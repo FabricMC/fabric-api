@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
@@ -117,11 +118,15 @@ public abstract class WorldRendererMixin {
 			if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(context, context)) {
 				ci.cancel();
 			}
-
-			// The immediate mode VertexConsumers use a shared buffer, so we have to make sure that the immediate mode VCP
-			// can accept block outline lines rendered to the existing vertexConsumer by the vanilla block overlay.
-			context.consumers().getBuffer(RenderLayer.getLines());
 		}
+	}
+
+	@SuppressWarnings("ConstantConditions")
+	@ModifyVariable(method = "drawBlockOutline", at = @At("HEAD"))
+	private VertexConsumer resetBlockOutlineBuffer(VertexConsumer vertexConsumer) {
+		// The original VertexConsumer may have been ended during the block outlines event, so we
+		// have to re-request it to prevent a crash when the vanilla block overlay is submitted.
+		return context.consumers().getBuffer(RenderLayer.getLines());
 	}
 
 	@Inject(
