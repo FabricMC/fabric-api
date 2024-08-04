@@ -18,6 +18,7 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
+    "fabric-networking-api-v1": "*",
     "minecraft": ">=1.15-alpha.19.37.a"
   },
   "entrypoints": {
