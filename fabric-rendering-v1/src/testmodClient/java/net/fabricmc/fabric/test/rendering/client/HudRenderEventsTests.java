@@ -16,20 +16,39 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import net.minecraft.client.MinecraftClient;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderEvents;
 
 public class HudRenderEventsTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		HudRenderEvents.START.register((context, tickCounter) -> { });
+		// Render a blue rectangle at the top right of the screen, and it should be blocked by misc overlays such as vignette, spyglass, and powder snow
+		HudRenderEvents.START.register((context, tickCounter) -> {
+			context.fill(context.getScaledWindowWidth() - 200, 0, context.getScaledWindowWidth(), 30, 0xFF0000FF);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "1. Blue rectangle blocked by overlays", context.getScaledWindowWidth() - 196, 10, 0xFFFFFFFF);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "such as powder snow", context.getScaledWindowWidth() - 111, 20, 0xFFFFFFFF);
+		});
 		// Render a red square in the center of the screen underneath the crosshair
-		HudRenderEvents.AFTER_MISC_OVERLAYS.register((context, tickCounter) -> context.fill(context.getScaledWindowWidth() / 2 - 10, context.getScaledWindowHeight() / 2 - 10, context.getScaledWindowWidth() / 2 + 10, context.getScaledWindowHeight() / 2 + 10, 0xFFFF0000));
+		HudRenderEvents.AFTER_MISC_OVERLAYS.register((context, tickCounter) -> {
+			context.fill(context.getScaledWindowWidth() / 2 - 10, context.getScaledWindowHeight() / 2 - 10, context.getScaledWindowWidth() / 2 + 10, context.getScaledWindowHeight() / 2 + 10, 0xFFFF0000);
+			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "2. Red square underneath crosshair", context.getScaledWindowWidth() / 2, context.getScaledWindowHeight() / 2 + 10, 0xFFFFFFFF);
+		});
 		// Render a green rectangle at the bottom of the screen, and it should block the hotbar and status bars
-		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> context.fill(context.getScaledWindowWidth() / 2 - 10, context.getScaledWindowHeight() / 2 - 10, context.getScaledWindowWidth() - 50, context.getScaledWindowHeight() - 10, 0xFF00FF00));
+		HudRenderEvents.AFTER_MAIN_HUD.register((context, tickCounter) -> {
+			context.fill(context.getScaledWindowWidth() / 2 - 50, context.getScaledWindowHeight() - 50, context.getScaledWindowWidth() / 2 + 50, context.getScaledWindowHeight() - 10, 0xFF00FF00);
+			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "3. This green rectangle should block the hotbar and status bars.", context.getScaledWindowWidth() / 2, context.getScaledWindowHeight() - 40, 0xFFFFFFFF);
+		});
 		// Render a blue rectangle at the bottom left of the screen, and it should be blocked by the chat
-		HudRenderEvents.BEFORE_CHAT.register((context, tickCounter) -> context.fill(0, context.getScaledWindowHeight() / 2, 100, context.getScaledWindowHeight() - 10, 0xFF0000FF));
+		HudRenderEvents.BEFORE_CHAT.register((context, tickCounter) -> {
+			context.fill(0, context.getScaledWindowHeight() - 40, 300, context.getScaledWindowHeight() - 50, 0xFF0000FF);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "4. This blue rectangle should be blocked by the chat.", 0, context.getScaledWindowHeight() - 50, 0xFFFFFFFF);
+		});
 		// Render a yellow rectangle at the top of the screen, and it should block the player list
-		HudRenderEvents.LAST.register((context, tickCounter) -> context.fill(0, 0, context.getScaledWindowWidth(), 100, 0xFFFFFF00));
+		HudRenderEvents.LAST.register((context, tickCounter) -> {
+			context.fill(0, 0, context.getScaledWindowWidth(), 10, 0xFFFFFF00);
+			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "5. This yellow rectangle should block the player list.", context.getScaledWindowWidth() / 2, 0, 0xFFFFFFFF);
+		});
 	}
 }
