@@ -43,9 +43,9 @@ public class InGameHudMixin {
 	}
 
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 3))
-	private LayeredDrawer.Layer fabric$afterMainHud(LayeredDrawer.Layer mainHudLayer) {
+	private LayeredDrawer.Layer fabric$afterMainHudAndExperienceLevel(LayeredDrawer.Layer experienceLevelLayer) {
 		return (context, tickCounter) -> {
-			mainHudLayer.render(context, tickCounter);
+			experienceLevelLayer.render(context, tickCounter);
 			HudRenderEvents.AFTER_MAIN_HUD.invoker().onRender(context, tickCounter);
 		};
 	}
@@ -66,6 +66,7 @@ public class InGameHudMixin {
 		};
 	}
 
+	@Deprecated
 	@Inject(method = "render", at = @At(value = "TAIL"))
 	public void render(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo callbackInfo) {
 		HudRenderCallback.EVENT.invoker().onHudRender(drawContext, tickCounter);

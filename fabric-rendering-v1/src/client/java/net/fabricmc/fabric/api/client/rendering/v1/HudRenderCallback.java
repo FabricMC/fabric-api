@@ -22,10 +22,14 @@ import net.minecraft.client.render.RenderTickCounter;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * @deprecated Use {@link HudRenderEvents} instead. For the closest equivalent, use {@link HudRenderEvents#LAST}.
+ */
+@Deprecated
 public interface HudRenderCallback {
-	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) -> (matrixStack, delta) -> {
+	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) -> (context, tickCounter) -> {
 		for (HudRenderCallback event : listeners) {
-			event.onHudRender(matrixStack, delta);
+			event.onHudRender(context, tickCounter);
 		}
 	});
 

@@ -24,8 +24,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Events for rendering elements on the HUD.
- * <p>
- * These events will not be called if the HUD is hidden with F1.
+ *
+ * <p>These events will not be called if the HUD is hidden with F1.
  */
 public class HudRenderEvents {
 	/**
