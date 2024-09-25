@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 
@@ -27,7 +28,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>These events will not be called if the HUD is hidden with F1.
  */
-public class HudRenderEvents {
+public final class HudRenderEvents {
 	/**
 	 * Called at the start of HUD rendering, right before anything is rendered.
 	 */
@@ -53,10 +54,12 @@ public class HudRenderEvents {
 	 */
 	public static final Event<HudRenderStage> LAST = createEventForStage();
 
+	private HudRenderEvents() { }
+
 	private static Event<HudRenderStage> createEventForStage() {
-		return EventFactory.createArrayBacked(HudRenderStage.class, listeners -> (context, tickDelta) -> {
+		return EventFactory.createArrayBacked(HudRenderStage.class, listeners -> (client, context, tickCounter) -> {
 			for (HudRenderStage listener : listeners) {
-				listener.onRender(context, tickDelta);
+				listener.onHudRender(client, context, tickCounter);
 			}
 		});
 	}
@@ -66,9 +69,10 @@ public class HudRenderEvents {
 		/**
 		 * Called sometime during a specific HUD render stage.
 		 *
+		 * @param client      The {@link MinecraftClient} instance
 		 * @param context     The {@link DrawContext} instance
 		 * @param tickCounter The {@link RenderTickCounter} instance
 		 */
-		void onRender(DrawContext context, RenderTickCounter tickCounter);
+		void onHudRender(MinecraftClient client, DrawContext context, RenderTickCounter tickCounter);
 	}
 }
