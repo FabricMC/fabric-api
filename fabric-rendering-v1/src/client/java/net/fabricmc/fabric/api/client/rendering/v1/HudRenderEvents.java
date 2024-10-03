@@ -32,47 +32,107 @@ public final class HudRenderEvents {
 	/**
 	 * Called at the start of HUD rendering, right before anything is rendered.
 	 */
-	public static final Event<HudRenderStage> START = createEventForStage();
+	public static final Event<Start> START = EventFactory.createArrayBacked(Start.class, listeners -> (client, context, tickCounter) -> {
+		for (Start listener : listeners) {
+			listener.onHudStart(client, context, tickCounter);
+		}
+	});
 
 	/**
 	 * Called after misc overlays (vignette, spyglass, and powder snow) have been rendered, and before the crosshair is rendered.
 	 */
-	public static final Event<HudRenderStage> AFTER_MISC_OVERLAYS = createEventForStage();
+	public static final Event<AfterMiscOverlays> AFTER_MISC_OVERLAYS = EventFactory.createArrayBacked(AfterMiscOverlays.class, listeners -> (client, context, tickCounter) -> {
+		for (AfterMiscOverlays listener : listeners) {
+			listener.afterMiscOverlays(client, context, tickCounter);
+		}
+	});
 
 	/**
 	 * Called after the hotbar, status bars, and experience bar have been rendered, and before the status effects overlays are rendered.
 	 */
-	public static final Event<HudRenderStage> AFTER_MAIN_HUD = createEventForStage();
+	public static final Event<AfterMainHud> AFTER_MAIN_HUD = EventFactory.createArrayBacked(AfterMainHud.class, listeners -> (client, context, tickCounter) -> {
+		for (AfterMainHud listener : listeners) {
+			listener.afterMainHud(client, context, tickCounter);
+		}
+	});
 
 	/**
 	 * Called after the debug HUD, scoreboard, overlay message (action bar), and title and subtitle have been rendered, and before the {@link net.minecraft.client.gui.hud.ChatHud} is rendered.
 	 */
-	public static final Event<HudRenderStage> BEFORE_CHAT = createEventForStage();
+	public static final Event<BeforeChat> BEFORE_CHAT = EventFactory.createArrayBacked(BeforeChat.class, listeners -> (client, context, tickCounter) -> {
+		for (BeforeChat listener : listeners) {
+			listener.beforeChat(client, context, tickCounter);
+		}
+	});
 
 	/**
 	 * Called after the entire HUD is rendered.
 	 */
-	public static final Event<HudRenderStage> LAST = createEventForStage();
+	public static final Event<Last> LAST = EventFactory.createArrayBacked(Last.class, listeners -> (client, context, tickCounter) -> {
+		for (Last listener : listeners) {
+			listener.onHudLast(client, context, tickCounter);
+		}
+	});
 
 	private HudRenderEvents() { }
 
-	private static Event<HudRenderStage> createEventForStage() {
-		return EventFactory.createArrayBacked(HudRenderStage.class, listeners -> (client, context, tickCounter) -> {
-			for (HudRenderStage listener : listeners) {
-				listener.onHudRender(client, context, tickCounter);
-			}
-		});
+	@FunctionalInterface
+	public interface Start {
+		/**
+		 * Called at the start of HUD rendering, right before anything is rendered.
+		 *
+		 * @param client      the {@link MinecraftClient} instance
+		 * @param context     the {@link DrawContext} instance
+		 * @param tickCounter the {@link RenderTickCounter} instance with access to tick delta
+		 */
+		void onHudStart(MinecraftClient client, DrawContext context, RenderTickCounter tickCounter);
 	}
 
 	@FunctionalInterface
-	public interface HudRenderStage {
+	public interface AfterMiscOverlays {
 		/**
-		 * Called sometime during a specific HUD render stage.
+		 * Called after misc overlays (vignette, spyglass, and powder snow) have been rendered, and before the crosshair is rendered.
 		 *
-		 * @param client      The {@link MinecraftClient} instance
-		 * @param context     The {@link DrawContext} instance
-		 * @param tickCounter The {@link RenderTickCounter} instance
+		 * @param client      the {@link MinecraftClient} instance
+		 * @param context     the {@link DrawContext} instance
+		 * @param tickCounter the {@link RenderTickCounter} instance with access to tick delta
 		 */
-		void onHudRender(MinecraftClient client, DrawContext context, RenderTickCounter tickCounter);
+		void afterMiscOverlays(MinecraftClient client, DrawContext context, RenderTickCounter tickCounter);
+	}
+
+	@FunctionalInterface
+	public interface AfterMainHud {
+		/**
+		 * Called after the hotbar, status bars, and experience bar have been rendered, and before the status effects overlays are rendered.
+		 *
+		 * @param client      the {@link MinecraftClient} instance
+		 * @param context     the {@link DrawContext} instance
+		 * @param tickCounter the {@link RenderTickCounter} instance with access to tick delta
+		 */
+		void afterMainHud(MinecraftClient client, DrawContext context, RenderTickCounter tickCounter);
+	}
+
+	@FunctionalInterface
+	public interface BeforeChat {
+		/**
+		 * Called after the debug HUD, scoreboard, overlay message (action bar), and title and subtitle have been rendered, and before the {@link net.minecraft.client.gui.hud.ChatHud} is rendered.
+		 *
+		 * @param client      the {@link MinecraftClient} instance
+		 * @param context     the {@link DrawContext} instance
+		 * @param tickCounter the {@link RenderTickCounter} instance with access to tick delta
+		 */
+		void beforeChat(MinecraftClient client, DrawContext context, RenderTickCounter tickCounter);
+	}
+
+	@FunctionalInterface
+	public interface Last {
+		/**
+		 * Called after the entire HUD is rendered.
+		 *
+		 * @param client      the {@link MinecraftClient} instance
+		 * @param context     the {@link DrawContext} instance
+		 * @param tickCounter the {@link RenderTickCounter} instance with access to tick delta
+		 */
+		void onHudLast(MinecraftClient client, DrawContext context, RenderTickCounter tickCounter);
 	}
 }

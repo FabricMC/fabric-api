@@ -43,9 +43,9 @@ public class InGameHudMixin {
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 0))
 	private LayeredDrawer.Layer fabric$beforeStartAndAfterMiscOverlays(LayeredDrawer.Layer miscOverlaysLayer) {
 		return (context, tickCounter) -> {
-			HudRenderEvents.START.invoker().onHudRender(client, context, tickCounter);
+			HudRenderEvents.START.invoker().onHudStart(client, context, tickCounter);
 			miscOverlaysLayer.render(context, tickCounter);
-			HudRenderEvents.AFTER_MISC_OVERLAYS.invoker().onHudRender(client, context, tickCounter);
+			HudRenderEvents.AFTER_MISC_OVERLAYS.invoker().afterMiscOverlays(client, context, tickCounter);
 		};
 	}
 
@@ -53,14 +53,14 @@ public class InGameHudMixin {
 	private LayeredDrawer.Layer fabric$afterMainHudAndExperienceLevel(LayeredDrawer.Layer experienceLevelLayer) {
 		return (context, tickCounter) -> {
 			experienceLevelLayer.render(context, tickCounter);
-			HudRenderEvents.AFTER_MAIN_HUD.invoker().onHudRender(client, context, tickCounter);
+			HudRenderEvents.AFTER_MAIN_HUD.invoker().afterMainHud(client, context, tickCounter);
 		};
 	}
 
 	@ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 1)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
 	private LayeredDrawer.Layer fabric$beforeChat(LayeredDrawer.Layer beforeChatLayer) {
 		return (context, tickCounter) -> {
-			HudRenderEvents.BEFORE_CHAT.invoker().onHudRender(client, context, tickCounter);
+			HudRenderEvents.BEFORE_CHAT.invoker().beforeChat(client, context, tickCounter);
 			beforeChatLayer.render(context, tickCounter);
 		};
 	}
@@ -69,7 +69,7 @@ public class InGameHudMixin {
 	private LayeredDrawer.Layer fabric$AfterSubtitlesHud(LayeredDrawer.Layer subtitlesHudLayer) {
 		return (context, tickCounter) -> {
 			subtitlesHudLayer.render(context, tickCounter);
-			HudRenderEvents.LAST.invoker().onHudRender(client, context, tickCounter);
+			HudRenderEvents.LAST.invoker().onHudLast(client, context, tickCounter);
 		};
 	}
 
