@@ -48,7 +48,7 @@ public class HudRenderEventsTests implements ClientModInitializer {
 		});
 		// Render a yellow rectangle at the top of the screen, and it should block the player list
 		HudRenderEvents.LAST.register((client, context, tickCounter) -> {
-			context.fill(0, 0, context.getScaledWindowWidth(), 10, Colors.YELLOW);
+			context.fill(context.getScaledWindowWidth() / 2 - 150, 0, context.getScaledWindowWidth() / 2 + 150, 15, Colors.YELLOW);
 			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "5. This yellow rectangle should block the player list.", context.getScaledWindowWidth() / 2, 0, Colors.WHITE);
 		});
 	}
