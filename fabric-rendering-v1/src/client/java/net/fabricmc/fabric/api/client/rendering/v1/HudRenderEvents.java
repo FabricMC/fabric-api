@@ -48,11 +48,20 @@ public final class HudRenderEvents {
 	});
 
 	/**
-	 * Called after the hotbar, status bars, and experience bar have been rendered, and before the status effects overlays are rendered.
+	 * Called after the hotbar, status bars, experience bar, status effects overlays, and boss bar have been rendered, and before the sleep overlay is rendered.
 	 */
 	public static final Event<AfterMainHud> AFTER_MAIN_HUD = EventFactory.createArrayBacked(AfterMainHud.class, listeners -> (client, context, tickCounter) -> {
 		for (AfterMainHud listener : listeners) {
 			listener.afterMainHud(client, context, tickCounter);
+		}
+	});
+
+	/**
+	 * Called after the sleep overlay has been rendered, and before the demo timer, debug HUD, scoreboard, overlay message (action bar), and title and subtitle are rendered.
+	 */
+	public static final Event<AfterSleepOverlay> AFTER_SLEEP_OVERLAY = EventFactory.createArrayBacked(AfterSleepOverlay.class, listeners -> (client, context, tickCounter) -> {
+		for (AfterSleepOverlay listener : listeners) {
+			listener.afterSleepOverlay(client, context, tickCounter);
 		}
 	});
 
@@ -103,13 +112,25 @@ public final class HudRenderEvents {
 	@FunctionalInterface
 	public interface AfterMainHud {
 		/**
-		 * Called after the hotbar, status bars, and experience bar have been rendered, and before the status effects overlays are rendered.
+		 * Called after the hotbar, status bars, experience bar, status effects overlays, and boss bar have been rendered, and before the sleep overlay is rendered.
 		 *
 		 * @param client      the {@link MinecraftClient} instance
 		 * @param context     the {@link DrawContext} instance
 		 * @param tickCounter the {@link RenderTickCounter} instance with access to tick delta
 		 */
 		void afterMainHud(MinecraftClient client, DrawContext context, RenderTickCounter tickCounter);
+	}
+
+	@FunctionalInterface
+	public interface AfterSleepOverlay {
+		/**
+		 * Called after the sleep overlay has been rendered, and before the demo timer, debug HUD, scoreboard, overlay message (action bar), and title and subtitle are rendered.
+		 *
+		 * @param client      the {@link MinecraftClient} instance
+		 * @param context     the {@link DrawContext} instance
+		 * @param tickCounter the {@link RenderTickCounter} instance with access to tick delta
+		 */
+		void afterSleepOverlay(MinecraftClient client, DrawContext context, RenderTickCounter tickCounter);
 	}
 
 	@FunctionalInterface

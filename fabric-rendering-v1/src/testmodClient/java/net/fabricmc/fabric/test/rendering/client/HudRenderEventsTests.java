@@ -41,15 +41,21 @@ public class HudRenderEventsTests implements ClientModInitializer {
 			context.fill(context.getScaledWindowWidth() / 2 - 50, context.getScaledWindowHeight() - 50, context.getScaledWindowWidth() / 2 + 50, context.getScaledWindowHeight() - 10, Colors.GREEN);
 			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "3. This green rectangle should block the hotbar and status bars.", context.getScaledWindowWidth() / 2, context.getScaledWindowHeight() - 40, Colors.WHITE);
 		});
+		// Render a yellow rectangle at the right of the screen, and it should be above the sleep overlay but below the scoreboard
+		HudRenderEvents.AFTER_SLEEP_OVERLAY.register((client, context, tickCounter) -> {
+			context.fill(context.getScaledWindowWidth() - 240, context.getScaledWindowHeight() / 2 - 10, context.getScaledWindowWidth(), context.getScaledWindowHeight() / 2 + 10, Colors.YELLOW);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "4. This yellow rectangle should be above", context.getScaledWindowWidth() - 236, context.getScaledWindowHeight() / 2 - 10, Colors.WHITE);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "the sleep overlay but below the scoreboard.", context.getScaledWindowWidth() - 236, context.getScaledWindowHeight() / 2, Colors.WHITE);
+		});
 		// Render a blue rectangle at the bottom left of the screen, and it should be blocked by the chat
 		HudRenderEvents.BEFORE_CHAT.register((client, context, tickCounter) -> {
 			context.fill(0, context.getScaledWindowHeight() - 40, 300, context.getScaledWindowHeight() - 50, Colors.BLUE);
-			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "4. This blue rectangle should be blocked by the chat.", 0, context.getScaledWindowHeight() - 50, Colors.WHITE);
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "5. This blue rectangle should be blocked by the chat.", 0, context.getScaledWindowHeight() - 50, Colors.WHITE);
 		});
 		// Render a yellow rectangle at the top of the screen, and it should block the player list
 		HudRenderEvents.LAST.register((client, context, tickCounter) -> {
 			context.fill(context.getScaledWindowWidth() / 2 - 150, 0, context.getScaledWindowWidth() / 2 + 150, 15, Colors.YELLOW);
-			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "5. This yellow rectangle should block the player list.", context.getScaledWindowWidth() / 2, 0, Colors.WHITE);
+			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "6. This yellow rectangle should block the player list.", context.getScaledWindowWidth() / 2, 0, Colors.WHITE);
 		});
 	}
 }

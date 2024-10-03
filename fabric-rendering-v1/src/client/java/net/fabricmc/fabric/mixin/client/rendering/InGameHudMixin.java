@@ -49,11 +49,19 @@ public class InGameHudMixin {
 		};
 	}
 
-	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 3))
-	private LayeredDrawer.Layer fabric$afterMainHudAndExperienceLevel(LayeredDrawer.Layer experienceLevelLayer) {
+	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
+	private LayeredDrawer.Layer fabric$afterMainHudExperienceLevelStatusEffectOverlayAndBossBar(LayeredDrawer.Layer experienceLevelLayer) {
 		return (context, tickCounter) -> {
 			experienceLevelLayer.render(context, tickCounter);
 			HudRenderEvents.AFTER_MAIN_HUD.invoker().afterMainHud(client, context, tickCounter);
+		};
+	}
+
+	@ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 0))
+	private LayeredDrawer.Layer fabric$afterSleepOverlay(LayeredDrawer.Layer demoTimerLayer) {
+		return (context, tickCounter) -> {
+			HudRenderEvents.AFTER_SLEEP_OVERLAY.invoker().afterSleepOverlay(client, context, tickCounter);
+			demoTimerLayer.render(context, tickCounter);
 		};
 	}
 
