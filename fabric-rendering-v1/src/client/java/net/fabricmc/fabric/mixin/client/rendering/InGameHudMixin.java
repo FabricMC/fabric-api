@@ -40,6 +40,7 @@ public class InGameHudMixin {
 	@Final
 	private MinecraftClient client;
 
+	// Targeting the first addLayer call of the first layered drawer, currently the misc overlays layer (renderMiscOverlays) as of 1.21.
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 0))
 	private LayeredDrawer.Layer fabric$beforeStartAndAfterMiscOverlays(LayeredDrawer.Layer miscOverlaysLayer) {
 		return (context, tickCounter) -> {
@@ -49,6 +50,7 @@ public class InGameHudMixin {
 		};
 	}
 
+	// Targeting the last addLayer call of the first layered drawer, which is after the main hud, currently the boss bar layer (bossBarHud.render) as of 1.21.
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
 	private LayeredDrawer.Layer fabric$afterMainHudExperienceLevelStatusEffectOverlayAndBossBar(LayeredDrawer.Layer experienceLevelLayer) {
 		return (context, tickCounter) -> {
@@ -57,6 +59,7 @@ public class InGameHudMixin {
 		};
 	}
 
+	// Targeting the first addLayer call of the second layered drawer, currently the demo timer layer (renderDemoTimer) as of 1.21.
 	@ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 0))
 	private LayeredDrawer.Layer fabric$afterSleepOverlay(LayeredDrawer.Layer demoTimerLayer) {
 		return (context, tickCounter) -> {
@@ -65,6 +68,7 @@ public class InGameHudMixin {
 		};
 	}
 
+	// Targeting the chat layer (renderChat), currently the sixth addLayer call of the second layered drawer as of 1.21.
 	@ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
 	private LayeredDrawer.Layer fabric$beforeChat(LayeredDrawer.Layer beforeChatLayer) {
 		return (context, tickCounter) -> {
@@ -73,6 +77,7 @@ public class InGameHudMixin {
 		};
 	}
 
+	// Targeting the last addLayer call of the second layered drawer, currently the subtitles hud layer (subtitlesHud.render) as of 1.21.
 	@ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 7))
 	private LayeredDrawer.Layer fabric$AfterSubtitlesHud(LayeredDrawer.Layer subtitlesHudLayer) {
 		return (context, tickCounter) -> {
@@ -81,6 +86,7 @@ public class InGameHudMixin {
 		};
 	}
 
+	// Inject after the HUD is rendered. Deprecated in favor of HudRenderEvents.
 	@Deprecated
 	@Inject(method = "render", at = @At(value = "TAIL"))
 	public void render(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo callbackInfo) {
