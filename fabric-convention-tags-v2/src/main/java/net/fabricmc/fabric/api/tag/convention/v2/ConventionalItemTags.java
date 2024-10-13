@@ -42,6 +42,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> MOSSY_COBBLESTONES = register("cobblestones/mossy");
 	public static final TagKey<Item> NORMAL_COBBLESTONES = register("cobblestones/normal");
 	public static final TagKey<Item> END_STONES = register("end_stones");
+	public static final TagKey<Item> GRAVELS = register("gravels");
 	public static final TagKey<Item> OBSIDIANS = register("obsidians");
 	/**
 	 * For common obsidian that has no special quirks or behaviors. Ideal for recipe use.

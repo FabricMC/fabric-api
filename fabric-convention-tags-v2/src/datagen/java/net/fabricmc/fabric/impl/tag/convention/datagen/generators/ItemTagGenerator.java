@@ -59,6 +59,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.INFESTED_COBBLESTONES, ConventionalItemTags.INFESTED_COBBLESTONES);
 		copy(ConventionalBlockTags.DEEPSLATE_COBBLESTONES, ConventionalItemTags.DEEPSLATE_COBBLESTONES);
 		copy(ConventionalBlockTags.END_STONES, ConventionalItemTags.END_STONES);
+		copy(ConventionalBlockTags.GRAVELS, ConventionalItemTags.GRAVELS);
 		copy(ConventionalBlockTags.OBSIDIANS, ConventionalItemTags.OBSIDIANS);
 		copy(ConventionalBlockTags.NORMAL_OBSIDIANS, ConventionalItemTags.NORMAL_OBSIDIANS);
 		copy(ConventionalBlockTags.CRYING_OBSIDIANS, ConventionalItemTags.CRYING_OBSIDIANS);
