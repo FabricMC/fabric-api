@@ -337,6 +337,9 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.SAVANNA_PLATEAU)
 				.add(BiomeKeys.CHERRY_GROVE)
 				.add(BiomeKeys.MEADOW);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SPOOKY)
+				.add(BiomeKeys.DARK_FOREST)
+				.add(BiomeKeys.DEEP_DARK);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLORAL)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
 				.add(BiomeKeys.MEADOW)

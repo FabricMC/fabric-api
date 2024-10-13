@@ -176,6 +176,10 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_PLATEAU = register("is_plateau");
 	/**
+	 * For biomes that are intended to be creepy or scary. For example, see Deep Dark biome or Dark Forest biome.
+	 */
+	public static final TagKey<Biome> IS_SPOOKY = register("is_spooky");
+	/**
 	 * Biomes with a large amount of flowers.
 	 */
 	public static final TagKey<Biome> IS_FLORAL = register("is_floral");
