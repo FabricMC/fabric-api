@@ -254,6 +254,11 @@ public final class ConventionalItemTags {
 
 	public static final TagKey<Item> VILLAGER_JOB_SITES = register("villager_job_sites");
 
+	// Sands
+	public static final TagKey<Item> SANDS = register("sands");
+	public static final TagKey<Item> RED_SANDS = register("sands/red");
+	public static final TagKey<Item> COLORLESS_SANDS = register("sands/colorless");
+
 	// Sandstone
 	public static final TagKey<Item> SANDSTONE_BLOCKS = register("sandstone/blocks");
 	public static final TagKey<Item> SANDSTONE_SLABS = register("sandstone/slabs");

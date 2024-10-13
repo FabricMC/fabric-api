@@ -100,6 +100,11 @@ public final class ConventionalBlockTags {
 
 	public static final TagKey<Block> VILLAGER_JOB_SITES = register("villager_job_sites");
 
+	// Sand
+	public static final TagKey<Block> SANDS = register("sands");
+	public static final TagKey<Block> RED_SANDS = register("sands/red");
+	public static final TagKey<Block> COLORLESS_SANDS = register("sands/colorless");
+
 	// Sandstone
 	public static final TagKey<Block> SANDSTONE_BLOCKS = register("sandstone/blocks");
 	public static final TagKey<Block> SANDSTONE_SLABS = register("sandstone/slabs");

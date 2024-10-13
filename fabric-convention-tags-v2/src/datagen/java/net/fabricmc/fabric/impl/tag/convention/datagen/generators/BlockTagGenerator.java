@@ -229,6 +229,14 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateSandstoneTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.COLORLESS_SANDS)
+				.add(Blocks.SAND);
+		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDS)
+				.add(Blocks.RED_SAND);
+		getOrCreateTagBuilder(ConventionalBlockTags.SANDS)
+				.addOptionalTag(ConventionalBlockTags.COLORLESS_SANDS)
+				.addOptionalTag(ConventionalBlockTags.RED_SANDS);
+
 		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS)
 				.addOptionalTag(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS)
 				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_BLOCKS);

@@ -92,6 +92,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.BUDS, "Buds");
 		translationBuilder.add(ConventionalBlockTags.CLUSTERS, "Clusters");
 		translationBuilder.add(ConventionalBlockTags.VILLAGER_JOB_SITES, "Villager Job Sites");
+		translationBuilder.add(ConventionalBlockTags.SANDS, "Sands");
+		translationBuilder.add(ConventionalBlockTags.RED_SANDS, "Red Sands");
+		translationBuilder.add(ConventionalBlockTags.COLORLESS_SANDS, "Colorless Sands");
 		translationBuilder.add(ConventionalBlockTags.SANDSTONE_BLOCKS, "Sandstone Blocks");
 		translationBuilder.add(ConventionalBlockTags.SANDSTONE_SLABS, "Sandstone Slabs");
 		translationBuilder.add(ConventionalBlockTags.SANDSTONE_STAIRS, "Sandstone Stairs");
@@ -293,6 +296,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.BUDS, "Buds");
 		translationBuilder.add(ConventionalItemTags.CLUSTERS, "Clusters");
 		translationBuilder.add(ConventionalItemTags.VILLAGER_JOB_SITES, "Villager Job Sites");
+		translationBuilder.add(ConventionalItemTags.SANDS, "Sands");
+		translationBuilder.add(ConventionalItemTags.RED_SANDS, "Red Sands");
+		translationBuilder.add(ConventionalItemTags.COLORLESS_SANDS, "Colorless Sands");
 		translationBuilder.add(ConventionalItemTags.SANDSTONE_BLOCKS, "Sandstone Blocks");
 		translationBuilder.add(ConventionalItemTags.SANDSTONE_SLABS, "Sandstone Slabs");
 		translationBuilder.add(ConventionalItemTags.SANDSTONE_STAIRS, "Sandstone Stairs");

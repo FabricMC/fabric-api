@@ -138,6 +138,10 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.BUDS, ConventionalItemTags.BUDS);
 		copy(ConventionalBlockTags.CLUSTERS, ConventionalItemTags.CLUSTERS);
 
+		copy(ConventionalBlockTags.COLORLESS_SANDS, ConventionalItemTags.COLORLESS_SANDS);
+		copy(ConventionalBlockTags.RED_SANDS, ConventionalItemTags.RED_SANDS);
+		copy(ConventionalBlockTags.SANDS, ConventionalItemTags.SANDS);
+
 		copy(ConventionalBlockTags.SANDSTONE_BLOCKS, ConventionalItemTags.SANDSTONE_BLOCKS);
 		copy(ConventionalBlockTags.SANDSTONE_SLABS, ConventionalItemTags.SANDSTONE_SLABS);
 		copy(ConventionalBlockTags.SANDSTONE_STAIRS, ConventionalItemTags.SANDSTONE_STAIRS);
