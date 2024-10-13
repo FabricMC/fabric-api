@@ -174,22 +174,24 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.addTag(ConventionalBiomeTags.IS_COLD_OVERWORLD);
 
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE_OVERWORLD)
-				.add(BiomeKeys.FOREST)
+				.add(BiomeKeys.PLAINS)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
-				.add(BiomeKeys.SWAMP)
-				.add(BiomeKeys.STONY_SHORE)
-				.add(BiomeKeys.DARK_FOREST)
-				.addOptional(WinterDropBuiltinBiomes.PALE_GARDEN)
-				.add(BiomeKeys.WINDSWEPT_FOREST)
+				.add(BiomeKeys.FOREST)
+				.add(BiomeKeys.FLOWER_FOREST)
 				.add(BiomeKeys.BIRCH_FOREST)
 				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST)
+				.add(BiomeKeys.DARK_FOREST)
+				.addOptional(WinterDropBuiltinBiomes.PALE_GARDEN)
+				.add(BiomeKeys.CHERRY_GROVE)
 				.add(BiomeKeys.MEADOW)
-				.add(BiomeKeys.PLAINS);
+				.add(BiomeKeys.SWAMP)
+				.add(BiomeKeys.BEACH)
+				.add(BiomeKeys.OCEAN)
+				.add(BiomeKeys.DEEP_OCEAN);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_TEMPERATE)
 				.addTag(ConventionalBiomeTags.IS_TEMPERATE_OVERWORLD);
 
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_HOT_OVERWORLD)
-				.add(BiomeKeys.SWAMP)
 				.add(BiomeKeys.MANGROVE_SWAMP)
 				.add(BiomeKeys.JUNGLE)
 				.add(BiomeKeys.BAMBOO_JUNGLE)
