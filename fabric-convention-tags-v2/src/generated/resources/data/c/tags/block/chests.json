@@ -1,6 +1,7 @@
 {
   "values": [
     "#c:chests/wooden",
-    "minecraft:ender_chest"
+    "#c:chests/trapped",
+    "#c:chests/ender"
   ]
 }

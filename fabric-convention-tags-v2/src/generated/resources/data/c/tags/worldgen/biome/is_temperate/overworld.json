@@ -1,19 +1,22 @@
 {
   "values": [
-    "minecraft:forest",
+    "minecraft:plains",
     "minecraft:sunflower_plains",
-    "minecraft:swamp",
-    "minecraft:stony_shore",
+    "minecraft:forest",
+    "minecraft:flower_forest",
+    "minecraft:birch_forest",
+    "minecraft:old_growth_birch_forest",
     "minecraft:dark_forest",
     {
       "id": "minecraft:pale_garden",
       "required": false
     },
-    "minecraft:windswept_forest",
-    "minecraft:birch_forest",
-    "minecraft:old_growth_birch_forest",
+    "minecraft:cherry_grove",
     "minecraft:meadow",
-    "minecraft:plains",
+    "minecraft:swamp",
+    "minecraft:beach",
+    "minecraft:ocean",
+    "minecraft:deep_ocean",
     {
       "id": "#c:climate_temperate",
       "required": false

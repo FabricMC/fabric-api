@@ -1,47 +1,39 @@
 {
   "values": [
     {
-      "id": "#minecraft:coal_ores",
+      "id": "#c:ores/coal",
       "required": false
     },
     {
-      "id": "#minecraft:copper_ores",
+      "id": "#c:ores/copper",
       "required": false
     },
     {
-      "id": "#minecraft:diamond_ores",
+      "id": "#c:ores/diamond",
       "required": false
     },
     {
-      "id": "#minecraft:emerald_ores",
+      "id": "#c:ores/emerald",
       "required": false
     },
     {
-      "id": "#minecraft:gold_ores",
+      "id": "#c:ores/gold",
       "required": false
     },
     {
-      "id": "#minecraft:iron_ores",
+      "id": "#c:ores/iron",
       "required": false
     },
     {
-      "id": "#minecraft:lapis_ores",
-      "required": false
-    },
-    {
-      "id": "#c:ores/netherite_scrap",
-      "required": false
-    },
-    {
-      "id": "#minecraft:redstone_ores",
-      "required": false
-    },
-    {
-      "id": "#c:ores/quartz",
+      "id": "#c:ores/lapis",
       "required": false
     },
     {
       "id": "#c:ores/netherite_scrap",
+      "required": false
+    },
+    {
+      "id": "#c:ores/redstone",
       "required": false
     },
     {

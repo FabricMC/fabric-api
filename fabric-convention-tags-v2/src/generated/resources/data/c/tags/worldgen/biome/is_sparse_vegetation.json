@@ -3,6 +3,14 @@
     {
       "id": "#c:is_sparse_vegetation/overworld",
       "required": false
+    },
+    {
+      "id": "#c:is_sparse_vegetation/nether",
+      "required": false
+    },
+    {
+      "id": "#c:is_sparse_vegetation/end",
+      "required": false
     }
   ]
 }
