@@ -164,6 +164,10 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_LUSH = register("is_lush");
 	/**
+	 * Biomes whose theme revolves around magic. Like a forest full of fairies or plants of magical abilities.
+	 */
+	public static final TagKey<Biome> IS_MAGICAL = register("is_magical");
+	/**
 	 * Biomes with a large amount of flowers.
 	 */
 	public static final TagKey<Biome> IS_FLORAL = register("is_floral");

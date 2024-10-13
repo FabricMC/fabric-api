@@ -510,6 +510,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBiomeTags.IS_WASTELAND, "Wasteland");
 		translationBuilder.add(ConventionalBiomeTags.IS_DEAD, "Dead");
 		translationBuilder.add(ConventionalBiomeTags.IS_LUSH, "Lush");
+		translationBuilder.add(ConventionalBiomeTags.IS_MAGICAL, "Magical");
 		translationBuilder.add(ConventionalBiomeTags.IS_FLORAL, "Floral");
 		translationBuilder.add(ConventionalBiomeTags.IS_SNOWY, "Snowy");
 		translationBuilder.add(ConventionalBiomeTags.IS_ICY, "Icy");
