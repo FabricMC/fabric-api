@@ -95,9 +95,14 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS)
 				.add(Blocks.CHEST)
 				.add(Blocks.TRAPPED_CHEST);
+		getOrCreateTagBuilder(ConventionalBlockTags.TRAPPED_CHESTS)
+				.add(Blocks.TRAPPED_CHEST);
+		getOrCreateTagBuilder(ConventionalBlockTags.ENDER_CHESTS)
+				.add(Blocks.ENDER_CHEST);
 		getOrCreateTagBuilder(ConventionalBlockTags.CHESTS)
 				.addTag(ConventionalBlockTags.WOODEN_CHESTS)
-				.add(Blocks.ENDER_CHEST);
+				.addTag(ConventionalBlockTags.TRAPPED_CHESTS)
+				.addTag(ConventionalBlockTags.ENDER_CHESTS);
 		getOrCreateTagBuilder(ConventionalBlockTags.BOOKSHELVES)
 				.add(Blocks.BOOKSHELF);
 		generateGlassTags();

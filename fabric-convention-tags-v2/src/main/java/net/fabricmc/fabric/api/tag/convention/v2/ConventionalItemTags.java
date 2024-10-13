@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.tag.convention.v2;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
@@ -209,6 +210,8 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> BOOKSHELVES = register("bookshelves");
 	public static final TagKey<Item> CHESTS = register("chests");
 	public static final TagKey<Item> WOODEN_CHESTS = register("chests/wooden");
+	public static final TagKey<Item> TRAPPED_CHESTS = register("chests/trapped");
+	public static final TagKey<Item> ENDER_CHESTS = register("chests/ender");
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_BLOCKS_COLORLESS = register("glass_blocks/colorless");
 	/**
