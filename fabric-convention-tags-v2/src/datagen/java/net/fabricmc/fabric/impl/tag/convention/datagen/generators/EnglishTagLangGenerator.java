@@ -515,6 +515,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBiomeTags.IS_PLATEAU, "Plateau");
 		translationBuilder.add(ConventionalBiomeTags.IS_SPOOKY, "Spooky");
 		translationBuilder.add(ConventionalBiomeTags.IS_FLORAL, "Floral");
+		translationBuilder.add(ConventionalBiomeTags.IS_SANDY, "Sandy");
 		translationBuilder.add(ConventionalBiomeTags.IS_SNOWY, "Snowy");
 		translationBuilder.add(ConventionalBiomeTags.IS_ICY, "Icy");
 		translationBuilder.add(ConventionalBiomeTags.IS_AQUATIC, "Aquatic");

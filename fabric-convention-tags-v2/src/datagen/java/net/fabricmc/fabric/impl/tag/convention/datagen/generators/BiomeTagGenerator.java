@@ -79,6 +79,12 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.FROZEN_RIVER)
 				.add(BiomeKeys.DEEP_FROZEN_OCEAN)
 				.add(BiomeKeys.FROZEN_OCEAN);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SANDY)
+				.add(BiomeKeys.DESERT)
+				.add(BiomeKeys.BADLANDS)
+				.add(BiomeKeys.WOODED_BADLANDS)
+				.add(BiomeKeys.ERODED_BADLANDS)
+				.add(BiomeKeys.BEACH);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SNOWY)
 				.add(BiomeKeys.SNOWY_BEACH)
 				.add(BiomeKeys.SNOWY_PLAINS)

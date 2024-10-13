@@ -184,6 +184,10 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_FLORAL = register("is_floral");
 	/**
+	 * Biomes that are able to spawn sand-based blocks on the surface.
+	 */
+	public static final TagKey<Biome> IS_SANDY = register("is_sandy");
+	/**
 	 * For biomes that contains lots of naturally spawned snow.
 	 * For biomes where lot of ice is present, see {@link ConventionalBiomeTags#IS_ICY}.
 	 * Biome with lots of both snow and ice may be in both tags.
