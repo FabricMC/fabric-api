@@ -768,6 +768,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.EGGS)
 				.add(Items.EGG);
 
+		getOrCreateTagBuilder(ConventionalItemTags.FEATHERS)
+				.add(Items.FEATHER);
+
 		getOrCreateTagBuilder(ConventionalItemTags.MUSIC_DISCS)
 				.add(Items.MUSIC_DISC_13, Items.MUSIC_DISC_CAT, Items.MUSIC_DISC_BLOCKS, Items.MUSIC_DISC_CHIRP, Items.MUSIC_DISC_FAR,
 						Items.MUSIC_DISC_MALL, Items.MUSIC_DISC_MELLOHI, Items.MUSIC_DISC_STAL, Items.MUSIC_DISC_STRAD, Items.MUSIC_DISC_WARD,
