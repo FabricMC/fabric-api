@@ -86,7 +86,7 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_VEGETATION_SPARSE = register("is_sparse_vegetation");
 	public static final TagKey<Biome> IS_VEGETATION_SPARSE_OVERWORLD = register("is_sparse_vegetation/overworld");
 	public static final TagKey<Biome> IS_VEGETATION_SPARSE_NETHER = register("is_sparse_vegetation/nether");
-	public static final TagKey<Biome> IS_VEGETATION_SPARSE_END  = register("is_sparse_vegetation/end");
+	public static final TagKey<Biome> IS_VEGETATION_SPARSE_END = register("is_sparse_vegetation/end");
 
 	/**
 	 * If a biome has more vegetation than a regular Forest biome, then it is considered having dense vegetation.
@@ -95,7 +95,7 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_VEGETATION_DENSE = register("is_dense_vegetation");
 	public static final TagKey<Biome> IS_VEGETATION_DENSE_OVERWORLD = register("is_dense_vegetation/overworld");
 	public static final TagKey<Biome> IS_VEGETATION_DENSE_NETHER = register("is_dense_vegetation/nether");
-	public static final TagKey<Biome> IS_VEGETATION_DENSE_END  = register("is_dense_vegetation/end");
+	public static final TagKey<Biome> IS_VEGETATION_DENSE_END = register("is_dense_vegetation/end");
 
 	public static final TagKey<Biome> IS_CONIFEROUS_TREE = register("is_tree/coniferous");
 	public static final TagKey<Biome> IS_SAVANNA_TREE = register("is_tree/savanna");

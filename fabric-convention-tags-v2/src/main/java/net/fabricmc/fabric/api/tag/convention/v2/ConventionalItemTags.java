@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.tag.convention.v2;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
