@@ -90,20 +90,36 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.addOptionalTag(ConventionalBlockTags.NORMAL_OBSIDIANS)
 				.addOptionalTag(ConventionalBlockTags.CRYING_OBSIDIANS);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES)
-				.add(Blocks.NETHER_QUARTZ_ORE);
+		getOrCreateTagBuilder(ConventionalBlockTags.COAL_ORES)
+				.addOptionalTag(BlockTags.COAL_ORES);
+		getOrCreateTagBuilder(ConventionalBlockTags.COPPER_ORES)
+				.addOptionalTag(BlockTags.COPPER_ORES);
+		getOrCreateTagBuilder(ConventionalBlockTags.DIAMOND_ORES)
+				.addOptionalTag(BlockTags.DIAMOND_ORES);
+		getOrCreateTagBuilder(ConventionalBlockTags.EMERALD_ORES)
+				.addOptionalTag(BlockTags.EMERALD_ORES);
+		getOrCreateTagBuilder(ConventionalBlockTags.GOLD_ORES)
+				.addOptionalTag(BlockTags.GOLD_ORES);
+		getOrCreateTagBuilder(ConventionalBlockTags.IRON_ORES)
+				.addOptionalTag(BlockTags.IRON_ORES);
+		getOrCreateTagBuilder(ConventionalBlockTags.LAPIS_ORES)
+				.addOptionalTag(BlockTags.LAPIS_ORES);
 		getOrCreateTagBuilder(ConventionalBlockTags.NETHERITE_SCRAP_ORES)
 				.add(Blocks.ANCIENT_DEBRIS);
+		getOrCreateTagBuilder(ConventionalBlockTags.REDSTONE_ORES)
+				.addOptionalTag(BlockTags.REDSTONE_ORES);
+		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES)
+				.add(Blocks.NETHER_QUARTZ_ORE);
 		getOrCreateTagBuilder(ConventionalBlockTags.ORES)
-				.addOptionalTag(BlockTags.COAL_ORES)
-				.addOptionalTag(BlockTags.COPPER_ORES)
-				.addOptionalTag(BlockTags.DIAMOND_ORES)
-				.addOptionalTag(BlockTags.EMERALD_ORES)
-				.addOptionalTag(BlockTags.GOLD_ORES)
-				.addOptionalTag(BlockTags.IRON_ORES)
-				.addOptionalTag(BlockTags.LAPIS_ORES)
+				.addOptionalTag(ConventionalBlockTags.COAL_ORES)
+				.addOptionalTag(ConventionalBlockTags.COPPER_ORES)
+				.addOptionalTag(ConventionalBlockTags.DIAMOND_ORES)
+				.addOptionalTag(ConventionalBlockTags.EMERALD_ORES)
+				.addOptionalTag(ConventionalBlockTags.GOLD_ORES)
+				.addOptionalTag(ConventionalBlockTags.IRON_ORES)
+				.addOptionalTag(ConventionalBlockTags.LAPIS_ORES)
 				.addOptionalTag(ConventionalBlockTags.NETHERITE_SCRAP_ORES)
-				.addOptionalTag(BlockTags.REDSTONE_ORES)
+				.addOptionalTag(ConventionalBlockTags.REDSTONE_ORES)
 				.addOptionalTag(ConventionalBlockTags.QUARTZ_ORES);
 
 		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS)

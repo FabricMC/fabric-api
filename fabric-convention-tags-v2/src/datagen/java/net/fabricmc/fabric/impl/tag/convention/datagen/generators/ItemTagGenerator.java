@@ -469,9 +469,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.IRON_NUGGETS)
 				.addOptionalTag(ConventionalItemTags.GOLD_NUGGETS);
 		copy(ConventionalBlockTags.ORES, ConventionalItemTags.ORES);
-		getOrCreateTagBuilder(ConventionalItemTags.ORES)
-				.addOptionalTag(ConventionalItemTags.NETHERITE_SCRAP_ORES)
-				.addOptionalTag(ConventionalItemTags.QUARTZ_ORES);
 		getOrCreateTagBuilder(ConventionalItemTags.RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.COPPER_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS)
@@ -522,10 +519,16 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.COAL)
 				.addOptionalTag(ItemTags.COALS);
 
-		getOrCreateTagBuilder(ConventionalItemTags.QUARTZ_ORES)
-				.add(Items.NETHER_QUARTZ_ORE);
-		getOrCreateTagBuilder(ConventionalItemTags.NETHERITE_SCRAP_ORES)
-				.add(Items.ANCIENT_DEBRIS);
+		copy(ConventionalBlockTags.COAL_ORES, ConventionalItemTags.COAL_ORES);
+		copy(ConventionalBlockTags.COPPER_ORES, ConventionalItemTags.COPPER_ORES);
+		copy(ConventionalBlockTags.DIAMOND_ORES, ConventionalItemTags.DIAMOND_ORES);
+		copy(ConventionalBlockTags.EMERALD_ORES, ConventionalItemTags.EMERALD_ORES);
+		copy(ConventionalBlockTags.GOLD_ORES, ConventionalItemTags.GOLD_ORES);
+		copy(ConventionalBlockTags.IRON_ORES, ConventionalItemTags.IRON_ORES);
+		copy(ConventionalBlockTags.LAPIS_ORES, ConventionalItemTags.LAPIS_ORES);
+		copy(ConventionalBlockTags.NETHERITE_SCRAP_ORES, ConventionalItemTags.NETHERITE_SCRAP_ORES);
+		copy(ConventionalBlockTags.REDSTONE_ORES, ConventionalItemTags.REDSTONE_ORES);
+		copy(ConventionalBlockTags.QUARTZ_ORES, ConventionalItemTags.QUARTZ_ORES);
 
 		getOrCreateTagBuilder(ConventionalItemTags.QUARTZ_GEMS)
 				.add(Items.QUARTZ);

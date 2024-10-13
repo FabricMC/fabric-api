@@ -125,9 +125,17 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> COPPER_INGOTS = register("ingots/copper");
 	public static final TagKey<Item> NETHERITE_INGOTS = register("ingots/netherite");
 
-	// Ores - vanilla instances
+	// Ores - vanilla instances (All ores consolidated here for consistency)
+	public static final TagKey<Item> COAL_ORES = register("ores/coal");
+	public static final TagKey<Item> COPPER_ORES = register("ores/copper");
+	public static final TagKey<Item> DIAMOND_ORES = register("ores/diamond");
+	public static final TagKey<Item> EMERALD_ORES = register("ores/emerald");
+	public static final TagKey<Item> GOLD_ORES = register("ores/gold");
+	public static final TagKey<Item> IRON_ORES = register("ores/iron");
+	public static final TagKey<Item> LAPIS_ORES = register("ores/lapis");
 	public static final TagKey<Item> NETHERITE_SCRAP_ORES = register("ores/netherite_scrap");
 	public static final TagKey<Item> QUARTZ_ORES = register("ores/quartz");
+	public static final TagKey<Item> REDSTONE_ORES = register("ores/redstone");
 
 	// Gems - vanilla instances
 	public static final TagKey<Item> QUARTZ_GEMS = register("gems/quartz");

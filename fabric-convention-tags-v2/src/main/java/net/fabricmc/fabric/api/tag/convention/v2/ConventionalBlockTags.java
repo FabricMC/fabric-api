@@ -53,9 +53,17 @@ public final class ConventionalBlockTags {
 	// Ores - broad categories
 	public static final TagKey<Block> ORES = register("ores");
 
-	// Ores - vanilla instances
-	public static final TagKey<Block> QUARTZ_ORES = register("ores/quartz");
+	// Ores - vanilla instances (All ores consolidated here for consistency)
+	public static final TagKey<Block> COAL_ORES = register("ores/coal");
+	public static final TagKey<Block> COPPER_ORES = register("ores/copper");
+	public static final TagKey<Block> DIAMOND_ORES = register("ores/diamond");
+	public static final TagKey<Block> EMERALD_ORES = register("ores/emerald");
+	public static final TagKey<Block> GOLD_ORES = register("ores/gold");
+	public static final TagKey<Block> IRON_ORES = register("ores/iron");
+	public static final TagKey<Block> LAPIS_ORES = register("ores/lapis");
 	public static final TagKey<Block> NETHERITE_SCRAP_ORES = register("ores/netherite_scrap");
+	public static final TagKey<Block> QUARTZ_ORES = register("ores/quartz");
+	public static final TagKey<Block> REDSTONE_ORES = register("ores/redstone");
 
 	public static final TagKey<Block> BARRELS = register("barrels");
 	public static final TagKey<Block> WOODEN_BARRELS = register("barrels/wooden");
