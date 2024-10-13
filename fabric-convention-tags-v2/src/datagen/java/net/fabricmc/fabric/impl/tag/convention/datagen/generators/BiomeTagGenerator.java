@@ -315,6 +315,8 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SAVANNA_TREE)
 				.addOptionalTag(ConventionalBiomeTags.IS_SAVANNA);
 
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_LUSH)
+				.add(BiomeKeys.LUSH_CAVES);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLORAL)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
 				.add(BiomeKeys.MEADOW)

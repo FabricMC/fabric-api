@@ -160,6 +160,10 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_DEAD = register("is_dead");
 	/**
+	 * Biomes whose flora primarily consists of vibrant thick vegetation and pools of water. Think of Lush Caves as an example.
+	 */
+	public static final TagKey<Biome> IS_LUSH = register("is_lush");
+	/**
 	 * Biomes with a large amount of flowers.
 	 */
 	public static final TagKey<Biome> IS_FLORAL = register("is_floral");
