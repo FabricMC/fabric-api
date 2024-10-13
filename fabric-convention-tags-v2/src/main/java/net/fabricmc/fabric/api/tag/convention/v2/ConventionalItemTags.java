@@ -375,6 +375,10 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> FEATHERS = register("feathers");
 	public static final TagKey<Item> GUNPOWDERS = register("gunpowders");
 	/**
+	 * Small mushroom items. Not the full block forms.
+	 */
+	public static final TagKey<Item> MUSHROOMS = register("mushrooms");
+	/**
 	 * For music disc-like materials to be used in recipes.
 	 * A pancake with a JUKEBOX_PLAYABLE component attached to play in Jukeboxes as an Easter Egg is not a music disc and would not go in this tag.
 	 */
