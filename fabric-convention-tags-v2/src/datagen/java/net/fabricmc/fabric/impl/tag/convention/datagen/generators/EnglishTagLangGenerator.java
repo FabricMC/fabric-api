@@ -379,6 +379,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.BONES, "Bones");
 		translationBuilder.add(ConventionalItemTags.EGGS, "Eggs");
 		translationBuilder.add(ConventionalItemTags.FEATHERS, "Feathers");
+		translationBuilder.add(ConventionalItemTags.GUNPOWDERS, "Gunpowders");
 		translationBuilder.add(ConventionalItemTags.MUSIC_DISCS, "Music Discs");
 		translationBuilder.add(ConventionalItemTags.RODS, "Rods");
 		translationBuilder.add(ConventionalItemTags.WOODEN_RODS, "Wooden Rods");
