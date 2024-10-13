@@ -370,6 +370,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_FURNACES = register("player_workstations/furnaces");
 	public static final TagKey<Item> STRINGS = register("strings");
 	public static final TagKey<Item> LEATHERS = register("leathers");
+	public static final TagKey<Item> BONES = register("bones");
 	/**
 	 * For music disc-like materials to be used in recipes.
 	 * A pancake with a JUKEBOX_PLAYABLE component attached to play in Jukeboxes as an Easter Egg is not a music disc and would not go in this tag.
