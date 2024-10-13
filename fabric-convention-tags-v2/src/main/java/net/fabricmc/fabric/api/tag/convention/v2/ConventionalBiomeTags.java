@@ -172,6 +172,10 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_RARE = register("is_rare");
 	/**
+	 * Biomes that spawn as a flat-topped hill often.
+	 */
+	public static final TagKey<Biome> IS_PLATEAU = register("is_plateau");
+	/**
 	 * Biomes with a large amount of flowers.
 	 */
 	public static final TagKey<Biome> IS_FLORAL = register("is_floral");
