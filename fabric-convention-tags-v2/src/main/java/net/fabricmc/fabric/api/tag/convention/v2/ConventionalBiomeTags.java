@@ -168,6 +168,10 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_MAGICAL = register("is_magical");
 	/**
+	 * Intended for biomes that spawns infrequently and can be difficult to find.
+	 */
+	public static final TagKey<Biome> IS_RARE = register("is_rare");
+	/**
 	 * Biomes with a large amount of flowers.
 	 */
 	public static final TagKey<Biome> IS_FLORAL = register("is_floral");

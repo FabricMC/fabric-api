@@ -318,6 +318,20 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_LUSH)
 				.add(BiomeKeys.LUSH_CAVES);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_MAGICAL);
+		getOrCreateTagBuilder(ConventionalBiomeTags.IS_RARE)
+				.add(BiomeKeys.SUNFLOWER_PLAINS)
+				.add(BiomeKeys.FLOWER_FOREST)
+				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST)
+				.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA)
+				.add(BiomeKeys.BAMBOO_JUNGLE)
+				.add(BiomeKeys.SPARSE_JUNGLE)
+				.add(BiomeKeys.ERODED_BADLANDS)
+				.add(BiomeKeys.SAVANNA_PLATEAU)
+				.add(BiomeKeys.WINDSWEPT_SAVANNA)
+				.add(BiomeKeys.ICE_SPIKES)
+				.add(BiomeKeys.WINDSWEPT_GRAVELLY_HILLS)
+				.add(BiomeKeys.MUSHROOM_FIELDS)
+				.add(BiomeKeys.DEEP_DARK);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLORAL)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
 				.add(BiomeKeys.MEADOW)
