@@ -40,6 +40,10 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		// Blocks
 		translationBuilder.add(ConventionalBlockTags.STONES, "Stones");
 		translationBuilder.add(ConventionalBlockTags.COBBLESTONES, "Cobblestones");
+		translationBuilder.add(ConventionalBlockTags.NORMAL_COBBLESTONES, "Normal Cobblestones");
+		translationBuilder.add(ConventionalBlockTags.MOSSY_COBBLESTONES, "Mossy Cobblestones");
+		translationBuilder.add(ConventionalBlockTags.INFESTED_COBBLESTONES, "Infested Cobblestones");
+		translationBuilder.add(ConventionalBlockTags.DEEPSLATE_COBBLESTONES, "Deepslate Cobblestones");
 		translationBuilder.add(ConventionalBlockTags.OBSIDIANS, "Obsidians");
 		translationBuilder.add(ConventionalBlockTags.NORMAL_OBSIDIANS, "Normal Obsidians");
 		translationBuilder.add(ConventionalBlockTags.CRYING_OBSIDIANS, "Crying Obsidians");
@@ -124,6 +128,10 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		// Items
 		translationBuilder.add(ConventionalItemTags.STONES, "Stones");
 		translationBuilder.add(ConventionalItemTags.COBBLESTONES, "Cobblestones");
+		translationBuilder.add(ConventionalItemTags.NORMAL_COBBLESTONES, "Normal Cobblestones");
+		translationBuilder.add(ConventionalItemTags.MOSSY_COBBLESTONES, "Mossy Cobblestones");
+		translationBuilder.add(ConventionalItemTags.INFESTED_COBBLESTONES, "Infested Cobblestones");
+		translationBuilder.add(ConventionalItemTags.DEEPSLATE_COBBLESTONES, "Deepslate Cobblestones");
 		translationBuilder.add(ConventionalItemTags.OBSIDIANS, "Obsidians");
 		translationBuilder.add(ConventionalItemTags.NORMAL_OBSIDIANS, "Normal Obsidians");
 		translationBuilder.add(ConventionalItemTags.CRYING_OBSIDIANS, "Crying Obsidians");

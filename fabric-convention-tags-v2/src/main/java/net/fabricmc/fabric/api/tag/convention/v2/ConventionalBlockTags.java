@@ -35,6 +35,10 @@ public final class ConventionalBlockTags {
 	 */
 	public static final TagKey<Block> STONES = register("stones");
 	public static final TagKey<Block> COBBLESTONES = register("cobblestones");
+	public static final TagKey<Block> DEEPSLATE_COBBLESTONES = register("cobblestones/deepslate");
+	public static final TagKey<Block> INFESTED_COBBLESTONES = register("cobblestones/infested");
+	public static final TagKey<Block> MOSSY_COBBLESTONES = register("cobblestones/mossy");
+	public static final TagKey<Block> NORMAL_COBBLESTONES = register("cobblestones/normal");
 	public static final TagKey<Block> OBSIDIANS = register("obsidians");
 	/**
 	 * For common obsidian that has no special quirks or behaviors. Ideal for recipe use.

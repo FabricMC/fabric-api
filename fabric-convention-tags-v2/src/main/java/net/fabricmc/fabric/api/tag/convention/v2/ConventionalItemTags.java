@@ -37,6 +37,10 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> STONES = register("stones");
 	public static final TagKey<Item> COBBLESTONES = register("cobblestones");
+	public static final TagKey<Item> DEEPSLATE_COBBLESTONES = register("cobblestones/deepslate");
+	public static final TagKey<Item> INFESTED_COBBLESTONES = register("cobblestones/infested");
+	public static final TagKey<Item> MOSSY_COBBLESTONES = register("cobblestones/mossy");
+	public static final TagKey<Item> NORMAL_COBBLESTONES = register("cobblestones/normal");
 	public static final TagKey<Item> OBSIDIANS = register("obsidians");
 	/**
 	 * For common obsidian that has no special quirks or behaviors. Ideal for recipe use.
