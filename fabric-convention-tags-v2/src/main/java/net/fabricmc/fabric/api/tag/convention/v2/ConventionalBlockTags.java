@@ -116,6 +116,13 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> UNCOLORED_SANDSTONE_SLABS = register("sandstone/uncolored_slabs");
 	public static final TagKey<Block> UNCOLORED_SANDSTONE_STAIRS = register("sandstone/uncolored_stairs");
 
+	// Fences and Fence Gates
+	public static final TagKey<Block> FENCES = register("fences");
+	public static final TagKey<Block> WOODEN_FENCES = register("fences/wooden");
+	public static final TagKey<Block> NETHER_BRICK_FENCES = register("fences/nether_brick");
+	public static final TagKey<Block> FENCE_GATES = register("fence_gates");
+	public static final TagKey<Block> WOODEN_FENCE_GATES = register("fence_gates/wooden");
+
 	// Blocks created with dyes
 	/**
 	 * Tag that holds all blocks that can be dyed a specific color.

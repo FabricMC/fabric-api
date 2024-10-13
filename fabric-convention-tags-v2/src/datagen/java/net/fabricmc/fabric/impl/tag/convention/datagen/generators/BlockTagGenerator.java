@@ -197,6 +197,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		generateSandstoneTags();
 
+		generateFenceAndFenceGateTags();
+
 		generateDyedTags();
 
 		generateStorageTags();
@@ -226,6 +228,40 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.CHAIN);
 
 		getOrCreateTagBuilder(ConventionalBlockTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
+	}
+
+	private void generateFenceAndFenceGateTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_FENCES)
+				.add(Blocks.OAK_FENCE)
+				.add(Blocks.SPRUCE_FENCE)
+				.add(Blocks.BIRCH_FENCE)
+				.add(Blocks.JUNGLE_FENCE)
+				.add(Blocks.ACACIA_FENCE)
+				.add(Blocks.DARK_OAK_FENCE)
+				.add(Blocks.CRIMSON_FENCE)
+				.add(Blocks.WARPED_FENCE)
+				.add(Blocks.MANGROVE_FENCE)
+				.add(Blocks.BAMBOO_FENCE)
+				.add(Blocks.CHERRY_FENCE);
+		getOrCreateTagBuilder(ConventionalBlockTags.NETHER_BRICK_FENCES)
+				.add(Blocks.NETHER_BRICK_FENCE);
+		getOrCreateTagBuilder(ConventionalBlockTags.FENCES)
+				.addOptionalTag(ConventionalBlockTags.WOODEN_FENCES)
+				.addOptionalTag(ConventionalBlockTags.NETHER_BRICK_FENCES);
+		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_FENCE_GATES)
+				.add(Blocks.OAK_FENCE_GATE)
+				.add(Blocks.SPRUCE_FENCE_GATE)
+				.add(Blocks.BIRCH_FENCE_GATE)
+				.add(Blocks.JUNGLE_FENCE_GATE)
+				.add(Blocks.ACACIA_FENCE_GATE)
+				.add(Blocks.DARK_OAK_FENCE_GATE)
+				.add(Blocks.CRIMSON_FENCE_GATE)
+				.add(Blocks.WARPED_FENCE_GATE)
+				.add(Blocks.MANGROVE_FENCE_GATE)
+				.add(Blocks.BAMBOO_FENCE_GATE)
+				.add(Blocks.CHERRY_FENCE_GATE);
+		getOrCreateTagBuilder(ConventionalBlockTags.FENCE_GATES)
+				.addOptionalTag(ConventionalBlockTags.WOODEN_FENCE_GATES);
 	}
 
 	private void generateSandstoneTags() {

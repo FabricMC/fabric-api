@@ -104,6 +104,11 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS, "Uncolored Sandstone Blocks");
 		translationBuilder.add(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS, "Uncolored Sandstone Slabs");
 		translationBuilder.add(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS, "Uncolored Sandstone Stairs");
+		translationBuilder.add(ConventionalBlockTags.FENCES, "Fences");
+		translationBuilder.add(ConventionalBlockTags.WOODEN_FENCES, "Wooden Fences");
+		translationBuilder.add(ConventionalBlockTags.NETHER_BRICK_FENCES, "Nether Brick Fences");
+		translationBuilder.add(ConventionalBlockTags.FENCE_GATES, "Fence Gates");
+		translationBuilder.add(ConventionalBlockTags.WOODEN_FENCE_GATES, "Wooden Fence Gates");
 		translationBuilder.add(ConventionalBlockTags.DYED, "Dyed Blocks");
 		translationBuilder.add(ConventionalBlockTags.BLACK_DYED, "Black Dyed Blocks");
 		translationBuilder.add(ConventionalBlockTags.BLUE_DYED, "Blue Dyed Blocks");
@@ -308,6 +313,11 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.UNCOLORED_SANDSTONE_BLOCKS, "Uncolored Sandstone Blocks");
 		translationBuilder.add(ConventionalItemTags.UNCOLORED_SANDSTONE_SLABS, "Uncolored Sandstone Slabs");
 		translationBuilder.add(ConventionalItemTags.UNCOLORED_SANDSTONE_STAIRS, "Uncolored Sandstone Stairs");
+		translationBuilder.add(ConventionalItemTags.FENCES, "Fences");
+		translationBuilder.add(ConventionalItemTags.WOODEN_FENCES, "Wooden Fences");
+		translationBuilder.add(ConventionalItemTags.NETHER_BRICK_FENCES, "Nether Brick Fences");
+		translationBuilder.add(ConventionalItemTags.FENCE_GATES, "Fence Gates");
+		translationBuilder.add(ConventionalItemTags.WOODEN_FENCE_GATES, "Wooden Fence Gates");
 		translationBuilder.add(ConventionalItemTags.DYES, "Dyes");
 		translationBuilder.add(ConventionalItemTags.BLACK_DYES, "Black Dyes");
 		translationBuilder.add(ConventionalItemTags.BLUE_DYES, "Blue Dyes");
