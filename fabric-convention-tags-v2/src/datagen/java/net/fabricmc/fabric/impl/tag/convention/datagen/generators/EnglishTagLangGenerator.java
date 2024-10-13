@@ -44,6 +44,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.MOSSY_COBBLESTONES, "Mossy Cobblestones");
 		translationBuilder.add(ConventionalBlockTags.INFESTED_COBBLESTONES, "Infested Cobblestones");
 		translationBuilder.add(ConventionalBlockTags.DEEPSLATE_COBBLESTONES, "Deepslate Cobblestones");
+		translationBuilder.add(ConventionalBlockTags.NETHERRACKS, "Netherracks");
 		translationBuilder.add(ConventionalBlockTags.END_STONES, "End Stones");
 		translationBuilder.add(ConventionalBlockTags.GRAVELS, "Gravels");
 		translationBuilder.add(ConventionalBlockTags.OBSIDIANS, "Obsidians");
@@ -134,6 +135,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.MOSSY_COBBLESTONES, "Mossy Cobblestones");
 		translationBuilder.add(ConventionalItemTags.INFESTED_COBBLESTONES, "Infested Cobblestones");
 		translationBuilder.add(ConventionalItemTags.DEEPSLATE_COBBLESTONES, "Deepslate Cobblestones");
+		translationBuilder.add(ConventionalItemTags.NETHERRACKS, "Netherracks");
 		translationBuilder.add(ConventionalItemTags.END_STONES, "End Stones");
 		translationBuilder.add(ConventionalItemTags.GRAVELS, "Gravels");
 		translationBuilder.add(ConventionalItemTags.OBSIDIANS, "Obsidians");

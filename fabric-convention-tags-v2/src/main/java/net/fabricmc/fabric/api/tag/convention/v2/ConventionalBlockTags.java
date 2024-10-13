@@ -39,6 +39,7 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> INFESTED_COBBLESTONES = register("cobblestones/infested");
 	public static final TagKey<Block> MOSSY_COBBLESTONES = register("cobblestones/mossy");
 	public static final TagKey<Block> NORMAL_COBBLESTONES = register("cobblestones/normal");
+	public static final TagKey<Block> NETHERRACKS = register("netherracks");
 	public static final TagKey<Block> END_STONES = register("end_stones");
 	public static final TagKey<Block> GRAVELS = register("gravels");
 	public static final TagKey<Block> OBSIDIANS = register("obsidians");
