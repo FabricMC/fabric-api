@@ -372,6 +372,12 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.PUMPKIN_CROPS, "Pumpkin Crops");
 		translationBuilder.add(ConventionalItemTags.SUGAR_CANE_CROPS, "Sugar Cane Crops");
 		translationBuilder.add(ConventionalItemTags.WHEAT_CROPS, "Wheat Crops");
+		translationBuilder.add(ConventionalItemTags.SEEDS, "Seeds");
+		translationBuilder.add(ConventionalItemTags.BEETROOT_SEEDS, "Beetroot Seeds");
+		translationBuilder.add(ConventionalItemTags.MELON_SEEDS, "Melon Seeds");
+		translationBuilder.add(ConventionalItemTags.PUMPKIN_SEEDS, "Pumpkin Seeds");
+		translationBuilder.add(ConventionalItemTags.TORCHFLOWER_SEEDS, "Torchflower Seeds");
+		translationBuilder.add(ConventionalItemTags.WHEAT_SEEDS, "Wheat Seeds");
 		translationBuilder.add(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES, "Crafting Tables");
 		translationBuilder.add(ConventionalItemTags.PLAYER_WORKSTATIONS_FURNACES, "Furnaces");
 		translationBuilder.add(ConventionalItemTags.STRINGS, "Strings");

@@ -365,6 +365,17 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> SUGAR_CANE_CROPS = register("crops/sugar_cane");
 	public static final TagKey<Item> WHEAT_CROPS = register("crops/wheat");
 
+	// Seeds
+	/**
+	 * For items that are explicitly seeds for use cases such as refilling a bird feeder block or certain seed-based recipes.
+	 */
+	public static final TagKey<Item> SEEDS = register("seeds");
+	public static final TagKey<Item> BEETROOT_SEEDS = register("seeds/beetroot");
+	public static final TagKey<Item> MELON_SEEDS = register("seeds/melon");
+	public static final TagKey<Item> PUMPKIN_SEEDS = register("seeds/pumpkin");
+	public static final TagKey<Item> TORCHFLOWER_SEEDS = register("seeds/torchflower");
+	public static final TagKey<Item> WHEAT_SEEDS = register("seeds/wheat");
+
 	// Other
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_CRAFTING_TABLES = register("player_workstations/crafting_tables");
 	public static final TagKey<Item> PLAYER_WORKSTATIONS_FURNACES = register("player_workstations/furnaces");

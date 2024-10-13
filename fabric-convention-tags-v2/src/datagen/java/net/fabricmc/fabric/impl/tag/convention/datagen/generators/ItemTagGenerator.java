@@ -44,7 +44,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateFoodTags();
 		generateDyeTags();
 		generateDyedTags();
-		generateCropTags();
+		generateCropAndSeedsTags();
 		generateVillagerJobSites();
 		generateOtherTags();
 		copyItemTags();
@@ -714,7 +714,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.forEach(getOrCreateTagBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)::add);
 	}
 
-	private void generateCropTags() {
+	private void generateCropAndSeedsTags() {
 		getOrCreateTagBuilder(ConventionalItemTags.CROPS)
 				.addOptionalTag(ConventionalItemTags.BEETROOT_CROPS)
 				.addOptionalTag(ConventionalItemTags.CACTUS_CROPS)
@@ -747,6 +747,23 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.SUGAR_CANE);
 		getOrCreateTagBuilder(ConventionalItemTags.WHEAT_CROPS)
 				.add(Items.WHEAT);
+
+		getOrCreateTagBuilder(ConventionalItemTags.SEEDS)
+				.addOptionalTag(ConventionalItemTags.BEETROOT_SEEDS)
+				.addOptionalTag(ConventionalItemTags.MELON_SEEDS)
+				.addOptionalTag(ConventionalItemTags.PUMPKIN_SEEDS)
+				.addOptionalTag(ConventionalItemTags.TORCHFLOWER_SEEDS)
+				.addOptionalTag(ConventionalItemTags.WHEAT_SEEDS);
+		getOrCreateTagBuilder(ConventionalItemTags.BEETROOT_SEEDS)
+				.add(Items.BEETROOT_SEEDS);
+		getOrCreateTagBuilder(ConventionalItemTags.MELON_SEEDS)
+				.add(Items.MELON_SEEDS);
+		getOrCreateTagBuilder(ConventionalItemTags.PUMPKIN_SEEDS)
+				.add(Items.PUMPKIN_SEEDS);
+		getOrCreateTagBuilder(ConventionalItemTags.TORCHFLOWER_SEEDS)
+				.add(Items.TORCHFLOWER_SEEDS);
+		getOrCreateTagBuilder(ConventionalItemTags.WHEAT_SEEDS)
+				.add(Items.WHEAT_SEEDS);
 	}
 
 	private void generateOtherTags() {
