@@ -381,6 +381,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.FEATHERS, "Feathers");
 		translationBuilder.add(ConventionalItemTags.GUNPOWDERS, "Gunpowders");
 		translationBuilder.add(ConventionalItemTags.MUSHROOMS, "Mushrooms");
+		translationBuilder.add(ConventionalItemTags.NETHER_STARS, "Nether Stars");
 		translationBuilder.add(ConventionalItemTags.MUSIC_DISCS, "Music Discs");
 		translationBuilder.add(ConventionalItemTags.RODS, "Rods");
 		translationBuilder.add(ConventionalItemTags.WOODEN_RODS, "Wooden Rods");
