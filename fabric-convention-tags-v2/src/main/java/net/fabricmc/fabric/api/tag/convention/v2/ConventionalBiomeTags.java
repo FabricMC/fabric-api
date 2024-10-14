@@ -56,7 +56,7 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_OVERWORLD = register("is_overworld");
 
 	/**
-	 * Biomes that are between above 0.8 temperature. (Excluding 0.8)
+	 * Biomes that are above 0.8 temperature. (Excluding 0.8)
 	 */
 	public static final TagKey<Biome> IS_HOT = register("is_hot");
 	public static final TagKey<Biome> IS_HOT_OVERWORLD = register("is_hot/overworld");
@@ -72,7 +72,7 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_TEMPERATE_END = register("is_temperate/end");
 
 	/**
-	 * Biomes that are between below 0.5 temperature. (Excluding 0.5)
+	 * Biomes that are below 0.5 temperature. (Excluding 0.5)
 	 */
 	public static final TagKey<Biome> IS_COLD = register("is_cold");
 	public static final TagKey<Biome> IS_COLD_OVERWORLD = register("is_cold/overworld");
