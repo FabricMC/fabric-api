@@ -1,7 +1,7 @@
 {
   "values": [
     {
-      "id": "#c:potions/bottled",
+      "id": "#c:potions/bottle",
       "required": false
     }
   ]

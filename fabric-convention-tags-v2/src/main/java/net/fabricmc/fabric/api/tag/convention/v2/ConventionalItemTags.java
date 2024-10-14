@@ -156,14 +156,14 @@ public final class ConventionalItemTags {
 	/**
 	 * Items that can hold various potion effects similar to how potion bottles do.
 	 * Contents of this tag may not always be a kind of bottle. Buckets of potions could go here.
-	 * The subtags would be the verb form of the container such as `c:potions/bucketed` or `c:potions/vialed`
+	 * The subtags would be the name of the container that is holding the potion effects such as `c:potions/bucket` or `c:potions/vial` as examples.
 	 */
 	public static final TagKey<Item> POTIONS = register("potions");
 	/**
-	 * Variations of the Potion bottle that can hold various effects. Examples are Splash and Lingering Potions from vanilla.
-	 * If a mod adds a new variant like Seeking Potion that applies effect to the closest entity at impact, that would in this tag.
+	 * Variations of the potion bottle that can hold various effects. Examples are splash and lingering potions from vanilla.
+	 * If a mod adds a new variant like seeking potion that applies effect to the closest entity at impact, that would in this tag.
 	 */
-	public static final TagKey<Item> BOTTLED_POTIONS = register("potions/bottled");
+	public static final TagKey<Item> BOTTLE_POTIONS = register("potions/bottle");
 
 	// Foods
 	public static final TagKey<Item> FOODS = register("foods");

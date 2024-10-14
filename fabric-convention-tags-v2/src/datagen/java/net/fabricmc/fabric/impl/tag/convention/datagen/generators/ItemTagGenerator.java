@@ -232,12 +232,12 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateConsumableTags() {
-		getOrCreateTagBuilder(ConventionalItemTags.BOTTLED_POTIONS)
+		getOrCreateTagBuilder(ConventionalItemTags.BOTTLE_POTIONS)
 				.add(Items.POTION)
 				.add(Items.SPLASH_POTION)
 				.add(Items.LINGERING_POTION);
 		getOrCreateTagBuilder(ConventionalItemTags.POTIONS)
-				.addOptionalTag(ConventionalItemTags.BOTTLED_POTIONS);
+				.addOptionalTag(ConventionalItemTags.BOTTLE_POTIONS);
 	}
 
 	private void generateFoodTags() {
