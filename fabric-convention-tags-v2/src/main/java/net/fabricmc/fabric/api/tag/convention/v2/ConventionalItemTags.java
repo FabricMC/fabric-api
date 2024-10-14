@@ -153,6 +153,10 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> GLOWSTONE_DUSTS = register("dusts/glowstone");
 
 	// Consumables
+	/**
+	 * Variations of the Potion bottle that can hold various effects. Examples are Splash and Lingering Potions from vanilla.
+	 * If a mod adds a new variant like Seeking Potion that applies effect to the closest entity at impact, that would in this tag.
+	 */
 	public static final TagKey<Item> POTIONS = register("potions");
 
 	// Foods
