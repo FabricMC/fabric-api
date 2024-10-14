@@ -1,6 +1,5 @@
 {
   "values": [
-    "minecraft:mangrove_swamp",
     "minecraft:jungle",
     "minecraft:bamboo_jungle",
     "minecraft:sparse_jungle",
@@ -12,6 +11,7 @@
     "minecraft:savanna_plateau",
     "minecraft:windswept_savanna",
     "minecraft:stony_peaks",
+    "minecraft:mushroom_fields",
     "minecraft:warm_ocean",
     {
       "id": "#c:climate_hot",
