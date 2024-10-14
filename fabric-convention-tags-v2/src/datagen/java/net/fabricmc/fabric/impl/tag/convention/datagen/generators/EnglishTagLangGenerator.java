@@ -242,6 +242,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.GLOWSTONE_DUSTS, "Glowstone Dusts");
 		translationBuilder.add(ConventionalItemTags.COAL, "Coal");
 		translationBuilder.add(ConventionalItemTags.POTIONS, "Potions");
+		translationBuilder.add(ConventionalItemTags.BOTTLED_POTIONS, "Bottled Potions");
 		translationBuilder.add(ConventionalItemTags.FOODS, "Foods");
 		translationBuilder.add(ConventionalItemTags.ANIMAL_FOODS, "Animal Foods");
 		translationBuilder.add(ConventionalItemTags.FRUIT_FOODS, "Fruits");
