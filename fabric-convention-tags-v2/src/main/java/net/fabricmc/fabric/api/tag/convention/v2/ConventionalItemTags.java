@@ -441,12 +441,12 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> ORE_BEARING_GROUND_STONE = register("ore_bearing_ground/stone");
 	/**
 	 * Ores which on average result in more than one resource worth of materials ignoring fortune and other modifiers.
-	 * (example, Redstone Ore)
+	 * (example, Copper Ore)
 	 */
 	public static final TagKey<Item> ORE_RATES_DENSE = register("ore_rates/dense");
 	/**
 	 * Ores which on average result in one resource worth of materials ignoring fortune and other modifiers.
-	 * (Example, Coal Ore)
+	 * (Example, Iron Ore)
 	 */
 	public static final TagKey<Item> ORE_RATES_SINGULAR = register("ore_rates/singular");
 	/**

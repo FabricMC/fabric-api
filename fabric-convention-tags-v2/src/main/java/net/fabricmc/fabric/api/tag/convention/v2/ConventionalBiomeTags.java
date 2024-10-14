@@ -55,16 +55,25 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_OVERWORLD = register("is_overworld");
 
+	/**
+	 * Biomes that are between above 0.8 temperature. (Excluding 0.8)
+	 */
 	public static final TagKey<Biome> IS_HOT = register("is_hot");
 	public static final TagKey<Biome> IS_HOT_OVERWORLD = register("is_hot/overworld");
 	public static final TagKey<Biome> IS_HOT_NETHER = register("is_hot/nether");
 	public static final TagKey<Biome> IS_HOT_END = register("is_hot/end");
 
+	/**
+	 * Biomes that are between 0.5 and 0.8 temperature range. (Including 0.5 and 0.8)
+	 */
 	public static final TagKey<Biome> IS_TEMPERATE = register("is_temperate");
 	public static final TagKey<Biome> IS_TEMPERATE_OVERWORLD = register("is_temperate/overworld");
 	public static final TagKey<Biome> IS_TEMPERATE_NETHER = register("is_temperate/nether");
 	public static final TagKey<Biome> IS_TEMPERATE_END = register("is_temperate/end");
 
+	/**
+	 * Biomes that are between below 0.5 temperature. (Excluding 0.5)
+	 */
 	public static final TagKey<Biome> IS_COLD = register("is_cold");
 	public static final TagKey<Biome> IS_COLD_OVERWORLD = register("is_cold/overworld");
 	public static final TagKey<Biome> IS_COLD_NETHER = register("is_cold/nether");
