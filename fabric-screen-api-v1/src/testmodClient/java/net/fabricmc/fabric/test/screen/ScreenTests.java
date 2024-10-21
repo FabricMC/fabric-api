@@ -28,17 +28,29 @@ import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.gen.WorldPreset;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.screen.v1.LevelScreenProviderRegistry;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
+import net.fabricmc.fabric.test.screen.chunk.FabriclandChunkGenerator;
 
 public final class ScreenTests implements ClientModInitializer {
+	public static final String MOD_ID = "fabric-screen-api-v1-testmod";
+
 	public static final Identifier ARMOR_FULL_TEXTURE = Identifier.ofVanilla("hud/armor_full");
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricScreenApiTests");
+
+	public static final Identifier FABRICLAND_ID = id("fabricland");
+	public static final RegistryKey<WorldPreset> FABRICLAND_WORLD_PRESET = RegistryKey.of(RegistryKeys.WORLD_PRESET, FABRICLAND_ID);
 
 	@Override
 	public void onInitializeClient() {
@@ -48,6 +60,12 @@ public final class ScreenTests implements ClientModInitializer {
 		});
 
 		ScreenEvents.AFTER_INIT.register(this::afterInitScreen);
+
+		Registry.register(Registries.CHUNK_GENERATOR, FABRICLAND_ID, FabriclandChunkGenerator.CODEC);
+		LevelScreenProviderRegistry.register(FABRICLAND_WORLD_PRESET, (parent, generatorOptionsHolder) -> {
+			LOGGER.info("Provided level screen provider for Fabricland");
+			return new FabriclandScreen(parent, generatorOptionsHolder);
+		});
 	}
 
 	private void afterInitScreen(MinecraftClient client, Screen screen, int windowWidth, int windowHeight) {
@@ -94,6 +112,10 @@ public final class ScreenTests implements ClientModInitializer {
 		} else if (screen instanceof CreativeInventoryScreen) {
 			Screens.getButtons(screen).add(new TestButtonWidget());
 		}
+	}
+
+	public static Identifier id(String name) {
+		return Identifier.of(MOD_ID, name);
 	}
 
 	// Test that mouseReleased is called

@@ -5,6 +5,8 @@
   "client": [
     "GameRendererMixin",
     "HandledScreenMixin",
+    "LevelScreenProviderAccessor",
+    "LevelScreenProviderMixin",
     "MinecraftClientMixin",
     "ScreenMixin"
   ],

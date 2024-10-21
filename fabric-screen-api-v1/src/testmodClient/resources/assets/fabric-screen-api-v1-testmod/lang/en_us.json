@@ -1,0 +1,5 @@
+{
+  "generator.fabric-screen-api-v1-testmod.fabricland": "Fabricland",
+  "generator.fabric-screen-api-v1-testmod.fabricland.background": "Background: %s",
+  "generator.fabric-screen-api-v1-testmod.fabricland.outline": "Outline: %s"
+}
