@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.gui.LayeredDrawer;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -32,52 +30,40 @@ public final class HudRenderEvents {
 	/**
 	 * Called at the start of HUD rendering, right before anything is rendered.
 	 */
-	public static final Event<HudRenderStage> START = createEventForStage();
+	public static final Event<LayeredDrawer.Layer> START = createEventForStage();
 
 	/**
 	 * Called after misc overlays (vignette, spyglass, and powder snow) have been rendered, and before the crosshair is rendered.
 	 */
-	public static final Event<HudRenderStage> AFTER_MISC_OVERLAYS = createEventForStage();
+	public static final Event<LayeredDrawer.Layer> AFTER_MISC_OVERLAYS = createEventForStage();
 
 	/**
 	 * Called after the hotbar, status bars, experience bar, status effects overlays, and boss bar have been rendered, and before the sleep overlay is rendered.
 	 */
-	public static final Event<HudRenderStage> AFTER_MAIN_HUD = createEventForStage();
+	public static final Event<LayeredDrawer.Layer> AFTER_MAIN_HUD = createEventForStage();
 
 	/**
 	 * Called after the sleep overlay has been rendered, and before the demo timer, debug HUD, scoreboard, overlay message (action bar), and title and subtitle are rendered.
 	 */
-	public static final Event<HudRenderStage> AFTER_SLEEP_OVERLAY = createEventForStage();
+	public static final Event<LayeredDrawer.Layer> AFTER_SLEEP_OVERLAY = createEventForStage();
 
 	/**
 	 * Called after the debug HUD, scoreboard, overlay message (action bar), and title and subtitle have been rendered, and before the {@link net.minecraft.client.gui.hud.ChatHud} is rendered.
 	 */
-	public static final Event<HudRenderStage> BEFORE_CHAT = createEventForStage();
+	public static final Event<LayeredDrawer.Layer> BEFORE_CHAT = createEventForStage();
 
 	/**
 	 * Called after the entire HUD is rendered.
 	 */
-	public static final Event<HudRenderStage> LAST = createEventForStage();
+	public static final Event<LayeredDrawer.Layer> LAST = createEventForStage();
 
 	private HudRenderEvents() { }
 
-	private static Event<HudRenderStage> createEventForStage() {
-		return EventFactory.createArrayBacked(HudRenderStage.class, listeners -> (client, context, tickCounter) -> {
-			for (HudRenderStage listener : listeners) {
-				listener.onHudRender(client, context, tickCounter);
+	private static Event<LayeredDrawer.Layer> createEventForStage() {
+		return EventFactory.createArrayBacked(LayeredDrawer.Layer.class, listeners -> (context, tickCounter) -> {
+			for (LayeredDrawer.Layer listener : listeners) {
+				listener.render(context, tickCounter);
 			}
 		});
-	}
-
-	@FunctionalInterface
-	public interface HudRenderStage {
-		/**
-		 * Called during a HUD render stage.
-		 *
-		 * @param client      the {@link MinecraftClient} instance
-		 * @param context     the {@link DrawContext} instance
-		 * @param tickCounter the {@link RenderTickCounter} instance with access to tick delta
-		 */
-		void onHudRender(MinecraftClient client, DrawContext context, RenderTickCounter tickCounter);
 	}
 }

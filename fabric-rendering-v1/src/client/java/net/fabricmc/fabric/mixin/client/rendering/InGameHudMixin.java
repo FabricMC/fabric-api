@@ -44,9 +44,9 @@ public class InGameHudMixin {
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 0))
 	private LayeredDrawer.Layer fabric$beforeStartAndAfterMiscOverlays(LayeredDrawer.Layer miscOverlaysLayer) {
 		return (context, tickCounter) -> {
-			HudRenderEvents.START.invoker().onHudRender(client, context, tickCounter);
+			HudRenderEvents.START.invoker().render(context, tickCounter);
 			miscOverlaysLayer.render(context, tickCounter);
-			HudRenderEvents.AFTER_MISC_OVERLAYS.invoker().onHudRender(client, context, tickCounter);
+			HudRenderEvents.AFTER_MISC_OVERLAYS.invoker().render(context, tickCounter);
 		};
 	}
 
@@ -55,7 +55,7 @@ public class InGameHudMixin {
 	private LayeredDrawer.Layer fabric$afterMainHudExperienceLevelStatusEffectOverlayAndBossBar(LayeredDrawer.Layer experienceLevelLayer) {
 		return (context, tickCounter) -> {
 			experienceLevelLayer.render(context, tickCounter);
-			HudRenderEvents.AFTER_MAIN_HUD.invoker().onHudRender(client, context, tickCounter);
+			HudRenderEvents.AFTER_MAIN_HUD.invoker().render(context, tickCounter);
 		};
 	}
 
@@ -63,7 +63,7 @@ public class InGameHudMixin {
 	@ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 0))
 	private LayeredDrawer.Layer fabric$afterSleepOverlay(LayeredDrawer.Layer demoTimerLayer) {
 		return (context, tickCounter) -> {
-			HudRenderEvents.AFTER_SLEEP_OVERLAY.invoker().onHudRender(client, context, tickCounter);
+			HudRenderEvents.AFTER_SLEEP_OVERLAY.invoker().render(context, tickCounter);
 			demoTimerLayer.render(context, tickCounter);
 		};
 	}
@@ -72,7 +72,7 @@ public class InGameHudMixin {
 	@ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
 	private LayeredDrawer.Layer fabric$beforeChat(LayeredDrawer.Layer beforeChatLayer) {
 		return (context, tickCounter) -> {
-			HudRenderEvents.BEFORE_CHAT.invoker().onHudRender(client, context, tickCounter);
+			HudRenderEvents.BEFORE_CHAT.invoker().render(context, tickCounter);
 			beforeChatLayer.render(context, tickCounter);
 		};
 	}
@@ -82,7 +82,7 @@ public class InGameHudMixin {
 	private LayeredDrawer.Layer fabric$AfterSubtitlesHud(LayeredDrawer.Layer subtitlesHudLayer) {
 		return (context, tickCounter) -> {
 			subtitlesHudLayer.render(context, tickCounter);
-			HudRenderEvents.LAST.invoker().onHudRender(client, context, tickCounter);
+			HudRenderEvents.LAST.invoker().render(context, tickCounter);
 		};
 	}
 
