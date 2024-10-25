@@ -16,16 +16,13 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -36,10 +33,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderEvents;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	@Shadow
-	@Final
-	private MinecraftClient client;
-
 	// Targeting the first addLayer call of the first layered drawer, currently the misc overlays layer (renderMiscOverlays) as of 1.21.
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 0))
 	private LayeredDrawer.Layer fabric$beforeStartAndAfterMiscOverlays(LayeredDrawer.Layer miscOverlaysLayer) {
@@ -79,7 +72,7 @@ public class InGameHudMixin {
 
 	// Targeting the last addLayer call of the second layered drawer, currently the subtitles hud layer (subtitlesHud.render) as of 1.21.
 	@ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 7))
-	private LayeredDrawer.Layer fabric$AfterSubtitlesHud(LayeredDrawer.Layer subtitlesHudLayer) {
+	private LayeredDrawer.Layer fabric$afterSubtitlesHud(LayeredDrawer.Layer subtitlesHudLayer) {
 		return (context, tickCounter) -> {
 			subtitlesHudLayer.render(context, tickCounter);
 			HudRenderEvents.LAST.invoker().render(context, tickCounter);
