@@ -118,6 +118,8 @@ public final class AttachmentRegistryImpl {
 
 		@Override
 		public AttachmentType<A> buildAndRegister(Identifier id) {
+			Objects.requireNonNull(id, "identifier cannot be null");
+
 			if (syncPredicate != null && id.toString().length() >= AttachmentSync.MAX_IDENTIFIER_SIZE) {
 				throw new IllegalArgumentException(
 						"Identifier length is too long for a synced attachment type (max %d)".formatted(AttachmentSync.MAX_IDENTIFIER_SIZE)
