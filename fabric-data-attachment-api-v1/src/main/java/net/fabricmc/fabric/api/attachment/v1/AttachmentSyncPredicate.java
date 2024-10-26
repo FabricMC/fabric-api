@@ -22,7 +22,14 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 
+/**
+ * A predicate that determines, for a specific attachment type, given the {@linkplain AttachmentTarget target} it is
+ * attached to an a {@link ServerPlayerEntity}, whether the data should be synchronized with the given player's client.
+ *
+ * <p>The class extends {@link BiPredicate} to allow for custom predicates, outside the ones provided by methods.</p>
+ */
 @ApiStatus.NonExtendable
+@FunctionalInterface
 public interface AttachmentSyncPredicate extends BiPredicate<AttachmentTarget, ServerPlayerEntity> {
 	/**
 	 * @return a predicate that syncs an attachment with all clients
