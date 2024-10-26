@@ -75,26 +75,34 @@ public class AttachmentTestMod implements ModInitializer {
 	public static final AttachmentType<String> FEATURE_ATTACHMENT = AttachmentRegistry.create(
 			Identifier.of(MOD_ID, "feature")
 	);
-	public static final AttachmentType<Boolean> SYNCED_WITH_ALL = AttachmentRegistry.<Boolean>builder()
-			.initializer(() -> false)
-			.persistent(Codec.BOOL)
-			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.all())
-			.buildAndRegister(Identifier.of(MOD_ID, "synced_all"));
-	public static final AttachmentType<Boolean> SYNCED_WITH_TARGET = AttachmentRegistry.<Boolean>builder()
-			.initializer(() -> false)
-			.persistent(Codec.BOOL)
-			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.targetOnly())
-			.buildAndRegister(Identifier.of(MOD_ID, "synced_target"));
-	public static final AttachmentType<Boolean> SYNCED_EXCEPT_TARGET = AttachmentRegistry.<Boolean>builder()
-			.initializer(() -> false)
-			.persistent(Codec.BOOL)
-			.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.allButTarget())
-			.buildAndRegister(Identifier.of(MOD_ID, "synced_except_target"));
-	public static final AttachmentType<Boolean> SYNCED_CREATIVE_ONLY = AttachmentRegistry.<Boolean>builder()
-			.initializer(() -> false)
-			.persistent(Codec.BOOL)
-			.syncWith(PacketCodecs.BOOL.cast(), (target, player) -> player.isCreative())
-			.buildAndRegister(Identifier.of(MOD_ID, "synced_custom"));
+	public static final AttachmentType<Boolean> SYNCED_WITH_ALL = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "synced_all"),
+			builder -> builder
+					.initializer(() -> false)
+					.persistent(Codec.BOOL)
+					.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.all())
+	);
+	public static final AttachmentType<Boolean> SYNCED_WITH_TARGET = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "synced_target"),
+			builder -> builder
+					.initializer(() -> false)
+					.persistent(Codec.BOOL)
+					.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.targetOnly())
+	);
+	public static final AttachmentType<Boolean> SYNCED_EXCEPT_TARGET = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "synced_except_target"),
+			builder -> builder
+					.initializer(() -> false)
+					.persistent(Codec.BOOL)
+					.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.allButTarget())
+	);
+	public static final AttachmentType<Boolean> SYNCED_CREATIVE_ONLY = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "synced_custom"),
+			builder -> builder
+					.initializer(() -> false)
+					.persistent(Codec.BOOL)
+					.syncWith(PacketCodecs.BOOL.cast(), (target, player) -> player.isCreative())
+	);
 	public static final SimpleCommandExceptionType TARGET_NOT_FOUND = new SimpleCommandExceptionType(Text.literal("Target not found"));
 
 	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(300, 0);
