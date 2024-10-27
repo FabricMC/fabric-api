@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 
@@ -43,8 +41,8 @@ public final class ClientWorldEvents {
 		 * Called after the client world has been changed.
 		 *
 		 * @param client the client instance
-		 * @param world the new world instance or null
+		 * @param world the new world instance
 		 */
-		void afterWorldChange(MinecraftClient client, @Nullable ClientWorld world);
+		void afterWorldChange(MinecraftClient client, ClientWorld world);
 	}
 }

@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -53,8 +52,10 @@ public abstract class MinecraftClientMixin {
 	}
 
 	@Inject(method = "setWorld", at = @At("TAIL"))
-	private void afterClientWorldChange(@Nullable ClientWorld world, CallbackInfo ci) {
-		MinecraftClient client = (MinecraftClient) (Object) this;
-		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.invoker().afterWorldChange(client, world);
+	private void afterClientWorldChange(ClientWorld world, CallbackInfo ci) {
+		if (world != null) {
+			MinecraftClient client = (MinecraftClient) (Object) this;
+			ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.invoker().afterWorldChange(client, world);
+		}
 	}
 }

@@ -51,9 +51,7 @@ public final class ClientLifecycleTests implements ClientModInitializer {
 		});
 
 		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, world) -> {
-			if (world != null) {
-				LOGGER.info("Client world changed to {}", world.getRegistryKey().getValue());
-			}
+			LOGGER.info("Client world changed to {}", world.getRegistryKey().getValue());
 		});
 	}
 }
