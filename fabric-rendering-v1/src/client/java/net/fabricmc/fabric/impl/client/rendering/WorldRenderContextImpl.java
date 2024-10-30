@@ -22,7 +22,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumer;
@@ -43,7 +42,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	private Camera camera;
 	private Frustum frustum;
 	private GameRenderer gameRenderer;
-	private LightmapTextureManager lightmapTextureManager;
 	private Matrix4f projectionMatrix;
 	private Matrix4f positionMatrix;
 	private VertexConsumerProvider consumers;
@@ -65,7 +63,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 			boolean blockOutlines,
 			Camera camera,
 			GameRenderer gameRenderer,
-			LightmapTextureManager lightmapTextureManager,
 			Matrix4f projectionMatrix,
 			Matrix4f positionMatrix,
 			VertexConsumerProvider consumers,
@@ -78,7 +75,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 		this.blockOutlines = blockOutlines;
 		this.camera = camera;
 		this.gameRenderer = gameRenderer;
-		this.lightmapTextureManager = lightmapTextureManager;
 		this.projectionMatrix = projectionMatrix;
 		this.positionMatrix = positionMatrix;
 		this.consumers = consumers;
@@ -163,11 +159,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	@Override
 	public GameRenderer gameRenderer() {
 		return gameRenderer;
-	}
-
-	@Override
-	public LightmapTextureManager lightmapTextureManager() {
-		return lightmapTextureManager;
 	}
 
 	@Override

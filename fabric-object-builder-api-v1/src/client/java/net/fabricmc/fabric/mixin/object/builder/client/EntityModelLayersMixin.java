@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.WoodType;
+import net.minecraft.client.render.block.entity.HangingSignBlockEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.util.Identifier;
@@ -45,10 +46,12 @@ public class EntityModelLayersMixin {
 	}
 
 	@Inject(method = "createHangingSign", at = @At("HEAD"), cancellable = true)
-	private static void createHangingSign(WoodType type, CallbackInfoReturnable<EntityModelLayer> cir) {
+	private static void createHangingSign(WoodType type, HangingSignBlockEntityRenderer.class_10381 attachmentType, CallbackInfoReturnable<EntityModelLayer> cir) {
 		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
 			Identifier identifier = Identifier.of(type.name());
-			cir.setReturnValue(new EntityModelLayer(identifier.withPrefixedPath("hanging_sign/"), "main"));
+			cir.setReturnValue(new EntityModelLayer(identifier.withPath(path -> {
+				return "hanging_sign/" + path + "/" + attachmentType.asString();
+			}), "main"));
 		}
 	}
 }

@@ -148,6 +148,7 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerParentedItemModel	(Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerItemModel	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerItemModel	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	method_65292	(Lnet/minecraft/block/Block;Ljava/lang/String;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerItemModel	(Lnet/minecraft/block/Block;Ljava/lang/String;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	createNorthDefaultHorizontalRotationStates	()Lnet/minecraft/data/client/BlockStateVariantMap;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	createSouthDefaultHorizontalRotationStates	()Lnet/minecraft/data/client/BlockStateVariantMap;
@@ -250,6 +251,8 @@ transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	getTurtleEggModel	(ILjava/lang/String;Lnet/minecraft/data/client/TextureMap;)Lnet/minecraft/util/Identifier;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	getTurtleEggModel	(Ljava/lang/Integer;Ljava/lang/Integer;)Lnet/minecraft/util/Identifier;
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerWallPlant	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	method_65295	(Lnet/minecraft/block/Block;Lnet/minecraft/item/Item;)V
+transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	method_65291	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerPaleMossCarpet	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	registerHangingMoss	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/client/BlockStateModelGenerator	supplyChiseledBookshelfModels	(Lnet/minecraft/data/client/MultipartBlockStateSupplier;Lnet/minecraft/data/client/When$PropertyCondition;Lnet/minecraft/data/client/VariantSettings$Rotation;)V
@@ -293,6 +296,7 @@ transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableG
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	dropsWithShears	(Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	dropsWithSilkTouchOrShears	(Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	multifaceGrowthDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/loot/condition/LootCondition$Builder;)Lnet/minecraft/loot/LootTable$Builder;
+transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	method_65261	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	paleMossCarpetDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	leavesDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;[F)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/server/loottable/BlockLootTableGenerator	oakLeavesDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;[F)Lnet/minecraft/loot/LootTable$Builder;

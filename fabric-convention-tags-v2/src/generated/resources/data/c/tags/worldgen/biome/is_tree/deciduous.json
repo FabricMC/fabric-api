@@ -5,10 +5,7 @@
     "minecraft:flower_forest",
     "minecraft:birch_forest",
     "minecraft:dark_forest",
-    {
-      "id": "minecraft:pale_garden",
-      "required": false
-    },
+    "minecraft:pale_garden",
     "minecraft:old_growth_birch_forest",
     {
       "id": "#c:tree_deciduous",

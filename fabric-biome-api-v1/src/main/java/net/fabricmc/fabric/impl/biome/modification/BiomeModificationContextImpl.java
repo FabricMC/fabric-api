@@ -45,6 +45,7 @@ import net.minecraft.sound.BiomeAdditionsSound;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.collection.DataPool;
 import net.minecraft.util.collection.Pool;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
@@ -188,8 +189,13 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void setMusic(Optional<MusicSound> sound) {
+		public void setMusic(Optional<DataPool<MusicSound>> sound) {
 			effects.music = Objects.requireNonNull(sound);
+		}
+
+		@Override
+		public void setMusicVolume(float volume) {
+			effects.field_55050 = volume;
 		}
 	}
 

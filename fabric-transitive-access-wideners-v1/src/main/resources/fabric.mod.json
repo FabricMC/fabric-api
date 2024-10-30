@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.8"
+    "fabricloader": ">=0.16.9"
   },
   "description": "Contains transitive access wideners that provide access to otherwise inaccessible Minecraft code.",
   "accessWidener": "fabric-transitive-access-wideners-v1.accesswidener",

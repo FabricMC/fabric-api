@@ -154,6 +154,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_RAW_GOLD, ConventionalItemTags.STORAGE_BLOCKS_RAW_GOLD);
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_RAW_IRON, ConventionalItemTags.STORAGE_BLOCKS_RAW_IRON);
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, ConventionalItemTags.STORAGE_BLOCKS_REDSTONE);
+		copy(ConventionalBlockTags.STORAGE_BLOCKS_RESIN, ConventionalItemTags.STORAGE_BLOCKS_RESIN);
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_SLIME, ConventionalItemTags.STORAGE_BLOCKS_SLIME);
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, ConventionalItemTags.STORAGE_BLOCKS_WHEAT);
 
@@ -440,10 +441,13 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		// Categories
 		getOrCreateTagBuilder(ConventionalItemTags.BRICKS)
 				.addOptionalTag(ConventionalItemTags.NORMAL_BRICKS)
-				.addOptionalTag(ConventionalItemTags.NETHER_BRICKS);
+				.addOptionalTag(ConventionalItemTags.NETHER_BRICKS)
+				.addOptionalTag(ConventionalItemTags.RESIN_BRICKS);
 		getOrCreateTagBuilder(ConventionalItemTags.DUSTS)
 				.addOptionalTag(ConventionalItemTags.GLOWSTONE_DUSTS)
 				.addOptionalTag(ConventionalItemTags.REDSTONE_DUSTS);
+		getOrCreateTagBuilder(ConventionalItemTags.CLUMPS)
+				.addOptionalTag(ConventionalItemTags.RESIN_CLUMPS);
 		getOrCreateTagBuilder(ConventionalItemTags.GEMS)
 				.addOptionalTag(ConventionalItemTags.AMETHYST_GEMS)
 				.addOptionalTag(ConventionalItemTags.DIAMOND_GEMS)
@@ -482,6 +486,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BRICK);
 		getOrCreateTagBuilder(ConventionalItemTags.NETHER_BRICKS)
 				.add(Items.NETHER_BRICK);
+		getOrCreateTagBuilder(ConventionalItemTags.RESIN_BRICKS)
+				.add(Items.RESIN_BRICK);
 
 		getOrCreateTagBuilder(ConventionalItemTags.IRON_INGOTS)
 				.add(Items.IRON_INGOT);
@@ -512,6 +518,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.GLOWSTONE_DUST);
 		getOrCreateTagBuilder(ConventionalItemTags.COAL)
 				.addOptionalTag(ItemTags.COALS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.RESIN_CLUMPS)
+				.add(Items.RESIN_CLUMP);
 
 		getOrCreateTagBuilder(ConventionalItemTags.QUARTZ_ORES)
 				.add(Items.NETHER_QUARTZ_ORE);

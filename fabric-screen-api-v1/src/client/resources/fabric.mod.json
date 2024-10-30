@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.8",
+    "fabricloader": ">=0.16.9",
     "fabric-api-base": "*"
   },
   "description": "Adds screen related hooks.",

@@ -23,7 +23,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -58,8 +57,6 @@ public interface WorldRenderContext {
 	Camera camera();
 
 	GameRenderer gameRenderer();
-
-	LightmapTextureManager lightmapTextureManager();
 
 	Matrix4f projectionMatrix();
 

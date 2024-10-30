@@ -6,6 +6,7 @@
     "PlayerAdvancementTrackerMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",
+    "ServerPlayNetworkHandlerInteractEntityHandlerMixin",
     "ServerPlayNetworkHandlerMixin"
   ],
   "injectors": {

@@ -35,6 +35,8 @@ accessible field net/minecraft/world/biome/BiomeEffects additionsSound Ljava/uti
 mutable field net/minecraft/world/biome/BiomeEffects additionsSound Ljava/util/Optional;
 accessible field net/minecraft/world/biome/BiomeEffects music Ljava/util/Optional;
 mutable field net/minecraft/world/biome/BiomeEffects music Ljava/util/Optional;
+accessible field net/minecraft/world/biome/BiomeEffects field_55050 F
+mutable field net/minecraft/world/biome/BiomeEffects field_55050 F
 
 # Spawn Settings / Density
 accessible field net/minecraft/world/biome/SpawnSettings creatureSpawnProbability F

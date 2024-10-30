@@ -140,6 +140,7 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> STORAGE_BLOCKS_RAW_GOLD = register("storage_blocks/raw_gold");
 	public static final TagKey<Block> STORAGE_BLOCKS_RAW_IRON = register("storage_blocks/raw_iron");
 	public static final TagKey<Block> STORAGE_BLOCKS_REDSTONE = register("storage_blocks/redstone");
+	public static final TagKey<Block> STORAGE_BLOCKS_RESIN = register("storage_blocks/resin");
 	public static final TagKey<Block> STORAGE_BLOCKS_SLIME = register("storage_blocks/slime");
 	public static final TagKey<Block> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 

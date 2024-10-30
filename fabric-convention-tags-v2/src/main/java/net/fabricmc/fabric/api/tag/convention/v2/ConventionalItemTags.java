@@ -96,6 +96,7 @@ public final class ConventionalItemTags {
 	// Ores and ingots - categories
 	public static final TagKey<Item> BRICKS = register("bricks");
 	public static final TagKey<Item> DUSTS = register("dusts");
+	public static final TagKey<Item> CLUMPS = register("clumps");
 	public static final TagKey<Item> GEMS = register("gems");
 	public static final TagKey<Item> INGOTS = register("ingots");
 	public static final TagKey<Item> NUGGETS = register("nuggets");
@@ -110,6 +111,7 @@ public final class ConventionalItemTags {
 	// Bricks - vanilla instances
 	public static final TagKey<Item> NORMAL_BRICKS = register("bricks/normal");
 	public static final TagKey<Item> NETHER_BRICKS = register("bricks/nether");
+	public static final TagKey<Item> RESIN_BRICKS = register("bricks/resin");
 
 	// Ingots - vanilla instances
 	public static final TagKey<Item> IRON_INGOTS = register("ingots/iron");
@@ -136,6 +138,8 @@ public final class ConventionalItemTags {
 	// Dusts and Misc - vanilla instances
 	public static final TagKey<Item> REDSTONE_DUSTS = register("dusts/redstone");
 	public static final TagKey<Item> GLOWSTONE_DUSTS = register("dusts/glowstone");
+
+	public static final TagKey<Item> RESIN_CLUMPS = register("clumps/resin");
 
 	// Consumables
 	public static final TagKey<Item> POTIONS = register("potions");
@@ -318,6 +322,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STORAGE_BLOCKS_RAW_GOLD = register("storage_blocks/raw_gold");
 	public static final TagKey<Item> STORAGE_BLOCKS_RAW_IRON = register("storage_blocks/raw_iron");
 	public static final TagKey<Item> STORAGE_BLOCKS_REDSTONE = register("storage_blocks/redstone");
+	public static final TagKey<Item> STORAGE_BLOCKS_RESIN = register("storage_blocks/resin");
 	public static final TagKey<Item> STORAGE_BLOCKS_SLIME = register("storage_blocks/slime");
 	public static final TagKey<Item> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
