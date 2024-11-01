@@ -11,18 +11,6 @@
     {
       "id": "#c:raw_materials/iron",
       "required": false
-    },
-    {
-      "id": "#c:raw_materials/copper",
-      "required": false
-    },
-    {
-      "id": "#c:raw_materials/iron",
-      "required": false
-    },
-    {
-      "id": "#c:raw_materials/gold",
-      "required": false
     }
   ]
 }
