@@ -471,10 +471,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.COPPER_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.IRON_RAW_MATERIALS);
-		getOrCreateTagBuilder(ConventionalItemTags.RAW_MATERIALS)
-				.addOptionalTag(ConventionalItemTags.COPPER_RAW_MATERIALS)
-				.addOptionalTag(ConventionalItemTags.IRON_RAW_MATERIALS)
-				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS);
 
 		getOrCreateTagBuilder(ConventionalItemTags.RAW_BLOCKS)
 				.addOptionalTag(ConventionalItemTags.COPPER_RAW_BLOCKS)
