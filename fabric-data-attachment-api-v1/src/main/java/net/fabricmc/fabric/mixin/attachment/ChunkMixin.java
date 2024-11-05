@@ -41,6 +41,9 @@ abstract class ChunkMixin implements AttachmentTargetImpl {
 	@Shadow
 	public abstract ChunkStatus getStatus();
 
+	@Shadow
+	public abstract ChunkPos getPos();
+
 	@Override
 	public AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
 		return new AttachmentTargetInfo.ChunkTarget(this.pos);
@@ -52,8 +55,9 @@ abstract class ChunkMixin implements AttachmentTargetImpl {
 
 		if (type.isPersistent() && this.getStatus().equals(ChunkStatus.EMPTY)) {
 			AttachmentEntrypoint.LOGGER.warn(
-					"Attaching persistent attachment {} to chunk with chunk status EMPTY. Attachment might be discarded.",
-					type.identifier()
+					"Attaching persistent attachment {} to chunk {} with chunk status EMPTY. Attachment might be discarded.",
+					type.identifier(),
+					this.getPos()
 			);
 		}
 	}

@@ -50,13 +50,13 @@ public final class AttachmentRegistryImpl {
 		if (existing != null) {
 			LOGGER.warn("Encountered duplicate type registration for id {}", id);
 
-			// Prevent duplicate registration from incorrectly overriding a synced type with a non-synced one
-			if (existing.isSynced()) {
+			// Prevent duplicate registration from incorrectly overriding a synced type with a non-synced one or vice-versa
+			if (existing.isSynced() && !attachmentType.isSynced()) {
 				syncableAttachments.remove(id);
+			} else if (!existing.isSynced() && attachmentType.isSynced()) {
+				syncableAttachments.add(id);
 			}
-		}
-
-		if (attachmentType.isSynced()) {
+		} else if (attachmentType.isSynced()) {
 			syncableAttachments.add(id);
 		}
 	}
@@ -120,9 +120,12 @@ public final class AttachmentRegistryImpl {
 		public AttachmentType<A> buildAndRegister(Identifier id) {
 			Objects.requireNonNull(id, "identifier cannot be null");
 
-			if (syncPredicate != null && id.toString().length() >= AttachmentSync.MAX_IDENTIFIER_SIZE) {
+			if (syncPredicate != null && id.toString().length() > AttachmentSync.MAX_IDENTIFIER_SIZE) {
 				throw new IllegalArgumentException(
-						"Identifier length is too long for a synced attachment type (max %d)".formatted(AttachmentSync.MAX_IDENTIFIER_SIZE)
+						"Identifier length is too long for a synced attachment type (was %d, maximum is %d)".formatted(
+								id.toString().length(),
+								AttachmentSync.MAX_IDENTIFIER_SIZE
+						)
 				);
 			}
 

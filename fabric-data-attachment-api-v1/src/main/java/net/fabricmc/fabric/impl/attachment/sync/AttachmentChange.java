@@ -54,7 +54,6 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			AttachmentChange::new
 	);
 	private static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + AttachmentSync.MAX_IDENTIFIER_SIZE;
-	// add a parameter?
 	private static final int MAX_DATA_SIZE_IN_BYTES = CustomPayloadS2CPacketAccessor.getMaxPayloadSize() - MAX_PADDING_SIZE_IN_BYTES;
 
 	@SuppressWarnings("unchecked")
@@ -66,7 +65,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		buf.writeOptional(Optional.ofNullable(value), codec);
 		byte[] encoded = buf.array();
 
-		if (encoded.length >= MAX_DATA_SIZE_IN_BYTES) {
+		if (encoded.length > MAX_DATA_SIZE_IN_BYTES) {
 			throw new IllegalArgumentException("Data for attachment '%s' was too big (%d bytes, over maximum %d)".formatted(
 					type.identifier(),
 					encoded.length,
@@ -93,7 +92,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 
 			int size = MAX_PADDING_SIZE_IN_BYTES + change.data.length;
 
-			if (byteSize + size >= MAX_DATA_SIZE_IN_BYTES) {
+			if (byteSize + size > MAX_DATA_SIZE_IN_BYTES) {
 				ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(packetChanges));
 				packetChanges.clear();
 				byteSize = maxVarIntSize;
