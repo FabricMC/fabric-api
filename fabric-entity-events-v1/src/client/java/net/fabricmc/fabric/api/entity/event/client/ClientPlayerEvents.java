@@ -27,11 +27,11 @@ public final class ClientPlayerEvents {
 	/**
 	 * An event that is called when a player is moving during using an item.
 	 */
-	public static final Event<AdjustUsingItemSpeed> ADJUST_USING_ITEM_SPEED = EventFactory.createArrayBacked(AdjustUsingItemSpeed.class, callbacks -> player -> {
+	public static final Event<ModifyItemUseSpeed> MODIFY_ITEM_USE_SPEED = EventFactory.createArrayBacked(ModifyItemUseSpeed.class, callbacks -> player -> {
 		Float maxSpeedPercentage = null;
 
-		for (AdjustUsingItemSpeed callback : callbacks) {
-			Float speedPercentage = callback.adjustUsingItemSpeed(player);
+		for (ModifyItemUseSpeed callback : callbacks) {
+			Float speedPercentage = callback.modifyItemUseSpeed(player);
 
 			if (speedPercentage != null) {
 				maxSpeedPercentage = maxSpeedPercentage == null ? speedPercentage : Math.max(speedPercentage, maxSpeedPercentage);
@@ -42,15 +42,15 @@ public final class ClientPlayerEvents {
 	});
 
 	@FunctionalInterface
-	public interface AdjustUsingItemSpeed {
+	public interface ModifyItemUseSpeed {
 		/**
 		 * Called when a player is moving during using an item.
 		 *
 		 * @param player the player is moving during using an item.
-		 * @return a Float representing the speed adjustment as a percentage (e.g., 0.8 for 80% speed),
-		 * or {@code null} indicates that no adjustment should be applied.
+		 * @return a Float representing the speed modifyment as a percentage (e.g., 0.8 for 80% speed),
+		 * or {@code null} indicates that no modifyment should be applied.
 		 */
 		@Nullable
-		Float adjustUsingItemSpeed(ClientPlayerEntity player);
+		Float modifyItemUseSpeed(ClientPlayerEntity player);
 	}
 }

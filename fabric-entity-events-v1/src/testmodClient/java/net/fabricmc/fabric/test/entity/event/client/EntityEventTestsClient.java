@@ -37,7 +37,7 @@ public class EntityEventTestsClient implements ClientModInitializer {
 		});
 
 		// the most common usage is to modify using item speed based on main hand item, most for custom items.
-		ClientPlayerEvents.ADJUST_USING_ITEM_SPEED.register(player -> {
+		ClientPlayerEvents.MODIFY_ITEM_USE_SPEED.register(player -> {
 			if (player.getMainHandStack().isOf(Items.GOLDEN_APPLE)) {
 				LOGGER.info("Player {} can move with half speed when eating golden apple.", player);
 				return 0.5F;
@@ -52,7 +52,7 @@ public class EntityEventTestsClient implements ClientModInitializer {
 		});
 
 		// another possible usages is to modify using item speed when certain conditions (e.g. equipped items) are met.
-		ClientPlayerEvents.ADJUST_USING_ITEM_SPEED.register(player -> {
+		ClientPlayerEvents.MODIFY_ITEM_USE_SPEED.register(player -> {
 			if (player.getMainHandStack().isOf(Items.BOW) && player.getEquippedStack(EquipmentSlot.FEET).isOf(Items.LEATHER_BOOTS)) {
 				LOGGER.info("Player {} can move with 80% speed becase of leather boots on feet.", player);
 				return 0.8F;
@@ -67,7 +67,7 @@ public class EntityEventTestsClient implements ClientModInitializer {
 		});
 
 		// this is used to test when multiple mods modify the using item speed together.
-		ClientPlayerEvents.ADJUST_USING_ITEM_SPEED.register(player -> {
+		ClientPlayerEvents.MODIFY_ITEM_USE_SPEED.register(player -> {
 			if (player.getMainHandStack().isOf(Items.BOW) && player.getOffHandStack().isOf(Items.FEATHER)) {
 				LOGGER.info("Player {} can move with half speed becase of feather in offhand.", player);
 				return 0.5F;
