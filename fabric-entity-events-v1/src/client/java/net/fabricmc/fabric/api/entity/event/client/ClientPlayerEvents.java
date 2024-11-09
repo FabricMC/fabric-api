@@ -44,11 +44,11 @@ public final class ClientPlayerEvents {
 	@FunctionalInterface
 	public interface ModifyItemUseSpeed {
 		/**
-		 * Called when a player is moving during using an item.
+		 * Called when a player is moving while using an item.
 		 *
-		 * @param player the player is moving during using an item.
-		 * @return a Float representing the speed modifyment as a percentage (e.g., 0.8 for 80% speed),
-		 * or {@code null} indicates that no modifyment should be applied.
+		 * @param player the player that is moving while using an item.
+		 * @return a Float representing the speed modification as a percentage (e.g., 0.8 for 80% speed),
+		 * or {@code null} indicates that no modification should be applied.
 		 */
 		@Nullable
 		Float modifyItemUseSpeed(ClientPlayerEntity player);
