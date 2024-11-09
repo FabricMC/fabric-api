@@ -28,11 +28,11 @@ import net.fabricmc.fabric.api.entity.event.client.ClientPlayerEvents;
 @Mixin(ClientPlayerEntity.class)
 abstract class ClientPlayerMixin {
 	@Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z"))
-	private void invokeModifyItemUseSpeedEvent(CallbackInfo ci) {
+	private void invokeModifyItemUseMovementSpeedEvent(CallbackInfo ci) {
 		ClientPlayerEntity player = (ClientPlayerEntity) (Object) this;
 
 		if (player.isUsingItem() && !player.hasVehicle() && (player.input.movementForward != 0.0F || player.input.movementSideways != 0.0F)) {
-			Float speedPercentage = ClientPlayerEvents.MODIFY_ITEM_USE_SPEED.invoker().modifyItemUseSpeed(player);
+			Float speedPercentage = ClientPlayerEvents.MODIFY_ITEM_USE_MOVEMENT_SPEED.invoker().modifyItemUseMovementSpeed(player);
 
 			if (speedPercentage != null) {
 				player.input.movementSideways *= speedPercentage * 5.0F;

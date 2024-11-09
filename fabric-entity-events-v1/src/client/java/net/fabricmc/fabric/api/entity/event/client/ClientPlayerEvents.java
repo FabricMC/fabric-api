@@ -25,13 +25,13 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class ClientPlayerEvents {
 	/**
-	 * An event that is called when a player is moving during using an item.
+	 * An event that is called when a player is moving while using an item.
 	 */
-	public static final Event<ModifyItemUseSpeed> MODIFY_ITEM_USE_SPEED = EventFactory.createArrayBacked(ModifyItemUseSpeed.class, callbacks -> player -> {
+	public static final Event<ModifyItemUseMovementSpeed> MODIFY_ITEM_USE_MOVEMENT_SPEED = EventFactory.createArrayBacked(ModifyItemUseMovementSpeed.class, callbacks -> player -> {
 		Float maxSpeedPercentage = null;
 
-		for (ModifyItemUseSpeed callback : callbacks) {
-			Float speedPercentage = callback.modifyItemUseSpeed(player);
+		for (ModifyItemUseMovementSpeed callback : callbacks) {
+			Float speedPercentage = callback.modifyItemUseMovementSpeed(player);
 
 			if (speedPercentage != null) {
 				maxSpeedPercentage = maxSpeedPercentage == null ? speedPercentage : Math.max(speedPercentage, maxSpeedPercentage);
@@ -42,7 +42,7 @@ public final class ClientPlayerEvents {
 	});
 
 	@FunctionalInterface
-	public interface ModifyItemUseSpeed {
+	public interface ModifyItemUseMovementSpeed {
 		/**
 		 * Called when a player is moving while using an item.
 		 *
@@ -51,6 +51,6 @@ public final class ClientPlayerEvents {
 		 * or {@code null} indicates that no modification should be applied.
 		 */
 		@Nullable
-		Float modifyItemUseSpeed(ClientPlayerEntity player);
+		Float modifyItemUseMovementSpeed(ClientPlayerEntity player);
 	}
 }
