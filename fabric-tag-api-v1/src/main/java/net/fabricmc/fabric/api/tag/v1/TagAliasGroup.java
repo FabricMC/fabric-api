@@ -26,6 +26,8 @@ import net.minecraft.registry.tag.TagKey;
 
 /**
  * A group of tags that refer to the same set of registry entries.
+ * The contained tags will be linked together and get the combined set of entries
+ * of all the aliased tags in a group.
  *
  * <p>Tag alias groups can be defined in data packs in the {@code data/<mod namespace>/fabric/tag_alias/<registry>}
  * directory. {@code <registry>} is the path of the registry's ID, prefixed with {@code <registry's namespace>/} if it's
@@ -35,6 +37,22 @@ import net.minecraft.registry.tag.TagKey;
  *
  * <p>If multiple tag alias groups include a tag, the groups will be combined and each tag will be an alias
  * for the same contents.
+ *
+ * <h2>Tag aliases in the {@code c} namespace</h2>
+ *
+ * <p>For the names of shared {@code c} tag alias groups, it's important that you use a short and descriptive name.
+ * A good way to do this is reusing the name of a contained {@code c} tag that follows the naming conventions.
+ * For example, if the tag alias group contains the tags {@code c:flowers/tall} and {@code minecraft:tall_flowers},
+ * the tag alias file should be named {@code flowers/tall.json}, like the contained {@code c} tag.
+ *
+ * <p>Tag alias groups in the {@code c} namespace are primarily intended for merging a {@code c} tag
+ * with an equivalent vanilla tag with no potentially unwanted gameplay behavior. If a vanilla tag affects
+ * game mechanics (such as the water tag affecting swimming), don't alias it as a {@code c} tag.
+ *
+ * <p>If you want to have the contents of a {@code c} tag in your own tag, prefer including the {@code c} tag
+ * in your tag file directly. That way, data packs can modify your tag separately. Tag aliases make their contained
+ * tags almost fully indistinguishable since they get the exact same content, and you have to override the alias group
+ * in a higher-priority data pack to unlink them.
  *
  * @param tags the tags in the group, must be from the same registry
  * @param <T> the type of registry entries in the tags
