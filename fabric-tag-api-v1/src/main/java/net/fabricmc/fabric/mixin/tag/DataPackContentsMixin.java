@@ -35,8 +35,9 @@ import net.fabricmc.fabric.impl.tag.TagAliasLoader;
 
 /**
  * Applies pending tag aliases to dynamic (including reloadable) registries.
+ * The priority is 999 because it must apply the injection to applyPendingTagLoads before the tag loaded lifecycle event.
  */
-@Mixin(DataPackContents.class)
+@Mixin(value = DataPackContents.class, priority = 999)
 abstract class DataPackContentsMixin {
 	@Unique
 	private CombinedDynamicRegistries<ServerDynamicRegistryType> dynamicRegistriesByType;
@@ -46,9 +47,13 @@ abstract class DataPackContentsMixin {
 		dynamicRegistriesByType = dynamicRegistries;
 	}
 
-	// HEAD because we have to run before the lifecycle event injected into the same method.
-	@Inject(method = "applyPendingTagLoads", at = @At("HEAD"))
+	@Inject(method = "applyPendingTagLoads", at = @At("RETURN"))
 	private void applyDynamicTagAliases(CallbackInfo info) {
+		// Note: when using /reload, dynamic registry tag reloading goes through the same system that is also used
+		// for static registries. Luckily, it doesn't break anything to run the code below even in that case,
+		// since the map of pending tag alias groups is cleared after they're applied in the first round.
+		// This code also needs to run after the vanilla code so the pending tag reloads don't override
+		// the alias groups for dynamic registries.
 		TagAliasLoader.applyToDynamicRegistries(dynamicRegistriesByType, ServerDynamicRegistryType.WORLDGEN);
 		TagAliasLoader.applyToDynamicRegistries(dynamicRegistriesByType, ServerDynamicRegistryType.RELOADABLE);
 	}
