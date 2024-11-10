@@ -27,7 +27,7 @@ import net.minecraft.registry.tag.TagKey;
 /**
  * A group of tags that refer to the same set of registry entries.
  *
- * <p>Tag alias groups can be defined in data packs in the {@code data/<mod namespace>/fabric/tag_aliases/<registry>}
+ * <p>Tag alias groups can be defined in data packs in the {@code data/<mod namespace>/fabric/tag_alias/<registry>}
  * directory. {@code <registry>} is the path of the registry's ID, prefixed with {@code <registry's namespace>/} if it's
  * not {@value net.minecraft.util.Identifier#DEFAULT_NAMESPACE}.
  *

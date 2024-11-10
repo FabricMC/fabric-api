@@ -102,7 +102,7 @@ public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<
 	}
 
 	private static String getDirectory(RegistryKey<? extends Registry<?>> registryKey) {
-		String directory = "fabric/tag_aliases/";
+		String directory = "fabric/tag_alias/";
 		Identifier registryId = registryKey.getValue();
 
 		if (!Identifier.DEFAULT_NAMESPACE.equals(registryId.getNamespace())) {
