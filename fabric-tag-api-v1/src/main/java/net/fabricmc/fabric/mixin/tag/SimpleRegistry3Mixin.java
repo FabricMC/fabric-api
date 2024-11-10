@@ -29,7 +29,7 @@ import net.fabricmc.fabric.impl.tag.SimpleRegistryExtension;
 
 /**
  * This is a mixin to the Registry.PendingTagLoad implementation in SimpleRegistry.
- * It applies pending tag aliases when data packs are reloaded.
+ * It applies pending tag aliases to static registries when data packs are reloaded.
  * (Tags run on their own data loading system separate from resource reloaders, so we need to inject them
  * once the tag and resource reloads are done, which is here.)
  */

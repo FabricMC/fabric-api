@@ -41,9 +41,11 @@ import net.fabricmc.fabric.impl.tag.TagAliasEnabledRegistryWrapper;
 
 /**
  * Adds tag alias support to {@code SimpleRegistry}, the primary registry implementation.
+ *
+ * <p>Additionally, the {@link TagAliasEnabledRegistryWrapper} implementation is for dynamic registry tag loading.
  */
 @Mixin(SimpleRegistry.class)
-abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension {
+abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension, TagAliasEnabledRegistryWrapper {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-tag-api-v1");
 
@@ -59,6 +61,12 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension {
 
 	@Shadow
 	protected abstract RegistryEntryList.Named<T> createNamedEntryList(TagKey<T> tag);
+
+	@Shadow
+	abstract void refreshTags();
+
+	@Shadow
+	public abstract RegistryKey<? extends Registry<T>> getKey();
 
 	@Override
 	public void fabric_loadTagAliases(Map<TagKey<?>, Set<TagKey<?>>> aliasGroups) {
@@ -107,5 +115,10 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension {
 
 		LOGGER.info("[Fabric] Loaded {} tag alias groups for {}", uniqueAliasGroups.size(), key.getValue());
 		fabric_pendingTagAliasGroups = null;
+	}
+
+	@Override
+	public void fabric_refreshTags() {
+		refreshTags();
 	}
 }

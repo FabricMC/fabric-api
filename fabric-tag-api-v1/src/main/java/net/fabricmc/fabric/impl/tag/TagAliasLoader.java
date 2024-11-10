@@ -36,9 +36,12 @@ import com.mojang.serialization.Lifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.registry.CombinedDynamicRegistries;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.ServerDynamicRegistryType;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceFinder;
@@ -53,7 +56,7 @@ import net.fabricmc.fabric.api.tag.v1.TagAliasGroup;
 public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<RegistryKey<? extends Registry<?>>, List<TagAliasLoader.Data>>> implements IdentifiableResourceReloadListener {
 	public static final Identifier ID = Identifier.of("fabric-tag-api-v1", "tag_alias_groups");
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TagAliasLoader.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-tag-api-v1");
 	private final RegistryWrapper.WrapperLookup registries;
 
 	public TagAliasLoader(RegistryWrapper.WrapperLookup registries) {
@@ -144,10 +147,27 @@ public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<
 			RegistryWrapper.Impl<?> wrapper = registries.getOrThrow(entry.getKey());
 
 			if (wrapper instanceof TagAliasEnabledRegistryWrapper aliasWrapper) {
-				LOGGER.info("applying tag aliases to {}", wrapper.getClass()); // TODO: remove
 				aliasWrapper.fabric_loadTagAliases(groupsByTag);
 			} else {
-				LOGGER.error("[Fabric] Couldn't apply tag aliases to registry wrapper {} ({}), please report this!", wrapper, entry.getKey().getValue());
+				LOGGER.error("[Fabric] Couldn't apply tag aliases to registry wrapper {} ({}) since it had an unknown type", wrapper, entry.getKey().getValue());
+			}
+		}
+	}
+
+	public static <T> void applyToDynamicRegistries(CombinedDynamicRegistries<T> registries, T phase) {
+		Iterator<DynamicRegistryManager.Entry<?>> registryEntries = registries.get(phase).streamAllRegistries().iterator();
+
+		while (registryEntries.hasNext()) {
+			Registry<?> registry = registryEntries.next().value();
+
+			if (registry instanceof SimpleRegistryExtension extension) {
+				extension.fabric_applyPendingTagAliases();
+				// This is not needed in the static registry code path as the tag aliases are applied
+				// before the tags are refreshed. Dynamic registry loading (including tags) takes place earlier
+				// than the rest of a data reload, so we need to refresh the tags manually.
+				//extension.fabric_refreshTags();
+			} else {
+				LOGGER.error("[Fabric] Could not apply pending tag aliases to registry {} ({}) since it had an unknown type", registry, registry.getClass().getName());
 			}
 		}
 	}

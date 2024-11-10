@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.tag",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "DataPackContentsMixin",
     "SimpleRegistryMixin",
     "SimpleRegistry2Mixin",
     "SimpleRegistry3Mixin",
