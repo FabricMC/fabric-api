@@ -35,7 +35,6 @@ import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
@@ -82,13 +81,13 @@ public final class TagAliasTest implements ModInitializer {
 		CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
 			LOGGER.info("Running tag alias tests on the {}...", client ? "client" : "server");
 
-			assertTagContent(registries, List.of(GEMS, EXPENSIVE_ROCKS), Item::getRegistryEntry,
+			assertTagContent(registries, List.of(GEMS, EXPENSIVE_ROCKS), TagAliasTest::getItemKey,
 					Items.DIAMOND, Items.EMERALD);
-			assertTagContent(registries, List.of(REDSTONE_DUSTS, REDSTONE_POWDERS), Item::getRegistryEntry,
+			assertTagContent(registries, List.of(REDSTONE_DUSTS, REDSTONE_POWDERS), TagAliasTest::getItemKey,
 					Items.REDSTONE);
-			assertTagContent(registries, List.of(BEETROOTS, MISSING_BEETROOTS), Item::getRegistryEntry,
+			assertTagContent(registries, List.of(BEETROOTS, MISSING_BEETROOTS), TagAliasTest::getItemKey,
 					Items.BEETROOT);
-			assertTagContent(registries, List.of(BRICK_BLOCKS, MORE_BRICK_BLOCKS, BRICKS), Block::getRegistryEntry,
+			assertTagContent(registries, List.of(BRICK_BLOCKS, MORE_BRICK_BLOCKS, BRICKS), TagAliasTest::getBlockKey,
 					Blocks.BRICKS, Blocks.STONE_BRICKS, Blocks.NETHER_BRICKS, Blocks.RED_NETHER_BRICKS);
 			assertTagContent(registries, List.of(CLASSIC_BIOMES, TRADITIONAL_BIOMES),
 					BiomeKeys.PLAINS, BiomeKeys.DESERT);
@@ -104,32 +103,40 @@ public final class TagAliasTest implements ModInitializer {
 		});
 	}
 
+	private static RegistryKey<Block> getBlockKey(Block block) {
+		return block.getRegistryEntry().registryKey();
+	}
+
+	private static RegistryKey<Item> getItemKey(Item item) {
+		return item.getRegistryEntry().registryKey();
+	}
+
 	@SafeVarargs
-	private static <T> void assertTagContent(RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, Function<T, RegistryEntry<T>> entryExtractor, T... expected) {
-		Set<RegistryEntry<T>> entries = Arrays.stream(expected)
-				.map(entryExtractor)
-				.collect(Collectors.toSet());;
-		assertTagContent(registries, tags, entries);
+	private static <T> void assertTagContent(RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, Function<T, RegistryKey<T>> keyExtractor, T... expected) {
+		Set<RegistryKey<T>> keys = Arrays.stream(expected)
+				.map(keyExtractor)
+				.collect(Collectors.toSet());
+		assertTagContent(registries, tags, keys);
 	}
 
 	@SafeVarargs
 	private static <T> void assertTagContent(RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, RegistryKey<T>... expected) {
-		RegistryEntryLookup<T> lookup = registries.getOrThrow(tags.getFirst().registryRef());
-		Set<RegistryEntry.Reference<T>> entries = Arrays.stream(expected)
-				.map(lookup::getOrThrow)
-				.collect(Collectors.toSet());
-		assertTagContent(registries, tags, entries);
+		assertTagContent(registries, tags, Set.of(expected));
 	}
 
-	private static <T> void assertTagContent(RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, Set<? extends RegistryEntry<T>> expected) {
+	private static <T> void assertTagContent(RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, Set<RegistryKey<T>> expected) {
 		RegistryEntryLookup<T> lookup = registries.getOrThrow(tags.getFirst().registryRef());
 
 		for (TagKey<T> tag : tags) {
 			RegistryEntryList.Named<T> tagEntryList = lookup.getOrThrow(tag);
+			Set<RegistryKey<T>> actual = tagEntryList.entries
+					.stream()
+					.map(entry -> entry.getKey().orElseThrow())
+					.collect(Collectors.toSet());
 
-			if (!Set.copyOf(tagEntryList.entries).equals(expected)) {
+			if (!actual.equals(expected)) {
 				throw new AssertionError("Expected tag %s to have contents %s, but it had %s instead"
-						.formatted(tag, expected, tagEntryList.entries));
+						.formatted(tag, expected, actual));
 			}
 		}
 
