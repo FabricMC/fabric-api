@@ -164,7 +164,7 @@ public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<
 				// This is not needed in the static registry code path as the tag aliases are applied
 				// before the tags are refreshed. Dynamic registry loading (including tags) takes place earlier
 				// than the rest of a data reload, so we need to refresh the tags manually.
-				//extension.fabric_refreshTags();
+				extension.fabric_refreshTags();
 			} else {
 				LOGGER.error("[Fabric] Could not apply pending tag aliases to registry {} ({}) since it had an unknown type", registry, registry.getClass().getName());
 			}
