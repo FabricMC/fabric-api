@@ -41,7 +41,6 @@ import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.ServerDynamicRegistryType;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceFinder;
@@ -87,7 +86,7 @@ public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<
 					Codec<TagAliasGroup<Object>> codec = TagAliasGroup.codec((RegistryKey<? extends Registry<Object>>) registryKey);
 
 					switch (codec.parse(JsonOps.INSTANCE, json)) {
-                    case DataResult.Success(TagAliasGroup<Object> group, Lifecycle unused) -> {
+					case DataResult.Success(TagAliasGroup<Object> group, Lifecycle unused) -> {
 						var data = new Data(groupId, group);
 						dataByRegistry.computeIfAbsent(registryKey, key -> new ArrayList<>()).add(data);
 					}
