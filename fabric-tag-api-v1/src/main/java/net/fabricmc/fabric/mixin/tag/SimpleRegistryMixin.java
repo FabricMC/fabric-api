@@ -91,7 +91,7 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension, TagAli
 				if (entryList != null) {
 					entries.addAll(entryList.entries);
 				} else {
-					LOGGER.info("[Fabric] Creating a new empty tag {} for unknown tag used in a tag alias group", tag);
+					LOGGER.info("[Fabric] Creating a new empty tag {} for unknown tag used in a tag alias group in {}", tag.id(), tag.registryRef().getValue());
 					Map<TagKey<T>, RegistryEntryList.Named<T>> tagMap = ((SimpleRegistryTagLookup2Accessor<T>) tagLookup).fabric_getTagMap();
 
 					if (!(tagMap instanceof HashMap<?, ?>)) {
