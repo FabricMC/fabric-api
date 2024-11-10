@@ -147,7 +147,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	}
 
 	/**
-	 * {@return a read-only map of alias group builders by the alias group ID}
+	 * {@return a read-only map of alias group builders by the alias group ID}.
 	 */
 	public Map<Identifier, AliasGroupBuilder> getAliasGroupBuilders() {
 		return Collections.unmodifiableMap(aliasGroupBuilders);
@@ -441,7 +441,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		private final List<TagKey<T>> tags = new ArrayList<>();
 
 		/**
-		 * {@return a read-only list of the tags in this alias group}
+		 * {@return a read-only list of the tags in this alias group}.
 		 */
 		public List<TagKey<T>> getTags() {
 			return Collections.unmodifiableList(tags);

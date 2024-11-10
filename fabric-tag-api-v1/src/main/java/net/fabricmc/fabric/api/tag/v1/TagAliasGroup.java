@@ -59,10 +59,11 @@ import net.minecraft.registry.tag.TagKey;
  */
 public record TagAliasGroup<T>(List<TagKey<T>> tags) {
 	/**
-	 * {@return the codec for tag alias groups in the specified registry}
+	 * Creates a codec for tag alias groups in the specified registry.
 	 *
 	 * @param registryKey the key of the registry where the tags are from
-	 * @param <T> the entry type
+	 * @param <T>         the entry type
+	 * @return the codec
 	 */
 	public static <T> Codec<TagAliasGroup<T>> codec(RegistryKey<? extends Registry<T>> registryKey) {
 		return TagKey.unprefixedCodec(registryKey)
