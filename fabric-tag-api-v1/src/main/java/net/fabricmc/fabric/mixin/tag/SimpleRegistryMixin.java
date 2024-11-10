@@ -37,6 +37,9 @@ import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.SimpleRegistryExtension;
 
+/**
+ * Adds tag alias support to {@code SimpleRegistry}, the primary registry implementation.
+ */
 @Mixin(SimpleRegistry.class)
 abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension {
 	@Unique
@@ -53,7 +56,7 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension {
 	SimpleRegistry.TagLookup<T> tagLookup;
 
 	@Override
-	public void fabric_applyTagAliases(Map<TagKey<?>, Set<TagKey<?>>> aliasGroups) {
+	public void fabric_loadTagAliases(Map<TagKey<?>, Set<TagKey<?>>> aliasGroups) {
 		fabric_pendingTagAliasGroups = aliasGroups;
 	}
 

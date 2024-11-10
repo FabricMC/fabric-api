@@ -16,6 +16,6 @@
 
 package net.fabricmc.fabric.impl.tag;
 
-public interface SimpleRegistryExtension extends TagAliasEnabledRegistry {
+public interface SimpleRegistryExtension extends TagAliasEnabledRegistryWrapper {
 	void fabric_applyPendingTagAliases();
 }

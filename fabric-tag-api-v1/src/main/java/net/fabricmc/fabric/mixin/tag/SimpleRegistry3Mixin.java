@@ -27,6 +27,12 @@ import net.minecraft.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.impl.tag.SimpleRegistryExtension;
 
+/**
+ * This is a mixin to the Registry.PendingTagLoad implementation in SimpleRegistry.
+ * It applies pending tag aliases when data packs are reloaded.
+ * (Tags run on their own data loading system separate from resource reloaders, so we need to inject them
+ * once the tag and resource reloads are done, which is here.)
+ */
 @Mixin(targets = "net.minecraft.registry.SimpleRegistry$3")
 abstract class SimpleRegistry3Mixin {
 	@Shadow

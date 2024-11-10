@@ -143,8 +143,9 @@ public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<
 
 			RegistryWrapper.Impl<?> wrapper = registries.getOrThrow(entry.getKey());
 
-			if (wrapper instanceof TagAliasEnabledRegistry registry) {
-				registry.fabric_applyTagAliases(groupsByTag);
+			if (wrapper instanceof TagAliasEnabledRegistryWrapper aliasWrapper) {
+				LOGGER.info("applying tag aliases to {}", wrapper.getClass()); // TODO: remove
+				aliasWrapper.fabric_loadTagAliases(groupsByTag);
 			} else {
 				LOGGER.error("[Fabric] Couldn't apply tag aliases to registry wrapper {} ({}), please report this!", wrapper, entry.getKey().getValue());
 			}
