@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.tag;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,7 @@ import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.SimpleRegistryExtension;
+import net.fabricmc.fabric.impl.tag.TagAliasEnabledRegistryWrapper;
 
 /**
  * Adds tag alias support to {@code SimpleRegistry}, the primary registry implementation.
@@ -54,6 +56,9 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension {
 
 	@Shadow
 	SimpleRegistry.TagLookup<T> tagLookup;
+
+	@Shadow
+	protected abstract RegistryEntryList.Named<T> createNamedEntryList(TagKey<T> tag);
 
 	@Override
 	public void fabric_loadTagAliases(Map<TagKey<?>, Set<TagKey<?>>> aliasGroups) {
@@ -78,7 +83,16 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension {
 				if (entryList != null) {
 					entries.addAll(entryList.entries);
 				} else {
-					LOGGER.warn("[Fabric] Cannot apply aliases to tag {} because it doesn't exist!", tag);
+					LOGGER.info("[Fabric] Trying to add aliases to unknown tag {}, creating a new empty tag", tag);
+					Map<TagKey<T>, RegistryEntryList.Named<T>> tagMap = ((SimpleRegistryTagLookup2Accessor<T>) tagLookup).fabric_getTagMap();
+
+					if (!(tagMap instanceof HashMap<?, ?>)) {
+						// Unfreeze the backing map.
+						tagMap = new HashMap<>(tagMap);
+						((SimpleRegistryTagLookup2Accessor<T>) tagLookup).fabric_setTagMap(tagMap);
+					}
+
+					tagMap.put((TagKey<T>) tag, createNamedEntryList((TagKey<T>) tag));
 				}
 			}
 
@@ -86,11 +100,8 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension {
 
 			// Replace the old entry list contents with the merged list.
 			for (TagKey<?> tag : aliasGroup) {
-				RegistryEntryList.Named<T> entryList = tagLookup.getOptional((TagKey<T>) tag).orElse(null);
-
-				if (entryList != null) {
-					entryList.entries = entriesAsList;
-				}
+				RegistryEntryList.Named<T> entryList = tagLookup.getOptional((TagKey<T>) tag).orElseThrow();
+				entryList.entries = entriesAsList;
 			}
 		}
 
