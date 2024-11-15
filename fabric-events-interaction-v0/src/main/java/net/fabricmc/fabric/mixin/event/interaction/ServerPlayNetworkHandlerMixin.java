@@ -48,11 +48,11 @@ public abstract class ServerPlayNetworkHandlerMixin {
 	}
 
 	@WrapOperation(method = "onPickItemFromBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getPickStack(Lnet/minecraft/world/WorldView;Lnet/minecraft/util/math/BlockPos;Z)Lnet/minecraft/item/ItemStack;"))
-	public ItemStack onPickItemFromBlock(BlockState state, WorldView world, BlockPos pos, boolean bl, Operation<ItemStack> operation, @Local PickItemFromBlockC2SPacket packet) {
-		ItemStack stack = PlayerPickItemEvents.BLOCK.invoker().onPickItemFromBlock(player, pos, state, packet.includeData());
+	public ItemStack onPickItemFromBlock(BlockState state, WorldView world, BlockPos pos, boolean includeData, Operation<ItemStack> operation, @Local PickItemFromBlockC2SPacket packet) {
+		ItemStack stack = PlayerPickItemEvents.BLOCK.invoker().onPickItemFromBlock(player, pos, state, includeData);
 
 		if (stack == null) {
-			return operation.call(state, world, pos, bl);
+			return operation.call(state, world, pos, includeData);
 		} else if (!stack.isEmpty()) {
 			this.onPickItem(stack);
 		}
@@ -63,7 +63,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
 
 	@WrapOperation(method = "onPickItemFromEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getPickBlockStack()Lnet/minecraft/item/ItemStack;"))
 	public ItemStack onPickItemFromEntity(Entity entity, Operation<ItemStack> operation, @Local PickItemFromEntityC2SPacket packet) {
-		ItemStack stack = PlayerPickItemEvents.ENTITY.invoker().onPickItemFromEntity(player, entity, packet.includeData());
+		ItemStack stack = PlayerPickItemEvents.ENTITY.invoker().onPickItemFromEntity(player, entity, packet.includeData() && player.isInCreativeMode());
 
 		if (stack == null) {
 			return operation.call(entity);
