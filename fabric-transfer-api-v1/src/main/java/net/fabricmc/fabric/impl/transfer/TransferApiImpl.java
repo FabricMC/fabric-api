@@ -20,11 +20,16 @@ import java.util.AbstractList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.minecraft.component.ComponentChanges;
+import net.minecraft.component.ComponentType;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -106,5 +111,25 @@ public class TransferApiImpl {
 				return storage.getSlotCount();
 			}
 		};
+	}
+
+	public static ComponentChanges mergeChanges(ComponentChanges base, ComponentChanges applied) {
+		ComponentChanges.Builder builder = ComponentChanges.builder();
+
+		writeChangesTo(base, builder);
+		writeChangesTo(applied, builder);
+
+		return builder.build();
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void writeChangesTo(ComponentChanges changes, ComponentChanges.Builder builder) {
+		for (Map.Entry<ComponentType<?>, Optional<?>> entry : changes.entrySet()) {
+			if (entry.getValue().isPresent()) {
+				builder.add((ComponentType<Object>) entry.getKey(), entry.getValue().get());
+			} else {
+				builder.remove(entry.getKey());
+			}
+		}
 	}
 }

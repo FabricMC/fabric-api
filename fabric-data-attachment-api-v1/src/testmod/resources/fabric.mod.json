@@ -8,11 +8,15 @@
   "depends": {
     "fabric-data-attachment-api-v1": "*",
     "fabric-lifecycle-events-v1": "*",
-    "fabric-biome-api-v1": "*"
+    "fabric-biome-api-v1": "*",
+    "fabric-command-api-v2": "*"
   },
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.attachment.AttachmentTestMod"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.attachment.client.AttachmentTestModClient"
     ],
     "fabric-gametest": [
       "net.fabricmc.fabric.test.attachment.gametest.AttachmentCopyTests",
@@ -20,6 +24,10 @@
     ]
   },
   "mixins": [
-    "fabric-data-attachment-api-v1-testmod.mixins.json"
+    "fabric-data-attachment-api-v1-testmod.mixins.json",
+    {
+      "config": "fabric-data-attachment-api-v1-testmod.client.mixins.json",
+      "environment": "client"
+    }
   ]
 }

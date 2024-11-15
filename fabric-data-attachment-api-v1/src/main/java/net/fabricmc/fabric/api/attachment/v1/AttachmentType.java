@@ -23,6 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.chunk.Chunk;
@@ -36,7 +37,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 /**
  * An attachment allows "attaching" arbitrary data to various game objects (entities, block entities, worlds and chunks at the moment).
  * Use the methods provided in {@link AttachmentRegistry} to create and register attachments. Attachments can
- * optionally be made to persist between restarts using a provided {@link Codec}.
+ * optionally be made to persist between restarts using a provided {@link Codec}, and to synchronize with player clients.
  *
  * <p>While the API places no restrictions on the types of data that can be attached, it is generally encouraged to use
  * immutable types. More generally, different attachments <i>must not</i> share mutable state, and it is <i>strongly advised</i>
@@ -53,6 +54,9 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
  * </p>
  *
  * @param <A> type of the attached data. It is encouraged for this to be an immutable type.
+ * @see AttachmentRegistry
+ * @see AttachmentRegistry.Builder#persistent(Codec)
+ * @see AttachmentRegistry.Builder#syncWith(PacketCodec, AttachmentSyncPredicate)
  */
 @ApiStatus.NonExtendable
 @ApiStatus.Experimental
@@ -92,6 +96,15 @@ public interface AttachmentType<A> {
 	 */
 	@Nullable
 	Supplier<A> initializer();
+
+	/**
+	 * Whether this attachment type can be synchronized with clients. This method returning {@code true} does not in any way
+	 * indicate that the attachment type will synchronize data with any given client, only that it is able to, as per its
+	 * {@link AttachmentSyncPredicate}.
+	 *
+	 * @return whether this attachment type is synced
+	 */
+	boolean isSynced();
 
 	/**
 	 * @return whether the attachments should persist after an entity dies, for example when a player respawns or

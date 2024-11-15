@@ -26,6 +26,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkGenerating;
 import net.minecraft.world.chunk.ChunkGenerationContext;
 import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.chunk.WrapperProtoChunk;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 
@@ -35,5 +36,9 @@ abstract class ChunkGeneratingMixin {
 	private static void onChunkLoad(Chunk chunk, ChunkGenerationContext chunkGenerationContext, AbstractChunkHolder chunkHolder, CallbackInfoReturnable<Chunk> callbackInfoReturnable) {
 		// We fire the event at TAIL since the chunk is guaranteed to be a WorldChunk then.
 		ServerChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(chunkGenerationContext.world(), (WorldChunk) callbackInfoReturnable.getReturnValue());
+
+		if (!(chunk instanceof WrapperProtoChunk)) {
+			ServerChunkEvents.CHUNK_GENERATE.invoker().onChunkGenerate(chunkGenerationContext.world(), (WorldChunk) callbackInfoReturnable.getReturnValue());
+		}
 	}
 }

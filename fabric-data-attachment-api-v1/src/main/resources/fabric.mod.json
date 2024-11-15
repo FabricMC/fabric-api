@@ -18,7 +18,8 @@
   "depends": {
     "fabricloader": ">=0.15.11",
     "fabric-entity-events-v1": "*",
-    "fabric-object-builder-api-v1": "*"
+    "fabric-object-builder-api-v1": "*",
+    "fabric-networking-api-v1": "*"
   },
   "description": "Allows conveniently attaching data to existing game objects",
   "mixins": [
@@ -30,7 +31,11 @@
   ],
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint"
+      "net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint",
+      "net.fabricmc.fabric.impl.attachment.sync.AttachmentSync"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.attachment.client.AttachmentSyncClient"
     ]
   },
   "custom": {
@@ -39,7 +44,7 @@
       "net/minecraft/class_2586": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
       "net/minecraft/class_2791": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
       "net/minecraft/class_1297": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"],
-      "net/minecraft/class_3218": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"]
+      "net/minecraft/class_1937": ["net/fabricmc/fabric/api/attachment/v1/AttachmentTarget"]
     }
   }
 }

@@ -25,12 +25,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 @Mixin(Entity.class)
 abstract class EntityMixin implements AttachmentTargetImpl {
+	@Shadow
+	private int id;
+
 	@Shadow
 	public abstract World getWorld();
 
@@ -48,5 +59,34 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	)
 	private void writeEntityAttachments(NbtCompound nbt, CallbackInfoReturnable<NbtCompound> cir) {
 		this.fabric_writeAttachmentsToNbt(nbt, getWorld().getRegistryManager());
+	}
+
+	@Override
+	public AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
+		return new AttachmentTargetInfo.EntityTarget(this.id);
+	}
+
+	@Override
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
+		if (!this.getWorld().isClient()) {
+			AttachmentSyncPredicate predicate = ((AttachmentTypeImpl<?>) type).syncPredicate();
+
+			if ((Object) this instanceof ServerPlayerEntity self && predicate.test(this, self)) {
+				// Players do not track themselves
+				AttachmentSync.trySync(payload, self);
+			}
+
+			PlayerLookup.tracking((Entity) (Object) this)
+					.forEach(player -> {
+						if (predicate.test(this, player)) {
+							AttachmentSync.trySync(payload, player);
+						}
+					});
+		}
+	}
+
+	@Override
+	public boolean fabric_shouldTryToSync() {
+		return !this.getWorld().isClient();
 	}
 }

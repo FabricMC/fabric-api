@@ -27,17 +27,22 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedSlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
+import net.fabricmc.fabric.impl.transfer.item.BundleContentsStorage;
 import net.fabricmc.fabric.impl.transfer.item.ComposterWrapper;
+import net.fabricmc.fabric.impl.transfer.item.ContainerComponentStorage;
 import net.fabricmc.fabric.mixin.transfer.DoubleInventoryAccessor;
 
 /**
@@ -79,6 +84,16 @@ public final class ItemStorage {
 	 */
 	public static final BlockApiLookup<Storage<ItemVariant>, @Nullable Direction> SIDED =
 			BlockApiLookup.get(Identifier.of("fabric", "sided_item_storage"), Storage.asClass(), Direction.class);
+
+	/**
+	 * Item access to item variant storages.
+	 * Querying should happen through {@link ContainerItemContext#find}.
+	 *
+	 * <p>This may be queried both client-side and server-side.
+	 * Returned APIs should behave the same regardless of the logical side.
+	 */
+	public static final ItemApiLookup<Storage<ItemVariant>, ContainerItemContext> ITEM =
+			ItemApiLookup.get(Identifier.of("fabric", "item_storage"), Storage.asClass(), ContainerItemContext.class);
 
 	private ItemStorage() {
 	}
@@ -128,5 +143,31 @@ public final class ItemStorage {
 
 			return inventoryToWrap != null ? InventoryStorage.of(inventoryToWrap, direction) : null;
 		});
+
+		ItemStorage.ITEM.registerForItems(
+				(itemStack, context) -> new ContainerComponentStorage(context, 27),
+				Items.SHULKER_BOX,
+				Items.WHITE_SHULKER_BOX,
+				Items.ORANGE_SHULKER_BOX,
+				Items.MAGENTA_SHULKER_BOX,
+				Items.LIGHT_BLUE_SHULKER_BOX,
+				Items.YELLOW_SHULKER_BOX,
+				Items.LIME_SHULKER_BOX,
+				Items.PINK_SHULKER_BOX,
+				Items.GRAY_SHULKER_BOX,
+				Items.LIGHT_GRAY_SHULKER_BOX,
+				Items.CYAN_SHULKER_BOX,
+				Items.PURPLE_SHULKER_BOX,
+				Items.BLUE_SHULKER_BOX,
+				Items.BROWN_SHULKER_BOX,
+				Items.GREEN_SHULKER_BOX,
+				Items.RED_SHULKER_BOX,
+				Items.BLACK_SHULKER_BOX
+		);
+
+		ItemStorage.ITEM.registerForItems(
+				(itemStack, context) -> new BundleContentsStorage(context),
+				Items.BUNDLE
+		);
 	}
 }

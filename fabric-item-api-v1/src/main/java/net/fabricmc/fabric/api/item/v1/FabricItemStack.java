@@ -23,7 +23,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.util.TriState;
 
-/*
+/**
  * Fabric-provided extensions for {@link ItemStack}.
  * This interface is automatically implemented on all item stacks via Mixin and interface injection.
  */

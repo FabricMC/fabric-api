@@ -11,5 +11,6 @@ moduleDependencies(project, [
 testDependencies(project, [
 	':fabric-object-builder-api-v1',
 	':fabric-rendering-v1',
-	':fabric-resource-loader-v0'
+	':fabric-resource-loader-v0',
+	':fabric-command-api-v2'
 ])

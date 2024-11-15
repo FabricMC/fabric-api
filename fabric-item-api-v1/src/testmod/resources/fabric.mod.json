@@ -13,13 +13,15 @@
       "net.fabricmc.fabric.test.item.CustomDamageTest",
       "net.fabricmc.fabric.test.item.DefaultItemComponentTest",
       "net.fabricmc.fabric.test.item.ItemUpdateAnimationTest",
-      "net.fabricmc.fabric.test.item.ArmorKnockbackResistanceTest"
+      "net.fabricmc.fabric.test.item.ArmorKnockbackResistanceTest",
+      "net.fabricmc.fabric.test.item.CustomEnchantmentEffectsTest"
     ],
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"
     ],
     "fabric-gametest" : [
       "net.fabricmc.fabric.test.item.gametest.BrewingStandGameTest",
+      "net.fabricmc.fabric.test.item.gametest.CustomEnchantmentEffectsGameTest",
       "net.fabricmc.fabric.test.item.gametest.DefaultItemComponentGameTest",
       "net.fabricmc.fabric.test.item.gametest.FurnaceGameTest",
       "net.fabricmc.fabric.test.item.gametest.RecipeGameTest"

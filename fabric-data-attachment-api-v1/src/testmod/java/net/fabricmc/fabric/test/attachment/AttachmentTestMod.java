@@ -16,21 +16,36 @@
 
 package net.fabricmc.fabric.test.attachment;
 
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
+
 import java.io.File;
 import java.io.IOException;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.serialization.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.command.argument.BlockPosArgumentType;
+import net.minecraft.command.argument.ColumnPosArgumentType;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.ColumnPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.ProtoChunk;
@@ -41,9 +56,12 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
@@ -57,6 +75,35 @@ public class AttachmentTestMod implements ModInitializer {
 	public static final AttachmentType<String> FEATURE_ATTACHMENT = AttachmentRegistry.create(
 			Identifier.of(MOD_ID, "feature")
 	);
+	public static final AttachmentType<Boolean> SYNCED_WITH_ALL = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "synced_all"),
+			builder -> builder
+					.initializer(() -> false)
+					.persistent(Codec.BOOL)
+					.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.all())
+	);
+	public static final AttachmentType<Boolean> SYNCED_WITH_TARGET = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "synced_target"),
+			builder -> builder
+					.initializer(() -> false)
+					.persistent(Codec.BOOL)
+					.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.targetOnly())
+	);
+	public static final AttachmentType<Boolean> SYNCED_EXCEPT_TARGET = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "synced_except_target"),
+			builder -> builder
+					.initializer(() -> false)
+					.persistent(Codec.BOOL)
+					.syncWith(PacketCodecs.BOOL.cast(), AttachmentSyncPredicate.allButTarget())
+	);
+	public static final AttachmentType<Boolean> SYNCED_CREATIVE_ONLY = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "synced_custom"),
+			builder -> builder
+					.initializer(() -> false)
+					.persistent(Codec.BOOL)
+					.syncWith(PacketCodecs.BOOL.cast(), (target, player) -> player.isCreative())
+	);
+	public static final SimpleCommandExceptionType TARGET_NOT_FOUND = new SimpleCommandExceptionType(Text.literal("Target not found"));
 
 	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(300, 0);
 
@@ -103,6 +150,7 @@ public class AttachmentTestMod implements ModInitializer {
 				overworld.setAttached(PERSISTENT, "world_data");
 
 				chunk.setAttached(PERSISTENT, "chunk_data");
+				chunk.setAttached(SYNCED_WITH_ALL, true);
 
 				ProtoChunk protoChunk = (ProtoChunk) overworld.getChunkManager().getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z, ChunkStatus.STRUCTURE_STARTS, true);
 				protoChunk.setAttached(PERSISTENT, "protochunk_data");
@@ -140,5 +188,62 @@ public class AttachmentTestMod implements ModInitializer {
 
 			if (!"protochunk_data".equals(chunk.getAttached(PERSISTENT))) throw new AssertionError("ProtoChunk attachment was not transfered to WorldChunk");
 		}));
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
+				literal("attachment")
+						.then(buildCommandForKind("all", "all", SYNCED_WITH_ALL))
+						.then(buildCommandForKind("self_only", "only self", SYNCED_WITH_TARGET))
+						.then(buildCommandForKind("others_only", "all but self", SYNCED_EXCEPT_TARGET))
+						.then(buildCommandForKind("creative_only", "creative players only", SYNCED_CREATIVE_ONLY))
+		));
+	}
+
+	private static LiteralArgumentBuilder<ServerCommandSource> buildCommandForKind(String id, String syncedWith, AttachmentType<Boolean> type) {
+		return literal(id).executes(context -> updateAttachmentFor(
+				context.getSource().getPlayerOrThrow(),
+				type,
+				context,
+				"Set self flag (synced with %s) to %%s".formatted(syncedWith)
+		)).then(
+				argument("target", EntityArgumentType.entity()).executes(context -> updateAttachmentFor(
+						EntityArgumentType.getEntity(context, "target"),
+						type,
+						context,
+						"Set entity flag (synced with %s) to %%s".formatted(syncedWith)
+				))
+		).then(argument("pos", BlockPosArgumentType.blockPos()).executes(context -> {
+			BlockEntity be = context.getSource().getWorld().getBlockEntity(BlockPosArgumentType.getBlockPos(context, "pos"));
+
+			if (be == null) {
+				throw TARGET_NOT_FOUND.create();
+			}
+
+			return updateAttachmentFor(
+					be,
+					type,
+					context,
+					"Set block entity flag (synced with %s) to %%s".formatted(syncedWith)
+			);
+		})).then(argument("chunkPos", ColumnPosArgumentType.columnPos()).executes(context -> {
+			ColumnPos pos = ColumnPosArgumentType.getColumnPos(context, "chunkpos");
+			return updateAttachmentFor(
+					context.getSource().getWorld().getChunk(pos.x(), pos.z(), ChunkStatus.STRUCTURE_STARTS, true),
+					type,
+					context,
+					"Set chunk flag (synced with %s) to %%s".formatted(syncedWith)
+			);
+		})).then(literal("world").executes(context -> updateAttachmentFor(
+				context.getSource().getWorld(),
+				type,
+				context,
+				"Set world flag (synced with %s) to %%s".formatted(syncedWith)
+		)));
+	}
+
+	private static int updateAttachmentFor(AttachmentTarget target, AttachmentType<Boolean> attachment, CommandContext<ServerCommandSource> context, String messageFormat) throws CommandSyntaxException {
+		boolean current = target.getAttachedOrElse(attachment, false);
+		target.setAttached(attachment, !current);
+		context.getSource().sendFeedback(() -> Text.literal(messageFormat.formatted(!current)), false);
+		return 1;
 	}
 }

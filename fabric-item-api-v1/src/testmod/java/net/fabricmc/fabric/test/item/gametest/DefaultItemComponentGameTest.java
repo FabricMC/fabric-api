@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FireworksComponent;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.test.GameTest;
@@ -28,6 +29,7 @@ import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.fabricmc.fabric.test.item.DefaultItemComponentTest;
 
 public class DefaultItemComponentGameTest implements FabricGameTest {
 	@GameTest(templateName = EMPTY_STRUCTURE)
@@ -71,6 +73,22 @@ public class DefaultItemComponentGameTest implements FabricGameTest {
 			throw new GameTestException("Enchantment glint override not set on gold nugget");
 		}
 
+		context.complete();
+	}
+
+	@GameTest(templateName = EMPTY_STRUCTURE)
+	public void diamondPickaxeIsRenamed(TestContext context) {
+		Item testItem = Items.DIAMOND_PICKAXE;
+		ItemStack stack = testItem.getDefaultStack();
+
+		Text itemName = stack.getOrDefault(DataComponentTypes.ITEM_NAME, Text.literal(""));
+		Text expectedName = DefaultItemComponentTest.prependModifiedLiteral(testItem.getName());
+
+		String errorMessage = "Expected '%s' to be contained in '%s', but it was not!";
+
+		// if they contain each other, then they are equal
+		context.assertTrue(itemName.contains(expectedName), errorMessage.formatted(expectedName, itemName));
+		context.assertTrue(expectedName.contains(itemName), errorMessage.formatted(itemName, expectedName));
 		context.complete();
 	}
 }

@@ -36,6 +36,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.util.Language;
 
 import net.fabricmc.fabric.impl.resource.loader.ServerLanguageUtil;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 
 @Mixin(Language.class)
 class LanguageMixin {
@@ -52,6 +54,18 @@ class LanguageMixin {
 		}
 
 		return ImmutableMap.copyOf(map);
+	}
+
+	@Redirect(method = "load(Ljava/util/function/BiConsumer;Ljava/lang/String;)V", at = @At(value = "INVOKE", target = "Ljava/lang/Class;getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream;"))
+	private static InputStream readCorrectVanillaResource(Class instance, String path) throws IOException {
+		ModContainer mod = FabricLoader.getInstance().getModContainer("minecraft").orElseThrow();
+		Path langPath = mod.findPath(path).orElse(null);
+
+		if (langPath == null) {
+			throw new IOException("Could not read %s from minecraft ModContainer".formatted(path));
+		} else {
+			return Files.newInputStream(langPath);
+		}
 	}
 
 	private static void loadFromPath(Path path, BiConsumer<String, String> entryConsumer) {

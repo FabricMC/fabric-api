@@ -16,20 +16,31 @@
 
 package net.fabricmc.fabric.test.transfer.ingame;
 
+import com.mojang.brigadier.arguments.LongArgumentType;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class TransferTestInitializer implements ModInitializer {
 	public static final String MOD_ID = "fabric-transfer-api-v1-testmod";
@@ -57,6 +68,74 @@ public class TransferTestInitializer implements ModInitializer {
 		ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashingStorage.ITEM, Blocks.OBSIDIAN);
 		// And diamond ore blocks are an infinite source of diamonds! Yay!
 		ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeStorage.DIAMONDS, Blocks.DIAMOND_ORE);
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			dispatcher.register(
+					CommandManager.literal("fabric_insertintoheldstack")
+							.then(CommandManager.argument("stack", ItemStackArgumentType.itemStack(registryAccess))
+									.then(CommandManager.argument("count", LongArgumentType.longArg(1))
+											.executes(context -> {
+												ItemVariant variant = ItemVariant.of(ItemStackArgumentType.getItemStackArgument(context, "stack")
+														.createStack(1, false));
+
+												ContainerItemContext containerCtx = ContainerItemContext.ofPlayerHand(context.getSource().getPlayerOrThrow(), Hand.MAIN_HAND);
+												Storage<ItemVariant> storage = containerCtx.find(ItemStorage.ITEM);
+
+												if (storage == null) {
+													context.getSource().sendMessage(Text.literal("no storage found"));
+													return 0;
+												}
+
+												long inserted;
+
+												try (Transaction tx = Transaction.openOuter()) {
+													inserted = storage.insert(
+															variant,
+															LongArgumentType.getLong(context, "count"),
+															tx
+													);
+													tx.commit();
+												}
+
+												context.getSource().sendMessage(Text.literal("inserted " + inserted + " items"));
+
+												return (int) inserted;
+											})))
+			);
+
+			dispatcher.register(
+					CommandManager.literal("fabric_extractfromheldstack")
+							.then(CommandManager.argument("stack", ItemStackArgumentType.itemStack(registryAccess))
+									.then(CommandManager.argument("count", LongArgumentType.longArg(1))
+											.executes(context -> {
+												ItemVariant variant = ItemVariant.of(ItemStackArgumentType.getItemStackArgument(context, "stack")
+														.createStack(1, false));
+
+												ContainerItemContext containerCtx = ContainerItemContext.ofPlayerHand(context.getSource().getPlayerOrThrow(), Hand.MAIN_HAND);
+												Storage<ItemVariant> storage = containerCtx.find(ItemStorage.ITEM);
+
+												if (storage == null) {
+													context.getSource().sendMessage(Text.literal("no storage found"));
+													return 0;
+												}
+
+												long extracted;
+
+												try (Transaction tx = Transaction.openOuter()) {
+													extracted = storage.extract(
+															variant,
+															LongArgumentType.getLong(context, "count"),
+															tx
+													);
+													tx.commit();
+												}
+
+												context.getSource().sendMessage(Text.literal("extracted " + extracted + " items"));
+
+												return (int) extracted;
+											})))
+			);
+		});
 	}
 
 	private static void registerBlock(Block block, String name) {

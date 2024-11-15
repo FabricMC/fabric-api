@@ -50,6 +50,10 @@
       "required": false
     },
     {
+      "id": "#c:foods/pie",
+      "required": false
+    },
+    {
       "id": "#c:foods/golden",
       "required": false
     },

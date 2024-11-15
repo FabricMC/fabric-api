@@ -22,9 +22,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
@@ -47,5 +49,13 @@ public abstract class MinecraftClientMixin {
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER, ordinal = 0), method = "run")
 	private void onStart(CallbackInfo ci) {
 		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((MinecraftClient) (Object) this);
+	}
+
+	@Inject(method = "setWorld", at = @At("TAIL"))
+	private void afterClientWorldChange(ClientWorld world, CallbackInfo ci) {
+		if (world != null) {
+			MinecraftClient client = (MinecraftClient) (Object) this;
+			ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.invoker().afterWorldChange(client, world);
+		}
 	}
 }

@@ -36,6 +36,13 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> STONES = register("stones");
 	public static final TagKey<Item> COBBLESTONES = register("cobblestones");
+	public static final TagKey<Item> OBSIDIANS = register("obsidians");
+	/**
+	 * For common obsidian that has no special quirks or behaviors. Ideal for recipe use.
+	 * Crying Obsidian, for example, is a light block and harder to obtain. So it gets its own tag instead of being under normal tag.
+	 */
+	public static final TagKey<Item> NORMAL_OBSIDIANS = register("obsidians/normal");
+	public static final TagKey<Item> CRYING_OBSIDIANS = register("obsidians/crying");
 
 	// Tool tags
 	public static final TagKey<Item> TOOLS = register("tools");
@@ -167,6 +174,10 @@ public final class ConventionalItemTags {
 	 * Sweets and candies like lollipops or chocolate belong in this tag.
 	 */
 	public static final TagKey<Item> CANDY_FOODS = register("foods/candy");
+	/**
+	 * Pies and other pie-like foods belong in this tag.
+	 */
+	public static final TagKey<Item> PIE_FOODS = register("foods/pie");
 	/**
 	 * Any gold-based foods would go in this tag. Such as Golden Apples or Glistering Melon Slice.
 	 */
@@ -309,6 +320,10 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STORAGE_BLOCKS_REDSTONE = register("storage_blocks/redstone");
 	public static final TagKey<Item> STORAGE_BLOCKS_SLIME = register("storage_blocks/slime");
 	public static final TagKey<Item> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
+
+	// Logs
+	public static final TagKey<Item> STRIPPED_LOGS = register("stripped_logs");
+	public static final TagKey<Item> STRIPPED_WOODS = register("stripped_woods");
 
 	// Crops
 	/**

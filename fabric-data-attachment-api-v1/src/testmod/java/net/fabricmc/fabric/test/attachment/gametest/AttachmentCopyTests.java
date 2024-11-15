@@ -41,9 +41,10 @@ public class AttachmentCopyTests implements FabricGameTest {
 	public static AttachmentType<IntSupplier> DUMMY = AttachmentRegistry.create(
 			Identifier.of(AttachmentTestMod.MOD_ID, "dummy")
 	);
-	public static AttachmentType<IntSupplier> COPY_ON_DEATH = AttachmentRegistry.<IntSupplier>builder()
-			.copyOnDeath()
-			.buildAndRegister(Identifier.of(AttachmentTestMod.MOD_ID, "copy_test"));
+	public static AttachmentType<IntSupplier> COPY_ON_DEATH = AttachmentRegistry.create(
+			Identifier.of(AttachmentTestMod.MOD_ID, "copy_test"),
+			AttachmentRegistry.Builder::copyOnDeath
+	);
 
 	@GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE)
 	public void testCrossWorldTeleport(TestContext context) {

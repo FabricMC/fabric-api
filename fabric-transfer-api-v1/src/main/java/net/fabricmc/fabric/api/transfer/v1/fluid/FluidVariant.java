@@ -84,4 +84,12 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 	default RegistryEntry<Fluid> getRegistryEntry() {
 		return getFluid().getRegistryEntry();
 	}
+
+	/**
+	 * Creates a copy of this FluidVariant with the provided component changes applied.
+	 * @param changes the changes to apply
+	 * @return the new variant with the changes applied
+	 */
+	@Override
+	FluidVariant withComponentChanges(ComponentChanges changes);
 }

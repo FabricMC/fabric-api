@@ -68,6 +68,13 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.MOSSY_COBBLESTONE)
 				.add(Blocks.COBBLED_DEEPSLATE)
 				.add(Blocks.INFESTED_COBBLESTONE);
+		getOrCreateTagBuilder(ConventionalBlockTags.NORMAL_OBSIDIANS)
+				.add(Blocks.OBSIDIAN);
+		getOrCreateTagBuilder(ConventionalBlockTags.CRYING_OBSIDIANS)
+				.add(Blocks.CRYING_OBSIDIAN);
+		getOrCreateTagBuilder(ConventionalBlockTags.OBSIDIANS)
+				.addOptionalTag(ConventionalBlockTags.NORMAL_OBSIDIANS)
+				.addOptionalTag(ConventionalBlockTags.CRYING_OBSIDIANS);
 
 		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES)
 				.add(Blocks.NETHER_QUARTZ_ORE);
@@ -108,6 +115,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		generateDyedTags();
 
 		generateStorageTags();
+
+		generateLogTags();
 
 		generateHeadTags();
 
@@ -488,6 +497,29 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT)
 				.add(Blocks.HAY_BLOCK);
+	}
+
+	private void generateLogTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.STRIPPED_LOGS)
+				.add(Blocks.STRIPPED_ACACIA_LOG)
+				.add(Blocks.STRIPPED_BAMBOO_BLOCK)
+				.add(Blocks.STRIPPED_BIRCH_LOG)
+				.add(Blocks.STRIPPED_CHERRY_LOG)
+				.add(Blocks.STRIPPED_DARK_OAK_LOG)
+				.add(Blocks.STRIPPED_JUNGLE_LOG)
+				.add(Blocks.STRIPPED_MANGROVE_LOG)
+				.add(Blocks.STRIPPED_OAK_LOG)
+				.add(Blocks.STRIPPED_SPRUCE_LOG);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.STRIPPED_WOODS)
+				.add(Blocks.STRIPPED_ACACIA_WOOD)
+				.add(Blocks.STRIPPED_BIRCH_WOOD)
+				.add(Blocks.STRIPPED_CHERRY_WOOD)
+				.add(Blocks.STRIPPED_DARK_OAK_WOOD)
+				.add(Blocks.STRIPPED_JUNGLE_WOOD)
+				.add(Blocks.STRIPPED_MANGROVE_WOOD)
+				.add(Blocks.STRIPPED_OAK_WOOD)
+				.add(Blocks.STRIPPED_SPRUCE_WOOD);
 	}
 
 	private void generateHeadTags() {

@@ -31,6 +31,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 public class FluidVariantImpl implements FluidVariant {
 	public static FluidVariant of(Fluid fluid, ComponentChanges components) {
@@ -93,6 +94,11 @@ public class FluidVariantImpl implements FluidVariant {
 	@Override
 	public ComponentMap getComponentMap() {
 		return componentMap;
+	}
+
+	@Override
+	public FluidVariant withComponentChanges(ComponentChanges changes) {
+		return of(fluid, TransferApiImpl.mergeChanges(getComponents(), changes));
 	}
 
 	@Override

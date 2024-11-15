@@ -36,12 +36,12 @@ import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupImpl;
 public class FabricCreativeGuiComponents {
 	private static final Identifier BUTTON_TEX = Identifier.of("fabric", "textures/gui/creative_buttons.png");
 	private static final double TABS_PER_PAGE = FabricItemGroupImpl.TABS_PER_PAGE;
-	public static final Set<ItemGroup> COMMON_GROUPS = Set.of(ItemGroups.SEARCH, ItemGroups.INVENTORY, ItemGroups.HOTBAR).stream()
+	public static final Set<ItemGroup> COMMON_GROUPS = Set.of(ItemGroups.SEARCH, ItemGroups.INVENTORY, ItemGroups.HOTBAR, ItemGroups.OPERATOR).stream()
 			.map(Registries.ITEM_GROUP::getOrThrow)
 			.collect(Collectors.toSet());
 
 	public static int getPageCount() {
-		return (int) Math.ceil((ItemGroups.getGroupsToDisplay().size() - COMMON_GROUPS.size()) / TABS_PER_PAGE);
+		return (int) Math.ceil((ItemGroups.getGroupsToDisplay().size() - COMMON_GROUPS.stream().filter(ItemGroup::shouldDisplay).count()) / TABS_PER_PAGE);
 	}
 
 	public static class ItemGroupButtonWidget extends ButtonWidget {

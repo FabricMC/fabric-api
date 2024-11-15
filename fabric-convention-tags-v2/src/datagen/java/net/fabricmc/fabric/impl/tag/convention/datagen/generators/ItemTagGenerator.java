@@ -54,6 +54,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	private void copyItemTags() {
 		copy(ConventionalBlockTags.STONES, ConventionalItemTags.STONES);
 		copy(ConventionalBlockTags.COBBLESTONES, ConventionalItemTags.COBBLESTONES);
+		copy(ConventionalBlockTags.OBSIDIANS, ConventionalItemTags.OBSIDIANS);
+		copy(ConventionalBlockTags.NORMAL_OBSIDIANS, ConventionalItemTags.NORMAL_OBSIDIANS);
+		copy(ConventionalBlockTags.CRYING_OBSIDIANS, ConventionalItemTags.CRYING_OBSIDIANS);
 		copy(ConventionalBlockTags.BARRELS, ConventionalItemTags.BARRELS);
 		copy(ConventionalBlockTags.WOODEN_BARRELS, ConventionalItemTags.WOODEN_BARRELS);
 		copy(ConventionalBlockTags.BOOKSHELVES, ConventionalItemTags.BOOKSHELVES);
@@ -153,6 +156,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, ConventionalItemTags.STORAGE_BLOCKS_REDSTONE);
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_SLIME, ConventionalItemTags.STORAGE_BLOCKS_SLIME);
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, ConventionalItemTags.STORAGE_BLOCKS_WHEAT);
+
+		copy(ConventionalBlockTags.STRIPPED_LOGS, ConventionalItemTags.STRIPPED_LOGS);
+		copy(ConventionalBlockTags.STRIPPED_WOODS, ConventionalItemTags.STRIPPED_WOODS);
 	}
 
 	private void generateDyeTags() {
@@ -281,6 +287,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		getOrCreateTagBuilder(ConventionalItemTags.CANDY_FOODS)
 				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS);
 
+		getOrCreateTagBuilder(ConventionalItemTags.PIE_FOODS)
+				.add(Items.PUMPKIN_PIE);
+
 		getOrCreateTagBuilder(ConventionalItemTags.GOLDEN_FOODS)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
@@ -339,6 +348,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.COOKED_FISH_FOODS)
 				.addOptionalTag(ConventionalItemTags.SOUP_FOODS)
 				.addOptionalTag(ConventionalItemTags.CANDY_FOODS)
+				.addOptionalTag(ConventionalItemTags.PIE_FOODS)
 				.addOptionalTag(ConventionalItemTags.GOLDEN_FOODS)
 				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
