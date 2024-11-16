@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -403,6 +404,9 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 
 	@Override
 	public void addAlias(Identifier old, Identifier newId) {
+		Objects.requireNonNull(old, "alias cannot be null");
+		Objects.requireNonNull(newId, "aliased id cannot be null");
+
 		if (fabric_aliases.containsKey(old)) {
 			throw new IllegalArgumentException(
 					"Tried adding %s as an alias for %s, but it is already an alias (for %s) in registry %s".formatted(
@@ -416,6 +420,16 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 			throw new IllegalArgumentException(
 					"Tried adding %s as an alias, but it is already present in registry %s".formatted(
 							old,
+							this.key
+					)
+			);
+		} else if (getAliased(newId).equals(old)) {
+			// since an alias corresponds to at most one identifier, this is the only way to create a cycle
+			// that doesn't already fall under the first condition
+			throw new IllegalArgumentException(
+					"Making %1$s an alias of %2$s would create a cycle, as %2$s is already an alias of %1$s (registry %3$s)".formatted(
+							old,
+							newId,
 							this.key
 					)
 			);
