@@ -35,5 +35,7 @@ public interface FabricRegistry {
 	 * @param old the {@link Identifier} that will become an alias for {@code newId}
 	 * @param newId the {@link Identifier} for which {@code old} will become an alias
 	 */
-	void addAlias(Identifier old, Identifier newId);
+	default void addAlias(Identifier old, Identifier newId) {
+		// implemented via mixin
+	}
 }
