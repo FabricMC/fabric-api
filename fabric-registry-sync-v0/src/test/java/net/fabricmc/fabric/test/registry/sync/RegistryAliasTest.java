@@ -21,8 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
@@ -33,34 +37,36 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
 public class RegistryAliasTest {
-	private static final RegistryKey<Registry<String>> testRegistryKey = RegistryKey.ofRegistry(id("test"));
-	private static Registry<String> testRegistry;
 	private static final Identifier OBSOLETE_ID = id("obsolete");
 	private static final Identifier NEW_ID = id("new");
 	private static final Identifier OTHER = id("other");
+	private RegistryKey<Registry<String>> testRegistryKey;
+	private Registry<String> testRegistry;
 
 	@BeforeAll
 	static void beforeAll() {
-		long time = System.currentTimeMillis();
 		SharedConstants.createGameVersion();
 		Bootstrap.initialize();
+	}
 
-		System.out.println("Bootstrap took " + (System.currentTimeMillis() - time) + "ms");
+	private static Identifier id(String s) {
+		return Identifier.of("registry_sync_test_alias_test", s);
+	}
 
-		testRegistry = FabricRegistryBuilder.createSimple(testRegistryKey).buildAndRegister();
+	@BeforeEach
+	void beforeEach() {
+		testRegistryKey = RegistryKey.ofRegistry(id(UUID.randomUUID().toString()));
+		testRegistry = Mockito.spy(FabricRegistryBuilder.createSimple(testRegistryKey).buildAndRegister());
 
 		Registry.register(testRegistry, NEW_ID, "entry");
 		Registry.register(testRegistry, OTHER, "other");
 		testRegistry.addAlias(OBSOLETE_ID, NEW_ID);
 	}
 
-	private static Identifier id(String s) {
-		return Identifier.of("registry_sync_test", s);
-	}
-
 	@Test
 	void testAlias() {
 		RegistryKey<String> obsoleteKey = RegistryKey.of(testRegistryKey, OBSOLETE_ID);
+
 		assertTrue(testRegistry.containsId(OBSOLETE_ID));
 		assertFalse(testRegistry.getIds().contains(OBSOLETE_ID));
 		assertEquals("entry", testRegistry.get(OBSOLETE_ID));
@@ -88,5 +94,10 @@ public class RegistryAliasTest {
 	@Test
 	void forbidExistingIdAsAlias() {
 		assertThrows(IllegalArgumentException.class, () -> testRegistry.addAlias(NEW_ID, OTHER));
+	}
+
+	@Test
+	void forbidOverridingAliasWithEntry() {
+		assertThrows(IllegalArgumentException.class, () -> Registry.register(testRegistry, OBSOLETE_ID, "obsolete"));
 	}
 }

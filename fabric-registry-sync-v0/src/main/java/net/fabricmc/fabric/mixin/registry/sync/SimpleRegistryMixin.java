@@ -148,6 +148,18 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 				}
 			}
 		);
+		// aliasing: check that no new entries use the id of an alias
+		fabric_addObjectEvent.register((rawId, id, object) -> {
+			if (aliases.containsKey(id)) {
+				throw new IllegalArgumentException(
+						"Tried registering %s to registry %s, but it is already an alias (for %s)".formatted(
+								id,
+								this.key,
+								aliases.get(id)
+						)
+				);
+			}
+		});
 		fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryIdRemapCallback.class,
 			(callbacks) -> (a) -> {
 				for (RegistryIdRemapCallback<T> callback : callbacks) {
