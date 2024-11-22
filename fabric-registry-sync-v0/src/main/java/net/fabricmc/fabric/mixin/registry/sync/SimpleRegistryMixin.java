@@ -129,6 +129,9 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	@Final
 	private RegistryKey<? extends Registry<T>> key;
 
+	@Shadow
+	protected abstract void assertNotFrozen();
+
 	@Override
 	public Event<RegistryEntryAddedCallback<T>> fabric_getAddObjectEvent() {
 		return fabric_addObjectEvent;
@@ -458,6 +461,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 			);
 		}
 
+		assertNotFrozen();
 		aliases.put(old, newId);
 		FABRIC_LOGGER.debug("Adding alias {} for {} in registry {}", old, newId, this.key);
 	}
