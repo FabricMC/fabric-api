@@ -47,18 +47,18 @@ public class ModelTestModClient implements ClientModInitializer {
 	public static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofVanilla("block/gold_block");
 	public static final Identifier BROWN_GLAZED_TERRACOTTA_MODEL_ID = Identifier.ofVanilla("block/brown_glazed_terracotta");
 
-//	static class DownQuadRemovingModel extends ForwardingBakedModel {
-//		DownQuadRemovingModel(BakedModel model) {
-//			wrapped = model;
-//		}
-//
-//		@Override
-//		public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-//			context.pushTransform(q -> q.cullFace() != Direction.DOWN);
-//			super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
-//			context.popTransform();
-//		}
-//	}
+	//static class DownQuadRemovingModel extends ForwardingBakedModel {
+	//	DownQuadRemovingModel(BakedModel model) {
+	//		wrapped = model;
+	//	}
+	//
+	//	@Override
+	//	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+	//		context.pushTransform(q -> q.cullFace() != Direction.DOWN);
+	//		super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
+	//		context.popTransform();
+	//	}
+	//}
 
 	@Override
 	public void onInitializeClient() {
@@ -102,14 +102,14 @@ public class ModelTestModClient implements ClientModInitializer {
 			});
 
 			// TODO 1.21.4: reintroduce test once FRAPI+Indigo are ported
-//			// remove bottom face of gold blocks
-//			pluginContext.modifyModelAfterBake().register(ModelModifier.WRAP_PHASE, (model, context) -> {
-//				if (context.id().equals(GOLD_BLOCK_MODEL_ID)) {
-//					return new DownQuadRemovingModel(model);
-//				}
-//
-//				return model;
-//			});
+			// remove bottom face of gold blocks
+			//pluginContext.modifyModelAfterBake().register(ModelModifier.WRAP_PHASE, (model, context) -> {
+			//	if (context.id().equals(GOLD_BLOCK_MODEL_ID)) {
+			//		return new DownQuadRemovingModel(model);
+			//	}
+			//
+			//	return model;
+			//});
 		});
 
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(SpecificModelReloadListener.INSTANCE);

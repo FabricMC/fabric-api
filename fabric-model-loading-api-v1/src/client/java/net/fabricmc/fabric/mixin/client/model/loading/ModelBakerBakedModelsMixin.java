@@ -36,12 +36,12 @@ abstract class ModelBakerBakedModelsMixin implements BakedModelsHooks {
 
 	@Override
 	@Nullable
-	public Map<Identifier, BakedModel> getExtraModels() {
+	public Map<Identifier, BakedModel> fabric_getExtraModels() {
 		return extraModels;
 	}
 
 	@Override
-	public void setExtraModels(@Nullable Map<Identifier, BakedModel> extraModels) {
+	public void fabric_setExtraModels(@Nullable Map<Identifier, BakedModel> extraModels) {
 		this.extraModels = extraModels;
 	}
 }

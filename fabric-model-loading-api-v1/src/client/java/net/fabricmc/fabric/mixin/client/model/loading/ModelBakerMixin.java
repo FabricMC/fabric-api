@@ -86,7 +86,7 @@ abstract class ModelBakerMixin implements ModelBakerHooks {
 				LOGGER.warn("Unable to bake extra model: '{}': {}", id, e);
 			}
 		});
-		((BakedModelsHooks) (Object) models).setExtraModels(extraModels);
+		((BakedModelsHooks) (Object) models).fabric_setExtraModels(extraModels);
 	}
 
 	@Override

@@ -137,6 +137,6 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 
 	@Inject(method = "upload", at = @At(value = "INVOKE_STRING", target = "net/minecraft/util/profiler/Profiler.swap(Ljava/lang/String;)V", args = "ldc=cache"))
 	private void onUpload(CallbackInfo ci, @Local ModelBaker.BakedModels bakedModels) {
-		extraModels = ((BakedModelsHooks) (Object) bakedModels).getExtraModels();
+		extraModels = ((BakedModelsHooks) (Object) bakedModels).fabric_getExtraModels();
 	}
 }

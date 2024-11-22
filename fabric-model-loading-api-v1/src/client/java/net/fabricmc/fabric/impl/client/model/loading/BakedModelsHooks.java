@@ -25,7 +25,7 @@ import net.minecraft.util.Identifier;
 
 public interface BakedModelsHooks {
 	@Nullable
-	Map<Identifier, BakedModel> getExtraModels();
+	Map<Identifier, BakedModel> fabric_getExtraModels();
 
-	void setExtraModels(@Nullable Map<Identifier, BakedModel> extraModels);
+	void fabric_setExtraModels(@Nullable Map<Identifier, BakedModel> extraModels);
 }
