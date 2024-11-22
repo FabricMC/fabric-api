@@ -16,16 +16,12 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
-import java.util.function.Function;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.util.Identifier;
 
 /**
@@ -33,16 +29,13 @@ import net.minecraft.util.Identifier;
  * This allows multiple {@link UnbakedModel}s to share the same {@link BakedModel} instance
  * and prevents baking the same model multiple times.
  */
-public final class DelegatingUnbakedModel implements UnbakedModel {
-	private final Identifier delegate;
-
+public record DelegatingUnbakedModel(Identifier delegate) implements UnbakedModel {
 	/**
 	 * Constructs a new delegating model.
 	 *
 	 * @param delegate The identifier of the underlying baked model.
 	 */
-	public DelegatingUnbakedModel(Identifier delegate) {
-		this.delegate = delegate;
+	public DelegatingUnbakedModel {
 	}
 
 	@Override
@@ -51,8 +44,7 @@ public final class DelegatingUnbakedModel implements UnbakedModel {
 	}
 
 	@Override
-	@Nullable
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
-		return baker.bake(delegate, rotationContainer);
+	public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
+		return baker.bake(delegate, settings);
 	}
 }

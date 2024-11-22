@@ -97,9 +97,28 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 
 		return model;
 	}, MODEL_MODIFIER_PHASES);
+	private final Event<ModelModifier.BeforeBakeBlock> beforeBakeBlockModifiers = EventFactory.createWithPhases(ModelModifier.BeforeBakeBlock.class, modifiers -> (model, context) -> {
+		for (ModelModifier.BeforeBakeBlock modifier : modifiers) {
+			try {
+				model = modifier.modifyModelBeforeBake(model, context);
+			} catch (Exception exception) {
+				LOGGER.error("Failed to modify unbaked block model before bake", exception);
+			}
+		}
 
-	public ModelLoadingPluginContextImpl() {
-	}
+		return model;
+	}, MODEL_MODIFIER_PHASES);
+	private final Event<ModelModifier.AfterBakeBlock> afterBakeBlockModifiers = EventFactory.createWithPhases(ModelModifier.AfterBakeBlock.class, modifiers -> (model, context) -> {
+		for (ModelModifier.AfterBakeBlock modifier : modifiers) {
+			try {
+				model = modifier.modifyModelAfterBake(model, context);
+			} catch (Exception exception) {
+				LOGGER.error("Failed to modify baked block model after bake", exception);
+			}
+		}
+
+		return model;
+	}, MODEL_MODIFIER_PHASES);
 
 	@Override
 	public void addModels(Identifier... ids) {
@@ -147,5 +166,15 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 	@Override
 	public Event<ModelModifier.AfterBake> modifyModelAfterBake() {
 		return afterBakeModifiers;
+	}
+
+	@Override
+	public Event<ModelModifier.BeforeBakeBlock> modifyBlockModelBeforeBake() {
+		return beforeBakeBlockModifiers;
+	}
+
+	@Override
+	public Event<ModelModifier.AfterBakeBlock> modifyBlockModelAfterBake() {
+		return afterBakeBlockModifiers;
 	}
 }

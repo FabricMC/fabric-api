@@ -16,10 +16,16 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
-import net.minecraft.block.Block;
+import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
+public interface BakedModelsHooks {
+	@Nullable
+	Map<Identifier, BakedModel> getExtraModels();
 
-record BlockStateResolverHolder(BlockStateResolver resolver, Block block, Identifier blockId) {
+	void setExtraModels(@Nullable Map<Identifier, BakedModel> extraModels);
 }

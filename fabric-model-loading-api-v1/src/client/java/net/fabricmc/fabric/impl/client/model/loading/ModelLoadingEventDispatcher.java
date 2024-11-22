@@ -23,14 +23,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,11 +38,10 @@ import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.BlockStatesLoader;
+import net.minecraft.client.render.model.GroupableModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
@@ -66,6 +63,8 @@ public class ModelLoadingEventDispatcher {
 	private final OnLoadModifierContext onLoadModifierContext = new OnLoadModifierContext();
 	private final ObjectArrayList<BeforeBakeModifierContext> beforeBakeModifierContextStack = new ObjectArrayList<>();
 	private final ObjectArrayList<AfterBakeModifierContext> afterBakeModifierContextStack = new ObjectArrayList<>();
+	private final BeforeBakeBlockModifierContext beforeBakeBlockModifierContext = new BeforeBakeBlockModifierContext();
+	private final AfterBakeBlockModifierContext afterBakeBlockModifierContext = new AfterBakeBlockModifierContext();
 
 	public ModelLoadingEventDispatcher(List<ModelLoadingPlugin> plugins) {
 		this.pluginContext = new ModelLoadingPluginContextImpl();
@@ -79,10 +78,8 @@ public class ModelLoadingEventDispatcher {
 		}
 	}
 
-	public void addExtraModels(Consumer<Identifier> extraModelConsumer) {
-		for (Identifier id : pluginContext.extraModels) {
-			extraModelConsumer.accept(id);
-		}
+	public void forEachExtraModel(Consumer<Identifier> extraModelConsumer) {
+		pluginContext.extraModels.forEach(extraModelConsumer);
 	}
 
 	public BlockStatesLoader.BlockStateDefinition loadBlockStateModels() {
@@ -97,7 +94,7 @@ public class ModelLoadingEventDispatcher {
 
 			Identifier blockId = optionalKey.get().getValue();
 
-			BiConsumer<BlockState, UnbakedModel> output = (state, model) -> {
+			BiConsumer<BlockState, GroupableModel> output = (state, model) -> {
 				ModelIdentifier modelId = BlockModels.getModelId(blockId, state);
 				map.put(modelId, new BlockStatesLoader.BlockModel(state, model));
 			};
@@ -108,11 +105,11 @@ public class ModelLoadingEventDispatcher {
 		return new BlockStatesLoader.BlockStateDefinition(map);
 	}
 
-	private void resolveBlockStates(BlockStateResolver resolver, Block block, BiConsumer<BlockState, UnbakedModel> output) {
+	private void resolveBlockStates(BlockStateResolver resolver, Block block, BiConsumer<BlockState, GroupableModel> output) {
 		BlockStateResolverContext context = blockStateResolverContext;
 		context.prepare(block);
 
-		Reference2ReferenceMap<BlockState, UnbakedModel> resolvedModels = context.models;
+		Reference2ReferenceMap<BlockState, GroupableModel> resolvedModels = context.models;
 		ImmutableList<BlockState> allStates = block.getStateManager().getStates();
 		boolean thrown = false;
 
@@ -131,7 +128,7 @@ public class ModelLoadingEventDispatcher {
 			} else {
 				for (BlockState state : allStates) {
 					@Nullable
-					UnbakedModel model = resolvedModels.get(state);
+					GroupableModel model = resolvedModels.get(state);
 
 					if (model == null) {
 						LOGGER.error("Block state resolver did not provide a model for state {} in block {}. Using missing model.", state, block);
@@ -151,18 +148,19 @@ public class ModelLoadingEventDispatcher {
 		return pluginContext.resolveModel().invoker().resolveModel(modelResolverContext);
 	}
 
-	public UnbakedModel modifyModelOnLoad(UnbakedModel model, @UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId) {
-		onLoadModifierContext.prepare(resourceId, topLevelId);
+	@Nullable
+	public UnbakedModel modifyModelOnLoad(@Nullable UnbakedModel model, Identifier id) {
+		onLoadModifierContext.prepare(id);
 		return pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, onLoadModifierContext);
 	}
 
-	public UnbakedModel modifyModelBeforeBake(UnbakedModel model, @UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+	public UnbakedModel modifyModelBeforeBake(UnbakedModel model, Identifier id, ModelBakeSettings settings, Baker baker) {
 		if (beforeBakeModifierContextStack.isEmpty()) {
 			beforeBakeModifierContextStack.add(new BeforeBakeModifierContext());
 		}
 
 		BeforeBakeModifierContext context = beforeBakeModifierContextStack.pop();
-		context.prepare(resourceId, topLevelId, textureGetter, settings, baker);
+		context.prepare(id, settings, baker);
 
 		model = pluginContext.modifyModelBeforeBake().invoker().modifyModelBeforeBake(model, context);
 
@@ -170,19 +168,28 @@ public class ModelLoadingEventDispatcher {
 		return model;
 	}
 
-	@Nullable
-	public BakedModel modifyModelAfterBake(@Nullable BakedModel model, @UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
+	public BakedModel modifyModelAfterBake(BakedModel model, Identifier id, UnbakedModel sourceModel, ModelBakeSettings settings, Baker baker) {
 		if (afterBakeModifierContextStack.isEmpty()) {
 			afterBakeModifierContextStack.add(new AfterBakeModifierContext());
 		}
 
 		AfterBakeModifierContext context = afterBakeModifierContextStack.pop();
-		context.prepare(resourceId, topLevelId, sourceModel, textureGetter, settings, baker);
+		context.prepare(id, sourceModel, settings, baker);
 
 		model = pluginContext.modifyModelAfterBake().invoker().modifyModelAfterBake(model, context);
 
 		afterBakeModifierContextStack.push(context);
 		return model;
+	}
+
+	public GroupableModel modifyBlockModelBeforeBake(GroupableModel model, ModelIdentifier id, Baker baker) {
+		beforeBakeBlockModifierContext.prepare(id, baker);
+		return pluginContext.modifyBlockModelBeforeBake().invoker().modifyModelBeforeBake(model, beforeBakeBlockModifierContext);
+	}
+
+	public BakedModel modifyBlockModelAfterBake(BakedModel model, ModelIdentifier id, GroupableModel sourceModel, Baker baker) {
+		afterBakeBlockModifierContext.prepare(id, sourceModel, baker);
+		return pluginContext.modifyBlockModelAfterBake().invoker().modifyModelAfterBake(model, afterBakeBlockModifierContext);
 	}
 
 	private static class ModelResolverContext implements ModelResolver.Context {
@@ -200,7 +207,7 @@ public class ModelLoadingEventDispatcher {
 
 	private static class BlockStateResolverContext implements BlockStateResolver.Context {
 		private Block block;
-		private final Reference2ReferenceMap<BlockState, UnbakedModel> models = new Reference2ReferenceOpenHashMap<>();
+		private final Reference2ReferenceMap<BlockState, GroupableModel> models = new Reference2ReferenceOpenHashMap<>();
 
 		private void prepare(Block block) {
 			this.block = block;
@@ -213,7 +220,7 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		@Override
-		public void setModel(BlockState state, UnbakedModel model) {
+		public void setModel(BlockState state, GroupableModel model) {
 			Objects.requireNonNull(model, "state cannot be null");
 			Objects.requireNonNull(model, "model cannot be null");
 
@@ -228,61 +235,32 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	private static class OnLoadModifierContext implements ModelModifier.OnLoad.Context {
-		@UnknownNullability
-		private Identifier resourceId;
-		@UnknownNullability
-		private ModelIdentifier topLevelId;
+		private Identifier id;
 
-		private void prepare(@UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId) {
-			this.resourceId = resourceId;
-			this.topLevelId = topLevelId;
+		private void prepare(Identifier id) {
+			this.id = id;
 		}
 
 		@Override
-		@UnknownNullability("#topLevelId() != null")
-		public Identifier resourceId() {
-			return resourceId;
-		}
-
-		@Override
-		@UnknownNullability("#resourceId() != null")
-		public ModelIdentifier topLevelId() {
-			return topLevelId;
+		public Identifier id() {
+			return id;
 		}
 	}
 
 	private static class BeforeBakeModifierContext implements ModelModifier.BeforeBake.Context {
-		@UnknownNullability
-		private Identifier resourceId;
-		@UnknownNullability
-		private ModelIdentifier topLevelId;
-		private Function<SpriteIdentifier, Sprite> textureGetter;
+		private Identifier id;
 		private ModelBakeSettings settings;
 		private Baker baker;
 
-		private void prepare(@UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-			this.resourceId = resourceId;
-			this.topLevelId = topLevelId;
-			this.textureGetter = textureGetter;
+		private void prepare(Identifier id, ModelBakeSettings settings, Baker baker) {
+			this.id = id;
 			this.settings = settings;
 			this.baker = baker;
 		}
 
 		@Override
-		@UnknownNullability("#topLevelId() != null")
-		public Identifier resourceId() {
-			return resourceId;
-		}
-
-		@Override
-		@UnknownNullability("#resourceId() != null")
-		public ModelIdentifier topLevelId() {
-			return topLevelId;
-		}
-
-		@Override
-		public Function<SpriteIdentifier, Sprite> textureGetter() {
-			return textureGetter;
+		public Identifier id() {
+			return id;
 		}
 
 		@Override
@@ -297,34 +275,21 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	private static class AfterBakeModifierContext implements ModelModifier.AfterBake.Context {
-		@UnknownNullability
-		private Identifier resourceId;
-		@UnknownNullability
-		private ModelIdentifier topLevelId;
+		private Identifier id;
 		private UnbakedModel sourceModel;
-		private Function<SpriteIdentifier, Sprite> textureGetter;
 		private ModelBakeSettings settings;
 		private Baker baker;
 
-		private void prepare(@UnknownNullability Identifier resourceId, @UnknownNullability ModelIdentifier topLevelId, UnbakedModel sourceModel, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings settings, Baker baker) {
-			this.resourceId = resourceId;
-			this.topLevelId = topLevelId;
+		private void prepare(Identifier id, UnbakedModel sourceModel, ModelBakeSettings settings, Baker baker) {
+			this.id = id;
 			this.sourceModel = sourceModel;
-			this.textureGetter = textureGetter;
 			this.settings = settings;
 			this.baker = baker;
 		}
 
 		@Override
-		@UnknownNullability("#topLevelId() != null")
-		public Identifier resourceId() {
-			return resourceId;
-		}
-
-		@Override
-		@UnknownNullability("#resourceId() != null")
-		public ModelIdentifier topLevelId() {
-			return topLevelId;
+		public Identifier id() {
+			return id;
 		}
 
 		@Override
@@ -333,13 +298,55 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		@Override
-		public Function<SpriteIdentifier, Sprite> textureGetter() {
-			return textureGetter;
+		public ModelBakeSettings settings() {
+			return settings;
 		}
 
 		@Override
-		public ModelBakeSettings settings() {
-			return settings;
+		public Baker baker() {
+			return baker;
+		}
+	}
+
+	private static class BeforeBakeBlockModifierContext implements ModelModifier.BeforeBakeBlock.Context {
+		private ModelIdentifier id;
+		private Baker baker;
+
+		private void prepare(ModelIdentifier id, Baker baker) {
+			this.id = id;
+			this.baker = baker;
+		}
+
+		@Override
+		public ModelIdentifier id() {
+			return id;
+		}
+
+		@Override
+		public Baker baker() {
+			return baker;
+		}
+	}
+
+	private static class AfterBakeBlockModifierContext implements ModelModifier.AfterBakeBlock.Context {
+		private ModelIdentifier id;
+		private GroupableModel sourceModel;
+		private Baker baker;
+
+		private void prepare(ModelIdentifier id, GroupableModel sourceModel, Baker baker) {
+			this.id = id;
+			this.sourceModel = sourceModel;
+			this.baker = baker;
+		}
+
+		@Override
+		public ModelIdentifier id() {
+			return id;
+		}
+
+		@Override
+		public GroupableModel sourceModel() {
+			return sourceModel;
 		}
 
 		@Override

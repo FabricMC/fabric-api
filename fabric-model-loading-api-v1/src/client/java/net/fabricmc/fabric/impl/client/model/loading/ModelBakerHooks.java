@@ -16,6 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
-public interface ModelLoaderHooks {
+public interface ModelBakerHooks {
 	ModelLoadingEventDispatcher fabric_getDispatcher();
 }
