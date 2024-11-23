@@ -56,12 +56,6 @@ abstract class ReferencedModelsCollectorMixin {
 			return model;
 		}
 
-		UnbakedModel resolvedModel = fabric_eventDispatcher.resolveModel(id);
-
-		if (resolvedModel != null) {
-			model = resolvedModel;
-		}
-
 		return fabric_eventDispatcher.modifyModelOnLoad(model, id);
 	}
 }

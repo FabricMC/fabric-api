@@ -16,13 +16,11 @@
 
 package net.fabricmc.fabric.mixin.client.model.loading;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.jetbrains.annotations.Nullable;
@@ -38,10 +36,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.client.render.model.BlockStatesLoader;
 import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.client.render.model.ReferencedModelsCollector;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
@@ -84,22 +80,6 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 		return future.thenApplyAsync(v -> {
 			eventDispatcherFuture = null;
 			return v;
-		});
-	}
-
-	@ModifyExpressionValue(method = "reload", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BlockStatesLoader.load(Lnet/minecraft/client/render/model/UnbakedModel;Lnet/minecraft/resource/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
-	private CompletableFuture<BlockStatesLoader.BlockStateDefinition> injectBlockStateModels(CompletableFuture<BlockStatesLoader.BlockStateDefinition> modelsFuture) {
-		CompletableFuture<BlockStatesLoader.BlockStateDefinition> resolvedModelsFuture = eventDispatcherFuture.thenApplyAsync(ModelLoadingEventDispatcher::loadBlockStateModels);
-		return modelsFuture.thenCombine(resolvedModelsFuture, (models, resolvedModels) -> {
-			Map<ModelIdentifier, BlockStatesLoader.BlockModel> map = models.models();
-
-			if (!(map instanceof HashMap)) {
-				map = new HashMap<>(map);
-				models = new BlockStatesLoader.BlockStateDefinition(map);
-			}
-
-			map.putAll(resolvedModels.models());
-			return models;
 		});
 	}
 

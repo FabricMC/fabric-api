@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.block.Block;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
@@ -61,19 +60,6 @@ public interface ModelLoadingPlugin {
 		 * {@link FabricBakedModelManager#getModel(Identifier)}.
 		 */
 		void addModels(Collection<? extends Identifier> ids);
-
-		/**
-		 * Registers a block state resolver for a block.
-		 *
-		 * <p>The block must be registered and a block state resolver must not have been previously registered for the
-		 * block.
-		 */
-		void registerBlockStateResolver(Block block, BlockStateResolver resolver);
-
-		/**
-		 * Event access to register model resolvers.
-		 */
-		Event<ModelResolver> resolveModel();
 
 		/**
 		 * Event access to monitor unbaked model loads and replace the loaded model.

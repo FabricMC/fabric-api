@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.model.loading;
 
 import java.util.List;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CropBlock;
 import net.minecraft.block.HorizontalConnectingBlock;
@@ -29,6 +28,7 @@ import net.minecraft.client.render.model.MissingModel;
 import net.minecraft.client.render.model.json.ModelVariant;
 import net.minecraft.client.render.model.json.WeightedUnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.AffineTransformation;
@@ -65,22 +65,6 @@ public class ModelTestModClient implements ClientModInitializer {
 		ModelLoadingPlugin.register(pluginContext -> {
 			pluginContext.addModels(HALF_RED_SAND_MODEL_ID);
 
-			// Make wheat stages 1->6 use the same model as stage 0. This can be done with resource packs, this is just a test.
-			pluginContext.registerBlockStateResolver(Blocks.WHEAT, context -> {
-				BlockState state = context.block().getDefaultState();
-
-				Identifier wheatStage0Id = Identifier.ofVanilla("block/wheat_stage0");
-				Identifier wheatStage7Id = Identifier.ofVanilla("block/wheat_stage7");
-				GroupableModel wheatStage0Model = simpleGroupableModel(wheatStage0Id);
-				GroupableModel wheatStage7Model = simpleGroupableModel(wheatStage7Id);
-
-				for (int age = 0; age <= 6; age++) {
-					context.setModel(state.with(CropBlock.AGE, age), wheatStage0Model);
-				}
-
-				context.setModel(state.with(CropBlock.AGE, 7), wheatStage7Model);
-			});
-
 			// replace the brown glazed terracotta model with a missing model
 			// with the new item model system in 1.21.4, this also affects the item model
 			pluginContext.modifyModelBeforeBake().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
@@ -99,6 +83,23 @@ public class ModelTestModClient implements ClientModInitializer {
 				}
 
 				return model;
+			});
+
+			// Make wheat stages 1->6 use the same model as stage 0. This can be done with resource packs, this is just a test.
+			Identifier wheatId = Registries.BLOCK.getId(Blocks.WHEAT);
+			String wheatStage7Variant = BlockModels.propertyMapToString(Blocks.WHEAT.getDefaultState().with(CropBlock.AGE, 7).getEntries());
+			GroupableModel wheatStage0Model = simpleGroupableModel(Identifier.ofVanilla("block/wheat_stage0"));
+			GroupableModel wheatStage7Model = simpleGroupableModel(Identifier.ofVanilla("block/wheat_stage7"));
+			pluginContext.modifyBlockModelBeforeBake().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
+				if (!context.id().id().equals(wheatId)) {
+					return model;
+				}
+
+				if (context.id().variant().equals(wheatStage7Variant)) {
+					return wheatStage7Model;
+				} else {
+					return wheatStage0Model;
+				}
 			});
 
 			// TODO 1.21.4: reintroduce test once FRAPI+Indigo are ported
