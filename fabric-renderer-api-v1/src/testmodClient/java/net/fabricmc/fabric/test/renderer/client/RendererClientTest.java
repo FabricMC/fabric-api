@@ -20,16 +20,16 @@ import net.minecraft.client.render.RenderLayer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.test.renderer.FrameBlock;
 import net.fabricmc.fabric.test.renderer.Registration;
 
 public final class RendererClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ModelLoadingPlugin.register(pluginContext -> {
-			pluginContext.resolveModel().register(new ModelResolverImpl());
-		});
+		// TODO 1.21.4
+		//ModelLoadingPlugin.register(pluginContext -> {
+		//	pluginContext.resolveModel().register(new ModelResolverImpl());
+		//});
 
 		for (FrameBlock frameBlock : Registration.FRAME_BLOCKS) {
 			// We don't specify a material for the frame mesh,

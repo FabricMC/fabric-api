@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
  * <p>A material instance is always immutable and thread-safe.  References to a material
  * remain valid until the end of the current game session.
  *
- * <p>Materials can be registered and shared between mods using {@link Renderer#registerMaterial(net.minecraft.util.Identifier, RenderMaterial)}.
+ * <p>Materials can be registered and shared between mods using {@link Renderer#registerMaterial(Identifier, RenderMaterial)}.
  * The registering mod is responsible for creating each registered material at startup.
  *
  * <p>Materials are not required to know their registration identity, and two materials
@@ -73,13 +73,5 @@ public interface RenderMaterial extends MaterialView {
 	 *
 	 * <p>All standard, non-fluid baked models are rendered using this material.
 	 */
-	Identifier MATERIAL_STANDARD = Identifier.of("fabric", "standard");
-
-	/**
-	 * Do not use. Always returns 1.
-	 */
-	@Deprecated
-	default int spriteDepth() {
-		return 1;
-	}
+	Identifier STANDARD_ID = Identifier.of("fabric", "standard");
 }

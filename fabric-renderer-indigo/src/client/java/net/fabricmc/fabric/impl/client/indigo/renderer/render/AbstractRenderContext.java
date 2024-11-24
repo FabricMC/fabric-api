@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import java.util.function.Consumer;
-
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -26,16 +23,11 @@ import org.joml.Vector4f;
 
 import net.minecraft.client.render.VertexConsumer;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
-abstract class AbstractRenderContext implements RenderContext {
-	private static final QuadTransform NO_TRANSFORM = q -> true;
-
+public abstract class AbstractRenderContext {
 	private final MutableQuadViewImpl editorQuad = new MutableQuadViewImpl() {
 		{
 			data = new int[EncodingFormat.TOTAL_STRIDE];
@@ -43,83 +35,24 @@ abstract class AbstractRenderContext implements RenderContext {
 		}
 
 		@Override
-		public void emitDirectly() {
-			renderQuad(this);
+		protected void emitDirectly() {
+			bufferQuad(this);
 		}
 	};
 
-	private QuadTransform activeTransform = NO_TRANSFORM;
-	private final ObjectArrayList<QuadTransform> transformStack = new ObjectArrayList<>();
-	private final QuadTransform stackTransform = q -> {
-		int i = transformStack.size() - 1;
-
-		while (i >= 0) {
-			if (!transformStack.get(i--).transform(q)) {
-				return false;
-			}
-		}
-
-		return true;
-	};
-
-	@Deprecated
-	private final Consumer<Mesh> meshConsumer = mesh -> mesh.outputTo(getEmitter());
+	private final Vector4f posVec = new Vector4f();
+	private final Vector3f normalVec = new Vector3f();
 
 	protected Matrix4f matrix;
 	protected Matrix3f normalMatrix;
 	protected int overlay;
-	private final Vector4f posVec = new Vector4f();
-	private final Vector3f normalVec = new Vector3f();
 
-	@Override
-	public QuadEmitter getEmitter() {
+	protected QuadEmitter getEmitter() {
 		editorQuad.clear();
 		return editorQuad;
 	}
 
-	protected abstract void renderQuad(MutableQuadViewImpl quadView);
-
-	protected final boolean transform(MutableQuadView q) {
-		return activeTransform.transform(q);
-	}
-
-	@Override
-	public boolean hasTransform() {
-		return activeTransform != NO_TRANSFORM;
-	}
-
-	@Override
-	public void pushTransform(QuadTransform transform) {
-		if (transform == null) {
-			throw new NullPointerException("Renderer received null QuadTransform.");
-		}
-
-		transformStack.push(transform);
-
-		if (transformStack.size() == 1) {
-			activeTransform = transform;
-		} else if (transformStack.size() == 2) {
-			activeTransform = stackTransform;
-		}
-	}
-
-	@Override
-	public void popTransform() {
-		transformStack.pop();
-
-		if (transformStack.size() == 0) {
-			activeTransform = NO_TRANSFORM;
-		} else if (transformStack.size() == 1) {
-			activeTransform = transformStack.get(0);
-		}
-	}
-
-	// Overridden to prevent allocating a lambda every time this method is called.
-	@Deprecated
-	@Override
-	public Consumer<Mesh> meshConsumer() {
-		return meshConsumer;
-	}
+	protected abstract void bufferQuad(MutableQuadViewImpl quadView);
 
 	/** final output step, common to all renders. */
 	protected void bufferQuad(MutableQuadViewImpl quad, VertexConsumer vertexConsumer) {

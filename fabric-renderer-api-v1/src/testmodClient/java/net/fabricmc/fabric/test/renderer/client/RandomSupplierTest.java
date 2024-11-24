@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.renderer.client;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +28,6 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.MultipartBakedModel;
 import net.minecraft.client.render.model.WeightedBakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.collection.DataPool;
@@ -35,9 +35,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.EmptyBlockRenderView;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /**
  * Tests that vanilla and Fabric API give the same random results.
@@ -65,7 +66,7 @@ public class RandomSupplierTest implements ClientModInitializer {
 			random.setSeed(startingSeed);
 			return random;
 		};
-		weightedAgain.emitBlockQuads(null, Blocks.STONE.getDefaultState(), BlockPos.ORIGIN, randomSupplier, null);
+		weightedAgain.emitBlockQuads(null, EmptyBlockRenderView.INSTANCE, Blocks.STONE.getDefaultState(), BlockPos.ORIGIN, randomSupplier, cullFace -> false);
 	}
 
 	private static WeightedBakedModel createWeightedBakedModel() {
@@ -77,8 +78,8 @@ public class RandomSupplierTest implements ClientModInitializer {
 
 		var weighted = new WeightedBakedModel(weightedBuilder.build());
 		var multipart = new MultipartBakedModel(List.of(
-				new MultipartBakedModel.class_10204(state -> true, weighted),
-				new MultipartBakedModel.class_10204(state -> true, weighted)));
+				new MultipartBakedModel.Selector(state -> true, weighted),
+				new MultipartBakedModel.Selector(state -> true, weighted)));
 
 		DataPool.Builder<BakedModel> weightedAgainBuilder = DataPool.builder();
 		weightedAgainBuilder.add(multipart, 1);
@@ -105,7 +106,7 @@ public class RandomSupplierTest implements ClientModInitializer {
 		}
 
 		@Override
-		public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+		public void emitBlockQuads(QuadEmitter emitter, BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, Predicate<@Nullable Direction> cullTest) {
 			getQuads(state, null, randomSupplier.get());
 		}
 
@@ -125,22 +126,12 @@ public class RandomSupplierTest implements ClientModInitializer {
 		}
 
 		@Override
-		public boolean isBuiltin() {
-			return false;
-		}
-
-		@Override
 		public Sprite getParticleSprite() {
 			return null;
 		}
 
 		@Override
 		public ModelTransformation getTransformation() {
-			return null;
-		}
-
-		@Override
-		public ModelOverrideList getOverrides() {
 			return null;
 		}
 	}

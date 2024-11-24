@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import java.util.function.Consumer;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
@@ -27,10 +29,10 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
  * The way we encode meshes makes it very simple.
  */
 public class MeshImpl implements Mesh {
-	/** Used to satisfy external calls to {@link #forEach(Consumer)}. */
-	private final ThreadLocal<QuadViewImpl> cursorPool = ThreadLocal.withInitial(QuadViewImpl::new);
+	/** Used to satisfy external calls to {@link #forEach}. */
+	private static final ThreadLocal<ObjectArrayList<QuadViewImpl>> CURSOR_POOLS = ThreadLocal.withInitial(ObjectArrayList::new);
 
-	final int[] data;
+	private final int[] data;
 
 	MeshImpl(int[] data) {
 		this.data = data;
@@ -38,7 +40,19 @@ public class MeshImpl implements Mesh {
 
 	@Override
 	public void forEach(Consumer<QuadView> consumer) {
-		forEach(consumer, cursorPool.get());
+		ObjectArrayList<QuadViewImpl> pool = CURSOR_POOLS.get();
+		QuadViewImpl cursor;
+
+		if (pool.isEmpty()) {
+			cursor = new QuadViewImpl();
+		} else {
+			cursor = pool.pop();
+		}
+
+		forEach(consumer, cursor);
+		cursor.data = null;
+
+		pool.push(cursor);
 	}
 
 	/**
@@ -69,7 +83,7 @@ public class MeshImpl implements Mesh {
 		while (index < limit) {
 			System.arraycopy(data, index, e.data, e.baseIndex, EncodingFormat.TOTAL_STRIDE);
 			e.load();
-			e.emitDirectly();
+			e.transformAndEmit();
 			index += EncodingFormat.TOTAL_STRIDE;
 		}
 

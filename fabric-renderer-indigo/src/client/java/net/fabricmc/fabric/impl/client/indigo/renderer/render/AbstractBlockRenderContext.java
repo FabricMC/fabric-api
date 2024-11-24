@@ -19,15 +19,13 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.AXIS_ALIGNED_FLAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
 
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -55,22 +53,8 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 	protected abstract VertexConsumer getVertexConsumer(RenderLayer layer);
 
 	@Override
-	public boolean isFaceCulled(@Nullable Direction face) {
-		return !blockInfo.shouldDrawFace(face);
-	}
-
-	@Override
-	public ModelTransformationMode itemTransformationMode() {
-		throw new IllegalStateException("itemTransformationMode() can only be called on an item render context.");
-	}
-
-	@Override
-	protected void renderQuad(MutableQuadViewImpl quad) {
-		if (!transform(quad)) {
-			return;
-		}
-
-		if (isFaceCulled(quad.cullFace())) {
+	protected void bufferQuad(MutableQuadViewImpl quad) {
+		if (blockInfo.shouldCullSide(quad.cullFace())) {
 			return;
 		}
 
@@ -151,8 +135,8 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 				if ((quad.geometryFlags() & AXIS_ALIGNED_FLAG) != 0) {
 					faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), hasShade);
 				} else {
-					Vector3f faceNormal = quad.faceNormal();
-					faceShade = normalShade(faceNormal.x, faceNormal.y, faceNormal.z, hasShade);
+					Vector3fc faceNormal = quad.faceNormal();
+					faceShade = normalShade(faceNormal.x(), faceNormal.y(), faceNormal.z(), hasShade);
 				}
 
 				if (quad.hasVertexNormals()) {

@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.renderer.v1.model;
+package net.fabricmc.fabric.mixin.renderer.client;
 
-import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.render.model.WrapperBakedModel;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -34,12 +34,10 @@ import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
-/**
- * Base class for specialized model implementations that need to wrap other baked models.
- * Avoids boilerplate code for pass-through methods.
- */
-public abstract class ForwardingBakedModel implements BakedModel, WrapperBakedModel {
-	/** Implementations must set this somehow. */
+@Mixin(WrapperBakedModel.class)
+abstract class WrapperBakedModelMixin implements BakedModel, net.fabricmc.fabric.api.renderer.v1.model.WrapperBakedModel {
+	@Shadow
+	@Final
 	protected BakedModel wrapped;
 
 	@Override
@@ -55,36 +53,6 @@ public abstract class ForwardingBakedModel implements BakedModel, WrapperBakedMo
 	@Override
 	public void emitItemQuads(QuadEmitter emitter, Supplier<Random> randomSupplier) {
 		wrapped.emitItemQuads(emitter, randomSupplier);
-	}
-
-	@Override
-	public List<BakedQuad> getQuads(BlockState blockState, Direction face, Random rand) {
-		return wrapped.getQuads(blockState, face, rand);
-	}
-
-	@Override
-	public boolean useAmbientOcclusion() {
-		return wrapped.useAmbientOcclusion();
-	}
-
-	@Override
-	public boolean hasDepth() {
-		return wrapped.hasDepth();
-	}
-
-	@Override
-	public Sprite getParticleSprite() {
-		return wrapped.getParticleSprite();
-	}
-
-	@Override
-	public boolean isSideLit() {
-		return wrapped.isSideLit();
-	}
-
-	@Override
-	public ModelTransformation getTransformation() {
-		return wrapped.getTransformation();
 	}
 
 	@Override

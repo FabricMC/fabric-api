@@ -29,6 +29,7 @@ import static net.minecraft.util.math.Direction.WEST;
 import java.util.BitSet;
 
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -253,8 +254,8 @@ public abstract class AoCalculator {
 	private final Vector3f vertexNormal = new Vector3f();
 
 	private void irregularFace(QuadViewImpl quad, boolean shade) {
-		final Vector3f faceNorm = quad.faceNormal();
-		Vector3f normal;
+		final Vector3fc faceNorm = quad.faceNormal();
+		Vector3fc normal;
 		final float[] w = this.w;
 		final float[] aoResult = this.ao;
 		final int[] lightResult = this.light;

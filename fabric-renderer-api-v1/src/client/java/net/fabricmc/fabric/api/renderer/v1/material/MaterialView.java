@@ -51,9 +51,9 @@ public interface MaterialView {
 	TriState ambientOcclusion();
 
 	/**
-	 * @see MaterialFinder#glint(TriState)
+	 * @see MaterialFinder#glintMode(GlintMode)
 	 */
-	TriState glint();
+	GlintMode glintMode();
 
 	/**
 	 * @see MaterialFinder#shadeMode(ShadeMode)

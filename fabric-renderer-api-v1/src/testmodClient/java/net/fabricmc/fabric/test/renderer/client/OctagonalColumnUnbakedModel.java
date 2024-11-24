@@ -16,14 +16,12 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import java.util.function.Function;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
@@ -31,14 +29,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.material.GlintMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.util.TriState;
 
 public class OctagonalColumnUnbakedModel implements UnbakedModel {
 	private static final SpriteIdentifier WHITE_CONCRETE_SPRITE_ID = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.ofVanilla("block/white_concrete"));
@@ -59,19 +56,13 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 	}
 
 	@Override
-	@Nullable
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
-		if (!RendererAccess.INSTANCE.hasRenderer()) {
-			return null;
-		}
+	public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
+		Sprite whiteConcreteSprite = baker.getSpriteGetter().get(WHITE_CONCRETE_SPRITE_ID);
 
-		Sprite whiteConcreteSprite = textureGetter.apply(WHITE_CONCRETE_SPRITE_ID);
+		MaterialFinder finder = Renderer.get().materialFinder();
+		RenderMaterial glintMaterial = finder.glintMode(GlintMode.STANDARD).shadeMode(shadeMode).find();
 
-		Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-		MaterialFinder finder = renderer.materialFinder();
-		RenderMaterial glintMaterial = finder.glint(TriState.TRUE).shadeMode(shadeMode).find();
-
-		MeshBuilder builder = renderer.meshBuilder();
+		MeshBuilder builder = Renderer.get().meshBuilder();
 		QuadEmitter emitter = builder.getEmitter();
 
 		// up

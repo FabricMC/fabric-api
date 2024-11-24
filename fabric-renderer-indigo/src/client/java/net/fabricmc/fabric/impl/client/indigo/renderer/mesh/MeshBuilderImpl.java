@@ -18,20 +18,36 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /**
  * Our implementation of {@link MeshBuilder}, used for static mesh creation and baking.
  * Not much to it - mainly it just needs to grow the int[] array as quads are appended
- * and maintain/provide a properly-configured {@link net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView} instance.
+ * and maintain/provide a properly-configured {@link MutableQuadView} instance.
  * All the encoding and other work is handled in the quad base classes.
- * The one interesting bit is in {@link Maker#emitDirectly()}.
+ * The one interesting bit is in {@link #maker}.
  */
 public class MeshBuilderImpl implements MeshBuilder {
-	private int[] data = new int[256];
+	/**
+	 * Our base classes are used differently so we define final
+	 * encoding steps in subtypes. This will be a static mesh used
+	 * at render time so we want to capture all geometry now and
+	 * apply non-location-dependent lighting.
+	 */
+	private final MutableQuadViewImpl maker = new MutableQuadViewImpl() {
+		@Override
+		protected void emitDirectly() {
+			computeGeometry();
+			index += EncodingFormat.TOTAL_STRIDE;
+			ensureCapacity(EncodingFormat.TOTAL_STRIDE);
+			baseIndex = index;
+		}
+	};
+
+	private int[] data = new int[8 * EncodingFormat.TOTAL_STRIDE];
 	private int index = 0;
 	private int limit = data.length;
-	private final Maker maker = new Maker();
 
 	public MeshBuilderImpl() {
 		ensureCapacity(EncodingFormat.TOTAL_STRIDE);
@@ -40,7 +56,7 @@ public class MeshBuilderImpl implements MeshBuilder {
 		maker.clear();
 	}
 
-	protected void ensureCapacity(int stride) {
+	private void ensureCapacity(int stride) {
 		if (stride > limit - index) {
 			limit *= 2;
 			final int[] bigger = new int[limit];
@@ -64,21 +80,5 @@ public class MeshBuilderImpl implements MeshBuilder {
 		maker.baseIndex = index;
 		maker.clear();
 		return new MeshImpl(packed);
-	}
-
-	/**
-	 * Our base classes are used differently so we define final
-	 * encoding steps in subtypes. This will be a static mesh used
-	 * at render time so we want to capture all geometry now and
-	 * apply non-location-dependent lighting.
-	 */
-	private class Maker extends MutableQuadViewImpl {
-		@Override
-		public void emitDirectly() {
-			computeGeometry();
-			index += EncodingFormat.TOTAL_STRIDE;
-			ensureCapacity(EncodingFormat.TOTAL_STRIDE);
-			baseIndex = index;
-		}
 	}
 }

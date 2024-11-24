@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
- * Context for non-terrain block rendering.
+ * Used during non-terrain block buffering to invoke {@link BakedModel#emitBlockQuads}.
  */
 public class BlockRenderContext extends AbstractBlockRenderContext {
 	private VertexConsumer vertexConsumer;
@@ -58,12 +58,12 @@ public class BlockRenderContext extends AbstractBlockRenderContext {
 		return vertexConsumer;
 	}
 
-	public void render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, boolean cull, Random random, long seed, int overlay) {
+	public void render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer vertexConsumer, boolean cull, Random random, long seed, int overlay) {
 		try {
 			Vec3d offset = state.getModelOffset(pos);
 			matrixStack.translate(offset.x, offset.y, offset.z);
 
-			this.vertexConsumer = buffer;
+			this.vertexConsumer = vertexConsumer;
 			this.matrix = matrixStack.peek().getPositionMatrix();
 			this.normalMatrix = matrixStack.peek().getNormalMatrix();
 			this.overlay = overlay;
@@ -76,7 +76,7 @@ public class BlockRenderContext extends AbstractBlockRenderContext {
 			blockInfo.prepareForWorld(blockView, cull);
 			blockInfo.prepareForBlock(state, pos, model.useAmbientOcclusion());
 
-			model.emitBlockQuads(blockView, state, pos, blockInfo.randomSupplier, this);
+			model.emitBlockQuads(getEmitter(), blockView, state, pos, blockInfo.randomSupplier, blockInfo::shouldCullSide);
 		} catch (Throwable throwable) {
 			CrashReport crashReport = CrashReport.create(throwable, "Tessellating block model - Indigo Renderer");
 			CrashReportSection crashReportSection = crashReport.addElement("Block model being tessellated");

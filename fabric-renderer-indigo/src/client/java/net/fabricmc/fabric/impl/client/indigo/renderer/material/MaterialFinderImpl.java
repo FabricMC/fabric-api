@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.material;
 import java.util.Objects;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.fabricmc.fabric.api.renderer.v1.material.GlintMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialView;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -31,7 +32,6 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 	static {
 		MaterialFinderImpl finder = new MaterialFinderImpl();
 		finder.ambientOcclusion(TriState.DEFAULT);
-		finder.glint(TriState.DEFAULT);
 		defaultBits = finder.bits;
 
 		if (!areBitsValid(defaultBits)) {
@@ -78,10 +78,10 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 	}
 
 	@Override
-	public MaterialFinder glint(TriState mode) {
-		Objects.requireNonNull(mode, "glint TriState may not be null");
+	public MaterialFinder glintMode(GlintMode mode) {
+		Objects.requireNonNull(mode, "GlintMode may not be null");
 
-		bits = (bits & ~GLINT_MASK) | (mode.ordinal() << GLINT_BIT_OFFSET);
+		bits = (bits & ~GLINT_MODE_MASK) | (mode.ordinal() << GLINT_MODE_BIT_OFFSET);
 		return this;
 	}
 

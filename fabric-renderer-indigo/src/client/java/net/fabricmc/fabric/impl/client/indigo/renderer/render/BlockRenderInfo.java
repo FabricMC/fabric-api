@@ -101,17 +101,17 @@ public class BlockRenderInfo {
 		return 0xFF000000 | blockColorMap.getColor(blockState, blockView, blockPos, colorIndex);
 	}
 
-	boolean shouldDrawFace(@Nullable Direction face) {
-		if (face == null || !enableCulling) {
+	boolean shouldDrawSide(@Nullable Direction side) {
+		if (side == null || !enableCulling) {
 			return true;
 		}
 
-		final int mask = 1 << face.getId();
+		final int mask = 1 << side.getId();
 
 		if ((cullCompletionFlags & mask) == 0) {
 			cullCompletionFlags |= mask;
 
-			if (Block.shouldDrawSide(blockState, blockView.getBlockState(searchPos.set(blockPos, face)), face)) {
+			if (Block.shouldDrawSide(blockState, blockView.getBlockState(searchPos.set(blockPos, side)), side)) {
 				cullResultFlags |= mask;
 				return true;
 			} else {
@@ -120,6 +120,10 @@ public class BlockRenderInfo {
 		} else {
 			return (cullResultFlags & mask) != 0;
 		}
+	}
+
+	boolean shouldCullSide(@Nullable Direction side) {
+		return !shouldDrawSide(side);
 	}
 
 	RenderLayer effectiveRenderLayer(BlendMode blendMode) {

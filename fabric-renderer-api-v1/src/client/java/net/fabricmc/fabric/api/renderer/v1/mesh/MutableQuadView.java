@@ -25,7 +25,6 @@ import org.joml.Vector3fc;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec2f;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
@@ -303,53 +302,4 @@ public interface MutableQuadView extends QuadView {
 	 * <p>Calling this method does not emit the quad.
 	 */
 	MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);
-
-	/**
-	 * @deprecated Use {@link #color(int, int)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView spriteColor(int vertexIndex, int spriteIndex, int color) {
-		return color(vertexIndex, color);
-	}
-
-	/**
-	 * @deprecated Use {@link #color(int, int, int, int)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView spriteColor(int spriteIndex, int c0, int c1, int c2, int c3) {
-		color(c0, c1, c2, c3);
-		return this;
-	}
-
-	/**
-	 * @deprecated Use {@link #uv(int, float, float)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView sprite(int vertexIndex, int spriteIndex, float u, float v) {
-		return uv(vertexIndex, u, v);
-	}
-
-	/**
-	 * @deprecated Use {@link #uv(int, Vector2f)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView sprite(int vertexIndex, int spriteIndex, Vec2f uv) {
-		return uv(vertexIndex, uv.x, uv.y);
-	}
-
-	/**
-	 * @deprecated Use {@link #spriteBake(Sprite, int)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView spriteBake(int spriteIndex, Sprite sprite, int bakeFlags) {
-		return spriteBake(sprite, bakeFlags);
-	}
-
-	/**
-	 * @deprecated Use {@link #fromVanilla(int[], int)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView fromVanilla(int[] quadData, int startIndex, boolean isItem) {
-		return fromVanilla(quadData, startIndex);
-	}
 }

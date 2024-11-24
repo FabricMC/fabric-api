@@ -30,15 +30,10 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
 	/** Set by other renderers to disable loading of Indigo. */
 	private static final String JSON_KEY_DISABLE_INDIGO = "fabric-renderer-api-v1:contains_renderer";
-	/**
-	 * Disables vanilla block tesselation and ensures vertex format compatibility.
-	 */
-	private static final String JSON_KEY_FORCE_COMPATIBILITY = "fabric-renderer-indigo:force_compatibility";
 
 	private static boolean needsLoad = true;
 
 	private static boolean indigoApplicable = true;
-	private static boolean forceCompatibility = false;
 
 	private static void loadIfNeeded() {
 		if (needsLoad) {
@@ -47,8 +42,6 @@ public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
 
 				if (meta.containsCustomValue(JSON_KEY_DISABLE_INDIGO)) {
 					indigoApplicable = false;
-				} else if (meta.containsCustomValue(JSON_KEY_FORCE_COMPATIBILITY)) {
-					forceCompatibility = true;
 				}
 			}
 
@@ -59,11 +52,6 @@ public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
 	static boolean shouldApplyIndigo() {
 		loadIfNeeded();
 		return indigoApplicable;
-	}
-
-	static boolean shouldForceCompatibility() {
-		loadIfNeeded();
-		return forceCompatibility;
 	}
 
 	@Override

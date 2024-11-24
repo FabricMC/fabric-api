@@ -23,7 +23,7 @@ import java.nio.ByteOrder;
  * Renderers are not required to use these helpers, but they were
  * designed to be usable without the default renderer.
  */
-public abstract class ColorHelper {
+public final class ColorHelper {
 	private ColorHelper() { }
 
 	private static final boolean BIG_ENDIAN = ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN;

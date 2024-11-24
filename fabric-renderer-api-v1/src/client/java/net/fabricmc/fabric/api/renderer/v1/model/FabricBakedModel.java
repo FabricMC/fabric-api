@@ -16,19 +16,23 @@
 
 package net.fabricmc.fabric.api.renderer.v1.model;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
 
 /**
@@ -42,7 +46,7 @@ import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
  */
 public interface FabricBakedModel {
 	/**
-	 * When true, signals renderer this producer is implemented through {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}.
+	 * When true, signals renderer this producer is implemented through {@link BakedModel#getQuads(BlockState, Direction, Random)}.
 	 * Also means the model does not rely on any non-vanilla features.
 	 * Allows the renderer to optimize or route vanilla models through the unmodified vanilla pipeline if desired.
 	 *
@@ -76,27 +80,25 @@ public interface FabricBakedModel {
 	 * state lookups are best avoided or will require special handling. Block entity lookups are
 	 * likely to fail and/or give meaningless results.
 	 *
-	 * <p>In all cases, renderer will handle face occlusion and filter quads on faces obscured by
-	 * neighboring blocks (if appropriate).  Models only need to consider "sides" to the
-	 * extent the model is driven by connection with neighbor blocks or other world state.
-	 *
-	 * <p>Note: with {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random
+	 * <p>Note: with {@link BakedModel#getQuads(BlockState, Direction, Random)}, the random
 	 * parameter is normally initialized with the same seed prior to each face layer.
 	 * Model authors should note this method is called only once per block, and call the provided
 	 * Random supplier multiple times if re-seeding is necessary.
 	 *
-	 * @param blockView Access to world state. Cast to {@code RenderAttachedBlockView} to
-	 * retrieve block entity data unless thread safety can be guaranteed.
+	 * @param emitter Accepts model output.
+	 * @param blockView Access to world state.
 	 * @param state Block state for model being rendered.
 	 * @param pos Position of block for model being rendered.
-	 * @param randomSupplier  Random object seeded per vanilla conventions. Call multiple times to re-seed.
-	 * Will not be thread-safe. Do not cache or retain a reference.
-	 * @param context Accepts model output.
+	 * @param randomSupplier Random object seeded per vanilla conventions. Call multiple times to re-seed.
+	 *                       Will not be thread-safe. Do not cache or retain a reference.
+	 * @param cullTest A test that returns true for directions which will be culled. Only provided for unique
+	 *                 cases; prefer using {@link MutableQuadView#cullFace(Direction)} when possible.
 	 */
-	default void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		VanillaModelEncoder.emitBlockQuads((BakedModel) this, state, randomSupplier, context);
+	default void emitBlockQuads(QuadEmitter emitter, BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, Predicate<@Nullable Direction> cullTest) {
+		VanillaModelEncoder.emitBlockQuads(emitter, (BakedModel) this, state, randomSupplier, cullTest);
 	}
 
+	// TODO: update doc - describe how to depend on ItemStack or other context
 	/**
 	 * This method will be called during item rendering to generate both the static and
 	 * dynamic portions of an item model when the model implements this interface and
@@ -109,22 +111,10 @@ public interface FabricBakedModel {
 	 * case handling in model implementations.
 	 *
 	 * <p>Calls to this method will generally happen on the main client thread but nothing
-	 * prevents a mod or renderer from calling this method concurrently. Implementations
-	 * should not mutate the ItemStack parameter, and best practice will be to make the
-	 * method thread-safe.
-	 *
-	 * <p>Implementing this method does NOT mitigate the need to implement a functional
-	 * {@link BakedModel#getOverrides()} method, because this method will be called
-	 * on the <em>result</em> of  {@link BakedModel#getOverrides}.  However, that
-	 * method can simply return the base model because the output from this method will
-	 * be used for rendering.
-	 *
-	 * <p>Renderer implementations should also use this method to obtain the quads used
-	 * for item enchantment glint rendering.  This means models can put geometric variation
-	 * logic here, instead of returning every possible shape from {@link BakedModel#getOverrides}
-	 * as vanilla baked models.
+	 * prevents a mod or renderer from calling this method concurrently. Best practice will
+	 * be to make the method thread-safe.
 	 */
-	default void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		VanillaModelEncoder.emitItemQuads((BakedModel) this, null, randomSupplier, context);
+	default void emitItemQuads(QuadEmitter emitter, Supplier<Random> randomSupplier) {
+		VanillaModelEncoder.emitItemQuads(emitter, (BakedModel) this, null, randomSupplier);
 	}
 }
