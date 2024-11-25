@@ -94,8 +94,8 @@ public interface MaterialFinder extends MaterialView {
 	 * Controls how glint should be applied.
 	 *
 	 * <p>If set to {@link GlintMode#DEFAULT}, glint will be applied in item contexts based on
-	 * {@linkplain ItemRenderState.LayerRenderState#setGlint the glint type of the layer}. Set to another value to
-	 * override this behavior.
+	 * {@linkplain ItemRenderState.LayerRenderState#setGlint(ItemRenderState.Glint) the glint type of the layer}. Set
+	 * to another value to override this behavior.
 	 *
 	 * <p>The default value is {@link GlintMode#DEFAULT}.
 	 *
@@ -122,19 +122,17 @@ public interface MaterialFinder extends MaterialView {
 	MaterialFinder copyFrom(MaterialView material);
 
 	/**
-	 * Resets this instance to default values. Values will match those
-	 * in effect when an instance is newly obtained via {@link Renderer#materialFinder()}.
+	 * Resets this instance to default values. Values will match those in effect when an instance is newly obtained via
+	 * {@link Renderer#materialFinder()}.
 	 */
 	MaterialFinder clear();
 
 	/**
-	 * Returns the standard material encoding all
-	 * of the current settings in this finder. The settings in
-	 * this finder are not changed.
+	 * Returns the standard material encoding all the current settings in this finder. The settings in this finder are
+	 * not changed.
 	 *
-	 * <p>Resulting instances can and should be re-used to prevent
-	 * needless memory allocation. {@link Renderer} implementations
-	 * may or may not cache standard material instances.
+	 * <p>Resulting instances can and should be re-used to prevent needless memory allocation. {@link Renderer}
+	 * implementations may or may not cache standard material instances.
 	 */
 	RenderMaterial find();
 }

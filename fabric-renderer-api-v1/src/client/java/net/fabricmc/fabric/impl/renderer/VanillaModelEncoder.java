@@ -48,7 +48,7 @@ public class VanillaModelEncoder {
 		for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
 			final Direction cullFace = ModelHelper.faceFromIndex(i);
 
-			if (!emitter.hasTransform() && cullTest.test(cullFace)) {
+			if (cullTest.test(cullFace)) {
 				// Skip entire quad list if possible.
 				continue;
 			}

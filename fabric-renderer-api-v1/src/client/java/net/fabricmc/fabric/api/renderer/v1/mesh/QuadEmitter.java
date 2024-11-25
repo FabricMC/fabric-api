@@ -210,7 +210,7 @@ public interface QuadEmitter extends MutableQuadView {
 
 	/**
 	 * Pushed transforms will be applied immediately after every call to {@link #emit()} and before the quad data is
-	 * delivered to its destination. If the transforms return {@code false}, the emitted quad will be discarded and will
+	 * delivered to its destination. If any transform returns {@code false}, the emitted quad will be discarded and will
 	 * not be delivered to its destination.
 	 *
 	 * <p>You MUST call {@link #popTransform()} once you are done using this emitter in the current scope.

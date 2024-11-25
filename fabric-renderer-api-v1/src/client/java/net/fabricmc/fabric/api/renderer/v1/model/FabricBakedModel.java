@@ -46,7 +46,8 @@ import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
  */
 public interface FabricBakedModel {
 	/**
-	 * When true, signals renderer this producer is implemented through {@link BakedModel#getQuads(BlockState, Direction, Random)}.
+	 * When true, signals renderer this producer is implemented through
+	 * {@link BakedModel#getQuads(BlockState, Direction, Random)}.
 	 * Also means the model does not rely on any non-vanilla features.
 	 * Allows the renderer to optimize or route vanilla models through the unmodified vanilla pipeline if desired.
 	 *
@@ -65,14 +66,15 @@ public interface FabricBakedModel {
 	 *
 	 * <p>During chunk rebuild, this method will always be called exactly one time per block
 	 * position, irrespective of which or how many faces or block render layers are included
-	 * in the model. Models must output all quads/meshes in a single pass.
+	 * in the model. Models must output all quads in a single pass.
 	 *
 	 * <p>Also called to render block models outside of chunk rebuild or block entity rendering.
 	 * Typically, this happens when the block is being rendered as an entity, not as a block placed in the world.
 	 * Currently, this happens for falling blocks and blocks being pushed by a piston, but renderers
-	 * should invoke this for all calls to {@link BlockModelRenderer#render(BlockRenderView, BakedModel, BlockState, BlockPos, MatrixStack, VertexConsumer, boolean, Random, long, int)}
-	 * that occur outside of chunk rebuilds to allow for features added by mods, unless
-	 * {@link #isVanillaAdapter()} returns true.
+	 * should invoke this for all calls to
+	 * {@link BlockModelRenderer#render(BlockRenderView, BakedModel, BlockState, BlockPos, MatrixStack, VertexConsumer, boolean, Random, long, int)}
+	 * that occur outside of chunk rebuilds to allow for features added by mods, unless {@link #isVanillaAdapter()}
+	 * returns true.
 	 *
 	 * <p>Outside of chunk rebuilds, this method will be called every frame. Model implementations should
 	 * rely on pre-baked meshes as much as possible and keep transformation to a minimum.  The provided
@@ -91,8 +93,11 @@ public interface FabricBakedModel {
 	 * @param pos Position of block for model being rendered.
 	 * @param randomSupplier Random object seeded per vanilla conventions. Call multiple times to re-seed.
 	 *                       Will not be thread-safe. Do not cache or retain a reference.
-	 * @param cullTest A test that returns true for directions which will be culled. Only provided for unique
-	 *                 cases; prefer using {@link MutableQuadView#cullFace(Direction)} when possible.
+	 * @param cullTest A test that returns {@code true} for faces which will be culled and {@code false} for faces which
+	 *                 may or may not be culled. Meant to be used to cull groups of quads or expensive dynamic quads
+	 *                 early for performance. Early culled quads will likely not be added the emitter, so callers of
+	 *                 this method must account for this. In general, prefer using
+	 *                 {@link MutableQuadView#cullFace(Direction)} instead of this test.
 	 */
 	default void emitBlockQuads(QuadEmitter emitter, BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, Predicate<@Nullable Direction> cullTest) {
 		VanillaModelEncoder.emitBlockQuads(emitter, (BakedModel) this, state, randomSupplier, cullTest);
