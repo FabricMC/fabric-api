@@ -131,7 +131,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	 * @param groupId the group ID
 	 * @return the alias group builder
 	 */
-	protected AliasGroupBuilder getOrCreateAliasGroupBuilder(Identifier groupId) {
+	protected AliasGroupBuilder aliasGroup(Identifier groupId) {
 		return aliasGroupBuilders.computeIfAbsent(groupId, key -> new AliasGroupBuilder());
 	}
 
@@ -141,7 +141,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	 * @param group the group name
 	 * @return the alias group builder
 	 */
-	protected AliasGroupBuilder getOrCreateAliasGroupBuilder(String group) {
+	protected AliasGroupBuilder aliasGroup(String group) {
 		Identifier groupId = Identifier.of(output.getModId(), group);
 		return aliasGroupBuilders.computeIfAbsent(groupId, key -> new AliasGroupBuilder());
 	}
@@ -439,6 +439,9 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	 */
 	public final class AliasGroupBuilder {
 		private final List<TagKey<T>> tags = new ArrayList<>();
+
+		private AliasGroupBuilder() {
+		}
 
 		/**
 		 * {@return a read-only list of the tags in this alias group}.

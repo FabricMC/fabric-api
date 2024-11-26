@@ -50,7 +50,7 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension, TagAli
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-tag-api-v1");
 
 	@Unique
-	private Map<TagKey<?>, Set<TagKey<?>>> fabric_pendingTagAliasGroups;
+	private Map<TagKey<?>, Set<TagKey<?>>> pendingTagAliasGroups;
 
 	@Shadow
 	@Final
@@ -70,16 +70,16 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension, TagAli
 
 	@Override
 	public void fabric_loadTagAliases(Map<TagKey<?>, Set<TagKey<?>>> aliasGroups) {
-		fabric_pendingTagAliasGroups = aliasGroups;
+		pendingTagAliasGroups = aliasGroups;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void fabric_applyPendingTagAliases() {
-		if (fabric_pendingTagAliasGroups == null) return;
+		if (pendingTagAliasGroups == null) return;
 
 		Set<Set<TagKey<?>>> uniqueAliasGroups = Sets.newIdentityHashSet();
-		uniqueAliasGroups.addAll(fabric_pendingTagAliasGroups.values());
+		uniqueAliasGroups.addAll(pendingTagAliasGroups.values());
 
 		for (Set<TagKey<?>> aliasGroup : uniqueAliasGroups) {
 			Set<RegistryEntry<T>> entries = Sets.newIdentityHashSet();
@@ -113,8 +113,8 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension, TagAli
 			}
 		}
 
-		LOGGER.info("[Fabric] Loaded {} tag alias groups for {}", uniqueAliasGroups.size(), key.getValue());
-		fabric_pendingTagAliasGroups = null;
+		LOGGER.debug("[Fabric] Loaded {} tag alias groups for {}", uniqueAliasGroups.size(), key.getValue());
+		pendingTagAliasGroups = null;
 	}
 
 	@Override
