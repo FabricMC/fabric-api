@@ -62,6 +62,11 @@ Currently, this contains events related to when the Minecraft Client is starting
 Events related to ticking of a Minecraft client.
 There are events that indicate the beginning and end of the tick for the client and the `ClientWorld` if in game.
 
+## `ClientWorldEvents`
+
+Events related to the lifecycle a `ClientWorld`.
+Currently, this contains an event which is called after `ClientWorld` has been changed.
+
 ## `ClientChunkEvents`
 
 Events related to the lifecycle of chunks on a Minecraft client.

@@ -2,8 +2,6 @@
   "required": true,
   "package": "net.fabricmc.fabric.mixin.attachment.client",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [
-  ],
   "injectors": {
     "defaultRequire": 1
   },

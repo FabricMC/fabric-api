@@ -46,7 +46,7 @@ public final class EntitySelectorOptionRegistry {
 	 * 	    final float minHealth = reader.getReader().readFloat();
 	 *
 	 * 	    if (minHealth > 0) {
-	 * 	        reader.setPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);
+	 * 	        reader.addPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);
 	 * 	    }
 	 * 	},
 	 * 	(reader) -> true

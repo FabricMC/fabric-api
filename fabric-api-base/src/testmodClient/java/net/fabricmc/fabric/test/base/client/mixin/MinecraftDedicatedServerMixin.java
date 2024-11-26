@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.base.client.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,5 +33,11 @@ public abstract class MinecraftDedicatedServerMixin {
 	private void captureServerInstance(CallbackInfoReturnable<Boolean> cir) {
 		// Capture the server instance once the server is ready to be connected to
 		TestDedicatedServer.DEDICATED_SERVER_REF.set((MinecraftDedicatedServer) (Object) this);
+	}
+
+	// Don't call shutdownExecutors as we are running the dedi server within the client process.
+	@WrapOperation(method = "shutdown", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;shutdownExecutors()V"))
+	private void dontStopExecutors(Operation<Void> original) {
+		// Never needed, as this is a client mixin.
 	}
 }
