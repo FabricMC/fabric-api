@@ -90,7 +90,7 @@ public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<
 						var data = new Data(groupId, group);
 						dataByRegistry.computeIfAbsent(registryKey, key -> new ArrayList<>()).add(data);
 					}
-					case DataResult.Error<TagAliasGroup<Object>> error -> {
+					case DataResult.Error<?> error -> {
 						LOGGER.error("[Fabric] Couldn't parse tag alias group file '{}' from '{}': {}", groupId, resourcePath, error.message());
 					}
 					}
@@ -148,7 +148,8 @@ public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<
 			if (wrapper instanceof TagAliasEnabledRegistryWrapper aliasWrapper) {
 				aliasWrapper.fabric_loadTagAliases(groupsByTag);
 			} else {
-				LOGGER.error("[Fabric] Couldn't apply tag aliases to registry wrapper {} ({}) since it had an unknown type", wrapper, entry.getKey().getValue());
+				throw new ClassCastException("[Fabric] Couldn't apply tag aliases to registry wrapper %s (%s) since it doesn't implement TagAliasEnabledRegistryWrapper"
+						.formatted(wrapper, entry.getKey().getValue()));
 			}
 		}
 	}
@@ -166,7 +167,8 @@ public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<
 				// than the rest of a data reload, so we need to refresh the tags manually.
 				extension.fabric_refreshTags();
 			} else {
-				LOGGER.error("[Fabric] Could not apply pending tag aliases to registry {} ({}) since it had an unknown type", registry, registry.getClass().getName());
+				throw new ClassCastException("[Fabric] Couldn't apply pending tag aliases to registry %s (%s) since it doesn't implement SimpleRegistryExtension"
+						.formatted(registry, registry.getClass().getName()));
 			}
 		}
 	}
