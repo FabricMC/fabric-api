@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.block.Block;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
@@ -62,6 +63,14 @@ public interface ModelLoadingPlugin {
 		void addModels(Collection<? extends Identifier> ids);
 
 		/**
+		 * Registers a block state resolver for a block.
+		 *
+		 * <p>The block must be registered and a block state resolver must not have been previously registered for the
+		 * block.
+		 */
+		void registerBlockStateResolver(Block block, BlockStateResolver resolver);
+
+		/**
 		 * Event access to monitor unbaked model loads and replace the loaded model.
 		 *
 		 * <p>Replacements done by listeners of this callback <b>do</b> affect child models (that is, models whose
@@ -81,6 +90,11 @@ public interface ModelLoadingPlugin {
 		 * Event access to replace the baked model.
 		 */
 		Event<ModelModifier.AfterBake> modifyModelAfterBake();
+
+		/**
+		 * Event access to monitor unbaked block model loads and replace the loaded model.
+		 */
+		Event<ModelModifier.OnLoadBlock> modifyBlockModelOnLoad();
 
 		/**
 		 * Event access to replace the unbaked block model used for baking.

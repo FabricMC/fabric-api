@@ -16,22 +16,37 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.BlockStatesLoader;
 import net.minecraft.client.render.model.GroupableModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 
@@ -41,9 +56,13 @@ public class ModelLoadingEventDispatcher {
 
 	private final ModelLoadingPluginContextImpl pluginContext;
 
+	private final BlockStateResolverContext blockStateResolverContext = new BlockStateResolverContext();
+
 	private final OnLoadModifierContext onLoadModifierContext = new OnLoadModifierContext();
 	private final ObjectArrayList<BeforeBakeModifierContext> beforeBakeModifierContextStack = new ObjectArrayList<>();
 	private final ObjectArrayList<AfterBakeModifierContext> afterBakeModifierContextStack = new ObjectArrayList<>();
+
+	private final OnLoadBlockModifierContext onLoadBlockModifierContext = new OnLoadBlockModifierContext();
 	private final BeforeBakeBlockModifierContext beforeBakeBlockModifierContext = new BeforeBakeBlockModifierContext();
 	private final AfterBakeBlockModifierContext afterBakeBlockModifierContext = new AfterBakeBlockModifierContext();
 
@@ -97,6 +116,89 @@ public class ModelLoadingEventDispatcher {
 		return model;
 	}
 
+	public BlockStatesLoader.BlockStateDefinition modifyBlockModelsOnLoad(BlockStatesLoader.BlockStateDefinition models) {
+		Map<ModelIdentifier, BlockStatesLoader.BlockModel> map = models.models();
+
+		if (!(map instanceof HashMap)) {
+			map = new HashMap<>(map);
+			models = new BlockStatesLoader.BlockStateDefinition(map);
+		}
+
+		putResolvedBlockStates(map);
+
+		map.replaceAll((id, blockModel) -> {
+			GroupableModel original = blockModel.model();
+			GroupableModel modified = modifyBlockModelOnLoad(original, id, blockModel.state());
+
+			if (original != modified) {
+				return new BlockStatesLoader.BlockModel(blockModel.state(), modified);
+			}
+
+			return blockModel;
+		});
+
+		return models;
+	}
+
+	private void putResolvedBlockStates(Map<ModelIdentifier, BlockStatesLoader.BlockModel> map) {
+		pluginContext.blockStateResolvers.forEach((block, resolver) -> {
+			Optional<RegistryKey<Block>> optionalKey = Registries.BLOCK.getKey(block);
+
+			if (optionalKey.isEmpty()) {
+				return;
+			}
+
+			Identifier blockId = optionalKey.get().getValue();
+
+			resolveBlockStates(resolver, block, (state, model) -> {
+				ModelIdentifier modelId = BlockModels.getModelId(blockId, state);
+				map.put(modelId, new BlockStatesLoader.BlockModel(state, model));
+			});
+		});
+	}
+
+	private void resolveBlockStates(BlockStateResolver resolver, Block block, BiConsumer<BlockState, GroupableModel> output) {
+		BlockStateResolverContext context = blockStateResolverContext;
+		context.prepare(block);
+
+		Reference2ReferenceMap<BlockState, GroupableModel> resolvedModels = context.models;
+		ImmutableList<BlockState> allStates = block.getStateManager().getStates();
+		boolean thrown = false;
+
+		try {
+			resolver.resolveBlockStates(context);
+		} catch (Exception e) {
+			LOGGER.error("Failed to resolve block state models for block {}. Using missing model for all states.", block, e);
+			thrown = true;
+		}
+
+		if (!thrown) {
+			if (resolvedModels.size() == allStates.size()) {
+				// If there are as many resolved models as total states, all states have
+				// been resolved and models do not need to be null-checked.
+				resolvedModels.forEach(output);
+			} else {
+				for (BlockState state : allStates) {
+					@Nullable
+					GroupableModel model = resolvedModels.get(state);
+
+					if (model == null) {
+						LOGGER.error("Block state resolver did not provide a model for state {} in block {}. Using missing model.", state, block);
+					} else {
+						output.accept(state, model);
+					}
+				}
+			}
+		}
+
+		resolvedModels.clear();
+	}
+
+	private GroupableModel modifyBlockModelOnLoad(GroupableModel model, ModelIdentifier id, BlockState state) {
+		onLoadBlockModifierContext.prepare(id, state);
+		return pluginContext.modifyBlockModelOnLoad().invoker().modifyModelOnLoad(model, onLoadBlockModifierContext);
+	}
+
 	public GroupableModel modifyBlockModelBeforeBake(GroupableModel model, ModelIdentifier id, Baker baker) {
 		beforeBakeBlockModifierContext.prepare(id, baker);
 		return pluginContext.modifyBlockModelBeforeBake().invoker().modifyModelBeforeBake(model, beforeBakeBlockModifierContext);
@@ -105,6 +207,35 @@ public class ModelLoadingEventDispatcher {
 	public BakedModel modifyBlockModelAfterBake(BakedModel model, ModelIdentifier id, GroupableModel sourceModel, Baker baker) {
 		afterBakeBlockModifierContext.prepare(id, sourceModel, baker);
 		return pluginContext.modifyBlockModelAfterBake().invoker().modifyModelAfterBake(model, afterBakeBlockModifierContext);
+	}
+
+	private static class BlockStateResolverContext implements BlockStateResolver.Context {
+		private Block block;
+		private final Reference2ReferenceMap<BlockState, GroupableModel> models = new Reference2ReferenceOpenHashMap<>();
+
+		private void prepare(Block block) {
+			this.block = block;
+			models.clear();
+		}
+
+		@Override
+		public Block block() {
+			return block;
+		}
+
+		@Override
+		public void setModel(BlockState state, GroupableModel model) {
+			Objects.requireNonNull(model, "state cannot be null");
+			Objects.requireNonNull(model, "model cannot be null");
+
+			if (!state.isOf(block)) {
+				throw new IllegalArgumentException("Attempted to set model for state " + state + " on block " + block);
+			}
+
+			if (models.putIfAbsent(state, model) != null) {
+				throw new IllegalStateException("Duplicate model for state " + state + " on block " + block);
+			}
+		}
 	}
 
 	private static class OnLoadModifierContext implements ModelModifier.OnLoad.Context {
@@ -178,6 +309,26 @@ public class ModelLoadingEventDispatcher {
 		@Override
 		public Baker baker() {
 			return baker;
+		}
+	}
+
+	private static class OnLoadBlockModifierContext implements ModelModifier.OnLoadBlock.Context {
+		private ModelIdentifier id;
+		private BlockState state;
+
+		private void prepare(ModelIdentifier id, BlockState state) {
+			this.id = id;
+			this.state = state;
+		}
+
+		@Override
+		public ModelIdentifier id() {
+			return id;
+		}
+
+		@Override
+		public BlockState state() {
+			return state;
 		}
 	}
 

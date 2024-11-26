@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.GroupableModel;
@@ -176,6 +177,35 @@ public final class ModelModifier {
 	}
 
 	@FunctionalInterface
+	public interface OnLoadBlock {
+		/**
+		 * This handler is invoked to allow modification of an unbaked block model right after it is first loaded.
+		 *
+		 * @param model the current unbaked model instance
+		 * @param context context with additional information about the model/loader
+		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
+		 * @see ModelLoadingPlugin.Context#modifyBlockModelOnLoad
+		 */
+		GroupableModel modifyModelOnLoad(GroupableModel model, Context context);
+
+		/**
+		 * The context for an on load block model modification event.
+		 */
+		@ApiStatus.NonExtendable
+		interface Context {
+			/**
+			 * The identifier of the model that was loaded.
+			 */
+			ModelIdentifier id();
+
+			/**
+			 * The corresponding block state of the model that was loaded.
+			 */
+			BlockState state();
+		}
+	}
+
+	@FunctionalInterface
 	public interface BeforeBakeBlock {
 		/**
 		 * This handler is invoked to allow modification of the unbaked block model instance right before it is baked.
@@ -188,7 +218,7 @@ public final class ModelModifier {
 		GroupableModel modifyModelBeforeBake(GroupableModel model, Context context);
 
 		/**
-		 * The context for a before bake model modification event.
+		 * The context for a before bake block model modification event.
 		 */
 		@ApiStatus.NonExtendable
 		interface Context {
@@ -219,7 +249,7 @@ public final class ModelModifier {
 		BakedModel modifyModelAfterBake(BakedModel model, Context context);
 
 		/**
-		 * The context for an after bake model modification event.
+		 * The context for an after bake block model modification event.
 		 */
 		@ApiStatus.NonExtendable
 		interface Context {

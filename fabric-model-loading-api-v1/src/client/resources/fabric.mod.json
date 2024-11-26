@@ -30,7 +30,8 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_1092": [ "net/fabricmc/fabric/api/client/model/loading/v1/FabricBakedModelManager" ]
+      "net/minecraft/class_1092": [ "net/fabricmc/fabric/api/client/model/loading/v1/FabricBakedModelManager" ],
+      "net/minecraft/class_10200": [ "net/fabricmc/fabric/api/client/model/loading/v1/UnwrappableBakedModel" ]
     }
   }
 }

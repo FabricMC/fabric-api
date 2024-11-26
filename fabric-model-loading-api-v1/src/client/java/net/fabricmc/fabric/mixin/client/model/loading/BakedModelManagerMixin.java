@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
+import net.minecraft.client.render.model.BlockStatesLoader;
 import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.client.render.model.ReferencedModelsCollector;
 import net.minecraft.resource.ResourceManager;
@@ -81,6 +83,11 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 			eventDispatcherFuture = null;
 			return v;
 		});
+	}
+
+	@ModifyExpressionValue(method = "reload", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BlockStatesLoader.load(Lnet/minecraft/client/render/model/UnbakedModel;Lnet/minecraft/resource/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
+	private CompletableFuture<BlockStatesLoader.BlockStateDefinition> hookBlockStateModels(CompletableFuture<BlockStatesLoader.BlockStateDefinition> modelsFuture) {
+		return modelsFuture.thenCombine(eventDispatcherFuture, (models, eventDispatcher) -> eventDispatcher.modifyBlockModelsOnLoad(models));
 	}
 
 	@ModifyArg(method = "reload", at = @At(value = "INVOKE", target = "java/util/concurrent/CompletableFuture.thenApplyAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 1), index = 0)
