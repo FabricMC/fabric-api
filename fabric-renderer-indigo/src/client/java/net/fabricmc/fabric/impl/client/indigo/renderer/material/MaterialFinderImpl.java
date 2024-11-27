@@ -27,20 +27,26 @@ import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
 import net.fabricmc.fabric.api.util.TriState;
 
 public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFinder {
-	private static int defaultBits = 0;
+	private static final int DEFAULT_BITS;
 
 	static {
-		MaterialFinderImpl finder = new MaterialFinderImpl();
+		// Start with all zeroes
+		MaterialFinderImpl finder = new MaterialFinderImpl(0);
+		// Apply non-zero defaults
 		finder.ambientOcclusion(TriState.DEFAULT);
-		defaultBits = finder.bits;
+		DEFAULT_BITS = finder.bits;
 
-		if (!areBitsValid(defaultBits)) {
+		if (!areBitsValid(DEFAULT_BITS)) {
 			throw new AssertionError("Default MaterialFinder bits are not valid!");
 		}
 	}
 
+	protected MaterialFinderImpl(int bits) {
+		super(bits);
+	}
+
 	public MaterialFinderImpl() {
-		super(defaultBits);
+		this(DEFAULT_BITS);
 	}
 
 	@Override
@@ -95,7 +101,7 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 
 	@Override
 	public MaterialFinder clear() {
-		bits = defaultBits;
+		bits = DEFAULT_BITS;
 		return this;
 	}
 

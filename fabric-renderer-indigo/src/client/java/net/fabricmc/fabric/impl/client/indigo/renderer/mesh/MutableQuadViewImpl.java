@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.DEFAULT;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
@@ -40,6 +39,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.TextureHelper;
@@ -58,6 +58,25 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialIm
 public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEmitter {
 	private static final QuadTransform NO_TRANSFORM = q -> true;
 
+	private static final int[] DEFAULT_QUAD_DATA = new int[EncodingFormat.TOTAL_STRIDE];
+
+	static {
+		MutableQuadViewImpl quad = new MutableQuadViewImpl() {
+			@Override
+			protected void emitDirectly() {
+				// This quad won't be emitted. It's only used to configure the default quad data.
+			}
+		};
+
+		// Start with all zeroes
+		quad.data = DEFAULT_QUAD_DATA;
+		// Apply non-zero defaults
+		quad.color(-1, -1, -1, -1);
+		quad.cullFace(null);
+		quad.material(IndigoRenderer.STANDARD_MATERIAL);
+		quad.tintIndex(-1);
+	}
+
 	private QuadTransform activeTransform = NO_TRANSFORM;
 	private final ObjectArrayList<QuadTransform> transformStack = new ObjectArrayList<>();
 	private final QuadTransform stackTransform = q -> {
@@ -73,7 +92,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	};
 
 	public final void clear() {
-		System.arraycopy(DEFAULT, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
+		System.arraycopy(DEFAULT_QUAD_DATA, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
 		isGeometryInvalid = true;
 		nominalFace = null;
 	}
