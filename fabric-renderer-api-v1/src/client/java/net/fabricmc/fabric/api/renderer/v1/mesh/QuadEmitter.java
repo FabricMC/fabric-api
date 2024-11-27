@@ -122,7 +122,7 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter material(RenderMaterial material);
 
 	@Override
-	QuadEmitter colorIndex(int colorIndex);
+	QuadEmitter tintIndex(int tintIndex);
 
 	@Override
 	QuadEmitter tag(int tag);

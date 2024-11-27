@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.EMPTY;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.DEFAULT;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_COLOR_INDEX;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TINT_INDEX;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_COLOR;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_LIGHTMAP;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_NORMAL;
@@ -40,7 +40,6 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
-import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.TextureHelper;
@@ -74,14 +73,9 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	};
 
 	public final void clear() {
-		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
+		System.arraycopy(DEFAULT, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
 		isGeometryInvalid = true;
 		nominalFace = null;
-		normalFlags(0);
-		tag(0);
-		colorIndex(-1);
-		cullFace(null);
-		material(IndigoRenderer.STANDARD_MATERIAL);
 	}
 
 	@Override
@@ -165,17 +159,13 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl material(RenderMaterial material) {
-		if (material == null) {
-			material = IndigoRenderer.STANDARD_MATERIAL;
-		}
-
 		data[baseIndex + HEADER_BITS] = EncodingFormat.material(data[baseIndex + HEADER_BITS], (RenderMaterialImpl) material);
 		return this;
 	}
 
 	@Override
-	public final MutableQuadViewImpl colorIndex(int colorIndex) {
-		data[baseIndex + HEADER_COLOR_INDEX] = colorIndex;
+	public final MutableQuadViewImpl tintIndex(int tintIndex) {
+		data[baseIndex + HEADER_TINT_INDEX] = tintIndex;
 		return this;
 	}
 
@@ -217,7 +207,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		fromVanilla(quad.getVertexData(), 0);
 		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(0, cullFace);
 		nominalFace(quad.getFace());
-		colorIndex(quad.getColorIndex());
+		tintIndex(quad.getColorIndex());
 
 		if (!quad.hasShade()) {
 			material = RenderMaterialImpl.setDisableDiffuse((RenderMaterialImpl) material, true);

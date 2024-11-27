@@ -59,22 +59,23 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 		}
 
 		final RenderMaterial mat = quad.material();
-		final int colorIndex = mat.disableColorIndex() ? -1 : quad.colorIndex();
 		final TriState aoMode = mat.ambientOcclusion();
 		final boolean ao = blockInfo.useAo && (aoMode == TriState.TRUE || (aoMode == TriState.DEFAULT && blockInfo.defaultAo));
 		final boolean emissive = mat.emissive();
 		final boolean vanillaShade = mat.shadeMode() == ShadeMode.VANILLA;
 		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveRenderLayer(mat.blendMode()));
 
-		colorizeQuad(quad, colorIndex);
+		tintQuad(quad);
 		shadeQuad(quad, ao, emissive, vanillaShade);
 		bufferQuad(quad, vertexConsumer);
 	}
 
 	/** handles block color, common to all renders. */
-	private void colorizeQuad(MutableQuadViewImpl quad, int colorIndex) {
-		if (colorIndex != -1) {
-			final int blockColor = blockInfo.blockColor(colorIndex);
+	private void tintQuad(MutableQuadViewImpl quad) {
+		int tintIndex = quad.tintIndex();
+
+		if (tintIndex != -1) {
+			final int blockColor = blockInfo.blockColor(tintIndex);
 
 			for (int i = 0; i < 4; i++) {
 				quad.color(i, ColorHelper.multiplyColor(blockColor, quad.color(i)));

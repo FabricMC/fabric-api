@@ -52,12 +52,6 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 	}
 
 	@Override
-	public MaterialFinder disableColorIndex(boolean disable) {
-		bits = disable ? (bits | COLOR_DISABLE_FLAG) : (bits & ~COLOR_DISABLE_FLAG);
-		return this;
-	}
-
-	@Override
 	public MaterialFinder emissive(boolean isEmissive) {
 		bits = isEmissive ? (bits | EMISSIVE_FLAG) : (bits & ~EMISSIVE_FLAG);
 		return this;

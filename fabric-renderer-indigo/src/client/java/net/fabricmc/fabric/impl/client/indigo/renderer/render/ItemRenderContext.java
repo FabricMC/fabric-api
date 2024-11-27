@@ -92,18 +92,19 @@ public class ItemRenderContext extends AbstractRenderContext {
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
 		final RenderMaterial mat = quad.material();
-		final int colorIndex = mat.disableColorIndex() ? -1 : quad.colorIndex();
 		final boolean emissive = mat.emissive();
 		final VertexConsumer vertexConsumer = getVertexConsumer(mat.blendMode(), mat.glintMode());
 
-		colorizeQuad(quad, colorIndex);
+		tintQuad(quad);
 		shadeQuad(quad, emissive);
 		bufferQuad(quad, vertexConsumer);
 	}
 
-	private void colorizeQuad(MutableQuadViewImpl quad, int colorIndex) {
-		if (colorIndex != -1 && colorIndex < tints.length) {
-			final int tint = tints[colorIndex];
+	private void tintQuad(MutableQuadViewImpl quad) {
+		int tintIndex = quad.tintIndex();
+
+		if (tintIndex != -1 && tintIndex < tints.length) {
+			final int tint = tints[tintIndex];
 
 			for (int i = 0; i < 4; i++) {
 				quad.color(i, ColorHelper.multiplyColor(tint, quad.color(i)));

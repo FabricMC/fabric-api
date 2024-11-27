@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
  * The way we encode meshes makes it very simple.
  */
 public class MeshImpl implements Mesh {
-	/** Used to satisfy external calls to {@link #forEach}. */
+	/** Used to satisfy external calls to {@link #forEach(Consumer)}. */
 	private static final ThreadLocal<ObjectArrayList<QuadViewImpl>> CURSOR_POOLS = ThreadLocal.withInitial(ObjectArrayList::new);
 
 	private final int[] data;

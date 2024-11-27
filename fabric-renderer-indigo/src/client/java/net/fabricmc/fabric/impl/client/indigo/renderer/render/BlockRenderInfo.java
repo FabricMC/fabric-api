@@ -97,8 +97,8 @@ public class BlockRenderInfo {
 		blockState = null;
 	}
 
-	int blockColor(int colorIndex) {
-		return 0xFF000000 | blockColorMap.getColor(blockState, blockView, blockPos, colorIndex);
+	int blockColor(int tintIndex) {
+		return 0xFF000000 | blockColorMap.getColor(blockState, blockView, blockPos, tintIndex);
 	}
 
 	boolean shouldDrawSide(@Nullable Direction side) {

@@ -258,13 +258,13 @@ public interface MutableQuadView extends QuadView {
 
 	/**
 	 * Value functions identically to {@link BakedQuad#getColorIndex()} and is
-	 * used by renderer / model builder in same way. Default value is -1.
+	 * used by renderer in same way. Default value is -1.
 	 */
-	MutableQuadView colorIndex(int colorIndex);
+	MutableQuadView tintIndex(int tintIndex);
 
 	/**
 	 * Encodes an integer tag with this quad that can later be retrieved via
-	 * {@link QuadView#tag()}.  Useful for models that want to perform conditional
+	 * {@link QuadView#tag()}. Useful for models that want to perform conditional
 	 * transformation or filtering on static meshes.
 	 */
 	MutableQuadView tag(int tag);

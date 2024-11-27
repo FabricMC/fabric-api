@@ -5,8 +5,8 @@
   "client": [
     "client.BakedModelMixin",
     "client.MultipartBakedModelMixin",
-    "client.WeightedBakedModelMixin",
     "client.SpriteAtlasTextureMixin",
+    "client.WeightedBakedModelMixin",
     "client.WrapperBakedModelMixin"
   ],
   "injectors": {

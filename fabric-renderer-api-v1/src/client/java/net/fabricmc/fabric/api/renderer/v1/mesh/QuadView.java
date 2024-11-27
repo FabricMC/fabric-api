@@ -163,9 +163,9 @@ public interface QuadView {
 	RenderMaterial material();
 
 	/**
-	 * Retrieves the quad color index serialized with the quad.
+	 * Retrieves the quad tint index serialized with the quad.
 	 */
-	int colorIndex();
+	int tintIndex();
 
 	/**
 	 * Retrieves the integer tag encoded with this quad via {@link MutableQuadView#tag(int)}.
@@ -200,7 +200,6 @@ public interface QuadView {
 		toVanilla(vertexData, 0);
 
 		// Mimic material properties to the largest possible extent
-		int outputColorIndex = material().disableColorIndex() ? -1 : colorIndex();
 		boolean outputShade = !material().disableDiffuse();
 		// The output light emission is equal to the minimum of all four sky light values and all four block light values.
 		int outputLightEmission = 15;
@@ -218,6 +217,6 @@ public interface QuadView {
 			outputLightEmission = Math.min(outputLightEmission, Math.min(blockLight, skyLight));
 		}
 
-		return new BakedQuad(vertexData, outputColorIndex, lightFace(), sprite, outputShade, outputLightEmission);
+		return new BakedQuad(vertexData, tintIndex(), lightFace(), sprite, outputShade, outputLightEmission);
 	}
 }

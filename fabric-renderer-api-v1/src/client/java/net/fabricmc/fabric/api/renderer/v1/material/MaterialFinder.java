@@ -42,14 +42,6 @@ public interface MaterialFinder extends MaterialView {
 	MaterialFinder blendMode(BlendMode blendMode);
 
 	/**
-	 * Controls whether vertex colors should be modified for quad coloring. This property
-	 * is inverted, so a value of {@code false} means that quad coloring will be applied.
-	 *
-	 * <p>The default value is {@code false}.
-	 */
-	MaterialFinder disableColorIndex(boolean disable);
-
-	/**
 	 * When true, sprite texture and color will be rendered at full brightness.
 	 * Lightmap values provided via {@link QuadEmitter#lightmap(int)} will be ignored.
 	 *

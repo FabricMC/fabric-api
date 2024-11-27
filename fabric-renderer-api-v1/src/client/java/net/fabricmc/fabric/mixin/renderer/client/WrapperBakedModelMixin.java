@@ -35,7 +35,7 @@ import net.minecraft.world.BlockRenderView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 @Mixin(WrapperBakedModel.class)
-abstract class WrapperBakedModelMixin implements BakedModel, net.fabricmc.fabric.api.renderer.v1.model.WrapperBakedModel {
+abstract class WrapperBakedModelMixin implements BakedModel {
 	@Shadow
 	@Final
 	protected BakedModel wrapped;
@@ -53,10 +53,5 @@ abstract class WrapperBakedModelMixin implements BakedModel, net.fabricmc.fabric
 	@Override
 	public void emitItemQuads(QuadEmitter emitter, Supplier<Random> randomSupplier) {
 		wrapped.emitItemQuads(emitter, randomSupplier);
-	}
-
-	@Override
-	public BakedModel getWrappedModel() {
-		return wrapped;
 	}
 }

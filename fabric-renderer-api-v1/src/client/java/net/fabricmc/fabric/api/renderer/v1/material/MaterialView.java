@@ -31,11 +31,6 @@ public interface MaterialView {
 	BlendMode blendMode();
 
 	/**
-	 * @see MaterialFinder#disableColorIndex(boolean)
-	 */
-	boolean disableColorIndex();
-
-	/**
 	 * @see MaterialFinder#emissive(boolean)
 	 */
 	boolean emissive();

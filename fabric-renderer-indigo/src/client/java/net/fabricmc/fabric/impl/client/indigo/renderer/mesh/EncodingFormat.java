@@ -26,6 +26,7 @@ import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
+import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.MaterialViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
@@ -40,7 +41,7 @@ public final class EncodingFormat {
 
 	static final int HEADER_BITS = 0;
 	static final int HEADER_FACE_NORMAL = 1;
-	static final int HEADER_COLOR_INDEX = 2;
+	static final int HEADER_TINT_INDEX = 2;
 	static final int HEADER_TAG = 3;
 	public static final int HEADER_STRIDE = 4;
 
@@ -77,9 +78,6 @@ public final class EncodingFormat {
 		Preconditions.checkState(QUAD_STRIDE == QuadView.VANILLA_QUAD_STRIDE, "Indigo quad stride (%s) mismatched with rendering API (%s)", QUAD_STRIDE, QuadView.VANILLA_QUAD_STRIDE);
 	}
 
-	/** used for quick clearing of quad buffers. */
-	static final int[] EMPTY = new int[TOTAL_STRIDE];
-
 	private static final int DIRECTION_COUNT = Direction.values().length;
 	private static final int NULLABLE_DIRECTION_COUNT = DIRECTION_COUNT + 1;
 
@@ -104,6 +102,27 @@ public final class EncodingFormat {
 
 	static {
 		Preconditions.checkArgument(TOTAL_BIT_LENGTH <= 32, "Indigo header encoding bit count (%s) exceeds integer bit length)", TOTAL_STRIDE);
+	}
+
+	static final int[] EMPTY = new int[TOTAL_STRIDE];
+	/** Used for quick clearing of quad buffers. Implicitly has invalid geometry. */
+	static final int[] DEFAULT = EMPTY.clone();
+
+	static {
+		MutableQuadViewImpl quad = new MutableQuadViewImpl() {
+			@Override
+			protected void emitDirectly() {
+				// This quad won't be emitted. It's only used to configure the default quad data.
+			}
+		};
+
+		// Start with all zeroes
+		quad.data = DEFAULT;
+		// Apply non-zero defaults
+		quad.color(-1, -1, -1, -1);
+		quad.cullFace(null);
+		quad.material(IndigoRenderer.STANDARD_MATERIAL);
+		quad.tintIndex(-1);
 	}
 
 	public static int bitMask(int bitLength, int bitOffset) {

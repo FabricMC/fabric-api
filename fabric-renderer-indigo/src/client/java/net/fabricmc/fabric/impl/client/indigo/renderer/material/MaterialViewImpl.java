@@ -43,7 +43,6 @@ public class MaterialViewImpl implements MaterialView {
 	private static final int SHADE_MODE_COUNT = SHADE_MODES.length;
 
 	protected static final int BLEND_MODE_BIT_LENGTH = MathHelper.ceilLog2(BLEND_MODE_COUNT);
-	protected static final int COLOR_DISABLE_BIT_LENGTH = 1;
 	protected static final int EMISSIVE_BIT_LENGTH = 1;
 	protected static final int DIFFUSE_BIT_LENGTH = 1;
 	protected static final int AO_BIT_LENGTH = MathHelper.ceilLog2(TRI_STATE_COUNT);
@@ -51,8 +50,7 @@ public class MaterialViewImpl implements MaterialView {
 	protected static final int SHADE_MODE_BIT_LENGTH = MathHelper.ceilLog2(SHADE_MODE_COUNT);
 
 	protected static final int BLEND_MODE_BIT_OFFSET = 0;
-	protected static final int COLOR_DISABLE_BIT_OFFSET = BLEND_MODE_BIT_OFFSET + BLEND_MODE_BIT_LENGTH;
-	protected static final int EMISSIVE_BIT_OFFSET = COLOR_DISABLE_BIT_OFFSET + COLOR_DISABLE_BIT_LENGTH;
+	protected static final int EMISSIVE_BIT_OFFSET = BLEND_MODE_BIT_OFFSET + BLEND_MODE_BIT_LENGTH;
 	protected static final int DIFFUSE_BIT_OFFSET = EMISSIVE_BIT_OFFSET + EMISSIVE_BIT_LENGTH;
 	protected static final int AO_BIT_OFFSET = DIFFUSE_BIT_OFFSET + DIFFUSE_BIT_LENGTH;
 	protected static final int GLINT_MODE_BIT_OFFSET = AO_BIT_OFFSET + AO_BIT_LENGTH;
@@ -60,7 +58,6 @@ public class MaterialViewImpl implements MaterialView {
 	public static final int TOTAL_BIT_LENGTH = SHADE_MODE_BIT_OFFSET + SHADE_MODE_BIT_LENGTH;
 
 	protected static final int BLEND_MODE_MASK = bitMask(BLEND_MODE_BIT_LENGTH, BLEND_MODE_BIT_OFFSET);
-	protected static final int COLOR_DISABLE_FLAG = bitMask(COLOR_DISABLE_BIT_LENGTH, COLOR_DISABLE_BIT_OFFSET);
 	protected static final int EMISSIVE_FLAG = bitMask(EMISSIVE_BIT_LENGTH, EMISSIVE_BIT_OFFSET);
 	protected static final int DIFFUSE_FLAG = bitMask(DIFFUSE_BIT_LENGTH, DIFFUSE_BIT_OFFSET);
 	protected static final int AO_MASK = bitMask(AO_BIT_LENGTH, AO_BIT_OFFSET);
@@ -88,11 +85,6 @@ public class MaterialViewImpl implements MaterialView {
 	@Override
 	public BlendMode blendMode() {
 		return BLEND_MODES[(bits & BLEND_MODE_MASK) >>> BLEND_MODE_BIT_OFFSET];
-	}
-
-	@Override
-	public boolean disableColorIndex() {
-		return (bits & COLOR_DISABLE_FLAG) != 0;
 	}
 
 	@Override

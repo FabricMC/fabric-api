@@ -55,43 +55,35 @@ public class FrameUnbakedModel implements UnbakedModel {
 			// Draw outer frame
 			emitter.square(direction, 0.0F, 0.9F, 0.9F, 1.0F, 0.0F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.0F, 0.0F, 0.1F, 0.9F, 0.0F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.9F, 0.1F, 1.0F, 1.0F, 0.0F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.1F, 0.0F, 1.0F, 0.1F, 0.0F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			// Draw inner frame - inset by 0.9 so the frame looks like an actual mesh
 			emitter.square(direction, 0.0F, 0.9F, 0.9F, 1.0F, 0.9F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.0F, 0.0F, 0.1F, 0.9F, 0.9F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.9F, 0.1F, 1.0F, 1.0F, 0.9F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.1F, 0.0F, 1.0F, 0.1F, 0.9F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 		}
 
