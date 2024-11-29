@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.base.client.mixin;
 
+import com.google.common.base.Preconditions;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,6 +24,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -135,6 +137,13 @@ public class MinecraftClientMixin {
 			// give the server a chance to tick too
 			preRunTasks(ci);
 			postRunTasks(ci);
+		}
+	}
+
+	@Inject(method = "getInstance", at = @At("HEAD"))
+	private static void checkThreadOnGetInstance(CallbackInfoReturnable<MinecraftClient> cir) {
+		if (FabricApiAutoTestClient.IS_AUTO_TEST) {
+			Preconditions.checkState(Thread.currentThread() != ThreadingImpl.testThread, "MinecraftClient.getInstance() cannot be called from the test thread");
 		}
 	}
 }
