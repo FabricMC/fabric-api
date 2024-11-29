@@ -68,7 +68,7 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 	private void runTest() {
 		waitForLoadingComplete();
 
-		final boolean onboardAccessibility = computeOnClient(() -> MinecraftClient.getInstance().options.onboardAccessibility);
+		final boolean onboardAccessibility = computeOnClient(client -> client.options.onboardAccessibility);
 
 		if (onboardAccessibility) {
 			waitForScreen(AccessibilityOnboardingScreen.class);
@@ -136,7 +136,7 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 			connectToServer(server);
 			waitForWorldTicks(5);
 
-			final GameProfile profile = computeOnClient(() -> MinecraftClient.getInstance().getGameProfile());
+			final GameProfile profile = computeOnClient(MinecraftClient::getGameProfile);
 			server.runCommand("op " + profile.getName());
 			server.runCommand("gamemode creative " + profile.getName());
 

@@ -20,6 +20,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.apache.commons.lang3.function.FailableConsumer;
+import org.apache.commons.lang3.function.FailableFunction;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import net.minecraft.SharedConstants;
@@ -77,7 +79,7 @@ public final class FabricClientTestHelper {
 	public static void openInventory() {
 		setScreen((client) -> new InventoryScreen(Objects.requireNonNull(client.player)));
 
-		boolean creative = computeOnClient(() -> Objects.requireNonNull(MinecraftClient.getInstance().player).isCreative());
+		boolean creative = computeOnClient(client -> Objects.requireNonNull(client.player).isCreative());
 		waitForScreen(creative ? CreativeInventoryScreen.class : InventoryScreen.class);
 	}
 
@@ -86,10 +88,7 @@ public final class FabricClientTestHelper {
 	}
 
 	private static void setScreen(Function<MinecraftClient, Screen> screenSupplier) {
-		runOnClient(() -> {
-			MinecraftClient client = MinecraftClient.getInstance();
-			client.setScreen(screenSupplier.apply(client));
-		});
+		runOnClient(client -> client.setScreen(screenSupplier.apply(client)));
 	}
 
 	public static void takeScreenshot(String name) {
@@ -100,8 +99,8 @@ public final class FabricClientTestHelper {
 		// Allow time for any screens to open
 		runTicks(delayTicks);
 
-		runOnClient(() -> {
-			ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), name + ".png", MinecraftClient.getInstance().getFramebuffer(), (message) -> {
+		runOnClient(client -> {
+			ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), name + ".png", client.getFramebuffer(), (message) -> {
 			});
 		});
 	}
@@ -156,25 +155,20 @@ public final class FabricClientTestHelper {
 	public static void waitForWorldTicks(long ticks) {
 		// Wait for the world to be loaded and get the start ticks
 		waitFor("World load", client -> client.world != null && !(client.currentScreen instanceof LevelLoadingScreen), 30 * SharedConstants.TICKS_PER_MINUTE);
-		final long startTicks = computeOnClient(() -> MinecraftClient.getInstance().world.getTime());
+		final long startTicks = computeOnClient(client -> client.world.getTime());
 		waitFor("World load", client -> Objects.requireNonNull(client.world).getTime() > startTicks + ticks, 10 * SharedConstants.TICKS_PER_MINUTE);
 	}
 
 	public static void enableDebugHud() {
-		runOnClient(() -> {
-			MinecraftClient.getInstance().inGameHud.getDebugHud().toggleDebugHud();
-		});
+		runOnClient(client -> client.inGameHud.getDebugHud().toggleDebugHud());
 	}
 
 	public static void setPerspective(Perspective perspective) {
-		runOnClient(() -> {
-			MinecraftClient.getInstance().options.setPerspective(perspective);
-		});
+		runOnClient(client -> client.options.setPerspective(perspective));
 	}
 
 	public static void connectToServer(TestDedicatedServer server) {
-		runOnClient(() -> {
-			MinecraftClient client = MinecraftClient.getInstance();
+		runOnClient(client -> {
 			final var serverInfo = new ServerInfo("localhost", server.getConnectionAddress(), ServerInfo.ServerType.OTHER);
 			ConnectScreen.connect(client.currentScreen, client, ServerAddress.parse(server.getConnectionAddress()), serverInfo, false, null);
 		});
@@ -201,11 +195,11 @@ public final class FabricClientTestHelper {
 	private static void waitFor(String what, Predicate<MinecraftClient> predicate, int timeoutTicks) {
 		int tickCount;
 
-		for (tickCount = 0; tickCount < timeoutTicks && !computeOnClient(() -> predicate.test(MinecraftClient.getInstance())); tickCount++) {
+		for (tickCount = 0; tickCount < timeoutTicks && !computeOnClient(predicate::test); tickCount++) {
 			runTick();
 		}
 
-		if (tickCount == timeoutTicks && !computeOnClient(() -> predicate.test(MinecraftClient.getInstance()))) {
+		if (tickCount == timeoutTicks && !computeOnClient(predicate::test)) {
 			throw new RuntimeException("Timed out waiting for " + what);
 		}
 	}
@@ -220,23 +214,13 @@ public final class FabricClientTestHelper {
 		ThreadingImpl.runTick();
 	}
 
-	public static <E extends Throwable> void runOnClient(ThrowingRunnable<E> action) throws E {
-		ThreadingImpl.runOnClient(action);
+	public static <E extends Throwable> void runOnClient(FailableConsumer<MinecraftClient, E> action) throws E {
+		ThreadingImpl.runOnClient(() -> action.accept(MinecraftClient.getInstance()));
 	}
 
-	public static <T, E extends Throwable> T computeOnClient(ThrowingSupplier<T, E> action) throws E {
+	public static <T, E extends Throwable> T computeOnClient(FailableFunction<MinecraftClient, T, E> action) throws E {
 		MutableObject<T> result = new MutableObject<>();
-		runOnClient(() -> result.setValue(action.get()));
-		return result.getValue();
-	}
-
-	public static <E extends Throwable> void runOnServer(ThrowingRunnable<E> action) throws E {
-		ThreadingImpl.runOnServer(action);
-	}
-
-	public static <T, E extends Throwable> T computeOnServer(ThrowingSupplier<T, E> action) throws E {
-		MutableObject<T> result = new MutableObject<>();
-		runOnServer(() -> result.setValue(action.get()));
+		runOnClient(minecraft -> result.setValue(action.apply(minecraft)));
 		return result.getValue();
 	}
 }

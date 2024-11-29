@@ -20,6 +20,7 @@ import java.util.concurrent.Phaser;
 import java.util.concurrent.Semaphore;
 
 import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.function.FailableRunnable;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
@@ -125,7 +126,7 @@ public final class ThreadingImpl {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <E extends Throwable> void runOnClient(ThrowingRunnable<E> action) throws E {
+	public static <E extends Throwable> void runOnClient(FailableRunnable<E> action) throws E {
 		Preconditions.checkNotNull(action, "action");
 		Preconditions.checkState(Thread.currentThread() == testThread, "runOnClient can only be called from the test thread");
 		Preconditions.checkState(clientCanAcceptTasks, "runOnClient called when no client is running");
@@ -156,7 +157,7 @@ public final class ThreadingImpl {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <E extends Throwable> void runOnServer(ThrowingRunnable<E> action) throws E {
+	public static <E extends Throwable> void runOnServer(FailableRunnable<E> action) throws E {
 		Preconditions.checkNotNull(action, "action");
 		Preconditions.checkState(Thread.currentThread() == testThread, "runOnServer can only be called from the test thread");
 		Preconditions.checkState(serverCanAcceptTasks, "runOnServer called when no server is running");
