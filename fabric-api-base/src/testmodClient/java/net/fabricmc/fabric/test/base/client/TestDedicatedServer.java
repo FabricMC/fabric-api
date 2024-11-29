@@ -23,11 +23,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 
 import net.minecraft.server.Main;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
@@ -51,23 +49,12 @@ public class TestDedicatedServer implements Closeable {
 	}
 
 	public void runCommand(String command) {
-		submitAndWait(server -> {
-			server.enqueueCommand(command, server.getCommandSource());
-			return null;
-		});
+		ThreadingImpl.runOnServer(() -> server.getCommandManager().executeWithPrefix(server.getCommandSource(), command));
 	}
 
 	private void run() {
 		setupServer();
 		Main.main(new String[]{});
-	}
-
-	private <T> CompletableFuture<T> submit(Function<MinecraftDedicatedServer, T> function) {
-		return server.submit(() -> function.apply(server));
-	}
-
-	private <T> T submitAndWait(Function<MinecraftDedicatedServer, T> function) {
-		return submit(function).join();
 	}
 
 	private void setupServer() {
@@ -100,7 +87,12 @@ public class TestDedicatedServer implements Closeable {
 
 	@Override
 	public void close() {
-		server.stop(true);
+		server.stop(false);
+
+		while (server.getThread().isAlive()) {
+			ThreadingImpl.runTick();
+		}
+
 		executor.close();
 	}
 }

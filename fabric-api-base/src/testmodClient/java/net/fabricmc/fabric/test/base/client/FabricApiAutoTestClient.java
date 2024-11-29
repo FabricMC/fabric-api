@@ -18,15 +18,16 @@ package net.fabricmc.fabric.test.base.client;
 
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.clickScreenButton;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.closeScreen;
+import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.computeOnClient;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.connectToServer;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.enableDebugHud;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.openGameMenu;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.openInventory;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.setPerspective;
-import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.submitAndWait;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.takeScreenshot;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForLoadingComplete;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForScreen;
+import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForServerStop;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForTitleScreenFade;
 import static net.fabricmc.fabric.test.base.client.FabricClientTestHelper.waitForWorldTicks;
 
@@ -35,7 +36,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 
 import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.MixinEnvironment;
@@ -54,28 +54,21 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class FabricApiAutoTestClient implements ClientModInitializer {
+	public static final boolean IS_AUTO_TEST = System.getProperty("fabric.autoTest") != null;
+
 	@Override
 	public void onInitializeClient() {
-		if (System.getProperty("fabric.autoTest") == null) {
+		if (!IS_AUTO_TEST) {
 			return;
 		}
 
-		var thread = new Thread(() -> {
-			try {
-				runTest();
-			} catch (Throwable t) {
-				t.printStackTrace();
-				System.exit(1);
-			}
-		});
-		thread.setName("Fabric Auto Test");
-		thread.start();
+		ThreadingImpl.runTestThread(this::runTest);
 	}
 
 	private void runTest() {
 		waitForLoadingComplete();
 
-		final boolean onboardAccessibility = submitAndWait(client -> client.options.onboardAccessibility);
+		final boolean onboardAccessibility = computeOnClient(() -> MinecraftClient.getInstance().options.onboardAccessibility);
 
 		if (onboardAccessibility) {
 			waitForScreen(AccessibilityOnboardingScreen.class);
@@ -86,7 +79,7 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 		{
 			waitForScreen(TitleScreen.class);
 			waitForTitleScreenFade();
-			takeScreenshot("title_screen", Duration.ZERO);
+			takeScreenshot("title_screen", 0);
 			clickScreenButton("menu.singleplayer");
 		}
 
@@ -113,7 +106,7 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 		{
 			enableDebugHud();
 			waitForWorldTicks(200);
-			takeScreenshot("in_game_overworld", Duration.ZERO);
+			takeScreenshot("in_game_overworld", 0);
 		}
 
 		MixinEnvironment.getCurrentEnvironment().audit();
@@ -136,18 +129,19 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 			takeScreenshot("game_menu");
 			clickScreenButton("menu.returnToMenu");
 			waitForScreen(TitleScreen.class);
+			waitForServerStop();
 		}
 
 		try (var server = new TestDedicatedServer()) {
 			connectToServer(server);
 			waitForWorldTicks(5);
 
-			final GameProfile profile = submitAndWait(MinecraftClient::getGameProfile);
+			final GameProfile profile = computeOnClient(() -> MinecraftClient.getInstance().getGameProfile());
 			server.runCommand("op " + profile.getName());
 			server.runCommand("gamemode creative " + profile.getName());
 
 			waitForWorldTicks(20);
-			takeScreenshot("server_in_game", Duration.ZERO);
+			takeScreenshot("server_in_game", 0);
 
 			{ // Test that we can enter and exit configuration
 				server.runCommand("debugconfig config " + profile.getName());
