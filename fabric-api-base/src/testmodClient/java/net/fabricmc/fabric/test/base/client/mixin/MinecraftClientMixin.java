@@ -102,13 +102,12 @@ public class MinecraftClientMixin {
 		}
 	}
 
-	@WrapMethod(method = "startIntegratedServer")
-	private void deferStartIntegratedServer(LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, boolean newWorld, Operation<Void> original) {
+	@Inject(method = "startIntegratedServer", at = @At("HEAD"), cancellable = true)
+	private void deferStartIntegratedServer(LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, boolean newWorld, CallbackInfo ci) {
 		if (FabricApiAutoTestClient.IS_AUTO_TEST && ThreadingImpl.taskToRun != null) {
 			// don't start the integrated server (which busywaits) inside a task
-			deferredTask = () -> original.call(session, dataPackManager, saveLoader, newWorld);
-		} else {
-			original.call(session, dataPackManager, saveLoader, newWorld);
+			deferredTask = () -> MinecraftClient.getInstance().startIntegratedServer(session, dataPackManager, saveLoader, newWorld);
+			ci.cancel();
 		}
 	}
 
@@ -121,13 +120,12 @@ public class MinecraftClientMixin {
 		}
 	}
 
-	@WrapMethod(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V")
-	private void deferDisconnect(Screen disconnectionScreen, boolean transferring, Operation<Void> original) {
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("HEAD"), cancellable = true)
+	private void deferDisconnect(Screen disconnectionScreen, boolean transferring, CallbackInfo ci) {
 		if (FabricApiAutoTestClient.IS_AUTO_TEST && MinecraftClient.getInstance().getServer() != null && ThreadingImpl.taskToRun != null) {
 			// don't disconnect (which busywaits) inside a task
-			deferredTask = () -> original.call(disconnectionScreen, transferring);
-		} else {
-			original.call(disconnectionScreen, transferring);
+			deferredTask = () -> MinecraftClient.getInstance().disconnect(disconnectionScreen, transferring);
+			ci.cancel();
 		}
 	}
 
