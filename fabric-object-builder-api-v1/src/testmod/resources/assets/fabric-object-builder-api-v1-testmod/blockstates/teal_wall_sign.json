@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "fabric-rendering-v1-testmod:block/teal_sign"
+      "model": "fabric-object-builder-api-v1-testmod:block/teal_sign"
     }
   }
 }

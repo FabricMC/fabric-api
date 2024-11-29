@@ -3,5 +3,10 @@
   "fabric-registry-sync-v0.unknown-remote.title.plural" : "Received %d registry entries that are unknown to this client.\n",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1" : "This is usually caused by a mismatched mod set between the client and server.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2" : " See the client logs for more details.\nThe following registry entry namespaces may be related:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer" : "And %d more..."
+  "fabric-registry-sync-v0.unknown-remote.footer" : "And %d more...",
+  "fabric-registry-sync-v0.unknown-registry.title.singular" : "Received a registry that is unknown to this client.\n",
+  "fabric-registry-sync-v0.unknown-registry.title.plural" : "Received %d registries that are unknown to this client.\n",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.1" : "This is usually caused by a mismatched mod set between the client and server.",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.2" : " See the client logs for more details.\nThe following registries are not present on the client:\n\n",
+  "fabric-registry-sync-v0.unknown-registry.footer" : "And %d more..."
 }

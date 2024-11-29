@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.registry.sync.packet;
 
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.zip.Deflater;
@@ -28,6 +29,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 
@@ -46,7 +48,7 @@ public abstract class RegistryPacketHandler<T extends RegistryPacketHandler.Regi
 	public abstract boolean isPacketFinished();
 
 	@Nullable
-	public abstract Map<Identifier, Object2IntMap<Identifier>> getSyncedRegistryMap();
+	public abstract SyncedPacketData getSyncedPacketData();
 
 	protected final void computeBufSize(PacketByteBuf buf) {
 		if (!RegistrySyncManager.DEBUG) {
@@ -92,4 +94,9 @@ public abstract class RegistryPacketHandler<T extends RegistryPacketHandler.Regi
 
 	public interface RegistrySyncPayload extends CustomPayload {
 	}
+
+	public record SyncedPacketData(
+			Map<Identifier, Object2IntMap<Identifier>> idMap,
+			Map<Identifier, EnumSet<RegistryAttribute>> attributes
+	) { }
 }
