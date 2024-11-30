@@ -143,6 +143,7 @@ public class MinecraftClientMixin {
 	@Inject(method = "getInstance", at = @At("HEAD"))
 	private static void checkThreadOnGetInstance(CallbackInfoReturnable<MinecraftClient> cir) {
 		if (FabricApiAutoTestClient.IS_AUTO_TEST) {
+			// TODO: add suggestion of runOnClient etc when API methods are added
 			Preconditions.checkState(Thread.currentThread() != ThreadingImpl.testThread, "MinecraftClient.getInstance() cannot be called from the test thread");
 		}
 	}
