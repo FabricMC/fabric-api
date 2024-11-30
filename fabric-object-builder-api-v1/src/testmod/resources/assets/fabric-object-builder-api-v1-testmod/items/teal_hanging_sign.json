@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "fabric-object-builder-api-v1-testmod:item/teal_hanging_sign"
+  }
+}

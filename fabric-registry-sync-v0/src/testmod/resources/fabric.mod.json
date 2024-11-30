@@ -17,7 +17,8 @@
       "net.fabricmc.fabric.test.registry.sync.RegistrySyncTest"
     ],
     "client": [
-      "net.fabricmc.fabric.test.registry.sync.client.DynamicRegistryClientTest"
+      "net.fabricmc.fabric.test.registry.sync.client.DynamicRegistryClientTest",
+      "net.fabricmc.fabric.test.registry.sync.client.RegistrySyncClientTest"
     ]
   }
 }

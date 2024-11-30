@@ -16,6 +16,16 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
-public interface ModelLoaderHooks {
-	ModelLoadingEventDispatcher fabric_getDispatcher();
+import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.util.Identifier;
+
+public interface BakedModelsHooks {
+	@Nullable
+	Map<Identifier, BakedModel> fabric_getExtraModels();
+
+	void fabric_setExtraModels(@Nullable Map<Identifier, BakedModel> extraModels);
 }

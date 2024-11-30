@@ -16,46 +16,59 @@
 
 package net.fabricmc.fabric.mixin.client.model.loading;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.render.model.ReferencedModelsCollector;
-import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.ModelBaker;
+import net.minecraft.client.render.model.ModelRotation;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.impl.client.model.loading.BakedModelsHooks;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 
-@Mixin(ReferencedModelsCollector.class)
-abstract class ReferencedModelsCollectorMixin {
+@Mixin(ModelBaker.class)
+abstract class ModelBakerMixin {
+	@Shadow
+	@Final
+	static Logger LOGGER;
+
 	@Unique
 	@Nullable
 	private ModelLoadingEventDispatcher fabric_eventDispatcher;
 
-	@Shadow
-	abstract UnbakedModel computeResolvedModel(Identifier id);
-
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onReturnInit(CallbackInfo ci) {
 		fabric_eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
-
-		if (fabric_eventDispatcher != null) {
-			fabric_eventDispatcher.forEachExtraModel(this::computeResolvedModel);
-		}
 	}
 
-	@ModifyVariable(method = "getModel", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
-	@Nullable
-	private UnbakedModel onLoadModel(@Nullable UnbakedModel model, Identifier id) {
+	@Inject(method = "bake", at = @At("RETURN"))
+	private void onReturnBake(ModelBaker.ErrorCollectingSpriteGetter spriteGetter, CallbackInfoReturnable<ModelBaker.BakedModels> cir) {
 		if (fabric_eventDispatcher == null) {
-			return model;
+			return;
 		}
 
-		return fabric_eventDispatcher.modifyModelOnLoad(model, id);
+		ModelBaker.BakedModels models = cir.getReturnValue();
+		Map<Identifier, BakedModel> extraModels = new HashMap<>();
+		fabric_eventDispatcher.forEachExtraModel(id -> {
+			try {
+				BakedModel model = ((ModelBaker) (Object) this).new BakerImpl(spriteGetter, id::toString).bake(id, ModelRotation.X0_Y0);
+				extraModels.put(id, model);
+			} catch (Exception e) {
+				LOGGER.warn("Unable to bake extra model: '{}': {}", id, e);
+			}
+		});
+		((BakedModelsHooks) (Object) models).fabric_setExtraModels(extraModels);
 	}
 }

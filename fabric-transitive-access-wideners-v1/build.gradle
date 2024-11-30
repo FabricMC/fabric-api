@@ -11,6 +11,8 @@ testDependencies(project, [
 
 
 import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.ClassNode
@@ -19,7 +21,6 @@ import java.nio.file.FileSystem
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.stream.Collectors
 
 tasks.register('generateAccessWidener') {
 	doLast {
@@ -37,6 +38,8 @@ tasks.register('generateAccessWidener') {
 			generateBlockConstructors(lines, fs)
 			lines.add("")
 			generateItemConstructors(lines, fs)
+			lines.add("")
+			generateCreatorEntityTrackedDataMethods(lines, fs)
 			lines.add("")
 		}
 
@@ -128,11 +131,67 @@ def generateRenderPhaseInnerClasses(List<String> lines, FileSystem fs) {
 	}
 }
 
+def generateTrackedDataFields(String className, List<String> lines, FileSystem fs, String... extraMethods) {
+	// using a set to prevent duplicates from multiple dataTracker references in a single method
+	// linked to preserve order and improve generated access widener readability
+	Set<String> collectedWideners = new LinkedHashSet<>()
+
+	loadClass(fs.getPath("${className}.class")).accept(
+		new ClassVisitor(Opcodes.ASM9) {
+			@Override
+			MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+				boolean isExtra = extraMethods.contains(name)
+				if (!isExtra) {
+					// check for desired methods
+					if (!name.startsWith("get") && !name.startsWith("set")) {
+						return null
+					}
+
+					// check methods as genuine basic getter/setters
+					int parameterCount = Type.getArgumentCount(descriptor)
+
+					if (name.startsWith("get") && parameterCount != 0) {
+						return null
+					}
+
+					if (name.startsWith("set") && parameterCount != 1) {
+						return null
+					}
+				} else {
+					println name
+				}
+
+				return new MethodVisitor(Opcodes.ASM9) {
+					@Override
+					void visitFieldInsn(int opcode, String owner, String fieldName, String fieldDescriptor) {
+						// check references its dataTracker field
+						if (isExtra || (fieldName == "dataTracker" && opcode == Opcodes.GETFIELD)) {
+							collectedWideners.add("transitive-accessible method $className $name $descriptor")
+						}
+					}
+				}
+			}
+		}
+	)
+
+	lines.addAll(collectedWideners)
+}
+
+def generateCreatorEntityTrackedDataMethods(List<String> lines, FileSystem fs) {
+	lines.add("# Private tracked data related methods of DisplayEntity (plus its subclasses) and InteractionEntity")
+
+	generateTrackedDataFields("net/minecraft/entity/decoration/DisplayEntity", lines, fs, "getTransformation")
+	generateTrackedDataFields("net/minecraft/entity/decoration/DisplayEntity\$ItemDisplayEntity", lines, fs)
+	generateTrackedDataFields("net/minecraft/entity/decoration/DisplayEntity\$BlockDisplayEntity", lines, fs)
+	generateTrackedDataFields("net/minecraft/entity/decoration/DisplayEntity\$TextDisplayEntity", lines, fs)
+	generateTrackedDataFields("net/minecraft/entity/decoration/InteractionEntity", lines, fs, "shouldRespond")
+}
+
 ClassNode loadClass(Path path) {
 	def node = new ClassNode()
 
 	Files.newInputStream(path).withCloseable { is ->
-		new ClassReader(is).accept(node, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
+		new ClassReader(is).accept(node, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES)
 	}
 
 	return node

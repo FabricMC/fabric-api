@@ -14,12 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.model.loading;
+package net.fabricmc.fabric.mixin.client.model.loading;
 
-import net.minecraft.block.Block;
-import net.minecraft.util.Identifier;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.WrapperBakedModel;
 
-record BlockStateResolverHolder(BlockStateResolver resolver, Block block, Identifier blockId) {
+import net.fabricmc.fabric.api.client.model.loading.v1.UnwrappableBakedModel;
+
+@Mixin(WrapperBakedModel.class)
+abstract class WrapperBakedModelMixin implements UnwrappableBakedModel {
+	@Shadow
+	@Final
+	protected BakedModel wrapped;
+
+	@Override
+	public BakedModel getWrappedModel() {
+		return wrapped;
+	}
 }

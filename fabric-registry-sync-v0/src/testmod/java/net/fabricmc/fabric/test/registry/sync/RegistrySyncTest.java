@@ -18,13 +18,9 @@ package net.fabricmc.fabric.test.registry.sync;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.mojang.logging.LogUtils;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 
@@ -37,19 +33,14 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
-import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
-import net.fabricmc.fabric.impl.registry.sync.RemapException;
 
 public class RegistrySyncTest implements ModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -112,28 +103,6 @@ public class RegistrySyncTest implements ModInitializer {
 
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
 		RegistryAttributeHolder.get(Registries.STATUS_EFFECT).addAttribute(RegistryAttribute.MODDED);
-
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
-				dispatcher.register(CommandManager.literal("remote_remap_error_test").executes(context -> {
-					Map<Identifier, Object2IntMap<Identifier>> registryData = Map.of(
-							RegistryKeys.BLOCK.getValue(), createFakeRegistryEntries(),
-							RegistryKeys.ITEM.getValue(), createFakeRegistryEntries()
-					);
-
-					try {
-						RegistrySyncManager.checkRemoteRemap(registryData);
-					} catch (RemapException e) {
-						final ServerPlayerEntity player = context.getSource().getPlayer();
-
-						if (player != null) {
-							player.networkHandler.disconnect(Objects.requireNonNull(e.getText()));
-						}
-
-						return 1;
-					}
-
-					throw new IllegalStateException();
-				})));
 	}
 
 	public static void checkSyncedRegistry(RegistryKey<? extends Registry<?>> registry) {
@@ -168,15 +137,5 @@ public class RegistrySyncTest implements ModInitializer {
 				Registry.register(Registries.ITEM, id, blockItem);
 			}
 		}
-	}
-
-	private static Object2IntMap<Identifier> createFakeRegistryEntries() {
-		Object2IntMap<Identifier> map = new Object2IntOpenHashMap<>();
-
-		for (int i = 0; i < 12; i++) {
-			map.put(Identifier.of("mod_" + i, "entry"), 0);
-		}
-
-		return map;
 	}
 }

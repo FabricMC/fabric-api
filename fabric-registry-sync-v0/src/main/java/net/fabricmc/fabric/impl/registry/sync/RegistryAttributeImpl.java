@@ -20,10 +20,13 @@ import java.util.EnumSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jetbrains.annotations.VisibleForTesting;
+
 import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.loader.api.FabricLoader;
 
 public final class RegistryAttributeImpl implements RegistryAttributeHolder {
 	private static final Map<RegistryKey<?>, RegistryAttributeHolder> HOLDER_MAP = new ConcurrentHashMap<>();
@@ -41,6 +44,15 @@ public final class RegistryAttributeImpl implements RegistryAttributeHolder {
 	public RegistryAttributeHolder addAttribute(RegistryAttribute attribute) {
 		attributes.add(attribute);
 		return this;
+	}
+
+	@VisibleForTesting
+	public void removeAttribute(RegistryAttribute attribute) {
+		if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
+			throw new AssertionError();
+		}
+
+		attributes.remove(attribute);
 	}
 
 	@Override

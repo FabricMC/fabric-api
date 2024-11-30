@@ -245,6 +245,55 @@ transitive-accessible method net/minecraft/block/WitherSkullBlock <init> (Lnet/m
 # Constructors of non-abstract item classes
 transitive-accessible method net/minecraft/item/MiningToolItem <init> (Lnet/minecraft/item/ToolMaterial;Lnet/minecraft/registry/tag/TagKey;FFLnet/minecraft/item/Item$Settings;)V
 
+# Private tracked data related methods of DisplayEntity (plus its subclasses) and InteractionEntity
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getTransformation (Lnet/minecraft/entity/data/DataTracker;)Lnet/minecraft/util/math/AffineTransformation;
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setTransformation (Lnet/minecraft/util/math/AffineTransformation;)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setInterpolationDuration (I)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getInterpolationDuration ()I
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setStartInterpolation (I)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getStartInterpolation ()I
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setTeleportDuration (I)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getTeleportDuration ()I
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setBillboardMode (Lnet/minecraft/entity/decoration/DisplayEntity$BillboardMode;)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getBillboardMode ()Lnet/minecraft/entity/decoration/DisplayEntity$BillboardMode;
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setBrightness (Lnet/minecraft/entity/decoration/Brightness;)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getBrightnessUnpacked ()Lnet/minecraft/entity/decoration/Brightness;
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getBrightness ()I
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setViewRange (F)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getViewRange ()F
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setShadowRadius (F)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getShadowRadius ()F
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setShadowStrength (F)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getShadowStrength ()F
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setDisplayWidth (F)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getDisplayWidth ()F
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setDisplayHeight (F)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getGlowColorOverride ()I
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setGlowColorOverride (I)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getDisplayHeight ()F
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$ItemDisplayEntity getItemStack ()Lnet/minecraft/item/ItemStack;
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$ItemDisplayEntity setItemStack (Lnet/minecraft/item/ItemStack;)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$ItemDisplayEntity setTransformationMode (Lnet/minecraft/item/ModelTransformationMode;)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$ItemDisplayEntity getTransformationMode ()Lnet/minecraft/item/ModelTransformationMode;
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$BlockDisplayEntity getBlockState ()Lnet/minecraft/block/BlockState;
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$BlockDisplayEntity setBlockState (Lnet/minecraft/block/BlockState;)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$TextDisplayEntity getText ()Lnet/minecraft/text/Text;
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$TextDisplayEntity setText (Lnet/minecraft/text/Text;)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$TextDisplayEntity getLineWidth ()I
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$TextDisplayEntity setLineWidth (I)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$TextDisplayEntity getTextOpacity ()B
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$TextDisplayEntity setTextOpacity (B)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$TextDisplayEntity getBackground ()I
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$TextDisplayEntity setBackground (I)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$TextDisplayEntity getDisplayFlags ()B
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$TextDisplayEntity setDisplayFlags (B)V
+transitive-accessible method net/minecraft/entity/decoration/InteractionEntity setInteractionWidth (F)V
+transitive-accessible method net/minecraft/entity/decoration/InteractionEntity getInteractionWidth ()F
+transitive-accessible method net/minecraft/entity/decoration/InteractionEntity setInteractionHeight (F)V
+transitive-accessible method net/minecraft/entity/decoration/InteractionEntity getInteractionHeight ()F
+transitive-accessible method net/minecraft/entity/decoration/InteractionEntity setResponse (Z)V
+transitive-accessible method net/minecraft/entity/decoration/InteractionEntity shouldRespond ()Z
+
 # Protected static fields of RenderPhase
 transitive-accessible field net/minecraft/client/render/RenderPhase NO_TRANSPARENCY Lnet/minecraft/client/render/RenderPhase$Transparency;
 transitive-accessible field net/minecraft/client/render/RenderPhase ADDITIVE_TRANSPARENCY Lnet/minecraft/client/render/RenderPhase$Transparency;
