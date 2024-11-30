@@ -25,8 +25,19 @@ import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 
-public class WrapperUnbakedModel implements UnbakedModel {
+/**
+ * A simple implementation of {@link UnbakedModel} that delegates all method calls to the {@link #wrapped} field.
+ * Implementations must set the {@link #wrapped} field somehow.
+ */
+public abstract class WrapperUnbakedModel implements UnbakedModel {
 	protected UnbakedModel wrapped;
+
+	protected WrapperUnbakedModel() {
+	}
+
+	protected WrapperUnbakedModel(UnbakedModel wrapped) {
+		this.wrapped = wrapped;
+	}
 
 	@Override
 	public void resolve(Resolver resolver) {

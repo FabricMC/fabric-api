@@ -19,8 +19,6 @@ package net.fabricmc.fabric.mixin.client.model.loading;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -33,19 +31,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.GroupableModel;
 import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.client.render.model.ModelRotation;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.model.loading.BakedModelsHooks;
-import net.fabricmc.fabric.impl.client.model.loading.ModelBakerHooks;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 
 @Mixin(ModelBaker.class)
-abstract class ModelBakerMixin implements ModelBakerHooks {
+abstract class ModelBakerMixin {
 	@Shadow
 	@Final
 	static Logger LOGGER;
@@ -57,17 +51,6 @@ abstract class ModelBakerMixin implements ModelBakerHooks {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onReturnInit(CallbackInfo ci) {
 		fabric_eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
-	}
-
-	@WrapOperation(method = "method_65737", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/GroupableModel.bake(Lnet/minecraft/client/render/model/Baker;)Lnet/minecraft/client/render/model/BakedModel;"))
-	private BakedModel wrapSingleOuterBake(GroupableModel unbakedModel, Baker baker, Operation<BakedModel> operation, ModelBaker.ErrorCollectingSpriteGetter spriteGetter, Map<ModelIdentifier, BakedModel> map, ModelIdentifier id) {
-		if (fabric_eventDispatcher == null) {
-			return operation.call(unbakedModel, baker);
-		}
-
-		unbakedModel = fabric_eventDispatcher.modifyBlockModelBeforeBake(unbakedModel, id, baker);
-		BakedModel model = operation.call(unbakedModel, baker);
-		return fabric_eventDispatcher.modifyBlockModelAfterBake(model, id, unbakedModel, baker);
 	}
 
 	@Inject(method = "bake", at = @At("RETURN"))
@@ -87,10 +70,5 @@ abstract class ModelBakerMixin implements ModelBakerHooks {
 			}
 		});
 		((BakedModelsHooks) (Object) models).fabric_setExtraModels(extraModels);
-	}
-
-	@Override
-	public ModelLoadingEventDispatcher fabric_getDispatcher() {
-		return fabric_eventDispatcher;
 	}
 }

@@ -22,21 +22,24 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CropBlock;
 import net.minecraft.block.HorizontalConnectingBlock;
-import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.GroupableModel;
 import net.minecraft.client.render.model.MissingModel;
+import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelTextures;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.ModelVariant;
 import net.minecraft.client.render.model.json.WeightedUnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.AffineTransformation;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.model.loading.v1.DelegatingUnbakedModel;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
+import net.fabricmc.fabric.api.client.model.loading.v1.WrapperUnbakedModel;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 
@@ -81,20 +84,31 @@ public class ModelTestModClient implements ClientModInitializer {
 				context.setModel(state.with(CropBlock.AGE, 7), wheatStage7Model);
 			});
 
-			// replace the brown glazed terracotta model with a missing model
-			// with the new item model system in 1.21.4, this also affects the item model
-			pluginContext.modifyModelBeforeBake().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
+			// Replace the brown glazed terracotta model with a missing model without affecting child models.
+			// Since 1.21.4, the item model is not a child model, so it is also affected.
+			pluginContext.modifyModelOnLoad().register(ModelModifier.WRAP_PHASE, (model, context) -> {
 				if (context.id().equals(BROWN_GLAZED_TERRACOTTA_MODEL_ID)) {
-					return new DelegatingUnbakedModel(MissingModel.ID);
+					return new WrapperUnbakedModel(model) {
+						@Override
+						public void resolve(Resolver resolver) {
+							super.resolve(resolver);
+							resolver.resolve(MissingModel.ID);
+						}
+
+						@Override
+						public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
+							return baker.bake(MissingModel.ID, settings);
+						}
+					};
 				}
 
 				return model;
 			});
 
-			// make fences with west: true and everything else false appear to be a missing model visually
-			ModelIdentifier fenceId = BlockModels.getModelId(Blocks.OAK_FENCE.getDefaultState().with(HorizontalConnectingBlock.WEST, true));
-			pluginContext.modifyBlockModelBeforeBake().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
-				if (context.id().equals(fenceId)) {
+			// Make oak fences with west: true and everything else false appear to be a missing model visually.
+			BlockState westOakFence = Blocks.OAK_FENCE.getDefaultState().with(HorizontalConnectingBlock.WEST, true);
+			pluginContext.modifyBlockModelOnLoad().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
+				if (context.state() == westOakFence) {
 					return simpleGroupableModel(MissingModel.ID);
 				}
 
@@ -103,9 +117,14 @@ public class ModelTestModClient implements ClientModInitializer {
 
 			// TODO 1.21.4: reintroduce test once FRAPI+Indigo are ported
 			// remove bottom face of gold blocks
-			//pluginContext.modifyModelAfterBake().register(ModelModifier.WRAP_PHASE, (model, context) -> {
+			//pluginContext.modifyModelOnLoad().register(ModelModifier.WRAP_PHASE, (model, context) -> {
 			//	if (context.id().equals(GOLD_BLOCK_MODEL_ID)) {
-			//		return new DownQuadRemovingModel(model);
+			//		return new WrapperUnbakedModel(model) {
+			//			@Override
+			//			public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
+			//				return new DownQuadRemovingModel(super.bake(textures, baker, settings, ambientOcclusion, isSideLit, transformation));
+			//			}
+			//		};
 			//	}
 			//
 			//	return model;

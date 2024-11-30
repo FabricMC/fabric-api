@@ -25,7 +25,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableList;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.Nullable;
@@ -35,11 +34,8 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModels;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.BlockStatesLoader;
 import net.minecraft.client.render.model.GroupableModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.registry.Registries;
@@ -59,12 +55,7 @@ public class ModelLoadingEventDispatcher {
 	private final BlockStateResolverContext blockStateResolverContext = new BlockStateResolverContext();
 
 	private final OnLoadModifierContext onLoadModifierContext = new OnLoadModifierContext();
-	private final ObjectArrayList<BeforeBakeModifierContext> beforeBakeModifierContextStack = new ObjectArrayList<>();
-	private final ObjectArrayList<AfterBakeModifierContext> afterBakeModifierContextStack = new ObjectArrayList<>();
-
 	private final OnLoadBlockModifierContext onLoadBlockModifierContext = new OnLoadBlockModifierContext();
-	private final BeforeBakeBlockModifierContext beforeBakeBlockModifierContext = new BeforeBakeBlockModifierContext();
-	private final AfterBakeBlockModifierContext afterBakeBlockModifierContext = new AfterBakeBlockModifierContext();
 
 	public ModelLoadingEventDispatcher(List<ModelLoadingPlugin> plugins) {
 		this.pluginContext = new ModelLoadingPluginContextImpl();
@@ -86,34 +77,6 @@ public class ModelLoadingEventDispatcher {
 	public UnbakedModel modifyModelOnLoad(@Nullable UnbakedModel model, Identifier id) {
 		onLoadModifierContext.prepare(id);
 		return pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, onLoadModifierContext);
-	}
-
-	public UnbakedModel modifyModelBeforeBake(UnbakedModel model, Identifier id, ModelBakeSettings settings, Baker baker) {
-		if (beforeBakeModifierContextStack.isEmpty()) {
-			beforeBakeModifierContextStack.add(new BeforeBakeModifierContext());
-		}
-
-		BeforeBakeModifierContext context = beforeBakeModifierContextStack.pop();
-		context.prepare(id, settings, baker);
-
-		model = pluginContext.modifyModelBeforeBake().invoker().modifyModelBeforeBake(model, context);
-
-		beforeBakeModifierContextStack.push(context);
-		return model;
-	}
-
-	public BakedModel modifyModelAfterBake(BakedModel model, Identifier id, UnbakedModel sourceModel, ModelBakeSettings settings, Baker baker) {
-		if (afterBakeModifierContextStack.isEmpty()) {
-			afterBakeModifierContextStack.add(new AfterBakeModifierContext());
-		}
-
-		AfterBakeModifierContext context = afterBakeModifierContextStack.pop();
-		context.prepare(id, sourceModel, settings, baker);
-
-		model = pluginContext.modifyModelAfterBake().invoker().modifyModelAfterBake(model, context);
-
-		afterBakeModifierContextStack.push(context);
-		return model;
 	}
 
 	public BlockStatesLoader.BlockStateDefinition modifyBlockModelsOnLoad(BlockStatesLoader.BlockStateDefinition models) {
@@ -199,16 +162,6 @@ public class ModelLoadingEventDispatcher {
 		return pluginContext.modifyBlockModelOnLoad().invoker().modifyModelOnLoad(model, onLoadBlockModifierContext);
 	}
 
-	public GroupableModel modifyBlockModelBeforeBake(GroupableModel model, ModelIdentifier id, Baker baker) {
-		beforeBakeBlockModifierContext.prepare(id, baker);
-		return pluginContext.modifyBlockModelBeforeBake().invoker().modifyModelBeforeBake(model, beforeBakeBlockModifierContext);
-	}
-
-	public BakedModel modifyBlockModelAfterBake(BakedModel model, ModelIdentifier id, GroupableModel sourceModel, Baker baker) {
-		afterBakeBlockModifierContext.prepare(id, sourceModel, baker);
-		return pluginContext.modifyBlockModelAfterBake().invoker().modifyModelAfterBake(model, afterBakeBlockModifierContext);
-	}
-
 	private static class BlockStateResolverContext implements BlockStateResolver.Context {
 		private Block block;
 		private final Reference2ReferenceMap<BlockState, GroupableModel> models = new Reference2ReferenceOpenHashMap<>();
@@ -251,67 +204,6 @@ public class ModelLoadingEventDispatcher {
 		}
 	}
 
-	private static class BeforeBakeModifierContext implements ModelModifier.BeforeBake.Context {
-		private Identifier id;
-		private ModelBakeSettings settings;
-		private Baker baker;
-
-		private void prepare(Identifier id, ModelBakeSettings settings, Baker baker) {
-			this.id = id;
-			this.settings = settings;
-			this.baker = baker;
-		}
-
-		@Override
-		public Identifier id() {
-			return id;
-		}
-
-		@Override
-		public ModelBakeSettings settings() {
-			return settings;
-		}
-
-		@Override
-		public Baker baker() {
-			return baker;
-		}
-	}
-
-	private static class AfterBakeModifierContext implements ModelModifier.AfterBake.Context {
-		private Identifier id;
-		private UnbakedModel sourceModel;
-		private ModelBakeSettings settings;
-		private Baker baker;
-
-		private void prepare(Identifier id, UnbakedModel sourceModel, ModelBakeSettings settings, Baker baker) {
-			this.id = id;
-			this.sourceModel = sourceModel;
-			this.settings = settings;
-			this.baker = baker;
-		}
-
-		@Override
-		public Identifier id() {
-			return id;
-		}
-
-		@Override
-		public UnbakedModel sourceModel() {
-			return sourceModel;
-		}
-
-		@Override
-		public ModelBakeSettings settings() {
-			return settings;
-		}
-
-		@Override
-		public Baker baker() {
-			return baker;
-		}
-	}
-
 	private static class OnLoadBlockModifierContext implements ModelModifier.OnLoadBlock.Context {
 		private ModelIdentifier id;
 		private BlockState state;
@@ -329,53 +221,6 @@ public class ModelLoadingEventDispatcher {
 		@Override
 		public BlockState state() {
 			return state;
-		}
-	}
-
-	private static class BeforeBakeBlockModifierContext implements ModelModifier.BeforeBakeBlock.Context {
-		private ModelIdentifier id;
-		private Baker baker;
-
-		private void prepare(ModelIdentifier id, Baker baker) {
-			this.id = id;
-			this.baker = baker;
-		}
-
-		@Override
-		public ModelIdentifier id() {
-			return id;
-		}
-
-		@Override
-		public Baker baker() {
-			return baker;
-		}
-	}
-
-	private static class AfterBakeBlockModifierContext implements ModelModifier.AfterBakeBlock.Context {
-		private ModelIdentifier id;
-		private GroupableModel sourceModel;
-		private Baker baker;
-
-		private void prepare(ModelIdentifier id, GroupableModel sourceModel, Baker baker) {
-			this.id = id;
-			this.sourceModel = sourceModel;
-			this.baker = baker;
-		}
-
-		@Override
-		public ModelIdentifier id() {
-			return id;
-		}
-
-		@Override
-		public GroupableModel sourceModel() {
-			return sourceModel;
-		}
-
-		@Override
-		public Baker baker() {
-			return baker;
 		}
 	}
 }
