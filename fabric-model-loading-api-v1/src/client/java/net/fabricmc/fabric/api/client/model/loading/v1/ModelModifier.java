@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.GroupableModel;
+import net.minecraft.client.render.model.ResolvableModel;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
@@ -70,6 +71,11 @@ public final class ModelModifier {
 		/**
 		 * This handler is invoked to allow modification of an unbaked model right after it is first loaded and before
 		 * it is cached.
+		 *
+		 * <p>If the given model is {@code null}, its corresponding identifier was requested during
+		 * {@linkplain ResolvableModel#resolve resolution} but the model was not loaded normally; i.e. through a JSON
+		 * file, possibly because that file did not exist. If a non-{@code null} model is returned in this case,
+		 * resolution will continue without warnings or errors.
 		 *
 		 * @param model the current unbaked model instance
 		 * @param context context with additional information about the model/loader
