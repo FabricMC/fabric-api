@@ -220,7 +220,7 @@ public final class FabricClientTestHelper {
 
 	public static <T, E extends Throwable> T computeOnClient(FailableFunction<MinecraftClient, T, E> action) throws E {
 		MutableObject<T> result = new MutableObject<>();
-		runOnClient(minecraft -> result.setValue(action.apply(minecraft)));
+		runOnClient(client -> result.setValue(action.apply(client)));
 		return result.getValue();
 	}
 }
