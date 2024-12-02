@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.renderer.v1.material;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 
@@ -52,13 +54,14 @@ public enum BlendMode {
 	 */
 	TRANSLUCENT(RenderLayer.getTranslucent());
 
+	@Nullable
 	public final RenderLayer blockRenderLayer;
 
-	BlendMode(RenderLayer blockRenderLayer) {
+	BlendMode(@Nullable RenderLayer blockRenderLayer) {
 		this.blockRenderLayer = blockRenderLayer;
 	}
 
-	public static BlendMode fromRenderLayer(RenderLayer renderLayer) {
+	public static BlendMode fromRenderLayer(@Nullable RenderLayer renderLayer) {
 		if (renderLayer == RenderLayer.getSolid()) {
 			return SOLID;
 		} else if (renderLayer == RenderLayer.getCutoutMipped()) {

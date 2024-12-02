@@ -24,8 +24,12 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockModelRenderer;
+import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -103,7 +107,6 @@ public interface FabricBakedModel {
 		VanillaModelEncoder.emitBlockQuads(emitter, (BakedModel) this, state, randomSupplier, cullTest);
 	}
 
-	// TODO: update doc - describe how to depend on ItemStack or other context
 	/**
 	 * This method will be called during item rendering to generate both the static and
 	 * dynamic portions of an item model when the model implements this interface and
@@ -118,6 +121,15 @@ public interface FabricBakedModel {
 	 * <p>Calls to this method will generally happen on the main client thread but nothing
 	 * prevents a mod or renderer from calling this method concurrently. Best practice will
 	 * be to make the method thread-safe.
+	 *
+	 * <p>This method receives very limited context, which is done to ensure that
+	 * {@link ItemRenderState}, after being updated, can be reused an arbitrary amount of times and
+	 * produce the same result each time. To depend on additional context, such as the
+	 * {@link ItemStack} or {@link ModelTransformationMode}, it is recommended to use a custom
+	 * {@link ItemModel}, capture the necessary context such that it cannot be modified externally
+	 * (for example, the {@link ItemStack} can be modified after the render state is updated, so it
+	 * should not be captured directly), and construct a new {@link BakedModel} which then uses
+	 * the captured context in this method.
 	 */
 	default void emitItemQuads(QuadEmitter emitter, Supplier<Random> randomSupplier) {
 		VanillaModelEncoder.emitItemQuads(emitter, (BakedModel) this, null, randomSupplier);

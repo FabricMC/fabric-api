@@ -20,8 +20,13 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.item.ItemRenderState;
 
-// TODO - add doc
+/**
+ * Controls how glint should be applied.
+ */
 public enum GlintMode {
+	/**
+	 * Use the glint {@linkplain ItemRenderState.LayerRenderState#setGlint(ItemRenderState.Glint) set in the layer}.
+	 */
 	DEFAULT(null),
 	NONE(ItemRenderState.Glint.NONE),
 	STANDARD(ItemRenderState.Glint.STANDARD),
