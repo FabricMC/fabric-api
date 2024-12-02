@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -34,6 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.EmptyBlockRenderView;
 
 import net.fabricmc.fabric.api.blockview.v2.FabricBlockView;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -96,19 +98,15 @@ public class FrameBakedModel implements BakedModel {
 		// Emit our frame mesh
 		frameMesh.outputTo(emitter);
 
-		// TODO 1.21.4
-		// Emit a scaled-down fence for testing, trying both materials again.
-		//RenderMaterial material = stack.contains(DataComponentTypes.CUSTOM_NAME) ? translucentEmissiveMaterial : translucentMaterial;
-		//
-		//ItemStack innerItem = Items.CRAFTING_TABLE.getDefaultStack();
-		//BakedModel innerModel = MinecraftClient.getInstance().getItemRenderer().getModel(innerItem, null, null, 0);
-		//
-		//// Let's push a transform to scale the model down and make it transparent
-		//emitter.pushTransform(createInnerTransform(material));
-		//// Emit the inner block model
-		//innerModel.emitItemQuads(emitter, randomSupplier);
-		//// Let's not forget to pop the transform!
-		//emitter.popTransform();
+		BlockState innerState = Blocks.OAK_FENCE.getDefaultState();
+		BakedModel innerModel = MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState);
+
+		// Let's push a transform to scale the model down and make it transparent
+		emitter.pushTransform(createInnerTransform(translucentMaterial));
+		// Emit the inner block model
+		innerModel.emitBlockQuads(emitter, EmptyBlockRenderView.INSTANCE, innerState, BlockPos.ORIGIN, randomSupplier, face -> false);
+		// Let's not forget to pop the transform!
+		emitter.popTransform();
 	}
 
 	/**

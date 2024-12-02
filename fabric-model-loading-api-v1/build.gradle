@@ -3,8 +3,8 @@ version = getSubprojectVersion(project)
 moduleDependencies(project, ['fabric-api-base'])
 
 testDependencies(project, [
-//	':fabric-renderer-api-v1',
-//	':fabric-renderer-indigo',
+	':fabric-renderer-api-v1',
+	':fabric-renderer-indigo',
 	':fabric-rendering-v1',
 	':fabric-resource-loader-v0'
 ])

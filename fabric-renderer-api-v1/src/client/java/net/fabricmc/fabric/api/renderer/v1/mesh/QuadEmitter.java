@@ -202,13 +202,6 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	/**
-	 * Returns whether this emitter currently has at least one transform.
-	 *
-	 * @see #pushTransform(QuadTransform)
-	 */
-	boolean hasTransform();
-
-	/**
 	 * Pushed transforms will be applied immediately after every call to {@link #emit()} and before the quad data is
 	 * delivered to its destination. If any transform returns {@code false}, the emitted quad will be discarded and will
 	 * not be delivered to its destination.

@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.impl.renderer.RendererManager;
 
 /**
@@ -51,19 +51,19 @@ public interface Renderer {
 	}
 
 	/**
-	 * Obtain a new {@link MeshBuilder} instance used to create
-	 * baked models with enhanced features.
+	 * Obtain a new {@link MutableMesh} instance to build optimized meshes and create baked models
+	 * with enhanced features.
 	 *
-	 * <p>Renderer does not retain a reference to returned instances and they should be re-used for
-	 * multiple models when possible to avoid memory allocation overhead.
+	 * <p>Renderer does not retain a reference to returned instances, so they should be re-used
+	 * when possible to avoid memory allocation overhead.
 	 */
-	MeshBuilder meshBuilder();
+	MutableMesh mutableMesh();
 
 	/**
-	 * Obtain a new {@link MaterialFinder} instance used to retrieve
-	 * standard {@link RenderMaterial} instances.
+	 * Obtain a new {@link MaterialFinder} instance to retrieve standard {@link RenderMaterial}
+	 * instances.
 	 *
-	 * <p>Renderer does not retain a reference to returned instances and they should be re-used for
+	 * <p>Renderer does not retain a reference to returned instances, so they should be re-used for
 	 * multiple materials when possible to avoid memory allocation overhead.
 	 */
 	MaterialFinder materialFinder();

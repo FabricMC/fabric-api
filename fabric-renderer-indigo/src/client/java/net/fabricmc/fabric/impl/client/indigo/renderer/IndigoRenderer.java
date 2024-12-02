@@ -24,10 +24,10 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.MaterialFinderImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshBuilderImpl;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 
 /**
  * The Fabric default renderer implementation. Supports all
@@ -47,8 +47,8 @@ public class IndigoRenderer implements Renderer {
 	private IndigoRenderer() { }
 
 	@Override
-	public MeshBuilder meshBuilder() {
-		return new MeshBuilderImpl();
+	public MutableMesh mutableMesh() {
+		return new MutableMeshImpl();
 	}
 
 	@Override

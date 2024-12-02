@@ -31,7 +31,7 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 
 /**
- * Interface for reading quad data encoded by {@link MeshBuilder}.
+ * Interface for reading quad data encoded in {@link Mesh}es.
  * Enables models to do analysis, re-texturing or translation without knowing the
  * renderer's vertex formats and without retaining redundant information.
  *

@@ -257,7 +257,7 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView material(RenderMaterial material);
 
 	/**
-	 * Value functions identically to {@link BakedQuad#getColorIndex()} and is
+	 * Value functions identically to {@link BakedQuad#getTintIndex()} and is
 	 * used by renderer in same way. Default value is -1.
 	 */
 	MutableQuadView tintIndex(int tintIndex);

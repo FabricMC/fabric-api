@@ -197,12 +197,14 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	@Override
 	public final MutableQuadViewImpl copyFrom(QuadView quad) {
 		final QuadViewImpl q = (QuadViewImpl) quad;
-		q.computeGeometry();
-
 		System.arraycopy(q.data, q.baseIndex, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
-		faceNormal.set(q.faceNormal);
 		nominalFace = q.nominalFace;
-		isGeometryInvalid = false;
+		isGeometryInvalid = q.isGeometryInvalid;
+
+		if (!isGeometryInvalid) {
+			faceNormal.set(q.faceNormal);
+		}
+
 		return this;
 	}
 
@@ -226,7 +228,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		fromVanilla(quad.getVertexData(), 0);
 		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(0, cullFace);
 		nominalFace(quad.getFace());
-		tintIndex(quad.getColorIndex());
+		tintIndex(quad.getTintIndex());
 
 		if (!quad.hasShade()) {
 			material = RenderMaterialImpl.setDisableDiffuse((RenderMaterialImpl) material, true);
@@ -243,11 +245,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		material(material);
 		tag(0);
 		return this;
-	}
-
-	@Override
-	public boolean hasTransform() {
-		return activeTransform != NO_TRANSFORM;
 	}
 
 	@Override

@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.GlintMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
@@ -62,8 +62,8 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		MaterialFinder finder = Renderer.get().materialFinder();
 		RenderMaterial glintMaterial = finder.glintMode(GlintMode.STANDARD).shadeMode(shadeMode).find();
 
-		MeshBuilder builder = Renderer.get().meshBuilder();
-		QuadEmitter emitter = builder.getEmitter();
+		MutableMesh builder = Renderer.get().mutableMesh();
+		QuadEmitter emitter = builder.emitter();
 
 		// up
 
@@ -209,7 +209,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.material(glintMaterial);
 		emitter.emit();
 
-		return new SingleMeshBakedModel(builder.build(), whiteConcreteSprite);
+		return new SingleMeshBakedModel(builder.immutableCopy(), whiteConcreteSprite);
 	}
 
 	private static void cornerSprite(QuadEmitter emitter, Sprite sprite) {

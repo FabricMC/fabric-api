@@ -21,7 +21,7 @@ import net.minecraft.client.render.RenderLayers;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 
 /**
@@ -56,7 +56,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
  *
  * <p>Special materials are implemented directly by the Renderer implementation, typically
  * with the aim of providing advanced/extended features. Such materials may offer additional
- * vertex attributes via extensions to {@link MeshBuilder} and {@link MutableQuadView}.
+ * vertex attributes via extensions to {@link MutableMesh} and {@link MutableQuadView}.
  *
  * <p>Special materials can be obtained using {@link Renderer#materialById(Identifier)}
  * with a known identifier. Renderers may provide other means of access. Popular

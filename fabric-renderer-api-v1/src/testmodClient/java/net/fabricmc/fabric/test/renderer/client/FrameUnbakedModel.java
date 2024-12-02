@@ -29,7 +29,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
@@ -48,8 +48,8 @@ public class FrameUnbakedModel implements UnbakedModel {
 	public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
 		Sprite obsidianSprite = baker.getSpriteGetter().get(OBSIDIAN_SPRITE_ID);
 
-		MeshBuilder builder = Renderer.get().meshBuilder();
-		QuadEmitter emitter = builder.getEmitter();
+		MutableMesh builder = Renderer.get().mutableMesh();
+		QuadEmitter emitter = builder.emitter();
 
 		for (Direction direction : Direction.values()) {
 			// Draw outer frame
@@ -87,6 +87,6 @@ public class FrameUnbakedModel implements UnbakedModel {
 					.emit();
 		}
 
-		return new FrameBakedModel(builder.build(), obsidianSprite);
+		return new FrameBakedModel(builder.immutableCopy(), obsidianSprite);
 	}
 }

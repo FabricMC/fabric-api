@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "fabric-renderer-api-v1-testmod:block/frame"
+  }
+}

@@ -17,6 +17,10 @@
 package net.fabricmc.fabric.test.model.loading;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -29,18 +33,25 @@ import net.minecraft.client.render.model.GroupableModel;
 import net.minecraft.client.render.model.MissingModel;
 import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelTextures;
+import net.minecraft.client.render.model.WrapperBakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.ModelVariant;
 import net.minecraft.client.render.model.json.WeightedUnbakedModel;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.AffineTransformation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.WrapperUnbakedModel;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 
 public class ModelTestModClient implements ClientModInitializer {
@@ -49,19 +60,6 @@ public class ModelTestModClient implements ClientModInitializer {
 	public static final Identifier HALF_RED_SAND_MODEL_ID = id("half_red_sand");
 	public static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofVanilla("block/gold_block");
 	public static final Identifier BROWN_GLAZED_TERRACOTTA_MODEL_ID = Identifier.ofVanilla("block/brown_glazed_terracotta");
-
-	//static class DownQuadRemovingModel extends ForwardingBakedModel {
-	//	DownQuadRemovingModel(BakedModel model) {
-	//		wrapped = model;
-	//	}
-	//
-	//	@Override
-	//	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-	//		context.pushTransform(q -> q.cullFace() != Direction.DOWN);
-	//		super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
-	//		context.popTransform();
-	//	}
-	//}
 
 	@Override
 	public void onInitializeClient() {
@@ -115,20 +113,19 @@ public class ModelTestModClient implements ClientModInitializer {
 				return model;
 			});
 
-			// TODO 1.21.4: reintroduce test once FRAPI+Indigo are ported
-			// remove bottom face of gold blocks
-			//pluginContext.modifyModelOnLoad().register(ModelModifier.WRAP_PHASE, (model, context) -> {
-			//	if (context.id().equals(GOLD_BLOCK_MODEL_ID)) {
-			//		return new WrapperUnbakedModel(model) {
-			//			@Override
-			//			public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
-			//				return new DownQuadRemovingModel(super.bake(textures, baker, settings, ambientOcclusion, isSideLit, transformation));
-			//			}
-			//		};
-			//	}
-			//
-			//	return model;
-			//});
+			// Remove bottom face of gold blocks
+			pluginContext.modifyModelOnLoad().register(ModelModifier.WRAP_PHASE, (model, context) -> {
+				if (context.id().equals(GOLD_BLOCK_MODEL_ID)) {
+					return new WrapperUnbakedModel(model) {
+						@Override
+						public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
+							return new DownQuadRemovingModel(super.bake(textures, baker, settings, ambientOcclusion, isSideLit, transformation));
+						}
+					};
+				}
+
+				return model;
+			});
 		});
 
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(SpecificModelReloadListener.INSTANCE);
@@ -146,5 +143,18 @@ public class ModelTestModClient implements ClientModInitializer {
 
 	private static GroupableModel simpleGroupableModel(Identifier model) {
 		return new WeightedUnbakedModel(List.of(new ModelVariant(model, AffineTransformation.identity(), false, 1)));
+	}
+
+	private static class DownQuadRemovingModel extends WrapperBakedModel implements FabricBakedModel {
+		DownQuadRemovingModel(BakedModel model) {
+			super(model);
+		}
+
+		@Override
+		public void emitBlockQuads(QuadEmitter emitter, BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, Predicate<@Nullable Direction> cullTest) {
+			emitter.pushTransform(q -> q.cullFace() != Direction.DOWN);
+			((FabricBakedModel) wrapped).emitBlockQuads(emitter, blockView, state, pos, randomSupplier, cullTest);
+			emitter.popTransform();
+		}
 	}
 }
