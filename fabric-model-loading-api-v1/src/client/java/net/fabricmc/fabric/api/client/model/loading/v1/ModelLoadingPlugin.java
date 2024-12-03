@@ -17,8 +17,10 @@
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.block.Block;
 import net.minecraft.resource.ResourceManager;
@@ -40,6 +42,14 @@ public interface ModelLoadingPlugin {
 	 */
 	static void register(ModelLoadingPlugin plugin) {
 		ModelLoadingPluginManager.registerPlugin(plugin);
+	}
+
+	/**
+	 * Gets a list of all registered model loading plugins.
+	 */
+	@UnmodifiableView
+	static List<ModelLoadingPlugin> getAll() {
+		return ModelLoadingPluginManager.PLUGINS_VIEW;
 	}
 
 	/**
