@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
+import net.fabricmc.fabric.api.client.rendering.v1.HudPostRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudPreRenderCallback;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,12 +28,16 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderTickCounter;
 
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
+
+	@Inject(method = "render", at = @At(value = "HEAD"))
+	public void renderHead(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo callbackInfo) {
+		HudPreRenderCallback.EVENT.invoker().onHudPreRender(drawContext, tickCounter);
+	}
+
 	@Inject(method = "render", at = @At(value = "TAIL"))
-	public void render(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo callbackInfo) {
-		HudRenderCallback.EVENT.invoker().onHudRender(drawContext, tickCounter);
+	public void renderTail(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo callbackInfo) {
+		HudPostRenderCallback.EVENT.invoker().onHudPostRender(drawContext, tickCounter);
 	}
 }

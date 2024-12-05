@@ -17,6 +17,10 @@
 package net.fabricmc.fabric.test.rendering.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+
+import net.fabricmc.fabric.api.client.rendering.v1.HudPostRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudPreRenderCallback;
+
 import org.joml.Matrix4f;
 
 import net.minecraft.client.MinecraftClient;
@@ -31,10 +35,9 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 /**
- * Tests {@link HudRenderCallback} and {@link CoreShaderRegistrationCallback} by drawing a green rectangle
+ * Tests {@link HudPostRenderCallback}, {@link  HudPreRenderCallback} and {@link CoreShaderRegistrationCallback} by drawing a green rectangle
  * in the lower-right corner of the screen.
  */
 public class HudAndShaderTest implements ClientModInitializer {
@@ -48,7 +51,25 @@ public class HudAndShaderTest implements ClientModInitializer {
 			context.register(id, VertexFormats.POSITION, program -> testShader = program);
 		});
 
-		HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
+		HudPreRenderCallback.EVENT.register((drawContext, tickDelta) -> {
+			MinecraftClient client = MinecraftClient.getInstance();
+			Window window = client.getWindow();
+			int x = 15;
+			int y = window.getScaledHeight() - 15;
+			RenderSystem.setShader(() -> testShader);
+			RenderSystem.setShaderColor(0f, 1f, 0f, 1f);
+			Matrix4f positionMatrix = drawContext.getMatrices().peek().getPositionMatrix();
+			BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+			buffer.vertex(positionMatrix, x, y, 50);
+			buffer.vertex(positionMatrix, x, y + 10, 50);
+			buffer.vertex(positionMatrix, x + 10, y + 10, 50);
+			buffer.vertex(positionMatrix, x + 10, y, 50);
+			BufferRenderer.drawWithGlobalProgram(buffer.end());
+			// Reset shader color
+			RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+		});
+
+		HudPostRenderCallback.EVENT.register((drawContext, tickDelta) -> {
 			MinecraftClient client = MinecraftClient.getInstance();
 			Window window = client.getWindow();
 			int x = window.getScaledWidth() - 15;
