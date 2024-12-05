@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.resource.ResourceManager;
@@ -79,6 +80,10 @@ public interface PreparableModelLoadingPlugin<T> {
 	 * Bundles a {@link PreparableModelLoadingPlugin} with its corresponding {@link DataLoader}
 	 * for retrieval through {@link #getAll()}.
 	 */
-	record Holder<T>(DataLoader<T> loader, PreparableModelLoadingPlugin<T> plugin) {
+	@ApiStatus.NonExtendable
+	interface Holder<T> {
+		DataLoader<T> loader();
+
+		PreparableModelLoadingPlugin<T> plugin();
 	}
 }
