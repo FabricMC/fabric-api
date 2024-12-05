@@ -16,37 +16,31 @@
 
 package net.fabricmc.fabric.mixin.object.builder.client;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.WoodType;
 import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
-@Mixin(TexturedRenderLayers.class)
-public class TexturedRenderLayersMixin {
-	@Shadow
-	@Final
-	public static Identifier SIGNS_ATLAS_TEXTURE;
+import net.fabricmc.fabric.impl.object.builder.client.SignTypeTextureHelper;
 
-	@Inject(method = "createSignTextureId", at = @At("HEAD"), cancellable = true)
-	private static void modifyTextureId(WoodType type, CallbackInfoReturnable<SpriteIdentifier> cir) {
-		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
-			Identifier identifier = Identifier.of(type.name());
-			cir.setReturnValue(new SpriteIdentifier(SIGNS_ATLAS_TEXTURE, Identifier.of(identifier.getNamespace(), "entity/signs/" + identifier.getPath())));
-		}
+@Mixin(TexturedRenderLayers.class)
+abstract class TexturedRenderLayersMixin {
+	@Inject(method = "<clinit>*", at = @At("RETURN"))
+	private static void onReturnClinit(CallbackInfo ci) {
+		SignTypeTextureHelper.shouldAddTextures = true;
 	}
 
-	@Inject(method = "createHangingSignTextureId", at = @At("HEAD"), cancellable = true)
-	private static void modifyHangingTextureId(WoodType type, CallbackInfoReturnable<SpriteIdentifier> cir) {
-		if (type.name().indexOf(Identifier.NAMESPACE_SEPARATOR) != -1) {
-			Identifier identifier = Identifier.of(type.name());
-			cir.setReturnValue(new SpriteIdentifier(SIGNS_ATLAS_TEXTURE, Identifier.of(identifier.getNamespace(), "entity/signs/hanging/" + identifier.getPath())));
-		}
+	@Redirect(method = "createSignTextureId", at = @At(value = "INVOKE", target = "net/minecraft/util/Identifier.ofVanilla(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"))
+	private static Identifier redirectSignVanillaId(String name) {
+		return Identifier.of(name);
+	}
+
+	@Redirect(method = "createHangingSignTextureId", at = @At(value = "INVOKE", target = "net/minecraft/util/Identifier.ofVanilla(Ljava/lang/String;)Lnet/minecraft/util/Identifier;"))
+	private static Identifier redirectHangingVanillaId(String name) {
+		return Identifier.of(name);
 	}
 }

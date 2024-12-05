@@ -25,12 +25,16 @@ import net.minecraft.block.WoodType;
 import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.impl.object.builder.client.SignTypeTextureHelper;
+
 @Mixin(WoodType.class)
-public abstract class WoodTypeMixin {
+abstract class WoodTypeMixin {
 	@Inject(method = "register", at = @At("RETURN"))
-	private static void register(WoodType type, CallbackInfoReturnable<WoodType> cir) {
-		final Identifier identifier = Identifier.of(type.name());
-		TexturedRenderLayers.SIGN_TYPE_TEXTURES.put(type, TexturedRenderLayers.createSignTextureId(identifier));
-		TexturedRenderLayers.HANGING_SIGN_TYPE_TEXTURES.put(type, TexturedRenderLayers.createHangingSignTextureId(identifier));
+	private static void onReturnRegister(WoodType type, CallbackInfoReturnable<WoodType> cir) {
+		if (SignTypeTextureHelper.shouldAddTextures) {
+			final Identifier identifier = Identifier.of(type.name());
+			TexturedRenderLayers.SIGN_TYPE_TEXTURES.put(type, TexturedRenderLayers.createSignTextureId(identifier));
+			TexturedRenderLayers.HANGING_SIGN_TYPE_TEXTURES.put(type, TexturedRenderLayers.createHangingSignTextureId(identifier));
+		}
 	}
 }
