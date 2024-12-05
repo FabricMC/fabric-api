@@ -52,6 +52,8 @@ public class RegistryAliasTest implements ModInitializer {
 			Registries.ITEM.addAlias(OLD_TEST_BLOCK, TEST_BLOCK);
 			Registries.ITEM.addAlias(OLD_TEST_INGOT, TEST_INGOT);
 		}
+
+		Registries.ITEM.addAlias(Identifier.of("old_stone"), Identifier.of("stone"));
 	}
 
 	private static void register(Identifier blockId, Identifier itemId) {
