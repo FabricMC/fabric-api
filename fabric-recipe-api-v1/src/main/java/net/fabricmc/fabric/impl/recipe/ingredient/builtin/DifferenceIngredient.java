@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.mojang.serialization.MapCodec;
@@ -72,6 +73,19 @@ public class DifferenceIngredient implements CustomIngredient {
 
 	private Ingredient getSubtracted() {
 		return subtracted;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		DifferenceIngredient that = (DifferenceIngredient) o;
+		return base.equals(that.base) && subtracted.equals(that.subtracted);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(base, subtracted);
 	}
 
 	private static class Serializer implements CustomIngredientSerializer<DifferenceIngredient> {

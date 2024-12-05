@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -74,12 +75,22 @@ public class CustomIngredientImpl extends Ingredient {
 	// Actual custom ingredient logic
 
 	private final CustomIngredient customIngredient;
+	@Nullable
+	private List<RegistryEntry<Item>> customMatchingItems;
 
 	public CustomIngredientImpl(CustomIngredient customIngredient) {
 		// We must pass a registry entry list that contains something that isn't air. It doesn't actually get used.
 		super(RegistryEntryList.of(Items.STONE.getRegistryEntry()));
 
 		this.customIngredient = customIngredient;
+	}
+
+	private List<RegistryEntry<Item>> getCustomMatchingItems() {
+		if (customMatchingItems == null) {
+			customMatchingItems = customIngredient.getMatchingItems().toList();
+		}
+
+		return customMatchingItems;
 	}
 
 	@Override
@@ -94,16 +105,38 @@ public class CustomIngredientImpl extends Ingredient {
 
 	@Override
 	public Stream<RegistryEntry<Item>> getMatchingItems() {
-		return customIngredient.getMatchingItems();
+		return getCustomMatchingItems().stream();
 	}
 
 	@Override
-	public boolean test(@Nullable ItemStack stack) {
-		return stack != null && customIngredient.test(stack);
+	public boolean isEmpty() {
+		return getCustomMatchingItems().isEmpty();
+	}
+
+	@Override
+	public boolean test(ItemStack stack) {
+		return customIngredient.test(stack);
+	}
+
+	@Override
+	public boolean acceptsItem(RegistryEntry<Item> registryEntry) {
+		return getCustomMatchingItems().contains(registryEntry);
 	}
 
 	@Override
 	public SlotDisplay toDisplay() {
 		return customIngredient.toDisplay();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof CustomIngredientImpl that)) return false;
+		return customIngredient.equals(that.customIngredient);
+	}
+
+	@Override
+	public int hashCode() {
+		return customIngredient.hashCode();
 	}
 }

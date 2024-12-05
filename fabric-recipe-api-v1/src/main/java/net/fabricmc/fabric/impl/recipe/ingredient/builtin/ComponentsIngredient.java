@@ -120,6 +120,19 @@ public class ComponentsIngredient implements CustomIngredient {
 		return components;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ComponentsIngredient that = (ComponentsIngredient) o;
+		return base.equals(that.base) && components.equals(that.components);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(base, components);
+	}
+
 	private static class Serializer implements CustomIngredientSerializer<ComponentsIngredient> {
 		private static final Identifier ID = Identifier.of("fabric", "components");
 		private static final MapCodec<ComponentsIngredient> CODEC = RecordCodecBuilder.mapCodec(instance ->

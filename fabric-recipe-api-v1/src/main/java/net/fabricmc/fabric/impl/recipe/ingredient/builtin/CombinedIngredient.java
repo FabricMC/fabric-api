@@ -67,6 +67,18 @@ abstract class CombinedIngredient implements CustomIngredient {
 		);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof CombinedIngredient that)) return false;
+		return ingredients.equals(that.ingredients);
+	}
+
+	@Override
+	public int hashCode() {
+		return ingredients.hashCode();
+	}
+
 	static class Serializer<I extends CombinedIngredient> implements CustomIngredientSerializer<I> {
 		private final Identifier identifier;
 		private final MapCodec<I> codec;
