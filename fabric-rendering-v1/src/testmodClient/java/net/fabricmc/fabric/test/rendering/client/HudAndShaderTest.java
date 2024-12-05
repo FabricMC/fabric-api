@@ -18,9 +18,6 @@ package net.fabricmc.fabric.test.rendering.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.fabricmc.fabric.api.client.rendering.v1.HudPostRenderCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudPreRenderCallback;
-
 import org.joml.Matrix4f;
 
 import net.minecraft.client.MinecraftClient;
@@ -35,6 +32,8 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudPostRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudPreRenderCallback;
 
 /**
  * Tests {@link HudPostRenderCallback}, {@link  HudPreRenderCallback} and {@link CoreShaderRegistrationCallback} by drawing a green rectangle
