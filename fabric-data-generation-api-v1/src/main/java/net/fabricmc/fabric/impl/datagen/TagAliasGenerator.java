@@ -28,7 +28,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.tag.v1.TagAliasGroup;
+import net.fabricmc.fabric.impl.tag.TagAliasGroup;
 
 public final class TagAliasGenerator {
 	public static String getDirectory(RegistryKey<? extends Registry<?>> registryKey) {

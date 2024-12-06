@@ -50,7 +50,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.tag.v1.TagAliasGroup;
 
 public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<RegistryKey<? extends Registry<?>>, List<TagAliasLoader.Data>>> implements IdentifiableResourceReloadListener {
 	public static final Identifier ID = Identifier.of("fabric-tag-api-v1", "tag_alias_groups");
