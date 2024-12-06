@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -82,5 +83,10 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 	@Override
 	public boolean fabric_shouldTryToSync() {
 		return !this.world.isClient();
+	}
+
+	@Override
+	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
+		return world.getRegistryManager();
 	}
 }

@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
@@ -88,5 +89,10 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	@Override
 	public boolean fabric_shouldTryToSync() {
 		return !this.getWorld().isClient();
+	}
+
+	@Override
+	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
+		return this.getWorld().getRegistryManager();
 	}
 }

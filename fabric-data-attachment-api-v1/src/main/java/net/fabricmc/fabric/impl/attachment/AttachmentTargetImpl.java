@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -93,4 +94,6 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	default boolean fabric_shouldTryToSync() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
+
+	DynamicRegistryManager fabric_getDynamicRegistryManager();
 }

@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.chunk.WorldChunk;
@@ -102,5 +103,10 @@ abstract class WrapperProtoChunkMixin extends AttachmentTargetsMixin {
 	@Override
 	public void fabric_markChanged(AttachmentType<?> type) {
 		((AttachmentTargetImpl) wrapped).fabric_markChanged(type);
+	}
+
+	@Override
+	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
+		return ((AttachmentTargetImpl) wrapped).fabric_getDynamicRegistryManager();
 	}
 }

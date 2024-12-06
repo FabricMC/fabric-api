@@ -37,6 +37,7 @@ import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.UuidArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.BlockPos;
@@ -98,6 +99,11 @@ public class AttachmentTestModClient implements ClientModInitializer {
 		context.getSource().sendFeedback(
 				Text.literal("Synced-with-creative attachment: %s".formatted(attCustom))
 						.withColor(attCustom ? target instanceof PlayerEntity p && p.isCreative() ? Colors.GREEN : Colors.RED : Colors.WHITE)
+		);
+		ItemStack stack = target.getAttachedOrCreate(AttachmentTestMod.SYNCED_ITEM);
+		context.getSource().sendFeedback(
+				Text.literal("Synced-item attachment: %s".formatted(stack))
+						.withColor(attOther ? target != MinecraftClient.getInstance().player ? Colors.GREEN : Colors.RED : Colors.WHITE)
 		);
 	}
 

@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.util.Identifier;
 
@@ -80,7 +80,7 @@ public final class AttachmentRegistryImpl {
 		@Nullable
 		private Codec<A> persistenceCodec = null;
 		@Nullable
-		private PacketCodec<PacketByteBuf, A> packetCodec = null;
+		private PacketCodec<? super RegistryByteBuf, A> packetCodec = null;
 		@Nullable
 		private AttachmentSyncPredicate syncPredicate = null;
 		private boolean copyOnDeath = false;
@@ -107,7 +107,8 @@ public final class AttachmentRegistryImpl {
 			return this;
 		}
 
-		public AttachmentRegistry.Builder<A> syncWith(PacketCodec<PacketByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate) {
+		@Deprecated
+		public AttachmentRegistry.Builder<A> syncWith(PacketCodec<? super RegistryByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate) {
 			Objects.requireNonNull(packetCodec, "packet codec cannot be null");
 			Objects.requireNonNull(syncPredicate, "sync predicate cannot be null");
 

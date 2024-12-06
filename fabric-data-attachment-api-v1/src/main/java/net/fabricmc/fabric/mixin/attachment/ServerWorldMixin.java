@@ -89,4 +89,9 @@ abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
 	public AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
 		return AttachmentTargetInfo.WorldTarget.INSTANCE;
 	}
+
+	@Override
+	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
+		return getRegistryManager();
+	}
 }

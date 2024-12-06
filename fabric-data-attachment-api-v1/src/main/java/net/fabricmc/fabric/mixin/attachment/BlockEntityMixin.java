@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -94,5 +95,10 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	public boolean fabric_shouldTryToSync() {
 		// Persistent attachments are read at a time with no world
 		return !this.hasWorld() || !this.world.isClient();
+	}
+
+	@Override
+	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
+		return this.world.getRegistryManager();
 	}
 }

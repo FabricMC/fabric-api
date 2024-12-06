@@ -61,7 +61,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		this.fabric_markChanged(type);
 
 		if (this.fabric_shouldTryToSync() && type.isSynced()) {
-			AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value);
+			AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getDynamicRegistryManager());
 			acknowledgeSyncedEntry(type, change);
 			this.fabric_syncChange(type, new AttachmentSyncPayloadS2C(List.of(change)));
 		}
@@ -118,7 +118,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Unique
 	private void acknowledgeSynced(AttachmentType<?> type, Object value) {
-		acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value));
+		acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getDynamicRegistryManager()));
 	}
 
 	@Unique
