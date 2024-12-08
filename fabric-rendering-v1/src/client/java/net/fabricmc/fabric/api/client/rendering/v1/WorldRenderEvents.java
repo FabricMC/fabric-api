@@ -139,11 +139,11 @@ public final class WorldRenderEvents {
 	 * renders.  Mods that replace the default block outline for specific blocks
 	 * should instead subscribe to {@link #BLOCK_OUTLINE}.
 	 */
-	public static final Event<BeforeBlockOutline> BEFORE_BLOCK_OUTLINE = EventFactory.createArrayBacked(BeforeBlockOutline.class, (context, hit) -> true, callbacks -> (context, hit) -> {
+	public static final Event<BeforeBlockOutline> BEFORE_BLOCK_OUTLINE = EventFactory.createArrayBacked(BeforeBlockOutline.class, (context, translucent, hit) -> true, callbacks -> (context, translucent, hit) -> {
 		boolean shouldRender = true;
 
 		for (final BeforeBlockOutline callback : callbacks) {
-			if (!callback.beforeBlockOutline(context, hit)) {
+			if (!callback.beforeBlockOutline(context, translucent, hit)) {
 				shouldRender = false;
 			}
 		}
@@ -279,13 +279,15 @@ public final class WorldRenderEvents {
 		 * Event signature for {@link WorldRenderEvents#BEFORE_BLOCK_OUTLINE}.
 		 *
 		 * @param context  Access to state and parameters available during world rendering.
+		 * @param translucent If {@code true}, current block outline is being rendered after translucent terrain.
+		 *                    Otherwise, it is being rendered after solid terrain.
 		 * @param hitResult The game object currently under the crosshair target.
 		 * Normally equivalent to {@link MinecraftClient#crosshairTarget}. Provided for convenience.
 		 * @return true if vanilla block outline rendering should happen.
 		 * Returning false prevents {@link WorldRenderEvents#BLOCK_OUTLINE} from invoking
 		 * and also skips the vanilla block outline render, but has no effect on other subscribers to this event.
 		 */
-		boolean beforeBlockOutline(WorldRenderContext context, @Nullable HitResult hitResult);
+		boolean beforeBlockOutline(WorldRenderContext context, boolean translucent, @Nullable HitResult hitResult);
 	}
 
 	@FunctionalInterface
