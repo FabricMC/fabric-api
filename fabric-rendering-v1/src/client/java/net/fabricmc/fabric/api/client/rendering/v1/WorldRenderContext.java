@@ -44,12 +44,6 @@ public interface WorldRenderContext {
 	 */
 	WorldRenderer worldRenderer();
 
-	/**
-	 * The matrix stack is only not null in {@link WorldRenderEvents#AFTER_ENTITIES} or later events.
-	 */
-	@Nullable
-	MatrixStack matrixStack();
-
 	RenderTickCounter tickCounter();
 
 	boolean blockOutlines();
@@ -58,9 +52,9 @@ public interface WorldRenderContext {
 
 	GameRenderer gameRenderer();
 
-	Matrix4f projectionMatrix();
-
 	Matrix4f positionMatrix();
+
+	Matrix4f projectionMatrix();
 
 	/**
 	 * Convenient access to {WorldRenderer.world}.
@@ -92,30 +86,39 @@ public interface WorldRenderContext {
 	 * possible, caller should use a separate "immediate" instance.
 	 *
 	 * <p>This property is {@code null} before {@link WorldRenderEvents#BEFORE_ENTITIES} and after
-	 * {@link WorldRenderEvents#BEFORE_DEBUG_RENDER} because the consumer buffers are not available before or
+	 * {@link WorldRenderEvents#BLOCK_OUTLINE} (translucent) because the consumer buffers are not available before or
 	 * drawn after that in vanilla world rendering.  Renders that cannot draw in one of the supported events
 	 * must be drawn directly to the frame buffer, preferably in {@link WorldRenderEvents#LAST} to avoid being
 	 * overdrawn or cleared.
 	 */
-	@Nullable VertexConsumerProvider consumers();
+	@Nullable
+	VertexConsumerProvider consumers();
 
 	/**
 	 * View frustum, after it is initialized. Will be {@code null} during
 	 * {@link WorldRenderEvents#START}.
 	 */
-	@Nullable Frustum frustum();
+	@Nullable
+	Frustum frustum();
 
 	/**
-	 * Used in {@code BLOCK_OUTLINE} to convey the parameters normally sent to
+	 * The matrix stack is only not null in {@link WorldRenderEvents#AFTER_ENTITIES} or later events.
+	 */
+	@Nullable
+	MatrixStack matrixStack();
+
+	/**
+	 * Meant to be used in {@link WorldRenderEvents#BEFORE_BLOCK_OUTLINE} and {@link WorldRenderEvents#BLOCK_OUTLINE}.
+	 * @return {@code true} if the current block outline is being rendered after translucent terrain; {@code false} if
+	 * it is being rendered after solid terrain
+	 */
+	boolean translucentBlockOutline();
+
+	/**
+	 * Used in {@link WorldRenderEvents#BLOCK_OUTLINE} to convey the parameters normally sent to
 	 * {@code WorldRenderer.drawBlockOutline}.
 	 */
 	interface BlockOutlineContext {
-		/**
-		 * @deprecated Use {@link #consumers()} directly.
-		 */
-		@Deprecated
-		VertexConsumer vertexConsumer();
-
 		Entity entity();
 
 		double cameraX();
@@ -127,5 +130,11 @@ public interface WorldRenderContext {
 		BlockPos blockPos();
 
 		BlockState blockState();
+
+		/**
+		 * @deprecated Use {@link #consumers()} directly.
+		 */
+		@Deprecated
+		VertexConsumer vertexConsumer();
 	}
 }
