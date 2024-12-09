@@ -85,7 +85,7 @@ public class CustomIngredientImpl extends Ingredient {
 		this.customIngredient = customIngredient;
 	}
 
-	private List<RegistryEntry<Item>> getCustomMatchingItems() {
+	public List<RegistryEntry<Item>> getCustomMatchingItems() {
 		if (customMatchingItems == null) {
 			customMatchingItems = customIngredient.getMatchingItems().toList();
 		}

@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient;
 
-import java.util.Set;
-
-import org.jetbrains.annotations.Nullable;
+import java.util.Optional;
 
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -28,19 +26,18 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
-public class CustomIngredientPacketCodec implements PacketCodec<RegistryByteBuf, Ingredient> {
-	static final int PACKET_MARKER = -1;
-	private final PacketCodec<RegistryByteBuf, Ingredient> fallback;
+public class OptionalCustomIngredientPacketCodec implements PacketCodec<RegistryByteBuf, Optional<Ingredient>> {
+	private final PacketCodec<RegistryByteBuf, Optional<Ingredient>> fallback;
 
-	public CustomIngredientPacketCodec(PacketCodec<RegistryByteBuf, Ingredient> fallback) {
+	public OptionalCustomIngredientPacketCodec(PacketCodec<RegistryByteBuf, Optional<Ingredient>> fallback) {
 		this.fallback = fallback;
 	}
 
 	@Override
-	public Ingredient decode(RegistryByteBuf buf) {
+	public Optional<Ingredient> decode(RegistryByteBuf buf) {
 		int index = buf.readerIndex();
 
-		if (buf.readVarInt() != PACKET_MARKER) {
+		if (buf.readVarInt() != CustomIngredientPacketCodec.PACKET_MARKER) {
 			// Reset index for vanilla's normal deserialization logic.
 			buf.readerIndex(index);
 			return this.fallback.decode(buf);
@@ -53,35 +50,29 @@ public class CustomIngredientPacketCodec implements PacketCodec<RegistryByteBuf,
 			throw new IllegalArgumentException("Cannot deserialize custom ingredient of unknown type " + type);
 		}
 
-		return serializer.getPacketCodec().decode(buf).toVanilla();
+		return Optional.of(serializer.getPacketCodec().decode(buf).toVanilla());
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void encode(RegistryByteBuf buf, Ingredient value) {
-		CustomIngredient customIngredient = value.getCustomIngredient();
+	public void encode(RegistryByteBuf buf, Optional<Ingredient> value) {
+		if (value.isEmpty()) {
+			this.fallback.encode(buf, value);
+			return;
+		}
 
-		if (shouldEncodeFallback(customIngredient)) {
+		CustomIngredient customIngredient = value.get().getCustomIngredient();
+
+		if (CustomIngredientPacketCodec.shouldEncodeFallback(customIngredient)) {
 			// The client doesn't support this custom ingredient, so we send the matching stacks as a regular ingredient.
 			this.fallback.encode(buf, value);
 			return;
 		}
 
 		// The client supports this custom ingredient, so we send it as a custom ingredient.
-		buf.writeVarInt(PACKET_MARKER);
+		buf.writeVarInt(CustomIngredientPacketCodec.PACKET_MARKER);
 		buf.writeIdentifier(customIngredient.getSerializer().getIdentifier());
 		PacketCodec<RegistryByteBuf, CustomIngredient> packetCodec = (PacketCodec<RegistryByteBuf, CustomIngredient>) customIngredient.getSerializer().getPacketCodec();
 		packetCodec.encode(buf, customIngredient);
-	}
-
-	static boolean shouldEncodeFallback(@Nullable CustomIngredient customIngredient) {
-		if (customIngredient == null) {
-			return true;
-		}
-
-		// Can be null if we're not writing a packet from the PacketEncoder; in that case, always write the full ingredient.
-		// Chances are this is a mod's doing and the client has the Ingredient API with the relevant ingredients.
-		Set<Identifier> supportedIngredients = CustomIngredientSync.CURRENT_SUPPORTED_INGREDIENTS.get();
-		return supportedIngredients != null && !supportedIngredients.contains(customIngredient.getSerializer().getIdentifier());
 	}
 }
