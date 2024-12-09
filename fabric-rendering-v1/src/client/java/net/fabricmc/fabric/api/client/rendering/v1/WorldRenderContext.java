@@ -24,6 +24,7 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -109,6 +110,12 @@ public interface WorldRenderContext {
 	 * {@code WorldRenderer.drawBlockOutline}.
 	 */
 	interface BlockOutlineContext {
+		/**
+		 * @deprecated Use {@link #consumers()} directly.
+		 */
+		@Deprecated
+		VertexConsumer vertexConsumer();
+
 		Entity entity();
 
 		double cameraX();
