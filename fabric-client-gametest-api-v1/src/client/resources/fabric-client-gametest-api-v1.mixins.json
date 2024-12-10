@@ -1,12 +1,12 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.gametest.client",
+  "package": "net.fabricmc.fabric.mixin.client.gametest",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MinecraftDedicatedServerMixin",
     "MinecraftServerMixin"
   ],
-  "plugin": "net.fabricmc.fabric.impl.gametest.client.ClientGameTestMixinConfigPlugin",
+  "plugin": "net.fabricmc.fabric.impl.client.gametest.ClientGameTestMixinConfigPlugin",
   "injectors": {
     "defaultRequire": 1
   },

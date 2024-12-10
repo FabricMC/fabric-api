@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.gametest.client;
-
-import java.util.List;
+package net.fabricmc.fabric.mixin.client.gametest;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.TitleScreen;
 
-@Mixin(Screen.class)
-public interface ScreenAccessor {
+@Mixin(TitleScreen.class)
+public interface TitleScreenAccessor {
 	@Accessor
-	List<Drawable> getDrawables();
+	boolean getDoBackgroundFade();
 }

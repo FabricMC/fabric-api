@@ -6,8 +6,8 @@
   "environment": "*",
   "license": "Apache-2.0",
   "entrypoints": {
-    "client": [
-      "net.fabricmc.fabric.test.gametest.client.ClientGameTestTestMod"
+    "fabric-client-gametest": [
+      "net.fabricmc.fabric.test.gametest.client.ClientGameTestTest"
     ]
   }
 }

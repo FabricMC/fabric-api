@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.gametest.client;
+package net.fabricmc.fabric.mixin.client.gametest;
 
 import com.google.common.base.Preconditions;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,17 +29,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.SaveLoader;
 import net.minecraft.world.level.storage.LevelStorage;
 
-import net.fabricmc.fabric.impl.gametest.client.ThreadingImpl;
+import net.fabricmc.fabric.impl.client.gametest.FabricClientGameTestRunner;
+import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
 	@Unique
+	private boolean startedClientGametests = false;
+	@Unique
 	private Runnable deferredTask = null;
+
+	@Shadow
+	@Nullable
+	private Overlay overlay;
 
 	@WrapMethod(method = "run")
 	private void onRun(Operation<Void> original) {
@@ -54,6 +64,14 @@ public class MinecraftClientMixin {
 			ThreadingImpl.clientCanAcceptTasks = false;
 			ThreadingImpl.PHASER.arriveAndDeregister();
 			ThreadingImpl.isClientRunning = false;
+		}
+	}
+
+	@Inject(method = "tick", at = @At("HEAD"))
+	private void onTick(CallbackInfo ci) {
+		if (!startedClientGametests && overlay == null) {
+			startedClientGametests = true;
+			FabricClientGameTestRunner.start();
 		}
 	}
 

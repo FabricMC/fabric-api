@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.gametest.client;
+package net.fabricmc.fabric.impl.client.gametest;
 
 import java.util.List;
 import java.util.Set;

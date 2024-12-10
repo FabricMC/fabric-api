@@ -16,20 +16,19 @@
 
 package net.fabricmc.fabric.test.gametest.client;
 
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.clickScreenButton;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.closeScreen;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.computeOnClient;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.connectToServer;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.enableDebugHud;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.openGameMenu;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.openInventory;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.setPerspective;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.takeScreenshot;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.waitForLoadingComplete;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.waitForScreen;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.waitForServerStop;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.waitForTitleScreenFade;
-import static net.fabricmc.fabric.impl.gametest.client.FabricClientTestHelper.waitForWorldTicks;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.clickScreenButton;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.closeScreen;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.computeOnClient;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.connectToServer;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.enableDebugHud;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.openGameMenu;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.openInventory;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.setPerspective;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.takeScreenshot;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.waitForScreen;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.waitForServerStop;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.waitForTitleScreenFade;
+import static net.fabricmc.fabric.impl.client.gametest.FabricClientTestHelper.waitForWorldTicks;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -50,26 +49,13 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
 import net.minecraft.client.option.Perspective;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.impl.gametest.client.TestDedicatedServer;
-import net.fabricmc.fabric.impl.gametest.client.ThreadingImpl;
+import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
+import net.fabricmc.fabric.impl.client.gametest.TestDedicatedServer;
 import net.fabricmc.loader.api.FabricLoader;
 
-public class ClientGameTestTestMod implements ClientModInitializer {
-	public static final boolean ENABLED = System.getProperty("fabric.client.gametest") != null;
-
-	@Override
-	public void onInitializeClient() {
-		if (!ENABLED) {
-			return;
-		}
-
-		ThreadingImpl.runTestThread(this::runTest);
-	}
-
-	private void runTest() {
-		waitForLoadingComplete();
-
+public class ClientGameTestTest implements FabricClientGameTest {
+	public void runTest(ClientGameTestContext context) {
 		final boolean onboardAccessibility = computeOnClient(client -> client.options.onboardAccessibility);
 
 		if (onboardAccessibility) {

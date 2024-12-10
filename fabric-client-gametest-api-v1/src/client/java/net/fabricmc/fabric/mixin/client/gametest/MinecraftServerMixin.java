@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.gametest.client;
+package net.fabricmc.fabric.mixin.client.gametest;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.MinecraftServer;
 
-import net.fabricmc.fabric.impl.gametest.client.ThreadingImpl;
+import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
