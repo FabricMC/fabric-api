@@ -12,6 +12,7 @@
   },
   "client": [
     "CyclingButtonWidgetAccessor",
+    "InputUtilMixin",
     "MinecraftClientMixin",
     "ScreenAccessor",
     "TitleScreenAccessor"
