@@ -484,6 +484,9 @@ configurations {
 		extendsFrom configurations.minecraftRuntimeLibraries
 	}
 	productionRuntimeServer
+	productionMods {
+		transitive = false
+	}
 }
 
 dependencies {
@@ -491,16 +494,16 @@ dependencies {
 	productionRuntime "net.fabricmc:intermediary:${project.minecraft_version}"
 
 	productionRuntimeServer "net.fabricmc:fabric-installer:${project.installer_version}:server"
+	productionMods project(':fabric-client-gametest-api-v1')
 }
 
 import net.fabricmc.loom.util.Platform
 
+def productionMods = project.files(configurations.productionMods, remapJar.archiveFile, remapTestmodJar.archiveFile)
+
 // This is very far beyond loom's API if you copy this, you're on your own.
 tasks.register('runProductionAutoTestClient', JavaExec) {
-	dependsOn remapJar, remapTestmodJar, downloadAssets
-	afterEvaluate {
-		dependsOn project(':fabric-client-gametest-api-v1').remapJar
-	}
+	dependsOn productionMods, downloadAssets
 	classpath.from configurations.productionRuntime
 	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
 	workingDir = file("run")
@@ -521,11 +524,9 @@ tasks.register('runProductionAutoTestClient', JavaExec) {
 					)
 		}
 
-		afterEvaluate {
-			jvmArgs "-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${project(':fabric-client-gametest-api-v1').remapJar.archiveFile.get().asFile.absolutePath}"
-		}
 		jvmArgs(
-				"-Dfabric.gametest.client",
+				"-Dfabric.addMods=${productionMods.collect { it.absolutePath }.join(File.pathSeparator)}",
+				"-Dfabric.client.gametest",
 				"-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail",
 				"-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
 				)
@@ -549,7 +550,7 @@ tasks.register('serverPropertiesJar', Jar) {
 }
 
 tasks.register('runProductionAutoTestServer', JavaExec) {
-	dependsOn remapJar, remapTestmodJar, serverPropertiesJar
+	dependsOn productionMods, serverPropertiesJar
 	classpath.from configurations.productionRuntimeServer, serverPropertiesJar
 	mainClass = "net.fabricmc.installer.ServerLauncher"
 	workingDir = file("run")
@@ -558,7 +559,7 @@ tasks.register('runProductionAutoTestServer', JavaExec) {
 		workingDir.mkdirs()
 
 		jvmArgs(
-				"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
+				"-Dfabric.addMods=${productionMods.collect { it.absolutePath }.join(File.pathSeparator)}",
 				"-Dfabric.autoTest",
 				)
 		jvmArgs(debugArgs)
