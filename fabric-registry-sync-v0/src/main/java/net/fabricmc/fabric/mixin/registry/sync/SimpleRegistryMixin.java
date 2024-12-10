@@ -27,8 +27,6 @@ import java.util.Set;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -47,6 +45,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -117,6 +116,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	@Unique
 	private BiMap<Identifier, RegistryEntry.Reference<T>> fabric_prevEntries;
 	@Unique
+	// invariant: the sets of keys and values are disjoint (every alias points to a 'deepest' non-alias ID)
 	private Map<Identifier, Identifier> aliases = new HashMap<>();
 
 	@Shadow
@@ -440,7 +440,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 			);
 		}
 
-		if (getAliased(newId).equals(old)) {
+		if (old.equals(aliases.get(newId))) {
 			// since an alias corresponds to at most one identifier, this is the only way to create a cycle
 			// that doesn't already fall under the first condition
 			throw new IllegalArgumentException(
@@ -462,64 +462,46 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 		}
 
 		assertNotFrozen();
-		aliases.put(old, newId);
+
+		// recompute alias map to preserve invariant, i.e. make sure all keys point to a non-alias ID
+		Identifier deepest = aliases.getOrDefault(newId, newId);
+
+		for (Map.Entry<Identifier, Identifier> entry : aliases.entrySet()) {
+			if (old.equals(entry.getValue())) {
+				entry.setValue(deepest);
+			}
+		}
+
+		aliases.put(old, deepest);
 		FABRIC_LOGGER.debug("Adding alias {} for {} in registry {}", old, newId, this.key);
 	}
 
-	@Unique
-	private Identifier getAliased(Identifier id) {
-		Identifier alias = id;
-
-		while (aliases.containsKey(alias)) {
-			alias = aliases.get(alias);
-		}
-
-		return alias;
+	@ModifyVariable(
+			method = {
+					"getEntry(Lnet/minecraft/util/Identifier;)Ljava/util/Optional;",
+					"get(Lnet/minecraft/util/Identifier;)Ljava/lang/Object;",
+					"containsId"
+			},
+			at = @At("HEAD"),
+			argsOnly = true
+	)
+	private Identifier aliasIdentifierParameter(Identifier original) {
+		return aliases.getOrDefault(original, original);
 	}
 
-	@Unique
-	private RegistryKey<T> getAliased(RegistryKey<T> key) {
-		Identifier aliased = getAliased(key.getValue());
-		return aliased == key.getValue() ? key : RegistryKey.of(key.getRegistryRef(), aliased);
-	}
-
-	@WrapMethod(method = "get(Lnet/minecraft/registry/RegistryKey;)Ljava/lang/Object;")
-	private T aliasGetFromKey(RegistryKey<T> key, Operation<T> original) {
-		return original.call(getAliased(key));
-	}
-
-	@WrapMethod(method = "getEntry(Lnet/minecraft/util/Identifier;)Ljava/util/Optional;")
-	private Optional<RegistryEntry.Reference<T>> aliasGetEntry(Identifier id, Operation<Optional<RegistryEntry.Reference<T>>> original) {
-		return original.call(getAliased(id));
-	}
-
-	@WrapMethod(method = "getOptional(Lnet/minecraft/registry/RegistryKey;)Ljava/util/Optional;")
-	private Optional<RegistryEntry.Reference<T>> aliasGetOptional(RegistryKey<T> key, Operation<Optional<RegistryEntry.Reference<T>>> original) {
-		return original.call(getAliased(key));
-	}
-
-	@WrapMethod(method = "getOrCreateEntry")
-	private RegistryEntry.Reference<T> aliasGetOrCreateEntry(RegistryKey<T> key, Operation<RegistryEntry.Reference<T>> original) {
-		return original.call(getAliased(key));
-	}
-
-	@WrapMethod(method = "get(Lnet/minecraft/util/Identifier;)Ljava/lang/Object;")
-	private T aliasGetFromId(Identifier id, Operation<T> original) {
-		return original.call(getAliased(id));
-	}
-
-	@WrapMethod(method = "containsId")
-	private boolean aliasContainsId(Identifier id, Operation<Boolean> original) {
-		return original.call(getAliased(id));
-	}
-
-	@WrapMethod(method = "contains")
-	private boolean aliasContains(RegistryKey<T> key, Operation<Boolean> original) {
-		return original.call(getAliased(key));
-	}
-
-	@WrapMethod(method = "getEntryInfo")
-	private Optional<RegistryEntryInfo> aliasGetEntryInfo(RegistryKey<T> key, Operation<Optional<RegistryEntryInfo>> original) {
-		return original.call(getAliased(key));
+	@ModifyVariable(
+			method = {
+					"get(Lnet/minecraft/registry/RegistryKey;)Ljava/lang/Object;",
+					"getOptional(Lnet/minecraft/registry/RegistryKey;)Ljava/util/Optional;",
+					"getOrCreateEntry",
+					"contains",
+					"getEntryInfo"
+			},
+			at = @At("HEAD"),
+			argsOnly = true
+	)
+	private RegistryKey<T> aliasRegistryKeyParameter(RegistryKey<T> original) {
+		Identifier aliased = aliases.get(original.getValue());
+		return aliased == null ? original : RegistryKey.of(original.getRegistryRef(), aliased);
 	}
 }
