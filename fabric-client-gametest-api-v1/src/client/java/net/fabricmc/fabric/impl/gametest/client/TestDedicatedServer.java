@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.base.client;
+package net.fabricmc.fabric.impl.gametest.client;
 
 import java.io.Closeable;
 import java.io.IOException;

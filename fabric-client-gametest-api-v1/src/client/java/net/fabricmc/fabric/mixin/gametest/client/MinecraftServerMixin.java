@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.base.client.mixin;
+package net.fabricmc.fabric.mixin.gametest.client;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -25,66 +25,57 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.MinecraftServer;
 
-import net.fabricmc.fabric.test.base.client.FabricApiAutoTestClient;
-import net.fabricmc.fabric.test.base.client.ThreadingImpl;
+import net.fabricmc.fabric.impl.gametest.client.ThreadingImpl;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
 	@WrapMethod(method = "runServer")
 	private void onRunServer(Operation<Void> original) {
-		if (FabricApiAutoTestClient.IS_AUTO_TEST) {
-			if (ThreadingImpl.isServerRunning) {
-				throw new IllegalStateException("Server is already running");
-			}
-
-			ThreadingImpl.isServerRunning = true;
-			ThreadingImpl.PHASER.register();
+		if (ThreadingImpl.isServerRunning) {
+			throw new IllegalStateException("Server is already running");
 		}
+
+		ThreadingImpl.isServerRunning = true;
+		ThreadingImpl.PHASER.register();
 
 		try {
 			original.call();
 		} finally {
-			if (FabricApiAutoTestClient.IS_AUTO_TEST) {
-				ThreadingImpl.serverCanAcceptTasks = false;
-				ThreadingImpl.PHASER.arriveAndDeregister();
-				ThreadingImpl.isServerRunning = false;
-			}
+			ThreadingImpl.serverCanAcceptTasks = false;
+			ThreadingImpl.PHASER.arriveAndDeregister();
+			ThreadingImpl.isServerRunning = false;
 		}
 	}
 
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;runTasksTillTickEnd()V"))
 	private void preRunTasks(CallbackInfo ci) {
-		if (FabricApiAutoTestClient.IS_AUTO_TEST) {
-			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
-		}
+		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
 	}
 
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;runTasksTillTickEnd()V", shift = At.Shift.AFTER))
 	private void postRunTasks(CallbackInfo ci) {
-		if (FabricApiAutoTestClient.IS_AUTO_TEST) {
-			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
-			// client tasks happen here
+		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
+		// client tasks happen here
 
-			ThreadingImpl.serverCanAcceptTasks = true;
-			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TEST);
+		ThreadingImpl.serverCanAcceptTasks = true;
+		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TEST);
 
-			if (ThreadingImpl.testThread != null) {
-				while (true) {
-					try {
-						ThreadingImpl.SERVER_SEMAPHORE.acquire();
-					} catch (InterruptedException e) {
-						throw new RuntimeException(e);
-					}
+		if (ThreadingImpl.testThread != null) {
+			while (true) {
+				try {
+					ThreadingImpl.SERVER_SEMAPHORE.acquire();
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
 
-					if (ThreadingImpl.taskToRun != null) {
-						ThreadingImpl.taskToRun.run();
-					} else {
-						break;
-					}
+				if (ThreadingImpl.taskToRun != null) {
+					ThreadingImpl.taskToRun.run();
+				} else {
+					break;
 				}
 			}
-
-			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TICK);
 		}
+
+		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TICK);
 	}
 }

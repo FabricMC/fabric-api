@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.base.client.mixin;
+package net.fabricmc.fabric.mixin.gametest.client;
+
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.gui.widget.CyclingButtonWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.screen.Screen;
 
-@Mixin(CyclingButtonWidget.class)
-public interface CyclingButtonWidgetAccessor {
+@Mixin(Screen.class)
+public interface ScreenAccessor {
 	@Accessor
-	Text getOptionText();
+	List<Drawable> getDrawables();
 }

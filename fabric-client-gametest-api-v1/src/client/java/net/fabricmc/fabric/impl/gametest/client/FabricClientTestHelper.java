@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.base.client;
+package net.fabricmc.fabric.impl.gametest.client;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -45,9 +45,9 @@ import net.minecraft.client.option.Perspective;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.test.base.client.mixin.CyclingButtonWidgetAccessor;
-import net.fabricmc.fabric.test.base.client.mixin.ScreenAccessor;
-import net.fabricmc.fabric.test.base.client.mixin.TitleScreenAccessor;
+import net.fabricmc.fabric.mixin.gametest.client.CyclingButtonWidgetAccessor;
+import net.fabricmc.fabric.mixin.gametest.client.ScreenAccessor;
+import net.fabricmc.fabric.mixin.gametest.client.TitleScreenAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class FabricClientTestHelper {

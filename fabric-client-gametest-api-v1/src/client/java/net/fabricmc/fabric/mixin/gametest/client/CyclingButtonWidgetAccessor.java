@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.base.client.mixin;
+package net.fabricmc.fabric.mixin.gametest.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.widget.CyclingButtonWidget;
+import net.minecraft.text.Text;
 
-@Mixin(TitleScreen.class)
-public interface TitleScreenAccessor {
+@Mixin(CyclingButtonWidget.class)
+public interface CyclingButtonWidgetAccessor {
 	@Accessor
-	boolean getDoBackgroundFade();
+	Text getOptionText();
 }

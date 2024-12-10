@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.gametest.client",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MinecraftDedicatedServerMixin",
+    "MinecraftServerMixin"
+  ],
+  "plugin": "net.fabricmc.fabric.impl.gametest.client.ClientGameTestMixinConfigPlugin",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "CyclingButtonWidgetAccessor",
+    "MinecraftClientMixin",
+    "ScreenAccessor",
+    "TitleScreenAccessor"
+  ]
+}

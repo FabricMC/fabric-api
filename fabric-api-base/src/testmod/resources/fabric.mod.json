@@ -9,20 +9,11 @@
     "main": [
       "net.fabricmc.fabric.test.base.FabricApiBaseTestInit"
     ],
-    "client": [
-      "net.fabricmc.fabric.test.base.client.FabricApiAutoTestClient"
-    ],
     "server": [
       "net.fabricmc.fabric.test.base.FabricApiAutoTestServer"
     ],
     "fabric-gametest" : [
       "net.fabricmc.fabric.test.base.FabricApiBaseGameTest"
     ]
-  },
-  "mixins": [
-    {
-      "config": "fabric-api-base-testmod.client.mixins.json",
-      "environment": "client"
-    }
-  ]
+  }
 }

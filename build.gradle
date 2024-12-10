@@ -420,7 +420,7 @@ loom {
 		autoTestClient {
 			inherit testmodClient
 			name "Auto Test Client"
-			vmArg "-Dfabric.autoTest"
+			vmArg "-Dfabric.client.gametest"
 			vmArg "-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail"
 			vmArg "-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
 		}
@@ -498,6 +498,9 @@ import net.fabricmc.loom.util.Platform
 // This is very far beyond loom's API if you copy this, you're on your own.
 tasks.register('runProductionAutoTestClient', JavaExec) {
 	dependsOn remapJar, remapTestmodJar, downloadAssets
+	afterEvaluate {
+		dependsOn project(':fabric-client-gametest-api-v1').remapJar
+	}
 	classpath.from configurations.productionRuntime
 	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
 	workingDir = file("run")
@@ -518,9 +521,11 @@ tasks.register('runProductionAutoTestClient', JavaExec) {
 					)
 		}
 
+		afterEvaluate {
+			jvmArgs "-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${project(':fabric-client-gametest-api-v1').remapJar.archiveFile.get().asFile.absolutePath}"
+		}
 		jvmArgs(
-				"-Dfabric.addMods=${remapJar.archiveFile.get().asFile.absolutePath}${File.pathSeparator}${remapTestmodJar.archiveFile.get().asFile.absolutePath}",
-				"-Dfabric.autoTest",
+				"-Dfabric.gametest.client",
 				"-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail",
 				"-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
 				)
@@ -726,7 +731,10 @@ subprojects.each {
 }
 
 // These modules are not included in the fat jar, maven will resolve them via the pom.
-def devOnlyModules = ["fabric-gametest-api-v1",]
+def devOnlyModules = [
+	"fabric-client-gametest-api-v1",
+	"fabric-gametest-api-v1",
+]
 
 dependencies {
 	afterEvaluate {
