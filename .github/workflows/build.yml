@@ -46,7 +46,7 @@ jobs:
       - name: Run Auto test Client
         uses: modmuss50/xvfb-action@v1
         with:
-          run: ./gradlew runProductionAutoTestClient --stacktrace --warning-mode=fail
+          run: ./gradlew runProductionClientGametest --stacktrace --warning-mode=fail
       - uses: actions/upload-artifact@v4
         if: always()
         with:

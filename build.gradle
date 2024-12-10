@@ -417,9 +417,9 @@ loom {
 			name  "Auto Test Server"
 			vmArg "-Dfabric.autoTest"
 		}
-		autoTestClient {
+		clientGametest {
 			inherit testmodClient
-			name "Auto Test Client"
+			name "Client Game Test"
 			vmArg "-Dfabric.client.gametest"
 			vmArg "-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail"
 			vmArg "-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
@@ -432,9 +432,9 @@ loom {
 			ideConfigGenerated = false
 		}
 
-		autoTestClientCoverage {
-			inherit autoTestClient
-			name "Auto Test Client Coverage"
+		clientGametestCoverage {
+			inherit clientGametest
+			name "Client Game Test Coverage"
 			ideConfigGenerated = false
 		}
 	}
@@ -448,7 +448,7 @@ test.dependsOn runGametest
 
 def coverageTasks = [
 	runGametestCoverage,
-	runAutoTestClientCoverage
+	runClientGametestCoverage
 ]
 
 jacoco {
@@ -502,7 +502,7 @@ import net.fabricmc.loom.util.Platform
 def productionMods = project.files(configurations.productionMods, remapJar.archiveFile, remapTestmodJar.archiveFile)
 
 // This is very far beyond loom's API if you copy this, you're on your own.
-tasks.register('runProductionAutoTestClient', JavaExec) {
+tasks.register('runProductionClientGametest', JavaExec) {
 	dependsOn productionMods, downloadAssets
 	classpath.from configurations.productionRuntime
 	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
