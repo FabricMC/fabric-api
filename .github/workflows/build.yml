@@ -43,7 +43,7 @@ jobs:
         with:
           distribution: 'microsoft'
           java-version: '21'
-      - name: Run Auto test Client
+      - name: Run Client Gametests
         uses: modmuss50/xvfb-action@v1
         with:
           run: ./gradlew runProductionClientGametest --stacktrace --warning-mode=fail
