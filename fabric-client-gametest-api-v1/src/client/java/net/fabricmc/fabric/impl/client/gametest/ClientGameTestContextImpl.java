@@ -24,6 +24,7 @@ import java.util.function.Predicate;
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.commons.lang3.function.FailableFunction;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
@@ -200,7 +201,16 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 			}
 
 			if (drawable instanceof Widget widget) {
-				widget.forEachChild(clickableWidget -> pressMatchingButton(clickableWidget, buttonText));
+				MutableBoolean found = new MutableBoolean(false);
+				widget.forEachChild(clickableWidget -> {
+					if (!found.booleanValue()) {
+						found.setValue(pressMatchingButton(clickableWidget, buttonText));
+					}
+				});
+
+				if (found.booleanValue()) {
+					return true;
+				}
 			}
 		}
 
