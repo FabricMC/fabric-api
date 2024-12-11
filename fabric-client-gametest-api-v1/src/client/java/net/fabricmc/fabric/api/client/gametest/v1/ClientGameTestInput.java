@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.client.gametest.v1;
 
 import java.util.function.Function;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
@@ -26,10 +28,11 @@ import net.minecraft.client.util.InputUtil;
 /**
  * The client gametest input handler used to simulate inputs to the client.
  */
+@ApiStatus.NonExtendable
 public interface ClientGameTestInput {
 	/**
 	 * Starts holding down a key binding. The key binding will be held until it is released. The key binding must be
-	 * bound.
+	 * bound. Does nothing if the key binding is already being held.
 	 *
 	 * @param keyBinding The key binding to hold
 	 * @see #releaseKey(KeyBinding)
@@ -40,7 +43,7 @@ public interface ClientGameTestInput {
 
 	/**
 	 * Starts holding down a key binding. The key binding will be held until it is released. The key binding must be
-	 * bound.
+	 * bound. Does nothing if the key binding is already being held.
 	 *
 	 * @param keyBindingGetter The function to get the key binding from the game options
 	 * @see #releaseKey(Function)
@@ -50,7 +53,8 @@ public interface ClientGameTestInput {
 	void holdKey(Function<GameOptions, KeyBinding> keyBindingGetter);
 
 	/**
-	 * Starts holding down a key or mouse button. The key will be held until it is released.
+	 * Starts holding down a key or mouse button. The key will be held until it is released. Does nothing if the key or
+	 * mouse button is already being held.
 	 *
 	 * @param key The key or mouse button to hold
 	 * @see #releaseKey(InputUtil.Key)
@@ -59,7 +63,8 @@ public interface ClientGameTestInput {
 	void holdKey(InputUtil.Key key);
 
 	/**
-	 * Starts holding down a key. The key will be held until it is released.
+	 * Starts holding down a key. The key will be held until it is released. Does nothing if the key is already being
+	 * held.
 	 *
 	 * @param keyCode The key code of the key to hold
 	 * @see #releaseKey(int)
@@ -68,7 +73,8 @@ public interface ClientGameTestInput {
 	void holdKey(int keyCode);
 
 	/**
-	 * Starts holding down a mouse button. The mouse button will be held until it is released.
+	 * Starts holding down a mouse button. The mouse button will be held until it is released. Does nothing if the mouse
+	 * button is already being held.
 	 *
 	 * @param button The mouse button to hold
 	 * @see #releaseMouse(int)
@@ -78,7 +84,8 @@ public interface ClientGameTestInput {
 
 	/**
 	 * Starts holding down left control, or left super on macOS. Suitable for triggering
-	 * {@link Screen#hasControlDown()}. The key will be held until it is released.
+	 * {@link Screen#hasControlDown()}. The key will be held until it is released. Does nothing if the key is already
+	 * being held.
 	 *
 	 * @see #releaseControl()
 	 */
@@ -86,7 +93,7 @@ public interface ClientGameTestInput {
 
 	/**
 	 * Starts holding down left shift. Suitable for triggering {@link Screen#hasShiftDown()}. The key will be held until
-	 * it is released.
+	 * it is released. Does nothing if the key is already being held.
 	 *
 	 * @see #releaseShift()
 	 */
@@ -94,14 +101,14 @@ public interface ClientGameTestInput {
 
 	/**
 	 * Starts holding down left alt. Suitable for triggering {@link Screen#hasAltDown()}. The key will be held until it
-	 * is released.
+	 * is released. Does nothing if the key is already being held.
 	 *
 	 * @see #releaseAlt()
 	 */
 	void holdAlt();
 
 	/**
-	 * Releases a key binding. The key binding must be bound.
+	 * Releases a key binding. The key binding must be bound. Does nothing if the key binding is not being held.
 	 *
 	 * @param keyBinding The key binding to release
 	 * @see #holdKey(KeyBinding)
@@ -110,7 +117,7 @@ public interface ClientGameTestInput {
 	void releaseKey(KeyBinding keyBinding);
 
 	/**
-	 * Releases a key binding. The key binding must be bound.
+	 * Releases a key binding. The key binding must be bound. Does nothing if the key binding is not being held.
 	 *
 	 * @param keyBindingGetter The function to get the key binding from the game options
 	 * @see #holdKey(Function)
@@ -119,7 +126,7 @@ public interface ClientGameTestInput {
 	void releaseKey(Function<GameOptions, KeyBinding> keyBindingGetter);
 
 	/**
-	 * Releases a key or mouse button.
+	 * Releases a key or mouse button. Does nothing if the key or mouse button is not being held.
 	 *
 	 * @param key The key or mouse button to release
 	 * @see #holdKey(InputUtil.Key)
@@ -127,7 +134,7 @@ public interface ClientGameTestInput {
 	void releaseKey(InputUtil.Key key);
 
 	/**
-	 * Releases a key.
+	 * Releases a key. Does nothing if the key is not being held.
 	 *
 	 * @param keyCode The key code of the key to release
 	 * @see #holdKey(int)
@@ -135,7 +142,7 @@ public interface ClientGameTestInput {
 	void releaseKey(int keyCode);
 
 	/**
-	 * Releases a mouse button.
+	 * Releases a mouse button. Does nothing if the mouse button is not being held.
 	 *
 	 * @param button The mouse button to release
 	 * @see #holdMouse(int)
@@ -143,21 +150,24 @@ public interface ClientGameTestInput {
 	void releaseMouse(int button);
 
 	/**
-	 * Releases left control, or left super on macOS. Suitable for un-triggering {@link Screen#hasControlDown()}.
+	 * Releases left control, or left super on macOS. Suitable for un-triggering {@link Screen#hasControlDown()}. Does
+	 * nothing if the key is not being held.
 	 *
 	 * @see #holdControl()
 	 */
 	void releaseControl();
 
 	/**
-	 * Releases left shift. Suitable for un-triggering {@link Screen#hasShiftDown()}.
+	 * Releases left shift. Suitable for un-triggering {@link Screen#hasShiftDown()}. Does nothing if the key is not
+	 * being held.
 	 *
 	 * @see #holdShift()
 	 */
 	void releaseShift();
 
 	/**
-	 * Releases left alt. Suitable for un-triggering {@link Screen#hasAltDown()}.
+	 * Releases left alt. Suitable for un-triggering {@link Screen#hasAltDown()}. Does nothing if the key is not being
+	 * held.
 	 *
 	 * @see #holdAlt()
 	 */

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.gametest.client;
+package net.fabricmc.fabric.test.client.gametest;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -46,11 +46,13 @@ import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.impl.client.gametest.TestDedicatedServer;
 import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
+import net.fabricmc.fabric.test.client.gametest.mixin.TitleScreenAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ClientGameTestTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext context) {
 		{
+			waitForTitleScreenFade(context);
 			context.takeScreenshot("title_screen", 0);
 			context.clickScreenButton("menu.singleplayer");
 		}
@@ -151,6 +153,12 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
+	}
+
+	private static void waitForTitleScreenFade(ClientGameTestContext context) {
+		context.waitFor(client -> {
+			return !(client.currentScreen instanceof TitleScreenAccessor titleScreen) || !titleScreen.getDoBackgroundFade();
+		});
 	}
 
 	private static void enableDebugHud(ClientGameTestContext context) {

@@ -20,7 +20,7 @@
     "MinecraftClientMixin",
     "MouseAccessor",
     "ScreenAccessor",
-    "TitleScreenAccessor",
+    "net.fabricmc.fabric.test.gametest.client.mixin.TitleScreenAccessor",
     "WindowMixin"
   ]
 }

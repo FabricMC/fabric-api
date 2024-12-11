@@ -325,7 +325,7 @@ public final class ClientGameTestInputImpl implements ClientGameTestInput {
 		InputUtil.Key boundKey = ((KeyBindingAccessor) keyBinding).getBoundKey();
 
 		if (boundKey == InputUtil.UNKNOWN_KEY) {
-			throw new AssertionError("Cannot %s binding '%s' because it isn'keyBinding bound to a key".formatted(action, keyBinding.getTranslationKey()));
+			throw new AssertionError("Cannot %s binding '%s' because it isn't bound to a key".formatted(action, keyBinding.getTranslationKey()));
 		}
 
 		return boundKey;

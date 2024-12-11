@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.test.client.gametest.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+  ],
+  "plugin": "net.fabricmc.fabric.impl.client.gametest.ClientGameTestMixinConfigPlugin",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "TitleScreenAccessor"
+  ]
+}
