@@ -54,25 +54,25 @@ public final class ClientGameTestInputImpl implements ClientGameTestInput {
 	}
 
 	@Override
-	public void pressKey(KeyBinding keyBinding) {
-		ThreadingImpl.checkOnGametestThread("pressKey");
+	public void holdKey(KeyBinding keyBinding) {
+		ThreadingImpl.checkOnGametestThread("holdKey");
 		Preconditions.checkNotNull(keyBinding, "keyBinding");
 
-		pressKey(getBoundKey(keyBinding, "press"));
+		holdKey(getBoundKey(keyBinding, "hold"));
 	}
 
 	@Override
-	public void pressKey(Function<GameOptions, KeyBinding> keyBindingGetter) {
-		ThreadingImpl.checkOnGametestThread("pressKey");
+	public void holdKey(Function<GameOptions, KeyBinding> keyBindingGetter) {
+		ThreadingImpl.checkOnGametestThread("holdKey");
 		Preconditions.checkNotNull(keyBindingGetter, "keyBindingGetter");
 
 		KeyBinding keyBinding = context.computeOnClient(client -> keyBindingGetter.apply(client.options));
-		pressKey(keyBinding);
+		holdKey(keyBinding);
 	}
 
 	@Override
-	public void pressKey(InputUtil.Key key) {
-		ThreadingImpl.checkOnGametestThread("pressKey");
+	public void holdKey(InputUtil.Key key) {
+		ThreadingImpl.checkOnGametestThread("holdKey");
 		Preconditions.checkNotNull(key, "key");
 
 		if (KEYS_DOWN.add(key)) {
@@ -81,38 +81,38 @@ public final class ClientGameTestInputImpl implements ClientGameTestInput {
 	}
 
 	@Override
-	public void pressKey(int keyCode) {
-		ThreadingImpl.checkOnGametestThread("pressKey");
+	public void holdKey(int keyCode) {
+		ThreadingImpl.checkOnGametestThread("holdKey");
 
-		pressKey(InputUtil.Type.KEYSYM.createFromCode(keyCode));
+		holdKey(InputUtil.Type.KEYSYM.createFromCode(keyCode));
 	}
 
 	@Override
-	public void pressMouse(int button) {
-		ThreadingImpl.checkOnGametestThread("pressMouse");
+	public void holdMouse(int button) {
+		ThreadingImpl.checkOnGametestThread("holdMouse");
 
-		pressKey(InputUtil.Type.MOUSE.createFromCode(button));
+		holdKey(InputUtil.Type.MOUSE.createFromCode(button));
 	}
 
 	@Override
-	public void pressControl() {
-		ThreadingImpl.checkOnGametestThread("pressControl");
+	public void holdControl() {
+		ThreadingImpl.checkOnGametestThread("holdControl");
 
-		pressKey(MinecraftClient.IS_SYSTEM_MAC ? InputUtil.GLFW_KEY_LEFT_SUPER : InputUtil.GLFW_KEY_LEFT_CONTROL);
+		holdKey(MinecraftClient.IS_SYSTEM_MAC ? InputUtil.GLFW_KEY_LEFT_SUPER : InputUtil.GLFW_KEY_LEFT_CONTROL);
 	}
 
 	@Override
-	public void pressShift() {
-		ThreadingImpl.checkOnGametestThread("pressShift");
+	public void holdShift() {
+		ThreadingImpl.checkOnGametestThread("holdShift");
 
-		pressKey(InputUtil.GLFW_KEY_LEFT_SHIFT);
+		holdKey(InputUtil.GLFW_KEY_LEFT_SHIFT);
 	}
 
 	@Override
-	public void pressAlt() {
-		ThreadingImpl.checkOnGametestThread("pressAlt");
+	public void holdAlt() {
+		ThreadingImpl.checkOnGametestThread("holdAlt");
 
-		pressKey(InputUtil.GLFW_KEY_LEFT_ALT);
+		holdKey(InputUtil.GLFW_KEY_LEFT_ALT);
 	}
 
 	@Override
@@ -186,89 +186,89 @@ public final class ClientGameTestInputImpl implements ClientGameTestInput {
 	}
 
 	@Override
-	public void pressReleaseKey(KeyBinding keyBinding) {
-		ThreadingImpl.checkOnGametestThread("pressReleaseKey");
+	public void pressKey(KeyBinding keyBinding) {
+		ThreadingImpl.checkOnGametestThread("pressKey");
 		Preconditions.checkNotNull(keyBinding, "keyBinding");
 
-		pressReleaseKey(getBoundKey(keyBinding, "press and release"));
+		pressKey(getBoundKey(keyBinding, "press"));
 	}
 
 	@Override
-	public void pressReleaseKey(Function<GameOptions, KeyBinding> keyBindingGetter) {
-		ThreadingImpl.checkOnGametestThread("pressReleaseKey");
+	public void pressKey(Function<GameOptions, KeyBinding> keyBindingGetter) {
+		ThreadingImpl.checkOnGametestThread("pressKey");
 		Preconditions.checkNotNull(keyBindingGetter, "keyBindingGetter");
 
 		KeyBinding keyBinding = context.computeOnClient(client -> keyBindingGetter.apply(client.options));
-		pressReleaseKey(keyBinding);
+		pressKey(keyBinding);
 	}
 
 	@Override
-	public void pressReleaseKey(InputUtil.Key key) {
-		ThreadingImpl.checkOnGametestThread("pressReleaseKey");
+	public void pressKey(InputUtil.Key key) {
+		ThreadingImpl.checkOnGametestThread("pressKey");
 		Preconditions.checkNotNull(key, "key");
 
-		pressKey(key);
+		holdKey(key);
 		releaseKey(key);
 	}
 
 	@Override
-	public void pressReleaseKey(int keyCode) {
-		ThreadingImpl.checkOnGametestThread("pressReleaseKey");
+	public void pressKey(int keyCode) {
+		ThreadingImpl.checkOnGametestThread("pressKey");
 
-		pressReleaseKey(InputUtil.Type.KEYSYM.createFromCode(keyCode));
+		pressKey(InputUtil.Type.KEYSYM.createFromCode(keyCode));
 	}
 
 	@Override
-	public void pressReleaseMouse(int button) {
-		ThreadingImpl.checkOnGametestThread("pressReleaseMouse");
+	public void pressMouse(int button) {
+		ThreadingImpl.checkOnGametestThread("pressMouse");
 
-		pressReleaseKey(InputUtil.Type.MOUSE.createFromCode(button));
+		pressKey(InputUtil.Type.MOUSE.createFromCode(button));
 	}
 
 	@Override
-	public void holdKey(KeyBinding keyBinding, int ticks) {
-		ThreadingImpl.checkOnGametestThread("holdKey");
+	public void holdKeyFor(KeyBinding keyBinding, int ticks) {
+		ThreadingImpl.checkOnGametestThread("holdKeyFor");
 		Preconditions.checkNotNull(keyBinding, "keyBinding");
 		Preconditions.checkArgument(ticks > 0, "ticks must be positive");
 
-		holdKey(getBoundKey(keyBinding, "hold"), ticks);
+		holdKeyFor(getBoundKey(keyBinding, "hold"), ticks);
 	}
 
 	@Override
-	public void holdKey(Function<GameOptions, KeyBinding> keyBindingGetter, int ticks) {
-		ThreadingImpl.checkOnGametestThread("holdKey");
+	public void holdKeyFor(Function<GameOptions, KeyBinding> keyBindingGetter, int ticks) {
+		ThreadingImpl.checkOnGametestThread("holdKeyFor");
 		Preconditions.checkNotNull(keyBindingGetter, "keyBindingGetter");
 		Preconditions.checkArgument(ticks > 0, "ticks must be positive");
 
 		KeyBinding keyBinding = context.computeOnClient(client -> keyBindingGetter.apply(client.options));
-		holdKey(keyBinding, ticks);
+		holdKeyFor(keyBinding, ticks);
 	}
 
 	@Override
-	public void holdKey(InputUtil.Key key, int ticks) {
-		ThreadingImpl.checkOnGametestThread("holdKey");
+	public void holdKeyFor(InputUtil.Key key, int ticks) {
+		ThreadingImpl.checkOnGametestThread("holdKeyFor");
 		Preconditions.checkNotNull(key, "key");
 		Preconditions.checkArgument(ticks > 0, "ticks must be positive");
 
-		pressKey(key);
+		holdKey(key);
 		context.waitTicks(ticks);
 		releaseKey(key);
 	}
 
 	@Override
-	public void holdKey(int keyCode, int ticks) {
-		ThreadingImpl.checkOnGametestThread("holdKey");
+	public void holdKeyFor(int keyCode, int ticks) {
+		ThreadingImpl.checkOnGametestThread("holdKeyFor");
 		Preconditions.checkArgument(ticks > 0, "ticks must be positive");
 
-		holdKey(InputUtil.Type.KEYSYM.createFromCode(keyCode), ticks);
+		holdKeyFor(InputUtil.Type.KEYSYM.createFromCode(keyCode), ticks);
 	}
 
 	@Override
-	public void holdMouse(int button, int ticks) {
-		ThreadingImpl.checkOnGametestThread("holdMouse");
+	public void holdMouseFor(int button, int ticks) {
+		ThreadingImpl.checkOnGametestThread("holdMouseFor");
 		Preconditions.checkArgument(ticks > 0, "ticks must be positive");
 
-		holdKey(InputUtil.Type.MOUSE.createFromCode(button), ticks);
+		holdKeyFor(InputUtil.Type.MOUSE.createFromCode(button), ticks);
 	}
 
 	@Override

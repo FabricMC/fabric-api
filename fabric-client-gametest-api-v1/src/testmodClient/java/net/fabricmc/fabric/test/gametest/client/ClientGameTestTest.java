@@ -82,10 +82,10 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		}
 
 		{
-			context.getInput().pressReleaseKey(options -> options.chatKey);
+			context.getInput().pressKey(options -> options.chatKey);
 			context.waitTick();
 			context.getInput().typeChars("Hello, World!");
-			context.getInput().pressReleaseKey(InputUtil.GLFW_KEY_ENTER);
+			context.getInput().pressKey(InputUtil.GLFW_KEY_ENTER);
 			context.takeScreenshot("chat_message_sent", 5);
 		}
 
@@ -99,7 +99,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		}
 
 		{
-			context.getInput().pressReleaseKey(options -> options.inventoryKey);
+			context.getInput().pressKey(options -> options.inventoryKey);
 			context.takeScreenshot("in_game_inventory");
 			context.setScreen(null);
 		}
