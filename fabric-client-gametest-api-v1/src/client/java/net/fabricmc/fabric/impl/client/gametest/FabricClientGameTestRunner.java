@@ -21,9 +21,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 
-import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -32,18 +32,26 @@ public class FabricClientGameTestRunner {
 	private static final String ENTRYPOINT_KEY = "fabric-client-gametest";
 
 	public static void start() {
+		// make the game think the window is focused
+		MinecraftClient.getInstance().onWindowFocusChanged(true);
+
 		List<FabricClientGameTest> gameTests = FabricLoader.getInstance().getEntrypoints(ENTRYPOINT_KEY, FabricClientGameTest.class);
+
 		ThreadingImpl.runTestThread(() -> {
-			ClientGameTestContext context = new ClientGameTestContextImpl();
+			ClientGameTestContextImpl context = new ClientGameTestContextImpl();
 			boolean failed = false;
 
 			for (FabricClientGameTest gameTest : gameTests) {
+				context.restoreDefaultGameOptions();
+
 				try {
 					gameTest.runTest(context);
 				} catch (Throwable e) {
 					LOGGER.error("Failed test {}", gameTest.getClass().getName(), e);
 					failed = true;
 				} finally {
+					context.getInput().clearKeysDown();
+
 					// Open the title screen to reset the state for the next gametest.
 					// If the gametest API was used correctly, we should be in the menus somewhere because any test
 					// world should have been closed at the end of a try-with-resources statement.

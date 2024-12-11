@@ -23,6 +23,8 @@ import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.function.FailableRunnable;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <h1>Implementation notes</h1>
@@ -63,6 +65,8 @@ import org.jetbrains.annotations.Nullable;
 public final class ThreadingImpl {
 	private ThreadingImpl() {
 	}
+
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
 
 	public static final int PHASE_TICK = 0;
 	public static final int PHASE_SERVER_TASKS = 1;
@@ -105,7 +109,7 @@ public final class ThreadingImpl {
 			try {
 				test.run();
 			} catch (Throwable e) {
-				e.printStackTrace();
+				LOGGER.error("Failed to run client gametests", e);
 				System.exit(1);
 			} finally {
 				PHASER.arriveAndDeregister();
@@ -125,10 +129,14 @@ public final class ThreadingImpl {
 		testThread.start();
 	}
 
+	public static void checkOnGametestThread(String methodName) {
+		Preconditions.checkState(Thread.currentThread() == testThread, "%s can only be called from the client gametest thread", methodName);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static <E extends Throwable> void runOnClient(FailableRunnable<E> action) throws E {
 		Preconditions.checkNotNull(action, "action");
-		Preconditions.checkState(Thread.currentThread() == testThread, "runOnClient can only be called from the test thread");
+		checkOnGametestThread("runOnClient");
 		Preconditions.checkState(clientCanAcceptTasks, "runOnClient called when no client is running");
 
 		MutableObject<E> thrown = new MutableObject<>();
@@ -159,7 +167,7 @@ public final class ThreadingImpl {
 	@SuppressWarnings("unchecked")
 	public static <E extends Throwable> void runOnServer(FailableRunnable<E> action) throws E {
 		Preconditions.checkNotNull(action, "action");
-		Preconditions.checkState(Thread.currentThread() == testThread, "runOnServer can only be called from the test thread");
+		checkOnGametestThread("runOnServer");
 		Preconditions.checkState(serverCanAcceptTasks, "runOnServer called when no server is running");
 
 		MutableObject<E> thrown = new MutableObject<>();
@@ -188,7 +196,7 @@ public final class ThreadingImpl {
 	}
 
 	public static void runTick() {
-		Preconditions.checkState(Thread.currentThread() == testThread, "runTick can only be called from the test thread");
+		checkOnGametestThread("runTick");
 
 		if (clientCanAcceptTasks) {
 			CLIENT_SEMAPHORE.release();

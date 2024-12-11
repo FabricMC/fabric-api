@@ -147,7 +147,9 @@ public class MinecraftClientMixin {
 
 	@Inject(method = "getInstance", at = @At("HEAD"))
 	private static void checkThreadOnGetInstance(CallbackInfoReturnable<MinecraftClient> cir) {
-		// TODO: add suggestion of runOnClient etc when API methods are added
-		Preconditions.checkState(Thread.currentThread() != ThreadingImpl.testThread, "MinecraftClient.getInstance() cannot be called from the test thread");
+		Preconditions.checkState(
+				Thread.currentThread() != ThreadingImpl.testThread,
+				"MinecraftClient.getInstance() cannot be called from the gametest thread. Try using ClientGameTestContext.runOnClient or ClientGameTestContext.computeOnClient"
+		);
 	}
 }

@@ -12,9 +12,15 @@
   },
   "client": [
     "CyclingButtonWidgetAccessor",
+    "GameOptionsAccessor",
+    "GameOptionsMixin",
     "InputUtilMixin",
+    "KeyBindingAccessor",
+    "KeyboardAccessor",
     "MinecraftClientMixin",
+    "MouseAccessor",
     "ScreenAccessor",
-    "TitleScreenAccessor"
+    "TitleScreenAccessor",
+    "WindowMixin"
   ]
 }

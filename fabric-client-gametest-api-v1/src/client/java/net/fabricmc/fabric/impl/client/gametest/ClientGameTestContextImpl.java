@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.impl.client.gametest;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.commons.lang3.function.FailableFunction;
@@ -30,21 +35,77 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.tutorial.TutorialStep;
+import net.minecraft.client.util.ScreenshotRecorder;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Nullables;
 
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.mixin.client.gametest.CyclingButtonWidgetAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.GameOptionsAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.ScreenAccessor;
+import net.fabricmc.loader.api.FabricLoader;
 
 public final class ClientGameTestContextImpl implements ClientGameTestContext {
+	private final ClientGameTestInputImpl input = new ClientGameTestInputImpl(this);
+
+	private static final Map<String, Object> DEFAULT_GAME_OPTIONS = new HashMap<>();
+
+	public static void initGameOptions(GameOptions options) {
+		options.onboardAccessibility = false;
+		options.tutorialStep = TutorialStep.NONE;
+		options.getSoundVolumeOption(SoundCategory.MUSIC).setValue(0.0);
+
+		((GameOptionsAccessor) options).invokeAccept(new GameOptions.Visitor() {
+			@Override
+			public int visitInt(String key, int current) {
+				DEFAULT_GAME_OPTIONS.put(key, current);
+				return current;
+			}
+
+			@Override
+			public boolean visitBoolean(String key, boolean current) {
+				DEFAULT_GAME_OPTIONS.put(key, current);
+				return current;
+			}
+
+			@Override
+			public String visitString(String key, String current) {
+				DEFAULT_GAME_OPTIONS.put(key, current);
+				return current;
+			}
+
+			@Override
+			public float visitFloat(String key, float current) {
+				DEFAULT_GAME_OPTIONS.put(key, current);
+				return current;
+			}
+
+			@Override
+			public <T> T visitObject(String key, T current, Function<String, T> decoder, Function<T, String> encoder) {
+				DEFAULT_GAME_OPTIONS.put(key, current);
+				return current;
+			}
+
+			@Override
+			public <T> void accept(String key, SimpleOption<T> option) {
+				DEFAULT_GAME_OPTIONS.put(key, option.getValue());
+			}
+		});
+	}
+
 	@Override
 	public void waitTick() {
+		ThreadingImpl.checkOnGametestThread("waitTick");
 		ThreadingImpl.runTick();
 	}
 
 	@Override
 	public void waitTicks(int ticks) {
+		ThreadingImpl.checkOnGametestThread("waitTicks");
 		Preconditions.checkArgument(ticks >= 0, "ticks cannot be negative");
 
 		for (int i = 0; i < ticks; i++) {
@@ -53,12 +114,58 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	@Override
+	public void waitFor(Predicate<MinecraftClient> predicate) {
+		ThreadingImpl.checkOnGametestThread("waitFor");
+		Preconditions.checkNotNull(predicate, "predicate");
+		waitFor(predicate, DEFAULT_TIMEOUT);
+	}
+
+	@Override
+	public void waitFor(Predicate<MinecraftClient> predicate, int timeout) {
+		ThreadingImpl.checkOnGametestThread("waitFor");
+		Preconditions.checkNotNull(predicate, "predicate");
+
+		if (timeout == NO_TIMEOUT) {
+			while (!computeOnClient(predicate::test)) {
+				ThreadingImpl.runTick();
+			}
+		} else {
+			Preconditions.checkArgument(timeout > 0, "timeout must be positive");
+
+			for (int i = 0; i < timeout; i++) {
+				if (computeOnClient(predicate::test)) {
+					return;
+				}
+
+				ThreadingImpl.runTick();
+			}
+
+			if (!computeOnClient(predicate::test)) {
+				throw new AssertionError("Timed out waiting for predicate");
+			}
+		}
+	}
+
+	@Override
+	public void waitForScreen(@Nullable Class<? extends Screen> screenClass) {
+		ThreadingImpl.checkOnGametestThread("waitForScreen");
+
+		if (screenClass == null) {
+			waitFor(client -> client.currentScreen == null);
+		} else {
+			waitFor(client -> screenClass.isInstance(client.currentScreen));
+		}
+	}
+
+	@Override
 	public void setScreen(@Nullable Screen screen) {
+		ThreadingImpl.checkOnGametestThread("setScreen");
 		runOnClient(client -> client.setScreen(screen));
 	}
 
 	@Override
 	public void clickScreenButton(String translationKey) {
+		ThreadingImpl.checkOnGametestThread("clickScreenButton");
 		Preconditions.checkNotNull(translationKey, "translationKey");
 
 		runOnClient(client -> {
@@ -73,6 +180,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 	@Override
 	public boolean tryClickScreenButton(String translationKey) {
+		ThreadingImpl.checkOnGametestThread("tryClickScreenButton");
 		Preconditions.checkNotNull(translationKey, "translationKey");
 
 		return computeOnClient(client -> tryClickScreenButtonImpl(client.currentScreen, translationKey));
@@ -121,7 +229,74 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	@Override
+	public void takeScreenshot(String name) {
+		ThreadingImpl.checkOnGametestThread("takeScreenshot");
+		Preconditions.checkNotNull(name, "name");
+		takeScreenshot(name, 1);
+	}
+
+	@Override
+	public void takeScreenshot(String name, int delay) {
+		ThreadingImpl.checkOnGametestThread("takeScreenshot");
+		Preconditions.checkNotNull(name, "name");
+		Preconditions.checkArgument(delay >= 0, "delay cannot be negative");
+
+		waitTicks(delay);
+		runOnClient(client -> {
+			ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), name + ".png", client.getFramebuffer(), (message) -> {
+			});
+		});
+	}
+
+	@Override
+	public ClientGameTestInputImpl getInput() {
+		return input;
+	}
+
+	@Override
+	public void restoreDefaultGameOptions() {
+		ThreadingImpl.checkOnGametestThread("restoreDefaultGameOptions");
+
+		runOnClient(client -> {
+			((GameOptionsAccessor) MinecraftClient.getInstance().options).invokeAccept(new GameOptions.Visitor() {
+				@Override
+				public int visitInt(String key, int current) {
+					return (Integer) DEFAULT_GAME_OPTIONS.get(key);
+				}
+
+				@Override
+				public boolean visitBoolean(String key, boolean current) {
+					return (Boolean) DEFAULT_GAME_OPTIONS.get(key);
+				}
+
+				@Override
+				public String visitString(String key, String current) {
+					return (String) DEFAULT_GAME_OPTIONS.get(key);
+				}
+
+				@Override
+				public float visitFloat(String key, float current) {
+					return (Float) DEFAULT_GAME_OPTIONS.get(key);
+				}
+
+				@SuppressWarnings("unchecked")
+				@Override
+				public <T> T visitObject(String key, T current, Function<String, T> decoder, Function<T, String> encoder) {
+					return (T) DEFAULT_GAME_OPTIONS.get(key);
+				}
+
+				@SuppressWarnings("unchecked")
+				@Override
+				public <T> void accept(String key, SimpleOption<T> option) {
+					option.setValue((T) DEFAULT_GAME_OPTIONS.get(key));
+				}
+			});
+		});
+	}
+
+	@Override
 	public <E extends Throwable> void runOnClient(FailableConsumer<MinecraftClient, E> action) throws E {
+		ThreadingImpl.checkOnGametestThread("runOnClient");
 		Preconditions.checkNotNull(action, "action");
 
 		ThreadingImpl.runOnClient(() -> action.accept(MinecraftClient.getInstance()));
@@ -129,6 +304,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 	@Override
 	public <T, E extends Throwable> T computeOnClient(FailableFunction<MinecraftClient, T, E> function) throws E {
+		ThreadingImpl.checkOnGametestThread("computeOnClient");
 		Preconditions.checkNotNull(function, "function");
 
 		MutableObject<T> result = new MutableObject<>();

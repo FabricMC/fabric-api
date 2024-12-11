@@ -20,26 +20,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.option.GameOptions;
 
-import net.fabricmc.fabric.impl.client.gametest.ClientGameTestInputImpl;
+import net.fabricmc.fabric.impl.client.gametest.ClientGameTestContextImpl;
 
-@Mixin(InputUtil.class)
-public class InputUtilMixin {
-	@Inject(method = "isKeyPressed", at = @At("HEAD"), cancellable = true)
-	private static void useGameTestInputForKeyPressed(long window, int keyCode, CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(ClientGameTestInputImpl.isKeyDown(keyCode));
-	}
-
-	@Inject(method = {"setKeyboardCallbacks", "setMouseCallbacks"}, at = @At("HEAD"), cancellable = true)
-	private static void dontAttachCallbacks(CallbackInfo ci) {
-		ci.cancel();
-	}
-
-	@Inject(method = "setCursorParameters", at = @At("HEAD"), cancellable = true)
-	private static void disableCursorLocking(CallbackInfo ci) {
-		ci.cancel();
+@Mixin(GameOptions.class)
+public class GameOptionsMixin {
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void onCreateGameOptions(CallbackInfo ci) {
+		ClientGameTestContextImpl.initGameOptions((GameOptions) (Object) this);
 	}
 }
