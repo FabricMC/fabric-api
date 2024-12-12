@@ -38,6 +38,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.tutorial.TutorialStep;
@@ -58,8 +59,14 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	private static final Map<String, Object> DEFAULT_GAME_OPTIONS = new HashMap<>();
 
 	public static void initGameOptions(GameOptions options) {
-		options.onboardAccessibility = false;
+		// Messes with the consistency of gametests
 		options.tutorialStep = TutorialStep.NONE;
+		options.getCloudRenderMode().setValue(CloudRenderMode.OFF);
+
+		// Messes with game tests starting
+		options.onboardAccessibility = false;
+
+		// Just annoying
 		options.getSoundVolumeOption(SoundCategory.MUSIC).setValue(0.0);
 
 		((GameOptionsAccessor) options).invokeAccept(new GameOptions.Visitor() {
