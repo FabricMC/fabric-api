@@ -33,13 +33,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 
 /**
- * Implementation of {@link RenderContext} used during terrain rendering.
- * Dispatches calls from models during chunk rebuild to the appropriate consumer,
- * and holds/manages all of the state needed by them.
+ * Used during terrain block buffering to invoke {@link BakedModel#emitBlockQuads}.
  */
 public class TerrainRenderContext extends AbstractBlockRenderContext {
 	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
@@ -82,7 +79,7 @@ public class TerrainRenderContext extends AbstractBlockRenderContext {
 	}
 
 	/** Called from chunk renderer hook. */
-	public void tessellateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
+	public void tessellateBlock(BlockState blockState, BlockPos blockPos, BakedModel model, MatrixStack matrixStack) {
 		try {
 			Vec3d offset = blockState.getModelOffset(blockPos);
 			matrixStack.translate(offset.x, offset.y, offset.z);
@@ -94,7 +91,7 @@ public class TerrainRenderContext extends AbstractBlockRenderContext {
 
 			aoCalc.clear();
 			blockInfo.prepareForBlock(blockState, blockPos, model.useAmbientOcclusion());
-			model.emitBlockQuads(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, this);
+			model.emitBlockQuads(getEmitter(), blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, blockInfo::shouldCullSide);
 		} catch (Throwable throwable) {
 			CrashReport crashReport = CrashReport.create(throwable, "Tessellating block in world - Indigo Renderer");
 			CrashReportSection crashReportSection = crashReport.addElement("Block being tessellated");

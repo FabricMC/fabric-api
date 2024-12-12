@@ -25,16 +25,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.gui.hud.DebugHud;
 
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.Renderer;
 
 @Mixin(DebugHud.class)
 public class DebugHudMixin {
 	@Inject(at = @At("RETURN"), method = "getLeftText")
 	protected void getLeftText(CallbackInfoReturnable<List<String>> info) {
-		if (RendererAccess.INSTANCE.hasRenderer()) {
-			info.getReturnValue().add("[Fabric] Active renderer: " + RendererAccess.INSTANCE.getRenderer().getClass().getSimpleName());
-		} else {
-			info.getReturnValue().add("[Fabric] Active renderer: none (vanilla)");
-		}
+		info.getReturnValue().add("[Fabric] Active renderer: " + Renderer.get().getClass().getSimpleName());
 	}
 }

@@ -34,6 +34,7 @@ import java.util.Set;
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -153,7 +154,9 @@ public final class ModResourcePackUtil {
 	}
 
 	public static JsonObject getMetadataPackJson(int packVersion, Text description) {
-		return PackResourceMetadata.SERIALIZER.toJson(getMetadataPack(packVersion, description));
+		return PackResourceMetadata.SERIALIZER.codec().encodeStart(JsonOps.INSTANCE, getMetadataPack(packVersion, description))
+				.getOrThrow()
+				.getAsJsonObject();
 	}
 
 	public static String serializeMetadata(int packVersion, String description) {

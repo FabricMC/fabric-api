@@ -19,13 +19,16 @@ package net.fabricmc.fabric.mixin.client.indigo.renderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.util.math.MatrixStack;
 
 @Mixin(ItemRenderer.class)
 public interface ItemRendererAccessor {
-	@Invoker("usesDynamicDisplay")
-	static boolean fabric_callUsesDynamicDisplay(ItemStack stack) {
+	@Invoker("getDynamicDisplayGlintConsumer")
+	static VertexConsumer fabric_getDynamicDisplayGlintConsumer(VertexConsumerProvider provider, RenderLayer layer, MatrixStack.Entry entry) {
 		throw new AssertionError();
 	}
 }

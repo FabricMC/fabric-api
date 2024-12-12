@@ -16,19 +16,14 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
-import java.util.function.Function;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.GroupableModel;
+import net.minecraft.client.render.model.ResolvableModel;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -39,9 +34,8 @@ import net.fabricmc.fabric.api.event.Event;
  *
  * <p>Example use cases:
  * <ul>
- *     <li>Overriding a model for a particular block state - check if the given top-level identifier is not null,
- *     and then check if it has the appropriate variant for that block state. If so, return your desired model,
- *     otherwise return the given model.</li>
+ *     <li>Overriding the model for a particular block state - check if the given identifier matches the identifier
+ *     for that block state. If so, return your desired model, otherwise return the given model.</li>
  *     <li>Wrapping a model to override certain behaviors - simply return a new model instance and delegate calls
  *     to the original model as needed.</li>
  * </ul>
@@ -50,7 +44,7 @@ import net.fabricmc.fabric.api.event.Event;
  * and separate phases are provided for mods that wrap their own models and mods that need to wrap models of other mods
  * or wrap models arbitrarily.
  *
- * <p>These callbacks are invoked for <b>every single model that is loaded or baked</b>, so implementations should be
+ * <p>These callbacks are invoked for <b>every single model that is loaded</b>, so implementations should be
  * as efficient as possible.
  */
 public final class ModelModifier {
@@ -78,12 +72,18 @@ public final class ModelModifier {
 		 * This handler is invoked to allow modification of an unbaked model right after it is first loaded and before
 		 * it is cached.
 		 *
+		 * <p>If the given model is {@code null}, its corresponding identifier was requested during
+		 * {@linkplain ResolvableModel#resolve resolution} but the model was not loaded normally; i.e. through a JSON
+		 * file, possibly because that file did not exist. If a non-{@code null} model is returned in this case,
+		 * resolution will continue without warnings or errors.
+		 *
 		 * @param model the current unbaked model instance
 		 * @param context context with additional information about the model/loader
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
 		 * @see ModelLoadingPlugin.Context#modifyModelOnLoad
 		 */
-		UnbakedModel modifyModelOnLoad(UnbakedModel model, Context context);
+		@Nullable
+		UnbakedModel modifyModelOnLoad(@Nullable UnbakedModel model, Context context);
 
 		/**
 		 * The context for an on load model modification event.
@@ -91,146 +91,38 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * Models with a resource ID are loaded directly from JSON or a {@link ModelModifier}.
-			 *
-			 * @return the identifier of the given model as an {@link Identifier}, or null if {@link #topLevelId()} is
-			 * not null
+			 * The identifier of the model that was loaded.
 			 */
-			@UnknownNullability("#topLevelId() != null")
-			Identifier resourceId();
-
-			/**
-			 * Models with a top-level ID are loaded from blockstate files, {@link BlockStateResolver}s, or by copying
-			 * a previously loaded model.
-			 *
-			 * @return the identifier of the given model as a {@link ModelIdentifier}, or null if {@link #resourceId()}
-			 * is not null
-			 */
-			@UnknownNullability("#resourceId() != null")
-			ModelIdentifier topLevelId();
+			Identifier id();
 		}
 	}
 
 	@FunctionalInterface
-	public interface BeforeBake {
+	public interface OnLoadBlock {
 		/**
-		 * This handler is invoked to allow modification of the unbaked model instance right before it is baked.
+		 * This handler is invoked to allow modification of an unbaked block model right after it is first loaded.
 		 *
 		 * @param model the current unbaked model instance
 		 * @param context context with additional information about the model/loader
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
-		 * @see ModelLoadingPlugin.Context#modifyModelBeforeBake
+		 * @see ModelLoadingPlugin.Context#modifyBlockModelOnLoad
 		 */
-		UnbakedModel modifyModelBeforeBake(UnbakedModel model, Context context);
+		GroupableModel modifyModelOnLoad(GroupableModel model, Context context);
 
 		/**
-		 * The context for a before bake model modification event.
+		 * The context for an on load block model modification event.
 		 */
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * Models with a resource ID are loaded directly from JSON or a {@link ModelModifier}.
-			 *
-			 * @return the identifier of the given model as an {@link Identifier}, or null if {@link #topLevelId()} is
-			 * not null
+			 * The identifier of the model that was loaded.
 			 */
-			@UnknownNullability("#topLevelId() != null")
-			Identifier resourceId();
+			ModelIdentifier id();
 
 			/**
-			 * Models with a top-level ID are loaded from blockstate files, {@link BlockStateResolver}s, or by copying
-			 * a previously loaded model.
-			 *
-			 * @return the identifier of the given model as a {@link ModelIdentifier}, or null if {@link #resourceId()}
-			 * is not null
+			 * The corresponding block state of the model that was loaded.
 			 */
-			@UnknownNullability("#resourceId() != null")
-			ModelIdentifier topLevelId();
-
-			/**
-			 * The function that can be used to retrieve sprites.
-			 */
-			Function<SpriteIdentifier, Sprite> textureGetter();
-
-			/**
-			 * The settings this model is being baked with.
-			 */
-			ModelBakeSettings settings();
-
-			/**
-			 * The baker being used to bake this model.
-			 * It can be used to {@linkplain Baker#getModel get unbaked models} and
-			 * {@linkplain Baker#bake bake models}.
-			 */
-			Baker baker();
-		}
-	}
-
-	@FunctionalInterface
-	public interface AfterBake {
-		/**
-		 * This handler is invoked to allow modification of the baked model instance right after it is baked and before
-		 * it is cached.
-		 *
-		 * <p>Note that the passed baked model may be null and that this handler may return a null baked model, since
-		 * {@link UnbakedModel#bake} and {@link Baker#bake} may also return null baked models. Null baked models are
-		 * automatically mapped to the missing model during model retrieval.
-		 *
-		 * <p>For further information, see the docs of {@link ModelLoadingPlugin.Context#modifyModelAfterBake()}.
-		 *
-		 * @param model the current baked model instance
-		 * @param context context with additional information about the model/loader
-		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
-		 * @see ModelLoadingPlugin.Context#modifyModelAfterBake
-		 */
-		@Nullable
-		BakedModel modifyModelAfterBake(@Nullable BakedModel model, Context context);
-
-		/**
-		 * The context for an after bake model modification event.
-		 */
-		@ApiStatus.NonExtendable
-		interface Context {
-			/**
-			 * Models with a resource ID are loaded directly from JSON or a {@link ModelModifier}.
-			 *
-			 * @return the identifier of the given model as an {@link Identifier}, or null if {@link #topLevelId()} is
-			 * not null
-			 */
-			@UnknownNullability("#topLevelId() != null")
-			Identifier resourceId();
-
-			/**
-			 * Models with a top-level ID are loaded from blockstate files, {@link BlockStateResolver}s, or by copying
-			 * a previously loaded model.
-			 *
-			 * @return the identifier of the given model as a {@link ModelIdentifier}, or null if {@link #resourceId()}
-			 * is not null
-			 */
-			@UnknownNullability("#resourceId() != null")
-			ModelIdentifier topLevelId();
-
-			/**
-			 * The unbaked model that is being baked.
-			 */
-			UnbakedModel sourceModel();
-
-			/**
-			 * The function that can be used to retrieve sprites.
-			 */
-			Function<SpriteIdentifier, Sprite> textureGetter();
-
-			/**
-			 * The settings this model is being baked with.
-			 */
-			ModelBakeSettings settings();
-
-			/**
-			 * The baker being used to bake this model.
-			 * It can be used to {@linkplain Baker#getModel get unbaked models} and
-			 * {@linkplain Baker#bake bake models}.
-			 */
-			Baker baker();
+			BlockState state();
 		}
 	}
 

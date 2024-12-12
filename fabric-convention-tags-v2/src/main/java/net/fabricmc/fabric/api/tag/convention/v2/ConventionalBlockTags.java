@@ -150,8 +150,8 @@ public final class ConventionalBlockTags {
 	/**
 	 * A storage block is generally a block that has a recipe to craft a bulk of 1 kind of resource to a block
 	 * and has a mirror recipe to reverse the crafting with no loss in resources.
-	 * <p></p>
-	 * Honey Block is special in that the reversing recipe is not a perfect mirror of the crafting recipe
+	 *
+	 * <p>Honey Block is special in that the reversing recipe is not a perfect mirror of the crafting recipe
 	 * and so, it is considered a special case and not given a storage block tag.
 	 */
 	public static final TagKey<Block> STORAGE_BLOCKS = register("storage_blocks");
@@ -169,6 +169,7 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> STORAGE_BLOCKS_RAW_GOLD = register("storage_blocks/raw_gold");
 	public static final TagKey<Block> STORAGE_BLOCKS_RAW_IRON = register("storage_blocks/raw_iron");
 	public static final TagKey<Block> STORAGE_BLOCKS_REDSTONE = register("storage_blocks/redstone");
+	public static final TagKey<Block> STORAGE_BLOCKS_RESIN = register("storage_blocks/resin");
 	public static final TagKey<Block> STORAGE_BLOCKS_SLIME = register("storage_blocks/slime");
 	public static final TagKey<Block> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 

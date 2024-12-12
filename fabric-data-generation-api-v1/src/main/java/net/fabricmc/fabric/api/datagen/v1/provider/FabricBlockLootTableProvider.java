@@ -28,7 +28,7 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
 import net.minecraft.data.DataWriter;
-import net.minecraft.data.server.loottable.BlockLootTableGenerator;
+import net.minecraft.data.loottable.BlockLootTableGenerator;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.registry.Registries;

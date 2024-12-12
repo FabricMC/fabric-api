@@ -36,7 +36,7 @@ public class ArmorRenderingTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		ArmorRenderer.register((matrices, vertexConsumers, stack, renderState, slot, light, model) -> {
 			if (armorModel == null) {
-				armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
+				armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
 			}
 
 			armorModel.setAngles(renderState);

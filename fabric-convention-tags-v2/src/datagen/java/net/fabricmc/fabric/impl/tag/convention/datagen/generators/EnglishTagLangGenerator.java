@@ -141,6 +141,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_RAW_GOLD, "Raw Gold Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_RAW_IRON, "Raw Iron Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE, "Redstone Storage Blocks");
+		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_RESIN, "Resin Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STRIPPED_LOGS, "Stripped Logs");
@@ -193,6 +194,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.ENCHANTABLES, "Enchantables");
 		translationBuilder.add(ConventionalItemTags.BRICKS, "Bricks");
 		translationBuilder.add(ConventionalItemTags.DUSTS, "Dusts");
+		translationBuilder.add(ConventionalItemTags.CLUMPS, "Clumps");
 		translationBuilder.add(ConventionalItemTags.GEMS, "Gems");
 		translationBuilder.add(ConventionalItemTags.INGOTS, "Ingots");
 		translationBuilder.add(ConventionalItemTags.NUGGETS, "Nuggets");
@@ -207,6 +209,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.COPPER_RAW_BLOCKS, "Raw Copper Blocks");
 		translationBuilder.add(ConventionalItemTags.NORMAL_BRICKS, "Bricks");
 		translationBuilder.add(ConventionalItemTags.NETHER_BRICKS, "Nether Bricks");
+		translationBuilder.add(ConventionalItemTags.RESIN_BRICKS, "Resin Bricks");
 		translationBuilder.add(ConventionalItemTags.IRON_INGOTS, "Iron Ingots");
 		translationBuilder.add(ConventionalItemTags.GOLD_INGOTS, "Gold Ingots");
 		translationBuilder.add(ConventionalItemTags.COPPER_INGOTS, "Copper Ingots");
@@ -240,6 +243,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.GOLD_NUGGETS, "Gold Nuggets");
 		translationBuilder.add(ConventionalItemTags.REDSTONE_DUSTS, "Redstone Dusts");
 		translationBuilder.add(ConventionalItemTags.GLOWSTONE_DUSTS, "Glowstone Dusts");
+		translationBuilder.add(ConventionalItemTags.RESIN_CLUMPS, "Resin Clumps");
 		translationBuilder.add(ConventionalItemTags.COAL, "Coal");
 		translationBuilder.add(ConventionalItemTags.POTIONS, "Potions");
 		translationBuilder.add(ConventionalItemTags.BOTTLE_POTIONS, "Bottle Potions");
@@ -368,6 +372,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_RAW_GOLD, "Raw Gold Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_RAW_IRON, "Raw Iron Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_REDSTONE, "Redstone Storage Blocks");
+		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_RESIN, "Resin Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STRIPPED_LOGS, "Stripped Log Blocks");

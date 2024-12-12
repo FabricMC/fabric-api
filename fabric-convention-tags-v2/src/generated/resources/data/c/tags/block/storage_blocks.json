@@ -14,6 +14,7 @@
     "#c:storage_blocks/raw_gold",
     "#c:storage_blocks/raw_iron",
     "#c:storage_blocks/redstone",
+    "#c:storage_blocks/resin",
     "#c:storage_blocks/slime",
     "#c:storage_blocks/wheat"
   ]

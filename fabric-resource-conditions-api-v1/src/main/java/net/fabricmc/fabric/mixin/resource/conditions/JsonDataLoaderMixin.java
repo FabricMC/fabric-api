@@ -36,6 +36,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourceFinder;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
@@ -45,9 +46,9 @@ public class JsonDataLoaderMixin {
 	@Unique
 	private static final Object SKIP_DATA_MARKER = new Object();
 
-	@WrapOperation(method = "load", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;", remap = false))
+	@WrapOperation(method = "load(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/resource/ResourceFinder;Lcom/mojang/serialization/DynamicOps;Lcom/mojang/serialization/Codec;Ljava/util/Map;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;", remap = false))
 	private static DataResult<?> applyResourceConditions(Codec<?> instance, DynamicOps<JsonElement> dynamicOps, Object object, Operation<DataResult<?>> original,
-														@Local(argsOnly = true) String dataType,
+														@Local(argsOnly = true) ResourceFinder resourceFinder,
 														@Local Map.Entry<Identifier, Resource> entry) {
 		final JsonElement resourceData = (JsonElement) object;
 		@Nullable RegistryOps.RegistryInfoGetter registryInfo = null;
@@ -58,6 +59,8 @@ public class JsonDataLoaderMixin {
 
 		if (resourceData.isJsonObject()) {
 			JsonObject obj = resourceData.getAsJsonObject();
+
+			final String dataType = ((ResourceFinderAccessor) resourceFinder).getDirectoryName();
 
 			if (!ResourceConditionsImpl.applyResourceConditions(obj, dataType, entry.getKey(), registryInfo)) {
 				return DataResult.success(SKIP_DATA_MARKER);

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.datagen.v1.loot;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.data.server.loottable.BlockLootTableGenerator;
+import net.minecraft.data.loottable.BlockLootTableGenerator;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.loot.ConditionBlockLootTableGenerator;

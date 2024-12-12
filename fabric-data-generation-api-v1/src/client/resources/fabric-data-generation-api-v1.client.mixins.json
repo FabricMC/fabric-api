@@ -3,7 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.datagen.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "ModelProviderBlockDefinitionsMixin",
+    "ModelProviderItemAssetsMixin",
+    "ModelProviderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -113,7 +113,8 @@ public class CustomAtlasSourcesTest implements ClientModInitializer {
 
 				int imageWidth = image.getWidth();
 				int imageHeight = image.getHeight();
-				AnimationResourceMetadata animationMetadata = metadata.decode(AnimationResourceMetadata.READER).orElse(AnimationResourceMetadata.EMPTY);
+				AnimationResourceMetadata animationMetadata = metadata.decode(AnimationResourceMetadata.SERIALIZER)
+						.orElse(new AnimationResourceMetadata(Optional.empty(), Optional.empty(), Optional.empty(), 1, false));
 				SpriteDimensions dimensions = animationMetadata.getSize(imageWidth, imageHeight);
 				int frameWidth = dimensions.width();
 				int frameHeight = dimensions.height();

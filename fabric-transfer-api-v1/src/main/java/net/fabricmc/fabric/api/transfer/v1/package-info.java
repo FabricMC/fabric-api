@@ -19,16 +19,15 @@
  *
  * <p>This module provides common facilities for the transfer of fluids and other game resources.
  *
- * <p><h2>Transactions</h2>
+ * <h2>Transactions</h2>
  * The {@link net.fabricmc.fabric.api.transfer.v1.transaction.Transaction Transaction} system provides a
  * scope that can be used to simulate any number of transfer operations, and then cancel or validate all of them at once.
  * One can think of transactions as video game checkpoints. A more detailed explanation can be found in the class javadoc of {@code Transaction}.
  * Every transfer operation requires a {@code Transaction} parameter.
  * {@link net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant SnapshotParticipant}
  * is the reference implementation of a "participant", that is an object participating in a transaction.
- * </p>
  *
- * <p><h2>Storages</h2>
+ * <h2>Storages</h2>
  * A {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage Storage&lt;T&gt;} is any object that can store resources of type {@code T}.
  * Its contents can be read, and resources can be inserted into it or extracted from it.
  * {@link net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil StorageUtil} provides a few helpful function to work with {@code Storage}s,
@@ -37,17 +36,15 @@
  * implementation of {@code Storage&lt;T&gt;}.
  * Usage of {@link net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions StoragePreconditions} is recommended to detect
  * wrong usage of {@code Storage} and {@code StorageView} methods.
- * </p>
  *
  * <p>Implementors of transfer variant storages with a fixed number of "slots" or "tanks" can use
  * {@link net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage SingleVariantStorage},
  * and combine them with {@link net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage CombinedStorage}.
  *
- * <p><h2>Fluid transfer</h2>
+ * <h2>Fluid transfer</h2>
  * A {@code Storage<FluidVariant>} is any object that can store fluids. It is just a {@code Storage<T>}, where {@code T} is
  * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant FluidVariant}, the immutable combination of a {@code Fluid} and additional components.
  * Instances can be accessed through the API lookups defined in {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage FluidStorage}.
- * </p>
  *
  * <p>The amount for fluid transfer is droplets, that is 1/81000ths of a bucket.
  * {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants FluidConstants} contains a few helpful constants to work with droplets.
@@ -57,20 +54,18 @@
  * {@code Fluid}s that wish to render differently depending on the stored components can register a
  * {@link net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler FluidVariantRenderHandler}.
  *
- * <p><h2>Item transfer</h2>
+ * <h2>Item transfer</h2>
  * A {@code Storage<ItemVariant>} is any object that can store items.
  * Instances can be accessed through the API lookup defined in {@link net.fabricmc.fabric.api.transfer.v1.item.ItemStorage ItemStorage}.
- * </p>
  *
  * <p>The lookup already provides compatibility with vanilla inventories, however it may sometimes be interesting to use
  * {@link net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage InventoryStorage} or
  * {@link net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage PlayerInventoryStorage} when interaction with
  * {@code Inventory}-based APIs is required.
  *
- * <p><h2>{@code ContainerItemContext}</h2>
+ * <h2>{@code ContainerItemContext}</h2>
  * {@link net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext ContainerItemContext} is a context designed for {@code ItemApiLookup} queries
  * that allows the returned APIs to interact with the containing inventory.
  * Notably, it is used by the {@code FluidStorage.ITEM} lookup for fluid-containing items.
- * </p>
  */
 package net.fabricmc.fabric.api.transfer.v1;

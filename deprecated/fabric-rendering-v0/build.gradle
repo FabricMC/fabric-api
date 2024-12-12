@@ -1,6 +1,0 @@
-version = getSubprojectVersion(project)
-
-moduleDependencies(project, [
-	'fabric-api-base',
-	'fabric-rendering-v1'
-])

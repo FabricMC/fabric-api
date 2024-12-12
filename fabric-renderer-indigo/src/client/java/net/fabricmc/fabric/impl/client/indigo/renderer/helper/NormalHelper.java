@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
  * Renderers are not required to use these helpers, but they were
  * designed to be usable without the default renderer.
  */
-public abstract class NormalHelper {
+public final class NormalHelper {
 	private NormalHelper() { }
 
 	private static final float PACK = 127.0f;

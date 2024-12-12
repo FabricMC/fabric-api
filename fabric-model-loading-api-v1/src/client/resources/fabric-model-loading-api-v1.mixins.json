@@ -4,9 +4,10 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BakedModelManagerMixin",
+    "ModelBakerBakedModelsMixin",
+    "ModelBakerMixin",
     "ReferencedModelsCollectorMixin",
-    "ModelLoaderBakerImplMixin",
-    "ModelLoaderMixin"
+    "WrapperBakedModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

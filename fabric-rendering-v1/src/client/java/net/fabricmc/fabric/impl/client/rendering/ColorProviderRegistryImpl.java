@@ -22,9 +22,6 @@ import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.color.item.ItemColorProvider;
-import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.item.ItemConvertible;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 
@@ -33,13 +30,6 @@ public abstract class ColorProviderRegistryImpl<T, Provider, Underlying> impleme
 		@Override
 		void registerUnderlying(BlockColors map, BlockColorProvider mapper, Block block) {
 			map.registerColorProvider(mapper, block);
-		}
-	};
-
-	public static final ColorProviderRegistryImpl<ItemConvertible, ItemColorProvider, ItemColors> ITEM = new ColorProviderRegistryImpl<ItemConvertible, ItemColorProvider, ItemColors>() {
-		@Override
-		void registerUnderlying(ItemColors map, ItemColorProvider mapper, ItemConvertible block) {
-			map.register(mapper, block);
 		}
 	};
 

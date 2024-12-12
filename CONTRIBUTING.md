@@ -99,6 +99,9 @@ Fabric API makes strong backwards compatibility guarantees, by which contributor
     - If vanilla exposes optionals in return types, then returning an optional is fine.
 - Avoid requiring the user to cast to a subtype if possible.
     - Adding methods to vanilla types can be done via interface injection.
+- Avoid exposing java `record`s as public API.
+    - Records expose more than is necessary for most APIs, which makes them difficult to evolve.
+    - Prefer to expose an interface that is implemented by an impl record.
 
 ### API design patterns to consider
 

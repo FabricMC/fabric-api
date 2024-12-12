@@ -4,7 +4,7 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.8.9" apply false
+	id "fabric-loom" version "1.9.2" apply false
 	id "com.diffplug.spotless" version "6.20.0"
 	id "org.ajoberstar.grgit" version "5.2.2"
 	id "me.modmuss50.remotesign" version "0.4.0" apply false
@@ -215,7 +215,7 @@ allprojects {
 	}
 
 	allprojects.each { p ->
-		if (metaProjects.contains(project.name)) {
+		if (metaProjects.contains(p.name)) {
 			return
 		}
 
@@ -247,19 +247,6 @@ allprojects {
 
 	test {
 		useJUnitPlatform()
-
-		afterEvaluate {
-			// See: https://github.com/FabricMC/fabric-loader/pull/585
-			def classPathGroups = loom.mods.stream()
-					.map { modSettings ->
-						SourceSetHelper.getClasspath(modSettings, getProject()).stream()
-								.map(File.&getAbsolutePath)
-								.collect(Collectors.joining(File.pathSeparator))
-					}
-					.collect(Collectors.joining(File.pathSeparator+File.pathSeparator))
-
-			systemProperty("fabric.classPathGroups", classPathGroups)
-		}
 	}
 
 	tasks.withType(ProcessResources).configureEach {
@@ -284,7 +271,7 @@ allprojects {
 
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = "10.12.1"
+		toolVersion = "10.20.2"
 	}
 
 	tasks.withType(AbstractArchiveTask).configureEach {
@@ -422,7 +409,7 @@ loom {
 
 			// Enable the gametest runner
 			vmArg "-Dfabric-api.gametest"
-			vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
+			vmArg "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.file("junit.xml").get().getAsFile()}"
 			runDir "build/gametest"
 		}
 		autoTestServer {
@@ -452,6 +439,11 @@ loom {
 		}
 	}
 }
+
+runGametest {
+	outputs.file project.layout.buildDirectory.file("junit.xml")
+}
+
 test.dependsOn runGametest
 
 def coverageTasks = [

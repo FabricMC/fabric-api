@@ -18,25 +18,39 @@ package net.fabricmc.fabric.api.renderer.v1.mesh;
 
 import java.util.function.Consumer;
 
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
+import org.jetbrains.annotations.Range;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 
 /**
- * A bundle of one or more {@link QuadView} instances encoded by the renderer,
- * typically via {@link Renderer#meshBuilder()}.
+ * A bundle of {@link QuadView} instances encoded by the renderer, typically
+ * via {@link MutableMesh#immutableCopy()}.
  *
- * <p>Similar in purpose to the {@code List<BakedQuad>} instances returned by BakedModel, but
- * affords the renderer the ability to optimize the format for performance
- * and memory allocation.
+ * <p>Similar in purpose to the {@code List<BakedQuad>} instances returned by
+ * {@link BakedModel#getQuads(BlockState, Direction, Random)}, but allows the
+ * renderer to optimize the format for performance and memory allocation.
+ *
+ * <p>All declared methods in this interface are thread-safe and can be used
+ * concurrently.
  *
  * <p>Only the renderer should implement or extend this interface.
  */
 public interface Mesh {
 	/**
-	 * Use to access all of the quads encoded in this mesh. The quad instances
-	 * sent to the consumer will likely be thread-local/reused and should never
-	 * be retained by the consumer.
+	 * Returns the number of quads encoded in this mesh.
 	 */
-	void forEach(Consumer<QuadView> consumer);
+	@Range(from = 0, to = Integer.MAX_VALUE)
+	int size();
+
+	/**
+	 * Use to access all the quads encoded in this mesh. The quad instance sent
+	 * to the consumer should never be retained outside the current call to the
+	 * consumer.
+	 */
+	void forEach(Consumer<? super QuadView> action);
 
 	/**
 	 * Outputs all quads in this mesh to the given quad emitter.

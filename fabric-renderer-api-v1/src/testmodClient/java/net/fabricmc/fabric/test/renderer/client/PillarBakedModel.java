@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.renderer.client;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
@@ -25,10 +26,8 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -38,7 +37,6 @@ import net.fabricmc.fabric.api.block.v1.FabricBlockState;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.test.renderer.Registration;
 
 /**
@@ -62,8 +60,7 @@ public class PillarBakedModel implements BakedModel {
 	}
 
 	@Override
-	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		QuadEmitter emitter = context.getEmitter();
+	public void emitBlockQuads(QuadEmitter emitter, BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, Predicate<@Nullable Direction> cullTest) {
 		// Do not use the passed state to ensure that this model connects
 		// to and from blocks with a custom appearance correctly.
 		BlockState worldState = blockView.getBlockState(pos);
@@ -92,9 +89,7 @@ public class PillarBakedModel implements BakedModel {
 	}
 
 	@Override
-	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		QuadEmitter emitter = context.getEmitter();
-
+	public void emitItemQuads(QuadEmitter emitter, Supplier<Random> randomSupplier) {
 		for (Direction side : Direction.values()) {
 			emitter.square(side, 0, 0, 1, 1, 0);
 			emitter.spriteBake(sprites[ConnectedTexture.ALONE.ordinal()], MutableQuadView.BAKE_LOCK_UV);
@@ -142,11 +137,6 @@ public class PillarBakedModel implements BakedModel {
 	}
 
 	@Override
-	public boolean isBuiltin() {
-		return false;
-	}
-
-	@Override
 	public Sprite getParticleSprite() {
 		return sprites[0];
 	}
@@ -154,10 +144,5 @@ public class PillarBakedModel implements BakedModel {
 	@Override
 	public ModelTransformation getTransformation() {
 		return ModelHelper.MODEL_TRANSFORM_BLOCK;
-	}
-
-	@Override
-	public ModelOverrideList getOverrides() {
-		return ModelOverrideList.EMPTY;
 	}
 }

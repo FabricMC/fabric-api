@@ -18,8 +18,10 @@ package net.fabricmc.fabric.mixin.registry.sync;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -43,6 +45,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -56,6 +59,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.registry.FabricRegistry;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -67,14 +71,11 @@ import net.fabricmc.fabric.impl.registry.sync.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 
 @Mixin(SimpleRegistry.class)
-public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, RemappableRegistry, ListenableRegistry<T> {
+public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, RemappableRegistry, ListenableRegistry<T>, FabricRegistry {
 	// Namespaces used by the vanilla game. "brigadier" is used by command argument type registry.
 	// While Realms use "realms" namespace, it is irrelevant for Registry Sync.
 	@Unique
 	private static final Set<String> VANILLA_NAMESPACES = Set.of("minecraft", "brigadier");
-
-	@Unique
-	private static final Logger LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
 
 	@Shadow
 	@Final
@@ -111,6 +112,22 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	private Object2IntMap<Identifier> fabric_prevIndexedEntries;
 	@Unique
 	private BiMap<Identifier, RegistryEntry.Reference<T>> fabric_prevEntries;
+	@Unique
+	// invariant: the sets of keys and values are disjoint (every alias points to a 'deepest' non-alias ID)
+	private Map<Identifier, Identifier> aliases = new HashMap<>();
+
+	@Shadow
+	public abstract boolean containsId(Identifier id);
+
+	@Shadow
+	public abstract String toString();
+
+	@Shadow
+	@Final
+	private RegistryKey<? extends Registry<T>> key;
+
+	@Shadow
+	protected abstract void assertNotFrozen();
 
 	@Override
 	public Event<RegistryEntryAddedCallback<T>> fabric_getAddObjectEvent() {
@@ -123,7 +140,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	}
 
 	@Inject(method = "<init>(Lnet/minecraft/registry/RegistryKey;Lcom/mojang/serialization/Lifecycle;Z)V", at = @At("RETURN"))
-	private void init(RegistryKey key, Lifecycle lifecycle, boolean intrusive, CallbackInfo ci) {
+	private void init(RegistryKey<?> key, Lifecycle lifecycle, boolean intrusive, CallbackInfo ci) {
 		fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,
 			(callbacks) -> (rawId, id, object) -> {
 				for (RegistryEntryAddedCallback<T> callback : callbacks) {
@@ -131,6 +148,18 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 				}
 			}
 		);
+		// aliasing: check that no new entries use the id of an alias
+		fabric_addObjectEvent.register((rawId, id, object) -> {
+			if (aliases.containsKey(id)) {
+				throw new IllegalArgumentException(
+						"Tried registering %s to registry %s, but it is already an alias (for %s)".formatted(
+								id,
+								this.key,
+								aliases.get(id)
+						)
+				);
+			}
+		});
 		fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryIdRemapCallback.class,
 			(callbacks) -> (a) -> {
 				for (RegistryIdRemapCallback<T> callback : callbacks) {
@@ -165,7 +194,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	}
 
 	@Override
-	public void remap(String name, Object2IntMap<Identifier> remoteIndexedEntries, RemapMode mode) throws RemapException {
+	public void remap(Object2IntMap<Identifier> remoteIndexedEntries, RemapMode mode) throws RemapException {
 		// Throw on invalid conditions.
 		switch (mode) {
 		case AUTHORITATIVE:
@@ -174,7 +203,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 			List<String> strings = null;
 
 			for (Identifier remoteId : remoteIndexedEntries.keySet()) {
-				if (!idToEntry.containsKey(remoteId)) {
+				if (!this.containsId(remoteId)) {
 					if (strings == null) {
 						strings = new ArrayList<>();
 					}
@@ -184,34 +213,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 			}
 
 			if (strings != null) {
-				StringBuilder builder = new StringBuilder("Received ID map for " + name + " contains IDs unknown to the receiver!");
-
-				for (String s : strings) {
-					builder.append('\n').append(s);
-				}
-
-				throw new RemapException(builder.toString());
-			}
-
-			break;
-		}
-		case EXACT: {
-			if (!idToEntry.keySet().equals(remoteIndexedEntries.keySet())) {
-				List<String> strings = new ArrayList<>();
-
-				for (Identifier remoteId : remoteIndexedEntries.keySet()) {
-					if (!idToEntry.containsKey(remoteId)) {
-						strings.add(" - " + remoteId + " (missing on local)");
-					}
-				}
-
-				for (Identifier localId : getIds()) {
-					if (!remoteIndexedEntries.containsKey(localId)) {
-						strings.add(" - " + localId + " (missing on remote)");
-					}
-				}
-
-				StringBuilder builder = new StringBuilder("Local and remote ID sets for " + name + " do not match!");
+				StringBuilder builder = new StringBuilder("Received ID map for " + getKey() + " contains IDs unknown to the receiver!");
 
 				for (String s : strings) {
 					builder.append('\n').append(s);
@@ -350,7 +352,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	}
 
 	@Override
-	public void unmap(String name) throws RemapException {
+	public void unmap() throws RemapException {
 		if (fabric_prevIndexedEntries != null) {
 			List<Identifier> addedIds = new ArrayList<>();
 
@@ -372,7 +374,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 				keyToEntry.put(entryKey, entry.getValue());
 			}
 
-			remap(name, fabric_prevIndexedEntries, RemapMode.AUTHORITATIVE);
+			remap(fabric_prevIndexedEntries, RemapMode.AUTHORITATIVE);
 
 			for (Identifier id : addedIds) {
 				fabric_getAddObjectEvent().invoker().onEntryAdded(entryToRawId.getInt(idToEntry.get(id)), id, get(id));
@@ -381,5 +383,95 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 			fabric_prevIndexedEntries = null;
 			fabric_prevEntries = null;
 		}
+	}
+
+	@Override
+	public void addAlias(Identifier old, Identifier newId) {
+		Objects.requireNonNull(old, "alias cannot be null");
+		Objects.requireNonNull(newId, "aliased id cannot be null");
+
+		if (aliases.containsKey(old)) {
+			throw new IllegalArgumentException(
+					"Tried adding %s as an alias for %s, but it is already an alias (for %s) in registry %s".formatted(
+							old,
+							newId,
+							aliases.get(old),
+							this.key
+					)
+			);
+		}
+
+		if (this.idToEntry.containsKey(old)) {
+			throw new IllegalArgumentException(
+					"Tried adding %s as an alias, but it is already present in registry %s".formatted(
+							old,
+							this.key
+					)
+			);
+		}
+
+		if (old.equals(aliases.get(newId))) {
+			// since an alias corresponds to at most one identifier, this is the only way to create a cycle
+			// that doesn't already fall under the first condition
+			throw new IllegalArgumentException(
+					"Making %1$s an alias of %2$s would create a cycle, as %2$s is already an alias of %1$s (registry %3$s)".formatted(
+							old,
+							newId,
+							this.key
+					)
+			);
+		}
+
+		if (!this.idToEntry.containsKey(newId)) {
+			FABRIC_LOGGER.warn(
+					"Adding {} as an alias for {}, but the latter doesn't exist in registry {}",
+					old,
+					newId,
+					this.key
+			);
+		}
+
+		assertNotFrozen();
+
+		// recompute alias map to preserve invariant, i.e. make sure all keys point to a non-alias ID
+		Identifier deepest = aliases.getOrDefault(newId, newId);
+
+		for (Map.Entry<Identifier, Identifier> entry : aliases.entrySet()) {
+			if (old.equals(entry.getValue())) {
+				entry.setValue(deepest);
+			}
+		}
+
+		aliases.put(old, deepest);
+		FABRIC_LOGGER.debug("Adding alias {} for {} in registry {}", old, newId, this.key);
+	}
+
+	@ModifyVariable(
+			method = {
+					"getEntry(Lnet/minecraft/util/Identifier;)Ljava/util/Optional;",
+					"get(Lnet/minecraft/util/Identifier;)Ljava/lang/Object;",
+					"containsId"
+			},
+			at = @At("HEAD"),
+			argsOnly = true
+	)
+	private Identifier aliasIdentifierParameter(Identifier original) {
+		return aliases.getOrDefault(original, original);
+	}
+
+	@ModifyVariable(
+			method = {
+					"get(Lnet/minecraft/registry/RegistryKey;)Ljava/lang/Object;",
+					"getOptional(Lnet/minecraft/registry/RegistryKey;)Ljava/util/Optional;",
+					"getOrCreateEntry",
+					"contains",
+					"getEntryInfo"
+			},
+			at = @At("HEAD"),
+			argsOnly = true
+	)
+	private RegistryKey<T> aliasRegistryKeyParameter(RegistryKey<T> original) {
+		Identifier aliased = aliases.get(original.getValue());
+		return aliased == null ? original : RegistryKey.of(original.getRegistryRef(), aliased);
 	}
 }

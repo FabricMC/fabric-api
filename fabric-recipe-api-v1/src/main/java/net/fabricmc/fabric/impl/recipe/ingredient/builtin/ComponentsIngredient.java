@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -84,14 +84,14 @@ public class ComponentsIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public List<RegistryEntry<Item>> getMatchingItems() {
+	public Stream<RegistryEntry<Item>> getMatchingItems() {
 		return base.getMatchingItems();
 	}
 
 	@Override
 	public SlotDisplay toDisplay() {
 		return new SlotDisplay.CompositeSlotDisplay(
-			base.getMatchingItems().stream().map(this::createEntryDisplay).toList()
+			base.getMatchingItems().map(this::createEntryDisplay).toList()
 		);
 	}
 
@@ -118,6 +118,19 @@ public class ComponentsIngredient implements CustomIngredient {
 	@Nullable
 	private ComponentChanges getComponents() {
 		return components;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ComponentsIngredient that = (ComponentsIngredient) o;
+		return base.equals(that.base) && components.equals(that.components);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(base, components);
 	}
 
 	private static class Serializer implements CustomIngredientSerializer<ComponentsIngredient> {

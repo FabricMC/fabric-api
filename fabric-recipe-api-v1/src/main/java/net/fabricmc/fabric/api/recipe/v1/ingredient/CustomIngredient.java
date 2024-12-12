@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.recipe.v1.ingredient;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -25,7 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.display.SlotDisplay;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryList;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
@@ -46,6 +45,9 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
  *     // extra ingredient data, dependent on the serializer
  * }
  * }</pre>
+ *
+ * <p>Implementors of this interface are strongly encouraged to also implement
+ * {@link Object#equals(Object)} and {@link Object#hashCode()}.
  *
  * @see CustomIngredientSerializer
  */
@@ -73,7 +75,7 @@ public interface CustomIngredient {
 	 *
 	 * <p>Note: no caching needs to be done by the implementation, this is already handled by the ingredient itself.
 	 */
-	List<RegistryEntry<Item>> getMatchingItems();
+	Stream<RegistryEntry<Item>> getMatchingItems();
 
 	/**
 	 * Returns whether this ingredient always requires {@linkplain #test direct stack testing}.
@@ -97,11 +99,7 @@ public interface CustomIngredient {
 	 */
 	default SlotDisplay toDisplay() {
 		// Matches the vanilla logic in Ingredient.toDisplay()
-		return RegistryEntryList.of(getMatchingItems()).getStorage().map(
-				SlotDisplay.TagSlotDisplay::new,
-				(itemEntries) -> new SlotDisplay.CompositeSlotDisplay(
-						itemEntries.stream().map(Ingredient::createDisplayWithRemainder).toList()
-				));
+		return new SlotDisplay.CompositeSlotDisplay(getMatchingItems().map(Ingredient::createDisplayWithRemainder).toList());
 	}
 
 	/**

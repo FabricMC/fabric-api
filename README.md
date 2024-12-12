@@ -5,7 +5,7 @@ Essential hooks for modding with Fabric.
 Fabric API is the library for essential hooks and interoperability mechanisms for Fabric mods. Examples include:
 
 - Exposing functionality that is useful but difficult to access for many mods such as particles, biomes and dimensions
-- Adding events, hooks and APIs to improve interopability between mods.
+- Adding events, hooks and APIs to improve interoperability between mods.
 - Essential features such as registry synchronization and adding information to crash reports.
 - An advanced rendering API designed for compatibility with optimization mods and graphics overhaul mods.
 

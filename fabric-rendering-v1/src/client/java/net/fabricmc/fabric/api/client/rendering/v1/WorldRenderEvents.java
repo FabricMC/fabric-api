@@ -37,9 +37,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <li>AFTER_SETUP
  * <li>BEFORE_ENTITIES
  * <li>AFTER_ENTITIES
- * <li>BEFORE_BLOCK_OUTLINE
- * <li>BLOCK_OUTLINE  (If not cancelled in BEFORE_BLOCK_OUTLINE)
+ * <li>BEFORE_BLOCK_OUTLINE (non-translucent)
+ * <li>BLOCK_OUTLINE (if not cancelled in non-translucent BEFORE_BLOCK_OUTLINE and vanilla checks pass)
  * <li>BEFORE_DEBUG_RENDER
+ * <li>BEFORE_BLOCK_OUTLINE (translucent)
+ * <li>BLOCK_OUTLINE (if not cancelled in translucent BEFORE_BLOCK_OUTLINE and vanilla checks pass)
  * <li>AFTER_TRANSLUCENT
  * <li>LAST
  * <li>END</ul>

@@ -19,15 +19,13 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.AXIS_ALIGNED_FLAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
 
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -55,42 +53,29 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 	protected abstract VertexConsumer getVertexConsumer(RenderLayer layer);
 
 	@Override
-	public boolean isFaceCulled(@Nullable Direction face) {
-		return !blockInfo.shouldDrawFace(face);
-	}
-
-	@Override
-	public ModelTransformationMode itemTransformationMode() {
-		throw new IllegalStateException("itemTransformationMode() can only be called on an item render context.");
-	}
-
-	@Override
-	protected void renderQuad(MutableQuadViewImpl quad) {
-		if (!transform(quad)) {
-			return;
-		}
-
-		if (isFaceCulled(quad.cullFace())) {
+	protected void bufferQuad(MutableQuadViewImpl quad) {
+		if (blockInfo.shouldCullSide(quad.cullFace())) {
 			return;
 		}
 
 		final RenderMaterial mat = quad.material();
-		final int colorIndex = mat.disableColorIndex() ? -1 : quad.colorIndex();
 		final TriState aoMode = mat.ambientOcclusion();
 		final boolean ao = blockInfo.useAo && (aoMode == TriState.TRUE || (aoMode == TriState.DEFAULT && blockInfo.defaultAo));
 		final boolean emissive = mat.emissive();
 		final boolean vanillaShade = mat.shadeMode() == ShadeMode.VANILLA;
 		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveRenderLayer(mat.blendMode()));
 
-		colorizeQuad(quad, colorIndex);
+		tintQuad(quad);
 		shadeQuad(quad, ao, emissive, vanillaShade);
 		bufferQuad(quad, vertexConsumer);
 	}
 
 	/** handles block color, common to all renders. */
-	private void colorizeQuad(MutableQuadViewImpl quad, int colorIndex) {
-		if (colorIndex != -1) {
-			final int blockColor = blockInfo.blockColor(colorIndex);
+	private void tintQuad(MutableQuadViewImpl quad) {
+		int tintIndex = quad.tintIndex();
+
+		if (tintIndex != -1) {
+			final int blockColor = blockInfo.blockColor(tintIndex);
 
 			for (int i = 0; i < 4; i++) {
 				quad.color(i, ColorHelper.multiplyColor(blockColor, quad.color(i)));
@@ -151,8 +136,8 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 				if ((quad.geometryFlags() & AXIS_ALIGNED_FLAG) != 0) {
 					faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), hasShade);
 				} else {
-					Vector3f faceNormal = quad.faceNormal();
-					faceShade = normalShade(faceNormal.x, faceNormal.y, faceNormal.z, hasShade);
+					Vector3fc faceNormal = quad.faceNormal();
+					faceShade = normalShade(faceNormal.x(), faceNormal.y(), faceNormal.z(), hasShade);
 				}
 
 				if (quad.hasVertexNormals()) {

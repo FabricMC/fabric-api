@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
 
 import static net.minecraft.util.math.MathHelper.approximatelyEquals;
 
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.Direction;
@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
  * Renderers are not required to use these helpers, but they were
  * designed to be usable without the default renderer.
  */
-public abstract class GeometryHelper {
+public final class GeometryHelper {
 	private GeometryHelper() { }
 
 	/** set when a quad touches all four corners of a unit cube. */
@@ -180,7 +180,7 @@ public abstract class GeometryHelper {
 	 * <p>Derived from the quad face normal and expects convex quads with all points co-planar.
 	 */
 	public static Direction lightFace(QuadView quad) {
-		final Vector3f normal = quad.faceNormal();
+		final Vector3fc normal = quad.faceNormal();
 		switch (GeometryHelper.longestAxis(normal)) {
 		case X:
 			return normal.x() > 0 ? Direction.EAST : Direction.WEST;
@@ -218,7 +218,7 @@ public abstract class GeometryHelper {
 	/**
 	 * @see #longestAxis(float, float, float)
 	 */
-	public static Axis longestAxis(Vector3f vec) {
+	public static Axis longestAxis(Vector3fc vec) {
 		return longestAxis(vec.x(), vec.y(), vec.z());
 	}
 

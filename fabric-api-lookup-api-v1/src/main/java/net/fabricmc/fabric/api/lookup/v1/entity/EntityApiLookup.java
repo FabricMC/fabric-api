@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
  * <p>When trying to {@link #find} an API for an entity, the provider registered for the entity type will be queried if it exists.
  * If it doesn't exist, or if it returns {@code null}, the fallback providers will be queried in order.
  *
- * <p><h3>Usage Example</h3>
+ * <h3>Usage Example</h3>
  * Let's pretend that we have the following interface that we want to attach to entities.
  * <pre>{@code
  * public interface Leveled {

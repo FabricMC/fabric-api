@@ -42,9 +42,9 @@ public abstract class AbstractFurnaceBlockEntityMixin extends LockableContainerB
 	@Shadow
 	protected DefaultedList<ItemStack> inventory;
 	@Shadow
-	int cookTime;
+	int cookingTimeSpent;
 	@Shadow
-	int cookTimeTotal;
+	int cookingTotalTime;
 	@Unique
 	private boolean fabric_suppressSpecialLogic = false;
 
@@ -76,8 +76,8 @@ public abstract class AbstractFurnaceBlockEntityMixin extends LockableContainerB
 			boolean bl = !stack.isEmpty() && ItemStack.areItemsAndComponentsEqual(stack, itemStack);
 
 			if (!bl && this.world instanceof ServerWorld world) {
-				this.cookTimeTotal = getCookTime(world, (AbstractFurnaceBlockEntity) (Object) this);
-				this.cookTime = 0;
+				this.cookingTotalTime = getCookTime(world, (AbstractFurnaceBlockEntity) (Object) this);
+				this.cookingTimeSpent = 0;
 			}
 		}
 	}

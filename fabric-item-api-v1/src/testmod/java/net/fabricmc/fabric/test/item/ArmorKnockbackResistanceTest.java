@@ -21,6 +21,7 @@ import java.util.Map;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.equipment.ArmorMaterial;
+import net.minecraft.item.equipment.EquipmentAssetKeys;
 import net.minecraft.item.equipment.EquipmentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -56,7 +57,7 @@ public class ArmorKnockbackResistanceTest implements ModInitializer {
 			0,
 			0.5F,
 			ItemTags.REPAIRS_LEATHER_ARMOR,
-			Identifier.of("fabric-item-api-v1-testmod", "wood")
+			EquipmentAssetKeys.IRON
 		);
 	}
 }

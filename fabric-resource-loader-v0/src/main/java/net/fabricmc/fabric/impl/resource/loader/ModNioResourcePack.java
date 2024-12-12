@@ -48,7 +48,7 @@ import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackInfo;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.resource.metadata.ResourceMetadataReader;
+import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PathUtil;
@@ -279,7 +279,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	}
 
 	@Override
-	public <T> T parseMetadata(ResourceMetadataReader<T> metaReader) throws IOException {
+	public <T> T parseMetadata(ResourceMetadataSerializer<T> metaReader) throws IOException {
 		try (InputStream is = Objects.requireNonNull(openFile("pack.mcmeta")).get()) {
 			return AbstractFileResourcePack.parseMetadata(metaReader, is);
 		}

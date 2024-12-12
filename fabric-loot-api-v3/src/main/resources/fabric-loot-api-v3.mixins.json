@@ -8,7 +8,8 @@
     "LootPoolAccessor",
     "LootPoolBuilderMixin",
     "LootTableAccessor",
-    "LootTableBuilderMixin"
+    "LootTableBuilderMixin",
+    "ResourceFinderAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

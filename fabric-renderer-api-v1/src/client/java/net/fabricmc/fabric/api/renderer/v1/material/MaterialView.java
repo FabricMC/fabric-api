@@ -31,11 +31,6 @@ public interface MaterialView {
 	BlendMode blendMode();
 
 	/**
-	 * @see MaterialFinder#disableColorIndex(boolean)
-	 */
-	boolean disableColorIndex();
-
-	/**
 	 * @see MaterialFinder#emissive(boolean)
 	 */
 	boolean emissive();
@@ -51,9 +46,9 @@ public interface MaterialView {
 	TriState ambientOcclusion();
 
 	/**
-	 * @see MaterialFinder#glint(TriState)
+	 * @see MaterialFinder#glintMode(GlintMode)
 	 */
-	TriState glint();
+	GlintMode glintMode();
 
 	/**
 	 * @see MaterialFinder#shadeMode(ShadeMode)

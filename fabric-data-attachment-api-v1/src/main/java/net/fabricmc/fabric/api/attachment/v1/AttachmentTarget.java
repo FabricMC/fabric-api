@@ -36,7 +36,7 @@ import net.minecraft.world.chunk.ChunkStatus;
  * <p>Fabric implements this on {@link Entity}, {@link BlockEntity}, {@link ServerWorld} and {@link Chunk} via mixin.</p>
  *
  * <p>Note about {@link BlockEntity} and {@link Chunk} targets: these objects need to be notified of changes to their
- * state (using {@link BlockEntity#markDirty()} and {@link Chunk#setNeedsSaving(boolean)} respectively), otherwise the modifications will not take effect properly.
+ * state (using {@link BlockEntity#markDirty()} and {@link Chunk#markNeedsSaving()} respectively), otherwise the modifications will not take effect properly.
  * The {@link #setAttached(AttachmentType, Object)} method handles this automatically, but this needs to be done manually
  * when attached data is mutable, for example:
  * <pre>{@code

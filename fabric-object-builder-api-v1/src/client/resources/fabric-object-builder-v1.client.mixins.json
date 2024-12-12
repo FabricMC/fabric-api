@@ -5,9 +5,8 @@
   "client": [
     "EntityModelLayersMixin",
     "HangingSignEditScreenMixin",
-    "ModelPredicateProviderRegistryAccessor",
-    "ModelPredicateProviderRegistrySpecificAccessor",
-    "TexturedRenderLayersMixin"
+    "TexturedRenderLayersMixin",
+    "WoodTypeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

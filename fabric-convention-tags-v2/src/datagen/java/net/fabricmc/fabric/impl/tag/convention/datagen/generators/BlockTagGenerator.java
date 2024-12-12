@@ -576,6 +576,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_RAW_GOLD)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_RAW_IRON)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE)
+				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_RESIN)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_SLIME)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT);
 
@@ -621,6 +622,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE)
 				.add(Blocks.REDSTONE_BLOCK);
 
+		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_RESIN)
+				.add(Blocks.RESIN_BLOCK);
+
 		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_SLIME)
 				.add(Blocks.SLIME_BLOCK);
 
@@ -638,6 +642,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.STRIPPED_JUNGLE_LOG)
 				.add(Blocks.STRIPPED_MANGROVE_LOG)
 				.add(Blocks.STRIPPED_OAK_LOG)
+				.add(Blocks.STRIPPED_PALE_OAK_LOG)
 				.add(Blocks.STRIPPED_SPRUCE_LOG);
 
 		getOrCreateTagBuilder(ConventionalBlockTags.STRIPPED_WOODS)
@@ -648,6 +653,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.STRIPPED_JUNGLE_WOOD)
 				.add(Blocks.STRIPPED_MANGROVE_WOOD)
 				.add(Blocks.STRIPPED_OAK_WOOD)
+				.add(Blocks.STRIPPED_PALE_OAK_WOOD)
 				.add(Blocks.STRIPPED_SPRUCE_WOOD);
 	}
 

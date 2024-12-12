@@ -20,14 +20,10 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.color.block.BlockColorProvider;
-import net.minecraft.client.color.item.ItemColorProvider;
-import net.minecraft.item.ItemConvertible;
 
 import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl;
 
 public interface ColorProviderRegistry<T, Provider> {
-	ColorProviderRegistry<ItemConvertible, ItemColorProvider> ITEM = ColorProviderRegistryImpl.ITEM;
-
 	ColorProviderRegistry<Block, BlockColorProvider> BLOCK = ColorProviderRegistryImpl.BLOCK;
 
 	/**

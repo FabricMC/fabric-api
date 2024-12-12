@@ -17,11 +17,12 @@
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
@@ -41,6 +42,14 @@ public interface ModelLoadingPlugin {
 	 */
 	static void register(ModelLoadingPlugin plugin) {
 		ModelLoadingPluginManager.registerPlugin(plugin);
+	}
+
+	/**
+	 * Gets a list of all registered model loading plugins.
+	 */
+	@UnmodifiableView
+	static List<ModelLoadingPlugin> getAll() {
+		return ModelLoadingPluginManager.PLUGINS_VIEW;
 	}
 
 	/**
@@ -72,27 +81,13 @@ public interface ModelLoadingPlugin {
 		void registerBlockStateResolver(Block block, BlockStateResolver resolver);
 
 		/**
-		 * Event access to register model resolvers.
-		 */
-		Event<ModelResolver> resolveModel();
-
-		/**
 		 * Event access to monitor unbaked model loads and replace the loaded model.
 		 */
 		Event<ModelModifier.OnLoad> modifyModelOnLoad();
 
 		/**
-		 * Event access to replace the unbaked model used for baking without replacing the cached model.
-		 *
-		 * <p>This is useful for mods which wish to wrap a model without affecting other models that use it as a parent
-		 * (e.g. wrap a block's model into a non-{@link JsonUnbakedModel} class but still allow the item model to be
-		 * loaded and baked without exceptions).
+		 * Event access to monitor unbaked block model loads and replace the loaded model.
 		 */
-		Event<ModelModifier.BeforeBake> modifyModelBeforeBake();
-
-		/**
-		 * Event access to monitor baked model loads and replace the loaded model.
-		 */
-		Event<ModelModifier.AfterBake> modifyModelAfterBake();
+		Event<ModelModifier.OnLoadBlock> modifyBlockModelOnLoad();
 	}
 }

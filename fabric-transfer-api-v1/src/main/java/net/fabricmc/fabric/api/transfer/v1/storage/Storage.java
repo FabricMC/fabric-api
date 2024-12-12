@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  * <p>Most of the documentation that follows is quite technical.
  * For an easier introduction to the API, see the <a href="https://fabricmc.net/wiki/tutorial:transfer-api">wiki page</a>.
  *
- * <p><ul>
+ * <ul>
  *     <li>{@link #supportsInsertion} and {@link #supportsExtraction} can be used to tell if insertion and extraction
  *     functionality are possibly supported by this storage.</li>
  *     <li>{@link #insert} and {@link #extract} can be used to insert or extract resources from this storage.</li>
@@ -153,7 +153,7 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	/**
 	 * Convenient helper to get an {@link Iterable} over the {@linkplain #nonEmptyIterator() non-empty views} of this storage, for use in for-each loops.
 	 *
-	 * <p><pre>{@code
+	 * <pre>{@code
 	 * for (StorageView<T> view : storage.nonEmptyViews()) {
 	 *     // Do something with the view
 	 * }

@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
@@ -36,7 +35,6 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -45,22 +43,6 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 
 	final Set<Identifier> extraModels = new LinkedHashSet<>();
 	final Map<Block, BlockStateResolver> blockStateResolvers = new IdentityHashMap<>();
-
-	private final Event<ModelResolver> modelResolvers = EventFactory.createArrayBacked(ModelResolver.class, resolvers -> context -> {
-		for (ModelResolver resolver : resolvers) {
-			try {
-				UnbakedModel model = resolver.resolveModel(context);
-
-				if (model != null) {
-					return model;
-				}
-			} catch (Exception exception) {
-				LOGGER.error("Failed to resolve model", exception);
-			}
-		}
-
-		return null;
-	});
 
 	private static final Identifier[] MODEL_MODIFIER_PHASES = new Identifier[] { ModelModifier.OVERRIDE_PHASE, ModelModifier.DEFAULT_PHASE, ModelModifier.WRAP_PHASE, ModelModifier.WRAP_LAST_PHASE };
 
@@ -75,31 +57,17 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 
 		return model;
 	}, MODEL_MODIFIER_PHASES);
-	private final Event<ModelModifier.BeforeBake> beforeBakeModifiers = EventFactory.createWithPhases(ModelModifier.BeforeBake.class, modifiers -> (model, context) -> {
-		for (ModelModifier.BeforeBake modifier : modifiers) {
+	private final Event<ModelModifier.OnLoadBlock> onLoadBlockModifiers = EventFactory.createWithPhases(ModelModifier.OnLoadBlock.class, modifiers -> (model, context) -> {
+		for (ModelModifier.OnLoadBlock modifier : modifiers) {
 			try {
-				model = modifier.modifyModelBeforeBake(model, context);
+				model = modifier.modifyModelOnLoad(model, context);
 			} catch (Exception exception) {
-				LOGGER.error("Failed to modify unbaked model before bake", exception);
+				LOGGER.error("Failed to modify unbaked block model on load", exception);
 			}
 		}
 
 		return model;
 	}, MODEL_MODIFIER_PHASES);
-	private final Event<ModelModifier.AfterBake> afterBakeModifiers = EventFactory.createWithPhases(ModelModifier.AfterBake.class, modifiers -> (model, context) -> {
-		for (ModelModifier.AfterBake modifier : modifiers) {
-			try {
-				model = modifier.modifyModelAfterBake(model, context);
-			} catch (Exception exception) {
-				LOGGER.error("Failed to modify baked model after bake", exception);
-			}
-		}
-
-		return model;
-	}, MODEL_MODIFIER_PHASES);
-
-	public ModelLoadingPluginContextImpl() {
-	}
 
 	@Override
 	public void addModels(Identifier... ids) {
@@ -130,22 +98,12 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 	}
 
 	@Override
-	public Event<ModelResolver> resolveModel() {
-		return modelResolvers;
-	}
-
-	@Override
 	public Event<ModelModifier.OnLoad> modifyModelOnLoad() {
 		return onLoadModifiers;
 	}
 
 	@Override
-	public Event<ModelModifier.BeforeBake> modifyModelBeforeBake() {
-		return beforeBakeModifiers;
-	}
-
-	@Override
-	public Event<ModelModifier.AfterBake> modifyModelAfterBake() {
-		return afterBakeModifiers;
+	public Event<ModelModifier.OnLoadBlock> modifyBlockModelOnLoad() {
+		return onLoadBlockModifiers;
 	}
 }

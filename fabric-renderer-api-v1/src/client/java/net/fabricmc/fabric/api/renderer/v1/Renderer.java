@@ -22,7 +22,8 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.impl.renderer.RendererManager;
 
 /**
  * Interface for rendering plug-ins that provide enhanced capabilities
@@ -31,19 +32,38 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
  */
 public interface Renderer {
 	/**
-	 * Obtain a new {@link MeshBuilder} instance used to create
-	 * baked models with enhanced features.
-	 *
-	 * <p>Renderer does not retain a reference to returned instances and they should be re-used for
-	 * multiple models when possible to avoid memory allocation overhead.
+	 * Access to the current {@link Renderer} for creating and retrieving mesh builders
+	 * and materials.
 	 */
-	MeshBuilder meshBuilder();
+	static Renderer get() {
+		return RendererManager.getRenderer();
+	}
 
 	/**
-	 * Obtain a new {@link MaterialFinder} instance used to retrieve
-	 * standard {@link RenderMaterial} instances.
+	 * Rendering extension mods must implement {@link Renderer} and
+	 * call this method during initialization.
 	 *
-	 * <p>Renderer does not retain a reference to returned instances and they should be re-used for
+	 * <p>Only one {@link Renderer} plug-in can be active in any game instance.
+	 * If a second mod attempts to register, this method will throw an UnsupportedOperationException.
+	 */
+	static void register(Renderer renderer) {
+		RendererManager.registerRenderer(renderer);
+	}
+
+	/**
+	 * Obtain a new {@link MutableMesh} instance to build optimized meshes and create baked models
+	 * with enhanced features.
+	 *
+	 * <p>Renderer does not retain a reference to returned instances, so they should be re-used
+	 * when possible to avoid memory allocation overhead.
+	 */
+	MutableMesh mutableMesh();
+
+	/**
+	 * Obtain a new {@link MaterialFinder} instance to retrieve standard {@link RenderMaterial}
+	 * instances.
+	 *
+	 * <p>Renderer does not retain a reference to returned instances, so they should be re-used for
 	 * multiple materials when possible to avoid memory allocation overhead.
 	 */
 	MaterialFinder materialFinder();

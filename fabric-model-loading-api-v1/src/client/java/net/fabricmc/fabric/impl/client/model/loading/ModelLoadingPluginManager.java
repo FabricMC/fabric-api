@@ -17,10 +17,13 @@
 package net.fabricmc.fabric.impl.client.model.loading;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Util;
@@ -30,9 +33,12 @@ import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlu
 
 public final class ModelLoadingPluginManager {
 	private static final List<ModelLoadingPlugin> PLUGINS = new ArrayList<>();
-	private static final List<PreparablePluginHolder<?>> PREPARABLE_PLUGINS = new ArrayList<>();
+	private static final List<HolderImpl<?>> PREPARABLE_PLUGINS = new ArrayList<>();
 
-	public static final ThreadLocal<List<ModelLoadingPlugin>> CURRENT_PLUGINS = new ThreadLocal<>();
+	@UnmodifiableView
+	public static final List<ModelLoadingPlugin> PLUGINS_VIEW = Collections.unmodifiableList(PLUGINS);
+	@UnmodifiableView
+	public static final List<PreparableModelLoadingPlugin.Holder<?>> PREPARABLE_PLUGINS_VIEW = Collections.unmodifiableList(PREPARABLE_PLUGINS);
 
 	public static void registerPlugin(ModelLoadingPlugin plugin) {
 		Objects.requireNonNull(plugin, "plugin must not be null");
@@ -44,7 +50,7 @@ public final class ModelLoadingPluginManager {
 		Objects.requireNonNull(loader, "data loader must not be null");
 		Objects.requireNonNull(plugin, "plugin must not be null");
 
-		PREPARABLE_PLUGINS.add(new PreparablePluginHolder<>(loader, plugin));
+		PREPARABLE_PLUGINS.add(new HolderImpl<>(loader, plugin));
 	}
 
 	public static CompletableFuture<List<ModelLoadingPlugin>> preparePlugins(ResourceManager resourceManager, Executor executor) {
@@ -54,19 +60,20 @@ public final class ModelLoadingPluginManager {
 			futures.add(CompletableFuture.completedFuture(plugin));
 		}
 
-		for (PreparablePluginHolder<?> holder : PREPARABLE_PLUGINS) {
+		for (HolderImpl<?> holder : PREPARABLE_PLUGINS) {
 			futures.add(preparePlugin(holder, resourceManager, executor));
 		}
 
 		return Util.combineSafe(futures);
 	}
 
-	private static <T> CompletableFuture<ModelLoadingPlugin> preparePlugin(PreparablePluginHolder<T> holder, ResourceManager resourceManager, Executor executor) {
+	private static <T> CompletableFuture<ModelLoadingPlugin> preparePlugin(HolderImpl<T> holder, ResourceManager resourceManager, Executor executor) {
 		CompletableFuture<T> dataFuture = holder.loader.load(resourceManager, executor);
 		return dataFuture.thenApply(data -> pluginContext -> holder.plugin.initialize(data, pluginContext));
 	}
 
 	private ModelLoadingPluginManager() { }
 
-	private record PreparablePluginHolder<T>(PreparableModelLoadingPlugin.DataLoader<T> loader, PreparableModelLoadingPlugin<T> plugin) { }
+	private record HolderImpl<T>(PreparableModelLoadingPlugin.DataLoader<T> loader, PreparableModelLoadingPlugin<T> plugin) implements PreparableModelLoadingPlugin.Holder<T> {
+	}
 }

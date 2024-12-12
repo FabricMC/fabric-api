@@ -6,7 +6,6 @@
     "BlockColorsMixin",
     "ClientRegistriesMixin",
     "ClientRegistriesDynamicRegistriesAccessor",
-    "ItemColorsMixin",
     "MinecraftClientMixin",
     "ParticleManagerMixin"
   ],

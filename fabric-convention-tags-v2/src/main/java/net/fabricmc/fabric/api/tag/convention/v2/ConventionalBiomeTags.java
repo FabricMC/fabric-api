@@ -48,8 +48,8 @@ public final class ConventionalBiomeTags {
 	 * Biomes that spawn in the Overworld.
 	 * (This is for people who want to tag their biomes as Overworld without getting
 	 * side effects from {@link net.minecraft.registry.tag.BiomeTags#IS_OVERWORLD}.
-	 * <p></p>
-	 * NOTE: If you do not add to the vanilla Overworld tag, be sure to add to
+	 *
+	 * <p>NOTE: If you do not add to the vanilla Overworld tag, be sure to add to
 	 * {@link net.minecraft.registry.tag.BiomeTags#STRONGHOLD_HAS_STRUCTURE} so
 	 * some Strongholds do not go missing.)
 	 */

@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 
 import java.util.Set;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.recipe.Ingredient;
@@ -27,7 +29,7 @@ import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
 public class CustomIngredientPacketCodec implements PacketCodec<RegistryByteBuf, Ingredient> {
-	private static final int PACKET_MARKER = -1;
+	static final int PACKET_MARKER = -1;
 	private final PacketCodec<RegistryByteBuf, Ingredient> fallback;
 
 	public CustomIngredientPacketCodec(PacketCodec<RegistryByteBuf, Ingredient> fallback) {
@@ -72,7 +74,7 @@ public class CustomIngredientPacketCodec implements PacketCodec<RegistryByteBuf,
 		packetCodec.encode(buf, customIngredient);
 	}
 
-	private static boolean shouldEncodeFallback(CustomIngredient customIngredient) {
+	static boolean shouldEncodeFallback(@Nullable CustomIngredient customIngredient) {
 		if (customIngredient == null) {
 			return true;
 		}

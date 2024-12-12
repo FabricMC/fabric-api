@@ -103,6 +103,7 @@ public final class ConventionalItemTags {
 	// Ores and ingots - categories
 	public static final TagKey<Item> BRICKS = register("bricks");
 	public static final TagKey<Item> DUSTS = register("dusts");
+	public static final TagKey<Item> CLUMPS = register("clumps");
 	public static final TagKey<Item> GEMS = register("gems");
 	public static final TagKey<Item> INGOTS = register("ingots");
 	public static final TagKey<Item> NUGGETS = register("nuggets");
@@ -117,6 +118,7 @@ public final class ConventionalItemTags {
 	// Bricks - vanilla instances
 	public static final TagKey<Item> NORMAL_BRICKS = register("bricks/normal");
 	public static final TagKey<Item> NETHER_BRICKS = register("bricks/nether");
+	public static final TagKey<Item> RESIN_BRICKS = register("bricks/resin");
 
 	// Ingots - vanilla instances
 	public static final TagKey<Item> IRON_INGOTS = register("ingots/iron");
@@ -151,6 +153,8 @@ public final class ConventionalItemTags {
 	// Dusts and Misc - vanilla instances
 	public static final TagKey<Item> REDSTONE_DUSTS = register("dusts/redstone");
 	public static final TagKey<Item> GLOWSTONE_DUSTS = register("dusts/glowstone");
+
+	public static final TagKey<Item> RESIN_CLUMPS = register("clumps/resin");
 
 	// Consumables
 	/**
@@ -311,8 +315,8 @@ public final class ConventionalItemTags {
 	 * Tag that holds all blocks and items that can be dyed a specific color.
 	 * (Does not include color blending items like leather armor.
 	 * Use {@link net.minecraft.registry.tag.ItemTags#DYEABLE} tag instead for color blending items)
-	 * <p></p>
-	 * Note: Use custom ingredients in recipes to do tag intersections and/or tag exclusions
+	 *
+	 * <p>Note: Use custom ingredients in recipes to do tag intersections and/or tag exclusions
 	 * to make more powerful recipes utilizing multiple tags such as dyed tags for an ingredient.
 	 * See {@link net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients}
 	 * children classes for various custom ingredients available that can also be used in data generation.
@@ -339,8 +343,8 @@ public final class ConventionalItemTags {
 	/**
 	 * A storage block is generally a block that has a recipe to craft a bulk of 1 kind of resource to a block
 	 * and has a mirror recipe to reverse the crafting with no loss in resources.
-	 * <p></p>
-	 * Honey Block is special in that the reversing recipe is not a perfect mirror of the crafting recipe
+	 *
+	 * <p>Honey Block is special in that the reversing recipe is not a perfect mirror of the crafting recipe
 	 * and so, it is considered a special case and not given a storage block tag.
 	 */
 	public static final TagKey<Item> STORAGE_BLOCKS = register("storage_blocks");
@@ -358,6 +362,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STORAGE_BLOCKS_RAW_GOLD = register("storage_blocks/raw_gold");
 	public static final TagKey<Item> STORAGE_BLOCKS_RAW_IRON = register("storage_blocks/raw_iron");
 	public static final TagKey<Item> STORAGE_BLOCKS_REDSTONE = register("storage_blocks/redstone");
+	public static final TagKey<Item> STORAGE_BLOCKS_RESIN = register("storage_blocks/resin");
 	public static final TagKey<Item> STORAGE_BLOCKS_SLIME = register("storage_blocks/slime");
 	public static final TagKey<Item> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 

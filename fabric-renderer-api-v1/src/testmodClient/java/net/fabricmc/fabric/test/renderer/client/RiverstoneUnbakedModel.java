@@ -16,16 +16,12 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import java.util.function.Function;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.util.Identifier;
 
 public class RiverstoneUnbakedModel implements UnbakedModel {
@@ -38,11 +34,10 @@ public class RiverstoneUnbakedModel implements UnbakedModel {
 		resolver.resolve(GOLD_BLOCK_MODEL_ID);
 	}
 
-	@Nullable
 	@Override
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
-		BakedModel stoneModel = baker.bake(STONE_MODEL_ID, rotationContainer);
-		BakedModel goldBlockModel = baker.bake(GOLD_BLOCK_MODEL_ID, rotationContainer);
+	public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
+		BakedModel stoneModel = baker.bake(STONE_MODEL_ID, settings);
+		BakedModel goldBlockModel = baker.bake(GOLD_BLOCK_MODEL_ID, settings);
 		return new RiverstoneBakedModel(stoneModel, goldBlockModel);
 	}
 }

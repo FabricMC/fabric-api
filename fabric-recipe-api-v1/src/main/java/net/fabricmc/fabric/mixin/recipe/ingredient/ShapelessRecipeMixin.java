@@ -60,7 +60,7 @@ public class ShapelessRecipeMixin {
 		if (fabric_requiresTesting) {
 			List<ItemStack> nonEmptyStacks = new ArrayList<>(recipeInput.getStackCount());
 
-			for (int i = 0; i < recipeInput.getStackCount(); ++i) {
+			for (int i = 0; i < recipeInput.size(); ++i) {
 				ItemStack stack = recipeInput.getStackInSlot(i);
 
 				if (!stack.isEmpty()) {

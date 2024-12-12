@@ -17,37 +17,37 @@
 /**
  * The Resource Loader, version 0.
  *
- * <p><h3>Quick note about vocabulary in Minecraft:</h3></p>
- * <p>Resource Pack refers to both client-sided resource pack and data pack.</p>
+ * <h3>Quick note about vocabulary in Minecraft:</h3>
+ * Resource Pack refers to both client-sided resource pack and data pack.
  *
- * <p><h3>Modded Resource Pack Handling</h3></p>
- * <p>There are two types of resource packs that mods can provide.</p>
+ * <h3>Modded Resource Pack Handling</h3>
+ * There are two types of resource packs that mods can provide.
  *
- * <p><h4>Bundled Resource Pack</h4></p>
- * <p>Mods can "bundle" resource packs with the mod by putting files inside the {@code assets} or {@code data}
+ * <h4>Bundled Resource Pack</h4>
+ * Mods can "bundle" resource packs with the mod by putting files inside the {@code assets} or {@code data}
  * sub-directories of the {@code resources} directory. They are always enabled, initially loaded after the vanilla pack,
  * and cannot be disabled. Individual mods' packs are hidden to users in the Resource Pack option screen or the {@code /datapack}
  * command. Instead, a placeholder pack, named "Fabric Mods", will be displayed. This pack, with the ID {@code fabric}, provides
- * no resource itself; it is merely a marker used internally.</p>
+ * no resource itself; it is merely a marker used internally.
  *
- * <p><h4>Built-in Mod Resource Pack</h4></p>
- * <p>The Resource Loader adds manually registered mod resource packs. Those resource packs are located inside the
+ * <h4>Built-in Mod Resource Pack</h4>
+ * The Resource Loader adds manually registered mod resource packs. Those resource packs are located inside the
  * {@code resources/resourcepacks/} directory. For example, a built-in data pack with the ID {@code example:test} should be placed
  * under {@code resources/resourcepacks/test/data/}. The packs are then registered with
  * {@link net.fabricmc.fabric.api.resource.ResourceManagerHelper#registerBuiltinResourcePack(net.minecraft.util.Identifier, net.fabricmc.loader.api.ModContainer, net.fabricmc.fabric.api.resource.ResourcePackActivationType)}.
- * Users can manually enable or disable the packs, unless it is specified to be always enabled.</p>
+ * Users can manually enable or disable the packs, unless it is specified to be always enabled.
  *
- * <p><h4>Programmer Art and High Contrast Support</h4></p>
- * <p>Bundled resource packs support Programmer Art and High Contrast vanilla resource packs. Simply place assets
+ * <h4>Programmer Art and High Contrast Support</h4>
+ * Bundled resource packs support Programmer Art and High Contrast vanilla resource packs. Simply place assets
  * under {@code resources/programmer_art/assets/} or {@code resources/high_contrast/assets/}, respectively.
  * Internally, these are treated as a separate internal pack, loaded just after the respective vanilla pack.
- * Toggling the vanilla packs automatically toggles the bundled ones as well; you cannot separately enable or disable them.</p>
+ * Toggling the vanilla packs automatically toggles the bundled ones as well; you cannot separately enable or disable them.
  *
- * <p><h4>Example</h4></p>
- * <p>Mod A ({@code mod_a} provides a bundled resource pack with both Programmer Art and High Contrast support.
+ * <h4>Example</h4>
+ * Mod A ({@code mod_a} provides a bundled resource pack with both Programmer Art and High Contrast support.
  * Mod B ({@code mod_b}) provides a bundled resource pack and one built-in resource pack, Extra ({@code mod_b:extra}).
  * When neither the Programmer Art nor High Contrast is enabled, the user sees "Vanilla", "Fabric Mods", and "Extra" in the
- * Resource Packs screen. Internally, between Fabric Mods and Extra packs, two hidden packs exist: {@code mod_a} and {@code mod_b}.</p>
+ * Resource Packs screen. Internally, between Fabric Mods and Extra packs, two hidden packs exist: {@code mod_a} and {@code mod_b}.
  *
  * <p>Suppose the user then enables both the Programmer Art and High Contrast, and the Resource Packs screen lists
  * "Vanilla", "Fabric", Programmer Art, "Extra", and High Contrast. Internally, there are 4 hidden packs:</p>
@@ -60,11 +60,11 @@
  *
  * <p>Note that while the current behavior is to sort bundled resource packs by mod ID in descending order (A to Z), this may change over time.</p>
  *
- * <p><h3>Resource Reload Listener</h3></p>
- * <p>The Resource Loader allows mods to register resource reload listeners through
+ * <h3>Resource Reload Listener</h3>
+ * The Resource Loader allows mods to register resource reload listeners through
  * {@link net.fabricmc.fabric.api.resource.ResourceManagerHelper#registerReloadListener(net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener)},
  * which are triggered when resources are reloaded.
- * A resource reload listener can depend on another and vanilla resource reload listener identifiers may be found in {@link net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys}.</p>
+ * A resource reload listener can depend on another and vanilla resource reload listener identifiers may be found in {@link net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys}.
  */
 
 package net.fabricmc.fabric.api.resource;

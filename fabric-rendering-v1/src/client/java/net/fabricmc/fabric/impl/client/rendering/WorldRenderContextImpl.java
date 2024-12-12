@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.impl.client.rendering;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumer;
@@ -38,17 +38,20 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 public final class WorldRenderContextImpl implements WorldRenderContext.BlockOutlineContext, WorldRenderContext {
 	private WorldRenderer worldRenderer;
 	private RenderTickCounter tickCounter;
-	private MatrixStack matrixStack;
 	private boolean blockOutlines;
 	private Camera camera;
-	private Frustum frustum;
 	private GameRenderer gameRenderer;
-	private LightmapTextureManager lightmapTextureManager;
-	private Matrix4f projectionMatrix;
 	private Matrix4f positionMatrix;
+	private Matrix4f projectionMatrix;
 	private VertexConsumerProvider consumers;
 	private boolean advancedTranslucency;
 	private ClientWorld world;
+
+	@Nullable
+	private Frustum frustum;
+	@Nullable
+	private MatrixStack matrixStack;
+	private boolean translucentBlockOutline;
 
 	private Entity entity;
 	private double cameraX;
@@ -61,29 +64,29 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 
 	public void prepare(
 			WorldRenderer worldRenderer,
-			RenderTickCounter delta,
+			RenderTickCounter tickCounter,
 			boolean blockOutlines,
 			Camera camera,
 			GameRenderer gameRenderer,
-			LightmapTextureManager lightmapTextureManager,
-			Matrix4f projectionMatrix,
 			Matrix4f positionMatrix,
+			Matrix4f projectionMatrix,
 			VertexConsumerProvider consumers,
 			boolean advancedTranslucency,
 			ClientWorld world
 	) {
 		this.worldRenderer = worldRenderer;
-		this.tickCounter = delta;
-		this.matrixStack = null;
+		this.tickCounter = tickCounter;
 		this.blockOutlines = blockOutlines;
 		this.camera = camera;
 		this.gameRenderer = gameRenderer;
-		this.lightmapTextureManager = lightmapTextureManager;
-		this.projectionMatrix = projectionMatrix;
 		this.positionMatrix = positionMatrix;
+		this.projectionMatrix = projectionMatrix;
 		this.consumers = consumers;
 		this.advancedTranslucency = advancedTranslucency;
 		this.world = world;
+
+		frustum = null;
+		matrixStack = null;
 	}
 
 	public void setFrustum(Frustum frustum) {
@@ -92,6 +95,10 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 
 	public void setMatrixStack(MatrixStack matrixStack) {
 		this.matrixStack = matrixStack;
+	}
+
+	public void setTranslucentBlockOutline(boolean translucentBlockOutline) {
+		this.translucentBlockOutline = translucentBlockOutline;
 	}
 
 	public void prepareBlockOutline(
@@ -116,11 +123,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	}
 
 	@Override
-	public MatrixStack matrixStack() {
-		return matrixStack;
-	}
-
-	@Override
 	public RenderTickCounter tickCounter() {
 		return this.tickCounter;
 	}
@@ -136,8 +138,8 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	}
 
 	@Override
-	public Matrix4f projectionMatrix() {
-		return projectionMatrix;
+	public GameRenderer gameRenderer() {
+		return gameRenderer;
 	}
 
 	@Override
@@ -146,28 +148,13 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	}
 
 	@Override
+	public Matrix4f projectionMatrix() {
+		return projectionMatrix;
+	}
+
+	@Override
 	public ClientWorld world() {
 		return world;
-	}
-
-	@Override
-	public Frustum frustum() {
-		return frustum;
-	}
-
-	@Override
-	public VertexConsumerProvider consumers() {
-		return consumers;
-	}
-
-	@Override
-	public GameRenderer gameRenderer() {
-		return gameRenderer;
-	}
-
-	@Override
-	public LightmapTextureManager lightmapTextureManager() {
-		return lightmapTextureManager;
 	}
 
 	@Override
@@ -176,8 +163,25 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	}
 
 	@Override
-	public VertexConsumer vertexConsumer() {
-		return consumers.getBuffer(RenderLayer.getLines());
+	public VertexConsumerProvider consumers() {
+		return consumers;
+	}
+
+	@Override
+	@Nullable
+	public Frustum frustum() {
+		return frustum;
+	}
+
+	@Override
+	@Nullable
+	public MatrixStack matrixStack() {
+		return matrixStack;
+	}
+
+	@Override
+	public boolean translucentBlockOutline() {
+		return translucentBlockOutline;
 	}
 
 	@Override
@@ -208,5 +212,11 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	@Override
 	public BlockState blockState() {
 		return blockState;
+	}
+
+	@Deprecated
+	@Override
+	public VertexConsumer vertexConsumer() {
+		return consumers.getBuffer(RenderLayer.getLines());
 	}
 }

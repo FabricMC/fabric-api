@@ -9,19 +9,12 @@ testDependencies(project, [
 	':fabric-lifecycle-events-v1',
 ])
 
-sourceSets {
-	main {
-		resources {
-			srcDirs += [
-				'src/generated/resources'
-			]
-		}
-	}
-	datagen {
-		compileClasspath += main.compileClasspath
-		runtimeClasspath += main.runtimeClasspath
-		compileClasspath += main.output
-		runtimeClasspath += main.output
+fabricApi {
+	configureDataGeneration {
+		outputDirectory = file("src/generated/resources")
+		strictValidation = true
+		createSourceSet = true
+		modId = "fabric-convention-tags-v2-datagen"
 	}
 }
 
@@ -32,15 +25,8 @@ dependencies {
 loom {
 	runs {
 		datagen {
-			inherit server
 			name "Data Generation"
-			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
-			vmArg "-Dfabric-api.datagen.strict-validation"
-
 			ideConfigGenerated = true
-			runDir "build/datagen"
-			source sourceSets.datagen
 		}
 	}
 }

@@ -16,11 +16,10 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.EMPTY;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_COLOR_INDEX;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TINT_INDEX;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_COLOR;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_LIGHTMAP;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_NORMAL;
@@ -28,6 +27,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_U;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.LightmapTextureManager;
@@ -37,6 +37,7 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
@@ -55,19 +56,49 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialIm
  * numbers. It also allows for a consistent interface for those transformations.
  */
 public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEmitter {
-	public void clear() {
-		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
+	private static final QuadTransform NO_TRANSFORM = q -> true;
+
+	private static final int[] DEFAULT_QUAD_DATA = new int[EncodingFormat.TOTAL_STRIDE];
+
+	static {
+		MutableQuadViewImpl quad = new MutableQuadViewImpl() {
+			@Override
+			protected void emitDirectly() {
+				// This quad won't be emitted. It's only used to configure the default quad data.
+			}
+		};
+
+		// Start with all zeroes
+		quad.data = DEFAULT_QUAD_DATA;
+		// Apply non-zero defaults
+		quad.color(-1, -1, -1, -1);
+		quad.cullFace(null);
+		quad.material(IndigoRenderer.STANDARD_MATERIAL);
+		quad.tintIndex(-1);
+	}
+
+	private QuadTransform activeTransform = NO_TRANSFORM;
+	private final ObjectArrayList<QuadTransform> transformStack = new ObjectArrayList<>();
+	private final QuadTransform stackTransform = q -> {
+		int i = transformStack.size() - 1;
+
+		while (i >= 0) {
+			if (!transformStack.get(i--).transform(q)) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
+	public final void clear() {
+		System.arraycopy(DEFAULT_QUAD_DATA, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
 		isGeometryInvalid = true;
 		nominalFace = null;
-		normalFlags(0);
-		tag(0);
-		colorIndex(-1);
-		cullFace(null);
-		material(IndigoRenderer.MATERIAL_STANDARD);
 	}
 
 	@Override
-	public MutableQuadViewImpl pos(int vertexIndex, float x, float y, float z) {
+	public final MutableQuadViewImpl pos(int vertexIndex, float x, float y, float z) {
 		final int index = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X;
 		data[index] = Float.floatToRawIntBits(x);
 		data[index + 1] = Float.floatToRawIntBits(y);
@@ -77,13 +108,13 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl color(int vertexIndex, int color) {
+	public final MutableQuadViewImpl color(int vertexIndex, int color) {
 		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_COLOR] = color;
 		return this;
 	}
 
 	@Override
-	public MutableQuadViewImpl uv(int vertexIndex, float u, float v) {
+	public final MutableQuadViewImpl uv(int vertexIndex, float u, float v) {
 		final int i = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U;
 		data[i] = Float.floatToRawIntBits(u);
 		data[i + 1] = Float.floatToRawIntBits(v);
@@ -91,23 +122,23 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl spriteBake(Sprite sprite, int bakeFlags) {
+	public final MutableQuadViewImpl spriteBake(Sprite sprite, int bakeFlags) {
 		TextureHelper.bakeSprite(this, sprite, bakeFlags);
 		return this;
 	}
 
 	@Override
-	public MutableQuadViewImpl lightmap(int vertexIndex, int lightmap) {
+	public final MutableQuadViewImpl lightmap(int vertexIndex, int lightmap) {
 		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_LIGHTMAP] = lightmap;
 		return this;
 	}
 
-	protected void normalFlags(int flags) {
+	protected final void normalFlags(int flags) {
 		data[baseIndex + HEADER_BITS] = EncodingFormat.normalFlags(data[baseIndex + HEADER_BITS], flags);
 	}
 
 	@Override
-	public MutableQuadViewImpl normal(int vertexIndex, float x, float y, float z) {
+	public final MutableQuadViewImpl normal(int vertexIndex, float x, float y, float z) {
 		normalFlags(normalFlags() | (1 << vertexIndex));
 		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_NORMAL] = NormalHelper.packNormal(x, y, z);
 		return this;
@@ -147,17 +178,13 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl material(RenderMaterial material) {
-		if (material == null) {
-			material = IndigoRenderer.MATERIAL_STANDARD;
-		}
-
 		data[baseIndex + HEADER_BITS] = EncodingFormat.material(data[baseIndex + HEADER_BITS], (RenderMaterialImpl) material);
 		return this;
 	}
 
 	@Override
-	public final MutableQuadViewImpl colorIndex(int colorIndex) {
-		data[baseIndex + HEADER_COLOR_INDEX] = colorIndex;
+	public final MutableQuadViewImpl tintIndex(int tintIndex) {
+		data[baseIndex + HEADER_TINT_INDEX] = tintIndex;
 		return this;
 	}
 
@@ -168,14 +195,16 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl copyFrom(QuadView quad) {
+	public final MutableQuadViewImpl copyFrom(QuadView quad) {
 		final QuadViewImpl q = (QuadViewImpl) quad;
-		q.computeGeometry();
-
 		System.arraycopy(q.data, q.baseIndex, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
-		faceNormal.set(q.faceNormal);
 		nominalFace = q.nominalFace;
-		isGeometryInvalid = false;
+		isGeometryInvalid = q.isGeometryInvalid;
+
+		if (!isGeometryInvalid) {
+			faceNormal.set(q.faceNormal);
+		}
+
 		return this;
 	}
 
@@ -199,7 +228,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		fromVanilla(quad.getVertexData(), 0);
 		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(0, cullFace);
 		nominalFace(quad.getFace());
-		colorIndex(quad.getColorIndex());
+		tintIndex(quad.getTintIndex());
 
 		if (!quad.hasShade()) {
 			material = RenderMaterialImpl.setDisableDiffuse((RenderMaterialImpl) material, true);
@@ -218,15 +247,50 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return this;
 	}
 
+	@Override
+	public void pushTransform(QuadTransform transform) {
+		if (transform == null) {
+			throw new NullPointerException("QuadTransform cannot be null!");
+		}
+
+		transformStack.push(transform);
+
+		if (transformStack.size() == 1) {
+			activeTransform = transform;
+		} else if (transformStack.size() == 2) {
+			activeTransform = stackTransform;
+		}
+	}
+
+	@Override
+	public void popTransform() {
+		transformStack.pop();
+
+		if (transformStack.size() == 0) {
+			activeTransform = NO_TRANSFORM;
+		} else if (transformStack.size() == 1) {
+			activeTransform = transformStack.get(0);
+		}
+	}
+
 	/**
-	 * Emit the quad without clearing the underlying data.
+	 * Emit the quad without applying transforms and without clearing the underlying data.
 	 * Geometry is not guaranteed to be valid when called, but can be computed by calling {@link #computeGeometry()}.
 	 */
-	public abstract void emitDirectly();
+	protected abstract void emitDirectly();
+
+	/**
+	 * Apply transforms and then if transforms return true, emit the quad without clearing the underlying data.
+	 */
+	public final void transformAndEmit() {
+		if (activeTransform.transform(this)) {
+			emitDirectly();
+		}
+	}
 
 	@Override
 	public final MutableQuadViewImpl emit() {
-		emitDirectly();
+		transformAndEmit();
 		clear();
 		return this;
 	}

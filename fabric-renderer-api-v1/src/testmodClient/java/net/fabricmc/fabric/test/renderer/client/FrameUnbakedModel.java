@@ -16,14 +16,12 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import java.util.function.Function;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
@@ -31,8 +29,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
@@ -47,65 +44,49 @@ public class FrameUnbakedModel implements UnbakedModel {
 	 * Bake the model.
 	 * In this case we can prebake the frame into a mesh, but will render the contained block when we draw the quads.
 	 */
-	@Nullable
 	@Override
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
-		// The renderer API may not have an implementation, so we should check if it exists.
-		if (!RendererAccess.INSTANCE.hasRenderer()) {
-			// No renderer implementation is present.
-			return null;
-		}
+	public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
+		Sprite obsidianSprite = baker.getSpriteGetter().get(OBSIDIAN_SPRITE_ID);
 
-		Sprite obsidianSprite = textureGetter.apply(OBSIDIAN_SPRITE_ID);
-
-		Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-		MeshBuilder builder = renderer.meshBuilder();
-		QuadEmitter emitter = builder.getEmitter();
+		MutableMesh builder = Renderer.get().mutableMesh();
+		QuadEmitter emitter = builder.emitter();
 
 		for (Direction direction : Direction.values()) {
 			// Draw outer frame
 			emitter.square(direction, 0.0F, 0.9F, 0.9F, 1.0F, 0.0F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.0F, 0.0F, 0.1F, 0.9F, 0.0F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.9F, 0.1F, 1.0F, 1.0F, 0.0F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.1F, 0.0F, 1.0F, 0.1F, 0.0F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			// Draw inner frame - inset by 0.9 so the frame looks like an actual mesh
 			emitter.square(direction, 0.0F, 0.9F, 0.9F, 1.0F, 0.9F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.0F, 0.0F, 0.1F, 0.9F, 0.9F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.9F, 0.1F, 1.0F, 1.0F, 0.9F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 
 			emitter.square(direction, 0.1F, 0.0F, 1.0F, 0.1F, 0.9F)
 					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
-					.color(-1, -1, -1, -1)
 					.emit();
 		}
 
-		return new FrameBakedModel(builder.build(), obsidianSprite);
+		return new FrameBakedModel(builder.immutableCopy(), obsidianSprite);
 	}
 }

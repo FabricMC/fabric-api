@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 
 public record OverlayConditionsMetadata(List<Entry> overlays) {
 	public static final Codec<OverlayConditionsMetadata> CODEC = Entry.CODEC.listOf().fieldOf("entries").xmap(OverlayConditionsMetadata::new, OverlayConditionsMetadata::overlays).codec();
-	public static final ResourceMetadataSerializer<OverlayConditionsMetadata> SERIALIZER = ResourceMetadataSerializer.fromCodec(ResourceConditions.OVERLAYS_KEY, CODEC);
+	public static final ResourceMetadataSerializer<OverlayConditionsMetadata> SERIALIZER = new ResourceMetadataSerializer<>(ResourceConditions.OVERLAYS_KEY, CODEC);
 
 	public List<String> appliedOverlays() {
 		List<String> appliedOverlays = new ArrayList<>();

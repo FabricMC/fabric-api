@@ -25,20 +25,15 @@ import org.joml.Vector3fc;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec2f;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 
 /**
- * Specialized {@link MutableQuadView} obtained via {@link MeshBuilder#getEmitter()}
- * to append quads during mesh building.
- *
- * <p>Also obtained from {@link RenderContext#getEmitter()} to submit
- * dynamic quads one-by-one at render time.
+ * Specialized {@link MutableQuadView} that supports transformers and
+ * sends quads to some destination, such as a mesh builder or rendering.
  *
  * <p>Instances of {@link QuadEmitter} will practically always be
- * threadlocal and/or reused - do not retain references.
+ * thread local and/or reused - do not retain references.
  *
  * <p>Only the renderer should implement or extend this interface.
  */
@@ -127,7 +122,7 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter material(RenderMaterial material);
 
 	@Override
-	QuadEmitter colorIndex(int colorIndex);
+	QuadEmitter tintIndex(int tintIndex);
 
 	@Override
 	QuadEmitter tag(int tag);
@@ -207,60 +202,28 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	/**
-	 * In static mesh building, causes quad to be appended to the mesh being built.
-	 * In a dynamic render context, create a new quad to be output to rendering.
-	 * In both cases, current instance is reset to default values.
+	 * Pushed transforms will be applied immediately after every call to {@link #emit()} and before the quad data is
+	 * delivered to its destination. If any transform returns {@code false}, the emitted quad will be discarded and will
+	 * not be delivered to its destination.
+	 *
+	 * <p>You MUST call {@link #popTransform()} once you are done using this emitter in the current scope.
+	 *
+	 * <p>More than one transformer can be pushed. Transformers are applied in reverse order. (Last pushed is applied
+	 * first.)
+	 *
+	 * <p>Using {@code this} emitter from inside the pushed quad transform is not supported.
 	 */
-	QuadEmitter emit();
-
-	@Override
-	@Deprecated
-	default QuadEmitter spriteColor(int vertexIndex, int spriteIndex, int color) {
-		MutableQuadView.super.spriteColor(vertexIndex, spriteIndex, color);
-		return this;
-	}
-
-	@Override
-	@Deprecated
-	default QuadEmitter spriteColor(int spriteIndex, int c0, int c1, int c2, int c3) {
-		MutableQuadView.super.spriteColor(spriteIndex, c0, c1, c2, c3);
-		return this;
-	}
-
-	@Override
-	@Deprecated
-	default QuadEmitter sprite(int vertexIndex, int spriteIndex, float u, float v) {
-		MutableQuadView.super.sprite(vertexIndex, spriteIndex, u, v);
-		return this;
-	}
-
-	@Override
-	@Deprecated
-	default QuadEmitter sprite(int vertexIndex, int spriteIndex, Vec2f uv) {
-		MutableQuadView.super.sprite(vertexIndex, spriteIndex, uv);
-		return this;
-	}
-
-	@Override
-	@Deprecated
-	default QuadEmitter spriteBake(int spriteIndex, Sprite sprite, int bakeFlags) {
-		MutableQuadView.super.spriteBake(spriteIndex, sprite, bakeFlags);
-		return this;
-	}
+	void pushTransform(QuadTransform transform);
 
 	/**
-	 * @deprecated Use {@link #uvUnitSquare()} instead.
+	 * Removes the transformer added by the last call to {@link #pushTransform(QuadTransform)}. MUST be called once you
+	 * are done using this emitter in the current scope.
 	 */
-	@Deprecated
-	default QuadEmitter spriteUnitSquare(int spriteIndex) {
-		uvUnitSquare();
-		return this;
-	}
+	void popTransform();
 
-	@Override
-	@Deprecated
-	default QuadEmitter fromVanilla(int[] quadData, int startIndex, boolean isItem) {
-		MutableQuadView.super.fromVanilla(quadData, startIndex, isItem);
-		return this;
-	}
+	/**
+	 * In static mesh building, causes quad to be appended to the mesh being built. In a dynamic render context, create
+	 * a new quad to be output to rendering. In both cases, current instance is reset to default values.
+	 */
+	QuadEmitter emit();
 }

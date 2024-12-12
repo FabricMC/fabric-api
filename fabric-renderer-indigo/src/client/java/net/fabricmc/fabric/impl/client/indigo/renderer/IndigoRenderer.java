@@ -17,36 +17,38 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.MaterialFinderImpl;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshBuilderImpl;
+import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 
 /**
  * The Fabric default renderer implementation. Supports all
- * features defined in the API except shaders and offers no special materials.
+ * features defined in the API and offers no special materials.
  */
 public class IndigoRenderer implements Renderer {
 	public static final IndigoRenderer INSTANCE = new IndigoRenderer();
 
-	public static final RenderMaterial MATERIAL_STANDARD = INSTANCE.materialFinder().find();
+	public static final RenderMaterial STANDARD_MATERIAL = INSTANCE.materialFinder().find();
 
 	static {
-		INSTANCE.registerMaterial(RenderMaterial.MATERIAL_STANDARD, MATERIAL_STANDARD);
+		INSTANCE.registerMaterial(RenderMaterial.STANDARD_ID, STANDARD_MATERIAL);
 	}
 
-	private final HashMap<Identifier, RenderMaterial> materialMap = new HashMap<>();
+	private final Map<Identifier, RenderMaterial> materialMap = new HashMap<>();
 
 	private IndigoRenderer() { }
 
 	@Override
-	public MeshBuilder meshBuilder() {
-		return new MeshBuilderImpl();
+	public MutableMesh mutableMesh() {
+		return new MutableMeshImpl();
 	}
 
 	@Override
@@ -64,7 +66,7 @@ public class IndigoRenderer implements Renderer {
 		if (materialMap.containsKey(id)) return false;
 
 		// cast to prevent acceptance of impostor implementations
-		materialMap.put(id, material);
+		materialMap.put(id, (RenderMaterialImpl) material);
 		return true;
 	}
 }

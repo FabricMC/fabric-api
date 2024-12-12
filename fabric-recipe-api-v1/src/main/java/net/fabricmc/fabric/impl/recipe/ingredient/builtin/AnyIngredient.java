@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.mojang.serialization.MapCodec;
 
@@ -54,14 +54,9 @@ public class AnyIngredient extends CombinedIngredient {
 	}
 
 	@Override
-	public List<RegistryEntry<Item>> getMatchingItems() {
-		List<RegistryEntry<Item>> previewStacks = new ArrayList<>();
-
-		for (Ingredient ingredient : ingredients) {
-			previewStacks.addAll(ingredient.getMatchingItems());
-		}
-
-		return previewStacks;
+	public Stream<RegistryEntry<Item>> getMatchingItems() {
+		return ingredients.stream()
+				.flatMap(Ingredient::getMatchingItems);
 	}
 
 	@Override

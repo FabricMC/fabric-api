@@ -4,11 +4,15 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "CyclingButtonWidgetAccessor",
+    "MinecraftClientMixin",
     "MinecraftDedicatedServerMixin",
     "ScreenAccessor",
     "TitleScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "MinecraftServerMixin"
+  ]
 }

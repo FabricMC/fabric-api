@@ -17,37 +17,35 @@
 package net.fabricmc.fabric.test.renderer.client;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Stream;
-
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.screen.PlayerScreenHandler;
 
 import net.fabricmc.fabric.test.renderer.RendererTest;
 
 public class PillarUnbakedModel implements UnbakedModel {
 	private static final List<SpriteIdentifier> SPRITES = Stream.of("alone", "bottom", "middle", "top")
-			.map(suffix -> new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, RendererTest.id("block/pillar_" + suffix)))
+			.map(suffix -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, RendererTest.id("block/pillar_" + suffix)))
 			.toList();
 
 	@Override
 	public void resolve(Resolver resolver) {
 	}
 
-	@Nullable
 	@Override
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
+	public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
 		Sprite[] sprites = new Sprite[SPRITES.size()];
 
 		for (int i = 0; i < sprites.length; ++i) {
-			sprites[i] = textureGetter.apply(SPRITES.get(i));
+			sprites[i] = baker.getSpriteGetter().get(SPRITES.get(i));
 		}
 
 		return new PillarBakedModel(sprites);

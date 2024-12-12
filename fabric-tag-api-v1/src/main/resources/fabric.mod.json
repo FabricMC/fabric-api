@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-tag-api-v1",
+  "name": "Fabric Tag API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-tag-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.9",
+    "fabric-api-base": "*",
+    "fabric-resource-loader-v0": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.tag.TagInit"
+    ]
+  },
+  "description": "Hooks for working with tags.",
+  "mixins": [
+    "fabric-tag-api-v1.mixins.json"
+  ],
+  "accessWidener": "fabric-tag-api-v1.accesswidener",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
+}

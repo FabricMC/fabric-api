@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -28,9 +29,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
+import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 
 @Mixin(MinecraftClient.class)
@@ -43,7 +46,7 @@ public class MinecraftClientMixin {
 	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V")
 	public void disconnectAfter(Screen disconnectionScreen, boolean bl, CallbackInfo ci) {
 		try {
-			RegistrySyncManager.unmap();
+			unmap();
 		} catch (RemapException e) {
 			LOGGER.warn("Failed to unmap Fabric registries!", e);
 		}
@@ -56,5 +59,16 @@ public class MinecraftClientMixin {
 		Registries.bootstrap();
 		BlockInitTracker.postFreeze();
 		ItemGroups.collect();
+	}
+
+	@Unique
+	private static void unmap() throws RemapException {
+		for (Identifier registryId : Registries.REGISTRIES.getIds()) {
+			Registry<?> registry = Registries.REGISTRIES.get(registryId);
+
+			if (registry instanceof RemappableRegistry) {
+				((RemappableRegistry) registry).unmap();
+			}
+		}
 	}
 }

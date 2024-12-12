@@ -3,8 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.datagen",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "DataCacheCachedDataMixin",
+    "DataCacheMixin",
     "DataProviderMixin",
-    "ModelProviderMixin",
     "TagBuilderMixin",
     "TagProviderMixin",
     "loot.BlockLootTableGeneratorAccessor",

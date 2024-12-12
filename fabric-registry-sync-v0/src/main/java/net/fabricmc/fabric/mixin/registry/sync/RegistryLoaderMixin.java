@@ -33,8 +33,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryLoader;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.resource.ResourceFinder;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
@@ -89,17 +91,17 @@ public class RegistryLoaderMixin {
 			},
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/registry/RegistryKeys;getPath(Lnet/minecraft/registry/RegistryKey;)Ljava/lang/String;"
+					target = "Lnet/minecraft/resource/ResourceFinder;json(Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/resource/ResourceFinder;"
 			)
 	)
-	private static String prependDirectoryWithNamespace(RegistryKey<? extends Registry<?>> registryKey, Operation<String> original) {
-		String originalDirectory = original.call(registryKey);
+	private static ResourceFinder prependDirectoryWithNamespace(RegistryKey<? extends Registry<?>> registryKey, Operation<ResourceFinder> original) {
+		String originalDirectory = RegistryKeys.getPath(registryKey);
 		Identifier id = registryKey.getValue();
 		if (!id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE)
 				&& DynamicRegistriesImpl.FABRIC_DYNAMIC_REGISTRY_KEYS.contains(registryKey)) {
-			return id.getNamespace() + "/" + originalDirectory;
+			return ResourceFinder.json(id.getNamespace() + "/" + originalDirectory);
 		}
 
-		return originalDirectory;
+		return original.call(registryKey);
 	}
 }

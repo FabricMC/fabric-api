@@ -26,7 +26,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
@@ -39,16 +38,13 @@ import net.minecraft.client.render.Fog;
 import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPass;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -72,14 +68,26 @@ public abstract class WorldRendererMixin {
 	@Unique private final WorldRenderContextImpl context = new WorldRenderContextImpl();
 
 	@Inject(method = "render", at = @At("HEAD"))
-	private void beforeRender(ObjectAllocator objectAllocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
-		context.prepare((WorldRenderer) (Object) this, tickCounter, renderBlockOutline, camera, gameRenderer, lightmapTextureManager, projectionMatrix, positionMatrix, bufferBuilders.getEntityVertexConsumers(), MinecraftClient.isFabulousGraphicsOrBetter(), world);
+	private void beforeRender(ObjectAllocator objectAllocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
+		context.prepare((WorldRenderer) (Object) this, tickCounter, renderBlockOutline, camera, gameRenderer, positionMatrix, projectionMatrix, bufferBuilders.getEntityVertexConsumers(), MinecraftClient.isFabulousGraphicsOrBetter(), world);
 		WorldRenderEvents.START.invoker().onStart(context);
 	}
 
 	@Inject(method = "setupTerrain", at = @At("RETURN"))
 	private void afterTerrainSetup(Camera camera, Frustum frustum, boolean hasForcedFrustum, boolean spectator, CallbackInfo ci) {
 		context.setFrustum(frustum);
+	}
+
+	@Inject(
+			method = "method_62214",
+			at = @At(
+				value = "INVOKE_STRING",
+				target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V",
+				args = "ldc=terrain",
+				shift = Shift.AFTER
+			) // Points to after profiler.push("terrain");
+	)
+	private void beforeTerrainSolid(CallbackInfo ci) {
 		WorldRenderEvents.AFTER_SETUP.invoker().afterSetup(context);
 	}
 
@@ -107,41 +115,28 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.AFTER_ENTITIES.invoker().afterEntities(context);
 	}
 
-	@Inject(
-			method = "renderTargetBlockOutline",
-			at = @At(
-				value = "FIELD",
-				target = "Lnet/minecraft/client/MinecraftClient;crosshairTarget:Lnet/minecraft/util/hit/HitResult;",
-				shift = At.Shift.AFTER,
-				ordinal = 0
-			)
-	)
-	private void beforeRenderOutline(CallbackInfo ci) {
+	@Inject(method = "renderTargetBlockOutline", at = @At("HEAD"))
+	private void beforeRenderOutline(Camera camera, VertexConsumerProvider.Immediate vertexConsumers, MatrixStack matrices, boolean translucent, CallbackInfo ci) {
+		context.setTranslucentBlockOutline(translucent);
 		context.renderBlockOutline = WorldRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(context, client.crosshairTarget);
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "drawBlockOutline", at = @At("HEAD"), cancellable = true)
-	private void onDrawBlockOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos blockPos, BlockState blockState, int color, CallbackInfo ci) {
+	@Inject(method = "renderTargetBlockOutline", at = @At(value = "INVOKE", target = "net/minecraft/client/option/GameOptions.getHighContrastBlockOutline()Lnet/minecraft/client/option/SimpleOption;"), cancellable = true)
+	private void onDrawBlockOutline(Camera camera, VertexConsumerProvider.Immediate vertexConsumers, MatrixStack matrices, boolean translucent, CallbackInfo ci, @Local BlockPos blockPos, @Local BlockState blockState, @Local Vec3d cameraPos) {
 		if (!context.renderBlockOutline) {
 			// Was cancelled before we got here, so do not
 			// fire the BLOCK_OUTLINE event per contract of the API.
 			ci.cancel();
-		} else {
-			context.prepareBlockOutline(entity, cameraX, cameraY, cameraZ, blockPos, blockState);
-
-			if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(context, context)) {
-				ci.cancel();
-			}
+			return;
 		}
-	}
 
-	@SuppressWarnings("ConstantConditions")
-	@ModifyVariable(method = "drawBlockOutline", at = @At("HEAD"))
-	private VertexConsumer resetBlockOutlineBuffer(VertexConsumer vertexConsumer) {
-		// The original VertexConsumer may have been ended during the block outlines event, so we
-		// have to re-request it to prevent a crash when the vanilla block overlay is submitted.
-		return context.consumers().getBuffer(RenderLayer.getLines());
+		context.prepareBlockOutline(camera.getFocusedEntity(), cameraPos.x, cameraPos.y, cameraPos.z, blockPos, blockState);
+
+		if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(context, context)) {
+			vertexConsumers.drawCurrentLayer();
+			ci.cancel();
+		}
 	}
 
 	@Inject(
@@ -180,7 +175,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
-	private void renderWeather(FrameGraphBuilder frameGraphBuilder, LightmapTextureManager lightmapTextureManager, Vec3d vec3d, float f, Fog fog, CallbackInfo info) {
+	private void renderWeather(FrameGraphBuilder frameGraphBuilder, Vec3d vec3d, float f, Fog fog, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.WeatherRenderer renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
 

@@ -23,6 +23,7 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.ArmorMaterial;
+import net.minecraft.item.equipment.EquipmentAssetKeys;
 import net.minecraft.item.equipment.EquipmentType;
 import net.minecraft.item.tooltip.TooltipData;
 import net.minecraft.registry.Registries;
@@ -78,7 +79,7 @@ public class TooltipComponentTestInit implements ModInitializer {
 				0,
 				0.5F,
 				ItemTags.REPAIRS_LEATHER_ARMOR,
-				Identifier.of("fabric-rendering-v1-testmod", "test_material")
+				EquipmentAssetKeys.IRON
 		);
 	}
 }

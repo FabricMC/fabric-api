@@ -25,7 +25,6 @@ import org.joml.Vector3fc;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec2f;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
@@ -258,14 +257,14 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView material(RenderMaterial material);
 
 	/**
-	 * Value functions identically to {@link BakedQuad#getColorIndex()} and is
-	 * used by renderer / model builder in same way. Default value is -1.
+	 * Value functions identically to {@link BakedQuad#getTintIndex()} and is
+	 * used by renderer in same way. Default value is -1.
 	 */
-	MutableQuadView colorIndex(int colorIndex);
+	MutableQuadView tintIndex(int tintIndex);
 
 	/**
 	 * Encodes an integer tag with this quad that can later be retrieved via
-	 * {@link QuadView#tag()}.  Useful for models that want to perform conditional
+	 * {@link QuadView#tag()}. Useful for models that want to perform conditional
 	 * transformation or filtering on static meshes.
 	 */
 	MutableQuadView tag(int tag);
@@ -282,8 +281,8 @@ public interface MutableQuadView extends QuadView {
 	 * Only the {@link BakedQuad#getVertexData() quad vertex data} is copied.
 	 * This method should be performant whenever caller's vertex representation makes it feasible.
 	 *
-	 * <p>Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction) the other overload} which has better encapsulation
-	 * unless you have a specific reason to use this one.
+	 * <p>Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction) the other overload} which has better
+	 * encapsulation unless you have a specific reason to use this one.
 	 *
 	 * <p>Calling this method does not emit the quad.
 	 */
@@ -292,64 +291,16 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Enables bulk vertex data transfer using the standard Minecraft quad format.
 	 *
-	 * <p>The material applied to this quad view might be slightly different from the {@code material} parameter regarding diffuse shading.
-	 * If either the baked quad {@link BakedQuad#hasShade() does not have shade} or the material {@link MaterialFinder#disableDiffuse(boolean) does not have shade},
-	 * diffuse shading will be disabled for this quad view.
-	 * This is reflected in the quad view's {@link #material()}, but the {@code material} parameter is unchanged (it is immutable anyway).
+	 * <p>The material applied to this quad view might be slightly different from the {@code material} parameter
+	 * regarding diffuse shading. If either the baked quad {@link BakedQuad#hasShade() does not have shade} or the
+	 * material {@link MaterialFinder#disableDiffuse(boolean) does not have shade}, diffuse shading will be disabled for
+	 * this quad view. This is reflected in the quad view's {@link #material()}, but the {@code material} parameter is
+	 * unchanged (it is immutable anyway).
 	 *
-	 * <p>The {@linkplain BakedQuad#getLightEmission() baked quad's light emission} will be applied to the lightmap values from the vertex data
-	 * after copying.
+	 * <p>The {@linkplain BakedQuad#getLightEmission() baked quad's light emission} will be applied to the lightmap
+	 * values from the vertex data after copying.
 	 *
 	 * <p>Calling this method does not emit the quad.
 	 */
 	MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);
-
-	/**
-	 * @deprecated Use {@link #color(int, int)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView spriteColor(int vertexIndex, int spriteIndex, int color) {
-		return color(vertexIndex, color);
-	}
-
-	/**
-	 * @deprecated Use {@link #color(int, int, int, int)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView spriteColor(int spriteIndex, int c0, int c1, int c2, int c3) {
-		color(c0, c1, c2, c3);
-		return this;
-	}
-
-	/**
-	 * @deprecated Use {@link #uv(int, float, float)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView sprite(int vertexIndex, int spriteIndex, float u, float v) {
-		return uv(vertexIndex, u, v);
-	}
-
-	/**
-	 * @deprecated Use {@link #uv(int, Vector2f)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView sprite(int vertexIndex, int spriteIndex, Vec2f uv) {
-		return uv(vertexIndex, uv.x, uv.y);
-	}
-
-	/**
-	 * @deprecated Use {@link #spriteBake(Sprite, int)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView spriteBake(int spriteIndex, Sprite sprite, int bakeFlags) {
-		return spriteBake(sprite, bakeFlags);
-	}
-
-	/**
-	 * @deprecated Use {@link #fromVanilla(int[], int)} instead.
-	 */
-	@Deprecated
-	default MutableQuadView fromVanilla(int[] quadData, int startIndex, boolean isItem) {
-		return fromVanilla(quadData, startIndex);
-	}
 }

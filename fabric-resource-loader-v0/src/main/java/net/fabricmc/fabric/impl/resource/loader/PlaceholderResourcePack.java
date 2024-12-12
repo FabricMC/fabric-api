@@ -21,6 +21,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Set;
 
+import com.google.gson.JsonElement;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +35,7 @@ import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.resource.metadata.ResourceMetadataMap;
-import net.minecraft.resource.metadata.ResourceMetadataReader;
+import net.minecraft.resource.metadata.ResourceMetadataSerializer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -53,7 +56,8 @@ public record PlaceholderResourcePack(ResourceType type, ResourcePackInfo metada
 			switch (segments[0]) {
 			case "pack.mcmeta":
 				return () -> {
-					String metadata = ModResourcePackUtil.GSON.toJson(PackResourceMetadata.SERIALIZER.toJson(getMetadata()));
+					DataResult<JsonElement> result = PackResourceMetadata.SERIALIZER.codec().encodeStart(JsonOps.INSTANCE, getMetadata());
+					String metadata = result.getOrThrow().toString();
 					return IOUtils.toInputStream(metadata, StandardCharsets.UTF_8);
 				};
 			case "pack.png":
@@ -84,7 +88,7 @@ public record PlaceholderResourcePack(ResourceType type, ResourcePackInfo metada
 
 	@Nullable
 	@Override
-	public <T> T parseMetadata(ResourceMetadataReader<T> metaReader) {
+	public <T> T parseMetadata(ResourceMetadataSerializer<T> metaReader) {
 		return ResourceMetadataMap.of(PackResourceMetadata.SERIALIZER, getMetadata()).get(metaReader);
 	}
 

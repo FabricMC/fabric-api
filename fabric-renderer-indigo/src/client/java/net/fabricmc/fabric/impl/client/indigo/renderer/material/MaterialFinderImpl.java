@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.material;
 import java.util.Objects;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.fabricmc.fabric.api.renderer.v1.material.GlintMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialView;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -26,21 +27,26 @@ import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
 import net.fabricmc.fabric.api.util.TriState;
 
 public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFinder {
-	private static int defaultBits = 0;
+	private static final int DEFAULT_BITS;
 
 	static {
-		MaterialFinderImpl finder = new MaterialFinderImpl();
+		// Start with all zeroes
+		MaterialFinderImpl finder = new MaterialFinderImpl(0);
+		// Apply non-zero defaults
 		finder.ambientOcclusion(TriState.DEFAULT);
-		finder.glint(TriState.DEFAULT);
-		defaultBits = finder.bits;
+		DEFAULT_BITS = finder.bits;
 
-		if (!areBitsValid(defaultBits)) {
+		if (!areBitsValid(DEFAULT_BITS)) {
 			throw new AssertionError("Default MaterialFinder bits are not valid!");
 		}
 	}
 
+	protected MaterialFinderImpl(int bits) {
+		super(bits);
+	}
+
 	public MaterialFinderImpl() {
-		super(defaultBits);
+		this(DEFAULT_BITS);
 	}
 
 	@Override
@@ -48,12 +54,6 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 		Objects.requireNonNull(blendMode, "BlendMode may not be null");
 
 		bits = (bits & ~BLEND_MODE_MASK) | (blendMode.ordinal() << BLEND_MODE_BIT_OFFSET);
-		return this;
-	}
-
-	@Override
-	public MaterialFinder disableColorIndex(boolean disable) {
-		bits = disable ? (bits | COLOR_DISABLE_FLAG) : (bits & ~COLOR_DISABLE_FLAG);
 		return this;
 	}
 
@@ -78,10 +78,10 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 	}
 
 	@Override
-	public MaterialFinder glint(TriState mode) {
-		Objects.requireNonNull(mode, "glint TriState may not be null");
+	public MaterialFinder glintMode(GlintMode mode) {
+		Objects.requireNonNull(mode, "GlintMode may not be null");
 
-		bits = (bits & ~GLINT_MASK) | (mode.ordinal() << GLINT_BIT_OFFSET);
+		bits = (bits & ~GLINT_MODE_MASK) | (mode.ordinal() << GLINT_MODE_BIT_OFFSET);
 		return this;
 	}
 
@@ -101,7 +101,7 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 
 	@Override
 	public MaterialFinder clear() {
-		bits = defaultBits;
+		bits = DEFAULT_BITS;
 		return this;
 	}
 

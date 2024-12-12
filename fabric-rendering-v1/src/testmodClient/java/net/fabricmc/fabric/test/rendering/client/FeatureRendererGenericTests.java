@@ -62,7 +62,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 
 			if (entityRenderer instanceof BipedEntityRenderer) {
 				// It works, method ref is encouraged
-				registrationHelper.register(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?, ?>) entityRenderer, context.getItemRenderer()));
+				registrationHelper.register(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?, ?>) entityRenderer));
 			}
 		});
 
@@ -87,7 +87,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 
 		if (entityRenderer instanceof BipedEntityRenderer<?, ?, ?> bipedEntityRenderer) {
 			// It works, method ref is encouraged
-			registrationHelper.register(new HeldItemFeatureRenderer<>(bipedEntityRenderer, context.getItemRenderer()));
+			registrationHelper.register(new HeldItemFeatureRenderer<>(bipedEntityRenderer));
 		}
 	}
 

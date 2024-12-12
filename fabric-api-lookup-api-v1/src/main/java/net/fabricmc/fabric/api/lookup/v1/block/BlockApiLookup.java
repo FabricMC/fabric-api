@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  *
  * <p>Note: If you are going to query APIs a lot, consider using {@link BlockApiCache}, it may drastically improve performance.
  *
- * <p><h3>Usage Example</h3>
+ * <h3>Usage Example</h3>
  * Let us pretend we have the following interface that we would like to attach to some blocks depending on the direction.
  *
  * <pre>{@code
@@ -106,7 +106,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  *     // return something if available, or null
  * });}</pre>
  *
- * <p><h3>Improving performance</h3>
+ * <h3>Improving performance</h3>
  * When performing queries every tick, it is recommended to use {@link BlockApiCache BlockApiCache&lt;A, C&gt;}
  * instead of directly querying the {@code BlockApiLookup}.
  *
@@ -129,7 +129,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  *
  * // no need to destroy the cache, the garbage collector will take care of it}</pre>
  *
- * <p><h3>Generic context types</h3>
+ * <h3>Generic context types</h3>
  * Note that {@code FluidContainer} and {@code Direction} were completely arbitrary in this example.
  * We can define any {@code BlockApiLookup&lt;A, C&gt;}, where {@code A} is the type of the queried API, and {@code C} is the type of the additional context
  * (the direction parameter in the previous example).

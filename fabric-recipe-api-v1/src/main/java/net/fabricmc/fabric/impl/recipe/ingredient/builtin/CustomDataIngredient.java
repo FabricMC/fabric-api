@@ -16,7 +16,8 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
-import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -40,6 +41,7 @@ import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
 public class CustomDataIngredient implements CustomIngredient {
 	public static final CustomIngredientSerializer<CustomDataIngredient> SERIALIZER = new Serializer();
+
 	private final Ingredient base;
 	private final NbtCompound nbt;
 
@@ -60,14 +62,14 @@ public class CustomDataIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public List<RegistryEntry<Item>> getMatchingItems() {
+	public Stream<RegistryEntry<Item>> getMatchingItems() {
 		return base.getMatchingItems();
 	}
 
 	@Override
 	public SlotDisplay toDisplay() {
 		return new SlotDisplay.CompositeSlotDisplay(
-				base.getMatchingItems().stream().map(this::createEntryDisplay).toList()
+				base.getMatchingItems().map(this::createEntryDisplay).toList()
 		);
 	}
 
@@ -93,6 +95,19 @@ public class CustomDataIngredient implements CustomIngredient {
 
 	private NbtCompound getNbt() {
 		return nbt;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		CustomDataIngredient that = (CustomDataIngredient) o;
+		return base.equals(that.base) && nbt.equals(that.nbt);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(base, nbt);
 	}
 
 	private static class Serializer implements CustomIngredientSerializer<CustomDataIngredient> {

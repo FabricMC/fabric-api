@@ -1,0 +1,3 @@
+accessWidener v2 named
+accessible class net/minecraft/client/render/model/ModelBaker$BakerImpl
+accessible method net/minecraft/client/render/model/ModelBaker$BakerImpl <init> (Lnet/minecraft/client/render/model/ModelBaker;Lnet/minecraft/client/render/model/ModelBaker$ErrorCollectingSpriteGetter;Lnet/minecraft/client/model/ModelNameSupplier;)V

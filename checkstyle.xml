@@ -208,5 +208,10 @@
         <module name="MatchXpath">
             <property name="query" value="//VARIABLE_DEF[./TYPE/IDENT[@text='var'] and not(./ASSIGN/EXPR/LITERAL_NEW)]"/>
         </module>
+
+        <!-- Prevent public records in API packages -->
+        <module name="MatchXpath">
+            <property name="query" value="//RECORD_DEF[./MODIFIERS/LITERAL_PUBLIC][//PACKAGE_DEF//DOT/IDENT[@text='api']]"/>
+        </module>
 	</module>
 </module>

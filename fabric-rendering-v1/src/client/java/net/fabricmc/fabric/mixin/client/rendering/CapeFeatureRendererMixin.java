@@ -22,16 +22,16 @@ import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.minecraft.client.render.entity.equipment.EquipmentModel;
 import net.minecraft.client.render.entity.feature.CapeFeatureRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.EquipmentModel;
 
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRenderEvents;
 
 @Mixin(CapeFeatureRenderer.class)
 public class CapeFeatureRendererMixin {
-	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/feature/CapeFeatureRenderer;hasCustomModelForLayer(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/equipment/EquipmentModel$LayerType;)Z"), method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/state/PlayerEntityRenderState;FF)V")
+	@WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/feature/CapeFeatureRenderer;hasCustomModelForLayer(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/entity/equipment/EquipmentModel$LayerType;)Z"), method = "render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/state/PlayerEntityRenderState;FF)V")
 	public boolean injectCapeRenderCheck(CapeFeatureRenderer instance, ItemStack itemStack, EquipmentModel.LayerType layerType, Operation<Boolean> original, @Local(argsOnly = true) PlayerEntityRenderState state) {
 		if (!LivingEntityFeatureRenderEvents.ALLOW_CAPE_RENDER.invoker().allowCapeRender(state)) {
 			return false;

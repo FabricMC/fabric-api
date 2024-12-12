@@ -68,7 +68,7 @@ public class VanillaStorageTests {
 		InventoryStorage furnaceWrapper = InventoryStorage.of(furnace, null);
 
 		context.runAtTick(5, () -> {
-			if (accessor.getCookTime() <= 0) {
+			if (accessor.getCookingTimeSpent() <= 0) {
 				throw new GameTestException("Furnace should have started cooking.");
 			}
 
@@ -78,7 +78,7 @@ public class VanillaStorageTests {
 				}
 			}
 
-			if (accessor.getCookTime() <= 0) {
+			if (accessor.getCookingTimeSpent() <= 0) {
 				throw new GameTestException("Furnace should still cook after simulation.");
 			}
 
@@ -90,7 +90,7 @@ public class VanillaStorageTests {
 				transaction.commit();
 			}
 
-			if (accessor.getCookTime() != 0) {
+			if (accessor.getCookingTimeSpent() != 0) {
 				throw new GameTestException("Furnace should have reset cook time after being emptied.");
 			}
 

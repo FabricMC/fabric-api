@@ -38,7 +38,7 @@ import net.fabricmc.fabric.mixin.recipe.ingredient.EncoderHandlerMixin;
  * If a specific client doesn't support a custom ingredient, we send the matching stacks as a regular ingredient.
  * This is fine since all recipe computation happens server-side anyway.
  *
- * <p><ul>
+ * <ul>
  *     <li>Each client sends a packet with the set of custom ingredients it supports.</li>
  *     <li>We store that set inside the {@link EncoderHandler} using {@link EncoderHandlerMixin}.</li>
  *     <li>When serializing a custom ingredient, we get access to the current {@link EncoderHandler},

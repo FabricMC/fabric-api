@@ -22,7 +22,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.server.loottable.LootTableGenerator;
+import net.minecraft.data.loottable.LootTableGenerator;
 import net.minecraft.loot.LootTable;
 import net.minecraft.registry.RegistryKey;
 

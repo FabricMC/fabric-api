@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexFormats;
@@ -30,7 +31,7 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 
 /**
- * Interface for reading quad data encoded by {@link MeshBuilder}.
+ * Interface for reading quad data encoded in {@link Mesh}es.
  * Enables models to do analysis, re-texturing or translation without knowing the
  * renderer's vertex formats and without retaining redundant information.
  *
@@ -154,7 +155,7 @@ public interface QuadView {
 	 * <p>Not typically needed by models. Exposed to enable standard lighting
 	 * utility functions for use by renderers.
 	 */
-	Vector3f faceNormal();
+	Vector3fc faceNormal();
 
 	/**
 	 * Retrieves the material serialized with the quad.
@@ -162,9 +163,9 @@ public interface QuadView {
 	RenderMaterial material();
 
 	/**
-	 * Retrieves the quad color index serialized with the quad.
+	 * Retrieves the quad tint index serialized with the quad.
 	 */
-	int colorIndex();
+	int tintIndex();
 
 	/**
 	 * Retrieves the integer tag encoded with this quad via {@link MutableQuadView#tag(int)}.
@@ -187,7 +188,7 @@ public interface QuadView {
 	 * Generates a new BakedQuad instance with texture
 	 * coordinates and colors from the given sprite.
 	 *
-	 * @param sprite {@link MutableQuadView} does not serialize sprites
+	 * @param sprite {@link QuadView} does not serialize sprites
 	 * so the sprite must be provided by the caller.
 	 *
 	 * @return A new baked quad instance with the closest-available appearance
@@ -199,7 +200,6 @@ public interface QuadView {
 		toVanilla(vertexData, 0);
 
 		// Mimic material properties to the largest possible extent
-		int outputColorIndex = material().disableColorIndex() ? -1 : colorIndex();
 		boolean outputShade = !material().disableDiffuse();
 		// The output light emission is equal to the minimum of all four sky light values and all four block light values.
 		int outputLightEmission = 15;
@@ -217,57 +217,6 @@ public interface QuadView {
 			outputLightEmission = Math.min(outputLightEmission, Math.min(blockLight, skyLight));
 		}
 
-		return new BakedQuad(vertexData, outputColorIndex, lightFace(), sprite, outputShade, outputLightEmission);
-	}
-
-	/**
-	 * @deprecated Use {@link #color(int)} instead.
-	 */
-	@Deprecated
-	default int spriteColor(int vertexIndex, int spriteIndex) {
-		return color(vertexIndex);
-	}
-
-	/**
-	 * @deprecated Use {@link #u(int)} instead.
-	 */
-	@Deprecated
-	default float spriteU(int vertexIndex, int spriteIndex) {
-		return u(vertexIndex);
-	}
-
-	/**
-	 * @deprecated Use {@link #v(int)} instead.
-	 */
-	@Deprecated
-	default float spriteV(int vertexIndex, int spriteIndex) {
-		return v(vertexIndex);
-	}
-
-	/**
-	 * @deprecated Use {@link MutableQuadView#copyFrom(QuadView)} instead.
-	 * <b>Unlike {@link MutableQuadView#copyFrom(QuadView) copyFrom}, this method will not copy the material.</b>
-	 */
-	@Deprecated
-	default void copyTo(MutableQuadView target) {
-		RenderMaterial material = target.material();
-		target.copyFrom(this);
-		target.material(material);
-	}
-
-	/**
-	 * @deprecated Use {@link #toVanilla(int[], int)} instead.
-	 */
-	@Deprecated
-	default void toVanilla(int spriteIndex, int[] target, int targetIndex, boolean isItem) {
-		toVanilla(target, targetIndex);
-	}
-
-	/**
-	 * @deprecated Use {@link #toBakedQuad(Sprite)} instead.
-	 */
-	@Deprecated
-	default BakedQuad toBakedQuad(int spriteIndex, Sprite sprite, boolean isItem) {
-		return toBakedQuad(sprite);
+		return new BakedQuad(vertexData, tintIndex(), lightFace(), sprite, outputShade, outputLightEmission);
 	}
 }

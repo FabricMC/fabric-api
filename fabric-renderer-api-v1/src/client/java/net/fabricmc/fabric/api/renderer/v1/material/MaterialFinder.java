@@ -18,18 +18,16 @@ package net.fabricmc.fabric.api.renderer.v1.material;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.util.TriState;
 
 /**
  * Finds standard {@link RenderMaterial} instances used to communicate
- * quad rendering characteristics to a {@link RenderContext}.
+ * quad rendering characteristics to the renderer.
  *
  * <p>Must be obtained via {@link Renderer#materialFinder()}.
  */
@@ -42,14 +40,6 @@ public interface MaterialFinder extends MaterialView {
 	 * @see BlendMode
 	 */
 	MaterialFinder blendMode(BlendMode blendMode);
-
-	/**
-	 * Controls whether vertex colors should be modified for quad coloring. This property
-	 * is inverted, so a value of {@code false} means that quad coloring will be applied.
-	 *
-	 * <p>The default value is {@code false}.
-	 */
-	MaterialFinder disableColorIndex(boolean disable);
 
 	/**
 	 * When true, sprite texture and color will be rendered at full brightness.
@@ -93,18 +83,18 @@ public interface MaterialFinder extends MaterialView {
 	MaterialFinder ambientOcclusion(TriState mode);
 
 	/**
-	 * Controls whether glint should be applied.
+	 * Controls how glint should be applied.
 	 *
-	 * <p>If set to {@link TriState#DEFAULT}, glint will be applied in item contexts if
-	 * {@linkplain ItemStack#hasGlint() the item stack has glint}. Set to {@link TriState#TRUE} or
-	 * {@link TriState#FALSE} to override this behavior.
+	 * <p>If set to {@link GlintMode#DEFAULT}, glint will be applied in item contexts based on
+	 * {@linkplain ItemRenderState.LayerRenderState#setGlint(ItemRenderState.Glint) the glint type of the layer}. Set
+	 * to another value to override this behavior.
 	 *
-	 * <p>The default value is {@link TriState#DEFAULT}.
+	 * <p>The default value is {@link GlintMode#DEFAULT}.
 	 *
 	 * <p>This property is guaranteed to be respected in item contexts. Some renderers may also respect it in block
 	 * contexts, but this is not guaranteed.
 	 */
-	MaterialFinder glint(TriState mode);
+	MaterialFinder glintMode(GlintMode mode);
 
 	/**
 	 * A hint to the renderer about how the quad is intended to be shaded, for example through ambient occlusion and
@@ -124,80 +114,17 @@ public interface MaterialFinder extends MaterialView {
 	MaterialFinder copyFrom(MaterialView material);
 
 	/**
-	 * Resets this instance to default values. Values will match those
-	 * in effect when an instance is newly obtained via {@link Renderer#materialFinder()}.
+	 * Resets this instance to default values. Values will match those in effect when an instance is newly obtained via
+	 * {@link Renderer#materialFinder()}.
 	 */
 	MaterialFinder clear();
 
 	/**
-	 * Returns the standard material encoding all
-	 * of the current settings in this finder. The settings in
-	 * this finder are not changed.
+	 * Returns the standard material encoding all the current settings in this finder. The settings in this finder are
+	 * not changed.
 	 *
-	 * <p>Resulting instances can and should be re-used to prevent
-	 * needless memory allocation. {@link Renderer} implementations
-	 * may or may not cache standard material instances.
+	 * <p>Resulting instances can and should be re-used to prevent needless memory allocation. {@link Renderer}
+	 * implementations may or may not cache standard material instances.
 	 */
 	RenderMaterial find();
-
-	/**
-	 * @deprecated Use {@link #blendMode(BlendMode)} instead.
-	 */
-	@Deprecated
-	default MaterialFinder blendMode(int spriteIndex, RenderLayer renderLayer) {
-		return blendMode(BlendMode.fromRenderLayer(renderLayer));
-	}
-
-	/**
-	 * @deprecated Use {@link #blendMode(BlendMode)} instead.
-	 */
-	@Deprecated
-	default MaterialFinder blendMode(int spriteIndex, BlendMode blendMode) {
-		// Null check is kept for legacy reasons, but the new blendMode method will NPE if passed null!
-		if (blendMode == null) {
-			blendMode = BlendMode.DEFAULT;
-		}
-
-		return blendMode(blendMode);
-	}
-
-	/**
-	 * @deprecated Use {@link #disableColorIndex(boolean)} instead.
-	 */
-	@Deprecated
-	default MaterialFinder disableColorIndex(int spriteIndex, boolean disable) {
-		return disableColorIndex(disable);
-	}
-
-	/**
-	 * @deprecated Use {@link #emissive(boolean)} instead.
-	 */
-	@Deprecated
-	default MaterialFinder emissive(int spriteIndex, boolean isEmissive) {
-		return emissive(isEmissive);
-	}
-
-	/**
-	 * @deprecated Use {@link #disableDiffuse(boolean)} instead.
-	 */
-	@Deprecated
-	default MaterialFinder disableDiffuse(int spriteIndex, boolean disable) {
-		return disableDiffuse(disable);
-	}
-
-	/**
-	 * @deprecated Use {@link #ambientOcclusion(TriState)} instead.
-	 */
-	@Deprecated
-	default MaterialFinder disableAo(int spriteIndex, boolean disable) {
-		return ambientOcclusion(disable ? TriState.FALSE : TriState.DEFAULT);
-	}
-
-	/**
-	 * Do not use. Does nothing.
-	 */
-	@Deprecated
-	default MaterialFinder spriteDepth(int depth) {
-		return this;
-	}
 }

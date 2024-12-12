@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.impl.recipe.ingredient.builtin;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -49,11 +51,10 @@ public class DifferenceIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public List<RegistryEntry<Item>> getMatchingItems() {
-		final List<RegistryEntry<Item>> subtractedMatchingItems = subtracted.getMatchingItems();
-		return base.getMatchingItems().stream()
-				.filter(registryEntry -> !subtractedMatchingItems.contains(registryEntry))
-				.toList();
+	public Stream<RegistryEntry<Item>> getMatchingItems() {
+		final List<RegistryEntry<Item>> subtractedMatchingItems = subtracted.getMatchingItems().toList();
+		return base.getMatchingItems()
+				.filter(registryEntry -> !subtractedMatchingItems.contains(registryEntry));
 	}
 
 	@Override
@@ -72,6 +73,19 @@ public class DifferenceIngredient implements CustomIngredient {
 
 	private Ingredient getSubtracted() {
 		return subtracted;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		DifferenceIngredient that = (DifferenceIngredient) o;
+		return base.equals(that.base) && subtracted.equals(that.subtracted);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(base, subtracted);
 	}
 
 	private static class Serializer implements CustomIngredientSerializer<DifferenceIngredient> {

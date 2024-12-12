@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
  * via {@link #bakeSprite(MutableQuadView, Sprite, int)}. Also used by the API
  * itself to implement automatic block-breaking models for enhanced models.
  */
-public class TextureHelper {
+public final class TextureHelper {
 	private TextureHelper() { }
 
 	private static final float NORMALIZER = 1f / 16f;

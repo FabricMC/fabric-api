@@ -11,6 +11,18 @@ testDependencies(project, [
 	':fabric-data-generation-api-v1'
 ])
 
+fabricApi {
+	configureDataGeneration {
+		outputDirectory = file("src/testmod/generated")
+		addToResources = false
+		strictValidation = true
+	}
+}
+
+runDatagen {
+	outputs.dir("src/testmod/generated")
+}
+
 sourceSets {
 	testmod {
 		resources {
@@ -24,14 +36,9 @@ sourceSets {
 loom {
 	runs {
 		datagen {
-			inherit testmodServer
 			name "Data Generation"
-			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${file("src/testmod/generated")}"
-			vmArg "-Dfabric-api.datagen.strict-validation"
-
+			source sourceSets.testmod
 			ideConfigGenerated = true
-			runDir "build/datagen"
 		}
 	}
 }
