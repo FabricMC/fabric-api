@@ -41,7 +41,7 @@ public interface ClientGameTestContext {
 	int NO_TIMEOUT = -1;
 
 	/**
-	 * The default timeout for wait tasks.
+	 * The default timeout in ticks for wait tasks (10 seconds).
 	 */
 	int DEFAULT_TIMEOUT = 10 * SharedConstants.TICKS_PER_SECOND;
 

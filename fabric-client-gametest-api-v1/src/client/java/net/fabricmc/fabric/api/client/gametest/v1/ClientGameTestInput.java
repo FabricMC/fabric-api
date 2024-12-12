@@ -136,7 +136,7 @@ public interface ClientGameTestInput {
 	/**
 	 * Releases a key. Does nothing if the key is not being held.
 	 *
-	 * @param keyCode The key code of the key to release
+	 * @param keyCode The GLFW key code of the key to release
 	 * @see #holdKey(int)
 	 */
 	void releaseKey(int keyCode);
@@ -144,7 +144,7 @@ public interface ClientGameTestInput {
 	/**
 	 * Releases a mouse button. Does nothing if the mouse button is not being held.
 	 *
-	 * @param button The mouse button to release
+	 * @param button The GLFW mouse button to release
 	 * @see #holdMouse(int)
 	 */
 	void releaseMouse(int button);
@@ -202,7 +202,10 @@ public interface ClientGameTestInput {
 	/**
 	 * Presses and releases a key.
 	 *
-	 * @param keyCode The key code of the key to press
+	 * <p>For sending Unicode text input (e.g. into text boxes), use {@link #typeChar(int)} or
+	 * {@link #typeChars(String)} instead.
+	 *
+	 * @param keyCode The GLFW key code of the key to press
 	 * @see #holdKey(int)
 	 */
 	void pressKey(int keyCode);
@@ -210,7 +213,7 @@ public interface ClientGameTestInput {
 	/**
 	 * Presses and releases a mouse button.
 	 *
-	 * @param button The mouse button to press
+	 * @param button The GLFW mouse button to press
 	 * @see #holdMouse(int)
 	 */
 	void pressMouse(int button);
@@ -250,7 +253,7 @@ public interface ClientGameTestInput {
 	/**
 	 * Holds a key for the specified number of ticks and then releases it. Waits until this process is finished.
 	 *
-	 * @param keyCode The key code of the key to hold
+	 * @param keyCode The GLFW key code of the key to hold
 	 * @param ticks The number of ticks to hold the key for
 	 * @see #holdKey(int)
 	 */
@@ -260,7 +263,7 @@ public interface ClientGameTestInput {
 	 * Holds a mouse button for the specified number of ticks and then releases it. Waits until this process is
 	 * finished.
 	 *
-	 * @param button The mouse button to hold
+	 * @param button The GLFW mouse button to hold
 	 * @param ticks The number of ticks to hold the mouse button for
 	 * @see #holdMouse(int)
 	 */
@@ -269,8 +272,15 @@ public interface ClientGameTestInput {
 	/**
 	 * Types a code point (character). Useful for typing in text boxes.
 	 *
+	 * <p>This method is for sending Unicode text input, <em>not</em> for pressing keys on the keyboard for other
+	 * purposes, such as pressing {@code W} for moving the player. For those use cases, use one of the {@code pressKey}
+	 * overloads instead.
+	 *
 	 * @param codePoint The code point to type
 	 * @see #typeChars(String)
+	 * @see #pressKey(int)
+	 * @see #pressKey(KeyBinding)
+	 * @see #pressKey(Function)
 	 */
 	void typeChar(int codePoint);
 
