@@ -3,14 +3,6 @@
   "package": "net.fabricmc.fabric.mixin.client.gametest",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "MinecraftDedicatedServerMixin",
-    "MinecraftServerMixin"
-  ],
-  "plugin": "net.fabricmc.fabric.impl.client.gametest.ClientGameTestMixinConfigPlugin",
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "client": [
     "CyclingButtonWidgetAccessor",
     "GameOptionsAccessor",
     "GameOptionsMixin",
@@ -18,8 +10,14 @@
     "KeyBindingAccessor",
     "KeyboardAccessor",
     "MinecraftClientMixin",
+    "MinecraftDedicatedServerMixin",
+    "MinecraftServerMixin",
     "MouseAccessor",
     "ScreenAccessor",
     "WindowMixin"
-  ]
+  ],
+  "plugin": "net.fabricmc.fabric.impl.client.gametest.ClientGameTestMixinConfigPlugin",
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

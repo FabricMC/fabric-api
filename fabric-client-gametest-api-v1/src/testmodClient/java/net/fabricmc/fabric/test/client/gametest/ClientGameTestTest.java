@@ -103,11 +103,11 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		{
 			context.getInput().pressKey(options -> options.inventoryKey);
 			context.takeScreenshot("in_game_inventory");
-			context.setScreen(null);
+			context.setScreen(() -> null);
 		}
 
 		{
-			context.setScreen(new GameMenuScreen(true));
+			context.setScreen(() -> new GameMenuScreen(true));
 			context.takeScreenshot("game_menu");
 			context.clickScreenButton("menu.returnToMenu");
 			context.waitForScreen(TitleScreen.class);
@@ -133,7 +133,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 				waitForWorldTicks(context, 1);
 			}
 
-			context.setScreen(new GameMenuScreen(true));
+			context.setScreen(() -> new GameMenuScreen(true));
 			context.takeScreenshot("server_game_menu");
 			context.clickScreenButton("menu.disconnect");
 

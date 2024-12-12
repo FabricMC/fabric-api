@@ -16,10 +16,12 @@
 
 package net.fabricmc.fabric.impl.client.gametest;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.function.FailableConsumer;
@@ -159,9 +161,9 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	@Override
-	public void setScreen(@Nullable Screen screen) {
+	public void setScreen(Supplier<@Nullable Screen> screen) {
 		ThreadingImpl.checkOnGametestThread("setScreen");
-		runOnClient(client -> client.setScreen(screen));
+		runOnClient(client -> client.setScreen(screen.get()));
 	}
 
 	@Override
@@ -239,14 +241,14 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	@Override
-	public void takeScreenshot(String name) {
+	public Path takeScreenshot(String name) {
 		ThreadingImpl.checkOnGametestThread("takeScreenshot");
 		Preconditions.checkNotNull(name, "name");
-		takeScreenshot(name, 1);
+		return takeScreenshot(name, 1);
 	}
 
 	@Override
-	public void takeScreenshot(String name, int delay) {
+	public Path takeScreenshot(String name, int delay) {
 		ThreadingImpl.checkOnGametestThread("takeScreenshot");
 		Preconditions.checkNotNull(name, "name");
 		Preconditions.checkArgument(delay >= 0, "delay cannot be negative");
@@ -256,6 +258,8 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 			ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), name + ".png", client.getFramebuffer(), (message) -> {
 			});
 		});
+
+		return FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name + ".png");
 	}
 
 	@Override

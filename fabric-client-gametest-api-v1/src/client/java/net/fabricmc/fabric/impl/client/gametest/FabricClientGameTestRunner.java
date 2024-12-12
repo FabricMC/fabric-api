@@ -18,17 +18,14 @@ package net.fabricmc.fabric.impl.client.gametest;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 
+import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class FabricClientGameTestRunner {
-	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
 	private static final String ENTRYPOINT_KEY = "fabric-client-gametest";
 
 	public static void start() {
@@ -39,31 +36,35 @@ public class FabricClientGameTestRunner {
 
 		ThreadingImpl.runTestThread(() -> {
 			ClientGameTestContextImpl context = new ClientGameTestContextImpl();
-			boolean failed = false;
 
 			for (FabricClientGameTest gameTest : gameTests) {
 				context.restoreDefaultGameOptions();
 
 				try {
 					gameTest.runTest(context);
-				} catch (Throwable e) {
-					LOGGER.error("Failed test {}", gameTest.getClass().getName(), e);
-					failed = true;
 				} finally {
 					context.getInput().clearKeysDown();
-
-					// Open the title screen to reset the state for the next gametest.
-					// If the gametest API was used correctly, we should be in the menus somewhere because any test
-					// world should have been closed at the end of a try-with-resources statement.
-					context.setScreen(new TitleScreen());
+					checkFinalGameTestState(context, gameTest.getClass().getName());
 				}
 			}
 
-			if (failed) {
-				throw new AssertionError("There were failing client gametests");
+			context.clickScreenButton("menu.quit");
+		});
+	}
+
+	private static void checkFinalGameTestState(ClientGameTestContext context, String testClassName) {
+		if (ThreadingImpl.isServerRunning) {
+			throw new AssertionError("Client gametest %s finished while a server is still running".formatted(testClassName));
+		}
+
+		context.runOnClient(client -> {
+			if (client.getNetworkHandler() != null) {
+				throw new AssertionError("Client gametest %s finished while still connected to a server".formatted(testClassName));
 			}
 
-			context.clickScreenButton("menu.quit");
+			if (!(client.currentScreen instanceof TitleScreen)) {
+				throw new AssertionError("Client gametest %s did not finish on the title screen".formatted(testClassName));
+			}
 		});
 	}
 }

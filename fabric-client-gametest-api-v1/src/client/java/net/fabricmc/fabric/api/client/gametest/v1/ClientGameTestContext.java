@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.api.client.gametest.v1;
 
+import java.nio.file.Path;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.commons.lang3.function.FailableFunction;
@@ -85,7 +87,7 @@ public interface ClientGameTestContext {
 	 * @param screen The screen to open
 	 * @see MinecraftClient#setScreen(Screen)
 	 */
-	void setScreen(@Nullable Screen screen);
+	void setScreen(Supplier<@Nullable Screen> screen);
 
 	/**
 	 * Presses the button in the current screen whose label is the given translation key. Fails if the button couldn't
@@ -109,7 +111,7 @@ public interface ClientGameTestContext {
 	 *
 	 * @param name The name of the screenshot
 	 */
-	void takeScreenshot(String name);
+	Path takeScreenshot(String name);
 
 	/**
 	 * Takes a screnshot after waiting {@code delay} ticks and saves it in the screenshots directory.
@@ -117,7 +119,7 @@ public interface ClientGameTestContext {
 	 * @param name The name of the screenshot
 	 * @param delay The delay in ticks before taking the screenshot
 	 */
-	void takeScreenshot(String name, int delay);
+	Path takeScreenshot(String name, int delay);
 
 	/**
 	 * Gets the input handler used to simulate inputs to the client.

@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.client.gametest.v1;
 
 /**
- * The client game test entrypoint interface. See the package documentation.
+ * The {@code fabric-client-gametest} entrypoint interface. See the package documentation.
  */
 public interface FabricClientGameTest {
 	/**
