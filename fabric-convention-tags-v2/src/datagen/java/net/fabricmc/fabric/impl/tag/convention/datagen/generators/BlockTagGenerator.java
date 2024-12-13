@@ -645,7 +645,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.STRIPPED_MANGROVE_LOG)
 				.add(Blocks.STRIPPED_OAK_LOG)
 				.add(Blocks.STRIPPED_PALE_OAK_LOG)
-				.add(Blocks.STRIPPED_SPRUCE_LOG);
+				.add(Blocks.STRIPPED_SPRUCE_LOG)
+				.add(Blocks.STRIPPED_CRIMSON_STEM)
+				.add(Blocks.STRIPPED_WARPED_STEM);
 
 		getOrCreateTagBuilder(ConventionalBlockTags.STRIPPED_WOODS)
 				.add(Blocks.STRIPPED_ACACIA_WOOD)
@@ -656,7 +658,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.STRIPPED_MANGROVE_WOOD)
 				.add(Blocks.STRIPPED_OAK_WOOD)
 				.add(Blocks.STRIPPED_PALE_OAK_WOOD)
-				.add(Blocks.STRIPPED_SPRUCE_WOOD);
+				.add(Blocks.STRIPPED_SPRUCE_WOOD)
+				.add(Blocks.STRIPPED_CRIMSON_HYPHAE)
+				.add(Blocks.STRIPPED_WARPED_HYPHAE);
 	}
 
 	private void generateHeadTags() {
