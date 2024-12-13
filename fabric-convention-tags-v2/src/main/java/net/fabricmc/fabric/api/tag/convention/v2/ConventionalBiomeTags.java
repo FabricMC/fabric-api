@@ -131,7 +131,7 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_FOREST = register("is_forest");
 	/**
-	 * For biomes that are a variant of Birch Forest (has mostly birch trees)
+	 * For biomes that are a variant of Birch Forest. (has mostly birch trees)
 	 */
 	public static final TagKey<Biome> IS_BIRCH_FOREST = register("is_birch_forest");
 	/**
@@ -141,7 +141,7 @@ public final class ConventionalBiomeTags {
 	 */
 	public static final TagKey<Biome> IS_DARK_FOREST = register("is_dark_forest");
 	/**
-	 * For biomes that are a variant of Flower Forest (Is very dense in variety of flowers)
+	 * For biomes that are a variant of Flower Forest. (Is very dense in variety of flowers)
 	 */
 	public static final TagKey<Biome> IS_FLOWER_FOREST = register("is_flower_forest");
 	/**
