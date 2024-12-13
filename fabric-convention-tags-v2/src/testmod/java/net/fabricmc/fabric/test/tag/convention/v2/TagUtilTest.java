@@ -78,6 +78,7 @@ public class TagUtilTest implements ModInitializer {
 			ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS,
 			ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS,
 
+			ConventionalItemTags.BOTTLE_POTIONS,
 			ConventionalItemTags.RED_SANDSTONE_BLOCKS,
 			ConventionalItemTags.RED_SANDSTONE_SLABS,
 			ConventionalItemTags.RED_SANDSTONE_STAIRS,
