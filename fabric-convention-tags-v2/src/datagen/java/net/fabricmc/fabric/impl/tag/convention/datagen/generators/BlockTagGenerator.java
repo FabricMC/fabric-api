@@ -209,6 +209,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		generateMiscTags();
 
+		generateTagAlias();
+
 		generateBackwardsCompatTags();
 	}
 
@@ -675,6 +677,21 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.DRAGON_WALL_HEAD);
 	}
 
+	private void generateTagAlias() {
+		aliasGroup("coal_ores").add(BlockTags.COAL_ORES, ConventionalBlockTags.COAL_ORES);
+		aliasGroup("copper_ores").add(BlockTags.COPPER_ORES, ConventionalBlockTags.COPPER_ORES);
+		aliasGroup("diamond_ores").add(BlockTags.DIAMOND_ORES, ConventionalBlockTags.DIAMOND_ORES);
+		aliasGroup("emerald_ores").add(BlockTags.EMERALD_ORES, ConventionalBlockTags.EMERALD_ORES);
+		aliasGroup("gold_ores").add(BlockTags.GOLD_ORES, ConventionalBlockTags.GOLD_ORES);
+		aliasGroup("iron_ores").add(BlockTags.IRON_ORES, ConventionalBlockTags.IRON_ORES);
+		aliasGroup("lapis_ores").add(BlockTags.LAPIS_ORES, ConventionalBlockTags.LAPIS_ORES);
+		aliasGroup("redstone_ores").add(BlockTags.REDSTONE_ORES, ConventionalBlockTags.REDSTONE_ORES);
+
+		aliasGroup("fences").add(BlockTags.FENCES, ConventionalBlockTags.FENCES);
+		aliasGroup("wooden_fences").add(BlockTags.WOODEN_FENCES, ConventionalBlockTags.WOODEN_FENCES);
+		aliasGroup("fence_gates").add(BlockTags.FENCE_GATES, ConventionalBlockTags.FENCE_GATES);
+	}
+	
 	private void generateBackwardsCompatTags() {
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
