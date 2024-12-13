@@ -127,36 +127,108 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_SNOWY_PLAINS = register("is_snowy_plains");
 	/**
 	 * Biomes densely populated with deciduous trees.
+	 * (This is for people who want to tag their biomes without getting side effects from {@link ConventionalBiomeTags#IS_FOREST})
 	 */
 	public static final TagKey<Biome> IS_FOREST = register("is_forest");
+	/**
+	 * For biomes that are a variant of Birch Forest (has mostly birch trees)
+	 */
 	public static final TagKey<Biome> IS_BIRCH_FOREST = register("is_birch_forest");
+	/**
+	 * For biomes that are a variant of Dark Forest. (Has roofed trees that are reminiscent of Dark Forest's style)
+	 * Pale Gardens is included in this tag because according to Mojang's blog post, they state it is a variation of the Dark Forest biome.
+	 * <a href="https://www.minecraft.net/en-us/article/minecraft-java-edition-1-21-4#pale_garden:~:text=The%20Pale%20Garden%20is%20a%20biome%20variation%20of%20Dark%20Forest">...</a>.
+	 */
 	public static final TagKey<Biome> IS_DARK_FOREST = register("is_dark_forest");
+	/**
+	 * For biomes that are a variant of Flower Forest (Is very dense in variety of flowers)
+	 */
 	public static final TagKey<Biome> IS_FLOWER_FOREST = register("is_flower_forest");
+	/**
+	 * Biomes that spawn as a taiga.
+	 * (This is for people who want to tag their biomes without getting side effects from {@link ConventionalBiomeTags#IS_TAIGA})
+	 */
 	public static final TagKey<Biome> IS_TAIGA = register("is_taiga");
+	/**
+	 * For biomes that are an "old growth" variant of a regular biome.
+	 * Usually this includes taller or different tree styles as if the biome is older.
+	 */
 	public static final TagKey<Biome> IS_OLD_GROWTH = register("is_old_growth");
 	/**
 	 * Biomes that spawn as a hills biome. (Previously was called Extreme Hills biome in past)
+	 * (This is for people who want to tag their biomes without getting side effects from {@link ConventionalBiomeTags#IS_HILL})
 	 */
 	public static final TagKey<Biome> IS_HILL = register("is_hill");
+	/**
+	 * For biomes that are a "windswept" variant of a regular biome.
+	 * Usually these biomes includes fewer trees than normal and more exposed stone on hilly terrain.
+	 */
 	public static final TagKey<Biome> IS_WINDSWEPT = register("is_windswept");
+	/**
+	 * Biomes that spawn as a jungle.
+	 * (This is for people who want to tag their biomes without getting side effects from {@link ConventionalBiomeTags#IS_JUNGLE})
+	 */
 	public static final TagKey<Biome> IS_JUNGLE = register("is_jungle");
+	/**
+	 * Biomes that spawn as a savanna.
+	 * (This is for people who want to tag their biomes without getting side effects from {@link ConventionalBiomeTags#IS_SAVANNA})
+	 */
 	public static final TagKey<Biome> IS_SAVANNA = register("is_savanna");
+	/**
+	 * For biomes that are considered a swamp such as Swamp or Mangrove Swamp.
+	 */
 	public static final TagKey<Biome> IS_SWAMP = register("is_swamp");
+	/**
+	 * For biomes that are considered a regular desert.
+	 * Badlands have their own tag to better separate them from this tag.
+	 */
 	public static final TagKey<Biome> IS_DESERT = register("is_desert");
+	/**
+	 * Biomes that spawn as a badlands.
+	 * (This is for people who want to tag their biomes without getting side effects from {@link ConventionalBiomeTags#IS_BADLANDS})
+	 */
 	public static final TagKey<Biome> IS_BADLANDS = register("is_badlands");
 	/**
-	 * Biomes that are dedicated to spawning on the shoreline of a body of water.
+	 * Non-stony biomes that are dedicated to spawning on the shoreline of a body of water.
+	 * (This is for people who want to tag their biomes without getting side effects from {@link ConventionalBiomeTags#IS_BEACH})
 	 */
 	public static final TagKey<Biome> IS_BEACH = register("is_beach");
+	/**
+	 * Stony biomes that are dedicated to spawning on the shoreline of a body of water.
+	 */
 	public static final TagKey<Biome> IS_STONY_SHORES = register("is_stony_shores");
+	/**
+	 * For biomes that spawn primarily mushrooms.
+	 */
 	public static final TagKey<Biome> IS_MUSHROOM = register("is_mushroom");
 
+	/**
+	 * Biomes that spawn as a river.
+	 * (This is for people who want to tag their biomes without getting side effects from {@link ConventionalBiomeTags#IS_RIVER})
+	 */
 	public static final TagKey<Biome> IS_RIVER = register("is_river");
+	/**
+	 * Biomes that spawn as part of the world's oceans.
+	 * (This is for people who want to tag their biomes without getting side effects from {@link ConventionalBiomeTags#IS_OCEAN})
+	 */
 	public static final TagKey<Biome> IS_OCEAN = register("is_ocean");
+	/**
+	 * Biomes that spawn as part of the world's oceans that have low depth.
+	 * (This is for people who want to tag their biomes without getting side effects from {@link ConventionalBiomeTags#IS_DEEP_OCEAN})
+	 */
 	public static final TagKey<Biome> IS_DEEP_OCEAN = register("is_deep_ocean");
+	/**
+	 * Biomes that spawn as part of the world's oceans that have shallow depth.
+	 */
 	public static final TagKey<Biome> IS_SHALLOW_OCEAN = register("is_shallow_ocean");
 
+	/**
+	 * Biomes that spawn primarily underground. (Not necessarily always a cave)
+	 */
 	public static final TagKey<Biome> IS_UNDERGROUND = register("is_underground");
+	/**
+	 * Biomes dedicated to decorating caves such as Lush Caves or Dripstone Caves.
+	 */
 	public static final TagKey<Biome> IS_CAVE = register("is_cave");
 
 	/**

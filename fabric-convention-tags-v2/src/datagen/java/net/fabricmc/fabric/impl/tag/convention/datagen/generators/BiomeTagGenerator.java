@@ -310,12 +310,12 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.GROVE);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_DECIDUOUS_TREE)
 				.add(BiomeKeys.FOREST)
-				.add(BiomeKeys.WINDSWEPT_FOREST)
 				.add(BiomeKeys.FLOWER_FOREST)
 				.add(BiomeKeys.BIRCH_FOREST)
+				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST)
 				.add(BiomeKeys.DARK_FOREST)
 				.add(BiomeKeys.PALE_GARDEN)
-				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST);
+				.add(BiomeKeys.WINDSWEPT_FOREST);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_JUNGLE_TREE)
 				.addOptionalTag(ConventionalBiomeTags.IS_JUNGLE);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SAVANNA_TREE)
@@ -346,8 +346,8 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.MEADOW);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_SPOOKY)
 				.add(BiomeKeys.DARK_FOREST)
-				.add(BiomeKeys.DEEP_DARK)
-				.add(BiomeKeys.PALE_GARDEN);
+				.add(BiomeKeys.PALE_GARDEN)
+				.add(BiomeKeys.DEEP_DARK);
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_FLORAL)
 				.add(BiomeKeys.SUNFLOWER_PLAINS)
 				.add(BiomeKeys.MEADOW)
