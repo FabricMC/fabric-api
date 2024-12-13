@@ -966,17 +966,17 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateTagAlias() {
-		aliasGroup("coal_ores").add(ItemTags.COAL_ORES, ConventionalItemTags.COAL_ORES);
-		aliasGroup("copper_ores").add(ItemTags.COPPER_ORES, ConventionalItemTags.COPPER_ORES);
-		aliasGroup("diamond_ores").add(ItemTags.DIAMOND_ORES, ConventionalItemTags.DIAMOND_ORES);
-		aliasGroup("emerald_ores").add(ItemTags.EMERALD_ORES, ConventionalItemTags.EMERALD_ORES);
-		aliasGroup("gold_ores").add(ItemTags.GOLD_ORES, ConventionalItemTags.GOLD_ORES);
-		aliasGroup("iron_ores").add(ItemTags.IRON_ORES, ConventionalItemTags.IRON_ORES);
-		aliasGroup("lapis_ores").add(ItemTags.LAPIS_ORES, ConventionalItemTags.LAPIS_ORES);
-		aliasGroup("redstone_ores").add(ItemTags.REDSTONE_ORES, ConventionalItemTags.REDSTONE_ORES);
+		aliasGroup("ores/coal").add(ItemTags.COAL_ORES, ConventionalItemTags.COAL_ORES);
+		aliasGroup("ores/copper").add(ItemTags.COPPER_ORES, ConventionalItemTags.COPPER_ORES);
+		aliasGroup("ores/diamond").add(ItemTags.DIAMOND_ORES, ConventionalItemTags.DIAMOND_ORES);
+		aliasGroup("ores/emerald").add(ItemTags.EMERALD_ORES, ConventionalItemTags.EMERALD_ORES);
+		aliasGroup("ores/gold").add(ItemTags.GOLD_ORES, ConventionalItemTags.GOLD_ORES);
+		aliasGroup("ores/iron").add(ItemTags.IRON_ORES, ConventionalItemTags.IRON_ORES);
+		aliasGroup("ores/lapis").add(ItemTags.LAPIS_ORES, ConventionalItemTags.LAPIS_ORES);
+		aliasGroup("ores/redstone").add(ItemTags.REDSTONE_ORES, ConventionalItemTags.REDSTONE_ORES);
 
 		aliasGroup("fences").add(ItemTags.FENCES, ConventionalItemTags.FENCES);
-		aliasGroup("wooden_fences").add(ItemTags.WOODEN_FENCES, ConventionalItemTags.WOODEN_FENCES);
+		aliasGroup("fences/wooden").add(ItemTags.WOODEN_FENCES, ConventionalItemTags.WOODEN_FENCES);
 		aliasGroup("fence_gates").add(ItemTags.FENCE_GATES, ConventionalItemTags.FENCE_GATES);
 	}
 

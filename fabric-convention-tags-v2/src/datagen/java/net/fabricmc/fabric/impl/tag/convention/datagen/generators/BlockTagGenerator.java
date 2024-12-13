@@ -678,17 +678,17 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateTagAlias() {
-		aliasGroup("coal_ores").add(BlockTags.COAL_ORES, ConventionalBlockTags.COAL_ORES);
-		aliasGroup("copper_ores").add(BlockTags.COPPER_ORES, ConventionalBlockTags.COPPER_ORES);
-		aliasGroup("diamond_ores").add(BlockTags.DIAMOND_ORES, ConventionalBlockTags.DIAMOND_ORES);
-		aliasGroup("emerald_ores").add(BlockTags.EMERALD_ORES, ConventionalBlockTags.EMERALD_ORES);
-		aliasGroup("gold_ores").add(BlockTags.GOLD_ORES, ConventionalBlockTags.GOLD_ORES);
-		aliasGroup("iron_ores").add(BlockTags.IRON_ORES, ConventionalBlockTags.IRON_ORES);
-		aliasGroup("lapis_ores").add(BlockTags.LAPIS_ORES, ConventionalBlockTags.LAPIS_ORES);
-		aliasGroup("redstone_ores").add(BlockTags.REDSTONE_ORES, ConventionalBlockTags.REDSTONE_ORES);
+		aliasGroup("ores/coal").add(BlockTags.COAL_ORES, ConventionalBlockTags.COAL_ORES);
+		aliasGroup("ores/copper").add(BlockTags.COPPER_ORES, ConventionalBlockTags.COPPER_ORES);
+		aliasGroup("ores/diamond").add(BlockTags.DIAMOND_ORES, ConventionalBlockTags.DIAMOND_ORES);
+		aliasGroup("ores/emerald").add(BlockTags.EMERALD_ORES, ConventionalBlockTags.EMERALD_ORES);
+		aliasGroup("ores/gold").add(BlockTags.GOLD_ORES, ConventionalBlockTags.GOLD_ORES);
+		aliasGroup("ores/iron").add(BlockTags.IRON_ORES, ConventionalBlockTags.IRON_ORES);
+		aliasGroup("ores/lapis").add(BlockTags.LAPIS_ORES, ConventionalBlockTags.LAPIS_ORES);
+		aliasGroup("ores/redstone").add(BlockTags.REDSTONE_ORES, ConventionalBlockTags.REDSTONE_ORES);
 
 		aliasGroup("fences").add(BlockTags.FENCES, ConventionalBlockTags.FENCES);
-		aliasGroup("wooden_fences").add(BlockTags.WOODEN_FENCES, ConventionalBlockTags.WOODEN_FENCES);
+		aliasGroup("fences/wooden").add(BlockTags.WOODEN_FENCES, ConventionalBlockTags.WOODEN_FENCES);
 		aliasGroup("fence_gates").add(BlockTags.FENCE_GATES, ConventionalBlockTags.FENCE_GATES);
 	}
 
