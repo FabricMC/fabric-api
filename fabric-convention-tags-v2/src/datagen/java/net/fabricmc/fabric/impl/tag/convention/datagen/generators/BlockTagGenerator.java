@@ -691,7 +691,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		aliasGroup("wooden_fences").add(BlockTags.WOODEN_FENCES, ConventionalBlockTags.WOODEN_FENCES);
 		aliasGroup("fence_gates").add(BlockTags.FENCE_GATES, ConventionalBlockTags.FENCE_GATES);
 	}
-	
+
 	private void generateBackwardsCompatTags() {
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
