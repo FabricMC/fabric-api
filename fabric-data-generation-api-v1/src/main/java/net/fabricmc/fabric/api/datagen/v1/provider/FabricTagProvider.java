@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.api.datagen.v1.provider;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -70,6 +75,9 @@ import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
  * @see EntityTypeTagProvider
  */
 public abstract class FabricTagProvider<T> extends TagProvider<T> {
+	private final FabricDataOutput output;
+	private final Map<Identifier, AliasGroupBuilder> aliasGroupBuilders = new HashMap<>();
+
 	/**
 	 * Constructs a new {@link FabricTagProvider} with the default computed path.
 	 *
@@ -80,6 +88,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	 */
 	public FabricTagProvider(FabricDataOutput output, RegistryKey<? extends Registry<T>> registryKey, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 		super(output, registryKey, registriesFuture);
+		this.output = output;
 	}
 
 	/**
@@ -114,6 +123,34 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	@Override
 	protected FabricTagBuilder getOrCreateTagBuilder(TagKey<T> tag) {
 		return new FabricTagBuilder(super.getOrCreateTagBuilder(tag));
+	}
+
+	/**
+	 * Gets an {@link AliasGroupBuilder} with the given ID.
+	 *
+	 * @param groupId the group ID
+	 * @return the alias group builder
+	 */
+	protected AliasGroupBuilder aliasGroup(Identifier groupId) {
+		return aliasGroupBuilders.computeIfAbsent(groupId, key -> new AliasGroupBuilder());
+	}
+
+	/**
+	 * Gets an {@link AliasGroupBuilder} with the given ID.
+	 *
+	 * @param group the group name
+	 * @return the alias group builder
+	 */
+	protected AliasGroupBuilder aliasGroup(String group) {
+		Identifier groupId = Identifier.of(output.getModId(), group);
+		return aliasGroupBuilders.computeIfAbsent(groupId, key -> new AliasGroupBuilder());
+	}
+
+	/**
+	 * {@return a read-only map of alias group builders by the alias group ID}.
+	 */
+	public Map<Identifier, AliasGroupBuilder> getAliasGroupBuilders() {
+		return Collections.unmodifiableMap(aliasGroupBuilders);
 	}
 
 	/**
@@ -391,6 +428,54 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		public final FabricTagBuilder add(RegistryKey<T>... registryKeys) {
 			for (RegistryKey<T> registryKey : registryKeys) {
 				add(registryKey);
+			}
+
+			return this;
+		}
+	}
+
+	/**
+	 * A builder for tag alias groups.
+	 */
+	public final class AliasGroupBuilder {
+		private final List<TagKey<T>> tags = new ArrayList<>();
+
+		private AliasGroupBuilder() {
+		}
+
+		/**
+		 * {@return a read-only list of the tags in this alias group}.
+		 */
+		public List<TagKey<T>> getTags() {
+			return Collections.unmodifiableList(tags);
+		}
+
+		public AliasGroupBuilder add(TagKey<T> tag) {
+			if (tag.registryRef() != registryRef) {
+				throw new IllegalArgumentException("Tag " + tag + " isn't from the registry " + registryRef);
+			}
+
+			this.tags.add(tag);
+			return this;
+		}
+
+		@SafeVarargs
+		public final AliasGroupBuilder add(TagKey<T>... tags) {
+			for (TagKey<T> tag : tags) {
+				add(tag);
+			}
+
+			return this;
+		}
+
+		public AliasGroupBuilder add(Identifier tag) {
+			this.tags.add(TagKey.of(registryRef, tag));
+			return this;
+		}
+
+		public AliasGroupBuilder add(Identifier... tags) {
+			for (Identifier tag : tags) {
+				this.tags.add(TagKey.of(registryRef, tag));
 			}
 
 			return this;

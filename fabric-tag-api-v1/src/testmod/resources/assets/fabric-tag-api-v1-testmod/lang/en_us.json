@@ -1,0 +1,15 @@
+{
+  "tag.block.fabric-tag-api-v1-testmod.bricks": "Bricks",
+  "tag.block.fabric-tag-api-v1-testmod.brick_blocks": "Brick Blocks",
+  "tag.block.fabric-tag-api-v1-testmod.more_brick_blocks": "More Brick Blocks",
+  "tag.item.fabric-tag-api-v1-testmod.beetroots": "Beetroots",
+  "tag.item.fabric-tag-api-v1-testmod.expensive_rocks": "Expensive Rocks",
+  "tag.item.fabric-tag-api-v1-testmod.gems": "Gems",
+  "tag.item.fabric-tag-api-v1-testmod.missing_beetroots": "Missing Beetroots",
+  "tag.item.fabric-tag-api-v1-testmod.redstone_dusts": "Redstone Dusts",
+  "tag.item.fabric-tag-api-v1-testmod.redstone_powders": "Redstone Powders",
+  "tag.loot_table.fabric-tag-api-v1-testmod.nether_bricks_1": "Nether Bricks 1",
+  "tag.loot_table.fabric-tag-api-v1-testmod.nether_bricks_2": "Nether Bricks 2",
+  "tag.worldgen.biome.fabric-tag-api-v1-testmod.classic": "Classic",
+  "tag.worldgen.biome.fabric-tag-api-v1-testmod.traditional": "Traditional"
+}

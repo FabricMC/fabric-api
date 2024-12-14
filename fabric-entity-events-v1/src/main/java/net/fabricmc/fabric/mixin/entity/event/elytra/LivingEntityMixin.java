@@ -25,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents;
@@ -64,7 +63,7 @@ abstract class LivingEntityMixin extends Entity {
 	@SuppressWarnings("ConstantConditions")
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EquipmentSlot;VALUES:Ljava/util/List;"), method = "canGlide", allow = 1, cancellable = true)
 	void injectElytraCheck(CallbackInfoReturnable<Boolean> cir) {
-		PlayerEntity self = (PlayerEntity) (Object) this;
+		LivingEntity self = (LivingEntity) (Object) this;
 
 		if (!EntityElytraEvents.ALLOW.invoker().allowElytraFlight(self)) {
 			cir.setReturnValue(false);

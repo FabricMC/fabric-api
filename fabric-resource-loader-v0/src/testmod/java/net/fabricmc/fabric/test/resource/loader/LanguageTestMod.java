@@ -27,6 +27,8 @@ public class LanguageTestMod implements DedicatedServerModInitializer {
 	}
 
 	private static void testTranslationLoaded() {
+		testTranslationLoaded("item.minecraft.potato", "Potato"); // Test that vanilla translation loads
+		testTranslationLoaded("text.fabric-resource-loader-v0-testmod.server.lang.override", "Vanilla override test");
 		testTranslationLoaded("pack.source.fabricmod", "Fabric mod");
 		testTranslationLoaded("text.fabric-resource-loader-v0-testmod.server.lang.test0", "Test from fabric-resource-loader-v0-testmod");
 		testTranslationLoaded("text.fabric-resource-loader-v0-testmod.server.lang.test1", "Test from fabric-resource-loader-v0-testmod-test1");

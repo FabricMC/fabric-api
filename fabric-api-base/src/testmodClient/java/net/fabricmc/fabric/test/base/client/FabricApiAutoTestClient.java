@@ -113,7 +113,7 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 		{
 			enableDebugHud();
 			waitForWorldTicks(200);
-			takeScreenshot("in_game_overworld");
+			takeScreenshot("in_game_overworld", Duration.ZERO);
 		}
 
 		MixinEnvironment.getCurrentEnvironment().audit();
@@ -147,7 +147,7 @@ public class FabricApiAutoTestClient implements ClientModInitializer {
 			server.runCommand("gamemode creative " + profile.getName());
 
 			waitForWorldTicks(20);
-			takeScreenshot("server_in_game");
+			takeScreenshot("server_in_game", Duration.ZERO);
 
 			{ // Test that we can enter and exit configuration
 				server.runCommand("debugconfig config " + profile.getName());

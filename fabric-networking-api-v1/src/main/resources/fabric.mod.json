@@ -26,7 +26,7 @@
   },
   "accessWidener": "fabric-networking-api-v1.accesswidener",
   "depends": {
-    "fabricloader": ">=0.16.7",
+    "fabricloader": ">=0.16.8",
     "fabric-api-base": "*"
   },
   "description": "Low-level, vanilla protocol oriented networking hooks.",

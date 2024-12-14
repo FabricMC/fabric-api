@@ -37,6 +37,9 @@ import net.fabricmc.fabric.impl.tag.client.ClientTagsImpl;
  * <p>Client Tags resolve that issue by lazily reading the tag json files within the mods on the side of the caller,
  * directly, allowing for mods to query tags such as {@link net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags}
  * even when connected to a vanilla server.
+ *
+ * <p>Note that locally read client tags don't currently support Fabric's tag aliases. The aliasing system is only
+ * implemented on servers.
  */
 public final class ClientTags {
 	private ClientTags() {

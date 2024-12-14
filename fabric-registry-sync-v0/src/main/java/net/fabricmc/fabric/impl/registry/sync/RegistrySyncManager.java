@@ -58,7 +58,6 @@ import net.minecraft.util.thread.ThreadExecutor;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
 import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
@@ -66,6 +65,7 @@ public final class RegistrySyncManager {
 	public static final boolean DEBUG = Boolean.getBoolean("fabric.registry.debug");
 
 	public static final DirectRegistryPacketHandler DIRECT_PACKET_HANDLER = new DirectRegistryPacketHandler();
+
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = Boolean.getBoolean("fabric.registry.debug.writeContentsAsCsv");
 
@@ -80,6 +80,11 @@ public final class RegistrySyncManager {
 			return;
 		}
 
+		if (!ServerConfigurationNetworking.canSend(handler, DIRECT_PACKET_HANDLER.getPacketId())) {
+			// Don't send if the client cannot receive
+			return;
+		}
+
 		final Map<Identifier, Object2IntMap<Identifier>> map = RegistrySyncManager.createAndPopulateRegistryMap();
 
 		if (map == null) {
@@ -87,47 +92,7 @@ public final class RegistrySyncManager {
 			return;
 		}
 
-		if (!ServerConfigurationNetworking.canSend(handler, DIRECT_PACKET_HANDLER.getPacketId())) {
-			// Disconnect incompatible clients
-			Text message = getIncompatibleClientText(ServerNetworkingImpl.getAddon(handler).getClientBrand(), map);
-			handler.disconnect(message);
-			return;
-		}
-
 		handler.addTask(new SyncConfigurationTask(handler, map));
-	}
-
-	private static Text getIncompatibleClientText(@Nullable String brand, Map<Identifier, Object2IntMap<Identifier>> map) {
-		String brandText = switch (brand) {
-		case "fabric" -> "Fabric API";
-		case null, default -> "Fabric Loader and Fabric API";
-		};
-
-		final int toDisplay = 4;
-
-		List<String> namespaces = map.values().stream()
-				.map(Object2IntMap::keySet)
-				.flatMap(Set::stream)
-				.map(Identifier::getNamespace)
-				.filter(s -> !s.equals(Identifier.DEFAULT_NAMESPACE))
-				.distinct()
-				.sorted()
-				.toList();
-
-		MutableText text = Text.literal("The following registry entry namespaces may be related:\n\n");
-
-		for (int i = 0; i < Math.min(namespaces.size(), toDisplay); i++) {
-			text = text.append(Text.literal(namespaces.get(i)).formatted(Formatting.YELLOW));
-			text = text.append(ScreenTexts.LINE_BREAK);
-		}
-
-		if (namespaces.size() > toDisplay) {
-			text = text.append(Text.literal("And %d more...".formatted(namespaces.size() - toDisplay)));
-		}
-
-		return Text.literal("This server requires ").append(Text.literal(brandText).formatted(Formatting.GREEN)).append(" installed on your client!")
-				.append(ScreenTexts.LINE_BREAK).append(text)
-				.append(ScreenTexts.LINE_BREAK).append(ScreenTexts.LINE_BREAK).append(Text.literal("Contact the server's administrator for more information!").formatted(Formatting.GOLD));
 	}
 
 	public record SyncConfigurationTask(

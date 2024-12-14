@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.7",
+    "fabricloader": ">=0.16.8",
     "minecraft": ">=1.19.2"
   },
   "description": "Hooks for modifying Minecraft's sound system.",

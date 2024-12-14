@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>On the logical client, the return values have the following meaning:
  * <ul>
- *     <li>SUCCESS/SUCCESS_NO_ITEM_USED cancels further processing, causes a hand swing, and sends a packet to the server.</li>
+ *     <li>SUCCESS cancels further processing, causes a hand swing, and sends a packet to the server.</li>
  *     <li>CONSUME cancels further processing, and sends a packet to the server. It does NOT cause a hand swing.</li>
  *     <li>PASS falls back to further processing.</li>
  *     <li>FAIL cancels further processing and does not send a packet to the server.</li>

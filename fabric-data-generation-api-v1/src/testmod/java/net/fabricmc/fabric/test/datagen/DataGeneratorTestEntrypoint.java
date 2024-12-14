@@ -332,6 +332,11 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			getOrCreateTagBuilder(BlockTags.FIRE).setReplace(true).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.DIRT).add(SIMPLE_BLOCK);
 			getOrCreateTagBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
+
+			aliasGroup("flowers")
+					.add(BlockTags.FLOWERS, BlockTags.FLOWER_POTS);
+			aliasGroup(Identifier.of("other_namespace", "flowers"))
+					.add(BlockTags.FLOWERS, BlockTags.FLOWER_POTS);
 		}
 	}
 

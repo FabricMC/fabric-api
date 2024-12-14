@@ -20,11 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.PacketCallbacks;
-import net.minecraft.network.packet.BrandCustomPayload;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.common.CommonPingS2CPacket;
@@ -47,8 +44,6 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	private final MinecraftServer server;
 	private final ServerConfigurationNetworking.Context context;
 	private RegisterState registerState = RegisterState.NOT_SENT;
-	@Nullable
-	private String clientBrand = null;
 
 	public ServerConfigurationNetworkAddon(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
 		super(ServerNetworkingImpl.CONFIGURATION, ((ServerCommonNetworkHandlerAccessor) handler).getConnection(), "ServerConfigurationNetworkAddon for " + handler.getDebugProfile().getName());
@@ -58,16 +53,6 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkPhase.CONFIGURATION);
-	}
-
-	@Override
-	public boolean handle(CustomPayload payload) {
-		if (payload instanceof BrandCustomPayload brandCustomPayload) {
-			clientBrand = brandCustomPayload.brand();
-			return false;
-		}
-
-		return super.handle(payload);
 	}
 
 	@Override
@@ -182,10 +167,6 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	@Override
 	public void sendPacket(Packet<?> packet, PacketCallbacks callback) {
 		handler.send(packet, callback);
-	}
-
-	public @Nullable String getClientBrand() {
-		return clientBrand;
 	}
 
 	private enum RegisterState {
