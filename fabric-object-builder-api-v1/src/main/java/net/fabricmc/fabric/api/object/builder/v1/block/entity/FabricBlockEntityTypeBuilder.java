@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.block.entity;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 import com.mojang.datafixers.types.Type;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,24 +30,22 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 
+import net.fabricmc.fabric.impl.object.builder.ExtendedBlockEntityType;
+
 /**
- * Fabric's version of BlockEntityType.Builder with additional convenience methods.
- *
+ * Use this builder to create a {@link BlockEntityType}.
  */
 public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	private final Factory<? extends T> factory;
-	private final List<Block> blocks;
+	private final Set<Block> blocks = new HashSet<>();
+	private boolean canPotentiallyExecuteCommands = false;
 
-	private FabricBlockEntityTypeBuilder(Factory<? extends T> factory, List<Block> blocks) {
+	private FabricBlockEntityTypeBuilder(Factory<? extends T> factory) {
 		this.factory = factory;
-		this.blocks = blocks;
 	}
 
 	public static <T extends BlockEntity> FabricBlockEntityTypeBuilder<T> create(Factory<? extends T> factory, Block... blocks) {
-		List<Block> blocksList = new ArrayList<>(blocks.length);
-		Collections.addAll(blocksList, blocks);
-
-		return new FabricBlockEntityTypeBuilder<>(factory, blocksList);
+		return new FabricBlockEntityTypeBuilder<T>(factory).addBlocks(blocks);
 	}
 
 	/**
@@ -71,12 +70,38 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 		return this;
 	}
 
-	public BlockEntityType<T> build() {
-		return build(null);
+	/**
+	 * Adds supported blocks for the block entity type.
+	 *
+	 * @param blocks the supported blocks
+	 * @return this builder
+	 */
+	public FabricBlockEntityTypeBuilder<T> addBlocks(Collection<? extends Block> blocks) {
+		this.blocks.addAll(blocks);
+		return this;
 	}
 
-	public BlockEntityType<T> build(Type<?> type) {
-		return new BlockEntityType<T>(factory::create, new HashSet<>(blocks));
+	/**
+	 * Makes the built {@link BlockEntityType} return {@code true} from
+	 * {@link BlockEntityType#canPotentiallyExecuteCommands()}.
+	 *
+	 * @return this builder
+	 */
+	public FabricBlockEntityTypeBuilder<T> canPotentiallyExecuteCommands() {
+		canPotentiallyExecuteCommands = true;
+		return this;
+	}
+
+	public BlockEntityType<T> build() {
+		return new ExtendedBlockEntityType<>(factory::create, new HashSet<>(blocks), canPotentiallyExecuteCommands);
+	}
+
+	/**
+	 * @deprecated Use {@link #build()} instead.
+	 */
+	@Deprecated
+	public BlockEntityType<T> build(@Nullable Type<?> type) {
+		return build();
 	}
 
 	@FunctionalInterface

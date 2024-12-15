@@ -30,16 +30,30 @@ import net.fabricmc.fabric.impl.object.builder.FabricEntityTypeImpl;
 public abstract class EntityTypeMixin implements FabricEntityTypeImpl {
 	@Unique
 	private Boolean alwaysUpdateVelocity;
+	@Unique
+	private Boolean canPotentiallyExecuteCommands;
 
 	@Inject(method = "alwaysUpdateVelocity", at = @At("HEAD"), cancellable = true)
-	public void alwaysUpdateVelocity(CallbackInfoReturnable<Boolean> cir) {
+	public void onAlwaysUpdateVelocity(CallbackInfoReturnable<Boolean> cir) {
 		if (alwaysUpdateVelocity != null) {
 			cir.setReturnValue(alwaysUpdateVelocity);
+		}
+	}
+
+	@Inject(method = "canPotentiallyExecuteCommands", at = @At("HEAD"), cancellable = true)
+	public void onCanPotentiallyExecuteCommands(CallbackInfoReturnable<Boolean> cir) {
+		if (canPotentiallyExecuteCommands != null) {
+			cir.setReturnValue(canPotentiallyExecuteCommands);
 		}
 	}
 
 	@Override
 	public void fabric_setAlwaysUpdateVelocity(Boolean alwaysUpdateVelocity) {
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
+	}
+
+	@Override
+	public void fabric_setCanPotentiallyExecuteCommands(Boolean canPotentiallyExecuteCommands) {
+		this.canPotentiallyExecuteCommands = canPotentiallyExecuteCommands;
 	}
 }

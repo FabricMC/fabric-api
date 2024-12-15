@@ -52,6 +52,16 @@ public interface FabricEntityType {
 		}
 
 		/**
+		 * Sets whether the entity is able to execute commands.
+		 *
+		 * @param canPotentiallyExecuteCommands whether the entity is able to execute commands
+		 * @return this builder
+		 */
+		default EntityType.Builder<T> canPotentiallyExecuteCommands(boolean canPotentiallyExecuteCommands) {
+			throw new AssertionError("Implemented in Mixin");
+		}
+
+		/**
 		 * Creates an entity type builder for a living entity.
 		 *
 		 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.

@@ -48,6 +48,8 @@ public abstract class EntityTypeBuilderMixin<T extends Entity> implements Fabric
 
 	@Unique
 	private Boolean alwaysUpdateVelocity = null;
+	@Unique
+	private Boolean canPotentiallyExecuteCommands = null;
 
 	@Unique
 	private FabricEntityTypeImpl.Builder.Living<? extends LivingEntity> livingBuilder = null;
@@ -55,8 +57,14 @@ public abstract class EntityTypeBuilderMixin<T extends Entity> implements Fabric
 	private FabricEntityTypeImpl.Builder.Mob<? extends MobEntity> mobBuilder = null;
 
 	@Override
-	public EntityType.Builder<T> alwaysUpdateVelocity(boolean forceTrackedVelocityUpdates) {
-		alwaysUpdateVelocity = forceTrackedVelocityUpdates;
+	public EntityType.Builder<T> alwaysUpdateVelocity(boolean alwaysUpdateVelocity) {
+		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
+		return (EntityType.Builder<T>) (Object) this;
+	}
+
+	@Override
+	public EntityType.Builder<T> canPotentiallyExecuteCommands(boolean canPotentiallyExecuteCommands) {
+		this.canPotentiallyExecuteCommands = canPotentiallyExecuteCommands;
 		return (EntityType.Builder<T>) (Object) this;
 	}
 
@@ -67,6 +75,7 @@ public abstract class EntityTypeBuilderMixin<T extends Entity> implements Fabric
 		}
 
 		entityType.fabric_setAlwaysUpdateVelocity(alwaysUpdateVelocity);
+		entityType.fabric_setCanPotentiallyExecuteCommands(canPotentiallyExecuteCommands);
 
 		if (livingBuilder != null) {
 			livingBuilder.onBuild(castLiving(cir.getReturnValue()));

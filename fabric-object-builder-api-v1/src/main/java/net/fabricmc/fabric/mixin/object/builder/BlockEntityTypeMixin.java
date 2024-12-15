@@ -43,7 +43,9 @@ public class BlockEntityTypeMixin<T extends BlockEntity> implements FabricBlockE
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void mutableBlocks(BlockEntityType.BlockEntityFactory<? extends T> factory, Set<Block> blocks, CallbackInfo ci) {
-		this.blocks = new HashSet<>(this.blocks);
+		if (!(this.blocks instanceof HashSet)) {
+			this.blocks = new HashSet<>(this.blocks);
+		}
 	}
 
 	@Override

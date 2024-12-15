@@ -37,6 +37,8 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityType;
 public interface FabricEntityTypeImpl {
 	void fabric_setAlwaysUpdateVelocity(Boolean alwaysUpdateVelocity);
 
+	void fabric_setCanPotentiallyExecuteCommands(Boolean canPotentiallyExecuteCommands);
+
 	interface Builder {
 		void fabric_setLivingEntityBuilder(Living<? extends LivingEntity> livingBuilder);
 
