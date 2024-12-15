@@ -477,15 +477,18 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
 
 	/**
-	 * Blocks which are often replaced by deepslate ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_DEEPSLATE}, during world generation
+	 * Blocks which are often replaced by deepslate ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_DEEPSLATE}, during world generation.
+	 * (The block's registry name is used as the tag name)
 	 */
 	public static final TagKey<Item> ORE_BEARING_GROUND_DEEPSLATE = register("ore_bearing_ground/deepslate");
 	/**
-	 * Blocks which are often replaced by netherrack ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_NETHERRACK}, during world generation
+	 * Blocks which are often replaced by netherrack ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_NETHERRACK}, during world generation.
+	 * (The block's registry name is used as the tag name)
 	 */
 	public static final TagKey<Item> ORE_BEARING_GROUND_NETHERRACK = register("ore_bearing_ground/netherrack");
 	/**
-	 * Blocks which are often replaced by stone ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_STONE}, during world generation
+	 * Blocks which are often replaced by stone ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_STONE}, during world generation.
+	 * (The block's registry name is used as the tag name)
 	 */
 	public static final TagKey<Item> ORE_BEARING_GROUND_STONE = register("ore_bearing_ground/stone");
 	/**
@@ -505,14 +508,17 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> ORE_RATES_SPARSE = register("ore_rates/sparse");
 	/**
 	 * Ores in deepslate (or in equivalent blocks in the tag {@link #ORE_BEARING_GROUND_DEEPSLATE}) which could logically use deepslate as recipe input or output.
+	 * (The block's registry name is used as the tag name)
 	 */
 	public static final TagKey<Item> ORES_IN_GROUND_DEEPSLATE = register("ores_in_ground/deepslate");
 	/**
 	 * Ores in netherrack (or in equivalent blocks in the tag {@link #ORE_BEARING_GROUND_NETHERRACK}) which could logically use netherrack as recipe input or output.
+	 * (The block's registry name is used as the tag name)
 	 */
 	public static final TagKey<Item> ORES_IN_GROUND_NETHERRACK = register("ores_in_ground/netherrack");
 	/**
 	 * Ores in stone (or in equivalent blocks in the tag {@link #ORE_BEARING_GROUND_STONE}) which could logically use stone as recipe input or output.
+	 * (The block's registry name is used as the tag name)
 	 */
 	public static final TagKey<Item> ORES_IN_GROUND_STONE = register("ores_in_ground/stone");
 
