@@ -70,6 +70,11 @@ public final class ThreadingImpl {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
 
+	private static final boolean DISABLE_JOIN_ASYNC_STACK_TRACES = System.getProperty("fabric.client.gametest.disableJoinAsyncStackTraces") != null;
+	private static final String THREAD_IMPL_CLASS_NAME = ThreadingImpl.class.getName();
+	private static final String TASK_ON_THIS_THREAD_METHOD_NAME = "runTaskOnThisThread";
+	private static final String TASK_ON_OTHER_THREAD_METHOD_NAME = "runTaskOnOtherThread";
+
 	public static final int PHASE_TICK = 0;
 	public static final int PHASE_SERVER_TASKS = 1;
 	public static final int PHASE_CLIENT_TASKS = 2;
@@ -160,25 +165,25 @@ public final class ThreadingImpl {
 		Preconditions.checkState(Thread.currentThread() == testThread, "%s can only be called from the client gametest thread", methodName);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <E extends Throwable> void runOnClient(FailableRunnable<E> action) throws E {
 		Preconditions.checkNotNull(action, "action");
 		checkOnGametestThread("runOnClient");
 		Preconditions.checkState(clientCanAcceptTasks, "runOnClient called when no client is running");
+		runTaskOnOtherThread(action, CLIENT_SEMAPHORE);
+	}
 
+	public static <E extends Throwable> void runOnServer(FailableRunnable<E> action) throws E {
+		Preconditions.checkNotNull(action, "action");
+		checkOnGametestThread("runOnServer");
+		Preconditions.checkState(serverCanAcceptTasks, "runOnServer called when no server is running");
+		runTaskOnOtherThread(action, SERVER_SEMAPHORE);
+	}
+
+	private static <E extends Throwable> void runTaskOnOtherThread(FailableRunnable<E> action, Semaphore clientOrServerSemaphore) throws E {
 		MutableObject<E> thrown = new MutableObject<>();
-		taskToRun = () -> {
-			try {
-				action.run();
-			} catch (Throwable e) {
-				thrown.setValue((E) e);
-			} finally {
-				taskToRun = null;
-				TEST_SEMAPHORE.release();
-			}
-		};
+		taskToRun = () -> runTaskOnThisThread(action, thrown);
 
-		CLIENT_SEMAPHORE.release();
+		clientOrServerSemaphore.release();
 
 		try {
 			TEST_SEMAPHORE.acquire();
@@ -187,39 +192,73 @@ public final class ThreadingImpl {
 		}
 
 		if (thrown.getValue() != null) {
+			joinAsyncStackTrace(thrown.getValue());
 			throw thrown.getValue();
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <E extends Throwable> void runOnServer(FailableRunnable<E> action) throws E {
-		Preconditions.checkNotNull(action, "action");
-		checkOnGametestThread("runOnServer");
-		Preconditions.checkState(serverCanAcceptTasks, "runOnServer called when no server is running");
-
-		MutableObject<E> thrown = new MutableObject<>();
-		taskToRun = () -> {
-			try {
-				action.run();
-			} catch (Throwable e) {
-				thrown.setValue((E) e);
-			} finally {
-				taskToRun = null;
-				TEST_SEMAPHORE.release();
-			}
-		};
-
-		SERVER_SEMAPHORE.release();
-
+	private static <E extends Throwable> void runTaskOnThisThread(FailableRunnable<E> action, MutableObject<E> thrown) {
 		try {
-			TEST_SEMAPHORE.acquire();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			action.run();
+		} catch (Throwable e) {
+			thrown.setValue((E) e);
+		} finally {
+			taskToRun = null;
+			TEST_SEMAPHORE.release();
+		}
+	}
+
+	private static void joinAsyncStackTrace(Throwable e) {
+		if (DISABLE_JOIN_ASYNC_STACK_TRACES) {
+			return;
 		}
 
-		if (thrown.getValue() != null) {
-			throw thrown.getValue();
+		// find the end of the relevant part of the stack trace on the other thread
+		StackTraceElement[] taskStackTrace = e.getStackTrace();
+
+		if (taskStackTrace == null) {
+			return;
 		}
+
+		int taskRunOnThreadIndex = taskStackTrace.length - 1;
+
+		for (; taskRunOnThreadIndex >= 0; taskRunOnThreadIndex--) {
+			StackTraceElement element = taskStackTrace[taskRunOnThreadIndex];
+
+			if (THREAD_IMPL_CLASS_NAME.equals(element.getClassName()) && TASK_ON_THIS_THREAD_METHOD_NAME.equals(element.getMethodName())) {
+				break;
+			}
+		}
+
+		if (taskRunOnThreadIndex == -1) {
+			// couldn't find stack trace element
+			return;
+		}
+
+		// find the start of the relevant part of the stack trace on the test thread
+		StackTraceElement[] testStackTrace = Thread.currentThread().getStackTrace();
+		int testRunOnThreadIndex = 0;
+
+		for (; testRunOnThreadIndex < testStackTrace.length; testRunOnThreadIndex++) {
+			StackTraceElement element = testStackTrace[testRunOnThreadIndex];
+
+			if (THREAD_IMPL_CLASS_NAME.equals(element.getClassName()) && TASK_ON_OTHER_THREAD_METHOD_NAME.equals(element.getMethodName())) {
+				break;
+			}
+		}
+
+		if (testRunOnThreadIndex == testStackTrace.length) {
+			// couldn't find stack trace element
+			return;
+		}
+
+		// join the stack traces
+		StackTraceElement[] joinedStackTrace = new StackTraceElement[(taskRunOnThreadIndex + 1) + 1 + (testStackTrace.length - taskRunOnThreadIndex)];
+		System.arraycopy(taskStackTrace, 0, joinedStackTrace, 0, taskRunOnThreadIndex + 1);
+		joinedStackTrace[taskRunOnThreadIndex + 1] = new StackTraceElement("Async Stack Trace", ".", null, 1);
+		System.arraycopy(testStackTrace, testRunOnThreadIndex, joinedStackTrace, taskRunOnThreadIndex + 2, testStackTrace.length - testRunOnThreadIndex);
+		e.setStackTrace(joinedStackTrace);
 	}
 
 	public static void runTick() {

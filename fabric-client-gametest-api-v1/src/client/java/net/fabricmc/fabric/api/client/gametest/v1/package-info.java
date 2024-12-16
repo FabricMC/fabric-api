@@ -11,8 +11,11 @@
  *
  * <p>Client gametests run on the client gametest thread. Use the functions inside
  * {@link net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext ClientGameTestContext} and other test helper
- * classes to run code on the correct thread. The game remains paused unless you explicitly unpause it using various
- * waiting functions such as
+ * classes to run code on the correct thread. Exceptions are transparently rethrown on the test thread, and their stack
+ * traces are mutated to include the async stack trace, to make them easy to track. You can disable this behavior by
+ * setting the {@code fabric.client.gametest.disableJoinAsyncStackTraces} system property.
+ *
+ * <p>The game remains paused unless you explicitly unpause it using various waiting functions such as
  * {@link net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext#waitTick() ClientGameTestContext.waitTick()}.
  *
  * <p>A few changes have been made to how the vanilla game threads run, to make tests more reproducible. Notably, there
