@@ -40,15 +40,11 @@ public class FabricClientGameTestRunner {
 			for (FabricClientGameTest gameTest : gameTests) {
 				context.restoreDefaultGameOptions();
 
-				try {
-					gameTest.runTest(context);
-				} finally {
-					context.getInput().clearKeysDown();
-					checkFinalGameTestState(context, gameTest.getClass().getName());
-				}
-			}
+				gameTest.runTest(context);
 
-			context.clickScreenButton("menu.quit");
+				context.getInput().clearKeysDown();
+				checkFinalGameTestState(context, gameTest.getClass().getName());
+			}
 		});
 	}
 

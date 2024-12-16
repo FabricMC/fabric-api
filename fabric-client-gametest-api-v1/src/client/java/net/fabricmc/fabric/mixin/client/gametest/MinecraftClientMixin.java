@@ -50,7 +50,7 @@ public class MinecraftClientMixin {
 	private Overlay overlay;
 
 	@WrapMethod(method = "run")
-	private void onRun(Operation<Void> original) {
+	private void onRun(Operation<Void> original) throws Throwable {
 		if (ThreadingImpl.isClientRunning) {
 			throw new IllegalStateException("Client is already running");
 		}
@@ -61,10 +61,19 @@ public class MinecraftClientMixin {
 		try {
 			original.call();
 		} finally {
-			ThreadingImpl.clientCanAcceptTasks = false;
-			ThreadingImpl.PHASER.arriveAndDeregister();
-			ThreadingImpl.isClientRunning = false;
+			deregisterClient();
+
+			if (ThreadingImpl.testFailureException != null) {
+				throw ThreadingImpl.testFailureException;
+			}
 		}
+	}
+
+	@Inject(method = "cleanUpAfterCrash", at = @At("HEAD"))
+	private void deregisterAfterCrash(CallbackInfo ci) {
+		// Deregister a bit earlier than normal to allow for the integrated server to stop without waiting for the client
+		ThreadingImpl.setGameCrashed();
+		deregisterClient();
 	}
 
 	@Inject(method = "tick", at = @At("HEAD"))
@@ -151,5 +160,14 @@ public class MinecraftClientMixin {
 				Thread.currentThread() != ThreadingImpl.testThread,
 				"MinecraftClient.getInstance() cannot be called from the gametest thread. Try using ClientGameTestContext.runOnClient or ClientGameTestContext.computeOnClient"
 		);
+	}
+
+	@Unique
+	private static void deregisterClient() {
+		if (ThreadingImpl.isClientRunning) {
+			ThreadingImpl.clientCanAcceptTasks = false;
+			ThreadingImpl.PHASER.arriveAndDeregister();
+			ThreadingImpl.isClientRunning = false;
+		}
 	}
 }

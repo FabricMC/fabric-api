@@ -19,10 +19,12 @@ package net.fabricmc.fabric.mixin.client.gametest;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 
 import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
@@ -41,10 +43,19 @@ public class MinecraftServerMixin {
 		try {
 			original.call();
 		} finally {
-			ThreadingImpl.serverCanAcceptTasks = false;
-			ThreadingImpl.PHASER.arriveAndDeregister();
-			ThreadingImpl.isServerRunning = false;
+			deregisterServer();
 		}
+	}
+
+	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setCrashReport(Lnet/minecraft/util/crash/CrashReport;)V", shift = At.Shift.AFTER))
+	protected void onCrash(CallbackInfo ci) {
+		if (ThreadingImpl.testFailureException == null) {
+			ThreadingImpl.testFailureException = new Throwable("The server crashed");
+		}
+
+		MinecraftClient.getInstance().scheduleStop();
+		ThreadingImpl.setGameCrashed();
+		deregisterServer();
 	}
 
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;runTasksTillTickEnd()V"))
@@ -77,5 +88,12 @@ public class MinecraftServerMixin {
 		}
 
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TICK);
+	}
+
+	@Unique
+	private void deregisterServer() {
+		ThreadingImpl.serverCanAcceptTasks = false;
+		ThreadingImpl.PHASER.arriveAndDeregister();
+		ThreadingImpl.isServerRunning = false;
 	}
 }

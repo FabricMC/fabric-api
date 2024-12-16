@@ -26,6 +26,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.client.MinecraftClient;
+
 /**
  * <h1>Implementation notes</h1>
  *
@@ -75,6 +77,7 @@ public final class ThreadingImpl {
 	private static final int PHASE_MASK = 3;
 
 	public static final Phaser PHASER = new Phaser();
+	private static volatile boolean enablePhases = true;
 
 	public static volatile boolean isClientRunning = false;
 	public static volatile boolean clientCanAcceptTasks = false;
@@ -87,19 +90,30 @@ public final class ThreadingImpl {
 	@Nullable
 	public static Thread testThread = null;
 	public static final Semaphore TEST_SEMAPHORE = new Semaphore(0);
+	@Nullable
+	public static Throwable testFailureException = null;
 
 	@Nullable
 	public static Runnable taskToRun = null;
 
+	private static volatile boolean gameCrashed = false;
+
 	public static void enterPhase(int phase) {
-		while ((PHASER.getPhase() & PHASE_MASK) != phase) {
+		while (enablePhases && (PHASER.getPhase() & PHASE_MASK) != phase) {
 			PHASER.arriveAndAwaitAdvance();
 		}
 
-		PHASER.arriveAndAwaitAdvance();
+		if (enablePhases) {
+			PHASER.arriveAndAwaitAdvance();
+		}
 	}
 
-	public static void runTestThread(Runnable test) {
+	public static void setGameCrashed() {
+		enablePhases = false;
+		gameCrashed = true;
+	}
+
+	public static void runTestThread(Runnable testRunner) {
 		Preconditions.checkState(testThread == null, "There is already a test thread running");
 
 		testThread = new Thread(() -> {
@@ -107,26 +121,39 @@ public final class ThreadingImpl {
 			enterPhase(PHASE_TEST);
 
 			try {
-				test.run();
+				testRunner.run();
 			} catch (Throwable e) {
-				LOGGER.error("Failed to run client gametests", e);
-				System.exit(1);
+				testFailureException = e;
 			} finally {
-				PHASER.arriveAndDeregister();
-
 				if (clientCanAcceptTasks) {
-					CLIENT_SEMAPHORE.release();
+					runOnClient(() -> MinecraftClient.getInstance().scheduleStop());
 				}
 
-				if (serverCanAcceptTasks) {
-					SERVER_SEMAPHORE.release();
+				if (testFailureException != null) {
+					// Log this now in case the client has stopped or is otherwise unable to rethrow our exception
+					LOGGER.error("Client gametests failed with an exception", testFailureException);
 				}
 
-				testThread = null;
+				deregisterTestThread();
 			}
 		});
 		testThread.setName("Test thread");
+		testThread.setDaemon(true);
 		testThread.start();
+	}
+
+	private static void deregisterTestThread() {
+		testThread = null;
+		enablePhases = false;
+		PHASER.arriveAndDeregister();
+
+		if (clientCanAcceptTasks) {
+			CLIENT_SEMAPHORE.release();
+		}
+
+		if (serverCanAcceptTasks) {
+			SERVER_SEMAPHORE.release();
+		}
 	}
 
 	public static void checkOnGametestThread(String methodName) {
@@ -207,5 +234,17 @@ public final class ThreadingImpl {
 		}
 
 		enterPhase(PHASE_TEST);
+
+		// Check if the game has crashed during this tick. If so, don't do any more work in the test
+		if (gameCrashed) {
+			deregisterTestThread();
+
+			try {
+				// wait until game is closed
+				new Semaphore(0).acquire();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }
