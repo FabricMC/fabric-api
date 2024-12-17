@@ -215,49 +215,49 @@ public final class ThreadingImpl {
 		}
 
 		// find the end of the relevant part of the stack trace on the other thread
-		StackTraceElement[] taskStackTrace = e.getStackTrace();
+		StackTraceElement[] otherThreadStackTrace = e.getStackTrace();
 
-		if (taskStackTrace == null) {
+		if (otherThreadStackTrace == null) {
 			return;
 		}
 
-		int taskRunOnThreadIndex = taskStackTrace.length - 1;
+		int otherThreadIndex = otherThreadStackTrace.length - 1;
 
-		for (; taskRunOnThreadIndex >= 0; taskRunOnThreadIndex--) {
-			StackTraceElement element = taskStackTrace[taskRunOnThreadIndex];
+		for (; otherThreadIndex >= 0; otherThreadIndex--) {
+			StackTraceElement element = otherThreadStackTrace[otherThreadIndex];
 
 			if (THREAD_IMPL_CLASS_NAME.equals(element.getClassName()) && TASK_ON_THIS_THREAD_METHOD_NAME.equals(element.getMethodName())) {
 				break;
 			}
 		}
 
-		if (taskRunOnThreadIndex == -1) {
+		if (otherThreadIndex == -1) {
 			// couldn't find stack trace element
 			return;
 		}
 
 		// find the start of the relevant part of the stack trace on the test thread
-		StackTraceElement[] testStackTrace = Thread.currentThread().getStackTrace();
-		int testRunOnThreadIndex = 0;
+		StackTraceElement[] thisThreadStackTrace = Thread.currentThread().getStackTrace();
+		int thisThreadIndex = 0;
 
-		for (; testRunOnThreadIndex < testStackTrace.length; testRunOnThreadIndex++) {
-			StackTraceElement element = testStackTrace[testRunOnThreadIndex];
+		for (; thisThreadIndex < thisThreadStackTrace.length; thisThreadIndex++) {
+			StackTraceElement element = thisThreadStackTrace[thisThreadIndex];
 
 			if (THREAD_IMPL_CLASS_NAME.equals(element.getClassName()) && TASK_ON_OTHER_THREAD_METHOD_NAME.equals(element.getMethodName())) {
 				break;
 			}
 		}
 
-		if (testRunOnThreadIndex == testStackTrace.length) {
+		if (thisThreadIndex == thisThreadStackTrace.length) {
 			// couldn't find stack trace element
 			return;
 		}
 
 		// join the stack traces
-		StackTraceElement[] joinedStackTrace = new StackTraceElement[(taskRunOnThreadIndex + 1) + 1 + (testStackTrace.length - taskRunOnThreadIndex)];
-		System.arraycopy(taskStackTrace, 0, joinedStackTrace, 0, taskRunOnThreadIndex + 1);
-		joinedStackTrace[taskRunOnThreadIndex + 1] = new StackTraceElement("Async Stack Trace", ".", null, 1);
-		System.arraycopy(testStackTrace, testRunOnThreadIndex, joinedStackTrace, taskRunOnThreadIndex + 2, testStackTrace.length - testRunOnThreadIndex);
+		StackTraceElement[] joinedStackTrace = new StackTraceElement[(otherThreadIndex + 1) + 1 + (thisThreadStackTrace.length - thisThreadIndex)];
+		System.arraycopy(otherThreadStackTrace, 0, joinedStackTrace, 0, otherThreadIndex + 1);
+		joinedStackTrace[otherThreadIndex + 1] = new StackTraceElement("Async Stack Trace", ".", null, 1);
+		System.arraycopy(thisThreadStackTrace, thisThreadIndex, joinedStackTrace, otherThreadIndex + 2, thisThreadStackTrace.length - thisThreadIndex);
 		e.setStackTrace(joinedStackTrace);
 	}
 
