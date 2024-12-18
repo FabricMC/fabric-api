@@ -143,7 +143,6 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 		{
 			context.waitForScreen(TitleScreen.class);
-			context.clickScreenButton("menu.quit");
 		}
 	}
 
