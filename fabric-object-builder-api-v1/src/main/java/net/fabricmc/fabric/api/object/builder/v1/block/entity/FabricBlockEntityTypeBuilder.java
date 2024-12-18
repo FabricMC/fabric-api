@@ -85,10 +85,11 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	 * Makes the built {@link BlockEntityType} return {@code true} from
 	 * {@link BlockEntityType#canPotentiallyExecuteCommands()}.
 	 *
+	 * @param canPotentiallyExecuteCommands whether the block entity is able to execute commands
 	 * @return this builder
 	 */
-	public FabricBlockEntityTypeBuilder<T> canPotentiallyExecuteCommands() {
-		canPotentiallyExecuteCommands = true;
+	public FabricBlockEntityTypeBuilder<T> canPotentiallyExecuteCommands(boolean canPotentiallyExecuteCommands) {
+		this.canPotentiallyExecuteCommands = canPotentiallyExecuteCommands;
 		return this;
 	}
 
