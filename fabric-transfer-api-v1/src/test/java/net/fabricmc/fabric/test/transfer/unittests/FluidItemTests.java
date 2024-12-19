@@ -173,6 +173,14 @@ class FluidItemTests extends AbstractTransferApiTest {
 		if (StorageUtil.findStoredResource(luckyStorage) != null) {
 			throw new AssertionError("Found a resource in an unhandled potion.");
 		}
+
+		// Make sure extraction returns nothing for no potion at all
+		testInventory.setStack(0, new ItemStack(Items.POTION));
+		Storage<FluidVariant> defaultStorage = new InventoryContainerItem(testInventory, 0).find(FluidStorage.ITEM);
+
+		if (StorageUtil.findStoredResource(defaultStorage) != null) {
+			throw new AssertionError("Found a resource in empty potion.");
+		}
 	}
 
 	@Test
