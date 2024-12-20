@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.transfer.fluid;
 
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.DataComponentTypes;
