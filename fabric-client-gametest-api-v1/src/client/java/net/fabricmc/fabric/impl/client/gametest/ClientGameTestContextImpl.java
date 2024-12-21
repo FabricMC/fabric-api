@@ -48,13 +48,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Nullables;
 
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.TestWorldBuilder;
 import net.fabricmc.fabric.mixin.client.gametest.CyclingButtonWidgetAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.GameOptionsAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.ScreenAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class ClientGameTestContextImpl implements ClientGameTestContext {
-	private final ClientGameTestInputImpl input = new ClientGameTestInputImpl(this);
+	private final TestInputImpl input = new TestInputImpl(this);
 
 	private static final Map<String, Object> DEFAULT_GAME_OPTIONS = new HashMap<>();
 
@@ -65,6 +66,9 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 		// Messes with game tests starting
 		options.onboardAccessibility = false;
+
+		// Makes chunk rendering finish sooner
+		options.getViewDistance().setValue(5);
 
 		// Just annoying
 		options.getSoundVolumeOption(SoundCategory.MUSIC).setValue(0.0);
@@ -124,27 +128,32 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	@Override
-	public void waitFor(Predicate<MinecraftClient> predicate) {
+	public int waitFor(Predicate<MinecraftClient> predicate) {
 		ThreadingImpl.checkOnGametestThread("waitFor");
 		Preconditions.checkNotNull(predicate, "predicate");
-		waitFor(predicate, DEFAULT_TIMEOUT);
+		return waitFor(predicate, DEFAULT_TIMEOUT);
 	}
 
 	@Override
-	public void waitFor(Predicate<MinecraftClient> predicate, int timeout) {
+	public int waitFor(Predicate<MinecraftClient> predicate, int timeout) {
 		ThreadingImpl.checkOnGametestThread("waitFor");
 		Preconditions.checkNotNull(predicate, "predicate");
 
 		if (timeout == NO_TIMEOUT) {
+			int ticksWaited = 0;
+
 			while (!computeOnClient(predicate::test)) {
+				ticksWaited++;
 				ThreadingImpl.runTick();
 			}
+
+			return ticksWaited;
 		} else {
 			Preconditions.checkArgument(timeout > 0, "timeout must be positive");
 
 			for (int i = 0; i < timeout; i++) {
 				if (computeOnClient(predicate::test)) {
-					return;
+					return i;
 				}
 
 				ThreadingImpl.runTick();
@@ -153,17 +162,19 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 			if (!computeOnClient(predicate::test)) {
 				throw new AssertionError("Timed out waiting for predicate");
 			}
+
+			return timeout;
 		}
 	}
 
 	@Override
-	public void waitForScreen(@Nullable Class<? extends Screen> screenClass) {
+	public int waitForScreen(@Nullable Class<? extends Screen> screenClass) {
 		ThreadingImpl.checkOnGametestThread("waitForScreen");
 
 		if (screenClass == null) {
-			waitFor(client -> client.currentScreen == null);
+			return waitFor(client -> client.currentScreen == null);
 		} else {
-			waitFor(client -> screenClass.isInstance(client.currentScreen));
+			return waitFor(client -> screenClass.isInstance(client.currentScreen));
 		}
 	}
 
@@ -270,8 +281,13 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	@Override
-	public ClientGameTestInputImpl getInput() {
+	public TestInputImpl getInput() {
 		return input;
+	}
+
+	@Override
+	public TestWorldBuilder worldBuilder() {
+		return new TestWorldBuilderImpl(this);
 	}
 
 	@Override

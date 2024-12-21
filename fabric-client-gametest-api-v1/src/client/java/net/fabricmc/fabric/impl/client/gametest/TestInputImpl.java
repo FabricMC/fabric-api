@@ -30,16 +30,16 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestInput;
+import net.fabricmc.fabric.api.client.gametest.v1.TestInput;
 import net.fabricmc.fabric.mixin.client.gametest.KeyBindingAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.KeyboardAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.MouseAccessor;
 
-public final class ClientGameTestInputImpl implements ClientGameTestInput {
+public final class TestInputImpl implements TestInput {
 	private static final Set<InputUtil.Key> KEYS_DOWN = new HashSet<>();
 	private final ClientGameTestContext context;
 
-	public ClientGameTestInputImpl(ClientGameTestContext context) {
+	public TestInputImpl(ClientGameTestContext context) {
 		this.context = context;
 	}
 

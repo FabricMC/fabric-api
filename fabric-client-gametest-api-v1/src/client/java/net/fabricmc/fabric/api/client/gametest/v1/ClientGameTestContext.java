@@ -30,8 +30,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
 /**
- * Context for a client gametest containing various helpful functions and functions to access the game. Functions in
- * this class can only be called on the client gametest thread.
+ * Context for a client gametest containing various helpful functions and functions to access the game.
+ *
+ * <p>Functions in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
 public interface ClientGameTestContext {
@@ -61,8 +62,9 @@ public interface ClientGameTestContext {
 	 * Waits for a predicate to be true. Fails if the predicate is not satisfied after {@link #DEFAULT_TIMEOUT} ticks.
 	 *
 	 * @param predicate The predicate to check
+	 * @return The number of ticks waited
 	 */
-	void waitFor(Predicate<MinecraftClient> predicate);
+	int waitFor(Predicate<MinecraftClient> predicate);
 
 	/**
 	 * Waits for a predicate to be true. Fails if the predicate is not satisfied after {@code timeout} ticks. If
@@ -70,16 +72,18 @@ public interface ClientGameTestContext {
 	 *
 	 * @param predicate The predicate to check
 	 * @param timeout The number of ticks before timing out
+	 * @return The number of ticks waited
 	 */
-	void waitFor(Predicate<MinecraftClient> predicate, int timeout);
+	int waitFor(Predicate<MinecraftClient> predicate, int timeout);
 
 	/**
 	 * Waits for the given screen class to be shown. If {@code screenClass} is {@code null}, waits for the current
 	 * screen to be {@code null}. Fails if the screen does not open after {@link #DEFAULT_TIMEOUT} ticks.
 	 *
 	 * @param screenClass The screen class to wait to open
+	 * @return The number of ticks waited
 	 */
-	void waitForScreen(@Nullable Class<? extends Screen> screenClass);
+	int waitForScreen(@Nullable Class<? extends Screen> screenClass);
 
 	/**
 	 * Opens a {@link Screen} on the client.
@@ -126,7 +130,14 @@ public interface ClientGameTestContext {
 	 *
 	 * @return The client gametest input handler
 	 */
-	ClientGameTestInput getInput();
+	TestInput getInput();
+
+	/**
+	 * Creates a world builder for creating singleplayer worlds and dedicated servers.
+	 *
+	 * @return A new world builder
+	 */
+	TestWorldBuilder worldBuilder();
 
 	/**
 	 * Restores all game options in {@link MinecraftClient#options} to their default values for client gametests. This

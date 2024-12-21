@@ -16,141 +16,85 @@
 
 package net.fabricmc.fabric.test.client.gametest;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Objects;
-
 import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.ReconfiguringScreen;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
-import net.minecraft.client.gui.screen.world.SelectWorldScreen;
-import net.minecraft.client.network.ServerAddress;
-import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.gui.screen.world.WorldCreator;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.util.InputUtil;
 
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
-import net.fabricmc.fabric.impl.client.gametest.TestDedicatedServer;
-import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
+import net.fabricmc.fabric.api.client.gametest.v1.TestDedicatedServerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.TestServerConnection;
+import net.fabricmc.fabric.api.client.gametest.v1.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.TestWorldSave;
 import net.fabricmc.fabric.test.client.gametest.mixin.TitleScreenAccessor;
-import net.fabricmc.loader.api.FabricLoader;
 
 public class ClientGameTestTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext context) {
 		{
 			waitForTitleScreenFade(context);
 			context.takeScreenshot("title_screen", 0);
-			context.clickScreenButton("menu.singleplayer");
 		}
 
-		if (!isDirEmpty(FabricLoader.getInstance().getGameDir().resolve("saves"))) {
-			context.waitForScreen(SelectWorldScreen.class);
-			context.takeScreenshot("select_world_screen");
-			context.clickScreenButton("selectWorld.create");
-		}
+		TestWorldSave spWorldSave;
+		try (TestSingleplayerContext singleplayer = context.worldBuilder()
+				.adjustSettings(creator -> creator.setGameMode(WorldCreator.Mode.CREATIVE)).create()) {
+			spWorldSave = singleplayer.getWorldSave();
 
-		{
-			context.waitForScreen(CreateWorldScreen.class);
-			context.clickScreenButton("selectWorld.gameMode");
-			context.clickScreenButton("selectWorld.gameMode");
-			context.takeScreenshot("create_world_screen");
-			context.clickScreenButton("selectWorld.create");
-		}
-
-		{
-			// API test mods use experimental features
-			context.waitForScreen(ConfirmScreen.class);
-			context.clickScreenButton("gui.yes");
-		}
-
-		{
-			enableDebugHud(context);
-			waitForWorldTicks(context, 200);
-			context.takeScreenshot("in_game_overworld", 0);
-		}
-
-		{
-			context.getInput().pressKey(options -> options.chatKey);
-			context.waitTick();
-			context.getInput().typeChars("Hello, World!");
-			context.getInput().pressKey(InputUtil.GLFW_KEY_ENTER);
-			context.takeScreenshot("chat_message_sent", 5);
-		}
-
-		MixinEnvironment.getCurrentEnvironment().audit();
-
-		{
-			// See if the player render events are working.
-			setPerspective(context, Perspective.THIRD_PERSON_BACK);
-			context.takeScreenshot("in_game_overworld_third_person");
-			setPerspective(context, Perspective.FIRST_PERSON);
-		}
-
-		{
-			context.getInput().pressKey(options -> options.inventoryKey);
-			context.takeScreenshot("in_game_inventory");
-			context.setScreen(() -> null);
-		}
-
-		{
-			context.setScreen(() -> new GameMenuScreen(true));
-			context.takeScreenshot("game_menu");
-			context.clickScreenButton("menu.returnToMenu");
-			context.waitForScreen(TitleScreen.class);
-			waitForServerStop(context);
-		}
-
-		try (var server = new TestDedicatedServer()) {
-			connectToServer(context, server);
-			waitForWorldTicks(context, 5);
-
-			final GameProfile profile = context.computeOnClient(MinecraftClient::getGameProfile);
-			server.runCommand("op " + profile.getName());
-			server.runCommand("gamemode creative " + profile.getName());
-
-			waitForWorldTicks(context, 20);
-			context.takeScreenshot("server_in_game", 0);
-
-			{ // Test that we can enter and exit configuration
-				server.runCommand("debugconfig config " + profile.getName());
-				context.waitForScreen(ReconfiguringScreen.class);
-				context.takeScreenshot("server_config");
-				server.runCommand("debugconfig unconfig " + profile.getId());
-				waitForWorldTicks(context, 1);
+			{
+				enableDebugHud(context);
+				singleplayer.getClientWorld().waitForChunksRender();
+				context.takeScreenshot("in_game_overworld", 0);
 			}
 
-			context.setScreen(() -> new GameMenuScreen(true));
-			context.takeScreenshot("server_game_menu");
-			context.clickScreenButton("menu.disconnect");
+			{
+				context.getInput().pressKey(options -> options.chatKey);
+				context.waitTick();
+				context.getInput().typeChars("Hello, World!");
+				context.getInput().pressKey(InputUtil.GLFW_KEY_ENTER);
+				context.takeScreenshot("chat_message_sent", 5);
+			}
 
-			context.waitForScreen(MultiplayerScreen.class);
-			context.clickScreenButton("gui.back");
+			MixinEnvironment.getCurrentEnvironment().audit();
+
+			{
+				// See if the player render events are working.
+				setPerspective(context, Perspective.THIRD_PERSON_BACK);
+				context.takeScreenshot("in_game_overworld_third_person");
+				setPerspective(context, Perspective.FIRST_PERSON);
+			}
+
+			{
+				context.getInput().pressKey(options -> options.inventoryKey);
+				context.takeScreenshot("in_game_inventory");
+				context.setScreen(() -> null);
+			}
 		}
 
-		{
-			context.waitForScreen(TitleScreen.class);
+		try (TestSingleplayerContext singleplayer = spWorldSave.open()) {
+			singleplayer.getClientWorld().waitForChunksRender();
+			context.takeScreenshot("in_game_overworld_2");
 		}
-	}
 
-	private static boolean isDirEmpty(Path path) {
-		try (DirectoryStream<Path> directory = Files.newDirectoryStream(path)) {
-			return !directory.iterator().hasNext();
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
+		try (TestDedicatedServerContext server = context.worldBuilder().createServer()) {
+			try (TestServerConnection connection = server.connect()) {
+				connection.getClientWorld().waitForChunksRender();
+				context.takeScreenshot("server_in_game", 0);
+
+				{ // Test that we can enter and exit configuration
+					final GameProfile profile = context.computeOnClient(MinecraftClient::getGameProfile);
+					server.runCommand("debugconfig config " + profile.getName());
+					context.waitForScreen(ReconfiguringScreen.class);
+					context.takeScreenshot("server_config");
+					server.runCommand("debugconfig unconfig " + profile.getId());
+					// TODO: better way to wait for reconfiguration to end
+					context.waitTicks(100);
+				}
+			}
 		}
 	}
 
@@ -166,26 +110,5 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 	private static void setPerspective(ClientGameTestContext context, Perspective perspective) {
 		context.runOnClient(client -> client.options.setPerspective(perspective));
-	}
-
-	// TODO: replace with world builder
-	private static void waitForWorldTicks(ClientGameTestContext context, long ticks) {
-		// Wait for the world to be loaded and get the start ticks
-		context.waitFor(client -> client.world != null && !(client.currentScreen instanceof LevelLoadingScreen), 30 * SharedConstants.TICKS_PER_MINUTE);
-		final long startTicks = context.computeOnClient(client -> client.world.getTime());
-		context.waitFor(client -> Objects.requireNonNull(client.world).getTime() > startTicks + ticks, 10 * SharedConstants.TICKS_PER_MINUTE);
-	}
-
-	// TODO: replace with function on TestDedicatedServer
-	private static void connectToServer(ClientGameTestContext context, TestDedicatedServer server) {
-		context.runOnClient(client -> {
-			final var serverInfo = new ServerInfo("localhost", server.getConnectionAddress(), ServerInfo.ServerType.OTHER);
-			ConnectScreen.connect(client.currentScreen, client, ServerAddress.parse(server.getConnectionAddress()), serverInfo, false, null);
-		});
-	}
-
-	// TODO: move into close methods of TestDedicatedServer and TestWorld
-	private static void waitForServerStop(ClientGameTestContext context) {
-		context.waitFor(client -> !ThreadingImpl.isServerRunning, SharedConstants.TICKS_PER_MINUTE);
 	}
 }

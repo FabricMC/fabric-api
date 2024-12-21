@@ -29,7 +29,7 @@ import net.minecraft.client.util.InputUtil;
  * The client gametest input handler used to simulate inputs to the client.
  */
 @ApiStatus.NonExtendable
-public interface ClientGameTestInput {
+public interface TestInput {
 	/**
 	 * Starts holding down a key binding. The key binding will be held until it is released. The key binding must be
 	 * bound. Does nothing if the key binding is already being held.

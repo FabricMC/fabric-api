@@ -54,7 +54,7 @@ public class FabricClientGameTestRunner {
 		}
 
 		context.runOnClient(client -> {
-			if (client.getNetworkHandler() != null) {
+			if (client.world != null) {
 				throw new AssertionError("Client gametest %s finished while still connected to a server".formatted(testClassName));
 			}
 

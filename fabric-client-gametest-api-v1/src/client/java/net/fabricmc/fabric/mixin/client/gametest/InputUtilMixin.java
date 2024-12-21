@@ -24,13 +24,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.util.InputUtil;
 
-import net.fabricmc.fabric.impl.client.gametest.ClientGameTestInputImpl;
+import net.fabricmc.fabric.impl.client.gametest.TestInputImpl;
 
 @Mixin(InputUtil.class)
 public class InputUtilMixin {
 	@Inject(method = "isKeyPressed", at = @At("HEAD"), cancellable = true)
 	private static void useGameTestInputForKeyPressed(long window, int keyCode, CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(ClientGameTestInputImpl.isKeyDown(keyCode));
+		cir.setReturnValue(TestInputImpl.isKeyDown(keyCode));
 	}
 
 	@Inject(method = {"setKeyboardCallbacks", "setMouseCallbacks"}, at = @At("HEAD"), cancellable = true)

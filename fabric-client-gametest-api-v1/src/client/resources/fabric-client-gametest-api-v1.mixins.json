@@ -14,10 +14,18 @@
     "MinecraftServerMixin",
     "MouseAccessor",
     "ScreenAccessor",
+    "ServerMainMixin",
     "WindowMixin"
   ],
   "plugin": "net.fabricmc.fabric.impl.client.gametest.ClientGameTestMixinConfigPlugin",
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "ClientChunkManagerAccessor",
+    "ClientChunkMapAccessor",
+    "ClientWorldAccessor",
+    "CreateWorldScreenAccessor",
+    "CreateWorldScreenMixin"
+  ]
 }
