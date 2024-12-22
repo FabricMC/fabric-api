@@ -58,8 +58,8 @@ public class ModelTestModClient implements ClientModInitializer {
 	public static final String ID = "fabric-model-loading-api-v1-testmod";
 
 	public static final Identifier HALF_RED_SAND_MODEL_ID = id("half_red_sand");
-	public static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofVanilla("block/gold_block");
 	public static final Identifier BROWN_GLAZED_TERRACOTTA_MODEL_ID = Identifier.ofVanilla("block/brown_glazed_terracotta");
+	public static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofVanilla("block/gold_block");
 
 	@Override
 	public void onInitializeClient() {
@@ -114,14 +114,9 @@ public class ModelTestModClient implements ClientModInitializer {
 			});
 
 			// Remove bottom face of gold blocks
-			pluginContext.modifyModelOnLoad().register(ModelModifier.WRAP_PHASE, (model, context) -> {
+			pluginContext.modifyModelAfterBake().register(ModelModifier.WRAP_PHASE, (model, context) -> {
 				if (context.id().equals(GOLD_BLOCK_MODEL_ID)) {
-					return new WrapperUnbakedModel(model) {
-						@Override
-						public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
-							return new DownQuadRemovingModel(super.bake(textures, baker, settings, ambientOcclusion, isSideLit, transformation));
-						}
-					};
+					return new DownQuadRemovingModel(model);
 				}
 
 				return model;

@@ -5,6 +5,7 @@
   "client": [
     "BakedModelManagerMixin",
     "ModelBakerBakedModelsMixin",
+    "ModelBakerBakerImplMixin",
     "ModelBakerMixin",
     "ReferencedModelsCollectorMixin",
     "WrapperBakedModelMixin"
