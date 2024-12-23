@@ -45,6 +45,9 @@ public final class DedicatedServerImplUtil {
 
 		// allow non-opped players to place blocks at spawn
 		properties.setProperty("spawn-protection", "0");
+
+		// stops other players from joining the server and interfering with the tests
+		properties.setProperty("max-players", "1");
 	});
 
 	// If this field is set, it causes the create world screen to write the level.dat file to the specified folder
@@ -77,8 +80,6 @@ public final class DedicatedServerImplUtil {
 		serverProperties.putAll(customServerProperties);
 
 		try {
-			Files.writeString(Path.of("eula.txt"), "eula=true");
-
 			try (BufferedWriter writer = Files.newBufferedWriter(Path.of("server.properties"))) {
 				serverProperties.store(writer, null);
 			}

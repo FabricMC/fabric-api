@@ -146,6 +146,12 @@
  *         <td>Spawn protection prevents non-opped players from modifying the world within a certain radius of the world
  *         spawn point, a likely source of confusion when writing gametests</td>
  *     </tr>
+ *     <tr>
+ *         <td>{@code max-players}</td>
+ *         <td>{@code 1}</td>
+ *         <td>{@code 20}</td>
+ *         <td>Stops other players from joining the server and interfering with the test</td>
+ *     </tr>
  * </table>
  */
 @ApiStatus.Experimental

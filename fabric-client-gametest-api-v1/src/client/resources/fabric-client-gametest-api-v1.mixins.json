@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "CyclingButtonWidgetAccessor",
+    "EulaReaderMixin",
     "GameOptionsAccessor",
     "GameOptionsMixin",
     "InputUtilMixin",
