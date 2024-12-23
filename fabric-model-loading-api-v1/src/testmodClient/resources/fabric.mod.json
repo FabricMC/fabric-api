@@ -12,7 +12,8 @@
   "entrypoints": {
     "client": [
       "net.fabricmc.fabric.test.model.loading.ModelTestModClient",
-      "net.fabricmc.fabric.test.model.loading.PreparablePluginTest"
+      "net.fabricmc.fabric.test.model.loading.PreparablePluginTest",
+      "net.fabricmc.fabric.test.model.loading.UnbakedModelDeserializerTest"
     ]
   }
 }

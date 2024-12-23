@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "fabric-model-loading-api-v1-testmod:block/emerald_block"
+    }
+  }
+}

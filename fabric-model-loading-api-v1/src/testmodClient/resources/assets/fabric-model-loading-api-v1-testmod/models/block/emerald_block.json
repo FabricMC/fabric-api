@@ -1,0 +1,13 @@
+{
+  "fabric:type": "fabric-model-loading-api-v1-testmod:transformed",
+  "parent": "minecraft:block/emerald_block",
+  "transformation": {
+    "translation": [ 0, 0.5, 0 ],
+    "left_rotation": [ 0, 0, 0, 1 ],
+    "scale": [ 0.8, 1.2, 0.8 ],
+    "right_rotation": {
+      "angle": 1.57079632679,
+      "axis": [ 0, 0, 1 ]
+    }
+  }
+}
