@@ -43,6 +43,7 @@ jobs:
         with:
           distribution: 'microsoft'
           java-version: '21'
+      - run: mkdir run && echo "eula=true" >> run/eula.txt
       - name: Run Client Gametests
         uses: modmuss50/xvfb-action@v1
         with:
