@@ -16,9 +16,12 @@
 
 package net.fabricmc.fabric.impl.client.gametest;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -41,6 +44,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.tutorial.TutorialStep;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.sound.SoundCategory;
@@ -48,9 +52,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Nullables;
 
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.TestScreenshotOptions;
 import net.fabricmc.fabric.api.client.gametest.v1.TestWorldBuilder;
 import net.fabricmc.fabric.mixin.client.gametest.CyclingButtonWidgetAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.GameOptionsAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.RenderTickCounterConstantAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.ScreenAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -262,22 +268,56 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	public Path takeScreenshot(String name) {
 		ThreadingImpl.checkOnGametestThread("takeScreenshot");
 		Preconditions.checkNotNull(name, "name");
-		return takeScreenshot(name, 1);
+		return takeScreenshot(TestScreenshotOptions.of(name));
 	}
 
 	@Override
-	public Path takeScreenshot(String name, int delay) {
+	public Path takeScreenshot(TestScreenshotOptions options) {
 		ThreadingImpl.checkOnGametestThread("takeScreenshot");
-		Preconditions.checkNotNull(name, "name");
-		Preconditions.checkArgument(delay >= 0, "delay cannot be negative");
+		Preconditions.checkNotNull(options, "options");
 
-		waitTicks(delay);
-		runOnClient(client -> {
-			ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), name + ".png", client.getFramebuffer(), (message) -> {
-			});
+		TestScreenshotOptionsImpl optionsImpl = (TestScreenshotOptionsImpl) options;
+		return computeOnClient(client -> {
+			int prevWidth = client.getWindow().getFramebufferWidth();
+			int prevHeight = client.getWindow().getFramebufferHeight();
+
+			if (optionsImpl.size != null) {
+				client.getWindow().setFramebufferWidth(optionsImpl.size.x);
+				client.getWindow().setFramebufferHeight(optionsImpl.size.y);
+				client.getFramebuffer().resize(optionsImpl.size.x, optionsImpl.size.y);
+			}
+
+			try {
+				client.gameRenderer.render(RenderTickCounterConstantAccessor.create(optionsImpl.tickDelta), true);
+
+				// The vanilla panorama screenshot code has a Thread.sleep(10) here, is this needed?
+
+				Path destinationDir = Objects.requireNonNullElseGet(optionsImpl.destinationDir, () -> FabricLoader.getInstance().getGameDir().resolve("screenshots"));
+
+				try {
+					Files.createDirectories(destinationDir);
+				} catch (IOException e) {
+					throw new AssertionError("Failed to create screenshots directory", e);
+				}
+
+				String counterPrefix = optionsImpl.counterPrefix ? "%04d_".formatted(ClientGameTestImpl.screenshotCounter++) : "";
+				Path screenshotFile = destinationDir.resolve(counterPrefix + optionsImpl.name + ".png");
+
+				try (NativeImage screenshot = ScreenshotRecorder.takeScreenshot(client.getFramebuffer())) {
+					screenshot.writeTo(screenshotFile);
+				} catch (IOException e) {
+					throw new AssertionError("Failed to write screenshot file", e);
+				}
+
+				return screenshotFile;
+			} finally {
+				if (optionsImpl.size != null) {
+					client.getWindow().setFramebufferWidth(prevWidth);
+					client.getWindow().setFramebufferHeight(prevHeight);
+					client.getFramebuffer().resize(prevWidth, prevHeight);
+				}
+			}
 		});
-
-		return FabricLoader.getInstance().getGameDir().resolve("screenshots").resolve(name + ".png");
 	}
 
 	@Override

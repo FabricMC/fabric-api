@@ -37,7 +37,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext context) {
 		{
 			waitForTitleScreenFade(context);
-			context.takeScreenshot("title_screen", 0);
+			context.takeScreenshot("title_screen");
 		}
 
 		TestWorldSave spWorldSave;
@@ -48,7 +48,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 			{
 				enableDebugHud(context);
 				singleplayer.getClientWorld().waitForChunksRender();
-				context.takeScreenshot("in_game_overworld", 0);
+				context.takeScreenshot("in_game_overworld");
 			}
 
 			{
@@ -56,7 +56,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 				context.waitTick();
 				context.getInput().typeChars("Hello, World!");
 				context.getInput().pressKey(InputUtil.GLFW_KEY_ENTER);
-				context.takeScreenshot("chat_message_sent", 5);
+				context.takeScreenshot("chat_message_sent");
 			}
 
 			MixinEnvironment.getCurrentEnvironment().audit();
@@ -83,7 +83,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		try (TestDedicatedServerContext server = context.worldBuilder().createServer()) {
 			try (TestServerConnection connection = server.connect()) {
 				connection.getClientWorld().waitForChunksRender();
-				context.takeScreenshot("server_in_game", 0);
+				context.takeScreenshot("server_in_game");
 
 				{ // Test that we can enter and exit configuration
 					final GameProfile profile = context.computeOnClient(MinecraftClient::getGameProfile);

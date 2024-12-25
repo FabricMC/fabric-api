@@ -111,19 +111,13 @@ public interface ClientGameTestContext {
 	boolean tryClickScreenButton(String translationKey);
 
 	/**
-	 * Takes a screenshot after waiting 1 tick (for a frame to render) and saves it in the screenshots directory.
+	 * Takes a screenshot and saves it in the screenshots directory.
 	 *
 	 * @param name The name of the screenshot
 	 */
 	Path takeScreenshot(String name);
 
-	/**
-	 * Takes a screnshot after waiting {@code delay} ticks and saves it in the screenshots directory.
-	 *
-	 * @param name The name of the screenshot
-	 * @param delay The delay in ticks before taking the screenshot
-	 */
-	Path takeScreenshot(String name, int delay);
+	Path takeScreenshot(TestScreenshotOptions options);
 
 	/**
 	 * Gets the input handler used to simulate inputs to the client.

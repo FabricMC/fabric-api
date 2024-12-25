@@ -31,6 +31,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 
 public final class ClientGameTestImpl {
 	public static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
+	public static int screenshotCounter = 0;
 
 	private ClientGameTestImpl() {
 	}
