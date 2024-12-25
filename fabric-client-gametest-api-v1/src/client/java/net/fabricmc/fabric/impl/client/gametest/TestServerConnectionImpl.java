@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.gametest;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
@@ -45,9 +44,11 @@ public class TestServerConnectionImpl implements TestServerConnection {
 			if (client.world == null) {
 				throw new AssertionError("Disconnected from server before closing the test server connection");
 			}
+
+			client.world.disconnect();
+			client.disconnect();
 		});
 
-		context.runOnClient(MinecraftClient::disconnect);
 		context.waitFor(client -> client.world == null);
 		context.setScreen(TitleScreen::new);
 	}

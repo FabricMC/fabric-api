@@ -17,9 +17,10 @@
 package net.fabricmc.fabric.impl.client.gametest;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.gui.screen.GameMenuScreen;
+import net.minecraft.client.gui.screen.MessageScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.TestClientWorldContext;
@@ -63,11 +64,12 @@ public class TestSingleplayerContextImpl implements TestSingleplayerContext {
 			if (client.world == null) {
 				throw new IllegalStateException("Exited the world before closing singleplayer context");
 			}
+
+			client.world.disconnect();
+			client.disconnect(new MessageScreen(Text.translatable("menu.savingLevel")));
 		});
 
-		context.setScreen(() -> new GameMenuScreen(true));
-		context.clickScreenButton("menu.returnToMenu");
-		context.waitForScreen(TitleScreen.class);
 		context.waitFor(client -> !ThreadingImpl.isServerRunning && client.world == null, SharedConstants.TICKS_PER_MINUTE);
+		context.setScreen(TitleScreen::new);
 	}
 }
