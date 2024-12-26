@@ -27,6 +27,8 @@
     "ClientWorldAccessor",
     "CreateWorldScreenAccessor",
     "CreateWorldScreenMixin",
+    "FramebufferMixin",
+    "MonitorTrackerMixin",
     "RenderTickCounterConstantAccessor"
   ]
 }

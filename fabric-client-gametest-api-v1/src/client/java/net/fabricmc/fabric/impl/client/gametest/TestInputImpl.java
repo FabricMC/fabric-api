@@ -321,6 +321,15 @@ public final class TestInputImpl implements TestInput {
 		});
 	}
 
+	@Override
+	public void resizeWindow(int width, int height) {
+		ThreadingImpl.checkOnGametestThread("resizeWindow");
+		Preconditions.checkArgument(width > 0, "width must be positive");
+		Preconditions.checkArgument(height > 0, "height must be positive");
+
+		context.runOnClient(client -> ((WindowHooks) (Object) client.getWindow()).fabric_resize(width, height));
+	}
+
 	private static InputUtil.Key getBoundKey(KeyBinding keyBinding, String action) {
 		InputUtil.Key boundKey = ((KeyBindingAccessor) keyBinding).getBoundKey();
 

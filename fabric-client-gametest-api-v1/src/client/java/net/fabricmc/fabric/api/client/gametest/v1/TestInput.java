@@ -325,4 +325,14 @@ public interface TestInput {
 	 * @see #setCursorPos(double, double)
 	 */
 	void moveCursor(double deltaX, double deltaY);
+
+	/**
+	 * Resizes the window to match the given size. Also attempts to resize the physical window, but whether the physical
+	 * window was successfully resized or not, the window size accessible by the game will always be changed to the
+	 * value specified, causing widget layouts and screenshots to work as expected.
+	 *
+	 * @param width The new window width
+	 * @param height The new window height
+	 */
+	void resizeWindow(int width, int height);
 }
