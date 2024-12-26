@@ -45,7 +45,7 @@ public class TestScreenshotOptionsImpl implements TestScreenshotOptions {
 
 	@Override
 	public TestScreenshotOptions withTickDelta(float tickDelta) {
-		Preconditions.checkArgument(tickDelta >= 0 && tickDelta <= 1, "tickDelta should be between 0 and 1");
+		Preconditions.checkArgument(tickDelta >= 0 && tickDelta <= 1, "tickDelta must be between 0 and 1");
 
 		this.tickDelta = tickDelta;
 		return this;
