@@ -114,9 +114,16 @@ public interface ClientGameTestContext {
 	 * Takes a screenshot and saves it in the screenshots directory.
 	 *
 	 * @param name The name of the screenshot
+	 * @return The {@link Path} to the screenshot
 	 */
 	Path takeScreenshot(String name);
 
+	/**
+	 * Takes a screenshot with the given options.
+	 *
+	 * @param options The {@link TestScreenshotOptions} to take the screenshot with
+	 * @return The {@link Path} to the screenshot
+	 */
 	Path takeScreenshot(TestScreenshotOptions options);
 
 	/**
