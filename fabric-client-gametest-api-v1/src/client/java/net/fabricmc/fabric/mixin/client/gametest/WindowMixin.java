@@ -205,8 +205,8 @@ public abstract class WindowMixin implements WindowHooks {
 			this.windowedY = this.y;
 		}
 
-		this.width = this.windowedWidth = width;
-		this.height = this.windowedHeight = height;
+		this.width = this.windowedWidth = this.framebufferWidth = width;
+		this.height = this.windowedHeight = this.framebufferHeight = height;
 
 		updateWindowRegion();
 		this.eventHandler.onResolutionChanged();
