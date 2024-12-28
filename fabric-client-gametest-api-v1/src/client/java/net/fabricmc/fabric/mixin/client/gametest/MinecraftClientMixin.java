@@ -46,6 +46,8 @@ public class MinecraftClientMixin {
 	@Unique
 	private boolean startedClientGametests = false;
 	@Unique
+	private boolean inMergedRunTasksLoop = false;
+	@Unique
 	private Runnable deferredTask = null;
 
 	@Shadow
@@ -100,8 +102,9 @@ public class MinecraftClientMixin {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V"))
 	private void preRunTasksHook(CallbackInfo ci, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
-		// only do our per-tick locking if there will actually be a tick
-		if (ticksPerFrame.get() > 0) {
+		// "merge" multiple possible iterations of runTasks into one block from the point of view of locking
+		if (!inMergedRunTasksLoop) {
+			inMergedRunTasksLoop = true;
 			preRunTasks();
 		}
 
@@ -111,9 +114,10 @@ public class MinecraftClientMixin {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.AFTER))
 	private void postRunTasksHook(CallbackInfo ci, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
-		// only do our per-tick locking if there will actually be a tick
+		// end our "merged" runTasks block if there is going to be a tick this frame
 		if (ticksPerFrame.get() > 0) {
 			postRunTasks();
+			inMergedRunTasksLoop = false;
 		}
 	}
 
@@ -151,13 +155,15 @@ public class MinecraftClientMixin {
 
 	@Unique
 	private void preRunTasks() {
-		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
-		// server tasks happen here
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
 	}
 
 	@Unique
 	private void postRunTasks() {
+		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
+
+		// server tasks happen here
+
 		ThreadingImpl.clientCanAcceptTasks = true;
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TEST);
 
