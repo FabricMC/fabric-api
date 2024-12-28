@@ -101,7 +101,7 @@ public class MinecraftClientMixin {
 	}
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V"))
-	private void preRunTasksHook(CallbackInfo ci, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
+	private void preRunTasksHook(CallbackInfo ci) {
 		// "merge" multiple possible iterations of runTasks into one block from the point of view of locking
 		if (!inMergedRunTasksLoop) {
 			inMergedRunTasksLoop = true;
