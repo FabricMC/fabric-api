@@ -125,22 +125,16 @@ public abstract class WindowMixin implements WindowHooks {
 		int prevHeight = this.height;
 		int prevWindowedWidth = this.windowedWidth;
 		int prevWindowedHeight = this.windowedHeight;
-		int prevFramebufferWidth = this.framebufferWidth;
-		int prevFramebufferHeight = this.framebufferHeight;
 
 		original.call();
 
 		this.realWidth = this.width;
 		this.realHeight = this.height;
-		this.realFramebufferWidth = this.framebufferWidth;
-		this.realFramebufferHeight = this.framebufferHeight;
 
 		this.width = prevWidth;
 		this.height = prevHeight;
 		this.windowedWidth = prevWindowedWidth;
 		this.windowedHeight = prevWindowedHeight;
-		this.framebufferWidth = prevFramebufferWidth;
-		this.framebufferHeight = prevFramebufferHeight;
 	}
 
 	@Inject(method = "setWindowedSize", at = @At("HEAD"), cancellable = true)
@@ -211,8 +205,8 @@ public abstract class WindowMixin implements WindowHooks {
 			this.windowedY = this.y;
 		}
 
-		this.width = this.windowedWidth = this.framebufferWidth = width;
-		this.height = this.windowedHeight = this.framebufferHeight = height;
+		this.width = this.windowedWidth = width;
+		this.height = this.windowedHeight = height;
 
 		updateWindowRegion();
 		this.eventHandler.onResolutionChanged();
