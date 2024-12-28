@@ -16,13 +16,20 @@
 
 package net.fabricmc.fabric.test.client.gametest;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.WindowFramebuffer;
 import net.minecraft.client.gui.screen.ReconfiguringScreen;
 import net.minecraft.client.gui.screen.world.WorldCreator;
 import net.minecraft.client.option.Perspective;
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.util.InputUtil;
 
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
@@ -38,6 +45,14 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		{
 			waitForTitleScreenFade(context);
 			context.takeScreenshot("title_screen");
+		}
+
+		{
+			testScreenSize(context, WindowFramebuffer.DEFAULT_WIDTH, WindowFramebuffer.DEFAULT_HEIGHT);
+			context.getInput().resizeWindow(1000, 500);
+			context.waitTick();
+			testScreenSize(context, 1000, 500);
+			context.getInput().resizeWindow(WindowFramebuffer.DEFAULT_WIDTH, WindowFramebuffer.DEFAULT_HEIGHT);
 		}
 
 		TestWorldSave spWorldSave;
@@ -112,5 +127,27 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 	private static void setPerspective(ClientGameTestContext context, Perspective perspective) {
 		context.runOnClient(client -> client.options.setPerspective(perspective));
+	}
+
+	private static void testScreenSize(ClientGameTestContext context, int expectedWidth, int expectedHeight) {
+		context.runOnClient(client -> {
+			if (client.getWindow().getWidth() != expectedWidth || client.getWindow().getHeight() != expectedHeight) {
+				throw new AssertionError("Expected window size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getWidth(), client.getWindow().getHeight()));
+			}
+
+			if (client.getWindow().getFramebufferWidth() != expectedWidth || client.getWindow().getFramebufferHeight() != expectedHeight) {
+				throw new AssertionError("Expected framebuffer size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight()));
+			}
+		});
+
+		Path screenshotPath = context.takeScreenshot("screenshot_size_test");
+
+		try (NativeImage screenshot = NativeImage.read(Files.newInputStream(screenshotPath))) {
+			if (screenshot.getWidth() != expectedWidth || screenshot.getHeight() != expectedHeight) {
+				throw new AssertionError("Expected screenshot size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, screenshot.getWidth(), screenshot.getHeight()));
+			}
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
 	}
 }
