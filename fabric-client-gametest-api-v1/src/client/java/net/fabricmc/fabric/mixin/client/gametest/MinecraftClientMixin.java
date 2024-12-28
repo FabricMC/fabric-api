@@ -17,8 +17,11 @@
 package net.fabricmc.fabric.mixin.client.gametest;
 
 import com.google.common.base.Preconditions;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -84,15 +87,77 @@ public class MinecraftClientMixin {
 		}
 	}
 
+	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderTickCounter$Dynamic;beginRenderTick(JZ)I"))
+	private int captureTicksPerFrame(int capturedTicksPerFrame, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
+		// limit the number of ticks in a single frame to 1 (disable the "catch-up" mechanism)
+		if (capturedTicksPerFrame > 1) {
+			capturedTicksPerFrame = 1;
+		}
+
+		ticksPerFrame.set(capturedTicksPerFrame);
+		return capturedTicksPerFrame;
+	}
+
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V"))
-	private void preRunTasks(CallbackInfo ci) {
+	private void preRunTasksHook(CallbackInfo ci, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
+		// only do our per-tick locking if there will actually be a tick
+		if (ticksPerFrame.get() > 0) {
+			preRunTasks();
+		}
+
+		// we still allow runTasks() to go ahead even when ticksPerFrame is 0, as the results of these tasks won't be
+		// observable until the next tick or gametest thread unlock anyway
+	}
+
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.AFTER))
+	private void postRunTasksHook(CallbackInfo ci, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
+		// only do our per-tick locking if there will actually be a tick
+		if (ticksPerFrame.get() > 0) {
+			postRunTasks();
+		}
+	}
+
+	@Inject(method = "startIntegratedServer", at = @At("HEAD"), cancellable = true)
+	private void deferStartIntegratedServer(LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, boolean newWorld, CallbackInfo ci) {
+		if (ThreadingImpl.taskToRun != null) {
+			// don't start the integrated server (which busywaits) inside a task
+			deferredTask = () -> MinecraftClient.getInstance().startIntegratedServer(session, dataPackManager, saveLoader, newWorld);
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;sleep(J)V", remap = false))
+	private void onStartIntegratedServerBusyWait(CallbackInfo ci) {
+		// give the server a chance to tick too
+		preRunTasks();
+		postRunTasks();
+	}
+
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("HEAD"), cancellable = true)
+	private void deferDisconnect(Screen disconnectionScreen, boolean transferring, CallbackInfo ci) {
+		if (MinecraftClient.getInstance().getServer() != null && ThreadingImpl.taskToRun != null) {
+			// don't disconnect (which busywaits) inside a task
+			deferredTask = () -> MinecraftClient.getInstance().disconnect(disconnectionScreen, transferring);
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V", shift = At.Shift.AFTER))
+	private void onDisconnectBusyWait(CallbackInfo ci) {
+		// give the server a chance to tick too
+		preRunTasks();
+		postRunTasks();
+	}
+
+	@Unique
+	private void preRunTasks() {
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
 		// server tasks happen here
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
 	}
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.AFTER))
-	private void postRunTasks(CallbackInfo ci) {
+	@Unique
+	private void postRunTasks() {
 		ThreadingImpl.clientCanAcceptTasks = true;
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TEST);
 
@@ -120,38 +185,6 @@ public class MinecraftClientMixin {
 		if (deferredTask != null) {
 			deferredTask.run();
 		}
-	}
-
-	@Inject(method = "startIntegratedServer", at = @At("HEAD"), cancellable = true)
-	private void deferStartIntegratedServer(LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, boolean newWorld, CallbackInfo ci) {
-		if (ThreadingImpl.taskToRun != null) {
-			// don't start the integrated server (which busywaits) inside a task
-			deferredTask = () -> MinecraftClient.getInstance().startIntegratedServer(session, dataPackManager, saveLoader, newWorld);
-			ci.cancel();
-		}
-	}
-
-	@Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;sleep(J)V", remap = false))
-	private void onStartIntegratedServerBusyWait(CallbackInfo ci) {
-		// give the server a chance to tick too
-		preRunTasks(ci);
-		postRunTasks(ci);
-	}
-
-	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("HEAD"), cancellable = true)
-	private void deferDisconnect(Screen disconnectionScreen, boolean transferring, CallbackInfo ci) {
-		if (MinecraftClient.getInstance().getServer() != null && ThreadingImpl.taskToRun != null) {
-			// don't disconnect (which busywaits) inside a task
-			deferredTask = () -> MinecraftClient.getInstance().disconnect(disconnectionScreen, transferring);
-			ci.cancel();
-		}
-	}
-
-	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V", shift = At.Shift.AFTER))
-	private void onDisconnectBusyWait(CallbackInfo ci) {
-		// give the server a chance to tick too
-		preRunTasks(ci);
-		postRunTasks(ci);
 	}
 
 	@Inject(method = "getInstance", at = @At("HEAD"))
