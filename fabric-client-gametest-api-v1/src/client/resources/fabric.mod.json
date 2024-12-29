@@ -20,6 +20,11 @@
     "fabric-resource-loader-v0": "*"
   },
   "description": "Allows registration of client game tests.",
+  "entrypoints": {
+    "preLaunch": [
+      "net.fabricmc.fabric.impl.client.gametest.ClientGameTestPreLaunch"
+    ]
+  },
   "mixins": [
     "fabric-client-gametest-api-v1.mixins.json"
   ],
