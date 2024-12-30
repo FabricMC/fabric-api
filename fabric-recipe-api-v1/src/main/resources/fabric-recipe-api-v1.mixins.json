@@ -6,7 +6,8 @@
     "ingredient.ClientConnectionMixin",
     "ingredient.EncoderHandlerMixin",
     "ingredient.IngredientMixin",
-    "ingredient.ShapelessRecipeMixin"
+    "ingredient.ShapelessRecipeMixin",
+    "ingredient.StonecutterScreenHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

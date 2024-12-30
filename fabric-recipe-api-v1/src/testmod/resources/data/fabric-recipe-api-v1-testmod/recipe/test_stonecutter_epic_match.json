@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "fabric:type": "fabric:components",
+    "base": "minecraft:redstone_ore",
+    "components": {
+      "minecraft:rarity": "epic"
+    }
+  },
+  "result": {
+    "id": "minecraft:emerald_block"
+  }
+}
