@@ -38,6 +38,11 @@ public class RenderMaterialImpl extends MaterialViewImpl implements RenderMateri
 		return bits;
 	}
 
+	@Override
+	public String toString() {
+		return "RenderMaterialImpl{" + contentsToString() + "}";
+	}
+
 	public static RenderMaterialImpl byIndex(int index) {
 		return BY_INDEX[index];
 	}

@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.material;
 
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.bitMask;
 
+import java.util.Locale;
+
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
@@ -110,5 +112,19 @@ public class MaterialViewImpl implements MaterialView {
 	@Override
 	public ShadeMode shadeMode() {
 		return SHADE_MODES[(bits & SHADE_MODE_MASK) >>> SHADE_MODE_BIT_OFFSET];
+	}
+
+	/**
+	 * Returns a string representation of the material properties.
+	 * To be used in {@link #toString} overrides so they show in the debugger.
+	 */
+	String contentsToString() {
+		return String.format("blend=%s, emissive=%b, disable diffuse=%b, ao=%s, glint=%s, shade=%s",
+				blendMode().toString().toLowerCase(Locale.ROOT),
+				emissive(),
+				disableDiffuse(),
+				ambientOcclusion().toString().toLowerCase(Locale.ROOT),
+				glintMode().toString().toLowerCase(Locale.ROOT),
+				shadeMode().toString().toLowerCase(Locale.ROOT));
 	}
 }

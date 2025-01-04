@@ -109,4 +109,9 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 	public RenderMaterial find() {
 		return RenderMaterialImpl.byIndex(bits);
 	}
+
+	@Override
+	public String toString() {
+		return "MaterialFinderImpl{" + contentsToString() + "}";
+	}
 }
