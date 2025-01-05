@@ -104,6 +104,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS, "Uncolored Sandstone Blocks");
 		translationBuilder.add(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS, "Uncolored Sandstone Slabs");
 		translationBuilder.add(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS, "Uncolored Sandstone Stairs");
+		translationBuilder.add(ConventionalBlockTags.SMALL_FLOWERS, "Small Flowers");
+		translationBuilder.add(ConventionalBlockTags.TALL_FLOWERS, "Tall Flowers");
+		translationBuilder.add(ConventionalBlockTags.FLOWERS, "Flowers");
 		translationBuilder.add(ConventionalBlockTags.FENCES, "Fences");
 		translationBuilder.add(ConventionalBlockTags.WOODEN_FENCES, "Wooden Fences");
 		translationBuilder.add(ConventionalBlockTags.NETHER_BRICK_FENCES, "Nether Brick Fences");
@@ -318,6 +321,9 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.UNCOLORED_SANDSTONE_BLOCKS, "Uncolored Sandstone Blocks");
 		translationBuilder.add(ConventionalItemTags.UNCOLORED_SANDSTONE_SLABS, "Uncolored Sandstone Slabs");
 		translationBuilder.add(ConventionalItemTags.UNCOLORED_SANDSTONE_STAIRS, "Uncolored Sandstone Stairs");
+		translationBuilder.add(ConventionalItemTags.SMALL_FLOWERS, "Small Flowers");
+		translationBuilder.add(ConventionalItemTags.TALL_FLOWERS, "Tall Flowers");
+		translationBuilder.add(ConventionalItemTags.FLOWERS, "Flowers");
 		translationBuilder.add(ConventionalItemTags.FENCES, "Fences");
 		translationBuilder.add(ConventionalItemTags.WOODEN_FENCES, "Wooden Fences");
 		translationBuilder.add(ConventionalItemTags.NETHER_BRICK_FENCES, "Nether Brick Fences");

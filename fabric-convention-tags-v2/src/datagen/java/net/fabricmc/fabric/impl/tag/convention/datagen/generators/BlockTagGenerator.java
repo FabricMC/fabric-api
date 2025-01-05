@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.Identifier;
@@ -207,11 +208,35 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		generateHeadTags();
 
+		generateFlowerTags();
+
 		generateMiscTags();
 
 		generateTagAlias();
 
 		generateBackwardsCompatTags();
+	}
+
+	private void generateFlowerTags() {
+		getOrCreateTagBuilder(ConventionalBlockTags.SMALL_FLOWERS)
+				.add(Blocks.DANDELION, Blocks.POPPY, Blocks.BLUE_ORCHID,
+						Blocks.ALLIUM, Blocks.AZURE_BLUET, Blocks.RED_TULIP,
+						Blocks.ORANGE_TULIP, Blocks.WHITE_TULIP, Blocks.PINK_TULIP,
+						Blocks.OXEYE_DAISY, Blocks.CORNFLOWER, Blocks.LILY_OF_THE_VALLEY,
+						Blocks.WITHER_ROSE, Blocks.TORCHFLOWER, Blocks.OPEN_EYEBLOSSOM,
+						Blocks.CLOSED_EYEBLOSSOM
+				);
+
+		getOrCreateTagBuilder(ConventionalBlockTags.TALL_FLOWERS)
+				.add(Blocks.SUNFLOWER, Blocks.LILAC, Blocks.PEONY,
+						Blocks.ROSE_BUSH, Blocks.PITCHER_PLANT
+				).addOptional(Identifier.ofVanilla("tall_flowers"));
+
+		getOrCreateTagBuilder(ConventionalBlockTags.FLOWERS)
+				.add(Blocks.FLOWERING_AZALEA_LEAVES, Blocks.FLOWERING_AZALEA, Blocks.MANGROVE_PROPAGULE,
+						Blocks.PINK_PETALS, Blocks.CHORUS_FLOWER, Blocks.SPORE_BLOSSOM
+				).addOptionalTag(ConventionalBlockTags.SMALL_FLOWERS)
+				.addOptionalTag(ConventionalBlockTags.TALL_FLOWERS);
 	}
 
 	private void generateMiscTags() {
@@ -694,6 +719,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		aliasGroup("fences").add(BlockTags.FENCES, ConventionalBlockTags.FENCES);
 		aliasGroup("fences/wooden").add(BlockTags.WOODEN_FENCES, ConventionalBlockTags.WOODEN_FENCES);
 		aliasGroup("fence_gates").add(BlockTags.FENCE_GATES, ConventionalBlockTags.FENCE_GATES);
+
+		aliasGroup("flowers/small").add(BlockTags.SMALL_FLOWERS, ConventionalBlockTags.SMALL_FLOWERS);
+		aliasGroup("flowers").add(BlockTags.FLOWERS, ConventionalBlockTags.FLOWERS);
 	}
 
 	private void generateBackwardsCompatTags() {
