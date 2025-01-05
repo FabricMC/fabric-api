@@ -23,9 +23,11 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
 
@@ -67,6 +69,8 @@ public class MinecraftServerMixin {
 
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;runTasksTillTickEnd()V", shift = At.Shift.AFTER))
 	private void postRunTasks(CallbackInfo ci) {
+		ThreadingImpl.SERVERBOUND_SYNCHRONIZER.waitForPacketHandlers((ThreadExecutor<?>) (Object) this);
+
 		ThreadingImpl.serverCanAcceptTasks = true;
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TEST);
 
@@ -89,10 +93,21 @@ public class MinecraftServerMixin {
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TICK);
 	}
 
+	@Inject(method = "canExecute(Lnet/minecraft/server/ServerTask;)Z", at = @At("HEAD"), cancellable = true)
+	private void alwaysExecuteNetworkTask(CallbackInfoReturnable<Boolean> cir) {
+		if (ThreadingImpl.SERVERBOUND_SYNCHRONIZER.isRunningNetworkTasks()) {
+			cir.setReturnValue(true);
+		}
+	}
+
 	@Unique
 	private void deregisterServer() {
 		ThreadingImpl.serverCanAcceptTasks = false;
 		ThreadingImpl.PHASER.arriveAndDeregister();
 		ThreadingImpl.isServerRunning = false;
+
+		if (!ThreadingImpl.gameCrashed) {
+			ThreadingImpl.SERVERBOUND_SYNCHRONIZER.reset();
+		}
 	}
 }

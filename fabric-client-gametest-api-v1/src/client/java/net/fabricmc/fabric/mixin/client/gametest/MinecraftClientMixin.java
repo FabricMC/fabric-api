@@ -36,6 +36,7 @@ import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.SaveLoader;
+import net.minecraft.util.thread.ThreadExecutor;
 import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.impl.client.gametest.FabricClientGameTestRunner;
@@ -116,6 +117,7 @@ public class MinecraftClientMixin {
 	private void postRunTasksHook(CallbackInfo ci, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
 		// end our "merged" runTasks block if there is going to be a tick this frame
 		if (ticksPerFrame.get() > 0) {
+			ThreadingImpl.CLIENTBOUND_SYNCHRONIZER.waitForPacketHandlers((ThreadExecutor<?>) (Object) this);
 			postRunTasks();
 			inMergedRunTasksLoop = false;
 		}
@@ -144,6 +146,11 @@ public class MinecraftClientMixin {
 			deferredTask = () -> MinecraftClient.getInstance().disconnect(disconnectionScreen, transferring);
 			ci.cancel();
 		}
+	}
+
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;cancelTasks()V"))
+	private void onDisconnectCancelTasks(CallbackInfo ci) {
+		ThreadingImpl.CLIENTBOUND_SYNCHRONIZER.reset();
 	}
 
 	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V", shift = At.Shift.AFTER))

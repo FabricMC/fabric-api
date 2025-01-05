@@ -66,6 +66,7 @@ import net.minecraft.client.MinecraftClient;
  * inside a test phase task (which is a minor difference from vanilla), and then ensuring the client is still running
  * the phase logic and is able to accept tasks while it is waiting for the server.
  */
+// TODO: document network synchronizers here too ^
 public final class ThreadingImpl {
 	private ThreadingImpl() {
 	}
@@ -100,10 +101,13 @@ public final class ThreadingImpl {
 	@Nullable
 	public static Throwable testFailureException = null;
 
+	public static final NetworkSynchronizer CLIENTBOUND_SYNCHRONIZER = new NetworkSynchronizer();
+	public static final NetworkSynchronizer SERVERBOUND_SYNCHRONIZER = new NetworkSynchronizer();
+
 	@Nullable
 	public static Runnable taskToRun = null;
 
-	private static volatile boolean gameCrashed = false;
+	public static volatile boolean gameCrashed = false;
 
 	public static void enterPhase(int phase) {
 		while (enablePhases && (PHASER.getPhase() & PHASE_MASK) != phase) {

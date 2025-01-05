@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.client.gametest",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ClientConnectionMixin",
     "CyclingButtonWidgetAccessor",
     "GameOptionsAccessor",
     "GameOptionsMixin",
@@ -15,6 +16,7 @@
     "MouseAccessor",
     "ScreenAccessor",
     "ServerMainMixin",
+    "ThreadExecutorMixin",
     "WindowMixin"
   ],
   "plugin": "net.fabricmc.fabric.impl.client.gametest.ClientGameTestMixinConfigPlugin",
