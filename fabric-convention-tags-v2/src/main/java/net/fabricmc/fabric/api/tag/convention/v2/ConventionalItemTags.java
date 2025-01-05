@@ -317,7 +317,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> SMALL_FLOWERS = register("flowers/small");
 	/**
 	 * Contains living ground-based flowers that are 2 block tall such as Rose Bush or Peony.
-	 * Equivalent to the "minecraft:tall_flowers" item tag in past Minecraft version.
+	 * Equivalent to the {@code minecraft:tall_flowers} item tag in past Minecraft versions.
 	 */
 	public static final TagKey<Item> TALL_FLOWERS = register("flowers/tall");
 	/**
