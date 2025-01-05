@@ -300,6 +300,8 @@ public interface MutableQuadView extends QuadView {
 	 * <p>The {@linkplain BakedQuad#getLightEmission() baked quad's light emission} will be applied to the lightmap
 	 * values from the vertex data after copying.
 	 *
+	 * <p>Calling this method resets the {@link #tag()}.
+	 *
 	 * <p>Calling this method does not emit the quad.
 	 */
 	MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);

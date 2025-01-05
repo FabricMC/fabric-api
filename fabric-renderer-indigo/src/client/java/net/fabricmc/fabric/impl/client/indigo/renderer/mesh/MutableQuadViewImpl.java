@@ -213,20 +213,30 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, VANILLA_QUAD_STRIDE);
 		isGeometryInvalid = true;
 
+		int normalFlags = 0;
 		int colorIndex = baseIndex + VERTEX_COLOR;
+		int normalIndex = baseIndex + VERTEX_NORMAL;
 
 		for (int i = 0; i < 4; i++) {
 			data[colorIndex] = ColorHelper.fromVanillaColor(data[colorIndex]);
+
+			// Set normal flag if normal is not zero, ignoring W component
+			if ((data[normalIndex] & 0xFFFFFF) != 0) {
+				normalFlags |= 1 << i;
+			}
+
 			colorIndex += VERTEX_STRIDE;
+			normalIndex += VERTEX_STRIDE;
 		}
 
+		normalFlags(normalFlags);
 		return this;
 	}
 
 	@Override
 	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace) {
 		fromVanilla(quad.getVertexData(), 0);
-		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(0, cullFace);
+		cullFace(cullFace);
 		nominalFace(quad.getFace());
 		tintIndex(quad.getTintIndex());
 
