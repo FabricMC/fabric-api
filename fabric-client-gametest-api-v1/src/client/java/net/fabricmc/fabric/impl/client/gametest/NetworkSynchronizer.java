@@ -77,7 +77,7 @@ public final class NetworkSynchronizer {
 		}
 	}
 
-	public void postTaskAdded(Runnable task) {
+	public void preTaskAdded(Runnable task) {
 		if (DISABLED) {
 			return;
 		}
@@ -120,8 +120,16 @@ public final class NetworkSynchronizer {
 
 			isRunningNetworkTasks = true;
 
+			long startTime = System.nanoTime();
 			try {
-				executor.runTasks(mainThreadPacketHandlers::isEmpty);
+				executor.runTasks(() -> {
+					if (System.nanoTime() - startTime > 10_000_000_000L) {
+						markInvalid();
+						checkInvalid();
+					}
+
+					return mainThreadPacketHandlers.isEmpty();
+				});
 			} finally {
 				isRunningNetworkTasks = false;
 			}

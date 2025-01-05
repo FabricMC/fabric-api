@@ -29,11 +29,11 @@ import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
 
 @Mixin(ThreadExecutor.class)
 public class ThreadExecutorMixin {
-	@Inject(method = "send", at = @At(value = "INVOKE", target = "Ljava/util/Queue;add(Ljava/lang/Object;)Z", remap = false, shift = At.Shift.AFTER))
+	@Inject(method = "send", at = @At("HEAD"))
 	private void onPacketHandlerSchedule(Runnable task, CallbackInfo ci) {
 		switch ((Object) this) {
-		case MinecraftClient $ -> ThreadingImpl.CLIENTBOUND_SYNCHRONIZER.postTaskAdded(task);
-		case MinecraftServer $ -> ThreadingImpl.SERVERBOUND_SYNCHRONIZER.postTaskAdded(task);
+		case MinecraftClient $ -> ThreadingImpl.CLIENTBOUND_SYNCHRONIZER.preTaskAdded(task);
+		case MinecraftServer $ -> ThreadingImpl.SERVERBOUND_SYNCHRONIZER.preTaskAdded(task);
 		default -> {
 		}
 		}
