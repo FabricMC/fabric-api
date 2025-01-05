@@ -322,7 +322,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> TALL_FLOWERS = register("flowers/tall");
 	/**
 	 * Contains any living plant block that contains flowers or is a flower itself.
-	 * Equivalent to the "minecraft:flowers" item tag in past minecraft versions.
+	 * Equivalent to the {@code minecraft:flowers} item tag in past Minecraft versions.
 	 */
 	public static final TagKey<Item> FLOWERS = register("flowers");
 
