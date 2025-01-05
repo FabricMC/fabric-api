@@ -311,7 +311,7 @@ public final class ConventionalItemTags {
 	// Flower
 	/**
 	 * Contains living ground-based flowers that are 1 block tall such as Dandelions or Poppy.
-	 * Equivalent to the "minecraft:small_flowers" item tag.
+	 * Equivalent to the {@code minecraft:small_flowers} item tag.
 	 * Aliased with {@link ItemTags#SMALL_FLOWERS}.
 	 */
 	public static final TagKey<Item> SMALL_FLOWERS = register("flowers/small");
