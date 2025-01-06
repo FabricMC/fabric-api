@@ -25,15 +25,15 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.thread.ThreadExecutor;
 
-import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
+import net.fabricmc.fabric.impl.client.gametest.NetworkSynchronizer;
 
 @Mixin(ThreadExecutor.class)
 public class ThreadExecutorMixin {
 	@Inject(method = "send", at = @At("HEAD"))
 	private void onPacketHandlerSchedule(Runnable task, CallbackInfo ci) {
 		switch ((Object) this) {
-		case MinecraftClient $ -> ThreadingImpl.CLIENTBOUND_SYNCHRONIZER.preTaskAdded(task);
-		case MinecraftServer $ -> ThreadingImpl.SERVERBOUND_SYNCHRONIZER.preTaskAdded(task);
+		case MinecraftClient $ -> NetworkSynchronizer.CLIENTBOUND.preTaskAdded(task);
+		case MinecraftServer $ -> NetworkSynchronizer.SERVERBOUND.preTaskAdded(task);
 		default -> {
 		}
 		}
@@ -42,8 +42,8 @@ public class ThreadExecutorMixin {
 	@Inject(method = "executeTask", at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", remap = false, shift = At.Shift.AFTER))
 	private void onPacketHandlerRun(Runnable task, CallbackInfo ci) {
 		switch ((Object) this) {
-		case MinecraftClient $ -> ThreadingImpl.CLIENTBOUND_SYNCHRONIZER.postTaskRun(task);
-		case MinecraftServer $ -> ThreadingImpl.SERVERBOUND_SYNCHRONIZER.postTaskRun(task);
+		case MinecraftClient $ -> NetworkSynchronizer.CLIENTBOUND.postTaskRun(task);
+		case MinecraftServer $ -> NetworkSynchronizer.SERVERBOUND.postTaskRun(task);
 		default -> {
 		}
 		}

@@ -40,6 +40,7 @@ import net.minecraft.util.thread.ThreadExecutor;
 import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.impl.client.gametest.FabricClientGameTestRunner;
+import net.fabricmc.fabric.impl.client.gametest.NetworkSynchronizer;
 import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
 
 @Mixin(MinecraftClient.class)
@@ -117,7 +118,7 @@ public class MinecraftClientMixin {
 	private void postRunTasksHook(CallbackInfo ci, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
 		// end our "merged" runTasks block if there is going to be a tick this frame
 		if (ticksPerFrame.get() > 0) {
-			ThreadingImpl.CLIENTBOUND_SYNCHRONIZER.waitForPacketHandlers((ThreadExecutor<?>) (Object) this);
+			NetworkSynchronizer.CLIENTBOUND.waitForPacketHandlers((ThreadExecutor<?>) (Object) this);
 			postRunTasks();
 			inMergedRunTasksLoop = false;
 		}
@@ -150,7 +151,7 @@ public class MinecraftClientMixin {
 
 	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;cancelTasks()V"))
 	private void onDisconnectCancelTasks(CallbackInfo ci) {
-		ThreadingImpl.CLIENTBOUND_SYNCHRONIZER.reset();
+		NetworkSynchronizer.CLIENTBOUND.reset();
 	}
 
 	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V", shift = At.Shift.AFTER))
@@ -166,9 +167,11 @@ public class MinecraftClientMixin {
 			postRunTasks();
 		}
 
-		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
-		// server tasks happen here
-		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
+		if (!NetworkSynchronizer.DISABLED) {
+			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
+			// server tasks happen here
+			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
+		}
 	}
 
 	@Unique

@@ -32,7 +32,10 @@ import net.minecraft.util.thread.ThreadExecutor;
 
 public final class NetworkSynchronizer {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
-	private static final boolean DISABLED = System.getProperty("fabric.client.gametest.disableNetworkSynchronizer") != null;
+	public static final boolean DISABLED = System.getProperty("fabric.client.gametest.disableNetworkSynchronizer") != null;
+
+	public static final NetworkSynchronizer CLIENTBOUND = new NetworkSynchronizer();
+	public static final NetworkSynchronizer SERVERBOUND = new NetworkSynchronizer();
 
 	private final ThreadLocal<Unit> isNettyThread = new ThreadLocal<>();
 	private final AtomicInteger inFlightPackets = new AtomicInteger();

@@ -99,9 +99,6 @@ public final class ThreadingImpl {
 	@Nullable
 	public static Throwable testFailureException = null;
 
-	public static final NetworkSynchronizer CLIENTBOUND_SYNCHRONIZER = new NetworkSynchronizer();
-	public static final NetworkSynchronizer SERVERBOUND_SYNCHRONIZER = new NetworkSynchronizer();
-
 	@Nullable
 	public static Runnable taskToRun = null;
 

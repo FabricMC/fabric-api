@@ -29,6 +29,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.thread.ThreadExecutor;
 
+import net.fabricmc.fabric.impl.client.gametest.NetworkSynchronizer;
 import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
 
 @Mixin(MinecraftServer.class)
@@ -62,14 +63,18 @@ public class MinecraftServerMixin {
 
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;runTasksTillTickEnd()V"))
 	private void preRunTasks(CallbackInfo ci) {
-		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
+		if (!NetworkSynchronizer.DISABLED) {
+			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
+		}
 	}
 
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;runTasksTillTickEnd()V", shift = At.Shift.AFTER))
 	private void postRunTasks(CallbackInfo ci) {
-		ThreadingImpl.SERVERBOUND_SYNCHRONIZER.waitForPacketHandlers((ThreadExecutor<?>) (Object) this);
+		NetworkSynchronizer.SERVERBOUND.waitForPacketHandlers((ThreadExecutor<?>) (Object) this);
 
-		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
+		if (!NetworkSynchronizer.DISABLED) {
+			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
+		}
 
 		// client tasks happen here
 
@@ -97,7 +102,7 @@ public class MinecraftServerMixin {
 
 	@Inject(method = "canExecute(Lnet/minecraft/server/ServerTask;)Z", at = @At("HEAD"), cancellable = true)
 	private void alwaysExecuteNetworkTask(CallbackInfoReturnable<Boolean> cir) {
-		if (ThreadingImpl.SERVERBOUND_SYNCHRONIZER.isRunningNetworkTasks()) {
+		if (NetworkSynchronizer.SERVERBOUND.isRunningNetworkTasks()) {
 			cir.setReturnValue(true);
 		}
 	}
@@ -109,7 +114,7 @@ public class MinecraftServerMixin {
 		ThreadingImpl.isServerRunning = false;
 
 		if (!ThreadingImpl.gameCrashed) {
-			ThreadingImpl.SERVERBOUND_SYNCHRONIZER.reset();
+			NetworkSynchronizer.SERVERBOUND.reset();
 		}
 	}
 }

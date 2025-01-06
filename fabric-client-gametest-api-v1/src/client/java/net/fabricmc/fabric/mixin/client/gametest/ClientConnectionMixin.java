@@ -31,7 +31,6 @@ import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.Packet;
 
 import net.fabricmc.fabric.impl.client.gametest.NetworkSynchronizer;
-import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
 
 @Mixin(ClientConnection.class)
 public class ClientConnectionMixin {
@@ -41,7 +40,7 @@ public class ClientConnectionMixin {
 
 	@WrapMethod(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V")
 	private void onNettyReceivePacket(ChannelHandlerContext context, Packet<?> packet, Operation<Void> original) {
-		NetworkSynchronizer synchronizer = side == NetworkSide.CLIENTBOUND ? ThreadingImpl.CLIENTBOUND_SYNCHRONIZER : ThreadingImpl.SERVERBOUND_SYNCHRONIZER;
+		NetworkSynchronizer synchronizer = side == NetworkSide.CLIENTBOUND ? NetworkSynchronizer.CLIENTBOUND : NetworkSynchronizer.SERVERBOUND;
 		synchronizer.preNettyHandlePacket();
 
 		try {
@@ -53,7 +52,7 @@ public class ClientConnectionMixin {
 
 	@Inject(method = "sendImmediately", at = @At("HEAD"))
 	private void onSendPacket(CallbackInfo ci) {
-		NetworkSynchronizer synchronizer = side == NetworkSide.CLIENTBOUND ? ThreadingImpl.SERVERBOUND_SYNCHRONIZER : ThreadingImpl.CLIENTBOUND_SYNCHRONIZER;
+		NetworkSynchronizer synchronizer = side == NetworkSide.CLIENTBOUND ? NetworkSynchronizer.SERVERBOUND : NetworkSynchronizer.CLIENTBOUND;
 		synchronizer.preSendPacket();
 	}
 }
