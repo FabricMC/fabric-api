@@ -121,6 +121,7 @@ public final class NetworkSynchronizer {
 			isRunningNetworkTasks = true;
 
 			long startTime = System.nanoTime();
+
 			try {
 				executor.runTasks(() -> {
 					if (System.nanoTime() - startTime > 10_000_000_000L) {
