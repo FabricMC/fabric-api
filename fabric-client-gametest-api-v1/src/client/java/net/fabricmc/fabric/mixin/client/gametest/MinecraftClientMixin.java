@@ -162,6 +162,10 @@ public class MinecraftClientMixin {
 
 	@Unique
 	private void preRunTasks() {
+		if (ThreadingImpl.getCurrentPhase() == ThreadingImpl.PHASE_CLIENT_TASKS) {
+			postRunTasks();
+		}
+
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
 	}
 

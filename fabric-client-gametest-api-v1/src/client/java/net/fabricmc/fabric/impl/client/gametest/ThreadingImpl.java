@@ -110,13 +110,21 @@ public final class ThreadingImpl {
 	public static volatile boolean gameCrashed = false;
 
 	public static void enterPhase(int phase) {
-		while (enablePhases && (PHASER.getPhase() & PHASE_MASK) != phase) {
+		while (enablePhases && getNextPhase() != phase) {
 			PHASER.arriveAndAwaitAdvance();
 		}
 
 		if (enablePhases) {
 			PHASER.arriveAndAwaitAdvance();
 		}
+	}
+
+	public static int getCurrentPhase() {
+		return (getNextPhase() - 1) & PHASE_MASK;
+	}
+
+	private static int getNextPhase() {
+		return PHASER.getPhase() & PHASE_MASK;
 	}
 
 	public static void setGameCrashed() {
