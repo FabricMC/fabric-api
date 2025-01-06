@@ -166,15 +166,13 @@ public class MinecraftClientMixin {
 			postRunTasks();
 		}
 
+		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
+		// server tasks happen here
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
 	}
 
 	@Unique
 	private void postRunTasks() {
-		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
-
-		// server tasks happen here
-
 		ThreadingImpl.clientCanAcceptTasks = true;
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TEST);
 

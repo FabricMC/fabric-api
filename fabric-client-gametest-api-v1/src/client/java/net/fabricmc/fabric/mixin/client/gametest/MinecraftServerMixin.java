@@ -62,14 +62,16 @@ public class MinecraftServerMixin {
 
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;runTasksTillTickEnd()V"))
 	private void preRunTasks(CallbackInfo ci) {
-		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
-		// client tasks happen here
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
 	}
 
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;runTasksTillTickEnd()V", shift = At.Shift.AFTER))
 	private void postRunTasks(CallbackInfo ci) {
 		ThreadingImpl.SERVERBOUND_SYNCHRONIZER.waitForPacketHandlers((ThreadExecutor<?>) (Object) this);
+
+		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
+
+		// client tasks happen here
 
 		ThreadingImpl.serverCanAcceptTasks = true;
 		ThreadingImpl.enterPhase(ThreadingImpl.PHASE_TEST);

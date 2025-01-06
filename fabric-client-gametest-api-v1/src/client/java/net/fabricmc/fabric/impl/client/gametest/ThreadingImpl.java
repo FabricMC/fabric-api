@@ -51,13 +51,11 @@ import net.minecraft.client.MinecraftClient;
  *
  * <p>The reason these phases were chosen are to make client-server interaction in singleplayer as consistent as
  * possible. The task queues are when most packets are handled, and without them being run in sequence it would be
- * unspecified whether a packet would be handled on the current tick until the next one. The client task queue is before
- * the server because the client task queue is run once per frame, rather than once per tick, meaning multiple frames
- * could run before a tick happens. We want the task queue processing for these frames to essentially "merge" into one
- * block of task queue processing. The test phase is run after the task queues rather than at the end of the physical
- * tick (i.e. {@code MinecraftClient}'s and {@code MinecraftServer}'s {@code tick} methods), for no particular reason
- * other than to avoid needing a 5th phase, and having a power of 2 number of phases is convenient when using
- * {@linkplain Phaser}, as it doesn't break when the phase counter overflows.
+ * unspecified whether a packet would be handled on the current tick until the next one. The server task queue is before
+ * the client so that changes on the server appear on the client more readily. The test phase is run after the task
+ * queues rather than at the end of the physical tick (i.e. {@code MinecraftClient}'s and {@code MinecraftServer}'s
+ * {@code tick} methods), for no particular reason other than to avoid needing a 5th phase, and having a power of 2
+ * number of phases is convenient when using {@linkplain Phaser}, as it doesn't break when the phase counter overflows.
  *
  * <p>Other challenges include that a client or server can be started during {@linkplain #PHASE_TEST} but haven't
  * reached their semaphore code yet meaning they are unable to accept tasks. This is solved by setting a flag to true
@@ -79,8 +77,8 @@ public final class ThreadingImpl {
 	private static final String TASK_ON_OTHER_THREAD_METHOD_NAME = "runTaskOnOtherThread";
 
 	public static final int PHASE_TICK = 0;
-	public static final int PHASE_CLIENT_TASKS = 1;
-	public static final int PHASE_SERVER_TASKS = 2;
+	public static final int PHASE_SERVER_TASKS = 1;
+	public static final int PHASE_CLIENT_TASKS = 2;
 	public static final int PHASE_TEST = 3;
 	private static final int PHASE_MASK = 3;
 
