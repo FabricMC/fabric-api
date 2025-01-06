@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.render.model.ReferencedModelsCollector;
+import net.minecraft.client.render.model.ResolvableModel;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
@@ -38,6 +39,9 @@ abstract class ReferencedModelsCollectorMixin {
 	private ModelLoadingEventDispatcher fabric_eventDispatcher;
 
 	@Shadow
+	public abstract void add(ResolvableModel model);
+
+	@Shadow
 	abstract UnbakedModel computeResolvedModel(Identifier id);
 
 	@Inject(method = "<init>", at = @At("RETURN"))
@@ -45,7 +49,7 @@ abstract class ReferencedModelsCollectorMixin {
 		fabric_eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
 
 		if (fabric_eventDispatcher != null) {
-			fabric_eventDispatcher.forEachExtraModel(this::computeResolvedModel);
+			fabric_eventDispatcher.forEachExtraModel(id -> add(computeResolvedModel(id)));
 		}
 	}
 

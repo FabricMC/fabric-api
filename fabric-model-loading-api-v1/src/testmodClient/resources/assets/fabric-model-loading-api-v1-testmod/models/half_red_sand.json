@@ -1,21 +1,7 @@
 {
+  "parent": "fabric-model-loading-api-v1-testmod:template_half",
   "textures": {
-    "sand": "minecraft:block/sand",
-    "red_sand": "minecraft:block/red_sand",
-    "particle": "#sand"
-  },
-  "elements": [
-    {
-      "from": [ 0, 0, 0 ],
-      "to": [ 16, 16, 16 ],
-      "faces": {
-        "down": { "texture": "#sand" },
-        "up": { "texture": "#red_sand" },
-        "north": { "texture": "#sand" },
-        "south": { "texture": "#red_sand" },
-        "west": { "texture": "#sand" },
-        "east": { "texture": "#red_sand" }
-      }
-    }
-  ]
+    "half1": "minecraft:block/sand",
+    "half2": "minecraft:block/red_sand"
+  }
 }
