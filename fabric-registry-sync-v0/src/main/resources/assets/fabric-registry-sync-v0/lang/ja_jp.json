@@ -3,5 +3,10 @@
   "fabric-registry-sync-v0.unknown-remote.title.plural": "クライアントで認識されていないレジストリ項目を %d 個受信しました。\n",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1": "これは、通常サーバーとクライアントで使用している Mod が一致しないときに起こります。",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2": " 詳細は、クライアントのログを確認してください。\n次の名前空間が関係しているかもしれません:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "以下 %d 個省略..."
+  "fabric-registry-sync-v0.unknown-remote.footer": "以下 %d 個省略...",
+  "fabric-registry-sync-v0.unknown-registry.title.singular": "クライアントで認識されていないレジストリ項目を受信しました。\n",
+  "fabric-registry-sync-v0.unknown-registry.title.plural": "クライアントで認識されていないレジストリ項目を %d 個受信しました。\n",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.1": "これは、通常サーバーとクライアントで使用している Mod が一致しないときに起こります。",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.2": " 詳細についてはクライアントのログをご確認ください。\n以下のレジストリはクライアントに存在しません：\n\n",
+  "fabric-registry-sync-v0.unknown-registry.footer": "その他 %d 件..."
 }
