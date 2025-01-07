@@ -101,7 +101,7 @@ public final class ThreadingImpl {
 	@Nullable
 	public static Runnable taskToRun = null;
 
-	public static volatile boolean gameCrashed = false;
+	private static volatile boolean gameCrashed = false;
 
 	public static void enterPhase(int phase) {
 		while (enablePhases && getNextPhase() != phase) {
@@ -119,6 +119,10 @@ public final class ThreadingImpl {
 
 	private static int getNextPhase() {
 		return PHASER.getPhase() & PHASE_MASK;
+	}
+
+	public static boolean isGameCrashed() {
+		return gameCrashed;
 	}
 
 	public static void setGameCrashed() {

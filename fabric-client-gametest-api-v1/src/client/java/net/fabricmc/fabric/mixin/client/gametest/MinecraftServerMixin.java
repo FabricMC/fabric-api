@@ -113,7 +113,7 @@ public class MinecraftServerMixin {
 		ThreadingImpl.PHASER.arriveAndDeregister();
 		ThreadingImpl.isServerRunning = false;
 
-		if (!ThreadingImpl.gameCrashed) {
+		if (!ThreadingImpl.isGameCrashed()) {
 			NetworkSynchronizer.SERVERBOUND.reset();
 		}
 	}
