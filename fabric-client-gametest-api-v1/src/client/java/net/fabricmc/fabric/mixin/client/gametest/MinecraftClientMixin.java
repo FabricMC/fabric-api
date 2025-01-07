@@ -23,6 +23,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,6 +35,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.Window;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.SaveLoader;
 import net.minecraft.util.thread.ThreadExecutor;
@@ -42,6 +44,7 @@ import net.minecraft.world.level.storage.LevelStorage;
 import net.fabricmc.fabric.impl.client.gametest.FabricClientGameTestRunner;
 import net.fabricmc.fabric.impl.client.gametest.NetworkSynchronizer;
 import net.fabricmc.fabric.impl.client.gametest.ThreadingImpl;
+import net.fabricmc.fabric.impl.client.gametest.WindowHooks;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
@@ -55,6 +58,10 @@ public class MinecraftClientMixin {
 	@Shadow
 	@Nullable
 	private Overlay overlay;
+
+	@Shadow
+	@Final
+	private Window window;
 
 	@WrapMethod(method = "run")
 	private void onRun(Operation<Void> original) throws Throwable {
@@ -211,6 +218,12 @@ public class MinecraftClientMixin {
 				Thread.currentThread() != ThreadingImpl.testThread,
 				"MinecraftClient.getInstance() cannot be called from the gametest thread. Try using ClientGameTestContext.runOnClient or ClientGameTestContext.computeOnClient"
 		);
+	}
+
+	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/Window;hasZeroWidthOrHeight()Z"))
+	private boolean hasZeroRealWidthOrHeight(boolean original) {
+		WindowHooks windowHooks = (WindowHooks) (Object) window;
+		return windowHooks.fabric_getRealFramebufferWidth() == 0 || windowHooks.fabric_getRealFramebufferHeight() == 0;
 	}
 
 	@Unique

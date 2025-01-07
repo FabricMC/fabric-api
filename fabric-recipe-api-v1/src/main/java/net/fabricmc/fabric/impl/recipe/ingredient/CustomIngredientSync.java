@@ -19,8 +19,6 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import io.netty.channel.ChannelHandler;
-
 import net.minecraft.network.handler.EncoderHandler;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
@@ -90,12 +88,7 @@ public class CustomIngredientSync implements ModInitializer {
 
 		ServerConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadC2S.ID, (payload, context) -> {
 			Set<Identifier> supportedCustomIngredients = decodeResponsePayload(payload);
-			ChannelHandler packetEncoder = ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection().channel.pipeline().get("encoder");
-
-			if (packetEncoder != null) { // Null in singleplayer
-				((SupportedIngredientsPacketEncoder) packetEncoder).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
-			}
-
+			((SupportedIngredientsClientConnection) ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
 			context.networkHandler().completeTask(IngredientSyncTask.KEY);
 		});
 	}

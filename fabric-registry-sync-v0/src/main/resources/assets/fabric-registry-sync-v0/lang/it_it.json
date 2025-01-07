@@ -1,7 +1,12 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Ricevuta una voce di registro sconosciuta a questo client.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Ricevute %d voci di registro sconosciute a questo client.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Ricevuta una voce di registry sconosciuta a questo client.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Ricevute %d voci di registry sconosciute a questo client.\n",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Questo problema solitamente è causato da un insieme di mod non compatibili tra client e server.",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Per ulteriori dettagli, consultare i log del client.\nI namespace delle voci di registro seguenti potrebbero essere correlati:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "E altri %d..."
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Per ulteriori dettagli, consultare i log del client.\nI namespace delle voci di registry seguenti potrebbero essere correlati:\n\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "E altri %d...",
+  "fabric-registry-sync-v0.unknown-registry.title.singular": "Ricevuta una registry sconosciuta a questo client.\n",
+  "fabric-registry-sync-v0.unknown-registry.title.plural": "Ricevute %d registry sconosciute a questo client.\n",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.1": "Questo problema solitamente è causato da un insieme di mod non compatibili tra client e server.",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.2": " Per ulteriori dettagli, consultare i log del client.\nLe registry seguenti non sono presenti sul client:\n\n",
+  "fabric-registry-sync-v0.unknown-registry.footer": "E altre %d..."
 }

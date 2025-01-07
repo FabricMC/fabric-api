@@ -16,13 +16,20 @@
 
 package net.fabricmc.fabric.test.client.gametest;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.WindowFramebuffer;
 import net.minecraft.client.gui.screen.ReconfiguringScreen;
 import net.minecraft.client.gui.screen.world.WorldCreator;
 import net.minecraft.client.option.Perspective;
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.util.InputUtil;
 
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
@@ -37,7 +44,15 @@ public class ClientGameTestTest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext context) {
 		{
 			waitForTitleScreenFade(context);
-			context.takeScreenshot("title_screen", 0);
+			context.takeScreenshot("title_screen");
+		}
+
+		{
+			testScreenSize(context, WindowFramebuffer.DEFAULT_WIDTH, WindowFramebuffer.DEFAULT_HEIGHT);
+			context.getInput().resizeWindow(1000, 500);
+			context.waitTick();
+			testScreenSize(context, 1000, 500);
+			context.getInput().resizeWindow(WindowFramebuffer.DEFAULT_WIDTH, WindowFramebuffer.DEFAULT_HEIGHT);
 		}
 
 		TestWorldSave spWorldSave;
@@ -48,7 +63,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 			{
 				enableDebugHud(context);
 				singleplayer.getClientWorld().waitForChunksRender();
-				context.takeScreenshot("in_game_overworld", 0);
+				context.takeScreenshot("in_game_overworld");
 			}
 
 			{
@@ -56,7 +71,8 @@ public class ClientGameTestTest implements FabricClientGameTest {
 				context.waitTick();
 				context.getInput().typeChars("Hello, World!");
 				context.getInput().pressKey(InputUtil.GLFW_KEY_ENTER);
-				context.takeScreenshot("chat_message_sent", 5);
+				context.waitTick(); // wait for the server to receive the chat message
+				context.takeScreenshot("chat_message_sent");
 			}
 
 			MixinEnvironment.getCurrentEnvironment().audit();
@@ -70,6 +86,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 			{
 				context.getInput().pressKey(options -> options.inventoryKey);
+				context.waitTicks(2); // allow the client to process the key press, and then the server to receive the request
 				context.takeScreenshot("in_game_inventory");
 				context.setScreen(() -> null);
 			}
@@ -83,7 +100,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		try (TestDedicatedServerContext server = context.worldBuilder().createServer()) {
 			try (TestServerConnection connection = server.connect()) {
 				connection.getClientWorld().waitForChunksRender();
-				context.takeScreenshot("server_in_game", 0);
+				context.takeScreenshot("server_in_game");
 
 				{ // Test that we can enter and exit configuration
 					final GameProfile profile = context.computeOnClient(MinecraftClient::getGameProfile);
@@ -110,5 +127,27 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 	private static void setPerspective(ClientGameTestContext context, Perspective perspective) {
 		context.runOnClient(client -> client.options.setPerspective(perspective));
+	}
+
+	private static void testScreenSize(ClientGameTestContext context, int expectedWidth, int expectedHeight) {
+		context.runOnClient(client -> {
+			if (client.getWindow().getWidth() != expectedWidth || client.getWindow().getHeight() != expectedHeight) {
+				throw new AssertionError("Expected window size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getWidth(), client.getWindow().getHeight()));
+			}
+
+			if (client.getWindow().getFramebufferWidth() != expectedWidth || client.getWindow().getFramebufferHeight() != expectedHeight) {
+				throw new AssertionError("Expected framebuffer size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight()));
+			}
+		});
+
+		Path screenshotPath = context.takeScreenshot("screenshot_size_test");
+
+		try (NativeImage screenshot = NativeImage.read(Files.newInputStream(screenshotPath))) {
+			if (screenshot.getWidth() != expectedWidth || screenshot.getHeight() != expectedHeight) {
+				throw new AssertionError("Expected screenshot size to be (%d, %d) but was (%d, %d)".formatted(expectedWidth, expectedHeight, screenshot.getWidth(), screenshot.getHeight()));
+			}
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
 	}
 }

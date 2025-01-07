@@ -18,12 +18,14 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 
 import java.util.Set;
 
-import net.minecraft.network.handler.EncoderHandler;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.util.Identifier;
 
 /**
- * Implemented on {@link EncoderHandler} to store which custom ingredients the client supports.
+ * Implemented on {@link ClientConnection} to store which custom ingredients the client supports.
  */
-public interface SupportedIngredientsPacketEncoder {
+public interface SupportedIngredientsClientConnection {
 	void fabric_setSupportedCustomIngredients(Set<Identifier> supportedCustomIngredients);
+
+	Set<Identifier> fabric_getSupportedCustomIngredients();
 }

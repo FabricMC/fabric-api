@@ -38,17 +38,24 @@ public class FabricClientGameTestRunner {
 			ClientGameTestContextImpl context = new ClientGameTestContextImpl();
 
 			for (FabricClientGameTest gameTest : gameTests) {
-				context.restoreDefaultGameOptions();
+				setupInitialGameTestState(context);
 
 				gameTest.runTest(context);
 
-				context.getInput().clearKeysDown();
-				checkFinalGameTestState(context, gameTest.getClass().getName());
+				setupAndCheckFinalGameTestState(context, gameTest.getClass().getName());
 			}
 		});
 	}
 
-	private static void checkFinalGameTestState(ClientGameTestContext context, String testClassName) {
+	private static void setupInitialGameTestState(ClientGameTestContext context) {
+		context.restoreDefaultGameOptions();
+	}
+
+	private static void setupAndCheckFinalGameTestState(ClientGameTestContextImpl context, String testClassName) {
+		context.getInput().clearKeysDown();
+		context.runOnClient(client -> ((WindowHooks) (Object) client.getWindow()).fabric_resetSize());
+		context.getInput().setCursorPos(context.computeOnClient(client -> client.getWindow().getWidth()) * 0.5, context.computeOnClient(client -> client.getWindow().getHeight()) * 0.5);
+
 		if (ThreadingImpl.isServerRunning) {
 			throw new AssertionError("Client gametest %s finished while a server is still running".formatted(testClassName));
 		}
