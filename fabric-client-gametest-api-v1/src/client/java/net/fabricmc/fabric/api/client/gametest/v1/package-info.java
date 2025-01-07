@@ -19,8 +19,18 @@
  * {@link net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext#waitTick() ClientGameTestContext.waitTick()}.
  *
  * <p>A few changes have been made to how the vanilla game threads run, to make tests more reproducible. Notably, there
- * is exactly one server tick per client tick while a server is running (singleplayer or multiplayer). On singleplayer,
- * packets will always arrive on a consistent tick.
+ * is exactly one server tick per client tick while a server is running (singleplayer or multiplayer). There is also a
+ * limit of one client tick per frame.
+ *
+ * <h1>Network synchronization</h1>
+ *
+ * <p>Network packets are internally tracked and managed so that they are always handled at a consistent time, always
+ * before the next tick. Calling {@code waitTick()} is always enough for a server packet to be handled on the client or
+ * vice versa.
+ *
+ * <p>If your mod interacts with the network code at a low level, such as by directly hooking into the Netty pipeline to
+ * send or handle packets, you may need to disable network synchronization. You can do this by setting the
+ * {@code fabric.client.gametest.disableNetworkSynchronizer} system property.
  *
  * <h1>Default settings</h1>
  * The client gametest API adjusts some default settings, usually for consistency of tests. These settings can always be
