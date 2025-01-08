@@ -3,6 +3,9 @@ package net.fabricmc.fabric.test.attachment.client.gametest;
 import java.util.Objects;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.world.ClientWorld;
@@ -27,6 +30,8 @@ import net.fabricmc.fabric.api.client.gametest.v1.TestServerConnection;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 
 public class SyncGametest implements FabricClientGameTest {
+	public static final Logger LOGGER = LoggerFactory.getLogger("data-attachment-persistence-gametest");
+
 	private static ServerPlayerEntity getSinglePlayer(MinecraftServer server) {
 		return server.getPlayerManager().getPlayerList().getFirst();
 	}
@@ -39,15 +44,15 @@ public class SyncGametest implements FabricClientGameTest {
 		target.setAttached(type, true);
 	}
 
-	private static void assertSyncedWithAll(AttachmentTarget target) {
-		assertSynced(target, AttachmentTestMod.SYNCED_WITH_ALL);
+	private static void assertHasSyncedWithAll(AttachmentTarget target) {
+		assertHasSynced(target, AttachmentTestMod.SYNCED_WITH_ALL);
 	}
 
-	private static void assertSynced(AttachmentTarget target, AttachmentType<?> type) {
+	private static void assertHasSynced(AttachmentTarget target, AttachmentType<?> type) {
 		assertPresence(target, type, true);
 	}
 
-	private static void assertNotSynced(AttachmentTarget target, AttachmentType<?> type) {
+	private static void assertHasNotSynced(AttachmentTarget target, AttachmentType<?> type) {
 		assertPresence(target, type, false);
 	}
 
@@ -63,11 +68,15 @@ public class SyncGametest implements FabricClientGameTest {
 		serverProps.setProperty("gamemode", "creative");
 
 		try (TestDedicatedServerContext serverContext = context.worldBuilder().createServer(serverProps)) {
+			// wait tick to avoid race condition causing server not to accept tasks
+			context.waitTick();
+
 			var state = new Object() {
 				BlockPos furnacePos;
 				int villagerId;
 			};
 
+			LOGGER.info("Setting up synced attachments before join");
 			// setup before player joins
 			serverContext.runOnServer(server -> {
 				ServerWorld world = server.getOverworld();
@@ -92,10 +101,12 @@ public class SyncGametest implements FabricClientGameTest {
 				setSyncedWithAll(Objects.requireNonNull(nether));
 			});
 
+			LOGGER.info("Joining dedicated server");
+
 			try (TestServerConnection connection = serverContext.connect()) {
 				connection.getClientWorld().waitForChunksDownload();
 
-				serverContext.runCommand("gamemode @p survival");
+				LOGGER.info("Setting up rest of synced attachments");
 				serverContext.runOnServer(server -> {
 					ServerPlayerEntity player = getSinglePlayer(server);
 					setSyncedWithAll(player);
@@ -106,30 +117,44 @@ public class SyncGametest implements FabricClientGameTest {
 					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.APPLE.getDefaultStack());
 				});
 
+				// safety
+				context.waitTick();
+
+				LOGGER.info("Testing synced attachments (1/2)");
 				context.runOnClient(client -> {
 					ClientWorld world = Objects.requireNonNull(client.world);
 					Entity villager = world.getEntityById(state.villagerId);
 
-					assertSyncedWithAll(world.getBlockEntity(state.furnacePos));
-					assertSyncedWithAll(villager);
-					assertSyncedWithAll(world.getChunk(0, 0));
-					assertSyncedWithAll(client.player);
-					assertSynced(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY);
-					assertSynced(client.player, AttachmentTestMod.SYNCED_ITEM);
+					assertHasSyncedWithAll(world.getBlockEntity(state.furnacePos));
+					assertHasSyncedWithAll(villager);
+					assertHasSyncedWithAll(world.getChunk(0, 0));
+					assertHasSyncedWithAll(client.player);
+					assertHasSynced(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY);
+					assertHasSynced(client.player, AttachmentTestMod.SYNCED_ITEM);
 
 					// `world` is the overworld here
-					assertNotSynced(world, AttachmentTestMod.SYNCED_WITH_ALL);
-					assertNotSynced(client.player, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
-					assertNotSynced(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
+					assertHasNotSynced(world, AttachmentTestMod.SYNCED_WITH_ALL);
+					assertHasNotSynced(client.player, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
+					assertHasNotSynced(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
 				});
 
+				LOGGER.info("Setting up second phase");
 				// now teleport to nether, on roof to avoid suffocation when switching to survival
 				serverContext.runCommand("execute in minecraft:the_nether run tp @p ~ 128 ~");
+				serverContext.runCommand("gamemode survival @p");
+				serverContext.runOnServer(server -> getSinglePlayer(server).removeAttached(AttachmentTestMod.SYNCED_CREATIVE_ONLY));
 
+				// safety
+				context.waitTick();
+
+				LOGGER.info("Testing synced attachments (2/2)");
 				context.runOnClient(client -> {
-					assertSyncedWithAll(client.world);
-					assertNotSynced(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY);
+					assertHasSyncedWithAll(client.world);
+					// asserts the removal wasn't synced
+					assertPresence(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY, true);
 				});
+
+				LOGGER.info("Done");
 			}
 		}
 	}

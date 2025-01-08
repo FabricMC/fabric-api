@@ -69,7 +69,7 @@ public class AttachmentTestMod implements ModInitializer {
 					.syncWith(PacketCodecs.BOOLEAN, AttachmentSyncPredicate.allButTarget())
 	);
 	public static final AttachmentType<Boolean> SYNCED_CREATIVE_ONLY = AttachmentRegistry.create(
-			Identifier.of(MOD_ID, "synced_custom"),
+			Identifier.of(MOD_ID, "synced_creative"),
 			builder -> builder
 					.initializer(() -> false)
 					.persistent(Codec.BOOL)

@@ -47,10 +47,13 @@ public class PersistenceGametest implements FabricClientGameTest {
 	public void runTest(ClientGameTestContext context) {
 		TestWorldSave save;
 
+		LOGGER.info("First launch");
 		try (TestSingleplayerContext spContext = context.worldBuilder()
+				.setUseConsistentSettings(false)
 				.adjustSettings(worldCreator -> worldCreator.setGameMode(WorldCreator.Mode.CREATIVE))
 				.create()) {
 			save = spContext.getWorldSave();
+			spContext.getClientWorld().waitForChunksDownload();
 
 			spContext.getServer().runOnServer(server -> {
 				ServerWorld overworld = server.getOverworld();
@@ -71,52 +74,59 @@ public class PersistenceGametest implements FabricClientGameTest {
 				ProtoChunk farChunk = (ProtoChunk) overworld.getChunkManager()
 						.getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z, ChunkStatus.STRUCTURE_STARTS, true);
 				farChunk.setAttached(PERSISTENT, "protochunk_data");
+				LOGGER.info("Set persistent attachments");
 			});
 		}
 
+		LOGGER.info("Second launch");
+
 		// second launch
 		try (TestSingleplayerContext spContext = save.open()) {
-			ServerWorld overworld = spContext.getServer().computeOnServer(MinecraftServer::getOverworld);
-			WorldChunk originChunk = overworld.getChunk(0, 0);
+			spContext.getClientWorld().waitForChunksDownload();
 
-			assertAttached(
-					spContext.getServer().computeOnServer(PersistenceGametest::getSinglePlayer),
-					PERSISTENT,
-					"player_data",
-					"Player attachment did not persist"
-			);
-			assertAttached(overworld, PERSISTENT, "world_data", "World attachment did not persist");
-			assertAttached(originChunk, PERSISTENT, "chunk_data", "WorldChunk attachment did not persist");
+			LOGGER.info("Testing persistent attachments");
+			spContext.getServer().runOnServer(server -> {
+				ServerWorld overworld = server.getOverworld();
+				WorldChunk originChunk = overworld.getChunk(0, 0);
 
-			WrapperProtoChunk wrapperProtoChunk = (WrapperProtoChunk) overworld.getChunkManager()
-					.getChunk(0, 0, ChunkStatus.EMPTY, true);
-			assertAttached(
-					wrapperProtoChunk,
-					PERSISTENT,
-					"chunk_data",
-					"Attachment is not accessible through WrapperProtoChunk"
-			);
+				assertAttached(getSinglePlayer(server), PERSISTENT, "player_data", "Player attachment did not persist");
+				assertAttached(overworld, PERSISTENT, "world_data", "World attachment did not persist");
+				assertAttached(originChunk, PERSISTENT, "chunk_data", "WorldChunk attachment did not persist");
 
-			Chunk farChunk = overworld.getChunkManager()
-					.getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z, ChunkStatus.EMPTY, true);
+				WrapperProtoChunk wrapperProtoChunk = (WrapperProtoChunk) overworld.getChunkManager()
+						.getChunk(0, 0, ChunkStatus.EMPTY, true);
+				assertAttached(
+						wrapperProtoChunk, PERSISTENT, "chunk_data",
+						"Attachment is not accessible through WrapperProtoChunk"
+				);
 
-			if (farChunk instanceof WrapperProtoChunk) {
-				LOGGER.warn("Far chunk already generated, can't test persistence in ProtoChunk.");
-			}
+				Chunk farChunk = overworld.getChunkManager()
+						.getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z, ChunkStatus.EMPTY, true);
 
-			assertAttached(farChunk, PERSISTENT, "protochunk_data", "ProtoChunk attachment did not persist");
+				if (farChunk instanceof WrapperProtoChunk) {
+					LOGGER.warn("Far chunk already generated, can't test persistence in ProtoChunk.");
+				}
 
+				assertAttached(farChunk, PERSISTENT, "protochunk_data", "ProtoChunk attachment did not persist");
+			});
+
+			LOGGER.info("Testing ProtoChunk transfer");
 			// load far chunk
 			spContext.getServer().runCommand("tp @p 4800 ~ 0");
 			spContext.getClientWorld().waitForChunksDownload();
-			farChunk = overworld.getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z);
 
-			assertAttached(
-					farChunk,
-					PERSISTENT,
-					"protochunk_data",
-					"ProtoChunk attachment was not transferred to WorldChunk"
-			);
+			spContext.getServer().runOnServer(server -> {
+				WorldChunk farChunk = server.getOverworld().getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z);
+
+				assertAttached(
+						farChunk,
+						PERSISTENT,
+						"protochunk_data",
+						"ProtoChunk attachment was not transferred to WorldChunk"
+				);
+			});
+
+			LOGGER.info("Done");
 		}
 	}
 }
