@@ -34,6 +34,8 @@ public interface TestInput {
 	 * Starts holding down a key binding. The key binding will be held until it is released. The key binding must be
 	 * bound. Does nothing if the key binding is already being held.
 	 *
+	 * <p><strong>Most key bindings will only start reacting to this when a tick is waited.</strong>
+	 *
 	 * @param keyBinding The key binding to hold
 	 * @see #releaseKey(KeyBinding)
 	 * @see #pressKey(KeyBinding)
@@ -44,6 +46,8 @@ public interface TestInput {
 	/**
 	 * Starts holding down a key binding. The key binding will be held until it is released. The key binding must be
 	 * bound. Does nothing if the key binding is already being held.
+	 *
+	 * <p><strong>Most key bindings will only start reacting to this when a tick is waited.</strong>
 	 *
 	 * @param keyBindingGetter The function to get the key binding from the game options
 	 * @see #releaseKey(Function)
@@ -56,6 +60,8 @@ public interface TestInput {
 	 * Starts holding down a key or mouse button. The key will be held until it is released. Does nothing if the key or
 	 * mouse button is already being held.
 	 *
+	 * <p><strong>Most key bindings will only start reacting to this when a tick is waited.</strong>
+	 *
 	 * @param key The key or mouse button to hold
 	 * @see #releaseKey(InputUtil.Key)
 	 * @see #pressKey(InputUtil.Key)
@@ -66,6 +72,8 @@ public interface TestInput {
 	 * Starts holding down a key. The key will be held until it is released. Does nothing if the key is already being
 	 * held.
 	 *
+	 * <p><strong>Most key bindings will only start reacting to this when a tick is waited.</strong>
+	 *
 	 * @param keyCode The key code of the key to hold
 	 * @see #releaseKey(int)
 	 * @see #pressKey(int)
@@ -75,6 +83,8 @@ public interface TestInput {
 	/**
 	 * Starts holding down a mouse button. The mouse button will be held until it is released. Does nothing if the mouse
 	 * button is already being held.
+	 *
+	 * <p><strong>Most key bindings will only start reacting to this when a tick is waited.</strong>
 	 *
 	 * @param button The mouse button to hold
 	 * @see #releaseMouse(int)
@@ -110,6 +120,8 @@ public interface TestInput {
 	/**
 	 * Releases a key binding. The key binding must be bound. Does nothing if the key binding is not being held.
 	 *
+	 * <p><strong>Most key bindings will only react to this when a tick is waited.</strong>
+	 *
 	 * @param keyBinding The key binding to release
 	 * @see #holdKey(KeyBinding)
 	 * @see #releaseKey(Function)
@@ -118,6 +130,8 @@ public interface TestInput {
 
 	/**
 	 * Releases a key binding. The key binding must be bound. Does nothing if the key binding is not being held.
+	 *
+	 * <p><strong>Most key bindings will only react to this when a tick is waited.</strong>
 	 *
 	 * @param keyBindingGetter The function to get the key binding from the game options
 	 * @see #holdKey(Function)
@@ -128,6 +142,8 @@ public interface TestInput {
 	/**
 	 * Releases a key or mouse button. Does nothing if the key or mouse button is not being held.
 	 *
+	 * <p><strong>Most key bindings will only react to this when a tick is waited.</strong>
+	 *
 	 * @param key The key or mouse button to release
 	 * @see #holdKey(InputUtil.Key)
 	 */
@@ -136,6 +152,8 @@ public interface TestInput {
 	/**
 	 * Releases a key. Does nothing if the key is not being held.
 	 *
+	 * <p><strong>Most key bindings will only react to this when a tick is waited.</strong>
+	 *
 	 * @param keyCode The GLFW key code of the key to release
 	 * @see #holdKey(int)
 	 */
@@ -143,6 +161,8 @@ public interface TestInput {
 
 	/**
 	 * Releases a mouse button. Does nothing if the mouse button is not being held.
+	 *
+	 * <p><strong>Most key bindings will only react to this when a tick is waited.</strong>
 	 *
 	 * @param button The GLFW mouse button to release
 	 * @see #holdMouse(int)
@@ -174,7 +194,10 @@ public interface TestInput {
 	void releaseAlt();
 
 	/**
-	 * Presses and releases a key binding. The key binding must be bound.
+	 * Presses and releases a key binding, then waits a tick. The key binding must be bound.
+	 *
+	 * <p>A tick is waited because most key bindings need a tick to happen to react to the press. If you don't want the
+	 * delay, use {@link #holdKeyFor(KeyBinding, int) holdKeyFor} with a tick count of {@code 0}.
 	 *
 	 * @param keyBinding The key binding to press
 	 * @see #holdKey(KeyBinding)
@@ -183,7 +206,10 @@ public interface TestInput {
 	void pressKey(KeyBinding keyBinding);
 
 	/**
-	 * Presses and releases a key binding. The key binding must be bound.
+	 * Presses and releases a key binding, then waits a tick. The key binding must be bound.
+	 *
+	 * <p>A tick is waited because most key bindings need a tick to happen to react to the press. If you don't want the
+	 * delay, use {@link #holdKeyFor(Function, int) holdKeyFor} with a tick count of {@code 0}.
 	 *
 	 * @param keyBindingGetter The function to get the key binding from the game options
 	 * @see #holdKey(Function)
@@ -192,7 +218,10 @@ public interface TestInput {
 	void pressKey(Function<GameOptions, KeyBinding> keyBindingGetter);
 
 	/**
-	 * Presses and releases a key or mouse button.
+	 * Presses and releases a key or mouse button, then waits a tick.
+	 *
+	 * <p>A tick is waited because most key bindings need a tick to happen to react to the press. If you don't want the
+	 * delay, use {@link #holdKeyFor(InputUtil.Key, int) holdKeyFor} with a tick count of {@code 0}.
 	 *
 	 * @param key The key or mouse button to press.
 	 * @see #holdKey(InputUtil.Key)
@@ -200,7 +229,10 @@ public interface TestInput {
 	void pressKey(InputUtil.Key key);
 
 	/**
-	 * Presses and releases a key.
+	 * Presses and releases a key, then waits a tick.
+	 *
+	 * <p>A tick is waited because most key bindings need a tick to happen to react to the press. If you don't want the
+	 * delay, use {@link #holdKeyFor(int, int) holdKeyFor} with a tick count of {@code 0}.
 	 *
 	 * <p>For sending Unicode text input (e.g. into text boxes), use {@link #typeChar(int)} or
 	 * {@link #typeChars(String)} instead.
@@ -211,7 +243,10 @@ public interface TestInput {
 	void pressKey(int keyCode);
 
 	/**
-	 * Presses and releases a mouse button.
+	 * Presses and releases a mouse button, then waits a tick.
+	 *
+	 * <p>A tick is waited because most key bindings need a tick to happen to react to the press. If you don't want the
+	 * delay, use {@link #holdMouseFor(int, int) holdMouseFor} with a tick count of {@code 0}.
 	 *
 	 * @param button The GLFW mouse button to press
 	 * @see #holdMouse(int)
@@ -221,6 +256,9 @@ public interface TestInput {
 	/**
 	 * Holds a key binding for the specified number of ticks and then releases it. Waits until this process is finished.
 	 * The key binding must be bound.
+	 *
+	 * <p>Although the key will be released when this method returns, <strong>most key bindings will only react to this
+	 * when a tick is waited.</strong>
 	 *
 	 * @param keyBinding The key binding to hold
 	 * @param ticks The number of ticks to hold the key binding for
@@ -233,6 +271,9 @@ public interface TestInput {
 	 * Holds a key binding for the specified number of ticks and then releases it. Waits until this process is finished.
 	 * The key binding must be bound.
 	 *
+	 * <p>Although the key will be released when this method returns, <strong>most key bindings will only react to this
+	 * when a tick is waited.</strong>
+	 *
 	 * @param keyBindingGetter The key binding to hold
 	 * @param ticks The number of ticks to hold the key binding for
 	 * @see #holdKey(Function)
@@ -244,6 +285,9 @@ public interface TestInput {
 	 * Holds a key or mouse button for the specified number of ticks and then releases it. Waits until this process is
 	 * finished.
 	 *
+	 * <p>Although the key or mouse button will be released when this method returns, <strong>most key bindings will
+	 * only react to this when a tick is waited.</strong>
+	 *
 	 * @param key The key or mouse button to hold
 	 * @param ticks The number of ticks to hold the key or mouse button for
 	 * @see #holdKey(InputUtil.Key)
@@ -252,6 +296,9 @@ public interface TestInput {
 
 	/**
 	 * Holds a key for the specified number of ticks and then releases it. Waits until this process is finished.
+	 *
+	 * <p>Although the key will be released when this method returns, <strong>most key bindings will only react to this
+	 * when a tick is waited.</strong>
 	 *
 	 * @param keyCode The GLFW key code of the key to hold
 	 * @param ticks The number of ticks to hold the key for
@@ -262,6 +309,9 @@ public interface TestInput {
 	/**
 	 * Holds a mouse button for the specified number of ticks and then releases it. Waits until this process is
 	 * finished.
+	 *
+	 * <p>Although the mouse button will be released when this method returns, <strong>most key bindings will only react
+	 * to this when a tick is waited.</strong>
 	 *
 	 * @param button The GLFW mouse button to hold
 	 * @param ticks The number of ticks to hold the mouse button for

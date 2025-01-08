@@ -209,6 +209,7 @@ public final class TestInputImpl implements TestInput {
 
 		holdKey(key);
 		releaseKey(key);
+		context.waitTick();
 	}
 
 	@Override
@@ -229,7 +230,7 @@ public final class TestInputImpl implements TestInput {
 	public void holdKeyFor(KeyBinding keyBinding, int ticks) {
 		ThreadingImpl.checkOnGametestThread("holdKeyFor");
 		Preconditions.checkNotNull(keyBinding, "keyBinding");
-		Preconditions.checkArgument(ticks > 0, "ticks must be positive");
+		Preconditions.checkArgument(ticks >= 0, "ticks cannot be negative");
 
 		holdKeyFor(getBoundKey(keyBinding, "hold"), ticks);
 	}
@@ -238,7 +239,7 @@ public final class TestInputImpl implements TestInput {
 	public void holdKeyFor(Function<GameOptions, KeyBinding> keyBindingGetter, int ticks) {
 		ThreadingImpl.checkOnGametestThread("holdKeyFor");
 		Preconditions.checkNotNull(keyBindingGetter, "keyBindingGetter");
-		Preconditions.checkArgument(ticks > 0, "ticks must be positive");
+		Preconditions.checkArgument(ticks >= 0, "ticks cannot be negative");
 
 		KeyBinding keyBinding = context.computeOnClient(client -> keyBindingGetter.apply(client.options));
 		holdKeyFor(keyBinding, ticks);
@@ -248,7 +249,7 @@ public final class TestInputImpl implements TestInput {
 	public void holdKeyFor(InputUtil.Key key, int ticks) {
 		ThreadingImpl.checkOnGametestThread("holdKeyFor");
 		Preconditions.checkNotNull(key, "key");
-		Preconditions.checkArgument(ticks > 0, "ticks must be positive");
+		Preconditions.checkArgument(ticks >= 0, "ticks cannot be negative");
 
 		holdKey(key);
 		context.waitTicks(ticks);
@@ -258,7 +259,7 @@ public final class TestInputImpl implements TestInput {
 	@Override
 	public void holdKeyFor(int keyCode, int ticks) {
 		ThreadingImpl.checkOnGametestThread("holdKeyFor");
-		Preconditions.checkArgument(ticks > 0, "ticks must be positive");
+		Preconditions.checkArgument(ticks >= 0, "ticks cannot be negative");
 
 		holdKeyFor(InputUtil.Type.KEYSYM.createFromCode(keyCode), ticks);
 	}
@@ -266,7 +267,7 @@ public final class TestInputImpl implements TestInput {
 	@Override
 	public void holdMouseFor(int button, int ticks) {
 		ThreadingImpl.checkOnGametestThread("holdMouseFor");
-		Preconditions.checkArgument(ticks > 0, "ticks must be positive");
+		Preconditions.checkArgument(ticks >= 0, "ticks cannot be negative");
 
 		holdKeyFor(InputUtil.Type.MOUSE.createFromCode(button), ticks);
 	}

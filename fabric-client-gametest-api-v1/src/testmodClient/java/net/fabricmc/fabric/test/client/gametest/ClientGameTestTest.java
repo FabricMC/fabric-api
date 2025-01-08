@@ -68,9 +68,8 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 			{
 				context.getInput().pressKey(options -> options.chatKey);
-				context.waitTick();
 				context.getInput().typeChars("Hello, World!");
-				context.getInput().pressKey(InputUtil.GLFW_KEY_ENTER);
+				context.getInput().holdKeyFor(InputUtil.GLFW_KEY_ENTER, 0); // press without delay, enter not a keybind
 				context.waitTick(); // wait for the server to receive the chat message
 				context.takeScreenshot("chat_message_sent");
 			}
@@ -86,7 +85,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 			{
 				context.getInput().pressKey(options -> options.inventoryKey);
-				context.waitTicks(2); // allow the client to process the key press, and then the server to receive the request
+				context.waitTick(); // wait for the server to receive the request
 				context.takeScreenshot("in_game_inventory");
 				context.setScreen(() -> null);
 			}

@@ -37,7 +37,7 @@ import net.minecraft.util.thread.ThreadExecutor;
  *
  * <ul>
  *     <li>A packet can be either "in-flight", which is between the time it is sent and the time it is handled on the
- *         Netty thread on the receiving side, or it can be queued for handling on the receiving main thread, which it
+ *         Netty thread on the receiving side, or it can be queued for handling on the receiving main thread, which is
  *         between when it is handled on the Netty thread and it is removed from the main thread task queue.
  *         <ul>
  *             <li>Some packets are handled directly on the Netty thread and never enter the second stage. The
