@@ -11,5 +11,6 @@ testDependencies(project, [
 	':fabric-lifecycle-events-v1',
 	':fabric-biome-api-v1',
 	':fabric-command-api-v2',
-	':fabric-rendering-v1'
+	':fabric-rendering-v1',
+	':fabric-client-gametest-api-v1'
 ])

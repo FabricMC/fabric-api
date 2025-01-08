@@ -27,6 +27,8 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
 public class SetAttachmentFeature extends Feature<DefaultFeatureConfig> {
+	public static boolean featurePlaced;
+
 	public SetAttachmentFeature(Codec<DefaultFeatureConfig> codec) {
 		super(codec);
 	}
@@ -36,13 +38,13 @@ public class SetAttachmentFeature extends Feature<DefaultFeatureConfig> {
 		Chunk chunk = context.getWorld().getChunk(context.getOrigin());
 
 		if (chunk.getPos().equals(new ChunkPos(0, 0))) {
-			AttachmentTestMod.featurePlaced = true;
+			featurePlaced = true;
 
 			if (!(chunk instanceof ProtoChunk) || chunk instanceof WrapperProtoChunk) {
 				AttachmentTestMod.LOGGER.warn("Feature not attaching to ProtoChunk");
 			}
 
-			chunk.setAttached(AttachmentTestMod.FEATURE_ATTACHMENT, "feature");
+			chunk.setAttached(AttachmentTestMod.FEATURE_ATTACHMENT, "feature_data");
 		}
 
 		return true;

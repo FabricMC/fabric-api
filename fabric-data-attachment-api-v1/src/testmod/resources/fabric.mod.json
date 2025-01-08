@@ -15,19 +15,16 @@
     "main": [
       "net.fabricmc.fabric.test.attachment.AttachmentTestMod"
     ],
-    "client": [
-      "net.fabricmc.fabric.test.attachment.client.AttachmentTestModClient"
-    ],
     "fabric-gametest": [
       "net.fabricmc.fabric.test.attachment.gametest.AttachmentCopyTests",
       "net.fabricmc.fabric.test.attachment.gametest.BlockEntityTests"
+    ],
+    "fabric-client-gametest": [
+      "net.fabricmc.fabric.test.attachment.client.gametest.PersistenceGametest",
+      "net.fabricmc.fabric.test.attachment.client.gametest.SyncGametest"
     ]
   },
   "mixins": [
-    "fabric-data-attachment-api-v1-testmod.mixins.json",
-    {
-      "config": "fabric-data-attachment-api-v1-testmod.client.mixins.json",
-      "environment": "client"
-    }
+    "fabric-data-attachment-api-v1-testmod.mixins.json"
   ]
 }
