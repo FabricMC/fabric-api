@@ -134,7 +134,7 @@ public final class ConventionalBlockTags {
 	/**
 	 * Contains living ground-based flowers that are 1 block tall such as Dandelions or Poppy.
 	 * Equivalent to the "minecraft:small_flowers" block tag.
-	 * Aliased with {@link BlockTags#SMALL_FLOWERS}.
+	 * This is NOT aliased with {@link BlockTags#SMALL_FLOWERS} because the vanilla tag is used to make the block weak to swords.
 	 */
 	public static final TagKey<Block> SMALL_FLOWERS = register("flowers/small");
 	/**

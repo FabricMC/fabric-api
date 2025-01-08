@@ -719,7 +719,6 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		aliasGroup("fences/wooden").add(BlockTags.WOODEN_FENCES, ConventionalBlockTags.WOODEN_FENCES);
 		aliasGroup("fence_gates").add(BlockTags.FENCE_GATES, ConventionalBlockTags.FENCE_GATES);
 
-		aliasGroup("flowers/small").add(BlockTags.SMALL_FLOWERS, ConventionalBlockTags.SMALL_FLOWERS);
 		aliasGroup("flowers").add(BlockTags.FLOWERS, ConventionalBlockTags.FLOWERS);
 	}
 
