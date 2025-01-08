@@ -77,7 +77,7 @@ public final class DedicatedServerImplUtil {
 			serverFuture = null;
 		}
 
-		context.waitFor(client -> ThreadingImpl.isServerRunning);
+		context.waitFor(client -> ThreadingImpl.isServerRunning && ThreadingImpl.serverCanAcceptTasks);
 		return server;
 	}
 
