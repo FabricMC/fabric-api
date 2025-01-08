@@ -100,7 +100,7 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 			DedicatedServerImplUtil.saveLevelDataTo = null;
 		}
 
-		MinecraftDedicatedServer server = DedicatedServerImplUtil.start(serverProperties);
+		MinecraftDedicatedServer server = DedicatedServerImplUtil.start(context, serverProperties);
 		return new TestDedicatedServerContextImpl(context, server);
 	}
 
