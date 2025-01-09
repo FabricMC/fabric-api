@@ -16,73 +16,170 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.BOSSBAR;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.CHAT;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.CROSSHAIR;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.DEBUG_HUD;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.DEMO_TIMER;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.EXPERIENCE_LEVEL;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.MAIN_HUD;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.MISC_OVERLAYS;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.OVERLAY_MESSAGE;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.PLAYER_LIST;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.SCOREBOARD;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.SLEEP;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.STAUS_EFFECTS;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.SUBTITLES;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.TITLE_AND_SUBTITLE;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	// Targeting the first addLayer call of the first layered drawer, currently the misc overlays layer (renderMiscOverlays) as of 1.21.
-	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 0))
-	private LayeredDrawer.Layer fabric$beforeStartAndAfterMiscOverlays(LayeredDrawer.Layer miscOverlaysLayer) {
-		return (context, tickCounter) -> {
-			HudRenderEvents.START.invoker().render(context, tickCounter);
-			miscOverlaysLayer.render(context, tickCounter);
-			HudRenderEvents.AFTER_MISC_OVERLAYS.invoker().render(context, tickCounter);
-		};
-	}
-
-	// Targeting the last addLayer call of the first layered drawer, which is after the main hud, currently the boss bar layer (bossBarHud.render) as of 1.21.
-	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
-	private LayeredDrawer.Layer fabric$afterMainHudExperienceLevelStatusEffectOverlayAndBossBar(LayeredDrawer.Layer experienceLevelLayer) {
-		return (context, tickCounter) -> {
-			experienceLevelLayer.render(context, tickCounter);
-			HudRenderEvents.AFTER_MAIN_HUD.invoker().render(context, tickCounter);
-		};
-	}
-
-	// Targeting the first addLayer call of the second layered drawer, currently the demo timer layer (renderDemoTimer) as of 1.21.
-	@ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 0))
-	private LayeredDrawer.Layer fabric$afterSleepOverlay(LayeredDrawer.Layer demoTimerLayer) {
-		return (context, tickCounter) -> {
-			HudRenderEvents.AFTER_SLEEP_OVERLAY.invoker().render(context, tickCounter);
-			demoTimerLayer.render(context, tickCounter);
-		};
-	}
-
-	// Targeting the chat layer (renderChat), currently the sixth addLayer call of the second layered drawer as of 1.21.
-	@ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 5))
-	private LayeredDrawer.Layer fabric$beforeChat(LayeredDrawer.Layer beforeChatLayer) {
-		return (context, tickCounter) -> {
-			HudRenderEvents.BEFORE_CHAT.invoker().render(context, tickCounter);
-			beforeChatLayer.render(context, tickCounter);
-		};
-	}
-
-	// Targeting the last addLayer call of the second layered drawer, currently the subtitles hud layer (subtitlesHud.render) as of 1.21.
-	@ModifyArg(method = "<init>", slice = @Slice(from = @At(value = "NEW", target = "Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 2)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addLayer(Lnet/minecraft/client/gui/LayeredDrawer$Layer;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 7))
-	private LayeredDrawer.Layer fabric$afterSubtitlesHud(LayeredDrawer.Layer subtitlesHudLayer) {
-		return (context, tickCounter) -> {
-			subtitlesHudLayer.render(context, tickCounter);
-			HudRenderEvents.LAST.invoker().render(context, tickCounter);
-		};
-	}
-
-	// Inject after the HUD is rendered. Deprecated in favor of HudRenderEvents.
-	@Deprecated
 	@Inject(method = "render", at = @At(value = "TAIL"))
 	public void render(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo callbackInfo) {
 		HudRenderCallback.EVENT.invoker().onHudRender(drawContext, tickCounter);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMiscOverlays(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapMiscOverlays(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(MISC_OVERLAYS, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderCrosshair(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapCrosshair(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(CROSSHAIR, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMainHud(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapMainHud(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(MAIN_HUD, instance, layer);
+	}
+
+	// renderExperienceLevel
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderExperienceLevel(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapExperienceLevel(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(EXPERIENCE_LEVEL, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderStatusEffectOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapStatusEffects(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(STAUS_EFFECTS, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;method_55808(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapbossBarHud(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(BOSSBAR, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderDemoTimer(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapDemoTimer(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(DEMO_TIMER, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;method_55807(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapDebugHud(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(DEBUG_HUD, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapScoreboard(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(SCOREBOARD, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderOverlayMessage(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapOverlayMessage(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(OVERLAY_MESSAGE, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderTitleAndSubtitle(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapTitleAndSubtitle(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(TITLE_AND_SUBTITLE, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderChat(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapChat(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(CHAT, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderPlayerList(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapPlayerList(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(PLAYER_LIST, instance, layer);
+	}
+
+	@Redirect(method = "<init>", at = @At(
+			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+			target = "Lnet/minecraft/client/gui/hud/InGameHud;method_55806(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+	)
+	private LayeredDrawer wrapSubtitlesHud(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(SUBTITLES, instance, layer);
+	}
+
+	@Redirect(method = "<init>",
+			at = @At(
+				value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
+				target = "Lnet/minecraft/client/gui/hud/InGameHud;renderSleepOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"
+			)
+	)
+	private LayeredDrawer wrapSleepOverlay(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(SLEEP, instance, layer);
+	}
+
+	@Unique
+	private static LayeredDrawer wrap(Identifier identifier, LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return instance.addLayer(IdentifiedLayer.wrapping(identifier, layer));
 	}
 }
