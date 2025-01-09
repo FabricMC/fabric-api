@@ -29,6 +29,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
@@ -113,7 +114,14 @@ public class AttachmentSync implements ModInitializer {
 			}
 		});
 
-		// entity tracking handled in EntityTrackerEntryMixin instead, see comment
+		EntityTrackingEvents.START_TRACKING.register((trackedEntity, player) -> {
+			List<AttachmentChange> changes = new ArrayList<>();
+			((AttachmentTargetImpl) trackedEntity).fabric_computeInitialSyncChanges(player, changes::add);
+
+			if (!changes.isEmpty()) {
+				AttachmentChange.partitionAndSendPackets(changes, player);
+			}
+		});
 	}
 
 	private record AttachmentSyncTask() implements ServerPlayerConfigurationTask {
