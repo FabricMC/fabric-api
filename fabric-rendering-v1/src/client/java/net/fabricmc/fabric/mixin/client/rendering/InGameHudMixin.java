@@ -28,11 +28,17 @@ import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.OVERLA
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.PLAYER_LIST;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.SCOREBOARD;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.SLEEP;
-import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.STAUS_EFFECTS;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.STATUS_EFFECTS;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.SUBTITLES;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.TITLE_AND_SUBTITLE;
 
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+
+import net.fabricmc.fabric.impl.client.rendering.FabricLayeredDrawerImpl;
+
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -50,6 +56,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
+	@Shadow
+	@Final
+	private LayeredDrawer layeredDrawer;
+
 	@Inject(method = "render", at = @At(value = "TAIL"))
 	public void render(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo callbackInfo) {
 		HudRenderCallback.EVENT.invoker().onHudRender(drawContext, tickCounter);
@@ -93,7 +103,7 @@ public class InGameHudMixin {
 			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderStatusEffectOverlay(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
 	)
 	private LayeredDrawer wrapStatusEffects(LayeredDrawer instance, LayeredDrawer.Layer layer) {
-		return wrap(STAUS_EFFECTS, instance, layer);
+		return wrap(STATUS_EFFECTS, instance, layer);
 	}
 
 	@Redirect(method = "<init>", at = @At(
@@ -181,5 +191,10 @@ public class InGameHudMixin {
 	@Unique
 	private static LayeredDrawer wrap(Identifier identifier, LayeredDrawer instance, LayeredDrawer.Layer layer) {
 		return instance.addLayer(IdentifiedLayer.wrapping(identifier, layer));
+	}
+
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void fabric$registerLayers(CallbackInfo ci) {
+		HudLayerRegistrationCallback.EVENT.invoker().register(new FabricLayeredDrawerImpl(layeredDrawer));
 	}
 }

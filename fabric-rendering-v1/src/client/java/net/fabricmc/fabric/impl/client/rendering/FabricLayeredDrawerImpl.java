@@ -44,25 +44,25 @@ public class FabricLayeredDrawerImpl implements FabricLayeredDrawer {
 	}
 
 	@Override
-	public FabricLayeredDrawer addLayerAfter(IdentifiedLayer layer, Identifier identifier) {
+	public FabricLayeredDrawer addLayerAfter(Identifier after, IdentifiedLayer layer) {
 		validateUnique(layer);
 
-		boolean didChange = findLayer(identifier, (l, iterator) -> {
+		boolean didChange = findLayer(after, (l, iterator) -> {
 			iterator.add(layer);
 			return true;
 		});
 
 		if (!didChange) {
-			throw new IllegalArgumentException("Layer with identifier " + identifier + " not found");
+			throw new IllegalArgumentException("Layer with identifier " + after + " not found");
 		}
 
 		return this;
 	}
 
 	@Override
-	public FabricLayeredDrawer addLayerBefore(IdentifiedLayer layer, Identifier identifier) {
+	public FabricLayeredDrawer addLayerBefore(Identifier before, IdentifiedLayer layer) {
 		validateUnique(layer);
-		boolean didChange = findLayer(identifier, (l, iterator) -> {
+		boolean didChange = findLayer(before, (l, iterator) -> {
 			iterator.previous();
 			iterator.add(layer);
 			iterator.next();
@@ -70,7 +70,7 @@ public class FabricLayeredDrawerImpl implements FabricLayeredDrawer {
 		});
 
 		if (!didChange) {
-			throw new IllegalArgumentException("Layer with identifier " + identifier + " not found");
+			throw new IllegalArgumentException("Layer with identifier " + before + " not found");
 		}
 
 		return this;

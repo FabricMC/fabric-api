@@ -25,9 +25,17 @@ import net.minecraft.util.Identifier;
 public interface FabricLayeredDrawer {
 	FabricLayeredDrawer addLayer(IdentifiedLayer layer);
 
-	FabricLayeredDrawer addLayerAfter(IdentifiedLayer layer, Identifier identifier);
+	FabricLayeredDrawer addLayerBefore(Identifier before, IdentifiedLayer layer);
 
-	FabricLayeredDrawer addLayerBefore(IdentifiedLayer layer, Identifier identifier);
+	default FabricLayeredDrawer addLayerBefore(Identifier before, Identifier identifier, LayeredDrawer.Layer layer) {
+		return addLayerBefore(before, IdentifiedLayer.wrapping(identifier, layer));
+	}
+
+	FabricLayeredDrawer addLayerAfter(Identifier after, IdentifiedLayer layer);
+
+	default FabricLayeredDrawer addLayerAfter(Identifier after, Identifier identifier, LayeredDrawer.Layer layer) {
+		return addLayerAfter(after, IdentifiedLayer.wrapping(identifier, layer));
+	}
 
 	FabricLayeredDrawer removeLayer(Identifier identifier);
 

@@ -26,7 +26,7 @@ public interface IdentifiedLayer extends LayeredDrawer.Layer {
 	Identifier CROSSHAIR = Identifier.ofVanilla("crosshair");
 	Identifier MAIN_HUD = Identifier.ofVanilla("main_hud");
 	Identifier EXPERIENCE_LEVEL = Identifier.ofVanilla("experience_level");
-	Identifier STAUS_EFFECTS = Identifier.ofVanilla("status_effects");
+	Identifier STATUS_EFFECTS = Identifier.ofVanilla("status_effects");
 	Identifier BOSSBAR = Identifier.ofVanilla("bossbar");
 	Identifier DEMO_TIMER = Identifier.ofVanilla("demo_timer");
 	Identifier DEBUG_HUD = Identifier.ofVanilla("debug_hud");

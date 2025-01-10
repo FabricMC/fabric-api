@@ -61,7 +61,7 @@ public class FabricLayeredDrawerTest {
 		layers.addLayer(testLayer("layer1"))
 				.addLayer(testLayer("layer2"));
 
-		layers.addLayerAfter(testLayer("after1"), Identifier.of("test", "layer1"));
+		layers.addLayerAfter(Identifier.of("test", "layer1"), testLayer("after1"));
 
 		assertOrder(base, List.of("layer1", "after1", "layer2"));
 	}
@@ -77,7 +77,7 @@ public class FabricLayeredDrawerTest {
 				.addSubDrawer(Identifier.of("test", "sublayer"), subLayer, () -> true)
 				.addLayer(testLayer("layer2"));
 
-		layers.addLayerAfter(testLayer("after1"), Identifier.of("test", "subdrawer1"));
+		layers.addLayerAfter(Identifier.of("test", "subdrawer1"), testLayer("after1"));
 
 		assertOrder(base, List.of("layer1", "subdrawer1", "after1", "subdrawer2", "layer2"));
 	}
