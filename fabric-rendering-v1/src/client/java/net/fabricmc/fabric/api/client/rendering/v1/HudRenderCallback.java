@@ -23,7 +23,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * @deprecated Use {@link HudRenderEvents} instead. For the closest equivalent, use {@link HudRenderEvents#LAST}.
+ * @deprecated Use {@link HudLayerRegistrationCallback} instead. For the closest equivalent, register a layer after {@link IdentifiedLayer#SUBTITLES}.
  */
 @Deprecated
 public interface HudRenderCallback {
