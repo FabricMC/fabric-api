@@ -22,6 +22,9 @@ import java.util.function.Function;
 import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.util.Identifier;
 
+/**
+ * A layered drawer that has an identifier attached to each layer and methods to add layers in specific positions.
+ */
 public interface FabricLayeredDrawer {
 	FabricLayeredDrawer addLayer(IdentifiedLayer layer);
 

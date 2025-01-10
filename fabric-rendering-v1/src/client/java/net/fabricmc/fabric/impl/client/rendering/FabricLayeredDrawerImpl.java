@@ -36,6 +36,10 @@ public class FabricLayeredDrawerImpl implements FabricLayeredDrawer {
 		this.base = base;
 	}
 
+	private static List<LayeredDrawer.Layer> getLayers(LayeredDrawer drawer) {
+		return ((LayeredDrawerAccessor) drawer).getLayers();
+	}
+
 	@Override
 	public FabricLayeredDrawer addLayer(IdentifiedLayer layer) {
 		validateUnique(layer);
@@ -121,8 +125,19 @@ public class FabricLayeredDrawerImpl implements FabricLayeredDrawer {
 		});
 	}
 
-	private boolean matchesIdentifier(LayeredDrawer.Layer layer, Identifier identifier) {
-		return layer instanceof IdentifiedLayer il && il.id().equals(identifier);
+	private boolean findLayer(Identifier identifier, LayerVisitor visitor) {
+		AtomicBoolean didFind = new AtomicBoolean(false);
+
+		visitLayers((l, iterator) -> {
+			if (matchesIdentifier(l, identifier)) {
+				didFind.set(true);
+				visitor.visit(l, iterator);
+			}
+
+			return true;
+		});
+
+		return didFind.get();
 	}
 
 	private void visitLayers(LayerVisitor visitor) {
@@ -146,27 +161,14 @@ public class FabricLayeredDrawerImpl implements FabricLayeredDrawer {
 		}
 	}
 
-	private boolean findLayer(Identifier identifier, LayerVisitor visitor) {
-		AtomicBoolean didFind = new AtomicBoolean(false);
-
-		visitLayers((l, iterator) -> {
-			if (l instanceof IdentifiedLayer il && il.id().equals(identifier)) {
-				didFind.set(true);
-				visitor.visit(l, iterator);
-			}
-
-			return true;
-		});
-
-		return didFind.get();
-	}
-
-	private static List<LayeredDrawer.Layer> getLayers(LayeredDrawer drawer) {
-		return ((LayeredDrawerAccessor) drawer).getLayers();
+	private static boolean matchesIdentifier(LayeredDrawer.Layer layer, Identifier identifier) {
+		return layer instanceof IdentifiedLayer il && il.id().equals(identifier);
 	}
 
 	private interface LayerVisitor {
-		// When returns false remove the layer
+		/**
+		 * @return false to remove the layer, true to keep it
+		 */
 		boolean visit(LayeredDrawer.Layer layer, ListIterator<LayeredDrawer.Layer> iterator);
 	}
 }

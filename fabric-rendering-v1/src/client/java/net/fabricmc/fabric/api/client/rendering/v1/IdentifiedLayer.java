@@ -37,6 +37,8 @@ public interface IdentifiedLayer extends LayeredDrawer.Layer {
 	Identifier PLAYER_LIST = Identifier.ofVanilla("player_list");
 	Identifier SUBTITLES = Identifier.ofVanilla("subtitles");
 	Identifier SLEEP = Identifier.ofVanilla("sleep");
+	Identifier SUB_DRAWER_1 = Identifier.ofVanilla("sub_drawer_1");
+	Identifier SUB_DRAWER_2 = Identifier.ofVanilla("sub_drawer_2");
 
 	Identifier id();
 
