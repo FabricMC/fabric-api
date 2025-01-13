@@ -31,6 +31,7 @@
     "CreateWorldScreenMixin",
     "FramebufferMixin",
     "MonitorTrackerMixin",
+    "NativeImageMixin",
     "RenderTickCounterConstantAccessor"
   ]
 }

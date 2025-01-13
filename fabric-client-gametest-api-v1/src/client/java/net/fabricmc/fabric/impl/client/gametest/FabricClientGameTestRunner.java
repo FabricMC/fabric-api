@@ -24,25 +24,32 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
 public class FabricClientGameTestRunner {
 	private static final String ENTRYPOINT_KEY = "fabric-client-gametest";
+
+	public static EntrypointContainer<FabricClientGameTest> currentlyRunningGameTest = null;
 
 	public static void start() {
 		// make the game think the window is focused
 		MinecraftClient.getInstance().onWindowFocusChanged(true);
 
-		List<FabricClientGameTest> gameTests = FabricLoader.getInstance().getEntrypoints(ENTRYPOINT_KEY, FabricClientGameTest.class);
+		List<EntrypointContainer<FabricClientGameTest>> gameTests = FabricLoader.getInstance().getEntrypointContainers(ENTRYPOINT_KEY, FabricClientGameTest.class);
 
 		ThreadingImpl.runTestThread(() -> {
 			ClientGameTestContextImpl context = new ClientGameTestContextImpl();
 
-			for (FabricClientGameTest gameTest : gameTests) {
-				setupInitialGameTestState(context);
+			for (EntrypointContainer<FabricClientGameTest> gameTest : gameTests) {
+				currentlyRunningGameTest = gameTest;
 
-				gameTest.runTest(context);
-
-				setupAndCheckFinalGameTestState(context, gameTest.getClass().getName());
+				try {
+					setupInitialGameTestState(context);
+					gameTest.getEntrypoint().runTest(context);
+					setupAndCheckFinalGameTestState(context);
+				} finally {
+					currentlyRunningGameTest = null;
+				}
 			}
 		});
 	}
@@ -51,22 +58,22 @@ public class FabricClientGameTestRunner {
 		context.restoreDefaultGameOptions();
 	}
 
-	private static void setupAndCheckFinalGameTestState(ClientGameTestContextImpl context, String testClassName) {
+	private static void setupAndCheckFinalGameTestState(ClientGameTestContextImpl context) {
 		context.getInput().clearKeysDown();
 		context.runOnClient(client -> ((WindowHooks) (Object) client.getWindow()).fabric_resetSize());
 		context.getInput().setCursorPos(context.computeOnClient(client -> client.getWindow().getWidth()) * 0.5, context.computeOnClient(client -> client.getWindow().getHeight()) * 0.5);
 
 		if (ThreadingImpl.isServerRunning) {
-			throw new AssertionError("Client gametest %s finished while a server is still running".formatted(testClassName));
+			throw new AssertionError("Client gametest %s finished while a server is still running".formatted(currentlyRunningGameTest.getDefinition()));
 		}
 
 		context.runOnClient(client -> {
 			if (client.world != null) {
-				throw new AssertionError("Client gametest %s finished while still connected to a server".formatted(testClassName));
+				throw new AssertionError("Client gametest %s finished while still connected to a server".formatted(currentlyRunningGameTest.getDefinition()));
 			}
 
 			if (!(client.currentScreen instanceof TitleScreen)) {
-				throw new AssertionError("Client gametest %s did not finish on the title screen".formatted(testClassName));
+				throw new AssertionError("Client gametest %s did not finish on the title screen".formatted(currentlyRunningGameTest.getDefinition()));
 			}
 		});
 	}

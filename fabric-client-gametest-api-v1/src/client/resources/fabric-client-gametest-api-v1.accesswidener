@@ -1,3 +1,5 @@
 accessWidener v2 named
 accessible class net/minecraft/client/option/GameOptions$Visitor
+accessible class net/minecraft/client/texture/NativeImage$WriteCallback
+accessible method net/minecraft/client/texture/NativeImage$WriteCallback <init> (Ljava/nio/channels/WritableByteChannel;)V
 accessible class net/minecraft/client/world/ClientChunkManager$ClientChunkMap

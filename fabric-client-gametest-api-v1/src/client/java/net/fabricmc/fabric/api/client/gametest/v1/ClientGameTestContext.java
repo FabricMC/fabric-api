@@ -116,7 +116,9 @@ public interface ClientGameTestContext {
 	 * @param name The name of the screenshot
 	 * @return The {@link Path} to the screenshot
 	 */
-	Path takeScreenshot(String name);
+	default Path takeScreenshot(String name) {
+		return takeScreenshot(TestScreenshotOptions.of(name));
+	}
 
 	/**
 	 * Takes a screenshot with the given options.
@@ -125,6 +127,18 @@ public interface ClientGameTestContext {
 	 * @return The {@link Path} to the screenshot
 	 */
 	Path takeScreenshot(TestScreenshotOptions options);
+
+	default void assertScreenshotEquals(String templateImage) {
+		assertScreenshotEquals(TestScreenshotComparisonOptions.of(templateImage));
+	}
+
+	void assertScreenshotEquals(TestScreenshotComparisonOptions options);
+
+	default void assertScreenshotContains(String templateImage) {
+		assertScreenshotContains(TestScreenshotComparisonOptions.of(templateImage));
+	}
+
+	void assertScreenshotContains(TestScreenshotComparisonOptions options);
 
 	/**
 	 * Gets the input handler used to simulate inputs to the client.

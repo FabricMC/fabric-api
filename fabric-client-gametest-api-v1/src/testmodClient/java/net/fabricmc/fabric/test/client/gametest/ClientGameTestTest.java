@@ -35,6 +35,7 @@ import net.minecraft.client.util.InputUtil;
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.TestDedicatedServerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.TestScreenshotComparisonOptions;
 import net.fabricmc.fabric.api.client.gametest.v1.TestServerConnection;
 import net.fabricmc.fabric.api.client.gametest.v1.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.TestWorldSave;
@@ -45,6 +46,11 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		{
 			waitForTitleScreenFade(context);
 			context.takeScreenshot("title_screen");
+			context.assertScreenshotContains("sound_button");
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("sound_button")
+					.withColor()
+					.withRegion(430, 312, 144, 40));
+			assertThrows(() -> context.assertScreenshotContains("doesnt_exist"));
 		}
 
 		{
@@ -148,5 +154,15 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
+	}
+
+	private static void assertThrows(Runnable runnable) {
+		try {
+			runnable.run();
+		} catch (Throwable t) {
+			return;
+		}
+
+		throw new AssertionError("Expected exception to be thrown");
 	}
 }

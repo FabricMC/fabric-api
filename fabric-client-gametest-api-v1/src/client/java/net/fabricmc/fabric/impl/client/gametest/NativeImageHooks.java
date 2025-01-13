@@ -16,12 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.gametest;
 
-import net.fabricmc.fabric.api.client.gametest.v1.TestScreenshotOptions;
-
-public final class TestScreenshotOptionsImpl extends TestScreenshotCommonOptionsImpl<TestScreenshotOptions> implements TestScreenshotOptions {
-	public final String name;
-
-	public TestScreenshotOptionsImpl(String name) {
-		this.name = name;
-	}
+public interface NativeImageHooks {
+	byte[] fabric_copyPixelsLuminance();
+	int[] fabric_copyPixelsRgb();
 }

@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -32,6 +33,8 @@ import org.apache.commons.lang3.function.FailableFunction;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
@@ -47,11 +50,14 @@ import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.tutorial.TutorialStep;
 import net.minecraft.client.util.ScreenshotRecorder;
+import net.minecraft.client.util.math.Rect2i;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Nullables;
 
 import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.TestScreenshotComparisonAlgorithm;
+import net.fabricmc.fabric.api.client.gametest.v1.TestScreenshotComparisonOptions;
 import net.fabricmc.fabric.api.client.gametest.v1.TestScreenshotOptions;
 import net.fabricmc.fabric.api.client.gametest.v1.TestWorldBuilder;
 import net.fabricmc.fabric.mixin.client.gametest.CyclingButtonWidgetAccessor;
@@ -61,6 +67,10 @@ import net.fabricmc.fabric.mixin.client.gametest.ScreenAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class ClientGameTestContextImpl implements ClientGameTestContext {
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
+	@Nullable
+	private static final String TEST_MOD_RESOURCES_PATH = System.getProperty("fabric.client.gametest.testModResourcesPath");
+
 	private final TestInputImpl input = new TestInputImpl(this);
 
 	private static final Map<String, Object> DEFAULT_GAME_OPTIONS = new HashMap<>();
@@ -265,59 +275,143 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	@Override
-	public Path takeScreenshot(String name) {
-		ThreadingImpl.checkOnGametestThread("takeScreenshot");
-		Preconditions.checkNotNull(name, "name");
-		return takeScreenshot(TestScreenshotOptions.of(name));
-	}
-
-	@Override
 	public Path takeScreenshot(TestScreenshotOptions options) {
 		ThreadingImpl.checkOnGametestThread("takeScreenshot");
 		Preconditions.checkNotNull(options, "options");
 
 		TestScreenshotOptionsImpl optionsImpl = (TestScreenshotOptionsImpl) options;
 		return computeOnClient(client -> {
-			int prevWidth = client.getWindow().getFramebufferWidth();
-			int prevHeight = client.getWindow().getFramebufferHeight();
-
-			if (optionsImpl.size != null) {
-				client.getWindow().setFramebufferWidth(optionsImpl.size.x);
-				client.getWindow().setFramebufferHeight(optionsImpl.size.y);
-				client.getFramebuffer().resize(optionsImpl.size.x, optionsImpl.size.y);
+			try (NativeImage screenshot = doTakeScreenshot(client, optionsImpl)) {
+				return saveScreenshot(screenshot, optionsImpl.name, optionsImpl);
 			}
+		});
+	}
 
-			try {
-				client.gameRenderer.render(RenderTickCounterConstantAccessor.create(optionsImpl.tickDelta), true);
+	@Override
+	public void assertScreenshotEquals(TestScreenshotComparisonOptions options) {
+		ThreadingImpl.checkOnGametestThread("assertScreenshotEquals");
+		Preconditions.checkNotNull(options, "options");
+		doAssertScreenshotContains(options, (haystackImage, needleImage) -> haystackImage.width() == needleImage.width() && haystackImage.height() == needleImage.height());
+	}
 
-				// The vanilla panorama screenshot code has a Thread.sleep(10) here, is this needed?
+	@Override
+	public void assertScreenshotContains(TestScreenshotComparisonOptions options) {
+		ThreadingImpl.checkOnGametestThread("assertScreenshotContains");
+		Preconditions.checkNotNull(options, "options");
+		doAssertScreenshotContains(options, (haystackImage, needleImage) -> true);
+	}
 
-				Path destinationDir = Objects.requireNonNullElseGet(optionsImpl.destinationDir, () -> FabricLoader.getInstance().getGameDir().resolve("screenshots"));
+	private void doAssertScreenshotContains(
+			TestScreenshotComparisonOptions options,
+			BiPredicate<TestScreenshotComparisonAlgorithm.RawImage<?>, TestScreenshotComparisonAlgorithm.RawImage<?>> preCheck
+	) {
+		TestScreenshotComparisonOptionsImpl optionsImpl = (TestScreenshotComparisonOptionsImpl) options;
+		runOnClient(client -> {
+			try (NativeImage screenshot = doTakeScreenshot(client, optionsImpl)) {
+				Rect2i region = optionsImpl.region == null ? new Rect2i(0, 0, screenshot.getWidth(), screenshot.getHeight()) : optionsImpl.region;
+				Preconditions.checkState(region.getX() + region.getWidth() <= screenshot.getWidth() && region.getY() + region.getHeight() <= screenshot.getHeight(), "Screenshot comparison region extends outside the screenshot");
 
-				try {
-					Files.createDirectories(destinationDir);
-				} catch (IOException e) {
-					throw new AssertionError("Failed to create screenshots directory", e);
-				}
+				try (NativeImage subScreenshot = new NativeImage(region.getWidth(), region.getHeight(), false)) {
+					screenshot.resizeSubRectTo(region.getX(), region.getY(), region.getWidth(), region.getHeight(), subScreenshot);
 
-				String counterPrefix = optionsImpl.counterPrefix ? "%04d_".formatted(ClientGameTestImpl.screenshotCounter++) : "";
-				Path screenshotFile = destinationDir.resolve(counterPrefix + optionsImpl.name + ".png");
+					if (optionsImpl.savedFileName != null) {
+						saveScreenshot(subScreenshot, optionsImpl.savedFileName, optionsImpl);
+					}
 
-				try (NativeImage screenshot = ScreenshotRecorder.takeScreenshot(client.getFramebuffer())) {
-					screenshot.writeTo(screenshotFile);
-				} catch (IOException e) {
-					throw new AssertionError("Failed to write screenshot file", e);
-				}
+					boolean result;
 
-				return screenshotFile;
-			} finally {
-				if (optionsImpl.size != null) {
-					client.getWindow().setFramebufferWidth(prevWidth);
-					client.getWindow().setFramebufferHeight(prevHeight);
-					client.getFramebuffer().resize(prevWidth, prevHeight);
+					if (optionsImpl.grayscale) {
+						TestScreenshotComparisonAlgorithm.RawImage<byte[]> templateImage = optionsImpl.getGrayscaleTemplateImage();
+
+						if (templateImage == null) {
+							onTemplateImageDoesntExist(subScreenshot, optionsImpl);
+							return;
+						}
+
+						TestScreenshotComparisonAlgorithm.RawImage<byte[]> haystackImage = TestScreenshotComparisonAlgorithms.RawImageImpl.fromGrayscaleNativeImage(subScreenshot);
+						result = preCheck.test(haystackImage, templateImage) && optionsImpl.algorithm.findGrayscale(haystackImage, templateImage);
+					} else {
+						TestScreenshotComparisonAlgorithm.RawImage<int[]> templateImage = optionsImpl.getColorTemplateImage();
+
+						if (templateImage == null) {
+							onTemplateImageDoesntExist(subScreenshot, optionsImpl);
+							return;
+						}
+
+						TestScreenshotComparisonAlgorithm.RawImage<int[]> haystackImage = TestScreenshotComparisonAlgorithms.RawImageImpl.fromColorNativeImage(subScreenshot);
+						result = preCheck.test(haystackImage, templateImage) && optionsImpl.algorithm.findColor(haystackImage, templateImage);
+					}
+
+					if (!result) {
+						throw new AssertionError("Screenshot does not contain template");
+					}
 				}
 			}
 		});
+	}
+
+	private static NativeImage doTakeScreenshot(MinecraftClient client, TestScreenshotCommonOptionsImpl<?> options) {
+		int prevWidth = client.getWindow().getFramebufferWidth();
+		int prevHeight = client.getWindow().getFramebufferHeight();
+
+		if (options.size != null) {
+			client.getWindow().setFramebufferWidth(options.size.x);
+			client.getWindow().setFramebufferHeight(options.size.y);
+			client.getFramebuffer().resize(options.size.x, options.size.y);
+		}
+
+		try {
+			client.gameRenderer.render(RenderTickCounterConstantAccessor.create(options.tickDelta), true);
+
+			// The vanilla panorama screenshot code has a Thread.sleep(10) here, is this needed?
+
+			return ScreenshotRecorder.takeScreenshot(client.getFramebuffer());
+		} finally {
+			if (options.size != null) {
+				client.getWindow().setFramebufferWidth(prevWidth);
+				client.getWindow().setFramebufferHeight(prevHeight);
+				client.getFramebuffer().resize(prevWidth, prevHeight);
+			}
+		}
+	}
+
+	private static Path saveScreenshot(NativeImage screenshot, String fileName, TestScreenshotCommonOptionsImpl<?> options) {
+		Path destinationDir = Objects.requireNonNullElseGet(options.destinationDir, () -> FabricLoader.getInstance().getGameDir().resolve("screenshots"));
+
+		try {
+			Files.createDirectories(destinationDir);
+		} catch (IOException e) {
+			throw new AssertionError("Failed to create screenshots directory", e);
+		}
+
+		String counterPrefix = options.counterPrefix ? "%04d_".formatted(ClientGameTestImpl.screenshotCounter++) : "";
+		Path screenshotFile = destinationDir.resolve(counterPrefix + fileName + ".png");
+
+		try {
+			screenshot.writeTo(screenshotFile);
+		} catch (IOException e) {
+			throw new AssertionError("Failed to write screenshot file", e);
+		}
+
+		return screenshotFile;
+	}
+
+	private static void onTemplateImageDoesntExist(NativeImage subScreenshot, TestScreenshotComparisonOptionsImpl options) {
+		if (TEST_MOD_RESOURCES_PATH != null) {
+			Path savePath = Path.of(TEST_MOD_RESOURCES_PATH).resolve("templates").resolve(options.getTemplateImagePath() + ".png");
+
+			try {
+				Files.createDirectories(savePath.getParent());
+				subScreenshot.writeTo(savePath);
+			} catch (IOException e) {
+				throw new AssertionError("Failed to write screenshot file", e);
+			}
+
+			LOGGER.info("Written absent screenshot template to {}", savePath);
+		} else {
+			LOGGER.error("The template image does not exist. Set the fabric.client.gametest.testModResourcesPath system property to your test mod resources file path to automatically save it");
+			throw new AssertionError("Template image does not exist");
+		}
 	}
 
 	@Override
