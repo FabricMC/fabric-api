@@ -1,12 +1,12 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Es wurde ein Registrierungseintrag empfangen, der für diesen Client unbekannt ist.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Es wurden %d Registrierungseinträge empfangen, die für diesen Client unbekannt sind.\n",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Dies wird in der Regel durch ein nicht übereinstimmendes Mod-Set zwischen Client und Server verursacht.",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Weitere Einzelheiten siehst du in den Client-Logs.\nDie folgenden Namensräume für Registrierungseinträge könnten miteinander in Verbindung stehen:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "Und %d mehr...",
-  "fabric-registry-sync-v0.unknown-registry.title.singular": "Es wurde eine Registry empfangen, die diesem Client unbekannt ist.\n",
-  "fabric-registry-sync-v0.unknown-registry.title.plural": "Es wurden %d Registries empfangen, die diesem Client unbekannt sind.\n",
+  "fabric-registry-sync-v0.unknown-registry.footer": "Und %d mehr...",
   "fabric-registry-sync-v0.unknown-registry.subtitle.1": "Dies wird in der Regel durch einen nicht übereinstimmenden Mod-Satz zwischen Client und Server verursacht.",
   "fabric-registry-sync-v0.unknown-registry.subtitle.2": " Weitere Einzelheiten findest du in den Client-Logs.\nDie folgenden Registries sind auf dem Client nicht vorhanden:\n\n",
-  "fabric-registry-sync-v0.unknown-registry.footer": "Und %d mehr..."
+  "fabric-registry-sync-v0.unknown-registry.title.plural": "Es wurden %d Registries empfangen, die diesem Client unbekannt sind.\n",
+  "fabric-registry-sync-v0.unknown-registry.title.singular": "Es wurde eine Registry empfangen, die diesem Client unbekannt ist.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "Und %d mehr...",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Dies wird in der Regel durch ein nicht übereinstimmendes Mod-Set zwischen Client und Server verursacht.",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Weitere Einzelheiten siehst du in den Client-Logs.\nDie folgenden Namensräume für Registrierungseinträge könnten miteinander in Verbindung stehen:\n\n",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Es wurden %d Registrierungseinträge empfangen, die für diesen Client unbekannt sind.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Es wurde ein Registrierungseintrag empfangen, der für diesen Client unbekannt ist.\n"
 }
