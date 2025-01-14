@@ -84,9 +84,6 @@ public class SyncGametest implements FabricClientGameTest {
 		serverProps.setProperty("gamemode", "creative");
 
 		try (TestDedicatedServerContext serverContext = context.worldBuilder().createServer(serverProps)) {
-			// wait tick to avoid race condition causing server not to accept tasks
-			context.waitTick();
-
 			var state = new Object() {
 				BlockPos furnacePos;
 				int villagerId;
