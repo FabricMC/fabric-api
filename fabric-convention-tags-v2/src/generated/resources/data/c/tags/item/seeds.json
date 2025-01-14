@@ -17,6 +17,10 @@
       "required": false
     },
     {
+      "id": "#c:seeds/pitcher_plant",
+      "required": false
+    },
+    {
       "id": "#c:seeds/wheat",
       "required": false
     }

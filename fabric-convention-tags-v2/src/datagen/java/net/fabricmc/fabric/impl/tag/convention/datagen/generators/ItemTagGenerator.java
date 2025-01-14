@@ -767,6 +767,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.MELON_SEEDS)
 				.addOptionalTag(ConventionalItemTags.PUMPKIN_SEEDS)
 				.addOptionalTag(ConventionalItemTags.TORCHFLOWER_SEEDS)
+				.addOptionalTag(ConventionalItemTags.PITCHER_PLANT_SEEDS)
 				.addOptionalTag(ConventionalItemTags.WHEAT_SEEDS);
 		getOrCreateTagBuilder(ConventionalItemTags.BEETROOT_SEEDS)
 				.add(Items.BEETROOT_SEEDS);
@@ -776,6 +777,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.PUMPKIN_SEEDS);
 		getOrCreateTagBuilder(ConventionalItemTags.TORCHFLOWER_SEEDS)
 				.add(Items.TORCHFLOWER_SEEDS);
+		getOrCreateTagBuilder(ConventionalItemTags.PITCHER_PLANT_SEEDS)
+				.add(Items.PITCHER_POD);
 		getOrCreateTagBuilder(ConventionalItemTags.WHEAT_SEEDS)
 				.add(Items.WHEAT_SEEDS);
 	}
