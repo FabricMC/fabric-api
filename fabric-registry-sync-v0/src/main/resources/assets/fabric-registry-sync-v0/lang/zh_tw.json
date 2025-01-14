@@ -1,12 +1,12 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "收到一個這個用戶端未知的登錄項目。\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "收到 %d 個這個用戶端未知的登錄項目。\n",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "這通常是由於用戶端和伺服器之間的模組設定不相符所導致。",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " 請查看用戶端記錄檔以取得詳細資訊。\n下列登錄項目命名空間可能相關：\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "以及其他 %d 個...",
-  "fabric-registry-sync-v0.unknown-registry.title.singular": "收到一個這個用戶端未知的登錄。\n",
-  "fabric-registry-sync-v0.unknown-registry.title.plural": "收到 %d 個這個用戶端未知的登錄。\n",
+  "fabric-registry-sync-v0.unknown-registry.footer": "以及其他 %d 個...",
   "fabric-registry-sync-v0.unknown-registry.subtitle.1": "這通常是由於用戶端和伺服器之間的模組設定不相符所導致。",
   "fabric-registry-sync-v0.unknown-registry.subtitle.2": " 請查看用戶端記錄檔以取得詳細資訊。\n下列登錄項目並不存在於用戶端：\n\n",
-  "fabric-registry-sync-v0.unknown-registry.footer": "以及其他 %d 個..."
+  "fabric-registry-sync-v0.unknown-registry.title.plural": "收到 %d 個這個用戶端未知的登錄。\n",
+  "fabric-registry-sync-v0.unknown-registry.title.singular": "收到一個這個用戶端未知的登錄。\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "以及其他 %d 個...",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "這通常是由於用戶端和伺服器之間的模組設定不相符所導致。",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " 請查看用戶端記錄檔以取得詳細資訊。\n下列登錄項目命名空間可能相關：\n\n",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "收到 %d 個這個用戶端未知的登錄項目。\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "收到一個這個用戶端未知的登錄項目。\n"
 }
