@@ -1,12 +1,12 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Ce client a reçu une entrée de registre qui lui est inconnue.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Ce client a reçu %d entrées de registre qui lui sont inconnues.\n",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Ce problème est généralement dû à une différence entre les mods du client et ceux du serveur.",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Voir les logs du client pour plus de détails.\nLes namespaces d'entrée de registre pourraient être liés :\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "Et %d de plus...",
-  "fabric-registry-sync-v0.unknown-registry.title.singular": "Le client a reçu une entrée de registre qui lui est inconnue.\n",
-  "fabric-registry-sync-v0.unknown-registry.title.plural": "Le client a reçu %d entrée de registre qui lui est inconnue.\n",
+  "fabric-registry-sync-v0.unknown-registry.footer": "Et %d de plus...",
   "fabric-registry-sync-v0.unknown-registry.subtitle.1": "Ce problème est généralement dû à une différence entre les mods du client et ceux du serveur.",
   "fabric-registry-sync-v0.unknown-registry.subtitle.2": " Voir les logs du client pour plus de détails.\nLes entrées suivantes ce sont pas présente sur le client :\n\n",
-  "fabric-registry-sync-v0.unknown-registry.footer": "Et %d de plus..."
+  "fabric-registry-sync-v0.unknown-registry.title.plural": "Le client a reçu %d entrée de registre qui lui est inconnue.\n",
+  "fabric-registry-sync-v0.unknown-registry.title.singular": "Le client a reçu une entrée de registre qui lui est inconnue.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "Et %d de plus...",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Ce problème est généralement dû à une différence entre les mods du client et ceux du serveur.",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Voir les logs du client pour plus de détails.\nLes namespaces d'entrée de registre pourraient être liés :\n\n",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Ce client a reçu %d entrées de registre qui lui sont inconnues.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Ce client a reçu une entrée de registre qui lui est inconnue.\n"
 }
