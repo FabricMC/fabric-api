@@ -1,12 +1,12 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "接收到 1 个本客户端未知的注册表项。\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "接收到 %d 个本客户端未知的注册表项。\n",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "这通常是客户端和服务器上安装的模组不一致而造成的。",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " 更多详情见客户端日志。\n以下注册表项命名空间可能有所关系：\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "以及 %d 项未显示……",
-  "fabric-registry-sync-v0.unknown-registry.title.singular": "接收到 1 个本客户端未知的注册表。\n",
-  "fabric-registry-sync-v0.unknown-registry.title.plural": "接收到 %d 个本客户端未知的注册表。\n",
+  "fabric-registry-sync-v0.unknown-registry.footer": "还有 %d 个...",
   "fabric-registry-sync-v0.unknown-registry.subtitle.1": "这通常是客户端和服务器上安装的模组不一致而造成的。",
   "fabric-registry-sync-v0.unknown-registry.subtitle.2": " 更多详情见客户端日志。\n以下注册表不存在于客户端中：\n\n",
-  "fabric-registry-sync-v0.unknown-registry.footer": "还有 %d 个..."
+  "fabric-registry-sync-v0.unknown-registry.title.plural": "接收到 %d 个本客户端未知的注册表。\n",
+  "fabric-registry-sync-v0.unknown-registry.title.singular": "接收到 1 个本客户端未知的注册表。\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "以及 %d 项未显示……",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "这通常是客户端和服务器上安装的模组不一致而造成的。",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " 更多详情见客户端日志。\n以下注册表项命名空间可能有所关系：\n\n",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "接收到 %d 个本客户端未知的注册表项。\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "接收到 1 个本客户端未知的注册表项。\n"
 }
