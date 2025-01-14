@@ -48,7 +48,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 			context.takeScreenshot("title_screen");
 			context.assertScreenshotContains("sound_button");
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("sound_button")
-					.withColor()
+					.withGrayscale()
 					.withRegion(430, 312, 144, 40));
 			assertThrows(() -> context.assertScreenshotContains("doesnt_exist"));
 		}

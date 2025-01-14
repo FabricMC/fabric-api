@@ -24,7 +24,7 @@ import org.joml.Vector2i;
 
 import net.fabricmc.fabric.api.client.gametest.v1.TestScreenshotCommonOptions;
 
-public abstract class TestScreenshotCommonOptionsImpl<THIS extends TestScreenshotCommonOptions<THIS>> implements TestScreenshotCommonOptions<THIS> {
+public abstract class TestScreenshotCommonOptionsImpl<SELF extends TestScreenshotCommonOptions<SELF>> implements TestScreenshotCommonOptions<SELF> {
 	public boolean counterPrefix = true;
 	public float tickDelta = 1;
 	@Nullable
@@ -33,13 +33,13 @@ public abstract class TestScreenshotCommonOptionsImpl<THIS extends TestScreensho
 	public Path destinationDir;
 
 	@Override
-	public THIS disableCounterPrefix() {
+	public SELF disableCounterPrefix() {
 		this.counterPrefix = false;
 		return getThis();
 	}
 
 	@Override
-	public THIS withTickDelta(float tickDelta) {
+	public SELF withTickDelta(float tickDelta) {
 		Preconditions.checkArgument(tickDelta >= 0 && tickDelta <= 1, "tickDelta must be between 0 and 1");
 
 		this.tickDelta = tickDelta;
@@ -47,7 +47,7 @@ public abstract class TestScreenshotCommonOptionsImpl<THIS extends TestScreensho
 	}
 
 	@Override
-	public THIS withSize(int width, int height) {
+	public SELF withSize(int width, int height) {
 		Preconditions.checkArgument(width > 0, "width must be positive");
 		Preconditions.checkArgument(height > 0, "height must be positive");
 
@@ -56,7 +56,7 @@ public abstract class TestScreenshotCommonOptionsImpl<THIS extends TestScreensho
 	}
 
 	@Override
-	public THIS withDestinationDir(Path destinationDir) {
+	public SELF withDestinationDir(Path destinationDir) {
 		Preconditions.checkNotNull(destinationDir, "destinationDir");
 
 		this.destinationDir = destinationDir;
@@ -64,7 +64,7 @@ public abstract class TestScreenshotCommonOptionsImpl<THIS extends TestScreensho
 	}
 
 	@SuppressWarnings("unchecked")
-	private THIS getThis() {
-		return (THIS) this;
+	private SELF getThis() {
+		return (SELF) this;
 	}
 }

@@ -16,7 +16,12 @@
 
 package net.fabricmc.fabric.impl.client.gametest;
 
+import java.util.Objects;
 import java.util.stream.IntStream;
+
+import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.util.math.ColorHelper;
@@ -25,9 +30,15 @@ import net.minecraft.util.math.MathHelper;
 import net.fabricmc.fabric.api.client.gametest.v1.TestScreenshotComparisonAlgorithm;
 
 public class TestScreenshotComparisonAlgorithms {
-	public record MeanSquaredDifference(float maxMeanSquaredError) implements TestScreenshotComparisonAlgorithm {
+	public record MeanSquaredDifference(float maxMeanSquaredDifference) implements TestScreenshotComparisonAlgorithm {
+		public static final MeanSquaredDifference DEFAULT = new MeanSquaredDifference(0.005f);
+
 		@Override
-		public boolean findColor(RawImage<int[]> haystack, RawImage<int[]> needle) {
+		@Nullable
+		public Vector2i findColor(RawImage<int[]> haystack, RawImage<int[]> needle) {
+			Preconditions.checkNotNull(haystack, "haystack");
+			Preconditions.checkNotNull(needle, "needle");
+
 			int[] haystackData = haystack.data();
 			int[] needleData = needle.data();
 			int haystackWidth = haystack.width();
@@ -40,7 +51,7 @@ public class TestScreenshotComparisonAlgorithms {
 			// But the pixels are stored as integers, not floats.
 			// We can avoid floating point conversions in the inner loop by multiplying both sides by 255^2:
 			// sumSquaredDifference < maxMeanSquaredError * numPixels * 3 * 255^2
-			long threshold = (long) ((double) maxMeanSquaredError * needleWidth * needleHeight * 3 * 255 * 255);
+			long threshold = (long) ((double) maxMeanSquaredDifference * needleWidth * needleHeight * 3 * 255 * 255);
 
 			return find(haystack, needle, (needleX, needleY) -> {
 				long sumSquaredDifference = 0;
@@ -68,7 +79,11 @@ public class TestScreenshotComparisonAlgorithms {
 		}
 
 		@Override
-		public boolean findGrayscale(RawImage<byte[]> haystack, RawImage<byte[]> needle) {
+		@Nullable
+		public Vector2i findGrayscale(RawImage<byte[]> haystack, RawImage<byte[]> needle) {
+			Preconditions.checkNotNull(haystack, "haystack");
+			Preconditions.checkNotNull(needle, "needle");
+
 			byte[] haystackData = haystack.data();
 			byte[] needleData = needle.data();
 			int haystackWidth = haystack.width();
@@ -81,7 +96,7 @@ public class TestScreenshotComparisonAlgorithms {
 			// But the pixels are stored as integers, not floats.
 			// We can avoid floating point conversions in the inner loop by multiplying both sides by 255^2:
 			// sumSquaredDifference < maxMeanSquaredError * numPixels * 255^2
-			long threshold = (long) ((double) maxMeanSquaredError * needleWidth * needleHeight * 255 * 255);
+			long threshold = (long) ((double) maxMeanSquaredDifference * needleWidth * needleHeight * 255 * 255);
 
 			return find(haystack, needle, (needleX, needleY) -> {
 				long sumSquaredDifference = 0;
@@ -107,7 +122,11 @@ public class TestScreenshotComparisonAlgorithms {
 		INSTANCE;
 
 		@Override
-		public boolean findColor(RawImage<int[]> haystack, RawImage<int[]> needle) {
+		@Nullable
+		public Vector2i findColor(RawImage<int[]> haystack, RawImage<int[]> needle) {
+			Preconditions.checkNotNull(haystack, "haystack");
+			Preconditions.checkNotNull(needle, "needle");
+
 			int[] haystackData = haystack.data();
 			int[] needleData = needle.data();
 			int haystackWidth = haystack.width();
@@ -131,7 +150,11 @@ public class TestScreenshotComparisonAlgorithms {
 		}
 
 		@Override
-		public boolean findGrayscale(RawImage<byte[]> haystack, RawImage<byte[]> needle) {
+		@Nullable
+		public Vector2i findGrayscale(RawImage<byte[]> haystack, RawImage<byte[]> needle) {
+			Preconditions.checkNotNull(haystack, "haystack");
+			Preconditions.checkNotNull(needle, "needle");
+
 			byte[] haystackData = haystack.data();
 			byte[] needleData = needle.data();
 			int haystackWidth = haystack.width();
@@ -155,24 +178,28 @@ public class TestScreenshotComparisonAlgorithms {
 		}
 	}
 
-	private static boolean find(TestScreenshotComparisonAlgorithm.RawImage<?> haystack, TestScreenshotComparisonAlgorithm.RawImage<?> needle, PositionPredicate predicate) {
+	@Nullable
+	private static Vector2i find(TestScreenshotComparisonAlgorithm.RawImage<?> haystack, TestScreenshotComparisonAlgorithm.RawImage<?> needle, PositionPredicate predicate) {
 		if (needle.width() > haystack.width() || needle.height() > haystack.height()) {
-			return false;
+			return null;
 		}
 
 		return IntStream.rangeClosed(0, haystack.height() - needle.height())
 				.parallel()
-				.anyMatch(needleY -> {
+				.mapToObj(needleY -> {
 					int maxNeedleX = haystack.width() - needle.width();
 
 					for (int needleX = 0; needleX <= maxNeedleX; needleX++) {
 						if (predicate.isAt(needleX, needleY)) {
-							return true;
+							return new Vector2i(needleX, needleY);
 						}
 					}
 
-					return false;
-				});
+					return null;
+				})
+				.filter(Objects::nonNull)
+				.findAny()
+				.orElse(null);
 	}
 
 	@FunctionalInterface

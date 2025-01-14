@@ -129,6 +129,26 @@ public abstract class NativeImageMixin implements NativeImageHooks {
 		};
 	}
 
+	@Override
+	public boolean fabric_isFullyOpaque() {
+		if (!format.hasAlpha()) {
+			return true;
+		}
+
+		int size = getWidth() * getHeight();
+		int alphaOffset = format.getAlphaOffset() / 8;
+
+		for (int i = 0; i < size; i++) {
+			int alpha = MemoryUtil.memGetByte(pointer + i * format.getChannelCount() + alphaOffset) & 0xff;
+
+			if (alpha != 255) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	@Unique
 	private static byte toGrayscale(int red, int green, int blue) {
 		// https://github.com/nothings/stb/blob/5c205738c191bcb0abc65c4febfa9bd25ff35234/stb_image.h#L1748

@@ -36,8 +36,8 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 	private final Either<String, NativeImage> templateImage;
 	@Nullable
 	public String savedFileName;
-	public TestScreenshotComparisonAlgorithm algorithm = TestScreenshotComparisonAlgorithm.meanSquaredDifference(0.995f);
-	public boolean grayscale = true;
+	public TestScreenshotComparisonAlgorithm algorithm = TestScreenshotComparisonAlgorithm.defaultAlgorithm();
+	public boolean grayscale = false;
 	@Nullable
 	public Rect2i region;
 
@@ -66,8 +66,8 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 	}
 
 	@Override
-	public TestScreenshotComparisonOptions withColor() {
-		this.grayscale = false;
+	public TestScreenshotComparisonOptions withGrayscale() {
+		this.grayscale = true;
 
 		return this;
 	}
@@ -90,7 +90,7 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 	@Nullable
 	public TestScreenshotComparisonAlgorithm.RawImage<byte[]> getGrayscaleTemplateImage() {
 		return this.templateImage.map(fileName -> {
-			try (NativeImage image = loadNativeImage(fileName, NativeImage.Format.LUMINANCE)) {
+			try (NativeImage image = loadNativeImage(fileName)) {
 				if (image == null) {
 					return null;
 				}
@@ -101,13 +101,16 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 						((NativeImageHooks) (Object) image).fabric_copyPixelsLuminance()
 				);
 			}
-		}, TestScreenshotComparisonAlgorithms.RawImageImpl::fromGrayscaleNativeImage);
+		}, image -> {
+			assertNoTransparency(image);
+			return TestScreenshotComparisonAlgorithms.RawImageImpl.fromGrayscaleNativeImage(image);
+		});
 	}
 
 	@Nullable
 	public TestScreenshotComparisonAlgorithm.RawImage<int[]> getColorTemplateImage() {
 		return this.templateImage.map(fileName -> {
-			try (NativeImage image = loadNativeImage(fileName, NativeImage.Format.RGB)) {
+			try (NativeImage image = loadNativeImage(fileName)) {
 				if (image == null) {
 					return null;
 				}
@@ -118,11 +121,14 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 						((NativeImageHooks) (Object) image).fabric_copyPixelsRgb()
 				);
 			}
-		}, TestScreenshotComparisonAlgorithms.RawImageImpl::fromColorNativeImage);
+		}, image -> {
+			assertNoTransparency(image);
+			return TestScreenshotComparisonAlgorithms.RawImageImpl.fromColorNativeImage(image);
+		});
 	}
 
 	@Nullable
-	private static NativeImage loadNativeImage(String templateImagePath, NativeImage.Format format) {
+	private static NativeImage loadNativeImage(String templateImagePath) {
 		Path filePath = FabricClientGameTestRunner.currentlyRunningGameTest.getProvider()
 				.findPath("templates/" + templateImagePath + ".png")
 				.orElse(null);
@@ -132,9 +138,17 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 		}
 
 		try (InputStream stream = Files.newInputStream(filePath)) {
-			return NativeImage.read(format, stream);
+			NativeImage image = NativeImage.read(stream);
+			assertNoTransparency(image);
+			return image;
 		} catch (IOException e) {
 			throw new UncheckedIOException("Failed to load template image", e);
+		}
+	}
+
+	private static void assertNoTransparency(NativeImage image) {
+		if (!((NativeImageHooks) (Object) image).fabric_isFullyOpaque()) {
+			throw new AssertionError("Template image is partially transparent which is not supported");
 		}
 	}
 }

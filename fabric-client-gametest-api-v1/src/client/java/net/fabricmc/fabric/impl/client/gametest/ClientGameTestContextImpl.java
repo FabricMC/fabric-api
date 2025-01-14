@@ -33,6 +33,7 @@ import org.apache.commons.lang3.function.FailableFunction;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -295,18 +296,18 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	@Override
-	public void assertScreenshotContains(TestScreenshotComparisonOptions options) {
+	public Vector2i assertScreenshotContains(TestScreenshotComparisonOptions options) {
 		ThreadingImpl.checkOnGametestThread("assertScreenshotContains");
 		Preconditions.checkNotNull(options, "options");
-		doAssertScreenshotContains(options, (haystackImage, needleImage) -> true);
+		return doAssertScreenshotContains(options, (haystackImage, needleImage) -> true);
 	}
 
-	private void doAssertScreenshotContains(
+	private Vector2i doAssertScreenshotContains(
 			TestScreenshotComparisonOptions options,
 			BiPredicate<TestScreenshotComparisonAlgorithm.RawImage<?>, TestScreenshotComparisonAlgorithm.RawImage<?>> preCheck
 	) {
 		TestScreenshotComparisonOptionsImpl optionsImpl = (TestScreenshotComparisonOptionsImpl) options;
-		runOnClient(client -> {
+		return this.computeOnClient(client -> {
 			try (NativeImage screenshot = doTakeScreenshot(client, optionsImpl)) {
 				Rect2i region = optionsImpl.region == null ? new Rect2i(0, 0, screenshot.getWidth(), screenshot.getHeight()) : optionsImpl.region;
 				Preconditions.checkState(region.getX() + region.getWidth() <= screenshot.getWidth() && region.getY() + region.getHeight() <= screenshot.getHeight(), "Screenshot comparison region extends outside the screenshot");
@@ -318,33 +319,45 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 						saveScreenshot(subScreenshot, optionsImpl.savedFileName, optionsImpl);
 					}
 
-					boolean result;
+					Vector2i result;
 
 					if (optionsImpl.grayscale) {
 						TestScreenshotComparisonAlgorithm.RawImage<byte[]> templateImage = optionsImpl.getGrayscaleTemplateImage();
 
 						if (templateImage == null) {
 							onTemplateImageDoesntExist(subScreenshot, optionsImpl);
-							return;
+							return new Vector2i(region.getX(), region.getY());
 						}
 
 						TestScreenshotComparisonAlgorithm.RawImage<byte[]> haystackImage = TestScreenshotComparisonAlgorithms.RawImageImpl.fromGrayscaleNativeImage(subScreenshot);
-						result = preCheck.test(haystackImage, templateImage) && optionsImpl.algorithm.findGrayscale(haystackImage, templateImage);
+
+						if (preCheck.test(haystackImage, templateImage)) {
+							result = optionsImpl.algorithm.findGrayscale(haystackImage, templateImage);
+						} else {
+							result = null;
+						}
 					} else {
 						TestScreenshotComparisonAlgorithm.RawImage<int[]> templateImage = optionsImpl.getColorTemplateImage();
 
 						if (templateImage == null) {
 							onTemplateImageDoesntExist(subScreenshot, optionsImpl);
-							return;
+							return new Vector2i(region.getX(), region.getY());
 						}
 
 						TestScreenshotComparisonAlgorithm.RawImage<int[]> haystackImage = TestScreenshotComparisonAlgorithms.RawImageImpl.fromColorNativeImage(subScreenshot);
-						result = preCheck.test(haystackImage, templateImage) && optionsImpl.algorithm.findColor(haystackImage, templateImage);
+
+						if (preCheck.test(haystackImage, templateImage)) {
+							result = optionsImpl.algorithm.findColor(haystackImage, templateImage);
+						} else {
+							result = null;
+						}
 					}
 
-					if (!result) {
+					if (result == null) {
 						throw new AssertionError("Screenshot does not contain template");
 					}
+
+					return result.add(region.getX(), region.getY());
 				}
 			}
 		});

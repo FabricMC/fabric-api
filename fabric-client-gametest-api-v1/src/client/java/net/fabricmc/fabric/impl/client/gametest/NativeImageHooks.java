@@ -19,4 +19,5 @@ package net.fabricmc.fabric.impl.client.gametest;
 public interface NativeImageHooks {
 	byte[] fabric_copyPixelsLuminance();
 	int[] fabric_copyPixelsRgb();
+	boolean fabric_isFullyOpaque();
 }
