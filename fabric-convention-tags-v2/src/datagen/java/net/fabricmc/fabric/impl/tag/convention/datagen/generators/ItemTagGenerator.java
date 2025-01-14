@@ -46,6 +46,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		generateDyedTags();
 		generateCropAndSeedsTags();
 		generateVillagerJobSites();
+		generateFlowerTags();
 		generateOtherTags();
 		copyItemTags();
 		generateTagAlias();
@@ -779,6 +780,12 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.WHEAT_SEEDS);
 	}
 
+	private void generateFlowerTags() {
+		copy(ConventionalBlockTags.SMALL_FLOWERS, ConventionalItemTags.SMALL_FLOWERS);
+		copy(ConventionalBlockTags.TALL_FLOWERS, ConventionalItemTags.TALL_FLOWERS);
+		copy(ConventionalBlockTags.FLOWERS, ConventionalItemTags.FLOWERS);
+	}
+
 	private void generateOtherTags() {
 		getOrCreateTagBuilder(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
 				.add(Items.CRAFTING_TABLE);
@@ -978,6 +985,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		aliasGroup("fences").add(ItemTags.FENCES, ConventionalItemTags.FENCES);
 		aliasGroup("fences/wooden").add(ItemTags.WOODEN_FENCES, ConventionalItemTags.WOODEN_FENCES);
 		aliasGroup("fence_gates").add(ItemTags.FENCE_GATES, ConventionalItemTags.FENCE_GATES);
+
+		aliasGroup("flowers/small").add(ItemTags.SMALL_FLOWERS, ConventionalItemTags.SMALL_FLOWERS);
 	}
 
 	private void generateBackwardsCompatTags() {

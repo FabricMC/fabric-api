@@ -1,7 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:redstone_ore",
-  "result": {
-    "id": "minecraft:redstone_block"
-  }
-}

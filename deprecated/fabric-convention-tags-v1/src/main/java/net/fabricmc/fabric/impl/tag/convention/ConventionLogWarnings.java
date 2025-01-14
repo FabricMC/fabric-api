@@ -217,7 +217,10 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(RegistryKeys.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDY_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "pie", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.PIE_FOODS),
 			createMapEntry(RegistryKeys.ITEM, "pies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.PIE_FOODS),
-			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "music_discs")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MUSIC_DISCS)
+			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "music_discs")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MUSIC_DISCS),
+			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "tall_flowers")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.TALL_FLOWERS),
+			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "flowers")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FLOWERS),
+			createMapEntry(TagKey.of(RegistryKeys.BLOCK, Identifier.of("minecraft", "tall_flowers")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.TALL_FLOWERS)
 	);
 
 	@Override

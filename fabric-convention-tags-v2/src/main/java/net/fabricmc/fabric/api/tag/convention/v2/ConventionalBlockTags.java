@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.tag.convention.v2;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
-import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
@@ -56,37 +56,37 @@ public final class ConventionalBlockTags {
 
 	// Ores - vanilla instances (All ores consolidated here for consistency)
 	/**
-	 * Aliased with {@link ItemTags#COAL_ORES}.
+	 * Aliased with {@link BlockTags#COAL_ORES}.
 	 */
 	public static final TagKey<Block> COAL_ORES = register("ores/coal");
 	/**
-	 * Aliased with {@link ItemTags#COPPER_ORES}.
+	 * Aliased with {@link BlockTags#COPPER_ORES}.
 	 */
 	public static final TagKey<Block> COPPER_ORES = register("ores/copper");
 	/**
-	 * Aliased with {@link ItemTags#DIAMOND_ORES}.
+	 * Aliased with {@link BlockTags#DIAMOND_ORES}.
 	 */
 	public static final TagKey<Block> DIAMOND_ORES = register("ores/diamond");
 	/**
-	 * Aliased with {@link ItemTags#EMERALD_ORES}.
+	 * Aliased with {@link BlockTags#EMERALD_ORES}.
 	 */
 	public static final TagKey<Block> EMERALD_ORES = register("ores/emerald");
 	/**
-	 * Aliased with {@link ItemTags#GOLD_ORES}.
+	 * Aliased with {@link BlockTags#GOLD_ORES}.
 	 */
 	public static final TagKey<Block> GOLD_ORES = register("ores/gold");
 	/**
-	 * Aliased with {@link ItemTags#IRON_ORES}.
+	 * Aliased with {@link BlockTags#IRON_ORES}.
 	 */
 	public static final TagKey<Block> IRON_ORES = register("ores/iron");
 	/**
-	 * Aliased with {@link ItemTags#LAPIS_ORES}.
+	 * Aliased with {@link BlockTags#LAPIS_ORES}.
 	 */
 	public static final TagKey<Block> LAPIS_ORES = register("ores/lapis");
 	public static final TagKey<Block> NETHERITE_SCRAP_ORES = register("ores/netherite_scrap");
 	public static final TagKey<Block> QUARTZ_ORES = register("ores/quartz");
 	/**
-	 * Aliased with {@link ItemTags#REDSTONE_ORES}.
+	 * Aliased with {@link BlockTags#REDSTONE_ORES}.
 	 */
 	public static final TagKey<Block> REDSTONE_ORES = register("ores/redstone");
 
@@ -130,6 +130,25 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> RED_SANDS = register("sands/red");
 	public static final TagKey<Block> COLORLESS_SANDS = register("sands/colorless");
 
+	// Flower
+	/**
+	 * Contains living ground-based flowers that are 1 block tall such as Dandelions or Poppy.
+	 * Equivalent to the "minecraft:small_flowers" block tag.
+	 * This is NOT aliased with {@link BlockTags#SMALL_FLOWERS} because the vanilla tag is used to make the block weak to swords.
+	 */
+	public static final TagKey<Block> SMALL_FLOWERS = register("flowers/small");
+	/**
+	 * Contains living ground-based flowers that are 2 block tall such as Rose Bush or Peony.
+	 * Equivalent to the "minecraft:tall_flowers" block tag in past Minecraft version.
+	 */
+	public static final TagKey<Block> TALL_FLOWERS = register("flowers/tall");
+	/**
+	 * Contains any living plant block that contains flowers or is a flower itself.
+	 * Equivalent to the "minecraft:flowers" block tag.
+	 * Aliased with {@link BlockTags#FLOWERS}.
+	 */
+	public static final TagKey<Block> FLOWERS = register("flowers");
+
 	// Sandstone
 	public static final TagKey<Block> SANDSTONE_BLOCKS = register("sandstone/blocks");
 	public static final TagKey<Block> SANDSTONE_SLABS = register("sandstone/slabs");
@@ -143,16 +162,16 @@ public final class ConventionalBlockTags {
 
 	// Fences and Fence Gates
 	/**
-	 * Aliased with {@link ItemTags#FENCES}.
+	 * Aliased with {@link BlockTags#FENCES}.
 	 */
 	public static final TagKey<Block> FENCES = register("fences");
 	/**
-	 * Aliased with {@link ItemTags#WOODEN_FENCES}.
+	 * Aliased with {@link BlockTags#WOODEN_FENCES}.
 	 */
 	public static final TagKey<Block> WOODEN_FENCES = register("fences/wooden");
 	public static final TagKey<Block> NETHER_BRICK_FENCES = register("fences/nether_brick");
 	/**
-	 * Aliased with {@link ItemTags#FENCE_GATES}.
+	 * Aliased with {@link BlockTags#FENCE_GATES}.
 	 */
 	public static final TagKey<Block> FENCE_GATES = register("fence_gates");
 	public static final TagKey<Block> WOODEN_FENCE_GATES = register("fence_gates/wooden");

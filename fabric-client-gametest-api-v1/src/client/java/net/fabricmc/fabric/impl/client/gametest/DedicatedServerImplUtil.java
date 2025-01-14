@@ -34,6 +34,8 @@ import net.minecraft.server.Main;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.util.Util;
 
+import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
+
 public final class DedicatedServerImplUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
 	private static final Properties DEFAULT_SERVER_PROPERTIES = Util.make(new Properties(), properties -> {
@@ -59,19 +61,24 @@ public final class DedicatedServerImplUtil {
 	private DedicatedServerImplUtil() {
 	}
 
-	public static MinecraftDedicatedServer start(Properties serverProperties) {
+	public static MinecraftDedicatedServer start(ClientGameTestContext context, Properties serverProperties) {
 		setupServer(serverProperties);
 		serverFuture = new CompletableFuture<>();
 
 		new Thread(() -> Main.main(new String[0])).start();
 
+		MinecraftDedicatedServer server;
+
 		try {
-			return serverFuture.get(10, TimeUnit.SECONDS);
+			server = serverFuture.get(10, TimeUnit.SECONDS);
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			throw new RuntimeException(e);
 		} finally {
 			serverFuture = null;
 		}
+
+		context.waitFor(client -> ThreadingImpl.isServerRunning && ThreadingImpl.serverCanAcceptTasks);
+		return server;
 	}
 
 	private static void setupServer(Properties customServerProperties) {

@@ -308,6 +308,24 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> UNCOLORED_SANDSTONE_SLABS = register("sandstone/uncolored_slabs");
 	public static final TagKey<Item> UNCOLORED_SANDSTONE_STAIRS = register("sandstone/uncolored_stairs");
 
+	// Flower
+	/**
+	 * Contains living ground-based flowers that are 1 block tall such as Dandelions or Poppy.
+	 * Equivalent to the {@code minecraft:small_flowers} item tag.
+	 * Aliased with {@link ItemTags#SMALL_FLOWERS}.
+	 */
+	public static final TagKey<Item> SMALL_FLOWERS = register("flowers/small");
+	/**
+	 * Contains living ground-based flowers that are 2 block tall such as Rose Bush or Peony.
+	 * Equivalent to the {@code minecraft:tall_flowers} item tag in past Minecraft versions.
+	 */
+	public static final TagKey<Item> TALL_FLOWERS = register("flowers/tall");
+	/**
+	 * Contains any living plant block that contains flowers or is a flower itself.
+	 * Equivalent to the {@code minecraft:flowers} item tag in past Minecraft versions.
+	 */
+	public static final TagKey<Item> FLOWERS = register("flowers");
+
 	// Fences and Fence Gates
 	/**
 	 * Aliased with {@link ItemTags#FENCES}.

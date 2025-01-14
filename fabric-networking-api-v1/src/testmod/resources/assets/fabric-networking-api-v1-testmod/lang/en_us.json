@@ -1,5 +1,5 @@
 {
   "key.category.fabric-networking-api-v1-testmod": "Fabric Network Test",
-  "key.fabric-networking-api-v1-testmod.test": "Send test packet",
-  "key.fabric-networking-api-v1-testmod.open": "Open channel tester"
+  "key.fabric-networking-api-v1-testmod.open": "Open channel tester",
+  "key.fabric-networking-api-v1-testmod.test": "Send test packet"
 }

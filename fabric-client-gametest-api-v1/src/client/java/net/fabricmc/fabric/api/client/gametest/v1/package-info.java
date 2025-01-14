@@ -17,6 +17,14 @@
  *
  * <p>The game remains paused unless you explicitly unpause it using various waiting functions such as
  * {@link net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext#waitTick() ClientGameTestContext.waitTick()}.
+ * A side effect of this is that <strong>the results of your code may not be immediate if the game needs a tick to
+ * process them</strong>. A big example of this is key bindings, although some key binding methods have built-in tick
+ * waits to mitigate the issue. See the {@link net.fabricmc.fabric.api.client.gametest.v1.TestInput TestInput}
+ * documentation for details. Another pseudo-example is effects on the server need a tick to propagate to the client and
+ * vice versa, although this is related to packets more than the fact the game is suspended (see the network
+ * synchronization section below). A good strategy for debugging these issues is by
+ * {@linkplain net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext#takeScreenshot(String) taking screenshots},
+ * which capture the immediate state of the game.
  *
  * <p>A few changes have been made to how the vanilla game threads run, to make tests more reproducible. Notably, there
  * is exactly one server tick per client tick while a server is running (singleplayer or multiplayer). There is also a

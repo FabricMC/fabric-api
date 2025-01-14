@@ -3,6 +3,6 @@
   "key.category.second.test": "Second Test Category",
   "key.fabric-key-binding-api-v1-testmod.test_keybinding_1": "Test 1",
   "key.fabric-key-binding-api-v1-testmod.test_keybinding_2": "Test 2",
-  "key.fabric-key-binding-api-v1-testmod.test_keybinding_sticky": "Sticky Test",
-  "key.fabric-key-binding-api-v1-testmod.test_keybinding_duplicate": "Duplicate Test"
+  "key.fabric-key-binding-api-v1-testmod.test_keybinding_duplicate": "Duplicate Test",
+  "key.fabric-key-binding-api-v1-testmod.test_keybinding_sticky": "Sticky Test"
 }

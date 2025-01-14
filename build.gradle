@@ -267,6 +267,14 @@ allprojects {
 			indentWithTabs()
 			trimTrailingWhitespace()
 		}
+
+		// Sort the en_us translation files
+		// The other languages are handled by Crowdin
+		json {
+			target 'src/**/lang/en_us.json'
+			targetExclude 'src/**/generated/**'
+			gson().indentWithSpaces(2).sortByKeys()
+		}
 	}
 
 	checkstyle {
