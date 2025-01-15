@@ -1,7 +1,12 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Отримано запис в реєстрі, невідомий для цього клієнту.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Отримано %d записів реєстру, невідомих для цього клієнту.\n",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Зазвичай це зумовлено невідповідністю наборів модів між клієнтом та сервером.",
-  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Перегляньте логи ігрового клієнта для більш докладної інформації\nТакі простори імен записів реєстру можуть бути пов’язані:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "І ще %d..."
+  "fabric-registry-sync-v0.unknown-registry.footer": "І ще %d...",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.1": "Зазвичай це спричинено невідповідним модом, встановленим між клієнтом і сервером",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.2": "Щоб отримати докладнішу інформацію, перегляньте журнали клієнта.\nНа клієнті відсутні такі реєстри:",
+  "fabric-registry-sync-v0.unknown-registry.title.plural": "Отримано %d реєстрів, невідомих цьому клієнту",
+  "fabric-registry-sync-v0.unknown-registry.title.singular": "Отримано реєстр, який не відомий цьому клієнту",
+  "fabric-registry-sync-v0.unknown-remote.footer": "І ще %d...",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Зазвичай це зумовлено невідповідністю наборів модів між клієнтом та сервером",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Перегляньте журнали клієнта для більш детальної інформації\nТакі простори імен записів реєстру можуть бути пов’язані:\n",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Отримано %d записів реєстру, невідомих для цього клієнту",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Отримано запис в реєстрі, невідомий для цього клієнту"
 }
