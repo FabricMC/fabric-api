@@ -19,20 +19,19 @@ package net.fabricmc.fabric.impl.client.rendering;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.rendering.v1.FabricLayeredDrawer;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 import net.fabricmc.fabric.mixin.client.rendering.LayeredDrawerAccessor;
 
-public class FabricLayeredDrawerImpl implements FabricLayeredDrawer {
+public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	private final LayeredDrawer base;
 
-	public FabricLayeredDrawerImpl(LayeredDrawer base) {
+	public LayeredDrawerWrapperImpl(LayeredDrawer base) {
 		this.base = base;
 	}
 
@@ -41,14 +40,14 @@ public class FabricLayeredDrawerImpl implements FabricLayeredDrawer {
 	}
 
 	@Override
-	public FabricLayeredDrawer addLayer(IdentifiedLayer layer) {
+	public LayeredDrawerWrapper addLayer(IdentifiedLayer layer) {
 		validateUnique(layer);
 		getLayers(this.base).add(layer);
 		return this;
 	}
 
 	@Override
-	public FabricLayeredDrawer addLayerAfter(Identifier after, IdentifiedLayer layer) {
+	public LayeredDrawerWrapper addLayerAfter(Identifier after, IdentifiedLayer layer) {
 		validateUnique(layer);
 
 		boolean didChange = findLayer(after, (l, iterator) -> {
@@ -64,7 +63,7 @@ public class FabricLayeredDrawerImpl implements FabricLayeredDrawer {
 	}
 
 	@Override
-	public FabricLayeredDrawer addLayerBefore(Identifier before, IdentifiedLayer layer) {
+	public LayeredDrawerWrapper addLayerBefore(Identifier before, IdentifiedLayer layer) {
 		validateUnique(layer);
 		boolean didChange = findLayer(before, (l, iterator) -> {
 			iterator.previous();
@@ -81,7 +80,7 @@ public class FabricLayeredDrawerImpl implements FabricLayeredDrawer {
 	}
 
 	@Override
-	public FabricLayeredDrawer removeLayer(Identifier identifier) {
+	public LayeredDrawerWrapper removeLayer(Identifier identifier) {
 		boolean didChange = findLayer(identifier, (l, iterator) -> {
 			iterator.remove();
 			return false;
@@ -95,7 +94,7 @@ public class FabricLayeredDrawerImpl implements FabricLayeredDrawer {
 	}
 
 	@Override
-	public FabricLayeredDrawer replaceLayer(Identifier identifier, Function<IdentifiedLayer, IdentifiedLayer> replacer) {
+	public LayeredDrawerWrapper replaceLayer(Identifier identifier, Function<IdentifiedLayer, IdentifiedLayer> replacer) {
 		boolean didChange = findLayer(identifier, (l, iterator) -> {
 			iterator.remove();
 			iterator.add(replacer.apply((IdentifiedLayer) l));
@@ -106,12 +105,6 @@ public class FabricLayeredDrawerImpl implements FabricLayeredDrawer {
 			throw new IllegalArgumentException("Layer with identifier " + identifier + " not found");
 		}
 
-		return this;
-	}
-
-	@Override
-	public FabricLayeredDrawer addSubDrawer(Identifier identifier, LayeredDrawer drawer, BooleanSupplier shouldRender) {
-		addLayer(new SubLayer(identifier, drawer, shouldRender));
 		return this;
 	}
 

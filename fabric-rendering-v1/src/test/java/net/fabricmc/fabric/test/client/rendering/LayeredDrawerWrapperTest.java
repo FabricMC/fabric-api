@@ -32,28 +32,39 @@ import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.rendering.v1.FabricLayeredDrawer;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
-import net.fabricmc.fabric.impl.client.rendering.FabricLayeredDrawerImpl;
+import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
+import net.fabricmc.fabric.impl.client.rendering.LayeredDrawerWrapperImpl;
 
-public class FabricLayeredDrawerTest {
+public class LayeredDrawerWrapperTest {
 	private List<String> drawnLayers;
 	private LayeredDrawer base;
-	FabricLayeredDrawer layers;
+	private LayeredDrawerWrapper layers;
 
 	@BeforeEach
 	void setUp() {
 		drawnLayers = new ArrayList<>();
 		base = new LayeredDrawer();
-		layers = new FabricLayeredDrawerImpl(base);
+		layers = new LayeredDrawerWrapperImpl(base);
 	}
 
 	@Test
 	void addLayer() {
 		layers.addLayer(testLayer("layer1"))
+				.addLayer(testLayer("layer2"))
+				.addLayer(testLayer("layer3"));
+
+		assertOrder(base, List.of("layer1", "layer2", "layer3"));
+	}
+
+	@Test
+	void addBefore() {
+		layers.addLayer(testLayer("layer1"))
 				.addLayer(testLayer("layer2"));
 
-		assertOrder(base, List.of("layer1", "layer2"));
+		layers.addLayerBefore(Identifier.of("test", "layer1"), testLayer("before1"));
+
+		assertOrder(base, List.of("before1", "layer1", "layer2"));
 	}
 
 	@Test
@@ -67,19 +78,31 @@ public class FabricLayeredDrawerTest {
 	}
 
 	@Test
-	void addAfterInSubLayer() {
-		LayeredDrawer subLayer = new LayeredDrawer();
-		FabricLayeredDrawer fabricSubLayer = new FabricLayeredDrawerImpl(subLayer);
-		fabricSubLayer.addLayer(testLayer("subdrawer1"))
-					.addLayer(testLayer("subdrawer2"));
-
+	void removeLayer() {
 		layers.addLayer(testLayer("layer1"))
-				.addSubDrawer(Identifier.of("test", "sublayer"), subLayer, () -> true)
-				.addLayer(testLayer("layer2"));
+				.addLayer(testLayer("layer2"))
+				.addLayer(testLayer("layer3"))
+				.addLayer(testLayer("layer4"));
 
-		layers.addLayerAfter(Identifier.of("test", "subdrawer1"), testLayer("after1"));
+		layers.removeLayer(Identifier.of("test", "layer2"));
+		layers.removeLayer(Identifier.of("test", "layer4"));
 
-		assertOrder(base, List.of("layer1", "subdrawer1", "after1", "subdrawer2", "layer2"));
+		assertOrder(base, List.of("layer1", "layer3"));
+	}
+
+	@Test
+	void replaceLayer() {
+		layers.addLayer(testLayer("layer1"))
+				.addLayer(testLayer("layer2"))
+				.addLayer(testLayer("layer3"));
+
+		layers.replaceLayer(Identifier.of("test", "layer2"), layer -> testLayer("replaced"));
+
+		assertOrder(base, List.of("layer1", "replaced", "layer3"));
+	}
+
+	private IdentifiedLayer testLayer(String name) {
+		return IdentifiedLayer.of(Identifier.of("test", name), (context, tickCounter) -> drawnLayers.add(name));
 	}
 
 	private void assertOrder(LayeredDrawer drawer, List<String> expectedLayers) {
@@ -92,11 +115,5 @@ public class FabricLayeredDrawerTest {
 		drawnLayers.clear();
 		drawer.render(drawContext, tickCounter);
 		assertEquals(drawnLayers, expectedLayers);
-	}
-
-	private IdentifiedLayer testLayer(String name) {
-		return IdentifiedLayer.wrapping(Identifier.of("test", name), (context, tickCounter) -> {
-			drawnLayers.add(name);
-		});
 	}
 }

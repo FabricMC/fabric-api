@@ -30,11 +30,7 @@ import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.SCOREB
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.SLEEP;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.STATUS_EFFECTS;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.SUBTITLES;
-import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.SUB_DRAWER_1;
-import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.SUB_DRAWER_2;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.TITLE_AND_SUBTITLE;
-
-import java.util.function.BooleanSupplier;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -54,8 +50,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
-import net.fabricmc.fabric.impl.client.rendering.FabricLayeredDrawerImpl;
-import net.fabricmc.fabric.impl.client.rendering.SubLayer;
+import net.fabricmc.fabric.impl.client.rendering.LayeredDrawerWrapperImpl;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
@@ -92,7 +87,6 @@ public class InGameHudMixin {
 		return wrap(MAIN_HUD, instance, layer);
 	}
 
-	// renderExperienceLevel
 	@Redirect(method = "<init>", at = @At(
 			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
 			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderExperienceLevel(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
@@ -191,23 +185,13 @@ public class InGameHudMixin {
 		return wrap(SLEEP, instance, layer);
 	}
 
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void registerLayers(CallbackInfo ci) {
+		HudLayerRegistrationCallback.EVENT.invoker().register(new LayeredDrawerWrapperImpl(layeredDrawer));
+	}
+
 	@Unique
 	private static LayeredDrawer wrap(Identifier identifier, LayeredDrawer instance, LayeredDrawer.Layer layer) {
-		return instance.addLayer(IdentifiedLayer.wrapping(identifier, layer));
-	}
-
-	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addSubDrawer(Lnet/minecraft/client/gui/LayeredDrawer;Ljava/util/function/BooleanSupplier;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 0))
-	private LayeredDrawer wrapSubDrawer1(LayeredDrawer instance, LayeredDrawer drawer, BooleanSupplier shouldRender) {
-		return instance.addLayer(new SubLayer(SUB_DRAWER_1, drawer, shouldRender));
-	}
-
-	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/LayeredDrawer;addSubDrawer(Lnet/minecraft/client/gui/LayeredDrawer;Ljava/util/function/BooleanSupplier;)Lnet/minecraft/client/gui/LayeredDrawer;", ordinal = 1))
-	private LayeredDrawer wrapSubDrawer2(LayeredDrawer instance, LayeredDrawer drawer, BooleanSupplier shouldRender) {
-		return instance.addLayer(new SubLayer(SUB_DRAWER_2, drawer, shouldRender));
-	}
-
-	@Inject(method = "<init>", at = @At("RETURN"))
-	private void fabric$registerLayers(CallbackInfo ci) {
-		HudLayerRegistrationCallback.EVENT.invoker().register(new FabricLayeredDrawerImpl(layeredDrawer));
+		return instance.addLayer(IdentifiedLayer.of(identifier, layer));
 	}
 }

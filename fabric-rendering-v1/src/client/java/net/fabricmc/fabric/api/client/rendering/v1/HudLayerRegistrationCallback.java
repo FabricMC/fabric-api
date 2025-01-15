@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>To register a layer, register a listener to this event and register your layers in the listener.
  *
- * @see FabricLayeredDrawer
+ * @see LayeredDrawerWrapper
  */
 public interface HudLayerRegistrationCallback {
 	Event<HudLayerRegistrationCallback> EVENT = EventFactory.createArrayBacked(HudLayerRegistrationCallback.class, callbacks -> layeredDrawer -> {
@@ -38,5 +38,5 @@ public interface HudLayerRegistrationCallback {
 	 *
 	 * @param layeredDrawer the layered drawer to register layers to
 	 */
-	void register(FabricLayeredDrawer layeredDrawer);
+	void register(LayeredDrawerWrapper layeredDrawer);
 }
