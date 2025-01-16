@@ -21,6 +21,8 @@ import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
+import org.jetbrains.annotations.VisibleForTesting;
+
 import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.util.Identifier;
 
@@ -108,7 +110,8 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 		return this;
 	}
 
-	private void validateUnique(IdentifiedLayer layer) {
+	@VisibleForTesting
+	public void validateUnique(IdentifiedLayer layer) {
 		visitLayers((l, iterator) -> {
 			if (matchesIdentifier(l, layer.id())) {
 				throw new IllegalArgumentException("Layer with identifier " + layer.id() + " already exists");
@@ -118,7 +121,8 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 		});
 	}
 
-	private boolean findLayer(Identifier identifier, LayerVisitor visitor) {
+	@VisibleForTesting
+	public boolean findLayer(Identifier identifier, LayerVisitor visitor) {
 		AtomicBoolean didFind = new AtomicBoolean(false);
 
 		visitLayers((l, iterator) -> {
@@ -133,7 +137,8 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 		return didFind.get();
 	}
 
-	private void visitLayers(LayerVisitor visitor) {
+	@VisibleForTesting
+	public void visitLayers(LayerVisitor visitor) {
 		visitLayers(getLayers(base), visitor);
 	}
 
@@ -158,7 +163,8 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 		return layer instanceof IdentifiedLayer il && il.id().equals(identifier);
 	}
 
-	private interface LayerVisitor {
+	@VisibleForTesting
+	public interface LayerVisitor {
 		/**
 		 * @return false to remove the layer, true to keep it
 		 */

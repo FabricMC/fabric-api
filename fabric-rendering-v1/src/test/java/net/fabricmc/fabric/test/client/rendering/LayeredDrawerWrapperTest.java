@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,13 +34,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
-import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 import net.fabricmc.fabric.impl.client.rendering.LayeredDrawerWrapperImpl;
 
 public class LayeredDrawerWrapperTest {
 	private List<String> drawnLayers;
 	private LayeredDrawer base;
-	private LayeredDrawerWrapper layers;
+	private LayeredDrawerWrapperImpl layers;
 
 	@BeforeEach
 	void setUp() {
@@ -62,7 +62,7 @@ public class LayeredDrawerWrapperTest {
 		layers.addLayer(testLayer("layer1"))
 				.addLayer(testLayer("layer2"));
 
-		layers.addLayerBefore(Identifier.of("test", "layer1"), testLayer("before1"));
+		layers.addLayerBefore(testIdentifier("layer1"), testLayer("before1"));
 
 		assertOrder(base, List.of("before1", "layer1", "layer2"));
 	}
@@ -72,7 +72,7 @@ public class LayeredDrawerWrapperTest {
 		layers.addLayer(testLayer("layer1"))
 				.addLayer(testLayer("layer2"));
 
-		layers.addLayerAfter(Identifier.of("test", "layer1"), testLayer("after1"));
+		layers.addLayerAfter(testIdentifier("layer1"), testLayer("after1"));
 
 		assertOrder(base, List.of("layer1", "after1", "layer2"));
 	}
@@ -84,8 +84,8 @@ public class LayeredDrawerWrapperTest {
 				.addLayer(testLayer("layer3"))
 				.addLayer(testLayer("layer4"));
 
-		layers.removeLayer(Identifier.of("test", "layer2"));
-		layers.removeLayer(Identifier.of("test", "layer4"));
+		layers.removeLayer(testIdentifier("layer2"));
+		layers.removeLayer(testIdentifier("layer4"));
 
 		assertOrder(base, List.of("layer1", "layer3"));
 	}
@@ -96,13 +96,56 @@ public class LayeredDrawerWrapperTest {
 				.addLayer(testLayer("layer2"))
 				.addLayer(testLayer("layer3"));
 
-		layers.replaceLayer(Identifier.of("test", "layer2"), layer -> testLayer("replaced"));
+		layers.replaceLayer(testIdentifier("layer2"), layer -> testLayer("replaced"));
 
 		assertOrder(base, List.of("layer1", "replaced", "layer3"));
 	}
 
+	@Test
+	void validateUnique() {
+		layers.addLayer(testLayer("layer1"))
+				.addLayer(testLayer("layer2"))
+				.addLayer(testLayer("layer3"));
+
+		Assertions.assertDoesNotThrow(() -> layers.validateUnique(testLayer("layer4")));
+		Assertions.assertThrows(IllegalArgumentException.class, () -> layers.validateUnique(testLayer("layer2")));
+	}
+
+	@Test
+	void findLayer() {
+		layers.addLayer(testLayer("layer1"))
+				.addLayer(testLayer("layer2"))
+				.addLayer(testLayer("layer3"));
+
+		Assertions.assertTrue(layers.findLayer(testIdentifier("layer2"), (layer, iterator) -> {
+			iterator.add(testLayer("found"));
+			return false;
+		}));
+
+		assertOrder(base, List.of("layer1", "layer2", "found", "layer3"));
+	}
+
+	@Test
+	void visitLayers() {
+		layers.addLayer(testLayer("layer1"))
+				.addLayer(testLayer("layer2"))
+				.addLayer(testLayer("layer3"));
+
+		layers.visitLayers((layer, iterator) -> {
+			String name = ((IdentifiedLayer) layer).id().getPath();
+			iterator.add(testLayer("visited" + name.substring(name.length() - 1)));
+			return true;
+		});
+
+		assertOrder(base, List.of("layer1", "visited1", "layer2", "visited2", "layer3", "visited3"));
+	}
+
 	private IdentifiedLayer testLayer(String name) {
-		return IdentifiedLayer.of(Identifier.of("test", name), (context, tickCounter) -> drawnLayers.add(name));
+		return IdentifiedLayer.of(testIdentifier(name), (context, tickCounter) -> drawnLayers.add(name));
+	}
+
+	private Identifier testIdentifier(String name) {
+		return Identifier.of("test", name);
 	}
 
 	private void assertOrder(LayeredDrawer drawer, List<String> expectedLayers) {
