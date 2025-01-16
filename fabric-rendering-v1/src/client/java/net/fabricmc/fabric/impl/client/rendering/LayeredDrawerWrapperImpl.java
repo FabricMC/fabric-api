@@ -85,7 +85,7 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	public LayeredDrawerWrapper removeLayer(Identifier identifier) {
 		boolean didChange = findLayer(identifier, (l, iterator) -> {
 			iterator.remove();
-			return false;
+			return true;
 		});
 
 		if (!didChange) {
@@ -100,7 +100,7 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 		boolean didChange = findLayer(identifier, (l, iterator) -> {
 			iterator.remove();
 			iterator.add(replacer.apply((IdentifiedLayer) l));
-			return false;
+			return true;
 		});
 
 		if (!didChange) {
@@ -117,39 +117,40 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 				throw new IllegalArgumentException("Layer with identifier " + layer.id() + " already exists");
 			}
 
-			return true;
+			return false;
 		});
 	}
 
 	@VisibleForTesting
 	public boolean findLayer(Identifier identifier, LayerVisitor visitor) {
-		AtomicBoolean didFind = new AtomicBoolean(false);
+		AtomicBoolean found = new AtomicBoolean(false);
 
 		visitLayers((l, iterator) -> {
 			if (matchesIdentifier(l, identifier)) {
-				didFind.set(true);
-				visitor.visit(l, iterator);
+				found.set(true);
+				return visitor.visit(l, iterator);
 			}
 
-			return true;
+			return false;
 		});
 
-		return didFind.get();
+		return found.get();
 	}
 
 	@VisibleForTesting
-	public void visitLayers(LayerVisitor visitor) {
-		visitLayers(getLayers(base), visitor);
+	public boolean visitLayers(LayerVisitor visitor) {
+		return visitLayers(getLayers(base), visitor);
 	}
 
-	private void visitLayers(List<LayeredDrawer.Layer> layers, LayerVisitor visitor) {
+	private boolean visitLayers(List<LayeredDrawer.Layer> layers, LayerVisitor visitor) {
+		AtomicBoolean modified = new AtomicBoolean(false);
 		ListIterator<LayeredDrawer.Layer> iterator = layers.listIterator();
 
 		while (iterator.hasNext()) {
 			LayeredDrawer.Layer layer = iterator.next();
 
-			if (!visitor.visit(layer, iterator)) {
-				iterator.remove();
+			if (visitor.visit(layer, iterator)) {
+				modified.set(true);
 				continue;
 			}
 
@@ -157,6 +158,8 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 				visitLayers(getLayers(subLayer.delegate()), visitor);
 			}
 		}
+
+		return modified.get();
 	}
 
 	private static boolean matchesIdentifier(LayeredDrawer.Layer layer, Identifier identifier) {
@@ -166,7 +169,7 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	@VisibleForTesting
 	public interface LayerVisitor {
 		/**
-		 * @return false to remove the layer, true to keep it
+		 * @return true if the list has been modified, false if not modified
 		 */
 		boolean visit(LayeredDrawer.Layer layer, ListIterator<LayeredDrawer.Layer> iterator);
 	}

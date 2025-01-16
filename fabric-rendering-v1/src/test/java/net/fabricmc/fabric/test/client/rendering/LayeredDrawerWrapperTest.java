@@ -131,11 +131,11 @@ public class LayeredDrawerWrapperTest {
 				.addLayer(testLayer("layer2"))
 				.addLayer(testLayer("layer3"));
 
-		layers.visitLayers((layer, iterator) -> {
+		Assertions.assertTrue(layers.visitLayers((layer, iterator) -> {
 			String name = ((IdentifiedLayer) layer).id().getPath();
 			iterator.add(testLayer("visited" + name.substring(name.length() - 1)));
 			return true;
-		});
+		}));
 
 		assertOrder(base, List.of("layer1", "visited1", "layer2", "visited2", "layer3", "visited3"));
 	}

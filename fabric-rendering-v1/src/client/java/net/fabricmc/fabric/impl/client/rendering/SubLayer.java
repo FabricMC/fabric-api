@@ -21,20 +21,16 @@ import java.util.function.BooleanSupplier;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 
 /**
  * A layer that wraps another layered drawer that can be added to {@link net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper LayeredDrawerWrapper}.
  *
- * <p>This implementation is currently not used, as vanilla sub drawers are flattened, but exists for completeness and use if needed.
+ * <p>This wraps the vanilla sub drawers, so we can retrieve sub layers as needed in the layered drawer wrapper.
  *
- * @param id           the identifier of the layer
  * @param delegate     the layered drawer to wrap
  * @param shouldRender a boolean supplier that determines if the layer should render
  */
-public record SubLayer(Identifier id, LayeredDrawer delegate, BooleanSupplier shouldRender) implements IdentifiedLayer {
+public record SubLayer(LayeredDrawer delegate, BooleanSupplier shouldRender) implements LayeredDrawer.Layer {
 	@Override
 	public void render(DrawContext context, RenderTickCounter tickCounter) {
 		if (shouldRender.getAsBoolean()) {
