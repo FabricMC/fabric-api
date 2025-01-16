@@ -23,6 +23,12 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 
+/**
+ * A simple layer that wraps a {@link LayeredDrawer.Layer} that can be added to {@link net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper LayeredDrawerWrapper}.
+ *
+ * @param id    the identifier of the layer
+ * @param layer the layer to wrap
+ */
 public record WrappedLayer(Identifier id, LayeredDrawer.Layer layer) implements IdentifiedLayer {
 	@Override
 	public void render(DrawContext context, RenderTickCounter tickCounter) {

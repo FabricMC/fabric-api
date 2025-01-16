@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.BOSSBAR;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.BOSS_BAR;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.CHAT;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.CROSSHAIR;
-import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.DEBUG_HUD;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.DEBUG;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.DEMO_TIMER;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.EXPERIENCE_LEVEL;
-import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.MAIN_HUD;
+import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.HOTBAR_AND_BARS;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.MISC_OVERLAYS;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.OVERLAY_MESSAGE;
 import static net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer.PLAYER_LIST;
@@ -83,8 +83,8 @@ public class InGameHudMixin {
 			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
 			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMainHud(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
 	)
-	private LayeredDrawer wrapMainHud(LayeredDrawer instance, LayeredDrawer.Layer layer) {
-		return wrap(MAIN_HUD, instance, layer);
+	private LayeredDrawer wrapHotbarAndBars(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(HOTBAR_AND_BARS, instance, layer);
 	}
 
 	@Redirect(method = "<init>", at = @At(
@@ -107,8 +107,8 @@ public class InGameHudMixin {
 			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
 			target = "Lnet/minecraft/client/gui/hud/InGameHud;method_55808(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
 	)
-	private LayeredDrawer wrapbossBarHud(LayeredDrawer instance, LayeredDrawer.Layer layer) {
-		return wrap(BOSSBAR, instance, layer);
+	private LayeredDrawer wrapBossBar(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(BOSS_BAR, instance, layer);
 	}
 
 	@Redirect(method = "<init>", at = @At(
@@ -123,8 +123,8 @@ public class InGameHudMixin {
 			value = "net.fabricmc.fabric.impl.client.rendering.LayerInjectionPoint",
 			target = "Lnet/minecraft/client/gui/hud/InGameHud;method_55807(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
 	)
-	private LayeredDrawer wrapDebugHud(LayeredDrawer instance, LayeredDrawer.Layer layer) {
-		return wrap(DEBUG_HUD, instance, layer);
+	private LayeredDrawer wrapDebug(LayeredDrawer instance, LayeredDrawer.Layer layer) {
+		return wrap(DEBUG, instance, layer);
 	}
 
 	@Redirect(method = "<init>", at = @At(

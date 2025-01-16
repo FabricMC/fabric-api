@@ -25,6 +25,15 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 
+/**
+ * A layer that wraps another layered drawer that can be added to {@link net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper LayeredDrawerWrapper}.
+ *
+ * <p>This implementation is currently not used, as vanilla sub drawers are flattened, but exists for completeness and use if needed.
+ *
+ * @param id           the identifier of the layer
+ * @param delegate     the layered drawer to wrap
+ * @param shouldRender a boolean supplier that determines if the layer should render
+ */
 public record SubLayer(Identifier id, LayeredDrawer delegate, BooleanSupplier shouldRender) implements IdentifiedLayer {
 	@Override
 	public void render(DrawContext context, RenderTickCounter tickCounter) {

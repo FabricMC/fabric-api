@@ -26,16 +26,16 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 
-public class HudRenderEventsTests implements ClientModInitializer {
+public class HudLayerTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer
-				.addLayerBefore(IdentifiedLayer.MISC_OVERLAYS, Identifier.of("fabric", "test_before_misc_overlay"), HudRenderEventsTests::renderBeforeMiscOverlay)
-				.addLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of("fabric", "test_after_misc_overlay"), HudRenderEventsTests::renderAfterMiscOverlay)
-				.addLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL, Identifier.of("fabric", "test_after_experience_level"), HudRenderEventsTests::renderAfterExperienceLevel)
-				.addLayerBefore(IdentifiedLayer.DEMO_TIMER, Identifier.of("fabric", "test_before_demo_timer"), HudRenderEventsTests::renderBeforeDemoTimer)
-				.addLayerBefore(IdentifiedLayer.CHAT, Identifier.of("fabric", "test_before_chat"), HudRenderEventsTests::renderBeforeChat)
-				.addLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of("fabric", "test_after_subtitles"), HudRenderEventsTests::renderAfterSubtitles)
+				.addLayerBefore(IdentifiedLayer.MISC_OVERLAYS, Identifier.of("fabric", "test_before_misc_overlay"), HudLayerTests::renderBeforeMiscOverlay)
+				.addLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of("fabric", "test_after_misc_overlay"), HudLayerTests::renderAfterMiscOverlay)
+				.addLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL, Identifier.of("fabric", "test_after_experience_level"), HudLayerTests::renderAfterExperienceLevel)
+				.addLayerBefore(IdentifiedLayer.DEMO_TIMER, Identifier.of("fabric", "test_before_demo_timer"), HudLayerTests::renderBeforeDemoTimer)
+				.addLayerBefore(IdentifiedLayer.CHAT, Identifier.of("fabric", "test_before_chat"), HudLayerTests::renderBeforeChat)
+				.addLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of("fabric", "test_after_subtitles"), HudLayerTests::renderAfterSubtitles)
 		);
 	}
 

@@ -23,23 +23,104 @@ import net.minecraft.util.Identifier;
 
 /**
  * A layered drawer that has an identifier attached to each layer and methods to add layers in specific positions.
+ *
+ * <p>Common places to add layers (as of 1.21.4):
+ * <table>
+ *     <tr>
+ *         <th>Injection Point</th>
+ *         <th>Use Case</th>
+ *     </tr>
+ *     <tr>
+ *         <td>Before {@link IdentifiedLayer#MISC_OVERLAYS MISC_OVERLAYS}</td>
+ *         <td>Render before everything</td>
+ *     </tr>
+ *     <tr>
+ *         <td>After {@link IdentifiedLayer#MISC_OVERLAYS MISC_OVERLAYS}</td>
+ *         <td>Render after misc overlays (vignette, spyglass, and powder snow) and before the crosshair</td>
+ *     </tr>
+ *     <tr>
+ *         <td>After {@link IdentifiedLayer#EXPERIENCE_LEVEL EXPERIENCE_LEVEL}</td>
+ *         <td>Render after most main hud elements like hotbar, spectator hud, status bars, experience bar, status effects overlays, and boss bar and before the sleep overlay</td>
+ *     </tr>
+ *     <tr>
+ *         <td>Before {@link IdentifiedLayer#DEMO_TIMER DEMO_TIMER}</td>
+ *         <td>Render after sleep overlay and before the demo timer, debug HUD, scoreboard, overlay message (action bar), and title and subtitle</td>
+ *     </tr>
+ *     <tr>
+ *         <td>Before {@link IdentifiedLayer#CHAT CHAT}</td>
+ *         <td>Render after the debug HUD, scoreboard, overlay message (action bar), and title and subtitle and before {@link net.minecraft.client.gui.hud.ChatHud ChatHud}, player list, and sound subtitles</td>
+ *     </tr>
+ *     <tr>
+ *         <td>After {@link IdentifiedLayer#SUBTITLES SUBTITLES}</td>
+ *         <td>Render after everything</td>
+ *     </tr>
+ * </table>
  */
 public interface LayeredDrawerWrapper {
+	/**
+	 * Adds a layer to the end of the layered drawer.
+	 *
+	 * @param layer the layer to add
+	 * @return this layered drawer
+	 */
 	LayeredDrawerWrapper addLayer(IdentifiedLayer layer);
 
-	LayeredDrawerWrapper addLayerBefore(Identifier before, IdentifiedLayer layer);
+	/**
+	 * Adds a layer before the layer with the specified identifier.
+	 *
+	 * @param beforeThis the identifier of the layer to add the new layer before
+	 * @param layer      the layer to add
+	 * @return this layered drawer
+	 */
+	LayeredDrawerWrapper addLayerBefore(Identifier beforeThis, IdentifiedLayer layer);
 
-	default LayeredDrawerWrapper addLayerBefore(Identifier before, Identifier identifier, LayeredDrawer.Layer layer) {
-		return addLayerBefore(before, IdentifiedLayer.of(identifier, layer));
+	/**
+	 * Adds a layer before the layer with the specified identifier.
+	 *
+	 * @param beforeThis the identifier of the layer to add the new layer before
+	 * @param identifier the identifier of the new layer
+	 * @param layer      the layer to add
+	 * @return this layered drawer
+	 */
+	default LayeredDrawerWrapper addLayerBefore(Identifier beforeThis, Identifier identifier, LayeredDrawer.Layer layer) {
+		return addLayerBefore(beforeThis, IdentifiedLayer.of(identifier, layer));
 	}
 
-	LayeredDrawerWrapper addLayerAfter(Identifier after, IdentifiedLayer layer);
+	/**
+	 * Adds a layer after the layer with the specified identifier.
+	 *
+	 * @param afterThis the identifier of the layer to add the new layer after
+	 * @param layer     the layer to add
+	 * @return this layered drawer
+	 */
+	LayeredDrawerWrapper addLayerAfter(Identifier afterThis, IdentifiedLayer layer);
 
-	default LayeredDrawerWrapper addLayerAfter(Identifier after, Identifier identifier, LayeredDrawer.Layer layer) {
-		return addLayerAfter(after, IdentifiedLayer.of(identifier, layer));
+	/**
+	 * Adds a layer after the layer with the specified identifier.
+	 *
+	 * @param afterThis  the identifier of the layer to add the new layer after
+	 * @param identifier the identifier of the new layer
+	 * @param layer      the layer to add
+	 * @return this layered drawer
+	 */
+	default LayeredDrawerWrapper addLayerAfter(Identifier afterThis, Identifier identifier, LayeredDrawer.Layer layer) {
+		return addLayerAfter(afterThis, IdentifiedLayer.of(identifier, layer));
 	}
 
+	/**
+	 * Removes a layer with the specified identifier.
+	 *
+	 * @param identifier the identifier of the layer to remove
+	 * @return this layered drawer
+	 */
 	LayeredDrawerWrapper removeLayer(Identifier identifier);
 
+	/**
+	 * Replaces a layer with the specified identifier.
+	 *
+	 * @param identifier the identifier of the layer to replace
+	 * @param replacer   a function that takes the old layer and returns the new layer
+	 * @return this layered drawer
+	 */
 	LayeredDrawerWrapper replaceLayer(Identifier identifier, Function<IdentifiedLayer, IdentifiedLayer> replacer);
 }

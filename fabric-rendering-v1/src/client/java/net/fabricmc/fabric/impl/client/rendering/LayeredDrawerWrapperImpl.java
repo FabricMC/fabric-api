@@ -47,25 +47,25 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	}
 
 	@Override
-	public LayeredDrawerWrapper addLayerAfter(Identifier after, IdentifiedLayer layer) {
+	public LayeredDrawerWrapper addLayerAfter(Identifier afterThis, IdentifiedLayer layer) {
 		validateUnique(layer);
 
-		boolean didChange = findLayer(after, (l, iterator) -> {
+		boolean didChange = findLayer(afterThis, (l, iterator) -> {
 			iterator.add(layer);
 			return true;
 		});
 
 		if (!didChange) {
-			throw new IllegalArgumentException("Layer with identifier " + after + " not found");
+			throw new IllegalArgumentException("Layer with identifier " + afterThis + " not found");
 		}
 
 		return this;
 	}
 
 	@Override
-	public LayeredDrawerWrapper addLayerBefore(Identifier before, IdentifiedLayer layer) {
+	public LayeredDrawerWrapper addLayerBefore(Identifier beforeThis, IdentifiedLayer layer) {
 		validateUnique(layer);
-		boolean didChange = findLayer(before, (l, iterator) -> {
+		boolean didChange = findLayer(beforeThis, (l, iterator) -> {
 			iterator.previous();
 			iterator.add(layer);
 			iterator.next();
@@ -73,7 +73,7 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 		});
 
 		if (!didChange) {
-			throw new IllegalArgumentException("Layer with identifier " + before + " not found");
+			throw new IllegalArgumentException("Layer with identifier " + beforeThis + " not found");
 		}
 
 		return this;

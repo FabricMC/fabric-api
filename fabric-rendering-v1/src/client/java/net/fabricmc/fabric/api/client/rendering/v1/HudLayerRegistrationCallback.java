@@ -23,6 +23,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Callback for when hud layers are registered.
  *
  * <p>To register a layer, register a listener to this event and register your layers in the listener.
+ * For common use cases, see {@link LayeredDrawerWrapper}.
+ *
+ * <p>For example, the following code registers a layer after {@link IdentifiedLayer#MISC_OVERLAYS}:
+ * <pre>{@code
+ * HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer.addLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of("example", "example_layer"), (context, tickDelta) -> {
+ *     // Your rendering code here
+ * }));
+ * }</pre>
  *
  * @see LayeredDrawerWrapper
  */
@@ -37,6 +45,7 @@ public interface HudLayerRegistrationCallback {
 	 * Called when registering hud layers.
 	 *
 	 * @param layeredDrawer the layered drawer to register layers to
+	 * @see LayeredDrawerWrapper
 	 */
 	void register(LayeredDrawerWrapper layeredDrawer);
 }
