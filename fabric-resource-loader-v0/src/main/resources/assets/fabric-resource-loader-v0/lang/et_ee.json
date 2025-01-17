@@ -1,9 +1,9 @@
 {
+  "commands.datapack.fabric.internal": "Fabricu sisemist pakki \"%s\" ei saa lubada ega keelata.",
   "pack.description.modResources": "Modide ressursid.",
-  "pack.source.fabricmod": "Fabricu mod",
-  "pack.source.builtinMod": "sisseeh.: %s",
   "pack.name.fabricMod": "Fabricu mod \"%s\"",
-  "pack.name.fabricMods": "Fabricu modid",
   "pack.name.fabricMod.subPack": "Fabricu mod \"%s\" (%s)",
-  "commands.datapack.fabric.internal": "Fabricu sisemist pakki \"%s\" ei saa lubada ega keelata."
+  "pack.name.fabricMods": "Fabricu modid",
+  "pack.source.builtinMod": "sisseeh.: %s",
+  "pack.source.fabricmod": "Fabricu mod"
 }
