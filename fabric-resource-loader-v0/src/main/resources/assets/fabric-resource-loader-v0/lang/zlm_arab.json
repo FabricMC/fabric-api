@@ -1,0 +1,9 @@
+{
+  "commands.datapack.fabric.internal": "تيدق بوليه منداياکن اتاو مڽهداياکن ڤيک دالمن Fabric \"%s\".",
+  "pack.description.modResources": "سومبر مود.",
+  "pack.name.fabricMod": "مود Fabric \"%s\"",
+  "pack.name.fabricMod.subPack": "مود Fabric \"%s\" (%s)",
+  "pack.name.fabricMods": "مود Fabric",
+  "pack.source.builtinMod": "تربينا: %s",
+  "pack.source.fabricmod": "مود Fabric"
+}
