@@ -1,9 +1,9 @@
 {
+  "commands.datapack.fabric.internal": "Không thể bật hoặc tắt gói nội bộ Fabric \"%s\".",
   "pack.description.modResources": "Tài nguyên mod.",
-  "pack.source.fabricmod": "Mod Fabric",
-  "pack.source.builtinMod": "tích hợp: %s",
   "pack.name.fabricMod": "Mod Fabric \"%s\"",
-  "pack.name.fabricMods": "Các Mod Fabric",
   "pack.name.fabricMod.subPack": "Mod Fabric \"%s\" (%s)",
-  "commands.datapack.fabric.internal": "Không thể bật hoặc tắt gói nội bộ Fabric \"%s\"."
+  "pack.name.fabricMods": "Các Mod Fabric",
+  "pack.source.builtinMod": "tích hợp: %s",
+  "pack.source.fabricmod": "Mod Fabric"
 }
