@@ -1,9 +1,9 @@
 {
+  "commands.datapack.fabric.internal": "Tidak boleh mendayakan atau menyahdayakan pek dalaman Fabric \"%s\".",
   "pack.description.modResources": "Sumber mod.",
-  "pack.source.fabricmod": "Mod Fabric",
-  "pack.source.builtinMod": "terbina: %s",
   "pack.name.fabricMod": "Mod Fabric \"%s\"",
-  "pack.name.fabricMods": "Mod Fabric",
   "pack.name.fabricMod.subPack": "Mod Fabric \"%s\" (%s)",
-  "commands.datapack.fabric.internal": "Tidak boleh mendayakan atau menyahdayakan pek dalaman Fabric \"%s\"."
+  "pack.name.fabricMods": "Mod Fabric",
+  "pack.source.builtinMod": "terbina: %s",
+  "pack.source.fabricmod": "Mod Fabric"
 }
