@@ -1,9 +1,9 @@
 {
+  "commands.datapack.fabric.internal": "Нельзя включить или отключить внутренний набор Fabric «%s».",
   "pack.description.modResources": "Ресурсы модов.",
-  "pack.source.fabricmod": "добавлен модом Fabric",
-  "pack.source.builtinMod": "встроенный: %s",
   "pack.name.fabricMod": "Мод Fabric «%s»",
-  "pack.name.fabricMods": "Моды Fabric",
   "pack.name.fabricMod.subPack": "Мод Fabric «%s» (%s)",
-  "commands.datapack.fabric.internal": "Нельзя включить или отключить внутренний набор Fabric «%s»."
+  "pack.name.fabricMods": "Моды Fabric",
+  "pack.source.builtinMod": "встроенный: %s",
+  "pack.source.fabricmod": "добавлен модом Fabric"
 }
