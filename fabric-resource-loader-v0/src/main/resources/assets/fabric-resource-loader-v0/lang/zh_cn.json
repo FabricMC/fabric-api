@@ -1,9 +1,9 @@
 {
+  "commands.datapack.fabric.internal": "无法启用或禁用 Fabric 内部包 \"%s\"。",
   "pack.description.modResources": "模组资源。",
-  "pack.source.fabricmod": "Fabric 模组",
-  "pack.source.builtinMod": "内置：%s",
   "pack.name.fabricMod": "Fabric 模组 \"%s\"",
-  "pack.name.fabricMods": "Fabric 模组",
   "pack.name.fabricMod.subPack": "Fabric 模组 \"%s\" (%s)",
-  "commands.datapack.fabric.internal": "无法启用或禁用 Fabric 内部包 \"%s\"。"
+  "pack.name.fabricMods": "Fabric 模组",
+  "pack.source.builtinMod": "内置：%s",
+  "pack.source.fabricmod": "Fabric 模组"
 }
