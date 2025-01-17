@@ -1,0 +1,9 @@
+{
+  "commands.datapack.fabric.internal": "Ekki tókst gera virkt eða óvirkt Fabric innvortis efnispakka \"%s\".",
+  "pack.description.modResources": "Viðbótaraðföng.",
+  "pack.name.fabricMod": "Fabric Viðbót \"%s\"",
+  "pack.name.fabricMod.subPack": "Fabric Viðbót \"%s\" (%s)",
+  "pack.name.fabricMods": "Fabric Viðbætur \"%s\"",
+  "pack.source.builtinMod": "innbyggður: %s",
+  "pack.source.fabricmod": "Fabric viðbót"
+}
