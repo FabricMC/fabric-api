@@ -1,9 +1,9 @@
 {
+  "commands.datapack.fabric.internal": "「%s」はFabric内部で管理されているため、有効化・無効化できません",
   "pack.description.modResources": "Mod リソース。",
-  "pack.source.fabricmod": "Fabric mod",
-  "pack.source.builtinMod": "ビルトイン: %s",
   "pack.name.fabricMod": "Fabric Mod \"%s\"",
-  "pack.name.fabricMods": "Fabric Mod",
   "pack.name.fabricMod.subPack": "Fabric Mod \"%s\" (%s)",
-  "commands.datapack.fabric.internal": "「%s」はFabric内部で管理されているため、有効化・無効化できません"
+  "pack.name.fabricMods": "Fabric Mod",
+  "pack.source.builtinMod": "ビルトイン: %s",
+  "pack.source.fabricmod": "Fabric mod"
 }
