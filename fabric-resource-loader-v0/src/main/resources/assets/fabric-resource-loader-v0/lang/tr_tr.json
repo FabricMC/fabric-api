@@ -1,0 +1,9 @@
+{
+  "commands.datapack.fabric.internal": "\"%s\" Fabric iç paketi etkinleştirilemiyor veya devre dışı bırakılamıyor.",
+  "pack.description.modResources": "Mod kaynakları.",
+  "pack.name.fabricMod": "Fabric Modu \"%s\"",
+  "pack.name.fabricMod.subPack": "Fabric Modu \"%s\" (%s)",
+  "pack.name.fabricMods": "Fabric Modları",
+  "pack.source.builtinMod": "dahili: %s",
+  "pack.source.fabricmod": "Fabric modu"
+}
