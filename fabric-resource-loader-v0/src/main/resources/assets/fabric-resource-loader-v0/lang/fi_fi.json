@@ -1,9 +1,9 @@
 {
+  "commands.datapack.fabric.internal": "Fabricin sisäistä pakettia \"%s\" ei voi ottaa käyttöön eikä pois käytöstä.",
   "pack.description.modResources": "Modien resurssit.",
-  "pack.source.fabricmod": "Fabric-modi",
-  "pack.source.builtinMod": "sisäänrakennettu: %s",
   "pack.name.fabricMod": "Fabric-modi \"%s\"",
-  "pack.name.fabricMods": "Fabric-modit",
   "pack.name.fabricMod.subPack": "Fabric-modi \"%s\" (%s)",
-  "commands.datapack.fabric.internal": "Fabricin sisäistä pakettia \"%s\" ei voi ottaa käyttöön eikä pois käytöstä."
+  "pack.name.fabricMods": "Fabric-modit",
+  "pack.source.builtinMod": "sisäänrakennettu: %s",
+  "pack.source.fabricmod": "Fabric-modi"
 }
