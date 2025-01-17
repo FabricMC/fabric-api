@@ -70,6 +70,7 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> IGNITER_TOOLS = register("tools/igniter");
 	public static final TagKey<Item> MACE_TOOLS = register("tools/mace");
+	public static final TagKey<Item> WRENCH_TOOLS = register("tools/wrench");
 
 	// Action-based tool tags
 	/**

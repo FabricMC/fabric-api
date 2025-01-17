@@ -53,6 +53,14 @@
       "required": false
     },
     {
+      "id": "#c:tools/mace",
+      "required": false
+    },
+    {
+      "id": "#c:tools/wrench",
+      "required": false
+    },
+    {
       "id": "#c:tools/mining_tool",
       "required": false
     },
