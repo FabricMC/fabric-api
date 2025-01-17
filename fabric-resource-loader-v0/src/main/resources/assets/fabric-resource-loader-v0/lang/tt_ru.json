@@ -1,9 +1,9 @@
 {
+  "commands.datapack.fabric.internal": "«%s» Fabric эчтәге җыелмасын кушып яки сүндереп булмый.",
   "pack.description.modResources": "Модлар ресурслары.",
-  "pack.source.fabricmod": "Fabric моды белән өстәлгән",
-  "pack.source.builtinMod": "кертелгән: %s",
   "pack.name.fabricMod": "«%s» дигән Fabric моды",
-  "pack.name.fabricMods": "Fabric модлары",
   "pack.name.fabricMod.subPack": "«%s» дигән Fabric моды (%s)",
-  "commands.datapack.fabric.internal": "«%s» дигән Fabric'ның эчтәге җыелмасын кушып яки сүндереп булмый."
+  "pack.name.fabricMods": "Fabric модлары",
+  "pack.source.builtinMod": "кертелгән: %s",
+  "pack.source.fabricmod": "Fabric моды белән өстәлгән"
 }
