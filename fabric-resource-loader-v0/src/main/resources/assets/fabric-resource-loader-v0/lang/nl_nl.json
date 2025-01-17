@@ -1,9 +1,9 @@
 {
+  "commands.datapack.fabric.internal": "Kan het interne Fabric datapack \"%s\" niet aan- of uitzetten.",
   "pack.description.modResources": "Mod bronnen.",
-  "pack.source.fabricmod": "Fabric mod",
-  "pack.source.builtinMod": "ingebouwd: %s",
   "pack.name.fabricMod": "Fabric Mod \"%s\"",
-  "pack.name.fabricMods": "Fabric Mods",
   "pack.name.fabricMod.subPack": "Fabric Mod \"%s\" (%s)",
-  "commands.datapack.fabric.internal": "Kan het interne Fabric datapack \"%s\" niet aan- of uitzetten."
+  "pack.name.fabricMods": "Fabric Mods",
+  "pack.source.builtinMod": "ingebouwd: %s",
+  "pack.source.fabricmod": "Fabric mod"
 }
