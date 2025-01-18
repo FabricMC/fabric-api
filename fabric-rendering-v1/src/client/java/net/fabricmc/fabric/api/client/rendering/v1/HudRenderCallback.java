@@ -23,9 +23,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * @deprecated Use {@link HudLayerRegistrationCallback} instead.
- *
- * <p>For a code example of the new API, see {@link HudLayerRegistrationCallback}. For common use cases, see {@link LayeredDrawerWrapper}.
+ * @deprecated Use {@link HudLayerRegistrationCallback} instead. For common use cases, see {@link LayeredDrawerWrapper}.
  */
 @Deprecated
 public interface HudRenderCallback {
