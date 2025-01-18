@@ -1,7 +1,12 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Vastaanotettiin rekisterialkio, jota tämä asiakasohjelma ei tunne.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Vastaanotettiin %d rekisterialkiota, joita tämä asiakasohjelma ei tunne.\n",
+  "fabric-registry-sync-v0.unknown-registry.footer": "Ja %d lisää...",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.1": "Tämä johtuu yleensä epäyhteensopivista modilistoista asiakasohjelman ja palvelimen välillä.",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.2": " Katso lisätietoja asiakasohjelman lokista.\nSeuraavat rekisterit puuttuvat asiakasohjelmalta:\n\n",
+  "fabric-registry-sync-v0.unknown-registry.title.plural": "Vastaanotettiin %d rekisteriä, joita tämä asiakasohjelma ei tunne.\n",
+  "fabric-registry-sync-v0.unknown-registry.title.singular": "Vastaanotettiin rekisteri, jota tämä asiakasohjelma ei tunne.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "Ja %d lisää...",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Tämä johtuu yleensä epäyhteensopivista modilistoista asiakasohjelman ja palvelimen välillä.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Katso lisätietoja asiakasohjelman lokista.\nSeuraavat rekisterialkioiden nimiavaruudet voivat liittyä ongelmaan:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "Ja %d lisää..."
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Vastaanotettiin %d rekisterialkiota, joita tämä asiakasohjelma ei tunne.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Vastaanotettiin rekisterialkio, jota tämä asiakasohjelma ei tunne.\n"
 }
