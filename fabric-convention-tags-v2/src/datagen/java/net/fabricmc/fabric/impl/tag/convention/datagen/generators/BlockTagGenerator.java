@@ -268,7 +268,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.WARPED_FENCE)
 				.add(Blocks.MANGROVE_FENCE)
 				.add(Blocks.BAMBOO_FENCE)
-				.add(Blocks.CHERRY_FENCE);
+				.add(Blocks.CHERRY_FENCE)
+				.add(Blocks.PALE_OAK_FENCE);
 		getOrCreateTagBuilder(ConventionalBlockTags.NETHER_BRICK_FENCES)
 				.add(Blocks.NETHER_BRICK_FENCE);
 		getOrCreateTagBuilder(ConventionalBlockTags.FENCES)
@@ -285,7 +286,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.WARPED_FENCE_GATE)
 				.add(Blocks.MANGROVE_FENCE_GATE)
 				.add(Blocks.BAMBOO_FENCE_GATE)
-				.add(Blocks.CHERRY_FENCE_GATE);
+				.add(Blocks.CHERRY_FENCE_GATE)
+				.add(Blocks.PALE_OAK_FENCE_GATE);
 		getOrCreateTagBuilder(ConventionalBlockTags.FENCE_GATES)
 				.addOptionalTag(ConventionalBlockTags.WOODEN_FENCE_GATES);
 	}
