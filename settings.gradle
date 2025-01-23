@@ -1,5 +1,6 @@
 pluginManagement {
 	repositories {
+		mavenLocal()
 		maven {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
@@ -10,6 +11,7 @@ pluginManagement {
 
 rootProject.name = "fabric-api"
 
+include(":moltenex-wrapper")
 include 'fabric-api-bom'
 include 'fabric-api-catalog'
 

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "moltenex-wrapper",
+  "version": "1.0.0",
+  "name": "Moltenex Wrapper",
+  "description": "A library that wraps Fabric Loader classes and integrates them with the Moltenex Loader.",
+  "authors": [
+    "Moltenex"
+  ],
+  "contact": {
+    "homepage": "https://moltenex.com",
+    "sources": "https://github.com/moltenex-tm/moltenex-wrapper"
+  },
+  "license": "MOSL",
+  "environment": "*",
+  "depends": {
+    "fabricloader": ">=0.14.0",
+    "fabric-api": "*",
+    "java": ">=17"
+  }
+}

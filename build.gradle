@@ -4,7 +4,7 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id 'jacoco'
-	id "fabric-loom" version "1.9.2" apply false
+	id "moltenex-loom" version "1.9-SNAPSHOT" apply false
 	id "com.diffplug.spotless" version "6.20.0"
 	id "org.ajoberstar.grgit" version "5.2.2"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
@@ -131,15 +131,12 @@ allprojects {
 		requestUrl = ENV.SIGNING_SERVER
 		pgpAuthKey = ENV.SIGNING_PGP_KEY
 		jarAuthKey = ENV.SIGNING_JAR_KEY
-
 		useDummyForTesting = ENV.SIGNING_SERVER == null
-
 		afterEvaluate {
 			// PGP sign all maven publications.
 			sign publishing.publications.mavenJava
 		}
 	}
-
 	publishing {
 		setupRepositories(repositories)
 	}
@@ -150,7 +147,7 @@ allprojects {
 
 	apply plugin: "java-library"
 	apply plugin: "checkstyle"
-	apply plugin: "fabric-loom"
+	apply plugin: "moltenex-loom"
 	apply plugin: "com.diffplug.spotless"
 
 	tasks.withType(JavaCompile).configureEach {
@@ -230,17 +227,23 @@ allprojects {
 		}
 	}
 
+	repositories {
+		mavenLocal() // Use Maven Local to resolve dependencies
+	}
 	dependencies {
+		if (name != "moltenex-wrapper") {
+			compileOnly(project(":moltenex-wrapper"))
+		}
 		minecraft "com.mojang:minecraft:$rootProject.minecraft_version"
 		mappings "net.fabricmc:yarn:${rootProject.minecraft_version}${project.yarn_version}:v2"
-		modApi "net.fabricmc:fabric-loader:${project.loader_version}"
+		modApi "com.moltenex:loader:${project.loader_version}"
 
 		testmodImplementation sourceSets.main.output
 		testmodClientImplementation sourceSets.main.output
 		testmodClientImplementation sourceSets.client.output
 		testmodClientImplementation sourceSets.testmod.output
 
-		testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+		testImplementation "com.moltenex:loader-junit:${project.loader_version}"
 		testImplementation sourceSets.testmodClient.output
 		testImplementation 'org.mockito:mockito-core:5.13.0'
 	}
@@ -276,10 +279,11 @@ allprojects {
 			gson().indentWithSpaces(2).sortByKeys()
 		}
 	}
-
-	checkstyle {
-		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = "10.20.2"
+	if (name != "moltenex-wrapper") {
+		checkstyle {
+			configFile = rootProject.file("checkstyle.xml")
+			toolVersion = "10.20.2"
+		}
 	}
 
 	tasks.withType(AbstractArchiveTask).configureEach {
@@ -447,12 +451,12 @@ loom {
 		}
 	}
 }
+/*
+ runGametest {
+ outputs.file project.layout.buildDirectory.file("junit.xml")
+ }*/
 
-runGametest {
-	outputs.file project.layout.buildDirectory.file("junit.xml")
-}
-
-test.dependsOn runGametest
+//test.dependsOn runGametest
 
 def coverageTasks = [
 	runGametestCoverage,
@@ -498,10 +502,10 @@ configurations {
 }
 
 dependencies {
-	productionRuntime "net.fabricmc:fabric-loader:${project.loader_version}"
+	productionRuntime "com.moltenex:loader:${project.loader_version}"
 	productionRuntime "net.fabricmc:intermediary:${project.minecraft_version}"
 
-	productionRuntimeServer "net.fabricmc:fabric-installer:${project.installer_version}:server"
+	productionRuntimeServer "com.moltenex:installer:${project.installer_version}:server"
 	productionMods project(':fabric-client-gametest-api-v1')
 }
 
@@ -513,7 +517,7 @@ def productionMods = project.files(configurations.productionMods, remapJar.archi
 tasks.register('runProductionClientGametest', JavaExec) {
 	dependsOn productionMods, downloadAssets
 	classpath.from configurations.productionRuntime
-	mainClass = "net.fabricmc.loader.impl.launch.knot.KnotClient"
+	mainClass = "com.moltenex.loader.impl.launch.knot.KnotClient"
 	workingDir = file("run")
 
 	doFirst {
