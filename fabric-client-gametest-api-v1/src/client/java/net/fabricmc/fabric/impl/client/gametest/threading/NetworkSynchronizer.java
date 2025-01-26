@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.util.Unit;
 import net.minecraft.util.thread.ThreadExecutor;
 
+import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
+
 /**
  * Ensures packets are always handled by the end of the task loop on the receiving thread.
  *
@@ -54,7 +56,6 @@ import net.minecraft.util.thread.ThreadExecutor;
  */
 public final class NetworkSynchronizer {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
-	public static final boolean DISABLED = System.getProperty("fabric.client.gametest.disableNetworkSynchronizer") != null;
 
 	public static final NetworkSynchronizer CLIENTBOUND = new NetworkSynchronizer();
 	public static final NetworkSynchronizer SERVERBOUND = new NetworkSynchronizer();
@@ -68,7 +69,7 @@ public final class NetworkSynchronizer {
 	private boolean isRunningNetworkTasks = false;
 
 	public void preSendPacket() {
-		if (DISABLED) {
+		if (TestSystemProperties.DISABLE_NETWORK_SYNCHRONIZER) {
 			return;
 		}
 
@@ -76,7 +77,7 @@ public final class NetworkSynchronizer {
 	}
 
 	public void preNettyHandlePacket() {
-		if (DISABLED) {
+		if (TestSystemProperties.DISABLE_NETWORK_SYNCHRONIZER) {
 			return;
 		}
 
@@ -84,7 +85,7 @@ public final class NetworkSynchronizer {
 	}
 
 	public void postNettyHandlePacket() {
-		if (DISABLED) {
+		if (TestSystemProperties.DISABLE_NETWORK_SYNCHRONIZER) {
 			return;
 		}
 
@@ -103,7 +104,7 @@ public final class NetworkSynchronizer {
 	}
 
 	public void preTaskAdded(Runnable task) {
-		if (DISABLED) {
+		if (TestSystemProperties.DISABLE_NETWORK_SYNCHRONIZER) {
 			return;
 		}
 
@@ -114,7 +115,7 @@ public final class NetworkSynchronizer {
 	}
 
 	public void postTaskRun(Runnable task) {
-		if (DISABLED) {
+		if (TestSystemProperties.DISABLE_NETWORK_SYNCHRONIZER) {
 			return;
 		}
 
@@ -123,7 +124,7 @@ public final class NetworkSynchronizer {
 	}
 
 	public void waitForPacketHandlers(ThreadExecutor<?> executor) {
-		if (DISABLED) {
+		if (TestSystemProperties.DISABLE_NETWORK_SYNCHRONIZER) {
 			return;
 		}
 

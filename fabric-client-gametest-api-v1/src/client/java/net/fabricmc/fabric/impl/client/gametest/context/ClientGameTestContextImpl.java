@@ -62,6 +62,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotCompa
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldBuilder;
 import net.fabricmc.fabric.impl.client.gametest.TestInputImpl;
+import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotCommonOptionsImpl;
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotComparisonAlgorithms;
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotComparisonOptionsImpl;
@@ -76,8 +77,6 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
-	@Nullable
-	private static final String TEST_MOD_RESOURCES_PATH = System.getProperty("fabric.client.gametest.testModResourcesPath");
 
 	private final TestInputImpl input = new TestInputImpl(this);
 	private static int screenshotCounter = 0;
@@ -418,8 +417,8 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	private static void onTemplateImageDoesntExist(NativeImage subScreenshot, TestScreenshotComparisonOptionsImpl options) {
-		if (TEST_MOD_RESOURCES_PATH != null) {
-			Path savePath = Path.of(TEST_MOD_RESOURCES_PATH).resolve("templates").resolve(options.getTemplateImagePath() + ".png");
+		if (TestSystemProperties.TEST_MOD_RESOURCES_PATH != null) {
+			Path savePath = Path.of(TestSystemProperties.TEST_MOD_RESOURCES_PATH).resolve("templates").resolve(options.getTemplateImagePath() + ".png");
 
 			try {
 				Files.createDirectories(savePath.getParent());

@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 public class ClientGameTestMixinConfigPlugin implements IMixinConfigPlugin {
-	private static final boolean ENABLED = System.getProperty("fabric.client.gametest") != null;
+	static final boolean ENABLED = System.getProperty("fabric.client.gametest") != null;
 
 	@Override
 	public void onLoad(String mixinPackage) {

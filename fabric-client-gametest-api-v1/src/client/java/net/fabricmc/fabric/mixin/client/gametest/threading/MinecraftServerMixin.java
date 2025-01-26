@@ -29,6 +29,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.thread.ThreadExecutor;
 
+import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 import net.fabricmc.fabric.impl.client.gametest.threading.NetworkSynchronizer;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 
@@ -63,7 +64,7 @@ public class MinecraftServerMixin {
 
 	@Inject(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;runTasksTillTickEnd()V"))
 	private void preRunTasks(CallbackInfo ci) {
-		if (!NetworkSynchronizer.DISABLED) {
+		if (!TestSystemProperties.DISABLE_NETWORK_SYNCHRONIZER) {
 			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_SERVER_TASKS);
 		}
 	}
@@ -72,7 +73,7 @@ public class MinecraftServerMixin {
 	private void postRunTasks(CallbackInfo ci) {
 		NetworkSynchronizer.SERVERBOUND.waitForPacketHandlers((ThreadExecutor<?>) (Object) this);
 
-		if (!NetworkSynchronizer.DISABLED) {
+		if (!TestSystemProperties.DISABLE_NETWORK_SYNCHRONIZER) {
 			ThreadingImpl.enterPhase(ThreadingImpl.PHASE_CLIENT_TASKS);
 		}
 

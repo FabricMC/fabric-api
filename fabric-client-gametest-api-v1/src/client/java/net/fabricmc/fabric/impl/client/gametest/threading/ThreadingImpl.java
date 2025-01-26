@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
 
+import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
+
 /**
  * <h1>Implementation notes</h1>
  *
@@ -70,7 +72,6 @@ public final class ThreadingImpl {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
 
-	private static final boolean DISABLE_JOIN_ASYNC_STACK_TRACES = System.getProperty("fabric.client.gametest.disableJoinAsyncStackTraces") != null;
 	private static final String THREAD_IMPL_CLASS_NAME = ThreadingImpl.class.getName();
 	private static final String TASK_ON_THIS_THREAD_METHOD_NAME = "runTaskOnThisThread";
 	private static final String TASK_ON_OTHER_THREAD_METHOD_NAME = "runTaskOnOtherThread";
@@ -222,7 +223,7 @@ public final class ThreadingImpl {
 	}
 
 	private static void joinAsyncStackTrace(Throwable e) {
-		if (DISABLE_JOIN_ASYNC_STACK_TRACES) {
+		if (TestSystemProperties.DISABLE_JOIN_ASYNC_STACK_TRACES) {
 			return;
 		}
 
