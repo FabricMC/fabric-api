@@ -36,10 +36,10 @@ import net.minecraft.world.chunk.WrapperProtoChunk;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
-import net.fabricmc.fabric.api.client.gametest.v1.TestSingleplayerContext;
-import net.fabricmc.fabric.api.client.gametest.v1.TestWorldSave;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 
 public class PersistenceGametest implements FabricClientGameTest {

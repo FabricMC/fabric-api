@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.gametest.v1;
+package net.fabricmc.fabric.mixin.client.gametest.screenshot;
 
-import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-/**
- * The {@code fabric-client-gametest} entrypoint interface. See the package documentation.
- */
-public interface FabricClientGameTest {
-	/**
-	 * Runs the gametest.
-	 */
-	void runTest(ClientGameTestContext context);
+import net.minecraft.client.render.RenderTickCounter;
+
+@Mixin(RenderTickCounter.Constant.class)
+public interface RenderTickCounterConstantAccessor {
+	@Invoker("<init>")
+	static RenderTickCounter.Constant create(float constant) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
 }

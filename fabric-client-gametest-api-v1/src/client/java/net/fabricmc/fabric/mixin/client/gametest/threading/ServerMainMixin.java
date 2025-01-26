@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.gametest.v1;
+package net.fabricmc.fabric.mixin.client.gametest.threading;
 
-import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
-/**
- * The {@code fabric-client-gametest} entrypoint interface. See the package documentation.
- */
-public interface FabricClientGameTest {
-	/**
-	 * Runs the gametest.
-	 */
-	void runTest(ClientGameTestContext context);
+import net.minecraft.server.Main;
+
+@Mixin(Main.class)
+public class ServerMainMixin {
+	@WrapWithCondition(method = "main", remap = false, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;startTimerHack()V", remap = true))
+	private static boolean dontStartAnotherTimerHack() {
+		return false;
+	}
 }

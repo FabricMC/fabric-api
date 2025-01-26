@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.gametest.v1;
+package net.fabricmc.fabric.impl.client.gametest.screenshot;
 
-import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 
-/**
- * The {@code fabric-client-gametest} entrypoint interface. See the package documentation.
- */
-public interface FabricClientGameTest {
-	/**
-	 * Runs the gametest.
-	 */
-	void runTest(ClientGameTestContext context);
+public final class TestScreenshotOptionsImpl extends TestScreenshotCommonOptionsImpl<TestScreenshotOptions> implements TestScreenshotOptions {
+	public final String name;
+
+	public TestScreenshotOptionsImpl(String name) {
+		this.name = name;
+	}
 }

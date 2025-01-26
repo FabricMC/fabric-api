@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.gametest.v1;
+package net.fabricmc.fabric.impl.client.gametest.util;
 
-import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-
-/**
- * The {@code fabric-client-gametest} entrypoint interface. See the package documentation.
- */
-public interface FabricClientGameTest {
-	/**
-	 * Runs the gametest.
-	 */
-	void runTest(ClientGameTestContext context);
+public interface WindowHooks {
+	int fabric_getRealWidth();
+	int fabric_getRealHeight();
+	int fabric_getRealFramebufferWidth();
+	int fabric_getRealFramebufferHeight();
+	void fabric_resetSize();
+	void fabric_resize(int width, int height);
 }

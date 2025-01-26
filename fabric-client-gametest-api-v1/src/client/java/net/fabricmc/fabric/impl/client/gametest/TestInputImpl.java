@@ -29,11 +29,13 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
-import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.TestInput;
-import net.fabricmc.fabric.mixin.client.gametest.KeyBindingAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.KeyboardAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.MouseAccessor;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
+import net.fabricmc.fabric.impl.client.gametest.util.WindowHooks;
+import net.fabricmc.fabric.mixin.client.gametest.input.KeyBindingAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.input.KeyboardAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.input.MouseAccessor;
 
 public final class TestInputImpl implements TestInput {
 	private static final Set<InputUtil.Key> KEYS_DOWN = new HashSet<>();

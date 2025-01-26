@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.gametest.v1;
+package net.fabricmc.fabric.mixin.client.gametest.world;
 
-import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-/**
- * The {@code fabric-client-gametest} entrypoint interface. See the package documentation.
- */
-public interface FabricClientGameTest {
-	/**
-	 * Runs the gametest.
-	 */
-	void runTest(ClientGameTestContext context);
+import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.client.gui.screen.world.WorldCreator;
+
+@Mixin(CreateWorldScreen.class)
+public interface CreateWorldScreenAccessor {
+	@Accessor
+	WorldCreator getWorldCreator();
 }

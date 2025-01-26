@@ -32,13 +32,13 @@ import net.minecraft.client.option.Perspective;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.util.InputUtil;
 
-import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
-import net.fabricmc.fabric.api.client.gametest.v1.TestDedicatedServerContext;
-import net.fabricmc.fabric.api.client.gametest.v1.TestScreenshotComparisonOptions;
-import net.fabricmc.fabric.api.client.gametest.v1.TestServerConnection;
-import net.fabricmc.fabric.api.client.gametest.v1.TestSingleplayerContext;
-import net.fabricmc.fabric.api.client.gametest.v1.TestWorldSave;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
+import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
 import net.fabricmc.fabric.test.client.gametest.mixin.TitleScreenAccessor;
 
 public class ClientGameTestTest implements FabricClientGameTest {

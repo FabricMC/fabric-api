@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.gametest.v1;
+package net.fabricmc.fabric.impl.client.gametest.screenshot;
 
-import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-
-/**
- * The {@code fabric-client-gametest} entrypoint interface. See the package documentation.
- */
-public interface FabricClientGameTest {
-	/**
-	 * Runs the gametest.
-	 */
-	void runTest(ClientGameTestContext context);
+public interface NativeImageHooks {
+	byte[] fabric_copyPixelsLuminance();
+	int[] fabric_copyPixelsRgb();
+	boolean fabric_isFullyOpaque();
 }

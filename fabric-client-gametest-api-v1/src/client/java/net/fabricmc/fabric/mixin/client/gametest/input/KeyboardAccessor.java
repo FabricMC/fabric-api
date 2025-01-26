@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.gametest.v1;
+package net.fabricmc.fabric.mixin.client.gametest.input;
 
-import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-/**
- * The {@code fabric-client-gametest} entrypoint interface. See the package documentation.
- */
-public interface FabricClientGameTest {
-	/**
-	 * Runs the gametest.
-	 */
-	void runTest(ClientGameTestContext context);
+import net.minecraft.client.Keyboard;
+
+@Mixin(Keyboard.class)
+public interface KeyboardAccessor {
+	@Invoker
+	void invokeOnChar(long window, int codePoint, int modifiers);
 }

@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.gametest.v1;
+package net.fabricmc.fabric.mixin.client.gametest.lifecycle;
 
-import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-/**
- * The {@code fabric-client-gametest} entrypoint interface. See the package documentation.
- */
-public interface FabricClientGameTest {
-	/**
-	 * Runs the gametest.
-	 */
-	void runTest(ClientGameTestContext context);
+import net.minecraft.client.option.GameOptions;
+
+@Mixin(GameOptions.class)
+public interface GameOptionsAccessor {
+	@Invoker
+	void invokeAccept(GameOptions.Visitor visitor);
 }
