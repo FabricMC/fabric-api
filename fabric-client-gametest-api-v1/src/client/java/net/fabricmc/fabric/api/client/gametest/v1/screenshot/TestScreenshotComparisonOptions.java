@@ -38,10 +38,11 @@ import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotCompari
  * <p>Template images must be fully opaque, this API will throw if the template image has any transparent pixels.
  *
  * <p>Template images loaded from a path are expected to be in the {@code templates} directory inside the resources
- * directory of the mod which registered the gametest. If the template image is not found, and the
- * {@code fabric.client.gametest.testModResourcesPath} system property is set to the resources folder of the mod which
- * registered the gametest, then the screenshot will be saved to the {@code templates} folder so that it can be used
- * next time the gametest is run.
+ * directory of the mod which registered the gametest. If the template image is not found then the screenshot will be
+ * saved to the {@code templates} directory so that it can be used next time the gametest is run. Your test mod's
+ * resources directory is in the {@code fabric.client.gametest.testModResourcesPath} system property which is set by
+ * Loom by default. You may set this system property to override the location of the test mod resources directory. If
+ * this system property is unset and the template image is not found, then the test will fail.
  */
 @ApiStatus.NonExtendable
 public interface TestScreenshotComparisonOptions extends TestScreenshotCommonOptions<TestScreenshotComparisonOptions> {

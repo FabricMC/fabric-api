@@ -23,6 +23,10 @@ import org.jetbrains.annotations.ApiStatus;
  * This class implements {@link AutoCloseable} and is intended to be used in a try-with-resources statement. When
  * closed, the dedicated server will be stopped.
  *
+ * <p>Dedicated servers will only run if the EULA has been accepted in {@code eula.txt}. If you have read and accepted
+ * the <a href="https://aka.ms/MinecraftEULA">Minecraft EULA</a>, you can write the file at build-time by setting
+ * {@code fabricApi.configureTests { eula = true }} in your {@code build.gradle}.
+ *
  * <p>Functions in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable

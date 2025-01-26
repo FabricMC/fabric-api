@@ -3,6 +3,17 @@
  * {@code fabric-client-gametest} entrypoint in your {@code fabric.mod.json}. Your gametest class should implement
  * {@link net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest FabricClientGameTest}.
  *
+ * <p>Loom provides an API to configure client gametests in your {@code build.gradle}. It is recommended to run
+ * gametests from a separate source set and test mod:
+ * <pre>
+ *     {@code
+ *     fabricApi.configureTests {
+ *         createSourceSet = true
+ *         modId = 'your-gametest-mod-id'
+ *     }
+ *     }
+ * </pre>
+ *
  * <h1>Lifecycle</h1>
  * Client gametests are run sequentially. When a gametest ends, the game will be
  * returned to the title screen. When all gametests have been run, the game will be closed.

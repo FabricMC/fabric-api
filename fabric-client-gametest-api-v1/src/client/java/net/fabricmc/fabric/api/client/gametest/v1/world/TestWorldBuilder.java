@@ -66,6 +66,9 @@ public interface TestWorldBuilder {
 	/**
 	 * Creates and starts a dedicated server with the configured world settings.
 	 *
+	 * <p>The dedicated server will only run if the EULA has been accepted in {@code eula.txt}. See
+	 * {@link TestDedicatedServerContext} for details.
+	 *
 	 * @return The dedicated server context of the server that was created
 	 */
 	default TestDedicatedServerContext createServer() {
@@ -74,6 +77,9 @@ public interface TestWorldBuilder {
 
 	/**
 	 * Creates and starts a dedicated server with the configured world settings and some custom server properties.
+	 *
+	 * <p>The dedicated server will only run if the EULA has been accepted in {@code eula.txt}. See
+	 * {@link TestDedicatedServerContext} for details.
 	 *
 	 * @param serverProperties The custom server properties to be written to the {@code server.properties} file.
 	 * @return The dedicated server context of the server that was created.
