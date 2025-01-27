@@ -16,26 +16,41 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
+import net.fabricmc.fabric.api.client.gametest.v1.TestScreenshotComparisonOptions;
+import net.fabricmc.fabric.api.client.gametest.v1.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 
-public class HudLayerTests implements ClientModInitializer {
+public class HudLayerTests implements ClientModInitializer, FabricClientGameTest {
+	private static final String MOD_ID = "fabric";
+	private static final String BEFORE_MISC_OVERLAY = "test_before_misc_overlay";
+	private static final String AFTER_MISC_OVERLAY = "test_after_misc_overlay";
+	private static final String AFTER_EXPERIENCE_LEVEL = "test_after_experience_level";
+	private static final String BEFORE_DEMO_TIMER = "test_before_demo_timer";
+	private static final String BEFORE_CHAT = "test_before_chat";
+	private static final String AFTER_SUBTITLES = "test_after_subtitles";
+
 	@Override
 	public void onInitializeClient() {
 		HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer
-				.addLayerBefore(IdentifiedLayer.MISC_OVERLAYS, Identifier.of("fabric", "test_before_misc_overlay"), HudLayerTests::renderBeforeMiscOverlay)
-				.addLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of("fabric", "test_after_misc_overlay"), HudLayerTests::renderAfterMiscOverlay)
-				.addLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL, Identifier.of("fabric", "test_after_experience_level"), HudLayerTests::renderAfterExperienceLevel)
-				.addLayerBefore(IdentifiedLayer.DEMO_TIMER, Identifier.of("fabric", "test_before_demo_timer"), HudLayerTests::renderBeforeDemoTimer)
-				.addLayerBefore(IdentifiedLayer.CHAT, Identifier.of("fabric", "test_before_chat"), HudLayerTests::renderBeforeChat)
-				.addLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of("fabric", "test_after_subtitles"), HudLayerTests::renderAfterSubtitles)
+				.addLayerBefore(IdentifiedLayer.MISC_OVERLAYS, Identifier.of(MOD_ID, BEFORE_MISC_OVERLAY), HudLayerTests::renderBeforeMiscOverlay)
+				.addLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of(MOD_ID, AFTER_MISC_OVERLAY), HudLayerTests::renderAfterMiscOverlay)
+				.addLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL, Identifier.of(MOD_ID, AFTER_EXPERIENCE_LEVEL), HudLayerTests::renderAfterExperienceLevel)
+				.addLayerBefore(IdentifiedLayer.DEMO_TIMER, Identifier.of(MOD_ID, BEFORE_DEMO_TIMER), HudLayerTests::renderBeforeDemoTimer)
+				.addLayerBefore(IdentifiedLayer.CHAT, Identifier.of(MOD_ID, BEFORE_CHAT), HudLayerTests::renderBeforeChat)
+				.addLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of(MOD_ID, AFTER_SUBTITLES), HudLayerTests::renderAfterSubtitles)
 		);
 	}
 
@@ -75,5 +90,29 @@ public class HudLayerTests implements ClientModInitializer {
 		// Render a yellow rectangle at the top of the screen, and it should block the player list
 		context.fill(context.getScaledWindowWidth() / 2 - 150, 0, context.getScaledWindowWidth() / 2 + 150, 15, Colors.YELLOW);
 		context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "6. This yellow rectangle should block the player list.", context.getScaledWindowWidth() / 2, 0, Colors.WHITE);
+	}
+
+	@Override
+	public void runTest(ClientGameTestContext context) {
+		context.getInput().resizeWindow(1708, 960); // Higher resolution needed for these tests
+		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
+			// Set up the test world
+			singleplayer.getServer().runCommand("/tp @a 0 -60 0");
+			singleplayer.getServer().runOnServer(server -> {
+				server.getOverworld().setBlockState(new BlockPos(0, -59, 0), Blocks.POWDER_SNOW.getDefaultState());
+				server.getOverworld().setBlockState(new BlockPos(0, -59, 1), Blocks.WHITE_BED.getDefaultState());
+			});
+
+			// Wait for stuff to load
+			singleplayer.getClientWorld().waitForChunksRender();
+			singleplayer.getServer().runOnServer(server -> server.getPlayerManager().broadcast(Text.of("hud_layer_" + BEFORE_CHAT), false)); // Chat messages disappear in 200 ticks so we send one 150 ticks in advance to test the before chat layer
+			context.waitTicks(150); // The powder snow frosty vignette takes 140 ticks to fully appear, so we additionally wait for a total of 150 ticks
+
+			// Take and assert screenshots
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_MISC_OVERLAY).withRegion(1308, 0, 400, 60).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_MISC_OVERLAY).withRegion(668, 460, 372, 56).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_EXPERIENCE_LEVEL).withRegion(754, 860, 200, 80).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_CHAT).withRegion(0, 860, 600, 20).save());
+		}
 	}
 }

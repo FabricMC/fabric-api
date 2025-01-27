@@ -22,6 +22,9 @@
       "net.fabricmc.fabric.test.rendering.client.SpecialBlockRendererTest",
       "net.fabricmc.fabric.test.rendering.client.TooltipComponentTests",
       "net.fabricmc.fabric.test.rendering.client.WorldRenderEventsTests"
+    ],
+    "fabric-client-gametest": [
+      "net.fabricmc.fabric.test.rendering.client.HudLayerTests"
     ]
   }
 }

@@ -68,6 +68,17 @@ public interface TestScreenshotComparisonOptions extends TestScreenshotCommonOpt
 	}
 
 	/**
+	 * Additionally save the screenshot which was compared against with the template image name.
+	 * This method only works when a template image name instead of a {@link NativeImage} is used.
+	 * This method works as if by calling {@link ClientGameTestContext#takeScreenshot(TestScreenshotOptions)}
+	 * with these screenshot options, except that the screenshot saved is from the same render of the game
+	 * as the one that is compared against in this screenshot comparison.
+	 *
+	 * @return This screenshot comparison options instance
+	 */
+	TestScreenshotComparisonOptions save();
+
+	/**
 	 * Additionally save the screenshot which was compared against. This method works as if by calling
 	 * {@link ClientGameTestContext#takeScreenshot(TestScreenshotOptions)} with these screenshot options, except that
 	 * the screenshot saved is from the same render of the game as the one that is compared against in this screenshot
