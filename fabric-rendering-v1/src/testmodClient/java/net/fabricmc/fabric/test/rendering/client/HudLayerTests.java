@@ -20,6 +20,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -98,10 +99,10 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			// Set up the test world
 			singleplayer.getServer().runCommand("/tp @a 0 -60 0");
-			singleplayer.getServer().runOnServer(server -> {
-				server.getOverworld().setBlockState(new BlockPos(0, -59, 0), Blocks.POWDER_SNOW.getDefaultState());
-				server.getOverworld().setBlockState(new BlockPos(0, -59, 1), Blocks.WHITE_BED.getDefaultState());
-			});
+			singleplayer.getServer().runCommand("/scoreboard objectives add hud_layer_test dummy");
+			singleplayer.getServer().runCommand("/scoreboard objectives setdisplay list hud_layer_test"); // Hack to show player list
+			singleplayer.getServer().runCommand("/scoreboard objectives setdisplay sidebar hud_layer_test"); // Hack to show sidebar
+			singleplayer.getServer().runOnServer(server -> server.getOverworld().setBlockState(new BlockPos(0, -59, 0), Blocks.POWDER_SNOW.getDefaultState()));
 
 			// Wait for stuff to load
 			singleplayer.getClientWorld().waitForChunksRender();
@@ -112,7 +113,19 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_MISC_OVERLAY).withRegion(1308, 0, 400, 60).save());
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_MISC_OVERLAY).withRegion(668, 460, 372, 56).save());
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_EXPERIENCE_LEVEL).withRegion(754, 860, 200, 80).save());
+
+			// The sleep overlay takes 100 ticks to fully appear, so we start sleeping and wait for 100 ticks
+			context.runOnClient(client -> client.player.setSleepingPosition(new BlockPos(0, -59, 0)));
+			context.waitTicks(100);
+
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_DEMO_TIMER).withRegion(1228, 460, 480, 40).save());
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_CHAT).withRegion(0, 860, 600, 20).save());
+
+			context.runOnClient(client -> client.player.clearSleepingPosition());
+			context.waitTick();
+			context.getInput().holdKey(InputUtil.GLFW_KEY_TAB); // Show player list
+			context.waitTick();
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_SUBTITLES).withRegion(554, 0, 600, 30).save());
 		}
 	}
 }
