@@ -95,7 +95,12 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
-		context.getInput().resizeWindow(1708, 960); // Higher resolution needed for these tests
+		// Set up required test environment
+		context.getInput().resizeWindow(1708, 960); // Twice the default dimensions
+		context.runOnClient(client -> {
+			client.options.hudHidden = false;
+			client.options.getGuiScale().setValue(2);
+		});
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			// Set up the test world
