@@ -42,6 +42,7 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 	private static final String BEFORE_DEMO_TIMER = "test_before_demo_timer";
 	private static final String BEFORE_CHAT = "test_before_chat";
 	private static final String AFTER_SUBTITLES = "test_after_subtitles";
+	private static boolean shouldRender = false;
 
 	@Override
 	public void onInitializeClient() {
@@ -56,6 +57,7 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 	}
 
 	private static void renderBeforeMiscOverlay(DrawContext context, RenderTickCounter tickCounter) {
+		if (!shouldRender) return;
 		// Render a blue rectangle at the top right of the screen, and it should be blocked by misc overlays such as vignette, spyglass, and powder snow
 		context.fill(context.getScaledWindowWidth() - 200, 0, context.getScaledWindowWidth(), 30, Colors.BLUE);
 		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "1. Blue rectangle blocked by overlays", context.getScaledWindowWidth() - 196, 10, Colors.WHITE);
@@ -63,18 +65,21 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 	}
 
 	private static void renderAfterMiscOverlay(DrawContext context, RenderTickCounter tickCounter) {
+		if (!shouldRender) return;
 		// Render a red square in the center of the screen underneath the crosshair
 		context.fill(context.getScaledWindowWidth() / 2 - 10, context.getScaledWindowHeight() / 2 - 10, context.getScaledWindowWidth() / 2 + 10, context.getScaledWindowHeight() / 2 + 10, Colors.RED);
 		context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "2. Red square underneath crosshair", context.getScaledWindowWidth() / 2, context.getScaledWindowHeight() / 2 + 10, Colors.WHITE);
 	}
 
 	private static void renderAfterExperienceLevel(DrawContext context, RenderTickCounter tickCounter) {
+		if (!shouldRender) return;
 		// Render a green rectangle at the bottom of the screen, and it should block the hotbar and status bars
 		context.fill(context.getScaledWindowWidth() / 2 - 50, context.getScaledWindowHeight() - 50, context.getScaledWindowWidth() / 2 + 50, context.getScaledWindowHeight() - 10, Colors.GREEN);
 		context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "3. This green rectangle should block the hotbar and status bars.", context.getScaledWindowWidth() / 2, context.getScaledWindowHeight() - 40, Colors.WHITE);
 	}
 
 	private static void renderBeforeDemoTimer(DrawContext context, RenderTickCounter tickCounter) {
+		if (!shouldRender) return;
 		// Render a yellow rectangle at the right of the screen, and it should be above the sleep overlay but below the scoreboard
 		context.fill(context.getScaledWindowWidth() - 240, context.getScaledWindowHeight() / 2 - 10, context.getScaledWindowWidth(), context.getScaledWindowHeight() / 2 + 10, Colors.YELLOW);
 		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "4. This yellow rectangle should be above", context.getScaledWindowWidth() - 236, context.getScaledWindowHeight() / 2 - 10, Colors.WHITE);
@@ -82,12 +87,14 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 	}
 
 	private static void renderBeforeChat(DrawContext context, RenderTickCounter tickCounter) {
+		if (!shouldRender) return;
 		// Render a blue rectangle at the bottom left of the screen, and it should be blocked by the chat
 		context.fill(0, context.getScaledWindowHeight() - 40, 300, context.getScaledWindowHeight() - 50, Colors.BLUE);
 		context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, "5. This blue rectangle should be blocked by the chat.", 0, context.getScaledWindowHeight() - 50, Colors.WHITE);
 	}
 
 	private static void renderAfterSubtitles(DrawContext context, RenderTickCounter tickCounter) {
+		if (!shouldRender) return;
 		// Render a yellow rectangle at the top of the screen, and it should block the player list
 		context.fill(context.getScaledWindowWidth() / 2 - 150, 0, context.getScaledWindowWidth() / 2 + 150, 15, Colors.YELLOW);
 		context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, "6. This yellow rectangle should block the player list.", context.getScaledWindowWidth() / 2, 0, Colors.WHITE);
@@ -101,6 +108,7 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 			client.options.hudHidden = false;
 			client.options.getGuiScale().setValue(2);
 		});
+		shouldRender = true;
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			// Set up the test world
@@ -133,5 +141,7 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 			context.waitTick();
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_SUBTITLES).withRegion(554, 0, 600, 30).save());
 		}
+
+		shouldRender = false;
 	}
 }
