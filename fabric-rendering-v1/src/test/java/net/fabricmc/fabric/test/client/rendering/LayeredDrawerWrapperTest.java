@@ -62,7 +62,7 @@ public class LayeredDrawerWrapperTest {
 		layers.addLayer(testLayer("layer1"))
 				.addLayer(testLayer("layer2"));
 
-		layers.addLayerBefore(testIdentifier("layer1"), testLayer("before1"));
+		layers.attachLayerBefore(testIdentifier("layer1"), testLayer("before1"));
 
 		assertOrder(base, List.of("before1", "layer1", "layer2"));
 	}
@@ -72,7 +72,7 @@ public class LayeredDrawerWrapperTest {
 		layers.addLayer(testLayer("layer1"))
 				.addLayer(testLayer("layer2"));
 
-		layers.addLayerAfter(testIdentifier("layer1"), testLayer("after1"));
+		layers.attachLayerAfter(testIdentifier("layer1"), testLayer("after1"));
 
 		assertOrder(base, List.of("layer1", "after1", "layer2"));
 	}

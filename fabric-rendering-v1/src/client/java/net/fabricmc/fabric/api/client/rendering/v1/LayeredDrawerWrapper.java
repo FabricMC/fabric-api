@@ -66,45 +66,53 @@ public interface LayeredDrawerWrapper {
 	LayeredDrawerWrapper addLayer(IdentifiedLayer layer);
 
 	/**
-	 * Adds a layer before the layer with the specified identifier.
+	 * Attaches a layer before the layer with the specified identifier.
+	 *
+	 * <p>The render condition of the layer being attached to, if any, also applies to the new layer.
 	 *
 	 * @param beforeThis the identifier of the layer to add the new layer before
 	 * @param layer      the layer to add
 	 * @return this layered drawer
 	 */
-	LayeredDrawerWrapper addLayerBefore(Identifier beforeThis, IdentifiedLayer layer);
+	LayeredDrawerWrapper attachLayerBefore(Identifier beforeThis, IdentifiedLayer layer);
 
 	/**
-	 * Adds a layer before the layer with the specified identifier.
+	 * Attaches a layer before the layer with the specified identifier.
+	 *
+	 * <p>The render condition of the layer being attached to, if any, also applies to the new layer.
 	 *
 	 * @param beforeThis the identifier of the layer to add the new layer before
 	 * @param identifier the identifier of the new layer
 	 * @param layer      the layer to add
 	 * @return this layered drawer
 	 */
-	default LayeredDrawerWrapper addLayerBefore(Identifier beforeThis, Identifier identifier, LayeredDrawer.Layer layer) {
-		return addLayerBefore(beforeThis, IdentifiedLayer.of(identifier, layer));
+	default LayeredDrawerWrapper attachLayerBefore(Identifier beforeThis, Identifier identifier, LayeredDrawer.Layer layer) {
+		return attachLayerBefore(beforeThis, IdentifiedLayer.of(identifier, layer));
 	}
 
 	/**
-	 * Adds a layer after the layer with the specified identifier.
+	 * Attaches a layer after the layer with the specified identifier.
+	 *
+	 * <p>The render condition of the layer being attached to, if any, also applies to the new layer.
 	 *
 	 * @param afterThis the identifier of the layer to add the new layer after
 	 * @param layer     the layer to add
 	 * @return this layered drawer
 	 */
-	LayeredDrawerWrapper addLayerAfter(Identifier afterThis, IdentifiedLayer layer);
+	LayeredDrawerWrapper attachLayerAfter(Identifier afterThis, IdentifiedLayer layer);
 
 	/**
-	 * Adds a layer after the layer with the specified identifier.
+	 * Attaches a layer after the layer with the specified identifier.
+	 *
+	 * <p>The render condition of the layer being attached to, if any, also applies to the new layer.
 	 *
 	 * @param afterThis  the identifier of the layer to add the new layer after
 	 * @param identifier the identifier of the new layer
 	 * @param layer      the layer to add
 	 * @return this layered drawer
 	 */
-	default LayeredDrawerWrapper addLayerAfter(Identifier afterThis, Identifier identifier, LayeredDrawer.Layer layer) {
-		return addLayerAfter(afterThis, IdentifiedLayer.of(identifier, layer));
+	default LayeredDrawerWrapper attachLayerAfter(Identifier afterThis, Identifier identifier, LayeredDrawer.Layer layer) {
+		return attachLayerAfter(afterThis, IdentifiedLayer.of(identifier, layer));
 	}
 
 	/**
@@ -117,6 +125,8 @@ public interface LayeredDrawerWrapper {
 
 	/**
 	 * Replaces a layer with the specified identifier.
+	 *
+	 * <p>The render condition of the layer being replaced, if any, also applies to the new layer.
 	 *
 	 * @param identifier the identifier of the layer to replace
 	 * @param replacer   a function that takes the old layer and returns the new layer

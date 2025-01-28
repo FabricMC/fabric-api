@@ -49,7 +49,7 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	}
 
 	@Override
-	public LayeredDrawerWrapper addLayerAfter(Identifier afterThis, IdentifiedLayer layer) {
+	public LayeredDrawerWrapper attachLayerAfter(Identifier afterThis, IdentifiedLayer layer) {
 		validateUnique(layer);
 
 		boolean didChange = findLayer(afterThis, (l, iterator) -> {
@@ -65,7 +65,7 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	}
 
 	@Override
-	public LayeredDrawerWrapper addLayerBefore(Identifier beforeThis, IdentifiedLayer layer) {
+	public LayeredDrawerWrapper attachLayerBefore(Identifier beforeThis, IdentifiedLayer layer) {
 		validateUnique(layer);
 		boolean didChange = findLayer(beforeThis, (l, iterator) -> {
 			iterator.previous();

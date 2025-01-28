@@ -46,12 +46,12 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 	@Override
 	public void onInitializeClient() {
 		HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer
-				.addLayerBefore(IdentifiedLayer.MISC_OVERLAYS, Identifier.of(MOD_ID, BEFORE_MISC_OVERLAY), HudLayerTests::renderBeforeMiscOverlay)
-				.addLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of(MOD_ID, AFTER_MISC_OVERLAY), HudLayerTests::renderAfterMiscOverlay)
-				.addLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL, Identifier.of(MOD_ID, AFTER_EXPERIENCE_LEVEL), HudLayerTests::renderAfterExperienceLevel)
-				.addLayerBefore(IdentifiedLayer.DEMO_TIMER, Identifier.of(MOD_ID, BEFORE_DEMO_TIMER), HudLayerTests::renderBeforeDemoTimer)
-				.addLayerBefore(IdentifiedLayer.CHAT, Identifier.of(MOD_ID, BEFORE_CHAT), HudLayerTests::renderBeforeChat)
-				.addLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of(MOD_ID, AFTER_SUBTITLES), HudLayerTests::renderAfterSubtitles)
+				.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, Identifier.of(MOD_ID, BEFORE_MISC_OVERLAY), HudLayerTests::renderBeforeMiscOverlay)
+				.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of(MOD_ID, AFTER_MISC_OVERLAY), HudLayerTests::renderAfterMiscOverlay)
+				.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL, Identifier.of(MOD_ID, AFTER_EXPERIENCE_LEVEL), HudLayerTests::renderAfterExperienceLevel)
+				.attachLayerBefore(IdentifiedLayer.DEMO_TIMER, Identifier.of(MOD_ID, BEFORE_DEMO_TIMER), HudLayerTests::renderBeforeDemoTimer)
+				.attachLayerBefore(IdentifiedLayer.CHAT, Identifier.of(MOD_ID, BEFORE_CHAT), HudLayerTests::renderBeforeChat)
+				.attachLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of(MOD_ID, AFTER_SUBTITLES), HudLayerTests::renderAfterSubtitles)
 		);
 	}
 
@@ -96,6 +96,7 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		context.getInput().resizeWindow(1708, 960); // Higher resolution needed for these tests
+
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			// Set up the test world
 			singleplayer.getServer().runCommand("/tp @a 0 -60 0");
