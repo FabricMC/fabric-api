@@ -111,7 +111,7 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	}
 
 	@VisibleForTesting
-	public void validateUnique(IdentifiedLayer layer) {
+	void validateUnique(IdentifiedLayer layer) {
 		visitLayers((l, iterator) -> {
 			if (matchesIdentifier(l, layer.id())) {
 				throw new IllegalArgumentException("Layer with identifier " + layer.id() + " already exists");
@@ -122,7 +122,7 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	}
 
 	@VisibleForTesting
-	public boolean findLayer(Identifier identifier, LayerVisitor visitor) {
+	boolean findLayer(Identifier identifier, LayerVisitor visitor) {
 		AtomicBoolean found = new AtomicBoolean(false);
 
 		visitLayers((l, iterator) -> {
@@ -138,7 +138,7 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	}
 
 	@VisibleForTesting
-	public boolean visitLayers(LayerVisitor visitor) {
+	boolean visitLayers(LayerVisitor visitor) {
 		return visitLayers(getLayers(base), visitor);
 	}
 
@@ -167,7 +167,7 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	}
 
 	@VisibleForTesting
-	public interface LayerVisitor {
+	interface LayerVisitor {
 		/**
 		 * @return true if the list has been modified, false if not modified
 		 */

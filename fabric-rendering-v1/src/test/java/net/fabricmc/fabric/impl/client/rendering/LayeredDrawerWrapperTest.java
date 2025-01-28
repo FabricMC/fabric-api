@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.client.rendering;
+package net.fabricmc.fabric.impl.client.rendering;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -34,7 +34,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
-import net.fabricmc.fabric.impl.client.rendering.LayeredDrawerWrapperImpl;
 
 public class LayeredDrawerWrapperTest {
 	private List<String> drawnLayers;
