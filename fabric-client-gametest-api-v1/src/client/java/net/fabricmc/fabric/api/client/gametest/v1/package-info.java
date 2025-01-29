@@ -3,6 +3,17 @@
  * {@code fabric-client-gametest} entrypoint in your {@code fabric.mod.json}. Your gametest class should implement
  * {@link net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest FabricClientGameTest}.
  *
+ * <p>Loom provides an API to configure client gametests in your {@code build.gradle}. It is recommended to run
+ * gametests from a separate source set and test mod:
+ * <pre>
+ *     {@code
+ *     fabricApi.configureTests {
+ *         createSourceSet = true
+ *         modId = 'your-gametest-mod-id'
+ *     }
+ *     }
+ * </pre>
+ *
  * <h1>Lifecycle</h1>
  * Client gametests are run sequentially. When a gametest ends, the game will be
  * returned to the title screen. When all gametests have been run, the game will be closed.
@@ -10,20 +21,20 @@
  * <h1>Threading</h1>
  *
  * <p>Client gametests run on the client gametest thread. Use the functions inside
- * {@link net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext ClientGameTestContext} and other test helper
- * classes to run code on the correct thread. Exceptions are transparently rethrown on the test thread, and their stack
- * traces are mutated to include the async stack trace, to make them easy to track. You can disable this behavior by
- * setting the {@code fabric.client.gametest.disableJoinAsyncStackTraces} system property.
+ * {@link net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext ClientGameTestContext} and other test
+ * helper classes to run code on the correct thread. Exceptions are transparently rethrown on the test thread, and their
+ * stack traces are mutated to include the async stack trace, to make them easy to track. You can disable this behavior
+ * by setting the {@code fabric.client.gametest.disableJoinAsyncStackTraces} system property.
  *
  * <p>The game remains paused unless you explicitly unpause it using various waiting functions such as
- * {@link net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext#waitTick() ClientGameTestContext.waitTick()}.
+ * {@link net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#waitTick() ClientGameTestContext.waitTick()}.
  * A side effect of this is that <strong>the results of your code may not be immediate if the game needs a tick to
  * process them</strong>. A big example of this is key bindings, although some key binding methods have built-in tick
  * waits to mitigate the issue. See the {@link net.fabricmc.fabric.api.client.gametest.v1.TestInput TestInput}
  * documentation for details. Another pseudo-example is effects on the server need a tick to propagate to the client and
  * vice versa, although this is related to packets more than the fact the game is suspended (see the network
  * synchronization section below). A good strategy for debugging these issues is by
- * {@linkplain net.fabricmc.fabric.api.client.gametest.v1.ClientGameTestContext#takeScreenshot(String) taking screenshots},
+ * {@linkplain net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#takeScreenshot(String) taking screenshots},
  * which capture the immediate state of the game.
  *
  * <p>A few changes have been made to how the vanilla game threads run, to make tests more reproducible. Notably, there
@@ -75,7 +86,7 @@
  *         <td>{@code 5}</td>
  *         <td>{@code 10}</td>
  *         <td>Speeds up loading of chunks, especially for functions such as
- *         {@link net.fabricmc.fabric.api.client.gametest.v1.TestClientWorldContext#waitForChunksRender() TestClientWorldContext.waitForChunksRender()}</td>
+ *         {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext#waitForChunksRender() TestClientWorldContext.waitForChunksRender()}</td>
  *     </tr>
  *     <tr>
  *         <td>{@linkplain net.minecraft.client.option.GameOptions#getSoundVolumeOption(net.minecraft.sound.SoundCategory) Music volume}</td>
@@ -87,7 +98,7 @@
  *
  * <h2>World creation options</h2>
  * These adjusted defaults only apply if the world builder's
- * {@linkplain net.fabricmc.fabric.api.client.gametest.v1.TestWorldBuilder#setUseConsistentSettings(boolean) consistent settings}
+ * {@linkplain net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldBuilder#setUseConsistentSettings(boolean) consistent settings}
  * have not been set to {@code false}.
  *
  * <table>

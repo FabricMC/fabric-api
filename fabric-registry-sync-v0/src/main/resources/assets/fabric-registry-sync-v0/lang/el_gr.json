@@ -1,0 +1,12 @@
+{
+  "fabric-registry-sync-v0.unknown-registry.footer": "Και %d περισσότερα...",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.1": "Αυτό συνήθως προκαλείται από ένα λάθος σετ mod μεταξύ του πελάτη και του διακομιστή.",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.2": " Ανατρέξτε στα αρχεία καταγραφής του πελάτη για περισσότερες λεπτομέρειες.\nΤα ακόλουθα μητρώα δεν υπάρχουν στον υπολογιστή-πελάτη:\n\n",
+  "fabric-registry-sync-v0.unknown-registry.title.plural": "Έλαβε %d μητρώα που είναι άγνωστα σε αυτόν τον πελάτη.\n",
+  "fabric-registry-sync-v0.unknown-registry.title.singular": "Ελήφθη ένα μητρώο που είναι άγνωστο σε αυτόν τον πελάτη.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "Και %d περισσότερα...",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Αυτό συνήθως προκαλείται από ένα λάθος σετ mod μεταξύ του πελάτη και του διακομιστή.",
+  "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Ανατρέξτε στα αρχεία καταγραφής του πελάτη για περισσότερες λεπτομέρειες.\nΟι ακόλουθοι χώροι ονομάτων καταχώρησης μητρώου ενδέχεται να σχετίζονται:\n\n",
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Ελήφθησαν %d καταχωρήσεις μητρώου που είναι άγνωστες σε αυτόν τον πελάτη.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Έλαβε μια καταχώρηση μητρώου που είναι άγνωστη σε αυτόν τον υπολογιστή-πελάτη.\n"
+}

@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -53,6 +54,7 @@ import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
 
 public class RegistryRemapTest {
 	private RegistryKey<Registry<String>> testRegistryKey;
@@ -240,6 +242,71 @@ public class RegistryRemapTest {
 		assertEquals(1, testRegistry.getRawId("zero"));
 		// assigned an ID at the end of the registry
 		assertEquals(2, testRegistry.getRawId("one"));
+
+		remappableRegistry.unmap();
+
+		assertEquals(0, testRegistry.getRawId("zero"));
+		assertEquals(1, testRegistry.getRawId("one"));
+		assertEquals(2, testRegistry.getRawId("two"));
+	}
+
+	@Test
+	void remapRegistryFromPacketData() throws RemapException {
+		RemappableRegistry remappableRegistry = (RemappableRegistry) testRegistry;
+
+		assertEquals(0, testRegistry.getRawId("zero"));
+		assertEquals(1, testRegistry.getRawId("one"));
+		assertEquals(2, testRegistry.getRawId("two"));
+
+		ClientRegistrySyncHandler.apply(new RegistryPacketHandler.SyncedPacketData(
+				Map.of(
+					testRegistryKey.getValue(), asFastMap(Map.of(
+						id("zero"), 2,
+						id("one"), 1,
+						id("two"), 0
+					))
+				),
+				Map.of()
+		));
+
+		assertEquals(2, testRegistry.getRawId("zero"));
+		assertEquals(1, testRegistry.getRawId("one"));
+		assertEquals(0, testRegistry.getRawId("two"));
+
+		remappableRegistry.unmap();
+
+		assertEquals(0, testRegistry.getRawId("zero"));
+		assertEquals(1, testRegistry.getRawId("one"));
+		assertEquals(2, testRegistry.getRawId("two"));
+	}
+
+	@Test
+	void remapRegistryFromPacketDataIgnoreOptional() throws RemapException {
+		RemappableRegistry remappableRegistry = (RemappableRegistry) testRegistry;
+
+		assertEquals(0, testRegistry.getRawId("zero"));
+		assertEquals(1, testRegistry.getRawId("one"));
+		assertEquals(2, testRegistry.getRawId("two"));
+
+		ClientRegistrySyncHandler.apply(new RegistryPacketHandler.SyncedPacketData(
+				Map.of(
+					testRegistryKey.getValue(), asFastMap(Map.of(
+							id("zero"), 2,
+							id("one"), 1,
+							id("two"), 0
+					)),
+					Identifier.of("test", "optional"), asFastMap(Map.of(
+						id("test"), 0
+					))
+				),
+				Map.of(
+						Identifier.of("test", "optional"), EnumSet.of(RegistryAttribute.OPTIONAL)
+				)
+		));
+
+		assertEquals(2, testRegistry.getRawId("zero"));
+		assertEquals(1, testRegistry.getRawId("one"));
+		assertEquals(0, testRegistry.getRawId("two"));
 
 		remappableRegistry.unmap();
 

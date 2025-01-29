@@ -103,12 +103,11 @@ public final class ClientRegistrySyncHandler {
 				}
 			}
 
-			if (registry instanceof RemappableRegistry remappableRegistry) {
-				remappableRegistry.remap(entry.getValue(), RemappableRegistry.RemapMode.REMOTE);
-				return;
+			if (!(registry instanceof RemappableRegistry remappableRegistry)) {
+				throw new RemapException("Registry " + registryId + " is not remappable");
 			}
 
-			throw new RemapException("Registry " + registryId + " is not remappable");
+			remappableRegistry.remap(entry.getValue(), RemappableRegistry.RemapMode.REMOTE);
 		}
 	}
 
