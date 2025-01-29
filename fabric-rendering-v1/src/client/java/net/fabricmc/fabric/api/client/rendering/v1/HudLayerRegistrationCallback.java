@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>For example, the following code registers a layer after {@link IdentifiedLayer#MISC_OVERLAYS}:
  * <pre>{@code
- * HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer.addLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of("example", "example_layer"), (context, tickDelta) -> {
+ * HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of("example", "example_layer_after_misc_overlays"), (context, tickDelta) -> {
  *     // Your rendering code here
  * }));
  * }</pre>
