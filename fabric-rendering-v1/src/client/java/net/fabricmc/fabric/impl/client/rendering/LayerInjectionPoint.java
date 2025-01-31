@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.InjectionPoint;
 import org.spongepowered.asm.mixin.injection.struct.InjectionPointData;
 import org.spongepowered.asm.mixin.injection.struct.MemberInfo;
 
-public class LayerInjectionPoint extends InjectionPoint {
+public final class LayerInjectionPoint extends InjectionPoint {
 	private final MemberInfo target;
 
 	public LayerInjectionPoint(InjectionPointData data) {

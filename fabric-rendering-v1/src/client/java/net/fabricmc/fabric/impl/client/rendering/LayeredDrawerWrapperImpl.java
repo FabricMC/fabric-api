@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 import net.fabricmc.fabric.mixin.client.rendering.LayeredDrawerAccessor;
 
-public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
+public final class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	private final LayeredDrawer base;
 
 	public LayeredDrawerWrapperImpl(LayeredDrawer base) {
