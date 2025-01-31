@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.function.Function;
 
+import org.jetbrains.annotations.Contract;
+
 import net.minecraft.client.gui.LayeredDrawer;
 import net.minecraft.util.Identifier;
 
@@ -65,6 +67,7 @@ public interface LayeredDrawerWrapper {
 	 * @param layer the layer to add
 	 * @return this layered drawer
 	 */
+	@Contract("_ -> this")
 	LayeredDrawerWrapper addLayer(IdentifiedLayer layer);
 
 	/**
@@ -76,6 +79,7 @@ public interface LayeredDrawerWrapper {
 	 * @param layer      the layer to add
 	 * @return this layered drawer
 	 */
+	@Contract("_, _ -> this")
 	LayeredDrawerWrapper attachLayerBefore(Identifier beforeThis, IdentifiedLayer layer);
 
 	/**
@@ -88,6 +92,7 @@ public interface LayeredDrawerWrapper {
 	 * @param layer      the layer to add
 	 * @return this layered drawer
 	 */
+	@Contract("_, _, _ -> this")
 	default LayeredDrawerWrapper attachLayerBefore(Identifier beforeThis, Identifier identifier, LayeredDrawer.Layer layer) {
 		return attachLayerBefore(beforeThis, IdentifiedLayer.of(identifier, layer));
 	}
@@ -101,6 +106,7 @@ public interface LayeredDrawerWrapper {
 	 * @param layer     the layer to add
 	 * @return this layered drawer
 	 */
+	@Contract("_, _ -> this")
 	LayeredDrawerWrapper attachLayerAfter(Identifier afterThis, IdentifiedLayer layer);
 
 	/**
@@ -113,6 +119,7 @@ public interface LayeredDrawerWrapper {
 	 * @param layer      the layer to add
 	 * @return this layered drawer
 	 */
+	@Contract("_, _, _ -> this")
 	default LayeredDrawerWrapper attachLayerAfter(Identifier afterThis, Identifier identifier, LayeredDrawer.Layer layer) {
 		return attachLayerAfter(afterThis, IdentifiedLayer.of(identifier, layer));
 	}
@@ -123,6 +130,7 @@ public interface LayeredDrawerWrapper {
 	 * @param identifier the identifier of the layer to remove
 	 * @return this layered drawer
 	 */
+	@Contract("_ -> this")
 	LayeredDrawerWrapper removeLayer(Identifier identifier);
 
 	/**
@@ -134,5 +142,6 @@ public interface LayeredDrawerWrapper {
 	 * @param replacer   a function that takes the old layer and returns the new layer
 	 * @return this layered drawer
 	 */
+	@Contract("_, _ -> this")
 	LayeredDrawerWrapper replaceLayer(Identifier identifier, Function<IdentifiedLayer, IdentifiedLayer> replacer);
 }

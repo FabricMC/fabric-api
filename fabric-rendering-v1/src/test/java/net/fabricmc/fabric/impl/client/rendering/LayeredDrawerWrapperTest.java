@@ -83,8 +83,8 @@ public class LayeredDrawerWrapperTest {
 				.addLayer(testLayer("layer3"))
 				.addLayer(testLayer("layer4"));
 
-		layers.removeLayer(testIdentifier("layer2"));
-		layers.removeLayer(testIdentifier("layer4"));
+		layers.removeLayer(testIdentifier("layer2"))
+				.removeLayer(testIdentifier("layer4"));
 
 		assertOrder(base, List.of("layer1", "layer3"));
 	}
@@ -95,7 +95,8 @@ public class LayeredDrawerWrapperTest {
 				.addLayer(testLayer("layer2"))
 				.addLayer(testLayer("layer3"));
 
-		layers.replaceLayer(testIdentifier("layer2"), layer -> testLayer("replaced"));
+		layers.replaceLayer(testIdentifier("layer2"), layer -> testLayer("temp"))
+				.replaceLayer(testIdentifier("temp"), layer -> testLayer("replaced"));
 
 		assertOrder(base, List.of("layer1", "replaced", "layer3"));
 	}
