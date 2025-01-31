@@ -55,6 +55,8 @@ import net.minecraft.util.Identifier;
  *         <td>Render after everything</td>
  *     </tr>
  * </table>
+ *
+ * @see HudLayerRegistrationCallback
  */
 public interface LayeredDrawerWrapper {
 	/**

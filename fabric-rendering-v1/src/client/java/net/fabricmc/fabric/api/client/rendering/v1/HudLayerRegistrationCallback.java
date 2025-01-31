@@ -26,11 +26,22 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * For common use cases, see {@link LayeredDrawerWrapper}.
  *
  * <p>For example, the following code registers a layer after {@link IdentifiedLayer#MISC_OVERLAYS}:
- * <pre>{@code
- * HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of("example", "example_layer_after_misc_overlays"), (context, tickDelta) -> {
+ * {@snippet :
+ * // @link region substring=HudLayerRegistrationCallback target=HudLayerRegistrationCallback
+ * // @link region substring=EVENT target="HudLayerRegistrationCallback#EVENT"
+ * // @link region substring=layeredDrawer target="LayeredDrawerWrapper"
+ * // @link region substring=attachLayerAfter target="LayeredDrawerWrapper#attachLayerAfter"
+ * // @link region substring=IdentifiedLayer target=IdentifiedLayer
+ * // @link region substring=MISC_OVERLAYS target="IdentifiedLayer#MISC_OVERLAYS"
+ * // @link region substring=Identifier target="net.minecraft.util.Identifier"
+ * // @link region substring=of target="net.minecraft.util.Identifier#of"
+ * // @link region substring=context target="net.minecraft.client.gui.DrawContext"
+ * // @link region substring=tickCounter target="net.minecraft.client.render.RenderTickCounter"
+ * HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of("example", "example_layer_after_misc_overlays"), (context, tickCounter) -> {
  *     // Your rendering code here
  * }));
- * }</pre>
+ * // @end @end @end @end @end @end @end @end @end @end
+ * }
  *
  * @see LayeredDrawerWrapper
  */
