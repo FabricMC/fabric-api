@@ -118,7 +118,7 @@ public class LayeredDrawerWrapperTest {
 
 		Assertions.assertTrue(layers.findLayer(testIdentifier("layer2"), (layer, iterator) -> {
 			iterator.add(testLayer("found"));
-			return false;
+			return true;
 		}));
 
 		assertOrder(base, List.of("layer1", "layer2", "found", "layer3"));
@@ -137,6 +137,38 @@ public class LayeredDrawerWrapperTest {
 		}));
 
 		assertOrder(base, List.of("layer1", "visited1", "layer2", "visited2", "layer3", "visited3"));
+	}
+
+	@Test
+	void replaceSubLayer() {
+		layers.addLayer(testLayer("layer1"));
+		base.addLayer(new SubLayer(
+				new LayeredDrawer().addLayer(testLayer("layer2"))
+						.addLayer(testLayer("layer3")),
+				() -> true
+		));
+		layers.addLayer(testLayer("layer4"));
+
+		layers.replaceLayer(testIdentifier("layer2"), layer -> testLayer("replaced"));
+
+		assertOrder(base, List.of("layer1", "replaced", "layer3", "layer4"));
+	}
+
+	@Test
+	void visitSubLayers() {
+		layers.addLayer(testLayer("layer1"));
+		base.addLayer(new SubLayer(
+				new LayeredDrawer().addLayer(testLayer("layer2"))
+						.addLayer(testLayer("layer3")),
+				() -> true
+		));
+		layers.addLayer(testLayer("layer4"));
+
+		// Return true when we encounter layer3, which is in a sub drawer
+		// Even though it's not modified. This is just for testing.
+		Assertions.assertTrue(layers.visitLayers((layer, iterator) -> layer instanceof IdentifiedLayer il && il.id().equals(testIdentifier("layer3"))));
+
+		assertOrder(base, List.of("layer1", "layer2", "layer3", "layer4"));
 	}
 
 	private IdentifiedLayer testLayer(String name) {

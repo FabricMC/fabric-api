@@ -121,6 +121,9 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 		});
 	}
 
+	/**
+	 * @return true if a layer with the given identifier was found
+	 */
 	@VisibleForTesting
 	boolean findLayer(Identifier identifier, LayerVisitor visitor) {
 		AtomicBoolean found = new AtomicBoolean(false);
@@ -151,11 +154,11 @@ public class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 
 			if (visitor.visit(layer, iterator)) {
 				modified.set(true);
-				continue;
+				continue; // Skip visiting children if the current layer was modified
 			}
 
 			if (layer instanceof SubLayer subLayer) {
-				visitLayers(getLayers(subLayer.delegate()), visitor);
+				modified.set(visitLayers(getLayers(subLayer.delegate()), visitor));
 			}
 		}
 
