@@ -24,23 +24,77 @@ import com.google.gson.JsonParseException;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.json.JsonUnbakedModel;
+import net.minecraft.client.render.model.json.ModelElement;
+import net.minecraft.client.render.model.json.ModelElementFace;
+import net.minecraft.client.render.model.json.ModelElementTexture;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.Transformation;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.model.loading.UnbakedModelDeserializerRegistry;
 
+/**
+ * Allows creating custom unbaked models by overriding the parsing of JSON model files.
+ *
+ * <p>The format for custom unbaked models is as follows:
+ * <pre>{@code
+ * {
+ *     "fabric:type": "<identifier of the deserializer>",
+ *     // extra model data, dependent on the deserializer
+ * }
+ * }</pre>
+ *
+ * <p>All instances must be registered using {@link #register} for deserialization to work.
+ */
 public interface UnbakedModelDeserializer {
+	/**
+	 * Registers a custom model deserializer.
+	 *
+	 * @throws IllegalArgumentException if the deserializer is already registered
+	 */
 	static void register(Identifier id, UnbakedModelDeserializer deserializer) {
 		UnbakedModelDeserializerRegistry.register(id, deserializer);
 	}
 
+	/**
+	 * @return the custom model deserializer registered with the given identifier, or {@code null} if there is no such
+	 * deserializer
+	 */
 	@Nullable
 	static UnbakedModelDeserializer get(Identifier id) {
 		return UnbakedModelDeserializerRegistry.get(id);
 	}
 
+	/**
+	 * Deserializes an {@link UnbakedModel} from a {@link Reader}, respecting custom deserializers. Prefer using this
+	 * method to {@link JsonUnbakedModel#deserialize(Reader)}.
+	 */
 	static UnbakedModel deserialize(Reader reader) throws JsonParseException {
 		return UnbakedModelDeserializerRegistry.deserialize(reader);
 	}
 
-	UnbakedModel deserialize(JsonObject jsonObject, JsonDeserializationContext context) throws RuntimeException;
+	/**
+	 * Deserialize an {@link UnbakedModel} given a {@link JsonObject} representing the entire model file.
+	 *
+	 * <p>The provided deserialization context is able to deserialize objects of the following types:
+	 * <ul>
+	 *     <li>{@link UnbakedModel}</li>
+	 *     <li>{@link ModelElement}</li>
+	 *     <li>{@link ModelElementFace}</li>
+	 *     <li>{@link ModelElementTexture}</li>
+	 *     <li>{@link Transformation}</li>
+	 *     <li>{@link ModelTransformation}</li>
+	 * </ul>
+	 *
+	 * <p>For example, to deserialize a nested {@link UnbakedModel}, use
+	 * {@code context.deserialize(nestedModelJson, UnbakedModel.class)}.
+	 *
+	 * <p>This method is allowed and encouraged to throw exceptions, as they will be caught and logged by the caller.
+	 *
+	 * @param jsonObject the JSON object representing the entire model file
+	 * @param context the deserialization context
+	 * @return the unbaked model
+	 */
+	UnbakedModel deserialize(JsonObject jsonObject, JsonDeserializationContext context);
 }
