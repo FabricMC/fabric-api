@@ -26,6 +26,12 @@ import net.minecraft.util.Identifier;
 /**
  * A layered drawer that has an identifier attached to each layer and methods to add layers in specific positions.
  *
+ * <p>Operations relative to a layer will generally inherit that layer's render condition.
+ * The render condition for all vanilla layers except {@link IdentifiedLayer#SLEEP} is {@link net.minecraft.client.option.GameOptions#hudHidden}.
+ * Only {@link #addLayer(IdentifiedLayer)} will not inherit any render condition.
+ * There is currently no mechanism to change the render condition of a layer.
+ * For vanilla layers, see {@link IdentifiedLayer}.
+ *
  * <p>Common places to add layers (as of 1.21.4):
  * <table>
  *     <tr>

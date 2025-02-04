@@ -24,7 +24,13 @@ import net.fabricmc.fabric.impl.client.rendering.WrappedLayer;
 /**
  * A hud layer that has an identifier attached for use in {@link LayeredDrawerWrapper}.
  *
- * <p>For common use cases, see {@link LayeredDrawerWrapper}.
+ * <p>The identifiers in this interface are the vanilla hud layers in the order they are drawn in.
+ * The first layer is drawn first, which means it is at the bottom.
+ * All vanilla layers except {@link #SLEEP} are in sub drawers and have a render condition attached ({@link net.minecraft.client.option.GameOptions#hudHidden}).
+ * Operations relative to any layer will generally inherit that layer's render condition.
+ * There is currently no mechanism to change the render condition of a layer.
+ *
+ * <p>For common use cases and more details on how this API deals with render condition, see {@link LayeredDrawerWrapper}.
  */
 public interface IdentifiedLayer extends LayeredDrawer.Layer {
 	/**
