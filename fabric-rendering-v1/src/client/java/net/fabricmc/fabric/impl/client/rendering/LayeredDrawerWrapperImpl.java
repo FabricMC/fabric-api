@@ -98,8 +98,7 @@ public final class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	@Override
 	public LayeredDrawerWrapper replaceLayer(Identifier identifier, Function<IdentifiedLayer, IdentifiedLayer> replacer) {
 		boolean didChange = findLayer(identifier, (l, iterator) -> {
-			iterator.remove();
-			iterator.add(replacer.apply((IdentifiedLayer) l));
+			iterator.set(replacer.apply((IdentifiedLayer) l));
 			return true;
 		});
 
