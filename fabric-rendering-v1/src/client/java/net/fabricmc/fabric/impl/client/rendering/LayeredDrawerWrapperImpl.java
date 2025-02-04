@@ -18,9 +18,9 @@ package net.fabricmc.fabric.impl.client.rendering;
 
 import java.util.List;
 import java.util.ListIterator;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import net.minecraft.client.gui.LayeredDrawer;
@@ -126,18 +126,18 @@ public final class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	 */
 	@VisibleForTesting
 	boolean findLayer(Identifier identifier, LayerVisitor visitor) {
-		AtomicBoolean found = new AtomicBoolean(false);
+		MutableBoolean found = new MutableBoolean(false);
 
 		visitLayers((l, iterator) -> {
 			if (matchesIdentifier(l, identifier)) {
-				found.set(true);
+				found.setTrue();
 				return visitor.visit(l, iterator);
 			}
 
 			return false;
 		});
 
-		return found.get();
+		return found.booleanValue();
 	}
 
 	@VisibleForTesting
@@ -146,23 +146,23 @@ public final class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	}
 
 	private boolean visitLayers(List<LayeredDrawer.Layer> layers, LayerVisitor visitor) {
-		AtomicBoolean modified = new AtomicBoolean(false);
+		MutableBoolean modified = new MutableBoolean(false);
 		ListIterator<LayeredDrawer.Layer> iterator = layers.listIterator();
 
 		while (iterator.hasNext()) {
 			LayeredDrawer.Layer layer = iterator.next();
 
 			if (visitor.visit(layer, iterator)) {
-				modified.set(true);
+				modified.setTrue();
 				continue; // Skip visiting children if the current layer was modified
 			}
 
 			if (layer instanceof SubLayer subLayer) {
-				modified.set(visitLayers(getLayers(subLayer.delegate()), visitor));
+				modified.setValue(visitLayers(getLayers(subLayer.delegate()), visitor));
 			}
 		}
 
-		return modified.get();
+		return modified.booleanValue();
 	}
 
 	private static boolean matchesIdentifier(LayeredDrawer.Layer layer, Identifier identifier) {
