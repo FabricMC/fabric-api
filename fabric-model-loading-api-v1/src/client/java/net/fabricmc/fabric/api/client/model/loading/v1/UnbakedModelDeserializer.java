@@ -45,6 +45,11 @@ import net.fabricmc.fabric.impl.client.model.loading.UnbakedModelDeserializerReg
  * }
  * }</pre>
  *
+ * <p>Alternatively, {@code "fabric:type"} may be an object with the required string field {@code "id"}, specifying the
+ * identifier of the deserializer, and the optional boolean field {@code "optional"} with default {@code false},
+ * specifying whether the model should fail loading ({@code false}) or continue loading as a vanilla model
+ * ({@code true}) when the specified deserializer has not been registered.
+ *
  * <p>All instances must be registered using {@link #register} for deserialization to work.
  */
 public interface UnbakedModelDeserializer {

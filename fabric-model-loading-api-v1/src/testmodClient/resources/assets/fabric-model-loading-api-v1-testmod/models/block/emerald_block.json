@@ -1,5 +1,8 @@
 {
-  "fabric:type": "fabric-model-loading-api-v1-testmod:transformed",
+  "fabric:type": {
+    "id": "fabric-model-loading-api-v1-testmod:transformed",
+    "optional": false
+  },
   "parent": "minecraft:block/emerald_block",
   "transformation": {
     "translation": [ 0, 0.5, 0 ],

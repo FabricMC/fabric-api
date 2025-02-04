@@ -23,6 +23,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
@@ -33,20 +34,37 @@ import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
 
 public class UnbakedModelJsonDeserializer implements JsonDeserializer<UnbakedModel> {
 	private static final String TYPE_KEY = "fabric:type";
+	private static final String TYPE_ID_KEY = "id";
+	private static final String TYPE_OPTIONAL_KEY = "optional";
 
 	@Override
 	public UnbakedModel deserialize(JsonElement jsonElement, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		JsonObject jsonObject = jsonElement.getAsJsonObject();
 
 		if (jsonObject.has(TYPE_KEY)) {
-			Identifier id = Identifier.of(JsonHelper.getString(jsonObject, TYPE_KEY));
-			UnbakedModelDeserializer deserializer = UnbakedModelDeserializer.get(id);
+			JsonElement typeElement = jsonObject.get(TYPE_KEY);
+			String idStr;
+			boolean optional;
 
-			if (deserializer == null) {
-				throw new JsonParseException("Cannot deserialize custom unbaked model of unknown type '" + id + "'");
+			if (typeElement.isJsonPrimitive()) {
+				idStr = typeElement.getAsString();
+				optional = false;
+			} else if (typeElement.isJsonObject()) {
+				JsonObject typeObject = typeElement.getAsJsonObject();
+				idStr = JsonHelper.getString(typeObject, TYPE_ID_KEY);
+				optional = JsonHelper.getBoolean(typeObject, TYPE_OPTIONAL_KEY, false);
+			} else {
+				throw new JsonSyntaxException("Expected " + TYPE_KEY + " to be a string or object, was " + JsonHelper.getType(typeElement));
 			}
 
-			return deserializer.deserialize(jsonObject, context);
+			Identifier id = Identifier.of(idStr);
+			UnbakedModelDeserializer deserializer = UnbakedModelDeserializer.get(id);
+
+			if (deserializer != null) {
+				return deserializer.deserialize(jsonObject, context);
+			} else if (!optional) {
+				throw new JsonParseException("Cannot deserialize custom unbaked model of unknown type '" + id + "'");
+			}
 		}
 
 		return context.deserialize(jsonElement, JsonUnbakedModel.class);
