@@ -1,6 +1,8 @@
 {
-  "pack.source.fabricmod": "Mod de Fabric",
-  "pack.source.builtinMod": "Integrado: %s",
+  "pack.description.modResources": "Recursos de mods.",
   "pack.name.fabricMod": "Mod de Fabric \"%s\"",
-  "pack.name.fabricMods": "Mods de Fabric"
+  "pack.name.fabricMod.subPack": "Mod de Fabric \"%s\" (%s)",
+  "pack.name.fabricMods": "Mods de Fabric",
+  "pack.source.builtinMod": "Integrado: %s",
+  "pack.source.fabricmod": "Mod de Fabric"
 }
