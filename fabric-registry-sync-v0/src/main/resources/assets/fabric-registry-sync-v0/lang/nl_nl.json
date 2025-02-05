@@ -1,7 +1,7 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Er is een registerwaarde ontvangen die onbekend is voor deze client.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Er zijn %d registerwaardes ontvangen die onbekend zijn voor deze client.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "En %d meer...",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Dit komt normaal gesproken door een verzameling mods die niet overeenkomt tussen de client en server.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Zie de client logboeken voor meer details.\nDe volgende registerwaardenamespaces zijn mogelijk gerelateerd:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "En %d meer..."
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Er zijn %d registerwaardes ontvangen die onbekend zijn voor deze client.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Er is een registerwaarde ontvangen die onbekend is voor deze client.\n"
 }
