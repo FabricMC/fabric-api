@@ -1,7 +1,7 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Telah menerima satu entri pendaftaran yang tidak diketahui oleh klien ini.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Telah menerima %d entri pendaftaran yang tidak diketahui oleh klien ini.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "Dan %d lagi...",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Ini biasanya disebabkan oleh set mod yang tidak sepadan antara klien dan pelayan.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Lihat log klien untuk butiran lanjut.\nRuang nama entri pendaftaran berikut mungkin berkaitan:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "Dan %d lagi..."
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Telah menerima %d entri pendaftaran yang tidak diketahui oleh klien ini.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Telah menerima satu entri pendaftaran yang tidak diketahui oleh klien ini.\n"
 }
