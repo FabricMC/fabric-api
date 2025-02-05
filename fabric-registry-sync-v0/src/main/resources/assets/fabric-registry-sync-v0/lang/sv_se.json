@@ -1,7 +1,7 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Tog emot en registerhändelse som är okänd för klienten.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Tog emot %d registerhändelser som är okända för klienten.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "Och %d mer...",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Detta är orsakas oftast av en differens av modifikationer mellan klienten och servern.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Se klient loggarna för mer information.\nFöljande registerhändelse namnrymder kan vara relaterade:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "Och %d mer..."
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Tog emot %d registerhändelser som är okända för klienten.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Tog emot en registerhändelse som är okänd för klienten.\n"
 }
