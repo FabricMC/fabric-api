@@ -1,7 +1,7 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "ma kulupu li toki e ijo. taso, mi sona ala e ona.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "ma kulupu li toki e ijo %d. taso, mi sona ala e ona.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "ijo %d namako...",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1": "ken suli la, ni li tan ni: kulupu ante pi ilo pana en kulupu ante pi ilo lanpan li kulupu ante ante.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2": " sina wile sona namako la, o lukin e lipu musi pi ilo lanpan.\nken la, ni li tan nimi kulupu ni:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "ijo %d namako..."
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "ma kulupu li toki e ijo %d. taso, mi sona ala e ona.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "ma kulupu li toki e ijo. taso, mi sona ala e ona.\n"
 }
