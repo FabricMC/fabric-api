@@ -1,7 +1,7 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Se ha recibido una entrada de registro desconocida para este cliente.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Se han recibido %d entradas de registro desconocidas para este cliente.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "Y %d más...",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Usualmente esto es ocasionado debido a que la lista de mods del cliente y el servidor no coinciden.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Verifica los logs del cliente para más detalles.\nLos siguientes espacios de nombre de entradas de registro pueden estar relacionadas:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "Y %d más..."
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Se han recibido %d entradas de registro desconocidas para este cliente.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Se ha recibido una entrada de registro desconocida para este cliente.\n"
 }
