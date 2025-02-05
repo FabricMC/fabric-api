@@ -1,7 +1,7 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Đã nhận được mục đăng ký mà client này không xác định.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Đã nhận được %d mục đăng ký mà client này không xác định.\n​.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "Và %d nữa...",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Điều này thường xảy ra do bộ mod giữa máy khách và máy chủ không khớp.\n​.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Xem nhật ký khách hàng để biết thêm chi tiết.\nCác không gian tên mục đăng ký sau đây có thể liên quan:\n​:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "Và %d nữa..."
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Đã nhận được %d mục đăng ký mà client này không xác định.\n​.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Đã nhận được mục đăng ký mà client này không xác định.\n"
 }
