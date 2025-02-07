@@ -131,17 +131,22 @@ public final class DynamicRegistries {
 	 * <p>The entries of the registry will be loaded from data packs at the file path
 	 * {@code data/<entry namespace>/<registry namespace>/<registry path>/<entry path>.json}
 	 *
-	 * <p>The registry will be synced from the server to players' clients using the given network codec.
+	 * <p>The registry will be synced from the server to players' clients using the given client codec.
+	 * The client codec is also used for writing synced entries on the server, so it cannot depend on
+	 * client-only code.
+	 *
+	 * <p>The client codec must be able to read data encoded by the server codec.
+	 * This is because client-sided registry entries are sometimes read directly from a data pack using the client codec.
 	 *
 	 * @param key          the unique key of the registry
-	 * @param dataCodec    the codec used to load registry entries from data packs
-	 * @param networkCodec the codec used to load registry entries from the network
+	 * @param serverCodec  the codec used to load registry entries on the server
+	 * @param clientCodec  the codec used to load registry entries on the client and sync them from the server
 	 * @param options      options to configure syncing
 	 * @param <T>          the entry type of the registry
 	 */
-	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> dataCodec, Codec<T> networkCodec, SyncOption... options) {
-		DynamicRegistriesImpl.register(key, dataCodec);
-		DynamicRegistriesImpl.addSyncedRegistry(key, networkCodec, options);
+	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> serverCodec, Codec<T> clientCodec, SyncOption... options) {
+		DynamicRegistriesImpl.register(key, serverCodec);
+		DynamicRegistriesImpl.addSyncedRegistry(key, clientCodec, options);
 	}
 
 	/**

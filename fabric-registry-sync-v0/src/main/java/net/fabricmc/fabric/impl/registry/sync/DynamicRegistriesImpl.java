@@ -51,30 +51,30 @@ public final class DynamicRegistriesImpl {
 		return List.copyOf(DYNAMIC_REGISTRIES);
 	}
 
-	public static <T> RegistryLoader.Entry<T> register(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
+	public static <T> RegistryLoader.Entry<T> register(RegistryKey<? extends Registry<T>> key, Codec<T> serverCodec) {
 		Objects.requireNonNull(key, "Registry key cannot be null");
-		Objects.requireNonNull(codec, "Codec cannot be null");
+		Objects.requireNonNull(serverCodec, "Server codec cannot be null");
 
 		if (!DYNAMIC_REGISTRY_KEYS.add(key)) {
 			throw new IllegalArgumentException("Dynamic registry " + key + " has already been registered!");
 		}
 
-		var entry = new RegistryLoader.Entry<>(key, codec, false);
+		var entry = new RegistryLoader.Entry<>(key, serverCodec, false);
 		DYNAMIC_REGISTRIES.add(entry);
 		FABRIC_DYNAMIC_REGISTRY_KEYS.add(key);
 		return entry;
 	}
 
-	public static <T> void addSyncedRegistry(RegistryKey<? extends Registry<T>> key, Codec<T> networkCodec, DynamicRegistries.SyncOption... options) {
+	public static <T> void addSyncedRegistry(RegistryKey<? extends Registry<T>> key, Codec<T> clientCodec, DynamicRegistries.SyncOption... options) {
 		Objects.requireNonNull(key, "Registry key cannot be null");
-		Objects.requireNonNull(networkCodec, "Network codec cannot be null");
+		Objects.requireNonNull(clientCodec, "Client codec cannot be null");
 		Objects.requireNonNull(options, "Options cannot be null");
 
 		if (!(RegistryLoader.SYNCED_REGISTRIES instanceof ArrayList<RegistryLoader.Entry<?>>)) {
 			RegistryLoader.SYNCED_REGISTRIES = new ArrayList<>(RegistryLoader.SYNCED_REGISTRIES);
 		}
 
-		RegistryLoader.SYNCED_REGISTRIES.add(new RegistryLoader.Entry<>(key, networkCodec, false));
+		RegistryLoader.SYNCED_REGISTRIES.add(new RegistryLoader.Entry<>(key, clientCodec, false));
 
 		if (!(SerializableRegistries.SYNCED_REGISTRIES instanceof HashSet<RegistryKey<? extends Registry<?>>>)) {
 			SerializableRegistries.SYNCED_REGISTRIES = new HashSet<>(SerializableRegistries.SYNCED_REGISTRIES);
