@@ -63,8 +63,8 @@ public interface UnbakedModelDeserializer {
 	}
 
 	/**
-	 * @return the custom model deserializer registered with the given identifier, or {@code null} if there is no such
-	 * deserializer
+	 * {@return the custom model deserializer registered with the given identifier, or {@code null} if there is no such
+	 * deserializer}
 	 */
 	@Nullable
 	static UnbakedModelDeserializer get(Identifier id) {
