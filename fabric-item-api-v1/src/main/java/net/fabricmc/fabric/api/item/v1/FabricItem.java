@@ -22,6 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 
@@ -141,6 +142,16 @@ public interface FabricItem {
 		 */
 		default Item.Settings customDamage(CustomDamageHandler handler) {
 			FabricItemInternals.computeExtraData((Item.Settings) this).customDamage(handler);
+			return (Item.Settings) this;
+		}
+
+		/**
+		 * Sets the model of the item to static Identifier.
+		 *
+		 * @param modelId the model id item should use
+		 * @return this builder
+		 */
+		default Item.Settings modelId(Identifier modelId) {
 			return (Item.Settings) this;
 		}
 	}
