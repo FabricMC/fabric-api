@@ -49,7 +49,7 @@ public class FabricCreativeGuiComponents {
 		final Type type;
 
 		public ItemGroupButtonWidget(int x, int y, Type type, CreativeInventoryScreen screen) {
-			super(x, y, 11, 12, type.text, (bw) -> type.clickConsumer.accept(screen), ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
+			super(x, y, 10, 12, type.text, (bw) -> type.clickConsumer.accept(screen), ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
 			this.type = type;
 			this.screen = screen;
 		}
@@ -63,9 +63,9 @@ public class FabricCreativeGuiComponents {
 				return;
 			}
 
-			int u = active && this.isHovered() ? 22 : 0;
+			int u = active && this.isHovered() ? 20 : 0;
 			int v = active ? 0 : 12;
-			drawContext.drawTexture(BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 11 : 0), v, 11, 12);
+			drawContext.drawTexture(BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 10 : 0), v, 10, 12, 256, 256);
 
 			if (this.isHovered()) {
 				drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.translatable("fabric.gui.creativeTabPage", screen.getCurrentPage() + 1, getPageCount()), mouseX, mouseY);

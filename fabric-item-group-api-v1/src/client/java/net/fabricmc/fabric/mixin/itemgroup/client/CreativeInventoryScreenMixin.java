@@ -68,15 +68,15 @@ public abstract class CreativeInventoryScreenMixin<T extends ScreenHandler> exte
 		}
 	}
 
-	@Inject(method = "init", at = @At("RETURN"))
+	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;setEditableColor(I)V", shift = At.Shift.AFTER))
 	private void init(CallbackInfo info) {
 		currentPage = getPage(selectedTab);
 
-		int xpos = x + 170;
+		int xpos = x + 171;
 		int ypos = y + 4;
 
 		CreativeInventoryScreen self = (CreativeInventoryScreen) (Object) this;
-		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 11, ypos, FabricCreativeGuiComponents.Type.NEXT, self));
+		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, self));
 		addDrawableChild(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, self));
 	}
 
