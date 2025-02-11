@@ -418,7 +418,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 	private static void onTemplateImageDoesntExist(NativeImage subScreenshot, TestScreenshotComparisonOptionsImpl options) {
 		if (TestSystemProperties.TEST_MOD_RESOURCES_PATH != null) {
-			Path savePath = Path.of(TestSystemProperties.TEST_MOD_RESOURCES_PATH).resolve("templates").resolve(options.getTemplateImagePathOrElseThrow() + ".png");
+			Path savePath = Path.of(TestSystemProperties.TEST_MOD_RESOURCES_PATH).resolve("templates").resolve(options.getTemplateImagePathOrThrow() + ".png");
 
 			try {
 				Files.createDirectories(savePath.getParent());

@@ -77,6 +77,7 @@ public interface TestScreenshotComparisonOptions extends TestScreenshotCommonOpt
 	 * as the one that is compared against in this screenshot comparison.
 	 *
 	 * @return This screenshot comparison options instance
+	 * @throws java.util.NoSuchElementException if template image is not provided by path
 	 */
 	TestScreenshotComparisonOptions save();
 

@@ -53,7 +53,7 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 
 	@Override
 	public TestScreenshotComparisonOptions save() {
-		return saveWithFileName(getTemplateImagePathOrElseThrow());
+		return saveWithFileName(getTemplateImagePathOrThrow());
 	}
 
 	@Override
@@ -99,8 +99,10 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 
 	/**
 	 * Gets the path to the template image, relative to the {@code templates} directory, if one was provided.
+	 *
+	 * @throws java.util.NoSuchElementException if template image is not provided by path
 	 */
-	public String getTemplateImagePathOrElseThrow() {
+	public String getTemplateImagePathOrThrow() {
 		return this.getTemplateImagePath().orElseThrow();
 	}
 
