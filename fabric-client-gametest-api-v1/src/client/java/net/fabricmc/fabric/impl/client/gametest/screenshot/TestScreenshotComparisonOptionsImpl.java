@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Either;
@@ -52,7 +53,7 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 
 	@Override
 	public TestScreenshotComparisonOptions save() {
-		return saveWithFileName(getTemplateImagePath());
+		return saveWithFileName(getTemplateImagePathOrElseThrow());
 	}
 
 	@Override
@@ -89,8 +90,18 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 		return this;
 	}
 
-	public String getTemplateImagePath() {
-		return this.templateImage.left().orElseThrow();
+	/**
+	 * Gets the path to the template image, relative to the {@code templates} directory, if one was provided.
+	 */
+	public Optional<String> getTemplateImagePath() {
+		return this.templateImage.left();
+	}
+
+	/**
+	 * Gets the path to the template image, relative to the {@code templates} directory, if one was provided.
+	 */
+	public String getTemplateImagePathOrElseThrow() {
+		return this.getTemplateImagePath().orElseThrow();
 	}
 
 	@Nullable
