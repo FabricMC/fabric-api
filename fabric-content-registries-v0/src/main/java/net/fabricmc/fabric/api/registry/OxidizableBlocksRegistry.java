@@ -16,11 +16,9 @@
 
 package net.fabricmc.fabric.api.registry;
 
-import java.util.Objects;
-
 import net.minecraft.block.Block;
-import net.minecraft.block.Oxidizable;
-import net.minecraft.item.HoneycombItem;
+
+import net.fabricmc.fabric.impl.content.registry.OxidizableBlocksRegistryImpl;
 
 /**
  * Provides methods for registering oxidizable and waxable blocks.
@@ -36,9 +34,7 @@ public final class OxidizableBlocksRegistry {
 	 * @param more the variant with more oxidation
 	 */
 	public static void registerOxidizableBlockPair(Block less, Block more) {
-		Objects.requireNonNull(less, "Oxidizable block cannot be null!");
-		Objects.requireNonNull(more, "Oxidizable block cannot be null!");
-		Oxidizable.OXIDATION_LEVEL_INCREASES.get().put(less, more);
+		OxidizableBlocksRegistryImpl.registerOxidizableBlockPair(less, more);
 	}
 
 	/**
@@ -48,8 +44,6 @@ public final class OxidizableBlocksRegistry {
 	 * @param waxed   the waxed variant
 	 */
 	public static void registerWaxableBlockPair(Block unwaxed, Block waxed) {
-		Objects.requireNonNull(unwaxed, "Unwaxed block cannot be null!");
-		Objects.requireNonNull(waxed, "Waxed block cannot be null!");
-		HoneycombItem.UNWAXED_TO_WAXED_BLOCKS.get().put(unwaxed, waxed);
+		OxidizableBlocksRegistryImpl.registerWaxableBlockPair(unwaxed, waxed);
 	}
 }

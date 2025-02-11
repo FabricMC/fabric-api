@@ -23,6 +23,8 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.Oxidizable;
+import net.minecraft.block.OxidizableBlock;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.HoeItem;
@@ -79,6 +81,9 @@ public final class ContentRegistryTest implements ModInitializer {
 	public static final RegistryKey<Block> TEST_EVENT_BLOCK_KEY = RegistryKey.of(RegistryKeys.BLOCK, TEST_EVENT_ID);
 	public static final RegistryEntry.Reference<GameEvent> TEST_EVENT = Registry.registerReference(Registries.GAME_EVENT, TEST_EVENT_ID, new GameEvent(GameEvent.DEFAULT_RANGE));
 
+	public static final RegistryKey<Block> TEST_OXIDIZING_BLOCK_KEY = RegistryKey.of(RegistryKeys.BLOCK, id("test_oxidizing"));
+	public static final RegistryKey<Block> EXPOSED_TEST_OXIDIZING_BLOCK_KEY = RegistryKey.of(RegistryKeys.BLOCK, id("exposed_test_oxidizing"));
+
 	@Override
 	public void onInitialize() {
 		// Expected behavior:
@@ -92,6 +97,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - green wool is tillable to lime wool
 		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
+		//  - the 'test_oxidizing' block will randomly tick to oxidize into an 'exposed_test_oxidizing' block
 		//  - villagers can now collect, consume (at the same level of bread) and compost apples
 		//  - villagers can now collect oak saplings
 		//  - assign a loot table to the nitwit villager type
@@ -149,8 +155,19 @@ public final class ContentRegistryTest implements ModInitializer {
 			throw new AssertionError("OxidizableBlocksRegistry didn't throw when blocks were null!");
 		} catch (NullPointerException e) {
 			// expected behavior
-			LOGGER.info("OxidizableBlocksRegistry test passed!");
+			LOGGER.info("OxidizableBlocksRegistry null test passed!");
 		}
+
+		Block testOxidizingBlock = Registry.register(Registries.BLOCK, TEST_OXIDIZING_BLOCK_KEY, new OxidizableBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.COPPER_BLOCK).registryKey(TEST_OXIDIZING_BLOCK_KEY)));
+		Block exposedTestOxidizingBlock = Registry.register(Registries.BLOCK, EXPOSED_TEST_OXIDIZING_BLOCK_KEY, new OxidizableBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.EXPOSED_COPPER).registryKey(EXPOSED_TEST_OXIDIZING_BLOCK_KEY)));
+
+		OxidizableBlocksRegistry.registerOxidizableBlockPair(testOxidizingBlock, exposedTestOxidizingBlock);
+
+		if (!testOxidizingBlock.getStateManager().getDefaultState().hasRandomTicks()) {
+			throw new AssertionError("OxidizableBlocksRegistry didn't refresh random ticks cache for state!");
+		}
+
+		LOGGER.info("OxidizableBlocksRegistry random ticks test passed!");
 
 		VillagerInteractionRegistries.registerFood(Items.APPLE, 4);
 		VillagerInteractionRegistries.registerCompostable(Items.APPLE);
