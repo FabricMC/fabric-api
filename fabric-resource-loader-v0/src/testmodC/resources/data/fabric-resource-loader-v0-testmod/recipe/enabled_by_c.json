@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:oak_slab"
+  ],
+  "result": {
+    "id": "minecraft:oak_boat",
+    "count": 1
+  }
+}

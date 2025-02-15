@@ -76,6 +76,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	 */
 	private final boolean modBundled;
 
+	@Nullable
 	public static ModNioResourcePack create(String id, ModContainer mod, String subPath, ResourceType type, ResourcePackActivationType activationType, boolean modBundled) {
 		List<Path> rootPaths = mod.getRootPaths();
 		List<Path> paths;
