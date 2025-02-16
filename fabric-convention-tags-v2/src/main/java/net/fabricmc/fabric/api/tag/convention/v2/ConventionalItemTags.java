@@ -457,6 +457,9 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STRINGS = register("strings");
 	public static final TagKey<Item> LEATHERS = register("leathers");
 	public static final TagKey<Item> BONES = register("bones");
+	/**
+	 * For eggs to use for culinary purposes in recipes such as baking a cake.
+	 */
 	public static final TagKey<Item> EGGS = register("eggs");
 	public static final TagKey<Item> FEATHERS = register("feathers");
 	public static final TagKey<Item> GUNPOWDERS = register("gunpowders");
