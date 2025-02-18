@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.mixin.client.model.loading;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.render.model.ReferencedModelsCollector;
-import net.minecraft.client.render.model.ResolvableModel;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
@@ -38,24 +37,14 @@ abstract class ReferencedModelsCollectorMixin {
 	@Nullable
 	private ModelLoadingEventDispatcher fabric_eventDispatcher;
 
-	@Shadow
-	public abstract void add(ResolvableModel model);
-
-	@Shadow
-	abstract UnbakedModel computeResolvedModel(Identifier id);
-
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onReturnInit(CallbackInfo ci) {
 		fabric_eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
-
-		if (fabric_eventDispatcher != null) {
-			fabric_eventDispatcher.forEachExtraModel(id -> add(computeResolvedModel(id)));
-		}
 	}
 
-	@ModifyVariable(method = "getModel", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
+	@ModifyVariable(method = "method_68027", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
 	@Nullable
-	private UnbakedModel onLoadModel(@Nullable UnbakedModel model, Identifier id) {
+	private UnbakedModel onLoadModel(@Nullable UnbakedModel model, @Local Identifier id) {
 		if (fabric_eventDispatcher == null) {
 			return model;
 		}

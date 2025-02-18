@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.class_10819;
 import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.util.Identifier;
 
@@ -32,16 +32,16 @@ import net.fabricmc.fabric.impl.client.model.loading.BakedModelsHooks;
 abstract class ModelBakerBakedModelsMixin implements BakedModelsHooks {
 	@Unique
 	@Nullable
-	private Map<Identifier, BakedModel> extraModels;
+	private Map<Identifier, class_10819> extraModels;
 
 	@Override
 	@Nullable
-	public Map<Identifier, BakedModel> fabric_getExtraModels() {
+	public Map<Identifier, class_10819> fabric_getExtraModels() {
 		return extraModels;
 	}
 
 	@Override
-	public void fabric_setExtraModels(@Nullable Map<Identifier, BakedModel> extraModels) {
+	public void fabric_setExtraModels(@Nullable Map<Identifier, class_10819> extraModels) {
 		this.extraModels = extraModels;
 	}
 }

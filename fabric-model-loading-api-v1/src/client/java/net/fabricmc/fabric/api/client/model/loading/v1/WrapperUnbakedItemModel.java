@@ -16,21 +16,21 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.Baker;
+import com.mojang.serialization.MapCodec;
+
+import net.minecraft.client.render.item.model.ItemModel;
 
 /**
- * A simple implementation of {@link BakedModel.GroupableModel} that delegates all method calls to the {@link #wrapped}
- * field. Implementations must set the {@link #wrapped} field somehow.
+ * A simple implementation of {@link ItemModel.Unbaked} that delegates all method calls to the {@link #wrapped} field.
+ * Implementations must set the {@link #wrapped} field somehow.
  */
-public abstract class WrapperGroupableModel implements BakedModel.GroupableModel {
-	protected BakedModel.GroupableModel wrapped;
+public abstract class WrapperUnbakedItemModel implements ItemModel.Unbaked {
+	protected ItemModel.Unbaked wrapped;
 
-	protected WrapperGroupableModel() {
+	protected WrapperUnbakedItemModel() {
 	}
 
-	protected WrapperGroupableModel(BakedModel.GroupableModel wrapped) {
+	protected WrapperUnbakedItemModel(ItemModel.Unbaked wrapped) {
 		this.wrapped = wrapped;
 	}
 
@@ -40,12 +40,12 @@ public abstract class WrapperGroupableModel implements BakedModel.GroupableModel
 	}
 
 	@Override
-	public BakedModel bake(Baker baker) {
-		return wrapped.bake(baker);
+	public MapCodec<? extends ItemModel.Unbaked> getCodec() {
+		return wrapped.getCodec();
 	}
 
 	@Override
-	public Object getEqualityGroup(BlockState state) {
-		return wrapped.getEqualityGroup(state);
+	public ItemModel bake(ItemModel.BakeContext context) {
+		return wrapped.bake(context);
 	}
 }

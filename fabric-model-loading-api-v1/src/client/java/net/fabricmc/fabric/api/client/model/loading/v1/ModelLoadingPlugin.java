@@ -83,23 +83,10 @@ public interface ModelLoadingPlugin {
 		/**
 		 * Event access to monitor unbaked model loads and replace the loaded model.
 		 *
-		 * <p>Replacements done by listeners of this callback <b>do</b> affect child models (that is, models whose
-		 * parent hierarchy contains the replaced model), unlike {@link #modifyModelBeforeBake}.
+		 * <p>Replacements done by listeners of this callback affect child models (that is, models whose
+		 * parent hierarchy contains the replaced model).
 		 */
 		Event<ModelModifier.OnLoad> modifyModelOnLoad();
-
-		/**
-		 * Event access to replace the unbaked model used for baking without replacing the cached model.
-		 *
-		 * <p>Replacements done by listeners of this callback <b>do not</b> affect child models (that is, models whose
-		 * parent hierarchy contains the replaced model), unlike {@link #modifyModelOnLoad}.
-		 */
-		Event<ModelModifier.BeforeBake> modifyModelBeforeBake();
-
-		/**
-		 * Event access to replace the baked model.
-		 */
-		Event<ModelModifier.AfterBake> modifyModelAfterBake();
 
 		/**
 		 * Event access to monitor unbaked block model loads and replace the loaded model.
@@ -115,5 +102,15 @@ public interface ModelLoadingPlugin {
 		 * Event access to replace the baked block model.
 		 */
 		Event<ModelModifier.AfterBakeBlock> modifyBlockModelAfterBake();
+
+		/**
+		 * Event access to replace the unbaked item model used for baking.
+		 */
+		Event<ModelModifier.BeforeBakeItem> modifyItemModelBeforeBake();
+
+		/**
+		 * Event access to replace the baked item model.
+		 */
+		Event<ModelModifier.AfterBakeItem> modifyItemModelAfterBake();
 	}
 }

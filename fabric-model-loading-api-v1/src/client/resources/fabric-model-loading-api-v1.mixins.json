@@ -7,10 +7,8 @@
     "JsonUnbakedModelAccessor",
     "JsonUnbakedModelMixin",
     "ModelBakerBakedModelsMixin",
-    "ModelBakerBakerImplMixin",
     "ModelBakerMixin",
-    "ReferencedModelsCollectorMixin",
-    "WrapperBakedModelMixin"
+    "ReferencedModelsCollectorMixin"
   ],
   "injectors": {
     "defaultRequire": 1

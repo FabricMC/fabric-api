@@ -57,28 +57,6 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 
 		return model;
 	}, MODEL_MODIFIER_PHASES);
-	private final Event<ModelModifier.BeforeBake> beforeBakeModifiers = EventFactory.createWithPhases(ModelModifier.BeforeBake.class, modifiers -> (model, context) -> {
-		for (ModelModifier.BeforeBake modifier : modifiers) {
-			try {
-				model = modifier.modifyModelBeforeBake(model, context);
-			} catch (Exception exception) {
-				LOGGER.error("Failed to modify unbaked model before bake", exception);
-			}
-		}
-
-		return model;
-	}, MODEL_MODIFIER_PHASES);
-	private final Event<ModelModifier.AfterBake> afterBakeModifiers = EventFactory.createWithPhases(ModelModifier.AfterBake.class, modifiers -> (model, context) -> {
-		for (ModelModifier.AfterBake modifier : modifiers) {
-			try {
-				model = modifier.modifyModelAfterBake(model, context);
-			} catch (Exception exception) {
-				LOGGER.error("Failed to modify baked model after bake", exception);
-			}
-		}
-
-		return model;
-	}, MODEL_MODIFIER_PHASES);
 	private final Event<ModelModifier.OnLoadBlock> onLoadBlockModifiers = EventFactory.createWithPhases(ModelModifier.OnLoadBlock.class, modifiers -> (model, context) -> {
 		for (ModelModifier.OnLoadBlock modifier : modifiers) {
 			try {
@@ -107,6 +85,28 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 				model = modifier.modifyModelAfterBake(model, context);
 			} catch (Exception exception) {
 				LOGGER.error("Failed to modify baked block model after bake", exception);
+			}
+		}
+
+		return model;
+	}, MODEL_MODIFIER_PHASES);
+	private final Event<ModelModifier.BeforeBakeItem> beforeBakeItemModifiers = EventFactory.createWithPhases(ModelModifier.BeforeBakeItem.class, modifiers -> (model, context) -> {
+		for (ModelModifier.BeforeBakeItem modifier : modifiers) {
+			try {
+				model = modifier.modifyModelBeforeBake(model, context);
+			} catch (Exception exception) {
+				LOGGER.error("Failed to modify unbaked item model before bake", exception);
+			}
+		}
+
+		return model;
+	}, MODEL_MODIFIER_PHASES);
+	private final Event<ModelModifier.AfterBakeItem> afterBakeItemModifiers = EventFactory.createWithPhases(ModelModifier.AfterBakeItem.class, modifiers -> (model, context) -> {
+		for (ModelModifier.AfterBakeItem modifier : modifiers) {
+			try {
+				model = modifier.modifyModelAfterBake(model, context);
+			} catch (Exception exception) {
+				LOGGER.error("Failed to modify baked item model after bake", exception);
 			}
 		}
 
@@ -147,16 +147,6 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 	}
 
 	@Override
-	public Event<ModelModifier.BeforeBake> modifyModelBeforeBake() {
-		return beforeBakeModifiers;
-	}
-
-	@Override
-	public Event<ModelModifier.AfterBake> modifyModelAfterBake() {
-		return afterBakeModifiers;
-	}
-
-	@Override
 	public Event<ModelModifier.OnLoadBlock> modifyBlockModelOnLoad() {
 		return onLoadBlockModifiers;
 	}
@@ -169,5 +159,15 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 	@Override
 	public Event<ModelModifier.AfterBakeBlock> modifyBlockModelAfterBake() {
 		return afterBakeBlockModifiers;
+	}
+
+	@Override
+	public Event<ModelModifier.BeforeBakeItem> modifyItemModelBeforeBake() {
+		return beforeBakeItemModifiers;
+	}
+
+	@Override
+	public Event<ModelModifier.AfterBakeItem> modifyItemModelAfterBake() {
+		return afterBakeItemModifiers;
 	}
 }

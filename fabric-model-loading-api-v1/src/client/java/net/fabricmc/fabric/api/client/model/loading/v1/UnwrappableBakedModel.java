@@ -21,19 +21,15 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.WrapperBakedModel;
 
 /**
- * An interface to be implemented by models that wrap and replace another model, such as {@link WrapperBakedModel}.
- * This allows mods to access the wrapped model without having to know the exact type of the wrapper model.
+ * An interface to be implemented by {@linkplain BakedModel block models} that wrap and replace another model, such a
+ * {@link WrapperBakedModel}. This allows mods to access the wrapped model without having to know the exact type of the
+ * wrapper model.
  *
- * <p>If you need to access data stored in one of your {@link BakedModel} subclasses,
- * and you would normally access the model by its identifier and then cast it:
- * call {@link #unwrap(BakedModel, Predicate)} on the model first, in case another
- * mod is wrapping your model to alter its rendering.
- *
- * <p>Note: This interface is automatically implemented on {@link WrapperBakedModel} and subclasses via Mixin and
- * interface injection.
+ * <p>If you need to access data stored in one of your {@link BakedModel} subclasses, and you would normally access the
+ * model by its identifier and then cast it: call {@link #unwrap(BakedModel, Predicate)} on the model first, in case
+ * another mod is wrapping your model to alter its rendering.
  */
 public interface UnwrappableBakedModel {
 	/**

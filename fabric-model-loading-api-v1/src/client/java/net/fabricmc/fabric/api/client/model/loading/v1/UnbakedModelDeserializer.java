@@ -27,7 +27,6 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.render.model.json.ModelElement;
 import net.minecraft.client.render.model.json.ModelElementFace;
-import net.minecraft.client.render.model.json.ModelElementTexture;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.Transformation;
 import net.minecraft.util.Identifier;
@@ -87,7 +86,6 @@ public interface UnbakedModelDeserializer {
 	 *     <li>{@link UnbakedModel}</li>
 	 *     <li>{@link ModelElement}</li>
 	 *     <li>{@link ModelElementFace}</li>
-	 *     <li>{@link ModelElementTexture}</li>
 	 *     <li>{@link Transformation}</li>
 	 *     <li>{@link ModelTransformation}</li>
 	 * </ul>

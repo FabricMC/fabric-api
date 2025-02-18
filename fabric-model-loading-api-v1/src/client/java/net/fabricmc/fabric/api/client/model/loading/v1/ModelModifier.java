@@ -20,13 +20,11 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.GroupableModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ResolvableModel;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -37,8 +35,8 @@ import net.fabricmc.fabric.api.event.Event;
  *
  * <p>Example use cases:
  * <ul>
- *     <li>Overriding the model for a particular block state - check if the given identifier matches the identifier
- *     for that block state. If so, return your desired model, otherwise return the given model.</li>
+ *     <li>Overriding the model for a particular block state - check if the given block state matches the desired block
+ *     state. If so, return your desired model, otherwise return the given model.</li>
  *     <li>Wrapping a model to override certain behaviors - simply return a new model instance and delegate calls
  *     to the original model as needed.</li>
  * </ul>
@@ -46,6 +44,10 @@ import net.fabricmc.fabric.api.event.Event;
  * <p>Phases are used to ensure that modifications occur in a reasonable order, e.g. wrapping occurs after overrides,
  * and separate phases are provided for mods that wrap their own models and mods that need to wrap models of other mods
  * or wrap models arbitrarily.
+ *
+ * <p>Any event may be invoked concurrently with other invocations of the same event or other events, subject to
+ * reasonable constraints. For example, a block/item model and its dependencies must be loaded before the block/item
+ * model is baked.
  *
  * <p>These callbacks are invoked for <b>every single model that is loaded or baked</b>, so implementations should be
  * as efficient as possible.
@@ -72,8 +74,7 @@ public final class ModelModifier {
 	@FunctionalInterface
 	public interface OnLoad {
 		/**
-		 * This handler is invoked to allow modification of an unbaked model right after it is first loaded and before
-		 * it is cached.
+		 * This handler is invoked to allow modification of an unbaked model right after it is first loaded.
 		 *
 		 * <p>If the given model is {@code null}, its corresponding identifier was requested during
 		 * {@linkplain ResolvableModel#resolve resolution} but the model was not loaded normally; i.e. through a JSON
@@ -105,86 +106,6 @@ public final class ModelModifier {
 	}
 
 	@FunctionalInterface
-	public interface BeforeBake {
-		/**
-		 * This handler is invoked to allow modification of the unbaked model instance right before it is baked.
-		 *
-		 * <p>For further information, see the docs of {@link ModelLoadingPlugin.Context#modifyModelBeforeBake()}.
-		 *
-		 * @param model the current unbaked model instance
-		 * @param context context with additional information about the model/loader
-		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
-		 * @see ModelLoadingPlugin.Context#modifyModelBeforeBake
-		 */
-		UnbakedModel modifyModelBeforeBake(UnbakedModel model, Context context);
-
-		/**
-		 * The context for a before bake model modification event.
-		 */
-		@ApiStatus.NonExtendable
-		interface Context {
-			/**
-			 * The identifier of the model being baked.
-			 */
-			Identifier id();
-
-			/**
-			 * The settings this model is being baked with.
-			 */
-			ModelBakeSettings settings();
-
-			/**
-			 * The baker being used to bake this model. It can be used to {@linkplain Baker#bake bake models} and
-			 * {@linkplain Baker#getSpriteGetter get sprites}. Note that baking a model which was not previously
-			 * {@linkplain ResolvableModel.Resolver#resolve resolved} will log a warning and return the missing model.
-			 */
-			Baker baker();
-		}
-	}
-
-	@FunctionalInterface
-	public interface AfterBake {
-		/**
-		 * This handler is invoked to allow modification of the baked model instance right after it is baked and before
-		 * it is cached.
-		 *
-		 * @param model the current baked model instance
-		 * @param context context with additional information about the model/loader
-		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
-		 * @see ModelLoadingPlugin.Context#modifyModelAfterBake
-		 */
-		BakedModel modifyModelAfterBake(BakedModel model, Context context);
-
-		/**
-		 * The context for an after bake model modification event.
-		 */
-		@ApiStatus.NonExtendable
-		interface Context {
-			/**
-			 * The identifier of the model being baked.
-			 */
-			Identifier id();
-
-			/**
-			 * The unbaked model that is being baked.
-			 */
-			UnbakedModel sourceModel();
-
-			/**
-			 * The settings this model is being baked with.
-			 */
-			ModelBakeSettings settings();
-
-			/**
-			 * The baker being used to bake this model. It can be used to {@linkplain Baker#bake bake models} and
-			 * {@linkplain Baker#getSpriteGetter get sprites}. Note that baking a model which was not previously
-			 * {@linkplain ResolvableModel.Resolver#resolve resolved} will log a warning and return the missing model.
-			 */
-			Baker baker();
-		}
-	}
-
-	@FunctionalInterface
 	public interface OnLoadBlock {
 		/**
 		 * This handler is invoked to allow modification of an unbaked block model right after it is first loaded.
@@ -194,18 +115,13 @@ public final class ModelModifier {
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
 		 * @see ModelLoadingPlugin.Context#modifyBlockModelOnLoad
 		 */
-		GroupableModel modifyModelOnLoad(GroupableModel model, Context context);
+		BakedModel.GroupableModel modifyModelOnLoad(BakedModel.GroupableModel model, Context context);
 
 		/**
 		 * The context for an on load block model modification event.
 		 */
 		@ApiStatus.NonExtendable
 		interface Context {
-			/**
-			 * The identifier of the model that was loaded.
-			 */
-			ModelIdentifier id();
-
 			/**
 			 * The corresponding block state of the model that was loaded.
 			 */
@@ -223,7 +139,7 @@ public final class ModelModifier {
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
 		 * @see ModelLoadingPlugin.Context#modifyBlockModelBeforeBake
 		 */
-		GroupableModel modifyModelBeforeBake(GroupableModel model, Context context);
+		BakedModel.GroupableModel modifyModelBeforeBake(BakedModel.GroupableModel model, Context context);
 
 		/**
 		 * The context for a before bake block model modification event.
@@ -231,14 +147,16 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * The identifier of the model being baked.
+			 * The corresponding block state of the model being baked.
 			 */
-			ModelIdentifier id();
+			BlockState state();
 
 			/**
-			 * The baker being used to bake this model. It can be used to {@linkplain Baker#bake bake models} and
-			 * {@linkplain Baker#getSpriteGetter get sprites}. Note that baking a model which was not previously
-			 * {@linkplain ResolvableModel.Resolver#resolve resolved} will log a warning and return the missing model.
+			 * The baker being used to bake this model. It can be used to
+			 * {@linkplain Baker#getModel get resolved models} and {@linkplain Baker#getSpriteGetter get sprites}. Note
+			 * that retrieving a model which was not previously
+			 * {@linkplain ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
+			 * model.
 			 */
 			Baker baker();
 		}
@@ -262,21 +180,86 @@ public final class ModelModifier {
 		@ApiStatus.NonExtendable
 		interface Context {
 			/**
-			 * The identifier of the model being baked.
+			 * The corresponding block state of the model being baked.
 			 */
-			ModelIdentifier id();
+			BlockState state();
 
 			/**
 			 * The unbaked model that is being baked.
 			 */
-			GroupableModel sourceModel();
+			BakedModel.GroupableModel sourceModel();
 
 			/**
-			 * The baker being used to bake this model. It can be used to {@linkplain Baker#bake bake models} and
-			 * {@linkplain Baker#getSpriteGetter get sprites}. Note that baking a model which was not previously
-			 * {@linkplain ResolvableModel.Resolver#resolve resolved} will log a warning and return the missing model.
+			 * The baker being used to bake this model. It can be used to
+			 * {@linkplain Baker#getModel get resolved models} and {@linkplain Baker#getSpriteGetter get sprites}. Note
+			 * that retrieving a model which was not previously
+			 * {@linkplain ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
+			 * model.
 			 */
 			Baker baker();
+		}
+	}
+
+	@FunctionalInterface
+	public interface BeforeBakeItem {
+		/**
+		 * This handler is invoked to allow modification of the unbaked item model instance right before it is baked.
+		 *
+		 * @param model the current unbaked model instance
+		 * @param context context with additional information about the model/loader
+		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
+		 * @see ModelLoadingPlugin.Context#modifyItemModelBeforeBake
+		 */
+		ItemModel.Unbaked modifyModelBeforeBake(ItemModel.Unbaked model, Context context);
+
+		/**
+		 * The context for a before bake item model modification event.
+		 */
+		@ApiStatus.NonExtendable
+		interface Context {
+			/**
+			 * The corresponding item ID of the model being baked.
+			 */
+			Identifier itemId();
+
+			/**
+			 * The vanilla context being used to bake this model.
+			 */
+			ItemModel.BakeContext bakeContext();
+		}
+	}
+
+	@FunctionalInterface
+	public interface AfterBakeItem {
+		/**
+		 * This handler is invoked to allow modification of the baked item model instance right after it is baked.
+		 *
+		 * @param model the current baked model instance
+		 * @param context context with additional information about the model/loader
+		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
+		 * @see ModelLoadingPlugin.Context#modifyItemModelAfterBake
+		 */
+		ItemModel modifyModelAfterBake(ItemModel model, Context context);
+
+		/**
+		 * The context for an after bake item model modification event.
+		 */
+		@ApiStatus.NonExtendable
+		interface Context {
+			/**
+			 * The corresponding item ID of the model being baked.
+			 */
+			Identifier itemId();
+
+			/**
+			 * The unbaked model that is being baked.
+			 */
+			ItemModel.Unbaked sourceModel();
+
+			/**
+			 * The vanilla context being used to bake this model.
+			 */
+			ItemModel.BakeContext bakeContext();
 		}
 	}
 
