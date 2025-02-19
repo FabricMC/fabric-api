@@ -23,7 +23,7 @@ publishing {
 				dependencies.add([
 					'groupId': it.group,
 					'artifactId': it.name,
-					'version': it.version,
+					'version': getSubprojectVersion(it),
 					'scope': 'compile'
 				])
 			}

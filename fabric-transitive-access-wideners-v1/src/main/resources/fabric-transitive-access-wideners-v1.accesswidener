@@ -50,8 +50,8 @@ transitive-accessible class net/minecraft/client/model/ModelPart$Vertex
 transitive-accessible class net/minecraft/client/model/ModelPart$Quad
 
 # Creating custom render layers
-transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;ILnet/minecraft/class_10785;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
-transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;IZZLnet/minecraft/class_10785;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
+transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;ILnet/minecraft/client/gl/ShaderProgramLayer;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
+transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;IZZLnet/minecraft/client/gl/ShaderProgramLayer;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
 transitive-accessible class net/minecraft/client/render/RenderLayer$MultiPhase
 transitive-accessible class net/minecraft/client/render/RenderLayer$MultiPhaseParameters
 transitive-accessible class net/minecraft/client/render/RenderLayer$OutlineMode
@@ -310,7 +310,7 @@ transitive-accessible field net/minecraft/client/render/RenderPhase VIEW_OFFSET_
 transitive-accessible field net/minecraft/client/render/RenderPhase VIEW_OFFSET_Z_LAYERING_FORWARD Lnet/minecraft/client/render/RenderPhase$Layering;
 transitive-accessible field net/minecraft/client/render/RenderPhase WORLD_BORDER_LAYERING Lnet/minecraft/client/render/RenderPhase$Layering;
 transitive-accessible field net/minecraft/client/render/RenderPhase MAIN_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
-transitive-accessible field net/minecraft/client/render/RenderPhase field_56917 Lnet/minecraft/client/render/RenderPhase$Target;
+transitive-accessible field net/minecraft/client/render/RenderPhase LIGHT_TEXTURE_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase OUTLINE_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase TRANSLUCENT_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase PARTICLES_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
