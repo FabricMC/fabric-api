@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -150,7 +151,7 @@ final class TestAnnotationLocator {
 		}
 
 		private static String camelToSnake(String input) {
-			return input.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+			return input.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase(Locale.ROOT);
 		}
 	}
 }
