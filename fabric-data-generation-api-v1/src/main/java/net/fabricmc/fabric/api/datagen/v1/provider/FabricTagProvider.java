@@ -373,6 +373,17 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		}
 
 		/**
+		 * Add multiple tags to this tag.
+		 *
+		 * @return the {@link FabricTagBuilder} instance
+		 */
+		@SafeVarargs
+		public final FabricTagBuilder addTags(TagKey<T>... tags) {
+			Stream.of(tags).forEach(this::addTag);
+			return this;
+		}
+
+		/**
 		 * Add another optional tag to this tag.
 		 *
 		 * @return the {@link FabricTagBuilder} instance
@@ -393,15 +404,40 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		}
 
 		/**
+		 * Add another optional tags to this tag.
+		 *
+		 * @return the {@link FabricTagBuilder} instance
+		 */
+		@SafeVarargs
+		public final FabricTagBuilder addOptionalTags(TagKey<T>... tags) {
+			Stream.of(tags).forEach(this::addOptionalTag);
+			return this;
+		}
+
+		/**
 		 * Add another tag to this tag, ignoring any warning.
 		 *
 		 * <p><b>Note:</b> only use this method if you sure that the tag will be always available at runtime.
-		 * If not, use {@link #addOptionalTag(Identifier)} instead.
+		 * If not, use {@link #addOptionalTag(TagKey)} instead.
 		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		public FabricTagBuilder forceAddTag(TagKey<T> tag) {
 			builder.add(new ForcedTagEntry(TagEntry.create(tag.id())));
+			return this;
+		}
+
+		/**
+		 * Add another tags to this tag, ignoring any warning.
+		 *
+		 * <p><b>Note:</b> only use this method if you sure that the tags will be always available at runtime.
+		 * If not, use {@link #addOptionalTags(TagKey[])} instead.
+		 *
+		 * @return the {@link FabricTagBuilder} instance
+		 */
+		@SafeVarargs
+		public final FabricTagBuilder forceAddTags(TagKey<T>... tags) {
+			Stream.of(tags).forEach(this::forceAddTag);
 			return this;
 		}
 
