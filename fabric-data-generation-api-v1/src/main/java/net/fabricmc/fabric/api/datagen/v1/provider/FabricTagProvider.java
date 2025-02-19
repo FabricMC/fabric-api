@@ -382,6 +382,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 			for (TagKey<T> tag : tags) {
 				addTag(tag);
 			}
+
 			return this;
 		}
 
@@ -415,6 +416,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 			for (TagKey<T> tag : tags) {
 				addOptionalTag(tag);
 			}
+
 			return this;
 		}
 
@@ -444,6 +446,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 			for (TagKey<T> tag : tags) {
 				forceAddTag(tag);
 			}
+
 			return this;
 		}
 
