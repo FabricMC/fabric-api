@@ -105,8 +105,8 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		}
 	}
 
-	@WrapOperation(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;setSpawnPoint(Lnet/minecraft/server/network/ServerPlayerEntity$class_10766;Z)V"))
-	private void onSetSpawnPoint(ServerPlayerEntity player, ServerPlayerEntity.class_10766 spawnPoint, boolean sendMessage, Operation<Void> original) {
+	@WrapOperation(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;setSpawnPoint(Lnet/minecraft/server/network/ServerPlayerEntity$Respawn;Z)V"))
+	private void onSetSpawnPoint(ServerPlayerEntity player, ServerPlayerEntity.Respawn spawnPoint, boolean sendMessage, Operation<Void> original) {
 		if (EntitySleepEvents.ALLOW_SETTING_SPAWN.invoker().allowSettingSpawn(player, spawnPoint.pos())) {
 			original.call(player, spawnPoint, sendMessage);
 		}

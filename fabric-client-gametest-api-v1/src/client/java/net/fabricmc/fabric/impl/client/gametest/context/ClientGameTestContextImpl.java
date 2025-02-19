@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -288,11 +290,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		Preconditions.checkNotNull(options, "options");
 
 		TestScreenshotOptionsImpl optionsImpl = (TestScreenshotOptionsImpl) options;
-		return computeOnClient(client -> {
-			try (NativeImage screenshot = doTakeScreenshot(client, optionsImpl)) {
-				return saveScreenshot(screenshot, optionsImpl.name, optionsImpl);
-			}
-		});
+		return doTakeScreenshot(optionsImpl, screenshot -> saveScreenshot(screenshot, optionsImpl.name, optionsImpl));
 	}
 
 	@Override
@@ -314,83 +312,108 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 			BiPredicate<TestScreenshotComparisonAlgorithm.RawImage<?>, TestScreenshotComparisonAlgorithm.RawImage<?>> preCheck
 	) {
 		TestScreenshotComparisonOptionsImpl optionsImpl = (TestScreenshotComparisonOptionsImpl) options;
-		return this.computeOnClient(client -> {
-			try (NativeImage screenshot = doTakeScreenshot(client, optionsImpl)) {
-				Rect2i region = optionsImpl.region == null ? new Rect2i(0, 0, screenshot.getWidth(), screenshot.getHeight()) : optionsImpl.region;
-				Preconditions.checkState(region.getX() + region.getWidth() <= screenshot.getWidth() && region.getY() + region.getHeight() <= screenshot.getHeight(), "Screenshot comparison region extends outside the screenshot");
+		return doTakeScreenshot(optionsImpl, screenshot -> {
+			Rect2i region = optionsImpl.region == null ? new Rect2i(0, 0, screenshot.getWidth(), screenshot.getHeight()) : optionsImpl.region;
+			Preconditions.checkState(region.getX() + region.getWidth() <= screenshot.getWidth() && region.getY() + region.getHeight() <= screenshot.getHeight(), "Screenshot comparison region extends outside the screenshot");
 
-				try (NativeImage subScreenshot = new NativeImage(region.getWidth(), region.getHeight(), false)) {
-					screenshot.resizeSubRectTo(region.getX(), region.getY(), region.getWidth(), region.getHeight(), subScreenshot);
+			try (NativeImage subScreenshot = new NativeImage(region.getWidth(), region.getHeight(), false)) {
+				screenshot.resizeSubRectTo(region.getX(), region.getY(), region.getWidth(), region.getHeight(), subScreenshot);
 
-					if (optionsImpl.savedFileName != null) {
-						saveScreenshot(subScreenshot, optionsImpl.savedFileName, optionsImpl);
-					}
-
-					Vector2i result;
-
-					if (optionsImpl.grayscale) {
-						TestScreenshotComparisonAlgorithm.RawImage<byte[]> templateImage = optionsImpl.getGrayscaleTemplateImage();
-
-						if (templateImage == null) {
-							onTemplateImageDoesntExist(subScreenshot, optionsImpl);
-							return new Vector2i(region.getX(), region.getY());
-						}
-
-						TestScreenshotComparisonAlgorithm.RawImage<byte[]> haystackImage = TestScreenshotComparisonAlgorithms.RawImageImpl.fromGrayscaleNativeImage(subScreenshot);
-
-						if (preCheck.test(haystackImage, templateImage)) {
-							result = optionsImpl.algorithm.findGrayscale(haystackImage, templateImage);
-						} else {
-							result = null;
-						}
-					} else {
-						TestScreenshotComparisonAlgorithm.RawImage<int[]> templateImage = optionsImpl.getColorTemplateImage();
-
-						if (templateImage == null) {
-							onTemplateImageDoesntExist(subScreenshot, optionsImpl);
-							return new Vector2i(region.getX(), region.getY());
-						}
-
-						TestScreenshotComparisonAlgorithm.RawImage<int[]> haystackImage = TestScreenshotComparisonAlgorithms.RawImageImpl.fromColorNativeImage(subScreenshot);
-
-						if (preCheck.test(haystackImage, templateImage)) {
-							result = optionsImpl.algorithm.findColor(haystackImage, templateImage);
-						} else {
-							result = null;
-						}
-					}
-
-					if (result == null) {
-						throw new AssertionError("Screenshot does not contain template" + optionsImpl.getTemplateImagePath().map(" '%s'"::formatted).orElse(""));
-					}
-
-					return result.add(region.getX(), region.getY());
+				if (optionsImpl.savedFileName != null) {
+					saveScreenshot(subScreenshot, optionsImpl.savedFileName, optionsImpl);
 				}
+
+				Vector2i result;
+
+				if (optionsImpl.grayscale) {
+					TestScreenshotComparisonAlgorithm.RawImage<byte[]> templateImage = optionsImpl.getGrayscaleTemplateImage();
+
+					if (templateImage == null) {
+						onTemplateImageDoesntExist(subScreenshot, optionsImpl);
+						return new Vector2i(region.getX(), region.getY());
+					}
+
+					TestScreenshotComparisonAlgorithm.RawImage<byte[]> haystackImage = TestScreenshotComparisonAlgorithms.RawImageImpl.fromGrayscaleNativeImage(subScreenshot);
+
+					if (preCheck.test(haystackImage, templateImage)) {
+						result = optionsImpl.algorithm.findGrayscale(haystackImage, templateImage);
+					} else {
+						result = null;
+					}
+				} else {
+					TestScreenshotComparisonAlgorithm.RawImage<int[]> templateImage = optionsImpl.getColorTemplateImage();
+
+					if (templateImage == null) {
+						onTemplateImageDoesntExist(subScreenshot, optionsImpl);
+						return new Vector2i(region.getX(), region.getY());
+					}
+
+					TestScreenshotComparisonAlgorithm.RawImage<int[]> haystackImage = TestScreenshotComparisonAlgorithms.RawImageImpl.fromColorNativeImage(subScreenshot);
+
+					if (preCheck.test(haystackImage, templateImage)) {
+						result = optionsImpl.algorithm.findColor(haystackImage, templateImage);
+					} else {
+						result = null;
+					}
+				}
+
+				if (result == null) {
+					throw new AssertionError("Screenshot does not contain template" + optionsImpl.getTemplateImagePath().map(" '%s'"::formatted).orElse(""));
+				}
+
+				return result.add(region.getX(), region.getY());
 			}
 		});
 	}
 
-	private static NativeImage doTakeScreenshot(MinecraftClient client, TestScreenshotCommonOptionsImpl<?> options) {
-		int prevWidth = client.getWindow().getFramebufferWidth();
-		int prevHeight = client.getWindow().getFramebufferHeight();
+	private <T> T doTakeScreenshot(TestScreenshotCommonOptionsImpl<?> options, Function<NativeImage, T> screenshotConsumer) {
+		ThreadingImpl.checkOnGametestThread("doTakeScreenshot");
 
-		if (options.size != null) {
-			client.getWindow().setFramebufferWidth(options.size.x);
-			client.getWindow().setFramebufferHeight(options.size.y);
-			client.getFramebuffer().resize(options.size.x, options.size.y);
-		}
+		Vector2i prevSize = computeOnClient(client -> {
+			int prevWidth = client.getWindow().getFramebufferWidth();
+			int prevHeight = client.getWindow().getFramebufferHeight();
+
+			if (options.size != null) {
+				client.getWindow().setFramebufferWidth(options.size.x);
+				client.getWindow().setFramebufferHeight(options.size.y);
+				client.getFramebuffer().resize(options.size.x, options.size.y);
+			}
+
+			return new Vector2i(prevWidth, prevHeight);
+		});
 
 		try {
-			client.gameRenderer.render(RenderTickCounterConstantAccessor.create(options.tickDelta), true);
+			CompletableFuture<T> future = computeOnClient(client -> {
+				client.gameRenderer.render(RenderTickCounterConstantAccessor.create(options.tickDelta), true);
+				CompletableFuture<T> resultFuture = new CompletableFuture<>();
 
-			// The vanilla panorama screenshot code has a Thread.sleep(10) here, is this needed?
+				ScreenshotRecorder.takeScreenshot(client.getFramebuffer(), screenshot -> {
+					try {
+						resultFuture.complete(screenshotConsumer.apply(screenshot));
+					} catch (Throwable e) {
+						resultFuture.completeExceptionally(e);
+					}
+				});
 
-			return ScreenshotRecorder.takeScreenshot(client.getFramebuffer());
+				return resultFuture;
+			});
+
+			// Keep ticking until the screenshot is done
+			while (!future.isDone()) {
+				waitTick();
+			}
+
+			return future.get();
+		} catch (ExecutionException | InterruptedException e) {
+			throw new RuntimeException(e);
 		} finally {
 			if (options.size != null) {
-				client.getWindow().setFramebufferWidth(prevWidth);
-				client.getWindow().setFramebufferHeight(prevHeight);
-				client.getFramebuffer().resize(prevWidth, prevHeight);
+				computeOnClient(client -> {
+					client.getWindow().setFramebufferWidth(prevSize.x);
+					client.getWindow().setFramebufferHeight(prevSize.y);
+					client.getFramebuffer().resize(prevSize.x, prevSize.y);
+					return null;
+				});
 			}
 		}
 	}
