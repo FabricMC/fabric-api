@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.class_10820;
+import net.minecraft.client.render.model.Geometry;
 import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -40,8 +40,8 @@ public abstract class WrapperUnbakedModel implements UnbakedModel {
 
 	@Override
 	@Nullable
-	public Boolean getAmbientOcclusion() {
-		return wrapped.getAmbientOcclusion();
+	public Boolean ambientOcclusion() {
+		return wrapped.ambientOcclusion();
 	}
 
 	@Override
@@ -63,13 +63,13 @@ public abstract class WrapperUnbakedModel implements UnbakedModel {
 
 	@Override
 	@Nullable
-	public class_10820 geometry() {
+	public Geometry geometry() {
 		return wrapped.geometry();
 	}
 
 	@Override
 	@Nullable
-	public Identifier getParentId() {
-		return wrapped.getParentId();
+	public Identifier parentId() {
+		return wrapped.parentId();
 	}
 }

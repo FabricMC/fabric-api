@@ -53,8 +53,8 @@ public abstract class WrapperBakedModel implements BakedModel, UnwrappableBakedM
 	}
 
 	@Override
-	public Sprite getParticleSprite() {
-		return wrapped.getParticleSprite();
+	public Sprite particleSprite() {
+		return wrapped.particleSprite();
 	}
 
 	@Override

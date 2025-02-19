@@ -76,12 +76,12 @@ public class ModelLoadingEventDispatcher {
 		return pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, onLoadModifierContext);
 	}
 
-	public BlockStatesLoader.BlockStateDefinition modifyBlockModelsOnLoad(BlockStatesLoader.BlockStateDefinition models) {
+	public BlockStatesLoader.LoadedModels modifyBlockModelsOnLoad(BlockStatesLoader.LoadedModels models) {
 		Map<BlockState, BakedModel.GroupableModel> map = models.models();
 
 		if (!(map instanceof HashMap)) {
 			map = new HashMap<>(map);
-			models = new BlockStatesLoader.BlockStateDefinition(map);
+			models = new BlockStatesLoader.LoadedModels(map);
 		}
 
 		putResolvedBlockStates(map);

@@ -35,8 +35,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_10819;
 import net.minecraft.client.render.model.BakedModelManager;
+import net.minecraft.client.render.model.BakedSimpleModel;
 import net.minecraft.client.render.model.BlockStatesLoader;
 import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.client.render.model.ReferencedModelsCollector;
@@ -59,11 +59,11 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 
 	@Unique
 	@Nullable
-	private Map<Identifier, class_10819> extraModels;
+	private Map<Identifier, BakedSimpleModel> extraModels;
 
 	@Override
 	@Nullable
-	public class_10819 getModel(Identifier id) {
+	public BakedSimpleModel getModel(Identifier id) {
 		if (extraModels == null) {
 			return null;
 		}
@@ -85,7 +85,7 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 	}
 
 	@ModifyExpressionValue(method = "reload", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BlockStatesLoader.load(Lnet/minecraft/resource/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
-	private CompletableFuture<BlockStatesLoader.BlockStateDefinition> hookBlockStateModels(CompletableFuture<BlockStatesLoader.BlockStateDefinition> modelsFuture) {
+	private CompletableFuture<BlockStatesLoader.LoadedModels> hookBlockStateModels(CompletableFuture<BlockStatesLoader.LoadedModels> modelsFuture) {
 		return modelsFuture.thenCombine(eventDispatcherFuture, (models, eventDispatcher) -> eventDispatcher.modifyBlockModelsOnLoad(models));
 	}
 
@@ -138,12 +138,12 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 		return UnbakedModelDeserializer.deserialize(reader);
 	}
 
-	@Inject(method = "collect(Ljava/util/Map;Lnet/minecraft/client/render/model/BlockStatesLoader$BlockStateDefinition;Lnet/minecraft/client/item/ItemAssetsLoader$Result;)Lnet/minecraft/client/render/model/BakedModelManager$class_10816;", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/ReferencedModelsCollector.method_68022()Lnet/minecraft/class_10819;"))
+	@Inject(method = "collect(Ljava/util/Map;Lnet/minecraft/client/render/model/BlockStatesLoader$LoadedModels;Lnet/minecraft/client/item/ItemAssetsLoader$Result;)Lnet/minecraft/client/render/model/BakedModelManager$Models;", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/ReferencedModelsCollector.getMissingModel()Lnet/minecraft/client/render/model/BakedSimpleModel;"))
 	private static void onCollect(CallbackInfoReturnable<?> cir, @Local ReferencedModelsCollector referencedModelsCollector) {
 		ModelLoadingEventDispatcher eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
 
 		if (eventDispatcher != null) {
-			referencedModelsCollector.add(resolver -> eventDispatcher.forEachExtraModel(resolver::markDependency));
+			referencedModelsCollector.resolve(resolver -> eventDispatcher.forEachExtraModel(resolver::markDependency));
 		}
 	}
 

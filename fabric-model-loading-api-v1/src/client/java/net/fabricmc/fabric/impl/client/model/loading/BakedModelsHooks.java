@@ -20,12 +20,12 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.class_10819;
+import net.minecraft.client.render.model.BakedSimpleModel;
 import net.minecraft.util.Identifier;
 
 public interface BakedModelsHooks {
 	@Nullable
-	Map<Identifier, class_10819> fabric_getExtraModels();
+	Map<Identifier, BakedSimpleModel> fabric_getExtraModels();
 
-	void fabric_setExtraModels(@Nullable Map<Identifier, class_10819> extraModels);
+	void fabric_setExtraModels(@Nullable Map<Identifier, BakedSimpleModel> extraModels);
 }

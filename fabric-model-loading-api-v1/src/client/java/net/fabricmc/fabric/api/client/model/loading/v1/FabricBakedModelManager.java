@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.class_10819;
 import net.minecraft.client.render.model.BakedModelManager;
+import net.minecraft.client.render.model.BakedSimpleModel;
 import net.minecraft.util.Identifier;
 
 /**
@@ -38,7 +38,7 @@ public interface FabricBakedModelManager {
 	 * @return the model
 	 */
 	@Nullable
-	default class_10819 getModel(Identifier id) {
+	default BakedSimpleModel getModel(Identifier id) {
 		throw new UnsupportedOperationException("Implemented via mixin.");
 	}
 }

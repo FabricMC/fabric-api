@@ -38,9 +38,9 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.class_10819;
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedSimpleModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
 import net.minecraft.client.render.model.ModelBaker;
@@ -57,7 +57,7 @@ abstract class ModelBakerMixin {
 
 	@Shadow
 	@Final
-	Map<Identifier, class_10819> field_56986;
+	Map<Identifier, BakedSimpleModel> simpleModels;
 
 	@Unique
 	@Nullable
@@ -68,7 +68,7 @@ abstract class ModelBakerMixin {
 		fabric_eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
 	}
 
-	@ModifyArg(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_10769;method_67612(Ljava/util/Map;Ljava/util/function/BiFunction;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0), index = 1)
+	@ModifyArg(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/FutureModel;newTask(Ljava/util/Map;Ljava/util/function/BiFunction;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0), index = 1)
 	private BiFunction<BlockState, BakedModel.GroupableModel, BakedModel> hookBlockModelBake(BiFunction<BlockState, BakedModel.GroupableModel, BakedModel> bifunction) {
 		if (fabric_eventDispatcher == null) {
 			return bifunction;
@@ -108,8 +108,8 @@ abstract class ModelBakerMixin {
 			return original;
 		}
 
-		Map<Identifier, class_10819> extraModels = new HashMap<>();
-		fabric_eventDispatcher.forEachExtraModel(id -> extraModels.put(id, field_56986.get(id)));
+		Map<Identifier, BakedSimpleModel> extraModels = new HashMap<>();
+		fabric_eventDispatcher.forEachExtraModel(id -> extraModels.put(id, simpleModels.get(id)));
 		return original.thenApply(models -> {
 			((BakedModelsHooks) (Object) models).fabric_setExtraModels(extraModels);
 			return models;
