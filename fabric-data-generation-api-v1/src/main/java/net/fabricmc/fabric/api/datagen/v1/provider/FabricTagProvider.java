@@ -404,7 +404,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		}
 
 		/**
-		 * Add another optional tags to this tag.
+		 * Add optional tags to this tag.
 		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 */
@@ -428,7 +428,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		}
 
 		/**
-		 * Add another tags to this tag, ignoring any warning.
+		 * Add tags to this tag, ignoring any warning.
 		 *
 		 * <p><b>Note:</b> only use this method if you sure that the tags will be always available at runtime.
 		 * If not, use {@link #addOptionalTags(TagKey[])} instead.
