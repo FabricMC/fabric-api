@@ -379,7 +379,9 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 */
 		@SafeVarargs
 		public final FabricTagBuilder addTags(TagKey<T>... tags) {
-			Stream.of(tags).forEach(this::addTag);
+			for (TagKey<T> tag : tags) {
+				addTag(tag);
+			}
 			return this;
 		}
 
@@ -410,7 +412,9 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 */
 		@SafeVarargs
 		public final FabricTagBuilder addOptionalTags(TagKey<T>... tags) {
-			Stream.of(tags).forEach(this::addOptionalTag);
+			for (TagKey<T> tag : tags) {
+				addOptionalTag(tag);
+			}
 			return this;
 		}
 
@@ -437,7 +441,9 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 */
 		@SafeVarargs
 		public final FabricTagBuilder forceAddTags(TagKey<T>... tags) {
-			Stream.of(tags).forEach(this::forceAddTag);
+			for (TagKey<T> tag : tags) {
+				forceAddTag(tag);
+			}
 			return this;
 		}
 
