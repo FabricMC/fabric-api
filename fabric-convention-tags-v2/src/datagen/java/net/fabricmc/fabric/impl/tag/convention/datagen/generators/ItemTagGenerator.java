@@ -373,6 +373,44 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
 
+		getOrCreateTagBuilder(ConventionalItemTags.DRINKS)
+				.addOptionalTag(ConventionalItemTags.WATER_DRINKS)
+				.addOptionalTag(ConventionalItemTags.WATERY_DRINKS)
+				.addOptionalTag(ConventionalItemTags.MILK_DRINKS)
+				.addOptionalTag(ConventionalItemTags.HONEY_DRINKS)
+				.addOptionalTag(ConventionalItemTags.MAGIC_DRINKS)
+				.addOptionalTag(ConventionalItemTags.OMINOUS_DRINKS)
+				.addOptionalTag(ConventionalItemTags.JUICE_DRINKS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.WATER_DRINKS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.WATERY_DRINKS)
+				.add(Items.POTION)
+				.addOptionalTag(ConventionalItemTags.WATER_DRINKS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.MILK_DRINKS)
+				.add(Items.MILK_BUCKET);
+
+		getOrCreateTagBuilder(ConventionalItemTags.HONEY_DRINKS)
+				.add(Items.HONEY_BOTTLE);
+
+		getOrCreateTagBuilder(ConventionalItemTags.MAGIC_DRINKS)
+				.add(Items.POTION)
+				.addOptionalTag(ConventionalItemTags.OMINOUS_DRINKS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.OMINOUS_DRINKS)
+				.add(Items.OMINOUS_BOTTLE);
+
+		getOrCreateTagBuilder(ConventionalItemTags.JUICE_DRINKS);
+
+		getOrCreateTagBuilder(ConventionalItemTags.DRINK_CONTAINING_BUCKET)
+				.add(Items.MILK_BUCKET);
+
+		getOrCreateTagBuilder(ConventionalItemTags.DRINK_CONTAINING_BOTTLE)
+				.add(Items.POTION)
+				.add(Items.HONEY_BOTTLE)
+				.add(Items.OMINOUS_BOTTLE);
+
 		// Deprecated tags below
 		getOrCreateTagBuilder(ConventionalItemTags.FRUITS_FOODS)
 				.add(Items.APPLE)

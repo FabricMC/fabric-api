@@ -271,6 +271,16 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.COOKED_FISHES_FOODS, "Cooked Fishes");
 		translationBuilder.add(ConventionalItemTags.SOUPS_FOODS, "Soups");
 		translationBuilder.add(ConventionalItemTags.CANDIES_FOODS, "Candies");
+		translationBuilder.add(ConventionalItemTags.DRINKS, "Drinks");
+		translationBuilder.add(ConventionalItemTags.WATER_DRINKS, "Water");
+		translationBuilder.add(ConventionalItemTags.WATERY_DRINKS, "Watery Drinks");
+		translationBuilder.add(ConventionalItemTags.MILK_DRINKS, "Milk");
+		translationBuilder.add(ConventionalItemTags.HONEY_DRINKS, "Honey");
+		translationBuilder.add(ConventionalItemTags.MAGIC_DRINKS, "Magical Drinks");
+		translationBuilder.add(ConventionalItemTags.OMINOUS_DRINKS, "Ominous Drinks");
+		translationBuilder.add(ConventionalItemTags.JUICE_DRINKS, "Juice");
+		translationBuilder.add(ConventionalItemTags.DRINK_CONTAINING_BUCKET, "Drink Containing Buckets");
+		translationBuilder.add(ConventionalItemTags.DRINK_CONTAINING_BOTTLE, "Drink Containing Bottles");
 		translationBuilder.add(ConventionalItemTags.BUCKETS, "Buckets");
 		translationBuilder.add(ConventionalItemTags.WATER_BUCKETS, "Water Buckets");
 		translationBuilder.add(ConventionalItemTags.ENTITY_WATER_BUCKETS, "Entity Water Buckets");
