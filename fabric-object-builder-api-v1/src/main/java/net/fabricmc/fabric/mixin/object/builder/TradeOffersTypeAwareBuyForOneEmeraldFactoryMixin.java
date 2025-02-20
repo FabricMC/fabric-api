@@ -46,17 +46,17 @@ public abstract class TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin {
 
 	/**
 	 * To prevent crashes due to passing a {@code null} item to a {@link TradedItem}, return a {@code null} trade offer
-	 * early before one is created.
+	 * early before {@code null} is passed.
 	 */
 	@ModifyExpressionValue(
 			method = "create",
 			at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;")
 	)
-	private Object failOnNullItem(Object original, @Cancellable CallbackInfoReturnable<TradeOffer> cir) {
-		if (original == null) {
+	private Object failOnNullItem(Object item, @Cancellable CallbackInfoReturnable<TradeOffer> cir) {
+		if (item == null) {
 			cir.setReturnValue(null);
 		}
 
-		return original;
+		return item;
 	}
 }
