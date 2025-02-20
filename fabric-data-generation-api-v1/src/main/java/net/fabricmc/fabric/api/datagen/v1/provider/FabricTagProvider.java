@@ -423,7 +423,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		/**
 		 * Add another tag to this tag, ignoring any warning.
 		 *
-		 * <p><b>Note:</b> only use this method if you sure that the tag will be always available at runtime.
+		 * <p><b>Note:</b> only use this method if you are sure that the tag will be always available at runtime.
 		 * If not, use {@link #addOptionalTag(TagKey)} instead.
 		 *
 		 * @return the {@link FabricTagBuilder} instance
@@ -436,7 +436,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		/**
 		 * Add multiple tags to this tag, ignoring any warning.
 		 *
-		 * <p><b>Note:</b> only use this method if you sure that the tags will be always available at runtime.
+		 * <p><b>Note:</b> only use this method if you are sure that the tags will be always available at runtime.
 		 * If not, use {@link #addOptionalTags(TagKey[])} instead.
 		 *
 		 * @return the {@link FabricTagBuilder} instance
