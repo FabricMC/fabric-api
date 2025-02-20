@@ -46,7 +46,7 @@ public abstract class TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin {
 
 	/**
 	 * To prevent crashes due to passing a {@code null} item to a {@link TradedItem}, return a {@code null} trade offer
-	 * early before {@code null} is passed.
+	 * early before {@code null} is passed to the constructor.
 	 */
 	@ModifyExpressionValue(
 			method = "create",
