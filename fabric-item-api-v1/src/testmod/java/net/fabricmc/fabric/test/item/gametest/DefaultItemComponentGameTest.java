@@ -18,8 +18,10 @@ package net.fabricmc.fabric.test.item.gametest;
 
 import java.util.function.Consumer;
 
+import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FireworksComponent;
+import net.minecraft.component.type.UnbreakableComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -88,6 +90,34 @@ public class DefaultItemComponentGameTest implements FabricGameTest {
 		// if they contain each other, then they are equal
 		context.assertTrue(itemName.contains(expectedName), errorMessage.formatted(expectedName, itemName));
 		context.assertTrue(expectedName.contains(itemName), errorMessage.formatted(itemName, expectedName));
+		context.complete();
+	}
+
+	@GameTest(templateName = EMPTY_STRUCTURE)
+	public void emptyComponentMapDoesNotContainUnbreakable(TestContext context) {
+		ComponentMap.Builder builder = ComponentMap.builder();
+
+		context.assertFalse(builder.contains(DataComponentTypes.UNBREAKABLE), "Empty component map contains unbreakable type");
+		context.complete();
+	}
+
+	@GameTest(templateName = EMPTY_STRUCTURE)
+	public void componentMapWithItemNameDoesNotContainUnbreakable(TestContext context) {
+		ComponentMap.Builder builder = ComponentMap.builder();
+
+		builder.add(DataComponentTypes.ITEM_NAME, Text.of("Weird Name"));
+
+		context.assertFalse(builder.contains(DataComponentTypes.UNBREAKABLE), "Component map should not contain unbreakable type");
+		context.complete();
+	}
+
+	@GameTest(templateName = EMPTY_STRUCTURE)
+	public void componentMapWithUnbreakableContainsUnbreakable(TestContext context) {
+		ComponentMap.Builder builder = ComponentMap.builder();
+
+		builder.add(DataComponentTypes.UNBREAKABLE, new UnbreakableComponent(true));
+
+		context.assertTrue(builder.contains(DataComponentTypes.UNBREAKABLE), "Component map does not contain unbreakable type");
 		context.complete();
 	}
 }

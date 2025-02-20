@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -304,8 +303,11 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@SafeVarargs
-		public final FabricTagBuilder add(T... element) {
-			Stream.of(element).map(FabricTagProvider.this::reverseLookup).forEach(this::add);
+		public final FabricTagBuilder add(T... elements) {
+			for (T element : elements) {
+				add(reverseLookup(element));
+			}
+
 			return this;
 		}
 
@@ -373,6 +375,20 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		}
 
 		/**
+		 * Add multiple tags to this tag.
+		 *
+		 * @return the {@link FabricTagBuilder} instance
+		 */
+		@SafeVarargs
+		public final FabricTagBuilder addTags(TagKey<T>... tags) {
+			for (TagKey<T> tag : tags) {
+				addTag(tag);
+			}
+
+			return this;
+		}
+
+		/**
 		 * Add another optional tag to this tag.
 		 *
 		 * @return the {@link FabricTagBuilder} instance
@@ -393,15 +409,46 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		}
 
 		/**
+		 * Add multiple optional tags to this tag.
+		 *
+		 * @return the {@link FabricTagBuilder} instance
+		 */
+		@SafeVarargs
+		public final FabricTagBuilder addOptionalTags(TagKey<T>... tags) {
+			for (TagKey<T> tag : tags) {
+				addOptionalTag(tag);
+			}
+
+			return this;
+		}
+
+		/**
 		 * Add another tag to this tag, ignoring any warning.
 		 *
-		 * <p><b>Note:</b> only use this method if you sure that the tag will be always available at runtime.
-		 * If not, use {@link #addOptionalTag(Identifier)} instead.
+		 * <p><b>Note:</b> only use this method if you are sure that the tag will be always available at runtime.
+		 * If not, use {@link #addOptionalTag(TagKey)} instead.
 		 *
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		public FabricTagBuilder forceAddTag(TagKey<T> tag) {
 			builder.add(new ForcedTagEntry(TagEntry.create(tag.id())));
+			return this;
+		}
+
+		/**
+		 * Add multiple tags to this tag, ignoring any warning.
+		 *
+		 * <p><b>Note:</b> only use this method if you are sure that the tags will be always available at runtime.
+		 * If not, use {@link #addOptionalTags(TagKey[])} instead.
+		 *
+		 * @return the {@link FabricTagBuilder} instance
+		 */
+		@SafeVarargs
+		public final FabricTagBuilder forceAddTags(TagKey<T>... tags) {
+			for (TagKey<T> tag : tags) {
+				forceAddTag(tag);
+			}
+
 			return this;
 		}
 

@@ -247,6 +247,55 @@ public final class ConventionalItemTags {
 	 */
 	public static final TagKey<Item> FOOD_POISONING_FOODS = register("foods/food_poisoning");
 
+	// Drinks
+	/**
+	 * Drinks are defined as (1) consumable items that (2) use the
+	 * {@linkplain net.minecraft.item.consume.UseAction#DRINK drink use action}, (3) can be consumed regardless of the
+	 * player's current hunger.
+	 *
+	 * <p>Drinks may provide nutrition and saturation, but are not required to do so.
+	 *
+	 * <p>More specific types of drinks, such as Water, Milk, or Juice should be placed in a sub-tag, such as
+	 * {@code #c:drinks/water}, {@code #c:drinks/milk}, and {@code #c:drinks/juice}.
+	 */
+	public static final TagKey<Item> DRINKS = register("drinks");
+	/**
+	 * For consumable drinks that contain only water.
+	 */
+	public static final TagKey<Item> WATER_DRINKS = register("drinks/water");
+	/**
+	 * For consumable drinks that are generally watery (such as potions).
+	 */
+	public static final TagKey<Item> WATERY_DRINKS = register("drinks/watery");
+	public static final TagKey<Item> MILK_DRINKS = register("drinks/milk");
+	public static final TagKey<Item> HONEY_DRINKS = register("drinks/honey");
+	/**
+	 * For consumable drinks that are magic in nature and usually grant at least one
+	 * {@link net.minecraft.entity.effect.StatusEffect} when consumed.
+	 */
+	public static final TagKey<Item> MAGIC_DRINKS = register("drinks/magic");
+	/**
+	 * For drinks that always grant the {@linkplain net.minecraft.entity.effect.StatusEffects#BAD_OMEN Bad Omen} effect.
+	 */
+	public static final TagKey<Item> OMINOUS_DRINKS = register("drinks/ominous");
+	/**
+	 * Non-alcoholic, plant based fruit and vegetable juices belong in this tag, for example apple juice and carrot juice.
+	 *
+	 * <p>If tags for specific types of juices are desired, they may go in a sub-tag, using their regular name such as
+	 * {@code #c:drinks/apple_juice}.
+	 */
+	public static final TagKey<Item> JUICE_DRINKS = register("drinks/juice");
+
+	// Drink containing items
+	/**
+	 * For non-empty buckets that are {@linkplain #DRINKS drinkable}.
+	 */
+	public static final TagKey<Item> DRINK_CONTAINING_BUCKET = register("drink_containing/bucket");
+	/**
+	 * For non-empty bottles that are {@linkplain #DRINKS drinkable}.
+	 */
+	public static final TagKey<Item> DRINK_CONTAINING_BOTTLE = register("drink_containing/bottle");
+
 	// Buckets
 	public static final TagKey<Item> BUCKETS = register("buckets");
 	public static final TagKey<Item> EMPTY_BUCKETS = register("buckets/empty");
@@ -457,6 +506,9 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STRINGS = register("strings");
 	public static final TagKey<Item> LEATHERS = register("leathers");
 	public static final TagKey<Item> BONES = register("bones");
+	/**
+	 * For eggs to use for culinary purposes in recipes such as baking a cake.
+	 */
 	public static final TagKey<Item> EGGS = register("eggs");
 	public static final TagKey<Item> FEATHERS = register("feathers");
 	public static final TagKey<Item> GUNPOWDERS = register("gunpowders");

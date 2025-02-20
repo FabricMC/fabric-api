@@ -1,7 +1,12 @@
 {
-  "fabric-registry-sync-v0.unknown-remote.title.singular": "Otrzymano wpis rejestru, który jest nieznany dla tego klienta.\n",
-  "fabric-registry-sync-v0.unknown-remote.title.plural": "Otrzymano %d wpisów rejestru, które są nieznane dla tego klienta.\n",
+  "fabric-registry-sync-v0.unknown-registry.footer": "I %d więcej...",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.1": "Jest to zwykle spowodowane różnym zestawem modów między klientem a serwerem.",
+  "fabric-registry-sync-v0.unknown-registry.subtitle.2": " Sprawdź logi klienta, aby poznać więcej detali.\nNastępujące rejestry nie są obecne w kliencie:\n\n",
+  "fabric-registry-sync-v0.unknown-registry.title.plural": "Otrzymano %d rejestrów, które są nieznane dla tego klienta.\n",
+  "fabric-registry-sync-v0.unknown-registry.title.singular": "Otrzymano rejestr, który jest nieznany dla tego klienta.\n",
+  "fabric-registry-sync-v0.unknown-remote.footer": "I %d więcej...",
   "fabric-registry-sync-v0.unknown-remote.subtitle.1": "Jest to zwykle spowodowane różnym zestawem modów między klientem a serwerem.",
   "fabric-registry-sync-v0.unknown-remote.subtitle.2": " Sprawdź logi klienta, aby poznać więcej detali.\nNastępujące rejestry przestrzeni nazw wpisów mogą być powiązane:\n\n",
-  "fabric-registry-sync-v0.unknown-remote.footer": "I %d więcej..."
+  "fabric-registry-sync-v0.unknown-remote.title.plural": "Otrzymano %d wpisów rejestru, które są nieznane dla tego klienta.\n",
+  "fabric-registry-sync-v0.unknown-remote.title.singular": "Otrzymano wpis rejestru, który jest nieznany dla tego klienta.\n"
 }

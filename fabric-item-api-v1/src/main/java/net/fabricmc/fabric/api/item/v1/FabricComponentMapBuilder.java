@@ -71,4 +71,14 @@ public interface FabricComponentMapBuilder {
 	default <T> List<T> getOrEmpty(ComponentType<List<T>> type) {
 		throw new AssertionError("Implemented in Mixin");
 	}
+
+	/**
+	 * Checks if a component type has been registered to this builder.
+	 *
+	 * @param type The component type to check
+	 * @return Returns true if the type has been registered to this builder, false otherwise
+	 */
+	default boolean contains(ComponentType<?> type) {
+		throw new AssertionError("Implemented in Mixin");
+	}
 }
