@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -304,8 +303,11 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 * @return the {@link FabricTagBuilder} instance
 		 */
 		@SafeVarargs
-		public final FabricTagBuilder add(T... element) {
-			Stream.of(element).map(FabricTagProvider.this::reverseLookup).forEach(this::add);
+		public final FabricTagBuilder add(T... elements) {
+			for (T element : elements) {
+				add(reverseLookup(element));
+			}
+
 			return this;
 		}
 
