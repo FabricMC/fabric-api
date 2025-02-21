@@ -26,7 +26,6 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.fabricmc.fabric.mixin.datagen.loot.EntityLootTableGeneratorAccessor;
 
-
 public class ConditionEntityLootTableGenerator extends EntityLootTableGenerator {
 	private final EntityLootTableGenerator parent;
 	private final ResourceCondition[] conditions;
@@ -44,7 +43,7 @@ public class ConditionEntityLootTableGenerator extends EntityLootTableGenerator 
 	}
 
 	@Override
-	protected void register(EntityType<?> entityType, RegistryKey<LootTable> tableKey, LootTable.Builder lootTable) {
+	public void register(EntityType<?> entityType, RegistryKey<LootTable> tableKey, LootTable.Builder lootTable) {
 		FabricDataGenHelper.addConditions(lootTable, this.conditions);
 		((EntityLootTableGeneratorAccessor) this.parent).invokeRegister(entityType, tableKey, lootTable);
 	}

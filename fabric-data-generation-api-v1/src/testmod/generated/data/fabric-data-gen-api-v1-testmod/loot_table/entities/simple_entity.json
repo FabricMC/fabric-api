@@ -1,0 +1,29 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:not",
+      "value": {
+        "condition": "fabric:not",
+        "value": {
+          "condition": "fabric:true"
+        }
+      }
+    },
+    {
+      "condition": "fabric:true"
+    }
+  ],
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "fabric-data-gen-api-v1-testmod:simple_block"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}
