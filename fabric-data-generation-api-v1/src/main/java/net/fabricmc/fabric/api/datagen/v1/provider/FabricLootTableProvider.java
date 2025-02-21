@@ -19,6 +19,9 @@ package net.fabricmc.fabric.api.datagen.v1.provider;
 import java.util.function.BiConsumer;
 
 import com.google.common.base.Preconditions;
+
+import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootTableGenerator;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.data.DataProvider;
@@ -42,7 +45,8 @@ public interface FabricLootTableProvider extends LootTableGenerator, DataProvide
 	/**
 	 * Return a new exporter that applies the specified conditions to any loot table it receives.
 	 *
-	 * <p>For block loot tables, use {@link FabricBlockLootTableGenerator#withConditions} instead.
+	 * <p>For block and entity loot tables, use {@link FabricBlockLootTableGenerator#withConditions} or
+	 * {@link FabricEntityLootTableGenerator#withConditions} instead, respectively.
 	 */
 	default BiConsumer<RegistryKey<LootTable>, LootTable.Builder> withConditions(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> exporter, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
