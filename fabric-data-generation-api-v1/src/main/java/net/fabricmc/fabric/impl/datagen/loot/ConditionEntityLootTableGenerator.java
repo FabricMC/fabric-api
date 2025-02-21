@@ -45,6 +45,6 @@ public class ConditionEntityLootTableGenerator extends EntityLootTableGenerator 
 	@Override
 	public void register(EntityType<?> entityType, RegistryKey<LootTable> tableKey, LootTable.Builder lootTable) {
 		FabricDataGenHelper.addConditions(lootTable, this.conditions);
-		((EntityLootTableGeneratorAccessor) this.parent).invokeRegister(entityType, tableKey, lootTable);
+		this.parent.register(entityType, tableKey, lootTable);
 	}
 }

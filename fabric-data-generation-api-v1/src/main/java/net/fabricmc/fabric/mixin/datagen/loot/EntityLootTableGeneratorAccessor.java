@@ -18,19 +18,12 @@ package net.fabricmc.fabric.mixin.datagen.loot;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.data.loottable.EntityLootTableGenerator;
-import net.minecraft.entity.EntityType;
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 
 @Mixin(EntityLootTableGenerator.class)
 public interface EntityLootTableGeneratorAccessor {
 	@Accessor()
 	RegistryWrapper.WrapperLookup getRegistries();
-
-	@Invoker()
-	void invokeRegister(EntityType<?> entityType, RegistryKey<LootTable> tableKey, LootTable.Builder lootTable);
 }
