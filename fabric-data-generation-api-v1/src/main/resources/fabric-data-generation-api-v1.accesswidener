@@ -16,6 +16,7 @@ transitive-extendable method net/minecraft/data/tag/TagProvider$ProvidedTagBuild
 accessible field net/minecraft/data/tag/TagProvider tagBuilders Ljava/util/Map;
 
 accessible field net/minecraft/data/loottable/BlockLootTableGenerator lootTables Ljava/util/Map;
+accessible field net/minecraft/data/loottable/EntityLootTableGenerator lootTables Ljava/util/Map;
 
 extendable method net/minecraft/registry/tag/TagEntry <init> (Lnet/minecraft/util/Identifier;ZZ)V
 accessible field net/minecraft/registry/tag/TagEntry id Lnet/minecraft/util/Identifier;
