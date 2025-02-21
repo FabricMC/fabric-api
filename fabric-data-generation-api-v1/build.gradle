@@ -11,6 +11,10 @@ moduleDependencies(project, [
 	'fabric-recipe-api-v1'
 ])
 
+testDependencies(project, [
+    ':fabric-object-builder-api-v1'
+])
+
 dependencies {
 }
 
