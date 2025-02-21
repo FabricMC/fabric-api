@@ -19,9 +19,6 @@ package net.fabricmc.fabric.api.datagen.v1.provider;
 import java.util.function.BiConsumer;
 
 import com.google.common.base.Preconditions;
-
-import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootTableGenerator;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.data.DataProvider;
@@ -30,6 +27,7 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootTableGenerator;
+import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootTableGenerator;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 

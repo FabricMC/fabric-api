@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.mixin.datagen.loot;
 
-import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootTableGenerator;
+import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.data.loottable.EntityLootTableGenerator;
 
-import org.spongepowered.asm.mixin.Mixin;
+import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootTableGenerator;
 
 @Mixin(EntityLootTableGenerator.class)
 public class EntityLootTableGeneratorMixin implements FabricEntityLootTableGenerator {
