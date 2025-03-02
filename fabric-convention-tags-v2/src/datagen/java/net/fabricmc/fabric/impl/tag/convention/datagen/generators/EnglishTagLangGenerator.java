@@ -115,7 +115,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.PUMPKINS, "Pumpkins");
 		translationBuilder.add(ConventionalBlockTags.NORMAL_PUMPKINS, "Normal Pumpkins");
 		translationBuilder.add(ConventionalBlockTags.CARVED_PUMPKINS, "Carved Pumpkins");
-		translationBuilder.add(ConventionalBlockTags.JACK_O_LANTERNS, "Jack O' Lanterns");
+		translationBuilder.add(ConventionalBlockTags.JACK_O_LANTERNS_PUMPKINS, "Jack O' Lanterns");
 		translationBuilder.add(ConventionalBlockTags.DYED, "Dyed Blocks");
 		translationBuilder.add(ConventionalBlockTags.BLACK_DYED, "Black Dyed Blocks");
 		translationBuilder.add(ConventionalBlockTags.BLUE_DYED, "Blue Dyed Blocks");
@@ -347,7 +347,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.PUMPKINS, "Pumpkins");
 		translationBuilder.add(ConventionalItemTags.NORMAL_PUMPKINS, "Normal Pumpkins");
 		translationBuilder.add(ConventionalItemTags.CARVED_PUMPKINS, "Carved Pumpkins");
-		translationBuilder.add(ConventionalItemTags.JACK_O_LANTERNS, "Jack O' Lanterns");
+		translationBuilder.add(ConventionalItemTags.JACK_O_LANTERNS_PUMPKINS, "Jack O' Lanterns");
 		translationBuilder.add(ConventionalItemTags.DYES, "Dyes");
 		translationBuilder.add(ConventionalItemTags.BLACK_DYES, "Black Dyes");
 		translationBuilder.add(ConventionalItemTags.BLUE_DYES, "Blue Dyes");

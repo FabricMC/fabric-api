@@ -184,7 +184,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.PUMPKINS, ConventionalItemTags.PUMPKINS);
 		copy(ConventionalBlockTags.NORMAL_PUMPKINS, ConventionalItemTags.NORMAL_PUMPKINS);
 		copy(ConventionalBlockTags.CARVED_PUMPKINS, ConventionalItemTags.CARVED_PUMPKINS);
-		copy(ConventionalBlockTags.JACK_O_LANTERNS, ConventionalItemTags.JACK_O_LANTERNS);
+		copy(ConventionalBlockTags.JACK_O_LANTERNS_PUMPKINS, ConventionalItemTags.JACK_O_LANTERNS_PUMPKINS);
 	}
 
 	private void generateDyeTags() {

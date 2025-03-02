@@ -190,7 +190,7 @@ public final class ConventionalBlockTags {
 	/**
 	 * For pumpkins that are already carved and a light source.
 	 */
-	public static final TagKey<Block> JACK_O_LANTERNS = register("pumpkins/jack_o_lanterns");
+	public static final TagKey<Block> JACK_O_LANTERNS_PUMPKINS = register("pumpkins/jack_o_lanterns");
 
 	// Blocks created with dyes
 	/**

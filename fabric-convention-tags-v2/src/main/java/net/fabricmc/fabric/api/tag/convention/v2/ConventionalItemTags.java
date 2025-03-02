@@ -406,7 +406,7 @@ public final class ConventionalItemTags {
 	/**
 	 * For pumpkins that are already carved and a light source.
 	 */
-	public static final TagKey<Item> JACK_O_LANTERNS = register("pumpkins/jack_o_lanterns");
+	public static final TagKey<Item> JACK_O_LANTERNS_PUMPKINS = register("pumpkins/jack_o_lanterns");
 
 	// Dyes
 	public static final TagKey<Item> DYES = register("dyes");
