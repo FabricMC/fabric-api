@@ -46,7 +46,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MarkerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryOps;
@@ -156,8 +155,8 @@ public class CommonAttachmentTests {
 		var fakeSave = new NbtCompound();
 
 		AttachmentSerializingImpl.serializeAttachmentData(fakeSave, mockDRM(), map);
-		assertTrue(fakeSave.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE));
-		assertTrue(fakeSave.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).contains(dummy.identifier().toString()));
+		assertTrue(fakeSave.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+		assertTrue(fakeSave.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElseThrow().contains(dummy.identifier().toString()));
 
 		map = AttachmentSerializingImpl.deserializeAttachmentData(fakeSave, mockDRM());
 		assertEquals(1, map.size());

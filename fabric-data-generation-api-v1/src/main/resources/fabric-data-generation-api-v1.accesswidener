@@ -197,7 +197,7 @@ transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerOrientableTrapdoor	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerTrapdoor	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerParentedTrapdoor	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
-transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerLog	(Lnet/minecraft/block/Block;)Lnet/minecraft/client/data/BlockStateModelGenerator$LogTexturePool;
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createLogTexturePool	(Lnet/minecraft/block/Block;)Lnet/minecraft/client/data/BlockStateModelGenerator$LogTexturePool;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerSimpleState	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerStateWithModelReference	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerTintableCross	(Lnet/minecraft/block/Block;Lnet/minecraft/client/data/BlockStateModelGenerator$CrossType;)V

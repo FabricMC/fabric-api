@@ -154,7 +154,7 @@ allprojects {
 	loom {
 		splitEnvironmentSourceSets()
 		mixin {
-			useLegacyMixinAp = true
+			useLegacyMixinAp = false
 		}
 	}
 

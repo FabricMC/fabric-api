@@ -62,4 +62,9 @@ abstract class ComponentMapBuilderMixin implements FabricComponentMapBuilder {
 		this.add(type, existing);
 		return existing;
 	}
+
+	@Override
+	public boolean contains(ComponentType<?> type) {
+		return this.components.containsKey(type);
+	}
 }

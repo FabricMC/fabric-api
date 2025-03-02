@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -427,7 +428,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 			throw new AssertionError("Failed to create screenshots directory", e);
 		}
 
-		String counterPrefix = options.counterPrefix ? "%04d_".formatted(screenshotCounter++) : "";
+		String counterPrefix = options.counterPrefix ? String.format(Locale.ROOT, "%04d_", screenshotCounter++) : "";
 		Path screenshotFile = destinationDir.resolve(counterPrefix + fileName + ".png");
 
 		try {

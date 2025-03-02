@@ -29,15 +29,15 @@ public class RegistryMapSerializer {
 	public static final int VERSION = 1;
 
 	public static Map<Identifier, Object2IntMap<Identifier>> fromNbt(NbtCompound nbt) {
-		NbtCompound mainNbt = nbt.getCompound("registries");
+		NbtCompound mainNbt = nbt.getCompound("registries").orElseThrow();
 		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();
 
 		for (String registryId : mainNbt.getKeys()) {
 			Object2IntMap<Identifier> idMap = new Object2IntLinkedOpenHashMap<>();
-			NbtCompound idNbt = mainNbt.getCompound(registryId);
+			NbtCompound idNbt = mainNbt.getCompound(registryId).orElseThrow();
 
 			for (String id : idNbt.getKeys()) {
-				idMap.put(Identifier.of(id), idNbt.getInt(id));
+				idMap.put(Identifier.of(id), idNbt.getInt(id, 0));
 			}
 
 			map.put(Identifier.of(registryId), idMap);

@@ -50,8 +50,8 @@ transitive-accessible class net/minecraft/client/model/ModelPart$Vertex
 transitive-accessible class net/minecraft/client/model/ModelPart$Quad
 
 # Creating custom render layers
-transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;ILnet/minecraft/client/gl/ShaderProgramLayer;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
-transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;IZZLnet/minecraft/client/gl/ShaderProgramLayer;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
+transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;ILnet/minecraft/client/gl/ShaderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
+transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;IZZLnet/minecraft/client/gl/ShaderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
 transitive-accessible class net/minecraft/client/render/RenderLayer$MultiPhase
 transitive-accessible class net/minecraft/client/render/RenderLayer$MultiPhaseParameters
 transitive-accessible class net/minecraft/client/render/RenderLayer$OutlineMode
@@ -272,8 +272,8 @@ transitive-accessible method net/minecraft/entity/decoration/DisplayEntity setGl
 transitive-accessible method net/minecraft/entity/decoration/DisplayEntity getDisplayHeight ()F
 transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$ItemDisplayEntity getItemStack ()Lnet/minecraft/item/ItemStack;
 transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$ItemDisplayEntity setItemStack (Lnet/minecraft/item/ItemStack;)V
-transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$ItemDisplayEntity setTransformationMode (Lnet/minecraft/item/ModelTransformationMode;)V
-transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$ItemDisplayEntity getTransformationMode ()Lnet/minecraft/item/ModelTransformationMode;
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$ItemDisplayEntity setItemDisplayContext (Lnet/minecraft/item/ItemDisplayContext;)V
+transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$ItemDisplayEntity getItemDisplayContext ()Lnet/minecraft/item/ItemDisplayContext;
 transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$BlockDisplayEntity getBlockState ()Lnet/minecraft/block/BlockState;
 transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$BlockDisplayEntity setBlockState (Lnet/minecraft/block/BlockState;)V
 transitive-accessible method net/minecraft/entity/decoration/DisplayEntity$TextDisplayEntity getText ()Lnet/minecraft/text/Text;
@@ -305,17 +305,13 @@ transitive-accessible field net/minecraft/client/render/RenderPhase DISABLE_LIGH
 transitive-accessible field net/minecraft/client/render/RenderPhase ENABLE_OVERLAY_COLOR Lnet/minecraft/client/render/RenderPhase$Overlay;
 transitive-accessible field net/minecraft/client/render/RenderPhase DISABLE_OVERLAY_COLOR Lnet/minecraft/client/render/RenderPhase$Overlay;
 transitive-accessible field net/minecraft/client/render/RenderPhase NO_LAYERING Lnet/minecraft/client/render/RenderPhase$Layering;
-transitive-accessible field net/minecraft/client/render/RenderPhase POLYGON_OFFSET_LAYERING Lnet/minecraft/client/render/RenderPhase$Layering;
 transitive-accessible field net/minecraft/client/render/RenderPhase VIEW_OFFSET_Z_LAYERING Lnet/minecraft/client/render/RenderPhase$Layering;
 transitive-accessible field net/minecraft/client/render/RenderPhase VIEW_OFFSET_Z_LAYERING_FORWARD Lnet/minecraft/client/render/RenderPhase$Layering;
-transitive-accessible field net/minecraft/client/render/RenderPhase WORLD_BORDER_LAYERING Lnet/minecraft/client/render/RenderPhase$Layering;
 transitive-accessible field net/minecraft/client/render/RenderPhase MAIN_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
-transitive-accessible field net/minecraft/client/render/RenderPhase LIGHT_TEXTURE_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase OUTLINE_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase TRANSLUCENT_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase PARTICLES_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase WEATHER_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
-transitive-accessible field net/minecraft/client/render/RenderPhase CLOUDS_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase ITEM_ENTITY_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase FULL_LINE_WIDTH Lnet/minecraft/client/render/RenderPhase$LineWidth;
 

@@ -65,13 +65,10 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 		matrices.translate(-camera.x, -camera.y, -camera.z);
 
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
 
 		VertexRendering.drawFilledBox(matrices, context.consumers().getBuffer(RenderLayer.getDebugFilledBox()), 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
 
 		matrices.pop();
-		RenderSystem.disableBlend();
 	}
 
 	@Override

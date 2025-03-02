@@ -65,9 +65,9 @@ public class AttachmentSerializingImpl {
 
 	@Nullable
 	public static IdentityHashMap<AttachmentType<?>, Object> deserializeAttachmentData(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		if (nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE)) {
+		if (nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY)) {
 			var attachments = new IdentityHashMap<AttachmentType<?>, Object>();
-			NbtCompound compound = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
+			NbtCompound compound = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElseThrow();
 
 			for (String key : compound.getKeys()) {
 				AttachmentType<?> type = AttachmentRegistryImpl.get(Identifier.of(key));

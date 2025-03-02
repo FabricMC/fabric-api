@@ -76,7 +76,7 @@ public class BlockEntityTests {
 
 			if (nbt != null && nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY)) {
 				// Note: this is a vanilla bug (it called createNbt, instead of the correct createComponentlessNbt)
-				throw context.createError("Packet NBT for " + entry + " had persistent data: " + nbt.asString());
+				throw context.createError("Packet NBT for " + entry + " had persistent data: " + nbt);
 			}
 		}
 

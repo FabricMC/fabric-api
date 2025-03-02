@@ -174,7 +174,7 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	 */
 	public static <T extends TransferVariant<?>> void readNbt(SingleVariantStorage<T> storage, Codec<T> codec, Supplier<T> fallback, NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		final RegistryOps<NbtElement> ops = wrapperLookup.getOps(NbtOps.INSTANCE);
-		final DataResult<T> result = codec.parse(ops, nbt.getCompound("variant"));
+		final DataResult<T> result = codec.parse(ops, nbt.getCompound("variant").orElseThrow());
 
 		if (result.error().isPresent()) {
 			LOGGER.debug("Failed to load an ItemVariant from NBT: {}", result.error().get());
@@ -183,7 +183,7 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 			storage.variant = result.result().get();
 		}
 
-		storage.amount = nbt.getLong("amount");
+		storage.amount = nbt.getLong("amount").orElseThrow();
 	}
 
 	/**

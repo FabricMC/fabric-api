@@ -35,7 +35,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtSizeTracker;
@@ -81,10 +80,10 @@ public class GameOptionsMixin {
 		if (Files.exists(trackerFile)) {
 			try {
 				NbtCompound data = NbtIo.readCompressed(trackerFile, NbtSizeTracker.ofUnlimitedBytes());
-				NbtList values = data.getList("values", NbtElement.STRING_TYPE);
+				NbtList values = data.getList("values").orElseThrow();
 
 				for (int i = 0; i < values.size(); i++) {
-					trackedPacks.add(values.getString(i));
+					trackedPacks.add(values.getString(i).orElseThrow());
 				}
 			} catch (IOException e) {
 				LOGGER.warn("[Fabric Resource Loader] Could not read " + trackerFile.toAbsolutePath(), e);

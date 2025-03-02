@@ -25,7 +25,7 @@ import net.minecraft.world.chunk.SerializedChunk;
 
 @Mixin(SerializedChunk.class)
 public class SerializedChunkMixin {
-	@Redirect(method = "readStructureReferences", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
+	@Redirect(method = "method_68295", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false))
 	private static void log(Logger logger, String msg, Object identifier, Object chunkPos) {
 		// Drop to debug log level.
 		logger.debug(msg, identifier, chunkPos);

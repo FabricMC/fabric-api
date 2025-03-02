@@ -43,7 +43,7 @@ abstract class ChunkMixin implements AttachmentTargetImpl {
 	public abstract ChunkPos getPos();
 
 	@Shadow
-	public abstract boolean needsSaving();
+	public abstract void markNeedsSaving();
 
 	@Override
 	public AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
@@ -52,7 +52,7 @@ abstract class ChunkMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_markChanged(AttachmentType<?> type) {
-		needsSaving();
+		markNeedsSaving();
 
 		if (type.isPersistent() && this.getStatus().equals(ChunkStatus.EMPTY)) {
 			AttachmentEntrypoint.LOGGER.warn(

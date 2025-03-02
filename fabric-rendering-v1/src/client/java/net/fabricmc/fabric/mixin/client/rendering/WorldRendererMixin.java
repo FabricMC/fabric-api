@@ -36,9 +36,9 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.Fog;
 import net.minecraft.client.render.FrameGraphBuilder;
+import net.minecraft.client.render.FramePass;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.RenderPass;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
@@ -153,7 +153,7 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;"))
 	private void beforeClouds(CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder) {
-		RenderPass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
+		FramePass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
 		framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(framebufferSet.mainFramebuffer);
 
 		afterTranslucentPass.setRenderer(() -> WorldRenderEvents.AFTER_TRANSLUCENT.invoker().afterTranslucent(context));

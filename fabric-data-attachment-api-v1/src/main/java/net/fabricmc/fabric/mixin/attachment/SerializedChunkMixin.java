@@ -26,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
@@ -55,8 +54,11 @@ abstract class SerializedChunkMixin {
 			return;
 		}
 
-		if (nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY, NbtElement.COMPOUND_TYPE)) {
-			((SerializedChunkMixin) (Object) serializer).attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
+		//noinspection SimplifyOptionalCallChains
+		NbtCompound attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
+
+		if (attachmentNbtData != null) {
+			((SerializedChunkMixin) (Object) serializer).attachmentNbtData = attachmentNbtData;
 		}
 	}
 
@@ -75,7 +77,13 @@ abstract class SerializedChunkMixin {
 	private static void storeAttachmentNbtData(ServerWorld world, Chunk chunk, CallbackInfoReturnable<SerializedChunk> cir) {
 		var nbt = new NbtCompound();
 		((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(nbt, world.getRegistryManager());
-		((SerializedChunkMixin) (Object) cir.getReturnValue()).attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
+
+		//noinspection SimplifyOptionalCallChains
+		NbtCompound attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
+
+		if (attachmentNbtData != null) {
+			((SerializedChunkMixin) (Object) cir.getReturnValue()).attachmentNbtData = attachmentNbtData;
+		}
 	}
 
 	@Inject(method = "serialize", at = @At("RETURN"))
