@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.model.loading.v1;
+package net.fabricmc.fabric.api.client.model.loading.v1.wrapper;
 
 import java.util.function.Predicate;
 
