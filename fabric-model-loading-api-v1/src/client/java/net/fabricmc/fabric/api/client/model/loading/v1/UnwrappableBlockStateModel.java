@@ -20,25 +20,25 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BlockStateModel;
 
 /**
- * An interface to be implemented by {@linkplain BakedModel block models} that wrap and replace another model, such a
- * {@link WrapperBakedModel}. This allows mods to access the wrapped model without having to know the exact type of the
- * wrapper model.
+ * An interface to be implemented by {@linkplain BlockStateModel block models} that wrap and replace another model, such
+ * as {@link WrapperBlockStateModel}. This allows mods to access the wrapped model without having to know the exact type of
+ * the wrapper model.
  *
- * <p>If you need to access data stored in one of your {@link BakedModel} subclasses, and you would normally access the
- * model by its identifier and then cast it: call {@link #unwrap(BakedModel, Predicate)} on the model first, in case
- * another mod is wrapping your model to alter its rendering.
+ * <p>If you need to access data stored in one of your {@link BlockStateModel} subclasses, and you would normally access
+ * the model by its identifier and then cast it: call {@link #unwrap(BlockStateModel, Predicate)} on the model first, in
+ * case another mod is wrapping your model to alter its rendering.
  */
-public interface UnwrappableBakedModel {
+public interface UnwrappableBlockStateModel {
 	/**
 	 * Return the wrapped model, if there is one at the moment, or {@code null} otherwise.
 	 *
 	 * <p>If there are multiple layers of wrapping, this method does not necessarily return the innermost model.
 	 */
 	@Nullable
-	default BakedModel getWrappedModel() {
+	default BlockStateModel getWrappedModel() {
 		return null;
 	}
 
@@ -50,10 +50,10 @@ public interface UnwrappableBakedModel {
 	 * {@code model -> model instanceof MyCustomBakedModel} as the condition.
 	 */
 	@Nullable
-	static BakedModel unwrap(BakedModel model, Predicate<BakedModel> condition) {
+	static BlockStateModel unwrap(BlockStateModel model, Predicate<BlockStateModel> condition) {
 		while (!condition.test(model)) {
-			if (model instanceof UnwrappableBakedModel wrapper) {
-				BakedModel wrapped = wrapper.getWrappedModel();
+			if (model instanceof UnwrappableBlockStateModel wrapper) {
+				BlockStateModel wrapped = wrapper.getWrappedModel();
 
 				if (wrapped == null) {
 					return null;
@@ -73,9 +73,9 @@ public interface UnwrappableBakedModel {
 	/**
 	 * Fully unwrap a model, i.e. return the innermost model.
 	 */
-	static BakedModel unwrap(BakedModel model) {
-		while (model instanceof UnwrappableBakedModel wrapper) {
-			BakedModel wrapped = wrapper.getWrappedModel();
+	static BlockStateModel unwrap(BlockStateModel model) {
+		while (model instanceof UnwrappableBlockStateModel wrapper) {
+			BlockStateModel wrapped = wrapper.getWrappedModel();
 
 			if (wrapped == null) {
 				return model;

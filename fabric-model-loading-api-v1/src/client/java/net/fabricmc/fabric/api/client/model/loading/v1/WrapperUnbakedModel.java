@@ -69,7 +69,7 @@ public abstract class WrapperUnbakedModel implements UnbakedModel {
 
 	@Override
 	@Nullable
-	public Identifier parentId() {
-		return wrapped.parentId();
+	public Identifier parent() {
+		return wrapped.parent();
 	}
 }

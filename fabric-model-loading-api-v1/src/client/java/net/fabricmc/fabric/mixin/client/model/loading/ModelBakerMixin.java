@@ -39,9 +39,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedSimpleModel;
 import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
 import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.util.Identifier;
@@ -69,25 +69,25 @@ abstract class ModelBakerMixin {
 	}
 
 	@ModifyArg(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/FutureModel;newTask(Ljava/util/Map;Ljava/util/function/BiFunction;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0), index = 1)
-	private BiFunction<BlockState, BakedModel.GroupableModel, BakedModel> hookBlockModelBake(BiFunction<BlockState, BakedModel.GroupableModel, BakedModel> bifunction) {
+	private BiFunction<BlockState, BlockStateModel.UnbakedGrouped, BlockStateModel> hookBlockModelBake(BiFunction<BlockState, BlockStateModel.UnbakedGrouped, BlockStateModel> bifunction) {
 		if (fabric_eventDispatcher == null) {
 			return bifunction;
 		}
 
 		return (state, unbakedModel) -> {
 			ModelLoadingEventDispatcher.CURRENT.set(fabric_eventDispatcher);
-			BakedModel model = bifunction.apply(state, unbakedModel);
+			BlockStateModel model = bifunction.apply(state, unbakedModel);
 			ModelLoadingEventDispatcher.CURRENT.remove();
 			return model;
 		};
 	}
 
-	@WrapOperation(method = "method_68018", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BakedModel$GroupableModel.bake(Lnet/minecraft/client/render/model/Baker;)Lnet/minecraft/client/render/model/BakedModel;"))
-	private static BakedModel wrapBlockModelBake(BakedModel.GroupableModel unbakedModel, Baker baker, Operation<BakedModel> operation, @Local BlockState state) {
+	@WrapOperation(method = "method_68018", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BlockStateModel$UnbakedGrouped.getModel(Lnet/minecraft/block/BlockState;Lnet/minecraft/client/render/model/Baker;)Lnet/minecraft/client/render/model/BlockStateModel;"))
+	private static BlockStateModel wrapBlockModelBake(BlockStateModel.UnbakedGrouped unbakedModel, BlockState state, Baker baker, Operation<BlockStateModel> operation) {
 		ModelLoadingEventDispatcher eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
 
 		if (eventDispatcher == null) {
-			return operation.call(unbakedModel, baker);
+			return operation.call(unbakedModel, state, baker);
 		}
 
 		return eventDispatcher.modifyBlockModel(unbakedModel, state, baker, operation);

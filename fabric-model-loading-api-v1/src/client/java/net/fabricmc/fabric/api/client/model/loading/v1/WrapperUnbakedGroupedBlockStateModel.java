@@ -17,35 +17,35 @@
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.BlockStateModel;
 
 /**
- * A simple implementation of {@link BakedModel.GroupableModel} that delegates all method calls to the {@link #wrapped}
- * field. Implementations must set the {@link #wrapped} field somehow.
+ * A simple implementation of {@link BlockStateModel.UnbakedGrouped} that delegates all method calls to the
+ * {@link #wrapped} field. Implementations must set the {@link #wrapped} field somehow.
  */
-public abstract class WrapperGroupableModel implements BakedModel.GroupableModel {
-	protected BakedModel.GroupableModel wrapped;
+public abstract class WrapperUnbakedGroupedBlockStateModel implements BlockStateModel.UnbakedGrouped {
+	protected BlockStateModel.UnbakedGrouped wrapped;
 
-	protected WrapperGroupableModel() {
+	protected WrapperUnbakedGroupedBlockStateModel() {
 	}
 
-	protected WrapperGroupableModel(BakedModel.GroupableModel wrapped) {
+	protected WrapperUnbakedGroupedBlockStateModel(BlockStateModel.UnbakedGrouped wrapped) {
 		this.wrapped = wrapped;
 	}
 
 	@Override
-	public void resolve(Resolver resolver) {
-		wrapped.resolve(resolver);
-	}
-
-	@Override
-	public BakedModel bake(Baker baker) {
-		return wrapped.bake(baker);
+	public BlockStateModel getModel(BlockState state, Baker baker) {
+		return wrapped.getModel(state, baker);
 	}
 
 	@Override
 	public Object getEqualityGroup(BlockState state) {
 		return wrapped.getEqualityGroup(state);
+	}
+
+	@Override
+	public void resolve(Resolver resolver) {
+		wrapped.resolve(resolver);
 	}
 }

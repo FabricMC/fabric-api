@@ -23,8 +23,8 @@ import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ModelTransformationMode;
 
 /**
  * A simple implementation of {@link ItemModel} that delegates all method calls to the {@link #wrapped} field.
@@ -41,7 +41,7 @@ public abstract class WrapperBakedItemModel implements ItemModel {
 	}
 
 	@Override
-	public void update(ItemRenderState state, ItemStack stack, ItemModelManager resolver, ModelTransformationMode transformationMode, @Nullable ClientWorld world, @Nullable LivingEntity user, int seed) {
-		wrapped.update(state, stack, resolver, transformationMode, world, user, seed);
+	public void update(ItemRenderState state, ItemStack stack, ItemModelManager resolver, ItemDisplayContext displayContext, @Nullable ClientWorld world, @Nullable LivingEntity user, int seed) {
+		wrapped.update(state, stack, resolver, displayContext, world, user, seed);
 	}
 }

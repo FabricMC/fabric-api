@@ -16,17 +16,15 @@
 
 package net.fabricmc.fabric.test.model.loading;
 
-import java.util.List;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CropBlock;
 import net.minecraft.block.HorizontalConnectingBlock;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.model.MissingModel;
+import net.minecraft.client.render.model.SimpleBlockStateModel;
 import net.minecraft.client.render.model.json.ModelVariant;
-import net.minecraft.client.render.model.json.WeightedUnbakedModel;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
@@ -54,8 +52,8 @@ public class ModelTestModClient implements ClientModInitializer {
 
 				Identifier wheatStage0Id = Identifier.ofVanilla("block/wheat_stage0");
 				Identifier wheatStage7Id = Identifier.ofVanilla("block/wheat_stage7");
-				BakedModel.GroupableModel wheatStage0Model = simpleGroupableModel(wheatStage0Id);
-				BakedModel.GroupableModel wheatStage7Model = simpleGroupableModel(wheatStage7Id);
+				BlockStateModel.UnbakedGrouped wheatStage0Model = simpleUnbakedGroupedBlockStateModel(wheatStage0Id);
+				BlockStateModel.UnbakedGrouped wheatStage7Model = simpleUnbakedGroupedBlockStateModel(wheatStage7Id);
 
 				for (int age = 0; age <= 6; age++) {
 					context.setModel(state.with(CropBlock.AGE, age), wheatStage0Model);
@@ -90,7 +88,7 @@ public class ModelTestModClient implements ClientModInitializer {
 			BlockState westOakFence = Blocks.OAK_FENCE.getDefaultState().with(HorizontalConnectingBlock.WEST, true);
 			pluginContext.modifyBlockModelOnLoad().register(ModelModifier.OVERRIDE_PHASE, (model, context) -> {
 				if (context.state() == westOakFence) {
-					return simpleGroupableModel(MissingModel.ID);
+					return simpleUnbakedGroupedBlockStateModel(MissingModel.ID);
 				}
 
 				return model;
@@ -120,8 +118,8 @@ public class ModelTestModClient implements ClientModInitializer {
 		return Identifier.of(ID, path);
 	}
 
-	private static BakedModel.GroupableModel simpleGroupableModel(Identifier model) {
-		return new WeightedUnbakedModel(List.of(new ModelVariant(model)));
+	private static BlockStateModel.UnbakedGrouped simpleUnbakedGroupedBlockStateModel(Identifier model) {
+		return new SimpleBlockStateModel.Unbaked(new ModelVariant(model)).cached();
 	}
 
 	//private static class DownQuadRemovingModel extends WrapperBakedModel implements FabricBakedModel {

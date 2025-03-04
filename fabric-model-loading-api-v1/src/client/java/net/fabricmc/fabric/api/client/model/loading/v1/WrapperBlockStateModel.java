@@ -20,36 +20,34 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.BlockModelPart;
+import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 
 // TODO: FRAPI overrides
 /**
- * A simple implementation of {@link BakedModel} that delegates all method calls to the {@link #wrapped} field.
+ * A simple implementation of {@link BlockStateModel} that delegates all method calls to the {@link #wrapped} field.
  * Implementations must set the {@link #wrapped} field somehow.
  */
-public abstract class WrapperBakedModel implements BakedModel, UnwrappableBakedModel {
-	protected BakedModel wrapped;
+public abstract class WrapperBlockStateModel implements BlockStateModel, UnwrappableBlockStateModel {
+	protected BlockStateModel wrapped;
 
-	protected WrapperBakedModel() {
+	protected WrapperBlockStateModel() {
 	}
 
-	protected WrapperBakedModel(BakedModel wrapped) {
+	protected WrapperBlockStateModel(BlockStateModel wrapped) {
 		this.wrapped = wrapped;
 	}
 
 	@Override
-	public List<BakedQuad> getQuads(BlockState state, @Nullable Direction face, Random random) {
-		return wrapped.getQuads(state, face, random);
+	public void addParts(Random random, List<BlockModelPart> parts) {
+		wrapped.addParts(random, parts);
 	}
 
 	@Override
-	public boolean useAmbientOcclusion() {
-		return wrapped.useAmbientOcclusion();
+	public List<BlockModelPart> getParts(Random random) {
+		return wrapped.getParts(random);
 	}
 
 	@Override
@@ -59,7 +57,7 @@ public abstract class WrapperBakedModel implements BakedModel, UnwrappableBakedM
 
 	@Override
 	@Nullable
-	public BakedModel getWrappedModel() {
+	public BlockStateModel getWrappedModel() {
 		return wrapped;
 	}
 }

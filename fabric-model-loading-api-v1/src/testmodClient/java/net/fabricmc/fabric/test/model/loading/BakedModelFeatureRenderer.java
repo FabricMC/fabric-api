@@ -30,28 +30,28 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 public class BakedModelFeatureRenderer<S extends LivingEntityRenderState, M extends EntityModel<S>> extends FeatureRenderer<S, M> {
-	private final Supplier<BakedModel> modelSupplier;
+	private final Supplier<BlockStateModel> modelSupplier;
 
-	public BakedModelFeatureRenderer(FeatureRendererContext<S, M> context, Supplier<BakedModel> modelSupplier) {
+	public BakedModelFeatureRenderer(FeatureRendererContext<S, M> context, Supplier<BlockStateModel> modelSupplier) {
 		super(context);
 		this.modelSupplier = modelSupplier;
 	}
 
 	@Override
 	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, S state, float limbAngle, float limbDistance) {
-		BakedModel model = modelSupplier.get();
+		BlockStateModel model = modelSupplier.get();
 		VertexConsumer vertices = vertexConsumers.getBuffer(TexturedRenderLayers.getEntityCutout());
 		matrices.push();
 		matrices.multiply(new Quaternionf(new AxisAngle4f(state.age * 0.07F - state.bodyYaw * MathHelper.RADIANS_PER_DEGREE, 0, 1, 0)));
 		matrices.scale(-0.75F, -0.75F, 0.75F);
 		float aboveHead = (float) (Math.sin(state.age * 0.08F)) * 0.5F + 0.5F;
 		matrices.translate(-0.5F, 0.75F + aboveHead, -0.5F);
-		MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(matrices.peek(), vertices, null, model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV);
+		MinecraftClient.getInstance().getBlockRenderManager().getModelRenderer().render(matrices.peek(), vertices, model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV);
 		matrices.pop();
 	}
 }

@@ -21,8 +21,8 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.model.ResolvableModel;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
@@ -115,7 +115,7 @@ public final class ModelModifier {
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
 		 * @see ModelLoadingPlugin.Context#modifyBlockModelOnLoad
 		 */
-		BakedModel.GroupableModel modifyModelOnLoad(BakedModel.GroupableModel model, Context context);
+		BlockStateModel.UnbakedGrouped modifyModelOnLoad(BlockStateModel.UnbakedGrouped model, Context context);
 
 		/**
 		 * The context for an on load block model modification event.
@@ -139,7 +139,7 @@ public final class ModelModifier {
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
 		 * @see ModelLoadingPlugin.Context#modifyBlockModelBeforeBake
 		 */
-		BakedModel.GroupableModel modifyModelBeforeBake(BakedModel.GroupableModel model, Context context);
+		BlockStateModel.UnbakedGrouped modifyModelBeforeBake(BlockStateModel.UnbakedGrouped model, Context context);
 
 		/**
 		 * The context for a before bake block model modification event.
@@ -172,7 +172,7 @@ public final class ModelModifier {
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
 		 * @see ModelLoadingPlugin.Context#modifyBlockModelAfterBake
 		 */
-		BakedModel modifyModelAfterBake(BakedModel model, Context context);
+		BlockStateModel modifyModelAfterBake(BlockStateModel model, Context context);
 
 		/**
 		 * The context for an after bake block model modification event.
@@ -187,7 +187,7 @@ public final class ModelModifier {
 			/**
 			 * The unbaked model that is being baked.
 			 */
-			BakedModel.GroupableModel sourceModel();
+			BlockStateModel.UnbakedGrouped sourceModel();
 
 			/**
 			 * The baker being used to bake this model. It can be used to

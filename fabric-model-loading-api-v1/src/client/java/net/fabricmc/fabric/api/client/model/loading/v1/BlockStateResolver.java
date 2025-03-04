@@ -20,12 +20,12 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BlockStateModel;
 
 /**
  * Block state resolvers are responsible for mapping each {@link BlockState} of a block to a
- * {@link BakedModel.GroupableModel}. They replace the {@code blockstates/} JSON files. One block can be mapped to only
- * one block state resolver; multiple resolvers will not receive the same block.
+ * {@link BlockStateModel.UnbakedGrouped}. They replace the {@code blockstates/} JSON files. One block can be mapped to
+ * only one block state resolver; multiple resolvers will not receive the same block.
  *
  * <p>Block state resolvers can be used to create custom block state formats or dynamically resolve block state models.
  *
@@ -65,6 +65,6 @@ public interface BlockStateResolver {
 		 * @param state the block state for which this model should be used
 		 * @param model the unbaked model for this block state
 		 */
-		void setModel(BlockState state, BakedModel.GroupableModel model);
+		void setModel(BlockState state, BlockStateModel.UnbakedGrouped model);
 	}
 }

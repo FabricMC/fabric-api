@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.model.BlockStatesLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
@@ -77,7 +77,7 @@ public class ModelLoadingEventDispatcher {
 	}
 
 	public BlockStatesLoader.LoadedModels modifyBlockModelsOnLoad(BlockStatesLoader.LoadedModels models) {
-		Map<BlockState, BakedModel.GroupableModel> map = models.models();
+		Map<BlockState, BlockStateModel.UnbakedGrouped> map = models.models();
 
 		if (!(map instanceof HashMap)) {
 			map = new HashMap<>(map);
@@ -90,17 +90,17 @@ public class ModelLoadingEventDispatcher {
 		return models;
 	}
 
-	private void putResolvedBlockStates(Map<BlockState, BakedModel.GroupableModel> map) {
+	private void putResolvedBlockStates(Map<BlockState, BlockStateModel.UnbakedGrouped> map) {
 		pluginContext.blockStateResolvers.forEach((block, resolver) -> {
 			resolveBlockStates(resolver, block, map::put);
 		});
 	}
 
-	private void resolveBlockStates(BlockStateResolver resolver, Block block, BiConsumer<BlockState, BakedModel.GroupableModel> output) {
+	private void resolveBlockStates(BlockStateResolver resolver, Block block, BiConsumer<BlockState, BlockStateModel.UnbakedGrouped> output) {
 		BlockStateResolverContext context = blockStateResolverContext;
 		context.prepare(block);
 
-		Reference2ReferenceMap<BlockState, BakedModel.GroupableModel> resolvedModels = context.models;
+		Reference2ReferenceMap<BlockState, BlockStateModel.UnbakedGrouped> resolvedModels = context.models;
 		ImmutableList<BlockState> allStates = block.getStateManager().getStates();
 		boolean thrown = false;
 
@@ -119,7 +119,7 @@ public class ModelLoadingEventDispatcher {
 			} else {
 				for (BlockState state : allStates) {
 					@Nullable
-					BakedModel.GroupableModel model = resolvedModels.get(state);
+					BlockStateModel.UnbakedGrouped model = resolvedModels.get(state);
 
 					if (model == null) {
 						LOGGER.error("Block state resolver did not provide a model for state {} in block {}. Using missing model.", state, block);
@@ -133,15 +133,15 @@ public class ModelLoadingEventDispatcher {
 		resolvedModels.clear();
 	}
 
-	private BakedModel.GroupableModel modifyBlockModelOnLoad(BakedModel.GroupableModel model, BlockState state) {
+	private BlockStateModel.UnbakedGrouped modifyBlockModelOnLoad(BlockStateModel.UnbakedGrouped model, BlockState state) {
 		onLoadBlockModifierContext.prepare(state);
 		return pluginContext.modifyBlockModelOnLoad().invoker().modifyModelOnLoad(model, onLoadBlockModifierContext);
 	}
 
-	public BakedModel modifyBlockModel(BakedModel.GroupableModel unbakedModel, BlockState state, Baker baker, Operation<BakedModel> bakeOperation) {
+	public BlockStateModel modifyBlockModel(BlockStateModel.UnbakedGrouped unbakedModel, BlockState state, Baker baker, Operation<BlockStateModel> bakeOperation) {
 		BakeBlockModifierContext modifierContext = new BakeBlockModifierContext(state, baker);
 		unbakedModel = pluginContext.modifyBlockModelBeforeBake().invoker().modifyModelBeforeBake(unbakedModel, modifierContext);
-		BakedModel model = bakeOperation.call(unbakedModel, baker);
+		BlockStateModel model = bakeOperation.call(unbakedModel, state, baker);
 		modifierContext.prepareAfterBake(unbakedModel);
 		return pluginContext.modifyBlockModelAfterBake().invoker().modifyModelAfterBake(model, modifierContext);
 	}
@@ -156,7 +156,7 @@ public class ModelLoadingEventDispatcher {
 
 	private static class BlockStateResolverContext implements BlockStateResolver.Context {
 		private Block block;
-		private final Reference2ReferenceMap<BlockState, BakedModel.GroupableModel> models = new Reference2ReferenceOpenHashMap<>();
+		private final Reference2ReferenceMap<BlockState, BlockStateModel.UnbakedGrouped> models = new Reference2ReferenceOpenHashMap<>();
 
 		private void prepare(Block block) {
 			this.block = block;
@@ -169,7 +169,7 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		@Override
-		public void setModel(BlockState state, BakedModel.GroupableModel model) {
+		public void setModel(BlockState state, BlockStateModel.UnbakedGrouped model) {
 			Objects.requireNonNull(state, "state cannot be null");
 			Objects.requireNonNull(model, "model cannot be null");
 
@@ -212,14 +212,14 @@ public class ModelLoadingEventDispatcher {
 	private static class BakeBlockModifierContext implements ModelModifier.BeforeBakeBlock.Context, ModelModifier.AfterBakeBlock.Context {
 		private final BlockState state;
 		private final Baker baker;
-		private BakedModel.GroupableModel sourceModel;
+		private BlockStateModel.UnbakedGrouped sourceModel;
 
 		private BakeBlockModifierContext(BlockState state, Baker baker) {
 			this.state = state;
 			this.baker = baker;
 		}
 
-		private void prepareAfterBake(BakedModel.GroupableModel sourceModel) {
+		private void prepareAfterBake(BlockStateModel.UnbakedGrouped sourceModel) {
 			this.sourceModel = sourceModel;
 		}
 
@@ -234,7 +234,7 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		@Override
-		public BakedModel.GroupableModel sourceModel() {
+		public BlockStateModel.UnbakedGrouped sourceModel() {
 			return sourceModel;
 		}
 	}
