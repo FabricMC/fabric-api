@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.client.model.loading.v1.wrapper;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.render.model.BlockModelPart;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.texture.Sprite;
@@ -30,7 +28,7 @@ import net.minecraft.util.math.random.Random;
  * A simple implementation of {@link BlockStateModel} that delegates all method calls to the {@link #wrapped} field.
  * Implementations must set the {@link #wrapped} field somehow.
  */
-public abstract class WrapperBlockStateModel implements BlockStateModel, UnwrappableBlockStateModel {
+public abstract class WrapperBlockStateModel implements BlockStateModel {
 	protected BlockStateModel wrapped;
 
 	protected WrapperBlockStateModel() {
@@ -53,11 +51,5 @@ public abstract class WrapperBlockStateModel implements BlockStateModel, Unwrapp
 	@Override
 	public Sprite particleSprite() {
 		return wrapped.particleSprite();
-	}
-
-	@Override
-	@Nullable
-	public BlockStateModel getWrappedModel() {
-		return wrapped;
 	}
 }
