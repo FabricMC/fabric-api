@@ -85,4 +85,9 @@ jobs:
           distribution: 'microsoft'
           java-version: '21'
       - run: ./gradlew generateResources --stacktrace --warning-mode=fail
+      - run: git --no-pager diff > build/gen_result.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 'gen_result'
+          path: 'build/gen_result.txt'
       - run: if [ -n "$(git status --porcelain)" ]; then exit 1; fi
