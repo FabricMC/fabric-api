@@ -16,13 +16,9 @@
 
 package net.fabricmc.fabric.mixin.client.model.loading;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -42,11 +38,9 @@ import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.model.BakedSimpleModel;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
 import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.client.model.loading.BakedModelsHooks;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 
 @Mixin(ModelBaker.class)
@@ -100,19 +94,5 @@ abstract class ModelBakerMixin {
 		}
 
 		return fabric_eventDispatcher.modifyItemModel(unbakedModel, itemId, bakeContext, operation);
-	}
-
-	@ModifyReturnValue(method = "bake", at = @At("RETURN"))
-	private CompletableFuture<ModelBaker.BakedModels> onReturnBake(CompletableFuture<ModelBaker.BakedModels> original, ErrorCollectingSpriteGetter spriteGetter, Executor executor) {
-		if (fabric_eventDispatcher == null) {
-			return original;
-		}
-
-		Map<Identifier, BakedSimpleModel> extraModels = new HashMap<>();
-		fabric_eventDispatcher.forEachExtraModel(id -> extraModels.put(id, simpleModels.get(id)));
-		return original.thenApply(models -> {
-			((BakedModelsHooks) (Object) models).fabric_setExtraModels(extraModels);
-			return models;
-		});
 	}
 }

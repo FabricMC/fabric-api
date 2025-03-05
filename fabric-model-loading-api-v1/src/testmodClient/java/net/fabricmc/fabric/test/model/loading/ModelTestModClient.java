@@ -44,7 +44,7 @@ public class ModelTestModClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ModelLoadingPlugin.register(pluginContext -> {
-			pluginContext.addModels(HALF_RED_SAND_MODEL_ID);
+			//pluginContext.addModels(HALF_RED_SAND_MODEL_ID);
 
 			// Make wheat stages 1->6 use the same model as stage 0. This can be done with resource packs, this is just a test.
 			pluginContext.registerBlockStateResolver(Blocks.WHEAT, context -> {

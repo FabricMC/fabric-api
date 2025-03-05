@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableList;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -64,10 +63,6 @@ public class ModelLoadingEventDispatcher {
 				LOGGER.error("Failed to initialize model loading plugin", exception);
 			}
 		}
-	}
-
-	public void forEachExtraModel(Consumer<Identifier> extraModelConsumer) {
-		pluginContext.extraModels.forEach(extraModelConsumer);
 	}
 
 	public Map<Identifier, UnbakedModel> modifyModelsOnLoad(Map<Identifier, UnbakedModel> models) {

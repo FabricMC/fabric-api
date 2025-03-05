@@ -16,13 +16,10 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
-import java.util.Collection;
 import java.util.IdentityHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +38,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingPluginContextImpl.class);
 
-	final Set<Identifier> extraModels = new LinkedHashSet<>();
 	final Map<Block, BlockStateResolver> blockStateResolvers = new IdentityHashMap<>();
 
 	private static final Identifier[] MODEL_MODIFIER_PHASES = new Identifier[] { ModelModifier.OVERRIDE_PHASE, ModelModifier.DEFAULT_PHASE, ModelModifier.WRAP_PHASE, ModelModifier.WRAP_LAST_PHASE };
@@ -112,18 +108,6 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 
 		return model;
 	}, MODEL_MODIFIER_PHASES);
-
-	@Override
-	public void addModels(Identifier... ids) {
-		for (Identifier id : ids) {
-			extraModels.add(id);
-		}
-	}
-
-	@Override
-	public void addModels(Collection<? extends Identifier> ids) {
-		extraModels.addAll(ids);
-	}
 
 	@Override
 	public void registerBlockStateResolver(Block block, BlockStateResolver resolver) {

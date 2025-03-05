@@ -6,7 +6,6 @@
     "BakedModelManagerMixin",
     "JsonUnbakedModelAccessor",
     "JsonUnbakedModelMixin",
-    "ModelBakerBakedModelsMixin",
     "ModelBakerMixin"
   ],
   "injectors": {

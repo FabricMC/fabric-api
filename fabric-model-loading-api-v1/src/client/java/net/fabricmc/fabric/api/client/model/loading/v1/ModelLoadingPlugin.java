@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -24,7 +23,6 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.block.Block;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
@@ -60,18 +58,6 @@ public interface ModelLoadingPlugin {
 
 	@ApiStatus.NonExtendable
 	interface Context {
-		/**
-		 * Adds one or more models that will be loaded, baked, and made available through
-		 * {@link FabricBakedModelManager#getModel(Identifier)}.
-		 */
-		void addModels(Identifier... ids);
-
-		/**
-		 * Adds multiple models that will be loaded, baked, and made available through
-		 * {@link FabricBakedModelManager#getModel(Identifier)}.
-		 */
-		void addModels(Collection<? extends Identifier> ids);
-
 		/**
 		 * Registers a block state resolver for a block.
 		 *
