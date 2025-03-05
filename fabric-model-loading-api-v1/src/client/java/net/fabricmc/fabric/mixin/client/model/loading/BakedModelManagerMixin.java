@@ -40,6 +40,7 @@ import net.minecraft.client.render.model.BakedSimpleModel;
 import net.minecraft.client.render.model.BlockStatesLoader;
 import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.client.render.model.ReferencedModelsCollector;
+import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
@@ -82,6 +83,11 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 			eventDispatcherFuture = null;
 			return v;
 		});
+	}
+
+	@ModifyExpressionValue(method = "reload", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BakedModelManager.reloadModels(Lnet/minecraft/resource/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
+	private CompletableFuture<Map<Identifier, UnbakedModel>> hookModels(CompletableFuture<Map<Identifier, UnbakedModel>> modelsFuture) {
+		return modelsFuture.thenCombine(eventDispatcherFuture, (models, eventDispatcher) -> eventDispatcher.modifyModelsOnLoad(models));
 	}
 
 	@ModifyExpressionValue(method = "reload", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BlockStatesLoader.load(Lnet/minecraft/resource/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))

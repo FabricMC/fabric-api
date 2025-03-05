@@ -70,8 +70,16 @@ public class ModelLoadingEventDispatcher {
 		pluginContext.extraModels.forEach(extraModelConsumer);
 	}
 
-	@Nullable
-	public UnbakedModel modifyModelOnLoad(@Nullable UnbakedModel model, Identifier id) {
+	public Map<Identifier, UnbakedModel> modifyModelsOnLoad(Map<Identifier, UnbakedModel> models) {
+		if (!(models instanceof HashMap)) {
+			models = new HashMap<>(models);
+		}
+
+		models.replaceAll(this::modifyModelOnLoad);
+		return models;
+	}
+
+	private UnbakedModel modifyModelOnLoad(Identifier id, UnbakedModel model) {
 		onLoadModifierContext.prepare(id);
 		return pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, onLoadModifierContext);
 	}
@@ -85,7 +93,7 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		putResolvedBlockStates(map);
-		map.replaceAll((state, model) -> modifyBlockModelOnLoad(model, state));
+		map.replaceAll(this::modifyBlockModelOnLoad);
 
 		return models;
 	}
@@ -133,7 +141,7 @@ public class ModelLoadingEventDispatcher {
 		resolvedModels.clear();
 	}
 
-	private BlockStateModel.UnbakedGrouped modifyBlockModelOnLoad(BlockStateModel.UnbakedGrouped model, BlockState state) {
+	private BlockStateModel.UnbakedGrouped modifyBlockModelOnLoad(BlockState state, BlockStateModel.UnbakedGrouped model) {
 		onLoadBlockModifierContext.prepare(state);
 		return pluginContext.modifyBlockModelOnLoad().invoker().modifyModelOnLoad(model, onLoadBlockModifierContext);
 	}

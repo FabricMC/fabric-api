@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.item.model.ItemModel;
@@ -76,13 +75,6 @@ public final class ModelModifier {
 		/**
 		 * This handler is invoked to allow modification of an unbaked model right after it is first loaded.
 		 *
-		 * <p>If the given model is {@code null}, its corresponding identifier was requested during
-		 * {@linkplain ResolvableModel#resolve resolution} but the model was not loaded normally; i.e. through a JSON
-		 * file, possibly because that file did not exist. If a non-{@code null} model is returned in this case,
-		 * resolution will continue without warnings or errors. This callback can return a {@code null} model, which
-		 * has the same meaning as described earlier, so it is unlikely that an implementor should need to return
-		 * {@code null} unless directly returning the given model.
-		 *
 		 * <p>For further information, see the docs of {@link ModelLoadingPlugin.Context#modifyModelOnLoad()}.
 		 *
 		 * @param model the current unbaked model instance
@@ -90,8 +82,7 @@ public final class ModelModifier {
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
 		 * @see ModelLoadingPlugin.Context#modifyModelOnLoad
 		 */
-		@Nullable
-		UnbakedModel modifyModelOnLoad(@Nullable UnbakedModel model, Context context);
+		UnbakedModel modifyModelOnLoad(UnbakedModel model, Context context);
 
 		/**
 		 * The context for an on load model modification event.
