@@ -189,6 +189,10 @@ public class FabricRegistryInit implements ModInitializer {
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced by rawID.
+		RegistryAttributeHolder.get(Registries.DATA_COMPONENT_PREDICATE_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Synced by rawID.
 		RegistryAttributeHolder.get(Registries.MAP_DECORATION_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
