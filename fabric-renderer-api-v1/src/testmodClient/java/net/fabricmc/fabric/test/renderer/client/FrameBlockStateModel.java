@@ -16,26 +16,21 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.BlockModelPart;
+import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.EmptyBlockRenderView;
 
 import net.fabricmc.fabric.api.blockview.v2.FabricBlockView;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -45,15 +40,14 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 
-public class FrameBakedModel implements BakedModel {
+public class FrameBlockStateModel implements BlockStateModel {
 	private final Mesh frameMesh;
 	private final Sprite frameSprite;
 	private final RenderMaterial translucentMaterial;
 	private final RenderMaterial translucentEmissiveMaterial;
 
-	public FrameBakedModel(Mesh frameMesh, Sprite frameSprite) {
+	public FrameBlockStateModel(Mesh frameMesh, Sprite frameSprite) {
 		this.frameMesh = frameMesh;
 		this.frameSprite = frameSprite;
 
@@ -69,7 +63,7 @@ public class FrameBakedModel implements BakedModel {
 	}
 
 	@Override
-	public void emitBlockQuads(QuadEmitter emitter, BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, Predicate<@Nullable Direction> cullTest) {
+	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
 		// Emit our frame mesh
 		frameMesh.outputTo(emitter);
 
@@ -79,7 +73,7 @@ public class FrameBakedModel implements BakedModel {
 		}
 
 		BlockState innerState = mimickedBlock.getDefaultState();
-		BakedModel innerModel = MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState);
+		BlockStateModel innerModel = MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState);
 
 		// Now, we emit a transparent scaled-down version of the inner model
 		// Try both emissive and non-emissive versions of the translucent material
@@ -88,23 +82,7 @@ public class FrameBakedModel implements BakedModel {
 		// Let's push a transform to scale the model down and make it transparent
 		emitter.pushTransform(createInnerTransform(material));
 		// Emit the inner block model
-		innerModel.emitBlockQuads(emitter, blockView, innerState, pos, randomSupplier, cullTest);
-		// Let's not forget to pop the transform!
-		emitter.popTransform();
-	}
-
-	@Override
-	public void emitItemQuads(QuadEmitter emitter, Supplier<Random> randomSupplier) {
-		// Emit our frame mesh
-		frameMesh.outputTo(emitter);
-
-		BlockState innerState = Blocks.OAK_FENCE.getDefaultState();
-		BakedModel innerModel = MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState);
-
-		// Let's push a transform to scale the model down and make it transparent
-		emitter.pushTransform(createInnerTransform(translucentMaterial));
-		// Emit the inner block model
-		innerModel.emitBlockQuads(emitter, EmptyBlockRenderView.INSTANCE, innerState, BlockPos.ORIGIN, randomSupplier, face -> false);
+		innerModel.emitQuads(emitter, blockView, pos, innerState, random, cullTest);
 		// Let's not forget to pop the transform!
 		emitter.popTransform();
 	}
@@ -141,32 +119,12 @@ public class FrameBakedModel implements BakedModel {
 	}
 
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
-		return Collections.emptyList(); // Renderer API makes this obsolete, so return no quads
+	public void addParts(Random random, List<BlockModelPart> parts) {
+		// Renderer API makes this obsolete, so don't add any parts
 	}
 
 	@Override
-	public boolean useAmbientOcclusion() {
-		return true; // we want the block to have a shadow depending on the adjacent blocks
-	}
-
-	@Override
-	public boolean hasDepth() {
-		return false;
-	}
-
-	@Override
-	public boolean isSideLit() {
-		return true; // we want the block to be lit from the side when rendered as an item
-	}
-
-	@Override
-	public Sprite getParticleSprite() {
-		return this.frameSprite;
-	}
-
-	@Override
-	public ModelTransformation getTransformation() {
-		return ModelHelper.MODEL_TRANSFORM_BLOCK;
+	public Sprite particleSprite() {
+		return frameSprite;
 	}
 }

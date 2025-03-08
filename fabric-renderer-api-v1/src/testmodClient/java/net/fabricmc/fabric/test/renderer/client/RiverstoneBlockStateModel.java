@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.model.loading.v1.wrapper;
+package net.fabricmc.fabric.test.renderer.client;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -25,49 +25,44 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BlockModelPart;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
+import net.fabricmc.fabric.api.blockview.v2.FabricBlockView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
-/**
- * A simple implementation of {@link BlockStateModel} that delegates all method calls to the {@link #wrapped} field.
- * Implementations must set the {@link #wrapped} field somehow.
- */
-public abstract class WrapperBlockStateModel implements BlockStateModel {
-	protected BlockStateModel wrapped;
+public class RiverstoneBlockStateModel implements BlockStateModel {
+	private final BlockStateModel regularModel;
+	private final BlockStateModel riverModel;
 
-	protected WrapperBlockStateModel() {
-	}
-
-	protected WrapperBlockStateModel(BlockStateModel wrapped) {
-		this.wrapped = wrapped;
-	}
-
-	@Override
-	public void addParts(Random random, List<BlockModelPart> parts) {
-		wrapped.addParts(random, parts);
-	}
-
-	@Override
-	public List<BlockModelPart> getParts(Random random) {
-		return wrapped.getParts(random);
-	}
-
-	@Override
-	public Sprite particleSprite() {
-		return wrapped.particleSprite();
+	public RiverstoneBlockStateModel(BlockStateModel regularModel, BlockStateModel riverModel) {
+		this.regularModel = regularModel;
+		this.riverModel = riverModel;
 	}
 
 	@Override
 	public boolean isVanillaAdapter() {
-		return wrapped.isVanillaAdapter();
+		return false;
 	}
 
 	@Override
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
-		wrapped.emitQuads(emitter, blockView, pos, state, random, cullTest);
+		if (((FabricBlockView) blockView).hasBiomes() && ((FabricBlockView) blockView).getBiomeFabric(pos).isIn(BiomeTags.IS_RIVER)) {
+			riverModel.emitQuads(emitter, blockView, pos, state, random, cullTest);
+		} else {
+			regularModel.emitQuads(emitter, blockView, pos, state, random, cullTest);
+		}
+	}
+
+	@Override
+	public void addParts(Random random, List<BlockModelPart> parts) {
+	}
+
+	@Override
+	public Sprite particleSprite() {
+		return regularModel.particleSprite();
 	}
 }

@@ -53,30 +53,26 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
  * Adaptation of inner, non-static class in BlockModelRenderer that serves same purpose.
  */
 public abstract class AoCalculator {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
+
 	/**
 	 * Vanilla models with cubic quads have vertices in a certain order, which allows
 	 * us to map them using a lookup. Adapted from enum in vanilla AoCalculator.
 	 */
 	private static final int[][] VERTEX_MAP = new int[6][4];
 	static {
-		VERTEX_MAP[DOWN.getId()] = new int[] { 0, 1, 2, 3 };
-		VERTEX_MAP[UP.getId()] = new int[] { 2, 3, 0, 1 };
-		VERTEX_MAP[NORTH.getId()] = new int[] { 3, 0, 1, 2 };
-		VERTEX_MAP[SOUTH.getId()] = new int[] { 0, 1, 2, 3 };
-		VERTEX_MAP[WEST.getId()] = new int[] { 3, 0, 1, 2 };
-		VERTEX_MAP[EAST.getId()] = new int[] { 1, 2, 3, 0 };
+		VERTEX_MAP[DOWN.getIndex()] = new int[] { 0, 1, 2, 3 };
+		VERTEX_MAP[UP.getIndex()] = new int[] { 2, 3, 0, 1 };
+		VERTEX_MAP[NORTH.getIndex()] = new int[] { 3, 0, 1, 2 };
+		VERTEX_MAP[SOUTH.getIndex()] = new int[] { 0, 1, 2, 3 };
+		VERTEX_MAP[WEST.getIndex()] = new int[] { 3, 0, 1, 2 };
+		VERTEX_MAP[EAST.getIndex()] = new int[] { 1, 2, 3, 0 };
 	}
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
 
 	private final BlockModelRenderer.AmbientOcclusionCalculator vanillaCalc;
 	private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
 	private final BlockPos.Mutable searchPos = new BlockPos.Mutable();
 	protected final BlockRenderInfo blockInfo;
-
-	public abstract int light(BlockPos pos, BlockState state);
-
-	public abstract float ao(BlockPos pos, BlockState state);
 
 	/** caches results of {@link #computeFace(Direction, boolean, boolean)} for the current block. */
 	private final AoFaceData[] faceData = new AoFaceData[24];
@@ -99,6 +95,10 @@ public abstract class AoCalculator {
 			faceData[i] = new AoFaceData();
 		}
 	}
+
+	public abstract int light(BlockPos pos, BlockState state);
+
+	public abstract float ao(BlockPos pos, BlockState state);
 
 	/** call at start of each new block. */
 	public void clear() {
@@ -197,7 +197,7 @@ public abstract class AoCalculator {
 	}
 
 	private void vanillaFullFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, boolean shade) {
-		computeFace(lightFace, isOnLightFace, shade).toArray(ao, light, VERTEX_MAP[lightFace.getId()]);
+		computeFace(lightFace, isOnLightFace, shade).toArray(ao, light, VERTEX_MAP[lightFace.getIndex()]);
 	}
 
 	private void vanillaPartialFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, boolean shade) {
@@ -325,7 +325,7 @@ public abstract class AoCalculator {
 	}
 
 	private AoFaceData computeFace(Direction lightFace, boolean isOnBlockFace, boolean shade) {
-		final int faceDataIndex = shade ? (isOnBlockFace ? lightFace.getId() : lightFace.getId() + 6) : (isOnBlockFace ? lightFace.getId() + 12 : lightFace.getId() + 18);
+		final int faceDataIndex = shade ? (isOnBlockFace ? lightFace.getIndex() : lightFace.getIndex() + 6) : (isOnBlockFace ? lightFace.getIndex() + 12 : lightFace.getIndex() + 18);
 		final int mask = 1 << faceDataIndex;
 		final AoFaceData result = faceData[faceDataIndex];
 

@@ -26,9 +26,8 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.math.MatrixUtil;
 import net.minecraft.util.math.random.Random;
 
@@ -53,7 +52,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 		return random;
 	};
 
-	private ModelTransformationMode transformMode;
+	private ItemDisplayContext displayContext;
 	private MatrixStack matrixStack;
 	private VertexConsumerProvider vertexConsumerProvider;
 	private int lightmap;
@@ -65,8 +64,8 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private MatrixStack.Entry specialGlintEntry;
 	private final VertexConsumer[] vertexConsumerCache = new VertexConsumer[3 * GLINT_COUNT];
 
-	public void render(ModelTransformationMode transformationMode, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, int[] tints, BakedModel model, RenderLayer layer, ItemRenderState.Glint glint) {
-		this.transformMode = transformationMode;
+	public void render(ItemDisplayContext displayContext, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, int[] tints, RenderLayer layer, ItemRenderState.Glint glint) {
+		this.displayContext = displayContext;
 		this.matrixStack = matrixStack;
 		this.vertexConsumerProvider = vertexConsumerProvider;
 		this.lightmap = lightmap;
@@ -76,10 +75,10 @@ public class ItemRenderContext extends AbstractRenderContext {
 		defaultLayer = layer;
 		defaultGlint = glint;
 
-		matrix = matrixStack.peek().getPositionMatrix();
+		posMatrix = matrixStack.peek().getPositionMatrix();
 		normalMatrix = matrixStack.peek().getNormalMatrix();
 
-		model.emitItemQuads(getEmitter(), randomSupplier);
+		//model.emitItemQuads(getEmitter(), randomSupplier);
 
 		this.matrixStack = null;
 		this.vertexConsumerProvider = null;
@@ -168,9 +167,9 @@ public class ItemRenderContext extends AbstractRenderContext {
 			if (specialGlintEntry == null) {
 				specialGlintEntry = matrixStack.peek().copy();
 
-				if (transformMode == ModelTransformationMode.GUI) {
+				if (displayContext == ItemDisplayContext.GUI) {
 					MatrixUtil.scale(specialGlintEntry.getPositionMatrix(), 0.5F);
-				} else if (transformMode.isFirstPerson()) {
+				} else if (displayContext.isFirstPerson()) {
 					MatrixUtil.scale(specialGlintEntry.getPositionMatrix(), 0.75F);
 				}
 			}

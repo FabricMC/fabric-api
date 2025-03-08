@@ -16,26 +16,41 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
-import net.fabricmc.fabric.test.renderer.FrameBlock;
+import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
+import net.fabricmc.fabric.test.renderer.OctagonalColumnBlock;
 import net.fabricmc.fabric.test.renderer.Registration;
 
 public final class RendererClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ModelLoadingPlugin.register(pluginContext -> {
-			pluginContext.modifyModelOnLoad().register(ModelModifier.OVERRIDE_PHASE, new ModelResolverImpl());
+			pluginContext.registerBlockStateResolver(Registration.FRAME_BLOCK, ctx -> {
+				ctx.setModel(ctx.block().getDefaultState(), new FrameUnbakedBlockStateModel().cached());
+			});
+
+			pluginContext.registerBlockStateResolver(Registration.PILLAR_BLOCK, ctx -> {
+				ctx.setModel(ctx.block().getDefaultState(), new PillarUnbakedBlockStateModel().cached());
+			});
+
+			pluginContext.registerBlockStateResolver(Registration.OCTAGONAL_COLUMN_BLOCK, ctx -> {
+				BlockState state = ctx.block().getDefaultState();
+				ctx.setModel(state.with(OctagonalColumnBlock.VANILLA_SHADE_MODE, false), new OctagonalColumnUnbakedBlockStateModel(ShadeMode.ENHANCED).cached());
+				ctx.setModel(state.with(OctagonalColumnBlock.VANILLA_SHADE_MODE, true), new OctagonalColumnUnbakedBlockStateModel(ShadeMode.VANILLA).cached());
+			});
+
+			pluginContext.registerBlockStateResolver(Registration.RIVERSTONE_BLOCK, ctx -> {
+				ctx.setModel(ctx.block().getDefaultState(), new RiverstoneUnbakedBlockStateModel().cached());
+			});
 		});
 
-		for (FrameBlock frameBlock : Registration.FRAME_BLOCKS) {
-			// We don't specify a material for the frame mesh,
-			// so it will use the default material, i.e. the one from BlockRenderLayerMap.
-			BlockRenderLayerMap.INSTANCE.putBlock(frameBlock, RenderLayer.getCutoutMipped());
-		}
+		// We don't specify a material for the frame mesh,
+		// so it will use the default material, i.e. the one from BlockRenderLayerMap.
+		BlockRenderLayerMap.INSTANCE.putBlock(Registration.FRAME_BLOCK, RenderLayer.getCutoutMipped());
 	}
 }

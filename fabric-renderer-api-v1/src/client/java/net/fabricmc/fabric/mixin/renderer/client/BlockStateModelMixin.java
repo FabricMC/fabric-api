@@ -18,13 +18,13 @@ package net.fabricmc.fabric.mixin.renderer.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BlockStateModel;
 
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBlockStateModel;
 
 /**
- * Avoids instanceof checks and enables consistent code path for all baked models.
+ * Avoids instanceof checks and enables consistent code path for all block state models.
  */
-@Mixin(BakedModel.class)
-public interface BakedModelMixin extends FabricBakedModel {
+@Mixin(BlockStateModel.class)
+public interface BlockStateModelMixin extends FabricBlockStateModel {
 }

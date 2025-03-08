@@ -16,28 +16,26 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelTextures;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.client.render.model.SimpleBlockStateModel;
+import net.minecraft.client.render.model.json.ModelVariant;
 import net.minecraft.util.Identifier;
 
-public class RiverstoneUnbakedModel implements UnbakedModel {
+public class RiverstoneUnbakedBlockStateModel implements BlockStateModel.Unbaked {
 	private static final Identifier STONE_MODEL_ID = Identifier.ofVanilla("block/stone");
 	private static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofVanilla("block/gold_block");
 
 	@Override
 	public void resolve(Resolver resolver) {
-		resolver.resolve(STONE_MODEL_ID);
-		resolver.resolve(GOLD_BLOCK_MODEL_ID);
+		resolver.markDependency(STONE_MODEL_ID);
+		resolver.markDependency(GOLD_BLOCK_MODEL_ID);
 	}
 
 	@Override
-	public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
-		BakedModel stoneModel = baker.bake(STONE_MODEL_ID, settings);
-		BakedModel goldBlockModel = baker.bake(GOLD_BLOCK_MODEL_ID, settings);
-		return new RiverstoneBakedModel(stoneModel, goldBlockModel);
+	public BlockStateModel getModel(Baker baker) {
+		BlockStateModel stoneModel = new SimpleBlockStateModel.Unbaked(new ModelVariant(STONE_MODEL_ID)).getModel(baker);
+		BlockStateModel goldBlockModel = new SimpleBlockStateModel.Unbaked(new ModelVariant(GOLD_BLOCK_MODEL_ID)).getModel(baker);
+		return new RiverstoneBlockStateModel(stoneModel, goldBlockModel);
 	}
 }

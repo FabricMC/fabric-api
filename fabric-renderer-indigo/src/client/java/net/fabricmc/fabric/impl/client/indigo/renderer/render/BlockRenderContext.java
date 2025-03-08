@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
@@ -33,9 +33,11 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
- * Used during non-terrain block buffering to invoke {@link BakedModel#emitBlockQuads}.
+ * Used during non-terrain block buffering to invoke {@link BlockStateModel#emitQuads}.
  */
 public class BlockRenderContext extends AbstractBlockRenderContext {
+	private final Random random = Random.createLocal();
+
 	private VertexConsumer vertexConsumer;
 
 	@Override
@@ -58,25 +60,22 @@ public class BlockRenderContext extends AbstractBlockRenderContext {
 		return vertexConsumer;
 	}
 
-	public void render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer vertexConsumer, boolean cull, Random random, long seed, int overlay) {
+	public void render(BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer vertexConsumer, boolean cull, long seed, int overlay) {
 		try {
 			Vec3d offset = state.getModelOffset(pos);
 			matrixStack.translate(offset.x, offset.y, offset.z);
+			this.posMatrix = matrixStack.peek().getPositionMatrix();
+			this.normalMatrix = matrixStack.peek().getNormalMatrix();
 
 			this.vertexConsumer = vertexConsumer;
-			this.matrix = matrixStack.peek().getPositionMatrix();
-			this.normalMatrix = matrixStack.peek().getNormalMatrix();
 			this.overlay = overlay;
-
-			blockInfo.random = random;
-			blockInfo.seed = seed;
-			blockInfo.recomputeSeed = false;
 
 			aoCalc.clear();
 			blockInfo.prepareForWorld(blockView, cull);
-			blockInfo.prepareForBlock(state, pos, model.useAmbientOcclusion());
+			blockInfo.prepareForBlock(pos, state);
+			random.setSeed(seed);
 
-			model.emitBlockQuads(getEmitter(), blockView, state, pos, blockInfo.randomSupplier, blockInfo::shouldCullSide);
+			model.emitQuads(getEmitter(), blockView, pos, state, random, blockInfo::shouldCullSide);
 		} catch (Throwable throwable) {
 			CrashReport crashReport = CrashReport.create(throwable, "Tessellating block model - Indigo Renderer");
 			CrashReportSection crashReportSection = crashReport.addElement("Block model being tessellated");
@@ -84,7 +83,6 @@ public class BlockRenderContext extends AbstractBlockRenderContext {
 			throw new CrashException(crashReport);
 		} finally {
 			blockInfo.release();
-			blockInfo.random = null;
 			this.vertexConsumer = null;
 		}
 	}

@@ -34,26 +34,16 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 
 public final class Registration {
 	public static final FrameBlock FRAME_BLOCK = register("frame", FrameBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());
-	public static final FrameBlock FRAME_MULTIPART_BLOCK = register("frame_multipart", FrameBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());
-	public static final FrameBlock FRAME_VARIANT_BLOCK = register("frame_variant", FrameBlock::new, AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());
 	public static final Block PILLAR_BLOCK = register("pillar", Block::new, AbstractBlock.Settings.create());
-	public static final Block OCTAGONAL_COLUMN_BLOCK = register("octagonal_column", OctagonalColumnBlock::new, AbstractBlock.Settings.create().nonOpaque().strength(1.8F));
+	public static final OctagonalColumnBlock OCTAGONAL_COLUMN_BLOCK = register("octagonal_column", OctagonalColumnBlock::new, AbstractBlock.Settings.create().nonOpaque().strength(1.8F));
 	public static final Block RIVERSTONE_BLOCK = register("riverstone", Block::new, AbstractBlock.Settings.copy(Blocks.STONE));
 
-	public static final FrameBlock[] FRAME_BLOCKS = new FrameBlock[] {
-			FRAME_BLOCK,
-			FRAME_MULTIPART_BLOCK,
-			FRAME_VARIANT_BLOCK,
-	};
+	public static final BlockItem FRAME_ITEM = registerItem("frame", settings -> new BlockItem(FRAME_BLOCK, settings));
+	public static final BlockItem PILLAR_ITEM = registerItem("pillar", settings -> new BlockItem(PILLAR_BLOCK, settings));
+	public static final BlockItem OCTAGONAL_COLUMN_ITEM = registerItem("octagonal_column", settings -> new BlockItem(OCTAGONAL_COLUMN_BLOCK, settings));
+	public static final BlockItem RIVERSTONE_ITEM = registerItem("riverstone", settings -> new BlockItem(RIVERSTONE_BLOCK, settings));
 
-	public static final Item FRAME_ITEM = registerItem("frame", (settings) -> new BlockItem(FRAME_BLOCK, settings));
-	public static final Item FRAME_MULTIPART_ITEM = registerItem("frame_multipart", (settings) -> new BlockItem(FRAME_MULTIPART_BLOCK, settings));
-	public static final Item FRAME_VARIANT_ITEM = registerItem("frame_variant", (settings) -> new BlockItem(FRAME_VARIANT_BLOCK, settings));
-	public static final Item PILLAR_ITEM = registerItem("pillar", (settings) -> new BlockItem(PILLAR_BLOCK, settings));
-	public static final Item OCTAGONAL_COLUMN_ITEM = registerItem("octagonal_column", (settings) -> new BlockItem(OCTAGONAL_COLUMN_BLOCK, settings));
-	public static final Item RIVERSTONE_ITEM = registerItem("riverstone", (settings) -> new BlockItem(RIVERSTONE_BLOCK, settings));
-
-	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY_TYPE = register("frame", FabricBlockEntityTypeBuilder.create(FrameBlockEntity::new, FRAME_BLOCKS).build());
+	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY_TYPE = register("frame", FabricBlockEntityTypeBuilder.create(FrameBlockEntity::new, FRAME_BLOCK).build());
 
 	// see also Blocks#register, which is functionally the same
 	private static <T extends Block> T register(String path, Function<AbstractBlock.Settings, T> constructor, AbstractBlock.Settings settings) {

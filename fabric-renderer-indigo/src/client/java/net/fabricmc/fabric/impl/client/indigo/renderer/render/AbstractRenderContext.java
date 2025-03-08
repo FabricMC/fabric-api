@@ -43,7 +43,7 @@ public abstract class AbstractRenderContext {
 	private final Vector4f posVec = new Vector4f();
 	private final Vector3f normalVec = new Vector3f();
 
-	protected Matrix4f matrix;
+	protected Matrix4f posMatrix;
 	protected Matrix3f normalMatrix;
 	protected int overlay;
 
@@ -69,7 +69,7 @@ public abstract class AbstractRenderContext {
 
 		for (int i = 0; i < 4; i++) {
 			posVec.set(quad.x(i), quad.y(i), quad.z(i), 1.0f);
-			posVec.mul(matrix);
+			posVec.mul(posMatrix);
 			vertexConsumer.vertex(posVec.x(), posVec.y(), posVec.z());
 
 			final int color = quad.color(i);

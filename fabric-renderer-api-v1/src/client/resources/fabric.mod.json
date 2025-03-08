@@ -17,7 +17,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.16.10",
-    "minecraft": ">=1.15-alpha.19.39.a",
+    "minecraft": ">=1.21.5-alpha.25.9.b",
     "fabric-api-base": "*"
   },
   "description": "Defines rendering extensions for dynamic/fancy block and item models.",
@@ -25,10 +25,11 @@
     "fabric-renderer-api-v1.mixins.json",
     "fabric-renderer-api-v1.debughud.mixins.json"
   ],
+  "accessWidener": "fabric-renderer-api-v1.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_1087": ["net/fabricmc/fabric/api/renderer/v1/model/FabricBakedModel"]
+      "net/minecraft/class_1087": ["net/fabricmc/fabric/api/renderer/v1/model/FabricBlockStateModel"]
     }
   }
 }

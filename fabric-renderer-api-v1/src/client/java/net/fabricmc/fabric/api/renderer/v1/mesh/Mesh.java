@@ -20,18 +20,13 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Range;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-
 /**
  * A bundle of {@link QuadView} instances encoded by the renderer, typically
  * via {@link MutableMesh#immutableCopy()}.
  *
- * <p>Similar in purpose to the {@code List<BakedQuad>} instances returned by
- * {@link BakedModel#getQuads(BlockState, Direction, Random)}, but allows the
- * renderer to optimize the format for performance and memory allocation.
+ * <p>Similar in purpose to {@code List<BakedQuad>} instances passed around
+ * in vanilla pipelines, but allows the renderer to optimize the format for
+ * performance and memory allocation.
  *
  * <p>All declared methods in this interface are thread-safe and can be used
  * concurrently.

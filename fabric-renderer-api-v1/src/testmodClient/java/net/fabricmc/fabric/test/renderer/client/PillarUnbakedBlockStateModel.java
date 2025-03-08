@@ -19,19 +19,16 @@ package net.fabricmc.fabric.test.renderer.client;
 import java.util.List;
 import java.util.stream.Stream;
 
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelTextures;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.client.render.model.SimpleModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 
 import net.fabricmc.fabric.test.renderer.RendererTest;
 
-public class PillarUnbakedModel implements UnbakedModel {
+public class PillarUnbakedBlockStateModel implements BlockStateModel.Unbaked, SimpleModel {
 	private static final List<SpriteIdentifier> SPRITES = Stream.of("alone", "bottom", "middle", "top")
 			.map(suffix -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, RendererTest.id("block/pillar_" + suffix)))
 			.toList();
@@ -41,13 +38,18 @@ public class PillarUnbakedModel implements UnbakedModel {
 	}
 
 	@Override
-	public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
+	public BlockStateModel getModel(Baker baker) {
 		Sprite[] sprites = new Sprite[SPRITES.size()];
 
 		for (int i = 0; i < sprites.length; ++i) {
-			sprites[i] = baker.getSpriteGetter().get(SPRITES.get(i));
+			sprites[i] = baker.getSpriteGetter().get(SPRITES.get(i), this);
 		}
 
-		return new PillarBakedModel(sprites);
+		return new PillarBlockStateModel(sprites);
+	}
+
+	@Override
+	public String name() {
+		return getClass().getName();
 	}
 }

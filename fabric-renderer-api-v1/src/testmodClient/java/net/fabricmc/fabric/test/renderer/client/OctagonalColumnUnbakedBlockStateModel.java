@@ -16,12 +16,9 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelTextures;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.client.render.model.SimpleModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
@@ -37,7 +34,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
-public class OctagonalColumnUnbakedModel implements UnbakedModel {
+public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Unbaked, SimpleModel {
 	private static final SpriteIdentifier WHITE_CONCRETE_SPRITE_ID = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.ofVanilla("block/white_concrete"));
 
 	// (B - A) is the side length of a regular octagon that fits in a unit square.
@@ -47,7 +44,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 
 	private final ShadeMode shadeMode;
 
-	public OctagonalColumnUnbakedModel(ShadeMode shadeMode) {
+	public OctagonalColumnUnbakedBlockStateModel(ShadeMode shadeMode) {
 		this.shadeMode = shadeMode;
 	}
 
@@ -56,8 +53,8 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 	}
 
 	@Override
-	public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
-		Sprite whiteConcreteSprite = baker.getSpriteGetter().get(WHITE_CONCRETE_SPRITE_ID);
+	public BlockStateModel getModel(Baker baker) {
+		Sprite whiteConcreteSprite = baker.getSpriteGetter().get(WHITE_CONCRETE_SPRITE_ID, this);
 
 		MaterialFinder finder = Renderer.get().materialFinder();
 		RenderMaterial glintMaterial = finder.glintMode(GlintMode.STANDARD).shadeMode(shadeMode).find();
@@ -209,7 +206,7 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.material(glintMaterial);
 		emitter.emit();
 
-		return new SingleMeshBakedModel(builder.immutableCopy(), whiteConcreteSprite);
+		return new SingleMeshBlockStateModel(builder.immutableCopy(), whiteConcreteSprite);
 	}
 
 	private static void cornerSprite(QuadEmitter emitter, Sprite sprite) {
@@ -220,5 +217,10 @@ public class OctagonalColumnUnbakedModel implements UnbakedModel {
 		emitter.uv(3, B, 0);
 		// Map [0, 1] coordinates to sprite atlas coordinates. spriteBake assumes [0, 16] unless we pass the BAKE_NORMALIZED flag.
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_NORMALIZED);
+	}
+
+	@Override
+	public String name() {
+		return getClass().getName();
 	}
 }

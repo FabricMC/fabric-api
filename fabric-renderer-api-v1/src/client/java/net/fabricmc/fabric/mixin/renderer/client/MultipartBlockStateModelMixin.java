@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.model.loading.v1.wrapper;
+package net.fabricmc.fabric.mixin.renderer.client;
 
 import java.util.List;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BlockModelPart;
+import net.minecraft.class_10895;
 import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -32,42 +35,57 @@ import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
-/**
- * A simple implementation of {@link BlockStateModel} that delegates all method calls to the {@link #wrapped} field.
- * Implementations must set the {@link #wrapped} field somehow.
- */
-public abstract class WrapperBlockStateModel implements BlockStateModel {
-	protected BlockStateModel wrapped;
+@Mixin(class_10895.class)
+abstract class MultipartBlockStateModelMixin implements BlockStateModel {
+	@Shadow
+	@Final
+	private class_10895.MultipartBakedModel field_57948;
 
-	protected WrapperBlockStateModel() {
-	}
+	@Shadow
+	@Final
+	private BlockState field_57949;
 
-	protected WrapperBlockStateModel(BlockStateModel wrapped) {
-		this.wrapped = wrapped;
-	}
+	@Shadow
+	@Nullable
+	private List<BlockStateModel> field_57950;
 
-	@Override
-	public void addParts(Random random, List<BlockModelPart> parts) {
-		wrapped.addParts(random, parts);
-	}
+	@Unique
+	private boolean isVanillaComputed = false;
 
-	@Override
-	public List<BlockModelPart> getParts(Random random) {
-		return wrapped.getParts(random);
-	}
-
-	@Override
-	public Sprite particleSprite() {
-		return wrapped.particleSprite();
-	}
+	@Unique
+	private boolean isVanilla = true;
 
 	@Override
 	public boolean isVanillaAdapter() {
-		return wrapped.isVanillaAdapter();
+		if (!isVanillaComputed) {
+			if (field_57950 == null) {
+				field_57950 = field_57948.method_68528(field_57949);
+			}
+
+			for (BlockStateModel model : field_57950) {
+				if (!model.isVanillaAdapter()) {
+					isVanilla = false;
+					break;
+				}
+			}
+
+			isVanillaComputed = true;
+		}
+
+		return isVanilla;
 	}
 
 	@Override
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
-		wrapped.emitQuads(emitter, blockView, pos, state, random, cullTest);
+		if (field_57950 == null) {
+			field_57950 = field_57948.method_68528(field_57949);
+		}
+
+		long seed = random.nextLong();
+
+		for (BlockStateModel model : field_57950) {
+			random.setSeed(seed);
+			model.emitQuads(emitter, blockView, pos, state, random, cullTest);
+		}
 	}
 }

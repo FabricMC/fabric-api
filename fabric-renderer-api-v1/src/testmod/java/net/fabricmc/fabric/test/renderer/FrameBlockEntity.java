@@ -16,23 +16,28 @@
 
 package net.fabricmc.fabric.test.renderer;
 
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.blockview.v2.RenderDataBlockEntity;
 
 public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEntity {
+	private static final Codec<Block> BLOCK_CODEC = Registries.BLOCK.getCodec();
+
 	@Nullable
 	private Block block = null;
 
@@ -44,10 +49,11 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup wrapperLookup) {
 		super.readNbt(tag, wrapperLookup);
 
-		if (tag.contains("block", NbtElement.STRING_TYPE)) {
-			this.block = Registries.BLOCK.get(Identifier.of(tag.getString("block")));
-		} else {
-			this.block = null;
+		RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
+		block = tag.get("block", BLOCK_CODEC, registryOps).orElse(null);
+
+		if (block == Blocks.AIR) {
+			block = null;
 		}
 
 		if (this.getWorld() != null && this.getWorld().isClient()) {
@@ -59,12 +65,13 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	@Override
 	public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup wrapperLookup) {
 		super.writeNbt(tag, wrapperLookup);
+		RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
 
-		if (this.block != null) {
-			tag.putString("block", Registries.BLOCK.getId(this.block).toString());
+		if (block != null) {
+			tag.put("block", BLOCK_CODEC, registryOps, block);
 		} else {
 			// Always need something in the tag, otherwise S2C syncing will never apply the packet.
-			tag.putInt("block", -1);
+			tag.put("block", BLOCK_CODEC, registryOps, Blocks.AIR);
 		}
 	}
 
@@ -83,6 +90,10 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	}
 
 	public void setBlock(@Nullable Block block) {
+		if (block == Blocks.AIR) {
+			block = null;
+		}
+
 		this.block = block;
 		this.markDirty();
 	}

@@ -37,10 +37,13 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
  * Collection of utilities for model implementations.
  */
 public final class ModelHelper {
-	private ModelHelper() { }
+	/** @see #faceFromIndex(int) */
+	private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
 	/** Result from {@link #toFaceIndex(Direction)} for null values. */
 	public static final int NULL_FACE_ID = 6;
+
+	private ModelHelper() { }
 
 	/**
 	 * Convenient way to encode faces that may be null.
@@ -48,7 +51,7 @@ public final class ModelHelper {
 	 * Use {@link #faceFromIndex(int)} to retrieve encoded face.
 	 */
 	public static int toFaceIndex(@Nullable Direction face) {
-		return face == null ? NULL_FACE_ID : face.getId();
+		return face == null ? NULL_FACE_ID : face.getIndex();
 	}
 
 	/**
@@ -62,9 +65,6 @@ public final class ModelHelper {
 	public static Direction faceFromIndex(int faceIndex) {
 		return FACES[faceIndex];
 	}
-
-	/** @see #faceFromIndex(int) */
-	private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
 	/**
 	 * Converts a mesh into an array of lists of vanilla baked quads.
@@ -87,7 +87,7 @@ public final class ModelHelper {
 		if (mesh != null) {
 			mesh.forEach(q -> {
 				Direction cullFace = q.cullFace();
-				builders[cullFace == null ? NULL_FACE_ID : cullFace.getId()].add(q.toBakedQuad(finder.find(q)));
+				builders[cullFace == null ? NULL_FACE_ID : cullFace.getIndex()].add(q.toBakedQuad(finder.find(q)));
 			});
 		}
 

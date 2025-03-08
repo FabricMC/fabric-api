@@ -17,7 +17,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.16.10",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-renderer-api-v1": "*"
   },
   "description": "Provides hooks for model loading.",
   "mixins": [

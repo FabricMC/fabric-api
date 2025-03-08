@@ -16,20 +16,16 @@
 
 package net.fabricmc.fabric.api.renderer.v1.model;
 
+import java.util.List;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockModelRenderer;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -37,21 +33,21 @@ import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.impl.renderer.VanillaModelEncoder;
+import net.fabricmc.fabric.impl.renderer.VanillaBlockModelEncoder;
 
 /**
- * Interface for baked models that output meshes with enhanced rendering features.
+ * Interface for baked block state models that output geometry with enhanced rendering features.
  * Can also be used to generate or customize outputs based on world state instead of
  * or in addition to block state when render chunks are rebuilt.
  *
  * <p>Implementors should have a look at {@link ModelHelper} as it contains many useful functions.
  *
- * <p>Note: This interface is automatically implemented on all baked models via Mixin and interface injection.
+ * <p>Note: This interface is automatically implemented on all block state models via Mixin and interface injection.
  */
-public interface FabricBakedModel {
+public interface FabricBlockStateModel {
 	/**
 	 * When true, signals renderer this producer is implemented through
-	 * {@link BakedModel#getQuads(BlockState, Direction, Random)}.
+	 * {@link BlockStateModel#addParts(Random, List)}.
 	 * Also means the model does not rely on any non-vanilla features.
 	 * Allows the renderer to optimize or route vanilla models through the unmodified vanilla pipeline if desired.
 	 *
@@ -81,57 +77,24 @@ public interface FabricBakedModel {
 	 * returns true.
 	 *
 	 * <p>Outside of chunk rebuilds, this method will be called every frame. Model implementations should
-	 * rely on pre-baked meshes as much as possible and keep transformation to a minimum.  The provided
+	 * rely on pre-baked meshes as much as possible and keep transformation to a minimum. The provided
 	 * block position may be the <em>nearest</em> block position and not actual. For this reason, neighbor
 	 * state lookups are best avoided or will require special handling. Block entity lookups are
 	 * likely to fail and/or give meaningless results.
 	 *
-	 * <p>Note: with {@link BakedModel#getQuads(BlockState, Direction, Random)}, the random
-	 * parameter is normally initialized with the same seed prior to each face layer.
-	 * Model authors should note this method is called only once per block, and call the provided
-	 * Random supplier multiple times if re-seeding is necessary.
-	 *
 	 * @param emitter Accepts model output.
 	 * @param blockView Access to world state.
-	 * @param state Block state for model being rendered.
 	 * @param pos Position of block for model being rendered.
-	 * @param randomSupplier Random object seeded per vanilla conventions. Call multiple times to re-seed.
-	 *                       Will not be thread-safe. Do not cache or retain a reference.
+	 * @param state Block state for model being rendered.
+	 * @param random Random object seeded per vanilla conventions. Will not be thread-safe.
+	 *               Do not cache or retain a reference.
 	 * @param cullTest A test that returns {@code true} for faces which will be culled and {@code false} for faces which
 	 *                 may or may not be culled. Meant to be used to cull groups of quads or expensive dynamic quads
 	 *                 early for performance. Early culled quads will likely not be added the emitter, so callers of
 	 *                 this method must account for this. In general, prefer using
 	 *                 {@link MutableQuadView#cullFace(Direction)} instead of this test.
 	 */
-	default void emitBlockQuads(QuadEmitter emitter, BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, Predicate<@Nullable Direction> cullTest) {
-		VanillaModelEncoder.emitBlockQuads(emitter, (BakedModel) this, state, randomSupplier, cullTest);
-	}
-
-	/**
-	 * This method will be called during item rendering to generate both the static and
-	 * dynamic portions of an item model when the model implements this interface and
-	 * {@link #isVanillaAdapter()} returns false.
-	 *
-	 * <p>Vanilla item rendering is normally very limited. It ignores lightmaps, vertex colors,
-	 * and vertex normals. Renderers are expected to implement enhanced features for item
-	 * models. If a feature is impractical due to performance or other concerns, then the
-	 * renderer must at least give acceptable visual results without the need for special
-	 * case handling in model implementations.
-	 *
-	 * <p>Calls to this method will generally happen on the main client thread but nothing
-	 * prevents a mod or renderer from calling this method concurrently. Best practice will
-	 * be to make the method thread-safe.
-	 *
-	 * <p>This method receives very limited context, which is done to ensure that
-	 * {@link ItemRenderState}, after being updated, can be reused an arbitrary amount of times and
-	 * produce the same result each time. To depend on additional context, such as the
-	 * {@link ItemStack} or {@link ModelTransformationMode}, it is recommended to use a custom
-	 * {@link ItemModel}, capture the necessary context such that it cannot be modified externally
-	 * (for example, the {@link ItemStack} can be modified after the render state is updated, so it
-	 * should not be captured directly), and construct a new {@link BakedModel} which then uses
-	 * the captured context in this method.
-	 */
-	default void emitItemQuads(QuadEmitter emitter, Supplier<Random> randomSupplier) {
-		VanillaModelEncoder.emitItemQuads(emitter, (BakedModel) this, null, randomSupplier);
+	default void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
+		VanillaBlockModelEncoder.emitQuads(emitter, (BlockStateModel) this, random, cullTest);
 	}
 }
