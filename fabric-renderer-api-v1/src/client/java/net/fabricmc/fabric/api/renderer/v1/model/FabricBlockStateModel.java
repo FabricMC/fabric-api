@@ -22,14 +22,13 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.block.BlockModelRenderer;
+import net.minecraft.class_10895;
 import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.EmptyBlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -37,8 +36,7 @@ import net.fabricmc.fabric.impl.renderer.VanillaBlockModelEncoder;
 
 /**
  * Interface for baked block state models that output geometry with enhanced rendering features.
- * Can also be used to generate or customize outputs based on world state instead of
- * or in addition to block state when render chunks are rebuilt.
+ * Can also be used to generate or customize geometry output based on world state.
  *
  * <p>Implementors should have a look at {@link ModelHelper} as it contains many useful functions.
  *
@@ -46,48 +44,43 @@ import net.fabricmc.fabric.impl.renderer.VanillaBlockModelEncoder;
  */
 public interface FabricBlockStateModel {
 	/**
-	 * When true, signals renderer this producer is implemented through
-	 * {@link BlockStateModel#addParts(Random, List)}.
-	 * Also means the model does not rely on any non-vanilla features.
-	 * Allows the renderer to optimize or route vanilla models through the unmodified vanilla pipeline if desired.
+	 * If this method returns {@code false}, this model's geometry must be retrieved through {@link #emitQuads} instead
+	 * of {@link BlockStateModel#addParts(Random, List)}. Otherwise, this model's geometry may be retrieved through
+	 * either method.
 	 *
-	 * <p>Vanilla baked models will return true.
-	 * Enhanced models that use this API should return false,
-	 * otherwise the API will not recognize the model.
+	 * <p>Vanilla models will return true. Enhanced models that use this API should return false.
 	 */
 	default boolean isVanillaAdapter() {
 		return true;
 	}
 
 	/**
-	 * This method will be called during chunk rebuilds to generate both the static and
-	 * dynamic portions of a block model when the model implements this interface and
-	 * {@link #isVanillaAdapter()} returns false.
+	 * Produces this model's geometry. This method is guaranteed to be called instead of
+	 * {@link BlockStateModel#addParts(Random, List)} when {@link #isVanillaAdapter} returns {@code false}. When
+	 * {@link #isVanillaAdapter} returns {@code true}, this method must still produce the correct geometry, but
+	 * implementors do not have to handle this case as the default implementation of this method will do so correctly
+	 * and automatically.
 	 *
-	 * <p>During chunk rebuild, this method will always be called exactly one time per block
-	 * position, irrespective of which or how many faces or block render layers are included
-	 * in the model. Models must output all quads in a single pass.
+	 * <p>Like {@link BlockStateModel#addParts(Random, List)}, this method may be called outside of chunk rebuilds. For
+	 * example, some entities and block entities render blocks. In some such cases, the provided position may be the
+	 * <em>nearest</em> position and not actual position. In others, the provided world may be
+	 * {@linkplain EmptyBlockRenderView#INSTANCE empty}.
 	 *
-	 * <p>Also called to render block models outside of chunk rebuild or block entity rendering.
-	 * Typically, this happens when the block is being rendered as an entity, not as a block placed in the world.
-	 * Currently, this happens for falling blocks and blocks being pushed by a piston, but renderers
-	 * should invoke this for all calls to
-	 * {@link BlockModelRenderer#render(BlockRenderView, BakedModel, BlockState, BlockPos, MatrixStack, VertexConsumer, boolean, Random, long, int)}
-	 * that occur outside of chunk rebuilds to allow for features added by mods, unless {@link #isVanillaAdapter()}
-	 * returns true.
+	 * <p>If multiple independent subtasks use the provided random, it is recommended that implementations
+	 * {@linkplain Random#setSeed(long) reseed} the random using a predetermined value before invoking each subtask, so
+	 * that one subtask's operations do not affect the next subtask. For example, if a model collects geometry from
+	 * multiple submodels, each submodel is considered a subtask and thus the random should be reseeded before
+	 * collecting geometry from each submodel. See {@link class_10895#addParts(Random, List)} for an example
+	 * implementation of this.
 	 *
-	 * <p>Outside of chunk rebuilds, this method will be called every frame. Model implementations should
-	 * rely on pre-baked meshes as much as possible and keep transformation to a minimum. The provided
-	 * block position may be the <em>nearest</em> block position and not actual. For this reason, neighbor
-	 * state lookups are best avoided or will require special handling. Block entity lookups are
-	 * likely to fail and/or give meaningless results.
+	 * <p>Implementations should rely on pre-baked meshes as much as possible and keep dynamic transformations to a
+	 * minimum for performance.
 	 *
 	 * @param emitter Accepts model output.
 	 * @param blockView Access to world state.
 	 * @param pos Position of block for model being rendered.
 	 * @param state Block state for model being rendered.
-	 * @param random Random object seeded per vanilla conventions. Will not be thread-safe.
-	 *               Do not cache or retain a reference.
+	 * @param random Random object seeded per vanilla conventions. Do not cache or retain a reference.
 	 * @param cullTest A test that returns {@code true} for faces which will be culled and {@code false} for faces which
 	 *                 may or may not be culled. Meant to be used to cull groups of quads or expensive dynamic quads
 	 *                 early for performance. Early culled quads will likely not be added the emitter, so callers of

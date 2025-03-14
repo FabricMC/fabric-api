@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.crash.CrashException;
@@ -33,12 +34,14 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
- * Used during non-terrain block buffering to invoke {@link BlockStateModel#emitQuads}.
+ * Used during terrain-like block buffering to invoke {@link BlockStateModel#emitQuads}.
  */
-public class BlockRenderContext extends AbstractBlockRenderContext {
+public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
+	public static final ThreadLocal<TerrainLikeRenderContext> POOL = ThreadLocal.withInitial(TerrainLikeRenderContext::new);
+
 	private final Random random = Random.createLocal();
 
-	private VertexConsumer vertexConsumer;
+	private VertexConsumerProvider vertexConsumers;
 
 	@Override
 	protected AoCalculator createAoCalc(BlockRenderInfo blockInfo) {
@@ -57,24 +60,22 @@ public class BlockRenderContext extends AbstractBlockRenderContext {
 
 	@Override
 	protected VertexConsumer getVertexConsumer(RenderLayer layer) {
-		return vertexConsumer;
+		return vertexConsumers.getBuffer(layer);
 	}
 
-	public void render(BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer vertexConsumer, boolean cull, long seed, int overlay) {
+	public void bufferModel(BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
 		try {
 			Vec3d offset = state.getModelOffset(pos);
 			matrixStack.translate(offset.x, offset.y, offset.z);
-			this.posMatrix = matrixStack.peek().getPositionMatrix();
-			this.normalMatrix = matrixStack.peek().getNormalMatrix();
-
-			this.vertexConsumer = vertexConsumer;
+			matrices = matrixStack.peek();
 			this.overlay = overlay;
 
-			aoCalc.clear();
+			this.vertexConsumers = vertexConsumers;
+
 			blockInfo.prepareForWorld(blockView, cull);
-			blockInfo.prepareForBlock(pos, state);
 			random.setSeed(seed);
 
+			prepare(pos, state);
 			model.emitQuads(getEmitter(), blockView, pos, state, random, blockInfo::shouldCullSide);
 		} catch (Throwable throwable) {
 			CrashReport crashReport = CrashReport.create(throwable, "Tessellating block model - Indigo Renderer");
@@ -83,7 +84,7 @@ public class BlockRenderContext extends AbstractBlockRenderContext {
 			throw new CrashException(crashReport);
 		} finally {
 			blockInfo.release();
-			this.vertexConsumer = null;
+			this.vertexConsumers = null;
 		}
 	}
 }

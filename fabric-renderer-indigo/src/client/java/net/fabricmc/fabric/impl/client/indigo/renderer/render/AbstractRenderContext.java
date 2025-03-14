@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
@@ -43,8 +43,7 @@ public abstract class AbstractRenderContext {
 	private final Vector4f posVec = new Vector4f();
 	private final Vector3f normalVec = new Vector3f();
 
-	protected Matrix4f posMatrix;
-	protected Matrix3f normalMatrix;
+	protected MatrixStack.Entry matrices;
 	protected int overlay;
 
 	protected QuadEmitter getEmitter() {
@@ -52,19 +51,20 @@ public abstract class AbstractRenderContext {
 		return editorQuad;
 	}
 
-	protected abstract void bufferQuad(MutableQuadViewImpl quadView);
+	protected abstract void bufferQuad(MutableQuadViewImpl quad);
 
 	/** final output step, common to all renders. */
 	protected void bufferQuad(MutableQuadViewImpl quad, VertexConsumer vertexConsumer) {
 		final Vector4f posVec = this.posVec;
 		final Vector3f normalVec = this.normalVec;
+		final Matrix4f posMatrix = matrices.getPositionMatrix();
 		final boolean useNormals = quad.hasVertexNormals();
 
 		if (useNormals) {
 			quad.populateMissingNormals();
 		} else {
 			normalVec.set(quad.faceNormal());
-			normalVec.mul(normalMatrix);
+			matrices.transformNormal(quad.faceNormal(), normalVec);
 		}
 
 		for (int i = 0; i < 4; i++) {
@@ -80,7 +80,7 @@ public abstract class AbstractRenderContext {
 
 			if (useNormals) {
 				quad.copyNormal(i, normalVec);
-				normalVec.mul(normalMatrix);
+				matrices.transformNormal(normalVec, normalVec);
 			}
 
 			vertexConsumer.normal(normalVec.x(), normalVec.y(), normalVec.z());

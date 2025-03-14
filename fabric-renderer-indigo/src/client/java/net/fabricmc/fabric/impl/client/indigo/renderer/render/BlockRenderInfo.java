@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 
 /**
  * Holds, manages, and provides access to the block/world related state
- * needed to render quads.
+ * needed to buffer quads.
  */
 public class BlockRenderInfo {
 	private final BlockColors blockColorMap = MinecraftClient.getInstance().getBlockColors();

@@ -25,7 +25,6 @@ import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.math.MatrixUtil;
@@ -75,8 +74,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 		defaultLayer = layer;
 		defaultGlint = glint;
 
-		posMatrix = matrixStack.peek().getPositionMatrix();
-		normalMatrix = matrixStack.peek().getNormalMatrix();
+		matrices = matrixStack.peek();
 
 		//model.emitItemQuads(getEmitter(), randomSupplier);
 
@@ -106,7 +104,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 			final int tint = tints[tintIndex];
 
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, ColorHelper.multiplyColor(tint, quad.color(i)));
+				quad.color(i, net.minecraft.util.math.ColorHelper.mix(quad.color(i), tint));
 			}
 		}
 	}
@@ -120,7 +118,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 			final int lightmap = this.lightmap;
 
 			for (int i = 0; i < 4; i++) {
-				quad.lightmap(i, ColorHelper.maxBrightness(quad.lightmap(i), lightmap));
+				quad.lightmap(i, ColorHelper.maxLight(quad.lightmap(i), lightmap));
 			}
 		}
 	}
@@ -177,6 +175,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 			return ItemRendererAccessor.fabric_getDynamicDisplayGlintConsumer(vertexConsumerProvider, layer, specialGlintEntry);
 		}
 
-		return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, layer, true, glint != ItemRenderState.Glint.NONE);
+		return net.minecraft.client.render.item.ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, layer, true, glint != ItemRenderState.Glint.NONE);
 	}
 }

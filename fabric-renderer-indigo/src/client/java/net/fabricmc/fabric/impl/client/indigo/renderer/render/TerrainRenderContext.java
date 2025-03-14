@@ -41,9 +41,9 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
- * Used during terrain block buffering to invoke {@link BlockStateModel#emitQuads}.
+ * Used during section block buffering to invoke {@link BlockStateModel#emitQuads}.
  */
-public class TerrainRenderContext extends AbstractBlockRenderContext {
+public class TerrainRenderContext extends AbstractTerrainRenderContext {
 	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
 
 	/**
@@ -60,16 +60,16 @@ public class TerrainRenderContext extends AbstractBlockRenderContext {
 	 * so we simply clear the cache at the start of each new chunk. It is also
 	 * not a threadlocal because it's held within a threadlocal TerrainRenderContext.</ul>
 	 */
-	private final Long2IntOpenHashMap brightnessCache = new Long2IntOpenHashMap();
-	private final Long2FloatOpenHashMap aoLevelCache = new Long2FloatOpenHashMap();
+	private final Long2IntOpenHashMap lightCache = new Long2IntOpenHashMap();
+	private final Long2FloatOpenHashMap aoCache = new Long2FloatOpenHashMap();
 
 	private MatrixStack matrixStack;
 	private Random random;
 	private Function<RenderLayer, BufferBuilder> bufferFunc;
 
 	public TerrainRenderContext() {
-		brightnessCache.defaultReturnValue(Integer.MAX_VALUE);
-		aoLevelCache.defaultReturnValue(Float.MAX_VALUE);
+		lightCache.defaultReturnValue(Integer.MAX_VALUE);
+		aoCache.defaultReturnValue(Float.MAX_VALUE);
 
 		overlay = OverlayTexture.DEFAULT_UV;
 	}
@@ -80,11 +80,11 @@ public class TerrainRenderContext extends AbstractBlockRenderContext {
 			@Override
 			public int light(BlockPos pos, BlockState state) {
 				long key = pos.asLong();
-				int result = brightnessCache.get(key);
+				int result = lightCache.get(key);
 
 				if (result == Integer.MAX_VALUE) {
 					result = AoCalculator.getLightmapCoordinates(blockInfo.blockView, state, pos);
-					brightnessCache.put(key, result);
+					lightCache.put(key, result);
 				}
 
 				return result;
@@ -93,11 +93,11 @@ public class TerrainRenderContext extends AbstractBlockRenderContext {
 			@Override
 			public float ao(BlockPos pos, BlockState state) {
 				long key = pos.asLong();
-				float result = aoLevelCache.get(key);
+				float result = aoCache.get(key);
 
 				if (result == Float.MAX_VALUE) {
 					result = AoLuminanceFix.INSTANCE.apply(blockInfo.blockView, pos, state);
-					aoLevelCache.put(key, result);
+					aoCache.put(key, result);
 				}
 
 				return result;
@@ -117,8 +117,8 @@ public class TerrainRenderContext extends AbstractBlockRenderContext {
 		this.random = random;
 		this.bufferFunc = bufferFunc;
 
-		brightnessCache.clear();
-		aoLevelCache.clear();
+		lightCache.clear();
+		aoCache.clear();
 	}
 
 	public void release() {
@@ -129,27 +129,27 @@ public class TerrainRenderContext extends AbstractBlockRenderContext {
 		blockInfo.release();
 	}
 
-	/** Called from chunk renderer hook. */
-	public void tessellateBlock(BlockStateModel model, BlockState blockState, BlockPos blockPos) {
+	/** Called from section builder hook. */
+	public void bufferModel(BlockStateModel model, BlockState blockState, BlockPos blockPos) {
+		matrixStack.push();
+
 		try {
-			matrixStack.push();
 			matrixStack.translate(ChunkSectionPos.getLocalCoord(blockPos.getX()), ChunkSectionPos.getLocalCoord(blockPos.getY()), ChunkSectionPos.getLocalCoord(blockPos.getZ()));
 			Vec3d offset = blockState.getModelOffset(blockPos);
 			matrixStack.translate(offset.x, offset.y, offset.z);
-			this.posMatrix = matrixStack.peek().getPositionMatrix();
-			this.normalMatrix = matrixStack.peek().getNormalMatrix();
-			matrixStack.pop();
+			matrices = matrixStack.peek();
 
-			aoCalc.clear();
-			blockInfo.prepareForBlock(blockPos, blockState);
 			random.setSeed(blockState.getRenderingSeed(blockPos));
 
+			prepare(blockPos, blockState);
 			model.emitQuads(getEmitter(), blockInfo.blockView, blockPos, blockState, random, blockInfo::shouldCullSide);
 		} catch (Throwable throwable) {
 			CrashReport crashReport = CrashReport.create(throwable, "Tessellating block in world - Indigo Renderer");
 			CrashReportSection crashReportSection = crashReport.addElement("Block being tessellated");
 			CrashReportSection.addBlockInfo(crashReportSection, blockInfo.blockView, blockPos, blockState);
 			throw new CrashException(crashReport);
+		} finally {
+			matrixStack.pop();
 		}
 	}
 }

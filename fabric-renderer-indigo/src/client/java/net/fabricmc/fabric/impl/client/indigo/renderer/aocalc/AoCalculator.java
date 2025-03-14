@@ -130,10 +130,10 @@ public abstract class AoCalculator {
 				if (light[i] != vanillaLight[i] || !MathHelper.approximatelyEquals(ao[i], vanillaAo[i])) {
 					LOGGER.info(String.format("Mismatch for %s @ %s", blockInfo.blockState.toString(), blockInfo.blockPos.toString()));
 					LOGGER.info(String.format("Flags = %d, LightFace = %s", quad.geometryFlags(), quad.lightFace().toString()));
-					LOGGER.info(String.format("    Old Multiplier: %.2f, %.2f, %.2f, %.2f", vanillaAo[0], vanillaAo[1], vanillaAo[2], vanillaAo[3]));
-					LOGGER.info(String.format("    New Multiplier: %.2f, %.2f, %.2f, %.2f", ao[0], ao[1], ao[2], ao[3]));
-					LOGGER.info(String.format("    Old Brightness: %s, %s, %s, %s", Integer.toHexString(vanillaLight[0]), Integer.toHexString(vanillaLight[1]), Integer.toHexString(vanillaLight[2]), Integer.toHexString(vanillaLight[3])));
-					LOGGER.info(String.format("    New Brightness: %s, %s, %s, %s", Integer.toHexString(light[0]), Integer.toHexString(light[1]), Integer.toHexString(light[2]), Integer.toHexString(light[3])));
+					LOGGER.info(String.format("    Old Brightness: %.2f, %.2f, %.2f, %.2f", vanillaAo[0], vanillaAo[1], vanillaAo[2], vanillaAo[3]));
+					LOGGER.info(String.format("    New Brightness: %.2f, %.2f, %.2f, %.2f", ao[0], ao[1], ao[2], ao[3]));
+					LOGGER.info(String.format("    Old Light: %s, %s, %s, %s", Integer.toHexString(vanillaLight[0]), Integer.toHexString(vanillaLight[1]), Integer.toHexString(vanillaLight[2]), Integer.toHexString(vanillaLight[3])));
+					LOGGER.info(String.format("    New Light: %s, %s, %s, %s", Integer.toHexString(light[0]), Integer.toHexString(light[1]), Integer.toHexString(light[2]), Integer.toHexString(light[3])));
 					break;
 				}
 			}
@@ -338,7 +338,7 @@ public abstract class AoCalculator {
 	}
 
 	/**
-	 * Computes smoothed brightness and Ao shading for four corners of a block face.
+	 * Computes smoothed light and brightness for four corners of a block face.
 	 * Outer block face is what you normally see and what you get when the second
 	 * parameter is true. Inner is light *within* the block and usually darker.
 	 * It is blended with the outer face for inset surfaces, but is also used directly
@@ -473,7 +473,7 @@ public abstract class AoCalculator {
 			cEm3 = hasEmissiveLighting(world, searchPos, searchState);
 		}
 
-		// If on block face or neighbor isn't occluding, "center" will be neighbor brightness
+		// If on block face or neighbor isn't occluding, "center" will be neighbor light
 		// Doesn't use light pos because logic not based solely on this block's geometry
 		int lightCenter;
 		boolean emCenter;
@@ -489,17 +489,17 @@ public abstract class AoCalculator {
 		}
 
 		float aoCenter = ao(lightPos, world.getBlockState(lightPos));
-		float worldBrightness = world.getBrightness(lightFace, shade);
+		float shadeBrightness = world.getBrightness(lightFace, shade);
 
-		result.a0 = ((ao3 + ao0 + cAo1 + aoCenter) * 0.25F) * worldBrightness;
-		result.a1 = ((ao2 + ao0 + cAo0 + aoCenter) * 0.25F) * worldBrightness;
-		result.a2 = ((ao2 + ao1 + cAo2 + aoCenter) * 0.25F) * worldBrightness;
-		result.a3 = ((ao3 + ao1 + cAo3 + aoCenter) * 0.25F) * worldBrightness;
+		result.a0 = ((ao3 + ao0 + cAo1 + aoCenter) * 0.25F) * shadeBrightness;
+		result.a1 = ((ao2 + ao0 + cAo0 + aoCenter) * 0.25F) * shadeBrightness;
+		result.a2 = ((ao2 + ao1 + cAo2 + aoCenter) * 0.25F) * shadeBrightness;
+		result.a3 = ((ao3 + ao1 + cAo3 + aoCenter) * 0.25F) * shadeBrightness;
 
-		result.l0(meanBrightness(light3, light0, cLight1, lightCenter, em3, em0, cEm1, emCenter));
-		result.l1(meanBrightness(light2, light0, cLight0, lightCenter, em2, em0, cEm0, emCenter));
-		result.l2(meanBrightness(light2, light1, cLight2, lightCenter, em2, em1, cEm2, emCenter));
-		result.l3(meanBrightness(light3, light1, cLight3, lightCenter, em3, em1, cEm3, emCenter));
+		result.l0(meanLight(light3, light0, cLight1, lightCenter, em3, em0, cEm1, emCenter));
+		result.l1(meanLight(light2, light0, cLight0, lightCenter, em2, em0, cEm0, emCenter));
+		result.l2(meanLight(light2, light1, cLight2, lightCenter, em2, em1, cEm2, emCenter));
+		result.l3(meanLight(light3, light1, cLight3, lightCenter, em3, em1, cEm3, emCenter));
 	}
 
 	public static int getLightmapCoordinates(BlockRenderView world, BlockState state, BlockPos pos) {
@@ -507,16 +507,16 @@ public abstract class AoCalculator {
 			// Same as WorldRenderer.getLightmapCoordinates but without the hasEmissiveLighting check.
 			// We don't want emissive lighting to influence the minimum lightmap in a quad,
 			// so when the fix is enabled we apply emissive lighting after the quad minimum is computed.
-			// See AoCalculator#meanBrightness.
-			int i = world.getLightLevel(LightType.SKY, pos);
-			int j = world.getLightLevel(LightType.BLOCK, pos);
-			int k = state.getLuminance();
+			// See AoCalculator#meanLight.
+			int sky = world.getLightLevel(LightType.SKY, pos);
+			int block = world.getLightLevel(LightType.BLOCK, pos);
+			int luminance = state.getLuminance();
 
-			if (j < k) {
-				j = k;
+			if (block < luminance) {
+				block = luminance;
 			}
 
-			return i << 20 | j << 4;
+			return sky << 20 | block << 4;
 		} else {
 			return WorldRenderer.getLightmapCoordinates(world, state, pos);
 		}
@@ -536,7 +536,7 @@ public abstract class AoCalculator {
 	 * Still need to substitute or edges are too dark but consistently use the min
 	 * value from all four samples.
 	 */
-	private static int meanBrightness(int lightA, int lightB, int lightC, int lightD, boolean emA, boolean emB, boolean emC, boolean emD) {
+	private static int meanLight(int lightA, int lightB, int lightC, int lightD, boolean emA, boolean emB, boolean emC, boolean emD) {
 		if (Indigo.FIX_MEAN_LIGHT_CALCULATION) {
 			if (lightA == 0 || lightB == 0 || lightC == 0 || lightD == 0) {
 				// Normalize values to non-zero minimum
@@ -557,14 +557,14 @@ public abstract class AoCalculator {
 				if (emD) lightD = LightmapTextureManager.MAX_LIGHT_COORDINATE;
 			}
 
-			return meanInnerBrightness(lightA, lightB, lightC, lightD);
+			return meanInnerLight(lightA, lightB, lightC, lightD);
 		} else {
-			return vanillaMeanBrightness(lightA, lightB, lightC, lightD);
+			return vanillaMeanLight(lightA, lightB, lightC, lightD);
 		}
 	}
 
 	/** vanilla logic - excludes missing light values from mean and has anisotropy defect mentioned above. */
-	private static int vanillaMeanBrightness(int a, int b, int c, int d) {
+	private static int vanillaMeanLight(int a, int b, int c, int d) {
 		if (a == 0) a = d;
 		if (b == 0) b = d;
 		if (c == 0) c = d;
@@ -572,7 +572,7 @@ public abstract class AoCalculator {
 		return a + b + c + d >> 2 & 0xFF00FF;
 	}
 
-	private static int meanInnerBrightness(int a, int b, int c, int d) {
+	private static int meanInnerLight(int a, int b, int c, int d) {
 		// bitwise divide by 4, clamp to expected (positive) range
 		return a + b + c + d >> 2 & 0xFF00FF;
 	}

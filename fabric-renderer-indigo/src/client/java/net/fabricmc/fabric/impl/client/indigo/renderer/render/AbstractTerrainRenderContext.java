@@ -38,19 +38,29 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
-public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
+public abstract class AbstractTerrainRenderContext extends AbstractRenderContext {
 	protected final BlockRenderInfo blockInfo = new BlockRenderInfo();
 	protected final AoCalculator aoCalc;
 
+	private int cachedTintIndex = -1;
+	private int cachedTint;
+
 	private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
 
-	protected AbstractBlockRenderContext() {
+	protected AbstractTerrainRenderContext() {
 		aoCalc = createAoCalc(blockInfo);
 	}
 
 	protected abstract AoCalculator createAoCalc(BlockRenderInfo blockInfo);
 
 	protected abstract VertexConsumer getVertexConsumer(RenderLayer layer);
+
+	/** Must be called before buffering a block model. */
+	protected void prepare(BlockPos pos, BlockState state) {
+		blockInfo.prepareForBlock(pos, state);
+		aoCalc.clear();
+		cachedTintIndex = -1;
+	}
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
@@ -70,15 +80,21 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 		bufferQuad(quad, vertexConsumer);
 	}
 
-	/** handles block color, common to all renders. */
 	private void tintQuad(MutableQuadViewImpl quad) {
 		int tintIndex = quad.tintIndex();
 
 		if (tintIndex != -1) {
-			final int blockColor = blockInfo.blockColor(tintIndex);
+			final int tint;
+
+			if (tintIndex == cachedTintIndex) {
+				tint = cachedTint;
+			} else {
+				cachedTint = tint = blockInfo.blockColor(tintIndex);
+				cachedTintIndex = tintIndex;
+			}
 
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, ColorHelper.multiplyColor(blockColor, quad.color(i)));
+				quad.color(i, net.minecraft.util.math.ColorHelper.mix(quad.color(i), tint));
 			}
 		}
 	}
@@ -90,13 +106,13 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 
 			if (emissive) {
 				for (int i = 0; i < 4; i++) {
-					quad.color(i, ColorHelper.multiplyRGB(quad.color(i), aoCalc.ao[i]));
+					quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), aoCalc.ao[i]));
 					quad.lightmap(i, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 				}
 			} else {
 				for (int i = 0; i < 4; i++) {
-					quad.color(i, ColorHelper.multiplyRGB(quad.color(i), aoCalc.ao[i]));
-					quad.lightmap(i, ColorHelper.maxBrightness(quad.lightmap(i), aoCalc.light[i]));
+					quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), aoCalc.ao[i]));
+					quad.lightmap(i, ColorHelper.maxLight(quad.lightmap(i), aoCalc.light[i]));
 				}
 			}
 		} else {
@@ -107,10 +123,10 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 					quad.lightmap(i, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 				}
 			} else {
-				final int brightness = flatBrightness(quad, blockInfo.blockState, blockInfo.blockPos);
+				final int light = flatLight(quad, blockInfo.blockState, blockInfo.blockPos);
 
 				for (int i = 0; i < 4; i++) {
-					quad.lightmap(i, ColorHelper.maxBrightness(quad.lightmap(i), brightness));
+					quad.lightmap(i, ColorHelper.maxLight(quad.lightmap(i), light));
 				}
 			}
 		}
@@ -128,7 +144,7 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 			if (quad.hasAllVertexNormals()) {
 				for (int i = 0; i < 4; i++) {
 					float shade = normalShade(quad.normalX(i), quad.normalY(i), quad.normalZ(i), hasShade);
-					quad.color(i, ColorHelper.multiplyRGB(quad.color(i), shade));
+					quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), shade));
 				}
 			} else {
 				final float faceShade;
@@ -150,12 +166,12 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 							shade = faceShade;
 						}
 
-						quad.color(i, ColorHelper.multiplyRGB(quad.color(i), shade));
+						quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), shade));
 					}
 				} else {
 					if (faceShade != 1.0f) {
 						for (int i = 0; i < 4; i++) {
-							quad.color(i, ColorHelper.multiplyRGB(quad.color(i), faceShade));
+							quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), faceShade));
 						}
 					}
 				}
@@ -165,7 +181,7 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 
 			if (faceShade != 1.0f) {
 				for (int i = 0; i < 4; i++) {
-					quad.color(i, ColorHelper.multiplyRGB(quad.color(i), faceShade));
+					quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), faceShade));
 				}
 			}
 		}
@@ -208,10 +224,10 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 	}
 
 	/**
-	 * Handles geometry-based check for using self brightness or neighbor brightness.
+	 * Handles geometry-based check for using self light or neighbor light.
 	 * That logic only applies in flat lighting.
 	 */
-	private int flatBrightness(MutableQuadViewImpl quad, BlockState blockState, BlockPos pos) {
+	private int flatLight(MutableQuadViewImpl quad, BlockState blockState, BlockPos pos) {
 		lightPos.set(pos);
 
 		// To mirror Vanilla's behavior, if the face has a cull-face, always sample the light value
@@ -227,7 +243,7 @@ public abstract class AbstractBlockRenderContext extends AbstractRenderContext {
 			}
 		}
 
-		// Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329
+		// Unfortunately cannot use light cache here unless we implement one specifically for flat lighting. See #329
 		return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, blockState, lightPos);
 	}
 }

@@ -109,7 +109,7 @@ abstract class SectionBuilderMixin {
 			BlockStateModel model = blockRenderManager.getModel(blockState);
 
 			if (Indigo.ALWAYS_TESSELATE_INDIGO || !model.isVanillaAdapter()) {
-				((AccessChunkRendererRegion) renderRegion).fabric_getRenderer().tessellateBlock(model, blockState, blockPos);
+				((AccessChunkRendererRegion) renderRegion).fabric_getRenderer().bufferModel(model, blockState, blockPos);
 				return BlockRenderType.INVISIBLE; // Cancel the vanilla logic
 			}
 		}
