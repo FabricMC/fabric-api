@@ -22,8 +22,8 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.class_10895;
 import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.client.render.model.MultipartBlockStateModel;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -70,8 +70,8 @@ public interface FabricBlockStateModel {
 	 * {@linkplain Random#setSeed(long) reseed} the random using a predetermined value before invoking each subtask, so
 	 * that one subtask's operations do not affect the next subtask. For example, if a model collects geometry from
 	 * multiple submodels, each submodel is considered a subtask and thus the random should be reseeded before
-	 * collecting geometry from each submodel. See {@link class_10895#addParts(Random, List)} for an example
-	 * implementation of this.
+	 * collecting geometry from each submodel. See {@link MultipartBlockStateModel#addParts(Random, List)} for an
+	 * example implementation of this.
 	 *
 	 * <p>Implementations should rely on pre-baked meshes as much as possible and keep dynamic transformations to a
 	 * minimum for performance.

@@ -26,8 +26,6 @@ import static net.minecraft.util.math.Direction.SOUTH;
 import static net.minecraft.util.math.Direction.UP;
 import static net.minecraft.util.math.Direction.WEST;
 
-import java.util.BitSet;
-
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.slf4j.Logger;
@@ -69,7 +67,6 @@ public abstract class AoCalculator {
 		VERTEX_MAP[EAST.getIndex()] = new int[] { 1, 2, 3, 0 };
 	}
 
-	private final BlockModelRenderer.AmbientOcclusionCalculator vanillaCalc;
 	private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
 	private final BlockPos.Mutable searchPos = new BlockPos.Mutable();
 	protected final BlockRenderInfo blockInfo;
@@ -89,7 +86,6 @@ public abstract class AoCalculator {
 
 	public AoCalculator(BlockRenderInfo blockInfo) {
 		this.blockInfo = blockInfo;
-		this.vanillaCalc = new BlockModelRenderer.AmbientOcclusionCalculator();
 
 		for (int i = 0; i < 24; i++) {
 			faceData[i] = new AoFaceData();
@@ -147,20 +143,18 @@ public abstract class AoCalculator {
 	// These are what vanilla AO calc wants, per its usage in vanilla code
 	// Because this instance is effectively thread-local, we preserve instances
 	// to avoid making a new allocation each call.
-	private final float[] vanillaAoData = new float[Direction.values().length * 2];
-	private final BitSet vanillaAoFlags = new BitSet(3);
 	private final int[] vertexData = new int[EncodingFormat.QUAD_STRIDE];
+	private final BlockModelRenderer.AmbientOcclusionCalculator vanillaCalc = new BlockModelRenderer.AmbientOcclusionCalculator();
 
 	private void calcVanilla(QuadViewImpl quad, float[] aoDest, int[] lightDest) {
-		vanillaAoFlags.clear();
 		final Direction lightFace = quad.lightFace();
 		quad.toVanilla(vertexData, 0);
 
-		VanillaAoHelper.getQuadDimensions(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaAoData, vanillaAoFlags);
-		vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, vanillaAoData, vanillaAoFlags, quad.hasShade());
+		BlockModelRenderer.getQuadDimensions(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaCalc);
+		vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, quad.hasShade());
 
-		System.arraycopy(vanillaCalc.brightness, 0, aoDest, 0, 4);
-		System.arraycopy(vanillaCalc.light, 0, lightDest, 0, 4);
+		System.arraycopy(vanillaCalc.field_58162, 0, aoDest, 0, 4);
+		System.arraycopy(vanillaCalc.field_58163, 0, lightDest, 0, 4);
 	}
 
 	private void calcFastVanilla(QuadViewImpl quad) {

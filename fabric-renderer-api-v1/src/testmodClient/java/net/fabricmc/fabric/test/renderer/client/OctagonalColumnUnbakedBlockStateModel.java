@@ -53,7 +53,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 	}
 
 	@Override
-	public BlockStateModel getModel(Baker baker) {
+	public BlockStateModel bake(Baker baker) {
 		Sprite whiteConcreteSprite = baker.getSpriteGetter().get(WHITE_CONCRETE_SPRITE_ID, this);
 
 		MaterialFinder finder = Renderer.get().materialFinder();

@@ -38,7 +38,7 @@ public class PillarUnbakedBlockStateModel implements BlockStateModel.Unbaked, Si
 	}
 
 	@Override
-	public BlockStateModel getModel(Baker baker) {
+	public BlockStateModel bake(Baker baker) {
 		Sprite[] sprites = new Sprite[SPRITES.size()];
 
 		for (int i = 0; i < sprites.length; ++i) {

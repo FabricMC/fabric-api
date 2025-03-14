@@ -17,7 +17,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.16.10",
-    "minecraft": ">=1.21.5-alpha.25.9.b",
+    "minecraft": ">=1.21.5-beta.1",
     "fabric-api-base": "*"
   },
   "description": "Defines rendering extensions for dynamic/fancy block and item models.",

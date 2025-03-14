@@ -42,7 +42,7 @@ public class FrameUnbakedBlockStateModel implements BlockStateModel.Unbaked, Sim
 	 * In this case we can prebake the frame into a mesh, but will render the contained block when we draw the quads.
 	 */
 	@Override
-	public BlockStateModel getModel(Baker baker) {
+	public BlockStateModel bake(Baker baker) {
 		Sprite obsidianSprite = baker.getSpriteGetter().get(OBSIDIAN_SPRITE_ID, this);
 
 		MutableMesh builder = Renderer.get().mutableMesh();

@@ -127,7 +127,7 @@ public interface Renderer {
 	 * @see FabricBlockModelRenderer#render(MatrixStack.Entry, VertexConsumerProvider, BlockStateModel, float, float, float, int, int, BlockRenderView, BlockPos, BlockState)
 	 */
 	@ApiStatus.OverrideOnly
-	void render(BlockModelRenderer modelRenderer, MatrixStack.Entry matrices, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state);
+	void render(MatrixStack.Entry matrices, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state);
 
 	/**
 	 * @see FabricBlockRenderManager#renderBlockAsEntity(BlockState, MatrixStack, VertexConsumerProvider, int, int, BlockRenderView, BlockPos)

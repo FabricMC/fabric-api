@@ -40,6 +40,7 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.MaterialFinderImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
@@ -101,11 +102,11 @@ public class IndigoRenderer implements Renderer {
 	}
 
 	@Override
-	public void render(BlockModelRenderer modelRenderer, MatrixStack.Entry entry, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
+	public void render(MatrixStack.Entry entry, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
 		if (!model.isVanillaAdapter()) {
 			SimpleBlockRenderContext.POOL.get().bufferModel(entry, vertexConsumers, model, red, green, blue, light, overlay, blockView, pos, state);
 		} else {
-			modelRenderer.render(entry, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(state)), model, red, green, blue, light, overlay);
+			BlockModelRenderer.render(entry, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(state)), model, red, green, blue, light, overlay);
 		}
 	}
 
@@ -119,7 +120,7 @@ public class IndigoRenderer implements Renderer {
 			float red = (tint >> 16 & 255) / 255.0F;
 			float green = (tint >> 8 & 255) / 255.0F;
 			float blue = (tint & 255) / 255.0F;
-			renderManager.getModelRenderer().render(matrices.peek(), layer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer)), model, red, green, blue, light, overlay, blockView, pos, state);
+			FabricBlockModelRenderer.render(matrices.peek(), layer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer)), model, red, green, blue, light, overlay, blockView, pos, state);
 			((BlockRenderManagerAccessor) renderManager).getBlockEntityModelsGetter().get().render(state.getBlock(), ItemDisplayContext.NONE, matrices, vertexConsumers, light, overlay);
 		}
 	}

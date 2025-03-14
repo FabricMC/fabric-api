@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.SimpleBlockRenderC
 @Mixin(BlockModelRenderer.class)
 abstract class BlockModelRendererMixin {
 	@Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack$Entry;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/client/render/model/BlockStateModel;FFFII)V", at = @At("HEAD"), cancellable = true)
-	private void onHeadRender(MatrixStack.Entry entry, VertexConsumer vertexConsumer, BlockStateModel model, float red, float green, float blue, int light, int overlay, CallbackInfo ci) {
+	private static void onHeadRender(MatrixStack.Entry entry, VertexConsumer vertexConsumer, BlockStateModel model, float red, float green, float blue, int light, int overlay, CallbackInfo ci) {
 		if (!model.isVanillaAdapter()) {
 			SimpleBlockRenderContext.POOL.get().bufferModel(entry, layer -> vertexConsumer, model, red, green, blue, light, overlay, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, Blocks.AIR.getDefaultState());
 			ci.cancel();

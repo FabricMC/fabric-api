@@ -33,9 +33,9 @@ public class RiverstoneUnbakedBlockStateModel implements BlockStateModel.Unbaked
 	}
 
 	@Override
-	public BlockStateModel getModel(Baker baker) {
-		BlockStateModel stoneModel = new SimpleBlockStateModel.Unbaked(new ModelVariant(STONE_MODEL_ID)).getModel(baker);
-		BlockStateModel goldBlockModel = new SimpleBlockStateModel.Unbaked(new ModelVariant(GOLD_BLOCK_MODEL_ID)).getModel(baker);
+	public BlockStateModel bake(Baker baker) {
+		BlockStateModel stoneModel = new SimpleBlockStateModel.Unbaked(new ModelVariant(STONE_MODEL_ID)).bake(baker);
+		BlockStateModel goldBlockModel = new SimpleBlockStateModel.Unbaked(new ModelVariant(GOLD_BLOCK_MODEL_ID)).bake(baker);
 		return new RiverstoneBlockStateModel(stoneModel, goldBlockModel);
 	}
 }

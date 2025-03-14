@@ -97,7 +97,7 @@ public interface FabricBlockModelRenderer {
 	 *            </b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 */
-	default void render(MatrixStack.Entry matrices, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
-		Renderer.get().render((BlockModelRenderer) this, matrices, vertexConsumers, model, red, green, blue, light, overlay, blockView, pos, state);
+	static void render(MatrixStack.Entry matrices, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
+		Renderer.get().render(matrices, vertexConsumers, model, red, green, blue, light, overlay, blockView, pos, state);
 	}
 }

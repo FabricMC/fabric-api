@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -59,7 +59,7 @@ public final class EncodingFormat {
 	public static final int TOTAL_STRIDE;
 
 	static {
-		final VertexFormat format = VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL;
+		final VertexFormat format = VertexFormats.field_1590;
 		VERTEX_X = HEADER_STRIDE + 0;
 		VERTEX_Y = HEADER_STRIDE + 1;
 		VERTEX_Z = HEADER_STRIDE + 2;
@@ -68,7 +68,7 @@ public final class EncodingFormat {
 		VERTEX_V = VERTEX_U + 1;
 		VERTEX_LIGHTMAP = HEADER_STRIDE + 6;
 		VERTEX_NORMAL = HEADER_STRIDE + 7;
-		VERTEX_STRIDE = format.getVertexSizeByte() / 4;
+		VERTEX_STRIDE = format.getVertexSize() / 4;
 		QUAD_STRIDE = VERTEX_STRIDE * 4;
 		QUAD_STRIDE_BYTES = QUAD_STRIDE * 4;
 		TOTAL_STRIDE = HEADER_STRIDE + QUAD_STRIDE;
