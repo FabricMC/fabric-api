@@ -29,7 +29,8 @@
       "net.fabricmc.fabric.test.object.builder.PersistentStateManagerTest"
     ],
     "fabric-gametest": [
-      "net.fabricmc.fabric.test.object.builder.ObjectBuilderGameTest"
+      "net.fabricmc.fabric.test.object.builder.ObjectBuilderGameTest",
+      "net.fabricmc.fabric.test.object.builder.EmptyTypeAwareBuyForOneEmeraldTradeOfferGameTest"
     ]
   }
 }

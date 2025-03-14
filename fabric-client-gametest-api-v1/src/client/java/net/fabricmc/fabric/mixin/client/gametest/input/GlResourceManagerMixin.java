@@ -19,25 +19,26 @@ package net.fabricmc.fabric.mixin.client.gametest.input;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.textures.GpuTexture;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.FramebufferManager;
 import net.minecraft.client.gl.GlResourceManager;
-import net.minecraft.client.texture.DrawableTexture;
 
 import net.fabricmc.fabric.impl.client.gametest.util.WindowHooks;
 
 @Mixin(GlResourceManager.class)
 public class GlResourceManagerMixin {
-	@WrapOperation(method = "method_68357", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_glBlitFrameBuffer(IIIIIIIIII)V"))
-	private void blitFrameBuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter, Operation<Void> original, @Local(argsOnly = true) DrawableTexture drawableTexture) {
-		if (drawableTexture == MinecraftClient.getInstance().getFramebuffer().getColorAttachment()) {
+	@WrapOperation(method = "presentTexture", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/FramebufferManager;method_68812(IIIIIIIIIIII)V"))
+	private void blitFrameBuffer(FramebufferManager manager, int readFramebuffer, int drawFramebuffer, int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter, Operation<Void> original, @Local(argsOnly = true) GpuTexture gpuTexture) {
+		if (gpuTexture == MinecraftClient.getInstance().getFramebuffer().method_30277()) {
 			WindowHooks window = ((WindowHooks) (Object) MinecraftClient.getInstance().getWindow());
 			dstX1 = window.fabric_getRealFramebufferWidth();
 			dstY1 = window.fabric_getRealFramebufferHeight();
 		}
 
-		original.call(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+		original.call(manager, readFramebuffer, drawFramebuffer, srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 	}
 }

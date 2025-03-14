@@ -50,8 +50,8 @@ transitive-accessible class net/minecraft/client/model/ModelPart$Vertex
 transitive-accessible class net/minecraft/client/model/ModelPart$Quad
 
 # Creating custom render layers
-transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;ILnet/minecraft/client/gl/ShaderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
-transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;IZZLnet/minecraft/client/gl/ShaderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
+transitive-accessible method net/minecraft/client/render/RenderLayer method_24048 (Ljava/lang/String;ILcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
+transitive-accessible method net/minecraft/client/render/RenderLayer method_24049 (Ljava/lang/String;IZZLcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
 transitive-accessible class net/minecraft/client/render/RenderLayer$MultiPhase
 transitive-accessible class net/minecraft/client/render/RenderLayer$MultiPhaseParameters
 transitive-accessible class net/minecraft/client/render/RenderLayer$OutlineMode
@@ -300,7 +300,7 @@ transitive-accessible field net/minecraft/client/render/RenderPhase NO_TEXTURE L
 transitive-accessible field net/minecraft/client/render/RenderPhase DEFAULT_TEXTURING Lnet/minecraft/client/render/RenderPhase$Texturing;
 transitive-accessible field net/minecraft/client/render/RenderPhase GLINT_TEXTURING Lnet/minecraft/client/render/RenderPhase$Texturing;
 transitive-accessible field net/minecraft/client/render/RenderPhase ENTITY_GLINT_TEXTURING Lnet/minecraft/client/render/RenderPhase$Texturing;
-transitive-accessible field net/minecraft/client/render/RenderPhase field_58053 Lnet/minecraft/client/render/RenderPhase$Texturing;
+transitive-accessible field net/minecraft/client/render/RenderPhase ARMOR_ENTITY_GLINT_TEXTURING Lnet/minecraft/client/render/RenderPhase$Texturing;
 transitive-accessible field net/minecraft/client/render/RenderPhase ENABLE_LIGHTMAP Lnet/minecraft/client/render/RenderPhase$Lightmap;
 transitive-accessible field net/minecraft/client/render/RenderPhase DISABLE_LIGHTMAP Lnet/minecraft/client/render/RenderPhase$Lightmap;
 transitive-accessible field net/minecraft/client/render/RenderPhase ENABLE_OVERLAY_COLOR Lnet/minecraft/client/render/RenderPhase$Overlay;

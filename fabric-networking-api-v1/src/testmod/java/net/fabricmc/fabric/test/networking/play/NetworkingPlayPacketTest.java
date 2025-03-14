@@ -20,7 +20,9 @@ import static com.mojang.brigadier.arguments.StringArgumentType.string;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -37,6 +39,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
@@ -45,7 +48,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.networking.FabricRegistryByteBuf;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
+import net.fabricmc.fabric.test.networking.common.NetworkingCommonTest;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class NetworkingPlayPacketTest implements ModInitializer {
@@ -132,6 +137,15 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		}
 
 		public void write(RegistryByteBuf buf) {
+			// Test that we can get the configuration channels that the client accepts
+			FabricRegistryByteBuf fabricRegistryByteBuf = (FabricRegistryByteBuf) buf;
+			Collection<Identifier> channels = fabricRegistryByteBuf.fabric_getSendableConfigurationChannels();
+			Objects.requireNonNull(channels);
+
+			if (!channels.contains(NetworkingCommonTest.CommonPayload.ID.id())) {
+				throw new IllegalStateException("Expected common payload channel to be sent");
+			}
+
 			TextCodecs.REGISTRY_PACKET_CODEC.encode(buf, this.message);
 		}
 

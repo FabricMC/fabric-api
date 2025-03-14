@@ -26,8 +26,10 @@ public final class ServerPlayerEvents {
 	/**
 	 * An event that is called when the data from an old player is copied to a new player.
 	 *
-	 * <p>This event is typically called before a player is completely respawned.
+	 * <p>This event is called <strong>after</strong> the old player is removed and untracked, but <strong>before</strong> the new player is added and tracked.
 	 * Mods may use this event to copy old player data to a new player.
+	 *
+	 * @see ServerPlayerEvents#AFTER_RESPAWN
 	 */
 	public static final Event<ServerPlayerEvents.CopyFrom> COPY_FROM = EventFactory.createArrayBacked(ServerPlayerEvents.CopyFrom.class, callbacks -> (oldPlayer, newPlayer, alive) -> {
 		for (CopyFrom callback : callbacks) {

@@ -19,16 +19,14 @@ package net.fabricmc.fabric.mixin.object.builder;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Cancellable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.TradedItem;
@@ -48,12 +46,18 @@ public abstract class TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin {
 	}
 
 	/**
-	 * To prevent "item" -> "air" trades, if the result of a type aware trade is air, make sure no offer is created.
+	 * To prevent crashes due to passing a {@code null} item to a {@link TradedItem}, return a {@code null} trade offer
+	 * early before {@code null} is passed to the constructor.
 	 */
-	@Inject(method = "create", at = @At(value = "NEW", target = "net/minecraft/village/TradeOffer"), cancellable = true)
-	private void failOnNullItem(Entity entity, Random random, CallbackInfoReturnable<TradeOffer> cir, @Local() TradedItem tradedItem) {
-		if (tradedItem.itemStack().isEmpty()) { // Will return true for an "empty" item stack that had null passed in the ctor
-			cir.setReturnValue(null); // Return null to prevent creation of empty trades
+	@ModifyExpressionValue(
+			method = "create",
+			at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;")
+	)
+	private Object failOnNullItem(Object item, @Cancellable CallbackInfoReturnable<TradeOffer> cir) {
+		if (item == null) {
+			cir.setReturnValue(null);
 		}
+
+		return item;
 	}
 }

@@ -17,7 +17,12 @@
 package net.fabricmc.fabric.mixin.networking;
 
 import java.util.Queue;
+import java.util.Set;
+import java.util.function.Function;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,6 +33,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
@@ -35,6 +42,7 @@ import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 
 import net.fabricmc.fabric.api.networking.v1.FabricServerConfigurationNetworkHandler;
+import net.fabricmc.fabric.impl.networking.FabricRegistryByteBuf;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 
@@ -162,5 +170,14 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 
 		this.currentTask = null;
 		sendConfigurations();
+	}
+
+	@WrapOperation(method = "onReady", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/RegistryByteBuf;makeFactory(Lnet/minecraft/registry/DynamicRegistryManager;)Ljava/util/function/Function;"))
+	private Function<ByteBuf, RegistryByteBuf> bindChannelInfo(DynamicRegistryManager registryManager, Operation<Function<ByteBuf, RegistryByteBuf>> original) {
+		return original.call(registryManager).andThen(registryByteBuf -> {
+			FabricRegistryByteBuf fabricRegistryByteBuf = (FabricRegistryByteBuf) registryByteBuf;
+			fabricRegistryByteBuf.fabric_setSendableConfigurationChannels(Set.copyOf(addon.getSendableChannels()));
+			return registryByteBuf;
+		});
 	}
 }
