@@ -9,11 +9,16 @@
     "client.FallingBlockEntityRendererMixin",
     "client.ItemFrameEntityRendererMixin",
     "client.MooshroomMushroomFeatureRendererMixin",
+    "client.MultipartBakedModelAccessor",
     "client.MultipartBlockStateModelMixin",
     "client.PistonBlockEntityRendererMixin",
     "client.SnowGolemPumpkinFeatureRendererMixin",
     "client.SpriteAtlasTextureMixin",
-    "client.WeightedBlockStateModelMixin"
+    "client.WeightedBlockStateModelMixin",
+    "client.particle.BlockDustParticleMixin",
+    "client.particle.BlockMarkerParticleMixin",
+    "client.particle.BlockModelsMixin",
+    "client.particle.InGameOverlayRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

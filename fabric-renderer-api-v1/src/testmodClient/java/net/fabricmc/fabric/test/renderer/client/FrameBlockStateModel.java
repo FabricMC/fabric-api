@@ -127,4 +127,16 @@ public class FrameBlockStateModel implements BlockStateModel {
 	public Sprite particleSprite() {
 		return frameSprite;
 	}
+
+	@Override
+	public Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
+		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
+		if (!(((FabricBlockView) blockView).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
+			return particleSprite(); // No inner block to render, or data of wrong type
+		}
+
+		BlockState innerState = mimickedBlock.getDefaultState();
+		BlockStateModel innerModel = MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState);
+		return innerModel.particleSprite(blockView, pos, state);
+	}
 }

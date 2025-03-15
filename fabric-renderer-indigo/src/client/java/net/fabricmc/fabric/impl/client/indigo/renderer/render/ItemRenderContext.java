@@ -25,6 +25,7 @@ import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.math.MatrixUtil;
@@ -175,6 +176,6 @@ public class ItemRenderContext extends AbstractRenderContext {
 			return ItemRendererAccessor.fabric_getDynamicDisplayGlintConsumer(vertexConsumerProvider, layer, specialGlintEntry);
 		}
 
-		return net.minecraft.client.render.item.ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, layer, true, glint != ItemRenderState.Glint.NONE);
+		return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, layer, true, glint != ItemRenderState.Glint.NONE);
 	}
 }

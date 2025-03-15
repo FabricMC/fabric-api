@@ -65,4 +65,13 @@ public class RiverstoneBlockStateModel implements BlockStateModel {
 	public Sprite particleSprite() {
 		return regularModel.particleSprite();
 	}
+
+	@Override
+	public Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
+		if (((FabricBlockView) blockView).hasBiomes() && ((FabricBlockView) blockView).getBiomeFabric(pos).isIn(BiomeTags.IS_RIVER)) {
+			return riverModel.particleSprite(blockView, pos, state);
+		} else {
+			return regularModel.particleSprite(blockView, pos, state);
+		}
+	}
 }

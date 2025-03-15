@@ -54,14 +54,14 @@ public interface FabricBlockModelRenderer {
 	 * culling, dynamic tinting, shading, and flat/smooth lighting.
 	 *
 	 * @param blockView The world in which to render the model. <b>Should not be empty (i.e. not
-	 * {@link EmptyBlockRenderView}).</b>
+	 *                  {@link EmptyBlockRenderView}).</b>
 	 * @param model The model to render.
 	 * @param state The block state.
 	 * @param pos The position of the block in the world.
 	 * @param matrices The matrix stack.
 	 * @param vertexConsumers The vertex consumers. <b>The {@link RenderLayer} passed to
-	 * {@link VertexConsumerProvider#getBuffer(RenderLayer)} is guaranteed to be one of
-	 * {@link RenderLayer#getBlockLayers()}</b>.
+	 *                        {@link VertexConsumerProvider#getBuffer(RenderLayer)} is guaranteed to be one of
+	 *                        {@link RenderLayer#getBlockLayers()}</b>.
 	 * @param cull Whether to try to cull faces hidden by other blocks.
 	 * @param seed The random seed. Usually retrieved by the caller from {@link BlockState#getRenderingSeed(BlockPos)}.
 	 * @param overlay The overlay value to pass to output {@link VertexConsumer}s.
@@ -84,8 +84,8 @@ public interface FabricBlockModelRenderer {
 	 *
 	 * @param matrices The matrices.
 	 * @param vertexConsumers The vertex consumers. <b>The {@link RenderLayer} passed to
-	 * {@link VertexConsumerProvider#getBuffer(RenderLayer)} is guaranteed to be one of
-	 * {@link RenderLayer#getBlockLayers()}</b>.
+	 *                        {@link VertexConsumerProvider#getBuffer(RenderLayer)} is guaranteed to be one of
+	 *                        {@link RenderLayer#getBlockLayers()}</b>.
 	 * @param model The model to render.
 	 * @param red The red component of the tint color.
 	 * @param green The green component of the tint color.

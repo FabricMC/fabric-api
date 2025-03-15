@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.model.MultipartBlockStateModel;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -79,7 +80,8 @@ public interface FabricBlockStateModel {
 	 * @param emitter Accepts model output.
 	 * @param blockView Access to world state.
 	 * @param pos Position of block for model being rendered.
-	 * @param state Block state for model being rendered.
+	 * @param state Block state whose model was queried for geometry. <b>This is not guaranteed to be the
+	 *              state corresponding to {@code this} model!</b>
 	 * @param random Random object seeded per vanilla conventions. Do not cache or retain a reference.
 	 * @param cullTest A test that returns {@code true} for faces which will be culled and {@code false} for faces which
 	 *                 may or may not be culled. Meant to be used to cull groups of quads or expensive dynamic quads
@@ -89,5 +91,22 @@ public interface FabricBlockStateModel {
 	 */
 	default void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
 		VanillaBlockModelEncoder.emitQuads(emitter, (BlockStateModel) this, random, cullTest);
+	}
+
+	/**
+	 * Extension of {@link BlockStateModel#particleSprite()} that accepts world state. This method will be invoked most
+	 * of the time, but the vanilla method may still be invoked when no world context is available.
+	 *
+	 * <p><b>If your model delegates to other {@link BlockStateModel}s, ensure that it also delegates invocations of
+	 * this method to its submodels as appropriate!</b>
+	 *
+	 * @param blockView The world in which the block exists.
+	 * @param pos The position of the block in the world.
+	 * @param state The block state whose model was queried for the particle sprite. <b>This is not guaranteed to be the
+	 *              state corresponding to {@code this} model!</b>
+	 * @return the particle sprite
+	 */
+	default Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
+		return ((BlockStateModel) this).particleSprite();
 	}
 }

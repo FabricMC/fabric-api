@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.model.MultipartBlockStateModel;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -87,5 +88,10 @@ abstract class MultipartBlockStateModelMixin implements BlockStateModel {
 			random.setSeed(seed);
 			model.emitQuads(emitter, blockView, pos, state, random, cullTest);
 		}
+	}
+
+	@Override
+	public Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
+		return ((MultipartBakedModelAccessor) (Object) bakedModels).getSelectors().getFirst().model().particleSprite(blockView, pos, state);
 	}
 }

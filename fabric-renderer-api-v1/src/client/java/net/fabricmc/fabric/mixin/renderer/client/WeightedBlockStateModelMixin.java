@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.model.WeightedBlockStateModel;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.collection.Pool;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.math.BlockPos;
@@ -66,5 +67,10 @@ abstract class WeightedBlockStateModelMixin implements BlockStateModel {
 	@Override
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
 		models.get(random).emitQuads(emitter, blockView, pos, state, random, cullTest);
+	}
+
+	@Override
+	public Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
+		return models.getEntries().getFirst().value().particleSprite(blockView, pos, state);
 	}
 }

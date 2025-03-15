@@ -70,4 +70,9 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
 		wrapped.emitQuads(emitter, blockView, pos, state, random, cullTest);
 	}
+
+	@Override
+	public Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
+		return wrapped.particleSprite(blockView, pos, state);
+	}
 }
