@@ -26,7 +26,7 @@ import net.fabricmc.fabric.impl.datagen.loot.ConditionEntityLootTableGenerator;
 public interface FabricEntityLootTableGenerator {
 	/**
 	 * {@return a new generator that applies the specified conditions to any loot table it receives, and then forwards
-	 * the loot tables to this generator}
+	 * the loot tables to this generator}.
 	 */
 	default EntityLootTableGenerator withConditions(ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");

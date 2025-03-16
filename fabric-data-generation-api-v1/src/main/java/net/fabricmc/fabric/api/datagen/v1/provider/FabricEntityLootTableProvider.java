@@ -44,8 +44,8 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 
 /**
  * Extend this class and implement {@link FabricEntityLootTableProvider#generate()}.
- * <p>
- * Register an instance of this class with {@link FabricDataGenerator.Pack#addProvider} in a
+ *
+ * <p>Register an instance of this class with {@link FabricDataGenerator.Pack#addProvider} in a
  * {@link DataGeneratorEntrypoint}.
  */
 public abstract class FabricEntityLootTableProvider extends EntityLootTableGenerator implements FabricLootTableProvider {
@@ -62,10 +62,10 @@ public abstract class FabricEntityLootTableProvider extends EntityLootTableGener
 
 	/**
 	 * Implement this method to add entity drops.
-	 * <p>
-	 * Use the {@link EntityLootTableGenerator#register} methods to generate entity drops.
-	 * <p>
-	 * See {@link VanillaEntityLootTableGenerator#generate()} for examples of vanilla entity loot tables.
+	 *
+	 * <p>Use the {@link EntityLootTableGenerator#register} methods to generate entity drops.
+	 *
+	 * <p>See {@link VanillaEntityLootTableGenerator#generate()} for examples of vanilla entity loot tables.
 	 */
 	@Override
 	public abstract void generate();

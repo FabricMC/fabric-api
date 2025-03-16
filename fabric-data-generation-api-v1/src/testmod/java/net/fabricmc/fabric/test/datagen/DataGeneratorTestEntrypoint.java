@@ -16,7 +16,16 @@
 
 package net.fabricmc.fabric.test.datagen;
 
-import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.*;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_ITEM;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ENTITY_TYPE_WITHOUT_LOOT_TABLE;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ENTITY_TYPE;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DATAGEN_DYNAMIC_REGISTRY_KEY;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_ITEM_KEY;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
