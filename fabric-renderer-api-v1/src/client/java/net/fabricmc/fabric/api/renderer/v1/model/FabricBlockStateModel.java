@@ -22,6 +22,7 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BlockModelPart;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.model.MultipartBlockStateModel;
 import net.minecraft.client.texture.Sprite;
@@ -33,7 +34,6 @@ import net.minecraft.world.EmptyBlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.impl.renderer.VanillaBlockModelEncoder;
 
 /**
  * Interface for baked block state models that output geometry with enhanced rendering features.
@@ -79,7 +79,12 @@ public interface FabricBlockStateModel {
 	 *                 {@link MutableQuadView#cullFace(Direction)} instead of this test.
 	 */
 	default void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
-		VanillaBlockModelEncoder.emitQuads(emitter, (BlockStateModel) this, random, cullTest);
+		final List<BlockModelPart> parts = ((BlockStateModel) this).getParts(random);
+		final int partCount = parts.size();
+
+		for (int i = 0; i < partCount; i++) {
+			parts.get(i).emitQuads(emitter, cullTest);
+		}
 	}
 
 	/**

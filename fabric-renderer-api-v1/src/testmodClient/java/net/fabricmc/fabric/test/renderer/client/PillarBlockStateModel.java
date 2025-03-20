@@ -52,17 +52,12 @@ public class PillarBlockStateModel implements BlockStateModel {
 
 	@Override
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
-		// Do not use the passed state to ensure that this model connects
-		// to and from blocks with a custom appearance correctly.
-		BlockState worldState = blockView.getBlockState(pos);
-
 		for (Direction side : Direction.values()) {
 			ConnectedTexture texture = ConnectedTexture.ALONE;
 
 			if (side.getAxis().isHorizontal()) {
-				// TODO: Which state to use?
-				boolean connectAbove = canConnect(blockView, worldState, pos, pos.offset(Direction.UP), side);
-				boolean connectBelow = canConnect(blockView, worldState, pos, pos.offset(Direction.DOWN), side);
+				boolean connectAbove = canConnect(blockView, state, pos, pos.offset(Direction.UP), side);
+				boolean connectBelow = canConnect(blockView, state, pos, pos.offset(Direction.DOWN), side);
 
 				if (connectAbove && connectBelow) {
 					texture = ConnectedTexture.MIDDLE;

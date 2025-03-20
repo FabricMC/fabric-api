@@ -23,9 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BlockModelPart;
-import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -35,37 +33,31 @@ import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.util.TriState;
 
 /**
- * Routines for adaptation of vanilla {@link BlockStateModel}s to FRAPI pipelines.
+ * Routines for adaptation of vanilla {@link BlockModelPart}s to FRAPI pipelines.
  */
-public class VanillaBlockModelEncoder {
+public class VanillaBlockModelPartEncoder {
 	private static final RenderMaterial STANDARD_MATERIAL = Renderer.get().materialFinder().shadeMode(ShadeMode.VANILLA).find();
 	private static final RenderMaterial NO_AO_MATERIAL = Renderer.get().materialFinder().shadeMode(ShadeMode.VANILLA).ambientOcclusion(TriState.FALSE).find();
 
-	public static void emitQuads(QuadEmitter emitter, BlockStateModel model, Random random, Predicate<@Nullable Direction> cullTest) {
-		final List<BlockModelPart> parts = model.getParts(random);
-		final int partCount = parts.size();
+	public static void emitQuads(BlockModelPart part, QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
+		// This does not exactly match vanilla, but doing so requires hiding state all over the FRAPI impl.
+		final RenderMaterial defaultMaterial = part.useAmbientOcclusion() ? STANDARD_MATERIAL : NO_AO_MATERIAL;
 
-		for (int i = 0; i < partCount; i++) {
-			final BlockModelPart part = parts.get(i);
-			// This does not exactly match vanilla, but doing so requires hiding state all over the FRAPI impl.
-			final RenderMaterial defaultMaterial = part.useAmbientOcclusion() ? STANDARD_MATERIAL : NO_AO_MATERIAL;
+		for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
+			final Direction cullFace = ModelHelper.faceFromIndex(i);
 
-			for (int j = 0; j <= ModelHelper.NULL_FACE_ID; j++) {
-				final Direction cullFace = ModelHelper.faceFromIndex(j);
+			if (cullTest.test(cullFace)) {
+				// Skip entire quad list if possible.
+				continue;
+			}
 
-				if (cullTest.test(cullFace)) {
-					// Skip entire quad list if possible.
-					continue;
-				}
+			final List<BakedQuad> quads = part.getQuads(cullFace);
+			final int quadCount = quads.size();
 
-				final List<BakedQuad> quads = part.getQuads(cullFace);
-				final int quadCount = quads.size();
-
-				for (int k = 0; k < quadCount; k++) {
-					final BakedQuad q = quads.get(k);
-					emitter.fromVanilla(q, defaultMaterial, cullFace);
-					emitter.emit();
-				}
+			for (int j = 0; j < quadCount; j++) {
+				final BakedQuad q = quads.get(j);
+				emitter.fromVanilla(q, defaultMaterial, cullFace);
+				emitter.emit();
 			}
 		}
 	}

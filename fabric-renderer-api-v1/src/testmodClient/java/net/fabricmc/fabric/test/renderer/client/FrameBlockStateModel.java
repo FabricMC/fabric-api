@@ -77,7 +77,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 		// Let's push a transform to scale the model down and make it transparent
 		emitter.pushTransform(createInnerTransform(material));
 		// Emit the inner block model
-		innerModel.emitQuads(emitter, blockView, pos, innerState, random, cullTest);
+		innerModel.emitQuads(emitter, blockView, pos, state, random, cullTest);
 		// Let's not forget to pop the transform!
 		emitter.popTransform();
 	}
