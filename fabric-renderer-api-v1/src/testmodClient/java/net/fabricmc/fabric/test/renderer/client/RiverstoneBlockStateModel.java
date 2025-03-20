@@ -53,6 +53,16 @@ public class RiverstoneBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
+	@Nullable
+	public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+		if (((FabricBlockView) blockView).hasBiomes() && ((FabricBlockView) blockView).getBiomeFabric(pos).isIn(BiomeTags.IS_RIVER)) {
+			return riverModel.createGeometryKey(blockView, pos, state, random);
+		} else {
+			return regularModel.createGeometryKey(blockView, pos, state, random);
+		}
+	}
+
+	@Override
 	public void addParts(Random random, List<BlockModelPart> parts) {
 	}
 

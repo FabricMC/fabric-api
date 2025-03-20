@@ -149,5 +149,20 @@ public class ModelTestModClient implements ClientModInitializer {
 			});
 			emitter.popTransform();
 		}
+
+		@Override
+		@Nullable
+		public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+			Object subkey = wrapped.createGeometryKey(blockView, pos, state, random);
+
+			if (subkey == null) {
+				return subkey;
+			}
+
+			record Key(Object subkey) {
+			}
+
+			return new Key(subkey);
+		}
 	}
 }

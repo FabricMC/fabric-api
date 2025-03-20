@@ -48,6 +48,11 @@ public class SingleMeshBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
+	public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+		return this;
+	}
+
+	@Override
 	public void addParts(Random random, List<BlockModelPart> parts) {
 	}
 

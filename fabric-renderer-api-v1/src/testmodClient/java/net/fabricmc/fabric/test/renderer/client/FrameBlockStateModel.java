@@ -114,6 +114,28 @@ public class FrameBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
+	@Nullable
+	public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
+		if (!(((FabricBlockView) blockView).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
+			return this; // No inner block to render, or data of wrong type
+		}
+
+		BlockState innerState = mimickedBlock.getDefaultState();
+		BlockStateModel innerModel = MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState);
+		Object subkey = innerModel.createGeometryKey(blockView, pos, state, random);
+
+		if (subkey == null) {
+			return null;
+		}
+
+		record Key(Object subkey, boolean notEmissive) {
+		}
+
+		return new Key(subkey, pos.getX() % 2 == 0);
+	}
+
+	@Override
 	public void addParts(Random random, List<BlockModelPart> parts) {
 		// Renderer API makes this obsolete, so don't add any parts
 	}

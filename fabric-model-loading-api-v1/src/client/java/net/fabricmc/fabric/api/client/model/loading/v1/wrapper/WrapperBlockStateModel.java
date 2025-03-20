@@ -67,6 +67,12 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
+	@Nullable
+	public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+		return wrapped.createGeometryKey(blockView, pos, state, random);
+	}
+
+	@Override
 	public Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
 		return wrapped.particleSprite(blockView, pos, state);
 	}

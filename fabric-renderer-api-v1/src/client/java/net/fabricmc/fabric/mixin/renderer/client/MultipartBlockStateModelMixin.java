@@ -64,6 +64,40 @@ abstract class MultipartBlockStateModelMixin implements BlockStateModel {
 	}
 
 	@Override
+	@Nullable
+	public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+		if (models == null) {
+			models = bakedModels.build(this.state);
+		}
+
+		int count = models.size();
+		long seed = random.nextLong();
+
+		if (count == 1) {
+			random.setSeed(seed);
+			return models.getFirst().createGeometryKey(blockView, pos, state, random);
+		} else {
+			Object[] subkeys = new Object[count];
+
+			for (int i = 0; i < count; i++) {
+				random.setSeed(seed);
+				Object subkey = models.get(i).createGeometryKey(blockView, pos, state, random);
+
+				if (subkey == null) {
+					return null;
+				}
+
+				subkeys[i] = subkey;
+			}
+
+			record Key(Object[] subkeys) {
+			}
+
+			return new Key(subkeys);
+		}
+	}
+
+	@Override
 	public Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
 		return ((MultipartBakedModelAccessor) (Object) bakedModels).getSelectors().getFirst().model().particleSprite(blockView, pos, state);
 	}

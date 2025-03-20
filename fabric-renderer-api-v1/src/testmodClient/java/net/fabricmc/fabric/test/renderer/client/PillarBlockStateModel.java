@@ -53,26 +53,42 @@ public class PillarBlockStateModel implements BlockStateModel {
 	@Override
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
 		for (Direction side : Direction.values()) {
-			ConnectedTexture texture = ConnectedTexture.ALONE;
-
-			if (side.getAxis().isHorizontal()) {
-				boolean connectAbove = canConnect(blockView, state, pos, pos.offset(Direction.UP), side);
-				boolean connectBelow = canConnect(blockView, state, pos, pos.offset(Direction.DOWN), side);
-
-				if (connectAbove && connectBelow) {
-					texture = ConnectedTexture.MIDDLE;
-				} else if (connectAbove) {
-					texture = ConnectedTexture.BOTTOM;
-				} else if (connectBelow) {
-					texture = ConnectedTexture.TOP;
-				}
-			}
-
+			ConnectedTexture texture = getConnectedTexture(blockView, pos, state, side);
 			emitter.square(side, 0, 0, 1, 1, 0);
 			emitter.spriteBake(sprites[texture.ordinal()], MutableQuadView.BAKE_LOCK_UV);
 			emitter.color(-1, -1, -1, -1);
 			emitter.emit();
 		}
+	}
+
+	@Override
+	public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+		record Key(ConnectedTexture north, ConnectedTexture south, ConnectedTexture west, ConnectedTexture east) {
+		}
+
+		return new Key(
+				getConnectedTexture(blockView, pos, state, Direction.NORTH),
+				getConnectedTexture(blockView, pos, state, Direction.SOUTH),
+				getConnectedTexture(blockView, pos, state, Direction.WEST),
+				getConnectedTexture(blockView, pos, state, Direction.EAST)
+		);
+	}
+
+	private static ConnectedTexture getConnectedTexture(BlockRenderView blockView, BlockPos pos, BlockState state, Direction side) {
+		if (side.getAxis().isHorizontal()) {
+			boolean connectAbove = canConnect(blockView, state, pos, pos.up(), side);
+			boolean connectBelow = canConnect(blockView, state, pos, pos.down(), side);
+
+			if (connectAbove && connectBelow) {
+				return ConnectedTexture.MIDDLE;
+			} else if (connectAbove) {
+				return ConnectedTexture.BOTTOM;
+			} else if (connectBelow) {
+				return ConnectedTexture.TOP;
+			}
+		}
+
+		return ConnectedTexture.ALONE;
 	}
 
 	private static boolean canConnect(BlockRenderView blockView, BlockState originState, BlockPos originPos, BlockPos otherPos, Direction side) {

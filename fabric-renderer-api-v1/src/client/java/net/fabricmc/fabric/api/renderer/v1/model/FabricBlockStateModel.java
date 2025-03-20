@@ -66,6 +66,8 @@ public interface FabricBlockStateModel {
 	 * <p>Implementations should rely on pre-baked meshes as much as possible and keep dynamic transformations to a
 	 * minimum for performance.
 	 *
+	 * <p>Implementations should generally also override {@link #createGeometryKey}.
+	 *
 	 * @param emitter Accepts model output.
 	 * @param blockView Access to world state.
 	 * @param pos Position of block for model being rendered.
@@ -77,6 +79,8 @@ public interface FabricBlockStateModel {
 	 *                 early for performance. Early culled quads will likely not be added the emitter, so callers of
 	 *                 this method must account for this. In general, prefer using
 	 *                 {@link MutableQuadView#cullFace(Direction)} instead of this test.
+	 *
+	 * @see #createGeometryKey(BlockRenderView, BlockPos, BlockState, Random)
 	 */
 	default void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
 		final List<BlockModelPart> parts = ((BlockStateModel) this).getParts(random);
@@ -85,6 +89,36 @@ public interface FabricBlockStateModel {
 		for (int i = 0; i < partCount; i++) {
 			parts.get(i).emitQuads(emitter, cullTest);
 		}
+	}
+
+	/**
+	 * Creates a geometry key using the given context. A geometry key represents the exact geometry output from
+	 * {@link #emitQuads} when given the same parameters as this method and a cull test that always returns
+	 * {@code false}. Geometry keys are intended to be used in a cache to avoid recomputing expensive transformations
+	 * applied to a certain model's geometry.
+	 *
+	 * <p>The geometry key must implement {@link Object#equals(Object)} and
+	 * {@link Object#hashCode()}. The geometry key may be compared to the geometry key of <b>any other model</b>, not
+	 * just those produced by this model instance, so care should be taken when selecting the type of the key.
+	 * Generally, one class of model will want to make its own record class to use for geometry keys.
+	 *
+	 * <p>A {@code null} key means that a geometry key does exist for specifically the given context; a key may exist
+	 * for a different context. It is always possible to create a key for any context, but some custom models may choose
+	 * not to if doing so is too complex. Vanilla models correctly implement this method, but may return {@code null}
+	 * when delegating to a submodel that returns {@code null}.
+	 *
+	 * @param blockView The world in which the block exists.
+	 * @param pos The position of the block in the world.
+	 * @param state The block state whose model was queried for a geometry key. <b>This is not guaranteed to be the
+	 *              state corresponding to {@code this} model!</b>
+	 * @param random Random object seeded per vanilla conventions.
+	 * @return the geometry key, or {@code null} if one does not exist for the given context
+	 *
+	 * @see #emitQuads(QuadEmitter, BlockRenderView, BlockPos, BlockState, Random, Predicate)
+	 */
+	@Nullable
+	default Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+		return null;
 	}
 
 	/**

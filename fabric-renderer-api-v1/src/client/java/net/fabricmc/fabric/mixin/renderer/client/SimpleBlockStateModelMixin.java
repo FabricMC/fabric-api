@@ -46,4 +46,9 @@ abstract class SimpleBlockStateModelMixin implements BlockStateModel {
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
 		part.emitQuads(emitter, cullTest);
 	}
+
+	@Override
+	public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+		return this;
+	}
 }

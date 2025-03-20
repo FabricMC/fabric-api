@@ -47,6 +47,12 @@ abstract class WeightedBlockStateModelMixin implements BlockStateModel {
 	}
 
 	@Override
+	@Nullable
+	public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+		return models.get(random).createGeometryKey(blockView, pos, state, random);
+	}
+
+	@Override
 	public Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
 		return models.getEntries().getFirst().value().particleSprite(blockView, pos, state);
 	}
