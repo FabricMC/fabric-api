@@ -17,23 +17,18 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.model.BlockModelPart;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -92,22 +87,12 @@ public class IndigoRenderer implements Renderer {
 
 	@Override
 	public void render(BlockModelRenderer modelRenderer, BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrices, VertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
-		if (!model.isVanillaAdapter()) {
-			TerrainLikeRenderContext.POOL.get().bufferModel(blockView, model, state, pos, matrices, vertexConsumers, cull, seed, overlay);
-		} else {
-			VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayers.getBlockLayer(state));
-			List<BlockModelPart> modelParts = model.getParts(new LocalRandom(state.getRenderingSeed(pos)));
-			modelRenderer.render(blockView, modelParts, state, pos, matrices, vertexConsumer, cull, overlay);
-		}
+		TerrainLikeRenderContext.POOL.get().bufferModel(blockView, model, state, pos, matrices, vertexConsumers, cull, seed, overlay);
 	}
 
 	@Override
 	public void render(MatrixStack.Entry entry, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
-		if (!model.isVanillaAdapter()) {
-			SimpleBlockRenderContext.POOL.get().bufferModel(entry, vertexConsumers, model, red, green, blue, light, overlay, blockView, pos, state);
-		} else {
-			BlockModelRenderer.render(entry, vertexConsumers.getBuffer(RenderLayers.getBlockLayer(state)), model, red, green, blue, light, overlay);
-		}
+		SimpleBlockRenderContext.POOL.get().bufferModel(entry, vertexConsumers, model, red, green, blue, light, overlay, blockView, pos, state);
 	}
 
 	@Override

@@ -17,9 +17,7 @@
 package net.fabricmc.fabric.mixin.client.indigo.renderer;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.Overwrite;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.VertexConsumer;
@@ -29,15 +27,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EmptyBlockRenderView;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.SimpleBlockRenderContext;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
 
 @Mixin(BlockModelRenderer.class)
 abstract class BlockModelRendererMixin {
-	@Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack$Entry;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/client/render/model/BlockStateModel;FFFII)V", at = @At("HEAD"), cancellable = true)
-	private static void onHeadRender(MatrixStack.Entry entry, VertexConsumer vertexConsumer, BlockStateModel model, float red, float green, float blue, int light, int overlay, CallbackInfo ci) {
-		if (!model.isVanillaAdapter()) {
-			SimpleBlockRenderContext.POOL.get().bufferModel(entry, layer -> vertexConsumer, model, red, green, blue, light, overlay, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, Blocks.AIR.getDefaultState());
-			ci.cancel();
-		}
+	@Overwrite
+	public static void render(MatrixStack.Entry entry, VertexConsumer vertexConsumer, BlockStateModel model, float red, float green, float blue, int light, int overlay) {
+		FabricBlockModelRenderer.render(entry, layer -> vertexConsumer, model, red, green, blue, light, overlay, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, Blocks.AIR.getDefaultState());
 	}
 }

@@ -51,11 +51,6 @@ public class PillarBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public boolean isVanillaAdapter() {
-		return false;
-	}
-
-	@Override
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
 		// Do not use the passed state to ensure that this model connects
 		// to and from blocks with a custom appearance correctly.

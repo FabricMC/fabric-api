@@ -45,7 +45,6 @@ import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRendererRegion;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderContext;
 
@@ -95,7 +94,7 @@ abstract class SectionBuilderMixin {
 	 * {@link BlockStateModel#addParts(Random, List)} and
 	 * {@link BlockRenderManager#renderBlock(BlockState, BlockPos, BlockRenderView, MatrixStack, VertexConsumer, boolean, List)}
 	 * do not execute for models that will be rendered by our renderer. For performance and convenience, just skip the
-	 * entire if block when the model to render should go through Indigo.
+	 * entire if block.
 	 *
 	 * <p>Any mod that wants to redirect this specific call is likely also a renderer, in which case this
 	 * renderer should not be present, or the mod should probably instead be relying on the renderer API
@@ -107,11 +106,8 @@ abstract class SectionBuilderMixin {
 
 		if (blockRenderType == BlockRenderType.MODEL) {
 			BlockStateModel model = blockRenderManager.getModel(blockState);
-
-			if (Indigo.ALWAYS_TESSELATE_INDIGO || !model.isVanillaAdapter()) {
-				((AccessChunkRendererRegion) renderRegion).fabric_getRenderer().bufferModel(model, blockState, blockPos);
-				return BlockRenderType.INVISIBLE; // Cancel the vanilla logic
-			}
+			((AccessChunkRendererRegion) renderRegion).fabric_getRenderer().bufferModel(model, blockState, blockPos);
+			return BlockRenderType.INVISIBLE; // Cancel the vanilla logic
 		}
 
 		return blockRenderType;

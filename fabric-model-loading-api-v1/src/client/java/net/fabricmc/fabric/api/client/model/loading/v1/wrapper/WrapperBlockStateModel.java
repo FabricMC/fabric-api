@@ -62,11 +62,6 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public boolean isVanillaAdapter() {
-		return wrapped.isVanillaAdapter();
-	}
-
-	@Override
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
 		wrapped.emitQuads(emitter, blockView, pos, state, random, cullTest);
 	}

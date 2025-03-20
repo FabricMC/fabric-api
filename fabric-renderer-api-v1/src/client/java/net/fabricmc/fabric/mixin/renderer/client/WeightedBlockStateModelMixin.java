@@ -22,17 +22,12 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.model.WeightedBlockStateModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.collection.Pool;
-import net.minecraft.util.collection.Weighted;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -45,24 +40,6 @@ abstract class WeightedBlockStateModelMixin implements BlockStateModel {
 	@Shadow
 	@Final
 	private Pool<BlockStateModel> models;
-
-	@Unique
-	private boolean isVanilla = true;
-
-	@Inject(at = @At("RETURN"), method = "<init>")
-	private void onInit(Pool<BlockStateModel> models, CallbackInfo ci) {
-		for (Weighted<BlockStateModel> model : models.getEntries()) {
-			if (!model.value().isVanillaAdapter()) {
-				isVanilla = false;
-				break;
-			}
-		}
-	}
-
-	@Override
-	public boolean isVanillaAdapter() {
-		return isVanilla;
-	}
 
 	@Override
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {

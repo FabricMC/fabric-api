@@ -45,22 +45,11 @@ import net.fabricmc.fabric.impl.renderer.VanillaBlockModelEncoder;
  */
 public interface FabricBlockStateModel {
 	/**
-	 * If this method returns {@code false}, this model's geometry must be retrieved through {@link #emitQuads} instead
-	 * of {@link BlockStateModel#addParts(Random, List)}. Otherwise, this model's geometry may be retrieved through
-	 * either method.
-	 *
-	 * <p>Vanilla models will return true. Enhanced models that use this API should return false.
-	 */
-	default boolean isVanillaAdapter() {
-		return true;
-	}
-
-	/**
-	 * Produces this model's geometry. This method is guaranteed to be called instead of
-	 * {@link BlockStateModel#addParts(Random, List)} when {@link #isVanillaAdapter} returns {@code false}. When
-	 * {@link #isVanillaAdapter} returns {@code true}, this method must still produce the correct geometry, but
-	 * implementors do not have to handle this case as the default implementation of this method will do so correctly
-	 * and automatically.
+	 * Produces this model's geometry. <b>This method must be called instead of
+	 * {@link BlockStateModel#addParts(Random, List)} or {@link BlockStateModel#getParts(Random)}; the vanilla methods
+	 * should be considered deprecated as they may not produce accurate results.</b> However, it is acceptable for a
+	 * custom model to only implement the vanilla methods as the default implementation of this method will delegate to
+	 * one of the vanilla methods.
 	 *
 	 * <p>Like {@link BlockStateModel#addParts(Random, List)}, this method may be called outside of chunk rebuilds. For
 	 * example, some entities and block entities render blocks. In some such cases, the provided position may be the

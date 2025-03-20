@@ -58,11 +58,6 @@ public class FrameBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public boolean isVanillaAdapter() {
-		return false;
-	}
-
-	@Override
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
 		// Emit our frame mesh
 		frameMesh.outputTo(emitter);

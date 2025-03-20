@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BlockStateModel;
@@ -49,32 +48,6 @@ abstract class MultipartBlockStateModelMixin implements BlockStateModel {
 	@Shadow
 	@Nullable
 	private List<BlockStateModel> models;
-
-	@Unique
-	private boolean isVanillaComputed = false;
-
-	@Unique
-	private boolean isVanilla = true;
-
-	@Override
-	public boolean isVanillaAdapter() {
-		if (!isVanillaComputed) {
-			if (models == null) {
-				models = bakedModels.build(state);
-			}
-
-			for (BlockStateModel model : models) {
-				if (!model.isVanillaAdapter()) {
-					isVanilla = false;
-					break;
-				}
-			}
-
-			isVanillaComputed = true;
-		}
-
-		return isVanilla;
-	}
 
 	@Override
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
