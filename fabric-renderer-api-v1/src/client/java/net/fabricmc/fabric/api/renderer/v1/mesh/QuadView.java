@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
  */
 public interface QuadView {
 	/** Count of integers in a conventional (un-modded) block or item vertex. */
-	int VANILLA_VERTEX_STRIDE = VertexFormats.field_1590.getVertexSize() / 4;
+	int VANILLA_VERTEX_STRIDE = VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.getVertexSize() / 4;
 
 	/** Count of integers in a conventional (un-modded) block or item quad. */
 	int VANILLA_QUAD_STRIDE = VANILLA_VERTEX_STRIDE * 4;

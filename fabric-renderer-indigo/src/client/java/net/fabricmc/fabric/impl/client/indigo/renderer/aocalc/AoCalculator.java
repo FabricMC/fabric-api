@@ -153,8 +153,8 @@ public abstract class AoCalculator {
 		BlockModelRenderer.getQuadDimensions(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaCalc);
 		vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, quad.hasShade());
 
-		System.arraycopy(vanillaCalc.field_58162, 0, aoDest, 0, 4);
-		System.arraycopy(vanillaCalc.field_58163, 0, lightDest, 0, 4);
+		System.arraycopy(vanillaCalc.fs, 0, aoDest, 0, 4);
+		System.arraycopy(vanillaCalc.is, 0, lightDest, 0, 4);
 	}
 
 	private void calcFastVanilla(QuadViewImpl quad) {
