@@ -31,9 +31,9 @@ import net.fabricmc.fabric.impl.client.gametest.util.WindowHooks;
 
 @Mixin(GlResourceManager.class)
 public class GlResourceManagerMixin {
-	@WrapOperation(method = "presentTexture", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/FramebufferManager;method_68812(IIIIIIIIIIII)V"))
+	@WrapOperation(method = "presentTexture", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/FramebufferManager;setupBlitFramebuffer(IIIIIIIIIIII)V"))
 	private void blitFrameBuffer(FramebufferManager manager, int readFramebuffer, int drawFramebuffer, int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter, Operation<Void> original, @Local(argsOnly = true) GpuTexture gpuTexture) {
-		if (gpuTexture == MinecraftClient.getInstance().getFramebuffer().method_30277()) {
+		if (gpuTexture == MinecraftClient.getInstance().getFramebuffer().getColorAttachment()) {
 			WindowHooks window = ((WindowHooks) (Object) MinecraftClient.getInstance().getWindow());
 			dstX1 = window.fabric_getRealFramebufferWidth();
 			dstY1 = window.fabric_getRealFramebufferHeight();

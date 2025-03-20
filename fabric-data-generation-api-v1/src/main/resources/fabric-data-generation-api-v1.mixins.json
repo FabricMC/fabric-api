@@ -9,7 +9,9 @@
     "TagBuilderMixin",
     "TagProviderMixin",
     "loot.BlockLootTableGeneratorAccessor",
-    "loot.BlockLootTableGeneratorMixin"
+    "loot.BlockLootTableGeneratorMixin",
+    "loot.EntityLootTableGeneratorAccessor",
+    "loot.EntityLootTableGeneratorMixin"
   ],
   "server": [
     "server.MainMixin"

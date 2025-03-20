@@ -392,6 +392,22 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> FENCE_GATES = register("fence_gates");
 	public static final TagKey<Item> WOODEN_FENCE_GATES = register("fence_gates/wooden");
 
+	// Pumpkins
+	public static final TagKey<Item> PUMPKINS = register("pumpkins");
+	/**
+	 * For pumpkins that are not carved.
+	 */
+	public static final TagKey<Item> NORMAL_PUMPKINS = register("pumpkins/normal");
+	/**
+	 * For pumpkins that are already carved but not a light source.
+	 */
+	public static final TagKey<Item> CARVED_PUMPKINS = register("pumpkins/carved");
+
+	/**
+	 * For pumpkins that are already carved and a light source.
+	 */
+	public static final TagKey<Item> JACK_O_LANTERNS_PUMPKINS = register("pumpkins/jack_o_lanterns");
+
 	// Dyes
 	public static final TagKey<Item> DYES = register("dyes");
 	public static final TagKey<Item> BLACK_DYES = register("dyes/black");

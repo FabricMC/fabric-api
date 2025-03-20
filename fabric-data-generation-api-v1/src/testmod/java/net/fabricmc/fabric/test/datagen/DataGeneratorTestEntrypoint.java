@@ -18,8 +18,10 @@ package net.fabricmc.fabric.test.datagen;
 
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_ITEM;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.ENTITY_TYPE_WITHOUT_LOOT_TABLE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.MOD_ID;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_BLOCK;
+import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ENTITY_TYPE;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.SIMPLE_ITEM_GROUP;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DATAGEN_DYNAMIC_REGISTRY_KEY;
 import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY;
@@ -88,6 +90,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricEntityLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -113,6 +116,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(TestRecipeProvider::new);
 		pack.addProvider(TestAdvancementProvider::new);
 		pack.addProvider(TestBlockLootTableProvider::new);
+		pack.addProvider(TestEntityLootTableProvider::new);
 		pack.addProvider(TestBarterLootTableProvider::new);
 		pack.addProvider(ExistingEnglishLangProvider::new);
 		pack.addProvider(JapaneseLangProvider::new);
@@ -392,6 +396,24 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 			addDrop(BLOCK_WITHOUT_ITEM, drops(SIMPLE_BLOCK));
 
 			excludeFromStrictValidation(BLOCK_WITHOUT_LOOT_TABLE);
+		}
+	}
+
+	public static class TestEntityLootTableProvider extends FabricEntityLootTableProvider {
+		private TestEntityLootTableProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+			super(output, registryLookup);
+		}
+
+		@Override
+		public void generate() {
+			this.withConditions(ALWAYS_LOADED)
+					.withConditions(ResourceConditions.not(NEVER_LOADED))
+					.register(
+							SIMPLE_ENTITY_TYPE,
+							LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(SIMPLE_BLOCK.asItem())))
+					);
+
+			this.excludeFromStrictValidation(ENTITY_TYPE_WITHOUT_LOOT_TABLE);
 		}
 	}
 

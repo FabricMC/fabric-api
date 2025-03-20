@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,14 +25,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.listener.PacketListener;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.network.state.NetworkState;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
+import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.UntrackedNetworkHandler;
+import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
@@ -57,6 +63,18 @@ abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler 
 	private void handleCustomPayloadReceivedAsync(CustomPayloadC2SPacket packet, CallbackInfo ci) {
 		if (getAddon().handle(packet.payload())) {
 			ci.cancel();
+		}
+	}
+
+	@WrapOperation(method = "onAcknowledgeReconfiguration", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;transitionInbound(Lnet/minecraft/network/state/NetworkState;Lnet/minecraft/network/listener/PacketListener;)V"))
+	private <T extends PacketListener> void onAcknowledgeReconfiguration(ClientConnection instance, NetworkState<T> state, T packetListener, Operation<Void> original) {
+		original.call(instance, state, packetListener);
+
+		ServerConfigurationNetworkHandler networkHandler = (ServerConfigurationNetworkHandler) packetListener;
+		ServerNetworkingImpl.getAddon(networkHandler).setReconfiguring();
+
+		if (addon.requestedReconfigure()) {
+			networkHandler.sendConfigurations();
 		}
 	}
 

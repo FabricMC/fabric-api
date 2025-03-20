@@ -50,8 +50,8 @@ transitive-accessible class net/minecraft/client/model/ModelPart$Vertex
 transitive-accessible class net/minecraft/client/model/ModelPart$Quad
 
 # Creating custom render layers
-transitive-accessible method net/minecraft/client/render/RenderLayer method_24048 (Ljava/lang/String;ILcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
-transitive-accessible method net/minecraft/client/render/RenderLayer method_24049 (Ljava/lang/String;IZZLcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
+transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;ILcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
+transitive-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;IZZLcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
 transitive-accessible class net/minecraft/client/render/RenderLayer$MultiPhase
 transitive-accessible class net/minecraft/client/render/RenderLayer$MultiPhaseParameters
 transitive-accessible class net/minecraft/client/render/RenderLayer$OutlineMode

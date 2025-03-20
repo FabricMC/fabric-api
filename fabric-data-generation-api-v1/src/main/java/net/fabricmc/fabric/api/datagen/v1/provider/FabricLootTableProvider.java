@@ -27,6 +27,7 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootTableGenerator;
+import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootTableGenerator;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
@@ -42,7 +43,8 @@ public interface FabricLootTableProvider extends LootTableGenerator, DataProvide
 	/**
 	 * Return a new exporter that applies the specified conditions to any loot table it receives.
 	 *
-	 * <p>For block loot tables, use {@link FabricBlockLootTableGenerator#withConditions} instead.
+	 * <p>For block and entity loot tables, use {@link FabricBlockLootTableGenerator#withConditions} or
+	 * {@link FabricEntityLootTableGenerator#withConditions} instead, respectively.
 	 */
 	default BiConsumer<RegistryKey<LootTable>, LootTable.Builder> withConditions(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> exporter, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");

@@ -78,7 +78,7 @@ public class AttachmentTestMod implements ModInitializer {
 			builder -> builder
 					.initializer(() -> false)
 					.persistent(Codec.BOOL)
-					.syncWith(PacketCodecs.BOOLEAN, (target, player) -> player.isCreative())
+					.syncWith(PacketCodecs.BOOLEAN, (target, player) -> player.method_68878())
 	);
 	public static final AttachmentType<ItemStack> SYNCED_ITEM = AttachmentRegistry.create(
 			Identifier.of(MOD_ID, "synced_item"),
