@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.renderer.client.particle;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -33,6 +34,7 @@ import net.minecraft.util.math.BlockPos;
 
 @Mixin(InGameOverlayRenderer.class)
 abstract class InGameOverlayRendererMixin {
+	@Unique
 	@Nullable
 	private static BlockPos pos;
 

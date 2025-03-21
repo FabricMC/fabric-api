@@ -49,6 +49,7 @@ abstract class BlockRenderManagerMixin {
 	@Inject(method = "renderDamage(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;)V", at = @At(value = "INVOKE_ASSIGN", target = "net/minecraft/client/render/block/BlockModels.getModel(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/render/model/BlockStateModel;", shift = At.Shift.AFTER), cancellable = true)
 	private void afterGetModel(BlockState blockState, BlockPos blockPos, BlockRenderView world, MatrixStack matrixStack, VertexConsumer vertexConsumer, CallbackInfo ci, @Local BlockStateModel model) {
 		blockModelRenderer.render(world, model, blockState, blockPos, matrixStack, layer -> vertexConsumer, true, blockState.getRenderingSeed(blockPos), OverlayTexture.DEFAULT_UV);
+		ci.cancel();
 	}
 
 	@Redirect(method = "renderBlockAsEntity(Lnet/minecraft/block/BlockState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V", at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/BlockModelRenderer.render(Lnet/minecraft/client/util/math/MatrixStack$Entry;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/client/render/model/BlockStateModel;FFFII)V"))
