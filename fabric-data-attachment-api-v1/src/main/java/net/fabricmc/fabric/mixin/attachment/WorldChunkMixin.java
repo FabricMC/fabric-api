@@ -54,7 +54,7 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 	public abstract Map<BlockPos, BlockEntity> getBlockEntities();
 
 	@Inject(method = "<init>(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/ProtoChunk;Lnet/minecraft/world/chunk/WorldChunk$EntityLoader;)V", at = @At("TAIL"))
-	private void transferProtoChunkAttachement(ServerWorld world, ProtoChunk protoChunk, WorldChunk.EntityLoader entityLoader, CallbackInfo ci) {
+	private void transferProtoChunkAttachment(ServerWorld world, ProtoChunk protoChunk, WorldChunk.EntityLoader entityLoader, CallbackInfo ci) {
 		AttachmentTargetImpl.transfer(protoChunk, this, false);
 	}
 
