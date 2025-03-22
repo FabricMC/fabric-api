@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-config-api-v-2147483648",
+  "name": "Fabric Config API (v-2147483648)",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-config-api-v-2147483648/icon.png",
+  "contact" : {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric",
+    "tutorial": "https://www.youtube.com/watch?v=XGxIE1hr0w4"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.10",
+    "minecraft": ">=1.16-rc.3"
+  },
+  "description": "The best Config API in the class_1937.",
+  "mixins": [
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
+}

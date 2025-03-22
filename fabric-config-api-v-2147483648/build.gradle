@@ -1,0 +1,4 @@
+version = getSubprojectVersion(project)
+
+testDependencies(project, [
+])
