@@ -37,7 +37,7 @@ public final class TradeOfferHelper {
 	 * Registers trade offer factories for use by villagers.
 	 * This adds the same trade offers to current and rebalanced trades.
 	 * To add separate offers for the rebalanced trade experiment, use
-	 * {@link #registerVillagerOffers(VillagerProfession, int, VillagerOffersAdder)}.
+	 * {@link #registerVillagerOffers(RegistryKey, int, VillagerOffersAdder)}.
 	 *
 	 * <p>Below is an example, of registering a trade offer factory to be added a blacksmith with a profession level of 3:
 	 * <blockquote><pre>
@@ -81,27 +81,10 @@ public final class TradeOfferHelper {
 
 	/**
 	 * Registers trade offer factories for use by wandering trades.
-	 * This does not add offers for the rebalanced trade experiment.
-	 * To add rebalanced trades, use {@link #registerRebalancedWanderingTraderOffers}.
-	 *
-	 * @param level the level the trades
-	 * @param factory a consumer to provide the factories
-	 */
-	public static void registerWanderingTraderOffers(int level, Consumer<List<TradeOffers.Factory>> factory) {
-		TradeOfferInternals.registerWanderingTraderOffers(level, factory);
-	}
-
-	/**
-	 * Registers trade offer factories for use by wandering trades.
-	 * This only adds offers for the rebalanced trade experiment.
-	 * To add regular trades, use {@link #registerWanderingTraderOffers(int, Consumer)}.
-	 *
-	 * <p><strong>Experimental feature</strong>. This API may receive changes as necessary to adapt to further experiment changes.
 	 *
 	 * @param factory a consumer to add trade offers
 	 */
-	@ApiStatus.Experimental
-	public static synchronized void registerRebalancedWanderingTraderOffers(Consumer<WanderingTraderOffersBuilder> factory) {
+	public static synchronized void registerWanderingTraderOffers(Consumer<WanderingTraderOffersBuilder> factory) {
 		factory.accept(new TradeOfferInternals.WanderingTraderOffersBuilderImpl());
 	}
 
@@ -114,14 +97,11 @@ public final class TradeOfferHelper {
 	}
 
 	/**
-	 * A builder for rebalanced wandering trader offers.
+	 * A builder for wandering trader offers.
 	 *
-	 * <p><strong>Experimental feature</strong>. This API may receive changes as necessary to adapt to further experiment changes.
-	 *
-	 * @see #registerRebalancedWanderingTraderOffers(Consumer)
+	 * @see #registerWanderingTraderOffers(Consumer)
 	 */
 	@ApiStatus.NonExtendable
-	@ApiStatus.Experimental
 	public interface WanderingTraderOffersBuilder {
 		/**
 		 * The pool ID for the "buy items" pool.
