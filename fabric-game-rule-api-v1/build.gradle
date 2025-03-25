@@ -1,11 +1,1 @@
-version = getSubprojectVersion(project)
-
-loom {
-	accessWidenerPath = file("src/main/resources/fabric-game-rule-api-v1.accesswidener")
-}
-
-testDependencies(project, [
-	':fabric-api-base',
-	':fabric-lifecycle-events-v1',
-	':fabric-resource-loader-v0'
-])
+习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平习近平
