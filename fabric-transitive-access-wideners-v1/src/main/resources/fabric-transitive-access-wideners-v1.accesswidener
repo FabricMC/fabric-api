@@ -327,3 +327,37 @@ transitive-accessible class net/minecraft/client/render/RenderPhase$Target
 transitive-accessible class net/minecraft/client/render/RenderPhase$LineWidth
 transitive-accessible class net/minecraft/client/render/RenderPhase$OffsetTexturing
 transitive-accessible class net/minecraft/client/render/RenderPhase$Textures
+
+# Protected methods of RenderLayer.MultiPhaseParameters.Builder
+transitive-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder texture (Lnet/minecraft/client/render/RenderPhase$TextureBase;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
+transitive-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder lightmap (Lnet/minecraft/client/render/RenderPhase$Lightmap;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
+transitive-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder overlay (Lnet/minecraft/client/render/RenderPhase$Overlay;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
+transitive-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder layering (Lnet/minecraft/client/render/RenderPhase$Layering;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
+transitive-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder target (Lnet/minecraft/client/render/RenderPhase$Target;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
+transitive-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder texturing (Lnet/minecraft/client/render/RenderPhase$Texturing;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
+transitive-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder lineWidth (Lnet/minecraft/client/render/RenderPhase$LineWidth;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
+transitive-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder build (Z)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
+transitive-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder build (Lnet/minecraft/client/render/RenderLayer$OutlineMode;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
+
+# private fields of RenderPipelines
+transitive-accessible field net/minecraft/client/gl/RenderPipelines MATRICES_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines FOG_NO_COLOR_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines FOG_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines MATRICES_COLOR_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines MATRICES_COLOR_FOG_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines MATRICES_COLOR_FOG_OFFSET_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines MATRICES_COLOR_FOG_LIGHT_DIR_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines TERRAIN_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines ENTITY_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines RENDERTYPE_BEACON_BEAM_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines TEXT_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines RENDERTYPE_END_PORTAL_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines RENDERTYPE_CLOUDS_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines RENDERTYPE_LINES_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines POSITION_COLOR_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines PARTICLE_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines WEATHER_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines GUI_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines POSITION_TEX_COLOR_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines RENDERTYPE_OUTLINE_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible method net/minecraft/client/gl/RenderPipelines register (Lcom/mojang/blaze3d/pipeline/RenderPipeline;)Lcom/mojang/blaze3d/pipeline/RenderPipeline;

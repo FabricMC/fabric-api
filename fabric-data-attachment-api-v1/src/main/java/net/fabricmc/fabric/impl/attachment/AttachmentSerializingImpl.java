@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.attachment;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
@@ -65,9 +66,11 @@ public class AttachmentSerializingImpl {
 
 	@Nullable
 	public static IdentityHashMap<AttachmentType<?>, Object> deserializeAttachmentData(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		if (nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY)) {
+		Optional<NbtCompound> optional = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
+
+		if (optional.isPresent()) {
 			var attachments = new IdentityHashMap<AttachmentType<?>, Object>();
-			NbtCompound compound = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElseThrow();
+			NbtCompound compound = optional.get();
 
 			for (String key : compound.getKeys()) {
 				AttachmentType<?> type = AttachmentRegistryImpl.get(Identifier.of(key));
