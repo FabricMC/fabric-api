@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer.client.render;
+package net.fabricmc.fabric.mixin.renderer.client.block.particle;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.render.block.BlockModelRenderer;
+import net.minecraft.client.render.block.BlockModels;
 
-import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBlockModels;
 
-@Mixin(BlockModelRenderer.class)
-abstract class BlockModelRendererMixin implements FabricBlockModelRenderer {
+@Mixin(BlockModels.class)
+abstract class BlockModelsMixin implements FabricBlockModels {
 }

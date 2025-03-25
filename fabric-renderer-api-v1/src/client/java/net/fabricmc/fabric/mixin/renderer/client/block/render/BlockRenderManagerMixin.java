@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.renderer.v1.mesh;
+package net.fabricmc.fabric.mixin.renderer.client.block.render;
 
-/**
- * An immutable bundle of {@linkplain QuadView quads} encoded by the renderer, typically via
- * {@link MutableMesh#immutableCopy()}.
- *
- * <p>All declared methods in this interface and inherited methods from {@link MeshView} are thread-safe and may be used
- * concurrently.
- *
- * <p>Only the renderer should implement or extend this interface.
- *
- * @see MeshView
- * @see MutableMesh
- */
-public interface Mesh extends MeshView {
+import org.spongepowered.asm.mixin.Mixin;
+
+import net.minecraft.client.render.block.BlockRenderManager;
+
+import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockRenderManager;
+
+@Mixin(BlockRenderManager.class)
+abstract class BlockRenderManagerMixin implements FabricBlockRenderManager {
 }

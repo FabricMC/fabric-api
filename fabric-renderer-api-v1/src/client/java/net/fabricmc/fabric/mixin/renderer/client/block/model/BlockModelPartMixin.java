@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer.client;
+package net.fabricmc.fabric.mixin.renderer.client.block.model;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.client.render.model.BlockModelPart;
 
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBlockStateModel;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBlockModelPart;
 
-/**
- * Avoids instanceof checks and enables consistent code path for all block state models.
- */
-@Mixin(BlockStateModel.class)
-public interface BlockStateModelMixin extends FabricBlockStateModel {
+@Mixin(BlockModelPart.class)
+interface BlockModelPartMixin extends FabricBlockModelPart {
 }

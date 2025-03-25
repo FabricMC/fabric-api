@@ -24,8 +24,10 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 
 /**
- * A special {@link BakedGeometry} which hides a {@link Mesh} instead of using {@link BakedQuad}s. Any code that
- * interacts with {@link BakedGeometry} should first check {@code instanceof MeshBakedGeometry} and use
+ * A special {@link BakedGeometry} which hides a {@link Mesh} instead of using {@link BakedQuad}s. Instances of this
+ * class always return empty lists from inherited methods.
+ *
+ * <p>Any code that interacts with {@link BakedGeometry} should first check {@code instanceof MeshBakedGeometry} and use
  * {@link #getMesh()} if {@code true} or the vanilla methods otherwise.
  */
 public final class MeshBakedGeometry extends BakedGeometry {

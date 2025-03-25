@@ -24,6 +24,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemDisplayContext;
@@ -35,8 +36,10 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
+import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.MaterialFinderImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
@@ -108,5 +111,10 @@ public class IndigoRenderer implements Renderer {
 			FabricBlockModelRenderer.render(matrices.peek(), layer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer)), model, red, green, blue, light, overlay, blockView, pos, state);
 			((BlockRenderManagerAccessor) renderManager).getBlockEntityModelsGetter().get().render(state.getBlock(), ItemDisplayContext.NONE, matrices, vertexConsumers, light, overlay);
 		}
+	}
+
+	@Override
+	public QuadEmitter getLayerRenderStateEmitter(ItemRenderState.LayerRenderState layer) {
+		return ((AccessLayerRenderState) layer).fabric_getMutableMesh().emitter();
 	}
 }

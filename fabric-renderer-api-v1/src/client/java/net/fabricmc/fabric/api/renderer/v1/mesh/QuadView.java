@@ -134,7 +134,7 @@ public interface QuadView {
 	Direction cullFace();
 
 	/**
-	 * Equivalent to {@link BakedQuad#getFace()}. This is the face used for vanilla lighting
+	 * Equivalent to {@link BakedQuad#face()}. This is the face used for vanilla lighting
 	 * calculations and will be the block face to which the quad is most closely aligned. Always
 	 * the same as cull face for quads that are on a block face, but never null.
 	 */
@@ -174,7 +174,7 @@ public interface QuadView {
 	int tag();
 
 	/**
-	 * Reads baked vertex data and outputs standard {@link BakedQuad#getVertexData() baked quad vertex data}
+	 * Reads baked vertex data and outputs standard {@link BakedQuad#vertexData() baked quad vertex data}
 	 * in the given array and location.
 	 *
 	 * @param target Target array for the baked quad data.

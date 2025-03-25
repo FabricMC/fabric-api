@@ -67,6 +67,12 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 			lastRenderLayer = renderLayer;
 		}
 
+		tintQuad(quad);
+		shadeQuad(quad, mat.emissive());
+		bufferQuad(quad, vertexConsumer);
+	}
+
+	private void tintQuad(MutableQuadViewImpl quad) {
 		if (quad.tintIndex() != -1) {
 			final float red = this.red;
 			final float green = this.green;
@@ -76,8 +82,10 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 				quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), red, green, blue));
 			}
 		}
+	}
 
-		if (mat.emissive()) {
+	private void shadeQuad(MutableQuadViewImpl quad, boolean emissive) {
+		if (emissive) {
 			for (int i = 0; i < 4; i++) {
 				quad.lightmap(i, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 			}
@@ -88,8 +96,6 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 				quad.lightmap(i, ColorHelper.maxLight(quad.lightmap(i), light));
 			}
 		}
-
-		bufferQuad(quad, vertexConsumer);
 	}
 
 	public void bufferModel(MatrixStack.Entry entry, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
@@ -107,6 +113,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 		model.emitQuads(getEmitter(), blockView, pos, state, random, cullFace -> false);
 
+		matrices = null;
 		this.vertexConsumers = null;
 		lastRenderLayer = null;
 		lastVertexConsumer = null;

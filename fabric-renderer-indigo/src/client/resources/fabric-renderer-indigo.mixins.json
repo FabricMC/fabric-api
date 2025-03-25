@@ -9,6 +9,8 @@
     "BlockRenderManagerMixin",
     "ChunkRendererRegionMixin",
     "ItemRendererAccessor",
+    "ItemRenderStateMixin",
+    "LayerRenderStateMixin",
     "SectionBuilderMixin"
   ],
   "injectors": {

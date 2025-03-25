@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer.client.particle;
+package net.fabricmc.fabric.mixin.renderer.client.block.particle;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import org.jetbrains.annotations.Nullable;

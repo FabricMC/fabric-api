@@ -84,6 +84,7 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 			throw new CrashException(crashReport);
 		} finally {
 			blockInfo.release();
+			matrices = null;
 			this.vertexConsumers = null;
 		}
 	}

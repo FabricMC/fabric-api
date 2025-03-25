@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer.client.particle;
+package net.fabricmc.fabric.mixin.renderer.client.block.particle;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.particle.BlockMarkerParticle;
+import net.minecraft.client.particle.BlockDustParticle;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 
-@Mixin(BlockMarkerParticle.class)
-abstract class BlockMarkerParticleMixin {
-	@Redirect(method = "<init>(Lnet/minecraft/client/world/ClientWorld;DDDLnet/minecraft/block/BlockState;)V", at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/BlockModels.getModelParticleSprite(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/texture/Sprite;"))
-	private Sprite getModelParticleSpriteProxy(BlockModels models, BlockState state, ClientWorld world, double x, double y, double z, BlockState state1) {
-		return models.getModelParticleSprite(state, world, BlockPos.ofFloored(x, y, z));
+@Mixin(BlockDustParticle.class)
+abstract class BlockDustParticleMixin {
+	@Redirect(method = "<init>(Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;)V", at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/BlockModels.getModelParticleSprite(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/texture/Sprite;"))
+	private Sprite getModelParticleSpriteProxy(BlockModels models, BlockState state, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state1, BlockPos blockPos) {
+		return models.getModelParticleSprite(state, world, blockPos);
 	}
 }

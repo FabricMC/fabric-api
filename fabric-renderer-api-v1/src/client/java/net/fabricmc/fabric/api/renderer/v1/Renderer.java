@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.renderer.v1;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -27,19 +28,26 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.chunk.SectionBuilder;
+import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.client.render.model.BlockModelPart;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBlockModelPart;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockRenderManager;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.impl.renderer.RendererManager;
+import net.fabricmc.fabric.impl.renderer.VanillaBlockModelPartEncoder;
 
 /**
  * Interface for rendering plug-ins that provide enhanced capabilities
@@ -134,4 +142,18 @@ public interface Renderer {
 	 */
 	@ApiStatus.OverrideOnly
 	void renderBlockAsEntity(BlockRenderManager renderManager, BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BlockRenderView blockView, BlockPos pos);
+
+	/**
+	 * @see FabricBlockModelPart#emitQuads(QuadEmitter, Predicate)
+	 */
+	@ApiStatus.OverrideOnly
+	default void emitBlockModelPartQuads(BlockModelPart modelPart, QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
+		VanillaBlockModelPartEncoder.emitQuads(modelPart, emitter, cullTest);
+	}
+
+	/**
+	 * @see FabricLayerRenderState#emitter()
+	 */
+	@ApiStatus.OverrideOnly
+	QuadEmitter getLayerRenderStateEmitter(ItemRenderState.LayerRenderState layer);
 }

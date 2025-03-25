@@ -46,6 +46,10 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 public class TerrainRenderContext extends AbstractTerrainRenderContext {
 	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
 
+	// TODO: Allow TerrainLikeRenderContext to also cache these values, including for flat lighting (possible as of
+	//  1.21.5 rc1), and respect the setting of the vanilla brightness cache.
+	//  This context (TerrainRenderContext) should use an array (or arrays) of length 18^3 instead of maps to cache
+	//  these values since it is known which positions they may be computed for.
 	/**
 	 * Serves same function as brightness cache in Mojang's AO calculator,
 	 * with some differences as follows...
@@ -122,6 +126,7 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 	}
 
 	public void release() {
+		matrices = null;
 		matrixStack = null;
 		random = null;
 		bufferFunc = null;

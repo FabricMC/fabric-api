@@ -57,33 +57,26 @@ public abstract class AbstractRenderContext {
 	protected void bufferQuad(MutableQuadViewImpl quad, VertexConsumer vertexConsumer) {
 		final Vector4f posVec = this.posVec;
 		final Vector3f normalVec = this.normalVec;
+		final MatrixStack.Entry matrices = this.matrices;
 		final Matrix4f posMatrix = matrices.getPositionMatrix();
 		final boolean useNormals = quad.hasVertexNormals();
 
 		if (useNormals) {
 			quad.populateMissingNormals();
 		} else {
-			normalVec.set(quad.faceNormal());
 			matrices.transformNormal(quad.faceNormal(), normalVec);
 		}
 
 		for (int i = 0; i < 4; i++) {
 			posVec.set(quad.x(i), quad.y(i), quad.z(i), 1.0f);
 			posVec.mul(posMatrix);
-			vertexConsumer.vertex(posVec.x(), posVec.y(), posVec.z());
-
-			final int color = quad.color(i);
-			vertexConsumer.color((color >>> 16) & 0xFF, (color >>> 8) & 0xFF, color & 0xFF, (color >>> 24) & 0xFF);
-			vertexConsumer.texture(quad.u(i), quad.v(i));
-			vertexConsumer.overlay(overlay);
-			vertexConsumer.light(quad.lightmap(i));
 
 			if (useNormals) {
 				quad.copyNormal(i, normalVec);
 				matrices.transformNormal(normalVec, normalVec);
 			}
 
-			vertexConsumer.normal(normalVec.x(), normalVec.y(), normalVec.z());
+			vertexConsumer.vertex(posVec.x(), posVec.y(), posVec.z(), quad.color(i), quad.u(i), quad.v(i), overlay, quad.lightmap(i), normalVec.x(), normalVec.y(), normalVec.z());
 		}
 	}
 }
