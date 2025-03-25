@@ -244,6 +244,6 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		}
 
 		// Unfortunately cannot use light cache here unless we implement one specifically for flat lighting. See #329
-		return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, blockState, lightPos);
+		return WorldRenderer.getLightmapCoordinates(WorldRenderer.BrightnessGetter.DEFAULT, blockInfo.blockView, blockState, lightPos);
 	}
 }

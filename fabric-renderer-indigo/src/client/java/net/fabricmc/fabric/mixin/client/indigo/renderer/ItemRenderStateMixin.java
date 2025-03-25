@@ -37,7 +37,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.QuadToPosPipe;
 
 @Mixin(ItemRenderState.class)
 abstract class ItemRenderStateMixin {
-	@Inject(method = "load(Ljava/util/function/Consumer;)V", at = @At(value = "INVOKE_ASSIGN", target = "org/joml/Vector3f.<init>()V"))
+	@Inject(method = "load(Ljava/util/function/Consumer;)V", at = @At(value = "NEW", target = "net/minecraft/client/util/math/MatrixStack$Entry"))
 	private void afterInitVecLoad(Consumer<Vector3fc> posConsumer, CallbackInfo ci, @Local Vector3f vec, @Share("pipe") LocalRef<QuadToPosPipe> pipeRef) {
 		pipeRef.set(new QuadToPosPipe(posConsumer, vec));
 	}

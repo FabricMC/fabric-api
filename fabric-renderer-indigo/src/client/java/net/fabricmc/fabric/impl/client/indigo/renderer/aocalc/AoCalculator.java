@@ -510,9 +510,9 @@ public abstract class AoCalculator {
 				block = luminance;
 			}
 
-			return sky << 20 | block << 4;
+			return LightmapTextureManager.pack(block, sky);
 		} else {
-			return WorldRenderer.getLightmapCoordinates(world, state, pos);
+			return WorldRenderer.getLightmapCoordinates(WorldRenderer.BrightnessGetter.DEFAULT, world, state, pos);
 		}
 	}
 

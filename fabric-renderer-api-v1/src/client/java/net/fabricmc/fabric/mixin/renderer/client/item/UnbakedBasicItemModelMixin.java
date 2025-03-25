@@ -40,7 +40,7 @@ abstract class UnbakedBasicItemModelMixin {
 		return geometry;
 	}
 
-	@ModifyExpressionValue(method = "bake", at = @At(value = "INVOKE", target = "net/minecraft/client/render/item/model/BasicItemModel.<init>(Ljava/util/List;Ljava/util/List;Lnet/minecraft/client/render/model/ModelSettings;)V"))
+	@ModifyExpressionValue(method = "bake", at = @At(value = "NEW", target = "net/minecraft/client/render/item/model/BasicItemModel"))
 	private BasicItemModel injectMesh(BasicItemModel model, @Share("mesh") LocalRef<Mesh> meshRef) {
 		Mesh mesh = meshRef.get();
 
