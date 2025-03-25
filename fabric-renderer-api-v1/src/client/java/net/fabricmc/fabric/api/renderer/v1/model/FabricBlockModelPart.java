@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.renderer.v1.model;
 
 import java.util.function.Predicate;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -33,6 +34,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 /**
  * Note: This interface is automatically implemented on all block model parts via Mixin and interface injection.
  */
+@ApiStatus.Experimental
 public interface FabricBlockModelPart {
 	/**
 	 * Produces this model part's geometry. <b>This method must be called instead of

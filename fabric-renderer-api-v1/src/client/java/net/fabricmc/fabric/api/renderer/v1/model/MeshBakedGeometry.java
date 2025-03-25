@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.renderer.v1.model;
 
 import java.util.List;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.render.model.BakedGeometry;
 import net.minecraft.client.render.model.BakedQuad;
 
@@ -30,6 +32,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
  * <p>Any code that interacts with {@link BakedGeometry} should first check {@code instanceof MeshBakedGeometry} and use
  * {@link #getMesh()} if {@code true} or the vanilla methods otherwise.
  */
+@ApiStatus.Experimental
 public final class MeshBakedGeometry extends BakedGeometry {
 	private final Mesh mesh;
 
