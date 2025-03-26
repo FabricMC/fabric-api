@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.attachment.sync;
 
-import java.util.StringJoiner;
-
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
@@ -27,6 +25,10 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.screen.ScreenTexts;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -49,7 +51,7 @@ public sealed interface AttachmentTargetInfo<T> {
 	@Nullable
 	AttachmentTarget getTarget(World world);
 
-	void appendDebugInformation(StringJoiner joiner);
+	void appendDebugInformation(MutableText text);
 
 	record Type<T>(byte id, PacketCodec<ByteBuf, ? extends AttachmentTargetInfo<T>> packetCodec) {
 		static Byte2ObjectMap<Type<?>> TYPES = new Byte2ObjectArrayMap<>();
@@ -84,9 +86,9 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(StringJoiner joiner) {
-			joiner.add("Target type: Block entity");
-			joiner.add("Block entity position: %s".formatted(pos));
+		public void appendDebugInformation(MutableText text) {
+			text.append("Target type: ").append(Text.literal("Block entity").formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
+			text.append("Block entity position: ").append(Text.literal(pos.toShortString()).formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
 		}
 	}
 
@@ -107,9 +109,9 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(StringJoiner joiner) {
-			joiner.add("Target type: Entity");
-			joiner.add("Entity network ID: %d".formatted(networkId));
+		public void appendDebugInformation(MutableText text) {
+			text.append("Target type: ").append(Text.literal("Entity").formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
+			text.append("Entity network ID: ").append(Text.literal(String.valueOf(networkId)).formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
 		}
 	}
 
@@ -129,9 +131,9 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(StringJoiner joiner) {
-			joiner.add("Target type: Chunk");
-			joiner.add("Chunk position: %s".formatted(pos));
+		public void appendDebugInformation(MutableText text) {
+			text.append("Target type: ").append(Text.literal("Chunk").formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
+			text.append("Chunk position: ").append(Text.literal(pos.toString()).formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
 		}
 	}
 
@@ -153,8 +155,8 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(StringJoiner joiner) {
-			joiner.add("Target type: World");
+		public void appendDebugInformation(MutableText text) {
+			text.append("Target type: ").append(Text.literal("World").formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
 		}
 	}
 }

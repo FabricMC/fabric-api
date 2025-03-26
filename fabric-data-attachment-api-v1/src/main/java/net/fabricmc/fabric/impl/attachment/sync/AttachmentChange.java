@@ -21,12 +21,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 
 import io.netty.buffer.Unpooled;
-
-import net.minecraft.text.Text;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -34,7 +30,11 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -144,16 +144,16 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		Object value = decodeValue(world.getRegistryManager());
 
 		if (target == null) {
-			final var errorMessageBuilder = new StringJoiner("\n");
+			final MutableText errorMessageText = Text.empty();
+			errorMessageText.append(Text.literal("Received attachment change for unknown target!").formatted(Formatting.RED)).append(ScreenTexts.LINE_BREAK);
+			errorMessageText.append(ScreenTexts.LINE_BREAK);
 
-			errorMessageBuilder.add("Attachment identifier: %s".formatted(type.identifier()));
-			errorMessageBuilder.add("Attachment value: %s".formatted(value));
-			errorMessageBuilder.add("World: %s".formatted(world.getRegistryKey()));
-			targetInfo.appendDebugInformation(errorMessageBuilder);
+			errorMessageText.append("Attachment identifier: ").append(Text.literal(String.valueOf(type.identifier())).formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
+			errorMessageText.append("World: ").append(Text.literal(String.valueOf(world.getRegistryKey().getValue())).formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
+			targetInfo.appendDebugInformation(errorMessageText);
 
-			String errorMessage = errorMessageBuilder.toString();
-			AttachmentEntrypoint.LOGGER.error(errorMessage);
-			sender.disconnect(Text.of(errorMessage));
+			AttachmentEntrypoint.LOGGER.error(errorMessageText.getString());
+			sender.disconnect(errorMessageText);
 
 			return false;
 		}
