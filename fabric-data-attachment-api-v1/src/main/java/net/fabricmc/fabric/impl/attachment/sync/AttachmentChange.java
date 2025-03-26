@@ -21,8 +21,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import io.netty.buffer.Unpooled;
+
+import net.minecraft.text.Text;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
@@ -37,6 +41,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
@@ -134,22 +139,26 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		return codec.decode(buf);
 	}
 
-	public void apply(World world) {
+	public boolean tryApply(World world, PacketSender sender) {
 		AttachmentTarget target = targetInfo.getTarget(world);
 		Object value = decodeValue(world.getRegistryManager());
 
 		if (target == null) {
-			final var errorMessageBuilder = new StringBuilder("Received attachment change for unknown target.\n");
-			errorMessageBuilder.append("Attachment identifier: ").append(type.identifier()).append('\n');
-			errorMessageBuilder.append("Attachment value: ").append(value).append('\n');
-			errorMessageBuilder.append("World: ").append(world.getRegistryKey()).append('\n');
+			final var errorMessageBuilder = new StringJoiner("\n");
+
+			errorMessageBuilder.add("Attachment identifier: %s".formatted(type.identifier()));
+			errorMessageBuilder.add("Attachment value: %s".formatted(value));
+			errorMessageBuilder.add("World: %s".formatted(world.getRegistryKey()));
 			targetInfo.appendDebugInformation(errorMessageBuilder);
 
-			AttachmentEntrypoint.LOGGER.warn(errorMessageBuilder.toString());
+			String errorMessage = errorMessageBuilder.toString();
+			AttachmentEntrypoint.LOGGER.error(errorMessage);
+			sender.disconnect(Text.of(errorMessage));
 
-			return;
+			return false;
 		}
 
 		target.setAttached((AttachmentType<Object>) type, value);
+		return true;
 	}
 }

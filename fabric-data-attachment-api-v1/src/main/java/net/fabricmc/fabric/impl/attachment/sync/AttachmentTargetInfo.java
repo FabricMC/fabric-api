@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.attachment.sync;
 
+import java.util.StringJoiner;
+
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
@@ -47,7 +49,7 @@ public sealed interface AttachmentTargetInfo<T> {
 	@Nullable
 	AttachmentTarget getTarget(World world);
 
-	void appendDebugInformation(StringBuilder builder);
+	void appendDebugInformation(StringJoiner joiner);
 
 	record Type<T>(byte id, PacketCodec<ByteBuf, ? extends AttachmentTargetInfo<T>> packetCodec) {
 		static Byte2ObjectMap<Type<?>> TYPES = new Byte2ObjectArrayMap<>();
@@ -82,9 +84,9 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(StringBuilder builder) {
-			builder.append("Target type: Block entity").append('\n');
-			builder.append("Block entity position: ").append(pos).append('\n');
+		public void appendDebugInformation(StringJoiner joiner) {
+			joiner.add("Target type: Block entity");
+			joiner.add("Block entity position: %s".formatted(pos));
 		}
 	}
 
@@ -105,9 +107,9 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(StringBuilder builder) {
-			builder.append("Target type: Entity").append('\n');
-			builder.append("Entity network ID: ").append(networkId).append('\n');
+		public void appendDebugInformation(StringJoiner joiner) {
+			joiner.add("Target type: Entity");
+			joiner.add("Entity network ID: %d".formatted(networkId));
 		}
 	}
 
@@ -127,9 +129,9 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(StringBuilder builder) {
-			builder.append("Target type: Chunk").append('\n');
-			builder.append("Chunk position: ").append(pos).append('\n');
+		public void appendDebugInformation(StringJoiner joiner) {
+			joiner.add("Target type: Chunk");
+			joiner.add("Chunk position: %s".formatted(pos));
 		}
 	}
 
@@ -151,8 +153,8 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(StringBuilder builder) {
-			builder.append("Target type: World").append('\n');
+		public void appendDebugInformation(StringJoiner joiner) {
+			joiner.add("Target type: World");
 		}
 	}
 }
