@@ -83,8 +83,8 @@ public sealed interface AttachmentTargetInfo<T> {
 
 		@Override
 		public void appendDebugInformation(StringBuilder builder) {
-			builder.append("Target type: Block entity");
-			builder.append("Block entity position: ").append(pos);
+			builder.append("Target type: Block entity").append('\n');
+			builder.append("Block entity position: ").append(pos).append('\n');
 		}
 	}
 
@@ -106,8 +106,8 @@ public sealed interface AttachmentTargetInfo<T> {
 
 		@Override
 		public void appendDebugInformation(StringBuilder builder) {
-			builder.append("Target type: Entity");
-			builder.append("Entity network ID: ").append(networkId);
+			builder.append("Target type: Entity").append('\n');
+			builder.append("Entity network ID: ").append(networkId).append('\n');
 		}
 	}
 
@@ -128,8 +128,8 @@ public sealed interface AttachmentTargetInfo<T> {
 
 		@Override
 		public void appendDebugInformation(StringBuilder builder) {
-			builder.append("Target type: Chunk");
-			builder.append("Chunk position: ").append(pos);
+			builder.append("Target type: Chunk").append('\n');
+			builder.append("Chunk position: ").append(pos).append('\n');
 		}
 	}
 
@@ -152,7 +152,7 @@ public sealed interface AttachmentTargetInfo<T> {
 
 		@Override
 		public void appendDebugInformation(StringBuilder builder) {
-			builder.append("Target type: World");
+			builder.append("Target type: World").append('\n');
 		}
 	}
 }

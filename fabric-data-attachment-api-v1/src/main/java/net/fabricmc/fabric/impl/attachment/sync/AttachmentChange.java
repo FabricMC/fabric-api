@@ -138,10 +138,10 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		AttachmentTarget target = targetInfo.getTarget(world);
 		Object value = decodeValue(world.getRegistryManager());
 		if (target == null) {
-			final var errorMessageBuilder = new StringBuilder("Received attachment change for unknown target.");
-			errorMessageBuilder.append("Attachment identifier: ").append(type.identifier());
-			errorMessageBuilder.append("Attachment value: ").append(value);
-			errorMessageBuilder.append("World: ").append(world.getRegistryKey());
+			final var errorMessageBuilder = new StringBuilder("Received attachment change for unknown target.").append('\n');
+			errorMessageBuilder.append("Attachment identifier: ").append(type.identifier()).append('\n');
+			errorMessageBuilder.append("Attachment value: ").append(value).append('\n');
+			errorMessageBuilder.append("World: ").append(world.getRegistryKey()).append('\n');
 			targetInfo.appendDebugInformation(errorMessageBuilder);
 			AttachmentEntrypoint.LOGGER.warn(errorMessageBuilder.toString());
 			return;
