@@ -34,9 +34,11 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
@@ -133,6 +135,17 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 	}
 
 	public void apply(World world) {
-		targetInfo.getTarget(world).setAttached((AttachmentType<Object>) type, decodeValue(world.getRegistryManager()));
+		AttachmentTarget target = targetInfo.getTarget(world);
+		Object value = decodeValue(world.getRegistryManager());
+		if (target == null) {
+			final var errorMessageBuilder = new StringBuilder("Received attachment change for unknown target.");
+			errorMessageBuilder.append("Attachment identifier: ").append(type.identifier());
+			errorMessageBuilder.append("Attachment value: ").append(value);
+			errorMessageBuilder.append("World: ").append(world.getRegistryKey());
+			targetInfo.appendDebugInformation(errorMessageBuilder);
+			AttachmentEntrypoint.LOGGER.warn(errorMessageBuilder.toString());
+			return;
+		}
+		target.setAttached((AttachmentType<Object>) type, value);
 	}
 }

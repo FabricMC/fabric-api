@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.attachment.sync;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -43,7 +44,10 @@ public sealed interface AttachmentTargetInfo<T> {
 		return getType().id;
 	}
 
+	@Nullable
 	AttachmentTarget getTarget(World world);
+
+	void appendDebugInformation(StringBuilder builder);
 
 	record Type<T>(byte id, PacketCodec<ByteBuf, ? extends AttachmentTargetInfo<T>> packetCodec) {
 		static Byte2ObjectMap<Type<?>> TYPES = new Byte2ObjectArrayMap<>();
@@ -76,6 +80,12 @@ public sealed interface AttachmentTargetInfo<T> {
 		public AttachmentTarget getTarget(World world) {
 			return world.getBlockEntity(pos);
 		}
+
+		@Override
+		public void appendDebugInformation(StringBuilder builder) {
+			builder.append("Target type: Block entity");
+			builder.append("Block entity position: ").append(pos);
+		}
 	}
 
 	record EntityTarget(int networkId) implements AttachmentTargetInfo<Entity> {
@@ -93,6 +103,12 @@ public sealed interface AttachmentTargetInfo<T> {
 		public AttachmentTarget getTarget(World world) {
 			return world.getEntityById(networkId);
 		}
+
+		@Override
+		public void appendDebugInformation(StringBuilder builder) {
+			builder.append("Target type: Entity");
+			builder.append("Entity network ID: ").append(networkId);
+		}
 	}
 
 	record ChunkTarget(ChunkPos pos) implements AttachmentTargetInfo<Chunk> {
@@ -108,6 +124,12 @@ public sealed interface AttachmentTargetInfo<T> {
 		@Override
 		public AttachmentTarget getTarget(World world) {
 			return world.getChunk(pos.x, pos.z);
+		}
+
+		@Override
+		public void appendDebugInformation(StringBuilder builder) {
+			builder.append("Target type: Chunk");
+			builder.append("Chunk position: ").append(pos);
 		}
 	}
 
@@ -126,6 +148,11 @@ public sealed interface AttachmentTargetInfo<T> {
 		@Override
 		public AttachmentTarget getTarget(World world) {
 			return world;
+		}
+
+		@Override
+		public void appendDebugInformation(StringBuilder builder) {
+			builder.append("Target type: World");
 		}
 	}
 }
