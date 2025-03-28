@@ -19,15 +19,11 @@ package net.fabricmc.fabric.test.event.lifecycle;
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
-import net.minecraft.server.world.ChunkLevelType;
-
 import org.slf4j.Logger;
 
+import net.minecraft.server.world.ChunkLevelType;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
@@ -78,11 +74,12 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		});
 
 		ServerTickEvents.END_WORLD_TICK.register(world -> {
-			if(world.getTime() % 20 != 0) return; // limit to 1 per second
+			if (world.getTime() % 20 != 0) return; // limit to 1 per second
 
 			worlds.putIfAbsent(world.getRegistryKey().getValue(), new Object2IntOpenHashMap<>());
 			Object2IntMap<ChunkLevelType> levelTypes = worlds.get(world.getRegistryKey().getValue());
-			if(!levelTypes.isEmpty()) {
+
+			if (!levelTypes.isEmpty()) {
 				StringBuilder sb = new StringBuilder(world.getRegistryKey().getValue() + " ");
 				levelTypes.forEach((levelType, integer) -> sb.append(levelType).append(": ").append(integer).append(", "));
 				LOGGER.info(sb.toString());
