@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
+import net.minecraft.server.world.ChunkLevelType;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -59,6 +61,17 @@ public final class ServerChunkEvents {
 		}
 	});
 
+	/**
+	 * Called when a chunk changes its {@link ChunkLevelType}.
+	 *
+	 * <p>When this event is called, the chunk's level type has already changed.
+	 */
+	public static final Event<LevelTypeChange> CHUNK_LEVEL_TYPE_CHANGE = EventFactory.createArrayBacked(LevelTypeChange.class, callbacks -> (serverWorld, chunkPos, oldLevelType, newLevelType) -> {
+		for (LevelTypeChange callback : callbacks) {
+			callback.onChunkLevelTypeChange(serverWorld, chunkPos, oldLevelType, newLevelType);
+		}
+	});
+
 	@FunctionalInterface
 	public interface Load {
 		void onChunkLoad(ServerWorld world, WorldChunk chunk);
@@ -72,5 +85,10 @@ public final class ServerChunkEvents {
 	@FunctionalInterface
 	public interface Unload {
 		void onChunkUnload(ServerWorld world, WorldChunk chunk);
+	}
+
+	@FunctionalInterface
+	public interface LevelTypeChange {
+		void onChunkLevelTypeChange(ServerWorld world, ChunkPos chunkPos, ChunkLevelType oldLevelType, ChunkLevelType newLevelType);
 	}
 }

@@ -4,13 +4,14 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ChunkGeneratingMixin",
+    "ChunkHolderMixin",
     "DataPackContentsMixin",
     "LivingEntityMixin",
     "MinecraftServerMixin",
     "PlayerManagerMixin",
-    "ServerWorldServerEntityHandlerMixin",
-    "ServerWorldMixin",
     "ServerChunkLoadingManagerMixin",
+    "ServerWorldMixin",
+    "ServerWorldServerEntityHandlerMixin",
     "WorldMixin"
   ],
   "server": [
