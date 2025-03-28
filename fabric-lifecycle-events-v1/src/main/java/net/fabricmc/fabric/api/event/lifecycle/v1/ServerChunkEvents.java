@@ -54,6 +54,9 @@ public final class ServerChunkEvents {
 	 * Called when a chunk is unloaded from a ServerWorld.
 	 *
 	 * <p>When this event is called, the chunk is still present in the world.
+	 *
+	 * <p>Note that the server typically unloads chunks when the chunk's level goes above 45 (and not immediately when the chunk becomes inaccessible).
+	 * To know when a chunk first becomes inaccessible, see {@link ServerChunkEvents#CHUNK_LEVEL_TYPE_CHANGE}.
 	 */
 	public static final Event<ServerChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ServerChunkEvents.Unload.class, callbacks -> (serverWorld, chunk) -> {
 		for (Unload callback : callbacks) {
