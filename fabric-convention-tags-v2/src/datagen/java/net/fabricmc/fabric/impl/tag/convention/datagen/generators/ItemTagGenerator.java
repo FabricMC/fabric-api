@@ -852,7 +852,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BONE);
 
 		getOrCreateTagBuilder(ConventionalItemTags.EGGS)
-				.add(Items.EGG);
+				.add(Items.EGG, Items.BROWN_EGG, Items.BLUE_EGG);
 
 		getOrCreateTagBuilder(ConventionalItemTags.FEATHERS)
 				.add(Items.FEATHER);

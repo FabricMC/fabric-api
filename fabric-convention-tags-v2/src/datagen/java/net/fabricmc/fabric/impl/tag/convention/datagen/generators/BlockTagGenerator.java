@@ -232,8 +232,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				).addOptional(Identifier.ofVanilla("tall_flowers"));
 
 		getOrCreateTagBuilder(ConventionalBlockTags.FLOWERS)
-				.add(Blocks.FLOWERING_AZALEA_LEAVES, Blocks.FLOWERING_AZALEA, Blocks.MANGROVE_PROPAGULE,
-						Blocks.PINK_PETALS, Blocks.CHORUS_FLOWER, Blocks.SPORE_BLOSSOM
+				.add(Blocks.CHERRY_LEAVES, Blocks.FLOWERING_AZALEA_LEAVES, Blocks.FLOWERING_AZALEA,
+						Blocks.MANGROVE_PROPAGULE, Blocks.PINK_PETALS, Blocks.WILDFLOWERS, Blocks.CHORUS_FLOWER,
+						Blocks.SPORE_BLOSSOM, Blocks.CACTUS_FLOWER
 				).addOptionalTag(ConventionalBlockTags.SMALL_FLOWERS)
 				.addOptionalTag(ConventionalBlockTags.TALL_FLOWERS);
 	}
