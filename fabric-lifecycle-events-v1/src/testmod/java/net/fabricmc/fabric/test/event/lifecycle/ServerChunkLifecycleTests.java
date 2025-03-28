@@ -40,7 +40,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		setupChunkGenerateTest();
-		setupChunkStatusChangeTest();
+		setupChunkLevelTypeChangeTest();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 	 * Moving around within the same chunk (use F3+G) should not log anything.
 	 * Moving into another chunk should trigger some logs.
 	 */
-	private static void setupChunkStatusChangeTest() {
+	private static void setupChunkLevelTypeChangeTest() {
 		final Object2ObjectMap<Identifier, Object2IntMap<ChunkLevelType>> worlds = new Object2ObjectOpenHashMap<>();
 		ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.register((world, chunkPos, oldLevelType, newLevelType) -> {
 			worlds.putIfAbsent(world.getRegistryKey().getValue(), new Object2IntOpenHashMap<>());
