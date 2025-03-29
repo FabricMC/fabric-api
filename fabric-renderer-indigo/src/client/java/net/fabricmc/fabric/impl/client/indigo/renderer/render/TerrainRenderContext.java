@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
+import java.util.Arrays;
 import java.util.function.Function;
-
-import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
-import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
@@ -38,7 +36,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
@@ -47,67 +44,17 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 public class TerrainRenderContext extends AbstractTerrainRenderContext {
 	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
 
-	// TODO: Allow TerrainLikeRenderContext to also cache these values, including for flat lighting (possible as of
-	//  1.21.5 rc1), and respect the setting of the vanilla brightness cache.
-	//  This context (TerrainRenderContext) should use an array (or arrays) of length 18^3 instead of maps to cache
-	//  these values since it is known which positions they may be computed for.
-	/**
-	 * Serves same function as brightness cache in Mojang's AO calculator,
-	 * with some differences as follows...
-	 *
-	 * <ul><li>Mojang limits the cache to 100 values.
-	 * However, a render chunk only has 16^3 blocks in it, and the cache is cleared every chunk.
-	 * For performance and simplicity, we just let map grow to the size of the render chunk.
-	 *
-	 * <li>The Mojang cache is a separate threadlocal with a threadlocal boolean to
-	 * enable and disable. Cache clearing happens on disable. There's no use case for
-	 * us when the cache needs to be disabled (and no apparent case in Mojang's code either)
-	 * so we simply clear the cache at the start of each new chunk. It is also
-	 * not a threadlocal because it's held within a threadlocal TerrainRenderContext.</ul>
-	 */
-	private final Long2IntOpenHashMap lightCache = new Long2IntOpenHashMap();
-	private final Long2FloatOpenHashMap aoCache = new Long2FloatOpenHashMap();
-
 	private MatrixStack matrixStack;
 	private Random random;
 	private Function<RenderLayer, BufferBuilder> bufferFunc;
 
 	public TerrainRenderContext() {
-		lightCache.defaultReturnValue(Integer.MAX_VALUE);
-		aoCache.defaultReturnValue(Float.MAX_VALUE);
-
 		overlay = OverlayTexture.DEFAULT_UV;
 	}
 
 	@Override
-	protected AoCalculator createAoCalc(BlockRenderInfo blockInfo) {
-		return new AoCalculator(blockInfo) {
-			@Override
-			public int light(BlockPos pos, BlockState state) {
-				long key = pos.asLong();
-				int result = lightCache.get(key);
-
-				if (result == Integer.MAX_VALUE) {
-					result = WorldRenderer.getLightmapCoordinates(WorldRenderer.BrightnessGetter.DEFAULT, blockInfo.blockView, state, pos);
-					lightCache.put(key, result);
-				}
-
-				return result;
-			}
-
-			@Override
-			public float ao(BlockPos pos, BlockState state) {
-				long key = pos.asLong();
-				float result = aoCache.get(key);
-
-				if (result == Float.MAX_VALUE) {
-					result = AoLuminanceFix.INSTANCE.apply(blockInfo.blockView, pos, state);
-					aoCache.put(key, result);
-				}
-
-				return result;
-			}
-		};
+	protected LightDataProvider createLightDataProvider(BlockRenderInfo blockInfo) {
+		return new LightDataCache(blockInfo);
 	}
 
 	@Override
@@ -115,15 +62,13 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 		return bufferFunc.apply(layer);
 	}
 
-	public void prepare(BlockRenderView blockView, MatrixStack matrixStack, Random random, Function<RenderLayer, BufferBuilder> bufferFunc) {
+	public void prepare(BlockRenderView blockView, BlockPos sectionOrigin, MatrixStack matrixStack, Random random, Function<RenderLayer, BufferBuilder> bufferFunc) {
 		blockInfo.prepareForWorld(blockView, true);
+		((LightDataCache) lightDataProvider).prepare(sectionOrigin);
 
 		this.matrixStack = matrixStack;
 		this.random = random;
 		this.bufferFunc = bufferFunc;
-
-		lightCache.clear();
-		aoCache.clear();
 	}
 
 	public void release() {
@@ -156,6 +101,91 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 			throw new CrashException(crashReport);
 		} finally {
 			matrixStack.pop();
+		}
+	}
+
+	private static class LightDataCache implements LightDataProvider {
+		// Since this context is only used during section building, we know ahead of time all positions for which data
+		// may be requested by flat or smooth lighting, so we use an array instead of a map to cache that data, unlike
+		// vanilla. Even though cache indices are positions and therefore 3D, the cache is 1D to maximize memory
+		// locality.
+		private final int[] lightCache = new int[18 * 18 * 18];
+		private final float[] aoCache = new float[18 * 18 * 18];
+
+		private final BlockRenderInfo blockInfo;
+		private BlockPos sectionOrigin;
+
+		LightDataCache(BlockRenderInfo blockInfo) {
+			this.blockInfo = blockInfo;
+		}
+
+		private final WorldRenderer.BrightnessGetter lightGetter = (world, pos) -> {
+			int cacheIndex = cacheIndex(pos);
+
+			if (cacheIndex == -1) {
+				return WorldRenderer.BrightnessGetter.DEFAULT.packedBrightness(world, pos);
+			}
+
+			int result = lightCache[cacheIndex];
+
+			if (result == Integer.MAX_VALUE) {
+				result = WorldRenderer.BrightnessGetter.DEFAULT.packedBrightness(world, pos);
+				lightCache[cacheIndex] = result;
+			}
+
+			return result;
+		};
+
+		public void prepare(BlockPos sectionOrigin) {
+			this.sectionOrigin = sectionOrigin;
+
+			Arrays.fill(lightCache, Integer.MAX_VALUE);
+			Arrays.fill(aoCache, Float.NaN);
+		}
+
+		@Override
+		public int light(BlockPos pos, BlockState state) {
+			return WorldRenderer.getLightmapCoordinates(lightGetter, blockInfo.blockView, state, pos);
+		}
+
+		@Override
+		public float ao(BlockPos pos, BlockState state) {
+			int cacheIndex = cacheIndex(pos);
+
+			if (cacheIndex == -1) {
+				return AoLuminanceFix.INSTANCE.apply(blockInfo.blockView, pos, state);
+			}
+
+			float result = aoCache[cacheIndex];
+
+			if (Float.isNaN(result)) {
+				result = AoLuminanceFix.INSTANCE.apply(blockInfo.blockView, pos, state);
+				aoCache[cacheIndex] = result;
+			}
+
+			return result;
+		}
+
+		private int cacheIndex(BlockPos pos) {
+			int localX = pos.getX() - (sectionOrigin.getX() - 1);
+
+			if (localX < 0 || localX >= 18) {
+				return -1;
+			}
+
+			int localY = pos.getY() - (sectionOrigin.getY() - 1);
+
+			if (localY < 0 || localY >= 18) {
+				return -1;
+			}
+
+			int localZ = pos.getZ() - (sectionOrigin.getZ() - 1);
+
+			if (localZ < 0 || localZ >= 18) {
+				return -1;
+			}
+
+			return localZ * 18 * 18 + localY * 18 + localX;
 		}
 	}
 }

@@ -29,6 +29,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.fabricmc.fabric.api.util.TriState;
 
 /**
  * Holds, manages, and provides access to the block/world related state
@@ -42,9 +43,9 @@ public class BlockRenderInfo {
 	public BlockPos blockPos;
 	public BlockState blockState;
 
-	boolean useAo;
-	boolean defaultAo;
-	RenderLayer defaultLayer;
+	private boolean useAo;
+	private boolean defaultAo;
+	private RenderLayer defaultLayer;
 
 	private boolean enableCulling;
 	private int cullCompletionFlags;
@@ -74,11 +75,19 @@ public class BlockRenderInfo {
 		blockState = null;
 	}
 
-	int blockColor(int tintIndex) {
+	public int blockColor(int tintIndex) {
 		return 0xFF000000 | blockColorMap.getColor(blockState, blockView, blockPos, tintIndex);
 	}
 
-	boolean shouldDrawSide(@Nullable Direction side) {
+	public boolean effectiveAo(TriState aoMode) {
+		return useAo && aoMode.orElse(defaultAo);
+	}
+
+	public RenderLayer effectiveRenderLayer(BlendMode blendMode) {
+		return blendMode == BlendMode.DEFAULT ? defaultLayer : blendMode.blockRenderLayer;
+	}
+
+	public boolean shouldDrawSide(@Nullable Direction side) {
 		if (side == null || !enableCulling) {
 			return true;
 		}
@@ -99,11 +108,7 @@ public class BlockRenderInfo {
 		}
 	}
 
-	boolean shouldCullSide(@Nullable Direction side) {
+	public boolean shouldCullSide(@Nullable Direction side) {
 		return !shouldDrawSide(side);
-	}
-
-	RenderLayer effectiveRenderLayer(BlendMode blendMode) {
-		return blendMode == BlendMode.DEFAULT ? this.defaultLayer : blendMode.blockRenderLayer;
 	}
 }

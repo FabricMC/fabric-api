@@ -78,12 +78,13 @@ abstract class SectionBuilderMixin {
 	private void hookBuild(ChunkSectionPos sectionPos, ChunkRendererRegion region, VertexSorter sorter,
 						BlockBufferAllocatorStorage allocators,
 						CallbackInfoReturnable<SectionBuilder.RenderData> cir,
+						@Local(ordinal = 0) BlockPos sectionOrigin,
 						@Local(ordinal = 0) MatrixStack matrixStack,
 						@Local(ordinal = 0) Map<RenderLayer, BufferBuilder> builderMap,
 						@Local(ordinal = 0) Random random) {
 		// hook just before iterating over the render chunk's blocks to capture the buffer builder map
 		TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
-		renderer.prepare(region, matrixStack, random, layer -> beginBufferBuilding(builderMap, allocators, layer));
+		renderer.prepare(region, sectionOrigin, matrixStack, random, layer -> beginBufferBuilding(builderMap, allocators, layer));
 		((AccessChunkRendererRegion) region).fabric_setRenderer(renderer);
 	}
 

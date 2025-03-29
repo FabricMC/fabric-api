@@ -25,13 +25,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
-import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
@@ -40,7 +38,8 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
 public abstract class AbstractTerrainRenderContext extends AbstractRenderContext {
 	protected final BlockRenderInfo blockInfo = new BlockRenderInfo();
-	protected final AoCalculator aoCalc;
+	protected final LightDataProvider lightDataProvider;
+	private final AoCalculator aoCalc;
 
 	private int cachedTintIndex = -1;
 	private int cachedTint;
@@ -48,10 +47,11 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 	private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
 
 	protected AbstractTerrainRenderContext() {
-		aoCalc = createAoCalc(blockInfo);
+		lightDataProvider = createLightDataProvider(blockInfo);
+		aoCalc = new AoCalculator(blockInfo, lightDataProvider);
 	}
 
-	protected abstract AoCalculator createAoCalc(BlockRenderInfo blockInfo);
+	protected abstract LightDataProvider createLightDataProvider(BlockRenderInfo blockInfo);
 
 	protected abstract VertexConsumer getVertexConsumer(RenderLayer layer);
 
@@ -69,8 +69,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		}
 
 		final RenderMaterial mat = quad.material();
-		final TriState aoMode = mat.ambientOcclusion();
-		final boolean ao = blockInfo.useAo && (aoMode == TriState.TRUE || (aoMode == TriState.DEFAULT && blockInfo.defaultAo));
+		final boolean ao = blockInfo.effectiveAo(mat.ambientOcclusion());
 		final boolean emissive = mat.emissive();
 		final boolean vanillaShade = mat.shadeMode() == ShadeMode.VANILLA;
 		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveRenderLayer(mat.blendMode()));
@@ -245,7 +244,6 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 			}
 		}
 
-		// Unfortunately cannot use light cache here unless we implement one specifically for flat lighting. See #329
-		return WorldRenderer.getLightmapCoordinates(WorldRenderer.BrightnessGetter.DEFAULT, blockInfo.blockView, blockState, lightPos);
+		return lightDataProvider.light(lightPos, blockState);
 	}
 }

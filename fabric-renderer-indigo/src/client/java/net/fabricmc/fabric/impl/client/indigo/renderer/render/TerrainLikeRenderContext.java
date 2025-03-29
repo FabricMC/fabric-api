@@ -31,7 +31,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
@@ -45,8 +44,9 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 	private VertexConsumerProvider vertexConsumers;
 
 	@Override
-	protected AoCalculator createAoCalc(BlockRenderInfo blockInfo) {
-		return new AoCalculator(blockInfo) {
+	protected LightDataProvider createLightDataProvider(BlockRenderInfo blockInfo) {
+		// TODO: Use a cache whenever vanilla would use a cache (BrightnessCache.enabled)
+		return new LightDataProvider() {
 			@Override
 			public int light(BlockPos pos, BlockState state) {
 				return WorldRenderer.getLightmapCoordinates(WorldRenderer.BrightnessGetter.DEFAULT, blockInfo.blockView, state, pos);

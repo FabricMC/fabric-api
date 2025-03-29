@@ -43,11 +43,12 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoFace.WeightFunct
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.LightDataProvider;
 
 /**
  * Adaptation of inner, non-static class in BlockModelRenderer that serves same purpose.
  */
-public abstract class AoCalculator {
+public class AoCalculator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
 
 	/**
@@ -64,9 +65,11 @@ public abstract class AoCalculator {
 		VERTEX_MAP[EAST.getIndex()] = new int[] { 1, 2, 3, 0 };
 	}
 
+	private final BlockRenderInfo blockInfo;
+	private final LightDataProvider dataProvider;
+
 	private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
 	private final BlockPos.Mutable searchPos = new BlockPos.Mutable();
-	protected final BlockRenderInfo blockInfo;
 
 	/** caches results of {@link #computeFace(Direction, boolean, boolean)} for the current block. */
 	private final AoFaceData[] faceData = new AoFaceData[24];
@@ -81,17 +84,14 @@ public abstract class AoCalculator {
 	public final float[] ao = new float[4];
 	public final int[] light = new int[4];
 
-	public AoCalculator(BlockRenderInfo blockInfo) {
+	public AoCalculator(BlockRenderInfo blockInfo, LightDataProvider dataProvider) {
 		this.blockInfo = blockInfo;
+		this.dataProvider = dataProvider;
 
 		for (int i = 0; i < 24; i++) {
 			faceData[i] = new AoFaceData();
 		}
 	}
-
-	public abstract int light(BlockPos pos, BlockState state);
-
-	public abstract float ao(BlockPos pos, BlockState state);
 
 	/** call at start of each new block. */
 	public void clear() {
@@ -358,8 +358,8 @@ public abstract class AoCalculator {
 
 		searchPos.set(lightPos, aoFace.neighbors[0]);
 		searchState = world.getBlockState(searchPos);
-		final int light0 = light(searchPos, searchState);
-		final float ao0 = ao(searchPos, searchState);
+		final int light0 = dataProvider.light(searchPos, searchState);
+		final float ao0 = dataProvider.ao(searchPos, searchState);
 
 		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
 			searchPos.move(lightFace);
@@ -370,8 +370,8 @@ public abstract class AoCalculator {
 
 		searchPos.set(lightPos, aoFace.neighbors[1]);
 		searchState = world.getBlockState(searchPos);
-		final int light1 = light(searchPos, searchState);
-		final float ao1 = ao(searchPos, searchState);
+		final int light1 = dataProvider.light(searchPos, searchState);
+		final float ao1 = dataProvider.ao(searchPos, searchState);
 
 		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
 			searchPos.move(lightFace);
@@ -382,8 +382,8 @@ public abstract class AoCalculator {
 
 		searchPos.set(lightPos, aoFace.neighbors[2]);
 		searchState = world.getBlockState(searchPos);
-		final int light2 = light(searchPos, searchState);
-		final float ao2 = ao(searchPos, searchState);
+		final int light2 = dataProvider.light(searchPos, searchState);
+		final float ao2 = dataProvider.ao(searchPos, searchState);
 
 		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
 			searchPos.move(lightFace);
@@ -394,8 +394,8 @@ public abstract class AoCalculator {
 
 		searchPos.set(lightPos, aoFace.neighbors[3]);
 		searchState = world.getBlockState(searchPos);
-		final int light3 = light(searchPos, searchState);
-		final float ao3 = ao(searchPos, searchState);
+		final int light3 = dataProvider.light(searchPos, searchState);
+		final float ao3 = dataProvider.ao(searchPos, searchState);
 
 		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
 			searchPos.move(lightFace);
@@ -419,8 +419,8 @@ public abstract class AoCalculator {
 		} else {
 			searchPos.set(lightPos, aoFace.neighbors[0]).move(aoFace.neighbors[2]);
 			searchState = world.getBlockState(searchPos);
-			cAo0 = ao(searchPos, searchState);
-			cLight0 = light(searchPos, searchState);
+			cAo0 = dataProvider.ao(searchPos, searchState);
+			cLight0 = dataProvider.light(searchPos, searchState);
 			cIsClear0 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity() == 0;
 		}
 
@@ -431,8 +431,8 @@ public abstract class AoCalculator {
 		} else {
 			searchPos.set(lightPos, aoFace.neighbors[0]).move(aoFace.neighbors[3]);
 			searchState = world.getBlockState(searchPos);
-			cAo1 = ao(searchPos, searchState);
-			cLight1 = light(searchPos, searchState);
+			cAo1 = dataProvider.ao(searchPos, searchState);
+			cLight1 = dataProvider.light(searchPos, searchState);
 			cIsClear1 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity() == 0;
 		}
 
@@ -443,8 +443,8 @@ public abstract class AoCalculator {
 		} else {
 			searchPos.set(lightPos, aoFace.neighbors[1]).move(aoFace.neighbors[2]);
 			searchState = world.getBlockState(searchPos);
-			cAo2 = ao(searchPos, searchState);
-			cLight2 = light(searchPos, searchState);
+			cAo2 = dataProvider.ao(searchPos, searchState);
+			cLight2 = dataProvider.light(searchPos, searchState);
 			cIsClear2 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity() == 0;
 		}
 
@@ -455,8 +455,8 @@ public abstract class AoCalculator {
 		} else {
 			searchPos.set(lightPos, aoFace.neighbors[1]).move(aoFace.neighbors[3]);
 			searchState = world.getBlockState(searchPos);
-			cAo3 = ao(searchPos, searchState);
-			cLight3 = light(searchPos, searchState);
+			cAo3 = dataProvider.ao(searchPos, searchState);
+			cLight3 = dataProvider.light(searchPos, searchState);
 			cIsClear3 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity() == 0;
 		}
 
@@ -468,14 +468,14 @@ public abstract class AoCalculator {
 		searchState = world.getBlockState(searchPos);
 
 		if (isOnBlockFace || !searchState.isOpaqueFullCube()) {
-			lightCenter = light(searchPos, searchState);
+			lightCenter = dataProvider.light(searchPos, searchState);
 			isClearCenter = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity() == 0;
 		} else {
-			lightCenter = light(pos, blockState);
+			lightCenter = dataProvider.light(pos, blockState);
 			isClearCenter = !blockState.shouldBlockVision(world, pos) || blockState.getOpacity() == 0;
 		}
 
-		float aoCenter = ao(lightPos, world.getBlockState(lightPos));
+		float aoCenter = dataProvider.ao(lightPos, world.getBlockState(lightPos));
 		float shadeBrightness = world.getBrightness(lightFace, shade);
 
 		result.a0 = ((ao3 + ao0 + cAo1 + aoCenter) * 0.25F) * shadeBrightness;
