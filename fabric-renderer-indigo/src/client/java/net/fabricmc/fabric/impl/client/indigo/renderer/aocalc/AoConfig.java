@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.aocalc;
 
 /**
  * Defines the configuration modes for the AoCalculator.
- * This determine the appearance of smooth lighting.
+ * This determines the appearance of smooth lighting.
  */
 public enum AoConfig {
 	/**

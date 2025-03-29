@@ -123,7 +123,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 					quad.lightmap(i, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 				}
 			} else {
-				final int light = flatLight(quad, blockInfo.blockState, blockInfo.blockPos);
+				final int light = flatLight(quad);
 
 				for (int i = 0; i < 4; i++) {
 					quad.lightmap(i, ColorHelper.maxLight(quad.lightmap(i), light));
@@ -227,7 +227,9 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 	 * Handles geometry-based check for using self light or neighbor light.
 	 * That logic only applies in flat lighting.
 	 */
-	private int flatLight(MutableQuadViewImpl quad, BlockState blockState, BlockPos pos) {
+	private int flatLight(MutableQuadViewImpl quad) {
+		BlockState blockState = blockInfo.blockState;
+		BlockPos pos = blockInfo.blockPos;
 		lightPos.set(pos);
 
 		// To mirror Vanilla's behavior, if the face has a cull-face, always sample the light value

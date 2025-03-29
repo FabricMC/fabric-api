@@ -38,12 +38,8 @@ public class Indigo implements ClientModInitializer {
 	/** Set true in dev env to confirm results match vanilla when they should. */
 	public static final boolean DEBUG_COMPARE_LIGHTING;
 	public static final boolean FIX_SMOOTH_LIGHTING_OFFSET;
+	/** When true, requires {@link #FIX_SMOOTH_LIGHTING_OFFSET} to be true. */
 	public static final boolean FIX_MEAN_LIGHT_CALCULATION;
-	/**
-	 * Same value as {@link #FIX_MEAN_LIGHT_CALCULATION} because it is only required when the mean formula is changed,
-	 * but different field to clearly separate code paths where we change emissive handling.
-	 */
-	public static final boolean FIX_EMISSIVE_LIGHTING;
 	public static final boolean FIX_EXTERIOR_VERTEX_LIGHTING;
 	public static final boolean FIX_LUMINOUS_AO_SHADE;
 
@@ -115,10 +111,16 @@ public class Indigo implements ClientModInitializer {
 		AMBIENT_OCCLUSION_MODE = asEnum((String) properties.computeIfAbsent("ambient-occlusion-mode", (a) -> "hybrid"), AoConfig.HYBRID);
 		DEBUG_COMPARE_LIGHTING = asBoolean((String) properties.computeIfAbsent("debug-compare-lighting", (a) -> "auto"), false);
 		FIX_SMOOTH_LIGHTING_OFFSET = asBoolean((String) properties.computeIfAbsent("fix-smooth-lighting-offset", (a) -> "auto"), true);
-		FIX_MEAN_LIGHT_CALCULATION = asBoolean((String) properties.computeIfAbsent("fix-mean-light-calculation", (a) -> "auto"), true);
-		FIX_EMISSIVE_LIGHTING = FIX_MEAN_LIGHT_CALCULATION;
+		boolean fixMeanLightCalculation = asBoolean((String) properties.computeIfAbsent("fix-mean-light-calculation", (a) -> "auto"), true);
 		FIX_EXTERIOR_VERTEX_LIGHTING = asBoolean((String) properties.computeIfAbsent("fix-exterior-vertex-lighting", (a) -> "auto"), true);
 		FIX_LUMINOUS_AO_SHADE = asBoolean((String) properties.computeIfAbsent("fix-luminous-block-ambient-occlusion", (a) -> "auto"), false);
+
+		if (fixMeanLightCalculation && !FIX_SMOOTH_LIGHTING_OFFSET) {
+			fixMeanLightCalculation = false;
+			LOGGER.warn("[Indigo] Config enabled 'fix-mean-light-calculation' but disabled 'fix-smooth-lighting-offset'; this is not supported! 'fix-mean-light-calculation' will be considered disabled.");
+		}
+
+		FIX_MEAN_LIGHT_CALCULATION = fixMeanLightCalculation;
 
 		try (FileOutputStream stream = new FileOutputStream(configFile)) {
 			properties.store(stream, "Indigo properties file");

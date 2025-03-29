@@ -26,6 +26,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.crash.CrashException;
@@ -87,7 +88,7 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 				int result = lightCache.get(key);
 
 				if (result == Integer.MAX_VALUE) {
-					result = AoCalculator.getLightmapCoordinates(blockInfo.blockView, state, pos);
+					result = WorldRenderer.getLightmapCoordinates(WorldRenderer.BrightnessGetter.DEFAULT, blockInfo.blockView, state, pos);
 					lightCache.put(key, result);
 				}
 
