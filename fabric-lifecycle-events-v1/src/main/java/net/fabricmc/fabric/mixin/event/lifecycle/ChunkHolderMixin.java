@@ -62,9 +62,14 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder {
 	 */
 	@Inject(method = "increaseLevel", at = @At("TAIL"))
 	private void increaseLevel(ServerChunkLoadingManager chunkLoadingManager, CompletableFuture<OptionalChunk<WorldChunk>> chunkFuture, Executor executor, ChunkLevelType target, CallbackInfo ci) {
-		ChunkLevelType previous = ChunkLevels.getType(this.lastTickLevel);
 		ServerWorld serverWorld = (ServerWorld) world;
 		MinecraftServer server = serverWorld.getServer();
+		ChunkLevelType previous = switch (target) {
+			case INACCESSIBLE -> throw new IllegalStateException("target must at least be FULL");
+			case FULL -> INACCESSIBLE;
+			case BLOCK_TICKING -> FULL;
+			case ENTITY_TICKING -> BLOCK_TICKING;
+		};
 		Runnable runnable = () -> ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange(serverWorld, this.pos, previous, target);
 		chunkFuture.thenAccept(optionalChunk -> optionalChunk.ifPresent(worldChunk -> {
 			if (!server.isOnThread()) {
