@@ -19,12 +19,6 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.aocalc;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.AXIS_ALIGNED_FLAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.CUBIC_FLAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
-import static net.minecraft.util.math.Direction.DOWN;
-import static net.minecraft.util.math.Direction.EAST;
-import static net.minecraft.util.math.Direction.NORTH;
-import static net.minecraft.util.math.Direction.SOUTH;
-import static net.minecraft.util.math.Direction.UP;
-import static net.minecraft.util.math.Direction.WEST;
 
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -39,7 +33,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
-import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoFace.WeightFunction;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
@@ -50,20 +43,6 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.LightDataProvider;
  */
 public class AoCalculator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
-
-	/**
-	 * Vanilla models with cubic quads have vertices in a certain order, which allows
-	 * us to map them using a lookup. Adapted from enum in vanilla AoCalculator.
-	 */
-	private static final int[][] VERTEX_MAP = new int[6][4];
-	static {
-		VERTEX_MAP[DOWN.getIndex()] = new int[] { 0, 1, 2, 3 };
-		VERTEX_MAP[UP.getIndex()] = new int[] { 2, 3, 0, 1 };
-		VERTEX_MAP[NORTH.getIndex()] = new int[] { 3, 0, 1, 2 };
-		VERTEX_MAP[SOUTH.getIndex()] = new int[] { 0, 1, 2, 3 };
-		VERTEX_MAP[WEST.getIndex()] = new int[] { 3, 0, 1, 2 };
-		VERTEX_MAP[EAST.getIndex()] = new int[] { 1, 2, 3, 0 };
-	}
 
 	private final BlockRenderInfo blockInfo;
 	private final LightDataProvider dataProvider;
@@ -156,16 +135,17 @@ public class AoCalculator {
 
 	private void calcFastVanilla(QuadViewImpl quad) {
 		int flags = quad.geometryFlags();
+		boolean isOnLightFace = (flags & LIGHT_FACE_FLAG) != 0;
 
 		// force to block face if shape is full cube - matches vanilla logic
-		if ((flags & LIGHT_FACE_FLAG) == 0 && (flags & AXIS_ALIGNED_FLAG) != 0 && blockInfo.blockState.isFullCube(blockInfo.blockView, blockInfo.blockPos)) {
-			flags |= LIGHT_FACE_FLAG;
+		if (!isOnLightFace && (flags & AXIS_ALIGNED_FLAG) != 0 && blockInfo.blockState.isFullCube(blockInfo.blockView, blockInfo.blockPos)) {
+			isOnLightFace = true;
 		}
 
 		if ((flags & CUBIC_FLAG) == 0) {
-			vanillaPartialFace(quad, quad.lightFace(), (flags & LIGHT_FACE_FLAG) != 0, quad.hasShade());
+			vanillaPartialFace(quad, quad.lightFace(), isOnLightFace, quad.hasShade());
 		} else {
-			vanillaFullFace(quad, quad.lightFace(), (flags & LIGHT_FACE_FLAG) != 0, quad.hasShade());
+			vanillaFullFace(quad, quad.lightFace(), isOnLightFace, quad.hasShade());
 		}
 	}
 
@@ -188,16 +168,16 @@ public class AoCalculator {
 	}
 
 	private void vanillaFullFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, boolean shade) {
-		computeFace(lightFace, isOnLightFace, shade).toArray(ao, light, VERTEX_MAP[lightFace.getIndex()]);
+		computeFace(lightFace, isOnLightFace, shade).toArray(ao, light, AoFace.get(lightFace).vertexMap);
 	}
 
 	private void vanillaPartialFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, boolean shade) {
 		AoFaceData faceData = computeFace(lightFace, isOnLightFace, shade);
-		final WeightFunction wFunc = AoFace.get(lightFace).weightFunc;
+		final AoFace aoFace = AoFace.get(lightFace);
 		final float[] w = this.w;
 
 		for (int i = 0; i < 4; i++) {
-			wFunc.apply(quad, i, w);
+			aoFace.computeCornerWeights(quad, i, w);
 			light[i] = faceData.weightedCombinedLight(w);
 			ao[i] = faceData.weigtedAo(w);
 		}
@@ -208,7 +188,7 @@ public class AoCalculator {
 
 	/** Returns linearly interpolated blend of outer and inner face based on depth of vertex in face. */
 	private AoFaceData blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, boolean shade) {
-		final float w1 = AoFace.get(lightFace).depthFunc.apply(quad, vertexIndex);
+		final float w1 = AoFace.get(lightFace).computeDepth(quad, vertexIndex);
 		final float w0 = 1 - w1;
 		return AoFaceData.weightedMean(computeFace(lightFace, true, shade), w0, computeFace(lightFace, false, shade), w1, tmpFace);
 	}
@@ -218,7 +198,7 @@ public class AoCalculator {
 	 * Used for irregular faces when depth varies by vertex to avoid unneeded interpolation.
 	 */
 	private AoFaceData gatherInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, boolean shade) {
-		final float w1 = AoFace.get(lightFace).depthFunc.apply(quad, vertexIndex);
+		final float w1 = AoFace.get(lightFace).computeDepth(quad, vertexIndex);
 
 		if (MathHelper.approximatelyEquals(w1, 0)) {
 			return computeFace(lightFace, true, shade);
@@ -232,10 +212,10 @@ public class AoCalculator {
 
 	private void blendedPartialFace(QuadViewImpl quad, Direction lightFace, boolean shade) {
 		AoFaceData faceData = blendedInsetFace(quad, 0, lightFace, shade);
-		final WeightFunction wFunc = AoFace.get(lightFace).weightFunc;
+		final AoFace aoFace = AoFace.get(lightFace);
 
 		for (int i = 0; i < 4; i++) {
-			wFunc.apply(quad, i, w);
+			aoFace.computeCornerWeights(quad, i, w);
 			light[i] = faceData.weightedCombinedLight(w);
 			ao[i] = faceData.weigtedAo(w);
 		}
@@ -261,7 +241,7 @@ public class AoCalculator {
 			if (!MathHelper.approximatelyEquals(0f, x)) {
 				final Direction face = x > 0 ? Direction.EAST : Direction.WEST;
 				final AoFaceData fd = gatherInsetFace(quad, i, face, shade);
-				AoFace.get(face).weightFunc.apply(quad, i, w);
+				AoFace.get(face).computeCornerWeights(quad, i, w);
 				final float n = x * x;
 				final float a = fd.weigtedAo(w);
 				final int s = fd.weigtedSkyLight(w);
@@ -279,7 +259,7 @@ public class AoCalculator {
 			if (!MathHelper.approximatelyEquals(0f, y)) {
 				final Direction face = y > 0 ? Direction.UP : Direction.DOWN;
 				final AoFaceData fd = gatherInsetFace(quad, i, face, shade);
-				AoFace.get(face).weightFunc.apply(quad, i, w);
+				AoFace.get(face).computeCornerWeights(quad, i, w);
 				final float n = y * y;
 				final float a = fd.weigtedAo(w);
 				final int s = fd.weigtedSkyLight(w);
@@ -297,7 +277,7 @@ public class AoCalculator {
 			if (!MathHelper.approximatelyEquals(0f, z)) {
 				final Direction face = z > 0 ? Direction.SOUTH : Direction.NORTH;
 				final AoFaceData fd = gatherInsetFace(quad, i, face, shade);
-				AoFace.get(face).weightFunc.apply(quad, i, w);
+				AoFace.get(face).computeCornerWeights(quad, i, w);
 				final float n = z * z;
 				final float a = fd.weigtedAo(w);
 				final int s = fd.weigtedSkyLight(w);
@@ -311,7 +291,7 @@ public class AoCalculator {
 			}
 
 			aoResult[i] = (ao + maxAo) * 0.5f;
-			lightResult[i] = (((int) ((sky + maxSky) * 0.5f) & 0xF0) << 16) | ((int) ((block + maxBlock) * 0.5f) & 0xF0);
+			lightResult[i] = (((int) ((sky + maxSky) * 0.5f) & 0xFF) << 16) | ((int) ((block + maxBlock) * 0.5f) & 0xFF);
 		}
 	}
 
@@ -437,6 +417,7 @@ public class AoCalculator {
 		}
 
 		if (!isClear2 && !isClear1) {
+			// Use the values from neighbor 1 instead of neighbor 0 since this corner is not adjacent to neighbor 0
 			cAo2 = ao1;
 			cLight2 = light1;
 			cIsClear2 = false;
@@ -449,6 +430,7 @@ public class AoCalculator {
 		}
 
 		if (!isClear3 && !isClear1) {
+			// Use the values from neighbor 1 instead of neighbor 0 since this corner is not adjacent to neighbor 0
 			cAo3 = ao1;
 			cLight3 = light1;
 			cIsClear3 = false;
@@ -460,14 +442,19 @@ public class AoCalculator {
 			cIsClear3 = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity() == 0;
 		}
 
-		// If on block face or neighbor isn't occluding, "center" will be neighbor light
+		// If on block face and neighbor isn't occluding, "center" will be neighbor light
 		// Doesn't use light pos because logic not based solely on this block's geometry
 		int lightCenter;
 		boolean isClearCenter;
 		searchPos.set(pos, lightFace);
 		searchState = world.getBlockState(searchPos);
 
-		if (isOnBlockFace || !searchState.isOpaqueFullCube()) {
+		// Vanilla uses an OR operator here; we use an AND operator to invert the result when isOnBlockFace and
+		// isOpaqueFullCube have the same value. When both are true, the vanilla logic caused inset faces against
+		// solid blocks to appear too dark when using enhanced AO (i.e. slab below ceiling or fence against wall). When
+		// both are false, the vanilla logic caused inset faces against non-solid blocks to be lit discontinuously (i.e.
+		// dark room with active sculk sensor above slabs).
+		if (isOnBlockFace && !searchState.isOpaqueFullCube()) {
 			lightCenter = dataProvider.light(searchPos, searchState);
 			isClearCenter = !searchState.shouldBlockVision(world, searchPos) || searchState.getOpacity() == 0;
 		} else {

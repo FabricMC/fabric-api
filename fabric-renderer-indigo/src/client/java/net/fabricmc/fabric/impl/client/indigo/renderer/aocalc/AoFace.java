@@ -17,92 +17,124 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.aocalc;
 
 import static net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoVertexClampFunction.CLAMP_FUNC;
-import static net.minecraft.util.math.Direction.DOWN;
-import static net.minecraft.util.math.Direction.EAST;
-import static net.minecraft.util.math.Direction.NORTH;
-import static net.minecraft.util.math.Direction.SOUTH;
-import static net.minecraft.util.math.Direction.UP;
-import static net.minecraft.util.math.Direction.WEST;
 
-import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 
 /**
- * Adapted from vanilla BlockModelRenderer.AoCalculator.
+ * Adapted from vanilla BlockModelRenderer.NeighborData and BlockModelRenderer.Translation.
  */
 enum AoFace {
-	AOF_DOWN(new Direction[] { WEST, EAST, NORTH, SOUTH }, (q, i) -> CLAMP_FUNC.clamp(q.y(i)), (q, i, w) -> {
-		final float u = CLAMP_FUNC.clamp(q.x(i));
-		final float v = CLAMP_FUNC.clamp(q.z(i));
-		w[0] = (1 - u) * v;
-		w[1] = (1 - u) * (1 - v);
-		w[2] = u * (1 - v);
-		w[3] = u * v;
-	}),
-	AOF_UP(new Direction[] { EAST, WEST, NORTH, SOUTH }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.y(i)), (q, i, w) -> {
-		final float u = CLAMP_FUNC.clamp(q.x(i));
-		final float v = CLAMP_FUNC.clamp(q.z(i));
-		w[0] = u * v;
-		w[1] = u * (1 - v);
-		w[2] = (1 - u) * (1 - v);
-		w[3] = (1 - u) * v;
-	}),
-	AOF_NORTH(new Direction[] { UP, DOWN, EAST, WEST }, (q, i) -> CLAMP_FUNC.clamp(q.z(i)), (q, i, w) -> {
-		final float u = CLAMP_FUNC.clamp(q.y(i));
-		final float v = CLAMP_FUNC.clamp(q.x(i));
-		w[0] = u * (1 - v);
-		w[1] = u * v;
-		w[2] = (1 - u) * v;
-		w[3] = (1 - u) * (1 - v);
-	}),
-	AOF_SOUTH(new Direction[] { WEST, EAST, DOWN, UP }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.z(i)), (q, i, w) -> {
-		final float u = CLAMP_FUNC.clamp(q.y(i));
-		final float v = CLAMP_FUNC.clamp(q.x(i));
-		w[0] = u * (1 - v);
-		w[1] = (1 - u) * (1 - v);
-		w[2] = (1 - u) * v;
-		w[3] = u * v;
-	}),
-	AOF_WEST(new Direction[] { UP, DOWN, NORTH, SOUTH }, (q, i) -> CLAMP_FUNC.clamp(q.x(i)), (q, i, w) -> {
-		final float u = CLAMP_FUNC.clamp(q.y(i));
-		final float v = CLAMP_FUNC.clamp(q.z(i));
-		w[0] = u * v;
-		w[1] = u * (1 - v);
-		w[2] = (1 - u) * (1 - v);
-		w[3] = (1 - u) * v;
-	}),
-	AOF_EAST(new Direction[] { DOWN, UP, NORTH, SOUTH }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.x(i)), (q, i, w) -> {
-		final float u = CLAMP_FUNC.clamp(q.y(i));
-		final float v = CLAMP_FUNC.clamp(q.z(i));
-		w[0] = (1 - u) * v;
-		w[1] = (1 - u) * (1 - v);
-		w[2] = u * (1 - v);
-		w[3] = u * v;
-	});
+	DOWN(new Direction[] { Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH }, new int[] { 0, 1, 2, 3 }) {
+		@Override
+		void computeCornerWeights(QuadViewImpl q, int vertexIndex, float[] out) {
+			final float u = CLAMP_FUNC.clamp(q.x(vertexIndex));
+			final float v = CLAMP_FUNC.clamp(q.z(vertexIndex));
+			out[0] = (1 - u) * v;
+			out[1] = (1 - u) * (1 - v);
+			out[2] = u * (1 - v);
+			out[3] = u * v;
+		}
+
+		@Override
+		float computeDepth(QuadViewImpl q, int vertexIndex) {
+			return CLAMP_FUNC.clamp(q.y(vertexIndex));
+		}
+	},
+	UP(new Direction[] { Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH }, new int[] { 2, 3, 0, 1 }) {
+		@Override
+		void computeCornerWeights(QuadViewImpl q, int vertexIndex, float[] out) {
+			final float u = CLAMP_FUNC.clamp(q.x(vertexIndex));
+			final float v = CLAMP_FUNC.clamp(q.z(vertexIndex));
+			out[0] = u * v;
+			out[1] = u * (1 - v);
+			out[2] = (1 - u) * (1 - v);
+			out[3] = (1 - u) * v;
+		}
+
+		@Override
+		float computeDepth(QuadViewImpl q, int vertexIndex) {
+			return 1 - CLAMP_FUNC.clamp(q.y(vertexIndex));
+		}
+	},
+	NORTH(new Direction[] { Direction.UP, Direction.DOWN, Direction.EAST, Direction.WEST }, new int[] { 3, 0, 1, 2 }) {
+		@Override
+		void computeCornerWeights(QuadViewImpl q, int vertexIndex, float[] out) {
+			final float u = CLAMP_FUNC.clamp(q.y(vertexIndex));
+			final float v = CLAMP_FUNC.clamp(q.x(vertexIndex));
+			out[0] = u * (1 - v);
+			out[1] = u * v;
+			out[2] = (1 - u) * v;
+			out[3] = (1 - u) * (1 - v);
+		}
+
+		@Override
+		float computeDepth(QuadViewImpl q, int vertexIndex) {
+			return CLAMP_FUNC.clamp(q.z(vertexIndex));
+		}
+	},
+	SOUTH(new Direction[] { Direction.WEST, Direction.EAST, Direction.DOWN, Direction.UP }, new int[] { 0, 1, 2, 3 }) {
+		@Override
+		void computeCornerWeights(QuadViewImpl q, int vertexIndex, float[] out) {
+			final float u = CLAMP_FUNC.clamp(q.y(vertexIndex));
+			final float v = CLAMP_FUNC.clamp(q.x(vertexIndex));
+			out[0] = u * (1 - v);
+			out[1] = (1 - u) * (1 - v);
+			out[2] = (1 - u) * v;
+			out[3] = u * v;
+		}
+
+		@Override
+		float computeDepth(QuadViewImpl q, int vertexIndex) {
+			return 1 - CLAMP_FUNC.clamp(q.z(vertexIndex));
+		}
+	},
+	WEST(new Direction[] { Direction.UP, Direction.DOWN, Direction.NORTH, Direction.SOUTH }, new int[] { 3, 0, 1, 2 }) {
+		@Override
+		void computeCornerWeights(QuadViewImpl q, int vertexIndex, float[] out) {
+			final float u = CLAMP_FUNC.clamp(q.y(vertexIndex));
+			final float v = CLAMP_FUNC.clamp(q.z(vertexIndex));
+			out[0] = u * v;
+			out[1] = u * (1 - v);
+			out[2] = (1 - u) * (1 - v);
+			out[3] = (1 - u) * v;
+		}
+
+		@Override
+		float computeDepth(QuadViewImpl q, int vertexIndex) {
+			return CLAMP_FUNC.clamp(q.x(vertexIndex));
+		}
+	},
+	EAST(new Direction[] { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH }, new int[] { 1, 2, 3, 0 }) {
+		@Override
+		void computeCornerWeights(QuadViewImpl q, int vertexIndex, float[] out) {
+			final float u = CLAMP_FUNC.clamp(q.y(vertexIndex));
+			final float v = CLAMP_FUNC.clamp(q.z(vertexIndex));
+			out[0] = (1 - u) * v;
+			out[1] = (1 - u) * (1 - v);
+			out[2] = u * (1 - v);
+			out[3] = u * v;
+		}
+
+		@Override
+		float computeDepth(QuadViewImpl q, int vertexIndex) {
+			return 1 - CLAMP_FUNC.clamp(q.x(vertexIndex));
+		}
+	};
+
+	private static final AoFace[] VALUES = AoFace.values();
 
 	final Direction[] neighbors;
-	final WeightFunction weightFunc;
-	final Vertex2Float depthFunc;
+	/**
+	 * Vanilla models with cubic quads have vertices in a certain order, which allows
+	 * us to map them using a lookup.
+	 */
+	final int[] vertexMap;
 
-	AoFace(Direction[] faces, Vertex2Float depthFunc, WeightFunction weightFunc) {
-		this.neighbors = faces;
-		this.depthFunc = depthFunc;
-		this.weightFunc = weightFunc;
-	}
-
-	private static final AoFace[] values = Util.make(new AoFace[6], (neighborData) -> {
-		neighborData[DOWN.getIndex()] = AOF_DOWN;
-		neighborData[UP.getIndex()] = AOF_UP;
-		neighborData[NORTH.getIndex()] = AOF_NORTH;
-		neighborData[SOUTH.getIndex()] = AOF_SOUTH;
-		neighborData[WEST.getIndex()] = AOF_WEST;
-		neighborData[EAST.getIndex()] = AOF_EAST;
-	});
-
-	public static AoFace get(Direction direction) {
-		return values[direction.getIndex()];
+	AoFace(Direction[] neighbors, int[] vertexMap) {
+		this.neighbors = neighbors;
+		this.vertexMap = vertexMap;
 	}
 
 	/**
@@ -113,13 +145,11 @@ enum AoFace {
 	 * coordinate pairs together gives sub-area that are the corner weights.
 	 * Weights sum to 1 because it is a unit cube. Values are stored in the provided array.
 	 */
-	@FunctionalInterface
-	interface WeightFunction {
-		void apply(QuadViewImpl q, int vertexIndex, float[] out);
-	}
+	abstract void computeCornerWeights(QuadViewImpl q, int vertexIndex, float[] out);
 
-	@FunctionalInterface
-	interface Vertex2Float {
-		float apply(QuadViewImpl q, int vertexIndex);
+	abstract float computeDepth(QuadViewImpl q, int vertexIndex);
+
+	static AoFace get(Direction direction) {
+		return VALUES[direction.getIndex()];
 	}
 }

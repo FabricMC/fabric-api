@@ -38,7 +38,7 @@ public final class GeometryHelper {
 	/** set when a quad touches all four corners of a unit cube. */
 	public static final int CUBIC_FLAG = 1;
 
-	/** set when a quad is parallel to (but not necessarily on) a its light face. */
+	/** set when a quad is parallel to (but not necessarily on) its light face. */
 	public static final int AXIS_ALIGNED_FLAG = CUBIC_FLAG << 1;
 
 	/** set when a quad is coplanar with its light face. Implies {@link #AXIS_ALIGNED_FLAG} */
