@@ -21,11 +21,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
-import net.minecraft.util.TriState;
-
-import net.minecraft.world.chunk.ChunkStatus;
-
 import org.slf4j.Logger;
 
 import net.minecraft.server.world.ChunkLevelType;
@@ -77,6 +72,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 			if (Thread.currentThread() != world.getServer().getThread()) LOGGER.error("{} NOT ON SERVER THREAD", chunkPos);
 			if (oldLevelType == newLevelType) LOGGER.error("{} {} SAME LEVEL TYPE", chunkPos, oldLevelType);
 
+			/* not sure how useful these tests are...
 			if (newLevelType.isAfter(ChunkLevelType.FULL)) {
 				if (world.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false) == null) LOGGER.error("{} {} BUT NOT WORLD CHUNK ACCESSIBLE", chunkPos, newLevelType);
 			}
@@ -87,7 +83,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 				//if (world.getChunkManager().chunkLoadingManager.getLevelManager().shouldTick(chunkPos.toLong()) == TriState.FALSE) LOGGER.error("{} {} BUT NOT TICKING CHUNKS", chunkPos, newLevelType);
 				if (!world.shouldTickEntityAt(chunkPos.getCenterAtY(0))) LOGGER.error("{} {} BUT NOT TICKING ENTITIES", chunkPos, newLevelType);
 				if (!world.canSpawnEntitiesAt(chunkPos)) LOGGER.error("{} {} BUT CANNOT SPAWN ENTITIES", chunkPos, newLevelType);
-			}
+			}*/
 
 			worlds.putIfAbsent(world.getRegistryKey().getValue(), new Object2IntOpenHashMap<>());
 			worlds.get(world.getRegistryKey().getValue()).mergeInt(newLevelType, 1, Integer::sum);

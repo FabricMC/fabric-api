@@ -19,6 +19,10 @@ package net.fabricmc.fabric.mixin.event.lifecycle;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerTask;
+
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -58,8 +62,17 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder {
 	 */
 	@Inject(method = "increaseLevel", at = @At("TAIL"))
 	private void increaseLevel(ServerChunkLoadingManager chunkLoadingManager, CompletableFuture<OptionalChunk<WorldChunk>> chunkFuture, Executor executor, ChunkLevelType target, CallbackInfo ci) {
-		ChunkLevelType previous = ChunkLevels.getType(this.lastTickLevel); // get it immediately before it gets updated to target
-		chunkFuture.thenAcceptAsync(optionalChunk -> optionalChunk.ifPresent(worldChunk -> ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, previous, target)), executor);
+		ChunkLevelType previous = ChunkLevels.getType(this.lastTickLevel);
+		ServerWorld serverWorld = (ServerWorld) world;
+		MinecraftServer server = serverWorld.getServer();
+		Runnable runnable = () -> ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange(serverWorld, this.pos, previous, target);
+		chunkFuture.thenAccept(optionalChunk -> optionalChunk.ifPresent(worldChunk -> {
+			if (!server.isOnThread()) {
+				LoggerFactory.getLogger(ChunkHolderMixin.class).warn("{} {} -> {} INITIALLY NOT ON SERVER THREAD", this.pos, previous, target); // temp check
+				server.send(new ServerTask(server.getTicks()-10, runnable)); // ensure the server thread runs it within this tick
+			}
+			else runnable.run();
+		}));
 	}
 
 	/**
