@@ -49,6 +49,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	private RegisterState registerState = RegisterState.NOT_SENT;
 	@Nullable
 	private String clientBrand = null;
+	private boolean isReconfiguring = false;
 
 	public ServerConfigurationNetworkAddon(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
 		super(ServerNetworkingImpl.CONFIGURATION, ((ServerCommonNetworkHandlerAccessor) handler).getConnection(), "ServerConfigurationNetworkAddon for " + handler.getDebugProfile().getName());
@@ -186,6 +187,14 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	public @Nullable String getClientBrand() {
 		return clientBrand;
+	}
+
+	public boolean isReconfiguring() {
+		return isReconfiguring;
+	}
+
+	public void setReconfiguring() {
+		isReconfiguring = true;
 	}
 
 	private enum RegisterState {

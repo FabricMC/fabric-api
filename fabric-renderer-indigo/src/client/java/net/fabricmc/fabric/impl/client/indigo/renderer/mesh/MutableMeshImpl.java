@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
  * All the encoding and other work is handled in the quad base classes.
  * The one interesting bit is in {@link #emitter}.
  */
-public class MutableMeshImpl extends MeshImpl implements MutableMesh {
+public class MutableMeshImpl extends MeshViewImpl implements MutableMesh {
 	private final MutableQuadViewImpl emitter = new MutableQuadViewImpl() {
 		@Override
 		protected void emitDirectly() {

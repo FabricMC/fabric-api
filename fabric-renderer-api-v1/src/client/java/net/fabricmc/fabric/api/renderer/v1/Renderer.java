@@ -16,19 +16,59 @@
 
 package net.fabricmc.fabric.api.renderer.v1;
 
+import java.util.List;
+import java.util.function.Predicate;
+
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.BlockModelRenderer;
+import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.chunk.SectionBuilder;
+import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.client.render.model.BlockModelPart;
+import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBlockModelPart;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockRenderManager;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.impl.renderer.RendererManager;
+import net.fabricmc.fabric.impl.renderer.VanillaBlockModelPartEncoder;
 
 /**
  * Interface for rendering plug-ins that provide enhanced capabilities
  * for model lighting, buffering and rendering. Such plug-ins implement the
  * enhanced model rendering interfaces specified by the Fabric API.
+ *
+ * <p>Renderers must ensure that terrain buffering supports {@link BlockStateModel#emitQuads}, which happens in
+ * {@link SectionBuilder} in vanilla; this code is not patched automatically. Renderers must also ensure that the
+ * following vanilla methods support {@link BlockStateModel#emitQuads}; these methods are not patched automatically.
+ *
+ * <ul><li>{@link BlockModelRenderer#render(MatrixStack.Entry, VertexConsumer, BlockStateModel, float, float, float, int, int)}
+ *
+ * <li>{@link BlockRenderManager#renderDamage(BlockState, BlockPos, BlockRenderView, MatrixStack, VertexConsumer)}
+ *
+ * <li>{@link BlockRenderManager#renderBlockAsEntity(BlockState, MatrixStack, VertexConsumerProvider, int, int)}</ul>
+ *
+ * <p>All other places in vanilla code that invoke {@link BlockStateModel#addParts(Random, List)},
+ * {@link BlockStateModel#getParts(Random)}, or
+ * {@link BlockModelRenderer#render(MatrixStack.Entry, VertexConsumer, BlockStateModel, float, float, float, int, int)}
+ * are, where appropriate, patched automatically to invoke the corresponding method above or the corresponding method in
+ * {@link FabricBlockModelRenderer} or {@link FabricBlockRenderManager}.
  */
 public interface Renderer {
 	/**
@@ -84,4 +124,37 @@ public interface Renderer {
 	 * leaving the existing material intact.
 	 */
 	boolean registerMaterial(Identifier id, RenderMaterial material);
+
+	/**
+	 * @see FabricBlockModelRenderer#render(BlockRenderView, BlockStateModel, BlockState, BlockPos, MatrixStack, VertexConsumerProvider, boolean, long, int)
+	 */
+	@ApiStatus.OverrideOnly
+	void render(BlockModelRenderer modelRenderer, BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrices, VertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay);
+
+	/**
+	 * @see FabricBlockModelRenderer#render(MatrixStack.Entry, VertexConsumerProvider, BlockStateModel, float, float, float, int, int, BlockRenderView, BlockPos, BlockState)
+	 */
+	@ApiStatus.OverrideOnly
+	void render(MatrixStack.Entry matrices, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state);
+
+	/**
+	 * @see FabricBlockRenderManager#renderBlockAsEntity(BlockState, MatrixStack, VertexConsumerProvider, int, int, BlockRenderView, BlockPos)
+	 */
+	@ApiStatus.OverrideOnly
+	void renderBlockAsEntity(BlockRenderManager renderManager, BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BlockRenderView blockView, BlockPos pos);
+
+	/**
+	 * @see FabricBlockModelPart#emitQuads(QuadEmitter, Predicate)
+	 */
+	@ApiStatus.Experimental
+	@ApiStatus.OverrideOnly
+	default void emitBlockModelPartQuads(BlockModelPart modelPart, QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
+		VanillaBlockModelPartEncoder.emitQuads(modelPart, emitter, cullTest);
+	}
+
+	/**
+	 * @see FabricLayerRenderState#emitter()
+	 */
+	@ApiStatus.OverrideOnly
+	QuadEmitter getLayerRenderStateEmitter(ItemRenderState.LayerRenderState layer);
 }

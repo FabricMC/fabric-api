@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.Arrays;
-import java.util.function.Supplier;
+import java.util.List;
 
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
@@ -26,37 +26,33 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.math.MatrixUtil;
-import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.GlintMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
+import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
 
 /**
- * Used during item buffering to invoke {@link BakedModel#emitItemQuads}.
+ * Used during item buffering to support geometry added through {@link FabricLayerRenderState#emitter()}.
  */
 public class ItemRenderContext extends AbstractRenderContext {
-	/** Value vanilla uses for item rendering. The only sensible choice, of course.  */
-	private static final long ITEM_RANDOM_SEED = 42L;
 	private static final int GLINT_COUNT = ItemRenderState.Glint.values().length;
 
-	private final Random random = Random.create();
-	private final Supplier<Random> randomSupplier = () -> {
-		random.setSeed(ITEM_RANDOM_SEED);
-		return random;
-	};
+	public static final ThreadLocal<ItemRenderContext> POOL = ThreadLocal.withInitial(ItemRenderContext::new);
 
-	private ModelTransformationMode transformMode;
-	private MatrixStack matrixStack;
-	private VertexConsumerProvider vertexConsumerProvider;
-	private int lightmap;
+	private ItemDisplayContext displayContext;
+	private VertexConsumerProvider vertexConsumers;
+	private int light;
 	private int[] tints;
 
 	private RenderLayer defaultLayer;
@@ -65,49 +61,61 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private MatrixStack.Entry specialGlintEntry;
 	private final VertexConsumer[] vertexConsumerCache = new VertexConsumer[3 * GLINT_COUNT];
 
-	public void render(ModelTransformationMode transformationMode, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, int[] tints, BakedModel model, RenderLayer layer, ItemRenderState.Glint glint) {
-		this.transformMode = transformationMode;
-		this.matrixStack = matrixStack;
-		this.vertexConsumerProvider = vertexConsumerProvider;
-		this.lightmap = lightmap;
+	public void renderItem(ItemDisplayContext displayContext, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay, int[] tints, List<BakedQuad> vanillaQuads, MeshViewImpl mesh, RenderLayer layer, ItemRenderState.Glint glint) {
+		this.displayContext = displayContext;
+		matrices = matrixStack.peek();
+		this.vertexConsumers = vertexConsumers;
+		this.light = light;
 		this.overlay = overlay;
 		this.tints = tints;
 
 		defaultLayer = layer;
 		defaultGlint = glint;
 
-		matrix = matrixStack.peek().getPositionMatrix();
-		normalMatrix = matrixStack.peek().getNormalMatrix();
+		bufferQuads(vanillaQuads, mesh);
 
-		model.emitItemQuads(getEmitter(), randomSupplier);
-
-		this.matrixStack = null;
-		this.vertexConsumerProvider = null;
+		matrices = null;
+		this.vertexConsumers = null;
 		this.tints = null;
+
+		defaultLayer = null;
 
 		specialGlintEntry = null;
 		Arrays.fill(vertexConsumerCache, null);
 	}
 
+	private void bufferQuads(List<BakedQuad> vanillaQuads, MeshViewImpl mesh) {
+		QuadEmitter emitter = getEmitter();
+
+		final int vanillaQuadCount = vanillaQuads.size();
+
+		for (int j = 0; j < vanillaQuadCount; j++) {
+			final BakedQuad q = vanillaQuads.get(j);
+			emitter.fromVanilla(q, IndigoRenderer.STANDARD_MATERIAL, null);
+			emitter.emit();
+		}
+
+		mesh.outputTo(emitter);
+	}
+
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
 		final RenderMaterial mat = quad.material();
-		final boolean emissive = mat.emissive();
 		final VertexConsumer vertexConsumer = getVertexConsumer(mat.blendMode(), mat.glintMode());
 
 		tintQuad(quad);
-		shadeQuad(quad, emissive);
+		shadeQuad(quad, mat.emissive());
 		bufferQuad(quad, vertexConsumer);
 	}
 
 	private void tintQuad(MutableQuadViewImpl quad) {
 		int tintIndex = quad.tintIndex();
 
-		if (tintIndex != -1 && tintIndex < tints.length) {
+		if (tintIndex >= 0 && tintIndex < tints.length) {
 			final int tint = tints[tintIndex];
 
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, ColorHelper.multiplyColor(tint, quad.color(i)));
+				quad.color(i, net.minecraft.util.math.ColorHelper.mix(quad.color(i), tint));
 			}
 		}
 	}
@@ -118,10 +126,10 @@ public class ItemRenderContext extends AbstractRenderContext {
 				quad.lightmap(i, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 			}
 		} else {
-			final int lightmap = this.lightmap;
+			final int light = this.light;
 
 			for (int i = 0; i < 4; i++) {
-				quad.lightmap(i, ColorHelper.maxBrightness(quad.lightmap(i), lightmap));
+				quad.lightmap(i, ColorHelper.maxLight(quad.lightmap(i), light));
 			}
 		}
 	}
@@ -166,18 +174,18 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private VertexConsumer createVertexConsumer(RenderLayer layer, ItemRenderState.Glint glint) {
 		if (glint == ItemRenderState.Glint.SPECIAL) {
 			if (specialGlintEntry == null) {
-				specialGlintEntry = matrixStack.peek().copy();
+				specialGlintEntry = matrices.copy();
 
-				if (transformMode == ModelTransformationMode.GUI) {
+				if (displayContext == ItemDisplayContext.GUI) {
 					MatrixUtil.scale(specialGlintEntry.getPositionMatrix(), 0.5F);
-				} else if (transformMode.isFirstPerson()) {
+				} else if (displayContext.isFirstPerson()) {
 					MatrixUtil.scale(specialGlintEntry.getPositionMatrix(), 0.75F);
 				}
 			}
 
-			return ItemRendererAccessor.fabric_getDynamicDisplayGlintConsumer(vertexConsumerProvider, layer, specialGlintEntry);
+			return ItemRendererAccessor.fabric_getDynamicDisplayGlintConsumer(vertexConsumers, layer, specialGlintEntry);
 		}
 
-		return ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, layer, true, glint != ItemRenderState.Glint.NONE);
+		return ItemRenderer.getItemGlintConsumer(vertexConsumers, layer, true, glint != ItemRenderState.Glint.NONE);
 	}
 }

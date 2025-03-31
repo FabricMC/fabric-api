@@ -19,9 +19,6 @@ package net.fabricmc.fabric.api.transfer.v1.storage.base;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -47,8 +44,6 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
  * @see net.fabricmc.fabric.api.transfer.v1.item.base.SingleItemStorage SingleItemStorage for item variants.
  */
 public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends SnapshotParticipant<ResourceAmount<T>> implements SingleSlotStorage<T> {
-	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-transfer-api-v1/variant-storage");
-
 	public T variant = getBlankVariant();
 	public long amount = 0;
 
@@ -174,16 +169,8 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	 */
 	public static <T extends TransferVariant<?>> void readNbt(SingleVariantStorage<T> storage, Codec<T> codec, Supplier<T> fallback, NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		final RegistryOps<NbtElement> ops = wrapperLookup.getOps(NbtOps.INSTANCE);
-		final DataResult<T> result = codec.parse(ops, nbt.getCompound("variant").orElseThrow());
-
-		if (result.error().isPresent()) {
-			LOGGER.debug("Failed to load an ItemVariant from NBT: {}", result.error().get());
-			storage.variant = fallback.get();
-		} else {
-			storage.variant = result.result().get();
-		}
-
-		storage.amount = nbt.getLong("amount").orElseThrow();
+		storage.variant = nbt.get("variant", codec, ops).orElseGet(fallback);
+		storage.amount = nbt.getLong("amount", 0L);
 	}
 
 	/**
@@ -197,7 +184,7 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	 */
 	public static <T extends TransferVariant<?>> void writeNbt(SingleVariantStorage<T> storage, Codec<T> codec, NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
 		final RegistryOps<NbtElement> ops = wrapperLookup.getOps(NbtOps.INSTANCE);
-		nbt.put("variant", codec.encode(storage.variant, ops, nbt).getOrThrow(RuntimeException::new));
+		nbt.put("variant", codec, ops, storage.variant);
 		nbt.putLong("amount", storage.amount);
 	}
 }

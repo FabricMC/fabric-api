@@ -93,16 +93,16 @@ enum AoFace {
 	}
 
 	private static final AoFace[] values = Util.make(new AoFace[6], (neighborData) -> {
-		neighborData[DOWN.getId()] = AOF_DOWN;
-		neighborData[UP.getId()] = AOF_UP;
-		neighborData[NORTH.getId()] = AOF_NORTH;
-		neighborData[SOUTH.getId()] = AOF_SOUTH;
-		neighborData[WEST.getId()] = AOF_WEST;
-		neighborData[EAST.getId()] = AOF_EAST;
+		neighborData[DOWN.getIndex()] = AOF_DOWN;
+		neighborData[UP.getIndex()] = AOF_UP;
+		neighborData[NORTH.getIndex()] = AOF_NORTH;
+		neighborData[SOUTH.getIndex()] = AOF_SOUTH;
+		neighborData[WEST.getIndex()] = AOF_WEST;
+		neighborData[EAST.getIndex()] = AOF_EAST;
 	});
 
 	public static AoFace get(Direction direction) {
-		return values[direction.getId()];
+		return values[direction.getIndex()];
 	}
 
 	/**

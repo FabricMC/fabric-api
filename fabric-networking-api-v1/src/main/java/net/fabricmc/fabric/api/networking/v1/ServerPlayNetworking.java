@@ -293,6 +293,28 @@ public final class ServerPlayNetworking {
 		player.networkHandler.sendPacket(createS2CPacket(payload));
 	}
 
+	/**
+	 * Put the player back into configuration phase and re-run all of the configuration tasks.
+	 *
+	 * @param player the player
+	 */
+	public static void reconfigure(ServerPlayerEntity player) {
+		Objects.requireNonNull(player, "Server player entity cannot be null");
+
+		reconfigure(player.networkHandler);
+	}
+
+	/**
+	 * Put the player back into configuration phase and re-run all of the configuration tasks.
+	 *
+	 * @param handler the network handler
+	 */
+	public static void reconfigure(ServerPlayNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Server play network handler cannot be null");
+
+		ServerNetworkingImpl.getAddon(handler).reconfigure();
+	}
+
 	private ServerPlayNetworking() {
 	}
 

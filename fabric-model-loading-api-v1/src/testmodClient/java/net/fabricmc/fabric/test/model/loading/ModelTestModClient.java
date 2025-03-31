@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.test.model.loading;
 
+import java.util.function.Predicate;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CropBlock;
@@ -27,19 +31,26 @@ import net.minecraft.client.render.model.SimpleBlockStateModel;
 import net.minecraft.client.render.model.json.ModelVariant;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
+import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 
 public class ModelTestModClient implements ClientModInitializer {
 	public static final String ID = "fabric-model-loading-api-v1-testmod";
 
 	public static final Identifier HALF_RED_SAND_MODEL_ID = id("half_red_sand");
+	public static final Identifier WHEAT_STAGE0_MODEL_ID = Identifier.ofVanilla("block/wheat_stage0");
+	public static final Identifier WHEAT_STAGE7_MODEL_ID = Identifier.ofVanilla("block/wheat_stage7");
 	public static final Identifier BROWN_GLAZED_TERRACOTTA_MODEL_ID = Identifier.ofVanilla("block/brown_glazed_terracotta");
-	public static final Identifier GOLD_BLOCK_MODEL_ID = Identifier.ofVanilla("block/gold_block");
 
 	@Override
 	public void onInitializeClient() {
@@ -50,10 +61,8 @@ public class ModelTestModClient implements ClientModInitializer {
 			pluginContext.registerBlockStateResolver(Blocks.WHEAT, context -> {
 				BlockState state = context.block().getDefaultState();
 
-				Identifier wheatStage0Id = Identifier.ofVanilla("block/wheat_stage0");
-				Identifier wheatStage7Id = Identifier.ofVanilla("block/wheat_stage7");
-				BlockStateModel.UnbakedGrouped wheatStage0Model = simpleUnbakedGroupedBlockStateModel(wheatStage0Id);
-				BlockStateModel.UnbakedGrouped wheatStage7Model = simpleUnbakedGroupedBlockStateModel(wheatStage7Id);
+				BlockStateModel.UnbakedGrouped wheatStage0Model = simpleUnbakedGroupedBlockStateModel(WHEAT_STAGE0_MODEL_ID);
+				BlockStateModel.UnbakedGrouped wheatStage7Model = simpleUnbakedGroupedBlockStateModel(WHEAT_STAGE7_MODEL_ID);
 
 				for (int age = 0; age <= 6; age++) {
 					context.setModel(state.with(CropBlock.AGE, age), wheatStage0Model);
@@ -94,15 +103,15 @@ public class ModelTestModClient implements ClientModInitializer {
 				return model;
 			});
 
-			// FIXME
 			// Remove bottom face of gold blocks
-			//pluginContext.modifyModelAfterBake().register(ModelModifier.WRAP_PHASE, (model, context) -> {
-			//	if (context.id().equals(GOLD_BLOCK_MODEL_ID)) {
-			//		return new DownQuadRemovingModel(model);
-			//	}
-			//
-			//	return model;
-			//});
+			BlockState goldBlock = Blocks.GOLD_BLOCK.getDefaultState();
+			pluginContext.modifyBlockModelAfterBake().register(ModelModifier.WRAP_PHASE, (model, context) -> {
+				if (context.state() == goldBlock) {
+					return new DownQuadRemovingModel(model);
+				}
+
+				return model;
+			});
 		});
 
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(SpecificModelReloadListener.INSTANCE);
@@ -122,16 +131,38 @@ public class ModelTestModClient implements ClientModInitializer {
 		return new SimpleBlockStateModel.Unbaked(new ModelVariant(model)).cached();
 	}
 
-	//private static class DownQuadRemovingModel extends WrapperBakedModel implements FabricBakedModel {
-	//	DownQuadRemovingModel(BakedModel model) {
-	//		super(model);
-	//	}
-	//
-	//	@Override
-	//	public void emitBlockQuads(QuadEmitter emitter, BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, Predicate<@Nullable Direction> cullTest) {
-	//		emitter.pushTransform(q -> q.cullFace() != Direction.DOWN);
-	//		((FabricBakedModel) wrapped).emitBlockQuads(emitter, blockView, state, pos, randomSupplier, cullTest);
-	//		emitter.popTransform();
-	//	}
-	//}
+	private static class DownQuadRemovingModel extends WrapperBlockStateModel {
+		DownQuadRemovingModel(BlockStateModel model) {
+			super(model);
+		}
+
+		@Override
+		public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
+			emitter.pushTransform(q -> q.cullFace() != Direction.DOWN);
+			// Modify the cullTest as an example of how to achieve maximum performance
+			super.emitQuads(emitter, blockView, pos, state, random, cullFace -> {
+				if (cullFace == Direction.DOWN) {
+					return true;
+				}
+
+				return cullTest.test(cullFace);
+			});
+			emitter.popTransform();
+		}
+
+		@Override
+		@Nullable
+		public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+			Object subkey = wrapped.createGeometryKey(blockView, pos, state, random);
+
+			if (subkey == null) {
+				return subkey;
+			}
+
+			record Key(Object subkey) {
+			}
+
+			return new Key(subkey);
+		}
+	}
 }

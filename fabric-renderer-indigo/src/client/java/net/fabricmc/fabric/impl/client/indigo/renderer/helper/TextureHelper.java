@@ -38,7 +38,7 @@ public final class TextureHelper {
 	public static void bakeSprite(MutableQuadView quad, Sprite sprite, int bakeFlags) {
 		if (quad.nominalFace() != null && (MutableQuadView.BAKE_LOCK_UV & bakeFlags) != 0) {
 			// Assigns normalized UV coordinates based on vertex positions
-			applyModifier(quad, UVLOCKERS[quad.nominalFace().getId()]);
+			applyModifier(quad, UVLOCKERS[quad.nominalFace().getIndex()]);
 		} else if ((MutableQuadView.BAKE_NORMALIZED & bakeFlags) == 0) { // flag is NOT set, UVs are assumed to not be normalized yet as is the default, normalize through dividing by 16
 			// Scales from 0-16 to 0-1
 			applyModifier(quad, (q, i) -> q.uv(i, q.u(i) * NORMALIZER, q.v(i) * NORMALIZER));
@@ -101,11 +101,11 @@ public final class TextureHelper {
 	private static final VertexModifier[] UVLOCKERS = new VertexModifier[6];
 
 	static {
-		UVLOCKERS[Direction.EAST.getId()] = (q, i) -> q.uv(i, 1 - q.z(i), 1 - q.y(i));
-		UVLOCKERS[Direction.WEST.getId()] = (q, i) -> q.uv(i, q.z(i), 1 - q.y(i));
-		UVLOCKERS[Direction.NORTH.getId()] = (q, i) -> q.uv(i, 1 - q.x(i), 1 - q.y(i));
-		UVLOCKERS[Direction.SOUTH.getId()] = (q, i) -> q.uv(i, q.x(i), 1 - q.y(i));
-		UVLOCKERS[Direction.DOWN.getId()] = (q, i) -> q.uv(i, q.x(i), 1 - q.z(i));
-		UVLOCKERS[Direction.UP.getId()] = (q, i) -> q.uv(i, q.x(i), q.z(i));
+		UVLOCKERS[Direction.EAST.getIndex()] = (q, i) -> q.uv(i, 1 - q.z(i), 1 - q.y(i));
+		UVLOCKERS[Direction.WEST.getIndex()] = (q, i) -> q.uv(i, q.z(i), 1 - q.y(i));
+		UVLOCKERS[Direction.NORTH.getIndex()] = (q, i) -> q.uv(i, 1 - q.x(i), 1 - q.y(i));
+		UVLOCKERS[Direction.SOUTH.getIndex()] = (q, i) -> q.uv(i, q.x(i), 1 - q.y(i));
+		UVLOCKERS[Direction.DOWN.getIndex()] = (q, i) -> q.uv(i, q.x(i), 1 - q.z(i));
+		UVLOCKERS[Direction.UP.getIndex()] = (q, i) -> q.uv(i, q.x(i), q.z(i));
 	}
 }

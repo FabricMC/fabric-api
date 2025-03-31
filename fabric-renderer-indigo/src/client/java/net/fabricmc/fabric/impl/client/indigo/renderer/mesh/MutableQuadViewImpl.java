@@ -235,16 +235,16 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace) {
-		fromVanilla(quad.getVertexData(), 0);
+		fromVanilla(quad.vertexData(), 0);
 		cullFace(cullFace);
-		nominalFace(quad.getFace());
-		tintIndex(quad.getTintIndex());
+		nominalFace(quad.face());
+		tintIndex(quad.tintIndex());
 
-		if (!quad.hasShade()) {
+		if (!quad.shade()) {
 			material = RenderMaterialImpl.setDisableDiffuse((RenderMaterialImpl) material, true);
 		}
 
-		int lightEmission = quad.getLightEmission();
+		int lightEmission = quad.lightEmission();
 
 		if (lightEmission > 0) {
 			for (int i = 0; i < 4; i++) {

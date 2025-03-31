@@ -68,7 +68,7 @@ public @interface GameTest {
 	BlockRotation rotation() default BlockRotation.NONE;
 
 	/**
-	 * When set the test must be ran manually.
+	 * When set the test must be run manually.
 	 */
 	boolean manualOnly() default false;
 

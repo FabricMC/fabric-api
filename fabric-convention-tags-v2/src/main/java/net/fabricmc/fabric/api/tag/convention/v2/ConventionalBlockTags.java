@@ -176,6 +176,22 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> FENCE_GATES = register("fence_gates");
 	public static final TagKey<Block> WOODEN_FENCE_GATES = register("fence_gates/wooden");
 
+	// Pumpkins
+	public static final TagKey<Block> PUMPKINS = register("pumpkins");
+	/**
+	 * For pumpkins that are not carved.
+	 */
+	public static final TagKey<Block> NORMAL_PUMPKINS = register("pumpkins/normal");
+	/**
+	 * For pumpkins that are already carved but not a light source.
+	 */
+	public static final TagKey<Block> CARVED_PUMPKINS = register("pumpkins/carved");
+
+	/**
+	 * For pumpkins that are already carved and a light source.
+	 */
+	public static final TagKey<Block> JACK_O_LANTERNS_PUMPKINS = register("pumpkins/jack_o_lanterns");
+
 	// Blocks created with dyes
 	/**
 	 * Tag that holds all blocks that can be dyed a specific color.

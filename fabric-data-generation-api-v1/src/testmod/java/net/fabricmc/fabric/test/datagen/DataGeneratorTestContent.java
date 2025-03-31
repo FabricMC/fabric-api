@@ -18,10 +18,14 @@ package net.fabricmc.fabric.test.datagen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -48,6 +52,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_WITH_VANILLA_LOOT_TABLE;
 	public static Block BLOCK_THAT_DROPS_NOTHING;
 
+	public static EntityType<?> SIMPLE_ENTITY_TYPE;
+	public static EntityType<?> ENTITY_TYPE_WITHOUT_LOOT_TABLE;
+
 	public static final RegistryKey<ItemGroup> SIMPLE_ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(MOD_ID, "simple"));
 
 	public static final RegistryKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_REGISTRY_KEY =
@@ -72,6 +79,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.create().lootTable(Blocks.STONE.getLootTableKey()));
 		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.create().dropsNothing());
 
+		SIMPLE_ENTITY_TYPE = createEntityType("simple_entity", EntityType.Builder.create(SpawnGroup.MISC));
+		ENTITY_TYPE_WITHOUT_LOOT_TABLE = createEntityType("entity_without_loot_table", EntityType.Builder.create(SpawnGroup.MISC));
+
 		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
 
 		Registry.register(Registries.ITEM_GROUP, SIMPLE_ITEM_GROUP, FabricItemGroup.builder()
@@ -92,6 +102,12 @@ public class DataGeneratorTestContent implements ModInitializer {
 		}
 
 		return block;
+	}
+
+	private static <E extends Entity> EntityType<E> createEntityType(String name, EntityType.@NotNull Builder<E> builder) {
+		RegistryKey<EntityType<?>> key = RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(MOD_ID, name));
+
+		return Registry.register(Registries.ENTITY_TYPE, key, builder.build(key));
 	}
 
 	public record TestDatagenObject(String value) {

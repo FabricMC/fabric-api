@@ -174,7 +174,7 @@ public final class GeometryHelper {
 
 	/**
 	 * Identifies the face to which the quad is most closely aligned.
-	 * This mimics the value that {@link BakedQuad#getFace()} returns, and is
+	 * This mimics the value that {@link BakedQuad#face()} returns, and is
 	 * used in the vanilla renderer for all diffuse lighting.
 	 *
 	 * <p>Derived from the quad face normal and expects convex quads with all points co-planar.

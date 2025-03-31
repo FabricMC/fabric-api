@@ -229,7 +229,7 @@ public interface MutableQuadView extends QuadView {
 	 * <p>When called with a non-null value, also sets {@link #nominalFace(Direction)}
 	 * to the same value.
 	 *
-	 * <p>This is different from the value reported by {@link BakedQuad#getFace()}. That value
+	 * <p>This is different from the value reported by {@link BakedQuad#face()}. That value
 	 * is computed based on face geometry and must be non-null in vanilla quads.
 	 * That computed value is returned by {@link #lightFace()}.
 	 */
@@ -257,7 +257,7 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView material(RenderMaterial material);
 
 	/**
-	 * Value functions identically to {@link BakedQuad#getTintIndex()} and is
+	 * Value functions identically to {@link BakedQuad#tintIndex()} and is
 	 * used by renderer in same way. Default value is -1.
 	 */
 	MutableQuadView tintIndex(int tintIndex);
@@ -278,7 +278,7 @@ public interface MutableQuadView extends QuadView {
 
 	/**
 	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
-	 * Only the {@link BakedQuad#getVertexData() quad vertex data} is copied.
+	 * Only the {@link BakedQuad#vertexData() quad vertex data} is copied.
 	 * This method should be performant whenever caller's vertex representation makes it feasible.
 	 *
 	 * <p>Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction) the other overload} which has better
@@ -292,12 +292,12 @@ public interface MutableQuadView extends QuadView {
 	 * Enables bulk vertex data transfer using the standard Minecraft quad format.
 	 *
 	 * <p>The material applied to this quad view might be slightly different from the {@code material} parameter
-	 * regarding diffuse shading. If either the baked quad {@link BakedQuad#hasShade() does not have shade} or the
+	 * regarding diffuse shading. If either the baked quad {@link BakedQuad#shade() does not have shade} or the
 	 * material {@link MaterialFinder#disableDiffuse(boolean) does not have shade}, diffuse shading will be disabled for
 	 * this quad view. This is reflected in the quad view's {@link #material()}, but the {@code material} parameter is
 	 * unchanged (it is immutable anyway).
 	 *
-	 * <p>The {@linkplain BakedQuad#getLightEmission() baked quad's light emission} will be applied to the lightmap
+	 * <p>The {@linkplain BakedQuad#lightEmission() baked quad's light emission} will be applied to the lightmap
 	 * values from the vertex data after copying.
 	 *
 	 * <p>Calling this method resets the {@link #tag()}.

@@ -21,15 +21,11 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.render.model.json.Transformation;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 
@@ -37,10 +33,13 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
  * Collection of utilities for model implementations.
  */
 public final class ModelHelper {
-	private ModelHelper() { }
+	/** @see #faceFromIndex(int) */
+	private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
 	/** Result from {@link #toFaceIndex(Direction)} for null values. */
 	public static final int NULL_FACE_ID = 6;
+
+	private ModelHelper() { }
 
 	/**
 	 * Convenient way to encode faces that may be null.
@@ -48,7 +47,7 @@ public final class ModelHelper {
 	 * Use {@link #faceFromIndex(int)} to retrieve encoded face.
 	 */
 	public static int toFaceIndex(@Nullable Direction face) {
-		return face == null ? NULL_FACE_ID : face.getId();
+		return face == null ? NULL_FACE_ID : face.getIndex();
 	}
 
 	/**
@@ -62,9 +61,6 @@ public final class ModelHelper {
 	public static Direction faceFromIndex(int faceIndex) {
 		return FACES[faceIndex];
 	}
-
-	/** @see #faceFromIndex(int) */
-	private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
 	/**
 	 * Converts a mesh into an array of lists of vanilla baked quads.
@@ -87,7 +83,7 @@ public final class ModelHelper {
 		if (mesh != null) {
 			mesh.forEach(q -> {
 				Direction cullFace = q.cullFace();
-				builders[cullFace == null ? NULL_FACE_ID : cullFace.getId()].add(q.toBakedQuad(finder.find(q)));
+				builders[cullFace == null ? NULL_FACE_ID : cullFace.getIndex()].add(q.toBakedQuad(finder.find(q)));
 			});
 		}
 
@@ -100,30 +96,4 @@ public final class ModelHelper {
 
 		return result;
 	}
-
-	/**
-	 * The vanilla model transformation logic is closely coupled with model deserialization.
-	 * That does little good for modded model loaders and procedurally generated models.
-	 * This convenient construction method applies the same scaling factors used for vanilla models.
-	 * This means you can use values from a vanilla JSON file as inputs to this method.
-	 */
-	private static Transformation makeTransform(float rotationX, float rotationY, float rotationZ, float translationX, float translationY, float translationZ, float scaleX, float scaleY, float scaleZ) {
-		Vector3f translation = new Vector3f(translationX, translationY, translationZ);
-		translation.mul(0.0625f);
-		translation.set(MathHelper.clamp(translation.x, -5.0F, 5.0F), MathHelper.clamp(translation.y, -5.0F, 5.0F), MathHelper.clamp(translation.z, -5.0F, 5.0F));
-		return new Transformation(new Vector3f(rotationX, rotationY, rotationZ), translation, new Vector3f(scaleX, scaleY, scaleZ));
-	}
-
-	public static final Transformation TRANSFORM_BLOCK_GUI = makeTransform(30, 225, 0, 0, 0, 0, 0.625f, 0.625f, 0.625f);
-	public static final Transformation TRANSFORM_BLOCK_GROUND = makeTransform(0, 0, 0, 0, 3, 0, 0.25f, 0.25f, 0.25f);
-	public static final Transformation TRANSFORM_BLOCK_FIXED = makeTransform(0, 0, 0, 0, 0, 0, 0.5f, 0.5f, 0.5f);
-	public static final Transformation TRANSFORM_BLOCK_3RD_PERSON_RIGHT = makeTransform(75, 45, 0, 0, 2.5f, 0, 0.375f, 0.375f, 0.375f);
-	public static final Transformation TRANSFORM_BLOCK_1ST_PERSON_RIGHT = makeTransform(0, 45, 0, 0, 0, 0, 0.4f, 0.4f, 0.4f);
-	public static final Transformation TRANSFORM_BLOCK_1ST_PERSON_LEFT = makeTransform(0, 225, 0, 0, 0, 0, 0.4f, 0.4f, 0.4f);
-
-	/**
-	 * Mimics the vanilla model transformation used for most vanilla blocks,
-	 * and should be suitable for most custom block-like models.
-	 */
-	public static final ModelTransformation MODEL_TRANSFORM_BLOCK = new ModelTransformation(TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_1ST_PERSON_LEFT, TRANSFORM_BLOCK_1ST_PERSON_RIGHT, Transformation.IDENTITY, TRANSFORM_BLOCK_GUI, TRANSFORM_BLOCK_GROUND, TRANSFORM_BLOCK_FIXED);
 }

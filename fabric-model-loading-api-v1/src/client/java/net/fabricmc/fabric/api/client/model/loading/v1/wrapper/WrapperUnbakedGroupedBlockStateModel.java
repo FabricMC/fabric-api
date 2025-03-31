@@ -35,8 +35,8 @@ public abstract class WrapperUnbakedGroupedBlockStateModel implements BlockState
 	}
 
 	@Override
-	public BlockStateModel getModel(BlockState state, Baker baker) {
-		return wrapped.getModel(state, baker);
+	public BlockStateModel bake(BlockState state, Baker baker) {
+		return wrapped.bake(state, baker);
 	}
 
 	@Override

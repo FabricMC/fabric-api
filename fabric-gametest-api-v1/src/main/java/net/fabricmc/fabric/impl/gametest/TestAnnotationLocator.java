@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.gametest;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -141,6 +142,13 @@ final class TestAnnotationLocator {
 					}
 
 					method.invoke(instance, context);
+				} catch (InvocationTargetException e) {
+					// Ensure that any GameTestException are propagated without wrapping
+					if (e.getTargetException() instanceof RuntimeException runtimeException) {
+						throw runtimeException;
+					}
+
+					throw new RuntimeException("Failed to invoke test method", e);
 				} catch (ReflectiveOperationException e) {
 					throw new RuntimeException("Failed to invoke test method", e);
 				}

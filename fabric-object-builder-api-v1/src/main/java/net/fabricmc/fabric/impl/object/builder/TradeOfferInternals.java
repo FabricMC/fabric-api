@@ -29,8 +29,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
@@ -41,8 +39,6 @@ import net.minecraft.village.VillagerProfession;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 
 public final class TradeOfferInternals {
-	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-object-builder-api-v1");
-
 	private TradeOfferInternals() {
 	}
 
@@ -71,29 +67,6 @@ public final class TradeOfferInternals {
 		registerOffers(TradeOffers.REBALANCED_PROFESSION_TO_LEVELED_TRADE.computeIfAbsent(profession, key -> new Int2ObjectOpenHashMap<>()), level, trades -> factory.onRegister(trades, true));
 	}
 
-	public static synchronized void registerWanderingTraderOffers(int level, Consumer<List<TradeOffers.Factory>> factory) {
-		final List<TradeOffers.Factory> list = new ArrayList<>();
-		factory.accept(list);
-		WanderingTraderOffersBuilderImpl.initWanderingTraderTrades();
-
-		Int2ObjectMap<TradeOffers.Factory[]> tradeMap = new Int2ObjectOpenHashMap<>();
-
-		TradeOffers.WANDERING_TRADER_TRADES.forEach(pair -> {
-			tradeMap.put(pair.getRight(), pair.getLeft());
-		});
-
-		registerOffers(tradeMap, level, factory);
-
-		List<Pair<TradeOffers.Factory[], Integer>> tradeList = new ArrayList<>();
-
-		tradeMap.forEach((key, value) -> {
-			tradeList.add(Pair.of(value, key));
-		});
-
-		TradeOffers.WANDERING_TRADER_TRADES = tradeList;
-	}
-
-	// Shared code to register offers for both villagers and wandering traders.
 	private static void registerOffers(Int2ObjectMap<TradeOffers.Factory[]> leveledTradeMap, int level, Consumer<List<TradeOffers.Factory>> factory) {
 		final List<TradeOffers.Factory> list = new ArrayList<>();
 		factory.accept(list);

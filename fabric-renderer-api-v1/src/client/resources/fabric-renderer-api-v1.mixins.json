@@ -3,11 +3,28 @@
   "package": "net.fabricmc.fabric.mixin.renderer",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "client.BakedModelMixin",
-    "client.MultipartBakedModelMixin",
     "client.SpriteAtlasTextureMixin",
-    "client.WeightedBakedModelMixin",
-    "client.WrapperBakedModelMixin"
+    "client.block.model.BlockModelPartMixin",
+    "client.block.model.BlockStateModelMixin",
+    "client.block.model.GeometryBakedModelMixin",
+    "client.block.model.MultipartBakedModelAccessor",
+    "client.block.model.MultipartBlockStateModelMixin",
+    "client.block.model.SimpleBlockStateModelMixin",
+    "client.block.model.WeightedBlockStateModelMixin",
+    "client.block.particle.BlockDustParticleMixin",
+    "client.block.particle.BlockMarkerParticleMixin",
+    "client.block.particle.BlockModelsMixin",
+    "client.block.particle.InGameOverlayRendererMixin",
+    "client.block.render.BlockModelRendererMixin",
+    "client.block.render.BlockRenderManagerMixin",
+    "client.block.render.FallingBlockEntityRendererMixin",
+    "client.block.render.ItemFrameEntityRendererMixin",
+    "client.block.render.MooshroomMushroomFeatureRendererMixin",
+    "client.block.render.PistonBlockEntityRendererMixin",
+    "client.block.render.SnowGolemPumpkinFeatureRendererMixin",
+    "client.item.BasicItemModelMixin",
+    "client.item.UnbakedBasicItemModelMixin",
+    "client.item.LayerRenderStateMixin"
   ],
   "injectors": {
     "defaultRequire": 1

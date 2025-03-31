@@ -17,7 +17,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.16.10",
-    "minecraft": ">=1.15-alpha.19.39.a",
+    "minecraft": ">=1.21.5-beta.1",
     "fabric-api-base": "*"
   },
   "description": "Defines rendering extensions for dynamic/fancy block and item models.",
@@ -25,10 +25,16 @@
     "fabric-renderer-api-v1.mixins.json",
     "fabric-renderer-api-v1.debughud.mixins.json"
   ],
+  "accessWidener": "fabric-renderer-api-v1.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_1087": ["net/fabricmc/fabric/api/renderer/v1/model/FabricBakedModel"]
+      "net/minecraft/class_10889": ["net/fabricmc/fabric/api/renderer/v1/model/FabricBlockModelPart"],
+      "net/minecraft/class_773": ["net/fabricmc/fabric/api/renderer/v1/model/FabricBlockModels"],
+      "net/minecraft/class_1087": ["net/fabricmc/fabric/api/renderer/v1/model/FabricBlockStateModel"],
+      "net/minecraft/class_778": ["net/fabricmc/fabric/api/renderer/v1/render/FabricBlockModelRenderer"],
+      "net/minecraft/class_776": ["net/fabricmc/fabric/api/renderer/v1/render/FabricBlockRenderManager"],
+      "net/minecraft/class_10444\u0024class_10446": ["net/fabricmc/fabric/api/renderer/v1/render/FabricLayerRenderState"]
     }
   }
 }

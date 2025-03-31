@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import java.util.function.Supplier;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -28,17 +26,13 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 
 /**
  * Holds, manages, and provides access to the block/world related state
- * needed to render quads.
- *
- * <p>Exception: per-block position offsets are tracked in {@link ChunkRenderInfo}
- * so they can be applied together with chunk offsets.
+ * needed to buffer quads.
  */
 public class BlockRenderInfo {
 	private final BlockColors blockColorMap = MinecraftClient.getInstance().getBlockColors();
@@ -52,23 +46,6 @@ public class BlockRenderInfo {
 	boolean defaultAo;
 	RenderLayer defaultLayer;
 
-	Random random;
-	long seed;
-	boolean recomputeSeed;
-	public final Supplier<Random> randomSupplier = () -> {
-		long seed = this.seed;
-
-		if (recomputeSeed) {
-			seed = blockState.getRenderingSeed(blockPos);
-			this.seed = seed;
-			recomputeSeed = false;
-		}
-
-		final Random random = this.random;
-		random.setSeed(seed);
-		return random;
-	};
-
 	private boolean enableCulling;
 	private int cullCompletionFlags;
 	private int cullResultFlags;
@@ -78,12 +55,12 @@ public class BlockRenderInfo {
 		this.enableCulling = enableCulling;
 	}
 
-	public void prepareForBlock(BlockState blockState, BlockPos blockPos, boolean modelAo) {
+	public void prepareForBlock(BlockPos blockPos, BlockState blockState) {
 		this.blockPos = blockPos;
 		this.blockState = blockState;
 
 		useAo = MinecraftClient.isAmbientOcclusionEnabled();
-		defaultAo = useAo && modelAo && blockState.getLuminance() == 0;
+		defaultAo = useAo && blockState.getLuminance() == 0;
 
 		defaultLayer = RenderLayers.getBlockLayer(blockState);
 
@@ -106,7 +83,7 @@ public class BlockRenderInfo {
 			return true;
 		}
 
-		final int mask = 1 << side.getId();
+		final int mask = 1 << side.getIndex();
 
 		if ((cullCompletionFlags & mask) == 0) {
 			cullCompletionFlags |= mask;

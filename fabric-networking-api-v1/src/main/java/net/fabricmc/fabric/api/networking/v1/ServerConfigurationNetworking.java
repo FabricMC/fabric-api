@@ -235,6 +235,18 @@ public final class ServerConfigurationNetworking {
 		return ((ServerCommonNetworkHandlerAccessor) handler).getServer();
 	}
 
+	/**
+	 * Returns true if the client has previously completed configuration, and has re-entered the configuration phase.
+	 *
+	 * @param handler the server configuration network handler
+	 * @return {@code true} if the client is reconfiguring
+	 */
+	public static boolean isReconfiguring(ServerConfigurationNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
+
+		return ServerNetworkingImpl.getAddon(handler).isReconfiguring();
+	}
+
 	private ServerConfigurationNetworking() {
 	}
 

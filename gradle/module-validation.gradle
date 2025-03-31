@@ -13,7 +13,8 @@ subprojects {
 	}
 
 	// Create the task
-	tasks.register("validateModules", ValidateModuleTask)
+	def validateModules = tasks.register("validateModules", ValidateModuleTask)
+	tasks.check.dependsOn(validateModules)
 }
 
 /**
@@ -28,12 +29,7 @@ subprojects {
  */
 abstract class ValidateModuleTask extends DefaultTask {
 	@InputFile
-	@Optional
 	abstract RegularFileProperty getFmj()
-
-	@InputFile
-	@Optional
-	abstract RegularFileProperty getClientFmj()
 
 	@Input
 	abstract Property<String> getProjectName()
@@ -47,11 +43,16 @@ abstract class ValidateModuleTask extends DefaultTask {
 	ValidateModuleTask() {
 		group = "verification"
 
-		// Hook up validation to check task
-		project.tasks.check.dependsOn(this)
+		// No outputs
+		outputs.upToDateWhen { true }
 
-		fmj.set(project.file("src/main/resources/fabric.mod.json"))
-		clientFmj.set(project.file("src/client/resources/fabric.mod.json"))
+		def file = project.file("src/main/resources/fabric.mod.json")
+
+		if (!file.exists()) {
+			file = project.file("src/client/resources/fabric.mod.json")
+		}
+
+		fmj.set(file)
 
 		projectName.set(project.name)
 		projectPath.set(project.path)
@@ -60,14 +61,7 @@ abstract class ValidateModuleTask extends DefaultTask {
 
 	@TaskAction
 	void validate() {
-		def clientOnlyMod = false
-
 		def file = fmj.get().asFile
-
-		if (!file.exists()) {
-			file = clientFmj.get().asFile
-			clientOnlyMod = true
-		}
 
 		def json = new JsonSlurper().parse(file)
 

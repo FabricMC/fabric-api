@@ -41,8 +41,10 @@ import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayPayloadHandler<?>> {
 	private final ServerPlayNetworkHandler handler;
 	private final MinecraftServer server;
-	private boolean sentInitialRegisterPacket;
 	private final ServerPlayNetworking.Context context;
+
+	private boolean sentInitialRegisterPacket;
+	private boolean requestedReconfigure = false;
 
 	public ServerPlayNetworkAddon(ServerPlayNetworkHandler handler, ClientConnection connection, MinecraftServer server) {
 		super(ServerNetworkingImpl.PLAY, connection, "ServerPlayNetworkAddon for " + handler.player.getDisplayName());
@@ -127,6 +129,19 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
 		return NetworkingImpl.isReservedCommonChannel(channelName);
+	}
+
+	public void reconfigure() {
+		if (requestedReconfigure) {
+			throw new IllegalStateException("Already requested reconfigure");
+		}
+
+		requestedReconfigure = true;
+		handler.reconfigure();
+	}
+
+	public boolean requestedReconfigure() {
+		return requestedReconfigure;
 	}
 
 	private record ContextImpl(MinecraftServer server, ServerPlayNetworkHandler handler, PacketSender responseSender) implements ServerPlayNetworking.Context {

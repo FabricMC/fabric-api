@@ -11,3 +11,7 @@ testDependencies(project, [
 	':fabric-renderer-indigo',
 	':fabric-resource-loader-v0'
 ])
+
+loom {
+	accessWidenerPath = file('src/client/resources/fabric-renderer-api-v1.accesswidener')
+}

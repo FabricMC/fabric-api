@@ -40,13 +40,6 @@ publishing {
 					depNode.appendNode("version", dep['version'])
 					depNode.appendNode("scope", dep['scope'])
 				}
-
-				// Depend on the main project.
-				def depNode = depsNode.appendNode("dependency")
-				depNode.appendNode("groupId", thisGroup)
-				depNode.appendNode("artifactId", "fabric-api")
-				depNode.appendNode("version", thisVersion)
-				depNode.appendNode("scope", "compile")
 			}
 		}
 	}

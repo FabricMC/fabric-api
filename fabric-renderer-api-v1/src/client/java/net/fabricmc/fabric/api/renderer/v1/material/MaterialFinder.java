@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.renderer.v1.material;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.model.BakedModel;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -70,8 +69,7 @@ public interface MaterialFinder extends MaterialView {
 	/**
 	 * Controls whether vertex colors should be modified for ambient occlusion.
 	 *
-	 * <p>If set to {@link TriState#DEFAULT}, ambient occlusion will be used if
-	 * {@linkplain BakedModel#useAmbientOcclusion() the model uses ambient occlusion} and the block state has
+	 * <p>If set to {@link TriState#DEFAULT}, ambient occlusion will be used if the block state has
 	 * {@linkplain BlockState#getLuminance() a luminance} of 0. Set to {@link TriState#TRUE} or {@link TriState#FALSE}
 	 * to override this behavior. {@link TriState#TRUE} will not have an effect if
 	 * {@linkplain MinecraftClient#isAmbientOcclusionEnabled() ambient occlusion is disabled globally}.

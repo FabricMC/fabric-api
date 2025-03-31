@@ -29,6 +29,9 @@ import groovy.json.JsonSlurper
 import org.apache.commons.codec.digest.DigestUtils
 import net.fabricmc.fabric.impl.build.CommitHashValueSource
 import net.fabricmc.fabric.impl.build.GitBranchValueSource
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 
 def getSubprojectVersion(Project project) {
 	// Get the version from the gradle.properties file
@@ -550,6 +553,39 @@ subprojects {
 					builtBy remapSourcesJar
 				}
 			}
+		}
+	}
+
+	def projectName = it.name
+	def projectVersion = getSubprojectVersion(it)
+
+	// Skip publishing if the artifact already exists on the maven server
+	tasks.withType(PublishToMavenRepository).configureEach {
+		onlyIf {
+			if (!providers.environmentVariable("MAVEN_URL").present) {
+				// Always try to publish if the maven url is not set (e.g locally)
+				return true
+			}
+
+			def artifactPath = "https://maven.fabricmc.net/net/fabricmc/fabric-api/${projectName}/${projectVersion}/${projectName}-${projectVersion}.pom"
+
+			boolean exists = HttpClient.newHttpClient().withCloseable { client ->
+				def request = HttpRequest.newBuilder()
+						.uri(URI.create(artifactPath))
+						.method("HEAD", HttpRequest.BodyPublishers.noBody())
+						.build()
+
+				def response = client.send(request, HttpResponse.BodyHandlers.discarding())
+				response.statusCode() == 200
+			}
+
+			if (exists) {
+				logger.lifecycle("${projectName}-${projectVersion}.pom has already been published")
+			} else {
+				logger.lifecycle("${projectName}-${projectVersion}.pom does not exist, publishing")
+			}
+
+			return !exists
 		}
 	}
 
