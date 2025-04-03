@@ -241,7 +241,7 @@ transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerAzalea	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerPottedAzaleaBush	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerMushroomBlock	(Lnet/minecraft/block/Block;)V
-transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerCubeWithCustomTextures	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Ljava/util/function/BiFunction;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerCubeWithCustomTextures	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Ljava/util/function/BiFunction;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerNorthDefaultHorizontalRotatable	(Lnet/minecraft/block/Block;Lnet/minecraft/client/data/TextureMap;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerDispenserLikeOrientable	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerCopperBulb	(Lnet/minecraft/block/Block;)V

@@ -49,7 +49,7 @@ public class SyncGametest implements FabricClientGameTest {
 	public static final Logger LOGGER = LoggerFactory.getLogger("data-attachment-persistence-gametest");
 
 	private static ServerPlayerEntity getSinglePlayer(MinecraftServer server) {
-		return server.getPlayerManager().getPlayerList().getFirst();
+		return server.method_70562().method_68990().getPlayerList().getFirst();
 	}
 
 	private static void setSyncedWithAll(AttachmentTarget target) {
@@ -92,7 +92,7 @@ public class SyncGametest implements FabricClientGameTest {
 			LOGGER.info("Setting up synced attachments before join");
 			// setup before player joins
 			serverContext.runOnServer(server -> {
-				ServerWorld world = server.getOverworld();
+				ServerWorld world = server.method_70562().method_68995();
 				BlockPos top = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BlockPos.ORIGIN);
 				state.furnacePos = top;
 
@@ -110,7 +110,7 @@ public class SyncGametest implements FabricClientGameTest {
 				WorldChunk originChunk = world.getChunk(0, 0);
 				setSyncedWithAll(originChunk);
 
-				ServerWorld nether = server.getWorld(World.NETHER);
+				ServerWorld nether = server.method_70562().method_68963(World.NETHER);
 				setSyncedWithAll(Objects.requireNonNull(nether));
 			});
 

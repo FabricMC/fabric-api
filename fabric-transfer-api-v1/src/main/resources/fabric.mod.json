@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.10",
+    "fabricloader": ">=0.16.11",
     "fabric-api-lookup-api-v1": "*",
     "fabric-rendering-fluids-v1": "*"
   },
@@ -24,6 +24,7 @@
   "mixins": [
     "fabric-transfer-api-v1.mixins.json"
   ],
+  "accessWidener": "fabric-transfer-api-v1.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }

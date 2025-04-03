@@ -56,7 +56,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 	}
 
 	private static ServerPlayerEntity getSinglePlayer(MinecraftServer server) {
-		return server.getPlayerManager().getPlayerList().getFirst();
+		return server.method_70562().method_68990().getPlayerList().getFirst();
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 			spContext.getClientWorld().waitForChunksDownload();
 
 			spContext.getServer().runOnServer(server -> {
-				ServerWorld overworld = server.getOverworld();
+				ServerWorld overworld = server.method_70562().method_68995();
 				WorldChunk originChunk = overworld.getChunk(0, 0);
 
 				assertAttached(
@@ -102,7 +102,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 
 			LOGGER.info("Testing persistent attachments");
 			spContext.getServer().runOnServer(server -> {
-				ServerWorld overworld = server.getOverworld();
+				ServerWorld overworld = server.method_70562().method_68995();
 				WorldChunk originChunk = overworld.getChunk(0, 0);
 
 				assertAttached(getSinglePlayer(server), PERSISTENT, "player_data", "Player attachment did not persist");
@@ -132,7 +132,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 			spContext.getClientWorld().waitForChunksDownload();
 
 			spContext.getServer().runOnServer(server -> {
-				WorldChunk farChunk = server.getOverworld().getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z);
+				WorldChunk farChunk = server.method_70562().method_68995().getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z);
 
 				assertAttached(
 						farChunk,

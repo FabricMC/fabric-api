@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.10",
+    "fabricloader": ">=0.16.11",
     "fabric-api-base": "*",
     "fabric-renderer-api-v1": "*"
   },

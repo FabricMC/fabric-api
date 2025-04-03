@@ -17,7 +17,6 @@
   ],
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.networking.CommonPacketsImpl::init",
       "net.fabricmc.fabric.impl.networking.NetworkingImpl::init"
     ],
     "client": [
@@ -26,7 +25,7 @@
   },
   "accessWidener": "fabric-networking-api-v1.accesswidener",
   "depends": {
-    "fabricloader": ">=0.16.10",
+    "fabricloader": ">=0.16.11",
     "fabric-api-base": "*"
   },
   "description": "Low-level, vanilla protocol oriented networking hooks.",

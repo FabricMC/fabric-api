@@ -133,7 +133,7 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 
 				while (remainder > 0) {
 					int dropped = (int) Math.min(entry.key.getItem().getMaxCount(), remainder);
-					playerInventory.player.dropItem(entry.key.toStack(dropped), entry.throwRandomly, entry.retainOwnership);
+					playerInventory.player.dropItem(entry.key.toStack(dropped), entry.throwRandomly, entry.retainOwnership, false); //Looking at the code, I think this new boolean at the end is probably for if you want to animate the hand throwing the item?
 					remainder -= dropped;
 				}
 			}

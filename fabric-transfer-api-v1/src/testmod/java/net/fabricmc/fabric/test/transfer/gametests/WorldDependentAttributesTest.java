@@ -31,7 +31,7 @@ public class WorldDependentAttributesTest {
 	@GameTest
 	public void testViscosity(TestContext context) {
 		ServerWorld overworld = context.getWorld();
-		ServerWorld nether = overworld.getServer().getWorld(ServerWorld.NETHER);
+		ServerWorld nether = overworld.method_69071().method_68961().method_70562().method_68963(ServerWorld.NETHER);
 		FluidVariant lava = FluidVariant.of(Fluids.LAVA);
 
 		// Test that lava viscosity correctly depends on the dimension.

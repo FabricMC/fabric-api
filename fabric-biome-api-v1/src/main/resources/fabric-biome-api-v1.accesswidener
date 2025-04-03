@@ -1,5 +1,4 @@
 accessWidener	v1	named
-accessible  class   net/minecraft/world/biome/Biome$Weather
 
 # Top-Level Biome Fields Access
 accessible field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Weather;

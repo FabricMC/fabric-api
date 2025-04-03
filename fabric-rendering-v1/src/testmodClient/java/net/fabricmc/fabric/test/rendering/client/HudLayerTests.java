@@ -116,11 +116,11 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 			singleplayer.getServer().runCommand("/scoreboard objectives add hud_layer_test dummy");
 			singleplayer.getServer().runCommand("/scoreboard objectives setdisplay list hud_layer_test"); // Hack to show player list
 			singleplayer.getServer().runCommand("/scoreboard objectives setdisplay sidebar hud_layer_test"); // Hack to show sidebar
-			singleplayer.getServer().runOnServer(server -> server.getOverworld().setBlockState(new BlockPos(0, -59, 0), Blocks.POWDER_SNOW.getDefaultState()));
+			singleplayer.getServer().runOnServer(server -> server.method_70562().method_68995().setBlockState(new BlockPos(0, -59, 0), Blocks.POWDER_SNOW.getDefaultState()));
 
 			// Wait for stuff to load
 			singleplayer.getClientWorld().waitForChunksRender();
-			singleplayer.getServer().runOnServer(server -> server.getPlayerManager().broadcast(Text.of("hud_layer_" + BEFORE_CHAT), false)); // Chat messages disappear in 200 ticks so we send one 150 ticks in advance to test the before chat layer
+			singleplayer.getServer().runOnServer(server -> server.method_70562().method_68990().broadcast(Text.of("hud_layer_" + BEFORE_CHAT), false)); // Chat messages disappear in 200 ticks so we send one 150 ticks in advance to test the before chat layer
 			context.waitTicks(150); // The powder snow frosty vignette takes 140 ticks to fully appear, so we additionally wait for a total of 150 ticks
 
 			// Take and assert screenshots

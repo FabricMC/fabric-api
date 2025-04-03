@@ -102,7 +102,7 @@ public class FakePlayer extends ServerPlayerEntity {
 	private static final Map<FakePlayerKey, FakePlayer> FAKE_PLAYER_MAP = new MapMaker().weakValues().makeMap();
 
 	protected FakePlayer(ServerWorld world, GameProfile profile) {
-		super(world.getServer(), world, profile, SyncedClientOptions.createDefault());
+		super(world.method_69071(), world, profile, SyncedClientOptions.createDefault());
 
 		this.networkHandler = new FakePlayerNetworkHandler(this);
 	}

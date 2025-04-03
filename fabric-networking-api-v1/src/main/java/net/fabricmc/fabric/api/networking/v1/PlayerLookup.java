@@ -58,8 +58,8 @@ public final class PlayerLookup {
 		Objects.requireNonNull(server, "The server cannot be null");
 
 		// return an immutable collection to guard against accidental removals.
-		if (server.getPlayerManager() != null) {
-			return Collections.unmodifiableCollection(server.getPlayerManager().getPlayerList());
+		if (server.method_70562() != null && server.method_70562().method_68990() != null) {
+			return Collections.unmodifiableCollection(server.method_70562().method_68990().getPlayerList());
 		}
 
 		return Collections.emptyList();

@@ -67,7 +67,7 @@ public final class RegistrySyncManager {
 	private RegistrySyncManager() { }
 
 	public static void configureClient(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
-		if (!DEBUG && server.isHost(handler.getDebugProfile())) {
+		if (!DEBUG && server.isHost(handler.method_69162())) {
 			// Dont send in singleplayer
 			return;
 		}
@@ -87,7 +87,7 @@ public final class RegistrySyncManager {
 
 			// Disconnect incompatible clients
 			Text message = getIncompatibleClientText(ServerNetworkingImpl.getAddon(handler).getClientBrand(), map);
-			handler.disconnect(message);
+			handler.method_69157(message);
 			return;
 		}
 

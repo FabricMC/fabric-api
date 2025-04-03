@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.client.render.DimensionEffects;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.registry.RegistryKey;
@@ -66,6 +65,6 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		DimensionRenderingRegistry.registerSkyRenderer(RegistryKey.of(RegistryKeys.WORLD, Identifier.of("fabric_dimension", "void")), DimensionalRenderingTest::render);
-		DimensionRenderingRegistry.registerDimensionEffects(Identifier.of("fabric_dimension", "void"), new DimensionEffects.End());
+		//DimensionRenderingRegistry.registerDimensionEffects(Identifier.of("fabric_dimension", "void"), new DimensionEffects.End());
 	}
 }

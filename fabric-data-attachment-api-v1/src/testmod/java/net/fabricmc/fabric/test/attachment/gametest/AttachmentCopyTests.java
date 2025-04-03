@@ -51,9 +51,9 @@ public class AttachmentCopyTests {
 
 	@GameTest
 	public void testCrossWorldTeleport(TestContext context) {
-		MinecraftServer server = context.getWorld().getServer();
-		ServerWorld overworld = server.getOverworld();
-		ServerWorld end = server.getWorld(World.END);
+		MinecraftServer server = context.getWorld().method_69071().method_68961();
+		ServerWorld overworld = server.method_70562().method_68995();
+		ServerWorld end = server.method_70562().method_68963(World.END);
 		// using overworld and end to avoid portal code related to the nether
 
 		Entity entity = EntityType.PIG.create(overworld, SpawnReason.SPAWN_ITEM_USE);

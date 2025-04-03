@@ -1,5 +1,9 @@
 version = getSubprojectVersion(project)
 
+loom {
+	accessWidenerPath = file('src/main/resources/fabric-transfer-api-v1.accesswidener')
+}
+
 moduleDependencies(project, [
 	'fabric-api-base',
 	'fabric-api-lookup-api-v1',
