@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import net.fabricmc.fabric.mixin.networking.accessor.NewServerCommonNetworkHandlerAccessor;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.NetworkPhase;
@@ -52,7 +54,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	private boolean isReconfiguring = false;
 
 	public ServerConfigurationNetworkAddon(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
-		super(ServerNetworkingImpl.CONFIGURATION, ((ServerCommonNetworkHandlerAccessor) handler).getConnection(), "ServerConfigurationNetworkAddon for " + ((ServerCommonNetworkHandlerAccessor) handler).getProfile().getName());
+		super(ServerNetworkingImpl.CONFIGURATION, ((NewServerCommonNetworkHandlerAccessor) handler).getField_58317(), "ServerConfigurationNetworkAddon for " + ((NewServerCommonNetworkHandlerAccessor) handler).invokeGetProfile().getName());
 		this.handler = handler;
 		this.server = server;
 		this.context = new ContextImpl(server, handler, this);
@@ -205,7 +207,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	public ChannelInfoHolder getChannelInfoHolder() {
-		return (ChannelInfoHolder) ((ServerCommonNetworkHandlerAccessor) handler).getConnection();
+		return (ChannelInfoHolder) ((NewServerCommonNetworkHandlerAccessor) handler).getField_58317();
 	}
 
 	private record ContextImpl(MinecraftServer server, ServerConfigurationNetworkHandler networkHandler, PacketSender responseSender) implements ServerConfigurationNetworking.Context {

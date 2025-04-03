@@ -18,6 +18,9 @@ package net.fabricmc.fabric.mixin.networking;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+
+import net.minecraft.server.network.ServerPlayerEntity;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -50,8 +53,8 @@ abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler 
 	}
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void initAddon(CallbackInfo ci) {
-		this.addon = new ServerPlayNetworkAddon((ServerPlayNetworkHandler) (Object) this, connection, server);
+	private void initAddon(class_10961 gameInstance, ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
+		this.addon = new ServerPlayNetworkAddon((ServerPlayNetworkHandler) (Object) this, connection, gameInstance.method_68961());
 
 		if (!(this instanceof UntrackedNetworkHandler)) {
 			// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
