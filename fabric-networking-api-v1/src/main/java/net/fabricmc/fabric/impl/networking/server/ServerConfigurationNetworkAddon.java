@@ -42,7 +42,6 @@ import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ServerConfigurationNetworking.ConfigurationPacketHandler<?>> {
 	private final ServerConfigurationNetworkHandler handler;
