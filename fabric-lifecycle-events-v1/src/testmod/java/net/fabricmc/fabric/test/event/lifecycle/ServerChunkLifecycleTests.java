@@ -69,28 +69,22 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 	private static void setupChunkLevelTypeChangeTest() {
 		final Object2ObjectMap<Identifier, Object2IntMap<ChunkLevelType>> worlds = new Object2ObjectOpenHashMap<>();
 		ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.register((world, chunkPos, oldLevelType, newLevelType) -> {
-			if (Thread.currentThread() != world.getServer().getThread()) LOGGER.error("{} NOT ON SERVER THREAD", chunkPos);
-			if (oldLevelType == newLevelType) LOGGER.error("{} {} SAME LEVEL TYPE", chunkPos, oldLevelType);
+			if (Thread.currentThread() != world.getServer().getThread()) {
+				LOGGER.error("{} {} -> {} NOT ON SERVER THREAD", chunkPos, oldLevelType, newLevelType);
+			}
 
-			/* not sure how useful these tests are...
-			if (newLevelType.isAfter(ChunkLevelType.FULL)) {
-				if (world.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false) == null) LOGGER.error("{} {} BUT NOT WORLD CHUNK ACCESSIBLE", chunkPos, newLevelType);
+			if (oldLevelType == newLevelType) {
+				LOGGER.error("{} {} SAME LEVEL TYPE", chunkPos, oldLevelType);
 			}
-			if (newLevelType.isAfter(ChunkLevelType.BLOCK_TICKING)) {
-				if (!world.shouldTickBlocksInChunk(chunkPos.toLong())) LOGGER.error("{} {} BUT NOT TICKING BLOCKS", chunkPos, newLevelType);
-			}
-			if (newLevelType.isAfter(ChunkLevelType.ENTITY_TICKING)) {
-				//if (world.getChunkManager().chunkLoadingManager.getLevelManager().shouldTick(chunkPos.toLong()) == TriState.FALSE) LOGGER.error("{} {} BUT NOT TICKING CHUNKS", chunkPos, newLevelType);
-				if (!world.shouldTickEntityAt(chunkPos.getCenterAtY(0))) LOGGER.error("{} {} BUT NOT TICKING ENTITIES", chunkPos, newLevelType);
-				if (!world.canSpawnEntitiesAt(chunkPos)) LOGGER.error("{} {} BUT CANNOT SPAWN ENTITIES", chunkPos, newLevelType);
-			}*/
 
 			worlds.putIfAbsent(world.getRegistryKey().getValue(), new Object2IntOpenHashMap<>());
 			worlds.get(world.getRegistryKey().getValue()).mergeInt(newLevelType, 1, Integer::sum);
 		});
 
 		ServerTickEvents.END_WORLD_TICK.register(world -> {
-			if (world.getTime() % 20 != 0) return; // limit to 1 per second
+			if (world.getTime() % 20 != 0) { // limit to 1 per second
+				return;
+			}
 
 			worlds.putIfAbsent(world.getRegistryKey().getValue(), new Object2IntOpenHashMap<>());
 			Object2IntMap<ChunkLevelType> levelTypes = worlds.get(world.getRegistryKey().getValue());

@@ -16,13 +16,14 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
+import static net.minecraft.server.world.ChunkLevelType.BLOCK_TICKING;
+import static net.minecraft.server.world.ChunkLevelType.ENTITY_TICKING;
+import static net.minecraft.server.world.ChunkLevelType.FULL;
+import static net.minecraft.server.world.ChunkLevelType.INACCESSIBLE;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerTask;
-
-import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,7 +31,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static net.minecraft.server.world.ChunkLevelType.*;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerTask;
 import net.minecraft.server.world.ChunkHolder;
 import net.minecraft.server.world.ChunkLevelType;
 import net.minecraft.server.world.ChunkLevels;
@@ -58,36 +60,51 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder {
 	}
 
 	/**
-	 * Really means decrease level (chunk load type promotion)
+	 * Really means decrease level (chunk load type promotion).
 	 */
 	@Inject(method = "increaseLevel", at = @At("TAIL"))
 	private void increaseLevel(ServerChunkLoadingManager chunkLoadingManager, CompletableFuture<OptionalChunk<WorldChunk>> chunkFuture, Executor executor, ChunkLevelType target, CallbackInfo ci) {
 		ServerWorld serverWorld = (ServerWorld) world;
 		MinecraftServer server = serverWorld.getServer();
 		ChunkLevelType previous = switch (target) {
-			case INACCESSIBLE -> throw new IllegalStateException("target must at least be FULL");
-			case FULL -> INACCESSIBLE;
-			case BLOCK_TICKING -> FULL;
-			case ENTITY_TICKING -> BLOCK_TICKING;
+		case INACCESSIBLE -> throw new IllegalStateException("target must at least be FULL");
+		case FULL -> INACCESSIBLE;
+		case BLOCK_TICKING -> FULL;
+		case ENTITY_TICKING -> BLOCK_TICKING;
 		};
-		Runnable runnable = () -> ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange(serverWorld, this.pos, previous, target);
+
+		Runnable runnable = () -> {
+			if (this.getLevelType().isAfter(target)) { // If chunk level type got demoted before promotion event fires, then don't fire it. This almost never happens tho.
+				ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange(serverWorld, this.pos, previous, target);
+			}
+		};
+
 		chunkFuture.thenAccept(optionalChunk -> optionalChunk.ifPresent(worldChunk -> {
 			if (!server.isOnThread()) {
-				LoggerFactory.getLogger(ChunkHolderMixin.class).warn("{} {} -> {} INITIALLY NOT ON SERVER THREAD", this.pos, previous, target); // temp check
 				server.send(new ServerTask(server.getTicks()-10, runnable)); // ensure the server thread runs it within this tick
+			} else {
+				runnable.run();
 			}
-			else runnable.run();
 		}));
 	}
 
 	/**
-	 * Really means increase level (chunk load type demotion)
+	 * Really means increase level (chunk load type demotion).
 	 */
 	@Inject(method = "decreaseLevel", at = @At("TAIL"))
 	private void decreaseLevel(ServerChunkLoadingManager chunkLoadingManager, ChunkLevelType target, CallbackInfo ci) {
 		ChunkLevelType previous = ChunkLevels.getType(this.lastTickLevel);
-		if (previous.isAfter(ENTITY_TICKING) && !target.isAfter(ENTITY_TICKING)) ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, ENTITY_TICKING, BLOCK_TICKING);
-		if (previous.isAfter(BLOCK_TICKING) && !target.isAfter(BLOCK_TICKING)) ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, BLOCK_TICKING, FULL);
-		if (previous.isAfter(FULL) && !target.isAfter(FULL)) ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, FULL, INACCESSIBLE);
+
+		if (previous.isAfter(ENTITY_TICKING) && !target.isAfter(ENTITY_TICKING)) {
+			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, ENTITY_TICKING, BLOCK_TICKING);
+		}
+
+		if (previous.isAfter(BLOCK_TICKING) && !target.isAfter(BLOCK_TICKING)) {
+			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, BLOCK_TICKING, FULL);
+		}
+
+		if (previous.isAfter(FULL) && !target.isAfter(FULL)) {
+			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, FULL, INACCESSIBLE);
+		}
 	}
 }
