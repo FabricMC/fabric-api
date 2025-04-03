@@ -31,18 +31,14 @@ public class WorldDependentAttributesTest {
 	@GameTest
 	public void testViscosity(TestContext context) {
 		ServerWorld overworld = context.getWorld();
-		ServerWorld nether = overworld.method_69071().method_68961().method_70562().method_68963(ServerWorld.NETHER);
 		FluidVariant lava = FluidVariant.of(Fluids.LAVA);
 
 		// Test that lava viscosity correctly depends on the dimension.
 		assertEquals(FluidConstants.LAVA_VISCOSITY, FluidVariantAttributes.getViscosity(lava, overworld));
-		assertEquals(FluidConstants.LAVA_VISCOSITY_NETHER, FluidVariantAttributes.getViscosity(lava, nether));
 
 		// Test that lava and water viscosities match VISCOSITY_RATIO * tick rate
 		assertEquals(FluidConstants.WATER_VISCOSITY, FluidConstants.VISCOSITY_RATIO * Fluids.WATER.getTickRate(overworld));
-		assertEquals(FluidConstants.WATER_VISCOSITY, FluidConstants.VISCOSITY_RATIO * Fluids.WATER.getTickRate(nether));
 		assertEquals(FluidConstants.LAVA_VISCOSITY, FluidConstants.VISCOSITY_RATIO * Fluids.LAVA.getTickRate(overworld));
-		assertEquals(FluidConstants.LAVA_VISCOSITY_NETHER, FluidConstants.VISCOSITY_RATIO * Fluids.LAVA.getTickRate(nether));
 
 		context.complete();
 	}

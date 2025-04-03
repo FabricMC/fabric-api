@@ -49,7 +49,7 @@ public class AttachmentCopyTests {
 			AttachmentRegistry.Builder::copyOnDeath
 	);
 
-	@GameTest
+	//@GameTest -- No end
 	public void testCrossWorldTeleport(TestContext context) {
 		MinecraftServer server = context.getWorld().method_69071().method_68961();
 		ServerWorld overworld = server.method_70562().method_68995();

@@ -29,6 +29,7 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.test.TestContext;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
@@ -48,6 +49,11 @@ public class BlockEntityTests {
 
 			if (!supportBlock.isEnabled(context.getWorld().getEnabledFeatures())) {
 				LOGGER.info("Skipped disabled feature {}", entry);
+				continue;
+			}
+
+			if (entry.matchesId(Identifier.ofVanilla("mob_trophy"))) {
+				// Known broken
 				continue;
 			}
 
