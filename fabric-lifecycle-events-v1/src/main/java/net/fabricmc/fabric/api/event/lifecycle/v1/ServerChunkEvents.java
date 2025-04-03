@@ -67,7 +67,10 @@ public final class ServerChunkEvents {
 	/**
 	 * Called when a chunk changes its {@link ChunkLevelType}.
 	 *
-	 * <p>When this event is called, the chunk's level type has already changed.
+	 * <p>For chunk level type promotions, this event is called only when the chunk's behavior actually aligns with its level type.
+	 * This means the event is usually called later than when the chunk's level type first gets promoted.
+	 *
+	 * <p>For chunk level type demotions, this event is called immediately when the chunk's level type first gets demoted.
 	 */
 	public static final Event<LevelTypeChange> CHUNK_LEVEL_TYPE_CHANGE = EventFactory.createArrayBacked(LevelTypeChange.class, callbacks -> (serverWorld, chunkPos, oldLevelType, newLevelType) -> {
 		for (LevelTypeChange callback : callbacks) {
