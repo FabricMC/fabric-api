@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
+import net.minecraft.class_10972;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,13 +26,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CommonPongC2SPacket;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.server.network.ServerCommonNetworkHandler;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 
-@Mixin(ServerCommonNetworkHandler.class)
-public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
+@Mixin(class_10972.class)
+public abstract class NewServerCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	private void handleCustomPayloadReceivedAsync(CustomPayloadC2SPacket packet, CallbackInfo ci) {
 		final CustomPayload payload = packet.payload();

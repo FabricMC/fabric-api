@@ -125,7 +125,7 @@ public final class ServerLoginNetworking {
 	public static MinecraftServer getServer(ServerLoginNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Network handler cannot be null");
 
-		return ((ServerLoginNetworkHandlerAccessor) handler).getServer();
+		return ((ServerLoginNetworkHandlerAccessor) handler).getField_58324().method_68961();
 	}
 
 	private ServerLoginNetworking() {

@@ -232,7 +232,7 @@ public final class ServerConfigurationNetworking {
 	public static MinecraftServer getServer(ServerConfigurationNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Network handler cannot be null");
 
-		return ((ServerCommonNetworkHandlerAccessor) handler).getServer();
+		return ((ServerCommonNetworkHandlerAccessor) handler).getField_58305().method_68961();
 	}
 
 	/**
