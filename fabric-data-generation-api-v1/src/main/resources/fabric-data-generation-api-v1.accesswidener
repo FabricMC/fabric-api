@@ -152,6 +152,7 @@ transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createMultipartConditionBuilder	()Lnet/minecraft/client/render/model/json/MultipartModelConditionBuilder;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	or	([Lnet/minecraft/client/render/model/json/MultipartModelConditionBuilder;)Lnet/minecraft/client/render/model/json/MultipartModelCondition;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createStoneState	(Lnet/minecraft/block/Block;Lnet/minecraft/client/render/model/json/ModelVariant;Lnet/minecraft/client/data/TextureMap;Ljava/util/function/BiConsumer;)Lnet/minecraft/client/data/BlockModelDefinitionCreator;
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_70250	(Lnet/minecraft/class_11071;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createMudBrickState	(Lnet/minecraft/block/Block;Lnet/minecraft/client/render/model/json/ModelVariant;Lnet/minecraft/client/data/TextureMap;Ljava/util/function/BiConsumer;)Lnet/minecraft/client/data/BlockModelDefinitionCreator;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createDeepslateState	(Lnet/minecraft/block/Block;Lnet/minecraft/client/render/model/json/ModelVariant;Lnet/minecraft/client/data/TextureMap;Ljava/util/function/BiConsumer;)Lnet/minecraft/client/data/BlockModelDefinitionCreator;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerItemModel	(Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;)V
@@ -351,6 +352,7 @@ transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	upload
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	uploadArmor	(Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;)V
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	registerArmor	(Lnet/minecraft/item/Item;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/util/Identifier;Z)V
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	registerBundle	(Lnet/minecraft/item/Item;)V
+transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	method_70255	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	uploadOpenBundleModel	(Lnet/minecraft/item/Item;Lnet/minecraft/client/data/Model;Ljava/lang/String;)Lnet/minecraft/util/Identifier;
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	registerBow	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	registerCrossbow	(Lnet/minecraft/item/Item;)V

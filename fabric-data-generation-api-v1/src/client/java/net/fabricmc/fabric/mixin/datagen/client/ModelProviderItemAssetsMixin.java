@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -53,9 +54,7 @@ public class ModelProviderItemAssetsMixin implements FabricModelProviderDefiniti
 	}
 
 	@WrapOperation(method = "method_65470", at = @At(value = "INVOKE", target = "Ljava/util/Map;containsKey(Ljava/lang/Object;)Z", ordinal = 1, remap = false))
-	private boolean filterItemsForProcessingMod(Map<Item, ItemAsset> map, Object o, Operation<Boolean> original) {
-		BlockItem blockItem = (BlockItem) o;
-
+	private boolean filterItemsForProcessingMod(Map<Item, ItemAsset> map, Object o, Operation<Boolean> original, @Local BlockItem blockItem) {
 		if (fabricDataOutput != null) {
 			// Only generate the item model if the block state json was registered
 			if (itemAssets.containsKey(blockItem)) {

@@ -19,14 +19,13 @@ package net.fabricmc.fabric.mixin.resource.loader;
 import java.util.List;
 import java.util.function.Function;
 
-import net.minecraft.class_10961;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.class_10961;
 import net.minecraft.registry.VersionedIdentifier;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;

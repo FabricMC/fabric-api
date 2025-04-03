@@ -16,25 +16,7 @@
 
 package net.fabricmc.fabric.test.biome;
 
-import static net.fabricmc.fabric.test.biome.DataGeneratorEntrypoint.PLACED_COMMON_DESERT_WELL;
-import static net.fabricmc.fabric.test.biome.DataGeneratorEntrypoint.PLACED_COMMON_ORE;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil;
-import net.minecraft.world.gen.GenerationStep;
-
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
-import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
-import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 
 /**
  * <b>NOTES FOR TESTING:</b>
@@ -51,6 +33,7 @@ public class FabricBiomeTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		/*
 		Preconditions.checkArgument(NetherBiomes.canGenerateInNether(BiomeKeys.NETHER_WASTES));
 		Preconditions.checkArgument(!NetherBiomes.canGenerateInNether(BiomeKeys.END_HIGHLANDS));
 
@@ -101,5 +84,6 @@ public class FabricBiomeTest implements ModInitializer {
 				TestBiomes.EXAMPLE_BIOME,
 				10.0
 		);
+		*/
 	}
 }

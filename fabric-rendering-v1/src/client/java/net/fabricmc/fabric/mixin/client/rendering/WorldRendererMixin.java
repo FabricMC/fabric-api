@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.client.rendering;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -199,7 +200,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(at = @At(value = "HEAD"), method = "renderSky", cancellable = true)
-	private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickDelta, Fog fog, CallbackInfo info) {
+	private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickProgress, Fog fog, Vector4f vector4f, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.SkyRenderer renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
 

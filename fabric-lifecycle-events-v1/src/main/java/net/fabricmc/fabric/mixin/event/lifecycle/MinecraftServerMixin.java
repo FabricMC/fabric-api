@@ -18,13 +18,12 @@ package net.fabricmc.fabric.mixin.event.lifecycle;
 
 import java.util.function.BooleanSupplier;
 
-import net.minecraft.class_10961;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.class_10961;
 import net.minecraft.server.MinecraftServer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;

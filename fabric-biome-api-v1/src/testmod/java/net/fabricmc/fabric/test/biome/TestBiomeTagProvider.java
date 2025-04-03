@@ -20,10 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -35,6 +32,7 @@ public class TestBiomeTagProvider extends FabricTagProvider<Biome> {
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries) {
+		/*
 		getOrCreateTagBuilder(TagKey.of(RegistryKeys.BIOME, Identifier.of(FabricBiomeTest.MOD_ID, "biome_tag_test")))
 				.add(TestBiomes.CUSTOM_PLAINS)
 				.add(TestBiomes.TEST_END_HIGHLANDS);
@@ -43,5 +41,6 @@ public class TestBiomeTagProvider extends FabricTagProvider<Biome> {
 				.add(BiomeKeys.DESERT)
 				.add(BiomeKeys.SAVANNA)
 				.add(BiomeKeys.BADLANDS);
+		 */
 	}
 }

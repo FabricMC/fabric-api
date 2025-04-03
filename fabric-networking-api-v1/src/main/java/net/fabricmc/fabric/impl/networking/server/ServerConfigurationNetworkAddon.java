@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import net.fabricmc.fabric.mixin.networking.accessor.NewServerCommonNetworkHandlerAccessor;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.NetworkPhase;
@@ -42,6 +40,7 @@ import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
+import net.fabricmc.fabric.mixin.networking.accessor.NewServerCommonNetworkHandlerAccessor;
 
 public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ServerConfigurationNetworking.ConfigurationPacketHandler<?>> {
 	private final ServerConfigurationNetworkHandler handler;

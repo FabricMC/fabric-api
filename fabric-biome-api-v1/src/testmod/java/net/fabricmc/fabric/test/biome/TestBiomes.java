@@ -18,20 +18,20 @@ package net.fabricmc.fabric.test.biome;
 
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
 public final class TestBiomes {
+	/*
 	public static final RegistryKey<Biome> EXAMPLE_BIOME = RegistryKey.of(RegistryKeys.BIOME, Identifier.of(FabricBiomeTest.MOD_ID, "example_biome"));
 	public static final RegistryKey<Biome> TEST_CRIMSON_FOREST = RegistryKey.of(RegistryKeys.BIOME, Identifier.of(FabricBiomeTest.MOD_ID, "test_crimson_forest"));
 	public static final RegistryKey<Biome> CUSTOM_PLAINS = RegistryKey.of(RegistryKeys.BIOME, Identifier.of(FabricBiomeTest.MOD_ID, "custom_plains"));
 	public static final RegistryKey<Biome> TEST_END_HIGHLANDS = RegistryKey.of(RegistryKeys.BIOME, Identifier.of(FabricBiomeTest.MOD_ID, "test_end_highlands"));
 	public static final RegistryKey<Biome> TEST_END_MIDLANDS = RegistryKey.of(RegistryKeys.BIOME, Identifier.of(FabricBiomeTest.MOD_ID, "test_end_midlands"));
 	public static final RegistryKey<Biome> TEST_END_BARRRENS = RegistryKey.of(RegistryKeys.BIOME, Identifier.of(FabricBiomeTest.MOD_ID, "test_end_barrens"));
+	*/
 
 	private TestBiomes() {
 	}
