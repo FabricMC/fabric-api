@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 // In response the server will send a message containing the keybind text letting the client know it pressed that key.
 public final class NetworkingKeybindPacketTest implements ModInitializer {
 	private static void receive(KeybindPayload payload, ServerPlayNetworking.Context context) {
-		context.player().server.execute(() -> context.player().sendMessage(Text.literal("So you pressed ").append(Text.keybind("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false));
+		context.player().method_69130().method_68961().execute(() -> context.player().sendMessage(Text.literal("So you pressed ").append(Text.keybind("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false));
 	}
 
 	@Override

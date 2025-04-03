@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.11"
+    "fabricloader": ">=0.16.12"
   },
   "description": "Adds the ability to load tags from the local mods.",
   "custom": {

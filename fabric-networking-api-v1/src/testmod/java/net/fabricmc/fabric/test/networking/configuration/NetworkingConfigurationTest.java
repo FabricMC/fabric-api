@@ -59,7 +59,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 				handler.addTask(new TestConfigurationTask("Example data"));
 			} else {
 				// You can opt to disconnect the client if it cannot handle the configuration task
-				handler.disconnect(Text.literal("Network test configuration not supported by client"));
+				handler.method_69157(Text.literal("Network test configuration not supported by client"));
 			}
 		});
 

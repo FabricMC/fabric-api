@@ -58,7 +58,7 @@ public class NetworkingCommonTest implements ModInitializer {
 
 		// Store the player uuid once received from the client
 		ServerPlayNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedPlay.add(context.player().getUuidAsString()));
-		ServerConfigurationNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedConfig.add(context.networkHandler().getDebugProfile().getId().toString()));
+		ServerConfigurationNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedConfig.add(context.networkHandler().method_69162().getId().toString()));
 
 		// Ensure that the packets were received on the server
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
@@ -73,7 +73,7 @@ public class NetworkingCommonTest implements ModInitializer {
 				final String uuid = player.getUuidAsString();
 
 				// Allow a few ticks for the packets to be received
-				executeIn(world.getServer(), 50, () -> {
+				executeIn(world.method_69071().method_68961(), 50, () -> {
 					if (!receivedPlay.remove(uuid)) {
 						throw new IllegalStateException("Did not receive play response");
 					}

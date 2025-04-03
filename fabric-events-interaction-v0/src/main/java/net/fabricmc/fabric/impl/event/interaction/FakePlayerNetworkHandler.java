@@ -16,8 +16,12 @@
 
 package net.fabricmc.fabric.impl.event.interaction;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
+import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -32,7 +36,7 @@ public final class FakePlayerNetworkHandler extends ServerPlayNetworkHandler imp
 	}
 
 	@Override
-	public void send(Packet<?> packet, @Nullable PacketCallbacks callbacks) { }
+	public void method_69158(Packet<?> packet, @Nullable PacketCallbacks callbacks) { }
 
 	private static final class FakeClientConnection extends ClientConnection {
 		private FakeClientConnection() {

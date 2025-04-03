@@ -42,7 +42,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 import net.fabricmc.fabric.mixin.attachment.CustomPayloadS2CPacketAccessor;
 import net.fabricmc.fabric.mixin.attachment.VarIntsAccessor;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.AbstractNetworkHandlerAccessor;
 
 public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, byte[] data) {
 	public static final PacketCodec<PacketByteBuf, AttachmentChange> PACKET_CODEC = PacketCodec.tuple(
@@ -86,7 +86,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 	}
 
 	public static void partitionAndSendPackets(List<AttachmentChange> changes, ServerPlayerEntity player) {
-		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonNetworkHandlerAccessor) player.networkHandler).getConnection())
+		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((AbstractNetworkHandlerAccessor) player.networkHandler).getConnection())
 				.fabric_getSupportedAttachments();
 		// sort by size to better partition packets
 		changes.sort(Comparator.comparingInt(c -> c.data().length));

@@ -16,17 +16,10 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.client.render.DimensionEffects;
-import net.minecraft.util.Identifier;
 
 @Mixin(DimensionEffects.class)
 public interface DimensionEffectsAccessor {
-	@Accessor("BY_IDENTIFIER")
-	static Object2ObjectMap<Identifier, DimensionEffects> getIdentifierMap() {
-		throw new AssertionError("This should not occur!");
-	}
 }

@@ -31,7 +31,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry.CloudRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry.SkyRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry.WeatherRenderer;
-import net.fabricmc.fabric.mixin.client.rendering.DimensionEffectsAccessor;
 
 public final class DimensionRenderingRegistryImpl {
 	private static final Map<RegistryKey<World>, SkyRenderer> SKY_RENDERERS = new IdentityHashMap<>();
@@ -57,7 +56,7 @@ public final class DimensionRenderingRegistryImpl {
 		Objects.requireNonNull(effects);
 		//The map containing all dimension effects returns a default if null so a null check doesn't work.
 
-		DimensionEffectsAccessor.getIdentifierMap().putIfAbsent(key, effects);
+		throw new UnsupportedOperationException("Not supported in 25w14craftmine");
 	}
 
 	public static void registerCloudRenderer(RegistryKey<World> key, CloudRenderer renderer) {
@@ -84,6 +83,6 @@ public final class DimensionRenderingRegistryImpl {
 
 	@Nullable
 	public static DimensionEffects getDimensionEffects(Identifier key) {
-		return DimensionEffectsAccessor.getIdentifierMap().get(key);
+		throw new UnsupportedOperationException("Not supported in 25w14craftmine");
 	}
 }

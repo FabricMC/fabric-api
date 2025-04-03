@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.screenhandler.screen;
 
+import java.util.List;
+
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.screen.Generic3x3ContainerScreenHandler;
@@ -28,7 +30,7 @@ public class BoxScreenHandler extends Generic3x3ContainerScreenHandler implement
 	private final BlockPos pos;
 
 	public BoxScreenHandler(int syncId, PlayerInventory playerInventory, BlockPos pos) {
-		super(syncId, playerInventory);
+		super(syncId, playerInventory, List.of());
 		this.pos = pos;
 	}
 

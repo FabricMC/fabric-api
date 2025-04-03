@@ -28,7 +28,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.AbstractNetworkHandlerAccessor;
 import net.fabricmc.fabric.mixin.recipe.ingredient.EncoderHandlerMixin;
 
 /**
@@ -88,7 +88,7 @@ public class CustomIngredientSync implements ModInitializer {
 
 		ServerConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadC2S.ID, (payload, context) -> {
 			Set<Identifier> supportedCustomIngredients = decodeResponsePayload(payload);
-			((SupportedIngredientsClientConnection) ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
+			((SupportedIngredientsClientConnection) ((AbstractNetworkHandlerAccessor) context.networkHandler()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
 			context.networkHandler().completeTask(IngredientSyncTask.KEY);
 		});
 	}

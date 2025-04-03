@@ -20,18 +20,9 @@ import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeEffects;
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.biome.OverworldBiomeCreator;
-import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.biome.TheNetherBiomeCreator;
-import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
-import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
-import net.minecraft.world.gen.feature.EndPlacedFeatures;
 import net.minecraft.world.gen.feature.PlacedFeature;
 
 public final class TestBiomes {
@@ -49,14 +40,17 @@ public final class TestBiomes {
 		RegistryEntryLookup<PlacedFeature> placedFeatures = biomeRegisterable.getRegistryLookup(RegistryKeys.PLACED_FEATURE);
 		RegistryEntryLookup<ConfiguredCarver<?>> configuredCarvers = biomeRegisterable.getRegistryLookup(RegistryKeys.CONFIGURED_CARVER);
 
+		/*
 		biomeRegisterable.register(EXAMPLE_BIOME, createExample());
 		biomeRegisterable.register(TEST_CRIMSON_FOREST, TheNetherBiomeCreator.createCrimsonForest(placedFeatures, configuredCarvers));
 		biomeRegisterable.register(CUSTOM_PLAINS, OverworldBiomeCreator.createPlains(placedFeatures, configuredCarvers, false, false, false));
 		biomeRegisterable.register(TEST_END_HIGHLANDS, createEndHighlands(placedFeatures));
 		biomeRegisterable.register(TEST_END_MIDLANDS, createEndMidlands());
 		biomeRegisterable.register(TEST_END_BARRRENS, createEndBarrens());
+		 */
 	}
 
+	/*
 	private static Biome createExample() {
 		return new Biome.Builder()
 				.temperature(0.8f)
@@ -101,4 +95,6 @@ public final class TestBiomes {
 		return (new Biome.Builder()).precipitation(false).temperature(0.5F).downfall(0.5F).effects((new BiomeEffects.Builder()).waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0).moodSound(
 				BiomeMoodSound.CAVE).build()).spawnSettings(builder2.build()).generationSettings(builder.build()).build();
 	}
+
+	 */
 }

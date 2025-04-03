@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.screenhandler.v1;
 
+import java.util.List;
 import java.util.Objects;
 
 import net.minecraft.entity.player.PlayerInventory;
@@ -93,7 +94,7 @@ public class ExtendedScreenHandlerType<T extends ScreenHandler, D> extends Scree
 	 */
 	@Deprecated
 	@Override
-	public final T create(int syncId, PlayerInventory inventory) {
+	public final T create(int syncId, PlayerInventory inventory, List<Integer> list) {
 		throw new UnsupportedOperationException("Use ExtendedScreenHandlerType.create(int, PlayerInventory, PacketByteBuf)!");
 	}
 

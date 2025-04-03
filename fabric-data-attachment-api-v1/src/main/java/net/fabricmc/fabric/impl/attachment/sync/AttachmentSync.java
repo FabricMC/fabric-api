@@ -42,7 +42,7 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.c2s.AcceptedAttachmentsPayloadC2S;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.RequestAcceptedAttachmentsPayloadS2C;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.AbstractNetworkHandlerAccessor;
 
 public class AttachmentSync implements ModInitializer {
 	public static final int MAX_IDENTIFIER_SIZE = 256;
@@ -93,7 +93,7 @@ public class AttachmentSync implements ModInitializer {
 
 		ServerConfigurationNetworking.registerGlobalReceiver(AcceptedAttachmentsPayloadC2S.ID, (payload, context) -> {
 			Set<Identifier> supportedAttachments = decodeResponsePayload(payload);
-			ClientConnection connection = ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection();
+			ClientConnection connection = ((AbstractNetworkHandlerAccessor) context.networkHandler()).getConnection();
 			((SupportedAttachmentsClientConnection) connection).fabric_setSupportedAttachments(supportedAttachments);
 
 			context.networkHandler().completeTask(AttachmentSyncTask.KEY);

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.screenhandler.screen;
 
+import java.util.List;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -31,7 +33,7 @@ import net.fabricmc.fabric.test.screenhandler.item.BagItem;
 public class BagScreenHandler extends Generic3x3ContainerScreenHandler {
 	private final ScreenHandlerType<?> type;
 
-	public BagScreenHandler(int syncId, PlayerInventory playerInventory) {
+	public BagScreenHandler(int syncId, PlayerInventory playerInventory, List<Integer> list) {
 		this(syncId, playerInventory, new SimpleInventory(9));
 	}
 

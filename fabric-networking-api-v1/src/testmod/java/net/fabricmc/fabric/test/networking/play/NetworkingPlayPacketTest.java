@@ -125,7 +125,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 			}
 
 			// Send many unknown packets, used to debug https://github.com/FabricMC/fabric/issues/3505
-			for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+			for (ServerPlayerEntity player : server.method_70562().method_68990().getPlayerList()) {
 				for (int i = 0; i < 50; i++) {
 					sendToUnknownChannel(player);
 				}
