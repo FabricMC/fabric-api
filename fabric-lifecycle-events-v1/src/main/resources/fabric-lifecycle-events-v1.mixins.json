@@ -5,6 +5,7 @@
   "mixins": [
     "ChunkGeneratingMixin",
     "DataPackContentsMixin",
+    "GameInstanceMixin",
     "LivingEntityMixin",
     "MinecraftServerMixin",
     "PlayerManagerMixin",
