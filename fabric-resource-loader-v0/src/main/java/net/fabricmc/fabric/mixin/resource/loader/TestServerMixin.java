@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
  */
 @Mixin(TestServer.class)
 public class TestServerMixin {
-	@Redirect(method = "create", at = @At(value = "NEW", target = "(Ljava/util/List;Ljava/util/List;)Lnet/minecraft/resource/DataPackSettings;"))
+	@Redirect(method = "method_70571", at = @At(value = "NEW", target = "(Ljava/util/List;Ljava/util/List;)Lnet/minecraft/resource/DataPackSettings;"))
 	private static DataPackSettings replaceDefaultDataPackSettings(List<String> enabled, List<String> disabled) {
 		return ModResourcePackUtil.createTestServerSettings(enabled, disabled);
 	}

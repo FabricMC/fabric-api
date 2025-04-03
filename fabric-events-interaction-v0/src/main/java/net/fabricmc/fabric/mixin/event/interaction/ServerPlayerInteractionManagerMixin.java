@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.interaction;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -114,8 +115,8 @@ public class ServerPlayerInteractionManagerMixin {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"), method = "tryBreakBlock", locals = LocalCapture.CAPTURE_FAILHARD)
-	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, BlockEntity entity, Block block, BlockState state, boolean bl) {
-		PlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(this.world, this.player, pos, state, entity);
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"), method = "tryBreakBlock")
+	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 1) BlockState state, @Local BlockEntity blockEntity) {
+		PlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(this.world, this.player, pos, state, blockEntity);
 	}
 }

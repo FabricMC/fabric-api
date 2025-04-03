@@ -25,9 +25,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.class_10961;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 public abstract class PlayerManagerMixin {
 	@Shadow
 	@Final
-	private MinecraftServer server;
+	private class_10961 field_58338;
 
 	@Inject(method = "broadcast(Lnet/minecraft/network/message/SignedMessage;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/network/message/MessageType$Parameters;)V", at = @At("HEAD"), cancellable = true)
 	private void onSendChatMessage(SignedMessage message, ServerPlayerEntity sender, MessageType.Parameters params, CallbackInfo ci) {
@@ -53,12 +53,12 @@ public abstract class PlayerManagerMixin {
 
 	@Inject(method = "broadcast(Lnet/minecraft/text/Text;Ljava/util/function/Function;Z)V", at = @At("HEAD"), cancellable = true)
 	private void onSendGameMessage(Text message, Function<ServerPlayerEntity, Text> playerMessageFactory, boolean overlay, CallbackInfo ci) {
-		if (!ServerMessageEvents.ALLOW_GAME_MESSAGE.invoker().allowGameMessage(this.server, message, overlay)) {
+		if (!ServerMessageEvents.ALLOW_GAME_MESSAGE.invoker().allowGameMessage(field_58338.method_68961(), message, overlay)) {
 			ci.cancel();
 			return;
 		}
 
-		ServerMessageEvents.GAME_MESSAGE.invoker().onGameMessage(this.server, message, overlay);
+		ServerMessageEvents.GAME_MESSAGE.invoker().onGameMessage(field_58338.method_68961(), message, overlay);
 	}
 
 	@Inject(method = "broadcast(Lnet/minecraft/network/message/SignedMessage;Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/network/message/MessageType$Parameters;)V", at = @At("HEAD"), cancellable = true)

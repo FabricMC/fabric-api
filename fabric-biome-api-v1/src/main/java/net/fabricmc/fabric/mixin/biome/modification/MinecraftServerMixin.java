@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.biome.modification;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,18 +23,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.class_10961;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 
-@Mixin(MinecraftServer.class)
+@Mixin(class_10961.class)
 public abstract class MinecraftServerMixin {
 	@Shadow
-	@Nullable
-	public abstract class_10961 method_70562();
+	public abstract DynamicRegistryManager.Immutable method_69003();
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
 	private void finalizeWorldGen(CallbackInfo ci) {
-		BiomeModificationImpl.INSTANCE.finalizeWorldGen(method_70562().method_69003());
+		BiomeModificationImpl.INSTANCE.finalizeWorldGen(method_69003());
 	}
 }

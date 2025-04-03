@@ -211,5 +211,17 @@ public class FabricRegistryInit implements ModInitializer {
 		// Synced via PacketCodecs.registryValue
 		RegistryAttributeHolder.get(Registries.RECIPE_BOOK_CATEGORY)
 				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Synced via PacketCodecs.registryValue
+		RegistryAttributeHolder.get(Registries.field_59577)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Synced via PacketCodecs.registryValue
+		RegistryAttributeHolder.get(Registries.field_59575)
+				.addAttribute(RegistryAttribute.SYNCED);
+
+		// Synced via PacketCodecs.registryValue
+		RegistryAttributeHolder.get(Registries.field_59579)
+				.addAttribute(RegistryAttribute.SYNCED);
 	}
 }
