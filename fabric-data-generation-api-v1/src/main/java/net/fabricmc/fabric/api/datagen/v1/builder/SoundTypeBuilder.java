@@ -33,8 +33,8 @@ import net.fabricmc.fabric.impl.datagen.SoundTypeBuilderImpl;
  *
  * <p>Use in conjunction with {@link FabricSoundsProvider} to generate sound definitions.
  *
- * @see {@link net.minecraft.client.sound.SoundManager}
- * @see {@link net.minecraft.client.sound.WeightedSoundSet}
+ * @see net.minecraft.client.sound.SoundManager
+ * @see net.minecraft.client.sound.WeightedSoundSet
  */
 public interface SoundTypeBuilder {
 	/**
@@ -82,16 +82,15 @@ public interface SoundTypeBuilder {
 	 * This is a shorthand method for quickly adding multiple entries where
 	 * each sound is a variant with an index.
 	 *
-	 *
 	 * @param sound The base sound to add.
 	 * @param count The number of instances of that sound to register.
 	 */
 	SoundTypeBuilder sound(EntryBuilder sound, int count);
 
 	/**
-	 * @see {@link net.minecraft.client.sound.Sound.RegistrationType}
+	 * @see net.minecraft.client.sound.Sound.RegistrationType
 	 */
-	public enum RegistrationType implements StringIdentifiable {
+	enum RegistrationType implements StringIdentifiable {
 		FILE("file"),
 		SOUND_EVENT("event");
 
@@ -109,7 +108,7 @@ public interface SoundTypeBuilder {
 		}
 	}
 
-	public interface EntryBuilder {
+	interface EntryBuilder {
 		/**
 		 * Creates a builder for constructing a new sound entry.
 		 *
@@ -148,14 +147,13 @@ public interface SoundTypeBuilder {
 		 * Sets the pitch of the sound.
 		 *
 		 * @param pitch The sound's pitch value.
-		 * @return
 		 */
 		EntryBuilder pitch(float pitch);
 
 		/**
 		 * Sets the attenuation block distance of the sound.
-		 * <p>
-		 * The default attenuation is 16 blocks. Setting it to
+		 *
+		 * <p>The default attenuation is 16 blocks. Setting it to
 		 * higher will cause the sound to be heard from greater distances.
 		 */
 		EntryBuilder attenuationDistance(int attenuationDistance);
@@ -163,8 +161,8 @@ public interface SoundTypeBuilder {
 		/**
 		 * Sets the weight or "chance" that this sound has of playing when
 		 * its parent sound event is called upon.
-		 * <p>
-		 * The default weight is 1.
+		 *
+		 * <p>The default weight is 1.
 		 */
 		EntryBuilder weight(int weight);
 
@@ -182,5 +180,4 @@ public interface SoundTypeBuilder {
 		 */
 		EntryBuilder preload(boolean preload);
 	}
-
 }

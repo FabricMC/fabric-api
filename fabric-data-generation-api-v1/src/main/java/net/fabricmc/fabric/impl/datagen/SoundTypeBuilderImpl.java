@@ -69,7 +69,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	@Override
 	public SoundTypeBuilder sound(EntryBuilder sound) {
 		Preconditions.checkArgument(sound != null, "Sound must not be null.");
-		sounds.add(((EntryBuilderImpl)sound).build(""));
+		sounds.add(((EntryBuilderImpl) sound).build(""));
 		return this;
 	}
 
@@ -77,14 +77,17 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	public SoundTypeBuilder sound(EntryBuilder sound, int count) {
 		Preconditions.checkArgument(sound != null, "Sound must not be null.");
 		Preconditions.checkArgument(count > 0, "Count must be greater than zero.");
+
 		for (int i = 1; i <= count; i++) {
-			sounds.add(((EntryBuilderImpl)sound).build("" + i));
+			sounds.add(((EntryBuilderImpl) sound).build("" + i));
 		}
+
 		return this;
 	}
 
 	public SoundType build() {
 		Preconditions.checkState(!sounds.isEmpty(), "Sound definition must have at least one sound file");
+
 		for (Entry sound : sounds) {
 			if (sound.type() == RegistrationType.SOUND_EVENT) {
 				Registries.SOUND_EVENT.getOptionalValue(sound.name()).orElseThrow(() -> new IllegalStateException("References sound event " + sound.name() + " does not exist"));
@@ -133,6 +136,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 					|| sound.preload()) {
 				return Either.right(sound);
 			}
+
 			return Either.left(sound);
 		});
 	}
@@ -160,9 +164,11 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 
 		public static EntryBuilder ofFile(Identifier soundFile) {
 			Preconditions.checkArgument(soundFile != null, "Sound file/event id must not be null.");
+
 			if (soundFile.getPath().indexOf('.') != -1) {
 				LOGGER.warn("Sound file id \"" + soundFile + "\" should not have a file extension and may result in the sound event not playing.");
 			}
+
 			return builder(RegistrationType.FILE, soundFile);
 		}
 
