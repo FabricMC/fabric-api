@@ -41,6 +41,7 @@ import net.fabricmc.fabric.impl.datagen.SoundTypeBuilderImpl;
  * Extend this class and implement {@link FabricSoundsProvider#generate}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
+ *
  * <p>Registered sound types will be appended to their own sounds.json in a namespace corresponding to
  * the id of the sound event they are assigned to.
  */
@@ -59,7 +60,7 @@ public abstract class FabricSoundsProvider implements DataProvider {
 		return registryLookupFuture.thenCompose(lookup -> {
 			final Map<String, Map<String, SoundTypeBuilderImpl.SoundType>> data = new LinkedHashMap<>();
 			configure((id, builder) -> {
-				if (data.computeIfAbsent(id.getNamespace(), n -> new LinkedHashMap<>()).put(id.getPath(), ((SoundTypeBuilderImpl)builder).build()) != null) {
+				if (data.computeIfAbsent(id.getNamespace(), n -> new LinkedHashMap<>()).put(id.getPath(), ((SoundTypeBuilderImpl) builder).build()) != null) {
 					throw new IllegalStateException("Duplicate sound for event " + id);
 				}
 			});
@@ -73,6 +74,7 @@ public abstract class FabricSoundsProvider implements DataProvider {
 
 	/**
 	 * Implement this method and then use {@link BiConsumer#accept} to register sound events to be data-generated.
+	 *
 	 * <p>Registered sound types will be appended to their own sounds.json in a namespace corresponding to
 	 * the id of the sound event they are assigned to.
 	 */
@@ -103,7 +105,6 @@ public abstract class FabricSoundsProvider implements DataProvider {
 		default void add(RegistryEntry<SoundEvent> event, SoundTypeBuilder builder) {
 			add(event.getKey().orElseThrow(() -> new NullPointerException("Sound event was not registered")).getValue(), builder);
 		}
-
 
 		/**
 		 * Adds a sound event.
