@@ -105,7 +105,7 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 		@Override
 		protected void configure(SoundExporter exporter) {
 			exporter.add(DataGeneratorTestContent.TEST_SOUND, SoundTypeBuilder.of(DataGeneratorTestContent.TEST_SOUND)
-					.sound(SoundTypeBuilder.Sound.ofFile(Identifier.ofVanilla("mob/parrot/idle"))
+					.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.ofVanilla("mob/parrot/idle"))
 							.volume(0.7F), 1));
 		}
 	}

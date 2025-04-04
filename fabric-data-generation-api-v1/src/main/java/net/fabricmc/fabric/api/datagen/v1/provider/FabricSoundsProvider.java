@@ -35,6 +35,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.builder.SoundTypeBuilder;
+import net.fabricmc.fabric.impl.datagen.SoundTypeBuilderImpl;
 
 /**
  * Extend this class and implement {@link FabricSoundsProvider#generate}.
@@ -44,7 +45,7 @@ import net.fabricmc.fabric.api.datagen.v1.builder.SoundTypeBuilder;
  * the id of the sound event they are assigned to.
  */
 public abstract class FabricSoundsProvider implements DataProvider {
-	private static final Codec<Map<String, SoundTypeBuilder.SoundType>> CODEC = Codec.unboundedMap(Codec.STRING, SoundTypeBuilder.SoundType.CODEC);
+	private static final Codec<Map<String, SoundTypeBuilderImpl.SoundType>> CODEC = Codec.unboundedMap(Codec.STRING, SoundTypeBuilderImpl.SoundType.CODEC);
 	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture;
 	private final DataOutput output;
 
@@ -56,9 +57,9 @@ public abstract class FabricSoundsProvider implements DataProvider {
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
 		return registryLookupFuture.thenCompose(lookup -> {
-			final Map<String, Map<String, SoundTypeBuilder.SoundType>> data = new LinkedHashMap<>();
+			final Map<String, Map<String, SoundTypeBuilderImpl.SoundType>> data = new LinkedHashMap<>();
 			configure((id, builder) -> {
-				if (data.computeIfAbsent(id.getNamespace(), n -> new LinkedHashMap<>()).put(id.getPath(), builder.build()) != null) {
+				if (data.computeIfAbsent(id.getNamespace(), n -> new LinkedHashMap<>()).put(id.getPath(), ((SoundTypeBuilderImpl)builder).build()) != null) {
 					throw new IllegalStateException("Duplicate sound for event " + id);
 				}
 			});
