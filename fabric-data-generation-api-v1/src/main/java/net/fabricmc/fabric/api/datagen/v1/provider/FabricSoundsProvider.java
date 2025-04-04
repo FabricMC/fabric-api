@@ -1,0 +1,115 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.api.datagen.v1.provider;
+
+import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
+
+import org.jetbrains.annotations.ApiStatus;
+
+import com.mojang.serialization.Codec;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.builder.SoundTypeBuilder;
+import net.minecraft.data.DataOutput;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.DataWriter;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
+
+/**
+ * Extend this class and implement {@link FabricSoundsProvider#generate}.
+ *
+ * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
+ * <p>Registered sound types will be appended to their own sounds.json in a namespace corresponding to
+ * the id of the sound event they are assigned to.
+ */
+public abstract class FabricSoundsProvider implements DataProvider {
+	private static final Codec<Map<String, SoundTypeBuilder.SoundType>> CODEC = Codec.unboundedMap(Codec.STRING, SoundTypeBuilder.SoundType.CODEC);
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture;
+	private final DataOutput output;
+
+	public FabricSoundsProvider(DataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture) {
+		this.registryLookupFuture = registryLookupFuture;
+		this.output = output;
+	}
+
+	@Override
+	public CompletableFuture<?> run(DataWriter writer) {
+		return registryLookupFuture.thenCompose(lookup -> {
+			final Map<String, Map<String, SoundTypeBuilder.SoundType>> data = new LinkedHashMap<>();
+			configure((id, builder) -> {
+				if (data.computeIfAbsent(id.getNamespace(), n -> new LinkedHashMap<>()).put(id.getPath(), builder.build()) != null) {
+					throw new IllegalStateException("Duplicate sound for event " + id);
+				}
+			});
+
+			return CompletableFuture.allOf(data.entrySet().stream().map(file -> {
+				Path outputPath = output.resolvePath(DataOutput.OutputType.RESOURCE_PACK).resolve(file.getKey() + "/sounds.json");
+				return DataProvider.writeCodecToPath(writer, lookup, CODEC, file.getValue(), outputPath);
+			}).toArray(CompletableFuture[]::new));
+		});
+	}
+
+	/**
+	 * Implement this method and then use {@link BiConsumer#accept} to register sound events to be data-generated.
+	 * <p>Registered sound types will be appended to their own sounds.json in a namespace corresponding to
+	 * the id of the sound event they are assigned to.
+	 */
+	protected abstract void configure(SoundExporter exporter);
+
+	/**
+	 * A consumer used by {@link FabricSoundsProvider#configure}.
+	 */
+	@ApiStatus.NonExtendable
+	@FunctionalInterface
+	public interface SoundExporter {
+		/**
+		 * Adds a sound event.
+		 *
+		 * @param event   The sound event to get it id from.
+		 * @param builder The sound event details.
+		 */
+		default void add(SoundEvent event, SoundTypeBuilder builder) {
+			add(event.id(), builder);
+		}
+
+		/**
+		 * Adds a sound event.
+		 *
+		 * @param event   A registry entry for sound event to get it id from.
+		 * @param builder The sound event details.
+		 */
+		default void add(RegistryEntry<SoundEvent> event, SoundTypeBuilder builder) {
+			add(event.getKey().orElseThrow(() -> new NullPointerException("Sound event was not registered")).getValue(), builder);
+		}
+
+
+		/**
+		 * Adds a sound event.
+		 *
+		 * @param id	  The id of a sound event.
+		 * @param builder The sound event details.
+		 */
+		void add(Identifier id, SoundTypeBuilder builder);
+	}
+}
