@@ -42,7 +42,6 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricSoundsProvider;
 import net.fabricmc.fabric.test.datagen.DataGeneratorTestContent;
 
-@SuppressWarnings("unused")
 public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoint {
 	@Override
 	public void addJsonKeySortOrders(JsonKeySortOrderCallback callback) {
@@ -54,6 +53,7 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 		final FabricDataGenerator.Pack pack = dataGenerator.createBuiltinResourcePack(Identifier.of(MOD_ID, "example_builtin"));
 		pack.addProvider(TestAtlasSourceProvider::new);
 		pack.addProvider(TestModelProvider::new);
+		pack.addProvider(TestSoundsProvider::new);
 	}
 
 	private static class TestAtlasSourceProvider extends FabricCodecDataProvider<List<AtlasSource>> {
