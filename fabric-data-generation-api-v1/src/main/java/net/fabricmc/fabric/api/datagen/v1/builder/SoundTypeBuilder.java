@@ -25,24 +25,24 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Strings;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.include.com.google.common.base.Preconditions;
 
-import com.google.common.base.Strings;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricSoundsProvider;
-import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
+
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricSoundsProvider;
+import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 /**
  * Provides functionality for building entries that go into a sounds.json file.

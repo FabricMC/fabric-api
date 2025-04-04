@@ -22,12 +22,9 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.mojang.serialization.Codec;
-
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.builder.SoundTypeBuilder;
 import net.minecraft.data.DataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.DataWriter;
@@ -35,6 +32,9 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.builder.SoundTypeBuilder;
 
 /**
  * Extend this class and implement {@link FabricSoundsProvider#generate}.
