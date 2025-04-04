@@ -42,7 +42,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.builder.SoundTypeBuilder;
 
-@ApiStatus.Internal
 public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDataGenHelper.class);
 
@@ -97,7 +96,6 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		return new SoundType(sounds, category, Optional.ofNullable(subtitle));
 	}
 
-	@ApiStatus.Internal
 	public record SoundType(List<Entry> sounds, SoundCategory category, Optional<String> subtitle) {
 		private static final Map<String, SoundCategory> CATEGORIES = Arrays.stream(SoundCategory.values()).collect(Collectors.toMap(SoundCategory::getName, Function.identity()));
 		private static final Codec<SoundCategory> SOUND_CATEGORY_CODEC = Codec.stringResolver(SoundCategory::getName, name -> CATEGORIES.getOrDefault(name.toLowerCase(Locale.ROOT), SoundCategory.NEUTRAL));
@@ -109,7 +107,6 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		).apply(i, SoundType::new));
 	}
 
-	@ApiStatus.Internal
 	private record Entry(Identifier name, RegistrationType type, float volume, float pitch, int weight, int attenuationDistance, boolean stream, boolean preload) {
 		private static final Codec<Entry> MAP_CODEC = RecordCodecBuilder.create(i -> i.group(
 				Identifier.CODEC.fieldOf("name").forGetter(Entry::name),
@@ -141,7 +138,6 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		});
 	}
 
-	@ApiStatus.Internal
 	public static final class EntryBuilderImpl implements EntryBuilder {
 		private final Identifier name;
 		private final RegistrationType type;
