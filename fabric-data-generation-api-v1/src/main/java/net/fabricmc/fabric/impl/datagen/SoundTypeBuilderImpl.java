@@ -29,7 +29,6 @@ import com.google.common.base.Strings;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +98,6 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	public record SoundType(List<Entry> sounds, SoundCategory category, Optional<String> subtitle) {
 		private static final Map<String, SoundCategory> CATEGORIES = Arrays.stream(SoundCategory.values()).collect(Collectors.toMap(SoundCategory::getName, Function.identity()));
 		private static final Codec<SoundCategory> SOUND_CATEGORY_CODEC = Codec.stringResolver(SoundCategory::getName, name -> CATEGORIES.getOrDefault(name.toLowerCase(Locale.ROOT), SoundCategory.NEUTRAL));
-		@ApiStatus.Internal
 		public static final Codec<SoundType> CODEC = RecordCodecBuilder.create(i -> i.group(
 				Entry.CODEC.listOf().fieldOf("sounds").forGetter(SoundType::sounds),
 				SOUND_CATEGORY_CODEC.fieldOf("category").forGetter(SoundType::category),
