@@ -1,0 +1,12 @@
+{
+  "test_sound": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "minecraft:mob/parrot/idle1",
+        "volume": 0.7
+      }
+    ],
+    "subtitle": "subtitles.fabric-data-gen-api-v1-testmod.test_sound"
+  }
+}
