@@ -6,7 +6,8 @@
     "BakedModelManagerMixin",
     "JsonUnbakedModelAccessor",
     "JsonUnbakedModelMixin",
-    "ModelBakerMixin"
+    "ModelBakerMixin",
+    "UnbakedBlockStateModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

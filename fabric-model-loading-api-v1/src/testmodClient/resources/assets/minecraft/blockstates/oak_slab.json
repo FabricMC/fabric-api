@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "type=bottom": {
+      "fabric:type": "fabric:composite",
+      "models": [
+        {
+          "model": "block/oak_slab"
+        },
+        {
+          "model": "block/torch"
+        }
+      ]
+    },
+    "type=double": {
+      "model": "minecraft:block/oak_planks"
+    },
+    "type=top": {
+      "model": "minecraft:block/oak_slab_top"
+    }
+  }
+}

@@ -15,6 +15,11 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.client.model.loading.CustomUnbakedBlockStateModelInit"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.16.10",
     "fabric-api-base": "*",
