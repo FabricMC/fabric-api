@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.renderer.client.block.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -77,7 +78,7 @@ abstract class MultipartBlockStateModelMixin implements BlockStateModel {
 			random.setSeed(seed);
 			return models.getFirst().createGeometryKey(blockView, pos, state, random);
 		} else {
-			Object[] subkeys = new Object[count];
+			List<Object> subkeys = new ArrayList<>(count);
 
 			for (int i = 0; i < count; i++) {
 				random.setSeed(seed);
@@ -87,10 +88,10 @@ abstract class MultipartBlockStateModelMixin implements BlockStateModel {
 					return null;
 				}
 
-				subkeys[i] = subkey;
+				subkeys.add(subkey);
 			}
 
-			record Key(Object[] subkeys) {
+			record Key(List<Object> subkeys) {
 			}
 
 			return new Key(subkeys);

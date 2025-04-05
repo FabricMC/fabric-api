@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -74,20 +75,20 @@ public class CompositeBlockStateModel implements BlockStateModel {
 			random.setSeed(seed);
 			return models[0].createGeometryKey(blockView, pos, state, random);
 		} else {
-			Object[] subkeys = new Object[count];
+			List<Object> subkeys = new ArrayList<>(count);
 
-			for (int i = 0; i < count; i++) {
+			for (BlockStateModel submodel : models) {
 				random.setSeed(seed);
-				Object subkey = models[i].createGeometryKey(blockView, pos, state, random);
+				Object subkey = submodel.createGeometryKey(blockView, pos, state, random);
 
 				if (subkey == null) {
 					return null;
 				}
 
-				subkeys[i] = subkey;
+				subkeys.add(subkey);
 			}
 
-			record Key(Object[] subkeys) {
+			record Key(List<Object> subkeys) {
 			}
 
 			return new Key(subkeys);
