@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
 import static net.minecraft.server.world.ChunkLevelType.BLOCK_TICKING;
-import static net.minecraft.server.world.ChunkLevelType.ENTITY_TICKING;
 import static net.minecraft.server.world.ChunkLevelType.FULL;
 import static net.minecraft.server.world.ChunkLevelType.INACCESSIBLE;
 
@@ -27,6 +26,7 @@ import java.util.concurrent.Executor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -54,6 +54,9 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder {
 
 	@Shadow
 	private int lastTickLevel;
+
+	@Unique
+	private static final ChunkLevelType[] CHUNK_LEVEL_TYPES = ChunkLevelType.values(); // values() clones the internal array each call, so cache the return
 
 	private ChunkHolderMixin(ChunkPos pos) {
 		super(pos);
@@ -94,17 +97,10 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder {
 	@Inject(method = "decreaseLevel", at = @At("TAIL"))
 	private void decreaseLevel(ServerChunkLoadingManager chunkLoadingManager, ChunkLevelType target, CallbackInfo ci) {
 		ChunkLevelType previous = ChunkLevels.getType(this.lastTickLevel);
+		ServerWorld serverWorld = (ServerWorld) world;
 
-		if (previous.isAfter(ENTITY_TICKING) && !target.isAfter(ENTITY_TICKING)) {
-			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, ENTITY_TICKING, BLOCK_TICKING);
-		}
-
-		if (previous.isAfter(BLOCK_TICKING) && !target.isAfter(BLOCK_TICKING)) {
-			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, BLOCK_TICKING, FULL);
-		}
-
-		if (previous.isAfter(FULL) && !target.isAfter(FULL)) {
-			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, FULL, INACCESSIBLE);
+		for (int i = previous.ordinal(); i > target.ordinal(); i--) {
+			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange(serverWorld, this.pos, CHUNK_LEVEL_TYPES[i], CHUNK_LEVEL_TYPES[i-1]);
 		}
 	}
 }

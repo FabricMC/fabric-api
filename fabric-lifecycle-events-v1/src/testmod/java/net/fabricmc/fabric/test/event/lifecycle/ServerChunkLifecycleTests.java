@@ -70,15 +70,14 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		final Object2ObjectMap<Identifier, Object2IntMap<ChunkLevelType>> worlds = new Object2ObjectOpenHashMap<>();
 		ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.register((world, chunkPos, oldLevelType, newLevelType) -> {
 			if (Thread.currentThread() != world.getServer().getThread()) {
-				LOGGER.error("{} {} -> {} NOT ON SERVER THREAD", chunkPos, oldLevelType, newLevelType);
+				throw new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + chunkPos + " " + oldLevelType + "->" + newLevelType + " NOT ON SERVER THREAD");
 			}
 
 			if (oldLevelType == newLevelType) {
-				LOGGER.error("{} {} SAME LEVEL TYPE", chunkPos, oldLevelType);
+				throw new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + chunkPos + " " + oldLevelType + " SAME LEVEL TYPE");
 			}
 
-			worlds.putIfAbsent(world.getRegistryKey().getValue(), new Object2IntOpenHashMap<>());
-			worlds.get(world.getRegistryKey().getValue()).mergeInt(newLevelType, 1, Integer::sum);
+			worlds.computeIfAbsent(world.getRegistryKey().getValue(), obj -> new Object2IntOpenHashMap<>()).mergeInt(newLevelType, 1, Integer::sum);
 		});
 
 		ServerTickEvents.END_WORLD_TICK.register(world -> {
@@ -86,12 +85,16 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 				return;
 			}
 
-			worlds.putIfAbsent(world.getRegistryKey().getValue(), new Object2IntOpenHashMap<>());
 			Object2IntMap<ChunkLevelType> levelTypes = worlds.get(world.getRegistryKey().getValue());
+
+			if (levelTypes == null) {
+				return;
+			}
 
 			if (!levelTypes.isEmpty()) {
 				StringBuilder sb = new StringBuilder(world.getRegistryKey().getValue() + " ");
-				levelTypes.forEach((levelType, integer) -> sb.append(levelType).append(": ").append(integer).append(", "));
+				// Logs the number of level type changes for each ChunkLevelType, only logs the newLevelType
+				levelTypes.forEach((newLevelType, numOfEvents) -> sb.append(newLevelType).append(": ").append(numOfEvents).append(", "));
 				LOGGER.info(sb.toString());
 				levelTypes.clear();
 			}
