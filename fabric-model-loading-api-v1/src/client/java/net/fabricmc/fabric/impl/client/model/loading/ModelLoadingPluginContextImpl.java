@@ -16,22 +16,28 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.render.model.BakedSimpleModel;
+import net.minecraft.client.render.model.Baker;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
+import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedExtraModel;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -39,8 +45,9 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingPluginContextImpl.class);
 
 	final Map<Block, BlockStateResolver> blockStateResolvers = new IdentityHashMap<>();
+	final Map<ModelKey<?>, UnbakedExtraModel<?>> extraModels = new HashMap<>();
 
-	private static final Identifier[] MODEL_MODIFIER_PHASES = new Identifier[] { ModelModifier.OVERRIDE_PHASE, ModelModifier.DEFAULT_PHASE, ModelModifier.WRAP_PHASE, ModelModifier.WRAP_LAST_PHASE };
+	private static final Identifier[] MODEL_MODIFIER_PHASES = new Identifier[]{ModelModifier.OVERRIDE_PHASE, ModelModifier.DEFAULT_PHASE, ModelModifier.WRAP_PHASE, ModelModifier.WRAP_LAST_PHASE};
 
 	private final Event<ModelModifier.OnLoad> onLoadModifiers = EventFactory.createWithPhases(ModelModifier.OnLoad.class, modifiers -> (model, context) -> {
 		for (ModelModifier.OnLoad modifier : modifiers) {
@@ -126,6 +133,25 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 	}
 
 	@Override
+	public <T> void addModel(ModelKey<T> key, Identifier model, BiFunction<BakedSimpleModel, Baker, T> bake) {
+		Objects.requireNonNull(key, "key cannot be null");
+		Objects.requireNonNull(model, "model cannot be null");
+		Objects.requireNonNull(bake, "bake cannot be null");
+
+		addModel(key, new SimpleExtraModel<>(model, bake));
+	}
+
+	@Override
+	public <T> void addModel(ModelKey<T> key, UnbakedExtraModel<T> model) {
+		Objects.requireNonNull(key, "key cannot be null");
+		Objects.requireNonNull(model, "model cannot be null");
+
+		if (extraModels.putIfAbsent(key, model) != null) {
+			throw new IllegalArgumentException("Already have a model for this key");
+		}
+	}
+
+	@Override
 	public Event<ModelModifier.OnLoad> modifyModelOnLoad() {
 		return onLoadModifiers;
 	}
@@ -153,5 +179,19 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 	@Override
 	public Event<ModelModifier.AfterBakeItem> modifyItemModelAfterBake() {
 		return afterBakeItemModifiers;
+	}
+
+	private record SimpleExtraModel<T>(
+			Identifier model, BiFunction<BakedSimpleModel, Baker, T> bake
+	) implements UnbakedExtraModel<T> {
+		@Override
+		public void resolve(Resolver resolver) {
+			resolver.markDependency(model);
+		}
+
+		@Override
+		public T bake(Baker baker) {
+			return bake.apply(baker.getModel(model), baker);
+		}
 	}
 }

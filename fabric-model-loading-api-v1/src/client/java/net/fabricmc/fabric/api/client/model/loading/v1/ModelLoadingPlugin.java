@@ -17,12 +17,17 @@
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.render.model.BakedSimpleModel;
+import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.SimpleBlockStateModel;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
@@ -65,6 +70,31 @@ public interface ModelLoadingPlugin {
 		 * block.
 		 */
 		void registerBlockStateResolver(Block block, BlockStateResolver resolver);
+
+		/**
+		 * Add a model that will be loaded, baked, and made available through
+		 * {@link FabricBakedModelManager#getModel(ModelKey)}.
+		 *
+		 * @param key   The unique key for this model.
+		 * @param model The location of the model to load.
+		 * @param bake  A function to bake the model.
+		 * @param <T>   The type of the baked model, for instance {@link SimpleBlockStateModel}.
+		 */
+		<T> void addModel(ModelKey<T> key, Identifier model, BiFunction<BakedSimpleModel, Baker, T> bake);
+
+		/**
+		 * Add a model that will be loaded, baked, and made available through
+		 * {@link FabricBakedModelManager#getModel(ModelKey)}.
+		 *
+		 * <p>Unlike {@link #addModel(ModelKey, Identifier, BiFunction)}, dependency gathering and baking is performed
+		 * by an {@link UnbakedExtraModel}. This allows you to depend on multiple models files at once, baking them into
+		 * a single dynamic model.
+		 *
+		 * @param key   The unique key for this model.
+		 * @param model The "unbaked" model, responsible for loading dependencies and backing.
+		 * @param <T>   The type of the baked model.
+		 */
+		<T> void addModel(ModelKey<T> key, UnbakedExtraModel<T> model);
 
 		/**
 		 * Event access to monitor unbaked model loads and replace the loaded model.
