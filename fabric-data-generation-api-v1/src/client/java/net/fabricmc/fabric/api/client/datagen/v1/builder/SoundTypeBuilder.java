@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.datagen.v1.builder;
+package net.fabricmc.fabric.api.client.datagen.v1.builder;
 
 import com.mojang.serialization.Codec;
 
@@ -26,8 +26,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
-
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricSoundsProvider;
+import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider;
 import net.fabricmc.fabric.impl.datagen.SoundTypeBuilderImpl;
 
 /**

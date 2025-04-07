@@ -31,15 +31,14 @@ import net.minecraft.data.DataOutput;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.Identifier;
-
+import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderCallback;
-import net.fabricmc.fabric.api.datagen.v1.builder.SoundTypeBuilder;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricSoundsProvider;
 import net.fabricmc.fabric.test.datagen.DataGeneratorTestContent;
 
 public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoint {

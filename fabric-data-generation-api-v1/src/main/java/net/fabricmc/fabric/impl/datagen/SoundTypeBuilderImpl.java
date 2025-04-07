@@ -34,12 +34,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.include.com.google.common.base.Preconditions;
 
+import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.api.datagen.v1.builder.SoundTypeBuilder;
 
 public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDataGenHelper.class);
