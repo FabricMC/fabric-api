@@ -175,7 +175,7 @@ public interface SoundTypeBuilder {
 
 		/**
 		 * Configures whether the sound must be pre-loaded by the game.
-		 * By default sounds are only loaded the first time they're used.
+		 * By default, sounds are only loaded upon playing.
 		 * Set preload to <code>true</code> will cause them to be loaded upon game start.
 		 */
 		EntryBuilder preload(boolean preload);
