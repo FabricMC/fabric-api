@@ -34,7 +34,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.impl.datagen.SoundTypeBuilderImpl;
+import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 
 /**
  * Extend this class and implement {@link FabricSoundsProvider#generate}.

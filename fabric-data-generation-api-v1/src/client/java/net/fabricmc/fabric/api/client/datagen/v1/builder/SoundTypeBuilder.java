@@ -28,7 +28,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.Util;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider;
-import net.fabricmc.fabric.impl.datagen.SoundTypeBuilderImpl;
+import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 
 /**
  * Provides functionality for building entries that go into a {@code sounds.json} file.

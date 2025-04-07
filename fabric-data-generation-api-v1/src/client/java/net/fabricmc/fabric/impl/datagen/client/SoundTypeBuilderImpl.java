@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.datagen;
+package net.fabricmc.fabric.impl.datagen.client;
 
 import java.util.ArrayList;
 import java.util.Arrays;
