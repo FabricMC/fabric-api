@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricSoundsProvider;
 import net.fabricmc.fabric.impl.datagen.SoundTypeBuilderImpl;
 
 /**
- * Provides functionality for building entries that go into a sounds.json file.
+ * Provides functionality for building entries that go into a {@code sounds.json} file.
  *
  * <p>Use in conjunction with {@link FabricSoundsProvider} to generate sound definitions.
  *
