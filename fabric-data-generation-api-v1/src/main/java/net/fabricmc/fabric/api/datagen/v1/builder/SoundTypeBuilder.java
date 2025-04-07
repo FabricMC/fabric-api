@@ -161,11 +161,21 @@ public interface SoundTypeBuilder {
 
 		/**
 		 * Sets the volume of the sound.
+		 *
+		 * <p>Must be a value between {@code 0} and {@code 1} (inclusive). The default volume is {@code 1}.
+		 *
+		 * @see net.minecraft.client.sound.SoundSystem#MIN_VOLUME
+		 * @see net.minecraft.client.sound.SoundSystem#MAX_VOLUME
 		 */
 		EntryBuilder volume(float volume);
 
 		/**
 		 * Sets the pitch of the sound.
+		 *
+		 * <p>Must be a value between {@code 0.5} and {@code 2}. The default pitch is {@code 1}.
+		 *
+		 * @see net.minecraft.client.sound.SoundSystem#MIN_PITCH
+		 * @see net.minecraft.client.sound.SoundSystem#MAX_PITCH
 		 */
 		EntryBuilder pitch(float pitch);
 
@@ -181,21 +191,22 @@ public interface SoundTypeBuilder {
 		 * Sets the weight or "chance" that this sound has of playing when
 		 * its parent sound event is called upon.
 		 *
-		 * <p>The default weight is 1.
+		 * <p>The default weight is {@code 1}.
 		 */
 		EntryBuilder weight(int weight);
 
 		/**
 		 * Configures the sound to be streamed.
 		 * This is usually set for longer sounds like music discs
-		 * to prevent delays when the game attempts playing them
+		 * to prevent delays when the game tries to play them.
 		 */
 		EntryBuilder stream(boolean stream);
 
 		/**
 		 * Configures whether the sound must be pre-loaded by the game.
 		 * By default, sounds are only loaded upon playing.
-		 * Setting this to {@code true} will cause them to be loaded when the game starts.
+		 *
+		 * <p>Setting this to {@code true} will cause them to be loaded when the game starts.
 		 */
 		EntryBuilder preload(boolean preload);
 	}

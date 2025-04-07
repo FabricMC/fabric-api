@@ -42,22 +42,22 @@ import net.fabricmc.fabric.impl.datagen.SoundTypeBuilderImpl;
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  *
- * <p>Registered sound types will be appended to their own sounds.json in a namespace corresponding to
+ * <p>Registered sound types will be appended to their own {@code sounds.json} in a namespace corresponding to
  * the id of the sound event they are assigned to.
  */
 public abstract class FabricSoundsProvider implements DataProvider {
 	private static final Codec<Map<String, SoundTypeBuilderImpl.SoundType>> CODEC = Codec.unboundedMap(Codec.STRING, SoundTypeBuilderImpl.SoundType.CODEC);
-	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture;
+	private final CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture;
 	private final DataOutput output;
 
-	public FabricSoundsProvider(DataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture) {
-		this.registryLookupFuture = registryLookupFuture;
+	public FabricSoundsProvider(DataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+		this.registriesFuture = registriesFuture;
 		this.output = output;
 	}
 
 	@Override
 	public CompletableFuture<?> run(DataWriter writer) {
-		return registryLookupFuture.thenCompose(lookup -> {
+		return registriesFuture.thenCompose(lookup -> {
 			final Map<String, Map<String, SoundTypeBuilderImpl.SoundType>> data = new LinkedHashMap<>();
 			configure((id, builder) -> {
 				if (data.computeIfAbsent(id.getNamespace(), n -> new LinkedHashMap<>()).put(id.getPath(), ((SoundTypeBuilderImpl) builder).build()) != null) {
@@ -89,8 +89,8 @@ public abstract class FabricSoundsProvider implements DataProvider {
 		/**
 		 * Adds a sound event.
 		 *
-		 * @param event   The sound event to get it id from.
-		 * @param builder The sound event details.
+		 * @param event   the sound event
+		 * @param builder the sound event details
 		 */
 		default void add(SoundEvent event, SoundTypeBuilder builder) {
 			add(event.id(), builder);
@@ -99,18 +99,20 @@ public abstract class FabricSoundsProvider implements DataProvider {
 		/**
 		 * Adds a sound event.
 		 *
-		 * @param event   A registry entry for sound event to get it id from.
-		 * @param builder The sound event details.
+		 * @param event   registry entry for sound event
+		 * @param builder the sound event details
+		 *
+		 * @throws IllegalArgumentException if the registry entry provided has not been registered
 		 */
 		default void add(RegistryEntry<SoundEvent> event, SoundTypeBuilder builder) {
-			add(event.getKey().orElseThrow(() -> new NullPointerException("Sound event was not registered")).getValue(), builder);
+			add(event.getKey().orElseThrow(() -> new IllegalArgumentException("Direct (non-registered) sound event cannot be added")).getValue(), builder);
 		}
 
 		/**
 		 * Adds a sound event.
 		 *
-		 * @param id	  The id of a sound event.
-		 * @param builder The sound event details.
+		 * @param id	  the id of a sound event
+		 * @param builder the sound event details
 		 */
 		void add(Identifier id, SoundTypeBuilder builder);
 	}

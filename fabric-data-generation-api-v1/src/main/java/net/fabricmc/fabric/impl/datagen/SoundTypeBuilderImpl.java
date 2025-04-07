@@ -180,7 +180,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 
 		@Override
 		public EntryBuilder pitch(float pitch) {
-			Preconditions.checkArgument(pitch > 0, "Sound pitch must be greater than 0.");
+			Preconditions.checkArgument(pitch >= 0.5F && pitch <= 2, "Sound pitch must be between 0.5 and 2 (inclusive)");
 			this.pitch = pitch;
 			return this;
 		}
