@@ -168,7 +168,7 @@ public interface SoundTypeBuilder {
 
 		/**
 		 * Configures the sound to be streamed.
-		 * This is usually set for longer sounds like music disks
+		 * This is usually set for longer sounds like music discs
 		 * to prevent delays when the game attempts playing them
 		 */
 		EntryBuilder stream(boolean stream);
