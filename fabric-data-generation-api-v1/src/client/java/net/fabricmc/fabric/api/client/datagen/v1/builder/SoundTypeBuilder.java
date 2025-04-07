@@ -16,17 +16,18 @@
 
 package net.fabricmc.fabric.api.client.datagen.v1.builder;
 
-import com.mojang.serialization.Codec;
-
 import java.util.Objects;
 
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.Util;
+
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider;
 import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 
