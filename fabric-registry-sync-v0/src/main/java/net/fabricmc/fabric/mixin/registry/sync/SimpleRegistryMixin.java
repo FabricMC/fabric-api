@@ -75,7 +75,7 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 	// Namespaces used by the vanilla game. "brigadier" is used by command argument type registry.
 	// While Realms use "realms" namespace, it is irrelevant for Registry Sync.
 	@Unique
-	private static final Set<String> VANILLA_NAMESPACES = Set.of("minecraft", "brigadier");
+	private static final Set<String> VANILLA_NAMESPACES = Set.of("minecraft", "brigadier", "nothingtoseehere");
 
 	@Shadow
 	@Final
