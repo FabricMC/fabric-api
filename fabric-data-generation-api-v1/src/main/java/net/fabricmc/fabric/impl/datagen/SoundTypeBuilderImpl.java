@@ -41,7 +41,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
-	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDataGenHelper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SoundTypeBuilderImpl.class);
 
 	private SoundCategory category = SoundCategory.NEUTRAL;
 	@Nullable
@@ -76,7 +76,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		Preconditions.checkArgument(count > 0, "Count must be greater than zero.");
 
 		for (int i = 1; i <= count; i++) {
-			sounds.add(((EntryBuilderImpl) sound).build("" + i));
+			sounds.add(((EntryBuilderImpl) sound).build(Integer.toString(i)));
 		}
 
 		return this;
@@ -87,7 +87,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 
 		for (Entry sound : sounds) {
 			if (sound.type() == RegistrationType.SOUND_EVENT) {
-				Registries.SOUND_EVENT.getOptionalValue(sound.name()).orElseThrow(() -> new IllegalStateException("References sound event " + sound.name() + " does not exist"));
+				Registries.SOUND_EVENT.getOptionalValue(sound.name()).orElseThrow(() -> new IllegalStateException("Referenced sound event " + sound.name() + " does not exist"));
 			}
 		}
 
@@ -97,15 +97,15 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	public record SoundType(List<Entry> sounds, SoundCategory category, Optional<String> subtitle) {
 		private static final Map<String, SoundCategory> CATEGORIES = Arrays.stream(SoundCategory.values()).collect(Collectors.toMap(SoundCategory::getName, Function.identity()));
 		private static final Codec<SoundCategory> SOUND_CATEGORY_CODEC = Codec.stringResolver(SoundCategory::getName, name -> CATEGORIES.getOrDefault(name.toLowerCase(Locale.ROOT), SoundCategory.NEUTRAL));
-		public static final Codec<SoundType> CODEC = RecordCodecBuilder.create(i -> i.group(
+		public static final Codec<SoundType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Entry.CODEC.listOf().fieldOf("sounds").forGetter(SoundType::sounds),
 				SOUND_CATEGORY_CODEC.fieldOf("category").forGetter(SoundType::category),
 				Codec.STRING.optionalFieldOf("subtitle").forGetter(SoundType::subtitle)
-		).apply(i, SoundType::new));
+		).apply(instance, SoundType::new));
 	}
 
 	private record Entry(Identifier name, RegistrationType type, float volume, float pitch, int weight, int attenuationDistance, boolean stream, boolean preload) {
-		private static final Codec<Entry> MAP_CODEC = RecordCodecBuilder.create(i -> i.group(
+		private static final Codec<Entry> MAP_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Identifier.CODEC.fieldOf("name").forGetter(Entry::name),
 				RegistrationType.CODEC.optionalFieldOf("type", RegistrationType.FILE).forGetter(Entry::type),
 				Codec.FLOAT.optionalFieldOf("volume", 1F).forGetter(Entry::volume),
@@ -114,7 +114,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 				Codec.INT.optionalFieldOf("attenuation_distance", 16).forGetter(Entry::attenuationDistance),
 				Codec.BOOL.optionalFieldOf("stream", false).forGetter(Entry::stream),
 				Codec.BOOL.optionalFieldOf("preload", false).forGetter(Entry::preload)
-		).apply(i, Entry::new));
+		).apply(instance, Entry::new));
 
 		private static final Codec<Entry> STRING_CODEC = Identifier.CODEC.xmap(
 				id -> new Entry(id, RegistrationType.FILE, 1F, 1F, 1, 16, false, false),
@@ -159,7 +159,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 			Objects.requireNonNull(soundFile, "Sound file/event id must not be null.");
 
 			if (soundFile.getPath().indexOf('.') != -1) {
-				LOGGER.warn("Sound file id \"" + soundFile + "\" should not have a file extension and may result in the sound event not playing.");
+				LOGGER.warn("Sound file \"" + soundFile + "\" should not have a file extension and may result in the sound event not playing.");
 			}
 
 			return create(RegistrationType.FILE, soundFile);
