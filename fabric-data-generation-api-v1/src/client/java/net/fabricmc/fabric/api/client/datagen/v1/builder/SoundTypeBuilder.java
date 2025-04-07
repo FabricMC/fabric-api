@@ -109,7 +109,7 @@ public interface SoundTypeBuilder {
 		 */
 		FILE("file"),
 		/**
-		 * References to another sound event
+		 * References to another sound event.
 		 */
 		SOUND_EVENT("event");
 
@@ -128,7 +128,7 @@ public interface SoundTypeBuilder {
 	}
 
 	/**
-	 * Builder for creating a weighted sound entry that can be played for a particular sound type
+	 * Builder for creating a weighted sound entry that can be played for a particular sound type.
 	 */
 	@ApiStatus.NonExtendable
 	interface EntryBuilder {
