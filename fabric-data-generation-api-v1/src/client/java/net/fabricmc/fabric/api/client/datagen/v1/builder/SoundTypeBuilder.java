@@ -26,6 +26,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.Util;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider;
 import net.fabricmc.fabric.impl.datagen.SoundTypeBuilderImpl;
 
@@ -46,7 +47,7 @@ public interface SoundTypeBuilder {
 	 */
 	static SoundTypeBuilder of(SoundEvent event) {
 		Objects.requireNonNull(event, "Sound event cannot be null.");
-		return of().subtitle("subtitles." + event.id().getNamespace() + "." + event.id().getPath());
+		return of().subtitle(Util.createTranslationKey("subtitles", event.id()));
 	}
 
 	/**
