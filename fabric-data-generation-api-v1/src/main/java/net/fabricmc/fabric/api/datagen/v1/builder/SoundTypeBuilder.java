@@ -17,9 +17,11 @@
 package net.fabricmc.fabric.api.datagen.v1.builder;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.include.com.google.common.base.Preconditions;
 
+import java.util.Objects;
+
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
@@ -36,22 +38,21 @@ import net.fabricmc.fabric.impl.datagen.SoundTypeBuilderImpl;
  * @see net.minecraft.client.sound.SoundManager
  * @see net.minecraft.client.sound.WeightedSoundSet
  */
+@ApiStatus.NonExtendable
 public interface SoundTypeBuilder {
 	/**
 	 * Creates a new builder pre-filled with a subtitle translation string based on the passed event.
 	 *
-	 * @param event The sound event.
 	 * @return New sound type builder
 	 */
 	static SoundTypeBuilder of(SoundEvent event) {
-		Preconditions.checkArgument(event != null, "Sound event must not be null.");
+		Objects.requireNonNull(event, "Sound event cannot be null.");
 		return of().subtitle("subtitles." + event.id().getNamespace() + "." + event.id().getPath());
 	}
 
 	/**
 	 * Creates a new empty builder.
 	 *
-	 * @param event The sound event.
 	 * @return New sound type builder
 	 */
 	static SoundTypeBuilder of() {
@@ -74,24 +75,42 @@ public interface SoundTypeBuilder {
 
 	/**
 	 * Adds one sound to the event.
+	 *
+	 * @param sound base sound to add
 	 */
 	SoundTypeBuilder sound(EntryBuilder sound);
 
 	/**
 	 * Adds one or more sounds to the event.
-	 * This is a shorthand method for quickly adding multiple entries where
-	 * each sound is a variant with an index.
 	 *
-	 * @param sound The base sound to add.
-	 * @param count The number of instances of that sound to register.
+	 * <p>This is a shorthand method for quickly adding multiple
+	 * entries where each sound is a variant with an index at the end of their name.
+	 *
+	 * <p>Calling this with the a count value of {@code 3} is the equivalent of doing:
+	 *
+	 * <p>{@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("1"));}
+	 * {@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("2"));}
+	 * {@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("3"));}
+	 *
+	 * @param sound base sound to add
+	 * @param count number of instances of that sound to register
 	 */
 	SoundTypeBuilder sound(EntryBuilder sound, int count);
 
 	/**
+	 *
+	 * Represents the type of weighted sound entry.
+	 *
 	 * @see net.minecraft.client.sound.Sound.RegistrationType
 	 */
 	enum RegistrationType implements StringIdentifiable {
+		/**
+		 * Direct references to sound files by path and filename excluding {@code *.ogg} extension.
+		 */
 		FILE("file"),
+		/**
+		 * References to another sound event
+		 */
 		SOUND_EVENT("event");
 
 		public static final Codec<RegistrationType> CODEC = StringIdentifiable.createCodec(RegistrationType::values);
@@ -108,20 +127,24 @@ public interface SoundTypeBuilder {
 		}
 	}
 
+	/**
+	 * Builder for creating a weighted sound entry that can be played for a particular sound type
+	 */
+	@ApiStatus.NonExtendable
 	interface EntryBuilder {
 		/**
 		 * Creates a builder for constructing a new sound entry.
 		 *
-		 * @param name The Identifier of the sound file or event this entry must reference.
+		 * @param id sound file or event
 		 */
-		static EntryBuilder builder(RegistrationType type, Identifier name) {
-			return SoundTypeBuilderImpl.EntryBuilderImpl.builder(type, name);
+		static EntryBuilder create(RegistrationType type, Identifier id) {
+			return SoundTypeBuilderImpl.EntryBuilderImpl.create(type, id);
 		}
 
 		/**
 		 * Creates a builder for constructing a new sound entry.
 		 *
-		 * @param soundFile The Identifier pointing to the sound file (minus .ogg extension).
+		 * @param soundFile sound file excluding the {@code .ogg} extension
 		 */
 		static EntryBuilder ofFile(Identifier soundFile) {
 			return SoundTypeBuilderImpl.EntryBuilderImpl.ofFile(soundFile);
@@ -130,7 +153,7 @@ public interface SoundTypeBuilder {
 		/**
 		 * Creates a builder for constructing a new sound entry.
 		 *
-		 * @param event The sound event this entry must point to.
+		 * @param event the sound event
 		 */
 		static EntryBuilder ofEvent(SoundEvent event) {
 			return SoundTypeBuilderImpl.EntryBuilderImpl.ofEvent(event);
@@ -138,15 +161,11 @@ public interface SoundTypeBuilder {
 
 		/**
 		 * Sets the volume of the sound.
-		 *
-		 * @param volume The volume.
 		 */
 		EntryBuilder volume(float volume);
 
 		/**
 		 * Sets the pitch of the sound.
-		 *
-		 * @param pitch The sound's pitch value.
 		 */
 		EntryBuilder pitch(float pitch);
 

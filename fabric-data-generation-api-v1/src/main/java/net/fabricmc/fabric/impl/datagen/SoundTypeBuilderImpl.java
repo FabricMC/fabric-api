@@ -21,11 +21,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Strings;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -53,7 +53,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 
 	@Override
 	public SoundTypeBuilder category(SoundCategory category) {
-		Preconditions.checkArgument(category != null, "Sound event category must not be null.");
+		Objects.requireNonNull(category, "Sound event category must not be null.");
 		this.category = category;
 		return this;
 	}
@@ -66,14 +66,14 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 
 	@Override
 	public SoundTypeBuilder sound(EntryBuilder sound) {
-		Preconditions.checkArgument(sound != null, "Sound must not be null.");
+		Objects.requireNonNull(sound, "Sound must not be null.");
 		sounds.add(((EntryBuilderImpl) sound).build(""));
 		return this;
 	}
 
 	@Override
 	public SoundTypeBuilder sound(EntryBuilder sound, int count) {
-		Preconditions.checkArgument(sound != null, "Sound must not be null.");
+		Objects.requireNonNull(sound, "Sound must not be null.");
 		Preconditions.checkArgument(count > 0, "Count must be greater than zero.");
 
 		for (int i = 1; i <= count; i++) {
@@ -137,7 +137,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	}
 
 	public static final class EntryBuilderImpl implements EntryBuilder {
-		private final Identifier name;
+		private final Identifier id;
 		private final RegistrationType type;
 
 		private float volume = 1F;
@@ -147,28 +147,28 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		private boolean stream = false;
 		private boolean preload = false;
 
-		private EntryBuilderImpl(RegistrationType type, Identifier name) {
+		private EntryBuilderImpl(RegistrationType type, Identifier id) {
 			this.type = type;
-			this.name = name;
+			this.id = id;
 		}
 
-		public static EntryBuilder builder(RegistrationType type, Identifier name) {
-			return new EntryBuilderImpl(type, name);
+		public static EntryBuilder create(RegistrationType type, Identifier id) {
+			return new EntryBuilderImpl(type, id);
 		}
 
 		public static EntryBuilder ofFile(Identifier soundFile) {
-			Preconditions.checkArgument(soundFile != null, "Sound file/event id must not be null.");
+			Objects.requireNonNull(soundFile, "Sound file/event id must not be null.");
 
 			if (soundFile.getPath().indexOf('.') != -1) {
 				LOGGER.warn("Sound file id \"" + soundFile + "\" should not have a file extension and may result in the sound event not playing.");
 			}
 
-			return builder(RegistrationType.FILE, soundFile);
+			return create(RegistrationType.FILE, soundFile);
 		}
 
 		public static EntryBuilder ofEvent(SoundEvent event) {
-			Preconditions.checkArgument(event != null, "Sound event must not be null.");
-			return builder(RegistrationType.SOUND_EVENT, event.id());
+			Objects.requireNonNull(event, "Sound event must not be null.");
+			return create(RegistrationType.SOUND_EVENT, event.id());
 		}
 
 		@Override
@@ -211,7 +211,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		}
 
 		public Entry build(@Nullable String suffix) {
-			return new Entry(name.withSuffixedPath(Strings.nullToEmpty(suffix)), type, volume, pitch, weight, attenuationDistance, stream, preload);
+			return new Entry(id.withSuffixedPath(suffix == null ? "" : suffix), type, volume, pitch, weight, attenuationDistance, stream, preload);
 		}
 	}
 }
