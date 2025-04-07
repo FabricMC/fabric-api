@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
+import net.fabricmc.fabric.impl.event.lifecycle.ChunkLevelTypeEventTracker;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,6 +29,7 @@ import net.minecraft.world.chunk.ChunkGenerating;
 import net.minecraft.world.chunk.ChunkGenerationContext;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.chunk.WrapperProtoChunk;
+import net.minecraft.server.world.ChunkLevelType;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 
@@ -36,6 +39,13 @@ abstract class ChunkGeneratingMixin {
 	private static void onChunkLoad(Chunk chunk, ChunkGenerationContext chunkGenerationContext, AbstractChunkHolder chunkHolder, CallbackInfoReturnable<Chunk> callbackInfoReturnable) {
 		// We fire the event at TAIL since the chunk is guaranteed to be a WorldChunk then.
 		ServerChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(chunkGenerationContext.world(), (WorldChunk) callbackInfoReturnable.getReturnValue());
+
+		// Handles the case where the chunk becomes accessible from being completed unloaded
+		ChunkLevelTypeEventTracker levelTypeTracker = (ChunkLevelTypeEventTracker) chunkHolder;
+		if (levelTypeTracker.fabric_getCurrentEventLevelType() == ChunkLevelType.INACCESSIBLE) { // prevent duplicate events with ChunkHolderMixin
+			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange(chunkGenerationContext.world(), chunk.getPos(), ChunkLevelType.INACCESSIBLE, ChunkLevelType.FULL);
+			levelTypeTracker.fabric_setCurrentEventLevelType(ChunkLevelType.FULL);
+		}
 
 		if (!(chunk instanceof WrapperProtoChunk)) {
 			ServerChunkEvents.CHUNK_GENERATE.invoker().onChunkGenerate(chunkGenerationContext.world(), (WorldChunk) callbackInfoReturnable.getReturnValue());

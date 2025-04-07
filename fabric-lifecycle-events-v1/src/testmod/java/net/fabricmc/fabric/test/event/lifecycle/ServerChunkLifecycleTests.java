@@ -71,26 +71,42 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		final Object2ObjectMap<Identifier, Object2IntMap<ChunkLevelType>> worldsChunkLevelEvents = new Object2ObjectOpenHashMap<>();
 		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<ChunkLevelType>> worldsChunkLevelTypeTracker = new Object2ObjectOpenHashMap<>();
 
+		/*
+		Since this event is frequently called within the server's main thread executor, simply throwing the AssertionError does not actually crash the game.
+		Instead it gets silently ignored. So log the error and call stop() manually.
+		 */
 		ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.register((world, chunkPos, oldLevelType, newLevelType) -> {
-			Identifier worldKey = world.getRegistryKey().getValue();
+			final Identifier worldKey = world.getRegistryKey().getValue();
+
 			if (Thread.currentThread() != world.getServer().getThread()) {
-				throw new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT ON SERVER THREAD: " + oldLevelType + "->" + newLevelType);
+				//AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT ON SERVER THREAD: " + oldLevelType + "->" + newLevelType);
+				//LOGGER.error(error.getMessage(), error);
+				//world.getServer().stop(false);
+				LOGGER.warn("NOT ON SERVER THREAD {} -> {}", oldLevelType, newLevelType);
 			}
 
 			if (oldLevelType == newLevelType) {
-				throw new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " SAME LEVEL TYPE: " + oldLevelType);
+				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " SAME LEVEL TYPE: " + oldLevelType);
+				LOGGER.error(error.getMessage(), error);
+				world.getServer().stop(false);
 			}
 
-			ChunkLevelType trackedPrev = worldsChunkLevelTypeTracker.computeIfAbsent(worldKey, obj -> new Long2ObjectOpenHashMap<>()).computeIfAbsent(chunkPos.toLong(), l -> ChunkLevelType.INACCESSIBLE);
+			ChunkLevelType trackedOld = worldsChunkLevelTypeTracker.computeIfAbsent(worldKey, obj -> new Long2ObjectOpenHashMap<>()).computeIfAbsent(chunkPos.toLong(), l -> ChunkLevelType.INACCESSIBLE);
 
-			if (trackedPrev != oldLevelType) { // check if the oldLevelType == the newLevelType from the previous event for this chunk
-				throw new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " TRACKED: " + trackedPrev + " != EVENT_OLD: " + oldLevelType);
+			if (trackedOld != oldLevelType) { // check if the oldLevelType == the newLevelType from the previous event for this chunk
+				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " " + oldLevelType + "->" + newLevelType + " / TRACKED_OLD: " + trackedOld);
+				LOGGER.error(error.getMessage(), error);
+				world.getServer().stop(false);
 			}
 
 			if (Math.abs(oldLevelType.ordinal() - newLevelType.ordinal()) != 1) { // check if the levelTypes are actually sequential
-				throw new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT SEQUENTIAL: " + oldLevelType + "->" + newLevelType);
+				LOGGER.error("not sequential {} {}", oldLevelType, newLevelType);
+				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT SEQUENTIAL: " + oldLevelType + "->" + newLevelType);
+				LOGGER.error(error.getMessage(), error);
+				world.getServer().stop(false);
 			}
 
+			worldsChunkLevelTypeTracker.get(worldKey).put(chunkPos.toLong(), newLevelType);
 			worldsChunkLevelEvents.computeIfAbsent(worldKey, obj -> new Object2IntOpenHashMap<>()).mergeInt(newLevelType, 1, Integer::sum);
 		});
 
