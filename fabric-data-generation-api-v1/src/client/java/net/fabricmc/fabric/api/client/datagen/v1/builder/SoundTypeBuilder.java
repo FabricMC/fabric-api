@@ -98,7 +98,6 @@ public interface SoundTypeBuilder {
 	SoundTypeBuilder sound(EntryBuilder sound, int count);
 
 	/**
-	 *
 	 * Represents the type of weighted sound entry.
 	 *
 	 * @see net.minecraft.client.sound.Sound.RegistrationType
