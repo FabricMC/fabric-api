@@ -79,10 +79,9 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 			final Identifier worldKey = world.getRegistryKey().getValue();
 
 			if (Thread.currentThread() != world.getServer().getThread()) {
-				//AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT ON SERVER THREAD: " + oldLevelType + "->" + newLevelType);
-				//LOGGER.error(error.getMessage(), error);
-				//world.getServer().stop(false);
-				LOGGER.warn("NOT ON SERVER THREAD {} -> {}", oldLevelType, newLevelType);
+				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT ON SERVER THREAD: " + oldLevelType + "->" + newLevelType);
+				LOGGER.error(error.getMessage(), error);
+				world.getServer().stop(false);
 			}
 
 			if (oldLevelType == newLevelType) {
@@ -100,7 +99,6 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 			}
 
 			if (Math.abs(oldLevelType.ordinal() - newLevelType.ordinal()) != 1) { // check if the levelTypes are actually sequential
-				LOGGER.error("not sequential {} {}", oldLevelType, newLevelType);
 				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT SEQUENTIAL: " + oldLevelType + "->" + newLevelType);
 				LOGGER.error(error.getMessage(), error);
 				world.getServer().stop(false);
