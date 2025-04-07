@@ -26,10 +26,7 @@ import net.minecraft.block.CropBlock;
 import net.minecraft.block.HorizontalConnectingBlock;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.render.model.GeometryBakedModel;
 import net.minecraft.client.render.model.MissingModel;
-import net.minecraft.client.render.model.ModelRotation;
-import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.SimpleBlockStateModel;
 import net.minecraft.client.render.model.json.ModelVariant;
 import net.minecraft.resource.ResourceType;
@@ -40,9 +37,10 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelKey;
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
+import net.fabricmc.fabric.api.client.model.loading.v1.SimpleExtraModel;
 import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -51,7 +49,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 public class ModelTestModClient implements ClientModInitializer {
 	public static final String ID = "fabric-model-loading-api-v1-testmod";
 
-	public static final ModelKey<BlockStateModel> HALF_RED_SAND_MODEL_KEY = ModelKey.create();
+	public static final ExtraModelKey<BlockStateModel> HALF_RED_SAND_MODEL_KEY = ExtraModelKey.create();
 	public static final Identifier HALF_RED_SAND_MODEL_ID = id("half_red_sand");
 	public static final Identifier WHEAT_STAGE0_MODEL_ID = Identifier.ofVanilla("block/wheat_stage0");
 	public static final Identifier WHEAT_STAGE7_MODEL_ID = Identifier.ofVanilla("block/wheat_stage7");
@@ -60,14 +58,7 @@ public class ModelTestModClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ModelLoadingPlugin.register(pluginContext -> {
-			pluginContext.addModel(HALF_RED_SAND_MODEL_KEY, HALF_RED_SAND_MODEL_ID, (model, baker) -> {
-				ModelTextures textures = model.getTextures();
-				return new SimpleBlockStateModel(new GeometryBakedModel(
-						model.bakeGeometry(textures, baker, ModelRotation.X0_Y0),
-						model.getAmbientOcclusion(),
-						model.getParticleTexture(textures, baker)
-				));
-			});
+			pluginContext.addModel(HALF_RED_SAND_MODEL_KEY, SimpleExtraModel.blockStateModel(HALF_RED_SAND_MODEL_ID));
 
 			// Make wheat stages 1->6 use the same model as stage 0. This can be done with resource packs, this is just a test.
 			pluginContext.registerBlockStateResolver(Blocks.WHEAT, context -> {

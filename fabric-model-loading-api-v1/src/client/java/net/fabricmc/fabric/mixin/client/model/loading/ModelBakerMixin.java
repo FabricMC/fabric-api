@@ -45,7 +45,7 @@ import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.AsyncHelper;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelKey;
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.impl.client.model.loading.BakedModelsHooks;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 
@@ -86,7 +86,7 @@ abstract class ModelBakerMixin {
 	private CompletableFuture<ModelBaker.BakedModels> withExtraModels(CompletableFuture<ModelBaker.BakedModels> models, @Local Executor executor, @Local ModelBaker.BakerImpl baker) {
 		if (fabric_eventDispatcher == null) return models;
 
-		CompletableFuture<Map<ModelKey<?>, Object>> extraModels = AsyncHelper.mapValues(fabric_eventDispatcher.getExtraModels(), (id, model) -> model.bake(baker), executor);
+		CompletableFuture<Map<ExtraModelKey<?>, Object>> extraModels = AsyncHelper.mapValues(fabric_eventDispatcher.getExtraModels(), (id, model) -> model.bake(baker), executor);
 		return models.thenCombine(extraModels, (res, extra) -> {
 			((BakedModelsHooks) (Object) res).fabric_setExtraModels(extra);
 			return res;

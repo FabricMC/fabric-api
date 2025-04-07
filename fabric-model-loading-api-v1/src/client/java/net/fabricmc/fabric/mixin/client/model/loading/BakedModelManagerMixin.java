@@ -46,8 +46,8 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.FabricBakedModelManager;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
 import net.fabricmc.fabric.impl.client.model.loading.BakedModelsHooks;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
@@ -61,11 +61,11 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 
 	@Unique
 	@Nullable
-	private Map<ModelKey<?>, ?> extraModels;
+	private Map<ExtraModelKey<?>, ?> extraModels;
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> @Nullable T getModel(ModelKey<T> key) {
+	public <T> @Nullable T getModel(ExtraModelKey<T> key) {
 		return extraModels == null ? null : (T) extraModels.get(key);
 	}
 
@@ -123,7 +123,8 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 			@Local ReferencedModelsCollector collector
 	) {
 		// We know eventDispatcherFuture is available, as it is required by the item and block models (hookModels).
-		ModelLoadingEventDispatcher.CURRENT.get().getExtraModels().values().forEach(collector::resolve);
+		ModelLoadingEventDispatcher eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
+		if (eventDispatcher != null) eventDispatcher.getExtraModels().values().forEach(collector::resolve);
 	}
 
 	@Inject(method = "upload", at = @At(value = "INVOKE_STRING", target = "net/minecraft/util/profiler/Profiler.swap(Ljava/lang/String;)V", args = "ldc=cache"))

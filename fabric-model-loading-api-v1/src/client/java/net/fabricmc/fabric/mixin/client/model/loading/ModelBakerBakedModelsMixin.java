@@ -24,23 +24,23 @@ import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.client.render.model.ModelBaker;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelKey;
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.impl.client.model.loading.BakedModelsHooks;
 
 @Mixin(ModelBaker.BakedModels.class)
 abstract class ModelBakerBakedModelsMixin implements BakedModelsHooks {
 	@Unique
 	@Nullable
-	private Map<ModelKey<?>, ?> extraModels;
+	private Map<ExtraModelKey<?>, ?> extraModels;
 
 	@Override
 	@Nullable
-	public Map<ModelKey<?>, ?> fabric_getExtraModels() {
+	public Map<ExtraModelKey<?>, ?> fabric_getExtraModels() {
 		return extraModels;
 	}
 
 	@Override
-	public void fabric_setExtraModels(@Nullable Map<ModelKey<?>, ?> extraModels) {
+	public void fabric_setExtraModels(@Nullable Map<ExtraModelKey<?>, ?> extraModels) {
 		this.extraModels = extraModels;
 	}
 }

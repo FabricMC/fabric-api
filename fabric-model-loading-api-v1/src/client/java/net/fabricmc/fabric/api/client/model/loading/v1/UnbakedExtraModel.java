@@ -28,7 +28,7 @@ import net.minecraft.client.render.model.ResolvableModel;
  * a single baked model.
  *
  * @param <T> The type of the baked model.
- * @see ModelLoadingPlugin.Context#addModel(ModelKey, UnbakedExtraModel)
+ * @see ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)
  */
 public interface UnbakedExtraModel<T> extends ResolvableModel {
 	/**

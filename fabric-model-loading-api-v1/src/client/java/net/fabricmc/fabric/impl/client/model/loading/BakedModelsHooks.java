@@ -20,11 +20,11 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelKey;
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 
 public interface BakedModelsHooks {
 	@Nullable
-	Map<ModelKey<?>, ?> fabric_getExtraModels();
+	Map<ExtraModelKey<?>, ?> fabric_getExtraModels();
 
-	void fabric_setExtraModels(@Nullable Map<ModelKey<?>, ?> extraModels);
+	void fabric_setExtraModels(@Nullable Map<ExtraModelKey<?>, ?> extraModels);
 }

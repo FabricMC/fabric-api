@@ -16,12 +16,9 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
-import java.util.function.BiFunction;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.util.Identifier;
 
 /**
  * Fabric-provided helper methods for {@link BakedModelManager}.
@@ -33,7 +30,7 @@ public interface FabricBakedModelManager {
 	 * Get an extra model from the model manager.
 	 *
 	 * <p>This can be used to retrieve models loaded using
-	 * {@link ModelLoadingPlugin.Context#addModel(ModelKey, UnbakedExtraModel)}.
+	 * {@link ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)}.
 	 *
 	 * <p><b>This method, as well as its vanilla counterpart, should only be used after the
 	 * {@link BakedModelManager} has completed reloading.</b> Otherwise, the result will be
@@ -41,10 +38,9 @@ public interface FabricBakedModelManager {
 	 *
 	 * @param key the key of the model
 	 * @return the model, or {@code null} if it cannot be found.
-	 * @see ModelLoadingPlugin.Context#addModel(ModelKey, UnbakedExtraModel)
-	 * @see ModelLoadingPlugin.Context#addModel(ModelKey, Identifier, BiFunction)
+	 * @see ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)
 	 */
-	default <T> @Nullable T getModel(ModelKey<T> key) {
+	default <T> @Nullable T getModel(ExtraModelKey<T> key) {
 		throw new UnsupportedOperationException("Implemented via mixin.");
 	}
 }

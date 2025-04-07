@@ -16,27 +16,21 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
-import java.util.function.BiFunction;
-
 import org.jetbrains.annotations.Contract;
-
-import net.minecraft.util.Identifier;
 
 /**
  * A unique key representing an extra model, not tied to a blockstate or item model.
  *
  * <p>Extra models can be registered with a {@link ModelLoadingPlugin} (see
- * {@link ModelLoadingPlugin.Context#addModel(ModelKey, Identifier, BiFunction)} and
- * {@link ModelLoadingPlugin.Context#addModel(ModelKey, UnbakedExtraModel)}). Once baking is complete, they may then be
- * queried from the model manager using {@link FabricBakedModelManager#getModel(ModelKey)}.
+ * {@link ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)}). Once baking is complete, they may
+ * then be queried from the model manager using {@link FabricBakedModelManager#getModel(ExtraModelKey)}.
  *
  * @param <T> The type of the baked model.
- * @see FabricBakedModelManager#getModel(ModelKey)
- * @see ModelLoadingPlugin.Context#addModel(ModelKey, Identifier, BiFunction)
- * @see ModelLoadingPlugin.Context#addModel(ModelKey, UnbakedExtraModel)
+ * @see FabricBakedModelManager#getModel(ExtraModelKey)
+ * @see ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)
  */
-public final class ModelKey<T> {
-	private ModelKey() {
+public final class ExtraModelKey<T> {
+	private ExtraModelKey() {
 	}
 
 	/**
@@ -46,7 +40,7 @@ public final class ModelKey<T> {
 	 * @return The newly created model key.
 	 */
 	@Contract("-> new")
-	public static <T> ModelKey<T> create() {
-		return new ModelKey<>();
+	public static <T> ExtraModelKey<T> create() {
+		return new ExtraModelKey<>();
 	}
 }

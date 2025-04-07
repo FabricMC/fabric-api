@@ -40,7 +40,7 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelKey;
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedExtraModel;
@@ -67,7 +67,7 @@ public class ModelLoadingEventDispatcher {
 		}
 	}
 
-	public Map<ModelKey<?>, UnbakedExtraModel<?>> getExtraModels() {
+	public Map<ExtraModelKey<?>, UnbakedExtraModel<?>> getExtraModels() {
 		return pluginContext.extraModels;
 	}
 
