@@ -21,15 +21,19 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.particle.BlockDustParticle;
 import net.minecraft.client.particle.SpriteBillboardParticle;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.client.particle.v1.ParticleRenderEvents;
+import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectExtension;
 
 // Implements ParticleRenderEvents.ALLOW_BLOCK_DUST_TINT
 @Mixin(BlockDustParticle.class)
@@ -59,5 +63,16 @@ abstract class BlockDustParticleMixin extends SpriteBillboardParticle {
 		}
 
 		return state;
+	}
+
+	@Redirect(method = "create", at = @At(value = "NEW", target = "(Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/block/BlockState;)Lnet/minecraft/client/particle/BlockDustParticle;"))
+	private static BlockDustParticle constructBlockDustParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state, BlockStateParticleEffect parameters, ClientWorld world1, double x1, double y1, double z1, double velocityX1, double velocityY1, double velocityZ1) {
+		BlockPos blockPos = ((BlockStateParticleEffectExtension) parameters).getBlockPos();
+
+		if (blockPos != null) {
+			return new BlockDustParticle(world, x, y, z, velocityX, velocityY, velocityZ, state, blockPos);
+		} else {
+			return new BlockDustParticle(world, x, y, z, velocityX, velocityY, velocityZ, state);
+		}
 	}
 }
