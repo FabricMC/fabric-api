@@ -16,26 +16,22 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
-import static net.minecraft.server.world.ChunkLevelType.INACCESSIBLE;
 import static net.minecraft.server.world.ChunkLevelType.BLOCK_TICKING;
-import static net.minecraft.server.world.ChunkLevelType.FULL;
 import static net.minecraft.server.world.ChunkLevelType.ENTITY_TICKING;
+import static net.minecraft.server.world.ChunkLevelType.FULL;
+import static net.minecraft.server.world.ChunkLevelType.INACCESSIBLE;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import net.fabricmc.fabric.impl.event.lifecycle.ChunkLevelTypeEventTracker;
-
-import net.minecraft.world.chunk.ChunkStatus;
-
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.world.ChunkHolder;
@@ -43,13 +39,16 @@ import net.minecraft.server.world.ChunkLevelType;
 import net.minecraft.server.world.ChunkLevels;
 import net.minecraft.server.world.OptionalChunk;
 import net.minecraft.server.world.ServerChunkLoadingManager;
+import net.minecraft.server.world.ServerEntityManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.chunk.AbstractChunkHolder;
+import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.impl.event.lifecycle.ChunkLevelTypeEventTracker;
 
 @Mixin(ChunkHolder.class)
 public abstract class ChunkHolderMixin extends AbstractChunkHolder implements ChunkLevelTypeEventTracker {
@@ -64,13 +63,7 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 	private volatile CompletableFuture<OptionalChunk<WorldChunk>> tickingFuture;
 
 	@Shadow
-	private volatile CompletableFuture<OptionalChunk<WorldChunk>> entityTickingFuture;
-
-	@Shadow
 	protected abstract void combineSavingFuture(CompletableFuture<?> savingFuture);
-
-	@Shadow
-	private CompletableFuture<?> levelIncreaseFuture;
 
 	@Unique
 	private static final ChunkLevelType[] CHUNK_LEVEL_TYPES = ChunkLevelType.values(); // values() clones the internal array each call, so cache the return
@@ -97,7 +90,7 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 	}
 
 	/**
-	 * Handles FULL -> BLOCK_TICKING
+	 * Handles FULL -> BLOCK_TICKING.
 	 */
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ChunkHolder;combineSavingFuture(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 1))
 	private void updateFutures$fullToBlockTicking(ServerChunkLoadingManager chunkLoadingManager, Executor executor, CallbackInfo ci) {
@@ -110,13 +103,15 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 	}
 
 	/**
-	 * Handles BLOCK_TICKING -> ENTITY_TICKING
+	 * Handles BLOCK_TICKING -> ENTITY_TICKING. Fire after entity tracking statuses have been updated.
+	 *
+	 * @param original The call to onChunkStatusChange(), which calls {@link ServerEntityManager#updateTrackingStatus(ChunkPos, ChunkLevelType)}.
 	 */
 	@ModifyExpressionValue(method = "increaseLevel", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;thenRunAsync(Ljava/lang/Runnable;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
 	private CompletableFuture<Void> increaseLevel$$blockTickingToEntityTicking(CompletableFuture<Void> original, @Local(argsOnly = true) ChunkLevelType target) {
 		if (target != ENTITY_TICKING) return original;
 
-		this.fullToBlockTickingEvent.thenCombine(original, (void0,void1) -> {
+		this.fullToBlockTickingEvent.thenCombine(original, (void0, void1) -> {
 			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, BLOCK_TICKING, ENTITY_TICKING);
 			this.currentEventLevelType = ENTITY_TICKING;
 			return null;
@@ -136,7 +131,7 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 		for (int i = previous.ordinal(); i > target.ordinal(); i--) {
 			ChunkLevelType oldLevelType = CHUNK_LEVEL_TYPES[i];
 			ChunkLevelType newLevelType = CHUNK_LEVEL_TYPES[i-1];
-			if (this.currentEventLevelType.isAfter(oldLevelType)) { // if a promotion event got cancelled, then do _not_ fire an equivalent demotion event
+			if (this.currentEventLevelType.isAfter(oldLevelType)) { // if a promotion event got cancelled or never finished, then do _not_ fire an equivalent demotion event
 				ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange(serverWorld, this.pos, oldLevelType, newLevelType);
 				this.currentEventLevelType = newLevelType;
 			}

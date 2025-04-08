@@ -84,8 +84,8 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 				world.getServer().stop(false);
 			}
 
-			if (oldLevelType == newLevelType) {
-				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " SAME LEVEL TYPE: " + oldLevelType);
+			if (Math.abs(oldLevelType.ordinal() - newLevelType.ordinal()) != 1) { // check if the levelTypes are actually sequential, also ensures levelTypes are not the same
+				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT SEQUENTIAL: " + oldLevelType + "->" + newLevelType);
 				LOGGER.error(error.getMessage(), error);
 				world.getServer().stop(false);
 			}
@@ -94,12 +94,6 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 
 			if (trackedOld != oldLevelType) { // check if the oldLevelType == the newLevelType from the previous event for this chunk
 				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " " + oldLevelType + "->" + newLevelType + " / TRACKED_OLD: " + trackedOld);
-				LOGGER.error(error.getMessage(), error);
-				world.getServer().stop(false);
-			}
-
-			if (Math.abs(oldLevelType.ordinal() - newLevelType.ordinal()) != 1) { // check if the levelTypes are actually sequential
-				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT SEQUENTIAL: " + oldLevelType + "->" + newLevelType);
 				LOGGER.error(error.getMessage(), error);
 				world.getServer().stop(false);
 			}

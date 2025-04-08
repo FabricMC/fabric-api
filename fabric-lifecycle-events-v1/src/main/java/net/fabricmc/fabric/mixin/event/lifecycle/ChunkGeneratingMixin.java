@@ -16,22 +16,21 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
-import net.fabricmc.fabric.impl.event.lifecycle.ChunkLevelTypeEventTracker;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.server.world.ChunkLevelType;
 import net.minecraft.world.chunk.AbstractChunkHolder;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkGenerating;
 import net.minecraft.world.chunk.ChunkGenerationContext;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.chunk.WrapperProtoChunk;
-import net.minecraft.server.world.ChunkLevelType;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.impl.event.lifecycle.ChunkLevelTypeEventTracker;
 
 @Mixin(ChunkGenerating.class)
 abstract class ChunkGeneratingMixin {
