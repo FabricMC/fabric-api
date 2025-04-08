@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectExtension;
 abstract class BrushItemMixin {
 	@ModifyExpressionValue(method = "addDustParticles", at = @At(value = "NEW", target = "(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)Lnet/minecraft/particle/BlockStateParticleEffect;"))
 	private BlockStateParticleEffect modifyBlockStateParticleEffect(BlockStateParticleEffect original, World world, BlockHitResult hitResult, BlockState state, Vec3d userRotation, Arm arm) {
-		((BlockStateParticleEffectExtension) original).setBlockPos(hitResult.getBlockPos());
+		((BlockStateParticleEffectExtension) original).fabric_setBlockPos(hitResult.getBlockPos());
 		return original;
 	}
 }

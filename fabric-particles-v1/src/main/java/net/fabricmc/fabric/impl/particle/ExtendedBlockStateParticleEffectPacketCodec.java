@@ -16,19 +16,13 @@
 
 package net.fabricmc.fabric.impl.particle;
 
-import java.util.Optional;
-
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.util.math.BlockPos;
 
 public class ExtendedBlockStateParticleEffectPacketCodec implements PacketCodec<RegistryByteBuf, BlockStateParticleEffect> {
 	private static final int PACKET_MARKER = -1;
-	private static final PacketCodec<ByteBuf, Optional<BlockPos>> OPTIONAL_BLOCK_POS_PACKET_CODEC = PacketCodecs.optional(BlockPos.PACKET_CODEC);
 	private final PacketCodec<? super RegistryByteBuf, BlockStateParticleEffect> fallback;
 
 	public ExtendedBlockStateParticleEffectPacketCodec(PacketCodec<? super RegistryByteBuf, BlockStateParticleEffect> fallback) {
@@ -46,25 +40,22 @@ public class ExtendedBlockStateParticleEffectPacketCodec implements PacketCodec<
 		}
 
 		BlockStateParticleEffect value = fallback.decode(buf);
-		Optional<BlockPos> optionalPos = OPTIONAL_BLOCK_POS_PACKET_CODEC.decode(buf);
-
-		if (optionalPos.isPresent()) {
-			((BlockStateParticleEffectExtension) value).setBlockPos(optionalPos.get());
-		}
-
+		BlockPos pos = BlockPos.PACKET_CODEC.decode(buf);
+		((BlockStateParticleEffectExtension) value).fabric_setBlockPos(pos);
 		return value;
 	}
 
 	@Override
 	public void encode(RegistryByteBuf buf, BlockStateParticleEffect value) {
-		if (ExtendedBlockStateParticleEffectSync.shouldEncodeFallback(buf)) {
+		BlockPos pos = value.getBlockPos();
+
+		if (pos == null || ExtendedBlockStateParticleEffectSync.shouldEncodeFallback(buf)) {
 			fallback.encode(buf, value);
 			return;
 		}
 
 		buf.writeVarInt(PACKET_MARKER);
 		fallback.encode(buf, value);
-		BlockPos pos = ((BlockStateParticleEffectExtension) value).getBlockPos();
-		OPTIONAL_BLOCK_POS_PACKET_CODEC.encode(buf, Optional.ofNullable(pos));
+		BlockPos.PACKET_CODEC.encode(buf, pos);
 	}
 }

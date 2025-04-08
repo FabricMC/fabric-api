@@ -36,7 +36,10 @@
     }
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_2388": ["net/fabricmc/fabric/api/particle/v1/FabricBlockStateParticleEffect"]
+    }
   },
   "accessWidener": "fabric-particles-v1.accesswidener"
 }

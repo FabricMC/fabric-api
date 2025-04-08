@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectExtension;
 abstract class LivingEntityMixin {
 	@ModifyExpressionValue(method = "fall", at = @At(value = "NEW", target = "(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)Lnet/minecraft/particle/BlockStateParticleEffect;"))
 	private BlockStateParticleEffect modifyBlockStateParticleEffect(BlockStateParticleEffect original, double heightDifference, boolean onGround, BlockState state, BlockPos landedPosition) {
-		((BlockStateParticleEffectExtension) original).setBlockPos(landedPosition);
+		((BlockStateParticleEffectExtension) original).fabric_setBlockPos(landedPosition);
 		return original;
 	}
 }

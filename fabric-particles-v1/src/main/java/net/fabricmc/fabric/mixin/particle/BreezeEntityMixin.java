@@ -38,7 +38,7 @@ abstract class BreezeEntityMixin extends HostileEntity {
 	@ModifyExpressionValue(method = { "addLongJumpingParticles", "addBlockParticles" }, at = @At(value = "NEW", target = "(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)Lnet/minecraft/particle/BlockStateParticleEffect;"))
 	private BlockStateParticleEffect modifyBlockStateParticleEffect(BlockStateParticleEffect original) {
 		BlockPos blockPos = !getBlockStateAtPos().isAir() ? getBlockPos() : getSteppingPos();
-		((BlockStateParticleEffectExtension) original).setBlockPos(blockPos);
+		((BlockStateParticleEffectExtension) original).fabric_setBlockPos(blockPos);
 		return original;
 	}
 }

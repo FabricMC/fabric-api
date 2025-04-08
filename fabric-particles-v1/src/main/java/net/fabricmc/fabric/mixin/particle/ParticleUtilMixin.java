@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectExtension;
 abstract class ParticleUtilMixin {
 	@ModifyExpressionValue(method = "spawnSmashAttackParticles", at = @At(value = "NEW", target = "(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)Lnet/minecraft/particle/BlockStateParticleEffect;"))
 	private static BlockStateParticleEffect modifyBlockStateParticleEffect(BlockStateParticleEffect original, WorldAccess world, BlockPos pos, int count) {
-		((BlockStateParticleEffectExtension) original).setBlockPos(pos);
+		((BlockStateParticleEffectExtension) original).fabric_setBlockPos(pos);
 		return original;
 	}
 }

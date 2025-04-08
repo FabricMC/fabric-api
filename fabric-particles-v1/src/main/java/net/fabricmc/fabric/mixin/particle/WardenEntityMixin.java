@@ -37,7 +37,7 @@ abstract class WardenEntityMixin extends HostileEntity implements Vibrations {
 
 	@ModifyExpressionValue(method = "addDigParticles", at = @At(value = "NEW", target = "(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)Lnet/minecraft/particle/BlockStateParticleEffect;"))
 	private BlockStateParticleEffect modifyBlockStateParticleEffect(BlockStateParticleEffect original) {
-		((BlockStateParticleEffectExtension) original).setBlockPos(getSteppingPos());
+		((BlockStateParticleEffectExtension) original).fabric_setBlockPos(getSteppingPos());
 		return original;
 	}
 }
