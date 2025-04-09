@@ -16,79 +16,78 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
+import net.minecraft.client.render.model.BakedGeometry;
 import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.client.render.model.Geometry;
+import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.SimpleModel;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
 
-public class FrameUnbakedBlockStateModel implements BlockStateModel.Unbaked, SimpleModel {
-	private static final SpriteIdentifier OBSIDIAN_SPRITE_ID = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.ofVanilla("block/obsidian"));
-
+public record FrameGeometry(boolean emissive) implements Geometry {
 	@Override
-	public void resolve(Resolver resolver) {
-	}
-
-	/*
-	 * Bake the model.
-	 * In this case we can prebake the frame into a mesh, but will render the contained block when we draw the quads.
-	 */
-	@Override
-	public BlockStateModel bake(Baker baker) {
-		Sprite obsidianSprite = baker.getSpriteGetter().get(OBSIDIAN_SPRITE_ID, this);
-
+	public BakedGeometry bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, SimpleModel model) {
 		MutableMesh builder = Renderer.get().mutableMesh();
 		QuadEmitter emitter = builder.emitter();
+
+		MaterialFinder finder = Renderer.get().materialFinder();
+		RenderMaterial material = finder.emissive(emissive).find();
+
+		Sprite sprite = baker.getSpriteGetter().get(textures.get("frame"), model);
 
 		for (Direction direction : Direction.values()) {
 			// Draw outer frame
 			emitter.square(direction, 0.0F, 0.9F, 0.9F, 1.0F, 0.0F)
-					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
+					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
+					.material(material)
 					.emit();
 
 			emitter.square(direction, 0.0F, 0.0F, 0.1F, 0.9F, 0.0F)
-					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
+					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
+					.material(material)
 					.emit();
 
 			emitter.square(direction, 0.9F, 0.1F, 1.0F, 1.0F, 0.0F)
-					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
+					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
+					.material(material)
 					.emit();
 
 			emitter.square(direction, 0.1F, 0.0F, 1.0F, 0.1F, 0.0F)
-					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
+					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
+					.material(material)
 					.emit();
 
 			// Draw inner frame - inset by 0.9 so the frame looks like an actual mesh
 			emitter.square(direction, 0.0F, 0.9F, 0.9F, 1.0F, 0.9F)
-					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
+					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
+					.material(material)
 					.emit();
 
 			emitter.square(direction, 0.0F, 0.0F, 0.1F, 0.9F, 0.9F)
-					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
+					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
+					.material(material)
 					.emit();
 
 			emitter.square(direction, 0.9F, 0.1F, 1.0F, 1.0F, 0.9F)
-					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
+					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
+					.material(material)
 					.emit();
 
 			emitter.square(direction, 0.1F, 0.0F, 1.0F, 0.1F, 0.9F)
-					.spriteBake(obsidianSprite, MutableQuadView.BAKE_LOCK_UV)
+					.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV)
+					.material(material)
 					.emit();
 		}
 
-		return new FrameBlockStateModel(builder.immutableCopy(), obsidianSprite);
-	}
-
-	@Override
-	public String name() {
-		return getClass().getName();
+		return new MeshBakedGeometry(builder.immutableCopy());
 	}
 }

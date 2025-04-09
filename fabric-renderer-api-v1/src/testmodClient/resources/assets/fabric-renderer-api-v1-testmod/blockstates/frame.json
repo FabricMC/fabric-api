@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "": {
+      "fabric:type": "fabric-renderer-api-v1-testmod:frame",
+      "frame_model": {
+        "fabric:type": "fabric-renderer-api-v1-testmod:biome_dependent",
+        "regular_model": { "model": "fabric-renderer-api-v1-testmod:frame" },
+        "biome_model": { "model": "fabric-renderer-api-v1-testmod:magma_frame" },
+        "biome_tag": "is_nether"
+      }
+    }
+  }
+}

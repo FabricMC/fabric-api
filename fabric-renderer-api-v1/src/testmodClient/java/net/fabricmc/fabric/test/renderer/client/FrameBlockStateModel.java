@@ -19,11 +19,14 @@ package net.fabricmc.fabric.test.renderer.client;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.BlockModelPart;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.texture.Sprite;
@@ -33,23 +36,21 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.blockview.v2.FabricBlockView;
+import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 
 public class FrameBlockStateModel implements BlockStateModel {
-	private final Mesh frameMesh;
-	private final Sprite frameSprite;
+	private final BlockStateModel frameModel;
 	private final RenderMaterial translucentMaterial;
 	private final RenderMaterial translucentEmissiveMaterial;
 
-	public FrameBlockStateModel(Mesh frameMesh, Sprite frameSprite) {
-		this.frameMesh = frameMesh;
-		this.frameSprite = frameSprite;
+	public FrameBlockStateModel(BlockStateModel frameModel) {
+		this.frameModel = frameModel;
 
 		MaterialFinder finder = Renderer.get().materialFinder();
 		this.translucentMaterial = finder.blendMode(BlendMode.TRANSLUCENT).find();
@@ -59,8 +60,8 @@ public class FrameBlockStateModel implements BlockStateModel {
 
 	@Override
 	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
-		// Emit our frame mesh
-		frameMesh.outputTo(emitter);
+		// Emit our frame model
+		frameModel.emitQuads(emitter, blockView, pos, state, random, cullTest);
 
 		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
 		if (!(((FabricBlockView) blockView).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
@@ -142,18 +143,40 @@ public class FrameBlockStateModel implements BlockStateModel {
 
 	@Override
 	public Sprite particleSprite() {
-		return frameSprite;
+		return frameModel.particleSprite();
 	}
 
 	@Override
 	public Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
 		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
 		if (!(((FabricBlockView) blockView).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
-			return particleSprite(); // No inner block to render, or data of wrong type
+			return frameModel.particleSprite(blockView, pos, state); // No inner block to render, or data of wrong type
 		}
 
 		BlockState innerState = mimickedBlock.getDefaultState();
 		BlockStateModel innerModel = MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState);
 		return innerModel.particleSprite(blockView, pos, state);
+	}
+
+	public record Unbaked(BlockStateModel.Unbaked frameModel) implements CustomUnbakedBlockStateModel {
+		public static final MapCodec<Unbaked> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+				BlockStateModel.Unbaked.CODEC.fieldOf("frame_model").forGetter(Unbaked::frameModel)
+		).apply(instance, Unbaked::new));
+
+		@Override
+		public MapCodec<? extends CustomUnbakedBlockStateModel> codec() {
+			return CODEC;
+		}
+
+		@Override
+		public void resolve(Resolver resolver) {
+			frameModel.resolve(resolver);
+		}
+
+		@Override
+		public BlockStateModel bake(Baker baker) {
+			BlockStateModel bakedFrameModel = frameModel.bake(baker);
+			return new FrameBlockStateModel(bakedFrameModel);
+		}
 	}
 }

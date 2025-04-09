@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "vanilla_shade_mode=false": { "model": "fabric-renderer-api-v1-testmod:octagonal_column_enhanced" },
+    "vanilla_shade_mode=true": { "model": "fabric-renderer-api-v1-testmod:octagonal_column_vanilla" }
+  }
+}

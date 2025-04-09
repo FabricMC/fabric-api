@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "": {
+      "fabric:type": "fabric-renderer-api-v1-testmod:biome_dependent",
+      "regular_model": { "model": "block/stone" },
+      "biome_model": { "model": "block/gold_block" },
+      "biome_tag": "is_river"
+    }
+  }
+}

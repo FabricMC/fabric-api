@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "fabric:type": "fabric-renderer-api-v1-testmod:pillar"
+    }
+  }
+}

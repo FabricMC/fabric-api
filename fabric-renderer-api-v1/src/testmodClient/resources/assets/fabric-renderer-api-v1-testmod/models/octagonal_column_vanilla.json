@@ -1,0 +1,9 @@
+{
+  "fabric:type": "fabric-renderer-api-v1-testmod:builtin_mesh",
+  "parent": "block/block",
+  "textures": {
+    "column": "block/white_concrete",
+    "particle": "#column"
+  },
+  "mesh": "octagonal_column_vanilla"
+}
