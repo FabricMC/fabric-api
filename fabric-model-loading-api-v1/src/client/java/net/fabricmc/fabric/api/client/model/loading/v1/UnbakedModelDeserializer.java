@@ -34,7 +34,9 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.impl.client.model.loading.UnbakedModelDeserializerRegistry;
 
 /**
- * Allows creating custom unbaked models by overriding the parsing of JSON model files.
+ * Allows creating custom unbaked models by overriding the parsing of JSON model files. <b>It is not necessary to
+ * implement this interface when using a custom subclass of {@link UnbakedModel} at runtime</b>, e.g. for
+ * {@link ModelModifier}.
  *
  * <p>The format for custom unbaked models is as follows:
  * <pre>{@code
