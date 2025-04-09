@@ -24,8 +24,6 @@ import static net.minecraft.server.world.ChunkLevelType.INACCESSIBLE;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,7 +37,6 @@ import net.minecraft.server.world.ChunkLevelType;
 import net.minecraft.server.world.ChunkLevels;
 import net.minecraft.server.world.OptionalChunk;
 import net.minecraft.server.world.ServerChunkLoadingManager;
-import net.minecraft.server.world.ServerEntityManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.HeightLimitView;
@@ -103,21 +100,14 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 	}
 
 	/**
-	 * Handles BLOCK_TICKING -> ENTITY_TICKING. Fire after entity tracking statuses have been updated, cause that's what makes entities actually start ticking.
-	 *
-	 * @param original The call to onChunkStatusChange(), which calls {@link ServerEntityManager#updateTrackingStatus(ChunkPos, ChunkLevelType)}.
+	 * Handles FULL -> BLOCK_TICKING.
 	 */
-	@ModifyExpressionValue(method = "increaseLevel", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;thenRunAsync(Ljava/lang/Runnable;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
-	private CompletableFuture<Void> increaseLevel$$blockTickingToEntityTicking(CompletableFuture<Void> original, @Local(argsOnly = true) ChunkLevelType target) {
-		if (target != ENTITY_TICKING) return original;
-
-		this.fullToBlockTickingEvent.thenCombine(original, (void0, void1) -> {
+	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ChunkHolder;combineSavingFuture(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 2))
+	private void updateFutures$blockTickingToEntityTicking(ServerChunkLoadingManager chunkLoadingManager, Executor executor, CallbackInfo ci) {
+		this.fullToBlockTickingEvent.thenAccept(optionalChunk -> {
 			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, BLOCK_TICKING, ENTITY_TICKING);
 			this.currentEventLevelType = ENTITY_TICKING;
-			return null;
 		});
-
-		return original;
 	}
 
 	/**

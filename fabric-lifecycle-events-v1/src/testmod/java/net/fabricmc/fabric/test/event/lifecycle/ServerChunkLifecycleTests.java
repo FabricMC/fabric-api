@@ -29,10 +29,14 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+
 
 public final class ServerChunkLifecycleTests implements ModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
+
+	private record ChunkLevelTypeEvent(ChunkLevelType oldLevelType, ChunkLevelType newLevelType) {}
 
 	@Override
 	public void onInitialize() {
@@ -69,7 +73,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 	 */
 	private static void setupChunkLevelTypeChangeTest() {
 		final Object2ObjectMap<Identifier, Object2IntMap<ChunkLevelType>> worldsChunkLevelEvents = new Object2ObjectOpenHashMap<>();
-		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<ChunkLevelType>> worldsChunkLevelTypeTracker = new Object2ObjectOpenHashMap<>();
+		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<ChunkLevelTypeEvent>> worldsChunkLevelTypeTracker = new Object2ObjectOpenHashMap<>();
 
 		/*
 		Since this event is frequently called within the server's main thread executor, simply throwing the AssertionError does not actually crash the game.
@@ -90,15 +94,15 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 				world.getServer().stop(false);
 			}
 
-			ChunkLevelType trackedOld = worldsChunkLevelTypeTracker.computeIfAbsent(worldKey, obj -> new Long2ObjectOpenHashMap<>()).computeIfAbsent(chunkPos.toLong(), l -> ChunkLevelType.INACCESSIBLE);
+			ChunkLevelTypeEvent prevEvent = worldsChunkLevelTypeTracker.computeIfAbsent(worldKey, obj -> new Long2ObjectOpenHashMap<>()).computeIfAbsent(chunkPos.toLong(), l -> new ChunkLevelTypeEvent(ChunkLevelType.INACCESSIBLE, ChunkLevelType.INACCESSIBLE));
 
-			if (trackedOld != oldLevelType) { // check if newLevelType from the previous event == oldLevelType for this current event. Catches any out-of-sync firing issues.
-				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " " + oldLevelType + "->" + newLevelType + " / TRACKED_OLD: " + trackedOld);
+			if (prevEvent.newLevelType() != oldLevelType) { // check if newLevelType from the previous event == oldLevelType for this current event. Catches any out-of-sync firing issues.
+				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " PREVIOUS_EVENT: " + prevEvent.oldLevelType() + "->" + prevEvent.newLevelType() + " / CURRENT_EVENT: " + oldLevelType + "->" + newLevelType);
 				LOGGER.error(error.getMessage(), error);
 				world.getServer().stop(false);
 			}
 
-			worldsChunkLevelTypeTracker.get(worldKey).put(chunkPos.toLong(), newLevelType);
+			worldsChunkLevelTypeTracker.get(worldKey).put(chunkPos.toLong(), new ChunkLevelTypeEvent(oldLevelType, newLevelType));
 			worldsChunkLevelEvents.computeIfAbsent(worldKey, obj -> new Object2IntOpenHashMap<>()).mergeInt(newLevelType, 1, Integer::sum);
 		});
 
@@ -120,6 +124,12 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 				LOGGER.info(sb.toString());
 				levelTypes.clear();
 			}
+		});
+
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			// clear everything otherwise it WILL crash when you open another world
+			worldsChunkLevelEvents.clear();
+			worldsChunkLevelTypeTracker.clear();
 		});
 	}
 }
