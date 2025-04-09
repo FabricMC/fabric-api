@@ -32,11 +32,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
-
 public final class ServerChunkLifecycleTests implements ModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
-
-	private record ChunkLevelTypeEvent(ChunkLevelType oldLevelType, ChunkLevelType newLevelType) {}
+	private record ChunkLevelTypeEvent(ChunkLevelType oldLevelType, ChunkLevelType newLevelType) { }
 
 	@Override
 	public void onInitialize() {
