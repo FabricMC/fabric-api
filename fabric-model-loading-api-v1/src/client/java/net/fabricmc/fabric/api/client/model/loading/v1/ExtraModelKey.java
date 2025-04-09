@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
+import java.util.function.Supplier;
+
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -30,7 +32,10 @@ import org.jetbrains.annotations.Contract;
  * @see ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)
  */
 public final class ExtraModelKey<T> {
-	private ExtraModelKey() {
+	private final Supplier<String> name;
+
+	private ExtraModelKey(Supplier<String> debugName) {
+		this.name = debugName;
 	}
 
 	/**
@@ -41,6 +46,23 @@ public final class ExtraModelKey<T> {
 	 */
 	@Contract("-> new")
 	public static <T> ExtraModelKey<T> create() {
-		return new ExtraModelKey<>();
+		return new ExtraModelKey<>(() -> "unnamed");
+	}
+
+	/**
+	 * Create a new unique model key.
+	 *
+	 * @param name The name of this model key, shown in error messages.
+	 * @param <T>  The type of the baked model.
+	 * @return The newly created model key.
+	 */
+	@Contract("_ -> new")
+	public static <T> ExtraModelKey<T> create(Supplier<String> name) {
+		return new ExtraModelKey<>(name);
+	}
+
+	@Override
+	public String toString() {
+		return "ExtraModelKey(" + name.get() + ")";
 	}
 }

@@ -86,7 +86,14 @@ abstract class ModelBakerMixin {
 	private CompletableFuture<ModelBaker.BakedModels> withExtraModels(CompletableFuture<ModelBaker.BakedModels> models, @Local Executor executor, @Local ModelBaker.BakerImpl baker) {
 		if (fabric_eventDispatcher == null) return models;
 
-		CompletableFuture<Map<ExtraModelKey<?>, Object>> extraModels = AsyncHelper.mapValues(fabric_eventDispatcher.getExtraModels(), (id, model) -> model.bake(baker), executor);
+		CompletableFuture<Map<ExtraModelKey<?>, Object>> extraModels = AsyncHelper.mapValues(fabric_eventDispatcher.getExtraModels(), (key, model) -> {
+			try {
+				return model.bake(baker);
+			} catch (Exception e) {
+				LOGGER.warn("Unable to bake extra model: '{}'", key, e);
+				return null;
+			}
+		}, executor);
 		return models.thenCombine(extraModels, (res, extra) -> {
 			((BakedModelsHooks) (Object) res).fabric_setExtraModels(extra);
 			return res;
