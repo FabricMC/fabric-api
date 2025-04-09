@@ -327,6 +327,8 @@ allprojects {
 		source(sourceSets.main.output)
 		source(sourceSets.client.output)
 		source(sourceSets.testmod.output)
+
+		outputs.upToDateWhen { true } // Task has no outputs
 	}
 	check.dependsOn "validateMixinNames"
 
