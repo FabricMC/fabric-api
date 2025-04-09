@@ -62,12 +62,12 @@ public class BuiltInMeshUnbakedModelDeserializer implements UnbakedModelDeserial
 
 	private static Geometry geometryFromMeshId(String meshId) {
 		return switch (meshId) {
-			case "emissive_frame" -> new FrameGeometry(true);
-			case "frame" -> new FrameGeometry(false);
-			case "pillar" -> new PillarGeometry();
-			case "octagonal_column_enhanced" -> new OctagonalColumnGeometry(ShadeMode.ENHANCED);
-			case "octagonal_column_vanilla" -> new OctagonalColumnGeometry(ShadeMode.VANILLA);
-			default -> throw new IllegalArgumentException("Invalid mesh ID: " + meshId);
+		case "emissive_frame" -> new FrameGeometry(true);
+		case "frame" -> new FrameGeometry(false);
+		case "pillar" -> new PillarGeometry();
+		case "octagonal_column_enhanced" -> new OctagonalColumnGeometry(ShadeMode.ENHANCED);
+		case "octagonal_column_vanilla" -> new OctagonalColumnGeometry(ShadeMode.VANILLA);
+		default -> throw new IllegalArgumentException("Invalid mesh ID: " + meshId);
 		};
 	}
 
