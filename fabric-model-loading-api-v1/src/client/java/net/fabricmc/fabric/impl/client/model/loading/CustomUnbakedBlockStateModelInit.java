@@ -27,6 +27,6 @@ import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateMo
 public class CustomUnbakedBlockStateModelInit implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		CustomUnbakedBlockStateModel.register(Identifier.of("fabric", "composite"), CompositeBlockStateModel.Unbaked.CODEC);
+		CustomUnbakedBlockStateModel.register(Identifier.of("fabric", "composite"), CompositeBlockStateModelImpl.Unbaked.CODEC);
 	}
 }

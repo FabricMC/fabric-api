@@ -17,12 +17,16 @@
 package net.fabricmc.fabric.impl.client.model.loading;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.Baker;
@@ -35,14 +39,32 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
+import net.fabricmc.fabric.api.client.model.loading.v1.CompositeBlockStateModel;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
-public class CompositeBlockStateModel implements BlockStateModel {
+public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	private final BlockStateModel[] models;
+	@UnmodifiableView
+	private final List<BlockStateModel> modelsView;
 
-	public CompositeBlockStateModel(BlockStateModel[] models) {
+	public CompositeBlockStateModelImpl(BlockStateModel[] models) {
 		this.models = models;
+		modelsView = Arrays.asList(models);
+	}
+
+	public static CompositeBlockStateModelImpl of(List<BlockStateModel> models) {
+		if (models.isEmpty()) {
+			throw new IllegalArgumentException("Models list must not be empty");
+		}
+
+		for (BlockStateModel model : models) Objects.requireNonNull(model, "Model cannot be null");
+		return new CompositeBlockStateModelImpl(models.toArray(BlockStateModel[]::new));
+	}
+
+	@Override
+	@Unmodifiable
+	public List<BlockStateModel> models() {
+		return modelsView;
 	}
 
 	@Override
@@ -105,17 +127,18 @@ public class CompositeBlockStateModel implements BlockStateModel {
 		return models[0].particleSprite(blockView, pos, state);
 	}
 
-	public record Unbaked(List<BlockStateModel.Unbaked> models) implements CustomUnbakedBlockStateModel {
-		public static final MapCodec<Unbaked> CODEC = RecordCodecBuilder.mapCodec(
-				instance -> instance.group(
-						Codecs.nonEmptyList(BlockStateModel.Unbaked.CODEC.listOf()).fieldOf("models").forGetter(Unbaked::models)
-				).apply(instance, Unbaked::new)
-		);
+	public record Unbaked(@Unmodifiable List<BlockStateModel.Unbaked> models) implements CompositeBlockStateModel.Unbaked {
+		public static final MapCodec<Unbaked> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+				Codecs.nonEmptyList(BlockStateModel.Unbaked.CODEC.listOf()).fieldOf("models").forGetter(Unbaked::models)
+		).apply(instance, Unbaked::new));
 
-		public Unbaked {
+		public static Unbaked of(List<BlockStateModel.Unbaked> models) {
 			if (models.isEmpty()) {
 				throw new IllegalArgumentException("Models list must not be empty");
 			}
+
+			for (BlockStateModel.Unbaked model : models) Objects.requireNonNull(model, "Model cannot be null");
+			return new Unbaked(List.copyOf(models));
 		}
 
 		@Override
@@ -131,7 +154,7 @@ public class CompositeBlockStateModel implements BlockStateModel {
 				bakedModels[i] = models.get(i).bake(baker);
 			}
 
-			return new CompositeBlockStateModel(bakedModels);
+			return new CompositeBlockStateModelImpl(bakedModels);
 		}
 
 		@Override
