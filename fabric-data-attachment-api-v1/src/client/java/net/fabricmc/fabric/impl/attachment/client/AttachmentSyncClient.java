@@ -45,6 +45,7 @@ public class AttachmentSyncClient implements ClientModInitializer {
 						} catch (AttachmentSyncException e) {
 							AttachmentEntrypoint.LOGGER.error("Error accepting attachment changes", e);
 							context.responseSender().disconnect(e.getText());
+							break;
 						}
 					}
 				}
