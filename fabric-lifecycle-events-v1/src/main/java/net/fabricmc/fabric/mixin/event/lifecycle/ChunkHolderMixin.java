@@ -103,7 +103,7 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 	}
 
 	/**
-	 * Handles BLOCK_TICKING -> ENTITY_TICKING. Fire after entity tracking statuses have been updated.
+	 * Handles BLOCK_TICKING -> ENTITY_TICKING. Fire after entity tracking statuses have been updated, cause that's what makes entities actually start ticking.
 	 *
 	 * @param original The call to onChunkStatusChange(), which calls {@link ServerEntityManager#updateTrackingStatus(ChunkPos, ChunkLevelType)}.
 	 */

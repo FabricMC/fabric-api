@@ -92,7 +92,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 
 			ChunkLevelType trackedOld = worldsChunkLevelTypeTracker.computeIfAbsent(worldKey, obj -> new Long2ObjectOpenHashMap<>()).computeIfAbsent(chunkPos.toLong(), l -> ChunkLevelType.INACCESSIBLE);
 
-			if (trackedOld != oldLevelType) { // check if the oldLevelType == the newLevelType from the previous event for this chunk
+			if (trackedOld != oldLevelType) { // check if newLevelType from the previous event == oldLevelType for this current event. Catches any out-of-sync firing issues.
 				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " " + oldLevelType + "->" + newLevelType + " / TRACKED_OLD: " + trackedOld);
 				LOGGER.error(error.getMessage(), error);
 				world.getServer().stop(false);
