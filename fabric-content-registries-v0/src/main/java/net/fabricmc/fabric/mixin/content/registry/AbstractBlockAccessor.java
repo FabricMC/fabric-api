@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer.client.block.model;
-
-import java.util.List;
+package net.fabricmc.fabric.mixin.content.registry;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.render.model.MultipartBlockStateModel;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.BlockState;
 
-@Mixin(MultipartBlockStateModel.MultipartBakedModel.class)
-public interface MultipartBakedModelAccessor {
-	@Accessor("selectors")
-	List<MultipartBlockStateModel.Selector<BlockStateModel>> getSelectors();
+@Mixin(AbstractBlock.class)
+public interface AbstractBlockAccessor {
+	@Invoker
+	boolean callHasRandomTicks(BlockState state);
 }

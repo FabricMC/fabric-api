@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.gametest;
+package net.fabricmc.fabric.mixin.renderer.client.item;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.world.ClientChunkManager;
+import net.minecraft.client.render.item.ItemRenderState;
 
-@Mixin(ClientChunkManager.ClientChunkMap.class)
-public interface ClientChunkMapAccessor {
-	@Accessor
-	int getCenterChunkX();
+import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
 
-	@Accessor
-	int getCenterChunkZ();
+@Mixin(ItemRenderState.LayerRenderState.class)
+abstract class ItemRenderStateLayerRenderStateMixin implements FabricLayerRenderState {
 }

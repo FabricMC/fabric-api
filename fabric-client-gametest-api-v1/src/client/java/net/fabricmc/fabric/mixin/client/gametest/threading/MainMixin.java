@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.minecraft.server.Main;
 
 @Mixin(Main.class)
-public class ServerMainMixin {
+public class MainMixin {
 	@WrapWithCondition(method = "main", remap = false, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;startTimerHack()V", remap = true))
 	private static boolean dontStartAnotherTimerHack() {
 		return false;

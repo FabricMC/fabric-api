@@ -30,17 +30,17 @@ import net.minecraft.state.property.Property;
 import net.fabricmc.fabric.impl.content.registry.OxidizableBlocksRegistryImpl;
 
 @Mixin(AbstractBlock.AbstractBlockState.class)
-public abstract class AbstractBlockStateMixin extends State<Block, BlockState> implements OxidizableBlocksRegistryImpl.RandomTickCacheRefresher {
+public abstract class AbstractBlockAbstractBlockStateMixin extends State<Block, BlockState> implements OxidizableBlocksRegistryImpl.RandomTickCacheRefresher {
 	@Shadow
 	private boolean ticksRandomly;
 
-	private AbstractBlockStateMixin(Block owner, Reference2ObjectArrayMap<Property<?>, Comparable<?>> propertyMap, MapCodec<BlockState> codec) {
+	private AbstractBlockAbstractBlockStateMixin(Block owner, Reference2ObjectArrayMap<Property<?>, Comparable<?>> propertyMap, MapCodec<BlockState> codec) {
 		super(owner, propertyMap, codec);
 	}
 
 	@Override
 	public void fabric_api$refreshRandomTickCache() {
-		this.ticksRandomly = ((AbstractBlockMixin) this.owner).callHasRandomTicks(this.asBlockState());
+		this.ticksRandomly = ((AbstractBlockAccessor) this.owner).callHasRandomTicks(this.asBlockState());
 	}
 
 	@Shadow

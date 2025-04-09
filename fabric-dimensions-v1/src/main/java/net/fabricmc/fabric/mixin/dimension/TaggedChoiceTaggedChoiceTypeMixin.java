@@ -34,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.fabricmc.fabric.impl.dimension.TaggedChoiceTypeExtension;
 
 @Mixin(value = TaggedChoice.TaggedChoiceType.class, remap = false)
-public class TaggedChoiceTypeMixin<K> implements TaggedChoiceTypeExtension {
+public class TaggedChoiceTaggedChoiceTypeMixin<K> implements TaggedChoiceTypeExtension {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("TaggedChoiceType_DimDataFix");
 

@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.content.registry;
+package net.fabricmc.fabric.mixin.attachment;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
+import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 
-@Mixin(AbstractBlock.class)
-public interface AbstractBlockMixin {
-	@Invoker
-	boolean callHasRandomTicks(BlockState state);
+@Mixin(CustomPayloadC2SPacket.class)
+public interface CustomPayloadC2SPacketAccessor {
+	@Accessor("MAX_PAYLOAD_SIZE")
+	static int getMaxPayloadSize() {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
 }

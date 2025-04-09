@@ -6,7 +6,7 @@
     "DimensionOptionsRegistryHolderMixin",
     "Schema2832Mixin",
     "TaggedChoiceMixin",
-    "TaggedChoiceTypeMixin"
+    "TaggedChoiceTaggedChoiceTypeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

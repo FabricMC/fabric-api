@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer.client.item;
+package net.fabricmc.fabric.mixin.renderer.client.block.model;
+
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.client.render.model.MultipartBlockStateModel;
 
-import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
-
-@Mixin(ItemRenderState.LayerRenderState.class)
-abstract class LayerRenderStateMixin implements FabricLayerRenderState {
+@Mixin(MultipartBlockStateModel.MultipartBakedModel.class)
+public interface MultipartBlockStateModelMultipartBakedModelAccessor {
+	@Accessor("selectors")
+	List<MultipartBlockStateModel.Selector<BlockStateModel>> getSelectors();
 }

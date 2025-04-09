@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
 import net.fabricmc.fabric.impl.renderer.BasicItemModelExtension;
 
 @Mixin(BasicItemModel.Unbaked.class)
-abstract class UnbakedBasicItemModelMixin {
+abstract class BasicItemModelUnbakedMixin {
 	@ModifyExpressionValue(method = "bake", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BakedSimpleModel.bakeGeometry(Lnet/minecraft/client/render/model/ModelTextures;Lnet/minecraft/client/render/model/Baker;Lnet/minecraft/client/render/model/ModelBakeSettings;)Lnet/minecraft/client/render/model/BakedGeometry;"))
 	private BakedGeometry captureMesh(BakedGeometry geometry, @Share("mesh") LocalRef<Mesh> meshRef) {
 		if (geometry instanceof MeshBakedGeometry meshBakedGeometry) {

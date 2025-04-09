@@ -99,6 +99,6 @@ abstract class MultipartBlockStateModelMixin implements BlockStateModel {
 
 	@Override
 	public Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
-		return ((MultipartBakedModelAccessor) (Object) bakedModels).getSelectors().getFirst().model().particleSprite(blockView, pos, state);
+		return ((MultipartBlockStateModelMultipartBakedModelAccessor) (Object) bakedModels).getSelectors().getFirst().model().particleSprite(blockView, pos, state);
 	}
 }

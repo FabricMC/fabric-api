@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
-import net.fabricmc.fabric.mixin.attachment.CustomPayloadS2CPacketAccessor;
+import net.fabricmc.fabric.mixin.attachment.CustomPayloadC2SPacketAccessor;
 import net.fabricmc.fabric.mixin.attachment.VarIntsAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
@@ -55,7 +55,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			AttachmentChange::new
 	);
 	private static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + AttachmentSync.MAX_IDENTIFIER_SIZE;
-	private static final int MAX_DATA_SIZE_IN_BYTES = CustomPayloadS2CPacketAccessor.getMaxPayloadSize() - MAX_PADDING_SIZE_IN_BYTES;
+	private static final int MAX_DATA_SIZE_IN_BYTES = CustomPayloadC2SPacketAccessor.getMaxPayloadSize() - MAX_PADDING_SIZE_IN_BYTES;
 
 	@SuppressWarnings("unchecked")
 	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, DynamicRegistryManager dynamicRegistryManager) {

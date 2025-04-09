@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.ItemRenderContext;
 
 @Mixin(value = ItemRenderState.LayerRenderState.class)
-abstract class LayerRenderStateMixin implements FabricLayerRenderState, AccessLayerRenderState {
+abstract class ItemRenderStateLayerRenderStateMixin implements FabricLayerRenderState, AccessLayerRenderState {
 	@Unique
 	private final MutableMeshImpl mutableMesh = new MutableMeshImpl();
 

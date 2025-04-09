@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.attachment;
+package net.fabricmc.fabric.mixin.client.gametest;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.client.world.ClientChunkManager;
 
-@Mixin(CustomPayloadC2SPacket.class)
-public interface CustomPayloadS2CPacketAccessor {
-	@Accessor("MAX_PAYLOAD_SIZE")
-	static int getMaxPayloadSize() {
-		throw new UnsupportedOperationException("Implemented via mixin");
-	}
+@Mixin(ClientChunkManager.ClientChunkMap.class)
+public interface ClientChunkManagerClientChunkMapAccessor {
+	@Accessor
+	int getCenterChunkX();
+
+	@Accessor
+	int getCenterChunkZ();
 }
