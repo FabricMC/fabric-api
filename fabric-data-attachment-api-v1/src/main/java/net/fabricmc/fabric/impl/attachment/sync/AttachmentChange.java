@@ -41,9 +41,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
@@ -139,26 +137,34 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		return codec.decode(buf);
 	}
 
-	public boolean tryApply(World world, PacketSender sender) {
+	public void tryApply(World world) throws AttachmentSyncException {
 		AttachmentTarget target = targetInfo.getTarget(world);
 		Object value = decodeValue(world.getRegistryManager());
 
 		if (target == null) {
 			final MutableText errorMessageText = Text.empty();
-			errorMessageText.append(Text.literal("Received attachment change for unknown target!").formatted(Formatting.RED)).append(ScreenTexts.LINE_BREAK);
+			errorMessageText
+					.append(Text.translatable("fabric-data-attachment-api-v1.unknown-target.title").formatted(Formatting.RED))
+					.append(ScreenTexts.LINE_BREAK);
 			errorMessageText.append(ScreenTexts.LINE_BREAK);
 
-			errorMessageText.append("Attachment identifier: ").append(Text.literal(String.valueOf(type.identifier())).formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
-			errorMessageText.append("World: ").append(Text.literal(String.valueOf(world.getRegistryKey().getValue())).formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
+			errorMessageText
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.attachment-identifier",
+							Text.literal(String.valueOf(type.identifier())).formatted(Formatting.YELLOW))
+					)
+					.append(ScreenTexts.LINE_BREAK);
+			errorMessageText
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.world",
+							Text.literal(String.valueOf(world.getRegistryKey().getValue())).formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
 			targetInfo.appendDebugInformation(errorMessageText);
 
-			AttachmentEntrypoint.LOGGER.error(errorMessageText.getString());
-			sender.disconnect(errorMessageText);
-
-			return false;
+			throw new AttachmentSyncException(errorMessageText);
 		}
 
 		target.setAttached((AttachmentType<Object>) type, value);
-		return true;
 	}
 }

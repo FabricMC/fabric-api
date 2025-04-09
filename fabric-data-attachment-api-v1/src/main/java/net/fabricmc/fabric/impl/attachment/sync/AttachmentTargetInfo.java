@@ -87,8 +87,18 @@ public sealed interface AttachmentTargetInfo<T> {
 
 		@Override
 		public void appendDebugInformation(MutableText text) {
-			text.append("Target type: ").append(Text.literal("Block entity").formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
-			text.append("Block entity position: ").append(Text.literal(pos.toShortString()).formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.target-type",
+							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.block-entity").formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.block-entity-position",
+							Text.literal(pos.toShortString()).formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
 		}
 	}
 
@@ -110,8 +120,18 @@ public sealed interface AttachmentTargetInfo<T> {
 
 		@Override
 		public void appendDebugInformation(MutableText text) {
-			text.append("Target type: ").append(Text.literal("Entity").formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
-			text.append("Entity network ID: ").append(Text.literal(String.valueOf(networkId)).formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.target-type",
+							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.entity").formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.entity-network-id",
+							Text.literal(String.valueOf(networkId)).formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
 		}
 	}
 
@@ -132,8 +152,18 @@ public sealed interface AttachmentTargetInfo<T> {
 
 		@Override
 		public void appendDebugInformation(MutableText text) {
-			text.append("Target type: ").append(Text.literal("Chunk").formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
-			text.append("Chunk position: ").append(Text.literal(pos.toString()).formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.target-type",
+							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.chunk").formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.chunk-position",
+							Text.literal(pos.x + ", " + pos.z).formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
 		}
 	}
 
@@ -156,7 +186,12 @@ public sealed interface AttachmentTargetInfo<T> {
 
 		@Override
 		public void appendDebugInformation(MutableText text) {
-			text.append("Target type: ").append(Text.literal("World").formatted(Formatting.YELLOW)).append(ScreenTexts.LINE_BREAK);
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.target-type",
+							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.world").formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
 		}
 	}
 }
