@@ -134,17 +134,17 @@ public interface SoundTypeBuilder {
 	@ApiStatus.NonExtendable
 	interface EntryBuilder {
 		/**
-		 * The default sound volume
+		 * The default sound volume.
 		 */
 		float DEFAULT_VOLUME = 1F;
 
 		/**
-		 * The default sound pitch
+		 * The default sound pitch.
 		 */
 		float DEFAULT_PITCH = 1F;
 
 		/**
-		 * The default weight applied to individual sounds
+		 * The default weight applied to individual sounds.
 		 */
 		int DEFAULT_WEIGHT = 1;
 

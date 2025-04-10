@@ -107,13 +107,13 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 		protected void configure(RegistryWrapper.WrapperLookup registryLookup, SoundExporter exporter) {
 			exporter.add(DataGeneratorTestContent.TEST_SOUND, SoundTypeBuilder.of(DataGeneratorTestContent.TEST_SOUND)
 					.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.ofVanilla("mob/parrot/idle"))
-							.volume(0.7F), 1)
+						.volume(0.7F), 1)
 					.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.ofVanilla("mob/parrot/idle2")))
 					.sound(SoundTypeBuilder.EntryBuilder.ofEvent(SoundEvents.BLOCK_ANVIL_HIT))
 					.sound(SoundTypeBuilder.EntryBuilder.ofEvent(SoundEvents.ITEM_ARMOR_EQUIP_GENERIC))
 					.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.ofVanilla("mob/parrot/idle"))
-					        .volume(0.3F).pitch(0.5F).stream(true).preload(true).attenuationDistance(8)
-			        )
+						.volume(0.3F).pitch(0.5F).stream(true).preload(true).attenuationDistance(8)
+					)
 			);
 		}
 	}
