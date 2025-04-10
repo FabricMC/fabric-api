@@ -50,14 +50,14 @@ public final class SimpleExtraModel<T> implements UnbakedExtraModel<T> {
 	 * Create a {@link SimpleExtraModel} for a {@link BlockStateModel}.
 	 *
 	 * <h2>Example</h2>
-	 * <pre>{@code
+	 * {@snippet :
 	 * public static final ExtraModelKey<BlockStateModel> MODEL_KEY = ExtraModelKey.create();
 	 * public static final Identifier MODEL_ID = Identifier.of("mod_id", "model_path");
 	 *
 	 * public static void register() {
 	 * 		ModelLoadingPlugin.register(pluginContext -> pluginContext.addModel(MODEL_KEY, SimpleExtraModel.blockStateModel(MODEL_ID)));
 	 * }
-	 * }</pre>
+	 * }
 	 *
 	 * @param model The location of the model to load.
 	 * @return The unbaked extra model.

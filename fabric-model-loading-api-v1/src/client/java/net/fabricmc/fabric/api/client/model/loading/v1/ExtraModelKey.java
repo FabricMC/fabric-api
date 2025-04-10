@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.Contract;
 
 /**
- * A unique key representing an extra model, not tied to a blockstate or item model.
+ * A unique key representing an extra model, not tied to a block state or item model.
  *
  * <p>Extra models can be registered with a {@link ModelLoadingPlugin} (see
  * {@link ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)}). Once baking is complete, they may
