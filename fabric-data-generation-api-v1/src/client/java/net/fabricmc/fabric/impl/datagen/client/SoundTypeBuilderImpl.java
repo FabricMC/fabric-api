@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.include.com.google.common.base.Preconditions;
 
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
@@ -169,6 +170,11 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		public static EntryBuilder ofEvent(SoundEvent event) {
 			Objects.requireNonNull(event, "Sound event must not be null.");
 			return create(RegistrationType.SOUND_EVENT, event.id());
+		}
+
+		public static EntryBuilder ofEvent(RegistryEntry<SoundEvent> event) {
+			Objects.requireNonNull(event, "Sound event key must not be null.");
+			return create(RegistrationType.SOUND_EVENT, event.getKey().orElseThrow(() -> new IllegalArgumentException("Direct (non-registered) sound event cannot be added")).getValue());
 		}
 
 		@Override

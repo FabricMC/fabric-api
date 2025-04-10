@@ -22,6 +22,7 @@ import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
@@ -132,25 +133,25 @@ public interface SoundTypeBuilder {
 	 */
 	@ApiStatus.NonExtendable
 	interface EntryBuilder {
-	    /**
-	     * The default sound volume
-	     */
-	    float DEFAULT_VOLUME = 1F;
+		/**
+		 * The default sound volume
+		 */
+		float DEFAULT_VOLUME = 1F;
 
-	    /**
-	     * The default sound pitch
-	     */
-	    float DEFAULT_PITCH = 1F;
+		/**
+		 * The default sound pitch
+		 */
+		float DEFAULT_PITCH = 1F;
 
-	    /**
-	     * The default weight applied to individual sounds
-	     */
-	    int DEFAULT_WEIGHT = 1;
+		/**
+		 * The default weight applied to individual sounds
+		 */
+		int DEFAULT_WEIGHT = 1;
 
-	    /**
-	     * The default attentuation distance for a sound (16 blocks).
-	     */
-	    int DEFAULT_ATTENUATION_DISTANCE = 16;
+		/**
+		 * The default attentuation distance for a sound (16 blocks).
+		 */
+		int DEFAULT_ATTENUATION_DISTANCE = 16;
 
 		/**
 		 * Creates a builder for constructing a new sound entry.
@@ -176,6 +177,15 @@ public interface SoundTypeBuilder {
 		 * @param event the sound event
 		 */
 		static EntryBuilder ofEvent(SoundEvent event) {
+			return SoundTypeBuilderImpl.EntryBuilderImpl.ofEvent(event);
+		}
+
+		/**
+		 * Creates a builder for constructing a new sound entry.
+		 *
+		 * @param event the sound event
+		 */
+		static EntryBuilder ofEvent(RegistryEntry<SoundEvent> event) {
 			return SoundTypeBuilderImpl.EntryBuilderImpl.ofEvent(event);
 		}
 
