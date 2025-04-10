@@ -132,6 +132,26 @@ public interface SoundTypeBuilder {
 	 */
 	@ApiStatus.NonExtendable
 	interface EntryBuilder {
+	    /**
+	     * The default sound volume
+	     */
+	    float DEFAULT_VOLUME = 1F;
+
+	    /**
+	     * The default sound pitch
+	     */
+	    float DEFAULT_PITCH = 1F;
+
+	    /**
+	     * The default weight applied to individual sounds
+	     */
+	    int DEFAULT_WEIGHT = 1;
+
+	    /**
+	     * The default attentuation distance for a sound (16 blocks).
+	     */
+	    int DEFAULT_ATTENUATION_DISTANCE = 16;
+
 		/**
 		 * Creates a builder for constructing a new sound entry.
 		 *
@@ -162,7 +182,9 @@ public interface SoundTypeBuilder {
 		/**
 		 * Sets the volume of the sound.
 		 *
-		 * <p>Must be a value between {@code 0} and {@code 1} (inclusive). The default volume is {@code 1}.
+		 * <p>Must be a value between {@code 0} and {@code 1} (inclusive).
+		 *
+		 * <p>The default volume is {@link EntryBuilder.DEFAULT_VOLUME} ({@code 1F}).
 		 *
 		 * @see net.minecraft.client.sound.SoundSystem#MIN_VOLUME
 		 * @see net.minecraft.client.sound.SoundSystem#MAX_VOLUME
@@ -172,7 +194,9 @@ public interface SoundTypeBuilder {
 		/**
 		 * Sets the pitch of the sound.
 		 *
-		 * <p>Must be a value between {@code 0.5} and {@code 2}. The default pitch is {@code 1}.
+		 * <p>Must be a value between {@code 0.5} and {@code 2}.
+		 *
+		 * <p>The default pitch is {@link EntryBuilder.DEFAULT_PITCH} ({@code 1F}).
 		 *
 		 * @see net.minecraft.client.sound.SoundSystem#MIN_PITCH
 		 * @see net.minecraft.client.sound.SoundSystem#MAX_PITCH
@@ -182,7 +206,7 @@ public interface SoundTypeBuilder {
 		/**
 		 * Sets the attenuation block distance of the sound.
 		 *
-		 * <p>The default attenuation is 16 blocks. Setting it to
+		 * <p>The default attenuation is {@link EntryBuilder.DEFAULT_ATTENUATION_DISTANCE} ({@code 16} blocks). Setting it to
 		 * higher will cause the sound to be heard from greater distances.
 		 */
 		EntryBuilder attenuationDistance(int attenuationDistance);
@@ -191,7 +215,7 @@ public interface SoundTypeBuilder {
 		 * Sets the weight or "chance" that this sound has of playing when
 		 * its parent sound event is called upon.
 		 *
-		 * <p>The default weight is {@code 1}.
+		 * <p>The default weight is {@link EntryBuilder.DEFAULT_WEIGHT} ({@code 1}).
 		 */
 		EntryBuilder weight(int weight);
 
@@ -199,6 +223,8 @@ public interface SoundTypeBuilder {
 		 * Configures the sound to be streamed.
 		 * This is usually set for longer sounds like music discs
 		 * to prevent delays when the game tries to play them.
+		 *
+		 * <p>The default value is {@code false}.
 		 */
 		EntryBuilder stream(boolean stream);
 
@@ -207,6 +233,8 @@ public interface SoundTypeBuilder {
 		 * By default, sounds are only loaded upon playing.
 		 *
 		 * <p>Setting this to {@code true} will cause them to be loaded when the game starts.
+		 *
+		 * <p>The default value is {@code false}.
 		 */
 		EntryBuilder preload(boolean preload);
 	}

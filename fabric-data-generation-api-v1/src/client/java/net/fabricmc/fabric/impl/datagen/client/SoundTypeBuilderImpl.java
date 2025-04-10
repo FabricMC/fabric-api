@@ -109,16 +109,16 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		private static final Codec<Entry> MAP_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Identifier.CODEC.fieldOf("name").forGetter(Entry::name),
 				RegistrationType.CODEC.optionalFieldOf("type", RegistrationType.FILE).forGetter(Entry::type),
-				Codec.FLOAT.optionalFieldOf("volume", 1F).forGetter(Entry::volume),
-				Codec.FLOAT.optionalFieldOf("pitch", 1F).forGetter(Entry::pitch),
-				Codec.INT.optionalFieldOf("weight", 1).forGetter(Entry::weight),
-				Codec.INT.optionalFieldOf("attenuation_distance", 16).forGetter(Entry::attenuationDistance),
+				Codec.FLOAT.optionalFieldOf("volume", EntryBuilder.DEFAULT_VOLUME).forGetter(Entry::volume),
+				Codec.FLOAT.optionalFieldOf("pitch", EntryBuilder.DEFAULT_PITCH).forGetter(Entry::pitch),
+				Codec.INT.optionalFieldOf("weight", EntryBuilder.DEFAULT_WEIGHT).forGetter(Entry::weight),
+				Codec.INT.optionalFieldOf("attenuation_distance", EntryBuilder.DEFAULT_ATTENUATION_DISTANCE).forGetter(Entry::attenuationDistance),
 				Codec.BOOL.optionalFieldOf("stream", false).forGetter(Entry::stream),
 				Codec.BOOL.optionalFieldOf("preload", false).forGetter(Entry::preload)
 		).apply(instance, Entry::new));
 
 		private static final Codec<Entry> STRING_CODEC = Identifier.CODEC.xmap(
-				id -> new Entry(id, RegistrationType.FILE, 1F, 1F, 1, 16, false, false),
+				id -> new Entry(id, RegistrationType.FILE, EntryBuilder.DEFAULT_VOLUME, EntryBuilder.DEFAULT_PITCH, EntryBuilder.DEFAULT_WEIGHT, EntryBuilder.DEFAULT_ATTENUATION_DISTANCE, false, false),
 				Entry::name
 		);
 		private static final Codec<Entry> CODEC = Codec.xor(STRING_CODEC, MAP_CODEC).xmap(Either::unwrap, sound -> {
@@ -140,10 +140,10 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		private final Identifier id;
 		private final RegistrationType type;
 
-		private float volume = 1F;
-		private float pitch = 1F;
-		private int attenuationDistance = 16;
-		private int weight = 1;
+		private float volume = DEFAULT_VOLUME;
+		private float pitch = DEFAULT_PITCH;
+		private int attenuationDistance = DEFAULT_ATTENUATION_DISTANCE;
+		private int weight = DEFAULT_WEIGHT;
 		private boolean stream = false;
 		private boolean preload = false;
 
