@@ -59,7 +59,7 @@ public abstract class FabricSoundsProvider implements DataProvider {
 	public CompletableFuture<?> run(DataWriter writer) {
 		return registriesFuture.thenCompose(lookup -> {
 			final Map<String, Map<String, SoundTypeBuilderImpl.SoundType>> data = new LinkedHashMap<>();
-			configure((id, builder) -> {
+			configure(lookup, (id, builder) -> {
 				if (data.computeIfAbsent(id.getNamespace(), n -> new LinkedHashMap<>()).put(id.getPath(), ((SoundTypeBuilderImpl) builder).build()) != null) {
 					throw new IllegalStateException("Duplicate sound for event " + id);
 				}
@@ -78,7 +78,7 @@ public abstract class FabricSoundsProvider implements DataProvider {
 	 * <p>Registered sound types will be appended to their own sounds.json in a namespace corresponding to
 	 * the id of the sound event they are assigned to.
 	 */
-	protected abstract void configure(SoundExporter exporter);
+	protected abstract void configure(RegistryWrapper.WrapperLookup registryLookup, SoundExporter exporter);
 
 	/**
 	 * A consumer used by {@link FabricSoundsProvider#configure}.
