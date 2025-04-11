@@ -33,7 +33,7 @@ import net.minecraft.util.Identifier;
  *
  * @param <T> The type of the baked model, for instance {@link BlockStateModel}.
  */
-public final class SimpleExtraModel<T> implements UnbakedExtraModel<T> {
+public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 	private final Identifier model;
 	private final BiFunction<BakedSimpleModel, Baker, T> bake;
 
@@ -41,13 +41,13 @@ public final class SimpleExtraModel<T> implements UnbakedExtraModel<T> {
 	 * @param model The location of the model to load.
 	 * @param bake  A function to bake the model.
 	 */
-	public SimpleExtraModel(Identifier model, BiFunction<BakedSimpleModel, Baker, T> bake) {
+	public SimpleUnbakedExtraModel(Identifier model, BiFunction<BakedSimpleModel, Baker, T> bake) {
 		this.model = model;
 		this.bake = bake;
 	}
 
 	/**
-	 * Create a {@link SimpleExtraModel} for a {@link BlockStateModel}.
+	 * Create a {@link SimpleUnbakedExtraModel} for a {@link BlockStateModel}.
 	 *
 	 * <h2>Example</h2>
 	 * {@snippet :
@@ -55,26 +55,26 @@ public final class SimpleExtraModel<T> implements UnbakedExtraModel<T> {
 	 * public static final ExtraModelKey<BlockStateModel> MODEL_KEY = ExtraModelKey.create(MODEL_ID::toString);
 	 *
 	 * public static void register() {
-	 * 		ModelLoadingPlugin.register(pluginContext -> pluginContext.addModel(MODEL_KEY, SimpleExtraModel.blockStateModel(MODEL_ID)));
+	 * 		ModelLoadingPlugin.register(pluginContext -> pluginContext.addModel(MODEL_KEY, SimpleUnbakedExtraModel.blockStateModel(MODEL_ID)));
 	 * }
 	 * }
 	 *
 	 * @param model The location of the model to load.
 	 * @return The unbaked extra model.
 	 */
-	public static SimpleExtraModel<BlockStateModel> blockStateModel(Identifier model) {
+	public static SimpleUnbakedExtraModel<BlockStateModel> blockStateModel(Identifier model) {
 		return blockStateModel(model, ModelRotation.X0_Y0);
 	}
 
 	/**
-	 * Create a {@link SimpleExtraModel} for a {@link BlockStateModel}.
+	 * Create a {@link SimpleUnbakedExtraModel} for a {@link BlockStateModel}.
 	 *
 	 * @param model    The location of the model to load.
 	 * @param settings The settings to bake the geometry with.
 	 * @return The unbaked extra model.
 	 */
-	public static SimpleExtraModel<BlockStateModel> blockStateModel(Identifier model, ModelBakeSettings settings) {
-		return new SimpleExtraModel<>(model, (baked, baker) -> {
+	public static SimpleUnbakedExtraModel<BlockStateModel> blockStateModel(Identifier model, ModelBakeSettings settings) {
+		return new SimpleUnbakedExtraModel<>(model, (baked, baker) -> {
 			ModelTextures textures = baked.getTextures();
 			return new SimpleBlockStateModel(new GeometryBakedModel(
 					baked.bakeGeometry(textures, baker, settings),

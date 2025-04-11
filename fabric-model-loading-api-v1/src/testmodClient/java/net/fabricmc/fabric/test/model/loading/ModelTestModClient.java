@@ -40,7 +40,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
-import net.fabricmc.fabric.api.client.model.loading.v1.SimpleExtraModel;
+import net.fabricmc.fabric.api.client.model.loading.v1.SimpleUnbakedExtraModel;
 import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -58,7 +58,7 @@ public class ModelTestModClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ModelLoadingPlugin.register(pluginContext -> {
-			pluginContext.addModel(HALF_RED_SAND_MODEL_KEY, SimpleExtraModel.blockStateModel(HALF_RED_SAND_MODEL_ID));
+			pluginContext.addModel(HALF_RED_SAND_MODEL_KEY, SimpleUnbakedExtraModel.blockStateModel(HALF_RED_SAND_MODEL_ID));
 
 			// Make wheat stages 1->6 use the same model as stage 0. This can be done with resource packs, this is just a test.
 			pluginContext.registerBlockStateResolver(Blocks.WHEAT, context -> {

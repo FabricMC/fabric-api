@@ -72,12 +72,12 @@ public interface ModelLoadingPlugin {
 		 *
 		 * <p>Dependency gathering and baking is performed by an {@link UnbakedExtraModel}. This allows you to depend
 		 * on multiple models files at once, baking them into a single dynamic model. To load a single model, then
-		 * {@link SimpleExtraModel} may be used.
+		 * {@link SimpleUnbakedExtraModel} may be used.
 		 *
 		 * @param key   The unique key for this model.
 		 * @param model The "unbaked" model, responsible for loading dependencies and backing.
 		 * @param <T>   The type of the baked model.
-		 * @see SimpleExtraModel
+		 * @see SimpleUnbakedExtraModel
 		 */
 		<T> void addModel(ExtraModelKey<T> key, UnbakedExtraModel<T> model);
 
