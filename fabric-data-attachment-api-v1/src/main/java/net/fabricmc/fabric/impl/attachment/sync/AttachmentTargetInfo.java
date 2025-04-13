@@ -19,11 +19,16 @@ package net.fabricmc.fabric.impl.attachment.sync;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.screen.ScreenTexts;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -43,7 +48,10 @@ public sealed interface AttachmentTargetInfo<T> {
 		return getType().id;
 	}
 
+	@Nullable
 	AttachmentTarget getTarget(World world);
+
+	void appendDebugInformation(MutableText text);
 
 	record Type<T>(byte id, PacketCodec<ByteBuf, ? extends AttachmentTargetInfo<T>> packetCodec) {
 		static Byte2ObjectMap<Type<?>> TYPES = new Byte2ObjectArrayMap<>();
@@ -76,6 +84,22 @@ public sealed interface AttachmentTargetInfo<T> {
 		public AttachmentTarget getTarget(World world) {
 			return world.getBlockEntity(pos);
 		}
+
+		@Override
+		public void appendDebugInformation(MutableText text) {
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.target-type",
+							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.block-entity").formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.block-entity-position",
+							Text.literal(pos.toShortString()).formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
+		}
 	}
 
 	record EntityTarget(int networkId) implements AttachmentTargetInfo<Entity> {
@@ -93,6 +117,22 @@ public sealed interface AttachmentTargetInfo<T> {
 		public AttachmentTarget getTarget(World world) {
 			return world.getEntityById(networkId);
 		}
+
+		@Override
+		public void appendDebugInformation(MutableText text) {
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.target-type",
+							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.entity").formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.entity-network-id",
+							Text.literal(String.valueOf(networkId)).formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
+		}
 	}
 
 	record ChunkTarget(ChunkPos pos) implements AttachmentTargetInfo<Chunk> {
@@ -108,6 +148,22 @@ public sealed interface AttachmentTargetInfo<T> {
 		@Override
 		public AttachmentTarget getTarget(World world) {
 			return world.getChunk(pos.x, pos.z);
+		}
+
+		@Override
+		public void appendDebugInformation(MutableText text) {
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.target-type",
+							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.chunk").formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.chunk-position",
+							Text.literal(pos.x + ", " + pos.z).formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
 		}
 	}
 
@@ -126,6 +182,16 @@ public sealed interface AttachmentTargetInfo<T> {
 		@Override
 		public AttachmentTarget getTarget(World world) {
 			return world;
+		}
+
+		@Override
+		public void appendDebugInformation(MutableText text) {
+			text
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.target-type",
+							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.world").formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
 		}
 	}
 }

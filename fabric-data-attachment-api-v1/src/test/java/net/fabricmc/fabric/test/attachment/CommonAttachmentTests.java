@@ -42,12 +42,14 @@ import net.minecraft.SharedConstants;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BellBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MarkerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.server.world.ServerWorld;
@@ -58,17 +60,26 @@ import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncException;
 
 public class CommonAttachmentTests {
 	private static final String MOD_ID = "example";
 	private static final AttachmentType<Integer> PERSISTENT = AttachmentRegistry.createPersistent(
 			Identifier.of(MOD_ID, "persistent"),
 			Codec.INT
+	);
+	private static final AttachmentType<Integer> SYNCED = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "synced"),
+			builder -> {
+				builder.syncWith(PacketCodecs.INTEGER, AttachmentSyncPredicate.all());
+			}
 	);
 
 	private static final AttachmentType<WheelInfo> WHEEL = AttachmentRegistry.create(Identifier.of(AttachmentTestMod.MOD_ID, "wheel_info"),
@@ -257,6 +268,25 @@ public class CommonAttachmentTests {
 		AttachmentPersistentState.read(world, fakeSave, mockDRM());
 		assertTrue(world.hasAttached(PERSISTENT));
 		assertEquals(expected, world.getAttached(PERSISTENT));
+	}
+
+	@Test
+	void applyToInvalidTarget() {
+		DynamicRegistryManager drm = mockDRM();
+
+		ServerWorld world = mock(ServerWorld.class);
+		when(world.getRegistryManager()).thenReturn(drm);
+		when(world.getRegistryKey()).thenReturn(World.END);
+
+		BlockEntity blockEntity = new ChestBlockEntity(BlockPos.ORIGIN, Blocks.CHEST.getDefaultState());
+
+		AttachmentChange attachmentChange = new AttachmentChange(
+				((AttachmentTargetImpl) blockEntity).fabric_getSyncTargetInfo(),
+				SYNCED,
+				new byte[]{0}
+		);
+
+		assertThrows(AttachmentSyncException.class, () -> attachmentChange.tryApply(world));
 	}
 
 	/*

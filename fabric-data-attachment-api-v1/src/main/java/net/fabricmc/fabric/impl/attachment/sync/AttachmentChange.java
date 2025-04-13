@@ -30,10 +30,15 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -132,7 +137,34 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		return codec.decode(buf);
 	}
 
-	public void apply(World world) {
-		targetInfo.getTarget(world).setAttached((AttachmentType<Object>) type, decodeValue(world.getRegistryManager()));
+	public void tryApply(World world) throws AttachmentSyncException {
+		AttachmentTarget target = targetInfo.getTarget(world);
+		Object value = decodeValue(world.getRegistryManager());
+
+		if (target == null) {
+			final MutableText errorMessageText = Text.empty();
+			errorMessageText
+					.append(Text.translatable("fabric-data-attachment-api-v1.unknown-target.title").formatted(Formatting.RED))
+					.append(ScreenTexts.LINE_BREAK);
+			errorMessageText.append(ScreenTexts.LINE_BREAK);
+
+			errorMessageText
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.attachment-identifier",
+							Text.literal(String.valueOf(type.identifier())).formatted(Formatting.YELLOW))
+					)
+					.append(ScreenTexts.LINE_BREAK);
+			errorMessageText
+					.append(Text.translatable(
+							"fabric-data-attachment-api-v1.unknown-target.world",
+							Text.literal(String.valueOf(world.getRegistryKey().getValue())).formatted(Formatting.YELLOW)
+					))
+					.append(ScreenTexts.LINE_BREAK);
+			targetInfo.appendDebugInformation(errorMessageText);
+
+			throw new AttachmentSyncException(errorMessageText);
+		}
+
+		target.setAttached((AttachmentType<Object>) type, value);
 	}
 }
