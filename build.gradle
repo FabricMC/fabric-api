@@ -9,7 +9,7 @@ plugins {
 }
 
 def branchProvider = providers.of(GitBranchValueSource.class) {}
-version = project.version + "+" + (providers.environmentVariable("CI").present ? branchProvider.get() : "local")
+version = project.version + "+" + (providers.environmentVariable("CI").present ? branchProvider.get().replace("/", "_") : "local")
 logger.lifecycle("Building Fabric: " + version)
 
 def metaProjects = [
