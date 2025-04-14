@@ -74,8 +74,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<ChunkLevelTypeEvent>> worldsChunkLevelTypeTracker = new Object2ObjectOpenHashMap<>();
 
 		/*
-		Since this event is frequently called within the server's main thread executor, simply throwing the AssertionError does not actually crash the game.
-		Instead it gets silently ignored. So log the error and call stop() manually.
+		Ensure game crashes when any tests fails.
 		 */
 		ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.register((world, chunkPos, oldLevelType, newLevelType) -> {
 			final Identifier worldKey = world.getRegistryKey().getValue();
