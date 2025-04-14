@@ -63,13 +63,13 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 	protected abstract void combineSavingFuture(CompletableFuture<?> savingFuture);
 
 	@Unique
-	private static final ChunkLevelType[] CHUNK_LEVEL_TYPES = ChunkLevelType.values(); // values() clones the internal array each call, so cache the return
+	private static final ChunkLevelType[] fabric_CHUNK_LEVEL_TYPES = ChunkLevelType.values(); // values() clones the internal array each call, so cache the return
 
 	@Unique
-	private CompletableFuture<Void> fullToBlockTickingEvent;
+	private CompletableFuture<Void> fabric_fullToBlockTickingEvent;
 
 	@Unique
-	private ChunkLevelType currentEventLevelType = INACCESSIBLE;
+	private ChunkLevelType fabric_currentEventLevelType = INACCESSIBLE;
 
 	private ChunkHolderMixin(ChunkPos pos) {
 		super(pos);
@@ -80,9 +80,9 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 	 */
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ChunkHolder;combineSavingFuture(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 0))
 	private void updateFutures$inaccessibleToFull(ServerChunkLoadingManager chunkLoadingManager, Executor executor, CallbackInfo ci) {
-		if (this.getUncheckedOrNull(ChunkStatus.FULL) instanceof WorldChunk && this.currentEventLevelType == INACCESSIBLE) { // prevent duplicate events with ChunkGeneratingMixin
+		if (this.getUncheckedOrNull(ChunkStatus.FULL) instanceof WorldChunk && this.fabric_currentEventLevelType == INACCESSIBLE) { // prevent duplicate events with ChunkGeneratingMixin
 			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, INACCESSIBLE, FULL);
-			this.currentEventLevelType = FULL;
+			this.fabric_currentEventLevelType = FULL;
 		}
 	}
 
@@ -91,22 +91,22 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 	 */
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ChunkHolder;combineSavingFuture(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 1))
 	private void updateFutures$fullToBlockTicking(ServerChunkLoadingManager chunkLoadingManager, Executor executor, CallbackInfo ci) {
-		this.fullToBlockTickingEvent = this.tickingFuture.thenAccept(optionalChunk -> {
+		this.fabric_fullToBlockTickingEvent = this.tickingFuture.thenAccept(optionalChunk -> {
 			optionalChunk.ifPresent(worldChunk -> {
 				ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, FULL, BLOCK_TICKING);
-				this.currentEventLevelType = BLOCK_TICKING;
+				this.fabric_currentEventLevelType = BLOCK_TICKING;
 			});
 		});
 	}
 
 	/**
-	 * Handles FULL -> BLOCK_TICKING.
+	 * Handles BLOCK_TICKING -> ENTITY_TICKING.
 	 */
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ChunkHolder;combineSavingFuture(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 2))
 	private void updateFutures$blockTickingToEntityTicking(ServerChunkLoadingManager chunkLoadingManager, Executor executor, CallbackInfo ci) {
-		this.fullToBlockTickingEvent.thenAccept(optionalChunk -> {
+		this.fabric_fullToBlockTickingEvent.thenAccept(optionalChunk -> {
 			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange((ServerWorld) world, this.pos, BLOCK_TICKING, ENTITY_TICKING);
-			this.currentEventLevelType = ENTITY_TICKING;
+			this.fabric_currentEventLevelType = ENTITY_TICKING;
 		});
 	}
 
@@ -119,22 +119,22 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 		ServerWorld serverWorld = (ServerWorld) world;
 
 		for (int i = previous.ordinal(); i > target.ordinal(); i--) {
-			ChunkLevelType oldLevelType = CHUNK_LEVEL_TYPES[i];
-			ChunkLevelType newLevelType = CHUNK_LEVEL_TYPES[i-1];
-			if (this.currentEventLevelType.isAfter(oldLevelType)) { // if a promotion event got cancelled or never finished, then do _not_ fire an equivalent demotion event
+			ChunkLevelType oldLevelType = fabric_CHUNK_LEVEL_TYPES[i];
+			ChunkLevelType newLevelType = fabric_CHUNK_LEVEL_TYPES[i-1];
+			if (this.fabric_currentEventLevelType.isAfter(oldLevelType)) { // if a promotion event got cancelled or never finished, then do _not_ fire an equivalent demotion event
 				ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange(serverWorld, this.pos, oldLevelType, newLevelType);
-				this.currentEventLevelType = newLevelType;
+				this.fabric_currentEventLevelType = newLevelType;
 			}
 		}
 	}
 
 	@Unique
 	public void fabric_setCurrentEventLevelType(ChunkLevelType levelType) {
-		this.currentEventLevelType = levelType;
+		this.fabric_currentEventLevelType = levelType;
 	}
 
 	@Unique
 	public ChunkLevelType fabric_getCurrentEventLevelType() {
-		return this.currentEventLevelType;
+		return this.fabric_currentEventLevelType;
 	}
 }
