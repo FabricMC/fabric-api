@@ -115,7 +115,7 @@ allprojects {
 	apply plugin: "maven-publish"
 	apply plugin: "me.modmuss50.remotesign"
 
-	tasks.withType(GenerateModuleMetadata) {
+	tasks.withType(GenerateModuleMetadata).configureEach {
 		enabled = false
 	}
 
