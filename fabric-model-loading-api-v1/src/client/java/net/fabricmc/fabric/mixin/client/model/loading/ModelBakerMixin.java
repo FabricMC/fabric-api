@@ -17,8 +17,11 @@
 package net.fabricmc.fabric.mixin.client.model.loading;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -40,7 +43,10 @@ import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.thread.AsyncHelper;
 
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
+import net.fabricmc.fabric.impl.client.model.loading.BakedModelsHooks;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 
 @Mixin(ModelBaker.class)
@@ -74,6 +80,24 @@ abstract class ModelBakerMixin {
 			ModelLoadingEventDispatcher.CURRENT.remove();
 			return model;
 		};
+	}
+
+	@ModifyReturnValue(method = "bake", at = @At("RETURN"))
+	private CompletableFuture<ModelBaker.BakedModels> withExtraModels(CompletableFuture<ModelBaker.BakedModels> models, @Local Executor executor, @Local ModelBaker.BakerImpl baker) {
+		if (fabric_eventDispatcher == null) return models;
+
+		CompletableFuture<Map<ExtraModelKey<?>, Object>> extraModels = AsyncHelper.mapValues(fabric_eventDispatcher.getExtraModels(), (key, model) -> {
+			try {
+				return model.bake(baker);
+			} catch (Exception e) {
+				LOGGER.warn("Unable to bake extra model: '{}'", key, e);
+				return null;
+			}
+		}, executor);
+		return models.thenCombine(extraModels, (res, extra) -> {
+			((BakedModelsHooks) (Object) res).fabric_setExtraModels(extra);
+			return res;
+		});
 	}
 
 	@WrapOperation(method = "method_68018", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BlockStateModel$UnbakedGrouped.bake(Lnet/minecraft/block/BlockState;Lnet/minecraft/client/render/model/Baker;)Lnet/minecraft/client/render/model/BlockStateModel;"))

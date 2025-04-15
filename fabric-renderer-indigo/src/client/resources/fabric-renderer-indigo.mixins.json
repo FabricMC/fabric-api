@@ -10,7 +10,7 @@
     "ChunkRendererRegionMixin",
     "ItemRendererAccessor",
     "ItemRenderStateMixin",
-    "LayerRenderStateMixin",
+    "ItemRenderStateLayerRenderStateMixin",
     "SectionBuilderMixin"
   ],
   "injectors": {

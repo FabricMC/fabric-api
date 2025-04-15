@@ -37,8 +37,10 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
+import net.fabricmc.fabric.api.client.model.loading.v1.SimpleUnbakedExtraModel;
 import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -48,6 +50,7 @@ public class ModelTestModClient implements ClientModInitializer {
 	public static final String ID = "fabric-model-loading-api-v1-testmod";
 
 	public static final Identifier HALF_RED_SAND_MODEL_ID = id("half_red_sand");
+	public static final ExtraModelKey<BlockStateModel> HALF_RED_SAND_MODEL_KEY = ExtraModelKey.create(HALF_RED_SAND_MODEL_ID::toString);
 	public static final Identifier WHEAT_STAGE0_MODEL_ID = Identifier.ofVanilla("block/wheat_stage0");
 	public static final Identifier WHEAT_STAGE7_MODEL_ID = Identifier.ofVanilla("block/wheat_stage7");
 	public static final Identifier BROWN_GLAZED_TERRACOTTA_MODEL_ID = Identifier.ofVanilla("block/brown_glazed_terracotta");
@@ -55,7 +58,7 @@ public class ModelTestModClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ModelLoadingPlugin.register(pluginContext -> {
-			//pluginContext.addModels(HALF_RED_SAND_MODEL_ID);
+			pluginContext.addModel(HALF_RED_SAND_MODEL_KEY, SimpleUnbakedExtraModel.blockStateModel(HALF_RED_SAND_MODEL_ID));
 
 			// Make wheat stages 1->6 use the same model as stage 0. This can be done with resource packs, this is just a test.
 			pluginContext.registerBlockStateResolver(Blocks.WHEAT, context -> {
@@ -118,7 +121,7 @@ public class ModelTestModClient implements ClientModInitializer {
 
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
 			if (entityRenderer instanceof PlayerEntityRenderer playerRenderer) {
-				//registrationHelper.register(new BakedModelFeatureRenderer<>(playerRenderer, SpecificModelReloadListener.INSTANCE::getSpecificModel));
+				registrationHelper.register(new BakedModelFeatureRenderer<>(playerRenderer, SpecificModelReloadListener.INSTANCE::getSpecificModel));
 			}
 		});
 	}

@@ -35,6 +35,7 @@ import net.minecraft.data.DataWriter;
 
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.impl.datagen.client.FabricItemAssetDefinitions;
 import net.fabricmc.fabric.impl.datagen.client.FabricModelProviderDefinitions;
 
 @Mixin(ModelProvider.class)
@@ -75,5 +76,6 @@ public class ModelProviderMixin {
 							@Local ModelProvider.ItemAssets itemAssets) {
 		((FabricModelProviderDefinitions) blockStateSuppliers).setFabricDataOutput(fabricDataOutput);
 		((FabricModelProviderDefinitions) itemAssets).setFabricDataOutput(fabricDataOutput);
+		((FabricItemAssetDefinitions) itemAssets).fabric_setProcessedBlocks(blockStateSuppliers.blockStateSuppliers.keySet());
 	}
 }

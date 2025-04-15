@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.gametest;
+package net.fabricmc.fabric.impl.attachment.sync;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.minecraft.text.Text;
 
-import net.minecraft.client.world.ClientChunkManager;
+public class AttachmentSyncException extends Exception {
+	private final Text text;
 
-@Mixin(ClientChunkManager.ClientChunkMap.class)
-public interface ClientChunkMapAccessor {
-	@Accessor
-	int getCenterChunkX();
+	public AttachmentSyncException(Text text) {
+		super(text.getString());
+		this.text = text;
+	}
 
-	@Accessor
-	int getCenterChunkZ();
+	public Text getText() {
+		return text;
+	}
 }

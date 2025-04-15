@@ -7,3 +7,5 @@ files:
     translation: /fabric-registry-sync-v0/src/main/resources/assets/fabric-registry-sync-v0/lang/%locale_with_underscore%.json
   - source: fabric-convention-tags-v2/src/generated/resources/assets/fabric-convention-tags-v2/lang/en_us.json
     translation: /fabric-convention-tags-v2/src/main/resources/assets/fabric-convention-tags-v2/lang/%locale_with_underscore%.json
+  - source: fabric-data-attachment-api-v1/src/main/resources/assets/fabric-data-attachment-api-v1/lang/en_us.json
+    translation: /fabric-data-attachment-api-v1/src/main/resources/assets/fabric-data-attachment-api-v1/lang/%locale_with_underscore%.json

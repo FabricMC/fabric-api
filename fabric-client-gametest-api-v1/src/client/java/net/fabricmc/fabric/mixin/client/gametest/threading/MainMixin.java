@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer.client.item;
+package net.fabricmc.fabric.mixin.client.gametest.threading;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.server.Main;
 
-import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
-
-@Mixin(ItemRenderState.LayerRenderState.class)
-abstract class LayerRenderStateMixin implements FabricLayerRenderState {
+@Mixin(Main.class)
+public class MainMixin {
+	@WrapWithCondition(method = "main", remap = false, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;startTimerHack()V", remap = true))
+	private static boolean dontStartAnotherTimerHack() {
+		return false;
+	}
 }

@@ -8,6 +8,7 @@ testDependencies(project, [
 	':fabric-blockrenderlayer-v1',
 	':fabric-model-loading-api-v1',
 	':fabric-object-builder-api-v1',
+	':fabric-particles-v1',
 	':fabric-renderer-indigo',
 	':fabric-resource-loader-v0'
 ])

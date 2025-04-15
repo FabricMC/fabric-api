@@ -327,7 +327,10 @@ allprojects {
 		source(sourceSets.main.output)
 		source(sourceSets.client.output)
 		source(sourceSets.testmod.output)
+
+		outputs.upToDateWhen { true } // Task has no outputs
 	}
+	check.dependsOn "validateMixinNames"
 
 	// Apply to each valid subproject.
 	apply from: rootProject.file('gradle/package-info.gradle')
