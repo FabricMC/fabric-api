@@ -17,7 +17,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.16.10",
-    "fabric-networking-api-v1": ">=4.4.0"
+    "fabric-networking-api-v1": "*"
   },
   "entrypoints": {
     "main": [
