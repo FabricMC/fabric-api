@@ -21,7 +21,6 @@ import static net.minecraft.server.world.ChunkLevelType.ENTITY_TICKING;
 import static net.minecraft.server.world.ChunkLevelType.FULL;
 import static net.minecraft.server.world.ChunkLevelType.INACCESSIBLE;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import org.spongepowered.asm.mixin.Final;
@@ -54,9 +53,6 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 
 	@Shadow
 	private int lastTickLevel;
-
-	@Shadow
-	protected abstract void combineSavingFuture(CompletableFuture<?> savingFuture);
 
 	@Unique
 	private static final ChunkLevelType[] fabric_CHUNK_LEVEL_TYPES = ChunkLevelType.values(); // values() clones the internal array each call, so cache the return

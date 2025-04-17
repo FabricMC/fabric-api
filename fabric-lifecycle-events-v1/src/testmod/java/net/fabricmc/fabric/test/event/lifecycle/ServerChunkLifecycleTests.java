@@ -74,37 +74,28 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		final Object2ObjectMap<Identifier, Object2IntMap<ChunkLevelType>> worldsChunkLevelEvents = new Object2ObjectOpenHashMap<>();
 		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<ChunkLevelTypeEvent>> worldsChunkLevelTypeTracker = new Object2ObjectOpenHashMap<>();
 
-		// Ensure game crashes when any tests fails.
 		ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.register((world, worldChunk, oldLevelType, newLevelType) -> {
 			final Identifier worldKey = world.getRegistryKey().getValue();
 
+			if (!world.getServer().isOnThread()) {
+				world.getServer().stop(false); // make sure the server actually "crashes", the throw below will just log the error.
+				throw new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " NOT ON SERVER THREAD: " + oldLevelType + "->" + newLevelType);
+			}
+
 			if (worldChunk == null) {
-				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " NULL WORLD CHUNK: " + oldLevelType + "->" + newLevelType);
-				LOGGER.error(error.getMessage(), error);
-				world.getServer().stop(false);
-				return;
+				throw new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " NULL WORLD CHUNK: " + oldLevelType + "->" + newLevelType);
 			}
 
 			final ChunkPos chunkPos = worldChunk.getPos();
 
-			if (Thread.currentThread() != world.getServer().getThread()) {
-				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT ON SERVER THREAD: " + oldLevelType + "->" + newLevelType);
-				LOGGER.error(error.getMessage(), error);
-				world.getServer().stop(false);
-			}
-
 			if (Math.abs(oldLevelType.ordinal() - newLevelType.ordinal()) != 1) { // check if the levelTypes are actually sequential, also ensures levelTypes are not the same
-				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT SEQUENTIAL: " + oldLevelType + "->" + newLevelType);
-				LOGGER.error(error.getMessage(), error);
-				world.getServer().stop(false);
+				throw new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT SEQUENTIAL: " + oldLevelType + "->" + newLevelType);
 			}
 
 			ChunkLevelTypeEvent prevEvent = worldsChunkLevelTypeTracker.computeIfAbsent(worldKey, obj -> new Long2ObjectOpenHashMap<>()).computeIfAbsent(chunkPos.toLong(), l -> new ChunkLevelTypeEvent(ChunkLevelType.INACCESSIBLE, ChunkLevelType.INACCESSIBLE));
 
 			if (prevEvent.newLevelType() != oldLevelType) { // check if newLevelType from the previous event == oldLevelType for this current event. Catches any out-of-sync firing issues.
-				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " PREVIOUS_EVENT: " + prevEvent.oldLevelType() + "->" + prevEvent.newLevelType() + " / CURRENT_EVENT: " + oldLevelType + "->" + newLevelType);
-				LOGGER.error(error.getMessage(), error);
-				world.getServer().stop(false);
+				throw new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " PREVIOUS_EVENT: " + prevEvent.oldLevelType() + "->" + prevEvent.newLevelType() + " / CURRENT_EVENT: " + oldLevelType + "->" + newLevelType);
 			}
 
 			worldsChunkLevelTypeTracker.get(worldKey).put(chunkPos.toLong(), new ChunkLevelTypeEvent(oldLevelType, newLevelType));
@@ -129,23 +120,10 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 				LOGGER.info(sb.toString());
 				levelTypes.clear();
 			}
-
-			final Object2IntMap<ChunkLevelType> total = new Object2IntOpenHashMap<>();
-
-			if (world.getTime() % 100 != 0) { // limit to 5 per second
-				worldsChunkLevelTypeTracker.get(world.getRegistryKey().getValue()).forEach((chunkPos, chunkLevelTypeEvent) -> {
-					total.mergeInt(chunkLevelTypeEvent.newLevelType, 1, Integer::sum);
-				});
-				StringBuilder msg = new StringBuilder(world.getRegistryKey().getValue().toString() + " ");
-				total.forEach((chunkLevelType, t) -> {
-					msg.append(chunkLevelType).append(": ").append(t).append(", ");
-				});
-				LOGGER.warn(msg.toString());
-			}
 		});
 
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			// clear everything otherwise it WILL crash when you open another world
+			// clear everything otherwise it will trip the test incorrectly when you open another world
 			worldsChunkLevelEvents.clear();
 			worldsChunkLevelTypeTracker.clear();
 		});

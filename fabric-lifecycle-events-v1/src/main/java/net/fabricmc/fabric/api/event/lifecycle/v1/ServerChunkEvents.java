@@ -67,7 +67,7 @@ public final class ServerChunkEvents {
 	 * Called when a chunk changes its {@link ChunkLevelType}.
 	 *
 	 * <p>When this event is called, the chunk's {@link WorldChunk#getLevelType()} has already changed. However, the chunk's actual ticking behavior may not fully align with its level type yet.
-	 * Additionally, it is not guaranteed that entities from the chunk are immediately accessible when this event is called, though they are already loaded.
+	 * Additionally, it is not guaranteed that entities from the chunk are immediately accessible when this event is called.
 	 */
 	public static final Event<LevelTypeChange> CHUNK_LEVEL_TYPE_CHANGE = EventFactory.createArrayBacked(LevelTypeChange.class, (world, chunk, oldLevelType, newLevelType) -> { }, callbacks -> (serverWorld, chunk, oldLevelType, newLevelType) -> {
 		for (LevelTypeChange callback : callbacks) {
