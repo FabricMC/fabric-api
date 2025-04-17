@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.event.lifecycle.v1;
 
 import net.minecraft.server.world.ChunkLevelType;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -67,14 +66,12 @@ public final class ServerChunkEvents {
 	/**
 	 * Called when a chunk changes its {@link ChunkLevelType}.
 	 *
-	 * <p>For chunk level type promotions, this event is called only when the chunk's behavior actually aligns with its level type.
-	 * This means the event is usually called later than when the chunk's level type first gets promoted.
-	 *
-	 * <p>For chunk level type demotions, this event is called immediately when the chunk's level type first gets demoted.
+	 * <p>When this event is called, the chunk's {@link WorldChunk#getLevelType()} has already changed. However, the chunk's actual ticking behavior may not fully align with its level type yet.
+	 * Additionally, it is not guaranteed that entities from the chunk are immediately accessible when this event is called, though they are already loaded.
 	 */
-	public static final Event<LevelTypeChange> CHUNK_LEVEL_TYPE_CHANGE = EventFactory.createArrayBacked(LevelTypeChange.class, callbacks -> (serverWorld, chunkPos, oldLevelType, newLevelType) -> {
+	public static final Event<LevelTypeChange> CHUNK_LEVEL_TYPE_CHANGE = EventFactory.createArrayBacked(LevelTypeChange.class, (world, chunk, oldLevelType, newLevelType) -> { }, callbacks -> (serverWorld, chunk, oldLevelType, newLevelType) -> {
 		for (LevelTypeChange callback : callbacks) {
-			callback.onChunkLevelTypeChange(serverWorld, chunkPos, oldLevelType, newLevelType);
+			callback.onChunkLevelTypeChange(serverWorld, chunk, oldLevelType, newLevelType);
 		}
 	});
 
@@ -95,6 +92,6 @@ public final class ServerChunkEvents {
 
 	@FunctionalInterface
 	public interface LevelTypeChange {
-		void onChunkLevelTypeChange(ServerWorld world, ChunkPos chunkPos, ChunkLevelType oldLevelType, ChunkLevelType newLevelType);
+		void onChunkLevelTypeChange(ServerWorld world, WorldChunk chunk, ChunkLevelType oldLevelType, ChunkLevelType newLevelType);
 	}
 }

@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 
 import net.minecraft.server.world.ChunkLevelType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ChunkPos;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
@@ -73,11 +74,18 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		final Object2ObjectMap<Identifier, Object2IntMap<ChunkLevelType>> worldsChunkLevelEvents = new Object2ObjectOpenHashMap<>();
 		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<ChunkLevelTypeEvent>> worldsChunkLevelTypeTracker = new Object2ObjectOpenHashMap<>();
 
-		/*
-		Ensure game crashes when any tests fails.
-		 */
-		ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.register((world, chunkPos, oldLevelType, newLevelType) -> {
+		// Ensure game crashes when any tests fails.
+		ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.register((world, worldChunk, oldLevelType, newLevelType) -> {
 			final Identifier worldKey = world.getRegistryKey().getValue();
+
+			if (worldChunk == null) {
+				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " NULL WORLD CHUNK: " + oldLevelType + "->" + newLevelType);
+				LOGGER.error(error.getMessage(), error);
+				world.getServer().stop(false);
+				return;
+			}
+
+			final ChunkPos chunkPos = worldChunk.getPos();
 
 			if (Thread.currentThread() != world.getServer().getThread()) {
 				AssertionError error = new AssertionError("CHUNK_LEVEL_TYPE_CHANGE for " + worldKey + " " + chunkPos + " NOT ON SERVER THREAD: " + oldLevelType + "->" + newLevelType);
@@ -120,6 +128,19 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 				levelTypes.forEach((newLevelType, numOfEvents) -> sb.append(newLevelType).append(": ").append(numOfEvents).append(", "));
 				LOGGER.info(sb.toString());
 				levelTypes.clear();
+			}
+
+			final Object2IntMap<ChunkLevelType> total = new Object2IntOpenHashMap<>();
+
+			if (world.getTime() % 100 != 0) { // limit to 5 per second
+				worldsChunkLevelTypeTracker.get(world.getRegistryKey().getValue()).forEach((chunkPos, chunkLevelTypeEvent) -> {
+					total.mergeInt(chunkLevelTypeEvent.newLevelType, 1, Integer::sum);
+				});
+				StringBuilder msg = new StringBuilder(world.getRegistryKey().getValue().toString() + " ");
+				total.forEach((chunkLevelType, t) -> {
+					msg.append(chunkLevelType).append(": ").append(t).append(", ");
+				});
+				LOGGER.warn(msg.toString());
 			}
 		});
 

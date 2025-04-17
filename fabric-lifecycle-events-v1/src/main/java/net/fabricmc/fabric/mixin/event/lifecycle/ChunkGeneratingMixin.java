@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -34,20 +35,28 @@ import net.fabricmc.fabric.impl.event.lifecycle.ChunkLevelTypeEventTracker;
 
 @Mixin(ChunkGenerating.class)
 abstract class ChunkGeneratingMixin {
+	@Unique
+	private static final ChunkLevelType[] fabric_CHUNK_LEVEL_TYPES = ChunkLevelType.values(); // values() clones the internal array each call, so cache the return
+
 	@Inject(method = "method_60553", at = @At("TAIL"))
 	private static void onChunkLoad(Chunk chunk, ChunkGenerationContext chunkGenerationContext, AbstractChunkHolder chunkHolder, CallbackInfoReturnable<Chunk> callbackInfoReturnable) {
-		// We fire the event at TAIL since the chunk is guaranteed to be a WorldChunk then.
-		ServerChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(chunkGenerationContext.world(), (WorldChunk) callbackInfoReturnable.getReturnValue());
+		WorldChunk worldChunk = (WorldChunk) callbackInfoReturnable.getReturnValue();
 
-		// Handles the case where the chunk becomes accessible from being completed unloaded
-		ChunkLevelTypeEventTracker levelTypeTracker = (ChunkLevelTypeEventTracker) chunkHolder;
-		if (levelTypeTracker.fabric_getCurrentEventLevelType() == ChunkLevelType.INACCESSIBLE) { // prevent duplicate events with ChunkHolderMixin
-			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange(chunkGenerationContext.world(), chunk.getPos(), ChunkLevelType.INACCESSIBLE, ChunkLevelType.FULL);
-			levelTypeTracker.fabric_setCurrentEventLevelType(ChunkLevelType.FULL);
-		}
+		// We fire the event at TAIL since the chunk is guaranteed to be a WorldChunk then.
+		ServerChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(chunkGenerationContext.world(), worldChunk);
 
 		if (!(chunk instanceof WrapperProtoChunk)) {
-			ServerChunkEvents.CHUNK_GENERATE.invoker().onChunkGenerate(chunkGenerationContext.world(), (WorldChunk) callbackInfoReturnable.getReturnValue());
+			ServerChunkEvents.CHUNK_GENERATE.invoker().onChunkGenerate(chunkGenerationContext.world(), worldChunk);
+		}
+
+		// Handles the case where the chunk becomes accessible from being completed unloaded, only fires if chunkHolder has been set to at least that level type
+		ChunkLevelTypeEventTracker levelTypeTracker = (ChunkLevelTypeEventTracker) chunkHolder;
+
+		for (int i = levelTypeTracker.fabric_getCurrentEventLevelType().ordinal(); i < chunkHolder.getLevelType().ordinal(); i++) {
+			ChunkLevelType oldLevelType = fabric_CHUNK_LEVEL_TYPES[i];
+			ChunkLevelType newLevelType = fabric_CHUNK_LEVEL_TYPES[i+1];
+			ServerChunkEvents.CHUNK_LEVEL_TYPE_CHANGE.invoker().onChunkLevelTypeChange(chunkGenerationContext.world(), worldChunk, oldLevelType, newLevelType);
+			levelTypeTracker.fabric_setCurrentEventLevelType(newLevelType);
 		}
 	}
 }
