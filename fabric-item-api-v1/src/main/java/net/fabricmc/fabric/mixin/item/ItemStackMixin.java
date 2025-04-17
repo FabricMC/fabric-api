@@ -16,26 +16,44 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.function.Consumer;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.component.ComponentType;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;
+import net.fabricmc.fabric.impl.item.ComponentTooltipAppenderRegistryImpl;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
+import net.fabricmc.fabric.impl.item.VanillaTooltipAppenderOrder;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin implements FabricItemStack {
@@ -71,5 +89,125 @@ public abstract class ItemStackMixin implements FabricItemStack {
 		}
 
 		original.call(instance, amount, serverWorld, serverPlayerEntity, consumer);
+	}
+
+	@ModifyArg(method = "appendTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;appendComponentTooltip(Lnet/minecraft/component/ComponentType;Lnet/minecraft/item/Item$TooltipContext;Lnet/minecraft/component/type/TooltipDisplayComponent;Ljava/util/function/Consumer;Lnet/minecraft/item/tooltip/TooltipType;)V"))
+	private ComponentType<?> preAppendComponentTooltip(
+			ComponentType<?> componentType,
+			@Local(argsOnly = true) Item.TooltipContext context,
+			@Local(argsOnly = true) TooltipDisplayComponent displayComponent,
+			@Local(argsOnly = true) TooltipType type,
+			@Local(argsOnly = true) Consumer<Text> textConsumer,
+			@Share("index") LocalIntRef index
+	) {
+		preAppendTooltip(componentType, context, displayComponent, textConsumer, type, index);
+		return componentType;
+	}
+
+	@ModifyArg(method = "appendTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/component/type/TooltipDisplayComponent;shouldDisplay(Lnet/minecraft/component/ComponentType;)Z"))
+	private ComponentType<?> preShouldDisplay(
+			ComponentType<?> componentType,
+			@Local(argsOnly = true) Item.TooltipContext context,
+			@Local(argsOnly = true) TooltipDisplayComponent displayComponent,
+			@Local(argsOnly = true) TooltipType type,
+			@Local(argsOnly = true) Consumer<Text> textConsumer,
+			@Share("index") LocalIntRef index
+	) {
+		preAppendTooltip(componentType, context, displayComponent, textConsumer, type, index);
+		return componentType;
+	}
+
+	@Inject(method = "appendTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;appendAttributeModifiersTooltip(Ljava/util/function/Consumer;Lnet/minecraft/component/type/TooltipDisplayComponent;Lnet/minecraft/entity/player/PlayerEntity;)V"))
+	private void preAttributeModifiers(
+			Item.TooltipContext context,
+			TooltipDisplayComponent displayComponent,
+			@Nullable PlayerEntity player,
+			TooltipType type,
+			Consumer<Text> textConsumer,
+			CallbackInfo ci,
+			@Share("index") LocalIntRef index
+	) {
+		// Special case: attribute modifiers are extracted into a separate method
+		preAppendTooltip(DataComponentTypes.ATTRIBUTE_MODIFIERS, context, displayComponent, textConsumer, type, index);
+	}
+
+	@Inject(method = "appendTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/DefaultedRegistry;getId(Ljava/lang/Object;)Lnet/minecraft/util/Identifier;"))
+	private void postTooltipsAdvanced(
+			Item.TooltipContext context,
+			TooltipDisplayComponent displayComponent,
+			@Nullable PlayerEntity player,
+			TooltipType type,
+			Consumer<Text> textConsumer,
+			CallbackInfo ci,
+			@Share("index") LocalIntRef index
+	) {
+		preAppendTooltip(null, context, displayComponent, textConsumer, type, index);
+	}
+
+	@ModifyExpressionValue(method = "appendTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/tooltip/TooltipType;isAdvanced()Z"))
+	private boolean postTooltipsNonAdvanced(
+			boolean isAdvanced,
+			Item.TooltipContext context,
+			TooltipDisplayComponent displayComponent,
+			@Nullable PlayerEntity player,
+			TooltipType type,
+			Consumer<Text> textConsumer,
+			@Share("index") LocalIntRef index
+	) {
+		if (!isAdvanced) {
+			preAppendTooltip(null, context, displayComponent, textConsumer, type, index);
+		}
+
+		return isAdvanced;
+	}
+
+	@Unique
+	private void preAppendTooltip(
+			@Nullable ComponentType<?> componentType,
+			Item.TooltipContext context,
+			TooltipDisplayComponent displayComponent,
+			Consumer<Text> textConsumer,
+			TooltipType tooltipType,
+			LocalIntRef index
+	) {
+		if (index.get() == 0) {
+			ComponentTooltipAppenderRegistryImpl.INSTANCE.onFirst((ItemStack) (Object) this, context, displayComponent, textConsumer, tooltipType);
+		}
+
+		List<ComponentType<?>> vanillaOrder = VanillaTooltipAppenderOrder.getVanillaOrder();
+
+		if (index.get() > vanillaOrder.size()) {
+			return;
+		}
+
+		// Find out which vanilla tooltip appenders we may have skipped over and run their anchored appenders first
+
+		while (true) {
+			if (index.get() > 0) {
+				ComponentType<?> prevComponentInOrder = vanillaOrder.get(index.get() - 1);
+				HashSet<ComponentType<?>> cycleDetector = new HashSet<>();
+				cycleDetector.add(prevComponentInOrder);
+				ComponentTooltipAppenderRegistryImpl.INSTANCE.onAfter((ItemStack) (Object) this, prevComponentInOrder, context, displayComponent, textConsumer, tooltipType, cycleDetector);
+			}
+
+			if (index.get() == vanillaOrder.size()) {
+				index.set(index.get() + 1);
+				break;
+			}
+
+			ComponentType<?> componentInOrder = vanillaOrder.get(index.get());
+			HashSet<ComponentType<?>> cycleDetector = new HashSet<>();
+			cycleDetector.add(componentInOrder);
+			ComponentTooltipAppenderRegistryImpl.INSTANCE.onBefore((ItemStack) (Object) this, componentInOrder, context, displayComponent, textConsumer, tooltipType, cycleDetector);
+			index.set(index.get() + 1);
+
+			if (componentInOrder == componentType) {
+				break;
+			}
+		}
+
+		if (componentType == null) {
+			ComponentTooltipAppenderRegistryImpl.INSTANCE.onLast((ItemStack) (Object) this, context, displayComponent, textConsumer, tooltipType);
+		}
 	}
 }
