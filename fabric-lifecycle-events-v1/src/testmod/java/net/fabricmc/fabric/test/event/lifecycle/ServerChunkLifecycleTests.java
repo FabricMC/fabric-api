@@ -103,27 +103,36 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		});
 
 		ServerTickEvents.END_WORLD_TICK.register(world -> {
-			if (world.getTime() % 20 != 0) { // limit to 1 per second
-				return;
-			}
+			if (world.getTime() % 20 == 0) { // limit to 1 per second
+				Object2IntMap<ChunkLevelType> levelTypes = worldsChunkLevelEvents.get(world.getRegistryKey().getValue());
 
-			Object2IntMap<ChunkLevelType> levelTypes = worldsChunkLevelEvents.get(world.getRegistryKey().getValue());
-
-			if (levelTypes == null) {
-				return;
-			}
-
-			if (!levelTypes.isEmpty()) {
-				StringBuilder sb = new StringBuilder(world.getRegistryKey().getValue() + " ");
-				// Logs the number of level type changes for each ChunkLevelType, only logs the newLevelType
-				levelTypes.forEach((newLevelType, numOfEvents) -> sb.append(newLevelType).append(": ").append(numOfEvents).append(", "));
-				LOGGER.info(sb.toString());
-				levelTypes.clear();
+				if (levelTypes != null && !levelTypes.isEmpty()) {
+					StringBuilder sb = new StringBuilder(world.getRegistryKey().getValue() + " ");
+					// Logs the number of level type changes for each ChunkLevelType, only logs the newLevelType
+					levelTypes.forEach((newLevelType, numOfEvents) -> sb.append(newLevelType).append(": ").append(numOfEvents).append(", "));
+					LOGGER.info(sb.toString());
+					levelTypes.clear();
+				}
 			}
 		});
 
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			// clear everything otherwise it will trip the test incorrectly when you open another world
+			worldsChunkLevelTypeTracker.forEach((id, chunks) -> {
+				final Object2IntMap<ChunkLevelType> totals = new Object2IntOpenHashMap<>();
+				chunks.forEach((chunkPos, chunkLevelTypeEvent) -> {
+					totals.mergeInt(chunkLevelTypeEvent.newLevelType(), 1, Integer::sum);
+				});
+
+				if (totals.containsKey(ChunkLevelType.FULL) || totals.containsKey(ChunkLevelType.BLOCK_TICKING) || totals.containsKey(ChunkLevelType.ENTITY_TICKING)) {
+					StringBuilder sb = new StringBuilder("CHUNK_LEVEL_TYPE_CHANGE expected all chunks to be INACCESSIBLE for " + id + ", instead got ");
+					totals.forEach((chunkLevelType, finalTotal) -> {
+						sb.append(chunkLevelType).append(": ").append(finalTotal);
+					});
+					LOGGER.error(sb.toString());
+				}
+			});
+
+			// clear everything otherwise it may trip the test incorrectly when you open another world
 			worldsChunkLevelEvents.clear();
 			worldsChunkLevelTypeTracker.clear();
 		});
