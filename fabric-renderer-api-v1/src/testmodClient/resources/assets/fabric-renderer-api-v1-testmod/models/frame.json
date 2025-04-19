@@ -1,0 +1,9 @@
+{
+  "fabric:type": "fabric-renderer-api-v1-testmod:builtin_mesh",
+  "parent": "block/block",
+  "textures": {
+    "frame": "block/obsidian",
+    "particle": "#frame"
+  },
+  "mesh": "frame"
+}

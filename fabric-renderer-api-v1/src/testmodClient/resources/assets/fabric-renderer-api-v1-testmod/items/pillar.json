@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "minecraft:block/stone"
+    "model": "fabric-renderer-api-v1-testmod:pillar"
   }
 }

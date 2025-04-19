@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
+import net.minecraft.client.render.model.BakedGeometry;
 import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.client.render.model.Geometry;
+import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.SimpleModel;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -33,34 +33,23 @@ import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
 
-public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Unbaked, SimpleModel {
-	private static final SpriteIdentifier WHITE_CONCRETE_SPRITE_ID = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.ofVanilla("block/white_concrete"));
-
+public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 	// (B - A) is the side length of a regular octagon that fits in a unit square.
 	// The line from A to B is centered on the line from 0 to 1.
 	private static final float A = (float) (1 - Math.sqrt(2) / 2);
 	private static final float B = (float) (Math.sqrt(2) / 2);
 
-	private final ShadeMode shadeMode;
-
-	public OctagonalColumnUnbakedBlockStateModel(ShadeMode shadeMode) {
-		this.shadeMode = shadeMode;
-	}
-
 	@Override
-	public void resolve(Resolver resolver) {
-	}
-
-	@Override
-	public BlockStateModel bake(Baker baker) {
-		Sprite whiteConcreteSprite = baker.getSpriteGetter().get(WHITE_CONCRETE_SPRITE_ID, this);
+	public BakedGeometry bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, SimpleModel model) {
+		MutableMesh builder = Renderer.get().mutableMesh();
+		QuadEmitter emitter = builder.emitter();
 
 		MaterialFinder finder = Renderer.get().materialFinder();
 		RenderMaterial glintMaterial = finder.glintMode(GlintMode.STANDARD).shadeMode(shadeMode).find();
 
-		MutableMesh builder = Renderer.get().mutableMesh();
-		QuadEmitter emitter = builder.emitter();
+		Sprite sprite = baker.getSpriteGetter().get(textures.get("column"), model);
 
 		// up
 
@@ -69,7 +58,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, 1, 1, A);
 		emitter.pos(3, B, 1, 0);
 		emitter.cullFace(Direction.UP);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.emit();
 
 		emitter.pos(0, 0, 1, A);
@@ -77,7 +66,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, 0.5f, 1, 0.5f);
 		emitter.pos(3, A, 1, 0);
 		emitter.cullFace(Direction.UP);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.emit();
 
 		emitter.pos(0, 0, 1, B);
@@ -85,7 +74,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, B, 1, 1);
 		emitter.pos(3, 0.5f, 1, 0.5f);
 		emitter.cullFace(Direction.UP);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.emit();
 
 		emitter.pos(0, 0.5f, 1, 0.5f);
@@ -93,7 +82,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, 1, 1, B);
 		emitter.pos(3, 1, 1, A);
 		emitter.cullFace(Direction.UP);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.emit();
 
 		// down
@@ -103,7 +92,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, 1, 0, B);
 		emitter.pos(3, B, 0, 1);
 		emitter.cullFace(Direction.DOWN);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.emit();
 
 		emitter.pos(0, 0, 0, B);
@@ -111,7 +100,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, 0.5f, 0, 0.5f);
 		emitter.pos(3, A, 0, 1);
 		emitter.cullFace(Direction.DOWN);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.emit();
 
 		emitter.pos(0, 0, 0, A);
@@ -119,7 +108,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, B, 0, 0);
 		emitter.pos(3, 0.5f, 0, 0.5f);
 		emitter.cullFace(Direction.DOWN);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.emit();
 
 		emitter.pos(0, 0.5f, 0, 0.5f);
@@ -127,7 +116,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, 1, 0, A);
 		emitter.pos(3, 1, 0, B);
 		emitter.cullFace(Direction.DOWN);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.emit();
 
 		// north
@@ -136,7 +125,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, A, 0, 0);
 		emitter.pos(3, A, 1, 0);
 		emitter.cullFace(Direction.NORTH);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.material(glintMaterial);
 		emitter.emit();
 
@@ -145,7 +134,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(1, A, 0, 0);
 		emitter.pos(2, 0, 0, A);
 		emitter.pos(3, 0, 1, A);
-		cornerSprite(emitter, whiteConcreteSprite);
+		cornerSprite(emitter, sprite);
 		emitter.material(glintMaterial);
 		emitter.emit();
 
@@ -155,7 +144,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, 0, 0, B);
 		emitter.pos(3, 0, 1, B);
 		emitter.cullFace(Direction.WEST);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.material(glintMaterial);
 		emitter.emit();
 
@@ -164,7 +153,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(1, 0, 0, B);
 		emitter.pos(2, A, 0, 1);
 		emitter.pos(3, A, 1, 1);
-		cornerSprite(emitter, whiteConcreteSprite);
+		cornerSprite(emitter, sprite);
 		emitter.material(glintMaterial);
 		emitter.emit();
 
@@ -174,7 +163,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, B, 0, 1);
 		emitter.pos(3, B, 1, 1);
 		emitter.cullFace(Direction.SOUTH);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.material(glintMaterial);
 		emitter.emit();
 
@@ -183,7 +172,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(1, B, 0, 1);
 		emitter.pos(2, 1, 0, B);
 		emitter.pos(3, 1, 1, B);
-		cornerSprite(emitter, whiteConcreteSprite);
+		cornerSprite(emitter, sprite);
 		emitter.material(glintMaterial);
 		emitter.emit();
 
@@ -193,7 +182,7 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(2, 1, 0, A);
 		emitter.pos(3, 1, 1, A);
 		emitter.cullFace(Direction.EAST);
-		emitter.spriteBake(whiteConcreteSprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.material(glintMaterial);
 		emitter.emit();
 
@@ -202,11 +191,11 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.pos(1, 1, 0, A);
 		emitter.pos(2, B, 0, 0);
 		emitter.pos(3, B, 1, 0);
-		cornerSprite(emitter, whiteConcreteSprite);
+		cornerSprite(emitter, sprite);
 		emitter.material(glintMaterial);
 		emitter.emit();
 
-		return new SingleMeshBlockStateModel(builder.immutableCopy(), whiteConcreteSprite);
+		return new MeshBakedGeometry(builder.immutableCopy());
 	}
 
 	private static void cornerSprite(QuadEmitter emitter, Sprite sprite) {
@@ -217,10 +206,5 @@ public class OctagonalColumnUnbakedBlockStateModel implements BlockStateModel.Un
 		emitter.uv(3, B, 0);
 		// Map [0, 1] coordinates to sprite atlas coordinates. spriteBake assumes [0, 16] unless we pass the BAKE_NORMALIZED flag.
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_NORMALIZED);
-	}
-
-	@Override
-	public String name() {
-		return getClass().getName();
 	}
 }

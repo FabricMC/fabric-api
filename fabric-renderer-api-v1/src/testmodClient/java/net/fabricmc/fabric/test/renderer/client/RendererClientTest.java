@@ -16,38 +16,23 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
-import net.fabricmc.fabric.test.renderer.OctagonalColumnBlock;
+import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
+import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
 import net.fabricmc.fabric.test.renderer.Registration;
+import net.fabricmc.fabric.test.renderer.RendererTest;
 
 public final class RendererClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ModelLoadingPlugin.register(pluginContext -> {
-			pluginContext.registerBlockStateResolver(Registration.FRAME_BLOCK, ctx -> {
-				ctx.setModel(ctx.block().getDefaultState(), new FrameUnbakedBlockStateModel().cached());
-			});
+		UnbakedModelDeserializer.register(RendererTest.id("builtin_mesh"), new BuiltInMeshUnbakedModelDeserializer());
 
-			pluginContext.registerBlockStateResolver(Registration.PILLAR_BLOCK, ctx -> {
-				ctx.setModel(ctx.block().getDefaultState(), new PillarUnbakedBlockStateModel().cached());
-			});
-
-			pluginContext.registerBlockStateResolver(Registration.OCTAGONAL_COLUMN_BLOCK, ctx -> {
-				BlockState state = ctx.block().getDefaultState();
-				ctx.setModel(state.with(OctagonalColumnBlock.VANILLA_SHADE_MODE, false), new OctagonalColumnUnbakedBlockStateModel(ShadeMode.ENHANCED).cached());
-				ctx.setModel(state.with(OctagonalColumnBlock.VANILLA_SHADE_MODE, true), new OctagonalColumnUnbakedBlockStateModel(ShadeMode.VANILLA).cached());
-			});
-
-			pluginContext.registerBlockStateResolver(Registration.RIVERSTONE_BLOCK, ctx -> {
-				ctx.setModel(ctx.block().getDefaultState(), new RiverstoneUnbakedBlockStateModel().cached());
-			});
-		});
+		CustomUnbakedBlockStateModel.register(RendererTest.id("biome_dependent"), BiomeDependentBlockStateModel.Unbaked.CODEC);
+		CustomUnbakedBlockStateModel.register(RendererTest.id("frame"), FrameBlockStateModel.Unbaked.CODEC);
+		CustomUnbakedBlockStateModel.register(RendererTest.id("pillar"), PillarBlockStateModel.Unbaked.CODEC);
 
 		// We don't specify a material for the frame mesh,
 		// so it will use the default material, i.e. the one from BlockRenderLayerMap.
