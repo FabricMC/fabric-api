@@ -34,7 +34,7 @@ import net.minecraft.util.collection.Weighted;
 import net.fabricmc.fabric.impl.client.model.loading.CustomUnbakedBlockStateModelRegistry;
 
 @Mixin(BlockStateModel.Unbaked.class)
-interface UnbakedBlockStateModelMixin {
+interface BlockStateModelUnbakedMixin {
 	@Redirect(method = "<clinit>()V", at = @At(value = "INVOKE", target = "com/mojang/serialization/Codec.flatComapMap(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false, ordinal = 0))
 	private static Codec<WeightedBlockStateModel.Unbaked> replaceWeightedCodec(Codec<List<Weighted<ModelVariant>>> codec, Function<?, ?> to, Function<?, ?> from) {
 		return CustomUnbakedBlockStateModelRegistry.WEIGHTED_MODEL_CODEC;

@@ -8,7 +8,7 @@
     "JsonUnbakedModelMixin",
     "ModelBakerBakedModelsMixin",
     "ModelBakerMixin",
-    "UnbakedBlockStateModelMixin"
+    "BlockStateModelUnbakedMixin"
   ],
   "injectors": {
     "defaultRequire": 1
