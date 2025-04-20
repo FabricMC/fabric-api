@@ -1,0 +1,13 @@
+{
+  "fabric-data-attachment-api-v1.unknown-target.attachment-identifier": "Identificativo allegato: %s",
+  "fabric-data-attachment-api-v1.unknown-target.block-entity-position": "Posizione blocco-entità: %s",
+  "fabric-data-attachment-api-v1.unknown-target.chunk-position": "Posizione chunk: %s",
+  "fabric-data-attachment-api-v1.unknown-target.entity-network-id": "ID rete entità: %s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type": "Tipo obiettivo: %s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.block-entity": "Blocco-entità",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.chunk": "Chunk",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.entity": "Entità",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.world": "Mondo",
+  "fabric-data-attachment-api-v1.unknown-target.title": "Ricevuto cambiamento d'allegato per obiettivo sconosciuto!",
+  "fabric-data-attachment-api-v1.unknown-target.world": "Mondo: %s"
+}
