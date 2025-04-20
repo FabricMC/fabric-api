@@ -1,0 +1,13 @@
+{
+  "fabric-data-attachment-api-v1.unknown-target.attachment-identifier": "Attachment identifier: %s",
+  "fabric-data-attachment-api-v1.unknown-target.block-entity-position": "Block entity position: %s",
+  "fabric-data-attachment-api-v1.unknown-target.chunk-position": "Chunk position: %s",
+  "fabric-data-attachment-api-v1.unknown-target.entity-network-id": "Entity network ID: %s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type": "Target type: %s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.block-entity": "Block entity",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.chunk": "Chunk",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.entity": "Entity",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.world": "World",
+  "fabric-data-attachment-api-v1.unknown-target.title": "Received attachment change for unknown target!",
+  "fabric-data-attachment-api-v1.unknown-target.world": "World: %s"
+}

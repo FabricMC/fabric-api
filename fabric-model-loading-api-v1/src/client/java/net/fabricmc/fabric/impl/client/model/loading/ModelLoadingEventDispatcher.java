@@ -40,8 +40,10 @@ import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
+import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedExtraModel;
 
 public class ModelLoadingEventDispatcher {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingEventDispatcher.class);
@@ -63,6 +65,10 @@ public class ModelLoadingEventDispatcher {
 				LOGGER.error("Failed to initialize model loading plugin", exception);
 			}
 		}
+	}
+
+	public Map<ExtraModelKey<?>, UnbakedExtraModel<?>> getExtraModels() {
+		return pluginContext.extraModels;
 	}
 
 	public Map<Identifier, UnbakedModel> modifyModelsOnLoad(Map<Identifier, UnbakedModel> models) {

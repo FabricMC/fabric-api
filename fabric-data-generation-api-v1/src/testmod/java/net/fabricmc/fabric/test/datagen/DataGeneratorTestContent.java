@@ -35,6 +35,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -51,6 +52,8 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static Block BLOCK_WITHOUT_LOOT_TABLE;
 	public static Block BLOCK_WITH_VANILLA_LOOT_TABLE;
 	public static Block BLOCK_THAT_DROPS_NOTHING;
+
+	public static SoundEvent TEST_SOUND;
 
 	public static EntityType<?> SIMPLE_ENTITY_TYPE;
 	public static EntityType<?> ENTITY_TYPE_WITHOUT_LOOT_TABLE;
@@ -88,6 +91,8 @@ public class DataGeneratorTestContent implements ModInitializer {
 				.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
 				.displayName(Text.translatable("fabric-data-gen-api-v1-testmod.simple_item_group"))
 				.build());
+
+		TEST_SOUND = Registry.register(Registries.SOUND_EVENT, Identifier.of(MOD_ID, "test_sound"), SoundEvent.of(Identifier.of(MOD_ID, "test_sound")));
 
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, TestDatagenObject.CODEC);
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY, TestDatagenObject.CODEC);

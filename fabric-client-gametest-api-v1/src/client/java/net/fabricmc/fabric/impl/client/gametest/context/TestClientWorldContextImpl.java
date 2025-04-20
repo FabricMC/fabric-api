@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.fabricmc.fabric.mixin.client.gametest.ClientChunkManagerAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.ClientChunkMapAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.ClientChunkManagerClientChunkMapAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.ClientWorldAccessor;
 
 public class TestClientWorldContextImpl implements TestClientWorldContext {
@@ -55,7 +55,7 @@ public class TestClientWorldContextImpl implements TestClientWorldContext {
 		int viewDistance = client.options.getClampedViewDistance();
 		ClientWorld world = Objects.requireNonNull(client.world);
 		ClientChunkManager.ClientChunkMap chunks = ((ClientChunkManagerAccessor) world.getChunkManager()).getChunks();
-		ClientChunkMapAccessor chunksAccessor = (ClientChunkMapAccessor) (Object) chunks;
+		ClientChunkManagerClientChunkMapAccessor chunksAccessor = (ClientChunkManagerClientChunkMapAccessor) (Object) chunks;
 		int centerChunkX = chunksAccessor.getCenterChunkX();
 		int centerChunkZ = chunksAccessor.getCenterChunkZ();
 

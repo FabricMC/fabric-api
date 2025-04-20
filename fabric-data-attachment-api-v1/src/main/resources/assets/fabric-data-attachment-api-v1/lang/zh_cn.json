@@ -1,0 +1,13 @@
+{
+  "fabric-data-attachment-api-v1.unknown-target.attachment-identifier": "附件标识符：%s",
+  "fabric-data-attachment-api-v1.unknown-target.block-entity-position": "方块实体位置：%s",
+  "fabric-data-attachment-api-v1.unknown-target.chunk-position": "区块位置：%s",
+  "fabric-data-attachment-api-v1.unknown-target.entity-network-id": "实体网络 ID：%s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type": "目标类型：%s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.block-entity": "方块实体",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.chunk": "区块",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.entity": "实体",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.world": "世界",
+  "fabric-data-attachment-api-v1.unknown-target.title": "收到了未知目标的附件更改！",
+  "fabric-data-attachment-api-v1.unknown-target.world": "世界：%s"
+}

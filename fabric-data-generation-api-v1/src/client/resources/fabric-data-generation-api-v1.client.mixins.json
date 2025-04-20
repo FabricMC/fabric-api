@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "MinecraftClientMixin",
-    "ModelProviderBlockDefinitionsMixin",
+    "ModelProviderBlockStateSuppliersMixin",
     "ModelProviderItemAssetsMixin",
     "ModelProviderMixin"
   ],

@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.model.loading;
 
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -30,8 +31,10 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
+import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedExtraModel;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -39,8 +42,9 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelLoadingPluginContextImpl.class);
 
 	final Map<Block, BlockStateResolver> blockStateResolvers = new IdentityHashMap<>();
+	final Map<ExtraModelKey<?>, UnbakedExtraModel<?>> extraModels = new HashMap<>();
 
-	private static final Identifier[] MODEL_MODIFIER_PHASES = new Identifier[] { ModelModifier.OVERRIDE_PHASE, ModelModifier.DEFAULT_PHASE, ModelModifier.WRAP_PHASE, ModelModifier.WRAP_LAST_PHASE };
+	private static final Identifier[] MODEL_MODIFIER_PHASES = new Identifier[]{ModelModifier.OVERRIDE_PHASE, ModelModifier.DEFAULT_PHASE, ModelModifier.WRAP_PHASE, ModelModifier.WRAP_LAST_PHASE};
 
 	private final Event<ModelModifier.OnLoad> onLoadModifiers = EventFactory.createWithPhases(ModelModifier.OnLoad.class, modifiers -> (model, context) -> {
 		for (ModelModifier.OnLoad modifier : modifiers) {
@@ -122,6 +126,16 @@ public class ModelLoadingPluginContextImpl implements ModelLoadingPlugin.Context
 
 		if (blockStateResolvers.put(block, resolver) != null) {
 			throw new IllegalArgumentException("Duplicate block state resolver for " + block);
+		}
+	}
+
+	@Override
+	public <T> void addModel(ExtraModelKey<T> key, UnbakedExtraModel<T> model) {
+		Objects.requireNonNull(key, "key cannot be null");
+		Objects.requireNonNull(model, "model cannot be null");
+
+		if (extraModels.putIfAbsent(key, model) != null) {
+			throw new IllegalArgumentException("Already have a model for this key");
 		}
 	}
 

@@ -1,0 +1,13 @@
+{
+  "fabric-data-attachment-api-v1.unknown-target.attachment-identifier": "Bezeichner des Anhangs: %s",
+  "fabric-data-attachment-api-v1.unknown-target.block-entity-position": "Block-Entität-Position: %s",
+  "fabric-data-attachment-api-v1.unknown-target.chunk-position": "Chunk-Position: %s",
+  "fabric-data-attachment-api-v1.unknown-target.entity-network-id": "Entität-Netzwerk-ID: %s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type": "Zieltyp: %s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.block-entity": "Block-Entität",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.chunk": "Chunk",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.entity": "Entität",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.world": "Welt",
+  "fabric-data-attachment-api-v1.unknown-target.title": "Anhangsänderung für unbekanntes Ziel erhalten!",
+  "fabric-data-attachment-api-v1.unknown-target.world": "Welt: %s"
+}

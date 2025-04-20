@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.content.registry;
+package net.fabricmc.fabric.impl.client.model.loading;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import java.util.Map;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
+import org.jetbrains.annotations.Nullable;
 
-@Mixin(AbstractBlock.class)
-public interface AbstractBlockMixin {
-	@Invoker
-	boolean callHasRandomTicks(BlockState state);
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
+
+public interface BakedModelsHooks {
+	@Nullable
+	Map<ExtraModelKey<?>, ?> fabric_getExtraModels();
+
+	void fabric_setExtraModels(@Nullable Map<ExtraModelKey<?>, ?> extraModels);
 }

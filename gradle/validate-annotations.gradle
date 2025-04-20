@@ -1,6 +1,8 @@
-task validateAnnotations(type: ValidateAnnotations) {
+tasks.register('validateAnnotations', ValidateAnnotations) {
 	group = 'fabric'
 	description = "Validate annotations used in Fabric API code."
+
+	outputs.upToDateWhen { true } // Task has no outputs
 
 	// Only apply to default source directories since there's also generated package-info files.
 	source file("src/client/java")
@@ -9,7 +11,7 @@ task validateAnnotations(type: ValidateAnnotations) {
 	source file("src/testmodClient/java")
 }
 
-tasks.check.dependsOn validateAnnotations
+tasks.check.dependsOn "validateAnnotations"
 
 class ValidateAnnotations extends SourceTask {
 	private static final def API_STATUS_INTERNAL = ~/@ApiStatus\.Internal/

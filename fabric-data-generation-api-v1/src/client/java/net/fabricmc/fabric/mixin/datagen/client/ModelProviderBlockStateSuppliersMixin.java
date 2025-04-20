@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.impl.datagen.client.FabricModelProviderDefinitions;
 
 @Mixin(ModelProvider.BlockStateSuppliers.class)
-public class ModelProviderBlockDefinitionsMixin implements FabricModelProviderDefinitions {
+public class ModelProviderBlockStateSuppliersMixin implements FabricModelProviderDefinitions {
 	@Unique
 	private FabricDataOutput fabricDataOutput;
 

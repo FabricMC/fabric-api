@@ -3,7 +3,7 @@
  * This task should be used to easily bump the major/minor/patch version of a fabric-api module.
  * It will automatically bump the versions of dependent modules.
  */
-task bumpVersions(type: BumpVersionTask)
+tasks.register('bumpVersions', BumpVersionTask)
 
 class BumpVersionTask extends DefaultTask {
 	BumpVersionTask() {

@@ -67,6 +67,21 @@ public interface ModelLoadingPlugin {
 		void registerBlockStateResolver(Block block, BlockStateResolver resolver);
 
 		/**
+		 * Add a model that will be loaded, baked, and made available through
+		 * {@link FabricBakedModelManager#getModel(ExtraModelKey)}.
+		 *
+		 * <p>Dependency gathering and baking is performed by an {@link UnbakedExtraModel}. This allows you to depend
+		 * on multiple models files at once, baking them into a single dynamic model. To load a single model, then
+		 * {@link SimpleUnbakedExtraModel} may be used.
+		 *
+		 * @param key   The unique key for this model.
+		 * @param model The "unbaked" model, responsible for loading dependencies and backing.
+		 * @param <T>   The type of the baked model.
+		 * @see SimpleUnbakedExtraModel
+		 */
+		<T> void addModel(ExtraModelKey<T> key, UnbakedExtraModel<T> model);
+
+		/**
 		 * Event access to monitor unbaked model loads and replace the loaded model.
 		 *
 		 * <p>Replacements done by listeners of this callback affect child models (that is, models whose

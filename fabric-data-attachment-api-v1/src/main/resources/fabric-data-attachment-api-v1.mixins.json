@@ -9,7 +9,7 @@
     "ChunkDataSenderMixin",
     "ChunkMixin",
     "ClientConnectionMixin",
-    "CustomPayloadS2CPacketAccessor",
+    "CustomPayloadC2SPacketAccessor",
     "EntityMixin",
     "SerializedChunkMixin",
     "ServerWorldMixin",

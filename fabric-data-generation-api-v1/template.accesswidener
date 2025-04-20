@@ -53,5 +53,6 @@ transitive-accessible class net/minecraft/client/data/BlockStateModelGenerator$C
 
 accessible class net/minecraft/client/data/ModelProvider$ItemAssets
 accessible class net/minecraft/client/data/ModelProvider$BlockStateSuppliers
+accessible field net/minecraft/client/data/ModelProvider$BlockStateSuppliers blockStateSuppliers Ljava/util/Map;
 
 ### Generated access wideners below

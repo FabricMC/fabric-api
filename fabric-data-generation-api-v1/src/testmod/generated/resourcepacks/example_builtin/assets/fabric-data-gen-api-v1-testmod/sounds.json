@@ -1,0 +1,29 @@
+{
+  "test_sound": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "minecraft:mob/parrot/idle1",
+        "volume": 0.7
+      },
+      "minecraft:mob/parrot/idle2",
+      {
+        "type": "event",
+        "name": "minecraft:block.anvil.hit"
+      },
+      {
+        "type": "event",
+        "name": "minecraft:item.armor.equip_generic"
+      },
+      {
+        "attenuation_distance": 8,
+        "name": "minecraft:mob/parrot/idle",
+        "pitch": 0.5,
+        "preload": true,
+        "stream": true,
+        "volume": 0.3
+      }
+    ],
+    "subtitle": "subtitles.fabric-data-gen-api-v1-testmod.test_sound"
+  }
+}

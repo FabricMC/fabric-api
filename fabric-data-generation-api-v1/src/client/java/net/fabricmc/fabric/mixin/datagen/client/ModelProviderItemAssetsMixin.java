@@ -17,18 +17,18 @@
 package net.fabricmc.fabric.mixin.datagen.client;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.data.ModelProvider;
 import net.minecraft.client.item.ItemAsset;
 import net.minecraft.item.BlockItem;
@@ -37,15 +37,19 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.impl.datagen.client.FabricModelProviderDefinitions;
+import net.fabricmc.fabric.impl.datagen.client.FabricItemAssetDefinitions;
 
 @Mixin(ModelProvider.ItemAssets.class)
-public class ModelProviderItemAssetsMixin implements FabricModelProviderDefinitions {
-	@Shadow
-	@Final
-	private Map<Item, ItemAsset> itemAssets;
+public class ModelProviderItemAssetsMixin implements FabricItemAssetDefinitions {
 	@Unique
 	private FabricDataOutput fabricDataOutput;
+	@Unique
+	private Set<Block> processedBlocks;
+
+	@Override
+	public void fabric_setProcessedBlocks(Set<Block> processedBlocks) {
+		this.processedBlocks = processedBlocks;
+	}
 
 	@Override
 	public void setFabricDataOutput(FabricDataOutput fabricDataOutput) {
@@ -58,7 +62,7 @@ public class ModelProviderItemAssetsMixin implements FabricModelProviderDefiniti
 
 		if (fabricDataOutput != null) {
 			// Only generate the item model if the block state json was registered
-			if (itemAssets.containsKey(blockItem)) {
+			if (!processedBlocks.contains(blockItem.getBlock())) {
 				return true;
 			}
 
@@ -68,7 +72,7 @@ public class ModelProviderItemAssetsMixin implements FabricModelProviderDefiniti
 			}
 		}
 
-		return original.call(map, blockItem);
+		return original.call(map, o);
 	}
 
 	@Redirect(method = "resolveAndValidate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0, remap = false))

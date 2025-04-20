@@ -7,7 +7,7 @@
     "client.block.model.BlockModelPartMixin",
     "client.block.model.BlockStateModelMixin",
     "client.block.model.GeometryBakedModelMixin",
-    "client.block.model.MultipartBakedModelAccessor",
+    "client.block.model.MultipartBlockStateModelMultipartBakedModelAccessor",
     "client.block.model.MultipartBlockStateModelMixin",
     "client.block.model.SimpleBlockStateModelMixin",
     "client.block.model.WeightedBlockStateModelMixin",
@@ -23,8 +23,8 @@
     "client.block.render.PistonBlockEntityRendererMixin",
     "client.block.render.SnowGolemPumpkinFeatureRendererMixin",
     "client.item.BasicItemModelMixin",
-    "client.item.UnbakedBasicItemModelMixin",
-    "client.item.LayerRenderStateMixin"
+    "client.item.BasicItemModelUnbakedMixin",
+    "client.item.ItemRenderStateLayerRenderStateMixin"
   ],
   "injectors": {
     "defaultRequire": 1

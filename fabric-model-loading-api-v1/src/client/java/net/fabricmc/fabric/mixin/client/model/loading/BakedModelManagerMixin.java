@@ -32,29 +32,46 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.item.ItemAssetsLoader;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.render.model.BlockStatesLoader;
+import net.minecraft.client.render.model.ModelBaker;
+import net.minecraft.client.render.model.ReferencedModelsCollector;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
+import net.fabricmc.fabric.api.client.model.loading.v1.FabricBakedModelManager;
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
+import net.fabricmc.fabric.impl.client.model.loading.BakedModelsHooks;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 
 @Mixin(BakedModelManager.class)
-abstract class BakedModelManagerMixin {
+abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 	@Unique
 	@Nullable
 	private volatile CompletableFuture<ModelLoadingEventDispatcher> eventDispatcherFuture;
 
+	@Unique
+	@Nullable
+	private Map<ExtraModelKey<?>, ?> extraModels;
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> @Nullable T getModel(ExtraModelKey<T> key) {
+		return extraModels == null ? null : (T) extraModels.get(key);
+	}
+
 	@Inject(method = "reload", at = @At("HEAD"))
 	private void onHeadReload(ResourceReloader.Synchronizer synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-		eventDispatcherFuture = ModelLoadingPluginManager.preparePlugins(manager, prepareExecutor).thenApplyAsync(ModelLoadingEventDispatcher::new);
+		eventDispatcherFuture = ModelLoadingPluginManager.preparePlugins(manager, prepareExecutor).thenApplyAsync(ModelLoadingEventDispatcher::new, prepareExecutor);
 	}
 
 	@ModifyReturnValue(method = "reload", at = @At("RETURN"))
@@ -75,20 +92,44 @@ abstract class BakedModelManagerMixin {
 		return modelsFuture.thenCombine(eventDispatcherFuture, (models, eventDispatcher) -> eventDispatcher.modifyBlockModelsOnLoad(models));
 	}
 
+	@ModifyArg(method = "reload", at = @At(value = "INVOKE", target = "java/util/concurrent/CompletableFuture.thenApplyAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 1), index = 0)
+	private Function<Void, ?> hookTextureCollect(Function<Void, CompletableFuture<?>> function) {
+		return withModelDispatcher(function);
+	}
+
 	@ModifyArg(method = "reload", at = @At(value = "INVOKE", target = "java/util/concurrent/CompletableFuture.thenComposeAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0), index = 0)
 	private Function<Void, CompletableFuture<?>> hookModelBaking(Function<Void, CompletableFuture<?>> function) {
-		return v -> {
-			CompletableFuture<ModelLoadingEventDispatcher> future = eventDispatcherFuture;
+		return withModelDispatcher(function);
+	}
 
-			if (future == null) {
-				return function.apply(v);
-			}
-
+	@Unique
+	private <T, R> Function<T, R> withModelDispatcher(Function<T, R> function) {
+		CompletableFuture<ModelLoadingEventDispatcher> future = eventDispatcherFuture;
+		if (future == null) return function;
+		return x -> {
 			ModelLoadingEventDispatcher.CURRENT.set(future.join());
-			CompletableFuture<?> bakingResultFuture = function.apply(v);
-			ModelLoadingEventDispatcher.CURRENT.remove();
-			return bakingResultFuture;
+
+			try {
+				return function.apply(x);
+			} finally {
+				ModelLoadingEventDispatcher.CURRENT.remove();
+			}
 		};
+	}
+
+	@Inject(method = "collect", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/ReferencedModelsCollector.collectModels()Ljava/util/Map;"))
+	private static void resolveExtraModels(
+			Map<Identifier, UnbakedModel> modelMap, BlockStatesLoader.LoadedModels stateDefinition, ItemAssetsLoader.Result result, CallbackInfoReturnable<?> cir,
+			@Local ReferencedModelsCollector collector
+	) {
+		// We know eventDispatcherFuture is available, as it is required by the item and block models (hookModels).
+		ModelLoadingEventDispatcher eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
+		if (eventDispatcher != null) eventDispatcher.getExtraModels().values().forEach(collector::resolve);
+	}
+
+	@Inject(method = "upload", at = @At(value = "INVOKE_STRING", target = "net/minecraft/util/profiler/Profiler.swap(Ljava/lang/String;)V", args = "ldc=cache"))
+	private void onUpload(CallbackInfo ci, @Local ModelBaker.BakedModels bakedModels) {
+		extraModels = ((BakedModelsHooks) (Object) bakedModels).fabric_getExtraModels();
 	}
 
 	// We want to redirect the JsonUnbakedModel.deserialize call, but its return type is JsonUnbakedModel, so we can't
