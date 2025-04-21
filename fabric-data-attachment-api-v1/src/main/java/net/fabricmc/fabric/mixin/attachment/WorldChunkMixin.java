@@ -81,6 +81,11 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 	}
 
 	@Override
+	public boolean fabric_shouldTryToSync() {
+		return !fabric_isClient();
+	}
+
+	@Override
 	public boolean fabric_isClient() {
 		return this.world != null && this.world.isClient();
 	}
