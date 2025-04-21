@@ -88,7 +88,7 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public boolean fabric_isClient() {
-		return this.getWorld().isClient();
+		return this.getWorld() != null && this.getWorld().isClient();
 	}
 
 	@Override
