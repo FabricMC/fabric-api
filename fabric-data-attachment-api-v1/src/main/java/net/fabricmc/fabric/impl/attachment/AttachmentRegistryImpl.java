@@ -139,13 +139,13 @@ public final class AttachmentRegistryImpl {
 					persistenceCodec,
 					packetCodec,
 					syncPredicate,
+					copyOnDeath,
 					EventFactory.createArrayBacked(AttachmentType.AttachmentModified.class, callbacks -> (newValue, target, isClient) -> {
 						for (AttachmentType.AttachmentModified<A> callback : callbacks)
 							newValue = callback.onModify(newValue, target, isClient);
-						
+
 						return newValue;
-					}),
-					copyOnDeath
+					})
 			);
 			register(id, attachment);
 			return attachment;

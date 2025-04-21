@@ -35,8 +35,8 @@ public record AttachmentTypeImpl<A>(
 		@Nullable Codec<A> persistenceCodec,
 		@Nullable PacketCodec<? super RegistryByteBuf, A> packetCodec,
 		@Nullable AttachmentSyncPredicate syncPredicate,
-		Event<AttachmentModified<A>> modify,
-		boolean copyOnDeath
+		boolean copyOnDeath,
+		Event<AttachmentModified<A>> modify
 ) implements AttachmentType<A> {
 	@Override
 	public boolean isSynced() {
