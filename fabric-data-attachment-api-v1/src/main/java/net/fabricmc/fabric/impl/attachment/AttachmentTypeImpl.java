@@ -27,6 +27,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.event.Event;
 
 public record AttachmentTypeImpl<A>(
 		Identifier identifier,
@@ -34,6 +35,7 @@ public record AttachmentTypeImpl<A>(
 		@Nullable Codec<A> persistenceCodec,
 		@Nullable PacketCodec<? super RegistryByteBuf, A> packetCodec,
 		@Nullable AttachmentSyncPredicate syncPredicate,
+		Event<AttachmentModified<A>> modify,
 		boolean copyOnDeath
 ) implements AttachmentType<A> {
 	@Override

@@ -25,6 +25,9 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+
+import net.fabricmc.fabric.api.event.EventFactory;
+
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,6 +139,12 @@ public final class AttachmentRegistryImpl {
 					persistenceCodec,
 					packetCodec,
 					syncPredicate,
+					EventFactory.createArrayBacked(AttachmentType.AttachmentModified.class, callbacks -> (newValue, target, isClient) -> {
+						for (AttachmentType.AttachmentModified<A> callback : callbacks)
+							newValue = callback.onModify(newValue, target, isClient);
+						
+						return newValue;
+					}),
 					copyOnDeath
 			);
 			register(id, attachment);

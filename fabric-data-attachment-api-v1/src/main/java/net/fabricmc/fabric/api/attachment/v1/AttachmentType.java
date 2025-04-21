@@ -19,6 +19,9 @@ package net.fabricmc.fabric.api.attachment.v1;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+
+import net.fabricmc.fabric.api.event.Event;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -111,4 +114,10 @@ public interface AttachmentType<A> {
 	 * when a mob is converted (e.g. zombie → drowned)
 	 */
 	boolean copyOnDeath();
+
+	Event<AttachmentModified<A>> modify();
+
+	public interface AttachmentModified<A> {
+		A onModify(A newValue, AttachmentTarget target, boolean isClient);
+	}
 }
