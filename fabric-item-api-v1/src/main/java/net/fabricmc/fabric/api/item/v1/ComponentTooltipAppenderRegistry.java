@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.fabricmc.fabric.impl.item.ComponentTooltipAppenderRegistryImpl;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.component.ComponentType;
 import net.minecraft.item.tooltip.TooltipAppender;
+
+import net.fabricmc.fabric.impl.item.ComponentTooltipAppenderRegistryImpl;
 
 /**
  * A registry of {@link TooltipAppender} item components. Adding your item component to this registry will render the
