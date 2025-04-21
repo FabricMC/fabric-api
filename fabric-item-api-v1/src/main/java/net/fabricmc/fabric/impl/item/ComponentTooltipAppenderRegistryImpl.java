@@ -34,43 +34,35 @@ import net.minecraft.item.tooltip.TooltipAppender;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
+public final class ComponentTooltipAppenderRegistryImpl {
+	private static final List<ComponentType<? extends TooltipAppender>> first = new ArrayList<>();
+	private static final List<ComponentType<? extends TooltipAppender>> last = new ArrayList<>();
+	private static final Map<ComponentType<?>, List<ComponentType<? extends TooltipAppender>>> before = new HashMap<>();
+	private static final Map<ComponentType<?>, List<ComponentType<? extends TooltipAppender>>> after = new HashMap<>();
 
-public final class ComponentTooltipAppenderRegistryImpl implements ComponentTooltipAppenderRegistry {
-	public static final ComponentTooltipAppenderRegistryImpl INSTANCE = new ComponentTooltipAppenderRegistryImpl();
-
-	private final List<ComponentType<? extends TooltipAppender>> first = new ArrayList<>();
-	private final List<ComponentType<? extends TooltipAppender>> last = new ArrayList<>();
-	private final Map<ComponentType<?>, List<ComponentType<? extends TooltipAppender>>> before = new HashMap<>();
-	private final Map<ComponentType<?>, List<ComponentType<? extends TooltipAppender>>> after = new HashMap<>();
-
-	@Override
-	public void addFirst(ComponentType<? extends TooltipAppender> componentType) {
+	public static void addFirst(ComponentType<? extends TooltipAppender> componentType) {
 		Preconditions.checkNotNull(componentType, "componentType");
 		first.add(componentType);
 	}
 
-	@Override
-	public void addLast(ComponentType<? extends TooltipAppender> componentType) {
+	public static void addLast(ComponentType<? extends TooltipAppender> componentType) {
 		Preconditions.checkNotNull(componentType, "componentType");
 		last.add(componentType);
 	}
 
-	@Override
-	public void addBefore(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
+	public static void addBefore(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
 		Preconditions.checkNotNull(anchor, "anchor");
 		Preconditions.checkNotNull(componentType, "componentType");
 		before.computeIfAbsent(anchor, k -> new ArrayList<>()).add(componentType);
 	}
 
-	@Override
-	public void addAfter(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
+	public static void addAfter(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
 		Preconditions.checkNotNull(anchor, "anchor");
 		Preconditions.checkNotNull(componentType, "componentType");
 		after.computeIfAbsent(anchor, k -> new ArrayList<>()).add(componentType);
 	}
 
-	public void onFirst(
+	public static void onFirst(
 			ItemStack stack,
 			Item.TooltipContext context,
 			TooltipDisplayComponent displayComponent,
@@ -84,7 +76,7 @@ public final class ComponentTooltipAppenderRegistryImpl implements ComponentTool
 		}
 	}
 
-	public void onLast(
+	public static void onLast(
 			ItemStack stack,
 			Item.TooltipContext context,
 			TooltipDisplayComponent displayComponent,
@@ -98,7 +90,7 @@ public final class ComponentTooltipAppenderRegistryImpl implements ComponentTool
 		}
 	}
 
-	public void onBefore(
+	public static void onBefore(
 			ItemStack stack,
 			ComponentType<?> componentType,
 			Item.TooltipContext context,
@@ -107,16 +99,16 @@ public final class ComponentTooltipAppenderRegistryImpl implements ComponentTool
 			TooltipType type,
 			Set<ComponentType<?>> cycleDetector
 	) {
-		List<ComponentType<? extends TooltipAppender>> before = this.before.get(componentType);
+		List<ComponentType<? extends TooltipAppender>> befores = before.get(componentType);
 
-		if (before != null) {
-			for (ComponentType<? extends TooltipAppender> beforeComponentType : before) {
+		if (befores != null) {
+			for (ComponentType<? extends TooltipAppender> beforeComponentType : befores) {
 				appendCustomComponentTooltip(stack, beforeComponentType, context, displayComponent, textConsumer, type, cycleDetector);
 			}
 		}
 	}
 
-	public void onAfter(
+	public static void onAfter(
 			ItemStack stack,
 			ComponentType<?> componentType,
 			Item.TooltipContext context,
@@ -125,16 +117,16 @@ public final class ComponentTooltipAppenderRegistryImpl implements ComponentTool
 			TooltipType type,
 			Set<ComponentType<?>> cycleDetector
 	) {
-		List<ComponentType<? extends TooltipAppender>> after = this.after.get(componentType);
+		List<ComponentType<? extends TooltipAppender>> afters = after.get(componentType);
 
-		if (after != null) {
-			for (ComponentType<? extends TooltipAppender> afterComponentType : after) {
+		if (afters != null) {
+			for (ComponentType<? extends TooltipAppender> afterComponentType : afters) {
 				appendCustomComponentTooltip(stack, afterComponentType, context, displayComponent, textConsumer, type, cycleDetector);
 			}
 		}
 	}
 
-	private void appendCustomComponentTooltip(
+	private static void appendCustomComponentTooltip(
 			ItemStack stack,
 			ComponentType<? extends TooltipAppender> componentType,
 			Item.TooltipContext context,

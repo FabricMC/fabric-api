@@ -65,10 +65,10 @@ public class ComponentTooltipAppenderTest implements ModInitializer {
 						.build()
 		);
 
-		ComponentTooltipAppenderRegistry.getInstance().addFirst(happyComponent);
-		ComponentTooltipAppenderRegistry.getInstance().addLast(sadComponent);
-		ComponentTooltipAppenderRegistry.getInstance().addBefore(DataComponentTypes.UNBREAKABLE, sadderComponent);
-		ComponentTooltipAppenderRegistry.getInstance().addAfter(DataComponentTypes.LORE, saddestComponent);
+		ComponentTooltipAppenderRegistry.addFirst(happyComponent);
+		ComponentTooltipAppenderRegistry.addLast(sadComponent);
+		ComponentTooltipAppenderRegistry.addBefore(DataComponentTypes.UNBREAKABLE, sadderComponent);
+		ComponentTooltipAppenderRegistry.addAfter(DataComponentTypes.LORE, saddestComponent);
 
 		DefaultItemComponentEvents.MODIFY.register(context -> {
 			context.modify(Items.GOLDEN_SWORD, builder -> builder.add(happyComponent, TestComponent.ONE));

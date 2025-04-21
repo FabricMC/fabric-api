@@ -171,7 +171,7 @@ public abstract class ItemStackMixin implements FabricItemStack {
 			LocalIntRef index
 	) {
 		if (index.get() == 0) {
-			ComponentTooltipAppenderRegistryImpl.INSTANCE.onFirst((ItemStack) (Object) this, context, displayComponent, textConsumer, tooltipType);
+			ComponentTooltipAppenderRegistryImpl.onFirst((ItemStack) (Object) this, context, displayComponent, textConsumer, tooltipType);
 		}
 
 		List<ComponentType<?>> vanillaOrder = VanillaTooltipAppenderOrder.getVanillaOrder();
@@ -187,7 +187,7 @@ public abstract class ItemStackMixin implements FabricItemStack {
 				ComponentType<?> prevComponentInOrder = vanillaOrder.get(index.get() - 1);
 				HashSet<ComponentType<?>> cycleDetector = new HashSet<>();
 				cycleDetector.add(prevComponentInOrder);
-				ComponentTooltipAppenderRegistryImpl.INSTANCE.onAfter((ItemStack) (Object) this, prevComponentInOrder, context, displayComponent, textConsumer, tooltipType, cycleDetector);
+				ComponentTooltipAppenderRegistryImpl.onAfter((ItemStack) (Object) this, prevComponentInOrder, context, displayComponent, textConsumer, tooltipType, cycleDetector);
 			}
 
 			if (index.get() == vanillaOrder.size()) {
@@ -198,7 +198,7 @@ public abstract class ItemStackMixin implements FabricItemStack {
 			ComponentType<?> componentInOrder = vanillaOrder.get(index.get());
 			HashSet<ComponentType<?>> cycleDetector = new HashSet<>();
 			cycleDetector.add(componentInOrder);
-			ComponentTooltipAppenderRegistryImpl.INSTANCE.onBefore((ItemStack) (Object) this, componentInOrder, context, displayComponent, textConsumer, tooltipType, cycleDetector);
+			ComponentTooltipAppenderRegistryImpl.onBefore((ItemStack) (Object) this, componentInOrder, context, displayComponent, textConsumer, tooltipType, cycleDetector);
 			index.set(index.get() + 1);
 
 			if (componentInOrder == componentType) {
@@ -207,7 +207,7 @@ public abstract class ItemStackMixin implements FabricItemStack {
 		}
 
 		if (componentType == null) {
-			ComponentTooltipAppenderRegistryImpl.INSTANCE.onLast((ItemStack) (Object) this, context, displayComponent, textConsumer, tooltipType);
+			ComponentTooltipAppenderRegistryImpl.onLast((ItemStack) (Object) this, context, displayComponent, textConsumer, tooltipType);
 		}
 	}
 }
