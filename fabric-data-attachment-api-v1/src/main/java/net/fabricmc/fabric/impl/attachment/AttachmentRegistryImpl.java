@@ -25,9 +25,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
-
-import net.fabricmc.fabric.api.event.EventFactory;
-
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +36,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 
 public final class AttachmentRegistryImpl {
@@ -141,8 +139,9 @@ public final class AttachmentRegistryImpl {
 					syncPredicate,
 					copyOnDeath,
 					EventFactory.createArrayBacked(AttachmentType.AttachmentModified.class, callbacks -> (newValue, target, isClient) -> {
-						for (AttachmentType.AttachmentModified<A> callback : callbacks)
+						for (AttachmentType.AttachmentModified<A> callback : callbacks) {
 							newValue = callback.onModify(newValue, target, isClient);
+						}
 
 						return newValue;
 					})

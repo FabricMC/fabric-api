@@ -19,9 +19,6 @@ package net.fabricmc.fabric.api.attachment.v1;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
-
-import net.fabricmc.fabric.api.event.Event;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +33,7 @@ import net.minecraft.world.chunk.WorldChunk;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.Event;
 
 /**
  * An attachment allows "attaching" arbitrary data to various game objects (entities, block entities, worlds and chunks at the moment).
@@ -121,7 +119,7 @@ public interface AttachmentType<A> {
 	Event<AttachmentModified<A>> modify();
 
 	@FunctionalInterface
-	public interface AttachmentModified<A> {
+	interface AttachmentModified<A> {
 		/**
 		 * Called right before the attachment is set and lets the listener change or cancel the operation.
 		 *
