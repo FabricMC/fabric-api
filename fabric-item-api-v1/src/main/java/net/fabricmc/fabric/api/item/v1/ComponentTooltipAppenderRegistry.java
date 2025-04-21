@@ -29,7 +29,6 @@ import net.fabricmc.fabric.impl.item.ComponentTooltipAppenderRegistryImpl;
  */
 @ApiStatus.NonExtendable
 public interface ComponentTooltipAppenderRegistry {
-
 	/**
 	 * Adds the specified item component type to the list of tooltip appenders to be called first. The component will
 	 * render at the top of the tooltip.
