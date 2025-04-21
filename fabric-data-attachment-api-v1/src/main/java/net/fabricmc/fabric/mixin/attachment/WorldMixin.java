@@ -33,8 +33,8 @@ abstract class WorldMixin implements AttachmentTargetImpl {
 	public abstract DynamicRegistryManager getRegistryManager();
 
 	@Override
-	public boolean fabric_shouldTryToSync() {
-		return !this.isClient();
+	public boolean fabric_isClient() {
+		return this.isClient();
 	}
 
 	@Override

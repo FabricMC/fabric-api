@@ -92,6 +92,10 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 	}
 
 	default boolean fabric_shouldTryToSync() {
+		return !this.fabric_isClient();
+	}
+
+	default boolean fabric_isClient() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 

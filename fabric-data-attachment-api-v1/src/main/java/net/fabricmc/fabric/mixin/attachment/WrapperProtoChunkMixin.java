@@ -86,6 +86,11 @@ abstract class WrapperProtoChunkMixin extends AttachmentTargetsMixin {
 	}
 
 	@Override
+	public boolean fabric_isClient() {
+		return ((AttachmentTargetImpl) wrapped).fabric_isClient();
+	}
+
+	@Override
 	public void fabric_computeInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
 		((AttachmentTargetImpl) wrapped).fabric_computeInitialSyncChanges(player, changeOutput);
 	}

@@ -70,6 +70,11 @@ abstract class ChunkMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
+	public boolean fabric_isClient() {
+		return false;
+	}
+
+	@Override
 	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
 		// Should never happen as this is only used for sync
 		throw new UnsupportedOperationException("Chunk does not have a DynamicRegistryManager.");
