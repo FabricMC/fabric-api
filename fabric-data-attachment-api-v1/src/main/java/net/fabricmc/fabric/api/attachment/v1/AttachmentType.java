@@ -115,9 +115,23 @@ public interface AttachmentType<A> {
 	 */
 	boolean copyOnDeath();
 
+	/**
+	 * An event that is called right before this type of attachment changes on a target.
+	 */
 	Event<AttachmentModified<A>> modify();
 
+	@FunctionalInterface
 	public interface AttachmentModified<A> {
+		/**
+		 * Called right before the attachment is set and lets the listener change or cancel the operation.
+		 *
+		 * <p>The old attachment value is available on the target with {@code getAttached}.</p>
+		 *
+		 * @param newValue new attachment that is about to be set, null if attachment is being removed
+		 * @param target target to set the value upon
+		 * @param isClient isClient from the associated world when applicable, false otherwise
+		 * @return value to set onto the target, return {@code newValue} to avoid modifying it, return null to remove the attachment.
+		 */
 		A onModify(A newValue, AttachmentTarget target, boolean isClient);
 	}
 }
