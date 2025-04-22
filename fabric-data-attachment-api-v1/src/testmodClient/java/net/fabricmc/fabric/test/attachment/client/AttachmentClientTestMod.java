@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.test.attachment.client;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 
 public class AttachmentClientTestMod implements ClientModInitializer {
 	@Override
