@@ -115,12 +115,12 @@ public abstract class ChunkHolderMixin extends AbstractChunkHolder implements Ch
 		}
 	}
 
-	@Unique
+	@Override
 	public void fabric_setCurrentEventLevelType(ChunkLevelType levelType) {
 		this.fabric_currentEventLevelType = levelType;
 	}
 
-	@Unique
+	@Override
 	public ChunkLevelType fabric_getCurrentEventLevelType() {
 		return this.fabric_currentEventLevelType;
 	}
