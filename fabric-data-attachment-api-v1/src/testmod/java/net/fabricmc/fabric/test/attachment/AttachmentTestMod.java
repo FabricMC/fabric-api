@@ -116,7 +116,7 @@ public class AttachmentTestMod implements ModInitializer {
 			if (!isClient) {
 				ItemStack oldValue = target.getAttached(SYNCED_ITEM);
 
-				if (oldValue != null && oldValue.isOf(Items.BAMBOO) && newValue.isOf(Items.BONE_MEAL)) {
+				if (oldValue != null && oldValue.isOf(Items.APPLE) && newValue.isOf(Items.BONE_MEAL)) {
 					return oldValue.copyWithCount(oldValue.getCount() + 1);
 				}
 			}
