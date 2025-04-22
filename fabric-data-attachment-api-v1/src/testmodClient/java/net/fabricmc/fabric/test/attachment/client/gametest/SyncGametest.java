@@ -128,6 +128,9 @@ public class SyncGametest implements FabricClientGameTest {
 
 					// check registry objects are synced correctly
 					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.APPLE.getDefaultStack());
+
+					// check modify event happening prior to syncing
+					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.BONE_MEAL.getDefaultStack());
 				});
 
 				// safety
@@ -149,6 +152,10 @@ public class SyncGametest implements FabricClientGameTest {
 					assertHasNotSynced(world, AttachmentTestMod.SYNCED_WITH_ALL);
 					assertHasNotSynced(client.player, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 					assertHasNotSynced(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
+
+					if (Objects.requireNonNull(client.player.getAttached(AttachmentTestMod.SYNCED_ITEM)).getCount() != 2) {
+						throw new AssertionError("Synced attachment %s was not incremented on the server".formatted(AttachmentTestMod.SYNCED_ITEM.identifier()));
+					}
 				});
 
 				LOGGER.info("Setting up second phase");

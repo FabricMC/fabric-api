@@ -111,5 +111,17 @@ public class AttachmentTestMod implements ModInitializer {
 
 			return ActionResult.PASS;
 		});
+
+		SYNCED_ITEM.modify().register((newValue, target, isClient) -> {
+			if (!isClient) {
+				ItemStack oldValue = target.getAttached(SYNCED_ITEM);
+
+				if (oldValue != null && oldValue.isOf(Items.BAMBOO) && newValue.isOf(Items.BONE_MEAL)) {
+					return oldValue.copyWithCount(oldValue.getCount() + 1);
+				}
+			}
+
+			return newValue;
+		});
 	}
 }
