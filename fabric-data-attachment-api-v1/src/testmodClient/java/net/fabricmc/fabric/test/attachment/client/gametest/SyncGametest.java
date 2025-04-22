@@ -89,6 +89,11 @@ public class SyncGametest implements FabricClientGameTest {
 				int villagerId;
 			};
 
+			context.runOnClient(client -> {
+				// set client simulation distance before the server sets it
+				client.options.getSimulationDistance().setValue(12);
+			});
+
 			LOGGER.info("Setting up synced attachments before join");
 			// setup before player joins
 			serverContext.runOnServer(server -> {
@@ -131,6 +136,9 @@ public class SyncGametest implements FabricClientGameTest {
 
 					// check onModify event happening prior to syncing
 					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.BONE_MEAL.getDefaultStack());
+
+					// try syncing simulation distance attachment to see if it changes the option on the client
+					player.setAttached(AttachmentTestMod.SYNCED_REQUESTED_SIMULATION_DISTANCE, 10);
 				});
 
 				// safety
@@ -155,6 +163,10 @@ public class SyncGametest implements FabricClientGameTest {
 
 					if (Objects.requireNonNull(client.player.getAttached(AttachmentTestMod.SYNCED_ITEM)).getCount() != 2) {
 						throw new AssertionError("Synced attachment %s was not incremented on the server".formatted(AttachmentTestMod.SYNCED_ITEM.identifier()));
+					}
+
+					if (client.options.getSimulationDistance().getValue() != 10) {
+						throw new AssertionError("Simulation distance was not set as requested.");
 					}
 				});
 
