@@ -20,7 +20,7 @@ jobs:
         with:
           context: changelog
           workflow_id: release.yml
-      - uses: gradle/wrapper-validation-action@v2
+      - uses: gradle/actions/wrapper-validation@v4
       - run: ./gradlew checkVersion build publish publishMods --stacktrace --no-configuration-cache
         env:
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
