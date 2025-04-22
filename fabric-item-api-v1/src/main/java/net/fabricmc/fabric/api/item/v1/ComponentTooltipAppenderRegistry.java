@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.component.ComponentType;
@@ -36,6 +37,7 @@ public interface ComponentTooltipAppenderRegistry {
 	 * @param componentType the component type to add
 	 */
 	static void addFirst(ComponentType<? extends TooltipAppender> componentType) {
+		Preconditions.checkNotNull(componentType, "componentType");
 		ComponentTooltipAppenderRegistryImpl.addFirst(componentType);
 	}
 
@@ -46,6 +48,7 @@ public interface ComponentTooltipAppenderRegistry {
 	 * @param componentType the component type to add
 	 */
 	static void addLast(ComponentType<? extends TooltipAppender> componentType) {
+		Preconditions.checkNotNull(componentType, "componentType");
 		ComponentTooltipAppenderRegistryImpl.addLast(componentType);
 	}
 
@@ -57,6 +60,8 @@ public interface ComponentTooltipAppenderRegistry {
 	 * @param componentType the component type to add
 	 */
 	static void addBefore(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
+		Preconditions.checkNotNull(anchor, "anchor");
+		Preconditions.checkNotNull(componentType, "componentType");
 		ComponentTooltipAppenderRegistryImpl.addBefore(anchor, componentType);
 	}
 
@@ -68,6 +73,8 @@ public interface ComponentTooltipAppenderRegistry {
 	 * @param componentType the component type to add
 	 */
 	static void addAfter(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
+		Preconditions.checkNotNull(anchor, "anchor");
+		Preconditions.checkNotNull(componentType, "componentType");
 		ComponentTooltipAppenderRegistryImpl.addAfter(anchor, componentType);
 	}
 }

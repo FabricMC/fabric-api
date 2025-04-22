@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.item.Item;
@@ -41,24 +39,18 @@ public final class ComponentTooltipAppenderRegistryImpl {
 	private static final Map<ComponentType<?>, List<ComponentType<? extends TooltipAppender>>> after = new HashMap<>();
 
 	public static void addFirst(ComponentType<? extends TooltipAppender> componentType) {
-		Preconditions.checkNotNull(componentType, "componentType");
 		first.add(componentType);
 	}
 
 	public static void addLast(ComponentType<? extends TooltipAppender> componentType) {
-		Preconditions.checkNotNull(componentType, "componentType");
 		last.add(componentType);
 	}
 
 	public static void addBefore(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
-		Preconditions.checkNotNull(anchor, "anchor");
-		Preconditions.checkNotNull(componentType, "componentType");
 		before.computeIfAbsent(anchor, k -> new ArrayList<>()).add(componentType);
 	}
 
 	public static void addAfter(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
-		Preconditions.checkNotNull(anchor, "anchor");
-		Preconditions.checkNotNull(componentType, "componentType");
 		after.computeIfAbsent(anchor, k -> new ArrayList<>()).add(componentType);
 	}
 
