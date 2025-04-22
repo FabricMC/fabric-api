@@ -87,6 +87,12 @@ public class AttachmentTestMod implements ModInitializer {
 					.persistent(ItemStack.CODEC)
 					.syncWith(ItemStack.OPTIONAL_PACKET_CODEC, AttachmentSyncPredicate.all())
 	);
+	public static final AttachmentType<Integer> SYNCED_REQUESTED_SIMULATION_DISTANCE = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "synced_requested_simulation_distance"),
+			builder -> builder
+					.persistent(Codec.INT)
+					.syncWith(PacketCodecs.INTEGER, AttachmentSyncPredicate.targetOnly())
+	);
 
 	@Override
 	public void onInitialize() {
