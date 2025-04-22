@@ -129,7 +129,7 @@ public class SyncGametest implements FabricClientGameTest {
 					// check registry objects are synced correctly
 					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.APPLE.getDefaultStack());
 
-					// check modify event happening prior to syncing
+					// check onModify event happening prior to syncing
 					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.BONE_MEAL.getDefaultStack());
 				});
 

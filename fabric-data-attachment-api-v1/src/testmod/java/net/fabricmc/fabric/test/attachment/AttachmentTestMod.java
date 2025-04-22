@@ -112,7 +112,7 @@ public class AttachmentTestMod implements ModInitializer {
 			return ActionResult.PASS;
 		});
 
-		SYNCED_ITEM.modify().register((newValue, target, isClient) -> {
+		SYNCED_ITEM.onModify().register((newValue, target, isClient) -> {
 			if (!isClient) {
 				ItemStack oldValue = target.getAttached(SYNCED_ITEM);
 

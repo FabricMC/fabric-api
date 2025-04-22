@@ -116,7 +116,7 @@ public interface AttachmentType<A> {
 	/**
 	 * An event that is called right before this type of attachment changes on a target.
 	 */
-	Event<AttachmentModified<A>> modify();
+	Event<AttachmentModified<A>> onModify();
 
 	@FunctionalInterface
 	interface AttachmentModified<A> {

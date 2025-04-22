@@ -61,7 +61,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	public <T> T setAttached(AttachmentType<T> type, @Nullable T value) {
 		this.fabric_markChanged(type);
 
-		value = type.modify().invoker().onModify(value, this, fabric_isClient());
+		value = type.onModify().invoker().onModify(value, this, fabric_isClient());
 
 		if (this.fabric_shouldTryToSync() && type.isSynced()) {
 			AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getDynamicRegistryManager());
