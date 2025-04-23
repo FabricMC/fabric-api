@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.item;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,6 +47,10 @@ public final class VanillaTooltipAppenderOrder {
 	private static final List<ComponentType<?>> VANILLA_ORDER = scrapeVanillaOrder();
 
 	private VanillaTooltipAppenderOrder() {
+	}
+
+	public static void load() {
+		// calling this method loads the class, eagerly populating VANILLA_ORDER
 	}
 
 	// Find the order in which vanilla tooltip appenders are run by inspecting the bytecode of ItemStack.appendTooltip.
@@ -129,7 +134,7 @@ public final class VanillaTooltipAppenderOrder {
 				throw new IllegalStateException("Found no component types in appendTooltip method");
 			}
 
-			return componentTypes;
+			return Collections.unmodifiableList(componentTypes);
 		} catch (ReflectiveOperationException | IOException e) {
 			throw new RuntimeException(e);
 		}

@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.impl.item;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,23 +35,37 @@ import net.minecraft.text.Text;
 public final class ComponentTooltipAppenderRegistryImpl {
 	private static final List<ComponentType<? extends TooltipAppender>> first = new ArrayList<>();
 	private static final List<ComponentType<? extends TooltipAppender>> last = new ArrayList<>();
-	private static final Map<ComponentType<?>, List<ComponentType<? extends TooltipAppender>>> before = new HashMap<>();
-	private static final Map<ComponentType<?>, List<ComponentType<? extends TooltipAppender>>> after = new HashMap<>();
+	private static final Map<ComponentType<?>, List<ComponentType<? extends TooltipAppender>>> before = new IdentityHashMap<>();
+	private static final Map<ComponentType<?>, List<ComponentType<? extends TooltipAppender>>> after = new IdentityHashMap<>();
+	private static boolean hasModdedEntries = false;
 
 	public static void addFirst(ComponentType<? extends TooltipAppender> componentType) {
 		first.add(componentType);
+		onModified();
 	}
 
 	public static void addLast(ComponentType<? extends TooltipAppender> componentType) {
 		last.add(componentType);
+		onModified();
 	}
 
 	public static void addBefore(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
 		before.computeIfAbsent(anchor, k -> new ArrayList<>()).add(componentType);
+		onModified();
 	}
 
 	public static void addAfter(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
 		after.computeIfAbsent(anchor, k -> new ArrayList<>()).add(componentType);
+		onModified();
+	}
+
+	private static void onModified() {
+		hasModdedEntries = true;
+		VanillaTooltipAppenderOrder.load();
+	}
+
+	public static boolean hasModdedEntries() {
+		return hasModdedEntries;
 	}
 
 	public static void onFirst(

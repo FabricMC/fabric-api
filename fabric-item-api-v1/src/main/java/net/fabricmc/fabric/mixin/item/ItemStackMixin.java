@@ -170,6 +170,10 @@ public abstract class ItemStackMixin implements FabricItemStack {
 			TooltipType tooltipType,
 			LocalIntRef index
 	) {
+		if (!ComponentTooltipAppenderRegistryImpl.hasModdedEntries()) {
+			return;
+		}
+
 		if (index.get() == 0) {
 			ComponentTooltipAppenderRegistryImpl.onFirst((ItemStack) (Object) this, context, displayComponent, textConsumer, tooltipType);
 		}
