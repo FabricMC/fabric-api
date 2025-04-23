@@ -103,7 +103,7 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		// Set up required test environment
-		context.getInput().resizeWindow(1708, 960); // Twice the default dimensions
+		context.getInput().resizeWindow(2048, 1024); // Multiple of 256 to not squish the pixels of 256x overlays.
 		context.runOnClient(client -> {
 			client.options.hudHidden = false;
 			client.options.getGuiScale().setValue(2);
@@ -124,22 +124,22 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 			context.waitTicks(150); // The powder snow frosty vignette takes 140 ticks to fully appear, so we additionally wait for a total of 150 ticks
 
 			// Take and assert screenshots
-			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_MISC_OVERLAY).withRegion(1308, 0, 400, 60).save());
-			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_MISC_OVERLAY).withRegion(668, 460, 372, 56).save());
-			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_EXPERIENCE_LEVEL).withRegion(754, 860, 200, 80).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_MISC_OVERLAY).withRegion(1648, 0, 400, 60).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_MISC_OVERLAY).withRegion(838, 494, 372, 56).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_EXPERIENCE_LEVEL).withRegion(924, 924, 200, 80).save());
 
 			// The sleep overlay takes 100 ticks to fully appear, so we start sleeping and wait for 100 ticks
 			context.runOnClient(client -> client.player.setSleepingPosition(new BlockPos(0, -59, 0)));
 			context.waitTicks(100);
 
-			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_DEMO_TIMER).withRegion(1228, 460, 480, 40).save());
-			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_CHAT).withRegion(0, 860, 600, 20).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_DEMO_TIMER).withRegion(1568, 492, 480, 40).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + BEFORE_CHAT).withRegion(0, 924, 600, 20).save());
 
 			context.runOnClient(client -> client.player.clearSleepingPosition());
 			context.waitTick();
 			context.getInput().holdKey(InputUtil.GLFW_KEY_TAB); // Show player list
 			context.waitTick();
-			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_SUBTITLES).withRegion(554, 0, 600, 30).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("hud_layer_" + AFTER_SUBTITLES).withRegion(724, 0, 600, 30).save());
 		}
 
 		shouldRender = false;
