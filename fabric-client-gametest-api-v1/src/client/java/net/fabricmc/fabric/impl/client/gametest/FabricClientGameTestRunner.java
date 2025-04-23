@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.gametest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
@@ -32,13 +35,18 @@ import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 public class FabricClientGameTestRunner {
 	private static final String ENTRYPOINT_KEY = "fabric-client-gametest";
 
+	/**
+	 * A comma separated list of mod ids to run tests for. When empty, all tests are run.
+	 */
+	private static final String MOD_ID_FILTER_PROPERTY = "fabric.client.gametest.modid";
+
 	public static EntrypointContainer<FabricClientGameTest> currentlyRunningGameTest = null;
 
 	public static void start() {
 		// make the game think the window is focused
 		MinecraftClient.getInstance().onWindowFocusChanged(true);
 
-		List<EntrypointContainer<FabricClientGameTest>> gameTests = FabricLoader.getInstance().getEntrypointContainers(ENTRYPOINT_KEY, FabricClientGameTest.class);
+		List<EntrypointContainer<FabricClientGameTest>> gameTests = getTestToRun();
 
 		ThreadingImpl.runTestThread(() -> {
 			ClientGameTestContextImpl context = new ClientGameTestContextImpl();
@@ -55,6 +63,42 @@ public class FabricClientGameTestRunner {
 				}
 			}
 		});
+	}
+
+	private static List<EntrypointContainer<FabricClientGameTest>> getTestToRun() {
+		List<EntrypointContainer<FabricClientGameTest>> gameTests = FabricLoader.getInstance().getEntrypointContainers(ENTRYPOINT_KEY, FabricClientGameTest.class);
+		String filter = System.getProperty(MOD_ID_FILTER_PROPERTY);
+
+		if (filter == null) {
+			return gameTests;
+		}
+
+		List<String> modIds = Arrays.stream(filter.split(","))
+				.map(String::trim)
+				.filter(modId -> !modId.isEmpty())
+				.peek(modId -> {
+					if (!FabricLoader.getInstance().isModLoaded(modId)) {
+						throw new IllegalArgumentException("Mod ID %s specified in game test filter %s is not loaded".formatted(modId, MOD_ID_FILTER_PROPERTY));
+					}
+				}).toList();
+
+		if (modIds.isEmpty()) {
+			throw new IllegalArgumentException("No valid mod IDs specified in the client game test filter");
+		}
+
+		List<EntrypointContainer<FabricClientGameTest>> filteredGameTests = new ArrayList<>();
+
+		for (EntrypointContainer<FabricClientGameTest> gameTest : gameTests) {
+			if (modIds.contains(gameTest.getProvider().getMetadata().getId())) {
+				filteredGameTests.add(gameTest);
+			}
+		}
+
+		if (filteredGameTests.isEmpty()) {
+			throw new IllegalArgumentException("No tests found for the specified mod IDs: " + modIds);
+		}
+
+		return Collections.unmodifiableList(filteredGameTests);
 	}
 
 	private static void setupInitialGameTestState(ClientGameTestContext context) {
