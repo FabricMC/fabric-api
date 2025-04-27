@@ -17,7 +17,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.16.10",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-registry-sync-v0": "*"
   },
   "description": "Builders for objects vanilla has locked down.",
   "mixins": [

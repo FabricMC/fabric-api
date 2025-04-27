@@ -11,6 +11,8 @@
     "EntityTypeBuilderMixin",
     "EntityTypeMixin",
     "PersistentStateManagerMixin",
+    "TrackedDataHandlerRegistryAccessor",
+    "TrackedDataHandlerRegistryMixin",
     "TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin"
   ],
   "injectors": {

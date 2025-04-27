@@ -5,5 +5,6 @@
   "block.fabric-object-builder-api-v1-testmod.second_multi_betrayal_block": "Second Multi Betrayal Block",
   "block.fabric-object-builder-api-v1-testmod.teal_hanging_sign": "Teal Hanging Sign",
   "block.fabric-object-builder-api-v1-testmod.teal_sign": "Teal Sign",
+  "entity.fabric-object-builder-api-v1-testmod.track_stack": "Track Stack",
   "text.fabric-object-builder-api-v1-testmod.block_entity_type_success": "Betrayal block at %s has correct block entity type: %s"
 }

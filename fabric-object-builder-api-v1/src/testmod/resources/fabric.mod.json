@@ -20,13 +20,23 @@
     "fabric-object-builder-api-v1": "*"
   },
   "description": "Test mod for fabric object builder API v1.",
+  "mixins": [
+    {
+      "config": "fabric-object-builder-api-v1-testmod.client.mixins.json",
+      "environment": "client"
+    }
+  ],
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.object.builder.BlockEntityTypeBuilderTest",
       "net.fabricmc.fabric.test.object.builder.VillagerTypeTest1",
       "net.fabricmc.fabric.test.object.builder.VillagerTypeTest2",
       "net.fabricmc.fabric.test.object.builder.TealSignTest",
-      "net.fabricmc.fabric.test.object.builder.PersistentStateManagerTest"
+      "net.fabricmc.fabric.test.object.builder.PersistentStateManagerTest",
+      "net.fabricmc.fabric.test.object.builder.EntityTrackedDataTest"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.object.builder.client.EntityTrackedDataClientTest"
     ],
     "fabric-gametest": [
       "net.fabricmc.fabric.test.object.builder.ObjectBuilderGameTest",

@@ -2,12 +2,14 @@ version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
 	'fabric-api-base',
+	'fabric-registry-sync-v0',
 	'fabric-resource-loader-v0'
 ])
 
 testDependencies(project, [
 	':fabric-command-api-v2',
-	':fabric-lifecycle-events-v1'
+	':fabric-lifecycle-events-v1',
+	':fabric-rendering-v1'
 ])
 
 loom {
