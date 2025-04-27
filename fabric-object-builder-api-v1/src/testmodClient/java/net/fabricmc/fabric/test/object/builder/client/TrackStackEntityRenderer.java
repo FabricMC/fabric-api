@@ -24,6 +24,7 @@ import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.model.ChickenEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.state.ChickenEntityRenderState;
+import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -31,8 +32,6 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.test.object.builder.TrackStackEntity;
 
 public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity, TrackStackEntityRenderer.RenderState, ChickenEntityModel> {
-	private static final Identifier TEXTURE = Identifier.ofVanilla("missingno");
-
 	public TrackStackEntityRenderer(EntityRendererFactory.Context context) {
 		super(context, new ChickenEntityModel(context.getPart(EntityModelLayers.CHICKEN)), 0.3f);
 	}
@@ -59,7 +58,7 @@ public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity
 
 	@Override
 	public Identifier getTexture(RenderState renderState) {
-		return TEXTURE;
+		return MissingSprite.getMissingSpriteId();
 	}
 
 	@Override

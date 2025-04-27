@@ -35,33 +35,44 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.mixin.object.builder.TrackedDataHandlerRegistryAccessor;
 
-public class FabricTrackedDataRegistryImpl {
-	private static final Logger LOGGER = LoggerFactory.getLogger(FabricTrackedDataRegistryImpl.class);
+public final class FabricTrackedDataRegistryImpl {
+	public static final Logger LOGGER = LoggerFactory.getLogger(FabricTrackedDataRegistryImpl.class);
 
 	private static final Identifier HANDLER_REGISTRY_ID = Identifier.of("fabric-object-builder-api-v1", "tracked_data_handler");
 	private static final RegistryKey<Registry<TrackedDataHandler<?>>> HANDLER_REGISTRY_KEY = RegistryKey.ofRegistry(HANDLER_REGISTRY_ID);
 
-	private static List<TrackedDataHandler<?>> VANILLA_HANDLERS = new ArrayList<>();
-	private static @Nullable Registry<TrackedDataHandler<?>> HANDLER_REGISTRY = null;
-	private static List<TrackedDataHandler<?>> EXTERNAL_MODDED_HANDLERS = new ArrayList<>();
+	private static boolean hasStoredVanillaHandlers = false;
+	private static final List<TrackedDataHandler<?>> VANILLA_HANDLERS = new ArrayList<>();
+	@Nullable
+	private static Registry<TrackedDataHandler<?>> handlerRegistry = null;
+	private static final List<TrackedDataHandler<?>> EXTERNAL_MODDED_HANDLERS = new ArrayList<>();
 
 	private FabricTrackedDataRegistryImpl() {
 	}
 
+	public static boolean hasStoredVanillaHandlers() {
+		return hasStoredVanillaHandlers;
+	}
+
 	public static void storeVanillaHandlers() {
+		if (hasStoredVanillaHandlers) {
+			throw new IllegalStateException("Already stored vanilla handlers!");
+		}
+
 		Int2ObjectBiMap<TrackedDataHandler<?>> dataHandlers = TrackedDataHandlerRegistryAccessor.fabric_getDataHandlers();
 
 		for (TrackedDataHandler<?> handler : dataHandlers) {
 			VANILLA_HANDLERS.add(handler);
 		}
 
+		hasStoredVanillaHandlers = true;
 		LOGGER.debug("Stored {} vanilla handlers", VANILLA_HANDLERS.size());
 	}
 
 	/**
-	 * Reorders handlers in {@link net.minecraft.entity.data.TrackedDataHandlerRegistry#DATA_HANDLERS} to have a consistent order between client and server.
+	 * Reorders handlers in {@code TrackedDataHandlerRegistry#DATA_HANDLERS} to have a consistent order between client and server.
 	 *
-	 * <p>The order used is the following:
+	 * <p>The order used is as follows:
 	 *
 	 * <ul>
 	 *   <li>Vanilla handlers</li>
@@ -76,7 +87,7 @@ public class FabricTrackedDataRegistryImpl {
 		// Store external modded handlers
 		for (TrackedDataHandler<?> handler : dataHandlers) {
 			if (VANILLA_HANDLERS.contains(handler)) continue;
-			if (HANDLER_REGISTRY != null && HANDLER_REGISTRY.getId(handler) != null) continue;
+			if (handlerRegistry != null && handlerRegistry.getId(handler) != null) continue;
 			if (EXTERNAL_MODDED_HANDLERS.contains(handler)) continue;
 
 			EXTERNAL_MODDED_HANDLERS.add(handler);
@@ -91,8 +102,8 @@ public class FabricTrackedDataRegistryImpl {
 			dataHandlers.add(handler);
 		}
 
-		if (HANDLER_REGISTRY != null) {
-			for (TrackedDataHandler<?> handler : HANDLER_REGISTRY) {
+		if (handlerRegistry != null) {
+			for (TrackedDataHandler<?> handler : handlerRegistry) {
 				dataHandlers.add(handler);
 			}
 		}
@@ -104,24 +115,46 @@ public class FabricTrackedDataRegistryImpl {
 		LOGGER.debug("Finished reordering tracked data handlers containing {} entries", dataHandlers.size());
 	}
 
-	public static void registerHandler(Identifier id, TrackedDataHandler<?> handler) {
+	public static void register(Identifier id, TrackedDataHandler<?> handler) {
 		Objects.requireNonNull(id, "Tracked data handler ID cannot be null!");
 		Objects.requireNonNull(handler, "Tracked data handler cannot be null!");
 
 		if (VANILLA_HANDLERS.contains(handler) || EXTERNAL_MODDED_HANDLERS.contains(handler)) {
-			throw new IllegalArgumentException("Cannot register tracked data handler added via TrackedDataHandlerRegistry.register");
+			throw new IllegalArgumentException("Cannot register tracked data handler previously added via TrackedDataHandlerRegistry.register");
 		}
 
-		if (HANDLER_REGISTRY == null) {
-			HANDLER_REGISTRY = FabricRegistryBuilder
+		if (handlerRegistry == null) {
+			handlerRegistry = FabricRegistryBuilder
 					.createSimple(HANDLER_REGISTRY_KEY)
 					.attribute(RegistryAttribute.SYNCED)
 					.buildAndRegister();
 
-			RegistryIdRemapCallback.event(HANDLER_REGISTRY).register(state -> reorderHandlers());
+			RegistryIdRemapCallback.event(handlerRegistry).register(state -> reorderHandlers());
 		}
 
-		Registry.register(HANDLER_REGISTRY, id, handler);
+		Registry.register(handlerRegistry, id, handler);
 		reorderHandlers();
+	}
+
+	@Nullable
+	public static TrackedDataHandler<?> get(Identifier id) {
+		Objects.requireNonNull(id, "Tracked data handler ID cannot be null!");
+
+		if (handlerRegistry == null) {
+			return null;
+		}
+
+		return handlerRegistry.get(id);
+	}
+
+	@Nullable
+	public static Identifier getId(TrackedDataHandler<?> handler) {
+		Objects.requireNonNull(handler, "Tracked data handler cannot be null!");
+
+		if (handlerRegistry == null) {
+			return null;
+		}
+
+		return handlerRegistry.getId(handler);
 	}
 }

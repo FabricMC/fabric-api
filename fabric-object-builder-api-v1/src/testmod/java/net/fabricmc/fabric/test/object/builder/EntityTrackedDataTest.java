@@ -34,7 +34,6 @@ import net.minecraft.util.math.GlobalPos;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityType;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricTrackedDataRegistry;
 import net.fabricmc.loader.api.FabricLoader;
@@ -50,7 +49,7 @@ public class EntityTrackedDataTest implements ModInitializer {
 	static TrackedDataHandler<Optional<ItemGroup>> OPTIONAL_ITEM_GROUP = TrackedDataHandler.create(PacketCodecs.registryValue(RegistryKeys.ITEM_GROUP).collect(PacketCodecs::optional));
 
 	private static final RegistryKey<EntityType<?>> TRACK_STACK_KEY = RegistryKey.of(RegistryKeys.ENTITY_TYPE, ObjectBuilderTestConstants.id("track_stack"));
-	public static EntityType<TrackStackEntity> TRACK_STACK_ENTITY = FabricEntityType.Builder.createLiving(TrackStackEntity::new, SpawnGroup.MISC, builder -> builder)
+	public static EntityType<TrackStackEntity> TRACK_STACK_ENTITY = FabricEntityType.Builder.createMob(TrackStackEntity::new, SpawnGroup.MISC, builder -> builder.defaultAttributes(MobEntity::createMobAttributes))
 			.dimensions(0.4f, 2.8f)
 			.maxTrackingRange(10)
 			.build(TRACK_STACK_KEY);
@@ -59,16 +58,15 @@ public class EntityTrackedDataTest implements ModInitializer {
 	public void onInitialize() {
 		// Register in a different order between a client and dedicated server
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			FabricTrackedDataRegistry.registerHandler(GLOBAL_POS_ID, GLOBAL_POS);
-			FabricTrackedDataRegistry.registerHandler(ITEM_ID, ITEM);
-			FabricTrackedDataRegistry.registerHandler(OPTIONAL_ITEM_GROUP_ID, OPTIONAL_ITEM_GROUP);
+			FabricTrackedDataRegistry.register(GLOBAL_POS_ID, GLOBAL_POS);
+			FabricTrackedDataRegistry.register(ITEM_ID, ITEM);
+			FabricTrackedDataRegistry.register(OPTIONAL_ITEM_GROUP_ID, OPTIONAL_ITEM_GROUP);
 		} else {
-			FabricTrackedDataRegistry.registerHandler(ITEM_ID, ITEM);
-			FabricTrackedDataRegistry.registerHandler(OPTIONAL_ITEM_GROUP_ID, OPTIONAL_ITEM_GROUP);
-			FabricTrackedDataRegistry.registerHandler(GLOBAL_POS_ID, GLOBAL_POS);
+			FabricTrackedDataRegistry.register(ITEM_ID, ITEM);
+			FabricTrackedDataRegistry.register(OPTIONAL_ITEM_GROUP_ID, OPTIONAL_ITEM_GROUP);
+			FabricTrackedDataRegistry.register(GLOBAL_POS_ID, GLOBAL_POS);
 		}
 
 		Registry.register(Registries.ENTITY_TYPE, TRACK_STACK_KEY, TRACK_STACK_ENTITY);
-		FabricDefaultAttributeRegistry.register(TRACK_STACK_ENTITY, MobEntity.createMobAttributes());
 	}
 }
