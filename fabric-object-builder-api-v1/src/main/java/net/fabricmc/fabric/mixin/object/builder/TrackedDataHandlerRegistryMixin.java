@@ -37,7 +37,7 @@ abstract class TrackedDataHandlerRegistryMixin {
 	@Inject(method = "register(Lnet/minecraft/entity/data/TrackedDataHandler;)V", at = @At("HEAD"))
 	private static void onHeadRegister(TrackedDataHandler<?> handler, CallbackInfo ci) {
 		if (FabricTrackedDataRegistryImpl.hasStoredVanillaHandlers() && FabricLoader.getInstance().isDevelopmentEnvironment()) {
-			throw new IllegalStateException("Tried to register tracked data handler " + handler + " using TrackedDataHandlerRegistry.register. This is not allowed as it can lead to desynchronization issues; use FabricTrackedDataRegistry.registerHandler instead.");
+			throw new IllegalStateException("Tried to register tracked data handler " + handler + " using TrackedDataHandlerRegistry.register. This is not allowed as it can lead to desynchronization issues; use FabricTrackedDataRegistry.register instead.");
 		}
 	}
 }
