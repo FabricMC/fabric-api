@@ -26,14 +26,12 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -43,7 +41,7 @@ import net.minecraft.world.World;
 public class TrackStackEntity extends MobEntity {
 	private static final TrackedData<GlobalPos> GLOBAL_POS = DataTracker.registerData(TrackStackEntity.class, EntityTrackedDataTest.GLOBAL_POS);
 	private static final TrackedData<Item> ITEM = DataTracker.registerData(TrackStackEntity.class, EntityTrackedDataTest.ITEM);
-	private static final TrackedData<Optional<ItemGroup>> OPTIONAL_ITEM_GROUP = DataTracker.registerData(TrackStackEntity.class, EntityTrackedDataTest.OPTIONAL_ITEM_GROUP);
+	private static final TrackedData<Optional<DyeColor>> OPTIONAL_DYE_COLOR = DataTracker.registerData(TrackStackEntity.class, EntityTrackedDataTest.OPTIONAL_DYE_COLOR);
 
 	public TrackStackEntity(EntityType<? extends TrackStackEntity> entityType, World world) {
 		super(entityType, world);
@@ -60,11 +58,11 @@ public class TrackStackEntity extends MobEntity {
 		// Get tracked data from data tracker
 		GlobalPos globalPos = this.dataTracker.get(GLOBAL_POS);
 		Item item = this.dataTracker.get(ITEM);
-		Optional<ItemGroup> optionalItemGroup = this.dataTracker.get(OPTIONAL_ITEM_GROUP);
+		Optional<DyeColor> optionalDyeColor = this.dataTracker.get(OPTIONAL_DYE_COLOR);
 
 		// Add in reverse order
-		lines.add(optionalItemGroup.map(itemGroup -> {
-			return itemGroup.getDisplayName().copy();
+		lines.add(optionalDyeColor.map(color -> {
+			return Text.literal(color.toString());
 		}).orElseGet(() -> {
 			return Text.literal("<empty>");
 		}).formatted(Formatting.BLACK));
@@ -87,8 +85,11 @@ public class TrackStackEntity extends MobEntity {
 		Item item = player.getStackInHand(hand).getItem();
 		this.dataTracker.set(ITEM, item);
 
-		Optional<ItemGroup> group = Registries.ITEM_GROUP.getRandom(this.getRandom()).map(RegistryEntry::value);
-		this.dataTracker.set(OPTIONAL_ITEM_GROUP, group);
+		if (!player.getWorld().isClient) {
+			DyeColor[] colors = DyeColor.values();
+			Optional<DyeColor> color = Optional.of(colors[this.getRandom().nextBetweenExclusive(0, colors.length)]);
+			this.dataTracker.set(OPTIONAL_DYE_COLOR, color);
+		}
 
 		return ActionResult.SUCCESS;
 	}
@@ -99,6 +100,6 @@ public class TrackStackEntity extends MobEntity {
 
 		builder.add(GLOBAL_POS, GlobalPos.create(World.OVERWORLD, BlockPos.ORIGIN));
 		builder.add(ITEM, Items.POTATO);
-		builder.add(OPTIONAL_ITEM_GROUP, Optional.empty());
+		builder.add(OPTIONAL_DYE_COLOR, Optional.empty());
 	}
 }

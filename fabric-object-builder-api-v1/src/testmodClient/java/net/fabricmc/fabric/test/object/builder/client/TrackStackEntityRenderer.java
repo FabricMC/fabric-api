@@ -26,6 +26,7 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.state.ChickenEntityRenderState;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EntityAttachmentType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -70,6 +71,10 @@ public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity
 	public void updateRenderState(TrackStackEntity entity, RenderState renderState, float tickProgress) {
 		super.updateRenderState(entity, renderState, tickProgress);
 		renderState.labelLines = entity.getLabelLines();
+
+		if (renderState.nameLabelPos == null) {
+			renderState.nameLabelPos = entity.getAttachments().getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getLerpedYaw(tickProgress));
+		}
 	}
 
 	public static class RenderState extends ChickenEntityRenderState {

@@ -36,12 +36,11 @@ import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.mixin.object.builder.TrackedDataHandlerRegistryAccessor;
 
 public final class FabricTrackedDataRegistryImpl {
-	public static final Logger LOGGER = LoggerFactory.getLogger(FabricTrackedDataRegistryImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FabricTrackedDataRegistryImpl.class);
 
 	private static final Identifier HANDLER_REGISTRY_ID = Identifier.of("fabric-object-builder-api-v1", "tracked_data_handler");
 	private static final RegistryKey<Registry<TrackedDataHandler<?>>> HANDLER_REGISTRY_KEY = RegistryKey.ofRegistry(HANDLER_REGISTRY_ID);
 
-	private static boolean hasStoredVanillaHandlers = false;
 	private static final List<TrackedDataHandler<?>> VANILLA_HANDLERS = new ArrayList<>();
 	@Nullable
 	private static Registry<TrackedDataHandler<?>> handlerRegistry = null;
@@ -51,11 +50,11 @@ public final class FabricTrackedDataRegistryImpl {
 	}
 
 	public static boolean hasStoredVanillaHandlers() {
-		return hasStoredVanillaHandlers;
+		return !VANILLA_HANDLERS.isEmpty();
 	}
 
 	public static void storeVanillaHandlers() {
-		if (hasStoredVanillaHandlers) {
+		if (hasStoredVanillaHandlers()) {
 			throw new IllegalStateException("Already stored vanilla handlers!");
 		}
 
@@ -65,8 +64,20 @@ public final class FabricTrackedDataRegistryImpl {
 			VANILLA_HANDLERS.add(handler);
 		}
 
-		hasStoredVanillaHandlers = true;
 		LOGGER.debug("Stored {} vanilla handlers", VANILLA_HANDLERS.size());
+	}
+
+	private static void storeExternalHandlers() {
+		Int2ObjectBiMap<TrackedDataHandler<?>> dataHandlers = TrackedDataHandlerRegistryAccessor.fabric_getDataHandlers();
+
+		for (TrackedDataHandler<?> handler : dataHandlers) {
+			if (VANILLA_HANDLERS.contains(handler)) continue;
+			if (handlerRegistry != null && handlerRegistry.getId(handler) != null) continue;
+			if (EXTERNAL_MODDED_HANDLERS.contains(handler)) continue;
+
+			EXTERNAL_MODDED_HANDLERS.add(handler);
+			LOGGER.warn("Tracked data handler {} is not managed by vanilla or Fabric API; it may be prone to desynchronization!", handler);
+		}
 	}
 
 	/**
@@ -83,16 +94,6 @@ public final class FabricTrackedDataRegistryImpl {
 	private static void reorderHandlers() {
 		Int2ObjectBiMap<TrackedDataHandler<?>> dataHandlers = TrackedDataHandlerRegistryAccessor.fabric_getDataHandlers();
 		LOGGER.debug("Reordering tracked data handlers containing {} entries", dataHandlers.size());
-
-		// Store external modded handlers
-		for (TrackedDataHandler<?> handler : dataHandlers) {
-			if (VANILLA_HANDLERS.contains(handler)) continue;
-			if (handlerRegistry != null && handlerRegistry.getId(handler) != null) continue;
-			if (EXTERNAL_MODDED_HANDLERS.contains(handler)) continue;
-
-			EXTERNAL_MODDED_HANDLERS.add(handler);
-			LOGGER.warn("Tracked data handler {} is not managed by vanilla or Fabric API; it may be prone to desynchronization!", handler);
-		}
 
 		// Reset the map so that handlers can be added back in a new order
 		dataHandlers.clear();
@@ -119,6 +120,8 @@ public final class FabricTrackedDataRegistryImpl {
 		Objects.requireNonNull(id, "Tracked data handler ID cannot be null!");
 		Objects.requireNonNull(handler, "Tracked data handler cannot be null!");
 
+		storeExternalHandlers();
+
 		if (VANILLA_HANDLERS.contains(handler) || EXTERNAL_MODDED_HANDLERS.contains(handler)) {
 			throw new IllegalArgumentException("Cannot register tracked data handler previously added via TrackedDataHandlerRegistry.register");
 		}
@@ -129,7 +132,10 @@ public final class FabricTrackedDataRegistryImpl {
 					.attribute(RegistryAttribute.SYNCED)
 					.buildAndRegister();
 
-			RegistryIdRemapCallback.event(handlerRegistry).register(state -> reorderHandlers());
+			RegistryIdRemapCallback.event(handlerRegistry).register(state -> {
+				storeExternalHandlers();
+				reorderHandlers();
+			});
 		}
 
 		Registry.register(handlerRegistry, id, handler);

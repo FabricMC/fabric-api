@@ -23,12 +23,12 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.data.TrackedDataHandler;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.GlobalPos;
 
@@ -45,8 +45,8 @@ public class EntityTrackedDataTest implements ModInitializer {
 	private static final Identifier ITEM_ID = ObjectBuilderTestConstants.id("item");
 	static TrackedDataHandler<Item> ITEM = TrackedDataHandler.create(PacketCodecs.registryValue(RegistryKeys.ITEM));
 
-	private static final Identifier OPTIONAL_ITEM_GROUP_ID = ObjectBuilderTestConstants.id("optional_item_group");
-	static TrackedDataHandler<Optional<ItemGroup>> OPTIONAL_ITEM_GROUP = TrackedDataHandler.create(PacketCodecs.registryValue(RegistryKeys.ITEM_GROUP).collect(PacketCodecs::optional));
+	private static final Identifier OPTIONAL_DYE_COLOR_ID = ObjectBuilderTestConstants.id("optional_dye_color");
+	static TrackedDataHandler<Optional<DyeColor>> OPTIONAL_DYE_COLOR = TrackedDataHandler.create(DyeColor.PACKET_CODEC.collect(PacketCodecs::optional));
 
 	private static final RegistryKey<EntityType<?>> TRACK_STACK_KEY = RegistryKey.of(RegistryKeys.ENTITY_TYPE, ObjectBuilderTestConstants.id("track_stack"));
 	public static EntityType<TrackStackEntity> TRACK_STACK_ENTITY = FabricEntityType.Builder.createMob(TrackStackEntity::new, SpawnGroup.MISC, builder -> builder.defaultAttributes(MobEntity::createMobAttributes))
@@ -60,10 +60,10 @@ public class EntityTrackedDataTest implements ModInitializer {
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 			FabricTrackedDataRegistry.register(GLOBAL_POS_ID, GLOBAL_POS);
 			FabricTrackedDataRegistry.register(ITEM_ID, ITEM);
-			FabricTrackedDataRegistry.register(OPTIONAL_ITEM_GROUP_ID, OPTIONAL_ITEM_GROUP);
+			FabricTrackedDataRegistry.register(OPTIONAL_DYE_COLOR_ID, OPTIONAL_DYE_COLOR);
 		} else {
 			FabricTrackedDataRegistry.register(ITEM_ID, ITEM);
-			FabricTrackedDataRegistry.register(OPTIONAL_ITEM_GROUP_ID, OPTIONAL_ITEM_GROUP);
+			FabricTrackedDataRegistry.register(OPTIONAL_DYE_COLOR_ID, OPTIONAL_DYE_COLOR);
 			FabricTrackedDataRegistry.register(GLOBAL_POS_ID, GLOBAL_POS);
 		}
 
