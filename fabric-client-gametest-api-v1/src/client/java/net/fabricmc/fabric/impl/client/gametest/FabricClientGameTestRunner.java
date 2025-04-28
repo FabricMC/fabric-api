@@ -35,11 +35,6 @@ import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 public class FabricClientGameTestRunner {
 	private static final String ENTRYPOINT_KEY = "fabric-client-gametest";
 
-	/**
-	 * A comma separated list of mod ids to run tests for. When empty, all tests are run.
-	 */
-	private static final String MOD_ID_FILTER_PROPERTY = "fabric.client.gametest.modid";
-
 	public static EntrypointContainer<FabricClientGameTest> currentlyRunningGameTest = null;
 
 	public static void start() {
@@ -67,7 +62,7 @@ public class FabricClientGameTestRunner {
 
 	private static List<EntrypointContainer<FabricClientGameTest>> getTestToRun() {
 		List<EntrypointContainer<FabricClientGameTest>> gameTests = FabricLoader.getInstance().getEntrypointContainers(ENTRYPOINT_KEY, FabricClientGameTest.class);
-		String filter = System.getProperty(MOD_ID_FILTER_PROPERTY);
+		String filter = System.getProperty(TestSystemProperties.MOD_ID_FILTER_PROPERTY);
 
 		if (filter == null) {
 			return gameTests;
@@ -78,7 +73,7 @@ public class FabricClientGameTestRunner {
 				.filter(modId -> !modId.isEmpty())
 				.peek(modId -> {
 					if (!FabricLoader.getInstance().isModLoaded(modId)) {
-						throw new IllegalArgumentException("Mod ID %s specified in game test filter %s is not loaded".formatted(modId, MOD_ID_FILTER_PROPERTY));
+						throw new IllegalArgumentException("Mod ID %s specified in game test filter '%s' is not loaded".formatted(modId, filter));
 					}
 				}).toList();
 
