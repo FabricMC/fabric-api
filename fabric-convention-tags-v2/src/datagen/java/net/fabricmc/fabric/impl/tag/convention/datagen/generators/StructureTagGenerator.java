@@ -33,7 +33,7 @@ public final class StructureTagGenerator extends FabricTagProvider<Structure> {
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup arg) {
-		getOrCreateTagBuilder(ConventionalStructureTags.HIDDEN_FROM_DISPLAYERS);
-		getOrCreateTagBuilder(ConventionalStructureTags.HIDDEN_FROM_LOCATOR_SELECTION);
+		tag(ConventionalStructureTags.HIDDEN_FROM_DISPLAYERS);
+		tag(ConventionalStructureTags.HIDDEN_FROM_LOCATOR_SELECTION);
 	}
 }

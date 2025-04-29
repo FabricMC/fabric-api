@@ -21,8 +21,10 @@ import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -56,61 +58,61 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries) {
-		getOrCreateTagBuilder(ConventionalBlockTags.STONES)
+		tag(ConventionalBlockTags.STONES)
 				.add(Blocks.STONE)
 				.add(Blocks.ANDESITE)
 				.add(Blocks.DIORITE)
 				.add(Blocks.GRANITE)
 				.add(Blocks.TUFF)
 				.add(Blocks.DEEPSLATE);
-		getOrCreateTagBuilder(ConventionalBlockTags.NORMAL_COBBLESTONES)
+		tag(ConventionalBlockTags.NORMAL_COBBLESTONES)
 				.add(Blocks.COBBLESTONE);
-		getOrCreateTagBuilder(ConventionalBlockTags.MOSSY_COBBLESTONES)
+		tag(ConventionalBlockTags.MOSSY_COBBLESTONES)
 				.add(Blocks.MOSSY_COBBLESTONE);
-		getOrCreateTagBuilder(ConventionalBlockTags.INFESTED_COBBLESTONES)
+		tag(ConventionalBlockTags.INFESTED_COBBLESTONES)
 				.add(Blocks.INFESTED_COBBLESTONE);
-		getOrCreateTagBuilder(ConventionalBlockTags.DEEPSLATE_COBBLESTONES)
+		tag(ConventionalBlockTags.DEEPSLATE_COBBLESTONES)
 				.add(Blocks.COBBLED_DEEPSLATE);
-		getOrCreateTagBuilder(ConventionalBlockTags.COBBLESTONES)
+		tag(ConventionalBlockTags.COBBLESTONES)
 				.addOptionalTag(ConventionalBlockTags.NORMAL_COBBLESTONES)
 				.addOptionalTag(ConventionalBlockTags.MOSSY_COBBLESTONES)
 				.addOptionalTag(ConventionalBlockTags.INFESTED_COBBLESTONES)
 				.addOptionalTag(ConventionalBlockTags.DEEPSLATE_COBBLESTONES);
-		getOrCreateTagBuilder(ConventionalBlockTags.NETHERRACKS)
+		tag(ConventionalBlockTags.NETHERRACKS)
 				.add(Blocks.NETHERRACK);
-		getOrCreateTagBuilder(ConventionalBlockTags.END_STONES)
+		tag(ConventionalBlockTags.END_STONES)
 				.add(Blocks.END_STONE);
-		getOrCreateTagBuilder(ConventionalBlockTags.GRAVELS)
+		tag(ConventionalBlockTags.GRAVELS)
 				.add(Blocks.GRAVEL);
-		getOrCreateTagBuilder(ConventionalBlockTags.NORMAL_OBSIDIANS)
+		tag(ConventionalBlockTags.NORMAL_OBSIDIANS)
 				.add(Blocks.OBSIDIAN);
-		getOrCreateTagBuilder(ConventionalBlockTags.CRYING_OBSIDIANS)
+		tag(ConventionalBlockTags.CRYING_OBSIDIANS)
 				.add(Blocks.CRYING_OBSIDIAN);
-		getOrCreateTagBuilder(ConventionalBlockTags.OBSIDIANS)
+		tag(ConventionalBlockTags.OBSIDIANS)
 				.addOptionalTag(ConventionalBlockTags.NORMAL_OBSIDIANS)
 				.addOptionalTag(ConventionalBlockTags.CRYING_OBSIDIANS);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.COAL_ORES)
+		tag(ConventionalBlockTags.COAL_ORES)
 				.addOptionalTag(BlockTags.COAL_ORES);
-		getOrCreateTagBuilder(ConventionalBlockTags.COPPER_ORES)
+		tag(ConventionalBlockTags.COPPER_ORES)
 				.addOptionalTag(BlockTags.COPPER_ORES);
-		getOrCreateTagBuilder(ConventionalBlockTags.DIAMOND_ORES)
+		tag(ConventionalBlockTags.DIAMOND_ORES)
 				.addOptionalTag(BlockTags.DIAMOND_ORES);
-		getOrCreateTagBuilder(ConventionalBlockTags.EMERALD_ORES)
+		tag(ConventionalBlockTags.EMERALD_ORES)
 				.addOptionalTag(BlockTags.EMERALD_ORES);
-		getOrCreateTagBuilder(ConventionalBlockTags.GOLD_ORES)
+		tag(ConventionalBlockTags.GOLD_ORES)
 				.addOptionalTag(BlockTags.GOLD_ORES);
-		getOrCreateTagBuilder(ConventionalBlockTags.IRON_ORES)
+		tag(ConventionalBlockTags.IRON_ORES)
 				.addOptionalTag(BlockTags.IRON_ORES);
-		getOrCreateTagBuilder(ConventionalBlockTags.LAPIS_ORES)
+		tag(ConventionalBlockTags.LAPIS_ORES)
 				.addOptionalTag(BlockTags.LAPIS_ORES);
-		getOrCreateTagBuilder(ConventionalBlockTags.NETHERITE_SCRAP_ORES)
+		tag(ConventionalBlockTags.NETHERITE_SCRAP_ORES)
 				.add(Blocks.ANCIENT_DEBRIS);
-		getOrCreateTagBuilder(ConventionalBlockTags.REDSTONE_ORES)
+		tag(ConventionalBlockTags.REDSTONE_ORES)
 				.addOptionalTag(BlockTags.REDSTONE_ORES);
-		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES)
+		tag(ConventionalBlockTags.QUARTZ_ORES)
 				.add(Blocks.NETHER_QUARTZ_ORE);
-		getOrCreateTagBuilder(ConventionalBlockTags.ORES)
+		tag(ConventionalBlockTags.ORES)
 				.addOptionalTag(ConventionalBlockTags.COAL_ORES)
 				.addOptionalTag(ConventionalBlockTags.COPPER_ORES)
 				.addOptionalTag(ConventionalBlockTags.DIAMOND_ORES)
@@ -122,20 +124,20 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.addOptionalTag(ConventionalBlockTags.REDSTONE_ORES)
 				.addOptionalTag(ConventionalBlockTags.QUARTZ_ORES);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.ORE_BEARING_GROUND_DEEPSLATE)
+		tag(ConventionalBlockTags.ORE_BEARING_GROUND_DEEPSLATE)
 				.add(Blocks.DEEPSLATE);
-		getOrCreateTagBuilder(ConventionalBlockTags.ORE_BEARING_GROUND_NETHERRACK)
+		tag(ConventionalBlockTags.ORE_BEARING_GROUND_NETHERRACK)
 				.add(Blocks.NETHERRACK);
-		getOrCreateTagBuilder(ConventionalBlockTags.ORE_BEARING_GROUND_STONE)
+		tag(ConventionalBlockTags.ORE_BEARING_GROUND_STONE)
 				.add(Blocks.STONE);
-		getOrCreateTagBuilder(ConventionalBlockTags.ORE_RATES_DENSE)
+		tag(ConventionalBlockTags.ORE_RATES_DENSE)
 				.add(Blocks.COPPER_ORE)
 				.add(Blocks.DEEPSLATE_COPPER_ORE)
 				.add(Blocks.DEEPSLATE_LAPIS_ORE)
 				.add(Blocks.DEEPSLATE_REDSTONE_ORE)
 				.add(Blocks.LAPIS_ORE)
 				.add(Blocks.REDSTONE_ORE);
-		getOrCreateTagBuilder(ConventionalBlockTags.ORE_RATES_SINGULAR)
+		tag(ConventionalBlockTags.ORE_RATES_SINGULAR)
 				.add(Blocks.ANCIENT_DEBRIS)
 				.add(Blocks.COAL_ORE)
 				.add(Blocks.DEEPSLATE_COAL_ORE)
@@ -148,9 +150,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.GOLD_ORE)
 				.add(Blocks.IRON_ORE)
 				.add(Blocks.NETHER_QUARTZ_ORE);
-		getOrCreateTagBuilder(ConventionalBlockTags.ORE_RATES_SPARSE)
+		tag(ConventionalBlockTags.ORE_RATES_SPARSE)
 				.add(Blocks.NETHER_GOLD_ORE);
-		getOrCreateTagBuilder(ConventionalBlockTags.ORES_IN_GROUND_DEEPSLATE)
+		tag(ConventionalBlockTags.ORES_IN_GROUND_DEEPSLATE)
 				.add(Blocks.DEEPSLATE_COAL_ORE)
 				.add(Blocks.DEEPSLATE_COPPER_ORE)
 				.add(Blocks.DEEPSLATE_DIAMOND_ORE)
@@ -159,10 +161,10 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.DEEPSLATE_IRON_ORE)
 				.add(Blocks.DEEPSLATE_LAPIS_ORE)
 				.add(Blocks.DEEPSLATE_REDSTONE_ORE);
-		getOrCreateTagBuilder(ConventionalBlockTags.ORES_IN_GROUND_NETHERRACK)
+		tag(ConventionalBlockTags.ORES_IN_GROUND_NETHERRACK)
 				.add(Blocks.NETHER_GOLD_ORE)
 				.add(Blocks.NETHER_QUARTZ_ORE);
-		getOrCreateTagBuilder(ConventionalBlockTags.ORES_IN_GROUND_STONE)
+		tag(ConventionalBlockTags.ORES_IN_GROUND_STONE)
 				.add(Blocks.COAL_ORE)
 				.add(Blocks.COPPER_ORE)
 				.add(Blocks.DIAMOND_ORE)
@@ -172,25 +174,25 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.LAPIS_ORE)
 				.add(Blocks.REDSTONE_ORE);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS)
+		tag(ConventionalBlockTags.WOODEN_CHESTS)
 				.add(Blocks.CHEST)
 				.add(Blocks.TRAPPED_CHEST);
-		getOrCreateTagBuilder(ConventionalBlockTags.TRAPPED_CHESTS)
+		tag(ConventionalBlockTags.TRAPPED_CHESTS)
 				.add(Blocks.TRAPPED_CHEST);
-		getOrCreateTagBuilder(ConventionalBlockTags.ENDER_CHESTS)
+		tag(ConventionalBlockTags.ENDER_CHESTS)
 				.add(Blocks.ENDER_CHEST);
-		getOrCreateTagBuilder(ConventionalBlockTags.CHESTS)
+		tag(ConventionalBlockTags.CHESTS)
 				.addTag(ConventionalBlockTags.WOODEN_CHESTS)
 				.addTag(ConventionalBlockTags.TRAPPED_CHESTS)
 				.addTag(ConventionalBlockTags.ENDER_CHESTS);
-		getOrCreateTagBuilder(ConventionalBlockTags.BOOKSHELVES)
+		tag(ConventionalBlockTags.BOOKSHELVES)
 				.add(Blocks.BOOKSHELF);
 		generateGlassTags();
 		generateGlazeTerracottaTags();
 		generateConcreteTags();
-		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS)
+		tag(ConventionalBlockTags.WOODEN_BARRELS)
 				.add(Blocks.BARREL);
-		getOrCreateTagBuilder(ConventionalBlockTags.BARRELS)
+		tag(ConventionalBlockTags.BARRELS)
 				.addTag(ConventionalBlockTags.WOODEN_BARRELS);
 
 		generateBuddingTags();
@@ -217,8 +219,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateFlowerTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.SMALL_FLOWERS)
-				.add(Blocks.DANDELION, Blocks.POPPY, Blocks.BLUE_ORCHID,
+		tag(ConventionalBlockTags.SMALL_FLOWERS)
+				.addAll(Blocks.DANDELION, Blocks.POPPY, Blocks.BLUE_ORCHID,
 						Blocks.ALLIUM, Blocks.AZURE_BLUET, Blocks.RED_TULIP,
 						Blocks.ORANGE_TULIP, Blocks.WHITE_TULIP, Blocks.PINK_TULIP,
 						Blocks.OXEYE_DAISY, Blocks.CORNFLOWER, Blocks.LILY_OF_THE_VALLEY,
@@ -226,13 +228,13 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 						Blocks.CLOSED_EYEBLOSSOM
 				);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.TALL_FLOWERS)
-				.add(Blocks.SUNFLOWER, Blocks.LILAC, Blocks.PEONY,
+		tag(ConventionalBlockTags.TALL_FLOWERS)
+				.addAll(Blocks.SUNFLOWER, Blocks.LILAC, Blocks.PEONY,
 						Blocks.ROSE_BUSH, Blocks.PITCHER_PLANT
-				).addOptional(Identifier.ofVanilla("tall_flowers"));
+				).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.ofVanilla("tall_flowers")));
 
-		getOrCreateTagBuilder(ConventionalBlockTags.FLOWERS)
-				.add(Blocks.CHERRY_LEAVES, Blocks.FLOWERING_AZALEA_LEAVES, Blocks.FLOWERING_AZALEA,
+		tag(ConventionalBlockTags.FLOWERS)
+				.addAll(Blocks.CHERRY_LEAVES, Blocks.FLOWERING_AZALEA_LEAVES, Blocks.FLOWERING_AZALEA,
 						Blocks.MANGROVE_PROPAGULE, Blocks.PINK_PETALS, Blocks.WILDFLOWERS, Blocks.CHORUS_FLOWER,
 						Blocks.SPORE_BLOSSOM, Blocks.CACTUS_FLOWER
 				).addOptionalTag(ConventionalBlockTags.SMALL_FLOWERS)
@@ -240,25 +242,25 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateMiscTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
+		tag(ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
 				.add(Blocks.CRAFTING_TABLE);
-		getOrCreateTagBuilder(ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES)
+		tag(ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES)
 				.add(Blocks.FURNACE);
 
-		VILLAGER_JOB_SITE_BLOCKS.forEach(getOrCreateTagBuilder(ConventionalBlockTags.VILLAGER_JOB_SITES)::add);
+		VILLAGER_JOB_SITE_BLOCKS.forEach(tag(ConventionalBlockTags.VILLAGER_JOB_SITES)::add);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED); // Generate tag so others can see it exists through JSON.
+		tag(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED); // Generate tag so others can see it exists through JSON.
 
-		getOrCreateTagBuilder(ConventionalBlockTags.ROPES); // Generate tag so others can see it exists through JSON.
+		tag(ConventionalBlockTags.ROPES); // Generate tag so others can see it exists through JSON.
 
-		getOrCreateTagBuilder(ConventionalBlockTags.CHAINS)
+		tag(ConventionalBlockTags.CHAINS)
 				.add(Blocks.CHAIN);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
+		tag(ConventionalBlockTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
 	}
 
 	private void generateFenceAndFenceGateTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_FENCES)
+		tag(ConventionalBlockTags.WOODEN_FENCES)
 				.add(Blocks.OAK_FENCE)
 				.add(Blocks.SPRUCE_FENCE)
 				.add(Blocks.BIRCH_FENCE)
@@ -271,12 +273,12 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.BAMBOO_FENCE)
 				.add(Blocks.CHERRY_FENCE)
 				.add(Blocks.PALE_OAK_FENCE);
-		getOrCreateTagBuilder(ConventionalBlockTags.NETHER_BRICK_FENCES)
+		tag(ConventionalBlockTags.NETHER_BRICK_FENCES)
 				.add(Blocks.NETHER_BRICK_FENCE);
-		getOrCreateTagBuilder(ConventionalBlockTags.FENCES)
+		tag(ConventionalBlockTags.FENCES)
 				.addOptionalTag(ConventionalBlockTags.WOODEN_FENCES)
 				.addOptionalTag(ConventionalBlockTags.NETHER_BRICK_FENCES);
-		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_FENCE_GATES)
+		tag(ConventionalBlockTags.WOODEN_FENCE_GATES)
 				.add(Blocks.OAK_FENCE_GATE)
 				.add(Blocks.SPRUCE_FENCE_GATE)
 				.add(Blocks.BIRCH_FENCE_GATE)
@@ -289,85 +291,85 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.BAMBOO_FENCE_GATE)
 				.add(Blocks.CHERRY_FENCE_GATE)
 				.add(Blocks.PALE_OAK_FENCE_GATE);
-		getOrCreateTagBuilder(ConventionalBlockTags.FENCE_GATES)
+		tag(ConventionalBlockTags.FENCE_GATES)
 				.addOptionalTag(ConventionalBlockTags.WOODEN_FENCE_GATES);
-		getOrCreateTagBuilder(ConventionalBlockTags.PUMPKINS)
+		tag(ConventionalBlockTags.PUMPKINS)
 				.addTag(ConventionalBlockTags.NORMAL_PUMPKINS)
 				.addTag(ConventionalBlockTags.CARVED_PUMPKINS)
 				.addTag(ConventionalBlockTags.JACK_O_LANTERNS_PUMPKINS);
-		getOrCreateTagBuilder(ConventionalBlockTags.NORMAL_PUMPKINS)
+		tag(ConventionalBlockTags.NORMAL_PUMPKINS)
 				.add(Blocks.PUMPKIN);
-		getOrCreateTagBuilder(ConventionalBlockTags.CARVED_PUMPKINS)
+		tag(ConventionalBlockTags.CARVED_PUMPKINS)
 				.add(Blocks.CARVED_PUMPKIN);
-		getOrCreateTagBuilder(ConventionalBlockTags.JACK_O_LANTERNS_PUMPKINS)
+		tag(ConventionalBlockTags.JACK_O_LANTERNS_PUMPKINS)
 				.add(Blocks.JACK_O_LANTERN);
 	}
 
 	private void generateSandstoneTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.COLORLESS_SANDS)
+		tag(ConventionalBlockTags.COLORLESS_SANDS)
 				.add(Blocks.SAND);
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDS)
+		tag(ConventionalBlockTags.RED_SANDS)
 				.add(Blocks.RED_SAND);
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDS)
+		tag(ConventionalBlockTags.SANDS)
 				.addOptionalTag(ConventionalBlockTags.COLORLESS_SANDS)
 				.addOptionalTag(ConventionalBlockTags.RED_SANDS);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS)
+		tag(ConventionalBlockTags.SANDSTONE_BLOCKS)
 				.addOptionalTag(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS)
 				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_BLOCKS);
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_SLABS)
+		tag(ConventionalBlockTags.SANDSTONE_SLABS)
 				.addOptionalTag(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS)
 				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_SLABS);
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_STAIRS)
+		tag(ConventionalBlockTags.SANDSTONE_STAIRS)
 				.addOptionalTag(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS)
 				.addOptionalTag(ConventionalBlockTags.RED_SANDSTONE_STAIRS);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_BLOCKS)
+		tag(ConventionalBlockTags.RED_SANDSTONE_BLOCKS)
 				.add(Blocks.RED_SANDSTONE)
 				.add(Blocks.CUT_RED_SANDSTONE)
 				.add(Blocks.SMOOTH_RED_SANDSTONE)
 				.add(Blocks.CHISELED_RED_SANDSTONE);
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_SLABS)
+		tag(ConventionalBlockTags.RED_SANDSTONE_SLABS)
 				.add(Blocks.RED_SANDSTONE_SLAB)
 				.add(Blocks.CUT_RED_SANDSTONE_SLAB)
 				.add(Blocks.SMOOTH_RED_SANDSTONE_SLAB);
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_STAIRS)
+		tag(ConventionalBlockTags.RED_SANDSTONE_STAIRS)
 				.add(Blocks.RED_SANDSTONE_STAIRS)
 				.add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS)
+		tag(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS)
 				.add(Blocks.SANDSTONE)
 				.add(Blocks.CUT_SANDSTONE)
 				.add(Blocks.SMOOTH_SANDSTONE)
 				.add(Blocks.CHISELED_SANDSTONE);
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS)
+		tag(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS)
 				.add(Blocks.SANDSTONE_SLAB)
 				.add(Blocks.CUT_SANDSTONE_SLAB)
 				.add(Blocks.SMOOTH_SANDSTONE_SLAB);
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS)
+		tag(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS)
 				.add(Blocks.SANDSTONE_STAIRS)
 				.add(Blocks.SMOOTH_SANDSTONE_STAIRS);
 	}
 
 	private void generateBuddingTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.BUDDING_BLOCKS)
+		tag(ConventionalBlockTags.BUDDING_BLOCKS)
 				.add(Blocks.BUDDING_AMETHYST);
-		getOrCreateTagBuilder(ConventionalBlockTags.BUDS)
+		tag(ConventionalBlockTags.BUDS)
 				.add(Blocks.SMALL_AMETHYST_BUD)
 				.add(Blocks.MEDIUM_AMETHYST_BUD)
 				.add(Blocks.LARGE_AMETHYST_BUD);
-		getOrCreateTagBuilder(ConventionalBlockTags.CLUSTERS)
+		tag(ConventionalBlockTags.CLUSTERS)
 				.add(Blocks.AMETHYST_CLUSTER);
 	}
 
 	private void generateGlassTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_BLOCKS)
+		tag(ConventionalBlockTags.GLASS_BLOCKS)
 				.addOptionalTag(ConventionalBlockTags.GLASS_BLOCKS_COLORLESS)
 				.addOptionalTag(ConventionalBlockTags.GLASS_BLOCKS_CHEAP)
 				.addOptionalTag(ConventionalBlockTags.GLASS_BLOCKS_TINTED);
-		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_BLOCKS_COLORLESS)
+		tag(ConventionalBlockTags.GLASS_BLOCKS_COLORLESS)
 				.add(Blocks.GLASS);
-		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_BLOCKS_CHEAP)
+		tag(ConventionalBlockTags.GLASS_BLOCKS_CHEAP)
 				.add(Blocks.GLASS)
 				.add(Blocks.WHITE_STAINED_GLASS)
 				.add(Blocks.ORANGE_STAINED_GLASS)
@@ -385,9 +387,9 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.GREEN_STAINED_GLASS)
 				.add(Blocks.BLACK_STAINED_GLASS)
 				.add(Blocks.RED_STAINED_GLASS);
-		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_BLOCKS_TINTED)
+		tag(ConventionalBlockTags.GLASS_BLOCKS_TINTED)
 				.add(Blocks.TINTED_GLASS);
-		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_PANES)
+		tag(ConventionalBlockTags.GLASS_PANES)
 				.add(Blocks.WHITE_STAINED_GLASS_PANE)
 				.add(Blocks.ORANGE_STAINED_GLASS_PANE)
 				.add(Blocks.MAGENTA_STAINED_GLASS_PANE)
@@ -405,12 +407,12 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.BLACK_STAINED_GLASS_PANE)
 				.add(Blocks.RED_STAINED_GLASS_PANE)
 				.addOptionalTag(ConventionalBlockTags.GLASS_PANES_COLORLESS);
-		getOrCreateTagBuilder(ConventionalBlockTags.GLASS_PANES_COLORLESS)
+		tag(ConventionalBlockTags.GLASS_PANES_COLORLESS)
 				.add(Blocks.GLASS_PANE);
 	}
 
 	private void generateGlazeTerracottaTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.GLAZED_TERRACOTTAS)
+		tag(ConventionalBlockTags.GLAZED_TERRACOTTAS)
 				.add(Blocks.WHITE_GLAZED_TERRACOTTA)
 				.add(Blocks.ORANGE_GLAZED_TERRACOTTA)
 				.add(Blocks.MAGENTA_GLAZED_TERRACOTTA)
@@ -427,7 +429,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.GREEN_GLAZED_TERRACOTTA)
 				.add(Blocks.BLACK_GLAZED_TERRACOTTA)
 				.add(Blocks.RED_GLAZED_TERRACOTTA);
-		getOrCreateTagBuilder(ConventionalBlockTags.GLAZED_TERRACOTTA)
+		tag(ConventionalBlockTags.GLAZED_TERRACOTTA)
 				.add(Blocks.WHITE_GLAZED_TERRACOTTA)
 				.add(Blocks.ORANGE_GLAZED_TERRACOTTA)
 				.add(Blocks.MAGENTA_GLAZED_TERRACOTTA)
@@ -447,7 +449,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateConcreteTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.CONCRETES)
+		tag(ConventionalBlockTags.CONCRETES)
 				.add(Blocks.WHITE_CONCRETE)
 				.add(Blocks.ORANGE_CONCRETE)
 				.add(Blocks.MAGENTA_CONCRETE)
@@ -464,7 +466,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.GREEN_CONCRETE)
 				.add(Blocks.BLACK_CONCRETE)
 				.add(Blocks.RED_CONCRETE);
-		getOrCreateTagBuilder(ConventionalBlockTags.CONCRETE)
+		tag(ConventionalBlockTags.CONCRETE)
 				.add(Blocks.WHITE_CONCRETE)
 				.add(Blocks.ORANGE_CONCRETE)
 				.add(Blocks.MAGENTA_CONCRETE)
@@ -484,103 +486,103 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateDyedTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.BLACK_DYED)
+		tag(ConventionalBlockTags.BLACK_DYED)
 				.add(Blocks.BLACK_BANNER).add(Blocks.BLACK_BED).add(Blocks.BLACK_CANDLE).add(Blocks.BLACK_CARPET)
 				.add(Blocks.BLACK_CONCRETE).add(Blocks.BLACK_CONCRETE_POWDER).add(Blocks.BLACK_GLAZED_TERRACOTTA)
 				.add(Blocks.BLACK_SHULKER_BOX).add(Blocks.BLACK_STAINED_GLASS).add(Blocks.BLACK_STAINED_GLASS_PANE)
 				.add(Blocks.BLACK_TERRACOTTA).add(Blocks.BLACK_WALL_BANNER).add(Blocks.BLACK_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.BLUE_DYED)
+		tag(ConventionalBlockTags.BLUE_DYED)
 				.add(Blocks.BLUE_BANNER).add(Blocks.BLUE_BED).add(Blocks.BLUE_CANDLE).add(Blocks.BLUE_CARPET)
 				.add(Blocks.BLUE_CONCRETE).add(Blocks.BLUE_CONCRETE_POWDER).add(Blocks.BLUE_GLAZED_TERRACOTTA)
 				.add(Blocks.BLUE_SHULKER_BOX).add(Blocks.BLUE_STAINED_GLASS).add(Blocks.BLUE_STAINED_GLASS_PANE)
 				.add(Blocks.BLUE_TERRACOTTA).add(Blocks.BLUE_WALL_BANNER).add(Blocks.BLUE_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.BROWN_DYED)
+		tag(ConventionalBlockTags.BROWN_DYED)
 				.add(Blocks.BROWN_BANNER).add(Blocks.BROWN_BED).add(Blocks.BROWN_CANDLE).add(Blocks.BROWN_CARPET)
 				.add(Blocks.BROWN_CONCRETE).add(Blocks.BROWN_CONCRETE_POWDER).add(Blocks.BROWN_GLAZED_TERRACOTTA)
 				.add(Blocks.BROWN_SHULKER_BOX).add(Blocks.BROWN_STAINED_GLASS).add(Blocks.BROWN_STAINED_GLASS_PANE)
 				.add(Blocks.BROWN_TERRACOTTA).add(Blocks.BROWN_WALL_BANNER).add(Blocks.BROWN_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.CYAN_DYED)
+		tag(ConventionalBlockTags.CYAN_DYED)
 				.add(Blocks.CYAN_BANNER).add(Blocks.CYAN_BED).add(Blocks.CYAN_CANDLE).add(Blocks.CYAN_CARPET)
 				.add(Blocks.CYAN_CONCRETE).add(Blocks.CYAN_CONCRETE_POWDER).add(Blocks.CYAN_GLAZED_TERRACOTTA)
 				.add(Blocks.CYAN_SHULKER_BOX).add(Blocks.CYAN_STAINED_GLASS).add(Blocks.CYAN_STAINED_GLASS_PANE)
 				.add(Blocks.CYAN_TERRACOTTA).add(Blocks.CYAN_WALL_BANNER).add(Blocks.CYAN_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.GRAY_DYED)
+		tag(ConventionalBlockTags.GRAY_DYED)
 				.add(Blocks.GRAY_BANNER).add(Blocks.GRAY_BED).add(Blocks.GRAY_CANDLE).add(Blocks.GRAY_CARPET)
 				.add(Blocks.GRAY_CONCRETE).add(Blocks.GRAY_CONCRETE_POWDER).add(Blocks.GRAY_GLAZED_TERRACOTTA)
 				.add(Blocks.GRAY_SHULKER_BOX).add(Blocks.GRAY_STAINED_GLASS).add(Blocks.GRAY_STAINED_GLASS_PANE)
 				.add(Blocks.GRAY_TERRACOTTA).add(Blocks.GRAY_WALL_BANNER).add(Blocks.GRAY_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.GREEN_DYED)
+		tag(ConventionalBlockTags.GREEN_DYED)
 				.add(Blocks.GREEN_BANNER).add(Blocks.GREEN_BED).add(Blocks.GREEN_CANDLE).add(Blocks.GREEN_CARPET)
 				.add(Blocks.GREEN_CONCRETE).add(Blocks.GREEN_CONCRETE_POWDER).add(Blocks.GREEN_GLAZED_TERRACOTTA)
 				.add(Blocks.GREEN_SHULKER_BOX).add(Blocks.GREEN_STAINED_GLASS).add(Blocks.GREEN_STAINED_GLASS_PANE)
 				.add(Blocks.GREEN_TERRACOTTA).add(Blocks.GREEN_WALL_BANNER).add(Blocks.GREEN_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.LIGHT_BLUE_DYED)
+		tag(ConventionalBlockTags.LIGHT_BLUE_DYED)
 				.add(Blocks.LIGHT_BLUE_BANNER).add(Blocks.LIGHT_BLUE_BED).add(Blocks.LIGHT_BLUE_CANDLE).add(Blocks.LIGHT_BLUE_CARPET)
 				.add(Blocks.LIGHT_BLUE_CONCRETE).add(Blocks.LIGHT_BLUE_CONCRETE_POWDER).add(Blocks.LIGHT_BLUE_GLAZED_TERRACOTTA)
 				.add(Blocks.LIGHT_BLUE_SHULKER_BOX).add(Blocks.LIGHT_BLUE_STAINED_GLASS).add(Blocks.LIGHT_BLUE_STAINED_GLASS_PANE)
 				.add(Blocks.LIGHT_BLUE_TERRACOTTA).add(Blocks.LIGHT_BLUE_WALL_BANNER).add(Blocks.LIGHT_BLUE_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.LIGHT_GRAY_DYED)
+		tag(ConventionalBlockTags.LIGHT_GRAY_DYED)
 				.add(Blocks.LIGHT_GRAY_BANNER).add(Blocks.LIGHT_GRAY_BED).add(Blocks.LIGHT_GRAY_CANDLE).add(Blocks.LIGHT_GRAY_CARPET)
 				.add(Blocks.LIGHT_GRAY_CONCRETE).add(Blocks.LIGHT_GRAY_CONCRETE_POWDER).add(Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA)
 				.add(Blocks.LIGHT_GRAY_SHULKER_BOX).add(Blocks.LIGHT_GRAY_STAINED_GLASS).add(Blocks.LIGHT_GRAY_STAINED_GLASS_PANE)
 				.add(Blocks.LIGHT_GRAY_TERRACOTTA).add(Blocks.LIGHT_GRAY_WALL_BANNER).add(Blocks.LIGHT_GRAY_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.LIME_DYED)
+		tag(ConventionalBlockTags.LIME_DYED)
 				.add(Blocks.LIME_BANNER).add(Blocks.LIME_BED).add(Blocks.LIME_CANDLE).add(Blocks.LIME_CARPET)
 				.add(Blocks.LIME_CONCRETE).add(Blocks.LIME_CONCRETE_POWDER).add(Blocks.LIME_GLAZED_TERRACOTTA)
 				.add(Blocks.LIME_SHULKER_BOX).add(Blocks.LIME_STAINED_GLASS).add(Blocks.LIME_STAINED_GLASS_PANE)
 				.add(Blocks.LIME_TERRACOTTA).add(Blocks.LIME_WALL_BANNER).add(Blocks.LIME_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.MAGENTA_DYED)
+		tag(ConventionalBlockTags.MAGENTA_DYED)
 				.add(Blocks.MAGENTA_BANNER).add(Blocks.MAGENTA_BED).add(Blocks.MAGENTA_CANDLE).add(Blocks.MAGENTA_CARPET)
 				.add(Blocks.MAGENTA_CONCRETE).add(Blocks.MAGENTA_CONCRETE_POWDER).add(Blocks.MAGENTA_GLAZED_TERRACOTTA)
 				.add(Blocks.MAGENTA_SHULKER_BOX).add(Blocks.MAGENTA_STAINED_GLASS).add(Blocks.MAGENTA_STAINED_GLASS_PANE)
 				.add(Blocks.MAGENTA_TERRACOTTA).add(Blocks.MAGENTA_WALL_BANNER).add(Blocks.MAGENTA_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.ORANGE_DYED)
+		tag(ConventionalBlockTags.ORANGE_DYED)
 				.add(Blocks.ORANGE_BANNER).add(Blocks.ORANGE_BED).add(Blocks.ORANGE_CANDLE).add(Blocks.ORANGE_CARPET)
 				.add(Blocks.ORANGE_CONCRETE).add(Blocks.ORANGE_CONCRETE_POWDER).add(Blocks.ORANGE_GLAZED_TERRACOTTA)
 				.add(Blocks.ORANGE_SHULKER_BOX).add(Blocks.ORANGE_STAINED_GLASS).add(Blocks.ORANGE_STAINED_GLASS_PANE)
 				.add(Blocks.ORANGE_TERRACOTTA).add(Blocks.ORANGE_WALL_BANNER).add(Blocks.ORANGE_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.PINK_DYED)
+		tag(ConventionalBlockTags.PINK_DYED)
 				.add(Blocks.PINK_BANNER).add(Blocks.PINK_BED).add(Blocks.PINK_CANDLE).add(Blocks.PINK_CARPET)
 				.add(Blocks.PINK_CONCRETE).add(Blocks.PINK_CONCRETE_POWDER).add(Blocks.PINK_GLAZED_TERRACOTTA)
 				.add(Blocks.PINK_SHULKER_BOX).add(Blocks.PINK_STAINED_GLASS).add(Blocks.PINK_STAINED_GLASS_PANE)
 				.add(Blocks.PINK_TERRACOTTA).add(Blocks.PINK_WALL_BANNER).add(Blocks.PINK_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.PURPLE_DYED)
+		tag(ConventionalBlockTags.PURPLE_DYED)
 				.add(Blocks.PURPLE_BANNER).add(Blocks.PURPLE_BED).add(Blocks.PURPLE_CANDLE).add(Blocks.PURPLE_CARPET)
 				.add(Blocks.PURPLE_CONCRETE).add(Blocks.PURPLE_CONCRETE_POWDER).add(Blocks.PURPLE_GLAZED_TERRACOTTA)
 				.add(Blocks.PURPLE_SHULKER_BOX).add(Blocks.PURPLE_STAINED_GLASS).add(Blocks.PURPLE_STAINED_GLASS_PANE)
 				.add(Blocks.PURPLE_TERRACOTTA).add(Blocks.PURPLE_WALL_BANNER).add(Blocks.PURPLE_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_DYED)
+		tag(ConventionalBlockTags.RED_DYED)
 				.add(Blocks.RED_BANNER).add(Blocks.RED_BED).add(Blocks.RED_CANDLE).add(Blocks.RED_CARPET)
 				.add(Blocks.RED_CONCRETE).add(Blocks.RED_CONCRETE_POWDER).add(Blocks.RED_GLAZED_TERRACOTTA)
 				.add(Blocks.RED_SHULKER_BOX).add(Blocks.RED_STAINED_GLASS).add(Blocks.RED_STAINED_GLASS_PANE)
 				.add(Blocks.RED_TERRACOTTA).add(Blocks.RED_WALL_BANNER).add(Blocks.RED_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.WHITE_DYED)
+		tag(ConventionalBlockTags.WHITE_DYED)
 				.add(Blocks.WHITE_BANNER).add(Blocks.WHITE_BED).add(Blocks.WHITE_CANDLE).add(Blocks.WHITE_CARPET)
 				.add(Blocks.WHITE_CONCRETE).add(Blocks.WHITE_CONCRETE_POWDER).add(Blocks.WHITE_GLAZED_TERRACOTTA)
 				.add(Blocks.WHITE_SHULKER_BOX).add(Blocks.WHITE_STAINED_GLASS).add(Blocks.WHITE_STAINED_GLASS_PANE)
 				.add(Blocks.WHITE_TERRACOTTA).add(Blocks.WHITE_WALL_BANNER).add(Blocks.WHITE_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.YELLOW_DYED)
+		tag(ConventionalBlockTags.YELLOW_DYED)
 				.add(Blocks.YELLOW_BANNER).add(Blocks.YELLOW_BED).add(Blocks.YELLOW_CANDLE).add(Blocks.YELLOW_CARPET)
 				.add(Blocks.YELLOW_CONCRETE).add(Blocks.YELLOW_CONCRETE_POWDER).add(Blocks.YELLOW_GLAZED_TERRACOTTA)
 				.add(Blocks.YELLOW_SHULKER_BOX).add(Blocks.YELLOW_STAINED_GLASS).add(Blocks.YELLOW_STAINED_GLASS_PANE)
 				.add(Blocks.YELLOW_TERRACOTTA).add(Blocks.YELLOW_WALL_BANNER).add(Blocks.YELLOW_WOOL);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.DYED)
+		tag(ConventionalBlockTags.DYED)
 				.addTag(ConventionalBlockTags.WHITE_DYED)
 				.addTag(ConventionalBlockTags.ORANGE_DYED)
 				.addTag(ConventionalBlockTags.MAGENTA_DYED)
@@ -600,7 +602,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateStorageTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_BONE_MEAL)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_COAL)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_COPPER)
@@ -619,60 +621,60 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_SLIME)
 				.addTag(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_BONE_MEAL)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_BONE_MEAL)
 				.add(Blocks.BONE_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_COAL)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_COAL)
 				.add(Blocks.COAL_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_COPPER)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_COPPER)
 				.add(Blocks.COPPER_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_DIAMOND)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_DIAMOND)
 				.add(Blocks.DIAMOND_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_DRIED_KELP)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_DRIED_KELP)
 				.add(Blocks.DRIED_KELP_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_EMERALD)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_EMERALD)
 				.add(Blocks.EMERALD_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_GOLD)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_GOLD)
 				.add(Blocks.GOLD_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_IRON)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_IRON)
 				.add(Blocks.IRON_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_LAPIS)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_LAPIS)
 				.add(Blocks.LAPIS_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_NETHERITE)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_NETHERITE)
 				.add(Blocks.NETHERITE_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_RAW_COPPER)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_RAW_COPPER)
 				.add(Blocks.RAW_COPPER_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_RAW_GOLD)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_RAW_GOLD)
 				.add(Blocks.RAW_GOLD_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_RAW_IRON)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_RAW_IRON)
 				.add(Blocks.RAW_IRON_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_REDSTONE)
 				.add(Blocks.REDSTONE_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_RESIN)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_RESIN)
 				.add(Blocks.RESIN_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_SLIME)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_SLIME)
 				.add(Blocks.SLIME_BLOCK);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT)
+		tag(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT)
 				.add(Blocks.HAY_BLOCK);
 	}
 
 	private void generateLogTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.STRIPPED_LOGS)
+		tag(ConventionalBlockTags.STRIPPED_LOGS)
 				.add(Blocks.STRIPPED_ACACIA_LOG)
 				.add(Blocks.STRIPPED_BAMBOO_BLOCK)
 				.add(Blocks.STRIPPED_BIRCH_LOG)
@@ -686,7 +688,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				.add(Blocks.STRIPPED_CRIMSON_STEM)
 				.add(Blocks.STRIPPED_WARPED_STEM);
 
-		getOrCreateTagBuilder(ConventionalBlockTags.STRIPPED_WOODS)
+		tag(ConventionalBlockTags.STRIPPED_WOODS)
 				.add(Blocks.STRIPPED_ACACIA_WOOD)
 				.add(Blocks.STRIPPED_BIRCH_WOOD)
 				.add(Blocks.STRIPPED_CHERRY_WOOD)
@@ -701,7 +703,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateHeadTags() {
-		getOrCreateTagBuilder(ConventionalBlockTags.SKULLS)
+		tag(ConventionalBlockTags.SKULLS)
 				.add(Blocks.SKELETON_SKULL)
 				.add(Blocks.SKELETON_WALL_SKULL)
 				.add(Blocks.WITHER_SKELETON_SKULL)
@@ -739,20 +741,20 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
 
-		getOrCreateTagBuilder(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "movement_restricted"));
-		getOrCreateTagBuilder(ConventionalBlockTags.QUARTZ_ORES).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "quartz_ores"));
-		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_BARRELS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_barrels"));
-		getOrCreateTagBuilder(ConventionalBlockTags.WOODEN_CHESTS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_chests"));
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_BLOCKS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_SLABS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.SANDSTONE_STAIRS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "sandstone_stairs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_BLOCKS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_SLABS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.RED_SANDSTONE_STAIRS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_sandstone_stairs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_blocks"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_slabs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS).addOptionalTag(Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_stairs"));
-		getOrCreateTagBuilder(ConventionalBlockTags.GLAZED_TERRACOTTAS).addOptionalTag(ConventionalBlockTags.GLAZED_TERRACOTTA);
-		getOrCreateTagBuilder(ConventionalBlockTags.CONCRETES).addOptionalTag(ConventionalBlockTags.CONCRETE);
+		tag(ConventionalBlockTags.RELOCATION_NOT_SUPPORTED).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "movement_restricted")));
+		tag(ConventionalBlockTags.QUARTZ_ORES).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "quartz_ores")));
+		tag(ConventionalBlockTags.WOODEN_BARRELS).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_barrels")));
+		tag(ConventionalBlockTags.WOODEN_CHESTS).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_chests")));
+		tag(ConventionalBlockTags.SANDSTONE_BLOCKS).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "sandstone_blocks")));
+		tag(ConventionalBlockTags.SANDSTONE_SLABS).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "sandstone_slabs")));
+		tag(ConventionalBlockTags.SANDSTONE_STAIRS).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "sandstone_stairs")));
+		tag(ConventionalBlockTags.RED_SANDSTONE_BLOCKS).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_sandstone_blocks")));
+		tag(ConventionalBlockTags.RED_SANDSTONE_SLABS).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_sandstone_slabs")));
+		tag(ConventionalBlockTags.RED_SANDSTONE_STAIRS).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_sandstone_stairs")));
+		tag(ConventionalBlockTags.UNCOLORED_SANDSTONE_BLOCKS).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_blocks")));
+		tag(ConventionalBlockTags.UNCOLORED_SANDSTONE_SLABS).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_slabs")));
+		tag(ConventionalBlockTags.UNCOLORED_SANDSTONE_STAIRS).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.of(TagUtil.C_TAG_NAMESPACE, "uncolored_sandstone_stairs")));
+		tag(ConventionalBlockTags.GLAZED_TERRACOTTAS).addOptionalTag(ConventionalBlockTags.GLAZED_TERRACOTTA);
+		tag(ConventionalBlockTags.CONCRETES).addOptionalTag(ConventionalBlockTags.CONCRETE);
 	}
 }

@@ -52,6 +52,9 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.storage.NbtReadView;
+import net.minecraft.storage.NbtWriteView;
+import net.minecraft.util.ErrorReporter;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -163,13 +166,14 @@ public class CommonAttachmentTests {
 		);
 		var map = new IdentityHashMap<AttachmentType<?>, Object>();
 		map.put(dummy, 0.5d);
-		var fakeSave = new NbtCompound();
+		DynamicRegistryManager drm = mockDRM();
+		NbtWriteView view = NbtWriteView.create(ErrorReporter.EMPTY, drm);
 
-		AttachmentSerializingImpl.serializeAttachmentData(fakeSave, mockDRM(), map);
-		assertTrue(fakeSave.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
-		assertTrue(fakeSave.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElseThrow().contains(dummy.identifier().toString()));
+		AttachmentSerializingImpl.serializeAttachmentData(view, map);
+		assertTrue(view.getNbt().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+		assertTrue(view.getNbt().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElseThrow().contains(dummy.identifier().toString()));
 
-		map = AttachmentSerializingImpl.deserializeAttachmentData(fakeSave, mockDRM());
+		map = AttachmentSerializingImpl.deserializeAttachmentData(NbtReadView.get(ErrorReporter.EMPTY, drm, view.getNbt()));
 		assertEquals(1, map.size());
 		Map.Entry<AttachmentType<?>, Object> entry = map.entrySet().stream().findFirst().orElseThrow();
 		// in this case the key should be the exact same object
@@ -181,20 +185,21 @@ public class CommonAttachmentTests {
 	@Test
 	void deserializeNull() {
 		var nbt = new NbtCompound();
-		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, mockDRM()));
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(NbtReadView.get(ErrorReporter.EMPTY, mockDRM(), null)));
 
 		nbt.put(Identifier.ofVanilla("test").toString(), new NbtCompound());
-		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(nbt, mockDRM()));
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(NbtReadView.get(ErrorReporter.EMPTY, mockDRM(), null)));
 	}
 
 	@Test
 	void serializeNullOrEmpty() {
-		var nbt = new NbtCompound();
-		AttachmentSerializingImpl.serializeAttachmentData(nbt, mockDRM(), null);
-		assertFalse(nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+		NbtWriteView view = NbtWriteView.create(ErrorReporter.EMPTY, mockDRM());
+		AttachmentSerializingImpl.serializeAttachmentData(view, null);
+		assertFalse(view.getNbt().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
 
-		AttachmentSerializingImpl.serializeAttachmentData(nbt, mockDRM(), new IdentityHashMap<>());
-		assertFalse(nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+		view = NbtWriteView.create(ErrorReporter.EMPTY, mockDRM());
+		AttachmentSerializingImpl.serializeAttachmentData(view, new IdentityHashMap<>());
+		assertFalse(view.getNbt().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
 	}
 
 	@Test
@@ -230,12 +235,12 @@ public class CommonAttachmentTests {
 
 		int expected = 1;
 		entity.setAttached(PERSISTENT, expected);
-		NbtCompound fakeSave = new NbtCompound();
-		entity.writeNbt(fakeSave);
+		NbtWriteView fakeSave = NbtWriteView.create(null);
+		entity.writeData(fakeSave);
 
 		entity = new MarkerEntity(EntityType.MARKER, mockWorld); // fresh object, like on restart
 		entity.setChangeListener(mock());
-		entity.readNbt(fakeSave);
+		entity.readData(NbtReadView.get(ErrorReporter.EMPTY, drm, fakeSave.getNbt()));
 		assertTrue(entity.hasAttached(PERSISTENT));
 		assertEquals(expected, entity.getAttached(PERSISTENT));
 	}
@@ -247,7 +252,9 @@ public class CommonAttachmentTests {
 
 		int expected = 1;
 		blockEntity.setAttached(PERSISTENT, expected);
-		NbtCompound fakeSave = blockEntity.createNbtWithId(mockDRM());
+		NbtWriteView writeView = NbtWriteView.create(ErrorReporter.EMPTY);
+		blockEntity.writeDataWithId(writeView);
+		NbtCompound fakeSave = writeView.getNbt();
 
 		blockEntity = BlockEntity.createFromNbt(BlockPos.ORIGIN, Blocks.BELL.getDefaultState(), fakeSave, mockDRM());
 		assertNotNull(blockEntity);

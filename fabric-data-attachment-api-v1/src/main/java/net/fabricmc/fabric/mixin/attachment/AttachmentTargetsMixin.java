@@ -27,10 +27,11 @@ import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -88,20 +89,20 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_writeAttachmentsToNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		AttachmentSerializingImpl.serializeAttachmentData(nbt, wrapperLookup, fabric_dataAttachments);
+	public void fabric_writeAttachmentsToNbt(WriteView view) {
+		AttachmentSerializingImpl.serializeAttachmentData(view, fabric_dataAttachments);
 	}
 
 	@Override
-	public void fabric_readAttachmentsFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+	public void fabric_readAttachmentsFromNbt(ReadView view) {
 		// Note on player targets: no syncing can happen here as the networkHandler is still null
 		// Instead it is done on player join (see AttachmentSync)
-		this.fabric_dataAttachments = AttachmentSerializingImpl.deserializeAttachmentData(nbt, wrapperLookup);
+		this.fabric_dataAttachments = AttachmentSerializingImpl.deserializeAttachmentData(view);
 
 		if (this.fabric_shouldTryToSync() && this.fabric_dataAttachments != null) {
 			this.fabric_dataAttachments.forEach((type, value) -> {
 				if (type.isSynced()) {
-					acknowledgeSynced(type, value, wrapperLookup);
+					acknowledgeSynced(type, value, view.getRegistries());
 				}
 			});
 		}

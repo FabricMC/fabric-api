@@ -26,6 +26,10 @@ import com.mojang.serialization.Encoder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.storage.NbtReadView;
+import net.minecraft.storage.NbtWriteView;
+import net.minecraft.storage.ReadView;
+import net.minecraft.util.ErrorReporter;
 import net.minecraft.world.PersistentState;
 
 /**
@@ -47,14 +51,15 @@ public class AttachmentPersistentState extends PersistentState {
 		return Codec.of(new Encoder<>() {
 			@Override
 			public <T> DataResult<T> encode(AttachmentPersistentState input, DynamicOps<T> ops, T prefix) {
-				NbtCompound nbtCompound = new NbtCompound();
-				((AttachmentTargetImpl) world).fabric_writeAttachmentsToNbt(nbtCompound, world.getRegistryManager());
-				return DataResult.success((T) nbtCompound);
+				NbtWriteView writeView = NbtWriteView.create(ErrorReporter.EMPTY);
+				((AttachmentTargetImpl) world).fabric_writeAttachmentsToNbt(writeView);
+				return DataResult.success(NbtOps.INSTANCE.convertTo(ops, writeView.getNbt()));
 			}
 		}, new Decoder<>() {
 			@Override
 			public <T> DataResult<Pair<AttachmentPersistentState, T>> decode(DynamicOps<T> ops, T input) {
-				((AttachmentTargetImpl) world).fabric_readAttachmentsFromNbt((NbtCompound) ops.convertTo(NbtOps.INSTANCE, input), world.getRegistryManager());
+				ReadView readView = NbtReadView.get(ErrorReporter.EMPTY, world.getRegistryManager(), (NbtCompound) ops.convertTo(NbtOps.INSTANCE, input));
+				((AttachmentTargetImpl) world).fabric_readAttachmentsFromNbt(readView);
 				return DataResult.success(Pair.of(new AttachmentPersistentState(world), ops.empty()));
 			}
 		});

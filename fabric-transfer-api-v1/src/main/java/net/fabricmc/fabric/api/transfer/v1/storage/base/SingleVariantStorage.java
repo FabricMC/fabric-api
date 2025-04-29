@@ -20,11 +20,8 @@ import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
@@ -163,14 +160,12 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	 * @param storage the {@link SingleVariantStorage} to read into
 	 * @param codec the item variant codec
 	 * @param fallback the fallback item variant, used when the NBT is invalid
-	 * @param nbt the NBT to read from
-	 * @param wrapperLookup the {@link RegistryWrapper.WrapperLookup} instance
+	 * @param data the @{@link ReadView} instance to read from
 	 * @param <T> the type of the item variant
 	 */
-	public static <T extends TransferVariant<?>> void readNbt(SingleVariantStorage<T> storage, Codec<T> codec, Supplier<T> fallback, NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		final RegistryOps<NbtElement> ops = wrapperLookup.getOps(NbtOps.INSTANCE);
-		storage.variant = nbt.get("variant", codec, ops).orElseGet(fallback);
-		storage.amount = nbt.getLong("amount", 0L);
+	public static <T extends TransferVariant<?>> void readData(SingleVariantStorage<T> storage, Codec<T> codec, Supplier<T> fallback, ReadView data) {
+		storage.variant = data.read("variant", codec).orElseGet(fallback);
+		storage.amount = data.getLong("amount", 0L);
 	}
 
 	/**
@@ -178,13 +173,11 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	 *
 	 * @param storage the {@link SingleVariantStorage} to write from
 	 * @param codec the item variant codec
-	 * @param nbt the NBT to write to
-	 * @param wrapperLookup the {@link RegistryWrapper.WrapperLookup} instance
+	 * @param data the @{@link WriteView} instance to write from
 	 * @param <T> the type of the item variant
 	 */
-	public static <T extends TransferVariant<?>> void writeNbt(SingleVariantStorage<T> storage, Codec<T> codec, NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		final RegistryOps<NbtElement> ops = wrapperLookup.getOps(NbtOps.INSTANCE);
-		nbt.put("variant", codec, ops, storage.variant);
-		nbt.putLong("amount", storage.amount);
+	public static <T extends TransferVariant<?>> void writeData(SingleVariantStorage<T> storage, Codec<T> codec, WriteView data) {
+		data.put("variant", codec, storage.variant);
+		data.putLong("amount", storage.amount);
 	}
 }

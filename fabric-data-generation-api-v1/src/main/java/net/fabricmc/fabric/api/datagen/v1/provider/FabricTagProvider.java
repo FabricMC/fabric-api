@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.data.tag.TagAppender;
 import net.minecraft.data.tag.TagProvider;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
@@ -42,19 +43,12 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.EntityTypeTags;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.registry.tag.GameEventTags;
-import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagBuilder;
-import net.minecraft.registry.tag.TagEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
 
 /**
  * Implement this class (or one of the inner classes) to generate a tag list.
@@ -91,7 +85,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	}
 
 	/**
-	 * Implement this method and then use {@link FabricTagProvider#getOrCreateTagBuilder} to get and register new tag builders.
+	 * Implement this method and then use {@link FabricTagProvider#tag} to get and register new tag builders.
 	 */
 	protected abstract void configure(RegistryWrapper.WrapperLookup wrapperLookup);
 
@@ -113,15 +107,12 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		throw new UnsupportedOperationException("Adding objects is not supported by " + getClass());
 	}
 
-	/**
-	 * Creates a new instance of {@link FabricTagBuilder} for the given {@link TagKey} tag.
-	 *
-	 * @param tag The {@link TagKey} tag to create the builder for
-	 * @return The {@link FabricTagBuilder} instance
-	 */
-	@Override
-	protected FabricTagBuilder getOrCreateTagBuilder(TagKey<T> tag) {
-		return new FabricTagBuilder(super.getOrCreateTagBuilder(tag));
+	protected TagAppender<T, T> tag(TagKey<T> key) {
+		return null;
+	}
+
+	protected TagAppender<RegistryKey<T>, T> keyTag(TagKey<T> tagKey) {
+		return null;
 	}
 
 	/**
@@ -261,223 +252,6 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		@Override
 		protected RegistryKey<EntityType<?>> reverseLookup(EntityType<?> element) {
 			return element.getRegistryEntry().registryKey();
-		}
-	}
-
-	/**
-	 * An extension to {@link ProvidedTagBuilder} that provides additional functionality.
-	 */
-	public final class FabricTagBuilder extends ProvidedTagBuilder<T> {
-		private final TagProvider.ProvidedTagBuilder<T> parent;
-
-		private FabricTagBuilder(ProvidedTagBuilder<T> parent) {
-			super(parent.builder);
-			this.parent = parent;
-		}
-
-		/**
-		 * Set the value of the `replace` flag in a Tag.
-		 *
-		 * <p>When set to true the tag will replace any existing tag entries.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		public FabricTagBuilder setReplace(boolean replace) {
-			((net.fabricmc.fabric.impl.datagen.FabricTagBuilder) builder).fabric_setReplace(replace);
-			return this;
-		}
-
-		/**
-		 * Add an element to the tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		public FabricTagBuilder add(T element) {
-			add(reverseLookup(element));
-			return this;
-		}
-
-		/**
-		 * Add multiple elements to the tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		@SafeVarargs
-		public final FabricTagBuilder add(T... elements) {
-			for (T element : elements) {
-				add(reverseLookup(element));
-			}
-
-			return this;
-		}
-
-		/**
-		 * Add an element to the tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 * @see #add(Identifier)
-		 */
-		@Override
-		public FabricTagBuilder add(RegistryKey<T> registryKey) {
-			parent.add(registryKey);
-			return this;
-		}
-
-		/**
-		 * Add a single element to the tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		public FabricTagBuilder add(Identifier id) {
-			builder.add(id);
-			return this;
-		}
-
-		/**
-		 * Add an optional {@link Identifier} to the tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		@Override
-		public FabricTagBuilder addOptional(Identifier id) {
-			parent.addOptional(id);
-			return this;
-		}
-
-		/**
-		 * Add an optional {@link RegistryKey} to the tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		public FabricTagBuilder addOptional(RegistryKey<? extends T> registryKey) {
-			return addOptional(registryKey.getValue());
-		}
-
-		/**
-		 * Add another tag to this tag.
-		 *
-		 * <p><b>Note:</b> any vanilla tags can be added to the builder,
-		 * but other tags can only be added if it has a builder registered in the same provider.
-		 *
-		 * <p>Use {@link #forceAddTag(TagKey)} to force add any tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 * @see BlockTags
-		 * @see EntityTypeTags
-		 * @see FluidTags
-		 * @see GameEventTags
-		 * @see ItemTags
-		 */
-		@Override
-		public FabricTagBuilder addTag(TagKey<T> tag) {
-			builder.addTag(tag.id());
-			return this;
-		}
-
-		/**
-		 * Add multiple tags to this tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		@SafeVarargs
-		public final FabricTagBuilder addTags(TagKey<T>... tags) {
-			for (TagKey<T> tag : tags) {
-				addTag(tag);
-			}
-
-			return this;
-		}
-
-		/**
-		 * Add another optional tag to this tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		@Override
-		public FabricTagBuilder addOptionalTag(Identifier id) {
-			parent.addOptionalTag(id);
-			return this;
-		}
-
-		/**
-		 * Add another optional tag to this tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		public FabricTagBuilder addOptionalTag(TagKey<T> tag) {
-			return addOptionalTag(tag.id());
-		}
-
-		/**
-		 * Add multiple optional tags to this tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		@SafeVarargs
-		public final FabricTagBuilder addOptionalTags(TagKey<T>... tags) {
-			for (TagKey<T> tag : tags) {
-				addOptionalTag(tag);
-			}
-
-			return this;
-		}
-
-		/**
-		 * Add another tag to this tag, ignoring any warning.
-		 *
-		 * <p><b>Note:</b> only use this method if you are sure that the tag will be always available at runtime.
-		 * If not, use {@link #addOptionalTag(TagKey)} instead.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		public FabricTagBuilder forceAddTag(TagKey<T> tag) {
-			builder.add(new ForcedTagEntry(TagEntry.create(tag.id())));
-			return this;
-		}
-
-		/**
-		 * Add multiple tags to this tag, ignoring any warning.
-		 *
-		 * <p><b>Note:</b> only use this method if you are sure that the tags will be always available at runtime.
-		 * If not, use {@link #addOptionalTags(TagKey[])} instead.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		@SafeVarargs
-		public final FabricTagBuilder forceAddTags(TagKey<T>... tags) {
-			for (TagKey<T> tag : tags) {
-				forceAddTag(tag);
-			}
-
-			return this;
-		}
-
-		/**
-		 * Add multiple elements to this tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		public FabricTagBuilder add(Identifier... ids) {
-			for (Identifier id : ids) {
-				add(id);
-			}
-
-			return this;
-		}
-
-		/**
-		 * Add multiple elements to this tag.
-		 *
-		 * @return the {@link FabricTagBuilder} instance
-		 */
-		@SafeVarargs
-		@Override
-		public final FabricTagBuilder add(RegistryKey<T>... registryKeys) {
-			for (RegistryKey<T> registryKey : registryKeys) {
-				add(registryKey);
-			}
-
-			return this;
 		}
 	}
 

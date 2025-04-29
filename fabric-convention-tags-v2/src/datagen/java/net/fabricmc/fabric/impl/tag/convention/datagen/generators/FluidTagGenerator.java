@@ -32,19 +32,19 @@ public final class FluidTagGenerator extends FabricTagProvider.FluidTagProvider 
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries) {
-		getOrCreateTagBuilder(ConventionalFluidTags.WATER)
+		tag(ConventionalFluidTags.WATER)
 				.addOptionalTag(FluidTags.WATER);
-		getOrCreateTagBuilder(ConventionalFluidTags.LAVA)
+		tag(ConventionalFluidTags.LAVA)
 				.addOptionalTag(FluidTags.LAVA);
-		getOrCreateTagBuilder(ConventionalFluidTags.MILK);
-		getOrCreateTagBuilder(ConventionalFluidTags.HONEY);
-		getOrCreateTagBuilder(ConventionalFluidTags.GASEOUS);
-		getOrCreateTagBuilder(ConventionalFluidTags.EXPERIENCE);
-		getOrCreateTagBuilder(ConventionalFluidTags.POTION);
-		getOrCreateTagBuilder(ConventionalFluidTags.SUSPICIOUS_STEW);
-		getOrCreateTagBuilder(ConventionalFluidTags.MUSHROOM_STEW);
-		getOrCreateTagBuilder(ConventionalFluidTags.RABBIT_STEW);
-		getOrCreateTagBuilder(ConventionalFluidTags.BEETROOT_SOUP);
-		getOrCreateTagBuilder(ConventionalFluidTags.HIDDEN_FROM_RECIPE_VIEWERS);
+		tag(ConventionalFluidTags.MILK);
+		tag(ConventionalFluidTags.HONEY);
+		tag(ConventionalFluidTags.GASEOUS);
+		tag(ConventionalFluidTags.EXPERIENCE);
+		tag(ConventionalFluidTags.POTION);
+		tag(ConventionalFluidTags.SUSPICIOUS_STEW);
+		tag(ConventionalFluidTags.MUSHROOM_STEW);
+		tag(ConventionalFluidTags.RABBIT_STEW);
+		tag(ConventionalFluidTags.BEETROOT_SOUP);
+		tag(ConventionalFluidTags.HIDDEN_FROM_RECIPE_VIEWERS);
 	}
 }

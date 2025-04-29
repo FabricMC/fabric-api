@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,6 +30,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.storage.NbtWriteView;
+import net.minecraft.storage.ReadView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -59,16 +62,16 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 			method = "read",
 			at = @At("RETURN")
 	)
-	private void readBlockEntityAttachments(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup, CallbackInfo ci) {
-		this.fabric_readAttachmentsFromNbt(nbt, registryLookup);
+	private void readBlockEntityAttachments(ReadView view, CallbackInfo ci) {
+		this.fabric_readAttachmentsFromNbt(view);
 	}
 
 	@Inject(
 			method = "createNbt",
-			at = @At("RETURN")
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;writeDataWithoutId(Lnet/minecraft/storage/WriteView;)V")
 	)
-	private void writeBlockEntityAttachments(RegistryWrapper.WrapperLookup wrapperLookup, CallbackInfoReturnable<NbtCompound> cir) {
-		this.fabric_writeAttachmentsToNbt(cir.getReturnValue(), wrapperLookup);
+	private void writeBlockEntityAttachments(RegistryWrapper.WrapperLookup wrapperLookup, CallbackInfoReturnable<NbtCompound> cir, @Local NbtWriteView view) {
+		this.fabric_writeAttachmentsToNbt(view);
 	}
 
 	@Override

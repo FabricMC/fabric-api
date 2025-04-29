@@ -24,13 +24,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.blockview.v2.RenderDataBlockEntity;
@@ -46,11 +45,10 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	}
 
 	@Override
-	public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup wrapperLookup) {
-		super.readNbt(tag, wrapperLookup);
+	public void readData(ReadView data) {
+		super.readData(data);
 
-		RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
-		block = tag.get("block", BLOCK_CODEC, registryOps).orElse(null);
+		block = data.read("block", BLOCK_CODEC).orElse(null);
 
 		if (block == Blocks.AIR) {
 			block = null;
@@ -63,15 +61,14 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	}
 
 	@Override
-	public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup wrapperLookup) {
-		super.writeNbt(tag, wrapperLookup);
-		RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
+	public void writeData(WriteView data) {
+		super.writeData(data);
 
 		if (block != null) {
-			tag.put("block", BLOCK_CODEC, registryOps, block);
+			data.put("block", BLOCK_CODEC, block);
 		} else {
 			// Always need something in the tag, otherwise S2C syncing will never apply the packet.
-			tag.put("block", BLOCK_CODEC, registryOps, Blocks.AIR);
+			data.put("block", BLOCK_CODEC, Blocks.AIR);
 		}
 	}
 

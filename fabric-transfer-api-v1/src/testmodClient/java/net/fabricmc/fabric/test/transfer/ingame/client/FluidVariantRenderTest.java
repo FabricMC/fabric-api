@@ -53,8 +53,6 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 				Sprite[] sprites = FluidVariantRendering.getSprites(variant);
 				int color = FluidVariantRendering.getColor(variant, player.getWorld(), player.getBlockPos());
 
-				drawContext.goUpLayer();
-
 				if (sprites != null) {
 					drawContext.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, sprites[0], 0, renderY, 16, 16, color);
 					renderY += 16;
@@ -71,8 +69,6 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 					renderY += 10;
 					drawContext.drawTooltip(textRenderer, line, -8, renderY);
 				}
-
-				drawContext.popLayer();
 			}
 		});
 	}

@@ -21,12 +21,12 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
@@ -47,19 +47,19 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	public abstract World getWorld();
 
 	@Inject(
-			at = @At(value = "INVOKE", target = "net/minecraft/entity/Entity.readCustomDataFromNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
-			method = "readNbt"
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readCustomData(Lnet/minecraft/storage/ReadView;)V"),
+			method = "readData"
 	)
-	private void readEntityAttachments(NbtCompound nbt, CallbackInfo cir) {
-		this.fabric_readAttachmentsFromNbt(nbt, getWorld().getRegistryManager());
+	private void readEntityAttachments(ReadView data, CallbackInfo ci) {
+		this.fabric_readAttachmentsFromNbt(data);
 	}
 
 	@Inject(
-			at = @At(value = "INVOKE", target = "net/minecraft/entity/Entity.writeCustomDataToNbt(Lnet/minecraft/nbt/NbtCompound;)V"),
-			method = "writeNbt"
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;writeCustomData(Lnet/minecraft/storage/WriteView;)V"),
+			method = "writeData"
 	)
-	private void writeEntityAttachments(NbtCompound nbt, CallbackInfoReturnable<NbtCompound> cir) {
-		this.fabric_writeAttachmentsToNbt(nbt, getWorld().getRegistryManager());
+	private void writeEntityAttachments(WriteView view, CallbackInfo ci) {
+		this.fabric_writeAttachmentsToNbt(view);
 	}
 
 	@Override

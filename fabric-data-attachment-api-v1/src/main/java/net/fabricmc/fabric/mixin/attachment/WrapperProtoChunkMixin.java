@@ -24,10 +24,10 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.chunk.WrapperProtoChunk;
 
@@ -61,13 +61,13 @@ abstract class WrapperProtoChunkMixin extends AttachmentTargetsMixin {
 	}
 
 	@Override
-	public void fabric_writeAttachmentsToNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		((AttachmentTargetImpl) this.wrapped).fabric_writeAttachmentsToNbt(nbt, wrapperLookup);
+	public void fabric_writeAttachmentsToNbt(WriteView view) {
+		((AttachmentTargetImpl) this.wrapped).fabric_writeAttachmentsToNbt(view);
 	}
 
 	@Override
-	public void fabric_readAttachmentsFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		((AttachmentTargetImpl) this.wrapped).fabric_readAttachmentsFromNbt(nbt, wrapperLookup);
+	public void fabric_readAttachmentsFromNbt(ReadView view) {
+		((AttachmentTargetImpl) this.wrapped).fabric_readAttachmentsFromNbt(view);
 	}
 
 	@Override

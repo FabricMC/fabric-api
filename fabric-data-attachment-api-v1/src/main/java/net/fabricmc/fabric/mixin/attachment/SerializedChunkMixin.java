@@ -19,6 +19,8 @@ package net.fabricmc.fabric.mixin.attachment;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,6 +30,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.storage.NbtReadView;
+import net.minecraft.storage.NbtWriteView;
+import net.minecraft.storage.ReadView;
+import net.minecraft.util.ErrorReporter;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.chunk.Chunk;
@@ -41,6 +47,9 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(SerializedChunk.class)
 abstract class SerializedChunkMixin {
+	@Unique
+	private static final Logger LOGGER = LoggerFactory.getLogger("SerializedChunkMixin");
+
 	// Adding a mutable record field like this is likely a bad idea, but I cannot see a better way.
 	@Unique
 	@Nullable
@@ -69,17 +78,18 @@ abstract class SerializedChunkMixin {
 		if (chunk != null && attachmentNbtData != null) {
 			var nbt = new NbtCompound();
 			nbt.put(AttachmentTarget.NBT_ATTACHMENT_KEY, attachmentNbtData);
-			((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(nbt, serverWorld.getRegistryManager());
+			ReadView readView = NbtReadView.get(new ErrorReporter.Logging(LOGGER), serverWorld.getRegistryManager(), nbt);
+			((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(readView);
 		}
 	}
 
 	@Inject(method = "fromChunk", at = @At("RETURN"))
 	private static void storeAttachmentNbtData(ServerWorld world, Chunk chunk, CallbackInfoReturnable<SerializedChunk> cir) {
-		var nbt = new NbtCompound();
-		((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(nbt, world.getRegistryManager());
+		NbtWriteView writeView = NbtWriteView.create(new ErrorReporter.Logging(LOGGER), world.getRegistryManager());
+		((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(writeView);
 
 		//noinspection SimplifyOptionalCallChains
-		NbtCompound attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
+		NbtCompound attachmentNbtData = writeView.getNbt().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
 
 		if (attachmentNbtData != null) {
 			((SerializedChunkMixin) (Object) cir.getReturnValue()).attachmentNbtData = attachmentNbtData;

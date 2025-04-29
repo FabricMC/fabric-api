@@ -25,12 +25,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.Identifier;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -39,61 +35,54 @@ public class AttachmentSerializingImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
 
 	@SuppressWarnings("unchecked")
-	public static void serializeAttachmentData(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup, @Nullable IdentityHashMap<AttachmentType<?>, ?> attachments) {
+	public static void serializeAttachmentData(WriteView view, @Nullable IdentityHashMap<AttachmentType<?>, ?> attachments) {
 		if (attachments == null || attachments.isEmpty()) {
 			return;
 		}
 
-		var compound = new NbtCompound();
+		WriteView attachmentData = view.get(AttachmentTarget.NBT_ATTACHMENT_KEY);
 
 		for (Map.Entry<AttachmentType<?>, ?> entry : attachments.entrySet()) {
 			AttachmentType<?> type = entry.getKey();
 			Codec<Object> codec = (Codec<Object>) type.persistenceCodec();
 
 			if (codec != null) {
-				RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
-				codec.encodeStart(registryOps, entry.getValue())
-						.ifError(partial -> {
-							LOGGER.warn("Couldn't serialize attachment {}, skipping. Error:", type.identifier());
-							LOGGER.warn(partial.message());
-						})
-						.ifSuccess(serialized -> compound.put(type.identifier().toString(), serialized));
+				attachmentData.put(type.identifier().toString(), codec, entry.getValue());
 			}
 		}
-
-		nbt.put(AttachmentTarget.NBT_ATTACHMENT_KEY, compound);
 	}
 
 	@Nullable
-	public static IdentityHashMap<AttachmentType<?>, Object> deserializeAttachmentData(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-		Optional<NbtCompound> optional = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY);
+	public static IdentityHashMap<AttachmentType<?>, Object> deserializeAttachmentData(ReadView data) {
+		Optional<ReadView> optional = data.getOptionalReadView(AttachmentTarget.NBT_ATTACHMENT_KEY);
 
 		if (optional.isPresent()) {
 			var attachments = new IdentityHashMap<AttachmentType<?>, Object>();
-			NbtCompound compound = optional.get();
+			ReadView compound = optional.get();
 
-			for (String key : compound.getKeys()) {
-				AttachmentType<?> type = AttachmentRegistryImpl.get(Identifier.of(key));
-
-				if (type == null) {
-					LOGGER.warn("Unknown attachment type {} found when deserializing, skipping", key);
-					continue;
-				}
-
-				Codec<?> codec = type.persistenceCodec();
-
-				if (codec != null) {
-					RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
-					codec.parse(registryOps, compound.get(key))
-							.ifError(partial -> {
-								LOGGER.warn("Couldn't deserialize attachment {}, skipping. Error:", type.identifier());
-								LOGGER.warn(partial.message());
-							})
-							.ifSuccess(
-									deserialized -> attachments.put(type, deserialized)
-							);
-				}
-			}
+			// TODO how do we get the keys?
+//			for (String key : compound.getKeys()) {
+//				AttachmentType<?> type = AttachmentRegistryImpl.get(Identifier.of(key));
+//
+//				if (type == null) {
+//					LOGGER.warn("Unknown attachment type {} found when deserializing, skipping", key);
+//					continue;
+//				}
+//
+//				Codec<?> codec = type.persistenceCodec();
+//
+//				if (codec != null) {
+//					RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
+//					codec.parse(registryOps, compound.get(key))
+//							.ifError(partial -> {
+//								LOGGER.warn("Couldn't deserialize attachment {}, skipping. Error:", type.identifier());
+//								LOGGER.warn(partial.message());
+//							})
+//							.ifSuccess(
+//									deserialized -> attachments.put(type, deserialized)
+//							);
+//				}
+//			}
 
 			if (attachments.isEmpty()) {
 				return null;
