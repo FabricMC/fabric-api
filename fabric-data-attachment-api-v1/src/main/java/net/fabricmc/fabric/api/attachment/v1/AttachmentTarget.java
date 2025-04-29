@@ -30,6 +30,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 
+import net.fabricmc.fabric.api.event.Event;
+
 /**
  * Marks all objects on which data can be attached using {@link AttachmentType}s.
  *
@@ -220,6 +222,16 @@ public interface AttachmentTarget {
 	}
 
 	/**
+	 * Provides an {@link Event} that lets the listener know when the target has its {@link AttachmentType} attachment changed.
+	 *
+	 * @param type the attachment type
+	 * @return event associated with this target and attachment type
+	 */
+	default <A> Event<OnAttachedChanged<A>> onAttachedChanged(AttachmentType<A> type) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
 	 * Modifies the data associated with the given {@link AttachmentType}. Functionally the same as calling {@link #getAttached(AttachmentType)},
 	 * applying the modifier, then calling {@link #setAttached(AttachmentType, Object)} with the result. The modifier
 	 * takes in the currently attached value, or {@code null} if no attachment is present.
@@ -232,5 +244,10 @@ public interface AttachmentTarget {
 	@Nullable
 	default <A> A modifyAttached(AttachmentType<A> type, UnaryOperator<A> modifier) {
 		return setAttached(type, modifier.apply(getAttached(type)));
+	}
+
+	@FunctionalInterface
+	interface OnAttachedChanged<A> {
+		void onAttachedChanged(A oldValue, A newValue);
 	}
 }
