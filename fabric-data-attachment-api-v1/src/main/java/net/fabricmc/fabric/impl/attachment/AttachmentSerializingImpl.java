@@ -17,16 +17,17 @@
 package net.fabricmc.fabric.impl.attachment;
 
 import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -34,64 +35,33 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 public class AttachmentSerializingImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
 
-	@SuppressWarnings("unchecked")
-	public static void serializeAttachmentData(WriteView view, @Nullable IdentityHashMap<AttachmentType<?>, ?> attachments) {
+	private static final Codec<AttachmentType<?>> TYPE_CODEC = Identifier.CODEC.comapFlatMap(id -> {
+		AttachmentType<?> type = AttachmentRegistryImpl.get(id);
+		return type == null ? DataResult.error(() -> "Found unknown attachment type " + id)
+				: type.persistenceCodec() == null ? DataResult.error(() -> "Found non-permanent attachment type " + id)
+				: DataResult.success(type);
+	}, AttachmentType::identifier);
+	private static final Codec<IdentityHashMap<AttachmentType<?>, Object>> CODEC = Codec.<AttachmentType<?>, Object>dispatchedMap(
+			TYPE_CODEC,
+			AttachmentType::persistenceCodec
+	)
+			.promotePartial(error -> LOGGER.warn("Skipping invalid attachments: {}", error))
+			.xmap(
+				IdentityHashMap::new,
+				Function.identity()
+	);
+
+	public static void serializeAttachmentData(WriteView view, @Nullable IdentityHashMap<AttachmentType<?>, Object> attachments) {
 		if (attachments == null || attachments.isEmpty()) {
 			return;
 		}
 
-		WriteView attachmentData = view.get(AttachmentTarget.NBT_ATTACHMENT_KEY);
-
-		for (Map.Entry<AttachmentType<?>, ?> entry : attachments.entrySet()) {
-			AttachmentType<?> type = entry.getKey();
-			Codec<Object> codec = (Codec<Object>) type.persistenceCodec();
-
-			if (codec != null) {
-				attachmentData.put(type.identifier().toString(), codec, entry.getValue());
-			}
-		}
+		view.put(AttachmentTarget.NBT_ATTACHMENT_KEY, CODEC, attachments);
 	}
 
 	@Nullable
 	public static IdentityHashMap<AttachmentType<?>, Object> deserializeAttachmentData(ReadView data) {
-		Optional<ReadView> optional = data.getOptionalReadView(AttachmentTarget.NBT_ATTACHMENT_KEY);
-
-		if (optional.isPresent()) {
-			var attachments = new IdentityHashMap<AttachmentType<?>, Object>();
-			ReadView compound = optional.get();
-
-			// TODO how do we get the keys?
-//			for (String key : compound.getKeys()) {
-//				AttachmentType<?> type = AttachmentRegistryImpl.get(Identifier.of(key));
-//
-//				if (type == null) {
-//					LOGGER.warn("Unknown attachment type {} found when deserializing, skipping", key);
-//					continue;
-//				}
-//
-//				Codec<?> codec = type.persistenceCodec();
-//
-//				if (codec != null) {
-//					RegistryOps<NbtElement> registryOps = wrapperLookup.getOps(NbtOps.INSTANCE);
-//					codec.parse(registryOps, compound.get(key))
-//							.ifError(partial -> {
-//								LOGGER.warn("Couldn't deserialize attachment {}, skipping. Error:", type.identifier());
-//								LOGGER.warn(partial.message());
-//							})
-//							.ifSuccess(
-//									deserialized -> attachments.put(type, deserialized)
-//							);
-//				}
-//			}
-
-			if (attachments.isEmpty()) {
-				return null;
-			}
-
-			return attachments;
-		}
-
-		return null;
+		return data.read(AttachmentTarget.NBT_ATTACHMENT_KEY, CODEC).filter(m -> !m.isEmpty()).orElse(null);
 	}
 
 	public static boolean hasPersistentAttachments(@Nullable IdentityHashMap<AttachmentType<?>, ?> map) {
