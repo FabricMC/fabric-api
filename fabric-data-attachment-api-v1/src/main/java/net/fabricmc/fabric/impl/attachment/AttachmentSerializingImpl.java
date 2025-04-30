@@ -60,8 +60,8 @@ public class AttachmentSerializingImpl {
 	}
 
 	@Nullable
-	public static IdentityHashMap<AttachmentType<?>, Object> deserializeAttachmentData(ReadView data) {
-		return data.read(AttachmentTarget.NBT_ATTACHMENT_KEY, CODEC).filter(m -> !m.isEmpty()).orElse(null);
+	public static IdentityHashMap<AttachmentType<?>, Object> deserializeAttachmentData(@Nullable ReadView data) {
+		return data == null ? null : data.read(AttachmentTarget.NBT_ATTACHMENT_KEY, CODEC).filter(m -> !m.isEmpty()).orElse(null);
 	}
 
 	public static boolean hasPersistentAttachments(@Nullable IdentityHashMap<AttachmentType<?>, ?> map) {

@@ -85,8 +85,6 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 	 */
 	protected abstract void configure(RegistryWrapper.WrapperLookup wrapperLookup);
 
-
-
 	protected ProvidedTagBuilder<RegistryKey<T>, T> builder(TagKey<T> tag) {
 		TagBuilder tagBuilder = this.getTagBuilder(tag);
 		return ProvidedTagBuilder.of(tagBuilder);
