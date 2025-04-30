@@ -35,10 +35,10 @@ public class TestBiomeTagProvider extends FabricTagProvider<Biome> {
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries) {
-		keyTag(TagKey.of(RegistryKeys.BIOME, Identifier.of(FabricBiomeTest.MOD_ID, "biome_tag_test")))
+		builder(TagKey.of(RegistryKeys.BIOME, Identifier.of(FabricBiomeTest.MOD_ID, "biome_tag_test")))
 				.add(TestBiomes.CUSTOM_PLAINS)
 				.add(TestBiomes.TEST_END_HIGHLANDS);
-		keyTag(TagKey.of(RegistryKeys.BIOME, Identifier.of(FabricBiomeTest.MOD_ID, "tag_selector_test")))
+		builder(TagKey.of(RegistryKeys.BIOME, Identifier.of(FabricBiomeTest.MOD_ID, "tag_selector_test")))
 				.add(BiomeKeys.BEACH)
 				.add(BiomeKeys.DESERT)
 				.add(BiomeKeys.SAVANNA)

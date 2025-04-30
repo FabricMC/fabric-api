@@ -26,25 +26,25 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags;
 
 public final class FluidTagGenerator extends FabricTagProvider.FluidTagProvider {
-	public FluidTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-		super(output, completableFuture);
+	public FluidTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+		super(output, registriesFuture);
 	}
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries) {
-		tag(ConventionalFluidTags.WATER)
+		valueLookupBuilder(ConventionalFluidTags.WATER)
 				.addOptionalTag(FluidTags.WATER);
-		tag(ConventionalFluidTags.LAVA)
+		valueLookupBuilder(ConventionalFluidTags.LAVA)
 				.addOptionalTag(FluidTags.LAVA);
-		tag(ConventionalFluidTags.MILK);
-		tag(ConventionalFluidTags.HONEY);
-		tag(ConventionalFluidTags.GASEOUS);
-		tag(ConventionalFluidTags.EXPERIENCE);
-		tag(ConventionalFluidTags.POTION);
-		tag(ConventionalFluidTags.SUSPICIOUS_STEW);
-		tag(ConventionalFluidTags.MUSHROOM_STEW);
-		tag(ConventionalFluidTags.RABBIT_STEW);
-		tag(ConventionalFluidTags.BEETROOT_SOUP);
-		tag(ConventionalFluidTags.HIDDEN_FROM_RECIPE_VIEWERS);
+		valueLookupBuilder(ConventionalFluidTags.MILK);
+		valueLookupBuilder(ConventionalFluidTags.HONEY);
+		valueLookupBuilder(ConventionalFluidTags.GASEOUS);
+		valueLookupBuilder(ConventionalFluidTags.EXPERIENCE);
+		valueLookupBuilder(ConventionalFluidTags.POTION);
+		valueLookupBuilder(ConventionalFluidTags.SUSPICIOUS_STEW);
+		valueLookupBuilder(ConventionalFluidTags.MUSHROOM_STEW);
+		valueLookupBuilder(ConventionalFluidTags.RABBIT_STEW);
+		valueLookupBuilder(ConventionalFluidTags.BEETROOT_SOUP);
+		valueLookupBuilder(ConventionalFluidTags.HIDDEN_FROM_RECIPE_VIEWERS);
 	}
 }

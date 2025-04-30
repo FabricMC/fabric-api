@@ -27,13 +27,13 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalStructureTags;
 
 public final class StructureTagGenerator extends FabricTagProvider<Structure> {
-	public StructureTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-		super(output, RegistryKeys.STRUCTURE, completableFuture);
+	public StructureTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+		super(output, RegistryKeys.STRUCTURE, registriesFuture);
 	}
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup arg) {
-		tag(ConventionalStructureTags.HIDDEN_FROM_DISPLAYERS);
-		tag(ConventionalStructureTags.HIDDEN_FROM_LOCATOR_SELECTION);
+		builder(ConventionalStructureTags.HIDDEN_FROM_DISPLAYERS);
+		builder(ConventionalStructureTags.HIDDEN_FROM_LOCATOR_SELECTION);
 	}
 }

@@ -33,8 +33,8 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 
 public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
-	public ItemTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture, FabricTagProvider.BlockTagProvider blockTags) {
-		super(output, completableFuture, blockTags);
+	public ItemTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, FabricTagProvider.BlockTagProvider blockTags) {
+		super(output, registriesFuture, blockTags);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.GLASS_BLOCKS_CHEAP, ConventionalItemTags.GLASS_BLOCKS_CHEAP);
 		copy(ConventionalBlockTags.GLASS_PANES, ConventionalItemTags.GLASS_PANES);
 		copy(ConventionalBlockTags.GLASS_PANES_COLORLESS, ConventionalItemTags.GLASS_PANES_COLORLESS);
-		tag(ConventionalItemTags.SHULKER_BOXES)
+		valueLookupBuilder(ConventionalItemTags.SHULKER_BOXES)
 				.add(Items.SHULKER_BOX)
 				.add(Items.WHITE_SHULKER_BOX)
 				.add(Items.ORANGE_SHULKER_BOX)
@@ -103,7 +103,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.GLAZED_TERRACOTTA, ConventionalItemTags.GLAZED_TERRACOTTA);
 		copy(ConventionalBlockTags.CONCRETES, ConventionalItemTags.CONCRETES);
 		copy(ConventionalBlockTags.CONCRETE, ConventionalItemTags.CONCRETE);
-		tag(ConventionalItemTags.CONCRETE_POWDERS)
+		valueLookupBuilder(ConventionalItemTags.CONCRETE_POWDERS)
 				.add(Items.WHITE_CONCRETE_POWDER)
 				.add(Items.ORANGE_CONCRETE_POWDER)
 				.add(Items.MAGENTA_CONCRETE_POWDER)
@@ -120,7 +120,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.GREEN_CONCRETE_POWDER)
 				.add(Items.RED_CONCRETE_POWDER)
 				.add(Items.BLACK_CONCRETE_POWDER);
-		tag(ConventionalItemTags.CONCRETE_POWDER)
+		valueLookupBuilder(ConventionalItemTags.CONCRETE_POWDER)
 				.add(Items.WHITE_CONCRETE_POWDER)
 				.add(Items.ORANGE_CONCRETE_POWDER)
 				.add(Items.MAGENTA_CONCRETE_POWDER)
@@ -190,7 +190,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateDyeTags() {
-		tag(ConventionalItemTags.DYES)
+		valueLookupBuilder(ConventionalItemTags.DYES)
 				.addOptionalTag(ConventionalItemTags.WHITE_DYES)
 				.addOptionalTag(ConventionalItemTags.ORANGE_DYES)
 				.addOptionalTag(ConventionalItemTags.MAGENTA_DYES)
@@ -207,51 +207,51 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.GREEN_DYES)
 				.addOptionalTag(ConventionalItemTags.RED_DYES)
 				.addOptionalTag(ConventionalItemTags.BLACK_DYES);
-		tag(ConventionalItemTags.BLACK_DYES)
+		valueLookupBuilder(ConventionalItemTags.BLACK_DYES)
 				.add(Items.BLACK_DYE);
-		tag(ConventionalItemTags.BLUE_DYES)
+		valueLookupBuilder(ConventionalItemTags.BLUE_DYES)
 				.add(Items.BLUE_DYE);
-		tag(ConventionalItemTags.BROWN_DYES)
+		valueLookupBuilder(ConventionalItemTags.BROWN_DYES)
 				.add(Items.BROWN_DYE);
-		tag(ConventionalItemTags.GREEN_DYES)
+		valueLookupBuilder(ConventionalItemTags.GREEN_DYES)
 				.add(Items.GREEN_DYE);
-		tag(ConventionalItemTags.RED_DYES)
+		valueLookupBuilder(ConventionalItemTags.RED_DYES)
 				.add(Items.RED_DYE);
-		tag(ConventionalItemTags.WHITE_DYES)
+		valueLookupBuilder(ConventionalItemTags.WHITE_DYES)
 				.add(Items.WHITE_DYE);
-		tag(ConventionalItemTags.YELLOW_DYES)
+		valueLookupBuilder(ConventionalItemTags.YELLOW_DYES)
 				.add(Items.YELLOW_DYE);
-		tag(ConventionalItemTags.LIGHT_BLUE_DYES)
+		valueLookupBuilder(ConventionalItemTags.LIGHT_BLUE_DYES)
 				.add(Items.LIGHT_BLUE_DYE);
-		tag(ConventionalItemTags.LIGHT_GRAY_DYES)
+		valueLookupBuilder(ConventionalItemTags.LIGHT_GRAY_DYES)
 				.add(Items.LIGHT_GRAY_DYE);
-		tag(ConventionalItemTags.LIME_DYES)
+		valueLookupBuilder(ConventionalItemTags.LIME_DYES)
 				.add(Items.LIME_DYE);
-		tag(ConventionalItemTags.MAGENTA_DYES)
+		valueLookupBuilder(ConventionalItemTags.MAGENTA_DYES)
 				.add(Items.MAGENTA_DYE);
-		tag(ConventionalItemTags.ORANGE_DYES)
+		valueLookupBuilder(ConventionalItemTags.ORANGE_DYES)
 				.add(Items.ORANGE_DYE);
-		tag(ConventionalItemTags.PINK_DYES)
+		valueLookupBuilder(ConventionalItemTags.PINK_DYES)
 				.add(Items.PINK_DYE);
-		tag(ConventionalItemTags.CYAN_DYES)
+		valueLookupBuilder(ConventionalItemTags.CYAN_DYES)
 				.add(Items.CYAN_DYE);
-		tag(ConventionalItemTags.GRAY_DYES)
+		valueLookupBuilder(ConventionalItemTags.GRAY_DYES)
 				.add(Items.GRAY_DYE);
-		tag(ConventionalItemTags.PURPLE_DYES)
+		valueLookupBuilder(ConventionalItemTags.PURPLE_DYES)
 				.add(Items.PURPLE_DYE);
 	}
 
 	private void generateConsumableTags() {
-		tag(ConventionalItemTags.BOTTLE_POTIONS)
+		valueLookupBuilder(ConventionalItemTags.BOTTLE_POTIONS)
 				.add(Items.POTION)
 				.add(Items.SPLASH_POTION)
 				.add(Items.LINGERING_POTION);
-		tag(ConventionalItemTags.POTIONS)
+		valueLookupBuilder(ConventionalItemTags.POTIONS)
 				.addOptionalTag(ConventionalItemTags.BOTTLE_POTIONS);
 	}
 
 	private void generateFoodTags() {
-		tag(ConventionalItemTags.FRUIT_FOODS)
+		valueLookupBuilder(ConventionalItemTags.FRUIT_FOODS)
 				.add(Items.APPLE)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
@@ -259,27 +259,27 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.MELON_SLICE)
 				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS);
 
-		tag(ConventionalItemTags.VEGETABLE_FOODS)
+		valueLookupBuilder(ConventionalItemTags.VEGETABLE_FOODS)
 				.add(Items.CARROT)
 				.add(Items.GOLDEN_CARROT)
 				.add(Items.POTATO)
 				.add(Items.BEETROOT)
 				.addOptionalTag(ConventionalItemTags.VEGETABLES_FOODS);
 
-		tag(ConventionalItemTags.BERRY_FOODS)
+		valueLookupBuilder(ConventionalItemTags.BERRY_FOODS)
 				.add(Items.SWEET_BERRIES)
 				.add(Items.GLOW_BERRIES)
 				.addOptionalTag(ConventionalItemTags.BERRIES_FOODS);
 
-		tag(ConventionalItemTags.BREAD_FOODS)
+		valueLookupBuilder(ConventionalItemTags.BREAD_FOODS)
 				.add(Items.BREAD)
 				.addOptionalTag(ConventionalItemTags.BREADS_FOODS);
 
-		tag(ConventionalItemTags.COOKIE_FOODS)
+		valueLookupBuilder(ConventionalItemTags.COOKIE_FOODS)
 				.add(Items.COOKIE)
 				.addOptionalTag(ConventionalItemTags.COOKIES_FOODS);
 
-		tag(ConventionalItemTags.RAW_MEAT_FOODS)
+		valueLookupBuilder(ConventionalItemTags.RAW_MEAT_FOODS)
 				.add(Items.BEEF)
 				.add(Items.PORKCHOP)
 				.add(Items.CHICKEN)
@@ -287,14 +287,14 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.MUTTON)
 				.addOptionalTag(ConventionalItemTags.RAW_MEATS_FOODS);
 
-		tag(ConventionalItemTags.RAW_FISH_FOODS)
+		valueLookupBuilder(ConventionalItemTags.RAW_FISH_FOODS)
 				.add(Items.COD)
 				.add(Items.SALMON)
 				.add(Items.TROPICAL_FISH)
 				.add(Items.PUFFERFISH)
 				.addOptionalTag(ConventionalItemTags.RAW_FISHES_FOODS);
 
-		tag(ConventionalItemTags.COOKED_MEAT_FOODS)
+		valueLookupBuilder(ConventionalItemTags.COOKED_MEAT_FOODS)
 				.add(Items.COOKED_BEEF)
 				.add(Items.COOKED_PORKCHOP)
 				.add(Items.COOKED_CHICKEN)
@@ -302,40 +302,40 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.COOKED_MUTTON)
 				.addOptionalTag(ConventionalItemTags.COOKED_MEATS_FOODS);
 
-		tag(ConventionalItemTags.COOKED_FISH_FOODS)
+		valueLookupBuilder(ConventionalItemTags.COOKED_FISH_FOODS)
 				.add(Items.COOKED_COD)
 				.add(Items.COOKED_SALMON)
 				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS);
 
-		tag(ConventionalItemTags.SOUP_FOODS)
+		valueLookupBuilder(ConventionalItemTags.SOUP_FOODS)
 				.add(Items.BEETROOT_SOUP)
 				.add(Items.MUSHROOM_STEW)
 				.add(Items.RABBIT_STEW)
 				.add(Items.SUSPICIOUS_STEW)
 				.addOptionalTag(ConventionalItemTags.SOUPS_FOODS);
 
-		tag(ConventionalItemTags.CANDY_FOODS)
+		valueLookupBuilder(ConventionalItemTags.CANDY_FOODS)
 				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS);
 
-		tag(ConventionalItemTags.PIE_FOODS)
+		valueLookupBuilder(ConventionalItemTags.PIE_FOODS)
 				.add(Items.PUMPKIN_PIE);
 
-		tag(ConventionalItemTags.GOLDEN_FOODS)
+		valueLookupBuilder(ConventionalItemTags.GOLDEN_FOODS)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
 				.add(Items.GOLDEN_CARROT);
 
-		tag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
+		valueLookupBuilder(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.add(Items.CAKE);
 
-		tag(ConventionalItemTags.FOOD_POISONING_FOODS)
+		valueLookupBuilder(ConventionalItemTags.FOOD_POISONING_FOODS)
 				.add(Items.POISONOUS_POTATO)
 				.add(Items.PUFFERFISH)
 				.add(Items.SPIDER_EYE)
 				.add(Items.CHICKEN)
 				.add(Items.ROTTEN_FLESH);
 
-		tag(ConventionalItemTags.ANIMAL_FOODS)
+		valueLookupBuilder(ConventionalItemTags.ANIMAL_FOODS)
 				.addOptionalTag(ItemTags.ARMADILLO_FOOD)
 				.addOptionalTag(ItemTags.AXOLOTL_FOOD)
 				.addOptionalTag(ItemTags.BEE_FOOD)
@@ -361,7 +361,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.TURTLE_FOOD)
 				.addOptionalTag(ItemTags.WOLF_FOOD);
 
-		tag(ConventionalItemTags.FOODS)
+		valueLookupBuilder(ConventionalItemTags.FOODS)
 				.add(Items.BAKED_POTATO)
 				.add(Items.PUMPKIN_PIE)
 				.add(Items.HONEY_BOTTLE)
@@ -383,7 +383,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
 
-		tag(ConventionalItemTags.DRINKS)
+		valueLookupBuilder(ConventionalItemTags.DRINKS)
 				.addOptionalTag(ConventionalItemTags.WATER_DRINKS)
 				.addOptionalTag(ConventionalItemTags.WATERY_DRINKS)
 				.addOptionalTag(ConventionalItemTags.MILK_DRINKS)
@@ -392,110 +392,110 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.OMINOUS_DRINKS)
 				.addOptionalTag(ConventionalItemTags.JUICE_DRINKS);
 
-		tag(ConventionalItemTags.WATER_DRINKS);
+		valueLookupBuilder(ConventionalItemTags.WATER_DRINKS);
 
-		tag(ConventionalItemTags.WATERY_DRINKS)
+		valueLookupBuilder(ConventionalItemTags.WATERY_DRINKS)
 				.add(Items.POTION)
 				.addOptionalTag(ConventionalItemTags.WATER_DRINKS);
 
-		tag(ConventionalItemTags.MILK_DRINKS)
+		valueLookupBuilder(ConventionalItemTags.MILK_DRINKS)
 				.add(Items.MILK_BUCKET);
 
-		tag(ConventionalItemTags.HONEY_DRINKS)
+		valueLookupBuilder(ConventionalItemTags.HONEY_DRINKS)
 				.add(Items.HONEY_BOTTLE);
 
-		tag(ConventionalItemTags.MAGIC_DRINKS)
+		valueLookupBuilder(ConventionalItemTags.MAGIC_DRINKS)
 				.add(Items.POTION)
 				.addOptionalTag(ConventionalItemTags.OMINOUS_DRINKS);
 
-		tag(ConventionalItemTags.OMINOUS_DRINKS)
+		valueLookupBuilder(ConventionalItemTags.OMINOUS_DRINKS)
 				.add(Items.OMINOUS_BOTTLE);
 
-		tag(ConventionalItemTags.JUICE_DRINKS);
+		valueLookupBuilder(ConventionalItemTags.JUICE_DRINKS);
 
-		tag(ConventionalItemTags.DRINK_CONTAINING_BUCKET)
+		valueLookupBuilder(ConventionalItemTags.DRINK_CONTAINING_BUCKET)
 				.add(Items.MILK_BUCKET);
 
-		tag(ConventionalItemTags.DRINK_CONTAINING_BOTTLE)
+		valueLookupBuilder(ConventionalItemTags.DRINK_CONTAINING_BOTTLE)
 				.add(Items.POTION)
 				.add(Items.HONEY_BOTTLE)
 				.add(Items.OMINOUS_BOTTLE);
 
 		// Deprecated tags below
-		tag(ConventionalItemTags.FRUITS_FOODS)
+		valueLookupBuilder(ConventionalItemTags.FRUITS_FOODS)
 				.add(Items.APPLE)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
 				.add(Items.MELON_SLICE);
 
-		tag(ConventionalItemTags.VEGETABLES_FOODS)
+		valueLookupBuilder(ConventionalItemTags.VEGETABLES_FOODS)
 				.add(Items.CARROT)
 				.add(Items.GOLDEN_CARROT)
 				.add(Items.POTATO)
 				.add(Items.BEETROOT);
 
-		tag(ConventionalItemTags.BERRIES_FOODS)
+		valueLookupBuilder(ConventionalItemTags.BERRIES_FOODS)
 				.add(Items.SWEET_BERRIES)
 				.add(Items.GLOW_BERRIES);
 
-		tag(ConventionalItemTags.BREADS_FOODS)
+		valueLookupBuilder(ConventionalItemTags.BREADS_FOODS)
 				.add(Items.BREAD);
 
-		tag(ConventionalItemTags.COOKIES_FOODS)
+		valueLookupBuilder(ConventionalItemTags.COOKIES_FOODS)
 				.add(Items.COOKIE);
 
-		tag(ConventionalItemTags.RAW_MEATS_FOODS)
+		valueLookupBuilder(ConventionalItemTags.RAW_MEATS_FOODS)
 				.add(Items.BEEF)
 				.add(Items.PORKCHOP)
 				.add(Items.CHICKEN)
 				.add(Items.RABBIT)
 				.add(Items.MUTTON);
 
-		tag(ConventionalItemTags.RAW_FISHES_FOODS)
+		valueLookupBuilder(ConventionalItemTags.RAW_FISHES_FOODS)
 				.add(Items.COD)
 				.add(Items.SALMON)
 				.add(Items.TROPICAL_FISH)
 				.add(Items.PUFFERFISH);
 
-		tag(ConventionalItemTags.COOKED_MEATS_FOODS)
+		valueLookupBuilder(ConventionalItemTags.COOKED_MEATS_FOODS)
 				.add(Items.COOKED_BEEF)
 				.add(Items.COOKED_PORKCHOP)
 				.add(Items.COOKED_CHICKEN)
 				.add(Items.COOKED_RABBIT)
 				.add(Items.COOKED_MUTTON);
 
-		tag(ConventionalItemTags.COOKED_FISHES_FOODS)
+		valueLookupBuilder(ConventionalItemTags.COOKED_FISHES_FOODS)
 				.add(Items.COOKED_COD)
 				.add(Items.COOKED_SALMON);
 
-		tag(ConventionalItemTags.SOUPS_FOODS)
+		valueLookupBuilder(ConventionalItemTags.SOUPS_FOODS)
 				.add(Items.BEETROOT_SOUP)
 				.add(Items.MUSHROOM_STEW)
 				.add(Items.RABBIT_STEW)
 				.add(Items.SUSPICIOUS_STEW);
 
-		tag(ConventionalItemTags.CANDIES_FOODS);
+		valueLookupBuilder(ConventionalItemTags.CANDIES_FOODS);
 	}
 
 	private void generateBucketTags() {
-		tag(ConventionalItemTags.EMPTY_BUCKETS)
+		valueLookupBuilder(ConventionalItemTags.EMPTY_BUCKETS)
 				.add(Items.BUCKET);
-		tag(ConventionalItemTags.LAVA_BUCKETS)
+		valueLookupBuilder(ConventionalItemTags.LAVA_BUCKETS)
 				.add(Items.LAVA_BUCKET);
-		tag(ConventionalItemTags.ENTITY_WATER_BUCKETS)
+		valueLookupBuilder(ConventionalItemTags.ENTITY_WATER_BUCKETS)
 				.add(Items.AXOLOTL_BUCKET)
 				.add(Items.COD_BUCKET)
 				.add(Items.PUFFERFISH_BUCKET)
 				.add(Items.TADPOLE_BUCKET)
 				.add(Items.TROPICAL_FISH_BUCKET)
 				.add(Items.SALMON_BUCKET);
-		tag(ConventionalItemTags.WATER_BUCKETS)
+		valueLookupBuilder(ConventionalItemTags.WATER_BUCKETS)
 				.add(Items.WATER_BUCKET);
-		tag(ConventionalItemTags.MILK_BUCKETS)
+		valueLookupBuilder(ConventionalItemTags.MILK_BUCKETS)
 				.add(Items.MILK_BUCKET);
-		tag(ConventionalItemTags.POWDER_SNOW_BUCKETS)
+		valueLookupBuilder(ConventionalItemTags.POWDER_SNOW_BUCKETS)
 				.add(Items.POWDER_SNOW_BUCKET);
-		tag(ConventionalItemTags.BUCKETS)
+		valueLookupBuilder(ConventionalItemTags.BUCKETS)
 				.addOptionalTag(ConventionalItemTags.EMPTY_BUCKETS)
 				.addOptionalTag(ConventionalItemTags.WATER_BUCKETS)
 				.addOptionalTag(ConventionalItemTags.LAVA_BUCKETS)
@@ -506,77 +506,77 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 	private void generateOreAndRelatedTags() {
 		// Categories
-		tag(ConventionalItemTags.BRICKS)
+		valueLookupBuilder(ConventionalItemTags.BRICKS)
 				.addOptionalTag(ConventionalItemTags.NORMAL_BRICKS)
 				.addOptionalTag(ConventionalItemTags.NETHER_BRICKS)
 				.addOptionalTag(ConventionalItemTags.RESIN_BRICKS);
-		tag(ConventionalItemTags.DUSTS)
+		valueLookupBuilder(ConventionalItemTags.DUSTS)
 				.addOptionalTag(ConventionalItemTags.GLOWSTONE_DUSTS)
 				.addOptionalTag(ConventionalItemTags.REDSTONE_DUSTS);
-		tag(ConventionalItemTags.CLUMPS)
+		valueLookupBuilder(ConventionalItemTags.CLUMPS)
 				.addOptionalTag(ConventionalItemTags.RESIN_CLUMPS);
-		tag(ConventionalItemTags.GEMS)
+		valueLookupBuilder(ConventionalItemTags.GEMS)
 				.addOptionalTag(ConventionalItemTags.AMETHYST_GEMS)
 				.addOptionalTag(ConventionalItemTags.DIAMOND_GEMS)
 				.addOptionalTag(ConventionalItemTags.EMERALD_GEMS)
 				.addOptionalTag(ConventionalItemTags.LAPIS_GEMS)
 				.addOptionalTag(ConventionalItemTags.PRISMARINE_GEMS)
 				.addOptionalTag(ConventionalItemTags.QUARTZ_GEMS);
-		tag(ConventionalItemTags.INGOTS)
+		valueLookupBuilder(ConventionalItemTags.INGOTS)
 				.addOptionalTag(ConventionalItemTags.COPPER_INGOTS)
 				.addOptionalTag(ConventionalItemTags.IRON_INGOTS)
 				.addOptionalTag(ConventionalItemTags.GOLD_INGOTS)
 				.addOptionalTag(ConventionalItemTags.NETHERITE_INGOTS);
-		tag(ConventionalItemTags.NUGGETS)
+		valueLookupBuilder(ConventionalItemTags.NUGGETS)
 				.addOptionalTag(ConventionalItemTags.IRON_NUGGETS)
 				.addOptionalTag(ConventionalItemTags.GOLD_NUGGETS);
 		copy(ConventionalBlockTags.ORES, ConventionalItemTags.ORES);
-		tag(ConventionalItemTags.RAW_MATERIALS)
+		valueLookupBuilder(ConventionalItemTags.RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.COPPER_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.IRON_RAW_MATERIALS);
 
-		tag(ConventionalItemTags.RAW_BLOCKS)
+		valueLookupBuilder(ConventionalItemTags.RAW_BLOCKS)
 				.addOptionalTag(ConventionalItemTags.COPPER_RAW_BLOCKS)
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_BLOCKS)
 				.addOptionalTag(ConventionalItemTags.IRON_RAW_BLOCKS);
 
 		// Vanilla instances
-		tag(ConventionalItemTags.NORMAL_BRICKS)
+		valueLookupBuilder(ConventionalItemTags.NORMAL_BRICKS)
 				.add(Items.BRICK);
-		tag(ConventionalItemTags.NETHER_BRICKS)
+		valueLookupBuilder(ConventionalItemTags.NETHER_BRICKS)
 				.add(Items.NETHER_BRICK);
-		tag(ConventionalItemTags.RESIN_BRICKS)
+		valueLookupBuilder(ConventionalItemTags.RESIN_BRICKS)
 				.add(Items.RESIN_BRICK);
 
-		tag(ConventionalItemTags.IRON_INGOTS)
+		valueLookupBuilder(ConventionalItemTags.IRON_INGOTS)
 				.add(Items.IRON_INGOT);
-		tag(ConventionalItemTags.COPPER_INGOTS)
+		valueLookupBuilder(ConventionalItemTags.COPPER_INGOTS)
 				.add(Items.COPPER_INGOT);
-		tag(ConventionalItemTags.GOLD_INGOTS)
+		valueLookupBuilder(ConventionalItemTags.GOLD_INGOTS)
 				.add(Items.GOLD_INGOT);
-		tag(ConventionalItemTags.NETHERITE_INGOTS)
+		valueLookupBuilder(ConventionalItemTags.NETHERITE_INGOTS)
 				.add(Items.NETHERITE_INGOT);
 
-		tag(ConventionalItemTags.IRON_RAW_BLOCKS)
+		valueLookupBuilder(ConventionalItemTags.IRON_RAW_BLOCKS)
 				.add(Items.RAW_IRON_BLOCK);
-		tag(ConventionalItemTags.COPPER_RAW_BLOCKS)
+		valueLookupBuilder(ConventionalItemTags.COPPER_RAW_BLOCKS)
 				.add(Items.RAW_COPPER_BLOCK);
-		tag(ConventionalItemTags.GOLD_RAW_BLOCKS)
+		valueLookupBuilder(ConventionalItemTags.GOLD_RAW_BLOCKS)
 				.add(Items.RAW_GOLD_BLOCK);
 
-		tag(ConventionalItemTags.IRON_RAW_MATERIALS)
+		valueLookupBuilder(ConventionalItemTags.IRON_RAW_MATERIALS)
 				.add(Items.RAW_IRON);
-		tag(ConventionalItemTags.COPPER_RAW_MATERIALS)
+		valueLookupBuilder(ConventionalItemTags.COPPER_RAW_MATERIALS)
 				.add(Items.RAW_COPPER);
-		tag(ConventionalItemTags.GOLD_RAW_MATERIALS)
+		valueLookupBuilder(ConventionalItemTags.GOLD_RAW_MATERIALS)
 				.add(Items.RAW_GOLD);
 
-		tag(ConventionalItemTags.REDSTONE_DUSTS)
+		valueLookupBuilder(ConventionalItemTags.REDSTONE_DUSTS)
 				.add(Items.REDSTONE);
-		tag(ConventionalItemTags.GLOWSTONE_DUSTS)
+		valueLookupBuilder(ConventionalItemTags.GLOWSTONE_DUSTS)
 				.add(Items.GLOWSTONE_DUST);
-		tag(ConventionalItemTags.COAL)
+		valueLookupBuilder(ConventionalItemTags.COAL)
 				.addOptionalTag(ItemTags.COALS);
 
 		copy(ConventionalBlockTags.COAL_ORES, ConventionalItemTags.COAL_ORES);
@@ -590,25 +590,25 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.REDSTONE_ORES, ConventionalItemTags.REDSTONE_ORES);
 		copy(ConventionalBlockTags.QUARTZ_ORES, ConventionalItemTags.QUARTZ_ORES);
 
-		tag(ConventionalItemTags.RESIN_CLUMPS)
+		valueLookupBuilder(ConventionalItemTags.RESIN_CLUMPS)
 				.add(Items.RESIN_CLUMP);
 
-		tag(ConventionalItemTags.QUARTZ_GEMS)
+		valueLookupBuilder(ConventionalItemTags.QUARTZ_GEMS)
 				.add(Items.QUARTZ);
-		tag(ConventionalItemTags.EMERALD_GEMS)
+		valueLookupBuilder(ConventionalItemTags.EMERALD_GEMS)
 				.add(Items.EMERALD);
-		tag(ConventionalItemTags.LAPIS_GEMS)
+		valueLookupBuilder(ConventionalItemTags.LAPIS_GEMS)
 				.add(Items.LAPIS_LAZULI);
-		tag(ConventionalItemTags.DIAMOND_GEMS)
+		valueLookupBuilder(ConventionalItemTags.DIAMOND_GEMS)
 				.add(Items.DIAMOND);
-		tag(ConventionalItemTags.AMETHYST_GEMS)
+		valueLookupBuilder(ConventionalItemTags.AMETHYST_GEMS)
 				.add(Items.AMETHYST_SHARD);
-		tag(ConventionalItemTags.PRISMARINE_GEMS)
+		valueLookupBuilder(ConventionalItemTags.PRISMARINE_GEMS)
 				.add(Items.PRISMARINE_CRYSTALS);
 
-		tag(ConventionalItemTags.IRON_NUGGETS)
+		valueLookupBuilder(ConventionalItemTags.IRON_NUGGETS)
 				.add(Items.IRON_NUGGET);
-		tag(ConventionalItemTags.GOLD_NUGGETS)
+		valueLookupBuilder(ConventionalItemTags.GOLD_NUGGETS)
 				.add(Items.GOLD_NUGGET);
 
 		copy(ConventionalBlockTags.ORE_BEARING_GROUND_DEEPSLATE, ConventionalItemTags.ORE_BEARING_GROUND_DEEPSLATE);
@@ -623,7 +623,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateToolTags() {
-		tag(ConventionalItemTags.TOOLS)
+		valueLookupBuilder(ConventionalItemTags.TOOLS)
 				.addOptionalTag(ItemTags.AXES)
 				.addOptionalTag(ItemTags.HOES)
 				.addOptionalTag(ItemTags.PICKAXES)
@@ -643,34 +643,34 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.MELEE_WEAPON_TOOLS)
 				.addOptionalTag(ConventionalItemTags.RANGED_WEAPON_TOOLS);
 
-		tag(ConventionalItemTags.BOW_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.BOW_TOOLS)
 				.add(Items.BOW)
 				.addOptionalTag(ConventionalItemTags.BOWS_TOOLS);
-		tag(ConventionalItemTags.CROSSBOW_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.CROSSBOW_TOOLS)
 				.add(Items.CROSSBOW)
 				.addOptionalTag(ConventionalItemTags.CROSSBOWS_TOOLS);
-		tag(ConventionalItemTags.SHEAR_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.SHEAR_TOOLS)
 				.add(Items.SHEARS)
 				.addOptionalTag(ConventionalItemTags.SHEARS_TOOLS);
-		tag(ConventionalItemTags.SHIELD_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.SHIELD_TOOLS)
 				.add(Items.SHIELD)
 				.addOptionalTag(ConventionalItemTags.SHIELDS_TOOLS);
-		tag(ConventionalItemTags.SPEAR_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.SPEAR_TOOLS)
 				.add(Items.TRIDENT)
 				.addOptionalTag(ConventionalItemTags.SPEARS_TOOLS);
-		tag(ConventionalItemTags.FISHING_ROD_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.FISHING_ROD_TOOLS)
 				.add(Items.FISHING_ROD)
 				.addOptionalTag(ConventionalItemTags.FISHING_RODS_TOOLS);
-		tag(ConventionalItemTags.BRUSH_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.BRUSH_TOOLS)
 				.add(Items.BRUSH)
 				.addOptionalTag(ConventionalItemTags.BRUSHES_TOOLS);
-		tag(ConventionalItemTags.IGNITER_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.IGNITER_TOOLS)
 				.add(Items.FLINT_AND_STEEL);
-		tag(ConventionalItemTags.MACE_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.MACE_TOOLS)
 				.add(Items.MACE);
-		tag(ConventionalItemTags.WRENCH_TOOLS);
+		valueLookupBuilder(ConventionalItemTags.WRENCH_TOOLS);
 
-		tag(ConventionalItemTags.MINING_TOOL_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.MINING_TOOL_TOOLS)
 				.add(Items.WOODEN_PICKAXE)
 				.add(Items.STONE_PICKAXE)
 				.add(Items.GOLDEN_PICKAXE)
@@ -679,7 +679,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.NETHERITE_PICKAXE)
 				.addOptionalTag(ConventionalItemTags.MINING_TOOLS);
 
-		tag(ConventionalItemTags.MELEE_WEAPON_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.MELEE_WEAPON_TOOLS)
 				.add(Items.MACE)
 				.add(Items.TRIDENT)
 				.add(Items.WOODEN_SWORD)
@@ -696,19 +696,19 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.NETHERITE_AXE)
 				.addOptionalTag(ConventionalItemTags.MELEE_WEAPONS_TOOLS);
 
-		tag(ConventionalItemTags.RANGED_WEAPON_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.RANGED_WEAPON_TOOLS)
 				.add(Items.BOW)
 				.add(Items.CROSSBOW)
 				.add(Items.TRIDENT)
 				.addOptionalTag(ConventionalItemTags.RANGED_WEAPONS_TOOLS);
 
-		tag(ConventionalItemTags.ARMORS)
+		valueLookupBuilder(ConventionalItemTags.ARMORS)
 				.addOptionalTag(ItemTags.HEAD_ARMOR)
 				.addOptionalTag(ItemTags.CHEST_ARMOR)
 				.addOptionalTag(ItemTags.LEG_ARMOR)
 				.addOptionalTag(ItemTags.FOOT_ARMOR);
 
-		tag(ConventionalItemTags.ENCHANTABLES)
+		valueLookupBuilder(ConventionalItemTags.ENCHANTABLES)
 				.addOptionalTag(ItemTags.ARMOR_ENCHANTABLE)
 				.addOptionalTag(ItemTags.EQUIPPABLE_ENCHANTABLE)
 				.addOptionalTag(ItemTags.WEAPON_ENCHANTABLE)
@@ -726,22 +726,22 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		// Deprecated tags below
 
-		tag(ConventionalItemTags.BOWS_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.BOWS_TOOLS)
 				.add(Items.BOW);
-		tag(ConventionalItemTags.CROSSBOWS_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.CROSSBOWS_TOOLS)
 				.add(Items.CROSSBOW);
-		tag(ConventionalItemTags.SHEARS_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.SHEARS_TOOLS)
 				.add(Items.SHEARS);
-		tag(ConventionalItemTags.SHIELDS_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.SHIELDS_TOOLS)
 				.add(Items.SHIELD);
-		tag(ConventionalItemTags.SPEARS_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.SPEARS_TOOLS)
 				.add(Items.TRIDENT);
-		tag(ConventionalItemTags.FISHING_RODS_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.FISHING_RODS_TOOLS)
 				.add(Items.FISHING_ROD);
-		tag(ConventionalItemTags.BRUSHES_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.BRUSHES_TOOLS)
 				.add(Items.BRUSH);
 
-		tag(ConventionalItemTags.MINING_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.MINING_TOOLS)
 				.add(Items.WOODEN_PICKAXE)
 				.add(Items.STONE_PICKAXE)
 				.add(Items.GOLDEN_PICKAXE)
@@ -749,7 +749,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.DIAMOND_PICKAXE)
 				.add(Items.NETHERITE_PICKAXE);
 
-		tag(ConventionalItemTags.MELEE_WEAPONS_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.MELEE_WEAPONS_TOOLS)
 				.add(Items.WOODEN_SWORD)
 				.add(Items.STONE_SWORD)
 				.add(Items.GOLDEN_SWORD)
@@ -763,7 +763,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.DIAMOND_AXE)
 				.add(Items.NETHERITE_AXE);
 
-		tag(ConventionalItemTags.RANGED_WEAPONS_TOOLS)
+		valueLookupBuilder(ConventionalItemTags.RANGED_WEAPONS_TOOLS)
 				.add(Items.BOW)
 				.add(Items.CROSSBOW)
 				.add(Items.TRIDENT);
@@ -773,11 +773,11 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		BlockTagGenerator.VILLAGER_JOB_SITE_BLOCKS.stream()
 				.map(ItemConvertible::asItem)
 				.distinct() // cauldron blocks have the same item
-				.forEach(tag(ConventionalItemTags.VILLAGER_JOB_SITES)::add);
+				.forEach(valueLookupBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)::add);
 	}
 
 	private void generateCropAndSeedsTags() {
-		tag(ConventionalItemTags.CROPS)
+		valueLookupBuilder(ConventionalItemTags.CROPS)
 				.addOptionalTag(ConventionalItemTags.BEETROOT_CROPS)
 				.addOptionalTag(ConventionalItemTags.CACTUS_CROPS)
 				.addOptionalTag(ConventionalItemTags.CARROT_CROPS)
@@ -789,45 +789,45 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.SUGAR_CANE_CROPS)
 				.addOptionalTag(ConventionalItemTags.WHEAT_CROPS);
 
-		tag(ConventionalItemTags.BEETROOT_CROPS)
+		valueLookupBuilder(ConventionalItemTags.BEETROOT_CROPS)
 				.add(Items.BEETROOT);
-		tag(ConventionalItemTags.CACTUS_CROPS)
+		valueLookupBuilder(ConventionalItemTags.CACTUS_CROPS)
 				.add(Items.CACTUS);
-		tag(ConventionalItemTags.CARROT_CROPS)
+		valueLookupBuilder(ConventionalItemTags.CARROT_CROPS)
 				.add(Items.CARROT);
-		tag(ConventionalItemTags.COCOA_BEAN_CROPS)
+		valueLookupBuilder(ConventionalItemTags.COCOA_BEAN_CROPS)
 				.add(Items.COCOA_BEANS);
-		tag(ConventionalItemTags.MELON_CROPS)
+		valueLookupBuilder(ConventionalItemTags.MELON_CROPS)
 				.add(Items.MELON);
-		tag(ConventionalItemTags.NETHER_WART_CROPS)
+		valueLookupBuilder(ConventionalItemTags.NETHER_WART_CROPS)
 				.add(Items.NETHER_WART);
-		tag(ConventionalItemTags.POTATO_CROPS)
+		valueLookupBuilder(ConventionalItemTags.POTATO_CROPS)
 				.add(Items.POTATO);
-		tag(ConventionalItemTags.PUMPKIN_CROPS)
+		valueLookupBuilder(ConventionalItemTags.PUMPKIN_CROPS)
 				.add(Items.PUMPKIN);
-		tag(ConventionalItemTags.SUGAR_CANE_CROPS)
+		valueLookupBuilder(ConventionalItemTags.SUGAR_CANE_CROPS)
 				.add(Items.SUGAR_CANE);
-		tag(ConventionalItemTags.WHEAT_CROPS)
+		valueLookupBuilder(ConventionalItemTags.WHEAT_CROPS)
 				.add(Items.WHEAT);
 
-		tag(ConventionalItemTags.SEEDS)
+		valueLookupBuilder(ConventionalItemTags.SEEDS)
 				.addOptionalTag(ConventionalItemTags.BEETROOT_SEEDS)
 				.addOptionalTag(ConventionalItemTags.MELON_SEEDS)
 				.addOptionalTag(ConventionalItemTags.PUMPKIN_SEEDS)
 				.addOptionalTag(ConventionalItemTags.TORCHFLOWER_SEEDS)
 				.addOptionalTag(ConventionalItemTags.PITCHER_PLANT_SEEDS)
 				.addOptionalTag(ConventionalItemTags.WHEAT_SEEDS);
-		tag(ConventionalItemTags.BEETROOT_SEEDS)
+		valueLookupBuilder(ConventionalItemTags.BEETROOT_SEEDS)
 				.add(Items.BEETROOT_SEEDS);
-		tag(ConventionalItemTags.MELON_SEEDS)
+		valueLookupBuilder(ConventionalItemTags.MELON_SEEDS)
 				.add(Items.MELON_SEEDS);
-		tag(ConventionalItemTags.PUMPKIN_SEEDS)
+		valueLookupBuilder(ConventionalItemTags.PUMPKIN_SEEDS)
 				.add(Items.PUMPKIN_SEEDS);
-		tag(ConventionalItemTags.TORCHFLOWER_SEEDS)
+		valueLookupBuilder(ConventionalItemTags.TORCHFLOWER_SEEDS)
 				.add(Items.TORCHFLOWER_SEEDS);
-		tag(ConventionalItemTags.PITCHER_PLANT_SEEDS)
+		valueLookupBuilder(ConventionalItemTags.PITCHER_PLANT_SEEDS)
 				.add(Items.PITCHER_POD);
-		tag(ConventionalItemTags.WHEAT_SEEDS)
+		valueLookupBuilder(ConventionalItemTags.WHEAT_SEEDS)
 				.add(Items.WHEAT_SEEDS);
 	}
 
@@ -838,173 +838,173 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	private void generateOtherTags() {
-		tag(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
+		valueLookupBuilder(ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
 				.add(Items.CRAFTING_TABLE);
 
-		tag(ConventionalItemTags.PLAYER_WORKSTATIONS_FURNACES)
+		valueLookupBuilder(ConventionalItemTags.PLAYER_WORKSTATIONS_FURNACES)
 				.add(Items.FURNACE);
 
-		tag(ConventionalItemTags.STRINGS)
+		valueLookupBuilder(ConventionalItemTags.STRINGS)
 				.add(Items.STRING);
 
-		tag(ConventionalItemTags.LEATHERS)
+		valueLookupBuilder(ConventionalItemTags.LEATHERS)
 				.add(Items.LEATHER);
 
-		tag(ConventionalItemTags.BONES)
+		valueLookupBuilder(ConventionalItemTags.BONES)
 				.add(Items.BONE);
 
-		tag(ConventionalItemTags.EGGS)
+		valueLookupBuilder(ConventionalItemTags.EGGS)
 				.add(Items.EGG, Items.BROWN_EGG, Items.BLUE_EGG);
 
-		tag(ConventionalItemTags.FEATHERS)
+		valueLookupBuilder(ConventionalItemTags.FEATHERS)
 				.add(Items.FEATHER);
 
-		tag(ConventionalItemTags.GUNPOWDERS)
+		valueLookupBuilder(ConventionalItemTags.GUNPOWDERS)
 				.add(Items.GUNPOWDER);
 
-		tag(ConventionalItemTags.MUSHROOMS)
+		valueLookupBuilder(ConventionalItemTags.MUSHROOMS)
 				.add(Items.RED_MUSHROOM)
 				.add(Items.BROWN_MUSHROOM);
 
-		tag(ConventionalItemTags.NETHER_STARS)
+		valueLookupBuilder(ConventionalItemTags.NETHER_STARS)
 				.add(Items.NETHER_STAR);
 
-		tag(ConventionalItemTags.MUSIC_DISCS)
+		valueLookupBuilder(ConventionalItemTags.MUSIC_DISCS)
 				.add(Items.MUSIC_DISC_13, Items.MUSIC_DISC_CAT, Items.MUSIC_DISC_BLOCKS, Items.MUSIC_DISC_CHIRP, Items.MUSIC_DISC_FAR,
 					Items.MUSIC_DISC_MALL, Items.MUSIC_DISC_MELLOHI, Items.MUSIC_DISC_STAL, Items.MUSIC_DISC_STRAD, Items.MUSIC_DISC_WARD,
 					Items.MUSIC_DISC_11, Items.MUSIC_DISC_WAIT, Items.MUSIC_DISC_OTHERSIDE, Items.MUSIC_DISC_5, Items.MUSIC_DISC_PIGSTEP,
 					Items.MUSIC_DISC_RELIC, Items.MUSIC_DISC_CREATOR, Items.MUSIC_DISC_CREATOR_MUSIC_BOX, Items.MUSIC_DISC_PRECIPICE);
 
-		tag(ConventionalItemTags.WOODEN_RODS)
+		valueLookupBuilder(ConventionalItemTags.WOODEN_RODS)
 				.add(Items.STICK);
 
-		tag(ConventionalItemTags.BLAZE_RODS)
+		valueLookupBuilder(ConventionalItemTags.BLAZE_RODS)
 				.add(Items.BLAZE_ROD);
 
-		tag(ConventionalItemTags.BREEZE_RODS)
+		valueLookupBuilder(ConventionalItemTags.BREEZE_RODS)
 				.add(Items.BREEZE_ROD);
 
-		tag(ConventionalItemTags.RODS)
+		valueLookupBuilder(ConventionalItemTags.RODS)
 				.addOptionalTag(ConventionalItemTags.WOODEN_RODS)
 				.addOptionalTag(ConventionalItemTags.BLAZE_RODS)
 				.addOptionalTag(ConventionalItemTags.BREEZE_RODS);
 
-		tag(ConventionalItemTags.ROPES); // Generate tag so others can see it exists through JSON.
+		valueLookupBuilder(ConventionalItemTags.ROPES); // Generate tag so others can see it exists through JSON.
 
-		tag(ConventionalItemTags.CHAINS)
+		valueLookupBuilder(ConventionalItemTags.CHAINS)
 				.add(Items.CHAIN);
 
-		tag(ConventionalItemTags.ENDER_PEARLS)
+		valueLookupBuilder(ConventionalItemTags.ENDER_PEARLS)
 				.add(Items.ENDER_PEARL);
 
-		tag(ConventionalItemTags.SLIME_BALLS)
+		valueLookupBuilder(ConventionalItemTags.SLIME_BALLS)
 				.add(Items.SLIME_BALL);
 
-		tag(ConventionalItemTags.FERTILIZERS)
+		valueLookupBuilder(ConventionalItemTags.FERTILIZERS)
 				.add(Items.BONE_MEAL);
 
-		tag(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
+		valueLookupBuilder(ConventionalItemTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
 	}
 
 	private void generateDyedTags() {
 		// Cannot pull entries from block tag because Wall Banners do not have an item form
-		tag(ConventionalItemTags.BLACK_DYED)
+		valueLookupBuilder(ConventionalItemTags.BLACK_DYED)
 				.add(Items.BLACK_BANNER).add(Items.BLACK_BED).add(Items.BLACK_CANDLE).add(Items.BLACK_CARPET)
 				.add(Items.BLACK_CONCRETE).add(Items.BLACK_CONCRETE_POWDER).add(Items.BLACK_GLAZED_TERRACOTTA)
 				.add(Items.BLACK_SHULKER_BOX).add(Items.BLACK_STAINED_GLASS).add(Items.BLACK_STAINED_GLASS_PANE)
 				.add(Items.BLACK_TERRACOTTA).add(Items.BLACK_WOOL).add(Items.BLACK_BUNDLE);
 
-		tag(ConventionalItemTags.BLUE_DYED)
+		valueLookupBuilder(ConventionalItemTags.BLUE_DYED)
 				.add(Items.BLUE_BANNER).add(Items.BLUE_BED).add(Items.BLUE_CANDLE).add(Items.BLUE_CARPET)
 				.add(Items.BLUE_CONCRETE).add(Items.BLUE_CONCRETE_POWDER).add(Items.BLUE_GLAZED_TERRACOTTA)
 				.add(Items.BLUE_SHULKER_BOX).add(Items.BLUE_STAINED_GLASS).add(Items.BLUE_STAINED_GLASS_PANE)
 				.add(Items.BLUE_TERRACOTTA).add(Items.BLUE_WOOL).add(Items.BLUE_BUNDLE);
 
-		tag(ConventionalItemTags.BROWN_DYED)
+		valueLookupBuilder(ConventionalItemTags.BROWN_DYED)
 				.add(Items.BROWN_BANNER).add(Items.BROWN_BED).add(Items.BROWN_CANDLE).add(Items.BROWN_CARPET)
 				.add(Items.BROWN_CONCRETE).add(Items.BROWN_CONCRETE_POWDER).add(Items.BROWN_GLAZED_TERRACOTTA)
 				.add(Items.BROWN_SHULKER_BOX).add(Items.BROWN_STAINED_GLASS).add(Items.BROWN_STAINED_GLASS_PANE)
 				.add(Items.BROWN_TERRACOTTA).add(Items.BROWN_WOOL).add(Items.BROWN_BUNDLE);
 
-		tag(ConventionalItemTags.CYAN_DYED)
+		valueLookupBuilder(ConventionalItemTags.CYAN_DYED)
 				.add(Items.CYAN_BANNER).add(Items.CYAN_BED).add(Items.CYAN_CANDLE).add(Items.CYAN_CARPET)
 				.add(Items.CYAN_CONCRETE).add(Items.CYAN_CONCRETE_POWDER).add(Items.CYAN_GLAZED_TERRACOTTA)
 				.add(Items.CYAN_SHULKER_BOX).add(Items.CYAN_STAINED_GLASS).add(Items.CYAN_STAINED_GLASS_PANE)
 				.add(Items.CYAN_TERRACOTTA).add(Items.CYAN_WOOL).add(Items.CYAN_BUNDLE);
 
-		tag(ConventionalItemTags.GRAY_DYED)
+		valueLookupBuilder(ConventionalItemTags.GRAY_DYED)
 				.add(Items.GRAY_BANNER).add(Items.GRAY_BED).add(Items.GRAY_CANDLE).add(Items.GRAY_CARPET)
 				.add(Items.GRAY_CONCRETE).add(Items.GRAY_CONCRETE_POWDER).add(Items.GRAY_GLAZED_TERRACOTTA)
 				.add(Items.GRAY_SHULKER_BOX).add(Items.GRAY_STAINED_GLASS).add(Items.GRAY_STAINED_GLASS_PANE)
 				.add(Items.GRAY_TERRACOTTA).add(Items.GRAY_WOOL).add(Items.GRAY_BUNDLE);
 
-		tag(ConventionalItemTags.GREEN_DYED)
+		valueLookupBuilder(ConventionalItemTags.GREEN_DYED)
 				.add(Items.GREEN_BANNER).add(Items.GREEN_BED).add(Items.GREEN_CANDLE).add(Items.GREEN_CARPET)
 				.add(Items.GREEN_CONCRETE).add(Items.GREEN_CONCRETE_POWDER).add(Items.GREEN_GLAZED_TERRACOTTA)
 				.add(Items.GREEN_SHULKER_BOX).add(Items.GREEN_STAINED_GLASS).add(Items.GREEN_STAINED_GLASS_PANE)
 				.add(Items.GREEN_TERRACOTTA).add(Items.GREEN_WOOL).add(Items.GREEN_BUNDLE);
 
-		tag(ConventionalItemTags.LIGHT_BLUE_DYED)
+		valueLookupBuilder(ConventionalItemTags.LIGHT_BLUE_DYED)
 				.add(Items.LIGHT_BLUE_BANNER).add(Items.LIGHT_BLUE_BED).add(Items.LIGHT_BLUE_CANDLE).add(Items.LIGHT_BLUE_CARPET)
 				.add(Items.LIGHT_BLUE_CONCRETE).add(Items.LIGHT_BLUE_CONCRETE_POWDER).add(Items.LIGHT_BLUE_GLAZED_TERRACOTTA)
 				.add(Items.LIGHT_BLUE_SHULKER_BOX).add(Items.LIGHT_BLUE_STAINED_GLASS).add(Items.LIGHT_BLUE_STAINED_GLASS_PANE)
 				.add(Items.LIGHT_BLUE_TERRACOTTA).add(Items.LIGHT_BLUE_WOOL).add(Items.LIGHT_BLUE_BUNDLE);
 
-		tag(ConventionalItemTags.LIGHT_GRAY_DYED)
+		valueLookupBuilder(ConventionalItemTags.LIGHT_GRAY_DYED)
 				.add(Items.LIGHT_GRAY_BANNER).add(Items.LIGHT_GRAY_BED).add(Items.LIGHT_GRAY_CANDLE).add(Items.LIGHT_GRAY_CARPET)
 				.add(Items.LIGHT_GRAY_CONCRETE).add(Items.LIGHT_GRAY_CONCRETE_POWDER).add(Items.LIGHT_GRAY_GLAZED_TERRACOTTA)
 				.add(Items.LIGHT_GRAY_SHULKER_BOX).add(Items.LIGHT_GRAY_STAINED_GLASS).add(Items.LIGHT_GRAY_STAINED_GLASS_PANE)
 				.add(Items.LIGHT_GRAY_TERRACOTTA).add(Items.LIGHT_GRAY_WOOL).add(Items.LIGHT_GRAY_BUNDLE);
 
-		tag(ConventionalItemTags.LIME_DYED)
+		valueLookupBuilder(ConventionalItemTags.LIME_DYED)
 				.add(Items.LIME_BANNER).add(Items.LIME_BED).add(Items.LIME_CANDLE).add(Items.LIME_CARPET)
 				.add(Items.LIME_CONCRETE).add(Items.LIME_CONCRETE_POWDER).add(Items.LIME_GLAZED_TERRACOTTA)
 				.add(Items.LIME_SHULKER_BOX).add(Items.LIME_STAINED_GLASS).add(Items.LIME_STAINED_GLASS_PANE)
 				.add(Items.LIME_TERRACOTTA).add(Items.LIME_WOOL).add(Items.LIME_BUNDLE);
 
-		tag(ConventionalItemTags.MAGENTA_DYED)
+		valueLookupBuilder(ConventionalItemTags.MAGENTA_DYED)
 				.add(Items.MAGENTA_BANNER).add(Items.MAGENTA_BED).add(Items.MAGENTA_CANDLE).add(Items.MAGENTA_CARPET)
 				.add(Items.MAGENTA_CONCRETE).add(Items.MAGENTA_CONCRETE_POWDER).add(Items.MAGENTA_GLAZED_TERRACOTTA)
 				.add(Items.MAGENTA_SHULKER_BOX).add(Items.MAGENTA_STAINED_GLASS).add(Items.MAGENTA_STAINED_GLASS_PANE)
 				.add(Items.MAGENTA_TERRACOTTA).add(Items.MAGENTA_WOOL).add(Items.MAGENTA_BUNDLE);
 
-		tag(ConventionalItemTags.ORANGE_DYED)
+		valueLookupBuilder(ConventionalItemTags.ORANGE_DYED)
 				.add(Items.ORANGE_BANNER).add(Items.ORANGE_BED).add(Items.ORANGE_CANDLE).add(Items.ORANGE_CARPET)
 				.add(Items.ORANGE_CONCRETE).add(Items.ORANGE_CONCRETE_POWDER).add(Items.ORANGE_GLAZED_TERRACOTTA)
 				.add(Items.ORANGE_SHULKER_BOX).add(Items.ORANGE_STAINED_GLASS).add(Items.ORANGE_STAINED_GLASS_PANE)
 				.add(Items.ORANGE_TERRACOTTA).add(Items.ORANGE_WOOL).add(Items.ORANGE_BUNDLE);
 
-		tag(ConventionalItemTags.PINK_DYED)
+		valueLookupBuilder(ConventionalItemTags.PINK_DYED)
 				.add(Items.PINK_BANNER).add(Items.PINK_BED).add(Items.PINK_CANDLE).add(Items.PINK_CARPET)
 				.add(Items.PINK_CONCRETE).add(Items.PINK_CONCRETE_POWDER).add(Items.PINK_GLAZED_TERRACOTTA)
 				.add(Items.PINK_SHULKER_BOX).add(Items.PINK_STAINED_GLASS).add(Items.PINK_STAINED_GLASS_PANE)
 				.add(Items.PINK_TERRACOTTA).add(Items.PINK_WOOL).add(Items.PINK_BUNDLE);
 
-		tag(ConventionalItemTags.PURPLE_DYED)
+		valueLookupBuilder(ConventionalItemTags.PURPLE_DYED)
 				.add(Items.PURPLE_BANNER).add(Items.PURPLE_BED).add(Items.PURPLE_CANDLE).add(Items.PURPLE_CARPET)
 				.add(Items.PURPLE_CONCRETE).add(Items.PURPLE_CONCRETE_POWDER).add(Items.PURPLE_GLAZED_TERRACOTTA)
 				.add(Items.PURPLE_SHULKER_BOX).add(Items.PURPLE_STAINED_GLASS).add(Items.PURPLE_STAINED_GLASS_PANE)
 				.add(Items.PURPLE_TERRACOTTA).add(Items.PURPLE_WOOL).add(Items.PURPLE_BUNDLE);
 
-		tag(ConventionalItemTags.RED_DYED)
+		valueLookupBuilder(ConventionalItemTags.RED_DYED)
 				.add(Items.RED_BANNER).add(Items.RED_BED).add(Items.RED_CANDLE).add(Items.RED_CARPET)
 				.add(Items.RED_CONCRETE).add(Items.RED_CONCRETE_POWDER).add(Items.RED_GLAZED_TERRACOTTA)
 				.add(Items.RED_SHULKER_BOX).add(Items.RED_STAINED_GLASS).add(Items.RED_STAINED_GLASS_PANE)
 				.add(Items.RED_TERRACOTTA).add(Items.RED_WOOL).add(Items.RED_BUNDLE);
 
-		tag(ConventionalItemTags.WHITE_DYED)
+		valueLookupBuilder(ConventionalItemTags.WHITE_DYED)
 				.add(Items.WHITE_BANNER).add(Items.WHITE_BED).add(Items.WHITE_CANDLE).add(Items.WHITE_CARPET)
 				.add(Items.WHITE_CONCRETE).add(Items.WHITE_CONCRETE_POWDER).add(Items.WHITE_GLAZED_TERRACOTTA)
 				.add(Items.WHITE_SHULKER_BOX).add(Items.WHITE_STAINED_GLASS).add(Items.WHITE_STAINED_GLASS_PANE)
 				.add(Items.WHITE_TERRACOTTA).add(Items.WHITE_WOOL).add(Items.WHITE_BUNDLE);
 
-		tag(ConventionalItemTags.YELLOW_DYED)
+		valueLookupBuilder(ConventionalItemTags.YELLOW_DYED)
 				.add(Items.YELLOW_BANNER).add(Items.YELLOW_BED).add(Items.YELLOW_CANDLE).add(Items.YELLOW_CARPET)
 				.add(Items.YELLOW_CONCRETE).add(Items.YELLOW_CONCRETE_POWDER).add(Items.YELLOW_GLAZED_TERRACOTTA)
 				.add(Items.YELLOW_SHULKER_BOX).add(Items.YELLOW_STAINED_GLASS).add(Items.YELLOW_STAINED_GLASS_PANE)
 				.add(Items.YELLOW_TERRACOTTA).add(Items.YELLOW_WOOL).add(Items.YELLOW_BUNDLE);
 
-		tag(ConventionalItemTags.DYED)
+		valueLookupBuilder(ConventionalItemTags.DYED)
 				.addTag(ConventionalItemTags.WHITE_DYED)
 				.addTag(ConventionalItemTags.ORANGE_DYED)
 				.addTag(ConventionalItemTags.MAGENTA_DYED)
@@ -1044,38 +1044,38 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
 
-		tag(ConventionalItemTags.WOODEN_BARRELS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_barrels")));
-		tag(ConventionalItemTags.WOODEN_CHESTS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_chests")));
-		tag(ConventionalItemTags.BLACK_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "black_dyes")));
-		tag(ConventionalItemTags.BLUE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "blue_dyes")));
-		tag(ConventionalItemTags.BROWN_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "brown_dyes")));
-		tag(ConventionalItemTags.GREEN_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "green_dyes")));
-		tag(ConventionalItemTags.RED_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_dyes")));
-		tag(ConventionalItemTags.WHITE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "white_dyes")));
-		tag(ConventionalItemTags.YELLOW_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "yellow_dyes")));
-		tag(ConventionalItemTags.LIGHT_BLUE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "light_blue_dyes")));
-		tag(ConventionalItemTags.LIGHT_GRAY_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "light_gray_dyes")));
-		tag(ConventionalItemTags.LIME_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "lime_dyes")));
-		tag(ConventionalItemTags.MAGENTA_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "magenta_dyes")));
-		tag(ConventionalItemTags.ORANGE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "orange_dyes")));
-		tag(ConventionalItemTags.PINK_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "pink_dyes")));
-		tag(ConventionalItemTags.CYAN_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "cyan_dyes")));
-		tag(ConventionalItemTags.GRAY_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "gray_dyes")));
-		tag(ConventionalItemTags.PURPLE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "purple_dyes")));
-		tag(ConventionalItemTags.IRON_RAW_MATERIALS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "raw_iron_ores")));
-		tag(ConventionalItemTags.COPPER_RAW_MATERIALS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "raw_copper_ores")));
-		tag(ConventionalItemTags.GOLD_RAW_MATERIALS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "raw_gold_ores")));
-		tag(ConventionalItemTags.GLOWSTONE_DUSTS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "glowstone_dusts")));
-		tag(ConventionalItemTags.REDSTONE_DUSTS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "redstone_dusts")));
-		tag(ConventionalItemTags.DIAMOND_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "diamonds")));
-		tag(ConventionalItemTags.LAPIS_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "lapis")));
-		tag(ConventionalItemTags.EMERALD_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "emeralds")));
-		tag(ConventionalItemTags.QUARTZ_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "quartz")));
-		tag(ConventionalItemTags.SHEAR_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "shears")));
-		tag(ConventionalItemTags.SPEAR_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "spears")));
-		tag(ConventionalItemTags.BOW_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "bows")));
-		tag(ConventionalItemTags.SHIELD_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "shields")));
-		tag(ConventionalItemTags.STRINGS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "string")));
-		tag(ConventionalItemTags.CONCRETE_POWDERS).addOptionalTag(ConventionalItemTags.CONCRETE_POWDER);
+		valueLookupBuilder(ConventionalItemTags.WOODEN_BARRELS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_barrels")));
+		valueLookupBuilder(ConventionalItemTags.WOODEN_CHESTS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_chests")));
+		valueLookupBuilder(ConventionalItemTags.BLACK_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "black_dyes")));
+		valueLookupBuilder(ConventionalItemTags.BLUE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "blue_dyes")));
+		valueLookupBuilder(ConventionalItemTags.BROWN_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "brown_dyes")));
+		valueLookupBuilder(ConventionalItemTags.GREEN_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "green_dyes")));
+		valueLookupBuilder(ConventionalItemTags.RED_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_dyes")));
+		valueLookupBuilder(ConventionalItemTags.WHITE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "white_dyes")));
+		valueLookupBuilder(ConventionalItemTags.YELLOW_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "yellow_dyes")));
+		valueLookupBuilder(ConventionalItemTags.LIGHT_BLUE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "light_blue_dyes")));
+		valueLookupBuilder(ConventionalItemTags.LIGHT_GRAY_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "light_gray_dyes")));
+		valueLookupBuilder(ConventionalItemTags.LIME_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "lime_dyes")));
+		valueLookupBuilder(ConventionalItemTags.MAGENTA_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "magenta_dyes")));
+		valueLookupBuilder(ConventionalItemTags.ORANGE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "orange_dyes")));
+		valueLookupBuilder(ConventionalItemTags.PINK_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "pink_dyes")));
+		valueLookupBuilder(ConventionalItemTags.CYAN_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "cyan_dyes")));
+		valueLookupBuilder(ConventionalItemTags.GRAY_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "gray_dyes")));
+		valueLookupBuilder(ConventionalItemTags.PURPLE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "purple_dyes")));
+		valueLookupBuilder(ConventionalItemTags.IRON_RAW_MATERIALS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "raw_iron_ores")));
+		valueLookupBuilder(ConventionalItemTags.COPPER_RAW_MATERIALS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "raw_copper_ores")));
+		valueLookupBuilder(ConventionalItemTags.GOLD_RAW_MATERIALS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "raw_gold_ores")));
+		valueLookupBuilder(ConventionalItemTags.GLOWSTONE_DUSTS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "glowstone_dusts")));
+		valueLookupBuilder(ConventionalItemTags.REDSTONE_DUSTS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "redstone_dusts")));
+		valueLookupBuilder(ConventionalItemTags.DIAMOND_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "diamonds")));
+		valueLookupBuilder(ConventionalItemTags.LAPIS_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "lapis")));
+		valueLookupBuilder(ConventionalItemTags.EMERALD_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "emeralds")));
+		valueLookupBuilder(ConventionalItemTags.QUARTZ_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "quartz")));
+		valueLookupBuilder(ConventionalItemTags.SHEAR_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "shears")));
+		valueLookupBuilder(ConventionalItemTags.SPEAR_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "spears")));
+		valueLookupBuilder(ConventionalItemTags.BOW_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "bows")));
+		valueLookupBuilder(ConventionalItemTags.SHIELD_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "shields")));
+		valueLookupBuilder(ConventionalItemTags.STRINGS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "string")));
+		valueLookupBuilder(ConventionalItemTags.CONCRETE_POWDERS).addOptionalTag(ConventionalItemTags.CONCRETE_POWDER);
 	}
 }
