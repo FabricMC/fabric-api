@@ -9,10 +9,6 @@ mutable field net/minecraft/data/DataGenerator output Lnet/minecraft/data/DataOu
 accessible class net/minecraft/data/recipe/RecipeGenerator$RecipeProvider
 transitive-extendable method net/minecraft/data/recipe/RecipeGenerator$RecipeProvider run (Lnet/minecraft/data/DataWriter;)Ljava/util/concurrent/CompletableFuture;
 
-accessible field net/minecraft/data/tag/TagProvider$ProvidedTagBuilder builder Lnet/minecraft/registry/tag/TagBuilder;
-transitive-extendable method net/minecraft/data/tag/TagProvider$ProvidedTagBuilder add (Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/data/tag/TagProvider$ProvidedTagBuilder;
-transitive-extendable method net/minecraft/data/tag/TagProvider$ProvidedTagBuilder add ([Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/data/tag/TagProvider$ProvidedTagBuilder;
-
 accessible field net/minecraft/data/tag/TagProvider tagBuilders Ljava/util/Map;
 
 accessible field net/minecraft/data/loottable/BlockLootTableGenerator lootTables Ljava/util/Map;

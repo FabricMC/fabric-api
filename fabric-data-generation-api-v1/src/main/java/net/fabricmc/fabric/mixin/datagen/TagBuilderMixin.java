@@ -17,17 +17,21 @@
 package net.fabricmc.fabric.mixin.datagen;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.registry.tag.TagBuilder;
+import net.minecraft.registry.tag.TagEntry;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
+import net.fabricmc.fabric.impl.datagen.ForcedTagEntry;
 
-/**
- * Extends Tag.Builder to support setting the replace field.
- */
 @Mixin(TagBuilder.class)
-public class TagBuilderMixin implements FabricTagBuilder {
+public abstract class TagBuilderMixin implements FabricTagBuilder {
+	@Shadow
+	public abstract TagBuilder add(TagEntry entry);
+
 	@Unique
 	private boolean replace = false;
 
@@ -38,6 +42,11 @@ public class TagBuilderMixin implements FabricTagBuilder {
 
 	@Override
 	public boolean fabric_isReplaced() {
-		return replace;
+		return this.replace;
+	}
+
+	@Override
+	public void fabric_forceAddTag(Identifier tag) {
+		this.add(new ForcedTagEntry(tag));
 	}
 }

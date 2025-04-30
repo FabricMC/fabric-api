@@ -307,10 +307,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
-			// TODO 1.21.6 fix me!!!
-			// tag(BlockTags.FIRE).setReplace(true).add(SIMPLE_BLOCK);
+			valueLookupBuilder(BlockTags.FIRE).setReplace(true).add(SIMPLE_BLOCK);
 			valueLookupBuilder(BlockTags.DIRT).add(SIMPLE_BLOCK);
-			// tag(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
+			valueLookupBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
 
 			aliasGroup("flowers")
 					.add(BlockTags.FLOWERS, BlockTags.FLOWER_POTS);

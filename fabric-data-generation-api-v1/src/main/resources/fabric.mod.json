@@ -32,7 +32,8 @@
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
       "net/minecraft/class_7788": ["net/fabricmc/fabric/api/datagen/v1/loot/FabricBlockLootTableGenerator"],
-      "net/minecraft/class_7789": ["net/fabricmc/fabric/api/datagen/v1/loot/FabricEntityLootTableGenerator"]
+      "net/minecraft/class_7789": ["net/fabricmc/fabric/api/datagen/v1/loot/FabricEntityLootTableGenerator"],
+      "net/minecraft/class_11389": ["net/fabricmc/fabric/api/datagen/v1/provider/FabricProvidedTagBuilder"]
     }
   }
 }
