@@ -220,7 +220,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 	private void generateFlowerTags() {
 		tag(ConventionalBlockTags.SMALL_FLOWERS)
-				.addAll(Blocks.DANDELION, Blocks.POPPY, Blocks.BLUE_ORCHID,
+				.add(Blocks.DANDELION, Blocks.POPPY, Blocks.BLUE_ORCHID,
 						Blocks.ALLIUM, Blocks.AZURE_BLUET, Blocks.RED_TULIP,
 						Blocks.ORANGE_TULIP, Blocks.WHITE_TULIP, Blocks.PINK_TULIP,
 						Blocks.OXEYE_DAISY, Blocks.CORNFLOWER, Blocks.LILY_OF_THE_VALLEY,
@@ -229,12 +229,12 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 				);
 
 		tag(ConventionalBlockTags.TALL_FLOWERS)
-				.addAll(Blocks.SUNFLOWER, Blocks.LILAC, Blocks.PEONY,
+				.add(Blocks.SUNFLOWER, Blocks.LILAC, Blocks.PEONY,
 						Blocks.ROSE_BUSH, Blocks.PITCHER_PLANT
 				).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.ofVanilla("tall_flowers")));
 
 		tag(ConventionalBlockTags.FLOWERS)
-				.addAll(Blocks.CHERRY_LEAVES, Blocks.FLOWERING_AZALEA_LEAVES, Blocks.FLOWERING_AZALEA,
+				.add(Blocks.CHERRY_LEAVES, Blocks.FLOWERING_AZALEA_LEAVES, Blocks.FLOWERING_AZALEA,
 						Blocks.MANGROVE_PROPAGULE, Blocks.PINK_PETALS, Blocks.WILDFLOWERS, Blocks.CHORUS_FLOWER,
 						Blocks.SPORE_BLOSSOM, Blocks.CACTUS_FLOWER
 				).addOptionalTag(ConventionalBlockTags.SMALL_FLOWERS)

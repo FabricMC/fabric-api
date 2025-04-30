@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.data.tag.TagAppender;
+import net.minecraft.data.tag.ProvidedTagBuilder;
 import net.minecraft.data.tag.TagProvider;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
@@ -107,11 +107,11 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		throw new UnsupportedOperationException("Adding objects is not supported by " + getClass());
 	}
 
-	protected TagAppender<T, T> tag(TagKey<T> key) {
+	protected ProvidedTagBuilder<T, T> tag(TagKey<T> key) {
 		return null;
 	}
 
-	protected TagAppender<RegistryKey<T>, T> keyTag(TagKey<T> tagKey) {
+	protected ProvidedTagBuilder<RegistryKey<T>, T> keyTag(TagKey<T> tagKey) {
 		return null;
 	}
 
