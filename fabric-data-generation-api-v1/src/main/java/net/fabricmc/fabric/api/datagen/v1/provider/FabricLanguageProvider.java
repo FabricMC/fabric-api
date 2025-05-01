@@ -26,7 +26,6 @@ import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.block.Block;
@@ -48,6 +47,7 @@ import net.minecraft.stat.StatType;
 import net.minecraft.text.TextContent;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.StrictJsonParser;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -248,7 +248,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 */
 		default void add(Path existingLanguageFile) throws IOException {
 			try (Reader reader = Files.newBufferedReader(existingLanguageFile)) {
-				JsonObject translations = JsonParser.parseReader(reader).getAsJsonObject();
+				JsonObject translations = StrictJsonParser.parse(reader).getAsJsonObject();
 
 				for (String key : translations.keySet()) {
 					add(key, translations.get(key).getAsString());
