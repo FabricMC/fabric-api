@@ -231,7 +231,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		valueLookupBuilder(ConventionalBlockTags.TALL_FLOWERS)
 				.add(Blocks.SUNFLOWER, Blocks.LILAC, Blocks.PEONY,
 						Blocks.ROSE_BUSH, Blocks.PITCHER_PLANT
-				).addOptionalTag(TagKey.of(RegistryKeys.BLOCK, Identifier.ofVanilla("tall_flowers")));
+				);
 
 		valueLookupBuilder(ConventionalBlockTags.FLOWERS)
 				.add(Blocks.CHERRY_LEAVES, Blocks.FLOWERING_AZALEA_LEAVES, Blocks.FLOWERING_AZALEA,

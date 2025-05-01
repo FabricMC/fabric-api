@@ -17,7 +17,9 @@
 package net.fabricmc.fabric.impl.attachment;
 
 import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -56,7 +58,20 @@ public class AttachmentSerializingImpl {
 			return;
 		}
 
-		view.put(AttachmentTarget.NBT_ATTACHMENT_KEY, CODEC, attachments);
+		IdentityHashMap<AttachmentType<?>, Object> attachmentsToSerialize = attachments.entrySet().stream()
+				.filter(entry -> entry.getKey().persistenceCodec() != null)
+				.collect(Collectors.toMap(
+					Map.Entry::getKey,
+					Map.Entry::getValue,
+					(v1, v2) -> v1,
+					IdentityHashMap::new
+				));
+
+		if (attachmentsToSerialize.isEmpty()) {
+			return;
+		}
+
+		view.put(AttachmentTarget.NBT_ATTACHMENT_KEY, CODEC, attachmentsToSerialize);
 	}
 
 	@Nullable

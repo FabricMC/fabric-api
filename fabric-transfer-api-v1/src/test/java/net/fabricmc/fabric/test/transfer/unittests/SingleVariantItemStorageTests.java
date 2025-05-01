@@ -43,6 +43,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.storage.NbtReadView;
 import net.minecraft.storage.NbtWriteView;
 import net.minecraft.text.Text;
+import net.minecraft.util.ErrorReporter;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -196,7 +197,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		nbt.putLong("amount", 1);
 		nbt.put("variant", variantNbt);
 
-		storage.readNbt(NbtReadView.get(null, staticDrm(), nbt));
+		storage.readNbt(NbtReadView.get(ErrorReporter.EMPTY, staticDrm(), nbt));
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(0L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
