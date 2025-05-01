@@ -912,97 +912,97 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.BLACK_BANNER).add(Items.BLACK_BED).add(Items.BLACK_CANDLE).add(Items.BLACK_CARPET)
 				.add(Items.BLACK_CONCRETE).add(Items.BLACK_CONCRETE_POWDER).add(Items.BLACK_GLAZED_TERRACOTTA)
 				.add(Items.BLACK_SHULKER_BOX).add(Items.BLACK_STAINED_GLASS).add(Items.BLACK_STAINED_GLASS_PANE)
-				.add(Items.BLACK_TERRACOTTA).add(Items.BLACK_WOOL).add(Items.BLACK_BUNDLE);
+				.add(Items.BLACK_TERRACOTTA).add(Items.BLACK_WOOL).add(Items.BLACK_BUNDLE).add(Items.BLACK_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.BLUE_DYED)
 				.add(Items.BLUE_BANNER).add(Items.BLUE_BED).add(Items.BLUE_CANDLE).add(Items.BLUE_CARPET)
 				.add(Items.BLUE_CONCRETE).add(Items.BLUE_CONCRETE_POWDER).add(Items.BLUE_GLAZED_TERRACOTTA)
 				.add(Items.BLUE_SHULKER_BOX).add(Items.BLUE_STAINED_GLASS).add(Items.BLUE_STAINED_GLASS_PANE)
-				.add(Items.BLUE_TERRACOTTA).add(Items.BLUE_WOOL).add(Items.BLUE_BUNDLE);
+				.add(Items.BLUE_TERRACOTTA).add(Items.BLUE_WOOL).add(Items.BLUE_BUNDLE).add(Items.BLUE_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.BROWN_DYED)
 				.add(Items.BROWN_BANNER).add(Items.BROWN_BED).add(Items.BROWN_CANDLE).add(Items.BROWN_CARPET)
 				.add(Items.BROWN_CONCRETE).add(Items.BROWN_CONCRETE_POWDER).add(Items.BROWN_GLAZED_TERRACOTTA)
 				.add(Items.BROWN_SHULKER_BOX).add(Items.BROWN_STAINED_GLASS).add(Items.BROWN_STAINED_GLASS_PANE)
-				.add(Items.BROWN_TERRACOTTA).add(Items.BROWN_WOOL).add(Items.BROWN_BUNDLE);
+				.add(Items.BROWN_TERRACOTTA).add(Items.BROWN_WOOL).add(Items.BROWN_BUNDLE).add(Items.BROWN_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.CYAN_DYED)
 				.add(Items.CYAN_BANNER).add(Items.CYAN_BED).add(Items.CYAN_CANDLE).add(Items.CYAN_CARPET)
 				.add(Items.CYAN_CONCRETE).add(Items.CYAN_CONCRETE_POWDER).add(Items.CYAN_GLAZED_TERRACOTTA)
 				.add(Items.CYAN_SHULKER_BOX).add(Items.CYAN_STAINED_GLASS).add(Items.CYAN_STAINED_GLASS_PANE)
-				.add(Items.CYAN_TERRACOTTA).add(Items.CYAN_WOOL).add(Items.CYAN_BUNDLE);
+				.add(Items.CYAN_TERRACOTTA).add(Items.CYAN_WOOL).add(Items.CYAN_BUNDLE).add(Items.CYAN_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.GRAY_DYED)
 				.add(Items.GRAY_BANNER).add(Items.GRAY_BED).add(Items.GRAY_CANDLE).add(Items.GRAY_CARPET)
 				.add(Items.GRAY_CONCRETE).add(Items.GRAY_CONCRETE_POWDER).add(Items.GRAY_GLAZED_TERRACOTTA)
 				.add(Items.GRAY_SHULKER_BOX).add(Items.GRAY_STAINED_GLASS).add(Items.GRAY_STAINED_GLASS_PANE)
-				.add(Items.GRAY_TERRACOTTA).add(Items.GRAY_WOOL).add(Items.GRAY_BUNDLE);
+				.add(Items.GRAY_TERRACOTTA).add(Items.GRAY_WOOL).add(Items.GRAY_BUNDLE).add(Items.GRAY_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.GREEN_DYED)
 				.add(Items.GREEN_BANNER).add(Items.GREEN_BED).add(Items.GREEN_CANDLE).add(Items.GREEN_CARPET)
 				.add(Items.GREEN_CONCRETE).add(Items.GREEN_CONCRETE_POWDER).add(Items.GREEN_GLAZED_TERRACOTTA)
 				.add(Items.GREEN_SHULKER_BOX).add(Items.GREEN_STAINED_GLASS).add(Items.GREEN_STAINED_GLASS_PANE)
-				.add(Items.GREEN_TERRACOTTA).add(Items.GREEN_WOOL).add(Items.GREEN_BUNDLE);
+				.add(Items.GREEN_TERRACOTTA).add(Items.GREEN_WOOL).add(Items.GREEN_BUNDLE).add(Items.GREEN_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.LIGHT_BLUE_DYED)
 				.add(Items.LIGHT_BLUE_BANNER).add(Items.LIGHT_BLUE_BED).add(Items.LIGHT_BLUE_CANDLE).add(Items.LIGHT_BLUE_CARPET)
 				.add(Items.LIGHT_BLUE_CONCRETE).add(Items.LIGHT_BLUE_CONCRETE_POWDER).add(Items.LIGHT_BLUE_GLAZED_TERRACOTTA)
 				.add(Items.LIGHT_BLUE_SHULKER_BOX).add(Items.LIGHT_BLUE_STAINED_GLASS).add(Items.LIGHT_BLUE_STAINED_GLASS_PANE)
-				.add(Items.LIGHT_BLUE_TERRACOTTA).add(Items.LIGHT_BLUE_WOOL).add(Items.LIGHT_BLUE_BUNDLE);
+				.add(Items.LIGHT_BLUE_TERRACOTTA).add(Items.LIGHT_BLUE_WOOL).add(Items.LIGHT_BLUE_BUNDLE).add(Items.LIGHT_BLUE_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.LIGHT_GRAY_DYED)
 				.add(Items.LIGHT_GRAY_BANNER).add(Items.LIGHT_GRAY_BED).add(Items.LIGHT_GRAY_CANDLE).add(Items.LIGHT_GRAY_CARPET)
 				.add(Items.LIGHT_GRAY_CONCRETE).add(Items.LIGHT_GRAY_CONCRETE_POWDER).add(Items.LIGHT_GRAY_GLAZED_TERRACOTTA)
 				.add(Items.LIGHT_GRAY_SHULKER_BOX).add(Items.LIGHT_GRAY_STAINED_GLASS).add(Items.LIGHT_GRAY_STAINED_GLASS_PANE)
-				.add(Items.LIGHT_GRAY_TERRACOTTA).add(Items.LIGHT_GRAY_WOOL).add(Items.LIGHT_GRAY_BUNDLE);
+				.add(Items.LIGHT_GRAY_TERRACOTTA).add(Items.LIGHT_GRAY_WOOL).add(Items.LIGHT_GRAY_BUNDLE).add(Items.LIGHT_GRAY_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.LIME_DYED)
 				.add(Items.LIME_BANNER).add(Items.LIME_BED).add(Items.LIME_CANDLE).add(Items.LIME_CARPET)
 				.add(Items.LIME_CONCRETE).add(Items.LIME_CONCRETE_POWDER).add(Items.LIME_GLAZED_TERRACOTTA)
 				.add(Items.LIME_SHULKER_BOX).add(Items.LIME_STAINED_GLASS).add(Items.LIME_STAINED_GLASS_PANE)
-				.add(Items.LIME_TERRACOTTA).add(Items.LIME_WOOL).add(Items.LIME_BUNDLE);
+				.add(Items.LIME_TERRACOTTA).add(Items.LIME_WOOL).add(Items.LIME_BUNDLE).add(Items.LIME_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.MAGENTA_DYED)
 				.add(Items.MAGENTA_BANNER).add(Items.MAGENTA_BED).add(Items.MAGENTA_CANDLE).add(Items.MAGENTA_CARPET)
 				.add(Items.MAGENTA_CONCRETE).add(Items.MAGENTA_CONCRETE_POWDER).add(Items.MAGENTA_GLAZED_TERRACOTTA)
 				.add(Items.MAGENTA_SHULKER_BOX).add(Items.MAGENTA_STAINED_GLASS).add(Items.MAGENTA_STAINED_GLASS_PANE)
-				.add(Items.MAGENTA_TERRACOTTA).add(Items.MAGENTA_WOOL).add(Items.MAGENTA_BUNDLE);
+				.add(Items.MAGENTA_TERRACOTTA).add(Items.MAGENTA_WOOL).add(Items.MAGENTA_BUNDLE).add(Items.MAGENTA_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.ORANGE_DYED)
 				.add(Items.ORANGE_BANNER).add(Items.ORANGE_BED).add(Items.ORANGE_CANDLE).add(Items.ORANGE_CARPET)
 				.add(Items.ORANGE_CONCRETE).add(Items.ORANGE_CONCRETE_POWDER).add(Items.ORANGE_GLAZED_TERRACOTTA)
 				.add(Items.ORANGE_SHULKER_BOX).add(Items.ORANGE_STAINED_GLASS).add(Items.ORANGE_STAINED_GLASS_PANE)
-				.add(Items.ORANGE_TERRACOTTA).add(Items.ORANGE_WOOL).add(Items.ORANGE_BUNDLE);
+				.add(Items.ORANGE_TERRACOTTA).add(Items.ORANGE_WOOL).add(Items.ORANGE_BUNDLE).add(Items.ORANGE_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.PINK_DYED)
 				.add(Items.PINK_BANNER).add(Items.PINK_BED).add(Items.PINK_CANDLE).add(Items.PINK_CARPET)
 				.add(Items.PINK_CONCRETE).add(Items.PINK_CONCRETE_POWDER).add(Items.PINK_GLAZED_TERRACOTTA)
 				.add(Items.PINK_SHULKER_BOX).add(Items.PINK_STAINED_GLASS).add(Items.PINK_STAINED_GLASS_PANE)
-				.add(Items.PINK_TERRACOTTA).add(Items.PINK_WOOL).add(Items.PINK_BUNDLE);
+				.add(Items.PINK_TERRACOTTA).add(Items.PINK_WOOL).add(Items.PINK_BUNDLE).add(Items.PINK_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.PURPLE_DYED)
 				.add(Items.PURPLE_BANNER).add(Items.PURPLE_BED).add(Items.PURPLE_CANDLE).add(Items.PURPLE_CARPET)
 				.add(Items.PURPLE_CONCRETE).add(Items.PURPLE_CONCRETE_POWDER).add(Items.PURPLE_GLAZED_TERRACOTTA)
 				.add(Items.PURPLE_SHULKER_BOX).add(Items.PURPLE_STAINED_GLASS).add(Items.PURPLE_STAINED_GLASS_PANE)
-				.add(Items.PURPLE_TERRACOTTA).add(Items.PURPLE_WOOL).add(Items.PURPLE_BUNDLE);
+				.add(Items.PURPLE_TERRACOTTA).add(Items.PURPLE_WOOL).add(Items.PURPLE_BUNDLE).add(Items.PURPLE_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.RED_DYED)
 				.add(Items.RED_BANNER).add(Items.RED_BED).add(Items.RED_CANDLE).add(Items.RED_CARPET)
 				.add(Items.RED_CONCRETE).add(Items.RED_CONCRETE_POWDER).add(Items.RED_GLAZED_TERRACOTTA)
 				.add(Items.RED_SHULKER_BOX).add(Items.RED_STAINED_GLASS).add(Items.RED_STAINED_GLASS_PANE)
-				.add(Items.RED_TERRACOTTA).add(Items.RED_WOOL).add(Items.RED_BUNDLE);
+				.add(Items.RED_TERRACOTTA).add(Items.RED_WOOL).add(Items.RED_BUNDLE).add(Items.RED_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.WHITE_DYED)
 				.add(Items.WHITE_BANNER).add(Items.WHITE_BED).add(Items.WHITE_CANDLE).add(Items.WHITE_CARPET)
 				.add(Items.WHITE_CONCRETE).add(Items.WHITE_CONCRETE_POWDER).add(Items.WHITE_GLAZED_TERRACOTTA)
 				.add(Items.WHITE_SHULKER_BOX).add(Items.WHITE_STAINED_GLASS).add(Items.WHITE_STAINED_GLASS_PANE)
-				.add(Items.WHITE_TERRACOTTA).add(Items.WHITE_WOOL).add(Items.WHITE_BUNDLE);
+				.add(Items.WHITE_TERRACOTTA).add(Items.WHITE_WOOL).add(Items.WHITE_BUNDLE).add(Items.WHITE_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.YELLOW_DYED)
 				.add(Items.YELLOW_BANNER).add(Items.YELLOW_BED).add(Items.YELLOW_CANDLE).add(Items.YELLOW_CARPET)
 				.add(Items.YELLOW_CONCRETE).add(Items.YELLOW_CONCRETE_POWDER).add(Items.YELLOW_GLAZED_TERRACOTTA)
 				.add(Items.YELLOW_SHULKER_BOX).add(Items.YELLOW_STAINED_GLASS).add(Items.YELLOW_STAINED_GLASS_PANE)
-				.add(Items.YELLOW_TERRACOTTA).add(Items.YELLOW_WOOL).add(Items.YELLOW_BUNDLE);
+				.add(Items.YELLOW_TERRACOTTA).add(Items.YELLOW_WOOL).add(Items.YELLOW_BUNDLE).add(Items.YELLOW_HARNESS);
 
 		valueLookupBuilder(ConventionalItemTags.DYED)
 				.addTag(ConventionalItemTags.WHITE_DYED)
