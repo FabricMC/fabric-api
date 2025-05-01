@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
  * and probably {@link #onFinalCommit} as well for {@code markDirty()} and similar calls.
  *
  * <p>This is a convenient specialization of {@link SingleVariantStorage} for fluids that additionally offers methods
- * to read the contents of the storage from NBT.
+ * to deserialize the contents of the storage.
  */
 public abstract class SingleFluidStorage extends SingleVariantStorage<FluidVariant> {
 	/**
@@ -64,7 +64,7 @@ public abstract class SingleFluidStorage extends SingleVariantStorage<FluidVaria
 	}
 
 	/**
-	 * Simple implementation of reading from NBT, to match what is written by {@link #writeData}.
+	 * Simple implementation of reading from {@link ReadView}, to match what is written by {@link #writeData}.
 	 * Other formats are allowed, this is just a suggestion.
 	 */
 	public void readData(ReadView data) {
@@ -72,7 +72,7 @@ public abstract class SingleFluidStorage extends SingleVariantStorage<FluidVaria
 	}
 
 	/**
-	 * Simple implementation of writing to NBT. Other formats are allowed, this is just a convenient suggestion.
+	 * Simple implementation of writing to {@link WriteView}. Other formats are allowed, this is just a convenient suggestion.
 	 */
 	public void writeData(WriteView data) {
 		SingleVariantStorage.writeData(this, FluidVariant.CODEC, data);
