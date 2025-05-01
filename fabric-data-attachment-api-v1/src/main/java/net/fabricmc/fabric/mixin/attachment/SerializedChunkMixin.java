@@ -78,21 +78,26 @@ abstract class SerializedChunkMixin {
 		if (chunk != null && attachmentNbtData != null) {
 			var nbt = new NbtCompound();
 			nbt.put(AttachmentTarget.NBT_ATTACHMENT_KEY, attachmentNbtData);
-			ReadView readView = NbtReadView.get(new ErrorReporter.Logging(LOGGER), serverWorld.getRegistryManager(), nbt);
-			((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(readView);
+
+			try (ErrorReporter.Logging reporter = new ErrorReporter.Logging(LOGGER)) {
+				ReadView readView = NbtReadView.get(reporter, serverWorld.getRegistryManager(), nbt);
+				((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(readView);
+			}
 		}
 	}
 
 	@Inject(method = "fromChunk", at = @At("RETURN"))
 	private static void storeAttachmentNbtData(ServerWorld world, Chunk chunk, CallbackInfoReturnable<SerializedChunk> cir) {
-		NbtWriteView writeView = NbtWriteView.create(new ErrorReporter.Logging(LOGGER), world.getRegistryManager());
-		((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(writeView);
+		try (ErrorReporter.Logging reporter = new ErrorReporter.Logging(LOGGER)) {
+			NbtWriteView writeView = NbtWriteView.create(reporter, world.getRegistryManager());
+			((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(writeView);
 
-		//noinspection SimplifyOptionalCallChains
-		NbtCompound attachmentNbtData = writeView.getNbt().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
+			//noinspection SimplifyOptionalCallChains
+			NbtCompound attachmentNbtData = writeView.getNbt().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
 
-		if (attachmentNbtData != null) {
-			((SerializedChunkMixin) (Object) cir.getReturnValue()).attachmentNbtData = attachmentNbtData;
+			if (attachmentNbtData != null) {
+				((SerializedChunkMixin) (Object) cir.getReturnValue()).attachmentNbtData = attachmentNbtData;
+			}
 		}
 	}
 
