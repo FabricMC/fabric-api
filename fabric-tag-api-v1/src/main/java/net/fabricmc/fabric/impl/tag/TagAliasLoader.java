@@ -28,7 +28,6 @@ import java.util.Set;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -47,6 +46,7 @@ import net.minecraft.resource.ResourceFinder;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.SinglePreparationResourceReloader;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.StrictJsonParser;
 import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
@@ -81,7 +81,7 @@ public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<
 				Identifier groupId = resourceFinder.toResourceId(resourcePath);
 
 				try (Reader reader = entry.getValue().getReader()) {
-					JsonElement json = JsonParser.parseReader(reader);
+					JsonElement json = StrictJsonParser.parse(reader);
 					Codec<TagAliasGroup<Object>> codec = TagAliasGroup.codec((RegistryKey<? extends Registry<Object>>) registryKey);
 
 					switch (codec.parse(JsonOps.INSTANCE, json)) {

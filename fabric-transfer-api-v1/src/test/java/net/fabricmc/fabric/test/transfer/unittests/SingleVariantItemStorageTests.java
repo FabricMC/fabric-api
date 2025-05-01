@@ -132,7 +132,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		}
 
 		NbtWriteView writeView = NbtWriteView.create(null);
-		storage.writeNbt(writeView);
+		storage.writeData(writeView);
 		assertEquals("{amount:1L,variant:{item:\"minecraft:diamond\"}}", writeView.getNbt().toString());
 	}
 
@@ -153,7 +153,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		}
 
 		NbtWriteView writeView = NbtWriteView.create(null);
-		storage.writeNbt(writeView);
+		storage.writeData(writeView);
 		assertEquals("{amount:1L,variant:{components:{\"minecraft:custom_name\":\"test name\"},item:\"minecraft:diamond\"}}", writeView.getNbt().toString());
 	}
 
@@ -173,7 +173,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		nbt.putLong("amount", 1);
 		nbt.put("variant", variantNbt);
 
-		storage.readNbt(NbtReadView.get(null, staticDrm(), nbt));
+		storage.readData(NbtReadView.get(null, staticDrm(), nbt));
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(1L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
@@ -197,7 +197,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		nbt.putLong("amount", 1);
 		nbt.put("variant", variantNbt);
 
-		storage.readNbt(NbtReadView.get(ErrorReporter.EMPTY, staticDrm(), nbt));
+		storage.readData(NbtReadView.get(ErrorReporter.EMPTY, staticDrm(), nbt));
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(0L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));

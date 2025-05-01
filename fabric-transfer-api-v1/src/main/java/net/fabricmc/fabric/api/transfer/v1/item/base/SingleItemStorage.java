@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
  * and probably {@link #onFinalCommit} as well for {@code markDirty()} and similar calls.
  *
  * <p>This is a convenient specialization of {@link SingleVariantStorage} for items that additionally offers methods
- * to read the contents of the storage from NBT.
+ * to deserialize the contents of the storage.
  */
 public abstract class SingleItemStorage extends SingleVariantStorage<ItemVariant> {
 	@Override
@@ -38,17 +38,17 @@ public abstract class SingleItemStorage extends SingleVariantStorage<ItemVariant
 	}
 
 	/**
-	 * Simple implementation of reading from NBT, to match what is written by {@link #writeData}.
+	 * Simple implementation of reading from {@link ReadView}, to match what is written by {@link #writeData}.
 	 * Other formats are allowed, this is just a suggestion.
 	 */
-	public void readNbt(ReadView data) {
+	public void readData(ReadView data) {
 		SingleVariantStorage.readData(this, ItemVariant.CODEC, ItemVariant::blank, data);
 	}
 
 	/**
-	 * Simple implementation of writing to NBT. Other formats are allowed, this is just a convenient suggestion.
+	 * Simple implementation of writing to {@link WriteView}. Other formats are allowed, this is just a suggestion.
 	 */
-	public void writeNbt(WriteView data) {
+	public void writeData(WriteView data) {
 		SingleVariantStorage.writeData(this, ItemVariant.CODEC, data);
 	}
 }

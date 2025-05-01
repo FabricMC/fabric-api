@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +39,7 @@ import net.minecraft.registry.tag.TagEntry;
 import net.minecraft.registry.tag.TagFile;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.StrictJsonParser;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -56,7 +56,7 @@ public class ClientTagsLoader {
 
 		for (Path tagPath : tagFiles) {
 			try (BufferedReader tagReader = Files.newBufferedReader(tagPath)) {
-				JsonElement jsonElement = JsonParser.parseReader(tagReader);
+				JsonElement jsonElement = StrictJsonParser.parse(tagReader);
 				TagFile maybeTagFile = TagFile.CODEC.parse(new Dynamic<>(JsonOps.INSTANCE, jsonElement))
 						.result().orElse(null);
 
