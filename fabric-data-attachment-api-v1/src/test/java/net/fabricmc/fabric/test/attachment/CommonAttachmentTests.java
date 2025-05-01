@@ -235,7 +235,7 @@ public class CommonAttachmentTests {
 
 		int expected = 1;
 		entity.setAttached(PERSISTENT, expected);
-		NbtWriteView fakeSave = NbtWriteView.create(null);
+		NbtWriteView fakeSave = NbtWriteView.create(ErrorReporter.EMPTY);
 		entity.writeData(fakeSave);
 
 		entity = new MarkerEntity(EntityType.MARKER, mockWorld); // fresh object, like on restart

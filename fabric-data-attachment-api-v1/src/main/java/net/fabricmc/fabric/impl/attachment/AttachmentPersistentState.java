@@ -22,6 +22,8 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Encoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
@@ -37,6 +39,7 @@ import net.minecraft.world.PersistentState;
  * Thanks to custom {@link #isDirty()} logic, the file is only written if something needs to be persisted.
  */
 public class AttachmentPersistentState extends PersistentState {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentPersistentState.class);
 	public static final String ID = "fabric_attachments";
 	private final AttachmentTargetImpl worldTarget;
 	private final boolean wasSerialized;
@@ -48,19 +51,25 @@ public class AttachmentPersistentState extends PersistentState {
 
 	// TODO 1.21.5 look at making this more idiomatic
 	public static Codec<AttachmentPersistentState> codec(ServerWorld world) {
+		final ErrorReporter.Context reporterContext = () -> "AttachmentPersistentState @ " + world.getRegistryKey().getValue();
+
 		return Codec.of(new Encoder<>() {
 			@Override
 			public <T> DataResult<T> encode(AttachmentPersistentState input, DynamicOps<T> ops, T prefix) {
-				NbtWriteView writeView = NbtWriteView.create(ErrorReporter.EMPTY);
-				((AttachmentTargetImpl) world).fabric_writeAttachmentsToNbt(writeView);
-				return DataResult.success(NbtOps.INSTANCE.convertTo(ops, writeView.getNbt()));
+				try (ErrorReporter.Logging reporter = new ErrorReporter.Logging(reporterContext, LOGGER)) {
+					NbtWriteView writeView = NbtWriteView.create(reporter);
+					((AttachmentTargetImpl) world).fabric_writeAttachmentsToNbt(writeView);
+					return DataResult.success(NbtOps.INSTANCE.convertTo(ops, writeView.getNbt()));
+				}
 			}
 		}, new Decoder<>() {
 			@Override
 			public <T> DataResult<Pair<AttachmentPersistentState, T>> decode(DynamicOps<T> ops, T input) {
-				ReadView readView = NbtReadView.get(ErrorReporter.EMPTY, world.getRegistryManager(), (NbtCompound) ops.convertTo(NbtOps.INSTANCE, input));
-				((AttachmentTargetImpl) world).fabric_readAttachmentsFromNbt(readView);
-				return DataResult.success(Pair.of(new AttachmentPersistentState(world), ops.empty()));
+				try (ErrorReporter.Logging reporter = new ErrorReporter.Logging(reporterContext, LOGGER)) {
+					ReadView readView = NbtReadView.get(reporter, world.getRegistryManager(), (NbtCompound) ops.convertTo(NbtOps.INSTANCE, input));
+					((AttachmentTargetImpl) world).fabric_readAttachmentsFromNbt(readView);
+					return DataResult.success(Pair.of(new AttachmentPersistentState(world), ops.empty()));
+				}
 			}
 		});
 	}
