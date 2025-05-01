@@ -30,8 +30,9 @@ import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 /**
  * Extends ProvidedTagBuilder to support setting the replace field.
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 @Mixin(ProvidedTagBuilder.class)
-interface ProvidedTagBuilderMixin<E, T> extends ProvidedTagBuilder<E, T>, FabricProvidedTagBuilder<E, T> {
+interface ProvidedTagBuilderMixin<E, T> extends FabricProvidedTagBuilder<E, T> {
 	@Mixin(targets = "net.minecraft.data.tag.ProvidedTagBuilder$1")
 	abstract class ProvidedTagBuilder1Mixin<E, T> implements ProvidedTagBuilderMixin<E, T> {
 		// the builder param
@@ -42,16 +43,16 @@ interface ProvidedTagBuilderMixin<E, T> extends ProvidedTagBuilder<E, T>, Fabric
 		@Override
 		public ProvidedTagBuilder<E, T> setReplace(boolean replace) {
 			((FabricTagBuilder) this.field_60483).fabric_setReplace(replace);
-			return this;
+			return (ProvidedTagBuilder<E, T>) this;
 		}
 
 		@Override
 		public ProvidedTagBuilder<E, T> forceAddTag(TagKey<T> tag) {
-			return ProvidedTagBuilderMixin.super.forceAddTag(tag);
+			((FabricTagBuilder) this.field_60483).fabric_forceAddTag(tag.id());
+			return (ProvidedTagBuilder<E, T>) this;
 		}
 	}
 
-	@SuppressWarnings({"rawtypes"})
 	@Mixin(targets = "net.minecraft.data.tag.ProvidedTagBuilder$2")
 	abstract class ProvidedTagBuilder2Mixin<E, T> implements ProvidedTagBuilderMixin<E, T> {
 		// ProvidedTagBuilder.this
@@ -62,13 +63,13 @@ interface ProvidedTagBuilderMixin<E, T> extends ProvidedTagBuilder<E, T>, Fabric
 		@Override
 		public ProvidedTagBuilder<E, T> setReplace(boolean replace) {
 			((FabricProvidedTagBuilder) this.field_60484).setReplace(replace);
-			return this;
+			return (ProvidedTagBuilder<E, T>) this;
 		}
 
 		@Override
 		public ProvidedTagBuilder<E, T> forceAddTag(TagKey<T> tag) {
 			((FabricProvidedTagBuilder) this.field_60484).forceAddTag(tag);
-			return this;
+			return (ProvidedTagBuilder<E, T>) this;
 		}
 	}
 }
