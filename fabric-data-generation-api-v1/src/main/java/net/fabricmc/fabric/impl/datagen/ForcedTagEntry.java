@@ -16,23 +16,14 @@
 
 package net.fabricmc.fabric.impl.datagen;
 
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import net.minecraft.registry.tag.TagEntry;
 import net.minecraft.util.Identifier;
 
 public class ForcedTagEntry extends TagEntry {
-	private final TagEntry delegate;
-
-	public ForcedTagEntry(TagEntry delegate) {
-		super(delegate.id, true, delegate.required);
-		this.delegate = delegate;
-	}
-
-	@Override
-	public <T> boolean resolve(TagEntry.ValueGetter<T> arg, Consumer<T> consumer) {
-		return delegate.resolve(arg, consumer);
+	public ForcedTagEntry(Identifier id) {
+		super(id, true, true); // if it's optional, then no need to force
 	}
 
 	@Override

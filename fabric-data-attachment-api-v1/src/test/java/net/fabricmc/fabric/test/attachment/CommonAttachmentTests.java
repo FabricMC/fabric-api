@@ -185,10 +185,10 @@ public class CommonAttachmentTests {
 	@Test
 	void deserializeNull() {
 		var nbt = new NbtCompound();
-		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(NbtReadView.get(ErrorReporter.EMPTY, mockDRM(), null)));
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(null));
 
 		nbt.put(Identifier.ofVanilla("test").toString(), new NbtCompound());
-		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(NbtReadView.get(ErrorReporter.EMPTY, mockDRM(), null)));
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(NbtReadView.get(ErrorReporter.EMPTY, mockDRM(), nbt)));
 	}
 
 	@Test
@@ -252,9 +252,7 @@ public class CommonAttachmentTests {
 
 		int expected = 1;
 		blockEntity.setAttached(PERSISTENT, expected);
-		NbtWriteView writeView = NbtWriteView.create(ErrorReporter.EMPTY);
-		blockEntity.writeDataWithId(writeView);
-		NbtCompound fakeSave = writeView.getNbt();
+		NbtCompound fakeSave = blockEntity.createNbtWithIdentifyingData(mockDRM());
 
 		blockEntity = BlockEntity.createFromNbt(BlockPos.ORIGIN, Blocks.BELL.getDefaultState(), fakeSave, mockDRM());
 		assertNotNull(blockEntity);

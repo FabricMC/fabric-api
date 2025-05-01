@@ -307,10 +307,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
-			// TODO 1.21.6 fix me!!!
-//			tag(BlockTags.FIRE).setReplace(true).add(SIMPLE_BLOCK);
-			tag(BlockTags.DIRT).add(SIMPLE_BLOCK);
-//			tag(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
+			valueLookupBuilder(BlockTags.FIRE).setReplace(true).add(SIMPLE_BLOCK);
+			valueLookupBuilder(BlockTags.DIRT).add(SIMPLE_BLOCK);
+			valueLookupBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
 
 			aliasGroup("flowers")
 					.add(BlockTags.FLOWERS, BlockTags.FLOWER_POTS);
@@ -337,7 +336,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
-			keyTag(TagKey.of(RegistryKeys.BIOME, Identifier.of(MOD_ID, "biome_tag_test")))
+			builder(TagKey.of(RegistryKeys.BIOME, Identifier.of(MOD_ID, "biome_tag_test")))
 					.add(BiomeKeys.BADLANDS)
 					.add(BiomeKeys.BAMBOO_JUNGLE)
 					.add(BiomeKeys.BASALT_DELTAS);
@@ -351,7 +350,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup registries) {
-			keyTag(TagKey.of(RegistryKeys.GAME_EVENT, Identifier.of(MOD_ID, "game_event_tag_test")))
+			builder(TagKey.of(RegistryKeys.GAME_EVENT, Identifier.of(MOD_ID, "game_event_tag_test")))
 					.add(GameEvent.SHRIEK.registryKey());
 		}
 	}

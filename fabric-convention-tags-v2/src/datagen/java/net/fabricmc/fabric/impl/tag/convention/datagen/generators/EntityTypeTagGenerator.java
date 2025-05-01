@@ -27,16 +27,16 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEntityTypeTags;
 
 public final class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTagProvider {
-	public EntityTypeTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-		super(output, completableFuture);
+	public EntityTypeTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+		super(output, registriesFuture);
 	}
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup registries) {
-		tag(ConventionalEntityTypeTags.BOSSES)
+		valueLookupBuilder(ConventionalEntityTypeTags.BOSSES)
 				.add(EntityType.ENDER_DRAGON)
 				.add(EntityType.WITHER);
-		tag(ConventionalEntityTypeTags.MINECARTS)
+		valueLookupBuilder(ConventionalEntityTypeTags.MINECARTS)
 				.add(EntityType.MINECART)
 				.add(EntityType.TNT_MINECART)
 				.add(EntityType.CHEST_MINECART)
@@ -44,7 +44,7 @@ public final class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTa
 				.add(EntityType.COMMAND_BLOCK_MINECART)
 				.add(EntityType.HOPPER_MINECART)
 				.add(EntityType.SPAWNER_MINECART);
-		tag(ConventionalEntityTypeTags.BOATS)
+		valueLookupBuilder(ConventionalEntityTypeTags.BOATS)
 				.addOptionalTag(EntityTypeTags.BOAT)
 				.add(EntityType.OAK_CHEST_BOAT)
 				.add(EntityType.SPRUCE_CHEST_BOAT)
@@ -56,7 +56,7 @@ public final class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTa
 				.add(EntityType.DARK_OAK_CHEST_BOAT)
 				.add(EntityType.MANGROVE_CHEST_BOAT)
 				.add(EntityType.BAMBOO_CHEST_RAFT);
-		tag(ConventionalEntityTypeTags.CAPTURING_NOT_SUPPORTED);
-		tag(ConventionalEntityTypeTags.TELEPORTING_NOT_SUPPORTED);
+		valueLookupBuilder(ConventionalEntityTypeTags.CAPTURING_NOT_SUPPORTED);
+		valueLookupBuilder(ConventionalEntityTypeTags.TELEPORTING_NOT_SUPPORTED);
 	}
 }
