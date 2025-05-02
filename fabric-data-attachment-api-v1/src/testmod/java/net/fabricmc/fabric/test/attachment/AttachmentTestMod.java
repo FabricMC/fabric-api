@@ -40,6 +40,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 
 public class AttachmentTestMod implements ModInitializer {
@@ -110,6 +111,13 @@ public class AttachmentTestMod implements ModInitializer {
 			}
 
 			return ActionResult.PASS;
+		});
+
+		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+			entity.onAttachedChanged(SYNCED_ITEM).register((oldValue, newValue) -> {
+				if (newValue != null && !newValue.equals(oldValue) && newValue.isOf(Items.BRICK))
+					entity.damage(world, world.getDamageSources().generic(), 1);
+			});
 		});
 	}
 }
