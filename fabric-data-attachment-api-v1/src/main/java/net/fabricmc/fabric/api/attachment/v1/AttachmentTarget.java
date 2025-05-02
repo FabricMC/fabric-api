@@ -224,9 +224,7 @@ public interface AttachmentTarget {
 	/**
 	 * Provides an {@link Event} that lets the listener know when the target has its {@link AttachmentType} attachment changed.
 	 *
-	 * <p>
-	 * The event is called after the attachment was changed, be aware of the potential of recursion if you intend on calling {@link #setAttached} on the target.
-	 * </p>
+	 * <p>The event is called after the attachment was changed, be aware of the potential of recursion if you intend on calling {@link #setAttached} on the target.
 	 *
 	 * @param type the attachment type
 	 * @return event associated with this target and attachment type
