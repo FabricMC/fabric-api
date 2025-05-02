@@ -90,7 +90,7 @@ public class SyncGametest implements FabricClientGameTest {
 			};
 
 			context.runOnClient(client -> {
-				// set client simulation distance before the server sets it
+				// set client render distance before the server sets it
 				client.options.getViewDistance().setValue(5);
 			});
 
