@@ -30,7 +30,7 @@ public class AttachmentClientTestMod implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			if (entity instanceof ClientPlayerEntity) {
-				entity.onAttachedChanged(AttachmentTestMod.SYNCED_RENDER_DISTANCE).register((oldValue, newValue) -> {
+				entity.onAttachedSet(AttachmentTestMod.SYNCED_RENDER_DISTANCE).register((oldValue, newValue) -> {
 					SimpleOption<Integer> viewDistance = MinecraftClient.getInstance().options.getViewDistance();
 
 					if (viewDistance.getValue() < newValue) {

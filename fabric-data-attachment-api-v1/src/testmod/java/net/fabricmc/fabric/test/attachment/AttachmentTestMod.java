@@ -121,7 +121,7 @@ public class AttachmentTestMod implements ModInitializer {
 		});
 
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
-			entity.onAttachedChanged(SYNCED_ITEM).register((oldValue, newValue) -> {
+			entity.onAttachedSet(SYNCED_ITEM).register((oldValue, newValue) -> {
 				if (newValue != null && !newValue.equals(oldValue) && newValue.isOf(Items.BRICK)) {
 					entity.damage(world, world.getDamageSources().generic(), 1);
 				}

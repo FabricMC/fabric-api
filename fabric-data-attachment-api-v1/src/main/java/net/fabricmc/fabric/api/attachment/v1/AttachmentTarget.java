@@ -229,7 +229,7 @@ public interface AttachmentTarget {
 	 * @param type the attachment type
 	 * @return event associated with this target and attachment type
 	 */
-	default <A> Event<OnAttachedChanged<A>> onAttachedChanged(AttachmentType<A> type) {
+	default <A> Event<OnAttachedSet<A>> onAttachedSet(AttachmentType<A> type) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -249,14 +249,14 @@ public interface AttachmentTarget {
 	}
 
 	@FunctionalInterface
-	interface OnAttachedChanged<A> {
+	interface OnAttachedSet<A> {
 		/**
-		 * Called after the attachment changes on this target.
+		 * Called after the attachment is set on this target.
 		 *
-		 * @see AttachmentTarget#onAttachedChanged(AttachmentType)
-		 * @param oldValue attachment value on the target prior to it being changed
-		 * @param newValue attachment value on the target after it was changed
+		 * @see AttachmentTarget#onAttachedSet(AttachmentType)
+		 * @param oldValue attachment value on the target prior to it being set
+		 * @param newValue attachment value on the target after it was set
 		 */
-		void onAttachedChanged(@Nullable A oldValue, @Nullable A newValue);
+		void onAttachedSet(@Nullable A oldValue, @Nullable A newValue);
 	}
 }

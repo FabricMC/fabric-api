@@ -51,7 +51,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Nullable
 	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_syncedAttachments = null;
 	@Nullable
-	private IdentityHashMap<AttachmentType<?>, Event<OnAttachedChanged<?>>> fabric_attachedChangedListeners = null;
+	private IdentityHashMap<AttachmentType<?>, Event<OnAttachedSet<?>>> fabric_attachedChangedListeners = null;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -89,10 +89,10 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		}
 
 		if (fabric_attachedChangedListeners != null) {
-			Event<OnAttachedChanged<T>> event = (Event<OnAttachedChanged<T>>) (Event<?>) fabric_attachedChangedListeners.get(type);
+			Event<OnAttachedSet<T>> event = (Event<OnAttachedSet<T>>) (Event<?>) fabric_attachedChangedListeners.get(type);
 
 			if (event != null) {
-				event.invoker().onAttachedChanged(oldValue, value);
+				event.invoker().onAttachedSet(oldValue, value);
 			}
 		}
 
@@ -105,15 +105,15 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public <A> Event<OnAttachedChanged<A>> onAttachedChanged(AttachmentType<A> type) {
+	public <A> Event<OnAttachedSet<A>> onAttachedSet(AttachmentType<A> type) {
 		if (fabric_attachedChangedListeners == null) {
 			fabric_attachedChangedListeners = new IdentityHashMap<>();
 		}
 
-		return (Event<OnAttachedChanged<A>>) (Event<?>) fabric_attachedChangedListeners.computeIfAbsent(type, t -> {
-			return (Event<OnAttachedChanged<?>>) (Event<?>) EventFactory.createArrayBacked(OnAttachedChanged.class, (Function<OnAttachedChanged<A>[], OnAttachedChanged<A>>) listeners -> (oldValue, newValue) -> {
-				for (OnAttachedChanged<A> listener : listeners) {
-					listener.onAttachedChanged(oldValue, newValue);
+		return (Event<OnAttachedSet<A>>) (Event<?>) fabric_attachedChangedListeners.computeIfAbsent(type, t -> {
+			return (Event<OnAttachedSet<?>>) (Event<?>) EventFactory.createArrayBacked(OnAttachedSet.class, (Function<OnAttachedSet<A>[], OnAttachedSet<A>>) listeners -> (oldValue, newValue) -> {
+				for (OnAttachedSet<A> listener : listeners) {
+					listener.onAttachedSet(oldValue, newValue);
 				}
 			});
 		});
