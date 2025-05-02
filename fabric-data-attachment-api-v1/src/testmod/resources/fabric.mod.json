@@ -15,6 +15,9 @@
     "main": [
       "net.fabricmc.fabric.test.attachment.AttachmentTestMod"
     ],
+    "client": [
+      "net.fabricmc.fabric.test.attachment.client.AttachmentClientTestMod"
+    ],
     "fabric-gametest": [
       "net.fabricmc.fabric.test.attachment.gametest.AttachmentCopyTests",
       "net.fabricmc.fabric.test.attachment.gametest.BlockEntityTests"

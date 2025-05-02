@@ -31,6 +31,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 
@@ -87,6 +88,12 @@ public class AttachmentTestMod implements ModInitializer {
 					.initializer(() -> ItemStack.EMPTY)
 					.persistent(ItemStack.CODEC)
 					.syncWith(ItemStack.OPTIONAL_PACKET_CODEC, AttachmentSyncPredicate.all())
+	);
+	public static final AttachmentType<Integer> SYNCED_RENDER_DISTANCE = AttachmentRegistry.create(
+			Identifier.of(MOD_ID, "synced_render_distance"),
+			builder -> builder
+					.persistent(Codecs.NON_NEGATIVE_INT)
+					.syncWith(PacketCodecs.INTEGER, AttachmentSyncPredicate.targetOnly())
 	);
 
 	@Override
