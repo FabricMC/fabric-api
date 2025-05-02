@@ -135,7 +135,7 @@ public class SyncGametest implements FabricClientGameTest {
 					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.APPLE.getDefaultStack());
 
 					// check that the client changes the render distance as requested
-					player.setAttached(AttachmentTestMod.SYNCED_RENDER_DISTANCE, 14);
+					player.setAttached(AttachmentTestMod.SYNCED_RENDER_DISTANCE, 8);
 				});
 
 				// safety
@@ -158,7 +158,7 @@ public class SyncGametest implements FabricClientGameTest {
 					assertHasNotSynced(client.player, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 					assertHasNotSynced(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
 
-					if (client.options.getViewDistance().getValue() != 14) {
+					if (client.options.getViewDistance().getValue() != 8) {
 						throw new AssertionError("Client did not set render distance to server requested synced attachment.");
 					}
 				});
