@@ -161,6 +161,9 @@ public class SyncGametest implements FabricClientGameTest {
 					if (client.options.getViewDistance().getValue() != 8) {
 						throw new AssertionError("Client did not set render distance to server requested synced attachment.");
 					}
+
+					// reset view distance
+					client.options.getViewDistance().setValue(12);
 				});
 
 				LOGGER.info("Setting up second phase");
