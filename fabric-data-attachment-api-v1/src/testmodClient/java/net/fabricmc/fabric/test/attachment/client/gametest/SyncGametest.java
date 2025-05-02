@@ -89,6 +89,11 @@ public class SyncGametest implements FabricClientGameTest {
 				int villagerId;
 			};
 
+			context.runOnClient(client -> {
+				// set client simulation distance before the server sets it
+				client.options.getViewDistance().setValue(5);
+			});
+
 			LOGGER.info("Setting up synced attachments before join");
 			// setup before player joins
 			serverContext.runOnServer(server -> {
@@ -128,6 +133,9 @@ public class SyncGametest implements FabricClientGameTest {
 
 					// check registry objects are synced correctly
 					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.APPLE.getDefaultStack());
+
+					// check that the client changes the render distance as requested
+					player.setAttached(AttachmentTestMod.SYNCED_RENDER_DISTANCE, 14);
 				});
 
 				// safety
@@ -149,6 +157,10 @@ public class SyncGametest implements FabricClientGameTest {
 					assertHasNotSynced(world, AttachmentTestMod.SYNCED_WITH_ALL);
 					assertHasNotSynced(client.player, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 					assertHasNotSynced(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
+
+					if (client.options.getViewDistance().getValue() != 13) {
+						throw new AssertionError("Client did not set render distance to server requested synced attachment.");
+					}
 				});
 
 				LOGGER.info("Setting up second phase");
