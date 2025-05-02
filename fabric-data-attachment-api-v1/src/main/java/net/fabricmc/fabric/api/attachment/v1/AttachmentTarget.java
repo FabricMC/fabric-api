@@ -257,6 +257,6 @@ public interface AttachmentTarget {
 		 * @param oldValue attachment value on the target prior to it being changed
 		 * @param newValue attachment value on the target after it was changed
 		 */
-		void onAttachedChanged(A oldValue, A newValue);
+		void onAttachedChanged(@Nullable A oldValue, @Nullable A newValue);
 	}
 }
