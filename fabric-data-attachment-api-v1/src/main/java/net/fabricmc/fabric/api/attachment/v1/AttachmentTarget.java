@@ -223,6 +223,9 @@ public interface AttachmentTarget {
 
 	/**
 	 * Provides an {@link Event} that lets the listener know when the target has its {@link AttachmentType} attachment changed.
+	 * <p>
+	 * The event is called after the attachment was changed, be aware of the potential of recursion if you intend on calling {@link #setAttached} on the target.
+	 * </p>
 	 *
 	 * @param type the attachment type
 	 * @return event associated with this target and attachment type
@@ -248,6 +251,13 @@ public interface AttachmentTarget {
 
 	@FunctionalInterface
 	interface OnAttachedChanged<A> {
+		/**
+		 * Called after the attachment changes on this target.
+		 *
+		 * @see AttachmentTarget#onAttachedChanged(AttachmentType)
+		 * @param oldValue attachment value on the target prior to it being changed
+		 * @param newValue attachment value on the target after it was changed
+		 */
 		void onAttachedChanged(A oldValue, A newValue);
 	}
 }
