@@ -16,19 +16,17 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.input.SingleStackRecipeInput;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
@@ -37,8 +35,8 @@ public abstract class AbstractFurnaceBlockEntityMixin {
 	@Unique
 	private static final ThreadLocal<ItemStack> REMAINDER_STACK = new ThreadLocal<>();
 
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"), locals = LocalCapture.CAPTURE_FAILHARD, allow = 1)
-	private static void getStackRemainder(ServerWorld world, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity blockEntity, CallbackInfo ci, boolean bl, boolean bl2, ItemStack itemStack, ItemStack itemStack2, boolean bl3, boolean bl4, RecipeEntry recipeEntry, SingleStackRecipeInput input, int i) {
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"), allow = 1)
+	private static void getStackRemainder(ServerWorld world, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity blockEntity, CallbackInfo ci, @Local(ordinal = 0) ItemStack itemStack) {
 		REMAINDER_STACK.set(itemStack.getRecipeRemainder());
 	}
 

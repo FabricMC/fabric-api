@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableList;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.DataFixer;
 import org.apache.commons.io.IOUtils;
@@ -29,7 +30,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NbtCompound;
@@ -75,8 +75,8 @@ public abstract class StructureTemplateManagerMixin {
 		return finder.findResources(this.resourceManager).keySet().stream().map(finder::toResourceId);
 	}
 
-	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList$Builder;add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 2, shift = At.Shift.AFTER, remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void addFabricTemplateProvider(ResourceManager resourceManager, LevelStorage.Session session, DataFixer dataFixer, RegistryEntryLookup<Block> blockLookup, CallbackInfo ci, ImmutableList.Builder<StructureTemplateManager.Provider> builder) {
+	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList$Builder;add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 2, shift = At.Shift.AFTER, remap = false))
+	private void addFabricTemplateProvider(ResourceManager resourceManager, LevelStorage.Session session, DataFixer dataFixer, RegistryEntryLookup<Block> blockLookup, CallbackInfo ci, @Local ImmutableList.Builder<StructureTemplateManager.Provider> builder) {
 		builder.add(new StructureTemplateManager.Provider(this::fabric_loadSnbtFromResource, this::fabric_streamTemplatesFromResource));
 	}
 }

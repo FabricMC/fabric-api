@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.screenhandler;
 import java.util.Objects;
 import java.util.OptionalInt;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.Packet;
@@ -66,8 +66,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 		}
 	}
 
-	@Inject(method = "openHandledScreen(Lnet/minecraft/screen/NamedScreenHandlerFactory;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void fabric_storeOpenedScreenHandler(NamedScreenHandlerFactory factory, CallbackInfoReturnable<OptionalInt> info, ScreenHandler handler) {
+	@Inject(method = "openHandledScreen(Lnet/minecraft/screen/NamedScreenHandlerFactory;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V"))
+	private void fabric_storeOpenedScreenHandler(NamedScreenHandlerFactory factory, CallbackInfoReturnable<OptionalInt> info, @Local ScreenHandler handler) {
 		if (factory instanceof ExtendedScreenHandlerFactory || (factory instanceof SimpleNamedScreenHandlerFactory simpleFactory && simpleFactory.baseFactory instanceof ExtendedScreenHandlerFactory)) {
 			// Set the screen handler, so the factory method can access it through the player.
 			currentScreenHandler = handler;

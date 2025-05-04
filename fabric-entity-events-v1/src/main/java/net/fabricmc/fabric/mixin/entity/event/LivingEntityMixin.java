@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +31,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.BlockState;
@@ -84,8 +84,8 @@ abstract class LivingEntityMixin {
 		}
 	}
 
-	@Inject(method = "damage", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void afterDamage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, float dealt, float f, boolean blocked) {
+	@Inject(method = "damage", at = @At("TAIL"))
+	private void afterDamage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 1) float dealt, @Local(ordinal = 0) boolean blocked) {
 		if (!isDead()) {
 			ServerLivingEntityEvents.AFTER_DAMAGE.invoker().afterDamage((LivingEntity) (Object) this, source, dealt, amount, blocked);
 		}

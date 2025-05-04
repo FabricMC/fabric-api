@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.item.Item;
@@ -36,8 +36,8 @@ public class BrewingStandBlockEntityMixin {
 	@Unique
 	private static final ThreadLocal<ItemStack> REMAINDER_STACK = new ThreadLocal<>();
 
-	@Inject(method = "craft", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
-	private static void captureItemStack(World world, BlockPos pos, DefaultedList<ItemStack> slots, CallbackInfo ci, ItemStack itemStack) {
+	@Inject(method = "craft", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V", shift = At.Shift.AFTER))
+	private static void captureItemStack(World world, BlockPos pos, DefaultedList<ItemStack> slots, CallbackInfo ci, @Local ItemStack itemStack) {
 		REMAINDER_STACK.set(itemStack.getRecipeRemainder());
 	}
 

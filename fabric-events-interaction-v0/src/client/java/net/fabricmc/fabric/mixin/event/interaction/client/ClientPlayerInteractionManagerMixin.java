@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.interaction.client;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -44,7 +44,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
@@ -88,8 +87,8 @@ public abstract class ClientPlayerInteractionManagerMixin {
 		}
 	}
 
-	@Inject(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void fabric$onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, World world, BlockState blockState) {
+	@Inject(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"))
+	private void fabric$onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockState blockState) {
 		ClientPlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(client.world, client.player, pos, blockState);
 	}
 
