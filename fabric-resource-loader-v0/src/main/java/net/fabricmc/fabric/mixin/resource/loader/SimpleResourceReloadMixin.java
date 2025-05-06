@@ -17,49 +17,36 @@
 package net.fabricmc.fabric.mixin.resource.loader;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceReload;
 import net.minecraft.resource.ResourceReloader;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.SimpleResourceReload;
-import net.minecraft.util.Unit;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricLifecycledResourceManager;
 import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 
 @Mixin(SimpleResourceReload.class)
 public class SimpleResourceReloadMixin {
-	@Unique
-	private static final ThreadLocal<ResourceType> fabric_resourceType = new ThreadLocal<>();
-
-	@Inject(method = "start(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/resource/ResourceReload;", at = @At("HEAD"))
-	private static void method_40087(ResourceManager resourceManager, List<ResourceReloader> list, Executor executor, Executor executor2, CompletableFuture<Unit> completableFuture, boolean bl, CallbackInfoReturnable<ResourceReload> cir) {
+	@ModifyArg(method = "start(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/resource/ResourceReload;", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/SimpleResourceReload;create(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;)Lnet/minecraft/resource/ResourceReload;"))
+	private static List<ResourceReloader> sortSimple(List<ResourceReloader> reloaders, @Local(argsOnly = true) ResourceManager resourceManager) {
 		if (resourceManager instanceof FabricLifecycledResourceManager flrm) {
-			fabric_resourceType.set(flrm.fabric_getResourceType());
+			return ResourceManagerHelperImpl.sort(flrm.fabric_getResourceType(), reloaders);
 		}
+
+		return reloaders;
 	}
 
-	@ModifyArg(method = "start(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/resource/ResourceReload;", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/SimpleResourceReload;create(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;)Lnet/minecraft/resource/ResourceReload;"))
-	private static List<ResourceReloader> sortSimple(List<ResourceReloader> reloaders) {
-		List<ResourceReloader> sorted = ResourceManagerHelperImpl.sort(fabric_resourceType.get(), reloaders);
-		fabric_resourceType.remove();
-		return sorted;
-	}
+	@ModifyArg(method = "start(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/resource/ResourceReload;", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ProfiledResourceReload;start(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;)Lnet/minecraft/resource/ResourceReload;"))
+	private static List<ResourceReloader> sortProfiled(List<ResourceReloader> reloaders, @Local(argsOnly = true) ResourceManager resourceManager) {
+		if (resourceManager instanceof FabricLifecycledResourceManager flrm) {
+			return ResourceManagerHelperImpl.sort(flrm.fabric_getResourceType(), reloaders);
+		}
 
-	@ModifyArg(method = "start(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/resource/ResourceReload;", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/SimpleResourceReload;create(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;)Lnet/minecraft/resource/ResourceReload;"))
-	private static List<ResourceReloader> sortProfiled(List<ResourceReloader> reloaders) {
-		List<ResourceReloader> sorted = ResourceManagerHelperImpl.sort(fabric_resourceType.get(), reloaders);
-		fabric_resourceType.remove();
-		return sorted;
+		return reloaders;
 	}
 }
