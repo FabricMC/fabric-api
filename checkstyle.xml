@@ -232,8 +232,8 @@
             "/>
         </module>
 
-        <!-- Prevent none @Unique methods in Mixin classes -->
-        <!-- All Mixin and Mixin extras annotations must be listed here -->
+        <!-- Prevent non-@Unique methods in Mixin classes -->
+        <!-- All Mixin and MixinExtras annotations must be listed here -->
         <module name="MatchXpath">
             <property name="query" value="
                 //METHOD_DEF[
