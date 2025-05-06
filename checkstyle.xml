@@ -236,7 +236,7 @@
         <!-- All Mixin and Mixin extras annotations must be listed here -->
         <module name="MatchXpath">
             <property name="query" value="
-                //OBJBLOCK/METHOD_DEF[
+                //METHOD_DEF[
                     not(
                         ./MODIFIERS/ANNOTATION/IDENT[
                             @text='Unique'
@@ -265,7 +265,7 @@
         <!-- Prevent @Inject local capture, @Local is preferred -->
         <module name="MatchXpath">
             <property name="query" value="
-                //OBJBLOCK/METHOD_DEF[
+                //METHOD_DEF[
                     ./MODIFIERS/ANNOTATION[
                         ./IDENT[@text='Inject']
                         and
