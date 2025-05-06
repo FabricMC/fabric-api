@@ -104,7 +104,7 @@ public class IngredientMixin implements FabricIngredient {
 		}
 	}
 
-	@Inject(method = "equals(Ljava/lang/Object;)Z", at = @At("HEAD"))
+	@Inject(method = "equals(Ljava/lang/Object;)Z", at = @At("HEAD"), cancellable = true)
 	private void onHeadEquals(Object obj, CallbackInfoReturnable<Boolean> cir) {
 		if (obj instanceof CustomIngredientImpl) {
 			// This will only get called when this isn't custom and other is custom, in which case the
