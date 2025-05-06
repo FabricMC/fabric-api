@@ -117,7 +117,7 @@ public class FluidRendererMixin {
 		return null;
 	}
 
-	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), method = "render", ordinal = 0)
+	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"), method = "render", ordinal = 0)
 	public Sprite modSideSpriteForOverlay(Sprite chk) {
 		Block block = fabric_neighborBlock.get();
 
