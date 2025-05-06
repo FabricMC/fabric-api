@@ -92,9 +92,12 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	@WrapOperation(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;get(Lnet/minecraft/state/property/Property;)Ljava/lang/Comparable;"))
 	private Comparable<?> redirectSleepDirection(BlockState instance, Property<Direction> property, Operation<Comparable<Direction>> original, BlockPos pos, @Cancellable CallbackInfoReturnable<Either<PlayerEntity.SleepFailureReason, Unit>> cir) {
 		Direction initial = (Direction) (instance.contains(property) ? original.call(instance, property) : null);
-		var dir = EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.invoker().modifySleepDirection((LivingEntity) (Object) this, pos, initial);
-		if (dir == null)
+		Direction dir = EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.invoker().modifySleepDirection((LivingEntity) (Object) this, pos, initial);
+
+		if (dir == null) {
 			cir.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE));
+		}
+
 		return dir;
 	}
 

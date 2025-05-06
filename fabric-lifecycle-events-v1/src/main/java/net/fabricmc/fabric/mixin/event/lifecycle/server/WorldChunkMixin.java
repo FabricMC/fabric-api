@@ -58,6 +58,7 @@ abstract class WorldChunkMixin {
 				ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerWorld) this.getWorld());
 			}
 		}
+
 		return removedBlockEntity;
 	}
 
