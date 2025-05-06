@@ -214,7 +214,7 @@
             <property name="query" value="//RECORD_DEF[./MODIFIERS/LITERAL_PUBLIC][//PACKAGE_DEF//DOT/IDENT[@text='api']]"/>
         </module>
 
-        <!-- Prevent none @Unique fields in Mixin classes -->
+        <!-- Prevent non-@Unique fields in Mixin classes -->
         <module name="MatchXpath">
             <property name="query" value="
                 //OBJBLOCK/VARIABLE_DEF[
