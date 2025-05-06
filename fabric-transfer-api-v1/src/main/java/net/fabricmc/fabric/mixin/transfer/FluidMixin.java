@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.transfer;
 import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -43,12 +44,13 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 @Mixin(Fluid.class)
 @SuppressWarnings("unused")
 public class FluidMixin implements FluidVariantCache {
+	@Unique
 	@SuppressWarnings("ConstantConditions")
-	private final FluidVariant fabric_cachedFluidVariant = new FluidVariantImpl((Fluid) (Object) this, ComponentChanges.EMPTY);
+	private final FluidVariant cachedFluidVariant = new FluidVariantImpl((Fluid) (Object) this, ComponentChanges.EMPTY);
 
 	@Override
 	public FluidVariant fabric_getCachedFluidVariant() {
-		return fabric_cachedFluidVariant;
+		return cachedFluidVariant;
 	}
 
 	@Inject(

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Locale;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.BlockRenderManager;
@@ -41,45 +42,47 @@ import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 		WorldRenderer.class, BlockRenderManager.class, ItemRenderer.class
 })
 public abstract class KeyedResourceReloadListenerClientMixin implements IdentifiableResourceReloadListener {
-	private Identifier fabric$id;
-	private Collection<Identifier> fabric$dependencies;
+	@Unique
+	private Identifier id;
+	@Unique
+	private Collection<Identifier> dependencies;
 
 	@Override
 	public Identifier getFabricId() {
-		if (this.fabric$id == null) {
+		if (this.id == null) {
 			Object self = this;
 
 			if (self instanceof SoundManager) {
-				this.fabric$id = ResourceReloadListenerKeys.SOUNDS;
+				this.id = ResourceReloadListenerKeys.SOUNDS;
 			} else if (self instanceof BakedModelManager) {
-				this.fabric$id = ResourceReloadListenerKeys.MODELS;
+				this.id = ResourceReloadListenerKeys.MODELS;
 			} else if (self instanceof LanguageManager) {
-				this.fabric$id = ResourceReloadListenerKeys.LANGUAGES;
+				this.id = ResourceReloadListenerKeys.LANGUAGES;
 			} else if (self instanceof TextureManager) {
-				this.fabric$id = ResourceReloadListenerKeys.TEXTURES;
+				this.id = ResourceReloadListenerKeys.TEXTURES;
 			} else {
-				this.fabric$id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
+				this.id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
 		}
 
-		return this.fabric$id;
+		return this.id;
 	}
 
 	@Override
 	@SuppressWarnings({"ConstantConditions"})
 	public Collection<Identifier> getFabricDependencies() {
-		if (this.fabric$dependencies == null) {
+		if (this.dependencies == null) {
 			Object self = this;
 
 			if (self instanceof BakedModelManager || self instanceof WorldRenderer) {
-				this.fabric$dependencies = Collections.singletonList(ResourceReloadListenerKeys.TEXTURES);
+				this.dependencies = Collections.singletonList(ResourceReloadListenerKeys.TEXTURES);
 			} else if (self instanceof ItemRenderer || self instanceof BlockRenderManager) {
-				this.fabric$dependencies = Collections.singletonList(ResourceReloadListenerKeys.MODELS);
+				this.dependencies = Collections.singletonList(ResourceReloadListenerKeys.MODELS);
 			} else {
-				this.fabric$dependencies = Collections.emptyList();
+				this.dependencies = Collections.emptyList();
 			}
 		}
 
-		return this.fabric$dependencies;
+		return this.dependencies;
 	}
 }

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.util.Identifier;
@@ -28,15 +29,16 @@ import net.fabricmc.fabric.impl.attachment.sync.SupportedAttachmentsClientConnec
 
 @Mixin(ClientConnection.class)
 public class ClientConnectionMixin implements SupportedAttachmentsClientConnection {
-	private Set<Identifier> fabric_supportedAttachments = new HashSet<>();
+	@Unique
+	private Set<Identifier> supportedAttachments = new HashSet<>();
 
 	@Override
 	public void fabric_setSupportedAttachments(Set<Identifier> supportedAttachments) {
-		fabric_supportedAttachments = supportedAttachments;
+		this.supportedAttachments = supportedAttachments;
 	}
 
 	@Override
 	public Set<Identifier> fabric_getSupportedAttachments() {
-		return fabric_supportedAttachments;
+		return supportedAttachments;
 	}
 }

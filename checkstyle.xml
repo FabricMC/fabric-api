@@ -213,5 +213,66 @@
         <module name="MatchXpath">
             <property name="query" value="//RECORD_DEF[./MODIFIERS/LITERAL_PUBLIC][//PACKAGE_DEF//DOT/IDENT[@text='api']]"/>
         </module>
+
+        <!-- Prevent none @Unique fields in Mixin classes -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //OBJBLOCK/VARIABLE_DEF[
+                    not(
+                        ./MODIFIERS/ANNOTATION/IDENT[
+                            @text='Unique'
+                            or @text='Shadow'
+                        ]
+                    )
+                    and
+                    ../../../CLASS_DEF[
+                        ./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']
+                    ]
+                ]
+            "/>
+        </module>
+
+        <!-- Prevent none @Unique methods in Mixin classes -->
+        <!-- All Mixin and Mixin extras annotations must be listed here -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //OBJBLOCK/METHOD_DEF[
+                    not(
+                        ./MODIFIERS/ANNOTATION/IDENT[
+                            @text='Unique'
+                            or @text='Inject'
+                            or @text='ModifyArg'
+                            or @text='ModifyExpressionValue'
+                            or @text='ModifyReturnValue'
+                            or @text='ModifyVariable'
+                            or @text='Override'
+                            or @text='Overwrite'
+                            or @text='Redirect'
+                            or @text='Shadow'
+                            or @text='WrapMethod'
+                            or @text='WrapOperation'
+                            or @text='WrapWithCondition'
+                        ]
+                    )
+                    and
+                    ../../../CLASS_DEF[
+                        ./MODIFIERS/ANNOTATION/IDENT[@text='Mixin']
+                    ]
+                ]
+            "/>
+        </module>
+
+        <!-- Prevent @Inject local capture, @Local is preferred -->
+        <module name="MatchXpath">
+            <property name="query" value="
+                //OBJBLOCK/METHOD_DEF[
+                    ./MODIFIERS/ANNOTATION[
+                        ./IDENT[@text='Inject']
+                        and
+                        ./ANNOTATION_MEMBER_VALUE_PAIR/IDENT[@text='locals']
+                    ]
+                ]
+            "/>
+        </module>
 	</module>
 </module>

@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.content.registry;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,7 +35,8 @@ import net.fabricmc.fabric.impl.content.registry.FlammableBlockRegistryImpl;
 
 @Mixin(FireBlock.class)
 public class FireBlockMixin implements FireBlockHooks {
-	private FlammableBlockRegistryImpl fabric_registry;
+	@Unique
+	private FlammableBlockRegistryImpl registry;
 
 	@Shadow
 	private int getSpreadChance(BlockState block_1) {
@@ -48,12 +50,12 @@ public class FireBlockMixin implements FireBlockHooks {
 
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void afterConstruct(Block.Settings settings, CallbackInfo info) {
-		fabric_registry = FlammableBlockRegistryImpl.getInstance((Block) (Object) this);
+		registry = FlammableBlockRegistryImpl.getInstance((Block) (Object) this);
 	}
 
 	@Inject(at = @At("HEAD"), method = "getBurnChance", cancellable = true)
 	private void getFabricBurnChance(BlockState block, CallbackInfoReturnable info) {
-		FlammableBlockRegistry.Entry entry = fabric_registry.getFabric(block.getBlock());
+		FlammableBlockRegistry.Entry entry = registry.getFabric(block.getBlock());
 
 		if (entry != null) {
 			// TODO: use a (BlockState -> int) with this as the default impl
@@ -67,7 +69,7 @@ public class FireBlockMixin implements FireBlockHooks {
 
 	@Inject(at = @At("HEAD"), method = "getSpreadChance", cancellable = true)
 	private void getFabricSpreadChance(BlockState block, CallbackInfoReturnable info) {
-		FlammableBlockRegistry.Entry entry = fabric_registry.getFabric(block.getBlock());
+		FlammableBlockRegistry.Entry entry = registry.getFabric(block.getBlock());
 
 		if (entry != null) {
 			// TODO: use a (BlockState -> int) with this as the default impl

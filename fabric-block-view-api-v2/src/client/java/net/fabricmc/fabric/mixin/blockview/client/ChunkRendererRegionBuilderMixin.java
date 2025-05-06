@@ -44,7 +44,9 @@ import net.fabricmc.fabric.impl.blockview.client.RenderDataMapConsumer;
 
 @Mixin(ChunkRendererRegionBuilder.class)
 public abstract class ChunkRendererRegionBuilderMixin {
+	@Unique
 	private static final AtomicInteger ERROR_COUNTER = new AtomicInteger();
+	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChunkRendererRegionBuilderMixin.class);
 
 	@Inject(method = "build", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/chunk/ChunkRendererRegionBuilder$ClientChunk;getRenderedChunk()Lnet/minecraft/client/render/chunk/RenderedChunk;"))

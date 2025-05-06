@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -31,10 +32,11 @@ import net.minecraft.world.biome.source.BiomeSource;
 public class BiomeSourceMixin {
 	@Redirect(method = "getBiomes", at = @At(value = "INVOKE", target = "Ljava/util/function/Supplier;get()Ljava/lang/Object;"))
 	private Object getBiomes(Supplier<Set<RegistryEntry<Biome>>> instance) {
-		return fabric_modifyBiomeSet(instance.get());
+		return modifyBiomeSet(instance.get());
 	}
 
-	protected Set<RegistryEntry<Biome>> fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
+	@Unique
+	protected Set<RegistryEntry<Biome>> modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
 		return biomes;
 	}
 }

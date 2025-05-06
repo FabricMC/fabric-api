@@ -110,7 +110,7 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	}
 
 	@Override
-	protected Set<RegistryEntry<Biome>> fabric_modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
+	protected Set<RegistryEntry<Biome>> modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
 		if (!hasCheckedForModifiedSet) {
 			hasCheckedForModifiedSet = true;
 			biomeSetModified = !overrides.get().customBiomes.isEmpty();

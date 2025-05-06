@@ -47,18 +47,21 @@ import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 @Mixin({BlockEntity.class, Entity.class, World.class, Chunk.class})
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
+	@Unique
 	@Nullable
-	private IdentityHashMap<AttachmentType<?>, Object> fabric_dataAttachments = null;
+	private IdentityHashMap<AttachmentType<?>, Object> dataAttachments = null;
+	@Unique
 	@Nullable
-	private IdentityHashMap<AttachmentType<?>, AttachmentChange> fabric_syncedAttachments = null;
+	private IdentityHashMap<AttachmentType<?>, AttachmentChange> syncedAttachments = null;
+	@Unique
 	@Nullable
-	private IdentityHashMap<AttachmentType<?>, Event<OnAttachedSet<?>>> fabric_attachedChangedListeners = null;
+	private IdentityHashMap<AttachmentType<?>, Event<OnAttachedSet<?>>> attachedChangedListeners = null;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	@Nullable
 	public <T> T getAttached(AttachmentType<T> type) {
-		return fabric_dataAttachments == null ? null : (T) fabric_dataAttachments.get(type);
+		return dataAttachments == null ? null : (T) dataAttachments.get(type);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -76,21 +79,21 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		T oldValue;
 
 		if (value == null) {
-			if (fabric_dataAttachments == null) {
+			if (dataAttachments == null) {
 				oldValue = null;
 			}
 
-			oldValue = (T) fabric_dataAttachments.remove(type);
+			oldValue = (T) dataAttachments.remove(type);
 		} else {
-			if (fabric_dataAttachments == null) {
-				fabric_dataAttachments = new IdentityHashMap<>();
+			if (dataAttachments == null) {
+				dataAttachments = new IdentityHashMap<>();
 			}
 
-			oldValue = (T) fabric_dataAttachments.put(type, value);
+			oldValue = (T) dataAttachments.put(type, value);
 		}
 
-		if (fabric_attachedChangedListeners != null) {
-			Event<OnAttachedSet<T>> event = (Event<OnAttachedSet<T>>) (Event<?>) fabric_attachedChangedListeners.get(type);
+		if (attachedChangedListeners != null) {
+			Event<OnAttachedSet<T>> event = (Event<OnAttachedSet<T>>) (Event<?>) attachedChangedListeners.get(type);
 
 			if (event != null) {
 				event.invoker().onAttachedSet(oldValue, value);
@@ -102,16 +105,16 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	public boolean hasAttached(AttachmentType<?> type) {
-		return fabric_dataAttachments != null && fabric_dataAttachments.containsKey(type);
+		return dataAttachments != null && dataAttachments.containsKey(type);
 	}
 
 	@Override
 	public <A> Event<OnAttachedSet<A>> onAttachedSet(AttachmentType<A> type) {
-		if (fabric_attachedChangedListeners == null) {
-			fabric_attachedChangedListeners = new IdentityHashMap<>();
+		if (attachedChangedListeners == null) {
+			attachedChangedListeners = new IdentityHashMap<>();
 		}
 
-		return (Event<OnAttachedSet<A>>) (Event<?>) fabric_attachedChangedListeners.computeIfAbsent(type, t -> {
+		return (Event<OnAttachedSet<A>>) (Event<?>) attachedChangedListeners.computeIfAbsent(type, t -> {
 			return (Event<OnAttachedSet<?>>) (Event<?>) EventFactory.createArrayBacked(OnAttachedSet.class, (Function<OnAttachedSet<A>[], OnAttachedSet<A>>) listeners -> (oldValue, newValue) -> {
 				for (OnAttachedSet<A> listener : listeners) {
 					listener.onAttachedSet(oldValue, newValue);
@@ -122,17 +125,17 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_writeAttachmentsToNbt(WriteView view) {
-		AttachmentSerializingImpl.serializeAttachmentData(view, fabric_dataAttachments);
+		AttachmentSerializingImpl.serializeAttachmentData(view, dataAttachments);
 	}
 
 	@Override
 	public void fabric_readAttachmentsFromNbt(ReadView view) {
 		// Note on player targets: no syncing can happen here as the networkHandler is still null
 		// Instead it is done on player join (see AttachmentSync)
-		this.fabric_dataAttachments = AttachmentSerializingImpl.deserializeAttachmentData(view);
+		this.dataAttachments = AttachmentSerializingImpl.deserializeAttachmentData(view);
 
-		if (this.fabric_shouldTryToSync() && this.fabric_dataAttachments != null) {
-			this.fabric_dataAttachments.forEach((type, value) -> {
+		if (this.fabric_shouldTryToSync() && this.dataAttachments != null) {
+			this.dataAttachments.forEach((type, value) -> {
 				if (type.isSynced()) {
 					acknowledgeSynced(type, value, view.getRegistries());
 				}
@@ -142,12 +145,12 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Override
 	public boolean fabric_hasPersistentAttachments() {
-		return AttachmentSerializingImpl.hasPersistentAttachments(fabric_dataAttachments);
+		return AttachmentSerializingImpl.hasPersistentAttachments(dataAttachments);
 	}
 
 	@Override
 	public Map<AttachmentType<?>, ?> fabric_getAttachments() {
-		return fabric_dataAttachments;
+		return dataAttachments;
 	}
 
 	@Unique
@@ -159,27 +162,27 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Unique
 	private void acknowledgeSyncedEntry(AttachmentType<?> type, @Nullable AttachmentChange change) {
 		if (change == null) {
-			if (fabric_syncedAttachments == null) {
+			if (syncedAttachments == null) {
 				return;
 			}
 
-			fabric_syncedAttachments.remove(type);
+			syncedAttachments.remove(type);
 		} else {
-			if (fabric_syncedAttachments == null) {
-				fabric_syncedAttachments = new IdentityHashMap<>();
+			if (syncedAttachments == null) {
+				syncedAttachments = new IdentityHashMap<>();
 			}
 
-			fabric_syncedAttachments.put(type, change);
+			syncedAttachments.put(type, change);
 		}
 	}
 
 	@Override
 	public void fabric_computeInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
-		if (fabric_syncedAttachments == null) {
+		if (syncedAttachments == null) {
 			return;
 		}
 
-		for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : fabric_syncedAttachments.entrySet()) {
+		for (Map.Entry<AttachmentType<?>, AttachmentChange> entry : syncedAttachments.entrySet()) {
 			if (((AttachmentTypeImpl<?>) entry.getKey()).syncPredicate().test(this, player)) {
 				changeOutput.accept(entry.getValue());
 			}

@@ -20,6 +20,7 @@ import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -52,7 +53,8 @@ public class FluidRendererMixin {
 	@Shadow
 	private Sprite waterOverlaySprite;
 
-	private final ThreadLocal<Block> fabric_neighborBlock = new ThreadLocal<>();
+	@Unique
+	private final ThreadLocal<Block> neighborBlock = new ThreadLocal<>();
 
 	@Inject(at = @At("RETURN"), method = "onResourceReload")
 	public void onResourceReloadReturn(CallbackInfo info) {
@@ -110,7 +112,7 @@ public class FluidRendererMixin {
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"), method = "render")
 	public Block getOverlayBlock(BlockState state) {
 		Block block = state.getBlock();
-		fabric_neighborBlock.set(block);
+		neighborBlock.set(block);
 
 		// An if-statement follows, we don't want this anymore and 'null' makes
 		// its condition always false (due to instanceof)
@@ -119,7 +121,7 @@ public class FluidRendererMixin {
 
 	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.BY, by = 2), method = "render", ordinal = 0)
 	public Sprite modSideSpriteForOverlay(Sprite chk) {
-		Block block = fabric_neighborBlock.get();
+		Block block = neighborBlock.get();
 
 		if (FluidRenderHandlerRegistry.INSTANCE.isBlockTransparent(block)) {
 			FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();

@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -55,6 +56,7 @@ public abstract class SystemDetailsMixin {
 		});
 	}
 
+	@Unique
 	private static void appendMods(StringBuilder modString, int depth, ArrayList<ModContainer> mods) {
 		mods.sort(Comparator.comparing(mod -> mod.getMetadata().getId()));
 

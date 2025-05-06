@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Locale;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.recipe.ServerRecipeManager;
 import net.minecraft.server.ServerAdvancementLoader;
@@ -36,36 +37,38 @@ import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 		/* private */
 })
 public abstract class KeyedResourceReloadListenerMixin implements IdentifiableResourceReloadListener {
-	private Identifier fabric$id;
-	private Collection<Identifier> fabric$dependencies;
+	@Unique
+	private Identifier id;
+	@Unique
+	private Collection<Identifier> dependencies;
 
 	@Override
 	@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 	public Identifier getFabricId() {
-		if (this.fabric$id == null) {
+		if (this.id == null) {
 			Object self = this;
 
 			if (self instanceof ServerRecipeManager) {
-				this.fabric$id = ResourceReloadListenerKeys.RECIPES;
+				this.id = ResourceReloadListenerKeys.RECIPES;
 			} else if (self instanceof ServerAdvancementLoader) {
-				this.fabric$id = ResourceReloadListenerKeys.ADVANCEMENTS;
+				this.id = ResourceReloadListenerKeys.ADVANCEMENTS;
 			} else if (self instanceof FunctionLoader) {
-				this.fabric$id = ResourceReloadListenerKeys.FUNCTIONS;
+				this.id = ResourceReloadListenerKeys.FUNCTIONS;
 			} else {
-				this.fabric$id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
+				this.id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
 		}
 
-		return this.fabric$id;
+		return this.id;
 	}
 
 	@Override
 	@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 	public Collection<Identifier> getFabricDependencies() {
-		if (this.fabric$dependencies == null) {
-			this.fabric$dependencies = Collections.emptyList();
+		if (this.dependencies == null) {
+			this.dependencies = Collections.emptyList();
 		}
 
-		return this.fabric$dependencies;
+		return this.dependencies;
 	}
 }

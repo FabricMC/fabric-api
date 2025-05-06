@@ -21,6 +21,7 @@ import java.util.Map;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -38,20 +39,21 @@ public class SpriteAtlasTextureMixin implements SpriteFinderImpl.SpriteFinderAcc
 	@Shadow
 	private Map<Identifier, Sprite> sprites;
 
-	private SpriteFinderImpl fabric_spriteFinder = null;
+	@Unique
+	private SpriteFinderImpl spriteFinder = null;
 
 	@Inject(at = @At("RETURN"), method = "upload")
 	private void uploadHook(SpriteLoader.StitchResult arg, CallbackInfo ci) {
-		fabric_spriteFinder = null;
+		spriteFinder = null;
 	}
 
 	@Override
 	public SpriteFinderImpl fabric_spriteFinder() {
-		SpriteFinderImpl result = fabric_spriteFinder;
+		SpriteFinderImpl result = spriteFinder;
 
 		if (result == null) {
 			result = new SpriteFinderImpl(sprites, (SpriteAtlasTexture) (Object) this);
-			fabric_spriteFinder = result;
+			spriteFinder = result;
 		}
 
 		return result;
