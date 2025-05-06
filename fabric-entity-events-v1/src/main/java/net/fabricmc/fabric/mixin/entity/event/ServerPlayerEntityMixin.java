@@ -96,7 +96,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		return EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.invoker().modifySleepDirection((LivingEntity) (Object) this, pos, initial);
 	}
 
-	@Inject(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;get(Lnet/minecraft/state/property/Property;)Ljava/lang/Comparable;", shift = At.Shift.BY, by = 3), cancellable = true)
+	@Inject(method = "trySleep", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/block/BlockState;get(Lnet/minecraft/state/property/Property;)Ljava/lang/Comparable;", args = "fuzz=3", shift = At.Shift.AFTER), cancellable = true)
 	private void onTrySleepDirectionCheck(BlockPos pos, CallbackInfoReturnable<Either<PlayerEntity.SleepFailureReason, Unit>> info, @Local @Nullable Direction sleepingDirection) {
 		// This checks the result from the event call above.
 		if (sleepingDirection == null) {

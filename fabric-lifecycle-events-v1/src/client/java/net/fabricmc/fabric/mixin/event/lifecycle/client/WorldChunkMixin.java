@@ -43,7 +43,7 @@ abstract class WorldChunkMixin {
 	@Shadow
 	public abstract World getWorld();
 
-	@Inject(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", shift = At.Shift.BY, by = 3))
+	@Inject(method = "setBlockEntity", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", args = "fuzz=3", shift = At.Shift.AFTER))
 	private void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfo ci, @Local(ordinal = 1) BlockEntity removedBlockEntity) {
 		// Only fire the load event if the block entity has actually changed
 		if (blockEntity != null && blockEntity != removedBlockEntity) {
