@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 <module name="Checker">
 	<property name="charset" value="UTF-8"/>
 	<property name="fileExtensions" value="java"/>
@@ -207,11 +207,13 @@
         <!-- Prevent var for all cases other than new instance creation -->
         <module name="MatchXpath">
             <property name="query" value="//VARIABLE_DEF[./TYPE/IDENT[@text='var'] and not(./ASSIGN/EXPR/LITERAL_NEW)]"/>
+            <message key="matchxpath.match" value="var is not allowed before new instance creation"/>
         </module>
 
         <!-- Prevent public records in API packages -->
         <module name="MatchXpath">
             <property name="query" value="//RECORD_DEF[./MODIFIERS/LITERAL_PUBLIC][//PACKAGE_DEF//DOT/IDENT[@text='api']]"/>
+            <message key="matchxpath.match" value="public records are not allowed in API packages"/>
         </module>
 
         <!-- Prevent non-@Unique fields in Mixin classes -->
@@ -230,6 +232,7 @@
                     ]
                 ]
             "/>
+            <message key="matchxpath.match" value="Mixin fields must be annotated with @Unique or @Shadow"/>
         </module>
 
         <!-- Prevent non-@Unique methods in Mixin classes -->
@@ -260,6 +263,7 @@
                     ]
                 ]
             "/>
+            <message key="matchxpath.match" value="Mixin methods must be annotated with @Unique or one of the Mixin annotations"/>
         </module>
 
         <!-- Prevent @Inject local capture, @Local is preferred -->
@@ -273,6 +277,7 @@
                     ]
                 ]
             "/>
+            <message key="matchxpath.match" value="Inject local capture is not allowed, use @Local instead"/>
         </module>
 	</module>
 </module>
