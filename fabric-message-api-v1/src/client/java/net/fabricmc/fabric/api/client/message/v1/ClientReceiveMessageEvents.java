@@ -36,6 +36,24 @@ public final class ClientReceiveMessageEvents {
 	private ClientReceiveMessageEvents() {
 	}
 
+	public static final Event<ChatV2> CHAT_V2 = EventFactory.createArrayBacked(ChatV2.class, listeners -> (text, message, signedMessage, sender, params, receptionTimestamp) -> {
+		boolean allow = true;
+		for (ChatV2 listener : listeners) {
+			allow &= listener.onReceiveChatMessage(text, message, signedMessage, sender, params, receptionTimestamp);
+		}
+
+		return allow;
+	});
+
+	public static final Event<GameV2> GAME_V2 = EventFactory.createArrayBacked(GameV2.class, listeners -> (text, message, overlay) -> {
+		boolean allow = true;
+		for (GameV2 listener : listeners) {
+			allow &= listener.onReceiveGameMessage(text, message, overlay);
+		}
+
+		return allow;
+	});
+
 	/**
 	 * An event triggered when the client receives a chat message,
 	 * which is any message sent by a player. Mods can use this to block the message.
@@ -144,6 +162,16 @@ public final class ClientReceiveMessageEvents {
 			listener.onReceiveGameMessageCanceled(message, overlay);
 		}
 	});
+
+	@FunctionalInterface
+	public interface ChatV2 {
+		boolean onReceiveChatMessage(Text text, String message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp);
+	}
+
+	@FunctionalInterface
+	public interface GameV2 {
+		boolean onReceiveGameMessage(Text text, String message, boolean overlay);
+	}
 
 	@FunctionalInterface
 	public interface AllowChat {

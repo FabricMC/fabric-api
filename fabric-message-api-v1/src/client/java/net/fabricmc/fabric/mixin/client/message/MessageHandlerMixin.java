@@ -59,7 +59,7 @@ public abstract class MessageHandlerMixin {
 
 	@Unique
 	private void fabric_onChatMessage(Text message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp, CallbackInfoReturnable<Boolean> cir) {
-		if (ClientReceiveMessageEvents.ALLOW_CHAT.invoker().allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp)) {
+		if (ClientReceiveMessageEvents.CHAT_V2.invoker().onReceiveChatMessage(message, message.getString(), signedMessage, sender, params, receptionTimestamp) && ClientReceiveMessageEvents.ALLOW_CHAT.invoker().allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp)) {
 			ClientReceiveMessageEvents.CHAT.invoker().onReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
 		} else {
 			ClientReceiveMessageEvents.CHAT_CANCELED.invoker().onReceiveChatMessageCanceled(message, signedMessage, sender, params, receptionTimestamp);
@@ -69,7 +69,7 @@ public abstract class MessageHandlerMixin {
 
 	@Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
 	private void fabric_allowGameMessage(Text _message, boolean overlay, CallbackInfo ci, @Local(argsOnly = true) LocalRef<Text> message) {
-		if (ClientReceiveMessageEvents.ALLOW_GAME.invoker().allowReceiveGameMessage(message.get(), overlay)) {
+		if (ClientReceiveMessageEvents.GAME_V2.invoker().onReceiveGameMessage(message.get(), message.get().getString(), overlay) && ClientReceiveMessageEvents.ALLOW_GAME.invoker().allowReceiveGameMessage(message.get(), overlay)) {
 			message.set(ClientReceiveMessageEvents.MODIFY_GAME.invoker().modifyReceivedGameMessage(message.get(), overlay));
 			ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message.get(), overlay);
 		} else {
