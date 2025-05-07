@@ -3,5 +3,6 @@
   "block.fabric-data-gen-api-v1-testmod.simple_block": "Simple Block",
   "entity.minecraft.allay": "Allay",
   "fabric-data-gen-api-v1-testmod.identifier_test": "Identifier Test",
-  "itemGroup.fabric-data-gen-api-v1-testmod.default": "Datagen Itemgroup"
+  "itemGroup.fabric-data-gen-api-v1-testmod.default": "Datagen Itemgroup",
+  "subtitles.fabric-data-gen-api-v1-testmod.test_sound": "Test Sound"
 }

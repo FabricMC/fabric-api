@@ -44,6 +44,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.stat.StatType;
 import net.minecraft.text.TextContent;
 import net.minecraft.text.TranslatableTextContent;
@@ -238,6 +239,18 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 */
 		default void add(TagKey<?> tagKey, String value) {
 			add(tagKey.getTranslationKey(), value);
+		}
+
+		/**
+		 * Adds a subtitle translation for a {@link SoundEvent} of the form
+		 * {@code subtitles.<namespace>.<path>}. If the sound event uses a non-standard
+		 * translation key for its subtitle, use {@link #add(String, String)} instead.
+		 *
+		 * @param sound The {@link SoundEvent} to get the translation key from
+		 * @param value The value of the entry
+		 */
+		default void add(SoundEvent sound, String value) {
+			add(sound.id().toTranslationKey("subtitles"), value);
 		}
 
 		/**

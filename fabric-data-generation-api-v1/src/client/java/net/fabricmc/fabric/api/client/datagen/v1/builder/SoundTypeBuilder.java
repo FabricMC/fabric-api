@@ -43,7 +43,9 @@ import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 @ApiStatus.NonExtendable
 public interface SoundTypeBuilder {
 	/**
-	 * Creates a new builder pre-filled with a subtitle translation string based on the passed event.
+	 * Creates a new builder pre-filled with a subtitle translation key string based on the passed event.
+	 *
+	 * Note: To generate a translation value, use {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider.TranslationBuilder#add(SoundEvent, String)}.
 	 *
 	 * @return New sound type builder
 	 */
@@ -69,9 +71,11 @@ public interface SoundTypeBuilder {
 	SoundTypeBuilder category(SoundCategory category);
 
 	/**
-	 * Sets an optional translation string to use for the sound's subtitle.
+	 * Sets an optional translation key string to use for the sound's subtitle.
 	 *
 	 * <p>The default is null (no subtitle).
+	 *
+	 * <p>Note: To generate a translation value, use {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider.TranslationBuilder#add(SoundEvent, String)}.
 	 */
 	SoundTypeBuilder subtitle(@Nullable String subtitle);
 

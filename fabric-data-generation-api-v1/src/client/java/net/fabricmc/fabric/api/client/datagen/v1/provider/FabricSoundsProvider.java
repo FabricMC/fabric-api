@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 
 /**
- * Extend this class and implement {@link FabricSoundsProvider#generate}.
+ * Extend this class and implement {@link FabricSoundsProvider#configure(RegistryWrapper.WrapperLookup, SoundExporter)}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  *
