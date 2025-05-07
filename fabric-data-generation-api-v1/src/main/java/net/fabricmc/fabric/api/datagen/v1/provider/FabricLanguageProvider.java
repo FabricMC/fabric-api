@@ -250,7 +250,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		 * @param value The value of the entry
 		 */
 		default void add(SoundEvent sound, String value) {
-			add(sound.id().toTranslationKey("subtitles"), value);
+			add(Util.createTranslationKey("subtitles", sound.id()), value);
 		}
 
 		/**
