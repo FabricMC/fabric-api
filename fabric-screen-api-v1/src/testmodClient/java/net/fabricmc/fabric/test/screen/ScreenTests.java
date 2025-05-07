@@ -34,6 +34,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
 public final class ScreenTests implements ClientModInitializer {
@@ -93,6 +94,11 @@ public final class ScreenTests implements ClientModInitializer {
 			});
 		} else if (screen instanceof CreativeInventoryScreen) {
 			Screens.getButtons(screen).add(new TestButtonWidget());
+
+			ScreenMouseEvents.afterMouseRelease(screen).register((ScreenMouseEvents.AfterMouseReleaseV2) (_screen, mouseX, mouseY, button, consumed) -> {
+				LOGGER.info("After Mouse Released, X: {}, Y: {}, Button: {}, Consumed: {}", mouseX, mouseY, button, consumed);
+				return true;
+			});
 		}
 	}
 

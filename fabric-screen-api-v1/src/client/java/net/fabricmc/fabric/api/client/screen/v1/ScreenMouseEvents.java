@@ -176,6 +176,20 @@ public final class ScreenMouseEvents {
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void afterMouseClick(Screen screen, double mouseX, double mouseY, int button);
+
+		default boolean afterMouseClick(Screen screen, double mouseX, double mouseY, int button, boolean consumed) {
+			afterMouseClick(screen, mouseX, mouseY, button);
+			return false;
+		}
+	}
+
+	@FunctionalInterface
+	public interface AfterMouseClickV2 extends AfterMouseClick {
+		@Override
+		default void afterMouseClick(Screen screen, double mouseX, double mouseY, int button) {}
+
+		@Override
+		boolean afterMouseClick(Screen screen, double mouseX, double mouseY, int button, boolean consumed);
 	}
 
 	@FunctionalInterface
@@ -215,6 +229,20 @@ public final class ScreenMouseEvents {
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void afterMouseRelease(Screen screen, double mouseX, double mouseY, int button);
+
+		default boolean afterMouseRelease(Screen screen, double mouseX, double mouseY, int button, boolean consumed) {
+			afterMouseRelease(screen, mouseX, mouseY, button);
+			return false;
+		}
+	}
+
+	@FunctionalInterface
+	public interface AfterMouseReleaseV2 extends AfterMouseRelease {
+		@Override
+		default void afterMouseRelease(Screen screen, double mouseX, double mouseY, int button) {}
+
+		@Override
+		boolean afterMouseRelease(Screen screen, double mouseX, double mouseY, int button, boolean consumed);
 	}
 
 	@FunctionalInterface
@@ -255,5 +283,19 @@ public final class ScreenMouseEvents {
 		 * @param verticalAmount the vertical scroll amount
 		 */
 		void afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
+
+		default boolean afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount, boolean consumed) {
+			afterMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
+			return false;
+		}
+	}
+
+	@FunctionalInterface
+	public interface AfterMouseScrollV2 extends AfterMouseScroll {
+		@Override
+		default void afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {}
+
+		@Override
+		boolean afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount, boolean consumed);
 	}
 }

@@ -147,10 +147,12 @@ public final class ScreenEventFactory {
 	}
 
 	public static Event<ScreenMouseEvents.AfterMouseClick> createAfterMouseClickEvent() {
-		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseClick.class, callbacks -> (screen, mouseX, mouseY, button) -> {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseClick.class, callbacks -> (ScreenMouseEvents.AfterMouseClickV2) (screen, mouseX, mouseY, button, consumed) -> {
+			boolean consume = false;
 			for (ScreenMouseEvents.AfterMouseClick callback : callbacks) {
-				callback.afterMouseClick(screen, mouseX, mouseY, button);
+				consume |= callback.afterMouseClick(screen, mouseX, mouseY, button, consume | consumed);
 			}
+			return consume;
 		});
 	}
 
@@ -175,10 +177,12 @@ public final class ScreenEventFactory {
 	}
 
 	public static Event<ScreenMouseEvents.AfterMouseRelease> createAfterMouseReleaseEvent() {
-		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseRelease.class, callbacks -> (screen, mouseX, mouseY, button) -> {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseRelease.class, callbacks -> (ScreenMouseEvents.AfterMouseReleaseV2) (screen, mouseX, mouseY, button, consumed) -> {
+			boolean consume = false;
 			for (ScreenMouseEvents.AfterMouseRelease callback : callbacks) {
-				callback.afterMouseRelease(screen, mouseX, mouseY, button);
+				consume |= callback.afterMouseRelease(screen, mouseX, mouseY, button, consume | consumed);
 			}
+			return consume;
 		});
 	}
 
@@ -203,10 +207,12 @@ public final class ScreenEventFactory {
 	}
 
 	public static Event<ScreenMouseEvents.AfterMouseScroll> createAfterMouseScrollEvent() {
-		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseScroll.class, callbacks -> (screen, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseScroll.class, callbacks -> (ScreenMouseEvents.AfterMouseScrollV2)(screen, mouseX, mouseY, horizontalAmount, verticalAmount, consumed) -> {
+			boolean consume = false;
 			for (ScreenMouseEvents.AfterMouseScroll callback : callbacks) {
-				callback.afterMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
+				consume |= callback.afterMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount, consume | consumed);
 			}
+			return consume;
 		});
 	}
 

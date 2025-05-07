@@ -45,7 +45,7 @@ abstract class MouseMixin {
 		boolean result = operation.call(screen, mouseX, mouseY, button);
 
 		if (screen != null) {
-			ScreenMouseEvents.afterMouseClick(screen).invoker().afterMouseClick(screen, mouseX, mouseY, button);
+			result |= ScreenMouseEvents.afterMouseClick(screen).invoker().afterMouseClick(screen, mouseX, mouseY, button, result);
 		}
 
 		return result;
@@ -68,7 +68,7 @@ abstract class MouseMixin {
 		boolean result = operation.call(screen, mouseX, mouseY, button);
 
 		if (screen != null) {
-			ScreenMouseEvents.afterMouseRelease(screen).invoker().afterMouseRelease(screen, mouseX, mouseY, button);
+			result |= ScreenMouseEvents.afterMouseRelease(screen).invoker().afterMouseRelease(screen, mouseX, mouseY, button, result);
 		}
 
 		return result;
@@ -91,7 +91,7 @@ abstract class MouseMixin {
 		boolean result = operation.call(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
 
 		if (screen != null) {
-			ScreenMouseEvents.afterMouseScroll(screen).invoker().afterMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
+			result |= ScreenMouseEvents.afterMouseScroll(screen).invoker().afterMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount, result);
 		}
 
 		return result;
