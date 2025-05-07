@@ -45,7 +45,7 @@ public interface SoundTypeBuilder {
 	/**
 	 * Creates a new builder pre-filled with a subtitle translation key string based on the passed event.
 	 *
-	 * Note: To generate a translation value, use {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider.TranslationBuilder#add(SoundEvent, String)}.
+	 * <p>Note: To generate a translation value, use {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider.TranslationBuilder#add(SoundEvent, String)}.
 	 *
 	 * @return New sound type builder
 	 */
