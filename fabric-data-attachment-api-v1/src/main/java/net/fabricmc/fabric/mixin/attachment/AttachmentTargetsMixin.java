@@ -76,11 +76,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		T oldValue;
 
 		if (value == null) {
-			if (fabric_dataAttachments == null) {
-				oldValue = null;
-			}
-
-			oldValue = (T) fabric_dataAttachments.remove(type);
+			oldValue = fabric_dataAttachments == null ? null : (T) fabric_dataAttachments.remove(type);
 		} else {
 			if (fabric_dataAttachments == null) {
 				fabric_dataAttachments = new IdentityHashMap<>();
