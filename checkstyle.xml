@@ -207,7 +207,7 @@
         <!-- Prevent var for all cases other than new instance creation -->
         <module name="MatchXpath">
             <property name="query" value="//VARIABLE_DEF[./TYPE/IDENT[@text='var'] and not(./ASSIGN/EXPR/LITERAL_NEW)]"/>
-            <message key="matchxpath.match" value="var is not allowed before new instance creation"/>
+            <message key="matchxpath.match" value="var is only allowed before new instance creation"/>
         </module>
 
         <!-- Prevent public records in API packages -->
