@@ -68,14 +68,6 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Override
 	@Nullable
 	public <T> T setAttached(AttachmentType<T> type, @Nullable T value) {
-		this.fabric_markChanged(type);
-
-		if (this.fabric_shouldTryToSync() && type.isSynced()) {
-			AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getDynamicRegistryManager());
-			acknowledgeSyncedEntry(type, change);
-			this.fabric_syncChange(type, new AttachmentSyncPayloadS2C(List.of(change)));
-		}
-
 		T oldValue;
 
 		if (value == null) {
@@ -93,6 +85,16 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 			if (event != null) {
 				event.invoker().onAttachedSet(oldValue, value);
+			}
+		}
+
+		if (oldValue != value) {
+			this.fabric_markChanged(type);
+
+			if (this.fabric_shouldTryToSync() && type.isSynced()) {
+				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getDynamicRegistryManager());
+				acknowledgeSyncedEntry(type, change);
+				this.fabric_syncChange(type, new AttachmentSyncPayloadS2C(List.of(change)));
 			}
 		}
 
