@@ -1,0 +1,13 @@
+{
+  "fabric-data-attachment-api-v1.unknown-target.attachment-identifier": "Identyfikator załącznika: %s",
+  "fabric-data-attachment-api-v1.unknown-target.block-entity-position": "Pozycja bytu bloku: %s",
+  "fabric-data-attachment-api-v1.unknown-target.chunk-position": "Pozycja chunku: %s",
+  "fabric-data-attachment-api-v1.unknown-target.entity-network-id": "ID sieciowe bytu: %s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type": "Typ celu: %s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.block-entity": "Byt bloku",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.chunk": "Chunk",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.entity": "Byt",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.world": "Świat",
+  "fabric-data-attachment-api-v1.unknown-target.title": "Otrzymano zmianę załącznika dla nieznanego celu!",
+  "fabric-data-attachment-api-v1.unknown-target.world": "Świat: %s"
+}
