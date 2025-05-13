@@ -23,7 +23,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -72,10 +71,10 @@ abstract class ClientPlayNetworkHandlerMixin {
 		ClientCommandInternals.addCommands((CommandDispatcher) commandDispatcher, (FabricClientCommandSource) commandSource);
 	}
 
-	@Inject(method = "sendCommand", at = @At("HEAD"), cancellable = true)
-	private void onSendCommand(String command, CallbackInfoReturnable<Boolean> cir) {
+	@Inject(method = "method_71927", at = @At("HEAD"), cancellable = true)
+	private void onSendCommand(String command, boolean closePreviousScreen, CallbackInfo info) {
 		if (ClientCommandInternals.executeCommand(command)) {
-			cir.setReturnValue(true);
+			info.cancel();
 		}
 	}
 

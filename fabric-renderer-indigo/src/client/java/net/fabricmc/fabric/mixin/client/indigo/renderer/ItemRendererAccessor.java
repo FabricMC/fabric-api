@@ -27,7 +27,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 @Mixin(ItemRenderer.class)
 public interface ItemRendererAccessor {
-	@Invoker("method_71138")
+	@Invoker("getSpecialItemGlintConsumer")
 	static VertexConsumer fabric_getDynamicDisplayGlintConsumer(VertexConsumerProvider provider, RenderLayer layer, MatrixStack.Entry entry) {
 		throw new AssertionError();
 	}

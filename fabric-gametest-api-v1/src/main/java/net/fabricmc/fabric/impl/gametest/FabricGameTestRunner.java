@@ -60,7 +60,7 @@ public final class FabricGameTestRunner {
 		boolean verify = Boolean.getBoolean(GameTestSystemProperties.VERIFY);
 		MinecraftServer.startServer((thread) -> {
 			TestServer testServer = TestServer.create(thread, session, resourcePackManager, filter, verify);
-			TestManager.INSTANCE.method_71664();
+			TestManager.INSTANCE.startTicking();
 			return testServer;
 		});
 	}

@@ -3,9 +3,7 @@
   "ingredients": [
     {
       "fabric:type": "fabric:components",
-      "base": {
-        "item": "minecraft:diamond_pickaxe"
-      },
+      "base": "minecraft:diamond_pickaxe",
       "components": {
         "minecraft:damage": 0
       },

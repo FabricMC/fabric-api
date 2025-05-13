@@ -75,7 +75,7 @@ public abstract class MinecraftClientMixin {
 			cancellable = true
 	)
 	private void injectUseEntityCallback(CallbackInfo ci, @Local Hand hand, @Local EntityHitResult hitResult, @Local Entity entity) {
-		ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), hand, entity, hitResult);
+		ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, player.getWorld(), hand, entity, hitResult);
 
 		if (result != ActionResult.PASS) {
 			if (result.isAccepted()) {

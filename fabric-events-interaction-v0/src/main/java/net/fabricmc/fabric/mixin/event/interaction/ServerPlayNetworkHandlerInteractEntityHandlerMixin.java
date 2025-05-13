@@ -48,7 +48,7 @@ public abstract class ServerPlayNetworkHandlerInteractEntityHandlerMixin impleme
 	@Inject(method = "interactAt(Lnet/minecraft/util/Hand;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(Hand hand, Vec3d hitPosition, CallbackInfo info) {
 		PlayerEntity player = field_28963.player;
-		World world = player.getEntityWorld();
+		World world = player.getWorld();
 
 		EntityHitResult hitResult = new EntityHitResult(field_28962, hitPosition.add(field_28962.getX(), field_28962.getY(), field_28962.getZ()));
 		ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, world, hand, field_28962, hitResult);
@@ -61,7 +61,7 @@ public abstract class ServerPlayNetworkHandlerInteractEntityHandlerMixin impleme
 	@Inject(method = "interact(Lnet/minecraft/util/Hand;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(Hand hand, CallbackInfo info) {
 		PlayerEntity player = field_28963.player;
-		World world = player.getEntityWorld();
+		World world = player.getWorld();
 
 		ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, world, hand, field_28962, null);
 

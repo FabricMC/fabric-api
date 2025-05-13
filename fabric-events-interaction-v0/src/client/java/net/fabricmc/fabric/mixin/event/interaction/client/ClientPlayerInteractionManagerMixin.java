@@ -129,7 +129,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V", ordinal = 0), method = "attackEntity", cancellable = true)
 	public void attackEntity(PlayerEntity player, Entity entity, CallbackInfo info) {
-		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), Hand.MAIN_HAND /* TODO */, entity, null);
+		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.getWorld(), Hand.MAIN_HAND /* TODO */, entity, null);
 
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
