@@ -36,40 +36,21 @@ public final class ClientReceiveMessageEvents {
 	private ClientReceiveMessageEvents() {
 	}
 
-	public static final Event<ChatV2> CHAT_V2 = EventFactory.createArrayBacked(ChatV2.class, listeners -> (text, message, signedMessage, sender, params, receptionTimestamp) -> {
-		boolean allow = true;
-		for (ChatV2 listener : listeners) {
-			allow &= listener.onReceiveChatMessage(text, message, signedMessage, sender, params, receptionTimestamp);
-		}
-
-		return allow;
-	});
-
-	public static final Event<GameV2> GAME_V2 = EventFactory.createArrayBacked(GameV2.class, listeners -> (text, message, overlay) -> {
-		boolean allow = true;
-		for (GameV2 listener : listeners) {
-			allow &= listener.onReceiveGameMessage(text, message, overlay);
-		}
-
-		return allow;
-	});
-
 	/**
 	 * An event triggered when the client receives a chat message,
 	 * which is any message sent by a player. Mods can use this to block the message.
 	 *
 	 * <p>If a listener returned {@code false}, the message will not be displayed,
-	 * the remaining listeners will not be called (if any), and
+	 * the remaining listeners will be called (if any), and
 	 * {@link #CHAT_CANCELED} will be triggered instead of {@link #CHAT}.
 	 */
 	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, listeners -> (message, signedMessage, sender, params, receptionTimestamp) -> {
+		boolean allow = true;
 		for (AllowChat listener : listeners) {
-			if (!listener.allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp)) {
-				return false;
-			}
+			allow &= listener.allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
 		}
 
-		return true;
+		return allow;
 	});
 
 	/**
@@ -78,7 +59,7 @@ public final class ClientReceiveMessageEvents {
 	 * Mods can use this to block the message or toggle overlay.
 	 *
 	 * <p>If a listener returned {@code false}, the message will not be displayed,
-	 * the remaining listeners will not be called (if any), and
+	 * the remaining listeners will be called (if any), and
 	 * {@link #GAME_CANCELED} will be triggered instead of {@link #MODIFY_GAME}.
 	 *
 	 * <p>Overlay is whether the message will be displayed in the action bar.
@@ -86,13 +67,12 @@ public final class ClientReceiveMessageEvents {
 	 * {@link net.minecraft.client.network.ClientPlayerEntity#sendMessage(Text, boolean) ClientPlayerEntity.sendMessage(message, overlay)}.
 	 */
 	public static final Event<AllowGame> ALLOW_GAME = EventFactory.createArrayBacked(AllowGame.class, listeners -> (message, overlay) -> {
+		boolean allow = true;
 		for (AllowGame listener : listeners) {
-			if (!listener.allowReceiveGameMessage(message, overlay)) {
-				return false;
-			}
+			allow &= listener.allowReceiveGameMessage(message, overlay);
 		}
 
-		return true;
+		return allow;
 	});
 
 	/**
@@ -162,16 +142,6 @@ public final class ClientReceiveMessageEvents {
 			listener.onReceiveGameMessageCanceled(message, overlay);
 		}
 	});
-
-	@FunctionalInterface
-	public interface ChatV2 {
-		boolean onReceiveChatMessage(Text text, String message, @Nullable SignedMessage signedMessage, @Nullable GameProfile sender, MessageType.Parameters params, Instant receptionTimestamp);
-	}
-
-	@FunctionalInterface
-	public interface GameV2 {
-		boolean onReceiveGameMessage(Text text, String message, boolean overlay);
-	}
 
 	@FunctionalInterface
 	public interface AllowChat {
