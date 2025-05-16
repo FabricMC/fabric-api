@@ -24,10 +24,12 @@ import java.util.SequencedMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 
@@ -190,16 +192,19 @@ public final class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 	 * A layer that wraps a vanilla layer using a list, allowing for users to attach layers before or after it, replace it, or remove it.
 	 */
 	@VisibleForTesting
-	public record VanillaLayer(Identifier id, List<HudLayer> layers) implements IdentifiedLayer {
-		public VanillaLayer(Identifier id, HudLayer vanillaLayer) {
+	public record VanillaLayer(Identifier id, List<HudLayer> layers) {
+		public VanillaLayer(Identifier id) {
 			this(id, new ArrayList<>());
-			layers().add(IdentifiedLayer.of(id, vanillaLayer));
+			layers().add(IdentifiedLayer.of(id, (context, tickCounter) -> { }));
 		}
 
-		@Override
-		public void render(DrawContext context, RenderTickCounter tickCounter) {
+		public void render(InGameHud instance, DrawContext context, RenderTickCounter tickCounter, Operation<Void> renderVanilla) {
 			for (HudLayer layer : layers) {
-				layer.render(context, tickCounter);
+				if (matchesIdentifier(layer, id())) {
+					renderVanilla.call(instance, context, tickCounter);
+				} else {
+					layer.render(context, tickCounter);
+				}
 			}
 		}
 	}

@@ -42,7 +42,7 @@ public class LayeredDrawerWrapperTest {
 	@BeforeEach
 	void setUp() {
 		drawnLayers = new ArrayList<>();
-		vanillaLayers = List.of(new LayeredDrawerWrapperImpl.VanillaLayer(testIdentifier("default"), (context, tickCounter) -> { }));
+		vanillaLayers = List.of(new LayeredDrawerWrapperImpl.VanillaLayer(testIdentifier("default")));
 		layers = new LayeredDrawerWrapperImpl(vanillaLayers);
 	}
 
@@ -162,7 +162,7 @@ public class LayeredDrawerWrapperTest {
 		drawnLayers.clear();
 
 		for (LayeredDrawerWrapperImpl.VanillaLayer vanillaLayer : vanillaLayers) {
-			vanillaLayer.render(drawContext, tickCounter);
+			vanillaLayer.render(null, drawContext, tickCounter, args -> null);
 		}
 
 		assertEquals(drawnLayers, expectedLayers);
