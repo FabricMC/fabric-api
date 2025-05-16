@@ -46,6 +46,7 @@ public final class ClientReceiveMessageEvents {
 	 */
 	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, listeners -> (message, signedMessage, sender, params, receptionTimestamp) -> {
 		boolean allow = true;
+
 		for (AllowChat listener : listeners) {
 			allow &= listener.allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
 		}
@@ -68,6 +69,7 @@ public final class ClientReceiveMessageEvents {
 	 */
 	public static final Event<AllowGame> ALLOW_GAME = EventFactory.createArrayBacked(AllowGame.class, listeners -> (message, overlay) -> {
 		boolean allow = true;
+
 		for (AllowGame listener : listeners) {
 			allow &= listener.allowReceiveGameMessage(message, overlay);
 		}
