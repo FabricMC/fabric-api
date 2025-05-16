@@ -36,6 +36,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 
 public final class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
+	/**
+	 * A map containing vanilla layers.
+	 * This map should not be modified. Modify {@link VanillaLayer#layers()} instead.
+	 */
 	private final SequencedMap<Identifier, VanillaLayer> vanillaLayers;
 
 	public LayeredDrawerWrapperImpl(List<VanillaLayer> vanillaLayers) {
@@ -182,6 +186,9 @@ public final class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 		boolean visit(HudLayer layer, ListIterator<HudLayer> iterator);
 	}
 
+	/**
+	 * A layer that wraps a vanilla layer using a list, allowing for users to attach layers before or after it, replace it, or remove it.
+	 */
 	@VisibleForTesting
 	public record VanillaLayer(Identifier id, List<HudLayer> layers) implements IdentifiedLayer {
 		public VanillaLayer(Identifier id, HudLayer vanillaLayer) {
