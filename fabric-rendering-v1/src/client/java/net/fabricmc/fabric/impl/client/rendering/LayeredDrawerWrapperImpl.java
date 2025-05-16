@@ -24,16 +24,14 @@ import java.util.SequencedMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayer;
-
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.VisibleForTesting;
 
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper;
 
@@ -153,6 +151,7 @@ public final class LayeredDrawerWrapperImpl implements LayeredDrawerWrapper {
 				return true;
 			}
 		}
+
 		return false;
 	}
 

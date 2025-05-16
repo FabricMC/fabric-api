@@ -42,7 +42,7 @@ public class LayeredDrawerWrapperTest {
 	@BeforeEach
 	void setUp() {
 		drawnLayers = new ArrayList<>();
-		vanillaLayers = List.of(new LayeredDrawerWrapperImpl.VanillaLayer(testIdentifier("default"), (context, tickCounter) -> {}));
+		vanillaLayers = List.of(new LayeredDrawerWrapperImpl.VanillaLayer(testIdentifier("default"), (context, tickCounter) -> { }));
 		layers = new LayeredDrawerWrapperImpl(vanillaLayers);
 	}
 
@@ -132,9 +132,11 @@ public class LayeredDrawerWrapperTest {
 
 		Assertions.assertTrue(layers.visitLayers((layer, iterator) -> {
 			String name = ((IdentifiedLayer) layer).id().getPath();
+
 			if ("default".equals(name)) {
 				return false; // Skip the default layer
 			}
+
 			iterator.add(testLayer("visited" + name.substring(name.length() - 1)));
 			return true;
 		}));
@@ -158,9 +160,11 @@ public class LayeredDrawerWrapperTest {
 		when(drawContext.getMatrices()).thenReturn(matrixStack);
 
 		drawnLayers.clear();
+
 		for (LayeredDrawerWrapperImpl.VanillaLayer vanillaLayer : vanillaLayers) {
 			vanillaLayer.render(drawContext, tickCounter);
 		}
+
 		assertEquals(drawnLayers, expectedLayers);
 	}
 }

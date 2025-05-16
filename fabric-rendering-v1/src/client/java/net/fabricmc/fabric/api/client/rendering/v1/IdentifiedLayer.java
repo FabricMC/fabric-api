@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.rendering.WrappedLayer;
