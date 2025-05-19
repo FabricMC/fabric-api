@@ -305,6 +305,55 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_SPARSE_NETHER)
 				.addOptionalTag(ConventionalBiomeTags.IS_VEGETATION_SPARSE_END);
 
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_OAK)
+				.add(BiomeKeys.FOREST)
+				.add(BiomeKeys.FLOWER_FOREST)
+				.add(BiomeKeys.SWAMP)
+				.add(BiomeKeys.WOODED_BADLANDS);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_BIRCH)
+				.add(BiomeKeys.BIRCH_FOREST)
+				.add(BiomeKeys.OLD_GROWTH_BIRCH_FOREST);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_SPRUCE)
+				.add(BiomeKeys.TAIGA)
+				.add(BiomeKeys.SNOWY_TAIGA)
+				.add(BiomeKeys.OLD_GROWTH_SPRUCE_TAIGA)
+				.add(BiomeKeys.OLD_GROWTH_PINE_TAIGA)
+				.add(BiomeKeys.GROVE);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_JUNGLE)
+				.add(BiomeKeys.JUNGLE)
+				.add(BiomeKeys.SPARSE_JUNGLE);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_ACACIA)
+				.add(BiomeKeys.SAVANNA)
+				.add(BiomeKeys.SAVANNA_PLATEAU)
+				.add(BiomeKeys.WINDSWEPT_SAVANNA);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_DARK_OAK)
+				.add(BiomeKeys.DARK_FOREST);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_MANGROVE)
+				.add(BiomeKeys.MANGROVE_SWAMP);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_CHERRY)
+				.add(BiomeKeys.CHERRY_GROVE);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_PALE_OAK)
+				.add(BiomeKeys.PALE_GARDEN);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_BAMBOO)
+				.add(BiomeKeys.BAMBOO_JUNGLE);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_CRIMSON)
+				.add(BiomeKeys.CRIMSON_FOREST);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE_WARPED)
+				.add(BiomeKeys.WARPED_FOREST);
+		getOrCreateTagBuilder(ConventionalBiomeTags.PRIMARY_WOOD_TYPE).addTags(
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_OAK,
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_BIRCH,
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_SPRUCE,
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_JUNGLE,
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_ACACIA,
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_DARK_OAK,
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_MANGROVE,
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_CHERRY,
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_PALE_OAK,
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_BAMBOO,
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_CRIMSON,
+				ConventionalBiomeTags.PRIMARY_WOOD_TYPE_WARPED);
+
 		getOrCreateTagBuilder(ConventionalBiomeTags.IS_CONIFEROUS_TREE)
 				.addOptionalTag(ConventionalBiomeTags.IS_TAIGA)
 				.add(BiomeKeys.GROVE);
