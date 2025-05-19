@@ -1,6 +1,9 @@
 {
   "schemaVersion": 1,
   "id": "fabric-tag-api-v1",
+  "provides": [
+    "fabric-client-tags-api-v1"
+  ],
   "name": "Fabric Tag API (v1)",
   "version": "${version}",
   "environment": "*",

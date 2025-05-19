@@ -39,13 +39,13 @@ import net.fabricmc.loader.api.ModContainer;
 
 public class ClientTagTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientTagTest.class);
-	private static final String MODID = "fabric-clients-tags-api-v1-testmod";
+	private static final String MOD_ID = "fabric-tag-api-v1-testmod";
 
 	@Override
 	public void onInitializeClient() {
-		final ModContainer container = FabricLoader.getInstance().getModContainer(MODID).get();
+		final ModContainer container = FabricLoader.getInstance().getModContainer(MOD_ID).get();
 
-		if (!ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of(MODID, "test2"),
+		if (!ResourceManagerHelper.registerBuiltinResourcePack(Identifier.of(MOD_ID, "test2"),
 				container, ResourcePackActivationType.ALWAYS_ENABLED)) {
 			throw new IllegalStateException("Could not register built-in resource pack.");
 		}
