@@ -51,6 +51,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
+import net.fabricmc.fabric.impl.loot.FabricLootTable;
 import net.fabricmc.fabric.impl.loot.LootUtil;
 
 /**
@@ -115,7 +116,10 @@ abstract class ReloadableRegistriesMixin {
 	private static <T> void onLootTablesLoaded(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<MutableRegistry<?>> cir) {
 		if (lootDataType != LootDataType.LOOT_TABLES) return;
 
-		LootTableEvents.ALL_LOADED.invoker().onLootTablesLoaded(resourceManager, (Registry<LootTable>) cir.getReturnValue());
+		Registry<LootTable> lootTableRegistry = (Registry<LootTable>) cir.getReturnValue();
+
+		LootTableEvents.ALL_LOADED.invoker().onLootTablesLoaded(resourceManager, lootTableRegistry);
 		LootUtil.SOURCES.remove();
+		lootTableRegistry.streamEntries().forEach(reference -> ((FabricLootTable) reference.value()).fabric$setRegistryKey(reference.registryKey()));
 	}
 }

@@ -29,15 +29,16 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContext;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.fabric.impl.loot.FabricLootTable;
 
 @Mixin(value = LootTable.class, priority = 3000 /* arbitrary, but requires mods to explicit set a priority to wrap the fabric event.*/)
-public class LootTableMixin {
+public class LootTableMixin implements FabricLootTable {
 	/*
 	 * the key of this loot table, if initialized.
 	 */
@@ -47,38 +48,45 @@ public class LootTableMixin {
 
 	@WrapMethod(method = "generateUnprocessedLoot(Lnet/minecraft/loot/context/LootContext;Ljava/util/function/Consumer;)V")
 	private void fabric$modifyDrops(LootContext context, Consumer<ItemStack> lootConsumer, Operation<Void> original) {
-		if (key == null) {
-			// I don't like either of these options
-			//option 1
-			DynamicRegistryManager lookup = (DynamicRegistryManager) ((ReloadableRegistriesLookupAccessor) context.getWorld().getServer().getReloadableRegistries()).getRegistries();
-			Registry<LootTable> lootTableRegistry = lookup.getOrThrow(RegistryKeys.LOOT_TABLE);
-			key = lootTableRegistry.getKey((LootTable) (Object) this).orElseThrow(
-					() -> new IllegalStateException("LootTable appears to not be registered, but has been asked to generate loot")
-			);
-
-			//option 2
-			//noinspection EqualsBetweenInconvertibleTypes
-			key = context.getWorld()
-					.getServer()
-					.getReloadableRegistries()
-					.createRegistryLookup()
-					.getOrThrow(RegistryKeys.LOOT_TABLE)
-					.streamEntries()
-					.filter(it -> it.value().equals(this))
-					.findFirst()
-					.orElseThrow(
-							() -> new IllegalStateException("LootTable appears to not be registered, but has been asked to generate loot")
-					)
-					.registryKey();
-		}
-
+		checkKeyInitOrInit(context);
 		List<ItemStack> list = new ObjectArrayList<>();
 		original.call(context, (Consumer<ItemStack>) list::add);
-		LootTableEvents.MODIFY_DROPS.invoker().modifyDrops(
+		LootTableEvents.MODIFY_DROPS.invoker().modifyLootTableDrops(
 				this.key,
 				context,
 				list
 		);
 		list.forEach(lootConsumer);
+	}
+
+	@Override
+	public void fabric$setRegistryKey(RegistryKey<LootTable> key) {
+		this.key = key;
+	}
+
+	@Unique
+	private void checkKeyInitOrInit(LootContext context) {
+		if (key != null) {
+			return;
+		}
+
+		RegistryWrapper.WrapperLookup wrapperLookup = context.getWorld()
+				.getServer()
+				.getReloadableRegistries()
+				.createRegistryLookup();
+
+		RegistryWrapper<LootTable> lootTableRegistryWrapper = wrapperLookup
+				.getOptional(RegistryKeys.LOOT_TABLE)
+				.orElseThrow(() -> new IllegalStateException("Failed to fetch LootTable wrapper from WrapperLookup"));
+
+		// noinspection EqualsBetweenInconvertibleTypes
+		this.key = lootTableRegistryWrapper
+				.streamEntries()
+				.filter(it -> it.value().equals(this))
+				.findFirst()
+				.map(RegistryEntry.Reference::registryKey)
+				.orElseThrow(
+						() -> new IllegalStateException("LootTable appears to be unregistered, but has been asked to generate loot")
+				);
 	}
 }
