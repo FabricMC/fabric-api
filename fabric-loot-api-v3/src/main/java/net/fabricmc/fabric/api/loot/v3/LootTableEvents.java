@@ -115,9 +115,9 @@ public final class LootTableEvents {
 		 * Replaces loot tables.
 		 *
 		 * @param key              the loot table key
-		 * @param original         the original loot table
-		 * @param source           the source of the original loot table
-		 * @param registries       the registry wrapper lookup
+		 * @param original        the original loot table
+		 * @param source          the source of the original loot table
+		 * @param registries      the registry wrapper lookup
 		 * @return the new loot table, or null if it wasn't replaced
 		 */
 		@Nullable
