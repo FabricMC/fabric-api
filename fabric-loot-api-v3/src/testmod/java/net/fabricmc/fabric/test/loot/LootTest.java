@@ -16,22 +16,32 @@
 
 package net.fabricmc.fabric.test.loot;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.SurvivesExplosionLootCondition;
+import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetEnchantmentsLootFunction;
 import net.minecraft.loot.function.SetNameLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.recipe.AbstractCookingRecipe;
+import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.ServerRecipeManager;
+import net.minecraft.recipe.input.SingleStackRecipeInput;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.ModInitializer;
@@ -120,6 +130,31 @@ public class LootTest implements ModInitializer {
 			if (blackWoolTable.isEmpty() || blackWoolTable.get() == LootTable.EMPTY) {
 				throw new AssertionError("black wool loot table should not be empty");
 			}
+		});
+
+		ServerRecipeManager.MatchGetter<SingleStackRecipeInput, ? extends AbstractCookingRecipe> matchGetter = ServerRecipeManager.createCachedMatchGetter(RecipeType.SMELTING);
+
+		// smelt any smeltable drops from blocks broken with a diamond pickaxe
+		LootTableEvents.MODIFY_DROPS.register((key, context, drops) -> {
+			if (!context.hasParameter(LootContextParameters.TOOL) || !context.hasParameter(LootContextParameters.BLOCK_STATE)) {
+				return;
+			}
+
+			ItemStack tool = Objects.requireNonNull(context.get(LootContextParameters.TOOL), "LootContext contains tool, but it was null");
+
+			if (!tool.isOf(Items.DIAMOND_PICKAXE)) {
+				return;
+			}
+
+			ServerWorld world = context.getWorld();
+			RegistryWrapper.WrapperLookup lookup = world.getRegistryManager();
+
+			drops.replaceAll(drop -> {
+				SingleStackRecipeInput input = new SingleStackRecipeInput(drop);
+				return matchGetter.getFirstMatch(input, world).map(RecipeEntry::value)
+						.map(recipe -> recipe.craft(input, lookup))
+						.orElse(drop);
+			});
 		});
 	}
 }

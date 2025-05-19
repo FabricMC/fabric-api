@@ -4,11 +4,13 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "JsonDataLoaderMixin",
-    "ReloadableRegistriesMixin",
     "LootPoolAccessor",
     "LootPoolBuilderMixin",
     "LootTableAccessor",
     "LootTableBuilderMixin",
+    "LootTableMixin",
+    "ReloadableRegistriesLookupAccessor",
+    "ReloadableRegistriesMixin",
     "ResourceFinderAccessor"
   ],
   "injectors": {

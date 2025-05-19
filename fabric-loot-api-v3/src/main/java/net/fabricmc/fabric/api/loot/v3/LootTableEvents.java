@@ -16,9 +16,13 @@
 
 package net.fabricmc.fabric.api.loot.v3;
 
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
@@ -95,16 +99,25 @@ public final class LootTableEvents {
 			listener.onLootTablesLoaded(resourceManager, lootManager);
 		}
 	});
+	/**
+	 * This event can be used for cases where the MODIFY and REPLACE events are inconvenient, such as when you are modifying the result of many loot tables that are unknown, and don't wish to add a custom LootFunction to every table
+	 * <br/>Note: if the table was requested to separate drops into stacks of a given size, the resulting drops from this event will be separated.
+	 */
+	public static final Event<Drop> MODIFY_DROPS = EventFactory.createArrayBacked(Drop.class, listeners -> (key, context, drops) -> {
+		for (Drop listener : listeners) {
+			listener.modifyDrops(key, context, drops);
+		}
+	});
 
 	@FunctionalInterface
 	public interface Replace {
 		/**
 		 * Replaces loot tables.
 		 *
-		 * @param key              the loot table key
-		 * @param original        the original loot table
-		 * @param source          the source of the original loot table
-		 * @param registries      the registry wrapper lookup
+		 * @param key        the loot table key
+		 * @param original   the original loot table
+		 * @param source     the source of the original loot table
+		 * @param registries the registry wrapper lookup
 		 * @return the new loot table, or null if it wasn't replaced
 		 */
 		@Nullable
@@ -116,10 +129,10 @@ public final class LootTableEvents {
 		/**
 		 * Called when a loot table is loading to modify loot tables.
 		 *
-		 * @param key              the loot table key
-		 * @param tableBuilder    a builder of the loot table being loaded
-		 * @param source          the source of the loot table
-		 * @param registries      the registry wrapper lookup
+		 * @param key          the loot table key
+		 * @param tableBuilder a builder of the loot table being loaded
+		 * @param source       the source of the loot table
+		 * @param registries   the registry wrapper lookup
 		 */
 		void modifyLootTable(RegistryKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source, RegistryWrapper.WrapperLookup registries);
 	}
@@ -130,8 +143,19 @@ public final class LootTableEvents {
 		 * Called when all loot tables have been loaded and {@link LootTableEvents#REPLACE} and {@link LootTableEvents#MODIFY} have been invoked.
 		 *
 		 * @param resourceManager the server resource manager
-		 * @param lootRegistry     the loot registry
+		 * @param lootRegistry    the loot registry
 		 */
 		void onLootTablesLoaded(ResourceManager resourceManager, Registry<LootTable> lootRegistry);
+	}
+
+	@FunctionalInterface
+	public interface Drop {
+		/**
+		 * Called after a loot table is finished generating drops to modify drops.
+		 * @param key the loot table's registry key
+		 * @param context the loot context for the current drops
+		 * @param drops the list of drops from the loot table to modify
+		 */
+		void modifyDrops(RegistryKey<LootTable> key, LootContext context, List<ItemStack> drops);
 	}
 }
