@@ -134,7 +134,7 @@ public final class ServerLoginNetworking {
 	 * @param handler the network handler, representing the connection to the client
 	 * @return the packet sender
 	 */
-	public static PacketSender getSender(ServerLoginNetworkHandler handler) {
+	public static LoginPacketSender getSender(ServerLoginNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Network handler cannot be null");
 		return ServerNetworkingImpl.getAddon(handler);
 	}
