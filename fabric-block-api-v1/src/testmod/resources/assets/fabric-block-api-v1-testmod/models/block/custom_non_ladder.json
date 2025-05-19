@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/ladder",
+  "textures": {
+    "texture": "fabric-block-api-v1-testmod:block/custom_non_ladder"
+  }
+}
