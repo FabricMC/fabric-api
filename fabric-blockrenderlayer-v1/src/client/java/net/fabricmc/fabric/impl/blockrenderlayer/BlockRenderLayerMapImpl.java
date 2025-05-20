@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import net.minecraft.block.Block;
+import net.minecraft.class_11515;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.fluid.Fluid;
 
@@ -45,7 +46,7 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	}
 
 	@Override
-	public void putFluid(Fluid fluid, RenderLayer renderLayer) {
+	public void putFluid(Fluid fluid, class_11515 renderLayer) {
 		if (fluid == null) throw new IllegalArgumentException("Request to map null fluid to RenderLayer");
 		if (renderLayer == null) throw new IllegalArgumentException("Request to map fluid " + fluid.toString() + " to null RenderLayer");
 
@@ -53,20 +54,20 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	}
 
 	@Override
-	public void putFluids(RenderLayer renderLayer, Fluid... fluids) {
+	public void putFluids(class_11515 renderLayer, Fluid... fluids) {
 		for (Fluid fluid : fluids) {
 			putFluid(fluid, renderLayer);
 		}
 	}
 
 	private static final Map<Block, RenderLayer> BLOCK_RENDER_LAYER_MAP = new HashMap<>();
-	private static final Map<Fluid, RenderLayer> FLUID_RENDER_LAYER_MAP = new HashMap<>();
+	private static final Map<Fluid, class_11515> FLUID_RENDER_LAYER_MAP = new HashMap<>();
 
 	// These consumers initially add to the maps above, and then are later set (when initialize is called) to insert straight into the target map.
 	private static BiConsumer<Block, RenderLayer> blockHandler = BLOCK_RENDER_LAYER_MAP::put;
-	private static BiConsumer<Fluid, RenderLayer> fluidHandler = FLUID_RENDER_LAYER_MAP::put;
+	private static BiConsumer<Fluid, class_11515> fluidHandler = FLUID_RENDER_LAYER_MAP::put;
 
-	public static void initialize(BiConsumer<Block, RenderLayer> blockHandlerIn, BiConsumer<Fluid, RenderLayer> fluidHandlerIn) {
+	public static void initialize(BiConsumer<Block, RenderLayer> blockHandlerIn, BiConsumer<Fluid, class_11515> fluidHandlerIn) {
 		// Add all the preexisting render layers
 		BLOCK_RENDER_LAYER_MAP.forEach(blockHandlerIn);
 		FLUID_RENDER_LAYER_MAP.forEach(fluidHandlerIn);

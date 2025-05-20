@@ -95,7 +95,7 @@ public abstract class WorldRendererMixin {
 			method = "method_62214",
 			at = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/client/render/WorldRenderer;renderLayer(Lnet/minecraft/client/render/RenderLayer;[Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V",
+				target = "Lnet/minecraft/client/render/WorldRenderer;renderLayer(Lnet/minecraft/class_11515;[Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V",
 				ordinal = 2,
 				shift = Shift.AFTER
 			)

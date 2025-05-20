@@ -72,7 +72,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		});
 
 		// Enable the vanilla debugconfig command
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> DebugConfigCommand.register(dispatcher));
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> DebugConfigCommand.register(dispatcher, registryAccess));
 	}
 
 	public record TestConfigurationTask(String data) implements ServerPlayerConfigurationTask {
