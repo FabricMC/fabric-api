@@ -110,6 +110,7 @@ public final class ConventionalBiomeTags {
 	 * Biomes that are primarily composed of a specific wood type.
 	 * For example, normal Forest biomes are mostly Oak Trees with a few Birch Trees. This biome would be in `c:primary_wood_type/oak` tag due to Oak dominance.
 	 * For biomes that are composed of multiple wood types but in equal proportions, put the biome into multiple wood type tags. Biomes with very few trees like Plains are skipped.
+	 *
 	 * <p></p>
 	 * If a mod introduces a new wood type, create a new tag under the `c:primary_wood_type/` folder.
 	 * Multiple mods introducing the same new wood type will both be sticking their biomes in same tag.
