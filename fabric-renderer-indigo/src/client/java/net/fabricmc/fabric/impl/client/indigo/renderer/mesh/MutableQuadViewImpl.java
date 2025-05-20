@@ -32,7 +32,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -42,7 +41,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.TextureHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 
 /**
@@ -118,12 +116,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		final int i = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U;
 		data[i] = Float.floatToRawIntBits(u);
 		data[i + 1] = Float.floatToRawIntBits(v);
-		return this;
-	}
-
-	@Override
-	public final MutableQuadViewImpl spriteBake(Sprite sprite, int bakeFlags) {
-		TextureHelper.bakeSprite(this, sprite, bakeFlags);
 		return this;
 	}
 

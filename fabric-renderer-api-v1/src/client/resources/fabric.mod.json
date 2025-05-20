@@ -37,7 +37,11 @@
       "net/minecraft/class_1087": ["net/fabricmc/fabric/api/renderer/v1/model/FabricBlockStateModel"],
       "net/minecraft/class_778": ["net/fabricmc/fabric/api/renderer/v1/render/FabricBlockModelRenderer"],
       "net/minecraft/class_776": ["net/fabricmc/fabric/api/renderer/v1/render/FabricBlockRenderManager"],
-      "net/minecraft/class_10444\u0024class_10446": ["net/fabricmc/fabric/api/renderer/v1/render/FabricLayerRenderState"]
+      "net/minecraft/class_10444\u0024class_10446": ["net/fabricmc/fabric/api/renderer/v1/render/FabricLayerRenderState"],
+      "net/minecraft/class_4724\u0024class_7774": ["net/fabricmc/fabric/api/renderer/v1/sprite/FabricAtlasPreparation"],
+      "net/minecraft/class_9826": ["net/fabricmc/fabric/api/renderer/v1/sprite/FabricErrorCollectingSpriteGetter"],
+      "net/minecraft/class_1059": ["net/fabricmc/fabric/api/renderer/v1/sprite/FabricSpriteAtlasTexture"],
+      "net/minecraft/class_7766\u0024class_7767": ["net/fabricmc/fabric/api/renderer/v1/sprite/FabricStitchResult"]
     }
   }
 }

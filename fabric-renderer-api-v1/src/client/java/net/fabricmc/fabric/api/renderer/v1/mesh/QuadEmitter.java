@@ -78,7 +78,10 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	@Override
-	QuadEmitter spriteBake(Sprite sprite, int bakeFlags);
+	default QuadEmitter spriteBake(Sprite sprite, int bakeFlags) {
+		MutableQuadView.super.spriteBake(sprite, bakeFlags);
+		return this;
+	}
 
 	default QuadEmitter uvUnitSquare() {
 		uv(0, 0, 0);

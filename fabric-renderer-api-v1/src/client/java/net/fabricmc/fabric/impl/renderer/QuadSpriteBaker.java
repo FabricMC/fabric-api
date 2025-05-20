@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
+package net.fabricmc.fabric.impl.renderer;
 
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
@@ -23,11 +23,10 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 
 /**
  * Handles most texture-baking use cases for model loaders and model libraries
- * via {@link #bakeSprite(MutableQuadView, Sprite, int)}. Also used by the API
- * itself to implement automatic block-breaking models for enhanced models.
+ * via {@link #bakeSprite(MutableQuadView, Sprite, int)}.
  */
-public final class TextureHelper {
-	private TextureHelper() { }
+public final class QuadSpriteBaker {
+	private QuadSpriteBaker() { }
 
 	private static final float NORMALIZER = 1f / 16f;
 
@@ -101,11 +100,11 @@ public final class TextureHelper {
 	private static final VertexModifier[] UVLOCKERS = new VertexModifier[6];
 
 	static {
-		UVLOCKERS[Direction.EAST.getIndex()] = (q, i) -> q.uv(i, 1 - q.z(i), 1 - q.y(i));
-		UVLOCKERS[Direction.WEST.getIndex()] = (q, i) -> q.uv(i, q.z(i), 1 - q.y(i));
-		UVLOCKERS[Direction.NORTH.getIndex()] = (q, i) -> q.uv(i, 1 - q.x(i), 1 - q.y(i));
-		UVLOCKERS[Direction.SOUTH.getIndex()] = (q, i) -> q.uv(i, q.x(i), 1 - q.y(i));
 		UVLOCKERS[Direction.DOWN.getIndex()] = (q, i) -> q.uv(i, q.x(i), 1 - q.z(i));
 		UVLOCKERS[Direction.UP.getIndex()] = (q, i) -> q.uv(i, q.x(i), q.z(i));
+		UVLOCKERS[Direction.NORTH.getIndex()] = (q, i) -> q.uv(i, 1 - q.x(i), 1 - q.y(i));
+		UVLOCKERS[Direction.SOUTH.getIndex()] = (q, i) -> q.uv(i, q.x(i), 1 - q.y(i));
+		UVLOCKERS[Direction.WEST.getIndex()] = (q, i) -> q.uv(i, q.z(i), 1 - q.y(i));
+		UVLOCKERS[Direction.EAST.getIndex()] = (q, i) -> q.uv(i, 1 - q.z(i), 1 - q.y(i));
 	}
 }

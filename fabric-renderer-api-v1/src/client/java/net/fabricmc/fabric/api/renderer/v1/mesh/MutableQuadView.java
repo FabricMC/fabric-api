@@ -29,6 +29,7 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.impl.renderer.QuadSpriteBaker;
 
 /**
  * A mutable {@link QuadView} instance. The base interface for
@@ -41,46 +42,47 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
  */
 public interface MutableQuadView extends QuadView {
 	/**
-	 * Causes texture to appear with no rotation.
+	 * When enabled, causes texture to appear with no rotation. This is the default and does not have to be specified
+	 * explicitly. Can be overridden by other rotation flags.
 	 * Pass in bakeFlags parameter to {@link #spriteBake(Sprite, int)}.
 	 */
 	int BAKE_ROTATE_NONE = 0;
 
 	/**
-	 * Causes texture to appear rotated 90 deg. clockwise relative to nominal face.
+	 * When enabled, causes texture to appear rotated 90 degrees clockwise.
 	 * Pass in bakeFlags parameter to {@link #spriteBake(Sprite, int)}.
 	 */
 	int BAKE_ROTATE_90 = 1;
 
 	/**
-	 * Causes texture to appear rotated 180 deg. relative to nominal face.
+	 * When enabled, causes texture to appear rotated 180 degrees.
 	 * Pass in bakeFlags parameter to {@link #spriteBake(Sprite, int)}.
 	 */
 	int BAKE_ROTATE_180 = 2;
 
 	/**
-	 * Causes texture to appear rotated 270 deg. clockwise relative to nominal face.
+	 * When enabled, causes texture to appear rotated 270 degrees clockwise.
 	 * Pass in bakeFlags parameter to {@link #spriteBake(Sprite, int)}.
 	 */
 	int BAKE_ROTATE_270 = 3;
 
 	/**
-	 * When enabled, texture coordinate are assigned based on vertex position.
-	 * Any existing UV coordinates will be replaced.
+	 * When enabled, texture coordinates are assigned based on vertex positions and the
+	 * {@linkplain #nominalFace() nominal face}.
+	 * Any existing UV coordinates will be replaced and the {@link #BAKE_NORMALIZED} flag will be ignored.
 	 * Pass in bakeFlags parameter to {@link #spriteBake(Sprite, int)}.
 	 *
-	 * <p>UV lock always derives texture coordinates based on nominal face, even
-	 * when the quad is not co-planar with that face, and the result is
-	 * the same as if the quad were projected onto the nominal face, which
-	 * is usually the desired result.
+	 * <p>UV lock derives texture coordinates based on {@linkplain #nominalFace() nominal face} by projecting the quad
+	 * onto it, even when the quad is not co-planar with it. This flag is ignored if the normal face is {@code null}.
 	 */
 	int BAKE_LOCK_UV = 4;
 
 	/**
-	 * When set, U texture coordinates for the given sprite are
+	 * When enabled, U texture coordinates for the given sprite are
 	 * flipped as part of baking. Can be useful for some randomization
 	 * and texture mapping scenarios. Results are different from what
-	 * can be obtained via rotation and both can be applied.
+	 * can be obtained via rotation and both can be applied. Any
+	 * rotation is applied before this flag.
 	 * Pass in bakeFlags parameter to {@link #spriteBake(Sprite, int)}.
 	 */
 	int BAKE_FLIP_U = 8;
@@ -168,7 +170,10 @@ public interface MutableQuadView extends QuadView {
 	 * Can handle UV locking, rotation, interpolation, etc. Control this behavior
 	 * by passing additive combinations of the BAKE_ flags defined in this interface.
 	 */
-	MutableQuadView spriteBake(Sprite sprite, int bakeFlags);
+	default MutableQuadView spriteBake(Sprite sprite, int bakeFlags) {
+		QuadSpriteBaker.bakeSprite(this, sprite, bakeFlags);
+		return this;
+	}
 
 	/**
 	 * Accept vanilla lightmap values.  Input values will override lightmap values

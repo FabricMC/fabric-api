@@ -17,14 +17,12 @@
 package net.fabricmc.fabric.impl.renderer;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
@@ -43,12 +41,12 @@ public class SpriteFinderImpl implements SpriteFinder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpriteFinderImpl.class);
 
 	private final Node root;
-	private final SpriteAtlasTexture spriteAtlasTexture;
+	private final Sprite missingSprite;
 	private int badSpriteCount = 0;
 
-	public SpriteFinderImpl(Map<Identifier, Sprite> sprites, SpriteAtlasTexture spriteAtlasTexture) {
+	public SpriteFinderImpl(Map<Identifier, Sprite> sprites, Sprite missingSprite) {
 		root = new Node(0.5f, 0.5f, 0.25f);
-		this.spriteAtlasTexture = spriteAtlasTexture;
+		this.missingSprite = missingSprite;
 		sprites.values().forEach(root::add);
 	}
 
@@ -74,9 +72,14 @@ public class SpriteFinderImpl implements SpriteFinder {
 		final float midU;
 		final float midV;
 		final float cellRadius;
+
+		@Nullable
 		Object lowLow = null;
+		@Nullable
 		Object lowHigh = null;
+		@Nullable
 		Object highLow = null;
+		@Nullable
 		Object highHigh = null;
 
 		Node(float midU, float midV, float radius) {
@@ -105,36 +108,37 @@ public class SpriteFinderImpl implements SpriteFinder {
 			final boolean highV = sprite.getMaxV() > midV + EPS;
 
 			if (lowU && lowV) {
-				addInner(sprite, lowLow, -1, -1, q -> lowLow = q);
+				lowLow = addInner(sprite, lowLow, -1, -1);
 			}
 
 			if (lowU && highV) {
-				addInner(sprite, lowHigh, -1, 1, q -> lowHigh = q);
+				lowHigh = addInner(sprite, lowHigh, -1, 1);
 			}
 
 			if (highU && lowV) {
-				addInner(sprite, highLow, 1, -1, q -> highLow = q);
+				highLow = addInner(sprite, highLow, 1, -1);
 			}
 
 			if (highU && highV) {
-				addInner(sprite, highHigh, 1, 1, q -> highHigh = q);
+				highHigh = addInner(sprite, highHigh, 1, 1);
 			}
 		}
 
-		private void addInner(Sprite sprite, Object quadrant, int uStep, int vStep, Consumer<Object> setter) {
+		private Object addInner(Sprite sprite, @Nullable Object quadrant, int uStep, int vStep) {
 			if (quadrant == null) {
-				setter.accept(sprite);
-			} else if (quadrant instanceof Node) {
-				((Node) quadrant).add(sprite);
+				return sprite;
+			} else if (quadrant instanceof Node node) {
+				node.add(sprite);
+				return quadrant;
 			} else {
 				Node n = new Node(midU + cellRadius * uStep, midV + cellRadius * vStep, cellRadius * 0.5f);
 
-				if (quadrant instanceof Sprite) {
-					n.add((Sprite) quadrant);
+				if (quadrant instanceof Sprite prevSprite) {
+					n.add(prevSprite);
 				}
 
 				n.add(sprite);
-				setter.accept(n);
+				return n;
 			}
 		}
 
@@ -146,22 +150,14 @@ public class SpriteFinderImpl implements SpriteFinder {
 			}
 		}
 
-		private Sprite findInner(Object quadrant, float u, float v) {
-			if (quadrant instanceof Sprite) {
-				return (Sprite) quadrant;
-			} else if (quadrant instanceof Node) {
-				return ((Node) quadrant).find(u, v);
+		private Sprite findInner(@Nullable Object quadrant, float u, float v) {
+			if (quadrant instanceof Node node) {
+				return node.find(u, v);
+			} else if (quadrant instanceof Sprite sprite) {
+				return sprite;
 			} else {
-				return spriteAtlasTexture.getSprite(MissingSprite.getMissingSpriteId());
+				return missingSprite;
 			}
 		}
-	}
-
-	public static SpriteFinderImpl get(SpriteAtlasTexture atlas) {
-		return ((SpriteFinderAccess) atlas).fabric_spriteFinder();
-	}
-
-	public interface SpriteFinderAccess {
-		SpriteFinderImpl fabric_spriteFinder();
 	}
 }

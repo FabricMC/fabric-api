@@ -3,7 +3,6 @@
   "package": "net.fabricmc.fabric.mixin.renderer",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "client.SpriteAtlasTextureMixin",
     "client.block.model.BlockModelPartMixin",
     "client.block.model.BlockStateModelMixin",
     "client.block.model.GeometryBakedModelMixin",
@@ -24,7 +23,12 @@
     "client.block.render.SnowGolemPumpkinFeatureRendererMixin",
     "client.item.BasicItemModelMixin",
     "client.item.BasicItemModelUnbakedMixin",
-    "client.item.ItemRenderStateLayerRenderStateMixin"
+    "client.item.ItemRenderStateLayerRenderStateMixin",
+    "client.sprite.BakedModelManager1Mixin",
+    "client.sprite.ErrorCollectingSpriteGetterMixin",
+    "client.sprite.SpriteAtlasManagerAtlasPreparationMixin",
+    "client.sprite.SpriteAtlasTextureMixin",
+    "client.sprite.SpriteLoaderStitchResultMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -16,35 +16,42 @@
 
 package net.fabricmc.fabric.api.renderer.v1.model;
 
+import java.util.function.Predicate;
+
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
-import net.fabricmc.fabric.impl.renderer.SpriteFinderImpl;
+import net.fabricmc.fabric.api.renderer.v1.sprite.FabricAtlasPreparation;
+import net.fabricmc.fabric.api.renderer.v1.sprite.FabricErrorCollectingSpriteGetter;
+import net.fabricmc.fabric.api.renderer.v1.sprite.FabricSpriteAtlasTexture;
+import net.fabricmc.fabric.api.renderer.v1.sprite.FabricStitchResult;
 
 /**
- * Indexes a texture atlas to allow fast lookup of Sprites from
- * baked vertex coordinates.  Main use is for {@link Mesh}-based models
- * to generate vanilla quads on demand without tracking and retaining
- * the sprites that were baked into the mesh. In other words, this class
- * supplies the sprite parameter for {@link QuadView#toBakedQuad(Sprite)}.
+ * Indexes a texture atlas to allow fast lookup of {@link Sprite}s from baked texture coordinates.
+ *
+ * <p>Example use cases include interpolating the textures of a submodel's quads in
+ * {@link FabricBlockStateModel#emitQuads(QuadEmitter, BlockRenderView, BlockPos, BlockState, Random, Predicate)} or
+ * finding the sprite for use in {@link QuadView#toBakedQuad(Sprite)}.
+ *
+ * <p>A sprite finder can be retrieved from various vanilla objects. Always use
+ * {@link FabricErrorCollectingSpriteGetter#spriteFinder(Identifier)}, {@link FabricStitchResult#spriteFinder()}, or
+ * {@link FabricAtlasPreparation#spriteFinder()} whenever an applicable instance is available. For example, model
+ * baking is supplied with a {@link ErrorCollectingSpriteGetter}, so it should be used to retrieve the sprite finder.
+ * In most other cases, it is safe to use {@link FabricSpriteAtlasTexture#spriteFinder()}.
  */
 @ApiStatus.NonExtendable
 public interface SpriteFinder {
-	/**
-	 * Retrieves or creates the finder for the given atlas.
-	 * Instances should not be retained as fields, or they must be
-	 * refreshed whenever there is a resource reload or other event
-	 * that causes atlas textures to be re-stitched.
-	 */
-	static SpriteFinder get(SpriteAtlasTexture atlas) {
-		return SpriteFinderImpl.get(atlas);
-	}
-
 	/**
 	 * Finds the atlas sprite containing the vertex centroid of the quad.
 	 * Vertex centroid is essentially the mean u,v coordinate - the intent being
@@ -68,6 +75,14 @@ public interface SpriteFinder {
 	 * faster if you already have the centroid or another appropriate value.
 	 */
 	Sprite find(float u, float v);
+
+	/**
+	 * @deprecated Use {@link FabricSpriteAtlasTexture#spriteFinder()} instead.
+	 */
+	@Deprecated
+	static SpriteFinder get(SpriteAtlasTexture atlas) {
+		return atlas.spriteFinder();
+	}
 
 	/**
 	 * @deprecated Use {@link #find(QuadView)} instead.
