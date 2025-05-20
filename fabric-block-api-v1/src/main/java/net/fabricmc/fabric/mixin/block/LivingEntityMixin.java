@@ -28,7 +28,7 @@ import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
 
-import net.fabricmc.fabric.api.block.v1.FabricBlockTags;
+import net.fabricmc.fabric.api.block.v1.BlockFunctionalityTags;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
@@ -39,7 +39,7 @@ abstract class LivingEntityMixin {
 			cancellable = true
 	)
 	private void allowTaggedBlocksForTrapdoorClimbing(BlockPos pos, BlockState state, CallbackInfoReturnable<Boolean> info, @Local(ordinal = 1) BlockState belowState) {
-		if (belowState.isIn(FabricBlockTags.CAN_CLIMB_TRAPDOOR_ABOVE)) {
+		if (belowState.isIn(BlockFunctionalityTags.CAN_CLIMB_TRAPDOOR_ABOVE)) {
 			if (belowState.getBlock() instanceof LadderBlock) {
 				// Check that the ladder and trapdoor are placed in the same direction.
 				// Vanilla does the same check for the normal ladder block.

@@ -22,9 +22,9 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 /**
- * Fabric-provided block tags that add extra functionality to blocks.
+ * Contains block tags that add extra functionality to blocks.
  */
-public final class FabricBlockTags {
+public final class BlockFunctionalityTags {
 	/**
 	 * Blocks in this tag let the player climb open trapdoors above them.
 	 *
@@ -33,7 +33,7 @@ public final class FabricBlockTags {
 	 */
 	public static final TagKey<Block> CAN_CLIMB_TRAPDOOR_ABOVE = create("can_climb_trapdoor_above");
 
-	private FabricBlockTags() {
+	private BlockFunctionalityTags() {
 	}
 
 	private static TagKey<Block> create(String name) {
