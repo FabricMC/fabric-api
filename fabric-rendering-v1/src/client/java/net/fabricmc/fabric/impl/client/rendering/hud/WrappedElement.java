@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.rendering;
+package net.fabricmc.fabric.impl.client.rendering.hud;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayer;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.IdentifiedElement;
 
 /**
- * A simple layer that wraps a {@link HudLayer} that can be added to {@link net.fabricmc.fabric.api.client.rendering.v1.LayeredDrawerWrapper LayeredDrawerWrapper}.
+ * A simple element that wraps a {@link HudElement} that can be added to {@link net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry HudElementRegistry}.
  *
- * @param id    the identifier of the layer
- * @param layer the layer to wrap
+ * @param id    the identifier of the element
+ * @param element the element to wrap
  */
-public record WrappedLayer(Identifier id, HudLayer layer) implements IdentifiedLayer {
+public record WrappedElement(Identifier id, HudElement element) implements IdentifiedElement {
 	@Override
 	public void render(DrawContext context, RenderTickCounter tickCounter) {
-		layer.render(context, tickCounter);
+		element.render(context, tickCounter);
 	}
 }

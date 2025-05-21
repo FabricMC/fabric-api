@@ -31,10 +31,10 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.IdentifiedElement;
 
-public class HudLayerTests implements ClientModInitializer, FabricClientGameTest {
+public class HudTests implements ClientModInitializer, FabricClientGameTest {
 	private static final String MOD_ID = "fabric";
 	private static final String BEFORE_MISC_OVERLAY = "test_before_misc_overlay";
 	private static final String AFTER_MISC_OVERLAY = "test_after_misc_overlay";
@@ -46,14 +46,12 @@ public class HudLayerTests implements ClientModInitializer, FabricClientGameTest
 
 	@Override
 	public void onInitializeClient() {
-		HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer
-				.attachLayerBefore(IdentifiedLayer.MISC_OVERLAYS, Identifier.of(MOD_ID, BEFORE_MISC_OVERLAY), HudLayerTests::renderBeforeMiscOverlay)
-				.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, Identifier.of(MOD_ID, AFTER_MISC_OVERLAY), HudLayerTests::renderAfterMiscOverlay)
-				.attachLayerAfter(IdentifiedLayer.HOTBAR_AND_BARS, Identifier.of(MOD_ID, AFTER_HOTBAR_AND_BARS), HudLayerTests::renderAfterExperienceLevel)
-				.attachLayerBefore(IdentifiedLayer.DEMO_TIMER, Identifier.of(MOD_ID, BEFORE_DEMO_TIMER), HudLayerTests::renderBeforeDemoTimer)
-				.attachLayerBefore(IdentifiedLayer.CHAT, Identifier.of(MOD_ID, BEFORE_CHAT), HudLayerTests::renderBeforeChat)
-				.attachLayerAfter(IdentifiedLayer.SUBTITLES, Identifier.of(MOD_ID, AFTER_SUBTITLES), HudLayerTests::renderAfterSubtitles)
-		);
+		HudElementRegistry.attachElementBefore(IdentifiedElement.MISC_OVERLAYS, Identifier.of(MOD_ID, BEFORE_MISC_OVERLAY), HudTests::renderBeforeMiscOverlay);
+		HudElementRegistry.attachElementAfter(IdentifiedElement.MISC_OVERLAYS, Identifier.of(MOD_ID, AFTER_MISC_OVERLAY), HudTests::renderAfterMiscOverlay);
+		HudElementRegistry.attachElementAfter(IdentifiedElement.HOTBAR_AND_BARS, Identifier.of(MOD_ID, AFTER_HOTBAR_AND_BARS), HudTests::renderAfterExperienceLevel);
+		HudElementRegistry.attachElementBefore(IdentifiedElement.DEMO_TIMER, Identifier.of(MOD_ID, BEFORE_DEMO_TIMER), HudTests::renderBeforeDemoTimer);
+		HudElementRegistry.attachElementBefore(IdentifiedElement.CHAT, Identifier.of(MOD_ID, BEFORE_CHAT), HudTests::renderBeforeChat);
+		HudElementRegistry.attachElementAfter(IdentifiedElement.SUBTITLES, Identifier.of(MOD_ID, AFTER_SUBTITLES), HudTests::renderAfterSubtitles);
 	}
 
 	private static void renderBeforeMiscOverlay(DrawContext context, RenderTickCounter tickCounter) {
