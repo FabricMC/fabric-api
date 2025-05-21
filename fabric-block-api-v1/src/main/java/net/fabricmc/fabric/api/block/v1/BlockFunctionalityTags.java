@@ -28,7 +28,7 @@ public final class BlockFunctionalityTags {
 	/**
 	 * Blocks in this tag let the player climb open trapdoors above them.
 	 *
-	 * <p>If a tagged block in a {@link net.minecraft.block.LadderBlock}, the block state's {@code facing}
+	 * <p>If a tagged block is a {@link net.minecraft.block.LadderBlock}, the block state's {@code facing}
 	 * property must additionally match the trapdoor's direction, to match how vanilla ladders work.
 	 */
 	public static final TagKey<Block> CAN_CLIMB_TRAPDOOR_ABOVE = create("can_climb_trapdoor_above");
