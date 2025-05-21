@@ -30,7 +30,7 @@ import net.minecraft.util.Identifier;
 @Mixin(SoundSystem.class)
 public class SoundSystemMixin {
 	@Redirect(
-			method = "play(Lnet/minecraft/client/sound/SoundInstance;)V",
+			method = "play(Lnet/minecraft/client/sound/SoundInstance;)Lnet/minecraft/client/sound/SoundSystem$class_11518;",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/client/sound/SoundLoader;loadStreamed(Lnet/minecraft/util/Identifier;Z)Ljava/util/concurrent/CompletableFuture;"
