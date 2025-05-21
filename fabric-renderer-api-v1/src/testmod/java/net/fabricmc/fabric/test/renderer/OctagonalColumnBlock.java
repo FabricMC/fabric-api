@@ -18,10 +18,11 @@ package net.fabricmc.fabric.test.renderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.PillarBlock;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 
-public class OctagonalColumnBlock extends Block {
+public class OctagonalColumnBlock extends PillarBlock {
 	public static final BooleanProperty VANILLA_SHADE_MODE = BooleanProperty.of("vanilla_shade_mode");
 
 	public OctagonalColumnBlock(Settings settings) {
@@ -31,6 +32,7 @@ public class OctagonalColumnBlock extends Block {
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+		super.appendProperties(builder);
 		builder.add(VANILLA_SHADE_MODE);
 	}
 }
