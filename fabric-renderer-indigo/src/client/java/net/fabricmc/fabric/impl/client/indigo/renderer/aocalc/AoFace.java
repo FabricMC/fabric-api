@@ -127,8 +127,9 @@ enum AoFace {
 
 	final Direction[] neighbors;
 	/**
-	 * Vanilla models with cubic quads have vertices in a certain order, which allows
-	 * us to map them using a lookup.
+	 * Cubic quads have a vertex in each corner, which allows us to skip computing
+	 * weights and map values to vertices directly. Note that vanilla assumes a
+	 * certain vertex order, but we detect it and offset the map accordingly.
 	 */
 	final int[] vertexMap;
 

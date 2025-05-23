@@ -21,6 +21,7 @@ import static net.minecraft.util.math.MathHelper.approximatelyEquals;
 import org.joml.Vector3fc;
 
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.CubeFace;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.math.Direction.AxisDirection;
@@ -198,24 +199,6 @@ public final class GeometryHelper {
 	}
 
 	/**
-	 * Simple 4-way compare, doesn't handle NaN values.
-	 */
-	public static float min(float a, float b, float c, float d) {
-		final float x = a < b ? a : b;
-		final float y = c < d ? c : d;
-		return x < y ? x : y;
-	}
-
-	/**
-	 * Simple 4-way compare, doesn't handle NaN values.
-	 */
-	public static float max(float a, float b, float c, float d) {
-		final float x = a > b ? a : b;
-		final float y = c > d ? c : d;
-		return x > y ? x : y;
-	}
-
-	/**
 	 * @see #longestAxis(float, float, float)
 	 */
 	public static Axis longestAxis(Vector3fc vec) {
@@ -237,5 +220,72 @@ public final class GeometryHelper {
 
 		return Math.abs(normalZ) > longest
 				? Axis.Z : result;
+	}
+
+	/**
+	 * Returns the index of the vertex which is in the first cubic corner for the given quad's light face, according to
+	 * the directions specified in {@link CubeFace}. Assumes that the given quad is
+	 * {@linkplain #isQuadCubic(Direction, QuadView) cubic}. Used to make smooth lighting for cubic quads work correctly
+	 * regardless of vertex order.
+	 *
+	 * <p>Because cubic quads have all vertices in different corners, the implementation only has to find which corner
+	 * the first vertex is in based on the same criteria as {@link #isQuadCubic(Direction, QuadView)}. Then, since
+	 * the vertex winding order is always counterclockwise, it can know which vertex is in the first corner.
+	 */
+	public static int firstCubicVertex(QuadView quad) {
+		final float x = quad.x(0);
+		final float y = quad.y(0);
+		final float z = quad.z(0);
+
+		/*
+		!a & !b -> vertex 0 is in corner 0 -> vertex 0 is in corner 0
+		!a & b -> vertex 0 is in corner 1 -> vertex 3 is in corner 0
+		a & b -> vertex 0 is in corner 2 -> vertex 2 is in corner 0
+		a & !b -> vertex 0 is in corner 3 -> vertex 1 is in corner 0
+		 */
+		final boolean a;
+		final boolean b;
+
+		switch (quad.lightFace()) {
+		case DOWN -> {
+			a = x > EPS_MIN;
+			b = z < EPS_MAX;
+		}
+		case UP -> {
+			a = x > EPS_MIN;
+			b = z > EPS_MIN;
+		}
+		case NORTH -> {
+			a = x < EPS_MAX;
+			b = y < EPS_MAX;
+		}
+		case SOUTH -> {
+			a = x > EPS_MIN;
+			b = y < EPS_MAX;
+		}
+		case WEST -> {
+			a = z > EPS_MIN;
+			b = y < EPS_MAX;
+		}
+		case EAST -> {
+			a = z < EPS_MAX;
+			b = y < EPS_MAX;
+		}
+		default -> {
+			return 0;
+		}
+		}
+
+		int result = 0;
+
+		if (a) {
+			result ^= 1;
+		}
+
+		if (b) {
+			result ^= 3;
+		}
+
+		return result;
 	}
 }

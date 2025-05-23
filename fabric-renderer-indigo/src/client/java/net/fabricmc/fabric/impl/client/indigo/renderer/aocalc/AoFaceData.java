@@ -54,31 +54,37 @@ class AoFaceData {
 		this.s3 = (l3 >>> 16) & 0xFFFF;
 	}
 
-	int weigtedBlockLight(float[] w) {
+	int weightedBlockLight(float[] w) {
 		return (int) (b0 * w[0] + b1 * w[1] + b2 * w[2] + b3 * w[3]) & 0xFF;
 	}
 
-	int weigtedSkyLight(float[] w) {
+	int weightedSkyLight(float[] w) {
 		return (int) (s0 * w[0] + s1 * w[1] + s2 * w[2] + s3 * w[3]) & 0xFF;
 	}
 
 	int weightedCombinedLight(float[] w) {
-		return weigtedSkyLight(w) << 16 | weigtedBlockLight(w);
+		return weightedSkyLight(w) << 16 | weightedBlockLight(w);
 	}
 
-	float weigtedAo(float[] w) {
+	float weightedAo(float[] w) {
 		return a0 * w[0] + a1 * w[1] + a2 * w[2] + a3 * w[3];
 	}
 
-	void toArray(float[] aOut, int[] bOut, int[] vertexMap) {
-		aOut[vertexMap[0]] = a0;
-		aOut[vertexMap[1]] = a1;
-		aOut[vertexMap[2]] = a2;
-		aOut[vertexMap[3]] = a3;
-		bOut[vertexMap[0]] = s0 << 16 | b0;
-		bOut[vertexMap[1]] = s1 << 16 | b1;
-		bOut[vertexMap[2]] = s2 << 16 | b2;
-		bOut[vertexMap[3]] = s3 << 16 | b3;
+	void toArrays(float[] aoOut, int[] lightOut, int[] vertexMap, int vertexOffset) {
+		int i0 = vertexMap[vertexOffset];
+		int i1 = vertexMap[(vertexOffset + 1) % 4];
+		int i2 = vertexMap[(vertexOffset + 2) % 4];
+		int i3 = vertexMap[(vertexOffset + 3) % 4];
+
+		aoOut[i0] = a0;
+		aoOut[i1] = a1;
+		aoOut[i2] = a2;
+		aoOut[i3] = a3;
+
+		lightOut[i0] = s0 << 16 | b0;
+		lightOut[i1] = s1 << 16 | b1;
+		lightOut[i2] = s2 << 16 | b2;
+		lightOut[i3] = s3 << 16 | b3;
 	}
 
 	static AoFaceData weightedMean(AoFaceData in0, float w0, AoFaceData in1, float w1, AoFaceData out) {

@@ -33,6 +33,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
+import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
@@ -151,12 +152,18 @@ public class AoCalculator {
 
 	private void calcEnhanced(QuadViewImpl quad) {
 		switch (quad.geometryFlags()) {
-		case AXIS_ALIGNED_FLAG | CUBIC_FLAG | LIGHT_FACE_FLAG:
-		case AXIS_ALIGNED_FLAG | LIGHT_FACE_FLAG:
+		case LIGHT_FACE_FLAG | AXIS_ALIGNED_FLAG | CUBIC_FLAG:
+			vanillaFullFace(quad, quad.lightFace(), true, quad.hasShade());
+			break;
+
+		case LIGHT_FACE_FLAG | AXIS_ALIGNED_FLAG:
 			vanillaPartialFace(quad, quad.lightFace(), true, quad.hasShade());
 			break;
 
 		case AXIS_ALIGNED_FLAG | CUBIC_FLAG:
+			blendedFullFace(quad, quad.lightFace(), quad.hasShade());
+			break;
+
 		case AXIS_ALIGNED_FLAG:
 			blendedPartialFace(quad, quad.lightFace(), quad.hasShade());
 			break;
@@ -167,24 +174,31 @@ public class AoCalculator {
 		}
 	}
 
-	private void vanillaFullFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, boolean shade) {
-		computeFace(lightFace, isOnLightFace, shade).toArray(ao, light, AoFace.get(lightFace).vertexMap);
+	private void fullFace(QuadViewImpl quad, Direction lightFace, AoFaceData faceData) {
+		faceData.toArrays(ao, light, AoFace.get(lightFace).vertexMap, GeometryHelper.firstCubicVertex(quad));
 	}
 
-	private void vanillaPartialFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, boolean shade) {
-		AoFaceData faceData = computeFace(lightFace, isOnLightFace, shade);
+	private void partialFace(QuadViewImpl quad, Direction lightFace, AoFaceData faceData) {
 		final AoFace aoFace = AoFace.get(lightFace);
 		final float[] w = this.w;
 
 		for (int i = 0; i < 4; i++) {
 			aoFace.computeCornerWeights(quad, i, w);
 			light[i] = faceData.weightedCombinedLight(w);
-			ao[i] = faceData.weigtedAo(w);
+			ao[i] = faceData.weightedAo(w);
 		}
 	}
 
-	/** used in {@link #blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, boolean shade)} as return variable to avoid new allocation. */
-	AoFaceData tmpFace = new AoFaceData();
+	private void vanillaFullFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, boolean shade) {
+		fullFace(quad, lightFace, computeFace(lightFace, isOnLightFace, shade));
+	}
+
+	private void vanillaPartialFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, boolean shade) {
+		partialFace(quad, lightFace, computeFace(lightFace, isOnLightFace, shade));
+	}
+
+	/** Used in {@link #blendedInsetFace(QuadViewImpl, int, Direction, boolean)} as return variable to avoid new allocation. */
+	private final AoFaceData tmpFace = new AoFaceData();
 
 	/** Returns linearly interpolated blend of outer and inner face based on depth of vertex in face. */
 	private AoFaceData blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, boolean shade) {
@@ -194,7 +208,7 @@ public class AoCalculator {
 	}
 
 	/**
-	 * Like {@link #blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, boolean shade)} but optimizes if depth is 0 or 1.
+	 * Like {@link #blendedInsetFace(QuadViewImpl, int, Direction, boolean)} but optimizes if depth is 0 or 1.
 	 * Used for irregular faces when depth varies by vertex to avoid unneeded interpolation.
 	 */
 	private AoFaceData gatherInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, boolean shade) {
@@ -210,15 +224,12 @@ public class AoCalculator {
 		}
 	}
 
-	private void blendedPartialFace(QuadViewImpl quad, Direction lightFace, boolean shade) {
-		AoFaceData faceData = blendedInsetFace(quad, 0, lightFace, shade);
-		final AoFace aoFace = AoFace.get(lightFace);
+	private void blendedFullFace(QuadViewImpl quad, Direction lightFace, boolean shade) {
+		fullFace(quad, lightFace, blendedInsetFace(quad, 0, lightFace, shade));
+	}
 
-		for (int i = 0; i < 4; i++) {
-			aoFace.computeCornerWeights(quad, i, w);
-			light[i] = faceData.weightedCombinedLight(w);
-			ao[i] = faceData.weigtedAo(w);
-		}
+	private void blendedPartialFace(QuadViewImpl quad, Direction lightFace, boolean shade) {
+		partialFace(quad, lightFace, blendedInsetFace(quad, 0, lightFace, shade));
 	}
 
 	/** used exclusively in irregular face to avoid new heap allocations each call. */
@@ -243,9 +254,9 @@ public class AoCalculator {
 				final AoFaceData fd = gatherInsetFace(quad, i, face, shade);
 				AoFace.get(face).computeCornerWeights(quad, i, w);
 				final float n = x * x;
-				final float a = fd.weigtedAo(w);
-				final int s = fd.weigtedSkyLight(w);
-				final int b = fd.weigtedBlockLight(w);
+				final float a = fd.weightedAo(w);
+				final int s = fd.weightedSkyLight(w);
+				final int b = fd.weightedBlockLight(w);
 				ao += n * a;
 				sky += n * s;
 				block += n * b;
@@ -261,9 +272,9 @@ public class AoCalculator {
 				final AoFaceData fd = gatherInsetFace(quad, i, face, shade);
 				AoFace.get(face).computeCornerWeights(quad, i, w);
 				final float n = y * y;
-				final float a = fd.weigtedAo(w);
-				final int s = fd.weigtedSkyLight(w);
-				final int b = fd.weigtedBlockLight(w);
+				final float a = fd.weightedAo(w);
+				final int s = fd.weightedSkyLight(w);
+				final int b = fd.weightedBlockLight(w);
 				ao += n * a;
 				sky += n * s;
 				block += n * b;
@@ -279,9 +290,9 @@ public class AoCalculator {
 				final AoFaceData fd = gatherInsetFace(quad, i, face, shade);
 				AoFace.get(face).computeCornerWeights(quad, i, w);
 				final float n = z * z;
-				final float a = fd.weigtedAo(w);
-				final int s = fd.weigtedSkyLight(w);
-				final int b = fd.weigtedBlockLight(w);
+				final float a = fd.weightedAo(w);
+				final int s = fd.weightedSkyLight(w);
+				final int b = fd.weightedBlockLight(w);
 				ao += n * a;
 				sky += n * s;
 				block += n * b;
