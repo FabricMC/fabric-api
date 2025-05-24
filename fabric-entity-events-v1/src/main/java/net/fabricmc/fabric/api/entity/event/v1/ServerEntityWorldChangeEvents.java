@@ -49,7 +49,10 @@ public final class ServerEntityWorldChangeEvents {
 	 * An event which is called after a player has been moved to a different world.
 	 *
 	 * <p>This is similar to {@link ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD} but is only called for players.
-	 * This is because the player is physically moved to the new world instead of being recreated at the destination.
+	 * This is because the player is usually physically moved to the new world instead of being recreated at the destination.
+	 *
+	 * <p>However, there is one exception to this. When the player respawns in a different world, the player is recreated at the destination. When that happens,
+	 * this event passes in the new {@link ServerPlayerEntity}. If you need the old {@link ServerPlayerEntity}, see {@link ServerPlayerEvents#AFTER_RESPAWN}
 	 *
 	 * @see ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD
 	 */
