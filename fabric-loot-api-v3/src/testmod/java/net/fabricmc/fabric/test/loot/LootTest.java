@@ -19,6 +19,8 @@ package net.fabricmc.fabric.test.loot;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
@@ -156,10 +158,20 @@ public class LootTest implements ModInitializer {
 						.orElse(drop);
 			});
 		});
-
+		var recGuard = new MutableBoolean(false);
 		LootTableEvents.MODIFY_DROPS.register((entry, context, drops) -> {
-			if (entry.registryKey().toString().contains("red")) { // all red blocks drop double
-				drops.addAll(drops.stream().map(ItemStack::copy).toList());
+			if (recGuard.isTrue()) {
+				return; // prevent infinite recursion
+			}
+
+			try {
+				recGuard.setTrue();
+
+				if (entry.registryKey().toString().contains("red")) { // all red blocks drop double
+					entry.value().generateLoot(context, drops::add);
+				}
+			} finally {
+				recGuard.setFalse();
 			}
 		});
 	}
