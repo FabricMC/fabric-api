@@ -100,7 +100,8 @@ public final class LootTableEvents {
 		}
 	});
 	/**
-	 * This event can be used for cases where the MODIFY and REPLACE events are inconvenient, such as when you are modifying the result of many loot tables that are unknown, and don't wish to add a custom LootFunction to every table
+	 * This event can be used for cases where the {@link #MODIFY} and {@link #REPLACE} events are inconvenient, such as when you are modifying the result of many loot tables that are unknown,
+	 * and don't wish to add a custom loot function to every table.
 	 * <br/>Note: if the table was requested to separate drops into stacks of a given size, the resulting drops from this event will be separated.
 	 */
 	public static final Event<ModifyDrops> MODIFY_DROPS = EventFactory.createArrayBacked(ModifyDrops.class, listeners -> (key, context, drops) -> {
