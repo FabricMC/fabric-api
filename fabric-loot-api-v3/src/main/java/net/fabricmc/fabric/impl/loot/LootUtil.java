@@ -19,8 +19,13 @@ package net.fabricmc.fabric.impl.loot;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.loot.LootTable;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourcePackSource;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
@@ -46,5 +51,24 @@ public final class LootUtil {
 		// It might also be a virtual loot table injected via mixin instead of being loaded
 		// from a resource, but we can't determine that here.
 		return LootTableSource.DATA_PACK;
+	}
+
+	public static RegistryEntry.Reference<LootTable> getEntry(ServerWorld world, LootTable table) {
+		RegistryWrapper.WrapperLookup wrapperLookup = world
+				.getServer()
+				.getReloadableRegistries()
+				.createRegistryLookup();
+
+		RegistryWrapper<LootTable> lootTableRegistryWrapper = wrapperLookup
+				.getOptional(RegistryKeys.LOOT_TABLE)
+				.orElseThrow(() -> new IllegalStateException("Failed to fetch LootTable wrapper from WrapperLookup"));
+
+		return lootTableRegistryWrapper
+				.streamEntries()
+				.filter(it -> it.value().equals(table))
+				.findFirst()
+				.orElseThrow(
+						() -> new IllegalStateException("LootTable appears to be unregistered, but has been asked to generate loot")
+				);
 	}
 }

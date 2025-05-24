@@ -26,6 +26,7 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.ResourceManager;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -153,10 +154,10 @@ public final class LootTableEvents {
 	public interface ModifyDrops {
 		/**
 		 * Called after a loot table is finished generating drops to modify drops.
-		 * @param key the loot table's registry key
+		 * @param entry the loot table's registry entry
 		 * @param context the loot context for the current drops
 		 * @param drops the list of drops from the loot table to modify
 		 */
-		void modifyLootTableDrops(RegistryKey<LootTable> key, LootContext context, List<ItemStack> drops);
+		void modifyLootTableDrops(RegistryEntry.Reference<LootTable> entry, LootContext context, List<ItemStack> drops);
 	}
 }

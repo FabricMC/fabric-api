@@ -120,6 +120,6 @@ abstract class ReloadableRegistriesMixin {
 
 		LootTableEvents.ALL_LOADED.invoker().onLootTablesLoaded(resourceManager, lootTableRegistry);
 		LootUtil.SOURCES.remove();
-		lootTableRegistry.streamEntries().forEach(reference -> ((FabricLootTable) reference.value()).fabric$setRegistryKey(reference.registryKey()));
+		lootTableRegistry.streamEntries().forEach(reference -> ((FabricLootTable) reference.value()).fabric$setRegistryEntry(reference));
 	}
 }
