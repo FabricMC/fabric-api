@@ -135,7 +135,7 @@ public class LootTest implements ModInitializer {
 		ServerRecipeManager.MatchGetter<SingleStackRecipeInput, ? extends AbstractCookingRecipe> matchGetter = ServerRecipeManager.createCachedMatchGetter(RecipeType.SMELTING);
 
 		// smelt any smeltable drops from blocks broken with a diamond pickaxe
-		LootTableEvents.MODIFY_DROPS.register((key, context, drops) -> {
+		LootTableEvents.MODIFY_DROPS.register((entry, context, drops) -> {
 			if (!context.hasParameter(LootContextParameters.TOOL) || !context.hasParameter(LootContextParameters.BLOCK_STATE)) {
 				return;
 			}
@@ -155,6 +155,12 @@ public class LootTest implements ModInitializer {
 						.map(recipe -> recipe.craft(input, lookup))
 						.orElse(drop);
 			});
+		});
+
+		LootTableEvents.MODIFY_DROPS.register((entry, context, drops) -> {
+			if (entry.registryKey().toString().contains("red")) { // all red blocks drop double
+				drops.addAll(drops.stream().map(ItemStack::copy).toList());
+			}
 		});
 	}
 }
