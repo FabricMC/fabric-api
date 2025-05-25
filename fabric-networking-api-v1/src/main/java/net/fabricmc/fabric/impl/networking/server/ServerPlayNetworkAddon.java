@@ -48,13 +48,12 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection);
-
-		// Register global receivers and attach to session
-		this.receiver.startSession(this);
 	}
 
 	@Override
 	public void lateInit() {
+		// Register global receivers and attach to session
+		this.receiver.startSession(this);
 		for (Map.Entry<Identifier, ServerPlayNetworking.PlayChannelHandler> entry : this.receiver.getHandlers().entrySet()) {
 			this.registerChannel(entry.getKey(), entry.getValue());
 		}
