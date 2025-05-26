@@ -93,7 +93,7 @@ public final class ServerPlayerEvents {
 		 *
 		 * @param oldPlayer the old player
 		 * @param newPlayer the new player
-		 * @param alive whether the old player is still alive
+		 * @param alive     whether the old player is still alive
 		 */
 		void copyFromPlayer(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
 	}
@@ -105,7 +105,7 @@ public final class ServerPlayerEvents {
 		 *
 		 * @param oldPlayer the old player
 		 * @param newPlayer the new player
-		 * @param alive whether the old player is still alive
+		 * @param alive     whether the old player is still alive
 		 */
 		void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
 	}
@@ -139,7 +139,7 @@ public final class ServerPlayerEvents {
 		/**
 		 * Called when a player takes fatal damage (before totems of undying can take effect).
 		 *
-		 * @param player the player
+		 * @param player       the player
 		 * @param damageSource the fatal damage damageSource
 		 * @param damageAmount the damageAmount of damage that has killed the player
 		 * @return true if the death should go ahead, false otherwise.

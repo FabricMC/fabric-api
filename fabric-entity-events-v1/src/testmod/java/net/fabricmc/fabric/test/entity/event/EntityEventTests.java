@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
-import net.minecraft.server.MinecraftServer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -245,7 +244,6 @@ public final class EntityEventTests implements ModInitializer {
 			throw new AssertionError("Expected the game to be on the server thread, but found " + Thread.currentThread());
 		}
 	}
-
 
 	private static ItemStack createNamedItem(Item item, String name) {
 		ItemStack stack = new ItemStack(item);
