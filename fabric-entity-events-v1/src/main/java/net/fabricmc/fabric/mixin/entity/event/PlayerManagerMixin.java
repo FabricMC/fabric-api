@@ -16,9 +16,14 @@
 
 package net.fabricmc.fabric.mixin.entity.event;
 
+import net.minecraft.network.ClientConnection;
+
+import net.minecraft.server.network.ConnectedClientData;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
@@ -32,5 +37,15 @@ abstract class PlayerManagerMixin {
 	@Inject(method = "respawnPlayer", at = @At("TAIL"))
 	private void afterRespawn(ServerPlayerEntity oldPlayer, boolean alive, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayerEntity> cir) {
 		ServerPlayerEvents.AFTER_RESPAWN.invoker().afterRespawn(oldPlayer, cir.getReturnValue(), alive);
+	}
+
+	@Inject(method = "onPlayerConnect", at = @At("RETURN"))
+	private void firePlayerJoinEvent(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
+		ServerPlayerEvents.JOIN.invoker().onJoin(player);
+	}
+
+	@Inject(method = "remove", at = @At("HEAD"))
+	private void firePlayerLeaveEvent(ServerPlayerEntity player, CallbackInfo ci) {
+		ServerPlayerEvents.LEAVE.invoker().onLeave(player);
 	}
 }

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
+import net.minecraft.server.MinecraftServer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -214,6 +216,16 @@ public final class EntityEventTests implements ModInitializer {
 		EntityElytraEvents.ALLOW.register(entity -> {
 			return !entity.getOffHandStack().isOf(Items.TORCH);
 		});
+
+		ServerPlayerEvents.JOIN.register(player -> {
+			assertOnServerThread(player.getServer());
+			LOGGER.info("Observed player {} joining the game", player.getGameProfile().getName());
+		});
+
+		ServerPlayerEvents.LEAVE.register(player -> {
+			assertOnServerThread(player.getServer());
+			LOGGER.info("Observed player {} leaving the game", player.getGameProfile().getName());
+		});
 	}
 
 	private static void addSleepWools(PlayerEntity player) {
@@ -227,6 +239,13 @@ public final class EntityEventTests implements ModInitializer {
 		inventory.offerOrDrop(createNamedItem(Items.ORANGE_WOOL, "Don't set occupied state"));
 		inventory.offerOrDrop(createNamedItem(Items.CYAN_WOOL, "Wake up high above"));
 	}
+
+	private static void assertOnServerThread(MinecraftServer server) {
+		if (!server.isOnThread()) {
+			throw new AssertionError("Expected the game to be on the server thread, but found " + Thread.currentThread());
+		}
+	}
+
 
 	private static ItemStack createNamedItem(Item item, String name) {
 		ItemStack stack = new ItemStack(item);
