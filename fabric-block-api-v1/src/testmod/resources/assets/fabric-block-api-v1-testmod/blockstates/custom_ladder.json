@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "fabric-block-api-v1-testmod:block/custom_ladder",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "fabric-block-api-v1-testmod:block/custom_ladder"
+    },
+    "facing=south": {
+      "model": "fabric-block-api-v1-testmod:block/custom_ladder",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "fabric-block-api-v1-testmod:block/custom_ladder",
+      "y": 270
+    }
+  }
+}

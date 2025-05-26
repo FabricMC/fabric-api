@@ -1,0 +1,16 @@
+{
+  "multipart": [
+    {
+      "apply": { "model": "fabric-block-api-v1-testmod:block/custom_non_ladder" }
+    },
+    {
+      "apply": { "model": "fabric-block-api-v1-testmod:block/custom_non_ladder", "y": 90 }
+    },
+    {
+      "apply": { "model": "fabric-block-api-v1-testmod:block/custom_non_ladder", "y": 180 }
+    },
+    {
+      "apply": { "model": "fabric-block-api-v1-testmod:block/custom_non_ladder", "y": 270 }
+    }
+  ]
+}
