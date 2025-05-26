@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.loot.FabricLootTable;
 import net.fabricmc.fabric.impl.loot.LootUtil;
 
 @Mixin(value = LootTable.class, priority = 3000 /* arbitrary, but requires mods to explicit set a priority to wrap the fabric event.*/)
-public class LootTableMixin implements FabricLootTable {
+class LootTableMixin implements FabricLootTable {
 	/*
 	 * the key of this loot table, if initialized.
 	 */
