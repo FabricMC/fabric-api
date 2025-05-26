@@ -1,0 +1,7 @@
+version = getSubprojectVersion(project)
+
+moduleDependencies(project, [
+	'fabric-api-base',
+	'fabric-resource-loader-v0',
+	'fabric-loot-api-v3'
+])
