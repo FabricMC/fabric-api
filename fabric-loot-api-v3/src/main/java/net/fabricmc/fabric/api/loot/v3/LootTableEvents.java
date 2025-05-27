@@ -100,6 +100,7 @@ public final class LootTableEvents {
 			listener.onLootTablesLoaded(resourceManager, lootManager);
 		}
 	});
+
 	/**
 	 * This event can be used for cases where the {@link #MODIFY} and {@link #REPLACE} events are inconvenient, such as when you are modifying the result of many loot tables that are unknown,
 	 * and don't wish to add a custom loot function to every table.
