@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.blockrenderlayer;
+package net.fabricmc.fabric.mixin.client.rendering;
 
 import java.util.Map;
 
@@ -30,10 +30,10 @@ import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.fluid.Fluid;
 
-import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
+import net.fabricmc.fabric.impl.client.rendering.BlockRenderLayerMapImpl;
 
 @Mixin(RenderLayers.class)
-public class RenderLayersMixin {
+abstract class RenderLayersMixin {
 	@Shadow
 	@Final
 	private static Map<Block, BlockRenderLayer> BLOCKS;
@@ -42,7 +42,7 @@ public class RenderLayersMixin {
 	private static Map<Fluid, BlockRenderLayer> FLUIDS;
 
 	@Inject(method = "<clinit>*", at = @At("RETURN"))
-	private static void onInitialize(CallbackInfo info) {
-		BlockRenderLayerMapImpl.initialize(BLOCKS::put, FLUIDS::put);
+	private static void onInitialize(CallbackInfo ci) {
+		BlockRenderLayerMapImpl.setup(BLOCKS::put, FLUIDS::put);
 	}
 }

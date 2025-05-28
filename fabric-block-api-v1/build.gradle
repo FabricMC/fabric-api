@@ -1,5 +1,5 @@
 version = getSubprojectVersion(project)
 
 testDependencies(project, [
-	':fabric-blockrenderlayer-v1',
+	':fabric-rendering-v1',
 ])
