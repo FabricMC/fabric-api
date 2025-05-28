@@ -95,9 +95,7 @@ public abstract class WorldRendererMixin {
 			method = "method_62214",
 			at = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/client/render/WorldRenderer;renderLayer(Lnet/minecraft/client/render/RenderLayer;[Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V",
-				ordinal = 2,
-				shift = Shift.AFTER
+				target = "Lnet/minecraft/client/render/WorldRenderer;renderEntities(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/RenderTickCounter;Ljava/util/List;)V"
 			)
 	)
 	private void afterTerrainSolid(CallbackInfo ci) {

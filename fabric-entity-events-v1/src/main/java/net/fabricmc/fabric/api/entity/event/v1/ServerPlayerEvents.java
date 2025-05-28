@@ -49,6 +49,30 @@ public final class ServerPlayerEvents {
 	});
 
 	/**
+	 * An event that is called when a player has joined the game.
+	 * This includes loading a singleplayer world.
+	 *
+	 * <p>This event is called on the server thread after the player has fully been loaded into the world.
+	 */
+	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> player -> {
+		for (Join callback : callbacks) {
+			callback.onJoin(player);
+		}
+	});
+
+	/**
+	 * An event that is called when a player is leaving the game.
+	 * This includes closing a singleplayer world.
+	 *
+	 * <p>This event is called on the server thread before the player has been saved and removed from the world.
+	 */
+	public static final Event<Leave> LEAVE = EventFactory.createArrayBacked(Leave.class, callbacks -> player -> {
+		for (Leave callback : callbacks) {
+			callback.onLeave(player);
+		}
+	});
+
+	/**
 	 * An event that is called when a player takes fatal damage.
 	 *
 	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayerEntity}.
@@ -86,6 +110,26 @@ public final class ServerPlayerEvents {
 		 * @param alive whether the old player is still alive
 		 */
 		void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
+	}
+
+	@FunctionalInterface
+	public interface Join {
+		/**
+		 * Called when a player has joined the game.
+		 *
+		 * @param player the player
+		 */
+		void onJoin(ServerPlayerEntity player);
+	}
+
+	@FunctionalInterface
+	public interface Leave {
+		/**
+		 * Called when a player is leaving the game.
+		 *
+		 * @param player the player
+		 */
+		void onLeave(ServerPlayerEntity player);
 	}
 
 	/**

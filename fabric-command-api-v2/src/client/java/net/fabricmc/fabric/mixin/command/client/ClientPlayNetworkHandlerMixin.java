@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandRegistryAccess;
@@ -71,8 +72,8 @@ abstract class ClientPlayNetworkHandlerMixin {
 		ClientCommandInternals.addCommands((CommandDispatcher) commandDispatcher, (FabricClientCommandSource) commandSource);
 	}
 
-	@Inject(method = "method_71927", at = @At("HEAD"), cancellable = true)
-	private void onSendCommand(String command, boolean closePreviousScreen, CallbackInfo info) {
+	@Inject(method = "runClickEventCommand", at = @At("HEAD"), cancellable = true)
+	private void onSendCommand(String command, Screen screen, CallbackInfo info) {
 		if (ClientCommandInternals.executeCommand(command)) {
 			info.cancel();
 		}

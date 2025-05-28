@@ -41,17 +41,17 @@ public final class ClientReceiveMessageEvents {
 	 * which is any message sent by a player. Mods can use this to block the message.
 	 *
 	 * <p>If a listener returned {@code false}, the message will not be displayed,
-	 * the remaining listeners will not be called (if any), and
+	 * the remaining listeners will be called (if any), and
 	 * {@link #CHAT_CANCELED} will be triggered instead of {@link #CHAT}.
 	 */
 	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, listeners -> (message, signedMessage, sender, params, receptionTimestamp) -> {
+		boolean allow = true;
+
 		for (AllowChat listener : listeners) {
-			if (!listener.allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp)) {
-				return false;
-			}
+			allow &= listener.allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
 		}
 
-		return true;
+		return allow;
 	});
 
 	/**
@@ -60,7 +60,7 @@ public final class ClientReceiveMessageEvents {
 	 * Mods can use this to block the message or toggle overlay.
 	 *
 	 * <p>If a listener returned {@code false}, the message will not be displayed,
-	 * the remaining listeners will not be called (if any), and
+	 * the remaining listeners will be called (if any), and
 	 * {@link #GAME_CANCELED} will be triggered instead of {@link #MODIFY_GAME}.
 	 *
 	 * <p>Overlay is whether the message will be displayed in the action bar.
@@ -68,13 +68,13 @@ public final class ClientReceiveMessageEvents {
 	 * {@link net.minecraft.client.network.ClientPlayerEntity#sendMessage(Text, boolean) ClientPlayerEntity.sendMessage(message, overlay)}.
 	 */
 	public static final Event<AllowGame> ALLOW_GAME = EventFactory.createArrayBacked(AllowGame.class, listeners -> (message, overlay) -> {
+		boolean allow = true;
+
 		for (AllowGame listener : listeners) {
-			if (!listener.allowReceiveGameMessage(message, overlay)) {
-				return false;
-			}
+			allow &= listener.allowReceiveGameMessage(message, overlay);
 		}
 
-		return true;
+		return allow;
 	});
 
 	/**

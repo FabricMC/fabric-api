@@ -15,6 +15,7 @@
     "EntityRenderersMixin",
     "InGameHudMixin",
     "LivingEntityRendererAccessor",
+    "RenderLayersMixin",
     "SpecialModelTypesMixin",
     "TooltipComponentMixin",
     "WorldRendererMixin"

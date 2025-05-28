@@ -37,7 +37,6 @@ import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -49,8 +48,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 	@Shadow
 	private int screenHandlerSyncId;
 
-	private ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
-		super(world, pos, yaw, gameProfile);
+	private ServerPlayerEntityMixin(World world, GameProfile gameProfile) {
+		super(world, gameProfile);
 	}
 
 	@Shadow

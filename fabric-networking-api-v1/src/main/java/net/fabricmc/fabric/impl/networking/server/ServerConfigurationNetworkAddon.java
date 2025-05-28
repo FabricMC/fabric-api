@@ -20,10 +20,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import io.netty.channel.ChannelFutureListener;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.NetworkPhase;
-import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.BrandCustomPayload;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
@@ -181,7 +181,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	@Override
-	public void sendPacket(Packet<?> packet, PacketCallbacks callback) {
+	public void sendPacket(Packet<?> packet, ChannelFutureListener callback) {
 		handler.send(packet, callback);
 	}
 

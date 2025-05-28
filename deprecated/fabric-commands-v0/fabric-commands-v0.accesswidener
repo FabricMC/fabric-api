@@ -1,4 +1,0 @@
-accessWidener v2 named
-
-# workaround for lack of cross-project taw propagation in loom
-accessible field net/minecraft/server/command/CommandManager$RegistrationEnvironment dedicated Z

@@ -18,11 +18,11 @@ package net.fabricmc.fabric.api.networking.v1;
 
 import java.util.Objects;
 
+import io.netty.channel.ChannelFutureListener;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.Identifier;
 
@@ -61,7 +61,7 @@ public interface LoginPacketSender extends PacketSender {
 	 * @param buf the content of the packet
 	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}
 	 */
-	default void sendPacket(Identifier channel, PacketByteBuf buf, @Nullable PacketCallbacks callback) {
+	default void sendPacket(Identifier channel, PacketByteBuf buf, @Nullable ChannelFutureListener callback) {
 		Objects.requireNonNull(channel, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Payload cannot be null");
 

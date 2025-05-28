@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-tag-v1-testmod",
+  "id": "fabric-tag-api-v1-testmod",
   "name": "Fabric Tag API (v1) Test Mod",
   "version": "1.0.0",
   "environment": "*",
@@ -11,6 +11,9 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.tag.TagAliasTest"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.tag.client.v1.ClientTagTest"
     ]
   }
 }

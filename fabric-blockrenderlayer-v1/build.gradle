@@ -1,3 +1,0 @@
-version = getSubprojectVersion(project)
-
-moduleDependencies(project, ['fabric-api-base'])

@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import io.netty.channel.ChannelFutureListener;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 import net.minecraft.util.Identifier;
@@ -74,16 +74,15 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		}
 
 		PacketByteBuf buf = PacketByteBufs.slice(originalBuf);
-		List<PacketCallbacks> callbacks = new ArrayList<>();
+		List<ChannelFutureListener> callbacks = new ArrayList<>();
 
 		try {
 			CompletableFuture<@Nullable PacketByteBuf> future = handler.receive(this.client, this.handler, buf, callbacks::add);
 			future.thenAccept(result -> {
 				LoginQueryResponseC2SPacket packet = new LoginQueryResponseC2SPacket(queryId, result == null ? null : new PacketByteBufLoginQueryResponse(result));
-				((ClientLoginNetworkHandlerAccessor) this.handler).getConnection().send(packet, new PacketCallbacks() {
-					@Override
-					public void onSuccess() {
-						callbacks.forEach(PacketCallbacks::onSuccess);
+				((ClientLoginNetworkHandlerAccessor) this.handler).getConnection().send(packet, operation -> {
+					for (ChannelFutureListener callback : callbacks) {
+						callback.operationComplete(operation);
 					}
 				});
 			});

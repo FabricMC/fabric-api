@@ -32,6 +32,5 @@
       "net/minecraft/class_1922": ["net/fabricmc/fabric/api/blockview/v2/FabricBlockView"],
       "net/minecraft/class_2586": ["net/fabricmc/fabric/api/blockview/v2/RenderDataBlockEntity"]
     }
-  },
-  "accessWidener": "fabric-block-view-api-v2.accesswidener"
+  }
 }

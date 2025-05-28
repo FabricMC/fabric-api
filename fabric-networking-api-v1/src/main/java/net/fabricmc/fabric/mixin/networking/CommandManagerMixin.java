@@ -50,6 +50,6 @@ public class CommandManagerMixin {
 			return;
 		}
 
-		DebugConfigCommand.register(this.dispatcher);
+		DebugConfigCommand.register(this.dispatcher, commandRegistryAccess);
 	}
 }

@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import java.util.Set;
+
 import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.VertexConsumer;
@@ -61,6 +64,10 @@ public class SpecialBlockRendererTest implements ClientModInitializer {
 						VertexConsumer vertexConsumer = vertexConsumers.getBuffer(allayModel.getLayer(ALLAY_TEXTURE));
 						allayModel.render(matrices, vertexConsumer, light, overlay);
 						matrices.pop();
+					}
+
+					@Override
+					public void method_72175(Set<Vector3f> set) {
 					}
 
 					@Override

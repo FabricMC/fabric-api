@@ -128,6 +128,17 @@ public final class ServerLoginNetworking {
 		return ((ServerLoginNetworkHandlerAccessor) handler).getServer();
 	}
 
+	/**
+	 * Gets the packet sender which sends packets to the connected client.
+	 *
+	 * @param handler the network handler, representing the connection to the client
+	 * @return the packet sender
+	 */
+	public static LoginPacketSender getSender(ServerLoginNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Network handler cannot be null");
+		return ServerNetworkingImpl.getAddon(handler);
+	}
+
 	private ServerLoginNetworking() {
 	}
 
