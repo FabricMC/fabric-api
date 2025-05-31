@@ -22,9 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -162,6 +165,12 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 
 		fabric_addObjectEvent.invoker().onEntryAdded(entryToRawId.getInt(entry), key.getValue(), entry);
 		onChange(key);
+	}
+
+	@WrapOperation(method = "freeze", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
+	private void skipBindValues(Map<?, ?> valueToEntry, BiConsumer<?, ?> bindFunction, Operation<Void> original) {
+		// Because we already bound references on insertion, there is no need to rebind values here.
+		// Instead, we can skip this operation, which avoids any accidental order issues.
 	}
 
 	@Override
