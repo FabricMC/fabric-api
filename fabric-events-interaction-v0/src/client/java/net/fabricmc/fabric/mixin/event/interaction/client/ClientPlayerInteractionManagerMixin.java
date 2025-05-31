@@ -103,7 +103,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 		ActionResult result = UseBlockCallback.EVENT.invoker().interact(player, player.getWorld(), hand, blockHitResult);
 
 		if (result != ActionResult.PASS) {
-			if (result == ActionResult.SUCCESS) {
+			if (result.isAccepted()) {
 				// send interaction packet to the server with a new sequentially assigned id
 				sendSequencedPacket(player.clientWorld, id -> new PlayerInteractBlockC2SPacket(hand, blockHitResult, id));
 			}
