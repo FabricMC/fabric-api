@@ -57,7 +57,7 @@ abstract class FallingBlockEntityRendererMixin extends EntityRenderer<FallingBlo
 
 			BlockStateModel model = blockRenderManager.getModel(blockState);
 			long seed = blockState.getRenderingSeed(renderState.fallingBlockPos);
-			blockRenderManager.getModelRenderer().render(renderState, model, blockState, renderState.currentPos, matrixStack, layer -> vertexConsumers.getBuffer(RenderLayerHelper.getMovingBlockLayer(layer)), false, seed, OverlayTexture.DEFAULT_UV);
+			blockRenderManager.getModelRenderer().render(renderState, model, blockState, renderState.currentPos, matrixStack, RenderLayerHelper.movingDelegate(vertexConsumers), false, seed, OverlayTexture.DEFAULT_UV);
 
 			matrixStack.pop();
 			super.render(renderState, matrixStack, vertexConsumers, light);

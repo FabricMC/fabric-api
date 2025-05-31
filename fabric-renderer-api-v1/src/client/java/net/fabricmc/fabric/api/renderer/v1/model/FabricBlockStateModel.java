@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
  *
  * <p>Implementors should have a look at {@link ModelHelper} as it contains many useful functions.
  *
- * <p>Note: This interface is automatically implemented on all block state models via Mixin and interface injection.
+ * <p>Note: This interface is automatically implemented on {@link BlockStateModel} via Mixin and interface injection.
  */
 public interface FabricBlockStateModel {
 	/**

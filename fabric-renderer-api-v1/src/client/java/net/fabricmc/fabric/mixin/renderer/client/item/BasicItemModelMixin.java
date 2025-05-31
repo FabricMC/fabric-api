@@ -29,7 +29,6 @@ import net.minecraft.client.render.item.model.BasicItemModel;
 import net.minecraft.client.render.item.model.ItemModel;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.impl.renderer.BasicItemModelExtension;
 
 @Mixin(BasicItemModel.class)
@@ -41,7 +40,7 @@ abstract class BasicItemModelMixin implements ItemModel, BasicItemModelExtension
 	@Inject(method = "update", at = @At("RETURN"))
 	private void onReturnUpdate(CallbackInfo ci, @Local ItemRenderState.LayerRenderState layer) {
 		if (mesh != null) {
-			mesh.outputTo(((FabricLayerRenderState) layer).emitter());
+			mesh.outputTo(layer.emitter());
 		}
 	}
 

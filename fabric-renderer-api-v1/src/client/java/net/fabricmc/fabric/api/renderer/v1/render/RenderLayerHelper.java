@@ -20,6 +20,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.TexturedRenderLayers;
+import net.minecraft.client.render.VertexConsumerProvider;
 
 public final class RenderLayerHelper {
 	private RenderLayerHelper() {
@@ -39,5 +40,21 @@ public final class RenderLayerHelper {
 	 */
 	public static RenderLayer getEntityBlockLayer(RenderLayer chunkRenderLayer) {
 		return chunkRenderLayer == RenderLayer.getTranslucent() ? TexturedRenderLayers.getItemEntityTranslucentCull() : TexturedRenderLayers.getEntityCutout();
+	}
+
+	/**
+	 * Wraps the given provider, converting {@linkplain RenderLayer#getBlockLayers() block layers} to render layers
+	 * using {@link #getMovingBlockLayer(RenderLayer)}.
+	 */
+	public static VertexConsumerProvider movingDelegate(VertexConsumerProvider vertexConsumers) {
+		return chunkRenderLayer -> vertexConsumers.getBuffer(RenderLayerHelper.getMovingBlockLayer(chunkRenderLayer));
+	}
+
+	/**
+	 * Wraps the given provider, converting {@linkplain RenderLayer#getBlockLayers() block layers} to render layers
+	 * using {@link #getEntityBlockLayer(RenderLayer)}.
+	 */
+	public static VertexConsumerProvider entityDelegate(VertexConsumerProvider vertexConsumers) {
+		return chunkRenderLayer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(chunkRenderLayer));
 	}
 }

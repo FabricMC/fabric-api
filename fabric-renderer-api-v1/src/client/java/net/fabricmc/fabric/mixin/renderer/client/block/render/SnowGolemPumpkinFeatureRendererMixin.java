@@ -52,7 +52,7 @@ abstract class SnowGolemPumpkinFeatureRendererMixin {
 			FabricBlockModelRenderer.render(entry, layer -> vertexConsumer, model, 1, 1, 1, light, overlay, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, blockState);
 		} else {
 			// Support multi-render layer models, fix tinted quads being rendered completely black, and provide the BlockState as context.
-			FabricBlockModelRenderer.render(entry, layer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer)), model, 1, 1, 1, light, overlay, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, blockState);
+			FabricBlockModelRenderer.render(entry, RenderLayerHelper.entityDelegate(vertexConsumers), model, 1, 1, 1, light, overlay, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, blockState);
 		}
 	}
 }

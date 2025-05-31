@@ -108,7 +108,7 @@ public class IndigoRenderer implements Renderer {
 			float red = (tint >> 16 & 255) / 255.0F;
 			float green = (tint >> 8 & 255) / 255.0F;
 			float blue = (tint & 255) / 255.0F;
-			FabricBlockModelRenderer.render(matrices.peek(), layer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer)), model, red, green, blue, light, overlay, blockView, pos, state);
+			FabricBlockModelRenderer.render(matrices.peek(), RenderLayerHelper.entityDelegate(vertexConsumers), model, red, green, blue, light, overlay, blockView, pos, state);
 			((BlockRenderManagerAccessor) renderManager).getBlockEntityModelsGetter().get().render(state.getBlock(), ItemDisplayContext.NONE, matrices, vertexConsumers, light, overlay);
 		}
 	}

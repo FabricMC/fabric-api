@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /**
- * Note: This interface is automatically implemented on all block render managers via Mixin and interface injection.
+ * Note: This interface is automatically implemented on {@link BlockRenderManager} via Mixin and interface injection.
  */
 public interface FabricBlockRenderManager {
 	/**

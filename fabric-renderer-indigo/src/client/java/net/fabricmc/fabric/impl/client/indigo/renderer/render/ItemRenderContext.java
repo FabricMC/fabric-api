@@ -89,8 +89,8 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 		final int vanillaQuadCount = vanillaQuads.size();
 
-		for (int j = 0; j < vanillaQuadCount; j++) {
-			final BakedQuad q = vanillaQuads.get(j);
+		for (int i = 0; i < vanillaQuadCount; i++) {
+			final BakedQuad q = vanillaQuads.get(i);
 			emitter.fromVanilla(q, IndigoRenderer.STANDARD_MATERIAL, null);
 			emitter.emit();
 		}

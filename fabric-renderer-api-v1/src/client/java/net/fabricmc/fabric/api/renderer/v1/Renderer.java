@@ -146,7 +146,7 @@ public interface Renderer {
 	/**
 	 * @see FabricBlockModelPart#emitQuads(QuadEmitter, Predicate)
 	 */
-	@ApiStatus.Experimental
+	@Deprecated(forRemoval = true)
 	@ApiStatus.OverrideOnly
 	default void emitBlockModelPartQuads(BlockModelPart modelPart, QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
 		VanillaBlockModelPartEncoder.emitQuads(modelPart, emitter, cullTest);

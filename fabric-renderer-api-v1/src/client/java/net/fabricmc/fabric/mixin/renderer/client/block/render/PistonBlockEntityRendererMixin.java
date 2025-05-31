@@ -40,6 +40,6 @@ abstract class PistonBlockEntityRendererMixin {
 	// Support multi-render layer models.
 	@Overwrite
 	private void renderModel(BlockPos pos, BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, World world, boolean cull, int overlay) {
-		manager.getModelRenderer().render(world, manager.getModel(state), state, pos, matrices, layer -> vertexConsumers.getBuffer(RenderLayerHelper.getMovingBlockLayer(layer)), cull, state.getRenderingSeed(pos), overlay);
+		manager.getModelRenderer().render(world, manager.getModel(state), state, pos, matrices, RenderLayerHelper.movingDelegate(vertexConsumers), cull, state.getRenderingSeed(pos), overlay);
 	}
 }

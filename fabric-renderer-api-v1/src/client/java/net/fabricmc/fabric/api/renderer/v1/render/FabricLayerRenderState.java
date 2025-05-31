@@ -25,7 +25,8 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /**
- * Note: This interface is automatically implemented on all layer render states via Mixin and interface injection.
+ * Note: This interface is automatically implemented on {@link ItemRenderState.LayerRenderState} via Mixin and interface
+ * injection.
  */
 public interface FabricLayerRenderState {
 	/**

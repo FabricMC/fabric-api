@@ -53,7 +53,7 @@ public class BakedModelFeatureRenderer<S extends LivingEntityRenderState, M exte
 		matrices.scale(-0.75F, -0.75F, 0.75F);
 		float aboveHead = (float) (Math.sin(state.age * 0.08F)) * 0.5F + 0.5F;
 		matrices.translate(-0.5F, 0.75F + aboveHead, -0.5F);
-		FabricBlockModelRenderer.render(matrices.peek(), layer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer)), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, Blocks.AIR.getDefaultState());
+		FabricBlockModelRenderer.render(matrices.peek(), RenderLayerHelper.entityDelegate(vertexConsumers), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, Blocks.AIR.getDefaultState());
 		matrices.pop();
 	}
 }

@@ -54,6 +54,6 @@ abstract class BlockRenderManagerMixin {
 
 	@Redirect(method = "renderBlockAsEntity(Lnet/minecraft/block/BlockState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II)V", at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/BlockModelRenderer.render(Lnet/minecraft/client/util/math/MatrixStack$Entry;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/client/render/model/BlockStateModel;FFFII)V"))
 	private void renderProxy(MatrixStack.Entry entry, VertexConsumer vertexConsumer, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light1, int overlay1) {
-		FabricBlockModelRenderer.render(entry, layer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer)), model, red, green, blue, light, overlay, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, state);
+		FabricBlockModelRenderer.render(entry, RenderLayerHelper.entityDelegate(vertexConsumers), model, red, green, blue, light, overlay, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, state);
 	}
 }

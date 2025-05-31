@@ -18,21 +18,24 @@ package net.fabricmc.fabric.api.renderer.v1.model;
 
 import java.util.List;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.client.render.model.BakedGeometry;
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.Baker;
+import net.minecraft.client.render.model.Geometry;
+import net.minecraft.client.render.model.ModelBakeSettings;
+import net.minecraft.client.render.model.ModelTextures;
+import net.minecraft.client.render.model.SimpleModel;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 
 /**
- * A special {@link BakedGeometry} which hides a {@link Mesh} instead of using {@link BakedQuad}s. Instances of this
- * class always return empty lists from inherited methods.
+ * A special {@link BakedGeometry} which hides a {@link Mesh} instead of using {@link BakedQuad}s. Useful for custom
+ * implementations of {@link Geometry#bake(ModelTextures, Baker, ModelBakeSettings, SimpleModel)} that want to return a
+ * mesh. Instances of this class always return empty lists from inherited methods.
  *
  * <p>Any code that interacts with {@link BakedGeometry} should first check {@code instanceof MeshBakedGeometry} and use
  * {@link #getMesh()} if {@code true} or the vanilla methods otherwise.
  */
-@ApiStatus.Experimental
 public final class MeshBakedGeometry extends BakedGeometry {
 	private final Mesh mesh;
 

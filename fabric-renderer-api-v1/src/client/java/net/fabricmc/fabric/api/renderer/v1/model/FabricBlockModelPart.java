@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.renderer.v1.model;
 
 import java.util.function.Predicate;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -32,15 +31,15 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /**
- * Note: This interface is automatically implemented on all block model parts via Mixin and interface injection.
+ * Note: This interface is automatically implemented on {@link BlockModelPart} via Mixin and interface injection.
  */
-@ApiStatus.Experimental
 public interface FabricBlockModelPart {
 	/**
 	 * Produces this model part's geometry. <b>This method must be called instead of
-	 * {@link BlockModelPart#getQuads(Direction)}; the vanilla method should be considered deprecated as it may not
-	 * produce accurate results.</b> However, it is acceptable for a custom model part to only implement the vanilla
-	 * method as the default implementation of this method will delegate to the vanilla method.
+	 * {@link BlockModelPart#getQuads(Direction)} and {@link BlockModelPart#useAmbientOcclusion()}; the vanilla methods
+	 * should be considered deprecated as they may not produce accurate results.</b> However, it is acceptable for a
+	 * custom model part to only implement the vanilla methods as the default implementation of this method will
+	 * delegate to the vanilla methods.
 	 *
 	 * <p>This method mainly exists for convenience when interacting with parts implemented and produced by vanilla
 	 * code. Custom models should generally override
