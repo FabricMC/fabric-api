@@ -32,47 +32,47 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.IdentifiedElement;
 
 public class HudElementRegistryTest {
 	private final List<String> drawnLayers = new ArrayList<>();
 
 	@Test
 	void addLayer() {
-		HudElementRegistry.addLast(testElement("layer1"));
-		HudElementRegistry.addLast(testElement("layer2"));
-		HudElementRegistry.addLast(testElement("layer3"));
+		HudElementRegistry.addLast(testIdentifier("layer1"), testElement("layer1"));
+		HudElementRegistry.addLast(testIdentifier("layer2"), testElement("layer2"));
+		HudElementRegistry.addLast(testIdentifier("layer3"), testElement("layer3"));
 
 		assertOrder(List.of("layer1", "layer2", "layer3"));
 	}
 
 	@Test
 	void addBefore() {
-		HudElementRegistry.addLast(testElement("layer1"));
-		HudElementRegistry.addLast(testElement("layer2"));
+		HudElementRegistry.addLast(testIdentifier("layer1"), testElement("layer1"));
+		HudElementRegistry.addLast(testIdentifier("layer2"), testElement("layer2"));
 
-		HudElementRegistry.attachElementBefore(testIdentifier("layer1"), testElement("before1"));
+		HudElementRegistry.attachElementBefore(testIdentifier("layer1"), testIdentifier("before1"), testElement("before1"));
 
 		assertOrder(List.of("before1", "layer1", "layer2"));
 	}
 
 	@Test
 	void addAfter() {
-		HudElementRegistry.addLast(testElement("layer1"));
-		HudElementRegistry.addLast(testElement("layer2"));
+		HudElementRegistry.addLast(testIdentifier("layer1"), testElement("layer1"));
+		HudElementRegistry.addLast(testIdentifier("layer2"), testElement("layer2"));
 
-		HudElementRegistry.attachElementAfter(testIdentifier("layer1"), testElement("after1"));
+		HudElementRegistry.attachElementAfter(testIdentifier("layer1"), testIdentifier("after1"), testElement("after1"));
 
 		assertOrder(List.of("layer1", "after1", "layer2"));
 	}
 
 	@Test
 	void removeLayer() {
-		HudElementRegistry.addLast(testElement("layer1"));
-		HudElementRegistry.addLast(testElement("layer2"));
-		HudElementRegistry.addLast(testElement("layer3"));
-		HudElementRegistry.addLast(testElement("layer4"));
+		HudElementRegistry.addLast(testIdentifier("layer1"), testElement("layer1"));
+		HudElementRegistry.addLast(testIdentifier("layer2"), testElement("layer2"));
+		HudElementRegistry.addLast(testIdentifier("layer3"), testElement("layer3"));
+		HudElementRegistry.addLast(testIdentifier("layer4"), testElement("layer4"));
 
 		HudElementRegistry.removeElement(testIdentifier("layer2"));
 		HudElementRegistry.removeElement(testIdentifier("layer4"));
@@ -82,34 +82,33 @@ public class HudElementRegistryTest {
 
 	@Test
 	void replaceLayer() {
-		HudElementRegistry.addLast(testElement("layer1"));
-		HudElementRegistry.addLast(testElement("layer2"));
-		HudElementRegistry.addLast(testElement("layer3"));
+		HudElementRegistry.addLast(testIdentifier("layer1"), testElement("layer1"));
+		HudElementRegistry.addLast(testIdentifier("layer2"), testElement("layer2"));
+		HudElementRegistry.addLast(testIdentifier("layer3"), testElement("layer3"));
 
-		HudElementRegistry.replaceElement(testIdentifier("layer2"), layer -> testElement("temp"));
-		HudElementRegistry.replaceElement(testIdentifier("temp"), layer -> testElement("replaced"));
+		HudElementRegistry.replaceElement(testIdentifier("layer2"), layer -> testElement("replaced"));
 
 		assertOrder(List.of("layer1", "replaced", "layer3"));
 	}
 
 	@Test
 	void validateUnique() {
-		HudElementRegistry.addLast(testElement("layer1"));
-		HudElementRegistry.addLast(testElement("layer2"));
-		HudElementRegistry.addLast(testElement("layer3"));
+		HudElementRegistry.addLast(testIdentifier("layer1"), testElement("layer1"));
+		HudElementRegistry.addLast(testIdentifier("layer2"), testElement("layer2"));
+		HudElementRegistry.addLast(testIdentifier("layer3"), testElement("layer3"));
 
-		Assertions.assertDoesNotThrow(() -> HudElementRegistryImpl.validateUnique(testElement("layer4")));
-		Assertions.assertThrows(IllegalArgumentException.class, () -> HudElementRegistryImpl.validateUnique(testElement("layer2")));
+		Assertions.assertDoesNotThrow(() -> HudElementRegistryImpl.validateUnique(testIdentifier("layer4")));
+		Assertions.assertThrows(IllegalArgumentException.class, () -> HudElementRegistryImpl.validateUnique(testIdentifier("layer2")));
 	}
 
 	@Test
 	void findLayer() {
-		HudElementRegistry.addLast(testElement("layer1"));
-		HudElementRegistry.addLast(testElement("layer2"));
-		HudElementRegistry.addLast(testElement("layer3"));
+		HudElementRegistry.addLast(testIdentifier("layer1"), testElement("layer1"));
+		HudElementRegistry.addLast(testIdentifier("layer2"), testElement("layer2"));
+		HudElementRegistry.addLast(testIdentifier("layer3"), testElement("layer3"));
 
 		Assertions.assertTrue(HudElementRegistryImpl.findLayer(testIdentifier("layer2"), (layer, iterator) -> {
-			iterator.add(testElement("found"));
+			iterator.add(HudLayer.of(testIdentifier("found"), testElement("found")));
 			return true;
 		}));
 
@@ -118,26 +117,27 @@ public class HudElementRegistryTest {
 
 	@Test
 	void visitLayers() {
-		HudElementRegistry.addLast(testElement("layer1"));
-		HudElementRegistry.addLast(testElement("layer2"));
-		HudElementRegistry.addLast(testElement("layer3"));
+		HudElementRegistry.addLast(testIdentifier("layer1"), testElement("layer1"));
+		HudElementRegistry.addLast(testIdentifier("layer2"), testElement("layer2"));
+		HudElementRegistry.addLast(testIdentifier("layer3"), testElement("layer3"));
 
 		Assertions.assertTrue(HudElementRegistryImpl.visitLayers((layer, iterator) -> {
-			// Skip vanilla elements
-			if ("minecraft".equals(((IdentifiedElement) layer).id().getNamespace())) {
+			// Skip vanilla layers
+			if ("minecraft".equals(layer.id().getNamespace())) {
 				return false;
 			}
 
-			String name = ((IdentifiedElement) layer).id().getPath();
-			iterator.add(testElement("visited" + name.substring(name.length() - 1)));
+			String path = layer.id().getPath();
+			String name = "visited" + path.substring(path.length() - 1);
+			iterator.add(HudLayer.of(testIdentifier(name), testElement(name)));
 			return true;
 		}));
 
 		assertOrder(List.of("layer1", "visited1", "layer2", "visited2", "layer3", "visited3"));
 	}
 
-	private IdentifiedElement testElement(String name) {
-		return IdentifiedElement.of(testIdentifier(name), (context, tickCounter) -> drawnLayers.add(name));
+	private HudElement testElement(String name) {
+		return (context, tickCounter) -> drawnLayers.add(name);
 	}
 
 	private Identifier testIdentifier(String name) {
@@ -153,7 +153,8 @@ public class HudElementRegistryTest {
 
 		drawnLayers.clear();
 
-		for (HudElementRegistryImpl.VanillaElement vanillaLayer : HudElementRegistryImpl.vanillaElements.sequencedValues()) {
+		for (Identifier id : HudElementRegistryImpl.VANILLA_ELEMENT_IDS) {
+			HudElementRegistryImpl.RootLayer vanillaLayer = HudElementRegistryImpl.ROOT_ELEMENTS.get(id);
 			vanillaLayer.render(null, drawContext, tickCounter, args -> null);
 		}
 
@@ -163,7 +164,7 @@ public class HudElementRegistryTest {
 	@AfterEach
 	void cleanUpLayers() {
 		HudElementRegistryImpl.visitLayers((layer, iterator) -> {
-			if (!"minecraft".equals(((IdentifiedElement) layer).id().getNamespace())) {
+			if (!"minecraft".equals(layer.id().getNamespace())) {
 				iterator.remove();
 			}
 

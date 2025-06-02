@@ -17,10 +17,10 @@
 package net.fabricmc.fabric.impl.client.rendering.hud;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.SequencedMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -34,52 +34,57 @@ import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.IdentifiedElement;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 
 public class HudElementRegistryImpl {
-	private static final List<Identifier> VANILLA_ELEMENT_IDS = List.of(
-			IdentifiedElement.MISC_OVERLAYS,
-			IdentifiedElement.CROSSHAIR,
-			IdentifiedElement.HOTBAR_AND_BARS,
-			IdentifiedElement.STATUS_EFFECTS,
-			IdentifiedElement.BOSS_BAR,
-			IdentifiedElement.SLEEP,
-			IdentifiedElement.DEMO_TIMER,
-			IdentifiedElement.DEBUG,
-			IdentifiedElement.SCOREBOARD,
-			IdentifiedElement.OVERLAY_MESSAGE,
-			IdentifiedElement.TITLE_AND_SUBTITLE,
-			IdentifiedElement.CHAT,
-			IdentifiedElement.PLAYER_LIST,
-			IdentifiedElement.SUBTITLES
+	@VisibleForTesting
+	public static final List<Identifier> VANILLA_ELEMENT_IDS = List.of(
+			VanillaHudElements.MISC_OVERLAYS,
+			VanillaHudElements.CROSSHAIR,
+			VanillaHudElements.HOTBAR_AND_BARS,
+			VanillaHudElements.STATUS_EFFECTS,
+			VanillaHudElements.BOSS_BAR,
+			VanillaHudElements.SLEEP,
+			VanillaHudElements.DEMO_TIMER,
+			VanillaHudElements.DEBUG,
+			VanillaHudElements.SCOREBOARD,
+			VanillaHudElements.OVERLAY_MESSAGE,
+			VanillaHudElements.TITLE_AND_SUBTITLE,
+			VanillaHudElements.CHAT,
+			VanillaHudElements.PLAYER_LIST,
+			VanillaHudElements.SUBTITLES
 	);
 	/**
-	 * A map containing vanilla elements.
-	 * This map should not be modified. Modify {@link VanillaElement#elements()} instead.
+	 * A map containing vanilla layers.
+	 * This map should not be modified. Modify {@link RootLayer#layers()} instead.
 	 */
 	@VisibleForTesting
-	static final SequencedMap<Identifier, VanillaElement> vanillaElements = VANILLA_ELEMENT_IDS.stream().map(VanillaElement::new).collect(Collectors.toMap(VanillaElement::id, Function.identity(), (a, b) -> a, LinkedHashMap::new));
+	public static final Map<Identifier, RootLayer> ROOT_ELEMENTS = VANILLA_ELEMENT_IDS.stream()
+			.map(RootLayer::new)
+			.collect(Collectors.toMap(RootLayer::id, Function.identity(), (a, b) -> a, IdentityHashMap::new));
+	static final RootLayer FIRST = ROOT_ELEMENTS.get(VanillaHudElements.MISC_OVERLAYS);
+	static final RootLayer LAST = ROOT_ELEMENTS.get(VanillaHudElements.SUBTITLES);
 
-	public static VanillaElement getVanillaLayer(Identifier id) {
-		return vanillaElements.get(id);
+	public static RootLayer getRoot(Identifier id) {
+		return ROOT_ELEMENTS.get(id);
 	}
 
-	public static void addFirst(IdentifiedElement element) {
-		validateUnique(element);
-		vanillaElements.firstEntry().getValue().elements().addFirst(element);
+	public static void addFirst(Identifier id, HudElement element) {
+		validateUnique(id);
+		FIRST.layers().addFirst(HudLayer.of(id, element));
 	}
 
-	public static void addLast(IdentifiedElement element) {
-		validateUnique(element);
-		vanillaElements.lastEntry().getValue().elements().addLast(element);
+	public static void addLast(Identifier id, HudElement element) {
+		validateUnique(id);
+		LAST.layers().addLast(HudLayer.of(id, element));
 	}
 
-	public static void attachElementBefore(Identifier beforeThis, IdentifiedElement element) {
-		validateUnique(element);
+	public static void attachElementBefore(Identifier beforeThis, Identifier id, HudElement element) {
+		validateUnique(id);
 
 		boolean didChange = findLayer(beforeThis, (l, iterator) -> {
 			iterator.previous();
-			iterator.add(element);
+			iterator.add(HudLayer.of(id, element));
 			iterator.next();
 			return true;
 		});
@@ -89,11 +94,11 @@ public class HudElementRegistryImpl {
 		}
 	}
 
-	public static void attachElementAfter(Identifier afterThis, IdentifiedElement element) {
-		validateUnique(element);
+	public static void attachElementAfter(Identifier afterThis, Identifier id, HudElement element) {
+		validateUnique(id);
 
 		boolean didChange = findLayer(afterThis, (l, iterator) -> {
-			iterator.add(element);
+			iterator.add(HudLayer.of(id, element));
 			return true;
 		});
 
@@ -113,9 +118,9 @@ public class HudElementRegistryImpl {
 		}
 	}
 
-	public static void replaceElement(Identifier identifier, Function<IdentifiedElement, IdentifiedElement> replacer) {
+	public static void replaceElement(Identifier identifier, Function<HudElement, HudElement> replacer) {
 		boolean didChange = findLayer(identifier, (l, iterator) -> {
-			iterator.set(replacer.apply((IdentifiedElement) l));
+			iterator.set(HudLayer.of(identifier, replacer.apply(l.element())));
 			return true;
 		});
 
@@ -125,10 +130,10 @@ public class HudElementRegistryImpl {
 	}
 
 	@VisibleForTesting
-	static void validateUnique(IdentifiedElement layer) {
+	static void validateUnique(Identifier id) {
 		visitLayers((l, iterator) -> {
-			if (matchesIdentifier(l, layer.id())) {
-				throw new IllegalArgumentException("Layer with identifier " + layer.id() + " already exists");
+			if (l.id().equals(id)) {
+				throw new IllegalArgumentException("Layer with identifier " + id + " already exists");
 			}
 
 			return false;
@@ -139,11 +144,11 @@ public class HudElementRegistryImpl {
 	 * @return true if an element with the given identifier was found
 	 */
 	@VisibleForTesting
-	static boolean findLayer(Identifier identifier, ElementVisitor visitor) {
+	static boolean findLayer(Identifier identifier, LayerVisitor visitor) {
 		MutableBoolean found = new MutableBoolean(false);
 
 		visitLayers((l, iterator) -> {
-			if (matchesIdentifier(l, identifier)) {
+			if (l.id().equals(identifier)) {
 				found.setTrue();
 				return visitor.visit(l, iterator);
 			}
@@ -155,24 +160,25 @@ public class HudElementRegistryImpl {
 	}
 
 	@VisibleForTesting
-	static boolean visitLayers(ElementVisitor visitor) {
+	static boolean visitLayers(LayerVisitor visitor) {
 		boolean modified = false;
 
-		for (VanillaElement vanillaElement : vanillaElements.sequencedValues()) {
-			modified |= visitLayers(vanillaElement.elements(), visitor);
+		for (Identifier id : VANILLA_ELEMENT_IDS) {
+			RootLayer rootLayer = ROOT_ELEMENTS.get(id);
+			modified |= visitLayers(rootLayer.layers(), visitor);
 		}
 
 		return modified;
 	}
 
-	private static boolean visitLayers(List<HudElement> layers, ElementVisitor visitor) {
+	private static boolean visitLayers(List<HudLayer> layers, LayerVisitor visitor) {
 		MutableBoolean modified = new MutableBoolean(false);
-		ListIterator<HudElement> iterator = layers.listIterator();
+		ListIterator<HudLayer> iterator = layers.listIterator();
 
 		while (iterator.hasNext()) {
-			HudElement element = iterator.next();
+			HudLayer layer = iterator.next();
 
-			if (visitor.visit(element, iterator)) {
+			if (visitor.visit(layer, iterator)) {
 				modified.setTrue();
 			}
 		}
@@ -180,34 +186,30 @@ public class HudElementRegistryImpl {
 		return modified.booleanValue();
 	}
 
-	private static boolean matchesIdentifier(HudElement element, Identifier identifier) {
-		return element instanceof IdentifiedElement ie && ie.id().equals(identifier);
-	}
-
 	@VisibleForTesting
-	interface ElementVisitor {
+	interface LayerVisitor {
 		/**
 		 * @return true if the list has been modified, false if not modified
 		 */
-		boolean visit(HudElement element, ListIterator<HudElement> iterator);
+		boolean visit(HudLayer layer, ListIterator<HudLayer> iterator);
 	}
 
 	/**
-	 * An element that wraps a vanilla element using a list, allowing for users to attach elements before or after it, replace it, or remove it.
+	 * An element that wraps a vanilla element using a list, allowing for users to attach layers before or after it, replace it, or remove it.
 	 */
 	@VisibleForTesting
-	public record VanillaElement(Identifier id, List<HudElement> elements) {
-		public VanillaElement(Identifier id) {
+	public record RootLayer(Identifier id, List<HudLayer> layers) {
+		public RootLayer(Identifier id) {
 			this(id, new ArrayList<>());
-			elements().add(IdentifiedElement.of(id, (context, tickCounter) -> { }));
+			layers().add(HudLayer.of(id, (context, tickCounter) -> { }));
 		}
 
 		public void render(InGameHud instance, DrawContext context, RenderTickCounter tickCounter, Operation<Void> renderVanilla) {
-			for (HudElement element : elements) {
-				if (matchesIdentifier(element, id())) {
+			for (HudLayer layer : layers) {
+				if (layer.id().equals(id)) {
 					renderVanilla.call(instance, context, tickCounter);
 				} else {
-					element.render(context, tickCounter);
+					layer.element().render(context, tickCounter);
 				}
 			}
 		}
