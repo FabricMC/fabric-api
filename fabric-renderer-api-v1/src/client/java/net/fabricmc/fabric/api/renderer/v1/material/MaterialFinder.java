@@ -108,7 +108,7 @@ public interface MaterialFinder extends MaterialView {
 	 *
 	 * @see ItemRenderState.Glint
 	 */
-	MaterialFinder glint(ItemRenderState.Glint mode);
+	MaterialFinder glint(@Nullable ItemRenderState.Glint mode);
 
 	/**
 	 * A hint to the renderer about how the quad is intended to be shaded, for example through ambient occlusion and
