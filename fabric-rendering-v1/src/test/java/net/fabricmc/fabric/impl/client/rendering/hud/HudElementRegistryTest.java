@@ -155,7 +155,7 @@ public class HudElementRegistryTest {
 
 		for (Identifier id : HudElementRegistryImpl.VANILLA_ELEMENT_IDS) {
 			HudElementRegistryImpl.RootLayer vanillaLayer = HudElementRegistryImpl.ROOT_ELEMENTS.get(id);
-			vanillaLayer.render(drawContext, tickCounter, () -> {});
+			vanillaLayer.render(drawContext, tickCounter, () -> { });
 		}
 
 		assertEquals(expectedLayers, drawnLayers);
