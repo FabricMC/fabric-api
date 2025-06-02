@@ -23,6 +23,7 @@ import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -31,7 +32,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.IdentifiedElement;
 
 public class HudTests implements ClientModInitializer, FabricClientGameTest {
 	private static final String MOD_ID = "fabric";
@@ -45,12 +46,12 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 
 	@Override
 	public void onInitializeClient() {
-		HudElementRegistry.before(VanillaHudElements.MISC_OVERLAYS).register(HudTests::renderBeforeMiscOverlay);
-		HudElementRegistry.after(VanillaHudElements.MISC_OVERLAYS).register(HudTests::renderAfterMiscOverlay);
-		HudElementRegistry.after(VanillaHudElements.HOTBAR_AND_BARS).register(HudTests::renderAfterExperienceLevel);
-		HudElementRegistry.before(VanillaHudElements.DEMO_TIMER).register(HudTests::renderBeforeDemoTimer);
-		HudElementRegistry.before(VanillaHudElements.CHAT).register(HudTests::renderBeforeChat);
-		HudElementRegistry.after(VanillaHudElements.SUBTITLES).register(HudTests::renderAfterSubtitles);
+		HudElementRegistry.attachElementBefore(IdentifiedElement.MISC_OVERLAYS, Identifier.of(MOD_ID, BEFORE_MISC_OVERLAY), HudTests::renderBeforeMiscOverlay);
+		HudElementRegistry.attachElementAfter(IdentifiedElement.MISC_OVERLAYS, Identifier.of(MOD_ID, AFTER_MISC_OVERLAY), HudTests::renderAfterMiscOverlay);
+		HudElementRegistry.attachElementAfter(IdentifiedElement.HOTBAR_AND_BARS, Identifier.of(MOD_ID, AFTER_HOTBAR_AND_BARS), HudTests::renderAfterExperienceLevel);
+		HudElementRegistry.attachElementBefore(IdentifiedElement.DEMO_TIMER, Identifier.of(MOD_ID, BEFORE_DEMO_TIMER), HudTests::renderBeforeDemoTimer);
+		HudElementRegistry.attachElementBefore(IdentifiedElement.CHAT, Identifier.of(MOD_ID, BEFORE_CHAT), HudTests::renderBeforeChat);
+		HudElementRegistry.attachElementAfter(IdentifiedElement.SUBTITLES, Identifier.of(MOD_ID, AFTER_SUBTITLES), HudTests::renderAfterSubtitles);
 	}
 
 	private static void renderBeforeMiscOverlay(DrawContext context, RenderTickCounter tickCounter) {
