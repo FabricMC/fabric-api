@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.api.renderer.v1.material;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.item.ItemRenderState;
+
 import net.fabricmc.fabric.api.util.TriState;
 
 /**
@@ -26,9 +31,10 @@ import net.fabricmc.fabric.api.util.TriState;
  */
 public interface MaterialView {
 	/**
-	 * @see MaterialFinder#blendMode(BlendMode)
+	 * @see MaterialFinder#renderLayer(BlockRenderLayer)
 	 */
-	BlendMode blendMode();
+	@Nullable
+	BlockRenderLayer renderLayer();
 
 	/**
 	 * @see MaterialFinder#emissive(boolean)
@@ -46,9 +52,10 @@ public interface MaterialView {
 	TriState ambientOcclusion();
 
 	/**
-	 * @see MaterialFinder#glintMode(GlintMode)
+	 * @see MaterialFinder#glint(ItemRenderState.Glint)
 	 */
-	GlintMode glintMode();
+	@Nullable
+	ItemRenderState.Glint glint();
 
 	/**
 	 * @see MaterialFinder#shadeMode(ShadeMode)

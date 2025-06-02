@@ -37,6 +37,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
@@ -89,12 +90,12 @@ public class IndigoRenderer implements Renderer {
 	}
 
 	@Override
-	public void render(BlockModelRenderer modelRenderer, BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrices, VertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
+	public void render(BlockModelRenderer modelRenderer, BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrices, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
 		TerrainLikeRenderContext.POOL.get().bufferModel(blockView, model, state, pos, matrices, vertexConsumers, cull, seed, overlay);
 	}
 
 	@Override
-	public void render(MatrixStack.Entry entry, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
+	public void render(MatrixStack.Entry entry, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
 		SimpleBlockRenderContext.POOL.get().bufferModel(entry, vertexConsumers, model, red, green, blue, light, overlay, blockView, pos, state);
 	}
 

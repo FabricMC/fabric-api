@@ -16,12 +16,18 @@
 
 package net.fabricmc.fabric.api.renderer.v1.material;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.item.ItemRenderState;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.api.util.TriState;
 
 /**
@@ -34,11 +40,19 @@ public interface MaterialFinder extends MaterialView {
 	/**
 	 * Controls how sprite pixels should be blended with the scene.
 	 *
-	 * <p>The default value is {@link BlendMode#DEFAULT}.
+	 * <p>If set to {@code null}, {@link RenderLayers#getBlockLayer(BlockState)} will be used to retrieve the render
+	 * layer in block contexts and
+	 * {@linkplain ItemRenderState.LayerRenderState#setRenderLayer(RenderLayer) the render layer of the state layer}
+	 * will be used in item contexts. Set to another value to override this behavior.
 	 *
-	 * @see BlendMode
+	 * <p>In block contexts, a non-null value will be used directly. In item contexts, a non-null value will be
+	 * converted to a {@link RenderLayer} using {@link RenderLayerHelper#getEntityBlockLayer(BlockRenderLayer)}.
+	 *
+	 * <p>The default value is {@code null}.
+	 *
+	 * @see BlockRenderLayer
 	 */
-	MaterialFinder blendMode(BlendMode blendMode);
+	MaterialFinder renderLayer(@Nullable BlockRenderLayer renderLayer);
 
 	/**
 	 * When true, sprite texture and color will be rendered at full brightness.
@@ -83,16 +97,18 @@ public interface MaterialFinder extends MaterialView {
 	/**
 	 * Controls how glint should be applied.
 	 *
-	 * <p>If set to {@link GlintMode#DEFAULT}, glint will be applied in item contexts based on
+	 * <p>If set to {@code null}, glint will be applied in item contexts based on
 	 * {@linkplain ItemRenderState.LayerRenderState#setGlint(ItemRenderState.Glint) the glint type of the layer}. Set
 	 * to another value to override this behavior.
 	 *
-	 * <p>The default value is {@link GlintMode#DEFAULT}.
+	 * <p>The default value is {@code null}.
 	 *
 	 * <p>This property is guaranteed to be respected in item contexts. Some renderers may also respect it in block
 	 * contexts, but this is not guaranteed.
+	 *
+	 * @see ItemRenderState.Glint
 	 */
-	MaterialFinder glintMode(GlintMode mode);
+	MaterialFinder glint(ItemRenderState.Glint mode);
 
 	/**
 	 * A hint to the renderer about how the quad is intended to be shaded, for example through ambient occlusion and

@@ -29,6 +29,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
  * injection.
  */
 public interface FabricLayerRenderState {
+	// TODO 1.21.6: If sprite of added quad is animated, automatically mark animated? Either way, clarify in doc.
 	/**
 	 * Retrieves the {@link QuadEmitter} used to append quads to this layer. Calling this method a second time
 	 * invalidates any prior result. Geometry added to this emitter will not be visible in

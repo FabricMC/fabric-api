@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.BlockModelPart;
 import net.minecraft.client.render.model.BlockStateModel;
@@ -38,7 +39,6 @@ import net.minecraft.world.BlockRenderView;
 import net.fabricmc.fabric.api.blockview.v2.FabricBlockView;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -53,9 +53,9 @@ public class FrameBlockStateModel implements BlockStateModel {
 		this.frameModel = frameModel;
 
 		MaterialFinder finder = Renderer.get().materialFinder();
-		this.translucentMaterial = finder.blendMode(BlendMode.TRANSLUCENT).find();
+		this.translucentMaterial = finder.renderLayer(BlockRenderLayer.TRANSLUCENT).find();
 		finder.clear();
-		this.translucentEmissiveMaterial = finder.blendMode(BlendMode.TRANSLUCENT).emissive(true).find();
+		this.translucentEmissiveMaterial = finder.renderLayer(BlockRenderLayer.TRANSLUCENT).emissive(true).find();
 	}
 
 	@Override

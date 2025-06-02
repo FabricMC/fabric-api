@@ -19,6 +19,9 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
@@ -31,11 +34,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.math.MatrixUtil;
 
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.fabricmc.fabric.api.renderer.v1.material.GlintMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshViewImpl;
@@ -101,7 +103,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
 		final RenderMaterial mat = quad.material();
-		final VertexConsumer vertexConsumer = getVertexConsumer(mat.blendMode(), mat.glintMode());
+		final VertexConsumer vertexConsumer = getVertexConsumer(mat.renderLayer(), mat.glint());
 
 		tintQuad(quad);
 		shadeQuad(quad, mat.emissive());
@@ -134,20 +136,20 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	private VertexConsumer getVertexConsumer(BlendMode blendMode, GlintMode glintMode) {
+	private VertexConsumer getVertexConsumer(@Nullable BlockRenderLayer matRenderLayer, @Nullable ItemRenderState.Glint matGlint) {
 		RenderLayer layer;
 		ItemRenderState.Glint glint;
 
-		if (blendMode == BlendMode.DEFAULT) {
+		if (matRenderLayer == null) {
 			layer = defaultLayer;
 		} else {
-			layer = blendMode == BlendMode.TRANSLUCENT ? TexturedRenderLayers.getItemEntityTranslucentCull() : TexturedRenderLayers.getEntityCutout();
+			layer = RenderLayerHelper.getEntityBlockLayer(matRenderLayer);
 		}
 
-		if (glintMode == GlintMode.DEFAULT) {
+		if (matGlint == null) {
 			glint = defaultGlint;
 		} else {
-			glint = glintMode.glint;
+			glint = matGlint;
 		}
 
 		int cacheIndex;

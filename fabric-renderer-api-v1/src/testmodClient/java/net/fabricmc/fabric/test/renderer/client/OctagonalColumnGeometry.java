@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.model.BakedGeometry;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.Geometry;
@@ -27,7 +28,6 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.material.GlintMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
@@ -50,7 +50,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.getSpriteGetter().spriteFinder(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)));
 
 		MaterialFinder finder = Renderer.get().materialFinder();
-		RenderMaterial glintMaterial = finder.glintMode(GlintMode.STANDARD).shadeMode(shadeMode).find();
+		RenderMaterial glintMaterial = finder.glint(ItemRenderState.Glint.STANDARD).shadeMode(shadeMode).find();
 
 		Sprite sprite = baker.getSpriteGetter().get(textures.get("column"), model);
 

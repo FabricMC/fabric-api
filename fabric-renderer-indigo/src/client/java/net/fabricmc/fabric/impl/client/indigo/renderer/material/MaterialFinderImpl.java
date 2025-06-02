@@ -18,8 +18,11 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.material;
 
 import java.util.Objects;
 
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.fabricmc.fabric.api.renderer.v1.material.GlintMode;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.item.ItemRenderState;
+
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialView;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -33,7 +36,9 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 		// Start with all zeroes
 		MaterialFinderImpl finder = new MaterialFinderImpl(0);
 		// Apply non-zero defaults
+		finder.renderLayer(null);
 		finder.ambientOcclusion(TriState.DEFAULT);
+		finder.glint(null);
 		DEFAULT_BITS = finder.bits;
 
 		if (!areBitsValid(DEFAULT_BITS)) {
@@ -50,10 +55,9 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 	}
 
 	@Override
-	public MaterialFinder blendMode(BlendMode blendMode) {
-		Objects.requireNonNull(blendMode, "BlendMode may not be null");
-
-		bits = (bits & ~BLEND_MODE_MASK) | (blendMode.ordinal() << BLEND_MODE_BIT_OFFSET);
+	public MaterialFinder renderLayer(@Nullable BlockRenderLayer renderLayer) {
+		int index = renderLayer == null ? NULL_RENDER_LAYER_INDEX : renderLayer.ordinal();
+		bits = (bits & ~RENDER_LAYER_MASK) | (index << RENDER_LAYER_BIT_OFFSET);
 		return this;
 	}
 
@@ -78,10 +82,9 @@ public class MaterialFinderImpl extends MaterialViewImpl implements MaterialFind
 	}
 
 	@Override
-	public MaterialFinder glintMode(GlintMode mode) {
-		Objects.requireNonNull(mode, "GlintMode may not be null");
-
-		bits = (bits & ~GLINT_MODE_MASK) | (mode.ordinal() << GLINT_MODE_BIT_OFFSET);
+	public MaterialFinder glint(@Nullable ItemRenderState.Glint glint) {
+		int index = glint == null ? NULL_GLINT_INDEX : glint.ordinal();
+		bits = (bits & ~GLINT_MASK) | (index << GLINT_BIT_OFFSET);
 		return this;
 	}
 

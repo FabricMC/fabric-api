@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BlockStateModel;
@@ -45,8 +43,8 @@ public interface FabricBlockModelRenderer {
 	 * and
 	 * {@link BlockRenderManager#renderBlock(BlockState, BlockPos, BlockRenderView, MatrixStack, VertexConsumer, boolean, List)}
 	 * that accepts a {@link BlockStateModel} instead of a {@code List<BlockModelPart>} and a
-	 * {@link VertexConsumerProvider} instead of a {@link VertexConsumer}. Also accepts the random seed. <b>Prefer using
-	 * this method over the vanilla alternative to correctly retrieve geometry from models that implement
+	 * {@link BlockVertexConsumerProvider} instead of a {@link VertexConsumer}. Also accepts the random seed. <b>Prefer
+	 * using this method over the vanilla alternative to correctly retrieve geometry from models that implement
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockRenderView, BlockPos, BlockState, Random, Predicate)} and to
 	 * correctly buffer models that have geometry on multiple render layers.</b>
 	 *
@@ -59,21 +57,19 @@ public interface FabricBlockModelRenderer {
 	 * @param state The block state.
 	 * @param pos The position of the block in the world.
 	 * @param matrices The matrix stack.
-	 * @param vertexConsumers The vertex consumers. <b>The {@link RenderLayer} passed to
-	 *                        {@link VertexConsumerProvider#getBuffer(RenderLayer)} is guaranteed to be one of
-	 *                        {@link RenderLayer#getBlockLayers()}</b>.
+	 * @param vertexConsumers The vertex consumers.
 	 * @param cull Whether to try to cull faces hidden by other blocks.
 	 * @param seed The random seed. Usually retrieved by the caller from {@link BlockState#getRenderingSeed(BlockPos)}.
 	 * @param overlay The overlay value to pass to output {@link VertexConsumer}s.
 	 */
-	default void render(BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrices, VertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
+	default void render(BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrices, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
 		Renderer.get().render((BlockModelRenderer) this, blockView, model, state, pos, matrices, vertexConsumers, cull, seed, overlay);
 	}
 
 	/**
 	 * Alternative for
 	 * {@link BlockModelRenderer#render(MatrixStack.Entry, VertexConsumer, BlockStateModel, float, float, float, int, int)}
-	 * that accepts a {@link VertexConsumerProvider} instead of a {@link VertexConsumer}. Also accepts the
+	 * that accepts a {@link BlockVertexConsumerProvider} instead of a {@link VertexConsumer}. Also accepts the
 	 * {@link BlockRenderView}, {@link BlockPos}, and {@link BlockState} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockRenderView, BlockPos, BlockState, Random, Predicate)} when
 	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
@@ -83,9 +79,7 @@ public interface FabricBlockModelRenderer {
 	 * entity renderers.
 	 *
 	 * @param matrices The matrices.
-	 * @param vertexConsumers The vertex consumers. <b>The {@link RenderLayer} passed to
-	 *                        {@link VertexConsumerProvider#getBuffer(RenderLayer)} is guaranteed to be one of
-	 *                        {@link RenderLayer#getBlockLayers()}</b>.
+	 * @param vertexConsumers The vertex consumers.
 	 * @param model The model to render.
 	 * @param red The red component of the tint color.
 	 * @param green The green component of the tint color.
@@ -97,7 +91,7 @@ public interface FabricBlockModelRenderer {
 	 *            </b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 */
-	static void render(MatrixStack.Entry matrices, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
+	static void render(MatrixStack.Entry matrices, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
 		Renderer.get().render(matrices, vertexConsumers, model, red, green, blue, light, overlay, blockView, pos, state);
 	}
 }

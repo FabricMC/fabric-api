@@ -22,8 +22,8 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHel
 import org.joml.Vector3fc;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -53,7 +53,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 	protected abstract LightDataProvider createLightDataProvider(BlockRenderInfo blockInfo);
 
-	protected abstract VertexConsumer getVertexConsumer(RenderLayer layer);
+	protected abstract VertexConsumer getVertexConsumer(BlockRenderLayer layer);
 
 	/** Must be called before buffering a block model. */
 	protected void prepare(BlockPos pos, BlockState state) {
@@ -72,7 +72,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		final boolean ao = blockInfo.effectiveAo(mat.ambientOcclusion());
 		final boolean emissive = mat.emissive();
 		final boolean vanillaShade = mat.shadeMode() == ShadeMode.VANILLA;
-		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveRenderLayer(mat.blendMode()));
+		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveRenderLayer(mat.renderLayer()));
 
 		tintQuad(quad);
 		shadeQuad(quad, ao, emissive, vanillaShade);

@@ -31,8 +31,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.chunk.BlockBufferAllocatorStorage;
@@ -71,7 +71,7 @@ abstract class SectionBuilderMixin {
 	private BlockRenderManager blockRenderManager;
 
 	@Shadow
-	abstract BufferBuilder beginBufferBuilding(Map<RenderLayer, BufferBuilder> builders, BlockBufferAllocatorStorage allocatorStorage, RenderLayer layer);
+	abstract BufferBuilder beginBufferBuilding(Map<BlockRenderLayer, BufferBuilder> builders, BlockBufferAllocatorStorage allocatorStorage, BlockRenderLayer layer);
 
 	@Inject(method = "build",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;iterate(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;"))
@@ -80,7 +80,7 @@ abstract class SectionBuilderMixin {
 						CallbackInfoReturnable<SectionBuilder.RenderData> cir,
 						@Local(ordinal = 0) BlockPos sectionOrigin,
 						@Local(ordinal = 0) MatrixStack matrixStack,
-						@Local(ordinal = 0) Map<RenderLayer, BufferBuilder> builderMap,
+						@Local(ordinal = 0) Map<BlockRenderLayer, BufferBuilder> builderMap,
 						@Local(ordinal = 0) Random random) {
 		// hook just before iterating over the render chunk's blocks to capture the buffer builder map
 		TerrainRenderContext renderer = TerrainRenderContext.POOL.get();

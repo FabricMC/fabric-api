@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.renderer;
+package net.fabricmc.fabric.api.renderer.v1.render;
 
-import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
+import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-
-public interface BasicItemModelExtension {
-	void fabric_setMesh(Mesh mesh, ErrorCollectingSpriteGetter spriteGetter);
+/**
+ * Like {@link VertexConsumerProvider}, but takes {@link BlockRenderLayer} instead of {@link RenderLayer}. Primarily
+ * used to correctly render block models which have geometry on more than one layer.
+ *
+ * @see FabricBlockModelRenderer
+ */
+public interface BlockVertexConsumerProvider {
+	VertexConsumer getBuffer(BlockRenderLayer layer);
 }

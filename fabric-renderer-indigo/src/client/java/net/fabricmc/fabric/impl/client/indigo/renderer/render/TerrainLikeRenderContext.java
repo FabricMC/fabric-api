@@ -17,9 +17,8 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -31,6 +30,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
+import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
@@ -41,7 +41,7 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 
 	private final Random random = Random.createLocal();
 
-	private VertexConsumerProvider vertexConsumers;
+	private BlockVertexConsumerProvider vertexConsumers;
 
 	@Override
 	protected LightDataProvider createLightDataProvider(BlockRenderInfo blockInfo) {
@@ -60,11 +60,11 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 	}
 
 	@Override
-	protected VertexConsumer getVertexConsumer(RenderLayer layer) {
+	protected VertexConsumer getVertexConsumer(BlockRenderLayer layer) {
 		return vertexConsumers.getBuffer(layer);
 	}
 
-	public void bufferModel(BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
+	public void bufferModel(BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
 		try {
 			Vec3d offset = state.getModelOffset(pos);
 			matrixStack.translate(offset.x, offset.y, offset.z);

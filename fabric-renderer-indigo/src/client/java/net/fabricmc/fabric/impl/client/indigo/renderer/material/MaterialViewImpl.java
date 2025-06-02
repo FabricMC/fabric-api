@@ -20,10 +20,13 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 
 import java.util.Locale;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.util.math.MathHelper;
 
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.fabricmc.fabric.api.renderer.v1.material.GlintMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialView;
 import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
 import net.fabricmc.fabric.api.util.TriState;
@@ -35,46 +38,49 @@ import net.fabricmc.fabric.api.util.TriState;
  * easy/fast interning via int/object hashmap.
  */
 public class MaterialViewImpl implements MaterialView {
-	private static final BlendMode[] BLEND_MODES = BlendMode.values();
-	private static final int BLEND_MODE_COUNT = BLEND_MODES.length;
+	private static final @Nullable BlockRenderLayer[] BLOCK_RENDER_LAYERS = ArrayUtils.add(BlockRenderLayer.values(), null);
+	private static final int BLOCK_RENDER_LAYER_COUNT = BLOCK_RENDER_LAYERS.length;
 	private static final TriState[] TRI_STATES = TriState.values();
 	private static final int TRI_STATE_COUNT = TRI_STATES.length;
-	private static final GlintMode[] GLINT_MODES = GlintMode.values();
-	private static final int GLINT_MODE_COUNT = GLINT_MODES.length;
+	private static final @Nullable ItemRenderState.Glint[] GLINTS = ArrayUtils.add(ItemRenderState.Glint.values(), null);
+	private static final int GLINT_COUNT = GLINTS.length;
 	private static final ShadeMode[] SHADE_MODES = ShadeMode.values();
 	private static final int SHADE_MODE_COUNT = SHADE_MODES.length;
 
-	protected static final int BLEND_MODE_BIT_LENGTH = MathHelper.ceilLog2(BLEND_MODE_COUNT);
+	protected static final int NULL_RENDER_LAYER_INDEX = BLOCK_RENDER_LAYER_COUNT - 1;
+	protected static final int NULL_GLINT_INDEX = GLINT_COUNT - 1;
+
+	protected static final int RENDER_LAYER_BIT_LENGTH = MathHelper.ceilLog2(BLOCK_RENDER_LAYER_COUNT);
 	protected static final int EMISSIVE_BIT_LENGTH = 1;
 	protected static final int DIFFUSE_BIT_LENGTH = 1;
 	protected static final int AO_BIT_LENGTH = MathHelper.ceilLog2(TRI_STATE_COUNT);
-	protected static final int GLINT_MODE_BIT_LENGTH = MathHelper.ceilLog2(GLINT_MODE_COUNT);
+	protected static final int GLINT_BIT_LENGTH = MathHelper.ceilLog2(GLINT_COUNT);
 	protected static final int SHADE_MODE_BIT_LENGTH = MathHelper.ceilLog2(SHADE_MODE_COUNT);
 
-	protected static final int BLEND_MODE_BIT_OFFSET = 0;
-	protected static final int EMISSIVE_BIT_OFFSET = BLEND_MODE_BIT_OFFSET + BLEND_MODE_BIT_LENGTH;
+	protected static final int RENDER_LAYER_BIT_OFFSET = 0;
+	protected static final int EMISSIVE_BIT_OFFSET = RENDER_LAYER_BIT_OFFSET + RENDER_LAYER_BIT_LENGTH;
 	protected static final int DIFFUSE_BIT_OFFSET = EMISSIVE_BIT_OFFSET + EMISSIVE_BIT_LENGTH;
 	protected static final int AO_BIT_OFFSET = DIFFUSE_BIT_OFFSET + DIFFUSE_BIT_LENGTH;
-	protected static final int GLINT_MODE_BIT_OFFSET = AO_BIT_OFFSET + AO_BIT_LENGTH;
-	protected static final int SHADE_MODE_BIT_OFFSET = GLINT_MODE_BIT_OFFSET + GLINT_MODE_BIT_LENGTH;
+	protected static final int GLINT_BIT_OFFSET = AO_BIT_OFFSET + AO_BIT_LENGTH;
+	protected static final int SHADE_MODE_BIT_OFFSET = GLINT_BIT_OFFSET + GLINT_BIT_LENGTH;
 	public static final int TOTAL_BIT_LENGTH = SHADE_MODE_BIT_OFFSET + SHADE_MODE_BIT_LENGTH;
 
-	protected static final int BLEND_MODE_MASK = bitMask(BLEND_MODE_BIT_LENGTH, BLEND_MODE_BIT_OFFSET);
+	protected static final int RENDER_LAYER_MASK = bitMask(RENDER_LAYER_BIT_LENGTH, RENDER_LAYER_BIT_OFFSET);
 	protected static final int EMISSIVE_FLAG = bitMask(EMISSIVE_BIT_LENGTH, EMISSIVE_BIT_OFFSET);
 	protected static final int DIFFUSE_FLAG = bitMask(DIFFUSE_BIT_LENGTH, DIFFUSE_BIT_OFFSET);
 	protected static final int AO_MASK = bitMask(AO_BIT_LENGTH, AO_BIT_OFFSET);
-	protected static final int GLINT_MODE_MASK = bitMask(GLINT_MODE_BIT_LENGTH, GLINT_MODE_BIT_OFFSET);
+	protected static final int GLINT_MASK = bitMask(GLINT_BIT_LENGTH, GLINT_BIT_OFFSET);
 	protected static final int SHADE_MODE_MASK = bitMask(SHADE_MODE_BIT_LENGTH, SHADE_MODE_BIT_OFFSET);
 
 	protected static boolean areBitsValid(int bits) {
-		int blendMode = (bits & BLEND_MODE_MASK) >>> BLEND_MODE_BIT_OFFSET;
+		int renderLayer = (bits & RENDER_LAYER_MASK) >>> RENDER_LAYER_BIT_OFFSET;
 		int ao = (bits & AO_MASK) >>> AO_BIT_OFFSET;
-		int glintMode = (bits & GLINT_MODE_MASK) >>> GLINT_MODE_BIT_OFFSET;
+		int glint = (bits & GLINT_MASK) >>> GLINT_BIT_OFFSET;
 		int shadeMode = (bits & SHADE_MODE_MASK) >>> SHADE_MODE_BIT_OFFSET;
 
-		return blendMode < BLEND_MODE_COUNT
+		return renderLayer < BLOCK_RENDER_LAYER_COUNT
 				&& ao < TRI_STATE_COUNT
-				&& glintMode < GLINT_MODE_COUNT
+				&& glint < GLINT_COUNT
 				&& shadeMode < SHADE_MODE_COUNT;
 	}
 
@@ -85,8 +91,9 @@ public class MaterialViewImpl implements MaterialView {
 	}
 
 	@Override
-	public BlendMode blendMode() {
-		return BLEND_MODES[(bits & BLEND_MODE_MASK) >>> BLEND_MODE_BIT_OFFSET];
+	@Nullable
+	public BlockRenderLayer renderLayer() {
+		return BLOCK_RENDER_LAYERS[(bits & RENDER_LAYER_MASK) >>> RENDER_LAYER_BIT_OFFSET];
 	}
 
 	@Override
@@ -105,8 +112,9 @@ public class MaterialViewImpl implements MaterialView {
 	}
 
 	@Override
-	public GlintMode glintMode() {
-		return GLINT_MODES[(bits & GLINT_MODE_MASK) >>> GLINT_MODE_BIT_OFFSET];
+	@Nullable
+	public ItemRenderState.Glint glint() {
+		return GLINTS[(bits & GLINT_MASK) >>> GLINT_BIT_OFFSET];
 	}
 
 	@Override
@@ -119,12 +127,12 @@ public class MaterialViewImpl implements MaterialView {
 	 * To be used in {@link #toString} overrides so they show in the debugger.
 	 */
 	String contentsToString() {
-		return String.format("blend=%s, emissive=%b, disable diffuse=%b, ao=%s, glint=%s, shade=%s",
-				blendMode().toString().toLowerCase(Locale.ROOT),
+		return String.format("render type=%s, emissive=%b, disable diffuse=%b, ao=%s, glint=%s, shade=%s",
+				String.valueOf(renderLayer()).toLowerCase(Locale.ROOT),
 				emissive(),
 				disableDiffuse(),
-				ambientOcclusion().toString().toLowerCase(Locale.ROOT),
-				glintMode().toString().toLowerCase(Locale.ROOT),
-				shadeMode().toString().toLowerCase(Locale.ROOT));
+				String.valueOf(ambientOcclusion()).toLowerCase(Locale.ROOT),
+				String.valueOf(glint()).toLowerCase(Locale.ROOT),
+				String.valueOf(shadeMode()).toLowerCase(Locale.ROOT));
 	}
 }
