@@ -18,20 +18,18 @@ package net.fabricmc.fabric.api.client.rendering.v1.hud;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.client.rendering.hud.WrappedElement;
-
 /**
- * A hud element that has an identifier attached for use in {@link HudElementRegistry}.
+ * Identifiers for vanilla hud elements for use in {@link HudElementRegistry}.
  *
  * <p>The identifiers in this interface are the vanilla hud elements in the order they are drawn in.
  * The first element is drawn first, which means it is at the bottom.
  * All vanilla elements except {@link #SLEEP} are in sub drawers and have a render condition attached ({@link net.minecraft.client.option.GameOptions#hudHidden}).
  * Operations relative to any element will generally inherit that element's render condition.
- * There is currently no mechanism to change the render condition of a element.
+ * There is currently no mechanism to change the render condition of an element.
  *
  * <p>For common use cases and more details on how this API deals with render condition, see {@link HudElementRegistry}.
  */
-public interface IdentifiedElement extends HudElement {
+public interface VanillaHudElements {
 	/**
 	 * The identifier for the vanilla miscellaneous overlays (such as vignette, spyglass, and powder snow) element.
 	 */
@@ -90,20 +88,4 @@ public interface IdentifiedElement extends HudElement {
 	 * The identifier for the vanilla sound subtitles element.
 	 */
 	Identifier SUBTITLES = Identifier.ofVanilla("subtitles");
-
-	/**
-	 * @return the identifier of the element
-	 */
-	Identifier id();
-
-	/**
-	 * Wraps a hud element in an identified element.
-	 *
-	 * @param id    the identifier to give the element
-	 * @param layer the element to wrap
-	 * @return the identified element
-	 */
-	static IdentifiedElement of(Identifier id, HudElement layer) {
-		return new WrappedElement(id, layer);
-	}
 }
