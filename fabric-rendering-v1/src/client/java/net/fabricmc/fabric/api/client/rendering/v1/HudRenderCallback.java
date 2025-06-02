@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * @deprecated Use {@link HudElementRegistry} instead. For common use cases, see {@link HudElementRegistry}.
+ * @deprecated Use {@link HudElementRegistry} instead.
  */
 @Deprecated
 public interface HudRenderCallback {

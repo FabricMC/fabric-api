@@ -39,9 +39,37 @@ public final class VanillaHudElements {
 	 */
 	public static final Identifier CROSSHAIR = Identifier.ofVanilla("crosshair");
 	/**
-	 * The identifier for the vanilla hotbar, spectator hud, experience bar, and status bars element.
+	 * The identifier for the vanilla spectator menu.
 	 */
-	public static final Identifier HOTBAR_AND_BARS = Identifier.ofVanilla("hotbar_and_bars");
+	public static final Identifier SPECTATOR_MENU = Identifier.ofVanilla("spectator_menu");
+	/**
+	 * The identifier for the vanilla hotbar.
+	 */
+	public static final Identifier HOTBAR = Identifier.ofVanilla("hotbar");
+	/**
+	 * The identifier for the vanilla status bar.
+	 */
+	public static final Identifier STATUS_BARS = Identifier.ofVanilla("status_bars");
+	/**
+	 * The identifier for the vanilla mount health.
+	 */
+	public static final Identifier MOUNT_HEALTH = Identifier.ofVanilla("mount_health");
+	/**
+	 * The identifier for the info bar, either empty, experience bar, locator or jump bar.
+	 */
+	public static final Identifier INFO_BAR = Identifier.ofVanilla("info_bar");
+	/**
+	 * The identifier for experience level tooltip.
+	 */
+	public static final Identifier EXPERIENCE_LEVEL = Identifier.ofVanilla("experience_level");
+	/**
+	 * The identifier for held item tooltip.
+	 */
+	public static final Identifier HELD_ITEM_TOOLTIP = Identifier.ofVanilla("held_item_tooltip");
+	/**
+	 * The identifier for the vanilla spectator tooltip.
+	 */
+	public static final Identifier SPECTATOR_TOOLTIP = Identifier.ofVanilla("spectator_tooltip");
 	/**
 	 * The identifier for the vanilla status effects element.
 	 */

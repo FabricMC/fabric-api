@@ -48,7 +48,7 @@ public class HudTests implements ClientModInitializer, FabricClientGameTest {
 	public void onInitializeClient() {
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Identifier.of(MOD_ID, BEFORE_MISC_OVERLAY), HudTests::renderBeforeMiscOverlay);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, Identifier.of(MOD_ID, AFTER_MISC_OVERLAY), HudTests::renderAfterMiscOverlay);
-		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR_AND_BARS, Identifier.of(MOD_ID, AFTER_HOTBAR_AND_BARS), HudTests::renderAfterExperienceLevel);
+		HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, Identifier.of(MOD_ID, AFTER_HOTBAR_AND_BARS), HudTests::renderAfterExperienceLevel);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.DEMO_TIMER, Identifier.of(MOD_ID, BEFORE_DEMO_TIMER), HudTests::renderBeforeDemoTimer);
 		HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.of(MOD_ID, BEFORE_CHAT), HudTests::renderBeforeChat);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.SUBTITLES, Identifier.of(MOD_ID, AFTER_SUBTITLES), HudTests::renderAfterSubtitles);

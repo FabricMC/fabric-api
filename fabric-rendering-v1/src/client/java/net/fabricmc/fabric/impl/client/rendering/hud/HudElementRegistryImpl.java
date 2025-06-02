@@ -24,12 +24,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 
@@ -41,7 +39,14 @@ public class HudElementRegistryImpl {
 	public static final List<Identifier> VANILLA_ELEMENT_IDS = List.of(
 			VanillaHudElements.MISC_OVERLAYS,
 			VanillaHudElements.CROSSHAIR,
-			VanillaHudElements.HOTBAR_AND_BARS,
+			VanillaHudElements.SPECTATOR_MENU,
+			VanillaHudElements.HOTBAR,
+			VanillaHudElements.STATUS_BARS,
+			VanillaHudElements.MOUNT_HEALTH,
+			VanillaHudElements.INFO_BAR,
+			VanillaHudElements.EXPERIENCE_LEVEL,
+			VanillaHudElements.HELD_ITEM_TOOLTIP,
+			VanillaHudElements.SPECTATOR_TOOLTIP,
 			VanillaHudElements.STATUS_EFFECTS,
 			VanillaHudElements.BOSS_BAR,
 			VanillaHudElements.SLEEP,
@@ -199,15 +204,19 @@ public class HudElementRegistryImpl {
 	 */
 	@VisibleForTesting
 	public record RootLayer(Identifier id, List<HudLayer> layers) {
+		private static final HudElement VANILLA = (context, tickCounter) -> {
+			throw new IllegalStateException();
+		};
+
 		public RootLayer(Identifier id) {
 			this(id, new ArrayList<>());
-			layers().add(HudLayer.of(id, (context, tickCounter) -> { }));
+			layers().add(HudLayer.of(id, VANILLA));
 		}
 
-		public void render(InGameHud instance, DrawContext context, RenderTickCounter tickCounter, Operation<Void> renderVanilla) {
+		public void render(DrawContext context, RenderTickCounter tickCounter, Runnable renderVanilla) {
 			for (HudLayer layer : layers) {
 				if (layer.id().equals(id)) {
-					renderVanilla.call(instance, context, tickCounter);
+					renderVanilla.run();
 				} else {
 					layer.element().render(context, tickCounter);
 				}
