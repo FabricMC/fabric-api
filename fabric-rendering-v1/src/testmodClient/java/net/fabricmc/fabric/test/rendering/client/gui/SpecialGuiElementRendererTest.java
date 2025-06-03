@@ -21,7 +21,6 @@ import net.minecraft.client.gui.ScreenRect;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRendererRegistrationCallback;
-import net.fabricmc.fabric.mixin.rendering.client.DrawContextAccessor;
 
 /**
  * This test mod renders a banner in the top left corner.
@@ -34,8 +33,7 @@ public class SpecialGuiElementRendererTest implements ClientModInitializer {
 		// TODO: Migrate to new HUD API once available
 		//noinspection deprecation
 		HudRenderCallback.EVENT.register((context, tickCounter) -> {
-			// TODO: Fix TAW
-			((DrawContextAccessor) context).getState().addSpecialElement(new BannerGuiElementRenderState(20, 0, 40, 20, new ScreenRect(20, 0, 40, 20)));
+			context.state.addSpecialElement(new BannerGuiElementRenderState(20, 0, 40, 20, new ScreenRect(20, 0, 40, 20)));
 		});
 	}
 }
