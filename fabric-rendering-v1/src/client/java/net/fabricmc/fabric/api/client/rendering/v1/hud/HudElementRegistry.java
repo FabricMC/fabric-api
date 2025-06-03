@@ -47,8 +47,8 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
  *         <td>Render after misc overlays (vignette, spyglass, and powder snow) and before the crosshair</td>
  *     </tr>
  *     <tr>
- *         <td>After {@link VanillaHudElements#HOTBAR}</td>
- *         <td>Render after the hotbar</td>
+ *         <td>After {@link VanillaHudElements#BOSS_BAR BOSS_BAR}</td>
+ *         <td>Render after most main hud layers like hotbar, spectator hud, status bars, experience bar, status effects overlays, and boss bar and before the sleep overlay</td>
  *     </tr>
  *     <tr>
  *         <td>Before {@link VanillaHudElements#DEMO_TIMER DEMO_TIMER}</td>
