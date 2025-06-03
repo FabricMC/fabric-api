@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 
 public class HudElementRegistryImpl {
 	@VisibleForTesting
-	public static final List<Identifier> VANILLA_ELEMENT_IDS = List.of(
+	static final List<Identifier> VANILLA_ELEMENT_IDS = List.of(
 			VanillaHudElements.MISC_OVERLAYS,
 			VanillaHudElements.CROSSHAIR,
 			VanillaHudElements.SPECTATOR_MENU,
@@ -67,8 +67,8 @@ public class HudElementRegistryImpl {
 	public static final Map<Identifier, RootLayer> ROOT_ELEMENTS = VANILLA_ELEMENT_IDS.stream()
 			.map(RootLayer::new)
 			.collect(Collectors.toMap(RootLayer::id, Function.identity(), (a, b) -> a, IdentityHashMap::new));
-	static final RootLayer FIRST = ROOT_ELEMENTS.get(VanillaHudElements.MISC_OVERLAYS);
-	static final RootLayer LAST = ROOT_ELEMENTS.get(VanillaHudElements.SUBTITLES);
+	private static final RootLayer FIRST = ROOT_ELEMENTS.get(VanillaHudElements.MISC_OVERLAYS);
+	private static final RootLayer LAST = ROOT_ELEMENTS.get(VanillaHudElements.SUBTITLES);
 
 	public static RootLayer getRoot(Identifier id) {
 		return ROOT_ELEMENTS.get(id);
@@ -113,14 +113,8 @@ public class HudElementRegistryImpl {
 	}
 
 	public static void removeElement(Identifier identifier) {
-		boolean didChange = findLayer(identifier, (l, iterator) -> {
-			iterator.remove();
-			return true;
-		});
-
-		if (!didChange) {
-			throw new IllegalArgumentException("Layer with identifier " + identifier + " not found");
-		}
+		// No-op the removed layer
+		replaceElement(identifier, e -> (context, tickCounter) -> { });
 	}
 
 	public static void replaceElement(Identifier identifier, Function<HudElement, HudElement> replacer) {
@@ -202,20 +196,20 @@ public class HudElementRegistryImpl {
 	/**
 	 * An element that wraps a vanilla element using a list, allowing for users to attach layers before or after it, replace it, or remove it.
 	 */
-	@VisibleForTesting
 	public record RootLayer(Identifier id, List<HudLayer> layers) {
 		private static final HudElement VANILLA = (context, tickCounter) -> {
 			throw new IllegalStateException();
 		};
 
-		public RootLayer(Identifier id) {
+		private RootLayer(Identifier id) {
 			this(id, new ArrayList<>());
 			layers().add(HudLayer.of(id, VANILLA));
 		}
 
 		public void render(DrawContext context, RenderTickCounter tickCounter, Runnable renderVanilla) {
 			for (HudLayer layer : layers) {
-				if (layer.id().equals(id)) {
+				// Run wrapped vanilla render only when the element is unmodified.
+				if (layer.id().equals(id) && layer.element() == VANILLA) {
 					renderVanilla.run();
 				} else {
 					layer.element().render(context, tickCounter);
