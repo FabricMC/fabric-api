@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.rendering.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "DrawContextAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
