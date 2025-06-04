@@ -34,6 +34,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 
 public class HudElementRegistryTest {
 	private final List<String> drawnLayers = new ArrayList<>();
@@ -89,6 +90,13 @@ public class HudElementRegistryTest {
 		HudElementRegistry.replaceElement(testIdentifier("layer2"), layer -> testElement("replaced"));
 
 		assertOrder(List.of("layer1", "replaced", "layer3"));
+	}
+
+	@Test
+	void replaceVanillaLayer() {
+		HudElementRegistry.replaceElement(VanillaHudElements.CHAT, layer -> testElement("replaced"));
+
+		assertOrder(List.of("replaced"));
 	}
 
 	@Test
