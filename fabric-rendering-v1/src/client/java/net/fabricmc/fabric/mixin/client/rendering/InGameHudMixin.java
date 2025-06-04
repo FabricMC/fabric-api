@@ -72,7 +72,7 @@ abstract class InGameHudMixin {
 
 	@WrapOperation(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderArmor(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIII)V"))
 	private void wrapArmorBar(DrawContext context, PlayerEntity player, int i, int j, int k, int x, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.ARMOR_BAR).render(context, client.getRenderTickCounter(), (ctx, tc) -> renderVanilla.call(this, ctx, player, i, j, k, x));
+		HudElementRegistryImpl.getRoot(VanillaHudElements.ARMOR_BAR).render(context, client.getRenderTickCounter(), (ctx, tc) -> renderVanilla.call(ctx, player, i, j, k, x));
 	}
 
 	@WrapOperation(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V"))
