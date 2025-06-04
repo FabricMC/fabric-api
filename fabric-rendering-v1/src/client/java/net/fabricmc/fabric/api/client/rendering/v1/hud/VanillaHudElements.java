@@ -25,7 +25,7 @@ import net.minecraft.util.Identifier;
  * The first element is drawn first, which means it is at the bottom.
  * All vanilla layers except {@link #SLEEP} are in sub drawers and have a render condition attached ({@link net.minecraft.client.option.GameOptions#hudHidden}).
  * Operations relative to any element will generally inherit that element's render condition.
- * There is currently no mechanism to change the render condition of a element.
+ * There is currently no mechanism to change the render condition of an element.
  *
  * <p>For common use cases and more details on how this API deals with render condition, see {@link HudElementRegistry}.
  */
@@ -47,15 +47,27 @@ public final class VanillaHudElements {
 	 */
 	public static final Identifier HOTBAR = Identifier.ofVanilla("hotbar");
 	/**
-	 * The identifier for the vanilla status bar.
+	 * The identifier for the player armor level bar.
 	 */
-	public static final Identifier STATUS_BARS = Identifier.ofVanilla("status_bars");
+	public static final Identifier ARMOR_BAR = Identifier.ofVanilla("armor_bar");
+	/**
+	 * The identifier for the player health bar.
+	 */
+	public static final Identifier HEALTH_BAR = Identifier.ofVanilla("health_bar");
+	/**
+	 * The identifier for the player hunger level bar.
+	 */
+	public static final Identifier FOOD_BAR = Identifier.ofVanilla("food_bar");
+	/**
+	 * The identifier for the player air level bar.
+	 */
+	public static final Identifier AIR_BAR = Identifier.ofVanilla("air_bar");
 	/**
 	 * The identifier for the vanilla mount health.
 	 */
 	public static final Identifier MOUNT_HEALTH = Identifier.ofVanilla("mount_health");
 	/**
-	 * The identifier for the info bar, either empty, experience bar, locator or jump bar.
+	 * The identifier for the info bar, either empty, experience bar, locator, or jump bar.
 	 */
 	public static final Identifier INFO_BAR = Identifier.ofVanilla("info_bar");
 	/**

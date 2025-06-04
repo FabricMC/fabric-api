@@ -19,17 +19,21 @@ package net.fabricmc.fabric.mixin.client.rendering;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.hud.SpectatorHud;
 import net.minecraft.client.gui.hud.bar.Bar;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.entity.player.PlayerEntity;
 
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -37,6 +41,10 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 
 @Mixin(InGameHud.class)
 abstract class InGameHudMixin {
+	@Shadow
+	@Final
+	private MinecraftClient client;
+
 	@Inject(method = "render", at = @At(value = "TAIL"))
 	public void render(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo callbackInfo) {
 		HudRenderCallback.EVENT.invoker().onHudRender(drawContext, tickCounter);
@@ -62,9 +70,24 @@ abstract class InGameHudMixin {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.HOTBAR).render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, tc));
 	}
 
-	@WrapOperation(method = "renderMainHud", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderStatusBars(Lnet/minecraft/client/gui/DrawContext;)V"))
-	private void wrapStatusBars(InGameHud instance, DrawContext context, Operation<Void> renderVanilla, @Local(argsOnly = true) RenderTickCounter tickCounter) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.STATUS_BARS).render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx));
+	@WrapOperation(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderArmor(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIII)V"))
+	private void wrapArmorBar(DrawContext context, PlayerEntity player, int i, int j, int k, int x, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.ARMOR_BAR).render(context, client.getRenderTickCounter(), (ctx, tc) -> renderVanilla.call(this, ctx, player, i, j, k, x));
+	}
+
+	@WrapOperation(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V"))
+	private void wrapHealthBar(InGameHud instance, DrawContext context, PlayerEntity player, int x, int y, int lines, int regeneratingHeartIndex, float maxHealth, int lastHealth, int health, int absorption, boolean blinking, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.HEALTH_BAR).render(context, client.getRenderTickCounter(), (ctx, tc) -> renderVanilla.call(instance, ctx, player, x, y, lines, regeneratingHeartIndex, maxHealth, lastHealth, health, absorption, blinking));
+	}
+
+	@WrapOperation(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderFood(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;II)V"))
+	private void wrapFoodBar(InGameHud instance, DrawContext context, PlayerEntity player, int top, int right, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.FOOD_BAR).render(context, client.getRenderTickCounter(), (ctx, tc) -> renderVanilla.call(instance, ctx, player, top, right));
+	}
+
+	@WrapOperation(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderAirBubbles(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;III)V"))
+	private void wrapAirBar(InGameHud instance, DrawContext context, PlayerEntity player, int heartCount, int top, int left, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.AIR_BAR).render(context, client.getRenderTickCounter(), (ctx, tc) -> renderVanilla.call(instance, ctx, player, heartCount, top, left));
 	}
 
 	@WrapOperation(method = "renderMainHud", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountHealth(Lnet/minecraft/client/gui/DrawContext;)V"))
