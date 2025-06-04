@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.joml.Matrix3x2fStack;
@@ -38,6 +39,19 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 
 public class HudElementRegistryTest {
 	private final List<String> drawnLayers = new ArrayList<>();
+
+	@SuppressWarnings("MisorderedAssertEqualsArguments")
+	@Test
+	void assertVanillaIds() {
+		// Make sure HudElementRegistryImpl.VANILLA_ELEMENT_IDS is correct and in sync with VanillaHudElements
+		Assertions.assertEquals(Arrays.stream(VanillaHudElements.class.getDeclaredFields()).map(f -> {
+			try {
+				return f.get(null);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException("Failed to access VanillaHudElements field: " + f.getName(), e);
+			}
+		}).toList(), HudElementRegistryImpl.VANILLA_ELEMENT_IDS);
+	}
 
 	@Test
 	void addLayer() {
