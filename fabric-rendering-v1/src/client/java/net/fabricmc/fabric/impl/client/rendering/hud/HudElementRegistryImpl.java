@@ -76,12 +76,12 @@ public class HudElementRegistryImpl {
 
 	public static void addFirst(Identifier id, HudElement element) {
 		validateUnique(id);
-		FIRST.layers().addFirst(HudLayer.of(id, element));
+		FIRST.layers().addFirst(HudLayer.ofElement(id, element));
 	}
 
 	public static void addLast(Identifier id, HudElement element) {
 		validateUnique(id);
-		LAST.layers().addLast(HudLayer.of(id, element));
+		LAST.layers().addLast(HudLayer.ofElement(id, element));
 	}
 
 	public static void attachElementBefore(Identifier beforeThis, Identifier id, HudElement element) {
@@ -89,7 +89,7 @@ public class HudElementRegistryImpl {
 
 		boolean didChange = findLayer(beforeThis, (l, iterator) -> {
 			iterator.previous();
-			iterator.add(HudLayer.of(id, element));
+			iterator.add(HudLayer.ofElement(id, element));
 			iterator.next();
 			return true;
 		});
@@ -103,7 +103,7 @@ public class HudElementRegistryImpl {
 		validateUnique(id);
 
 		boolean didChange = findLayer(afterThis, (l, iterator) -> {
-			iterator.add(HudLayer.of(id, element));
+			iterator.add(HudLayer.ofElement(id, element));
 			return true;
 		});
 
@@ -119,7 +119,7 @@ public class HudElementRegistryImpl {
 
 	public static void replaceElement(Identifier identifier, Function<HudElement, HudElement> replacer) {
 		boolean didChange = findLayer(identifier, (l, iterator) -> {
-			iterator.set(HudLayer.of(identifier, replacer.apply(l.element())));
+			iterator.set(HudLayer.of(identifier, replacer.compose(l::element)));
 			return true;
 		});
 
@@ -197,23 +197,14 @@ public class HudElementRegistryImpl {
 	 * An element that wraps a vanilla element using a list, allowing for users to attach layers before or after it, replace it, or remove it.
 	 */
 	public record RootLayer(Identifier id, List<HudLayer> layers) {
-		private static final HudElement VANILLA = (context, tickCounter) -> {
-			throw new IllegalStateException();
-		};
-
 		private RootLayer(Identifier id) {
 			this(id, new ArrayList<>());
-			layers().add(HudLayer.of(id, VANILLA));
+			layers().add(HudLayer.ofVanilla(id));
 		}
 
-		public void render(DrawContext context, RenderTickCounter tickCounter, Runnable renderVanilla) {
+		public void render(DrawContext context, RenderTickCounter tickCounter, HudElement vanillaElement) {
 			for (HudLayer layer : layers) {
-				// Run wrapped vanilla render only when the element is unmodified.
-				if (layer.id().equals(id) && layer.element() == VANILLA) {
-					renderVanilla.run();
-				} else {
-					layer.element().render(context, tickCounter);
-				}
+				layer.element(vanillaElement).render(context, tickCounter);
 			}
 		}
 	}
