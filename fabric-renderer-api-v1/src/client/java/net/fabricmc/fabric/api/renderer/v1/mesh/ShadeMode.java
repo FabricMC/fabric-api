@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.renderer.v1.material;
+package net.fabricmc.fabric.api.renderer.v1.mesh;
 
 /**
  * A hint to the renderer about how the quad is intended to be shaded, for example through ambient occlusion and

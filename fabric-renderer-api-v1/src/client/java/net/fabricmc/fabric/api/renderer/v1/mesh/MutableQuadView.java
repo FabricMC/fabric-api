@@ -22,13 +22,18 @@ import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.renderer.QuadSpriteBaker;
 
 /**
@@ -37,6 +42,10 @@ import net.fabricmc.fabric.impl.renderer.QuadSpriteBaker;
  *
  * <p>Instances of {@link MutableQuadView} will practically always be
  * thread local and/or reused - do not retain references.
+ *
+ * <p>Unless otherwise stated, assume all properties persist through serialization into {@link Mesh}es and have an
+ * effect in both block and item contexts. If a property is described as transient, then its value will not persist
+ * through serialization into a {@link Mesh}.
  *
  * <p>Only the renderer should implement or extend this interface.
  */
@@ -107,30 +116,38 @@ public interface MutableQuadView extends QuadView {
 	 * for models that fit within a single block space and is recommended
 	 * that coordinates remain in the 0-1 range, with multi-block meshes
 	 * split into multiple per-block models.
+	 *
+	 * <p>The default value for all vertices is {@code 0.0f}.
 	 */
 	MutableQuadView pos(int vertexIndex, float x, float y, float z);
 
 	/**
-	 * Same as {@link #pos(int, float, float, float)} but accepts vector type.
+	 * Sets the geometric position for the given vertex. Only use this method if you already have a {@link Vector3f}.
+	 * Otherwise, use {@link #pos(int, float, float, float)}.
 	 */
 	default MutableQuadView pos(int vertexIndex, Vector3f pos) {
 		return pos(vertexIndex, pos.x, pos.y, pos.z);
 	}
 
 	/**
-	 * Same as {@link #pos(int, float, float, float)} but accepts vector type.
+	 * Sets the geometric position for the given vertex. Only use this method if you already have a {@link Vector3fc}.
+	 * Otherwise, use {@link #pos(int, float, float, float)}.
 	 */
 	default MutableQuadView pos(int vertexIndex, Vector3fc pos) {
 		return pos(vertexIndex, pos.x(), pos.y(), pos.z());
 	}
 
 	/**
-	 * Set vertex color in ARGB format (0xAARRGGBB).
+	 * Sets the color in ARGB format (0xAARRGGBB) for the given vertex.
+	 *
+	 * <p>The default value for all vertices is {@code 0xFFFFFFFF}.
 	 */
 	MutableQuadView color(int vertexIndex, int color);
 
 	/**
-	 * Convenience: set vertex color for all vertices at once.
+	 * Sets the color in ARGB format (0xAARRGGBB) for all vertices at once.
+	 *
+	 * @see #color(int, int)
 	 */
 	default MutableQuadView color(int c0, int c1, int c2, int c3) {
 		color(0, c0);
@@ -141,34 +158,32 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
-	 * Set texture coordinates.
+	 * Sets the texture coordinates for the given vertex.
+	 *
+	 * <p>The default value for all vertices is {@code 0.0f}.
 	 */
 	MutableQuadView uv(int vertexIndex, float u, float v);
 
 	/**
-	 * Set texture coordinates.
-	 *
-	 * <p>Only use this function if you already have a {@link Vector2f}.
-	 * Otherwise, see {@link MutableQuadView#uv(int, float, float)}.
+	 * Sets the texture coordinates for the given vertex. Only use this method if you already have a {@link Vector2f}.
+	 * Otherwise, use {@link #uv(int, float, float)}.
 	 */
 	default MutableQuadView uv(int vertexIndex, Vector2f uv) {
 		return uv(vertexIndex, uv.x, uv.y);
 	}
 
 	/**
-	 * Set texture coordinates.
-	 *
-	 * <p>Only use this function if you already have a {@link Vector2fc}.
-	 * Otherwise, see {@link MutableQuadView#uv(int, float, float)}.
+	 * Sets the texture coordinates for the given vertex. Only use this method if you already have a {@link Vector2fc}.
+	 * Otherwise, use {@link #uv(int, float, float)}.
 	 */
 	default MutableQuadView uv(int vertexIndex, Vector2fc uv) {
 		return uv(vertexIndex, uv.x(), uv.y());
 	}
 
 	/**
-	 * Assigns sprite atlas u,v coordinates to this quad for the given sprite.
-	 * Can handle UV locking, rotation, interpolation, etc. Control this behavior
-	 * by passing additive combinations of the BAKE_ flags defined in this interface.
+	 * Sets the texture coordinates for all vertices using the given sprite. Can handle UV locking, rotation,
+	 * interpolation, etc. Control this behavior by passing additive combinations of the BAKE_ flags defined in this
+	 * interface.
 	 */
 	default MutableQuadView spriteBake(Sprite sprite, int bakeFlags) {
 		QuadSpriteBaker.bakeSprite(this, sprite, bakeFlags);
@@ -176,138 +191,204 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
-	 * Accept vanilla lightmap values.  Input values will override lightmap values
-	 * computed from world state if input values are higher. Exposed for completeness
-	 * but some rendering implementations with non-standard lighting model may not honor it.
+	 * Sets the minimum lightmap value for the given vertex. Input values will override lightmap values computed from
+	 * world state if input values are higher. Exposed for completeness but some rendering implementations with
+	 * non-standard lighting model may not honor it.
 	 *
-	 * <p>For emissive rendering, it is better to use {@link MaterialFinder#emissive(boolean)}.
+	 * <p>For emissive rendering, prefer using {@link #emissive(boolean)}.
+	 *
+	 * <p>The default value for all vertices is {@code 0}.
 	 */
 	MutableQuadView lightmap(int vertexIndex, int lightmap);
 
 	/**
-	 * Convenience: set lightmap for all vertices at once.
+	 * Sets the lightmap value for all vertices at once.
 	 *
-	 * <p>For emissive rendering, it is better to use {@link MaterialFinder#emissive(boolean)}.
-	 * See {@link #lightmap(int, int)}.
+	 * <p>For emissive rendering, prefer using {@link #emissive(boolean)}.
+	 *
+	 * @see #lightmap(int, int)
 	 */
-	default MutableQuadView lightmap(int b0, int b1, int b2, int b3) {
-		lightmap(0, b0);
-		lightmap(1, b1);
-		lightmap(2, b2);
-		lightmap(3, b3);
+	default MutableQuadView lightmap(int l0, int l1, int l2, int l3) {
+		lightmap(0, l0);
+		lightmap(1, l1);
+		lightmap(2, l2);
+		lightmap(3, l3);
 		return this;
 	}
 
 	/**
-	 * Adds a vertex normal. Models that have per-vertex
-	 * normals should include them to get correct lighting when it matters.
-	 * Computed face normal is used when no vertex normal is provided.
-	 *
-	 * <p>{@link Renderer} implementations should honor vertex normals for
-	 * diffuse lighting - modifying vertex color(s) or packing normals in the vertex
-	 * buffer as appropriate for the rendering method/vertex format in effect.
+	 * Sets the normal vector for the given vertex. The {@linkplain #faceNormal() face normal} is used when no vertex
+	 * normal is provided. Models that have per-vertex normals should include them to get correct lighting when it
+	 * matters.
 	 */
 	MutableQuadView normal(int vertexIndex, float x, float y, float z);
 
 	/**
-	 * Same as {@link #normal(int, float, float, float)} but accepts vector type.
+	 * Sets the normal vector for the given vertex. Only use this method if you already have a {@link Vector3f}.
+	 * Otherwise, use {@link #normal(int, float, float, float)}.
 	 */
 	default MutableQuadView normal(int vertexIndex, Vector3f normal) {
 		return normal(vertexIndex, normal.x, normal.y, normal.z);
 	}
 
 	/**
-	 * Same as {@link #normal(int, float, float, float)} but accepts vector type.
+	 * Sets the normal vector for the given vertex. Only use this method if you already have a {@link Vector3fc}.
+	 * Otherwise, use {@link #normal(int, float, float, float)}.
 	 */
 	default MutableQuadView normal(int vertexIndex, Vector3fc normal) {
 		return normal(vertexIndex, normal.x(), normal.y(), normal.z());
 	}
 
 	/**
-	 * If non-null, quad is coplanar with a block face which, if known, simplifies
-	 * or shortcuts geometric analysis that might otherwise be needed.
-	 * Set to null if quad is not coplanar or if this is not known.
-	 * Also controls face culling during block rendering.
+	 * Sets the nominal face, which provides a hint to the renderer about the facing of this quad. It is not required,
+	 * but if set, should be the expected value of {@link #lightFace()}. It may be used to shortcut geometric analysis,
+	 * if the provided value was correct; otherwise, it is ignored.
 	 *
-	 * <p>Null by default.
+	 * <p>The nominal face is also used for {@link #spriteBake(Sprite, int)} with {@link #BAKE_LOCK_UV}.
 	 *
-	 * <p>When called with a non-null value, also sets {@link #nominalFace(Direction)}
-	 * to the same value.
+	 * <p>When {@link #cullFace(Direction)} is called, it also sets the nominal face.
 	 *
-	 * <p>This is different from the value reported by {@link BakedQuad#face()}. That value
-	 * is computed based on face geometry and must be non-null in vanilla quads.
-	 * That computed value is returned by {@link #lightFace()}.
-	 */
-	MutableQuadView cullFace(@Nullable Direction face);
-
-	/**
-	 * Provides a hint to renderer about the facing of this quad. Not required,
-	 * but if provided can shortcut some geometric analysis if the quad is parallel to a block face.
-	 * Should be the expected value of {@link #lightFace()}. Value will be confirmed
-	 * and if invalid the correct light face will be calculated.
+	 * <p>The default value is {@code null}.
 	 *
-	 * <p>Null by default, and set automatically by {@link #cullFace()}.
-	 *
-	 * <p>Models may also find this useful as the face for texture UV locking and rotation semantics.
-	 *
-	 * <p>Note: This value is not persisted independently when the quad is encoded.
-	 * When reading encoded quads, this value will always be the same as {@link #lightFace()}.
+	 * <p>This property is transient. It is set to the same value as {@link #lightFace()} when a quad is decoded.
 	 */
 	MutableQuadView nominalFace(@Nullable Direction face);
 
 	/**
-	 * Assigns a different material to this quad. Useful for transformation of
-	 * existing meshes because lighting and texture blending are controlled by material.
+	 * Sets the cull face. This quad will not be rendered if its cull face is non-null and the block is occluded by
+	 * another block in the direction of the cull face.
+	 *
+	 * <p>The cull face is different from {@link BakedQuad#face()}, which is equivalent to {@link #lightFace()}. The
+	 * light face is computed based on geometry and must be non-null.
+	 *
+	 * <p>When called, sets {@link #nominalFace(Direction)} to the same value.
+	 *
+	 * <p>The default value is {@code null}.
+	 *
+	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
 	 */
-	MutableQuadView material(RenderMaterial material);
+	MutableQuadView cullFace(@Nullable Direction face);
 
 	/**
-	 * Value functions identically to {@link BakedQuad#tintIndex()} and is
-	 * used by renderer in same way. Default value is -1.
+	 * Controls how this quad's pixels should be blended with the scene.
+	 *
+	 * <p>If set to {@code null}, {@link RenderLayers#getBlockLayer(BlockState)} will be used to retrieve the render
+	 * layer in block contexts and
+	 * {@linkplain ItemRenderState.LayerRenderState#setRenderLayer(RenderLayer) the render layer of the state layer}
+	 * will be used in item contexts. Set to another value to override this behavior.
+	 *
+	 * <p>In block contexts, a non-null value will be used directly. In item contexts, a non-null value will be
+	 * converted to a {@link RenderLayer} using {@link RenderLayerHelper#getEntityBlockLayer(BlockRenderLayer)}.
+	 *
+	 * <p>The default value is {@code null}.
+	 */
+	MutableQuadView renderLayer(@Nullable BlockRenderLayer renderLayer);
+
+	/**
+	 * When true, this quad will be rendered at full brightness.
+	 * Lightmap values provided via {@link QuadEmitter#lightmap(int)} will be ignored.
+	 *
+	 * <p>This is the preferred method for emissive lighting effects as some renderers
+	 * with advanced lighting pipelines may not use lightmaps.
+	 *
+	 * <p>Note that vertex colors will still be modified by diffuse shading and ambient occlusion, unless disabled via
+	 * {@link #diffuseShade(boolean)} and {@link #ambientOcclusion(TriState)}.
+	 *
+	 * <p>The default value is {@code false}.
+	 */
+	MutableQuadView emissive(boolean emissive);
+
+	/**
+	 * Controls whether vertex colors should be modified for diffuse shading.
+	 *
+	 * <p>The default value is {@code true}.
+	 *
+	 * <p>This property is guaranteed to be respected in block contexts. Some renderers may also respect it in item
+	 * contexts, but this is not guaranteed.
+	 */
+	MutableQuadView diffuseShade(boolean shade);
+
+	/**
+	 * Controls whether vertex colors should be modified for ambient occlusion.
+	 *
+	 * <p>If set to {@link TriState#DEFAULT}, ambient occlusion will be used if the block state has
+	 * {@linkplain BlockState#getLuminance() a luminance} of 0. Set to {@link TriState#TRUE} or {@link TriState#FALSE}
+	 * to override this behavior. {@link TriState#TRUE} will not have an effect if
+	 * {@linkplain MinecraftClient#isAmbientOcclusionEnabled() ambient occlusion is disabled globally}.
+	 *
+	 * <p>The default value is {@link TriState#DEFAULT}.
+	 *
+	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
+	 */
+	MutableQuadView ambientOcclusion(TriState ao);
+
+	/**
+	 * Controls how glint should be applied.
+	 *
+	 * <p>If set to {@code null}, glint will be applied in item contexts based on
+	 * {@linkplain ItemRenderState.LayerRenderState#setGlint(ItemRenderState.Glint) the glint type of the layer}. Set
+	 * to another value to override this behavior.
+	 *
+	 * <p>The default value is {@code null}.
+	 *
+	 * <p>This property is guaranteed to be respected in item contexts. Some renderers may also respect it in block
+	 * contexts, but this is not guaranteed.
+	 */
+	MutableQuadView glint(@Nullable ItemRenderState.Glint glint);
+
+	/**
+	 * A hint to the renderer about how this quad is intended to be shaded, for example through ambient occlusion and
+	 * diffuse shading. The renderer is free to ignore this hint.
+	 *
+	 * <p>The default value is {@link ShadeMode#ENHANCED}.
+	 *
+	 * <p>This property is respected only in block contexts. It will not have an effect in other contexts.
+	 *
+	 * @see ShadeMode
+	 */
+	MutableQuadView shadeMode(ShadeMode mode);
+
+	/**
+	 * Sets the tint index, which is used to retrieve the tint color.
+	 *
+	 * <p>The default value is {@code -1}.
 	 */
 	MutableQuadView tintIndex(int tintIndex);
 
 	/**
-	 * Encodes an integer tag with this quad that can later be retrieved via
-	 * {@link QuadView#tag()}. Useful for models that want to perform conditional
-	 * transformation or filtering on static meshes.
+	 * Sets the tag, which is an arbitrary integer that is meant to be encoded into {@link Mesh}es to later allow
+	 * performing conditional transformation or filtering on their quads.
+	 *
+	 * <p>The default value is {@code 0}.
 	 */
 	MutableQuadView tag(int tag);
 
 	/**
-	 * Copies all quad properties from the given {@link QuadView} to this quad.
+	 * Copies all quad data and properties from the given {@link QuadView} to this quad.
 	 *
-	 * <p>Calling this method does not emit the quad.
+	 * <p>Calling this method does not emit this quad.
 	 */
 	MutableQuadView copyFrom(QuadView quad);
 
 	/**
-	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
-	 * Only the {@link BakedQuad#vertexData() quad vertex data} is copied.
-	 * This method should be performant whenever caller's vertex representation makes it feasible.
+	 * Sets this quad's vertex data for all vertices using data in given array, starting at the given index. The array
+	 * must have at least {@link #VANILLA_QUAD_STRIDE} elements starting at the given index. The format of the data must
+	 * be the same as {@link BakedQuad#vertexData()}. This quad's lightmap values and normals will be set even though
+	 * vanilla does not decode them from packed vertex data.
 	 *
-	 * <p>Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction) the other overload} which has better
-	 * encapsulation unless you have a specific reason to use this one.
+	 * <p>Prefer using {@link #fromBakedQuad(BakedQuad)} instead if you have a {@link BakedQuad}.
 	 *
-	 * <p>Calling this method does not emit the quad.
+	 * <p>Calling this method does not emit this quad.
 	 */
-	MutableQuadView fromVanilla(int[] quadData, int startIndex);
+	MutableQuadView fromVanilla(int[] vertexData, int startIndex);
 
 	/**
-	 * Enables bulk vertex data transfer using the standard Minecraft quad format.
+	 * Sets all applicable data and properties of this quad as specified by the given {@link BakedQuad}. This quad's
+	 * lightmap values and normals will be set even though vanilla does not decode them from packed vertex data. The
+	 * {@linkplain BakedQuad#lightEmission() baked quad's light emission} will be applied to the lightmap values from
+	 * the vertex data after copying.
 	 *
-	 * <p>The material applied to this quad view might be slightly different from the {@code material} parameter
-	 * regarding diffuse shading. If either the baked quad {@link BakedQuad#shade() does not have shade} or the
-	 * material {@link MaterialFinder#disableDiffuse(boolean) does not have shade}, diffuse shading will be disabled for
-	 * this quad view. This is reflected in the quad view's {@link #material()}, but the {@code material} parameter is
-	 * unchanged (it is immutable anyway).
-	 *
-	 * <p>The {@linkplain BakedQuad#lightEmission() baked quad's light emission} will be applied to the lightmap
-	 * values from the vertex data after copying.
-	 *
-	 * <p>Calling this method resets the {@link #tag()}.
-	 *
-	 * <p>Calling this method does not emit the quad.
+	 * <p>Calling this method does not emit this quad.
 	 */
-	MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);
+	MutableQuadView fromBakedQuad(BakedQuad quad);
 }

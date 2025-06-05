@@ -28,8 +28,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
+import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoConfig;
@@ -68,14 +67,12 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 			return;
 		}
 
-		final RenderMaterial mat = quad.material();
-		final boolean ao = blockInfo.effectiveAo(mat.ambientOcclusion());
-		final boolean emissive = mat.emissive();
-		final boolean vanillaShade = mat.shadeMode() == ShadeMode.VANILLA;
-		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveRenderLayer(mat.renderLayer()));
+		final boolean ao = blockInfo.effectiveAo(quad.ambientOcclusion());
+		final boolean vanillaShade = quad.shadeMode() == ShadeMode.VANILLA;
+		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveRenderLayer(quad.renderLayer()));
 
 		tintQuad(quad);
-		shadeQuad(quad, ao, emissive, vanillaShade);
+		shadeQuad(quad, ao, quad.emissive(), vanillaShade);
 		bufferQuad(quad, vertexConsumer);
 	}
 
@@ -136,7 +133,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 	 * even for un-shaded quads. These are also applied with AO shading but that is done in AO calculator.
 	 */
 	private void shadeFlatQuad(MutableQuadViewImpl quad, boolean vanillaShade) {
-		final boolean hasShade = quad.hasShade();
+		final boolean hasShade = quad.diffuseShade();
 
 		// Check the AO mode to match how shade is applied during smooth lighting
 		if ((Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.HYBRID && !vanillaShade) || Indigo.AMBIENT_OCCLUSION_MODE == AoConfig.ENHANCED) {

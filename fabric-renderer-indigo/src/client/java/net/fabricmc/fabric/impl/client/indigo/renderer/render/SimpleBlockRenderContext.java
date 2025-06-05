@@ -30,7 +30,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -54,9 +53,8 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final RenderMaterial mat = quad.material();
-		final BlockRenderLayer matRenderLayer = mat.renderLayer();
-		final BlockRenderLayer renderLayer = matRenderLayer == null ? defaultRenderLayer : matRenderLayer;
+		final BlockRenderLayer quadRenderLayer = quad.renderLayer();
+		final BlockRenderLayer renderLayer = quadRenderLayer == null ? defaultRenderLayer : quadRenderLayer;
 		final VertexConsumer vertexConsumer;
 
 		if (renderLayer == lastRenderLayer) {
@@ -67,7 +65,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		}
 
 		tintQuad(quad);
-		shadeQuad(quad, mat.emissive());
+		shadeQuad(quad, quad.emissive());
 		bufferQuad(quad, vertexConsumer);
 	}
 

@@ -82,8 +82,8 @@ public class BlockRenderInfo {
 		return useAo && aoMode.orElse(defaultAo);
 	}
 
-	public BlockRenderLayer effectiveRenderLayer(@Nullable BlockRenderLayer matRenderLayer) {
-		return matRenderLayer == null ? defaultLayer : matRenderLayer;
+	public BlockRenderLayer effectiveRenderLayer(@Nullable BlockRenderLayer quadRenderLayer) {
+		return quadRenderLayer == null ? defaultLayer : quadRenderLayer;
 	}
 
 	public boolean shouldDrawSide(@Nullable Direction side) {

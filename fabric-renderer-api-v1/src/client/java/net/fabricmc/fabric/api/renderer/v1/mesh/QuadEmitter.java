@@ -22,11 +22,13 @@ import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
+import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.util.TriState;
 
 /**
  * Specialized {@link MutableQuadView} that supports transformers and
@@ -95,8 +97,8 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter lightmap(int vertexIndex, int lightmap);
 
 	@Override
-	default QuadEmitter lightmap(int b0, int b1, int b2, int b3) {
-		MutableQuadView.super.lightmap(b0, b1, b2, b3);
+	default QuadEmitter lightmap(int l0, int l1, int l2, int l3) {
+		MutableQuadView.super.lightmap(l0, l1, l2, l3);
 		return this;
 	}
 
@@ -116,13 +118,28 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	@Override
-	QuadEmitter cullFace(@Nullable Direction face);
-
-	@Override
 	QuadEmitter nominalFace(@Nullable Direction face);
 
 	@Override
-	QuadEmitter material(RenderMaterial material);
+	QuadEmitter cullFace(@Nullable Direction face);
+
+	@Override
+	QuadEmitter renderLayer(@Nullable BlockRenderLayer renderLayer);
+
+	@Override
+	QuadEmitter emissive(boolean emissive);
+
+	@Override
+	QuadEmitter diffuseShade(boolean shade);
+
+	@Override
+	QuadEmitter ambientOcclusion(TriState ao);
+
+	@Override
+	QuadEmitter glint(@Nullable ItemRenderState.Glint glint);
+
+	@Override
+	QuadEmitter shadeMode(ShadeMode mode);
 
 	@Override
 	QuadEmitter tintIndex(int tintIndex);
@@ -130,13 +147,14 @@ public interface QuadEmitter extends MutableQuadView {
 	@Override
 	QuadEmitter tag(int tag);
 
+	@Override
 	QuadEmitter copyFrom(QuadView quad);
 
 	@Override
-	QuadEmitter fromVanilla(int[] quadData, int startIndex);
+	QuadEmitter fromVanilla(int[] vertexData, int startIndex);
 
 	@Override
-	QuadEmitter fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);
+	QuadEmitter fromBakedQuad(BakedQuad quad);
 
 	/**
 	 * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}

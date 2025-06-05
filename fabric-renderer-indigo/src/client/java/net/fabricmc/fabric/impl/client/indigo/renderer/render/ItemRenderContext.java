@@ -34,11 +34,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.math.MatrixUtil;
 
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -93,7 +91,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 		for (int i = 0; i < vanillaQuadCount; i++) {
 			final BakedQuad q = vanillaQuads.get(i);
-			emitter.fromVanilla(q, IndigoRenderer.STANDARD_MATERIAL, null);
+			emitter.fromBakedQuad(q);
 			emitter.emit();
 		}
 
@@ -102,11 +100,10 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final RenderMaterial mat = quad.material();
-		final VertexConsumer vertexConsumer = getVertexConsumer(mat.renderLayer(), mat.glint());
+		final VertexConsumer vertexConsumer = getVertexConsumer(quad.renderLayer(), quad.glint());
 
 		tintQuad(quad);
-		shadeQuad(quad, mat.emissive());
+		shadeQuad(quad, quad.emissive());
 		bufferQuad(quad, vertexConsumer);
 	}
 
@@ -136,20 +133,20 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	private VertexConsumer getVertexConsumer(@Nullable BlockRenderLayer matRenderLayer, @Nullable ItemRenderState.Glint matGlint) {
+	private VertexConsumer getVertexConsumer(@Nullable BlockRenderLayer quadRenderLayer, @Nullable ItemRenderState.Glint quadGlint) {
 		RenderLayer layer;
 		ItemRenderState.Glint glint;
 
-		if (matRenderLayer == null) {
+		if (quadRenderLayer == null) {
 			layer = defaultLayer;
 		} else {
-			layer = RenderLayerHelper.getEntityBlockLayer(matRenderLayer);
+			layer = RenderLayerHelper.getEntityBlockLayer(quadRenderLayer);
 		}
 
-		if (matGlint == null) {
+		if (quadGlint == null) {
 			glint = defaultGlint;
 		} else {
-			glint = matGlint;
+			glint = quadGlint;
 		}
 
 		int cacheIndex;

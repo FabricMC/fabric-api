@@ -18,17 +18,20 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.material.MaterialViewImpl;
-import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 
 /**
  * Holds all the array offsets and bit-wise encoders/decoders for
@@ -80,30 +83,57 @@ public final class EncodingFormat {
 	private static final int DIRECTION_COUNT = Direction.values().length;
 	private static final int NULLABLE_DIRECTION_COUNT = DIRECTION_COUNT + 1;
 
+	private static final @Nullable BlockRenderLayer[] NULLABLE_BLOCK_RENDER_LAYERS = ArrayUtils.add(BlockRenderLayer.values(), null);
+	private static final int NULLABLE_BLOCK_RENDER_LAYER_COUNT = NULLABLE_BLOCK_RENDER_LAYERS.length;
+	private static final TriState[] TRI_STATES = TriState.values();
+	private static final int TRI_STATE_COUNT = TRI_STATES.length;
+	private static final @Nullable ItemRenderState.Glint[] NULLABLE_GLINTS = ArrayUtils.add(ItemRenderState.Glint.values(), null);
+	private static final int NULLABLE_GLINT_COUNT = NULLABLE_GLINTS.length;
+	private static final ShadeMode[] SHADE_MODES = ShadeMode.values();
+	private static final int SHADE_MODE_COUNT = SHADE_MODES.length;
+
+	private static final int NULL_RENDER_LAYER_INDEX = NULLABLE_BLOCK_RENDER_LAYER_COUNT - 1;
+	private static final int NULL_GLINT_INDEX = NULLABLE_GLINT_COUNT - 1;
+
 	private static final int CULL_BIT_LENGTH = MathHelper.ceilLog2(NULLABLE_DIRECTION_COUNT);
 	private static final int LIGHT_BIT_LENGTH = MathHelper.ceilLog2(DIRECTION_COUNT);
 	private static final int NORMALS_BIT_LENGTH = 4;
 	private static final int GEOMETRY_BIT_LENGTH = GeometryHelper.FLAG_BIT_COUNT;
-	private static final int MATERIAL_BIT_LENGTH = MaterialViewImpl.TOTAL_BIT_LENGTH;
+	private static final int RENDER_LAYER_BIT_LENGTH = MathHelper.ceilLog2(NULLABLE_BLOCK_RENDER_LAYER_COUNT);
+	private static final int EMISSIVE_BIT_LENGTH = 1;
+	private static final int DIFFUSE_BIT_LENGTH = 1;
+	private static final int AO_BIT_LENGTH = MathHelper.ceilLog2(TRI_STATE_COUNT);
+	private static final int GLINT_BIT_LENGTH = MathHelper.ceilLog2(NULLABLE_GLINT_COUNT);
+	private static final int SHADE_MODE_BIT_LENGTH = MathHelper.ceilLog2(SHADE_MODE_COUNT);
 
 	private static final int CULL_BIT_OFFSET = 0;
 	private static final int LIGHT_BIT_OFFSET = CULL_BIT_OFFSET + CULL_BIT_LENGTH;
 	private static final int NORMALS_BIT_OFFSET = LIGHT_BIT_OFFSET + LIGHT_BIT_LENGTH;
 	private static final int GEOMETRY_BIT_OFFSET = NORMALS_BIT_OFFSET + NORMALS_BIT_LENGTH;
-	private static final int MATERIAL_BIT_OFFSET = GEOMETRY_BIT_OFFSET + GEOMETRY_BIT_LENGTH;
-	private static final int TOTAL_BIT_LENGTH = MATERIAL_BIT_OFFSET + MATERIAL_BIT_LENGTH;
+	private static final int RENDER_LAYER_BIT_OFFSET = GEOMETRY_BIT_OFFSET + GEOMETRY_BIT_LENGTH;
+	private static final int EMISSIVE_BIT_OFFSET = RENDER_LAYER_BIT_OFFSET + RENDER_LAYER_BIT_LENGTH;
+	private static final int DIFFUSE_BIT_OFFSET = EMISSIVE_BIT_OFFSET + EMISSIVE_BIT_LENGTH;
+	private static final int AO_BIT_OFFSET = DIFFUSE_BIT_OFFSET + DIFFUSE_BIT_LENGTH;
+	private static final int GLINT_BIT_OFFSET = AO_BIT_OFFSET + AO_BIT_LENGTH;
+	private static final int SHADE_MODE_BIT_OFFSET = GLINT_BIT_OFFSET + GLINT_BIT_LENGTH;
+	private static final int TOTAL_BIT_LENGTH = SHADE_MODE_BIT_OFFSET + SHADE_MODE_BIT_LENGTH;
 
 	private static final int CULL_MASK = bitMask(CULL_BIT_LENGTH, CULL_BIT_OFFSET);
 	private static final int LIGHT_MASK = bitMask(LIGHT_BIT_LENGTH, LIGHT_BIT_OFFSET);
 	private static final int NORMALS_MASK = bitMask(NORMALS_BIT_LENGTH, NORMALS_BIT_OFFSET);
 	private static final int GEOMETRY_MASK = bitMask(GEOMETRY_BIT_LENGTH, GEOMETRY_BIT_OFFSET);
-	private static final int MATERIAL_MASK = bitMask(MATERIAL_BIT_LENGTH, MATERIAL_BIT_OFFSET);
+	private static final int RENDER_LAYER_MASK = bitMask(RENDER_LAYER_BIT_LENGTH, RENDER_LAYER_BIT_OFFSET);
+	private static final int EMISSIVE_MASK = bitMask(EMISSIVE_BIT_LENGTH, EMISSIVE_BIT_OFFSET);
+	private static final int DIFFUSE_MASK = bitMask(DIFFUSE_BIT_LENGTH, DIFFUSE_BIT_OFFSET);
+	private static final int AO_MASK = bitMask(AO_BIT_LENGTH, AO_BIT_OFFSET);
+	private static final int GLINT_MASK = bitMask(GLINT_BIT_LENGTH, GLINT_BIT_OFFSET);
+	private static final int SHADE_MODE_MASK = bitMask(SHADE_MODE_BIT_LENGTH, SHADE_MODE_BIT_OFFSET);
 
 	static {
 		Preconditions.checkArgument(TOTAL_BIT_LENGTH <= 32, "Indigo header encoding bit count (%s) exceeds integer bit length)", TOTAL_STRIDE);
 	}
 
-	public static int bitMask(int bitLength, int bitOffset) {
+	private static int bitMask(int bitLength, int bitOffset) {
 		return ((1 << bitLength) - 1) << bitOffset;
 	}
 
@@ -141,11 +171,55 @@ public final class EncodingFormat {
 		return (bits & ~GEOMETRY_MASK) | ((geometryFlags << GEOMETRY_BIT_OFFSET) & GEOMETRY_MASK);
 	}
 
-	static RenderMaterialImpl material(int bits) {
-		return RenderMaterialImpl.byIndex((bits & MATERIAL_MASK) >>> MATERIAL_BIT_OFFSET);
+	@Nullable
+	static BlockRenderLayer renderLayer(int bits) {
+		return NULLABLE_BLOCK_RENDER_LAYERS[(bits & RENDER_LAYER_MASK) >>> RENDER_LAYER_BIT_OFFSET];
 	}
 
-	static int material(int bits, RenderMaterialImpl material) {
-		return (bits & ~MATERIAL_MASK) | (material.index() << MATERIAL_BIT_OFFSET);
+	static int renderLayer(int bits, @Nullable BlockRenderLayer renderLayer) {
+		int index = renderLayer == null ? NULL_RENDER_LAYER_INDEX : renderLayer.ordinal();
+		return (bits & ~RENDER_LAYER_MASK) | (index << RENDER_LAYER_BIT_OFFSET);
+	}
+
+	static boolean emissive(int bits) {
+		return (bits & EMISSIVE_MASK) != 0;
+	}
+
+	static int emissive(int bits, boolean emissive) {
+		return emissive ? (bits | EMISSIVE_MASK) : (bits & ~EMISSIVE_MASK);
+	}
+
+	static boolean diffuseShade(int bits) {
+		return (bits & DIFFUSE_MASK) != 0;
+	}
+
+	static int diffuseShade(int bits, boolean shade) {
+		return shade ? (bits | DIFFUSE_MASK) : (bits & ~DIFFUSE_MASK);
+	}
+
+	static TriState ambientOcclusion(int bits) {
+		return TRI_STATES[(bits & AO_MASK) >>> AO_BIT_OFFSET];
+	}
+
+	static int ambientOcclusion(int bits, TriState ao) {
+		return (bits & ~AO_MASK) | (ao.ordinal() << AO_BIT_OFFSET);
+	}
+
+	@Nullable
+	static ItemRenderState.Glint glint(int bits) {
+		return NULLABLE_GLINTS[(bits & GLINT_MASK) >>> GLINT_BIT_OFFSET];
+	}
+
+	static int glint(int bits, @Nullable ItemRenderState.Glint glint) {
+		int index = glint == null ? NULL_GLINT_INDEX : glint.ordinal();
+		return (bits & ~GLINT_MASK) | (index << GLINT_BIT_OFFSET);
+	}
+
+	static ShadeMode shadeMode(int bits) {
+		return SHADE_MODES[(bits & SHADE_MODE_MASK) >>> SHADE_MODE_BIT_OFFSET];
+	}
+
+	static int shadeMode(int bits, ShadeMode mode) {
+		return (bits & ~SHADE_MODE_MASK) | (mode.ordinal() << SHADE_MODE_BIT_OFFSET);
 	}
 }

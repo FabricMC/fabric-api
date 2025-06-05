@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.renderer.v1;
 import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumer;
@@ -30,13 +29,10 @@ import net.minecraft.client.render.chunk.SectionBuilder;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
@@ -94,32 +90,6 @@ public interface Renderer {
 	 * when possible to avoid memory allocation overhead.
 	 */
 	MutableMesh mutableMesh();
-
-	/**
-	 * Obtain a new {@link MaterialFinder} instance to retrieve standard {@link RenderMaterial}
-	 * instances.
-	 *
-	 * <p>Renderer does not retain a reference to returned instances, so they should be re-used for
-	 * multiple materials when possible to avoid memory allocation overhead.
-	 */
-	MaterialFinder materialFinder();
-
-	/**
-	 * Return a material previously registered via {@link #registerMaterial(Identifier, RenderMaterial)}.
-	 * Will return null if no material was found matching the given identifier.
-	 */
-	@Nullable
-	RenderMaterial materialById(Identifier id);
-
-	/**
-	 * Register a material for re-use by other mods or models within a mod.
-	 * The registry does not persist registrations - mods must create and register
-	 * all materials at game initialization.
-	 *
-	 * <p>Returns false if a material with the given identifier is already present,
-	 * leaving the existing material intact.
-	 */
-	boolean registerMaterial(Identifier id, RenderMaterial material);
 
 	/**
 	 * @see FabricBlockModelRenderer#render(BlockRenderView, BlockStateModel, BlockState, BlockPos, MatrixStack, BlockVertexConsumerProvider, boolean, long, int)
