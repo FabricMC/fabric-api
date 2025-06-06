@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.item.v1;
 
 import com.google.common.base.Preconditions;
-import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.component.ComponentType;
 import net.minecraft.item.tooltip.TooltipAppender;
@@ -28,15 +27,17 @@ import net.fabricmc.fabric.impl.item.ComponentTooltipAppenderRegistryImpl;
  * A registry of {@link TooltipAppender} item components. Adding your item component to this registry will render the
  * item component to the tooltip of them item when it is present, in a location relative to other item components.
  */
-@ApiStatus.NonExtendable
-public interface ComponentTooltipAppenderRegistry {
+public final class ComponentTooltipAppenderRegistry {
+	private ComponentTooltipAppenderRegistry() {
+	}
+
 	/**
 	 * Adds the specified item component type to the list of tooltip appenders to be called first. The component will
 	 * render at the top of the tooltip.
 	 *
 	 * @param componentType the component type to add
 	 */
-	static void addFirst(ComponentType<? extends TooltipAppender> componentType) {
+	public static void addFirst(ComponentType<? extends TooltipAppender> componentType) {
 		Preconditions.checkNotNull(componentType, "componentType");
 		ComponentTooltipAppenderRegistryImpl.addFirst(componentType);
 	}
@@ -47,7 +48,7 @@ public interface ComponentTooltipAppenderRegistry {
 	 *
 	 * @param componentType the component type to add
 	 */
-	static void addLast(ComponentType<? extends TooltipAppender> componentType) {
+	public static void addLast(ComponentType<? extends TooltipAppender> componentType) {
 		Preconditions.checkNotNull(componentType, "componentType");
 		ComponentTooltipAppenderRegistryImpl.addLast(componentType);
 	}
@@ -59,7 +60,7 @@ public interface ComponentTooltipAppenderRegistry {
 	 * @param anchor the component type before which the specified component type will be rendered
 	 * @param componentType the component type to add
 	 */
-	static void addBefore(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
+	public static void addBefore(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
 		Preconditions.checkNotNull(anchor, "anchor");
 		Preconditions.checkNotNull(componentType, "componentType");
 		ComponentTooltipAppenderRegistryImpl.addBefore(anchor, componentType);
@@ -72,7 +73,7 @@ public interface ComponentTooltipAppenderRegistry {
 	 * @param anchor the component type after which the specified component type will be rendered
 	 * @param componentType the component type to add
 	 */
-	static void addAfter(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
+	public static void addAfter(ComponentType<?> anchor, ComponentType<? extends TooltipAppender> componentType) {
 		Preconditions.checkNotNull(anchor, "anchor");
 		Preconditions.checkNotNull(componentType, "componentType");
 		ComponentTooltipAppenderRegistryImpl.addAfter(anchor, componentType);
