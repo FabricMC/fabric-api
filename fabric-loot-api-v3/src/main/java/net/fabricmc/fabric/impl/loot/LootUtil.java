@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.loot;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import net.minecraft.loot.LootTable;
 import net.minecraft.registry.RegistryKeys;
@@ -53,7 +54,7 @@ public final class LootUtil {
 		return LootTableSource.DATA_PACK;
 	}
 
-	public static RegistryEntry.Reference<LootTable> getEntry(ServerWorld world, LootTable table) {
+	public static RegistryEntry<LootTable> getEntryOrDirect(ServerWorld world, LootTable table) {
 		RegistryWrapper.WrapperLookup wrapperLookup = world
 				.getServer()
 				.getReloadableRegistries()
@@ -67,8 +68,7 @@ public final class LootUtil {
 				.streamEntries()
 				.filter(it -> it.value().equals(table))
 				.findFirst()
-				.orElseThrow(
-						() -> new IllegalStateException("LootTable appears to be unregistered, but has been asked to generate loot")
-				);
+				.map(Function.<RegistryEntry<LootTable>>identity())
+				.orElseGet(() -> RegistryEntry.of(table));
 	}
 }

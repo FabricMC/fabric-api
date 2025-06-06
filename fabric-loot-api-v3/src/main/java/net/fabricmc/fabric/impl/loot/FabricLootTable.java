@@ -20,5 +20,5 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.registry.entry.RegistryEntry;
 
 public interface FabricLootTable {
-	void fabric$setRegistryEntry(RegistryEntry.Reference<LootTable> key);
+	void fabric$setRegistryEntry(RegistryEntry<LootTable> key);
 }
