@@ -199,7 +199,6 @@ public class LootTest implements ModInitializer {
 		});
 	}
 
-	@SuppressWarnings("SameParameterValue")
 	private Function<MinecraftServer, Runnable> createActionCache(String command) {
 		MutableObject<WeakReference<MinecraftServer>> stashedServer = new MutableObject<>();
 		MutableObject<Runnable> runnable = new MutableObject<>();
