@@ -155,7 +155,7 @@ public final class LootTableEvents {
 	public interface ModifyDrops {
 		/**
 		 * Called after a loot table is finished generating drops to modify drops.
-		 * @param entry the loot table's registry entry. This will be a {@link RegistryEntry.Reference} if the lootTable is registered, and {@link RegistryEntry.Direct} if it is not, and should not be
+		 * @param entry the loot table's registry entry. This will be a {@link RegistryEntry.Reference} if the lootTable is registered, or {@link RegistryEntry.Direct} if the table is inline
 		 * @param context the loot context for the current drops
 		 * @param drops the list of drops from the loot table to modify
 		 */
