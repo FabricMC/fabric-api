@@ -9,6 +9,7 @@
     "BlockEntityRendererFactoriesMixin",
     "CapeFeatureRendererMixin",
     "ClientWorldMixin",
+    "DebugHudMixin",
     "DimensionEffectsAccessor",
     "EntityModelLayersAccessor",
     "EntityModelsMixin",
