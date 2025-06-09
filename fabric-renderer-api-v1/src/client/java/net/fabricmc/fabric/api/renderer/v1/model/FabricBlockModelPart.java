@@ -27,8 +27,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.impl.renderer.VanillaBlockModelPartEncoder;
 
 /**
  * Note: This interface is automatically implemented on {@link BlockModelPart} via Mixin and interface injection.
@@ -54,6 +54,6 @@ public interface FabricBlockModelPart {
 	 *                 should be used whenever possible.
 	 */
 	default void emitQuads(QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
-		Renderer.get().emitBlockModelPartQuads((BlockModelPart) this, emitter, cullTest);
+		VanillaBlockModelPartEncoder.emitQuads((BlockModelPart) this, emitter, cullTest);
 	}
 }

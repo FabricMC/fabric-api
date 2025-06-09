@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.renderer.v1.render;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.TexturedRenderLayers;
@@ -27,34 +28,40 @@ public final class RenderLayerHelper {
 	}
 
 	/**
-	 * Same logic as {@link RenderLayers#getMovingBlockLayer}, but accepts a {@link RenderLayer} from
-	 * {@link RenderLayer#getBlockLayers()} instead of a {@link BlockState}.
+	 * Same logic as {@link RenderLayers#getMovingBlockLayer}, but accepts a {@link BlockRenderLayer} instead of a
+	 * {@link BlockState}.
 	 */
-	public static RenderLayer getMovingBlockLayer(RenderLayer chunkRenderLayer) {
-		return chunkRenderLayer == RenderLayer.getTranslucent() ? RenderLayer.getTranslucentMovingBlock() : chunkRenderLayer;
+	public static RenderLayer getMovingBlockLayer(BlockRenderLayer layer) {
+		return switch (layer) {
+		case SOLID -> RenderLayer.getSolid();
+		case CUTOUT_MIPPED -> RenderLayer.getCutoutMipped();
+		case CUTOUT -> RenderLayer.getCutout();
+		case TRANSLUCENT -> RenderLayer.getTranslucentMovingBlock();
+		case TRIPWIRE -> RenderLayer.getTripwire();
+		};
 	}
 
 	/**
-	 * Same logic as {@link RenderLayers#getEntityBlockLayer}, but accepts a {@link RenderLayer} from
-	 * {@link RenderLayer#getBlockLayers()} instead of a {@link BlockState}.
+	 * Same logic as {@link RenderLayers#getEntityBlockLayer}, but accepts a {@link BlockRenderLayer} instead of a
+	 * {@link BlockState}.
 	 */
-	public static RenderLayer getEntityBlockLayer(RenderLayer chunkRenderLayer) {
-		return chunkRenderLayer == RenderLayer.getTranslucent() ? TexturedRenderLayers.getItemEntityTranslucentCull() : TexturedRenderLayers.getEntityCutout();
+	public static RenderLayer getEntityBlockLayer(BlockRenderLayer layer) {
+		return layer == BlockRenderLayer.TRANSLUCENT ? TexturedRenderLayers.getItemEntityTranslucentCull() : TexturedRenderLayers.getEntityCutout();
 	}
 
 	/**
-	 * Wraps the given provider, converting {@linkplain RenderLayer#getBlockLayers() block layers} to render layers
-	 * using {@link #getMovingBlockLayer(RenderLayer)}.
+	 * Wraps the given provider, converting {@link BlockRenderLayer}s to render layers using
+	 * {@link #getMovingBlockLayer(BlockRenderLayer)}.
 	 */
-	public static VertexConsumerProvider movingDelegate(VertexConsumerProvider vertexConsumers) {
-		return chunkRenderLayer -> vertexConsumers.getBuffer(RenderLayerHelper.getMovingBlockLayer(chunkRenderLayer));
+	public static BlockVertexConsumerProvider movingDelegate(VertexConsumerProvider vertexConsumers) {
+		return layer -> vertexConsumers.getBuffer(RenderLayerHelper.getMovingBlockLayer(layer));
 	}
 
 	/**
-	 * Wraps the given provider, converting {@linkplain RenderLayer#getBlockLayers() block layers} to render layers
-	 * using {@link #getEntityBlockLayer(RenderLayer)}.
+	 * Wraps the given provider, converting {@link BlockRenderLayer}s to render layers using
+	 * {@link #getEntityBlockLayer(BlockRenderLayer)}.
 	 */
-	public static VertexConsumerProvider entityDelegate(VertexConsumerProvider vertexConsumers) {
-		return chunkRenderLayer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(chunkRenderLayer));
+	public static BlockVertexConsumerProvider entityDelegate(VertexConsumerProvider vertexConsumers) {
+		return layer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer));
 	}
 }

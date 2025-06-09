@@ -22,13 +22,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.util.TriState;
 
 /**
@@ -45,7 +44,7 @@ public class BlockRenderInfo {
 
 	private boolean useAo;
 	private boolean defaultAo;
-	private RenderLayer defaultLayer;
+	private BlockRenderLayer defaultLayer;
 
 	private boolean enableCulling;
 	private int cullCompletionFlags;
@@ -83,8 +82,8 @@ public class BlockRenderInfo {
 		return useAo && aoMode.orElse(defaultAo);
 	}
 
-	public RenderLayer effectiveRenderLayer(BlendMode blendMode) {
-		return blendMode == BlendMode.DEFAULT ? defaultLayer : blendMode.blockRenderLayer;
+	public BlockRenderLayer effectiveRenderLayer(@Nullable BlockRenderLayer quadRenderLayer) {
+		return quadRenderLayer == null ? defaultLayer : quadRenderLayer;
 	}
 
 	public boolean shouldDrawSide(@Nullable Direction side) {

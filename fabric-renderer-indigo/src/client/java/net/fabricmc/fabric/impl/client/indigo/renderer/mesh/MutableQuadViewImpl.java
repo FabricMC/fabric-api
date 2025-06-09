@@ -27,21 +27,24 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_U;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
 
+import java.util.Objects;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
-import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
+import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 
 /**
  * Almost-concrete implementation of a mutable quad. The only missing part is {@link #emitDirectly()},
@@ -71,7 +74,10 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		// Apply non-zero defaults
 		quad.color(-1, -1, -1, -1);
 		quad.cullFace(null);
-		quad.material(IndigoRenderer.STANDARD_MATERIAL);
+		quad.renderLayer(null);
+		quad.diffuseShade(true);
+		quad.ambientOcclusion(TriState.DEFAULT);
+		quad.glint(null);
 		quad.tintIndex(-1);
 	}
 
@@ -137,7 +143,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	/**
-	 * Internal helper method. Copies face normals to vertex normals lacking one.
+	 * Internal helper method. Copies face normal to vertices lacking a normal.
 	 */
 	public final void populateMissingNormals() {
 		final int normalFlags = this.normalFlags();
@@ -156,6 +162,12 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
+	public final MutableQuadViewImpl nominalFace(@Nullable Direction face) {
+		nominalFace = face;
+		return this;
+	}
+
+	@Override
 	public final MutableQuadViewImpl cullFace(@Nullable Direction face) {
 		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(data[baseIndex + HEADER_BITS], face);
 		nominalFace(face);
@@ -163,14 +175,40 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public final MutableQuadViewImpl nominalFace(@Nullable Direction face) {
-		nominalFace = face;
+	public MutableQuadViewImpl renderLayer(@Nullable BlockRenderLayer renderLayer) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.renderLayer(data[baseIndex + HEADER_BITS], renderLayer);
 		return this;
 	}
 
 	@Override
-	public final MutableQuadViewImpl material(RenderMaterial material) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.material(data[baseIndex + HEADER_BITS], (RenderMaterialImpl) material);
+	public MutableQuadViewImpl emissive(boolean emissive) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.emissive(data[baseIndex + HEADER_BITS], emissive);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl diffuseShade(boolean shade) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.diffuseShade(data[baseIndex + HEADER_BITS], shade);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl ambientOcclusion(TriState ao) {
+		Objects.requireNonNull(ao, "ambient occlusion TriState may not be null");
+		data[baseIndex + HEADER_BITS] = EncodingFormat.ambientOcclusion(data[baseIndex + HEADER_BITS], ao);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl glint(@Nullable ItemRenderState.Glint glint) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.glint(data[baseIndex + HEADER_BITS], glint);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl shadeMode(ShadeMode mode) {
+		Objects.requireNonNull(mode, "ShadeMode may not be null");
+		data[baseIndex + HEADER_BITS] = EncodingFormat.shadeMode(data[baseIndex + HEADER_BITS], mode);
 		return this;
 	}
 
@@ -201,8 +239,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex) {
-		System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, VANILLA_QUAD_STRIDE);
+	public final MutableQuadViewImpl fromVanilla(int[] vertexData, int startIndex) {
+		System.arraycopy(vertexData, startIndex, data, baseIndex + HEADER_STRIDE, VANILLA_QUAD_STRIDE);
 		isGeometryInvalid = true;
 
 		int normalFlags = 0;
@@ -226,15 +264,11 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace) {
+	public final MutableQuadViewImpl fromBakedQuad(BakedQuad quad) {
 		fromVanilla(quad.vertexData(), 0);
-		cullFace(cullFace);
 		nominalFace(quad.face());
+		diffuseShade(quad.shade());
 		tintIndex(quad.tintIndex());
-
-		if (!quad.shade()) {
-			material = RenderMaterialImpl.setDisableDiffuse((RenderMaterialImpl) material, true);
-		}
 
 		int lightEmission = quad.lightEmission();
 
@@ -244,8 +278,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 			}
 		}
 
-		material(material);
-		tag(0);
 		return this;
 	}
 

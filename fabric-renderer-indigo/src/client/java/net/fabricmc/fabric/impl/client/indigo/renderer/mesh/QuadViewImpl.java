@@ -38,13 +38,16 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
+import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 
 /**
  * Base class for all quads / quad makers. Handles the ugly bits
@@ -92,10 +95,6 @@ public class QuadViewImpl implements QuadView {
 	public final int geometryFlags() {
 		computeGeometry();
 		return EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS]);
-	}
-
-	public final boolean hasShade() {
-		return !material().disableDiffuse();
 	}
 
 	@Override
@@ -214,10 +213,15 @@ public class QuadViewImpl implements QuadView {
 		}
 	}
 
+	public final int packedFaceNormal() {
+		computeGeometry();
+		return data[baseIndex + HEADER_FACE_NORMAL];
+	}
+
 	@Override
-	@Nullable
-	public final Direction cullFace() {
-		return EncodingFormat.cullFace(data[baseIndex + HEADER_BITS]);
+	public final Vector3fc faceNormal() {
+		computeGeometry();
+		return faceNormal;
 	}
 
 	@Override
@@ -233,20 +237,42 @@ public class QuadViewImpl implements QuadView {
 		return nominalFace;
 	}
 
-	public final int packedFaceNormal() {
-		computeGeometry();
-		return data[baseIndex + HEADER_FACE_NORMAL];
+	@Override
+	@Nullable
+	public final Direction cullFace() {
+		return EncodingFormat.cullFace(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override
-	public final Vector3fc faceNormal() {
-		computeGeometry();
-		return faceNormal;
+	@Nullable
+	public BlockRenderLayer renderLayer() {
+		return EncodingFormat.renderLayer(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override
-	public final RenderMaterialImpl material() {
-		return EncodingFormat.material(data[baseIndex + HEADER_BITS]);
+	public boolean emissive() {
+		return EncodingFormat.emissive(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
+	public boolean diffuseShade() {
+		return EncodingFormat.diffuseShade(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
+	public TriState ambientOcclusion() {
+		return EncodingFormat.ambientOcclusion(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
+	@Nullable
+	public ItemRenderState.Glint glint() {
+		return EncodingFormat.glint(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
+	public ShadeMode shadeMode() {
+		return EncodingFormat.shadeMode(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override
@@ -260,10 +286,10 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	public final void toVanilla(int[] target, int targetIndex) {
-		System.arraycopy(data, baseIndex + HEADER_STRIDE, target, targetIndex, QUAD_STRIDE);
+	public final void toVanilla(int[] target, int startIndex) {
+		System.arraycopy(data, baseIndex + HEADER_STRIDE, target, startIndex, QUAD_STRIDE);
 
-		int colorIndex = targetIndex + VERTEX_COLOR - HEADER_STRIDE;
+		int colorIndex = startIndex + VERTEX_COLOR - HEADER_STRIDE;
 
 		for (int i = 0; i < 4; i++) {
 			target[colorIndex] = ColorHelper.toVanillaColor(target[colorIndex]);

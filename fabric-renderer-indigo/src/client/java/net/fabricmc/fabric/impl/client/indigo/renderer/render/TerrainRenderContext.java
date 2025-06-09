@@ -20,9 +20,9 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.model.BlockStateModel;
@@ -46,7 +46,7 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 
 	private MatrixStack matrixStack;
 	private Random random;
-	private Function<RenderLayer, BufferBuilder> bufferFunc;
+	private Function<BlockRenderLayer, BufferBuilder> bufferFunc;
 
 	public TerrainRenderContext() {
 		overlay = OverlayTexture.DEFAULT_UV;
@@ -58,11 +58,11 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 	}
 
 	@Override
-	protected VertexConsumer getVertexConsumer(RenderLayer layer) {
+	protected VertexConsumer getVertexConsumer(BlockRenderLayer layer) {
 		return bufferFunc.apply(layer);
 	}
 
-	public void prepare(BlockRenderView blockView, BlockPos sectionOrigin, MatrixStack matrixStack, Random random, Function<RenderLayer, BufferBuilder> bufferFunc) {
+	public void prepare(BlockRenderView blockView, BlockPos sectionOrigin, MatrixStack matrixStack, Random random, Function<BlockRenderLayer, BufferBuilder> bufferFunc) {
 		blockInfo.prepareForWorld(blockView, true);
 		((LightDataCache) lightDataProvider).prepare(sectionOrigin);
 

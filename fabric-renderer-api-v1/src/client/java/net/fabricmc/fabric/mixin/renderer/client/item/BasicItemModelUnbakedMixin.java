@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.render.item.model.BasicItemModel;
+import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.model.BakedGeometry;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -41,11 +42,11 @@ abstract class BasicItemModelUnbakedMixin {
 	}
 
 	@ModifyExpressionValue(method = "bake", at = @At(value = "NEW", target = "net/minecraft/client/render/item/model/BasicItemModel"))
-	private BasicItemModel injectMesh(BasicItemModel model, @Share("mesh") LocalRef<Mesh> meshRef) {
+	private BasicItemModel injectMesh(BasicItemModel model, ItemModel.BakeContext context, @Share("mesh") LocalRef<Mesh> meshRef) {
 		Mesh mesh = meshRef.get();
 
 		if (mesh != null) {
-			((BasicItemModelExtension) model).setMesh(mesh);
+			((BasicItemModelExtension) model).fabric_setMesh(mesh, context.blockModelBaker().getSpriteGetter());
 		}
 
 		return model;

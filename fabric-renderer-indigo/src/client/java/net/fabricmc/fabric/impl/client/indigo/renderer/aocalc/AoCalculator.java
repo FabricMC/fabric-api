@@ -128,7 +128,7 @@ public class AoCalculator {
 		quad.toVanilla(vertexData, 0);
 
 		BlockModelRenderer.getQuadDimensions(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaCalc);
-		vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, quad.hasShade());
+		vanillaCalc.apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, quad.diffuseShade());
 
 		System.arraycopy(vanillaCalc.fs, 0, aoDest, 0, 4);
 		System.arraycopy(vanillaCalc.is, 0, lightDest, 0, 4);
@@ -144,32 +144,32 @@ public class AoCalculator {
 		}
 
 		if ((flags & CUBIC_FLAG) == 0) {
-			vanillaPartialFace(quad, quad.lightFace(), isOnLightFace, quad.hasShade());
+			vanillaPartialFace(quad, quad.lightFace(), isOnLightFace, quad.diffuseShade());
 		} else {
-			vanillaFullFace(quad, quad.lightFace(), isOnLightFace, quad.hasShade());
+			vanillaFullFace(quad, quad.lightFace(), isOnLightFace, quad.diffuseShade());
 		}
 	}
 
 	private void calcEnhanced(QuadViewImpl quad) {
 		switch (quad.geometryFlags()) {
 		case LIGHT_FACE_FLAG | AXIS_ALIGNED_FLAG | CUBIC_FLAG:
-			vanillaFullFace(quad, quad.lightFace(), true, quad.hasShade());
+			vanillaFullFace(quad, quad.lightFace(), true, quad.diffuseShade());
 			break;
 
 		case LIGHT_FACE_FLAG | AXIS_ALIGNED_FLAG:
-			vanillaPartialFace(quad, quad.lightFace(), true, quad.hasShade());
+			vanillaPartialFace(quad, quad.lightFace(), true, quad.diffuseShade());
 			break;
 
 		case AXIS_ALIGNED_FLAG | CUBIC_FLAG:
-			blendedFullFace(quad, quad.lightFace(), quad.hasShade());
+			blendedFullFace(quad, quad.lightFace(), quad.diffuseShade());
 			break;
 
 		case AXIS_ALIGNED_FLAG:
-			blendedPartialFace(quad, quad.lightFace(), quad.hasShade());
+			blendedPartialFace(quad, quad.lightFace(), quad.diffuseShade());
 			break;
 
 		default:
-			irregularFace(quad, quad.hasShade());
+			irregularFace(quad, quad.diffuseShade());
 			break;
 		}
 	}

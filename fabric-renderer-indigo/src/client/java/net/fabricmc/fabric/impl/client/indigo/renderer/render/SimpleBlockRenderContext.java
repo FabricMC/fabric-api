@@ -19,11 +19,10 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
@@ -31,8 +30,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
@@ -41,23 +39,22 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 	private final Random random = Random.createLocal();
 
-	private VertexConsumerProvider vertexConsumers;
-	private RenderLayer defaultRenderLayer;
+	private BlockVertexConsumerProvider vertexConsumers;
+	private BlockRenderLayer defaultRenderLayer;
 	private float red;
 	private float green;
 	private float blue;
 	private int light;
 
 	@Nullable
-	private RenderLayer lastRenderLayer;
+	private BlockRenderLayer lastRenderLayer;
 	@Nullable
 	private VertexConsumer lastVertexConsumer;
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final RenderMaterial mat = quad.material();
-		final BlendMode blendMode = mat.blendMode();
-		final RenderLayer renderLayer = blendMode == BlendMode.DEFAULT ? defaultRenderLayer : blendMode.blockRenderLayer;
+		final BlockRenderLayer quadRenderLayer = quad.renderLayer();
+		final BlockRenderLayer renderLayer = quadRenderLayer == null ? defaultRenderLayer : quadRenderLayer;
 		final VertexConsumer vertexConsumer;
 
 		if (renderLayer == lastRenderLayer) {
@@ -68,7 +65,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		}
 
 		tintQuad(quad);
-		shadeQuad(quad, mat.emissive());
+		shadeQuad(quad, quad.emissive());
 		bufferQuad(quad, vertexConsumer);
 	}
 
@@ -98,7 +95,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	public void bufferModel(MatrixStack.Entry entry, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
+	public void bufferModel(MatrixStack.Entry entry, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
 		matrices = entry;
 		this.overlay = overlay;
 

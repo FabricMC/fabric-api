@@ -63,6 +63,7 @@ abstract class SpriteLoaderStitchResultMixin implements FabricStitchResult, Stit
 		return result;
 	}
 
+	@Override
 	@Nullable
 	public SpriteFinder fabric_spriteFinderNullable() {
 		return spriteFinder;

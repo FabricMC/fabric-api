@@ -28,9 +28,6 @@ import net.minecraft.client.render.model.BlockModelPart;
 import net.minecraft.client.render.model.GeometryBakedModel;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
 import net.fabricmc.fabric.api.util.TriState;
@@ -50,14 +47,9 @@ abstract class GeometryBakedModelMixin implements BlockModelPart {
 			if (useAmbientOcclusion) {
 				meshBakedGeometry.getMesh().outputTo(emitter);
 			} else {
-				MaterialFinder materialFinder = Renderer.get().materialFinder();
 				emitter.pushTransform(quad -> {
-					RenderMaterial material = quad.material();
-
-					if (material.ambientOcclusion() == TriState.DEFAULT) {
-						materialFinder.copyFrom(quad.material());
-						materialFinder.ambientOcclusion(TriState.FALSE);
-						quad.material(materialFinder.find());
+					if (quad.ambientOcclusion() == TriState.DEFAULT) {
+						quad.ambientOcclusion(TriState.FALSE);
 					}
 
 					return true;
