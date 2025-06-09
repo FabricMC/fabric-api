@@ -1,0 +1,7 @@
+accessWidener v2 named
+
+accessible  field   net/minecraft/client/gui/hud/InGameHud    renderHealthValue I
+accessible  method  net/minecraft/client/gui/hud/InGameHud    getRiddenEntity   ()Lnet/minecraft/entity/LivingEntity;
+accessible  method  net/minecraft/client/gui/hud/InGameHud    getHeartCount (Lnet/minecraft/entity/LivingEntity;)I
+accessible  method  net/minecraft/client/gui/hud/InGameHud    getHeartRows  (I)I
+accessible  method  net/minecraft/client/gui/hud/InGameHud    getCameraPlayer ()Lnet/minecraft/entity/player/PlayerEntity;
