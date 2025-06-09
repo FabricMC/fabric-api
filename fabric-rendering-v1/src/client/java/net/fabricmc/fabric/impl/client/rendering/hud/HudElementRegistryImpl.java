@@ -116,13 +116,19 @@ public class HudElementRegistryImpl {
 	}
 
 	public static void removeElement(Identifier identifier) {
-		// No-op the removed layer
-		replaceElement(identifier, e -> (context, tickCounter) -> { });
+		boolean didChange = findLayer(identifier, (l, iterator) -> {
+			iterator.set(HudLayer.of(l.id(), l::element, true));
+			return true;
+		});
+
+		if (!didChange) {
+			throw new IllegalArgumentException("Layer with identifier " + identifier + " not found");
+		}
 	}
 
 	public static void replaceElement(Identifier identifier, Function<HudElement, HudElement> replacer) {
 		boolean didChange = findLayer(identifier, (l, iterator) -> {
-			iterator.set(HudLayer.of(identifier, replacer.compose(l::element)));
+			iterator.set(HudLayer.of(l.id(), replacer.compose(l::element), l.isRemoved()));
 			return true;
 		});
 
@@ -207,7 +213,9 @@ public class HudElementRegistryImpl {
 
 		public void render(DrawContext context, RenderTickCounter tickCounter, HudElement vanillaElement) {
 			for (HudLayer layer : layers) {
-				layer.element(vanillaElement).render(context, tickCounter);
+				if (!layer.isRemoved()) {
+					layer.element(vanillaElement).render(context, tickCounter);
+				}
 			}
 		}
 	}
