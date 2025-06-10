@@ -37,7 +37,6 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenOpeningCallback;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
 public final class ScreenTests implements ClientModInitializer {
@@ -54,7 +53,7 @@ public final class ScreenTests implements ClientModInitializer {
 		ScreenEvents.AFTER_INIT.register(this::afterInitScreen);
 
 		// skip the control options screen and go directly to keybindings when coming from the main options screen
-		ScreenOpeningCallback.EVENT.register((oldScreen, newScreen) -> {
+		ScreenEvents.OPEN.register((oldScreen, newScreen) -> {
 			if (oldScreen instanceof OptionsScreen && newScreen instanceof ControlsOptionsScreen) {
 				// the new screen does not have a client instance set yet
 				return new KeybindsScreen(newScreen, Screens.getClient(oldScreen).options);
