@@ -7,6 +7,7 @@
   "license": "Apache-2.0",
   "entrypoints": {
     "main": [
+      "net.fabricmc.fabric.test.rendering.ArmorRenderingTestsInit",
       "net.fabricmc.fabric.test.rendering.CustomAtlasSourcesTestInit",
       "net.fabricmc.fabric.test.rendering.CustomColorResolverTestInit",
       "net.fabricmc.fabric.test.rendering.TooltipComponentTestInit"

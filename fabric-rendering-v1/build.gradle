@@ -7,5 +7,6 @@ moduleDependencies(project, [
 
 testDependencies(project, [
 	':fabric-client-gametest-api-v1',
+	':fabric-item-api-v1',
 	':fabric-object-builder-api-v1'
 ])
