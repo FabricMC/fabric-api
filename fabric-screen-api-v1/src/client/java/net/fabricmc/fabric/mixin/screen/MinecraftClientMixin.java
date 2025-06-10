@@ -24,12 +24,15 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenOpeningCallback;
 import net.fabricmc.loader.api.FabricLoader;
 
 @Mixin(MinecraftClient.class)
@@ -59,6 +62,11 @@ abstract class MinecraftClientMixin {
 	@Inject(method = "setScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;removed()V", shift = At.Shift.AFTER))
 	private void onScreenRemove(@Nullable Screen screen, CallbackInfo ci) {
 		ScreenEvents.remove(this.currentScreen).invoker().onRemove(this.currentScreen);
+	}
+
+	@ModifyVariable(method = "setScreen", at = @At("LOAD"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;requestRespawn()V")))
+	public @Nullable Screen onScreenOpen(@Nullable Screen screen) {
+		return ScreenOpeningCallback.EVENT.invoker().onScreenOpening(this.currentScreen, screen);
 	}
 
 	@Inject(method = "stop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;removed()V", shift = At.Shift.AFTER))
