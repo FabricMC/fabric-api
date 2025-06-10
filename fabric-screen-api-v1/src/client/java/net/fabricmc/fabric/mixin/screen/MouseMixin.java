@@ -74,6 +74,29 @@ abstract class MouseMixin {
 		return result;
 	}
 
+	@WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseDragged(DDIDD)Z"))
+	private boolean invokeMouseDragEvents(Screen screen, double mouseX, double mouseY, int button, double horizontalAmount, double verticalAmount, Operation<Boolean> operation) {
+		// The screen passed to events is the same as the screen the handler method is called on,
+		// regardless of whether the screen changes within the handler or event invocations.
+
+		if (screen != null) {
+			if (!ScreenMouseEvents.allowMouseDrag(screen).invoker().allowMouseDrag(screen, mouseX, mouseY, button, horizontalAmount, verticalAmount)) {
+				// Set this drag action as handled
+				return true;
+			}
+
+			ScreenMouseEvents.beforeMouseDrag(screen).invoker().beforeMouseDrag(screen, mouseX, mouseY, button, horizontalAmount, verticalAmount);
+		}
+
+		boolean result = operation.call(screen, mouseX, mouseY, button, horizontalAmount, verticalAmount);
+
+		if (screen != null) {
+			ScreenMouseEvents.afterMouseDrag(screen).invoker().afterMouseDrag(screen, mouseX, mouseY, button, horizontalAmount, verticalAmount);
+		}
+
+		return result;
+	}
+
 	@WrapOperation(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseScrolled(DDDD)Z"))
 	private boolean invokeMouseScrollEvents(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,

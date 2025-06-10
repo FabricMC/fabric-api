@@ -71,6 +71,12 @@ public interface ScreenExtensions {
 
 	Event<ScreenMouseEvents.AfterMouseRelease> fabric_getAfterMouseReleaseEvent();
 
+	Event<ScreenMouseEvents.AllowMouseDrag> fabric_getAllowMouseDragEvent();
+
+	Event<ScreenMouseEvents.BeforeMouseDrag> fabric_getBeforeMouseDragEvent();
+
+	Event<ScreenMouseEvents.AfterMouseDrag> fabric_getAfterMouseDragEvent();
+
 	Event<ScreenMouseEvents.AllowMouseScroll> fabric_getAllowMouseScrollEvent();
 
 	Event<ScreenMouseEvents.BeforeMouseScroll> fabric_getBeforeMouseScrollEvent();

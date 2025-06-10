@@ -182,6 +182,34 @@ public final class ScreenEventFactory {
 		});
 	}
 
+	public static Event<ScreenMouseEvents.AllowMouseDrag> createAllowMouseDragEvent() {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AllowMouseDrag.class, callbacks -> (screen, mouseX, mouseY, button, horizontalAmount, verticalAmount) -> {
+			for (ScreenMouseEvents.AllowMouseDrag callback : callbacks) {
+				if (!callback.allowMouseDrag(screen, mouseX, mouseY, button, horizontalAmount, verticalAmount)) {
+					return false;
+				}
+			}
+
+			return true;
+		});
+	}
+
+	public static Event<ScreenMouseEvents.BeforeMouseDrag> createBeforeMouseDragEvent() {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.BeforeMouseDrag.class, callbacks -> (screen, mouseX, mouseY, button, horizontalAmount, verticalAmount) -> {
+			for (ScreenMouseEvents.BeforeMouseDrag callback : callbacks) {
+				callback.beforeMouseDrag(screen, mouseX, mouseY, button, horizontalAmount, verticalAmount);
+			}
+		});
+	}
+
+	public static Event<ScreenMouseEvents.AfterMouseDrag> createAfterMouseDragEvent() {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseDrag.class, callbacks -> (screen, mouseX, mouseY, button, horizontalAmount, verticalAmount) -> {
+			for (ScreenMouseEvents.AfterMouseDrag callback : callbacks) {
+				callback.afterMouseDrag(screen, mouseX, mouseY, button, horizontalAmount, verticalAmount);
+			}
+		});
+	}
+
 	public static Event<ScreenMouseEvents.AllowMouseScroll> createAllowMouseScrollEvent() {
 		return EventFactory.createArrayBacked(ScreenMouseEvents.AllowMouseScroll.class, callbacks -> (screen, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
 			for (ScreenMouseEvents.AllowMouseScroll callback : callbacks) {

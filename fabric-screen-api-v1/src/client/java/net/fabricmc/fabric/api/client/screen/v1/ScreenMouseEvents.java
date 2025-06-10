@@ -104,9 +104,48 @@ public final class ScreenMouseEvents {
 	}
 
 	/**
-	 * An event that is checks if the mouse should be allowed to scroll in a screen.
+	 * An event that checks if the mouse should be allowed to drag in a screen.
 	 *
-	 * <p>This event tracks amount of vertical and horizontal scroll.
+	 * <p>This event tracks the amount a mouse was dragged both vertically and horizontally.
+	 *
+	 * @return the event
+	 */
+	public static Event<AllowMouseDrag> allowMouseDrag(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getAllowMouseDragEvent();
+	}
+
+	/**
+	 * An event called after mouse dragging is processed for a screen.
+	 *
+	 * <p>This event tracks the amount a mouse was dragged both vertically and horizontally.
+	 *
+	 * @return the event
+	 */
+	public static Event<BeforeMouseDrag> beforeMouseDrag(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getBeforeMouseDragEvent();
+	}
+
+	/**
+	 * An event called after mouse dragging is processed for a screen.
+	 *
+	 * <p>This event tracks the amount a mouse was dragged both vertically and horizontally.
+	 *
+	 * @return the event
+	 */
+	public static Event<AfterMouseDrag> afterMouseDrag(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getAfterMouseDragEvent();
+	}
+
+	/**
+	 * An event that checks if the mouse should be allowed to scroll in a screen.
+	 *
+	 * <p>This event tracks the amount a mouse was scrolled both vertically and horizontally.
 	 *
 	 * @return the event
 	 */
@@ -117,9 +156,9 @@ public final class ScreenMouseEvents {
 	}
 
 	/**
-	 * An event that is called after mouse scrolling is processed for a screen.
+	 * An event called before mouse scrolling is processed for a screen.
 	 *
-	 * <p>This event tracks amount of vertical and horizontal scroll.
+	 * <p>This event tracks the amount a mouse was scrolled both vertically and horizontally.
 	 *
 	 * @return the event
 	 */
@@ -130,9 +169,9 @@ public final class ScreenMouseEvents {
 	}
 
 	/**
-	 * An event that is called after mouse scrolling is processed for a screen.
+	 * An event called after mouse scrolling is processed for a screen.
 	 *
-	 * <p>This event tracks amount a mouse was scrolled both vertically and horizontally.
+	 * <p>This event tracks the amount a mouse was scrolled both vertically and horizontally.
 	 *
 	 * @return the event
 	 */
@@ -148,10 +187,12 @@ public final class ScreenMouseEvents {
 	@FunctionalInterface
 	public interface AllowMouseClick {
 		/**
+		 * Checks if the mouse click should be allowed in a screen.
+		 *
+		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		boolean allowMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
@@ -159,10 +200,12 @@ public final class ScreenMouseEvents {
 	@FunctionalInterface
 	public interface BeforeMouseClick {
 		/**
+		 * Called before a mouse click in a screen.
+		 *
+		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void beforeMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
@@ -170,10 +213,12 @@ public final class ScreenMouseEvents {
 	@FunctionalInterface
 	public interface AfterMouseClick {
 		/**
+		 * Called after a mouse click in a screen.
+		 *
+		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void afterMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
@@ -183,10 +228,10 @@ public final class ScreenMouseEvents {
 		/**
 		 * Checks if the mouse click should be allowed to release in a screen.
 		 *
+		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		boolean allowMouseRelease(Screen screen, double mouseX, double mouseY, int button);
 	}
@@ -196,10 +241,10 @@ public final class ScreenMouseEvents {
 		/**
 		 * Called before a mouse click has released in a screen.
 		 *
+		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void beforeMouseRelease(Screen screen, double mouseX, double mouseY, int button);
 	}
@@ -209,12 +254,59 @@ public final class ScreenMouseEvents {
 		/**
 		 * Called after a mouse click has released in a screen.
 		 *
+		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void afterMouseRelease(Screen screen, double mouseX, double mouseY, int button);
+	}
+
+	@FunctionalInterface
+	public interface AllowMouseDrag {
+		/**
+		 * Checks if the mouse should be allowed to drag in a screen by moving the cursor while a mouse button is held
+		 * down.
+		 *
+		 * @param screen the screen
+		 * @param mouseX the x position of the mouse
+		 * @param mouseY the y position of the mouse
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param horizontalAmount the horizontal drag amount
+		 * @param verticalAmount the vertical drag amount
+		 * @return whether the mouse should be allowed to drag
+		 */
+		boolean allowMouseDrag(Screen screen, double mouseX, double mouseY, int button, double horizontalAmount, double verticalAmount);
+	}
+
+	@FunctionalInterface
+	public interface BeforeMouseDrag {
+		/**
+		 * Called before a mouse is dragged on screen.
+		 *
+		 * @param screen the screen
+		 * @param mouseX the x position of the mouse
+		 * @param mouseY the y position of the mouse
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param horizontalAmount the horizontal drag amount
+		 * @param verticalAmount the vertical drag amount
+		 */
+		void beforeMouseDrag(Screen screen, double mouseX, double mouseY, int button, double horizontalAmount, double verticalAmount);
+	}
+
+	@FunctionalInterface
+	public interface AfterMouseDrag {
+		/**
+		 * Called after a mouse is dragged on screen.
+		 *
+		 * @param screen the screen
+		 * @param mouseX the x position of the mouse
+		 * @param mouseY the y position of the mouse
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param horizontalAmount the horizontal drag amount
+		 * @param verticalAmount the vertical drag amount
+		 */
+		void afterMouseDrag(Screen screen, double mouseX, double mouseY, int button, double horizontalAmount, double verticalAmount);
 	}
 
 	@FunctionalInterface
@@ -222,6 +314,7 @@ public final class ScreenMouseEvents {
 		/**
 		 * Checks if the mouse should be allowed to scroll in a screen.
 		 *
+		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param horizontalAmount the horizontal scroll amount
@@ -236,6 +329,7 @@ public final class ScreenMouseEvents {
 		/**
 		 * Called before a mouse has scrolled on screen.
 		 *
+		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param horizontalAmount the horizontal scroll amount
@@ -249,6 +343,7 @@ public final class ScreenMouseEvents {
 		/**
 		 * Called after a mouse has scrolled on screen.
 		 *
+		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param horizontalAmount the horizontal scroll amount
