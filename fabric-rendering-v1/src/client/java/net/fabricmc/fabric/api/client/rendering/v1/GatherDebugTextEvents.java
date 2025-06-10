@@ -23,12 +23,17 @@ import net.minecraft.client.gui.hud.DebugHud;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * Provides events that give control over the string lists rendered on both sides of the {@link DebugHud}.
+ *
+ * <p>The strings do support <a href="https://minecraft.wiki/w/Formatting_codes">formatting codes</a>.
+ */
 public final class GatherDebugTextEvents {
 	private GatherDebugTextEvents() {
 	}
 
 	/**
-	 * An event that runs when gathering all game information text lines via {@link DebugHud#getLeftText()}.
+	 * An event that runs when gathering all game information text lines.
 	 */
 	public static final Event<Left> LEFT = EventFactory.createArrayBacked(Left.class, callbacks -> lines -> {
 		for (Left callback : callbacks) {
@@ -37,7 +42,7 @@ public final class GatherDebugTextEvents {
 	});
 
 	/**
-	 * An event that runs when gathering all game information text lines via {@link DebugHud#getRightText()}.
+	 * An event that runs when gathering all system information text lines.
 	 */
 	public static final Event<Right> RIGHT = EventFactory.createArrayBacked(Right.class, callbacks -> lines -> {
 		for (Right callback : callbacks) {
@@ -47,11 +52,17 @@ public final class GatherDebugTextEvents {
 
 	@FunctionalInterface
 	public interface Left {
+		/**
+		 * @param lines the mutable result of {@link DebugHud#getLeftText()}
+		 */
 		void onGatherLeftDebugText(List<String> lines);
 	}
 
 	@FunctionalInterface
 	public interface Right {
+		/**
+		 * @param lines the mutable result of {@link DebugHud#getRightText()}
+		 */
 		void onGatherRightDebugText(List<String> lines);
 	}
 }
