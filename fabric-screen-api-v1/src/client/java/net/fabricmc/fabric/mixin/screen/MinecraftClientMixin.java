@@ -65,7 +65,7 @@ abstract class MinecraftClientMixin {
 
 	@ModifyVariable(method = "setScreen", at = @At(value = "LOAD", ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;requestRespawn()V")))
 	public @Nullable Screen onScreenOpen(@Nullable Screen screen) {
-		return ScreenEvents.OPEN.invoker().onScreenOpening(this.currentScreen, screen);
+		return ScreenEvents.OPEN.invoker().onOpen(this.currentScreen, screen);
 	}
 
 	@Inject(method = "stop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;removed()V", shift = At.Shift.AFTER))

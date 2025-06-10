@@ -56,7 +56,7 @@ public final class ScreenEvents {
 	public static final Event<Open> OPEN = EventFactory.createArrayBacked(Open.class,
 			callbacks -> (oldScreen, newScreen) -> {
 				for (Open callback : callbacks) {
-					Screen screen = callback.onScreenOpening(oldScreen, newScreen);
+					Screen screen = callback.onOpen(oldScreen, newScreen);
 
 					if (screen != newScreen) {
 						return screen;
@@ -191,7 +191,7 @@ public final class ScreenEvents {
 		 *                  to the in-game hud
 		 * @return the screen to be opened, by default the new screen
 		 */
-		@Nullable Screen onScreenOpening(@Nullable Screen oldScreen, @Nullable Screen newScreen);
+		@Nullable Screen onOpen(@Nullable Screen oldScreen, @Nullable Screen newScreen);
 	}
 
 	@FunctionalInterface
