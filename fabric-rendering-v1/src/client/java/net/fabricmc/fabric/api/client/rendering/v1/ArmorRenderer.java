@@ -84,10 +84,14 @@ public interface ArmorRenderer {
 
 	/**
 	 * Checks whether an item stack equipped on the head should also be
-	 * rendered as an item when it's rendered using this renderer.
+	 * rendered as an item. By default, vanilla renders most items equipped on the head
+	 * using their models (or special item renderers), but this is often unwanted for custom equipment.
 	 *
-	 * <p>Note that the item won't be rendered by vanilla code if it has an armor model defined
+	 * <p>This method only applies to items registered with this renderer.
+	 *
+	 * <p>Note that the item will never be rendered by vanilla code if it has an armor model defined
 	 * by the {@link net.minecraft.component.DataComponentTypes#EQUIPPABLE minecraft:equippable} component.
+	 * This method cannot be used to overwrite that check to re-enable also rendering the item model.
 	 * See {@link net.minecraft.client.render.entity.feature.ArmorFeatureRenderer#hasModel(ItemStack, EquipmentSlot)}.
 	 *
 	 * @param entity the equipping entity
