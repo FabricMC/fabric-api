@@ -192,7 +192,8 @@ public final class ScreenMouseEvents {
 		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		boolean allowMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
@@ -205,7 +206,8 @@ public final class ScreenMouseEvents {
 		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void beforeMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
@@ -218,7 +220,8 @@ public final class ScreenMouseEvents {
 		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void afterMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
@@ -231,7 +234,8 @@ public final class ScreenMouseEvents {
 		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		boolean allowMouseRelease(Screen screen, double mouseX, double mouseY, int button);
 	}
@@ -244,7 +248,8 @@ public final class ScreenMouseEvents {
 		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void beforeMouseRelease(Screen screen, double mouseX, double mouseY, int button);
 	}
@@ -257,7 +262,8 @@ public final class ScreenMouseEvents {
 		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void afterMouseRelease(Screen screen, double mouseX, double mouseY, int button);
 	}
@@ -271,10 +277,11 @@ public final class ScreenMouseEvents {
 		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
 		 * @param horizontalAmount the horizontal drag amount
 		 * @param verticalAmount the vertical drag amount
 		 * @return whether the mouse should be allowed to drag
+		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		boolean allowMouseDrag(Screen screen, double mouseX, double mouseY, int button, double horizontalAmount, double verticalAmount);
 	}
@@ -287,9 +294,10 @@ public final class ScreenMouseEvents {
 		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
 		 * @param horizontalAmount the horizontal drag amount
 		 * @param verticalAmount the vertical drag amount
+		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void beforeMouseDrag(Screen screen, double mouseX, double mouseY, int button, double horizontalAmount, double verticalAmount);
 	}
@@ -302,9 +310,10 @@ public final class ScreenMouseEvents {
 		 * @param screen the screen
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
+		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
 		 * @param horizontalAmount the horizontal drag amount
 		 * @param verticalAmount the vertical drag amount
+		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
 		void afterMouseDrag(Screen screen, double mouseX, double mouseY, int button, double horizontalAmount, double verticalAmount);
 	}
