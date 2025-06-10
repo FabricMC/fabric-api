@@ -84,8 +84,8 @@ public interface ArmorRenderer {
 
 	/**
 	 * Checks whether an item stack equipped on the head should also be
-	 * rendered as an item. By default, vanilla renders most items equipped on the head
-	 * using their models (or special item renderers), but this is often unwanted for custom equipment.
+	 * rendered as an item. By default, vanilla renders most items with their models (or special item renderers)
+	 * around or on top of the entity's head, but this is often unwanted for custom equipment.
 	 *
 	 * <p>This method only applies to items registered with this renderer.
 	 *
