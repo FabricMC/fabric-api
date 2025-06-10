@@ -15,18 +15,23 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.renderer.DebugHudClient"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.16.13",
     "minecraft": ">=1.21.5-beta.1",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-rendering-v1": "*"
   },
   "suggests": {
     "fabric-particles-v1": "*"
   },
   "description": "Defines rendering extensions for dynamic/fancy block and item models.",
   "mixins": [
-    "fabric-renderer-api-v1.mixins.json",
-    "fabric-renderer-api-v1.debughud.mixins.json"
+    "fabric-renderer-api-v1.mixins.json"
   ],
   "accessWidener": "fabric-renderer-api-v1.accesswidener",
   "custom": {
