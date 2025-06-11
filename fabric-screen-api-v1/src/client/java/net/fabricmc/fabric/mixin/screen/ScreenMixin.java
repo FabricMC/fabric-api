@@ -54,7 +54,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 	protected List<Drawable> drawables;
 
 	@Unique
-	private ButtonList buttonList;
+	private ButtonList fabricButtons;
 	@Unique
 	private Event<ScreenEvents.Remove> removeEvent;
 	@Unique
@@ -129,7 +129,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Unique
 	private void beforeInit(MinecraftClient client, int width, int height) {
 		// All elements are repopulated on the screen, so we need to reinitialize all events
-		this.buttonList = null;
+		this.fabricButtons = null;
 		this.removeEvent = ScreenEventFactory.createRemoveEvent();
 		this.beforeRenderEvent = ScreenEventFactory.createBeforeRenderEvent();
 		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
@@ -169,11 +169,11 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Override
 	public List<ClickableWidget> fabric_getButtons() {
 		// Lazy init to make the list access safe after Screen#init
-		if (this.buttonList == null) {
-			this.buttonList = new ButtonList(this.drawables, this.selectables, this.children);
+		if (this.fabricButtons == null) {
+			this.fabricButtons = new ButtonList(this.drawables, this.selectables, this.children);
 		}
 
-		return this.buttonList;
+		return this.fabricButtons;
 	}
 
 	@Unique
