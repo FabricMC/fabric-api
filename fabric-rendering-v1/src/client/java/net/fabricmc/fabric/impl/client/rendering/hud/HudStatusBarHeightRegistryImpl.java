@@ -1,14 +1,16 @@
 package net.fabricmc.fabric.impl.client.rendering.hud;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.SequencedCollection;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.IntBinaryOperator;
 import java.util.function.ToIntFunction;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
@@ -111,8 +113,8 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * height providers, to compare with the actual height providers during rendering for potential translations for
 	 * vanilla status bars. Translations are achieved via pose stack transformations; alternatively can also be
 	 * implemented via mixins.
-	 * <p>
-	 * Do not use {@link Map}, it does not preserve insertion order.
+	 *
+	 * <p>Do not use {@link Map}, it does not preserve insertion order.
 	 */
 	static final Map<Identifier, ToIntFunction<PlayerEntity>> VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.HEALTH_BAR,
@@ -127,10 +129,10 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 			reduceToIntFunctions(MOUNT_HEALTH, FOOD_BAR, Integer::sum));
 	/**
 	 * Height providers registered for the left side above the hotbar.
-	 * <p>
-	 * Used for checking if any custom height providers have been registered to potentially skip resolving later on.
-	 * <p>
-	 * Do not use {@link Map}, it does not preserve insertion order.
+	 *
+	 * <p>Used for checking if any custom height providers have been registered to potentially skip resolving later on.
+	 *
+	 * <p>Do not use {@link Map}, it does not preserve insertion order.
 	 */
 	static final Map<Identifier, ToIntFunction<PlayerEntity>> VANILLA_LEFT_HEIGHT_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.HEALTH_BAR,
@@ -139,10 +141,10 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 			ARMOR_BAR);
 	/**
 	 * Height providers registered for the right side above the hotbar.
-	 * <p>
-	 * Used for checking if any custom height providers have been registered to potentially skip resolving later on.
-	 * <p>
-	 * Do not use {@link Map}, it does not preserve insertion order.
+	 *
+	 * <p>Used for checking if any custom height providers have been registered to potentially skip resolving later on.
+	 *
+	 * <p>Do not use {@link Map}, it does not preserve insertion order.
 	 */
 	static final Map<Identifier, ToIntFunction<PlayerEntity>> VANILLA_RIGHT_HEIGHT_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.MOUNT_HEALTH,
@@ -185,8 +187,8 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 
 	static void init() {
 		// skip resolving if no custom height providers have been registered
-		if (VANILLA_LEFT_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS) &&
-				VANILLA_RIGHT_HEIGHT_PROVIDERS.equals(RIGHT_HEIGHT_PROVIDERS)) {
+		if (VANILLA_LEFT_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS)
+				&& VANILLA_RIGHT_HEIGHT_PROVIDERS.equals(RIGHT_HEIGHT_PROVIDERS)) {
 			resolvedHeightProviders = Map.of();
 		} else {
 			ImmutableMap.Builder<Identifier, ToIntFunction<PlayerEntity>> builder = ImmutableMap.builder();
@@ -217,13 +219,12 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	}
 
 	public static int getHeight(Identifier id) {
-
 		if (resolvedHeightProviders == null) {
 			throw new IllegalStateException("Trying to get status bar height for " + id + " too early");
 		}
 
 		if (!resolvedHeightProviders.containsKey(id)) {
-			throw new IllegalArgumentException("Unknown status bar " + id);
+			throw new IllegalArgumentException("Unknown status bar: " + id);
 		}
 
 		PlayerEntity player = MinecraftClient.getInstance().inGameHud.getCameraPlayer();
@@ -238,7 +239,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	private static ToIntFunction<PlayerEntity> resolveHeightProviders(Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup, BiConsumer<Identifier, ToIntFunction<PlayerEntity>> heightProviderConsumer) {
 		// called individually for both status bar sides for combining all height providers with the ones below them
 		// finally returns a provider for the total height of all providers on this side
-		List<Identifier> orderedHeightProviders = getOrderedHeightProviders(heightProviderLookup);
+		SequencedCollection<Identifier> orderedHeightProviders = getOrderedHeightProviders(heightProviderLookup);
 
 		for (Identifier resourceLocation : heightProviderLookup.keySet()) {
 			ToIntFunction<PlayerEntity> heightProvider = resolveHeightProvider(resourceLocation,
@@ -252,11 +253,11 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 				orderedHeightProviders);
 	}
 
-	private static List<Identifier> getOrderedHeightProviders(Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup) {
+	private static SequencedCollection<Identifier> getOrderedHeightProviders(Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup) {
 		// creates an ordered list of all height provider identifiers from the lookup,
 		// with a fixed order provided for some vanilla elements and other elements attached to those via the static map;
 		// all other elements are simply appended in the order they appear in the hud element registry
-		List<Identifier> orderedHeightProviders = new ArrayList<>();
+		LinkedHashSet<Identifier> orderedHeightProviders = new LinkedHashSet<>();
 
 		for (Identifier resourceLocation : VANILLA_HEIGHT_PROVIDERS.keySet()) {
 			for (HudLayer hudLayer : HudElementRegistryImpl.ROOT_ELEMENTS.get(resourceLocation).layers()) {
@@ -276,10 +277,16 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 			}
 		}
 
+		Set<Identifier> unregisteredHudElements = Sets.difference(heightProviderLookup.keySet(), orderedHeightProviders);
+
+		if (!unregisteredHudElements.isEmpty()) {
+			throw new IllegalStateException("Unregistered hud elements: " + unregisteredHudElements);
+		}
+
 		return orderedHeightProviders;
 	}
 
-	private static ToIntFunction<PlayerEntity> resolveHeightProvider(Identifier resourceLocation, Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup, List<Identifier> orderedHeightProviders) {
+	private static ToIntFunction<PlayerEntity> resolveHeightProvider(Identifier resourceLocation, Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup, SequencedCollection<Identifier> orderedHeightProviders) {
 		// combines all height providers "below" a hud element for determining the height at which it should render at
 		ToIntFunction<PlayerEntity> heightProvider = ZERO;
 
@@ -296,7 +303,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		throw new IllegalStateException();
 	}
 
-	private static ToIntFunction<PlayerEntity> resolveMaximumHeightProvider(Identifier resourceLocation, Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup, List<Identifier> orderedHeightProviders) {
+	private static ToIntFunction<PlayerEntity> resolveMaximumHeightProvider(Identifier resourceLocation, Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup, SequencedCollection<Identifier> orderedHeightProviders) {
 		// combines all height providers "below" and including a hud element
 		ToIntFunction<PlayerEntity> heightProvider = resolveHeightProvider(resourceLocation,
 				heightProviderLookup,
