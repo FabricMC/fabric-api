@@ -344,6 +344,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 					context.getMatrices().pushMatrix();
 					context.getMatrices().translate(0.0F, height);
 				}
+
 				layer.render(context, tickCounter);
 
 				if (height != 0) {

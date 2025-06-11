@@ -80,12 +80,15 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 				});
 		HudStatusBarHeightRegistry.addRight(id, (PlayerEntity player) -> {
 			MinecraftClient minecraft = MinecraftClient.getInstance();
+
 			if (minecraft.interactionManager.hasStatusBars()) {
 				LivingEntity livingEntity = minecraft.inGameHud.getRiddenEntity();
+
 				if (minecraft.inGameHud.getHeartCount(livingEntity) == 0) {
 					return 10;
 				}
 			}
+
 			return 0;
 		});
 	}
@@ -95,11 +98,13 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	 */
 	private static void renderArmor(DrawContext context, PlayerEntity player, int y, int heartRows, int height, int x) {
 		int i = MathHelper.floor(player.getAttributeValue(EntityAttributes.ARMOR_TOUGHNESS));
+
 		if (i > 0) {
 			int j = y - (heartRows - 1) * height - 10;
 
 			for (int k = 0; k < 10; k++) {
 				int l = x + k * 8;
+
 				if (k * 2 + 1 < i) {
 					context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TOUGHNESS_FULL_SPRITE, l, j, 9, 9);
 				}
@@ -120,9 +125,11 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	 */
 	private static void renderFood(DrawContext context, PlayerEntity player, int y, int x) {
 		int k = player.getHungerManager().getFoodLevel();
+
 		for (int l = 0; l < 10; l++) {
 			int n = x - l * 8 - 9;
 			context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, STAMINA_EMPTY_SPRITE, n, y, 9, 9);
+
 			if (l * 2 + 1 < k) {
 				context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, STAMINA_FULL_SPRITE, n, y, 9, 9);
 			}
