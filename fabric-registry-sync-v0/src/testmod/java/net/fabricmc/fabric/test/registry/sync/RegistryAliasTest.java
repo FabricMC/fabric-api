@@ -25,8 +25,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
@@ -57,11 +55,11 @@ public class RegistryAliasTest implements ModInitializer {
 	}
 
 	private static void register(Identifier blockId, Identifier itemId) {
-		Block block = new Block(AbstractBlock.Settings.create().registryKey(RegistryKey.of(RegistryKeys.BLOCK, blockId)));
+		Block block = new Block(AbstractBlock.Settings.create());
 		Registry.register(Registries.BLOCK, blockId, block);
-		BlockItem blockItem = new BlockItem(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, blockId)));
+		BlockItem blockItem = new BlockItem(block, new Item.Settings());
 		Registry.register(Registries.ITEM, blockId, blockItem);
-		Item item = new Item(new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, itemId)));
+		Item item = new Item(new Item.Settings());
 		Registry.register(Registries.ITEM, itemId, item);
 	}
 
