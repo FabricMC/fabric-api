@@ -34,7 +34,6 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudStatusBarHeightRegistryI
  * {@link VanillaHudElements}.
  */
 public interface HudStatusBarHeightRegistry {
-
 	/**
 	 * Adds a height provider for a status bar on the left side above the hotbar.
 	 *
@@ -94,8 +93,8 @@ public interface HudStatusBarHeightRegistry {
 	/**
 	 * Gets the total calculated height offset for a given HUD element ID. Usage:
 	 * {@snippet :
-	 *     - net.minecraft.client.gui.DrawContext.getScaledWindowHeight() - (39 + renderHeight)
-	 *     + net.minecraft.client.gui.DrawContext.getScaledWindowHeight() - HudStatusBarHeightRegistry.getHeight(id)
+	 *		- net.minecraft.client.gui.DrawContext.getScaledWindowHeight() - (39 + renderHeight)
+	 *		+ net.minecraft.client.gui.DrawContext.getScaledWindowHeight() - HudStatusBarHeightRegistry.getHeight(id)
 	 *}
 	 *
 	 * <p>This method is typically used by the rendering system to determine how much
