@@ -16,32 +16,33 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import com.llamalad7.mixinextras.sugar.Local;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.render.GuiRenderer;
-import net.minecraft.client.render.BufferBuilderStorage;
-import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
+import net.minecraft.client.gui.render.state.GuiRenderState;
+import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.item.HeldItemRenderer;
 
-import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRegistryImpl;
-
-@Mixin(GameRenderer.class)
-public class GameRendererMixin {
+@Mixin(GuiRenderer.class)
+abstract class GuiRendererMixin {
 	@Shadow
 	@Final
-	private GuiRenderer guiRenderer;
+	@Mutable
+	private Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> specialElementRenderers;
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
-	private void initializeSpecialElements(MinecraftClient client, HeldItemRenderer firstPersonHeldItemRenderer, BufferBuilderStorage buffers, CallbackInfo ci, @Local VertexConsumerProvider.Immediate immediate) {
-		GuiRendererAccessor accessor = (GuiRendererAccessor) this.guiRenderer;
-		SpecialGuiElementRegistryImpl.onReady(client, immediate, accessor.getSpecialElementRenderers());
+	private void mutableSpecialElementRenderers(GuiRenderState state, VertexConsumerProvider.Immediate vertexConsumers, List<SpecialGuiElementRenderer<?>> specialElementRenderers, CallbackInfo ci) {
+		this.specialElementRenderers = new IdentityHashMap<>(this.specialElementRenderers);
 	}
 }

@@ -20,7 +20,7 @@ import net.minecraft.client.gui.ScreenRect;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
 
 /**
  * This test mod renders a banner in the top left corner.
@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRendererRegi
 public class SpecialGuiElementRendererTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		SpecialGuiElementRendererRegistrationCallback.EVENT.register((elements, immediate) -> elements.add(new BannerGuiElementRenderer(immediate)));
+		SpecialGuiElementRegistry.register(ctx -> new BannerGuiElementRenderer(ctx.immediate()));
 
 		// TODO: Migrate to new HUD API once available
 		//noinspection deprecation
