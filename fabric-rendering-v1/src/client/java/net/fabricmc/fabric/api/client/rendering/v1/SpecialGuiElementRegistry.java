@@ -27,7 +27,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRegistryImpl;
 
 /**
- * Allows registering {@link SpecialGuiElementRenderer special gui element renderers},
+ * Allows registering {@linkplain SpecialGuiElementRenderer special gui element renderers},
  * used to render custom gui elements beyond the methods available in {@link net.minecraft.client.gui.DrawContext DrawContext}.
  *
  * <p>To render a custom gui element, first implement and register a {@link SpecialGuiElementRenderer}.
