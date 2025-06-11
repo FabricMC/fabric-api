@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.lang3.mutable.MutableBoolean;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
@@ -175,7 +173,7 @@ public class LootTest implements ModInitializer {
 
 	private static final class ModifyDropsWithRecGuard implements LootTableEvents.ModifyDrops {
 		private final LootTableEvents.ModifyDrops inner;
-		private final MutableBoolean recGuard = new MutableBoolean(false);
+		private boolean running = false;
 
 		ModifyDropsWithRecGuard(LootTableEvents.ModifyDrops inner) {
 			this.inner = inner;
@@ -183,13 +181,13 @@ public class LootTest implements ModInitializer {
 
 		@Override
 		public void modifyLootTableDrops(RegistryEntry<LootTable> entry, LootContext context, List<ItemStack> drops) {
-			if (recGuard.isTrue()) return;
+			if (running) return;
 
 			try {
-				recGuard.setTrue();
+				running = true;
 				inner.modifyLootTableDrops(entry, context, drops);
 			} finally {
-				recGuard.setFalse();
+				running = false;
 			}
 		}
 	}
