@@ -11,6 +11,9 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.loot.LootTest"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.loot.LootGameTest"
     ]
   }
 }
