@@ -26,6 +26,10 @@ import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
+// Allows items with armor renderers to be passed to the armor feature in the first place.
+// Vanilla only stores the items with armor models in the entity's render state,
+// but we want to store any item with an armor renderer. Otherwise, armor renderers would
+// only be called for items with an existing vanilla armor model.
 @Mixin(BipedEntityRenderer.class)
 abstract class BipedEntityRendererMixin {
 	@ModifyExpressionValue(method = "getEquippedStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/feature/ArmorFeatureRenderer;hasModel(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EquipmentSlot;)Z"))
