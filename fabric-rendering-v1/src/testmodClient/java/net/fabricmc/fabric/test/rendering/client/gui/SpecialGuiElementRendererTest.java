@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
 public class SpecialGuiElementRendererTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		SpecialGuiElementRegistry.register(ctx -> new BannerGuiElementRenderer(ctx.immediate()));
+		SpecialGuiElementRegistry.register(ctx -> new BannerGuiElementRenderer(ctx.vertexConsumers()));
 
 		// TODO: Migrate to new HUD API once available
 		//noinspection deprecation

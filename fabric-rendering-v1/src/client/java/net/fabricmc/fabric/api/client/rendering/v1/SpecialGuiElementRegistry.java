@@ -55,7 +55,7 @@ public final class SpecialGuiElementRegistry {
 		/**
 		 * @return the {@link VertexConsumerProvider.Immediate}.
 		 */
-		VertexConsumerProvider.Immediate immediate();
+		VertexConsumerProvider.Immediate vertexConsumers();
 
 		/**
 		 * @return the {@link MinecraftClient} instance.

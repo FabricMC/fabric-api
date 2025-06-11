@@ -87,5 +87,5 @@ public final class SpecialGuiElementRegistryImpl {
 		}
 	}
 
-	record ContextImpl(MinecraftClient client, VertexConsumerProvider.Immediate immediate) implements SpecialGuiElementRegistry.Context { }
+	record ContextImpl(MinecraftClient client, VertexConsumerProvider.Immediate vertexConsumers) implements SpecialGuiElementRegistry.Context { }
 }
