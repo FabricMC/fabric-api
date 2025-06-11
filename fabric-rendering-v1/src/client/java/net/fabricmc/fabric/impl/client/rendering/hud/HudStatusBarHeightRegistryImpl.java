@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.SequencedCollection;
+import java.util.SequencedSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.IntBinaryOperator;
@@ -185,23 +186,6 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		});
 	}
 
-	static void init() {
-		// skip resolving if no custom height providers have been registered
-		if (VANILLA_LEFT_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS)
-				&& VANILLA_RIGHT_HEIGHT_PROVIDERS.equals(RIGHT_HEIGHT_PROVIDERS)) {
-			resolvedHeightProviders = Map.of();
-		} else {
-			ImmutableMap.Builder<Identifier, ToIntFunction<PlayerEntity>> builder = ImmutableMap.builder();
-			ToIntFunction<PlayerEntity> maxLeftHeightProvider = resolveHeightProviders(LEFT_HEIGHT_PROVIDERS,
-					builder::put);
-			ToIntFunction<PlayerEntity> maxRightHeightProvider = resolveHeightProviders(RIGHT_HEIGHT_PROVIDERS,
-					builder::put);
-			resolvedHeightProviders = builder.build();
-			applyVanillaHeightProviders(resolvedHeightProviders,
-					reduceToIntFunctions(maxLeftHeightProvider, maxRightHeightProvider, Math::max));
-		}
-	}
-
 	public static void addLeft(Identifier id, ToIntFunction<PlayerEntity> heightProvider) {
 		if (resolvedHeightProviders == null) {
 			LEFT_HEIGHT_PROVIDERS.put(id, heightProvider);
@@ -236,10 +220,32 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		return DEFAULT_HEIGHT + resolvedHeightProviders.get(id).applyAsInt(player);
 	}
 
+	static void init() {
+		// skip resolving if no custom height providers have been registered
+		if (VANILLA_LEFT_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS)
+				&& VANILLA_RIGHT_HEIGHT_PROVIDERS.equals(RIGHT_HEIGHT_PROVIDERS)) {
+			resolvedHeightProviders = Map.of();
+		} else {
+			ImmutableMap.Builder<Identifier, ToIntFunction<PlayerEntity>> builder = ImmutableMap.builder();
+			ToIntFunction<PlayerEntity> maxLeftHeightProvider = resolveHeightProviders(LEFT_HEIGHT_PROVIDERS,
+					builder::put);
+			ToIntFunction<PlayerEntity> maxRightHeightProvider = resolveHeightProviders(RIGHT_HEIGHT_PROVIDERS,
+					builder::put);
+			resolvedHeightProviders = builder.build();
+			applyVanillaHeightProviders(resolvedHeightProviders,
+					reduceToIntFunctions(maxLeftHeightProvider, maxRightHeightProvider, Math::max));
+		}
+	}
+
 	private static ToIntFunction<PlayerEntity> resolveHeightProviders(Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup, BiConsumer<Identifier, ToIntFunction<PlayerEntity>> heightProviderConsumer) {
 		// called individually for both status bar sides for combining all height providers with the ones below them
 		// finally returns a provider for the total height of all providers on this side
-		SequencedCollection<Identifier> orderedHeightProviders = getOrderedHeightProviders(heightProviderLookup);
+		SequencedSet<Identifier> orderedHeightProviders = getOrderedHeightProviders(heightProviderLookup);
+		Set<Identifier> unregisteredHudElements = Sets.difference(heightProviderLookup.keySet(), orderedHeightProviders);
+
+		if (!unregisteredHudElements.isEmpty()) {
+			throw new IllegalStateException("Unregistered hud elements: " + unregisteredHudElements);
+		}
 
 		for (Identifier resourceLocation : heightProviderLookup.keySet()) {
 			ToIntFunction<PlayerEntity> heightProvider = resolveHeightProvider(resourceLocation,
@@ -253,11 +259,11 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 				orderedHeightProviders);
 	}
 
-	private static SequencedCollection<Identifier> getOrderedHeightProviders(Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup) {
+	private static SequencedSet<Identifier> getOrderedHeightProviders(Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup) {
 		// creates an ordered list of all height provider identifiers from the lookup,
 		// with a fixed order provided for some vanilla elements and other elements attached to those via the static map;
 		// all other elements are simply appended in the order they appear in the hud element registry
-		LinkedHashSet<Identifier> orderedHeightProviders = new LinkedHashSet<>();
+		SequencedSet<Identifier> orderedHeightProviders = new LinkedHashSet<>();
 
 		for (Identifier resourceLocation : VANILLA_HEIGHT_PROVIDERS.keySet()) {
 			for (HudLayer hudLayer : HudElementRegistryImpl.ROOT_ELEMENTS.get(resourceLocation).layers()) {
@@ -275,12 +281,6 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 					}
 				}
 			}
-		}
-
-		Set<Identifier> unregisteredHudElements = Sets.difference(heightProviderLookup.keySet(), orderedHeightProviders);
-
-		if (!unregisteredHudElements.isEmpty()) {
-			throw new IllegalStateException("Unregistered hud elements: " + unregisteredHudElements);
 		}
 
 		return orderedHeightProviders;
