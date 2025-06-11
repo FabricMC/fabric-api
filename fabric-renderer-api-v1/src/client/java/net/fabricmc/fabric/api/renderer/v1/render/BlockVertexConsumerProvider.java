@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.loot;
+package net.fabricmc.fabric.api.renderer.v1.render;
 
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 
-public interface FabricLootTable {
-	void fabric$setRegistryEntry(RegistryEntry<LootTable> key);
+/**
+ * Like {@link VertexConsumerProvider}, but takes {@link BlockRenderLayer} instead of {@link RenderLayer}. Primarily
+ * used to correctly render block models which have geometry on more than one layer.
+ *
+ * @see FabricBlockModelRenderer
+ */
+public interface BlockVertexConsumerProvider {
+	VertexConsumer getBuffer(BlockRenderLayer layer);
 }

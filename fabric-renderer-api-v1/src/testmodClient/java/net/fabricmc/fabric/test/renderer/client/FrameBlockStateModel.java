@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.BlockModelPart;
 import net.minecraft.client.render.model.BlockStateModel;
@@ -37,25 +38,13 @@ import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.blockview.v2.FabricBlockView;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 
 public class FrameBlockStateModel implements BlockStateModel {
 	private final BlockStateModel frameModel;
-	private final RenderMaterial translucentMaterial;
-	private final RenderMaterial translucentEmissiveMaterial;
 
 	public FrameBlockStateModel(BlockStateModel frameModel) {
 		this.frameModel = frameModel;
-
-		MaterialFinder finder = Renderer.get().materialFinder();
-		this.translucentMaterial = finder.blendMode(BlendMode.TRANSLUCENT).find();
-		finder.clear();
-		this.translucentEmissiveMaterial = finder.blendMode(BlendMode.TRANSLUCENT).emissive(true).find();
 	}
 
 	@Override
@@ -72,22 +61,10 @@ public class FrameBlockStateModel implements BlockStateModel {
 		BlockStateModel innerModel = MinecraftClient.getInstance().getBlockRenderManager().getModel(innerState);
 
 		// Now, we emit a transparent scaled-down version of the inner model
-		// Try both emissive and non-emissive versions of the translucent material
-		RenderMaterial material = pos.getX() % 2 == 0 ? translucentMaterial : translucentEmissiveMaterial;
 
-		// Let's push a transform to scale the model down and make it transparent
-		emitter.pushTransform(createInnerTransform(material));
-		// Emit the inner block model
-		innerModel.emitQuads(emitter, blockView, pos, state, random, cullTest);
-		// Let's not forget to pop the transform!
-		emitter.popTransform();
-	}
-
-	/**
-	 * Create a transform to scale down the model, make it translucent, and assign the given material.
-	 */
-	private static QuadTransform createInnerTransform(RenderMaterial material) {
-		return quad -> {
+		// Let's push a transform to scale the model down, make it transparent, and optionally make it emissive
+		boolean emissive = pos.getX() % 2 != 0;
+		emitter.pushTransform(quad -> {
 			// Scale model down
 			for (int vertex = 0; vertex < 4; ++vertex) {
 				float x = quad.x(vertex) * 0.8f + 0.1f;
@@ -97,8 +74,12 @@ public class FrameBlockStateModel implements BlockStateModel {
 			}
 
 			// Make the quad partially transparent
-			// Change material to translucent
-			quad.material(material);
+			quad.renderLayer(BlockRenderLayer.TRANSLUCENT);
+
+			// Make the quad emissive, if requested
+			if (emissive) {
+				quad.emissive(true);
+			}
 
 			// Change vertex colors to be partially transparent
 			for (int vertex = 0; vertex < 4; ++vertex) {
@@ -111,7 +92,11 @@ public class FrameBlockStateModel implements BlockStateModel {
 
 			// Return true because we want the quad to be rendered
 			return true;
-		};
+		});
+		// Emit the inner block model
+		innerModel.emitQuads(emitter, blockView, pos, state, random, cullTest);
+		// Let's not forget to pop the transform!
+		emitter.popTransform();
 	}
 
 	@Override

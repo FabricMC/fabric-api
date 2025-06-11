@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -28,39 +25,26 @@ import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemDisplayContext;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
-import net.fabricmc.fabric.impl.client.indigo.renderer.material.MaterialFinderImpl;
-import net.fabricmc.fabric.impl.client.indigo.renderer.material.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.SimpleBlockRenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainLikeRenderContext;
 import net.fabricmc.fabric.mixin.client.indigo.renderer.BlockRenderManagerAccessor;
 
 /**
- * The Fabric default renderer implementation. Supports all
- * features defined in the API and offers no special materials.
+ * The Fabric default renderer implementation. Supports all features defined in the API.
  */
 public class IndigoRenderer implements Renderer {
 	public static final IndigoRenderer INSTANCE = new IndigoRenderer();
-
-	public static final RenderMaterial STANDARD_MATERIAL = INSTANCE.materialFinder().find();
-
-	static {
-		INSTANCE.registerMaterial(RenderMaterial.STANDARD_ID, STANDARD_MATERIAL);
-	}
-
-	private final Map<Identifier, RenderMaterial> materialMap = new HashMap<>();
 
 	private IndigoRenderer() { }
 
@@ -70,31 +54,12 @@ public class IndigoRenderer implements Renderer {
 	}
 
 	@Override
-	public MaterialFinder materialFinder() {
-		return new MaterialFinderImpl();
-	}
-
-	@Override
-	public RenderMaterial materialById(Identifier id) {
-		return materialMap.get(id);
-	}
-
-	@Override
-	public boolean registerMaterial(Identifier id, RenderMaterial material) {
-		if (materialMap.containsKey(id)) return false;
-
-		// cast to prevent acceptance of impostor implementations
-		materialMap.put(id, (RenderMaterialImpl) material);
-		return true;
-	}
-
-	@Override
-	public void render(BlockModelRenderer modelRenderer, BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrices, VertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
+	public void render(BlockModelRenderer modelRenderer, BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrices, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
 		TerrainLikeRenderContext.POOL.get().bufferModel(blockView, model, state, pos, matrices, vertexConsumers, cull, seed, overlay);
 	}
 
 	@Override
-	public void render(MatrixStack.Entry entry, VertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
+	public void render(MatrixStack.Entry entry, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
 		SimpleBlockRenderContext.POOL.get().bufferModel(entry, vertexConsumers, model, red, green, blue, light, overlay, blockView, pos, state);
 	}
 

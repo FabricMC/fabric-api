@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.BlockRenderLayer;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.test.renderer.Registration;
 import net.fabricmc.fabric.test.renderer.RendererTest;
 
@@ -35,7 +35,7 @@ public final class RendererClientTest implements ClientModInitializer {
 		CustomUnbakedBlockStateModel.register(RendererTest.id("pillar"), PillarBlockStateModel.Unbaked.CODEC);
 
 		// We don't specify a material for the frame mesh,
-		// so it will use the default material, i.e. the one from BlockRenderLayerMap.
-		BlockRenderLayerMap.INSTANCE.putBlock(Registration.FRAME_BLOCK, RenderLayer.getCutoutMipped());
+		// so it will use the default material, i.e. the one from RenderLayers.
+		BlockRenderLayerMap.putBlock(Registration.FRAME_BLOCK, BlockRenderLayer.CUTOUT_MIPPED);
 	}
 }

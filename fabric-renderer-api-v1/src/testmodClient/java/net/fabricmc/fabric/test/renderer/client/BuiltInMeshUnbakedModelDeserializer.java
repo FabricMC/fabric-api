@@ -29,7 +29,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
-import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
+import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 
 public class BuiltInMeshUnbakedModelDeserializer implements UnbakedModelDeserializer {
 	@Override

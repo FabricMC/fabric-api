@@ -42,12 +42,12 @@ class LootTableMixin implements FabricLootTable {
 	 */
 	@Unique
 	@Nullable
-	RegistryEntry.Reference<LootTable> entry = null;
+	RegistryEntry<LootTable> entry = null;
 
 	@WrapMethod(method = "generateUnprocessedLoot(Lnet/minecraft/loot/context/LootContext;Ljava/util/function/Consumer;)V")
 	private void fabric$modifyDrops(LootContext context, Consumer<ItemStack> lootConsumer, Operation<Void> original) {
 		if (entry == null) {
-			this.entry = LootUtil.getEntry(context.getWorld(), (LootTable) (Object) this);
+			this.entry = LootUtil.getEntryOrDirect(context.getWorld(), (LootTable) (Object) this);
 		}
 
 		List<ItemStack> list = new ObjectArrayList<>();
@@ -61,7 +61,7 @@ class LootTableMixin implements FabricLootTable {
 	}
 
 	@Override
-	public void fabric$setRegistryEntry(RegistryEntry.Reference<LootTable> key) {
+	public void fabric$setRegistryEntry(RegistryEntry<LootTable> key) {
 		this.entry = key;
 	}
 }

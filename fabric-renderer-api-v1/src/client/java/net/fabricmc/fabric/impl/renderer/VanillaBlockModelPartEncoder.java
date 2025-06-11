@@ -25,10 +25,8 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BlockModelPart;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.util.TriState;
 
@@ -36,12 +34,9 @@ import net.fabricmc.fabric.api.util.TriState;
  * Routines for adaptation of vanilla {@link BlockModelPart}s to FRAPI pipelines.
  */
 public class VanillaBlockModelPartEncoder {
-	private static final RenderMaterial STANDARD_MATERIAL = Renderer.get().materialFinder().shadeMode(ShadeMode.VANILLA).find();
-	private static final RenderMaterial NO_AO_MATERIAL = Renderer.get().materialFinder().shadeMode(ShadeMode.VANILLA).ambientOcclusion(TriState.FALSE).find();
-
 	public static void emitQuads(BlockModelPart part, QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
 		// This does not exactly match vanilla, but doing so requires hiding state all over the FRAPI impl.
-		final RenderMaterial defaultMaterial = part.useAmbientOcclusion() ? STANDARD_MATERIAL : NO_AO_MATERIAL;
+		final TriState ao = part.useAmbientOcclusion() ? TriState.DEFAULT : TriState.FALSE;
 
 		for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
 			final Direction cullFace = ModelHelper.faceFromIndex(i);
@@ -56,7 +51,10 @@ public class VanillaBlockModelPartEncoder {
 
 			for (int j = 0; j < quadCount; j++) {
 				final BakedQuad q = quads.get(j);
-				emitter.fromVanilla(q, defaultMaterial, cullFace);
+				emitter.cullFace(cullFace);
+				emitter.fromBakedQuad(q);
+				emitter.ambientOcclusion(ao);
+				emitter.shadeMode(ShadeMode.VANILLA);
 				emitter.emit();
 			}
 		}

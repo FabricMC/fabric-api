@@ -22,18 +22,25 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
+import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
+import net.fabricmc.fabric.api.util.TriState;
 
 /**
  * Interface for reading quad data encoded in {@link Mesh}es.
  * Enables models to do analysis, re-texturing or translation without knowing the
  * renderer's vertex formats and without retaining redundant information.
+ *
+ * <p>Unless otherwise stated, assume all properties persist through serialization into {@link Mesh}es and have an
+ * effect in both block and item contexts. If a property is described as transient, then its value will not persist
+ * through serialization into a {@link Mesh}.
  *
  * <p>Only the renderer should implement or extend this interface.
  */
@@ -45,178 +52,200 @@ public interface QuadView {
 	int VANILLA_QUAD_STRIDE = VANILLA_VERTEX_STRIDE * 4;
 
 	/**
-	 * Retrieve geometric position, x coordinate.
+	 * Gets the X coordinate of the geometric position of the given vertex.
 	 */
 	float x(int vertexIndex);
 
 	/**
-	 * Retrieve geometric position, y coordinate.
+	 * Gets the Y coordinate of the geometric position of the given vertex.
 	 */
 	float y(int vertexIndex);
 
 	/**
-	 * Retrieve geometric position, z coordinate.
+	 * Gets the Z coordinate of the geometric position of the given vertex.
 	 */
 	float z(int vertexIndex);
 
 	/**
-	 * Convenience: access x, y, z by index 0-2.
+	 * Gets the specified coordinate of the geometric position of the given vertex. Index 0 is X, 1 is Y, and 2 is Z.
 	 */
 	float posByIndex(int vertexIndex, int coordinateIndex);
 
 	/**
-	 * Pass a non-null target to avoid allocation - will be returned with values.
-	 * Otherwise returns a new instance.
+	 * Copies the geometric position of the given vertex to the given target. If the target is {@code null}, a new
+	 * {@link Vector3f} will be allocated and returned.
 	 */
 	Vector3f copyPos(int vertexIndex, @Nullable Vector3f target);
 
 	/**
-	 * Retrieve vertex color in ARGB format (0xAARRGGBB).
+	 * Gets the vertex color in ARGB format (0xAARRGGBB) of the given vertex.
 	 */
 	int color(int vertexIndex);
 
 	/**
-	 * Retrieve horizontal texture coordinates.
+	 * Gets the horizontal texture coordinates of the given vertex.
 	 */
 	float u(int vertexIndex);
 
 	/**
-	 * Retrieve vertical texture coordinates.
+	 * Gets the vertical texture coordinates of the given vertex.
 	 */
 	float v(int vertexIndex);
 
 	/**
-	 * Pass a non-null target to avoid allocation - will be returned with values.
-	 * Otherwise returns a new instance.
+	 * Copies the texture coordinates of the given vertex to the given target. If the target is {@code null}, a new
+	 * {@link Vector2f} will be allocated and returned.
 	 */
 	Vector2f copyUv(int vertexIndex, @Nullable Vector2f target);
 
 	/**
-	 * Minimum block brightness. Zero if not set.
+	 * Gets the minimum lightmap value of the given vertex.
 	 */
 	int lightmap(int vertexIndex);
 
 	/**
-	 * If false, no vertex normal was provided.
-	 * Lighting should use face normal in that case.
+	 * Returns whether a normal vector is present for the given vertex. If not, the vertex implicitly uses the
+	 * {@linkplain #faceNormal() face normal}.
 	 */
 	boolean hasNormal(int vertexIndex);
 
 	/**
-	 * Will return {@link Float#NaN} if normal not present.
+	 * Gets the X coordinate of the normal vector of the given vertex. Returns {@link Float#NaN} if the
+	 * {@linkplain #hasNormal(int) normal is not present}.
 	 */
 	float normalX(int vertexIndex);
 
 	/**
-	 * Will return {@link Float#NaN} if normal not present.
+	 * Gets the Y coordinate of the normal vector of the given vertex. Returns {@link Float#NaN} if the
+	 * {@linkplain #hasNormal(int) normal is not present}.
 	 */
 	float normalY(int vertexIndex);
 
 	/**
-	 * Will return {@link Float#NaN} if normal not present.
+	 * Gets the Z coordinate of the normal vector of the given vertex. Returns {@link Float#NaN} if the
+	 * {@linkplain #hasNormal(int) normal is not present}.
 	 */
 	float normalZ(int vertexIndex);
 
 	/**
-	 * Pass a non-null target to avoid allocation - will be returned with values.
-	 * Otherwise returns a new instance. Returns null if normal not present.
+	 * Copies the normal vector of the given vertex to the given target, if the vertex
+	 * {@linkplain #hasNormal(int) has a normal}. Otherwise, returns {@code null}. If the target is {@code null} and a
+	 * normal exists, a new {@link Vector3f} will be allocated and returned.
 	 */
 	@Nullable
 	Vector3f copyNormal(int vertexIndex, @Nullable Vector3f target);
 
 	/**
-	 * If non-null, quad should not be rendered in-world if the
-	 * opposite face of a neighbor block occludes it.
+	 * Gets the normal vector of this quad as implied by its vertex positions. It will be invalid if the vertices are
+	 * not co-planar.
+	 */
+	Vector3fc faceNormal();
+
+	/**
+	 * Gets the light face of this quad as implied by its {@linkplain #faceNormal() face normal}. It is equal to the
+	 * axis-aligned direction closest to the face normal, and is never {@code null}.
 	 *
+	 * <p>This method is equivalent to {@link BakedQuad#face()}.
+	 */
+	@NotNull
+	Direction lightFace();
+
+	/**
+	 * @see MutableQuadView#nominalFace(Direction)
+	 */
+	@Nullable
+	Direction nominalFace();
+
+	/**
 	 * @see MutableQuadView#cullFace(Direction)
 	 */
 	@Nullable
 	Direction cullFace();
 
 	/**
-	 * Equivalent to {@link BakedQuad#face()}. This is the face used for vanilla lighting
-	 * calculations and will be the block face to which the quad is most closely aligned. Always
-	 * the same as cull face for quads that are on a block face, but never null.
-	 */
-	@NotNull
-	Direction lightFace();
-
-	/**
-	 * See {@link MutableQuadView#nominalFace(Direction)}.
+	 * @see MutableQuadView#renderLayer(BlockRenderLayer)
 	 */
 	@Nullable
-	Direction nominalFace();
+	BlockRenderLayer renderLayer();
 
 	/**
-	 * Normal of the quad as implied by geometry. Will be invalid
-	 * if quad vertices are not co-planar. Typically computed lazily
-	 * on demand.
+	 * @see MutableQuadView#emissive(boolean)
+	 */
+	boolean emissive();
+
+	/**
+	 * This method is equivalent to {@link BakedQuad#shade()}.
 	 *
-	 * <p>Not typically needed by models. Exposed to enable standard lighting
-	 * utility functions for use by renderers.
+	 * @see MutableQuadView#diffuseShade(boolean)
 	 */
-	Vector3fc faceNormal();
+	boolean diffuseShade();
 
 	/**
-	 * Retrieves the material serialized with the quad.
+	 * @see MutableQuadView#ambientOcclusion(TriState)
 	 */
-	RenderMaterial material();
+	TriState ambientOcclusion();
 
 	/**
-	 * Retrieves the quad tint index serialized with the quad.
+	 * @see MutableQuadView#glint(ItemRenderState.Glint)
+	 */
+	@Nullable
+	ItemRenderState.Glint glint();
+
+	/**
+	 * @see MutableQuadView#shadeMode(ShadeMode)
+	 */
+	ShadeMode shadeMode();
+
+	/**
+	 * This method is equivalent to {@link BakedQuad#tintIndex()}.
+	 *
+	 * @see MutableQuadView#tintIndex(int)
 	 */
 	int tintIndex();
 
 	/**
-	 * Retrieves the integer tag encoded with this quad via {@link MutableQuadView#tag(int)}.
-	 * Will return zero if no tag was set. For use by models.
+	 * @see MutableQuadView#tag(int)
 	 */
 	int tag();
 
 	/**
-	 * Reads baked vertex data and outputs standard {@link BakedQuad#vertexData() baked quad vertex data}
-	 * in the given array and location.
-	 *
-	 * @param target Target array for the baked quad data.
-	 *
-	 * @param targetIndex Starting position in target array - array must have
-	 * at least {@link #VANILLA_QUAD_STRIDE} elements available at this index.
+	 * Outputs this quad's vertex data into the given array, starting at the given index. The array must have at least
+	 * {@link #VANILLA_QUAD_STRIDE} elements available starting at the given index. The format of the data is the same
+	 * as {@link BakedQuad#vertexData()}. Lightmap values and normals will be populated even though vanilla does not use
+	 * them.
 	 */
-	void toVanilla(int[] target, int targetIndex);
+	void toVanilla(int[] target, int startIndex);
 
 	/**
-	 * Generates a new BakedQuad instance with texture
-	 * coordinates and colors from the given sprite.
+	 * Creates a new {@link BakedQuad} with an appearance as close as possible to this quad, as permitted by vanilla.
+	 * Vertex lightmap values and vertex normals will be populated even though vanilla does not use them.
 	 *
-	 * @param sprite {@link QuadView} does not serialize sprites
-	 * so the sprite must be provided by the caller.
-	 *
-	 * @return A new baked quad instance with the closest-available appearance
-	 * supported by vanilla features. Will retain emissive light maps, for example,
-	 * but the standard Minecraft renderer will not use them.
+	 * @param sprite The sprite is not serialized so it must be provided by the caller. Retrieve it using
+	 * {@link SpriteFinder#find(QuadView)} if it is not already known.
 	 */
 	default BakedQuad toBakedQuad(Sprite sprite) {
 		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
 		toVanilla(vertexData, 0);
 
-		// Mimic material properties to the largest possible extent
-		boolean outputShade = !material().disableDiffuse();
-		// The output light emission is equal to the minimum of all four sky light values and all four block light values.
-		int outputLightEmission = 15;
+		// The light emission is set to 15 if the quad is emissive; otherwise, to the minimum of all four sky light
+		// values and all four block light values.
+		int lightEmission = 15;
 
-		for (int i = 0; i < 4; i++) {
-			int lightmap = lightmap(i);
+		if (!emissive()) {
+			for (int i = 0; i < 4; i++) {
+				int lightmap = lightmap(i);
 
-			if (lightmap == 0) {
-				outputLightEmission = 0;
-				break;
+				if (lightmap == 0) {
+					lightEmission = 0;
+					break;
+				}
+
+				int blockLight = LightmapTextureManager.getBlockLightCoordinates(lightmap);
+				int skyLight = LightmapTextureManager.getSkyLightCoordinates(lightmap);
+				lightEmission = Math.min(lightEmission, Math.min(blockLight, skyLight));
 			}
-
-			int blockLight = LightmapTextureManager.getBlockLightCoordinates(lightmap);
-			int skyLight = LightmapTextureManager.getSkyLightCoordinates(lightmap);
-			outputLightEmission = Math.min(outputLightEmission, Math.min(blockLight, skyLight));
 		}
 
-		return new BakedQuad(vertexData, tintIndex(), lightFace(), sprite, outputShade, outputLightEmission);
+		return new BakedQuad(vertexData, tintIndex(), lightFace(), sprite, diffuseShade(), lightEmission);
 	}
 }

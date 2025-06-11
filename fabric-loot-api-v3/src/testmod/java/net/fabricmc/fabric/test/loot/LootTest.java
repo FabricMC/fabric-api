@@ -16,10 +16,15 @@
 
 package net.fabricmc.fabric.test.loot;
 
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.ParseResults;
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantment;
@@ -43,6 +48,9 @@ import net.minecraft.recipe.input.SingleStackRecipeInput;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 
@@ -167,12 +175,49 @@ public class LootTest implements ModInitializer {
 			try {
 				recGuard.setTrue();
 
-				if (entry.registryKey().toString().contains("red")) { // all red blocks drop double
+				if (entry.getKey().map(it -> it.toString().contains("red")).orElse(false)) { // all red blocks drop double
 					entry.value().generateLoot(context, drops::add);
 				}
 			} finally {
 				recGuard.setFalse();
 			}
 		});
+		var recGuard2 = new MutableBoolean(false);
+		Function<MinecraftServer, Runnable> actionGetter = createActionCache("loot spawn 0 0 0 loot {\"pools\":[{\"entries\":[], \"rolls\":1.0}]}");
+		// test inline LootPools
+		LootTableEvents.MODIFY_DROPS.register((entry, context, drops) -> {
+			if (recGuard2.isTrue()) {
+				return;
+			}
+
+			try {
+				recGuard2.setTrue();
+				actionGetter.apply(context.getWorld().getServer()).run();
+			} finally {
+				recGuard2.setFalse();
+			}
+		});
+	}
+
+	private Function<MinecraftServer, Runnable> createActionCache(String command) {
+		MutableObject<WeakReference<MinecraftServer>> stashedServer = new MutableObject<>();
+		MutableObject<Runnable> runnable = new MutableObject<>();
+		return server -> {
+			if (runnable.getValue() != null && stashedServer.getValue() != null && stashedServer.getValue().refersTo(server)) {
+				return runnable.getValue();
+			}
+
+			stashedServer.setValue(new WeakReference<>(server));
+			CommandManager manager = server.getCommandManager();
+			CommandDispatcher<ServerCommandSource> dispatcher = manager.getDispatcher();
+			ParseResults<ServerCommandSource> parseResults = dispatcher.parse(command, server.getCommandSource());
+
+			if (parseResults.getReader().canRead()) {
+				throw new IllegalStateException("Failed to Parse Command: " + parseResults);
+			}
+
+			runnable.setValue(() -> manager.execute(parseResults, command));
+			return runnable.getValue();
+		};
 	}
 }

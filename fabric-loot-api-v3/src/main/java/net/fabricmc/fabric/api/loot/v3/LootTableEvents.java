@@ -106,9 +106,9 @@ public final class LootTableEvents {
 	 * and don't wish to add a custom loot function to every table.
 	 * <br/>Note: if the table was requested to separate drops into stacks of a given size, the resulting drops from this event will be separated.
 	 */
-	public static final Event<ModifyDrops> MODIFY_DROPS = EventFactory.createArrayBacked(ModifyDrops.class, listeners -> (key, context, drops) -> {
+	public static final Event<ModifyDrops> MODIFY_DROPS = EventFactory.createArrayBacked(ModifyDrops.class, listeners -> (entry, context, drops) -> {
 		for (ModifyDrops listener : listeners) {
-			listener.modifyLootTableDrops(key, context, drops);
+			listener.modifyLootTableDrops(entry, context, drops);
 		}
 	});
 
@@ -155,10 +155,10 @@ public final class LootTableEvents {
 	public interface ModifyDrops {
 		/**
 		 * Called after a loot table is finished generating drops to modify drops.
-		 * @param entry the loot table's registry entry
+		 * @param entry the loot table's registry entry. This will be a {@link RegistryEntry.Reference} if the lootTable is registered, or a {@link RegistryEntry.Direct} if the table is inline
 		 * @param context the loot context for the current drops
 		 * @param drops the list of drops from the loot table to modify
 		 */
-		void modifyLootTableDrops(RegistryEntry.Reference<LootTable> entry, LootContext context, List<ItemStack> drops);
+		void modifyLootTableDrops(RegistryEntry<LootTable> entry, LootContext context, List<ItemStack> drops);
 	}
 }

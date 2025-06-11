@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
+import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.model.BakedGeometry;
 import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.Geometry;
@@ -27,13 +28,10 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.material.GlintMode;
-import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.material.ShadeMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelBakeSettingsHelper;
 
@@ -49,9 +47,6 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		QuadEmitter emitter = builder.emitter();
 		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.getSpriteGetter().spriteFinder(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)));
 
-		MaterialFinder finder = Renderer.get().materialFinder();
-		RenderMaterial glintMaterial = finder.glintMode(GlintMode.STANDARD).shadeMode(shadeMode).find();
-
 		Sprite sprite = baker.getSpriteGetter().get(textures.get("column"), model);
 
 		// up
@@ -62,6 +57,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, B, 1, 0);
 		emitter.cullFace(Direction.UP);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.shadeMode(shadeMode);
 		emitter.emit();
 
 		emitter.pos(0, 0, 1, A);
@@ -70,6 +66,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, A, 1, 0);
 		emitter.cullFace(Direction.UP);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.shadeMode(shadeMode);
 		emitter.emit();
 
 		emitter.pos(0, 0, 1, B);
@@ -78,6 +75,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, 0.5f, 1, 0.5f);
 		emitter.cullFace(Direction.UP);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.shadeMode(shadeMode);
 		emitter.emit();
 
 		emitter.pos(0, 0.5f, 1, 0.5f);
@@ -86,6 +84,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, 1, 1, A);
 		emitter.cullFace(Direction.UP);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.shadeMode(shadeMode);
 		emitter.emit();
 
 		// down
@@ -96,6 +95,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, B, 0, 1);
 		emitter.cullFace(Direction.DOWN);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.shadeMode(shadeMode);
 		emitter.emit();
 
 		emitter.pos(0, 0, 0, B);
@@ -104,6 +104,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, A, 0, 1);
 		emitter.cullFace(Direction.DOWN);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.shadeMode(shadeMode);
 		emitter.emit();
 
 		emitter.pos(0, 0, 0, A);
@@ -112,6 +113,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, 0.5f, 0, 0.5f);
 		emitter.cullFace(Direction.DOWN);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.shadeMode(shadeMode);
 		emitter.emit();
 
 		emitter.pos(0, 0.5f, 0, 0.5f);
@@ -120,6 +122,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, 1, 0, B);
 		emitter.cullFace(Direction.DOWN);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+		emitter.shadeMode(shadeMode);
 		emitter.emit();
 
 		// north
@@ -129,7 +132,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, A, 1, 0);
 		emitter.cullFace(Direction.NORTH);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-		emitter.material(glintMaterial);
+		emitter.shadeMode(shadeMode);
+		emitter.glint(ItemRenderState.Glint.STANDARD);
 		emitter.emit();
 
 		// northwest
@@ -138,7 +142,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(2, 0, 0, A);
 		emitter.pos(3, 0, 1, A);
 		cornerSprite(emitter, sprite);
-		emitter.material(glintMaterial);
+		emitter.shadeMode(shadeMode);
+		emitter.glint(ItemRenderState.Glint.STANDARD);
 		emitter.emit();
 
 		// west
@@ -148,7 +153,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, 0, 1, B);
 		emitter.cullFace(Direction.WEST);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-		emitter.material(glintMaterial);
+		emitter.shadeMode(shadeMode);
+		emitter.glint(ItemRenderState.Glint.STANDARD);
 		emitter.emit();
 
 		// southwest
@@ -157,7 +163,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(2, A, 0, 1);
 		emitter.pos(3, A, 1, 1);
 		cornerSprite(emitter, sprite);
-		emitter.material(glintMaterial);
+		emitter.shadeMode(shadeMode);
+		emitter.glint(ItemRenderState.Glint.STANDARD);
 		emitter.emit();
 
 		// south
@@ -167,7 +174,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, B, 1, 1);
 		emitter.cullFace(Direction.SOUTH);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-		emitter.material(glintMaterial);
+		emitter.shadeMode(shadeMode);
+		emitter.glint(ItemRenderState.Glint.STANDARD);
 		emitter.emit();
 
 		// southeast
@@ -176,7 +184,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(2, 1, 0, B);
 		emitter.pos(3, 1, 1, B);
 		cornerSprite(emitter, sprite);
-		emitter.material(glintMaterial);
+		emitter.shadeMode(shadeMode);
+		emitter.glint(ItemRenderState.Glint.STANDARD);
 		emitter.emit();
 
 		// east
@@ -186,7 +195,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(3, 1, 1, A);
 		emitter.cullFace(Direction.EAST);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-		emitter.material(glintMaterial);
+		emitter.shadeMode(shadeMode);
+		emitter.glint(ItemRenderState.Glint.STANDARD);
 		emitter.emit();
 
 		// northeast
@@ -195,7 +205,8 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements Geometry {
 		emitter.pos(2, B, 0, 0);
 		emitter.pos(3, B, 1, 0);
 		cornerSprite(emitter, sprite);
-		emitter.material(glintMaterial);
+		emitter.shadeMode(shadeMode);
+		emitter.glint(ItemRenderState.Glint.STANDARD);
 		emitter.emit();
 
 		return new MeshBakedGeometry(builder.immutableCopy());

@@ -19,11 +19,12 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * @deprecated Use {@link HudLayerRegistrationCallback} instead. For common use cases, see {@link LayeredDrawerWrapper}.
+ * @deprecated Use {@link HudElementRegistry} instead.
  */
 @Deprecated
 public interface HudRenderCallback {
