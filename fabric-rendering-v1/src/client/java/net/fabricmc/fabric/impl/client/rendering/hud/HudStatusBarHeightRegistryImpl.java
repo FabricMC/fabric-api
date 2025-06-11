@@ -222,8 +222,8 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 
 	static void init() {
 		// skip resolving if no custom height providers have been registered
-		if (VANILLA_LEFT_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS)
-				&& VANILLA_RIGHT_HEIGHT_PROVIDERS.equals(RIGHT_HEIGHT_PROVIDERS)) {
+		if (VANILLA_LEFT_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS) && VANILLA_RIGHT_HEIGHT_PROVIDERS.equals(
+				RIGHT_HEIGHT_PROVIDERS)) {
 			resolvedHeightProviders = Map.of();
 		} else {
 			ImmutableMap.Builder<Identifier, ToIntFunction<PlayerEntity>> builder = ImmutableMap.builder();
@@ -241,7 +241,8 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		// called individually for both status bar sides for combining all height providers with the ones below them
 		// finally returns a provider for the total height of all providers on this side
 		SequencedSet<Identifier> orderedHeightProviders = getOrderedHeightProviders(heightProviderLookup);
-		Set<Identifier> unregisteredHudElements = Sets.difference(heightProviderLookup.keySet(), orderedHeightProviders);
+		Set<Identifier> unregisteredHudElements = Sets.difference(heightProviderLookup.keySet(),
+				orderedHeightProviders);
 
 		if (!unregisteredHudElements.isEmpty()) {
 			throw new IllegalStateException("Unregistered hud elements: " + unregisteredHudElements);
@@ -326,11 +327,11 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 
 		// offset text above hotbar depending on height values
 		replaceVanillaElement(VanillaHudElements.HELD_ITEM_TOOLTIP,
-				(PlayerEntity player) -> HELD_ITEM_TOOLTIP_HEIGHT -
-						Math.max(HELD_ITEM_TOOLTIP_HEIGHT, maxHeightProvider.applyAsInt(player)));
+				(PlayerEntity player) -> HELD_ITEM_TOOLTIP_HEIGHT - Math.max(HELD_ITEM_TOOLTIP_HEIGHT,
+						maxHeightProvider.applyAsInt(player)));
 		replaceVanillaElement(VanillaHudElements.OVERLAY_MESSAGE,
-				(PlayerEntity player) -> OVERLAY_MESSAGE_HEIGHT -
-						Math.max(OVERLAY_MESSAGE_HEIGHT, maxHeightProvider.applyAsInt(player) + TEXT_HEIGHT_DELTA));
+				(PlayerEntity player) -> OVERLAY_MESSAGE_HEIGHT - Math.max(OVERLAY_MESSAGE_HEIGHT,
+						maxHeightProvider.applyAsInt(player) + TEXT_HEIGHT_DELTA));
 	}
 
 	private static void replaceVanillaElement(Identifier resourceLocation, ToIntFunction<PlayerEntity> heightProvider) {

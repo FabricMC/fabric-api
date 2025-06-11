@@ -43,6 +43,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 				id,
 				(DrawContext context, RenderTickCounter tickCounter) -> {
 					MinecraftClient minecraft = MinecraftClient.getInstance();
+
 					if (minecraft.interactionManager.hasStatusBars()) {
 						InGameHud hud = minecraft.inGameHud;
 						int width = context.getScaledWindowWidth() / 2 - 91;
@@ -53,8 +54,8 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 				});
 		HudStatusBarHeightRegistry.addLeft(id, (PlayerEntity player) -> {
 			MinecraftClient minecraft = MinecraftClient.getInstance();
-			return minecraft.interactionManager.hasStatusBars() &&
-					MathHelper.floor(player.getAttributeValue(EntityAttributes.ARMOR_TOUGHNESS)) > 0 ? 10 : 0;
+			return minecraft.interactionManager.hasStatusBars()
+					&& MathHelper.floor(player.getAttributeValue(EntityAttributes.ARMOR_TOUGHNESS)) > 0 ? 10 : 0;
 		});
 	}
 
@@ -65,9 +66,11 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 				id,
 				(DrawContext context, RenderTickCounter tickCounter) -> {
 					MinecraftClient minecraft = MinecraftClient.getInstance();
+
 					if (minecraft.interactionManager.hasStatusBars()) {
 						InGameHud hud = minecraft.inGameHud;
 						LivingEntity livingEntity = hud.getRiddenEntity();
+
 						if (hud.getHeartCount(livingEntity) == 0) {
 							int width = context.getScaledWindowWidth() / 2 + 91;
 							int height = context.getScaledWindowHeight() - HudStatusBarHeightRegistry.getHeight(id);
