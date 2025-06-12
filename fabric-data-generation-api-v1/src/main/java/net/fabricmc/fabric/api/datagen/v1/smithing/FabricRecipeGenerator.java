@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.datagen.smithing;
+package net.fabricmc.fabric.api.datagen.v1.smithing;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 
-public interface SmithingTransformRecipeCreator {
+public interface FabricRecipeGenerator {
 	default SmithingTransformRecipeJsonBuilder createSmithingTransformRecipe(Ingredient template, Ingredient input, Ingredient addition, RecipeCategory category, Item result, int count, @Nullable ComponentChanges componentChanges) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}

@@ -25,10 +25,10 @@ import net.minecraft.component.ComponentChanges;
 import net.minecraft.data.recipe.SmithingTransformRecipeJsonBuilder;
 import net.minecraft.recipe.TransmuteRecipeResult;
 
-import net.fabricmc.fabric.impl.datagen.smithing.SmithingTransformParameters;
+import net.fabricmc.fabric.api.datagen.v1.smithing.FabricSmithingTransformRecipeJsonBuilder;
 
 @Mixin(SmithingTransformRecipeJsonBuilder.class)
-public class SmithingTransformRecipeJsonBuilderMixin implements SmithingTransformParameters {
+public class SmithingTransformRecipeJsonBuilderMixin implements FabricSmithingTransformRecipeJsonBuilder {
 	@Unique
 	private int count = 1;
 

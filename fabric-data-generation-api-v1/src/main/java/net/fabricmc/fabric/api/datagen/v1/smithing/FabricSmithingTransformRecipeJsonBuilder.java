@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.datagen.smithing;
+package net.fabricmc.fabric.api.datagen.v1.smithing;
 
 import net.minecraft.component.ComponentChanges;
 
-public interface SmithingTransformParameters {
+public interface FabricSmithingTransformRecipeJsonBuilder {
 	default ComponentChanges getComponentChanges() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
