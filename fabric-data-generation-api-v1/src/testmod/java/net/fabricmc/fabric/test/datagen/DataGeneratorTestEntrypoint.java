@@ -174,6 +174,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 				@Override
 				public void generate() {
 					offerPlanksRecipe2(SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);
+					createSmithingTransformRecipe(Items.BOOK, Items.STICK, Items.EXPERIENCE_BOTTLE, RecipeCategory.MISC, Items.STICK, 1, ComponentChanges.builder().add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true).build())
+							.criterion("has_book", conditionsFromItem(Items.BOOK))
+							.offerTo(this.exporter, getItemPath(Items.STICK) + "_smithing");
 
 					createShapeless(RecipeCategory.MISC, Items.DIAMOND_ORE, 4).input(Items.ITEM_FRAME)
 							.criterion("has_frame", conditionsFromItem(Items.ITEM_FRAME))
