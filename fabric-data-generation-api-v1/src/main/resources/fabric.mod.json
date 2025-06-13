@@ -33,7 +33,9 @@
     "loom:injected_interfaces": {
       "net/minecraft/class_7788": ["net/fabricmc/fabric/api/datagen/v1/loot/FabricBlockLootTableGenerator"],
       "net/minecraft/class_7789": ["net/fabricmc/fabric/api/datagen/v1/loot/FabricEntityLootTableGenerator"],
-      "net/minecraft/class_11389": ["net/fabricmc/fabric/api/datagen/v1/provider/FabricProvidedTagBuilder"]
+      "net/minecraft/class_11389": ["net/fabricmc/fabric/api/datagen/v1/provider/FabricProvidedTagBuilder"],
+      "net/minecraft/class_8074": ["net/fabricmc/fabric/api/datagen/v1/smithing/FabricSmithingTransformRecipeJsonBuilder"],
+      "net/minecraft/class_2446": ["net/fabricmc/fabric/api/datagen/v1/smithing/FabricRecipeGenerator"]
     }
   }
 }

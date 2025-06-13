@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": "minecraft:experience_bottle",
+  "base": "minecraft:stick",
+  "result": {
+    "components": {
+      "minecraft:enchantment_glint_override": true
+    },
+    "id": "minecraft:stick"
+  },
+  "template": "minecraft:book"
+}
