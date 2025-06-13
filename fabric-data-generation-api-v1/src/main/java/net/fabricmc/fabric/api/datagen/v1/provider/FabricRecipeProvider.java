@@ -91,6 +91,11 @@ public abstract class FabricRecipeProvider extends RecipeGenerator.RecipeProvide
 			@Override
 			public void addRootAdvancement() {
 			}
+
+			@Override
+			public Identifier getRecipeIdentifier(Identifier recipeId) {
+				return exporter.getRecipeIdentifier(recipeId);
+			}
 		};
 	}
 
@@ -102,7 +107,7 @@ public abstract class FabricRecipeProvider extends RecipeGenerator.RecipeProvide
 			RecipeGenerator recipeGenerator = getRecipeGenerator(wrapperLookup, new RecipeExporter() {
 				@Override
 				public void accept(RegistryKey<Recipe<?>> recipeKey, Recipe<?> recipe, @Nullable AdvancementEntry advancement) {
-					Identifier identifier = getRecipeIdentifier(recipeKey.getValue());
+					Identifier identifier = recipeKey.getValue();
 
 					if (!generatedRecipes.add(identifier)) {
 						throw new IllegalStateException("Duplicate recipe " + identifier);
@@ -133,6 +138,11 @@ public abstract class FabricRecipeProvider extends RecipeGenerator.RecipeProvide
 
 				@Override
 				public void addRootAdvancement() {
+				}
+
+				@Override
+				public Identifier getRecipeIdentifier(Identifier recipeId) {
+					return FabricRecipeProvider.this.getRecipeIdentifier(recipeId);
 				}
 			});
 			recipeGenerator.generate();

@@ -22,7 +22,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "minecraft:gold_ingot"
+        "recipe": "fabric-data-gen-api-v1-testmod:gold_ingot"
       }
     }
   },
@@ -34,7 +34,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:gold_ingot"
+      "fabric-data-gen-api-v1-testmod:gold_ingot"
     ]
   }
 }

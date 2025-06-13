@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "minecraft:diamond"
+        "recipe": "fabric-data-gen-api-v1-testmod:diamond"
       }
     }
   },
@@ -31,7 +31,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:diamond"
+      "fabric-data-gen-api-v1-testmod:diamond"
     ]
   }
 }
