@@ -18,6 +18,11 @@ package net.fabricmc.fabric.api.datagen.v1.smithing;
 
 import net.minecraft.component.ComponentChanges;
 
+/**
+ * Fabric-provided extensions for {@link net.minecraft.data.recipe.SmithingTransformRecipeJsonBuilder}.
+ *
+ * <p>Allows specification of the transform recipe result item count and component changes.
+ */
 public interface FabricSmithingTransformRecipeJsonBuilder {
 	default ComponentChanges getComponentChanges() {
 		throw new UnsupportedOperationException("Implemented via mixin");

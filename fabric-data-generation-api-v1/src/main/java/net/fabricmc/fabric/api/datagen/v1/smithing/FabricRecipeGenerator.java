@@ -21,23 +21,25 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.data.recipe.SmithingTransformRecipeJsonBuilder;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 
+/**
+ * Fabric-provided extensions for {@link net.minecraft.data.recipe.RecipeGenerator}.
+ *
+ * <p>Adds recipe types that the vanilla class does not implement.
+ */
 public interface FabricRecipeGenerator {
 	default SmithingTransformRecipeJsonBuilder createSmithingTransformRecipe(Ingredient template, Ingredient input, Ingredient addition, RecipeCategory category, Item result, int count, @Nullable ComponentChanges componentChanges) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default SmithingTransformRecipeJsonBuilder createSmithingTransformRecipe(Item template, Item input, Item addition, RecipeCategory category, Item result, int count, @Nullable ComponentChanges componentChanges) {
-		return createSmithingTransformRecipe(Ingredient.ofItem(template), Ingredient.ofItem(input), Ingredient.ofItem(addition), category, result, count, componentChanges);
+	default SmithingTransformRecipeJsonBuilder createSmithingTransformRecipe(Ingredient template, Ingredient input, Ingredient addition, RecipeCategory category, ItemStack result) {
+		return createSmithingTransformRecipe(template, input, addition, category, result.getItem(), result.getCount(), result.getComponentChanges());
 	}
 
-	default SmithingTransformRecipeJsonBuilder createSmithingTransformRecipe(Ingredient template, Ingredient input, Ingredient addition, RecipeCategory category, Item result, int count) {
-		return createSmithingTransformRecipe(template, input, addition, category, result, count, null);
-	}
-
-	default SmithingTransformRecipeJsonBuilder createSmithingTransformRecipe(Ingredient template, Ingredient input, Ingredient addition, RecipeCategory category, Item result, @Nullable ComponentChanges componentChanges) {
-		return createSmithingTransformRecipe(template, input, addition, category, result, 1, componentChanges);
+	default SmithingTransformRecipeJsonBuilder createSmithingTransformRecipe(Item template, Item input, Item addition, RecipeCategory category, ItemStack result) {
+		return createSmithingTransformRecipe(Ingredient.ofItem(template), Ingredient.ofItem(input), Ingredient.ofItem(addition), category, result);
 	}
 }

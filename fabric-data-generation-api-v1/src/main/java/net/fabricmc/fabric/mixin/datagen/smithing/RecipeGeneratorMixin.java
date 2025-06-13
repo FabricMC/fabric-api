@@ -30,7 +30,7 @@ import net.minecraft.recipe.book.RecipeCategory;
 import net.fabricmc.fabric.api.datagen.v1.smithing.FabricRecipeGenerator;
 
 @Mixin(RecipeGenerator.class)
-public abstract class RecipeGeneratorMixin implements FabricRecipeGenerator {
+abstract class RecipeGeneratorMixin implements FabricRecipeGenerator {
 	@Override
 	@Unique
 	public SmithingTransformRecipeJsonBuilder createSmithingTransformRecipe(Ingredient template, Ingredient input, Ingredient addition, RecipeCategory category, Item result, int count, @Nullable ComponentChanges componentChanges) {

@@ -52,6 +52,7 @@ import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -174,7 +175,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 				@Override
 				public void generate() {
 					offerPlanksRecipe2(SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);
-					createSmithingTransformRecipe(Items.BOOK, Items.STICK, Items.EXPERIENCE_BOTTLE, RecipeCategory.MISC, Items.STICK, 1, ComponentChanges.builder().add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true).build())
+					createSmithingTransformRecipe(Items.BOOK, Items.STICK, Items.EXPERIENCE_BOTTLE, RecipeCategory.MISC, new ItemStack(Items.STICK.getRegistryEntry(), 1, ComponentChanges.builder().add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true).build()))
 							.criterion("has_book", conditionsFromItem(Items.BOOK))
 							.offerTo(this.exporter, getItemPath(Items.STICK) + "_smithing");
 
