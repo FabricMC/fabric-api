@@ -16,12 +16,14 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
@@ -30,13 +32,13 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
 @Mixin(LivingEntityRenderer.class)
 abstract class LivingEntityRendererMixin {
-	@ModifyExpressionValue(
+	@WrapOperation(
 			method = "updateRenderState(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;F)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/feature/ArmorFeatureRenderer;hasModel(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EquipmentSlot;)Z")
 	)
-	private boolean toggleDefaultHeadItem(boolean skip, @Local(argsOnly = true) LivingEntity entity, @Local ItemStack headStack) {
+	private boolean toggleDefaultHeadItem(ItemStack headStack, EquipmentSlot slot, Operation<Boolean> original, @Local(argsOnly = true) LivingEntity entity) {
 		// Return value: true if the item isn't rendered
-		if (skip) return true;
+		if (original.call(headStack, slot)) return true;
 		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(headStack.getItem());
 		return renderer != null && !renderer.shouldRenderDefaultHeadItem(entity, headStack);
 	}

@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.render.entity.BipedEntityRenderer;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
@@ -32,8 +33,8 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 // only be called for items with an existing vanilla armor model.
 @Mixin(BipedEntityRenderer.class)
 abstract class BipedEntityRendererMixin {
-	@ModifyExpressionValue(method = "getEquippedStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/feature/ArmorFeatureRenderer;hasModel(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EquipmentSlot;)Z"))
-	private static boolean permitArmorWithCustomRenderers(boolean hasModel, @Local ItemStack stack) {
-		return hasModel || ArmorRendererRegistryImpl.get(stack.getItem()) != null;
+	@WrapOperation(method = "getEquippedStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/feature/ArmorFeatureRenderer;hasModel(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EquipmentSlot;)Z"))
+	private static boolean permitArmorWithCustomRenderers(ItemStack stack, EquipmentSlot slot, Operation<Boolean> original) {
+		return original.call(stack, slot) || ArmorRendererRegistryImpl.get(stack.getItem()) != null;
 	}
 }
