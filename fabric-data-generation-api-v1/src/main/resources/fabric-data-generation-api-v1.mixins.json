@@ -14,7 +14,11 @@
     "loot.BlockLootTableGeneratorAccessor",
     "loot.BlockLootTableGeneratorMixin",
     "loot.EntityLootTableGeneratorAccessor",
-    "loot.EntityLootTableGeneratorMixin"
+    "loot.EntityLootTableGeneratorMixin",
+    "recipe.AllCraftingRecipeJsonBuildersMixin",
+    "recipe.ComplexRecipeJsonBuilderMixin",
+    "recipe.SmithingTransformRecipeJsonBuilderMixin",
+    "recipe.SmithingTrimRecipeJsonBuilderMixin"
   ],
   "server": [
     "server.MainMixin"

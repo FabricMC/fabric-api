@@ -1,0 +1,13 @@
+{
+  "fabric-data-attachment-api-v1.unknown-target.attachment-identifier": "Attachment 식별자: %s",
+  "fabric-data-attachment-api-v1.unknown-target.block-entity-position": "블럭 엔티티 위치: %s",
+  "fabric-data-attachment-api-v1.unknown-target.chunk-position": "청크 위치: %s",
+  "fabric-data-attachment-api-v1.unknown-target.entity-network-id": "엔티티 네트워크 ID: %s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type": "목표 타입: %s",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.block-entity": "블럭 엔티티",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.chunk": "청크",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.entity": "엔티티",
+  "fabric-data-attachment-api-v1.unknown-target.target-type.world": "월드",
+  "fabric-data-attachment-api-v1.unknown-target.title": "알 수 없는 목표의 컴포넌트 변경사항이 수신되었습니다수 없는 목표의 컴포넌트 변경사항이 수신되었습니다!",
+  "fabric-data-attachment-api-v1.unknown-target.world": "월드: %s"
+}

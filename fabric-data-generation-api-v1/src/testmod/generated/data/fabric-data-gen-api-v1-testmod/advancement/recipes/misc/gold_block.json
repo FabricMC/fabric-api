@@ -24,7 +24,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "minecraft:gold_block"
+        "recipe": "fabric-data-gen-api-v1-testmod:gold_block"
       }
     }
   },
@@ -37,7 +37,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:gold_block"
+      "fabric-data-gen-api-v1-testmod:gold_block"
     ]
   }
 }

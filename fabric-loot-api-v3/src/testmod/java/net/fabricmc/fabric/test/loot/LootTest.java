@@ -16,15 +16,9 @@
 
 package net.fabricmc.fabric.test.loot;
 
-import java.lang.ref.WeakReference;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
-
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.ParseResults;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.apache.commons.lang3.mutable.MutableObject;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantment;
@@ -35,6 +29,7 @@ import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.SurvivesExplosionLootCondition;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetEnchantmentsLootFunction;
@@ -48,9 +43,6 @@ import net.minecraft.recipe.input.SingleStackRecipeInput;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 
@@ -166,58 +158,37 @@ public class LootTest implements ModInitializer {
 						.orElse(drop);
 			});
 		});
-		var recGuard = new MutableBoolean(false);
-		LootTableEvents.MODIFY_DROPS.register((entry, context, drops) -> {
-			if (recGuard.isTrue()) {
-				return; // prevent infinite recursion
+		LootTableEvents.MODIFY_DROPS.register(new ModifyDropsWithRecGuard((entry, context, drops) -> {
+			if (entry.getKey().map(it -> it.toString().contains("red")).orElse(false)) { // all red blocks drop double
+				entry.value().generateLoot(context, drops::add);
 			}
-
-			try {
-				recGuard.setTrue();
-
-				if (entry.getKey().map(it -> it.toString().contains("red")).orElse(false)) { // all red blocks drop double
-					entry.value().generateLoot(context, drops::add);
-				}
-			} finally {
-				recGuard.setFalse();
-			}
-		});
-		var recGuard2 = new MutableBoolean(false);
-		Function<MinecraftServer, Runnable> actionGetter = createActionCache("loot spawn 0 0 0 loot {\"pools\":[{\"entries\":[], \"rolls\":1.0}]}");
+		}));
 		// test inline LootPools
 		LootTableEvents.MODIFY_DROPS.register((entry, context, drops) -> {
-			if (recGuard2.isTrue()) {
-				return;
-			}
-
-			try {
-				recGuard2.setTrue();
-				actionGetter.apply(context.getWorld().getServer()).run();
-			} finally {
-				recGuard2.setFalse();
+			if (entry.getKey().isEmpty()) {
+				LootGameTest.inlineLootTablesSeen++;
 			}
 		});
 	}
 
-	private Function<MinecraftServer, Runnable> createActionCache(String command) {
-		MutableObject<WeakReference<MinecraftServer>> stashedServer = new MutableObject<>();
-		MutableObject<Runnable> runnable = new MutableObject<>();
-		return server -> {
-			if (runnable.getValue() != null && stashedServer.getValue() != null && stashedServer.getValue().refersTo(server)) {
-				return runnable.getValue();
+	private static final class ModifyDropsWithRecGuard implements LootTableEvents.ModifyDrops {
+		private final LootTableEvents.ModifyDrops inner;
+		private boolean running = false;
+
+		ModifyDropsWithRecGuard(LootTableEvents.ModifyDrops inner) {
+			this.inner = inner;
+		}
+
+		@Override
+		public void modifyLootTableDrops(RegistryEntry<LootTable> entry, LootContext context, List<ItemStack> drops) {
+			if (running) return;
+
+			try {
+				running = true;
+				inner.modifyLootTableDrops(entry, context, drops);
+			} finally {
+				running = false;
 			}
-
-			stashedServer.setValue(new WeakReference<>(server));
-			CommandManager manager = server.getCommandManager();
-			CommandDispatcher<ServerCommandSource> dispatcher = manager.getDispatcher();
-			ParseResults<ServerCommandSource> parseResults = dispatcher.parse(command, server.getCommandSource());
-
-			if (parseResults.getReader().canRead()) {
-				throw new IllegalStateException("Failed to Parse Command: " + parseResults);
-			}
-
-			runnable.setValue(() -> manager.execute(parseResults, command));
-			return runnable.getValue();
-		};
+		}
 	}
 }

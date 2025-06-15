@@ -14,7 +14,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "minecraft:torch"
+        "recipe": "fabric-data-gen-api-v1-testmod:torch"
       }
     }
   },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:torch"
+      "fabric-data-gen-api-v1-testmod:torch"
     ]
   }
 }

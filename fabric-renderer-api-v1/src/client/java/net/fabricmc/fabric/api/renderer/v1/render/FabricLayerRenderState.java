@@ -29,16 +29,16 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
  * injection.
  */
 public interface FabricLayerRenderState {
-	// TODO 1.21.6: If sprite of added quad is animated, automatically mark animated? Either way, clarify in doc.
 	/**
 	 * Retrieves the {@link QuadEmitter} used to append quads to this layer. Calling this method a second time
 	 * invalidates any prior result. Geometry added to this emitter will not be visible in
 	 * {@link ItemRenderState.LayerRenderState#getQuads()} and will be rendered after any
 	 * {@linkplain ItemRenderState.LayerRenderState#getQuads() vanilla quads} when this layer is rendered. Vertex
 	 * positions of geometry added to this emitter will automatically be output on
-	 * {@link ItemRenderState#load(Consumer)} ({@link ItemRenderState.LayerRenderState#setVector(Supplier)} must still
-	 * be used to add positions of {@linkplain ItemRenderState.LayerRenderState#getQuads() vanilla quads}). Any quads
-	 * added to this emitter will be cleared on {@link ItemRenderState.LayerRenderState#clear()}.
+	 * {@link ItemRenderState#load(Consumer)} ({@link ItemRenderState.LayerRenderState#setVertices(Supplier)} must still
+	 * be used to add positions of {@linkplain ItemRenderState.LayerRenderState#getQuads() vanilla quads}). Adding quads
+	 * that use animated sprites to this emitter will not automatically call {@link ItemRenderState#markAnimated()}. Any
+	 * quads added to this emitter will be cleared on {@link ItemRenderState.LayerRenderState#clear()}.
 	 *
 	 * <p>Do not retain references outside the context of this layer.
 	 */

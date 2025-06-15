@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer.client.debughud;
+package net.fabricmc.fabric.impl.renderer;
 
-import java.util.List;
-
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.minecraft.client.gui.hud.DebugHud;
-
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.GatherDebugTextEvents;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 
-@Mixin(DebugHud.class)
-public class DebugHudMixin {
-	@Inject(at = @At("RETURN"), method = "getLeftText")
-	protected void getLeftText(CallbackInfoReturnable<List<String>> info) {
-		info.getReturnValue().add("[Fabric] Active renderer: " + Renderer.get().getClass().getSimpleName());
+public class DebugHudClient implements ClientModInitializer {
+	@Override
+	public void onInitializeClient() {
+		GatherDebugTextEvents.LEFT.register(lines -> lines.addLast(
+				"[Fabric] Active renderer: " + Renderer.get().getClass().getSimpleName()));
 	}
 }
