@@ -37,7 +37,7 @@ abstract class DrawContextMixin {
 	public void drawStackOverlay(TextRenderer textRenderer, ItemStack stack, int x, int y, @Nullable String stackCountText, CallbackInfo callback) {
 		if (!stack.isEmpty()) {
 			DrawItemStackOverlayCallback.EVENT.invoker()
-					.onDrawItemStackOverlay(DrawContext.class.cast(this), textRenderer, stack, x, y);
+					.onDrawItemStackOverlay((DrawContext) (Object) this, textRenderer, stack, x, y);
 		}
 	}
 }
