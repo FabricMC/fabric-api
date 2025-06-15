@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudStatusBarHeightRegistryI
  * height from registered providers on each side and shifts elements like health, armor, food, and air bars
  * accordingly.
  *
- * <p>Height providers are associated with a {@link Identifier}
+ * <p>Height providers are associated with a {@link Identifier}.
  * The identifier must also be registered with a corresponding {@link HudElement} in
  * {@link HudElementRegistry}. The relative positioning to other HUD elements is determined from that registration. For
  * instance, registering a height for {@link VanillaHudElements#ARMOR_BAR} via
