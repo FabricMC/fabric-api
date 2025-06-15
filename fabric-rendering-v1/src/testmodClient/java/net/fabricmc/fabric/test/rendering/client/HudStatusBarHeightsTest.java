@@ -31,6 +31,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.mixin.client.rendering.InGameHudAccessor;
 
 public class HudStatusBarHeightsTest implements ClientModInitializer {
 	private static final Identifier TOUGHNESS_EMPTY_SPRITE = Identifier.of("fabric-rendering-v1-testmod",
@@ -64,7 +65,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						InGameHud hud = minecraft.inGameHud;
 						int width = context.getScaledWindowWidth() / 2 - 91;
 						int height = context.getScaledWindowHeight() - HudStatusBarHeightRegistry.getHeight(id);
-						PlayerEntity player = hud.getCameraPlayer();
+						PlayerEntity player = ((InGameHudAccessor) hud).callGetCameraPlayer();
 						renderArmor(context, player, height, 0, 10, width);
 					}
 				});
@@ -85,12 +86,12 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 
 					if (minecraft.interactionManager.hasStatusBars()) {
 						InGameHud hud = minecraft.inGameHud;
-						LivingEntity livingEntity = hud.getRiddenEntity();
+						LivingEntity livingEntity = ((InGameHudAccessor) hud).callGetRiddenEntity();
 
-						if (hud.getHeartCount(livingEntity) == 0) {
+						if (((InGameHudAccessor) hud).callGetHeartCount(livingEntity) == 0) {
 							int width = context.getScaledWindowWidth() / 2 + 91;
 							int height = context.getScaledWindowHeight() - HudStatusBarHeightRegistry.getHeight(id);
-							renderFood(context, hud.getCameraPlayer(), height, width);
+							renderFood(context, ((InGameHudAccessor) hud).callGetCameraPlayer(), height, width);
 						}
 					}
 				});
@@ -98,9 +99,10 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 			MinecraftClient minecraft = MinecraftClient.getInstance();
 
 			if (minecraft.interactionManager.hasStatusBars()) {
-				LivingEntity livingEntity = minecraft.inGameHud.getRiddenEntity();
+				InGameHud hud = minecraft.inGameHud;
+				LivingEntity livingEntity = ((InGameHudAccessor) hud).callGetRiddenEntity();
 
-				if (minecraft.inGameHud.getHeartCount(livingEntity) == 0) {
+				if (((InGameHudAccessor) hud).callGetHeartCount(livingEntity) == 0) {
 					return 10;
 				}
 			}

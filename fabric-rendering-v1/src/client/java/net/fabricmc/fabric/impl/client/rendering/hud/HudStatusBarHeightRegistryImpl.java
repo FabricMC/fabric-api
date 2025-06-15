@@ -46,6 +46,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.mixin.client.rendering.InGameHudAccessor;
 
 public final class HudStatusBarHeightRegistryImpl implements ClientModInitializer {
 	/**
@@ -71,9 +72,9 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * {@link HudStatusBarHeightRegistry#addLeft(Identifier, ToIntFunction)}.
 	 */
 	static final ToIntFunction<PlayerEntity> HEALTH_BAR = (PlayerEntity player) -> {
-		InGameHud gui = MinecraftClient.getInstance().inGameHud;
+		InGameHud hud = MinecraftClient.getInstance().inGameHud;
 		int playerHealth = MathHelper.ceil(player.getHealth());
-		int displayHealth = gui.renderHealthValue;
+		int displayHealth = ((InGameHudAccessor) hud).getRenderHealthValue();
 		float maxHealth = Math.max((float) player.getAttributeValue(EntityAttributes.MAX_HEALTH),
 				Math.max(displayHealth, playerHealth));
 		int absorptionAmount = MathHelper.ceil(player.getAbsorptionAmount());
@@ -97,10 +98,10 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * {@link HudStatusBarHeightRegistry#addRight(Identifier, ToIntFunction)}.
 	 */
 	static final ToIntFunction<PlayerEntity> MOUNT_HEALTH = (PlayerEntity player) -> {
-		InGameHud gui = MinecraftClient.getInstance().inGameHud;
-		LivingEntity livingEntity = gui.getRiddenEntity();
-		int vehicleMaxHearts = gui.getHeartCount(livingEntity);
-		return gui.getHeartRows(vehicleMaxHearts) * 10;
+		InGameHud hud = MinecraftClient.getInstance().inGameHud;
+		LivingEntity livingEntity = ((InGameHudAccessor) hud).callGetRiddenEntity();
+		int vehicleMaxHearts = ((InGameHudAccessor) hud).callGetHeartCount(livingEntity);
+		return ((InGameHudAccessor) hud).callGetHeartRows(vehicleMaxHearts) * 10;
 	};
 	/**
 	 * Height provider for the vanilla food bar.
@@ -109,9 +110,9 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * {@link HudStatusBarHeightRegistry#addRight(Identifier, ToIntFunction)}.
 	 */
 	static final ToIntFunction<PlayerEntity> FOOD_BAR = (PlayerEntity player) -> {
-		InGameHud gui = MinecraftClient.getInstance().inGameHud;
-		LivingEntity livingEntity = gui.getRiddenEntity();
-		return gui.getHeartCount(livingEntity) == 0 ? 10 : 0;
+		InGameHud hud = MinecraftClient.getInstance().inGameHud;
+		LivingEntity livingEntity = ((InGameHudAccessor) hud).callGetRiddenEntity();
+		return ((InGameHudAccessor) hud).callGetHeartCount(livingEntity) == 0 ? 10 : 0;
 	};
 	/**
 	 * Height provider for the vanilla air bar.
@@ -227,7 +228,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 			throw new IllegalArgumentException("Unknown status bar: " + id);
 		}
 
-		PlayerEntity player = MinecraftClient.getInstance().inGameHud.getCameraPlayer();
+		PlayerEntity player = ((InGameHudAccessor) MinecraftClient.getInstance().inGameHud).callGetCameraPlayer();
 
 		if (player == null) {
 			throw new IllegalStateException("Trying to get status bar height for " + id + " without a camera player");
@@ -353,7 +354,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	private static void replaceVanillaElement(Identifier resourceLocation, ToIntFunction<PlayerEntity> heightProvider) {
 		HudElementRegistry.replaceElement(resourceLocation, (HudElement layer) -> {
 			return (DrawContext context, RenderTickCounter tickCounter) -> {
-				PlayerEntity player = MinecraftClient.getInstance().inGameHud.getCameraPlayer();
+				PlayerEntity player = ((InGameHudAccessor) MinecraftClient.getInstance().inGameHud).callGetCameraPlayer();
 				int height = player != null ? heightProvider.applyAsInt(player) : 0;
 
 				if (height != 0) {

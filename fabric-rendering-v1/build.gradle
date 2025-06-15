@@ -10,7 +10,3 @@ testDependencies(project, [
 	':fabric-client-gametest-api-v1',
 	':fabric-object-builder-api-v1'
 ])
-
-loom {
-	accessWidenerPath = file('src/client/resources/fabric-rendering-v1.accesswidener')
-}

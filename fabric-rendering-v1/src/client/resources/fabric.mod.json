@@ -29,7 +29,6 @@
   "mixins": [
     "fabric-rendering-v1.mixins.json"
   ],
-  "accessWidener": "fabric-rendering-v1.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }
