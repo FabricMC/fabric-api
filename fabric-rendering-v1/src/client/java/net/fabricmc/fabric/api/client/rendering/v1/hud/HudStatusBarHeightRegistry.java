@@ -36,8 +36,8 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudStatusBarHeightRegistryI
  * height from registered providers on each side and shifts elements like health, armor, food, and air bars
  * accordingly.
  *
- * <p>Height providers are associated with a {@link Identifier ResourceLocation}
- * identifier. The identifier must also be registered with a corresponding {@link HudElement} in
+ * <p>Height providers are associated with a {@link Identifier}
+ * The identifier must also be registered with a corresponding {@link HudElement} in
  * {@link HudElementRegistry}. The relative positioning to other HUD elements is determined from that registration. For
  * instance, registering a height for {@link VanillaHudElements#ARMOR_BAR} via
  * {@link #addLeft(Identifier, ToIntFunction)} implies the custom bar is on the left side and affects the positioning of
@@ -63,7 +63,7 @@ public interface HudStatusBarHeightRegistry {
 	 * {@link HudStatusBarHeightRegistryImpl#ARMOR_BAR}
 	 *
 	 * <p>Existing height providers (like vanilla) can be replaced to coincide with
-	 * {@link HudElementRegistry#replaceElement(ResourceLocation, Function)}.
+	 * {@link HudElementRegistry#replaceElement(Identifier, Function)}.
 	 *
 	 * <p>Registration is frozen once the client has fully started.
 	 *
@@ -91,7 +91,7 @@ public interface HudStatusBarHeightRegistry {
 	 * {@link HudStatusBarHeightRegistryImpl#FOOD_BAR}, {@link HudStatusBarHeightRegistryImpl#AIR_BAR}
 	 *
 	 * <p>Existing height providers (like vanilla) can be replaced to coincide with
-	 * {@link HudElementRegistry#replaceElement(ResourceLocation, Function)}.
+	 * {@link HudElementRegistry#replaceElement(Identifier, Function)}.
 	 *
 	 * <p>Registration is frozen once the client has fully started.
 	 *
