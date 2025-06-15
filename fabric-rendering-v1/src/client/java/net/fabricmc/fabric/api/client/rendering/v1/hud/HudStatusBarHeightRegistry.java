@@ -31,23 +31,22 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudStatusBarHeightRegistryI
  * providers define the vertical space occupied by HUD elements, known as status bars, which are positioned on the left
  * and right sides above the player's hotbar.
  *
- * <p>Registering a height provider allows the game to automatically adjust the layout of existing
- * HUD elements, including vanilla ones, to accommodate new bars without overlap. The system calculates the cumulative
- * height from registered providers on each side and shifts elements like health, armor, food, and air bars
- * accordingly.
+ * <p>Registering a height provider allows the game to automatically adjust the layout of existing HUD elements,
+ * including vanilla ones, to accommodate new bars without overlap. The system calculates the cumulative height from
+ * registered providers on each side and shifts status bars like health, armor, food, and air bars accordingly.
  *
- * <p>Height providers are associated with a {@link Identifier}.
- * The identifier must also be registered with a corresponding {@link HudElement} in
+ * <p>Height providers are associated with an {@link Identifier}. The function itself should return the height of the
+ * custom bar. The identifier must also be registered with a corresponding {@link HudElement} in
  * {@link HudElementRegistry}. The relative positioning to other HUD elements is determined from that registration. For
- * instance, registering a height for {@link VanillaHudElements#ARMOR_BAR} via
- * {@link #addLeft(Identifier, ToIntFunction)} implies the custom bar is on the left side and affects the positioning of
- * elements starting from the health bar downwards. The function itself should return the height of the custom bar.
+ * instance, registering a height provider for a HUD element attached before {@link VanillaHudElements#ARMOR_BAR} via
+ * {@link #addLeft(Identifier, ToIntFunction)} implies the custom bar is on the left side and affects the vertical
+ * positioning of elements starting from the armor bar upwards.
  *
- * <p>The final vertical offset for a HUD element is determined by summing the heights
- * of all custom providers registered for elements that would appear "below" it on the same side.
+ * <p>The final vertical offset for a HUD element is determined by summing the heights of all custom providers
+ * registered for elements that would appear "below" it on the same side. This includes all HUD elements that have been
+ * attached before it in {@link HudElementRegistry}.
  *
- * <p>For vanilla HUD element identifiers, see
- * {@link VanillaHudElements}.
+ * <p>For vanilla HUD element identifiers, see {@link VanillaHudElements}.
  */
 public interface HudStatusBarHeightRegistry {
 	/**
