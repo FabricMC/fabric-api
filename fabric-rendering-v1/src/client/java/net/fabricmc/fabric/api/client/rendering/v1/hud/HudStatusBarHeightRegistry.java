@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.client.rendering.v1.hud;
 
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.ToIntFunction;
 
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,9 +26,9 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.impl.client.rendering.hud.HudStatusBarHeightRegistryImpl;
 
 /**
- * A registry for {@link ToIntFunction ToIntFunction&lt;Player&gt;} instances, known as height providers. These
- * providers define the vertical space occupied by HUD elements, known as status bars, which are positioned on the left
- * and right sides above the player's hotbar.
+ * A registry for {@link StatusBarHeightProvider} instances, known as height providers. These providers define the
+ * vertical space occupied by HUD elements, known as status bars, which are positioned on the left and right sides above
+ * the player's hotbar.
  *
  * <p>Registering a height provider allows the game to automatically adjust the layout of existing HUD elements,
  * including vanilla ones, to accommodate new bars without overlap. The system calculates the cumulative height from
@@ -39,8 +38,8 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudStatusBarHeightRegistryI
  * custom bar. The identifier must also be registered with a corresponding {@link HudElement} in
  * {@link HudElementRegistry}. The relative positioning to other HUD elements is determined from that registration. For
  * instance, registering a height provider for a HUD element attached before {@link VanillaHudElements#ARMOR_BAR} via
- * {@link #addLeft(Identifier, ToIntFunction)} implies the custom bar is on the left side and affects the vertical
- * positioning of elements starting from the armor bar upwards.
+ * {@link #addLeft(Identifier, StatusBarHeightProvider)} implies the custom bar is on the left side and affects the
+ * vertical positioning of elements starting from the armor bar upwards.
  *
  * <p>The final vertical offset for a HUD element is determined by summing the heights of all custom providers
  * registered for elements that would appear "below" it on the same side. This includes all HUD elements that have been
@@ -68,10 +67,10 @@ public interface HudStatusBarHeightRegistry {
 	 *
 	 * @param id             the {@link Identifier} identifier; must be registered with a corresponding
 	 *                       {@link HudElement} in {@link HudElementRegistry}.
-	 * @param heightProvider a {@link ToIntFunction} that takes a {@link PlayerEntity} from
+	 * @param heightProvider a {@link StatusBarHeightProvider} that takes a {@link PlayerEntity} from
 	 *                       {@link InGameHud#getCameraPlayer()} and returns the height.
 	 */
-	static void addLeft(Identifier id, ToIntFunction<PlayerEntity> heightProvider) {
+	static void addLeft(Identifier id, StatusBarHeightProvider heightProvider) {
 		Objects.requireNonNull(id, "id is null");
 		Objects.requireNonNull(heightProvider, "height provider is null");
 		HudStatusBarHeightRegistryImpl.addLeft(id, heightProvider);
@@ -96,10 +95,10 @@ public interface HudStatusBarHeightRegistry {
 	 *
 	 * @param id             the {@link Identifier} identifier; must be registered with a corresponding
 	 *                       {@link HudElement} in * {@link HudElementRegistry}.
-	 * @param heightProvider a {@link ToIntFunction} that takes a {@link PlayerEntity} from
+	 * @param heightProvider a {@link StatusBarHeightProvider} that takes a {@link PlayerEntity} from
 	 *                       {@link InGameHud#getCameraPlayer()} and returns the height.
 	 */
-	static void addRight(Identifier id, ToIntFunction<PlayerEntity> heightProvider) {
+	static void addRight(Identifier id, StatusBarHeightProvider heightProvider) {
 		Objects.requireNonNull(id, "id is null");
 		Objects.requireNonNull(heightProvider, "height provider is null");
 		HudStatusBarHeightRegistryImpl.addRight(id, heightProvider);
@@ -117,7 +116,7 @@ public interface HudStatusBarHeightRegistry {
 	 * provider heights that are considered "below" the position of the element associated with the given {@code id}.
 	 *
 	 * <p>Note: The registry must be initialized (frozen) before this method returns
-	 * meaningful values beyond a default. This initialization typically happens during the Minecraft client setup.
+	 * values without throwing an exception. This initialization happens during the Minecraft client setup.
 	 *
 	 * @param id the {@link Identifier} identifier of the HUD element.
 	 * @return the total height offset.

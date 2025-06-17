@@ -45,6 +45,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.StatusBarHeightProvider;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.mixin.client.rendering.InGameHudAccessor;
 
@@ -64,14 +65,14 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 */
 	static final int OVERLAY_MESSAGE_HEIGHT = 68 - DEFAULT_HEIGHT;
 	static final int TEXT_HEIGHT_DELTA = OVERLAY_MESSAGE_HEIGHT - HELD_ITEM_TOOLTIP_HEIGHT;
-	static final ToIntFunction<PlayerEntity> ZERO = (PlayerEntity player) -> 0;
 	/**
 	 * Height provider for the vanilla health bar.
 	 *
 	 * <p>Mods that would otherwise have a mixin for this are encouraged to instead register a replacement provider via
-	 * {@link HudStatusBarHeightRegistry#addLeft(Identifier, ToIntFunction)}.
+	 * {@link net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry#addLeft(Identifier,
+	 * StatusBarHeightProvider)}.
 	 */
-	static final ToIntFunction<PlayerEntity> HEALTH_BAR = (PlayerEntity player) -> {
+	static final StatusBarHeightProvider HEALTH_BAR = (PlayerEntity player) -> {
 		InGameHud hud = MinecraftClient.getInstance().inGameHud;
 		int playerHealth = MathHelper.ceil(player.getHealth());
 		int displayHealth = ((InGameHudAccessor) hud).getRenderHealthValue();
@@ -86,18 +87,20 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * Height provider for the vanilla armor bar.
 	 *
 	 * <p>Mods that would otherwise have a mixin for this are encouraged to instead register a replacement provider via
-	 * {@link HudStatusBarHeightRegistry#addLeft(Identifier, ToIntFunction)}.
+	 * {@link net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry#addLeft(Identifier,
+	 * StatusBarHeightProvider)}.
 	 */
-	static final ToIntFunction<PlayerEntity> ARMOR_BAR = (PlayerEntity player) -> {
+	static final StatusBarHeightProvider ARMOR_BAR = (PlayerEntity player) -> {
 		return player.getArmor() > 0 ? 10 : 0;
 	};
 	/**
 	 * Height provider for the vanilla mount health.
 	 *
 	 * <p>Mods that would otherwise have a mixin for this are encouraged to instead register a replacement provider via
-	 * {@link HudStatusBarHeightRegistry#addRight(Identifier, ToIntFunction)}.
+	 * {@link net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry#addRight(Identifier,
+	 * StatusBarHeightProvider)}.
 	 */
-	static final ToIntFunction<PlayerEntity> MOUNT_HEALTH = (PlayerEntity player) -> {
+	static final StatusBarHeightProvider MOUNT_HEALTH = (PlayerEntity player) -> {
 		InGameHud hud = MinecraftClient.getInstance().inGameHud;
 		LivingEntity livingEntity = ((InGameHudAccessor) hud).callGetRiddenEntity();
 		int vehicleMaxHearts = ((InGameHudAccessor) hud).callGetHeartCount(livingEntity);
@@ -107,9 +110,10 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * Height provider for the vanilla food bar.
 	 *
 	 * <p>Mods that would otherwise have a mixin for this are encouraged to instead register a replacement provider via
-	 * {@link HudStatusBarHeightRegistry#addRight(Identifier, ToIntFunction)}.
+	 * {@link net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry#addRight(Identifier,
+	 * StatusBarHeightProvider)}.
 	 */
-	static final ToIntFunction<PlayerEntity> FOOD_BAR = (PlayerEntity player) -> {
+	static final StatusBarHeightProvider FOOD_BAR = (PlayerEntity player) -> {
 		InGameHud hud = MinecraftClient.getInstance().inGameHud;
 		LivingEntity livingEntity = ((InGameHudAccessor) hud).callGetRiddenEntity();
 		return ((InGameHudAccessor) hud).callGetHeartCount(livingEntity) == 0 ? 10 : 0;
@@ -118,9 +122,10 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * Height provider for the vanilla air bar.
 	 *
 	 * <p>Mods that would otherwise have a mixin for this are encouraged to instead register a replacement provider via
-	 * {@link HudStatusBarHeightRegistry#addRight(Identifier, ToIntFunction)}.
+	 * {@link net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry#addRight(Identifier,
+	 * StatusBarHeightProvider)}.
 	 */
-	static final ToIntFunction<PlayerEntity> AIR_BAR = (PlayerEntity player) -> {
+	static final StatusBarHeightProvider AIR_BAR = (PlayerEntity player) -> {
 		int maxAirSupply = player.getMaxAir();
 		int airSupply = Math.clamp(player.getAir(), 0, maxAirSupply);
 		boolean isInWater = player.isSubmergedIn(FluidTags.WATER);
@@ -134,15 +139,14 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 *
 	 * <p>Do not use {@link Map}, it does not preserve insertion order.
 	 */
-	static final Map<Identifier, ToIntFunction<PlayerEntity>> VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(
-			VanillaHudElements.HEALTH_BAR,
-			ZERO,
+	static final Map<Identifier, ResolvedHeightProvider> VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(VanillaHudElements.HEALTH_BAR,
+			ResolvedHeightProvider.ZERO,
 			VanillaHudElements.ARMOR_BAR,
-			HEALTH_BAR,
+			HEALTH_BAR::applyAsInt,
 			VanillaHudElements.MOUNT_HEALTH,
-			ZERO,
+			ResolvedHeightProvider.ZERO,
 			VanillaHudElements.FOOD_BAR,
-			ZERO,
+			ResolvedHeightProvider.ZERO,
 			VanillaHudElements.AIR_BAR,
 			reduceToIntFunctions(MOUNT_HEALTH, FOOD_BAR, Integer::sum));
 	/**
@@ -152,7 +156,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 *
 	 * <p>Do not use {@link Map}, it does not preserve insertion order.
 	 */
-	static final Map<Identifier, ToIntFunction<PlayerEntity>> VANILLA_LEFT_HEIGHT_PROVIDERS = ImmutableMap.of(
+	static final Map<Identifier, StatusBarHeightProvider> VANILLA_LEFT_HEIGHT_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.HEALTH_BAR,
 			HEALTH_BAR,
 			VanillaHudElements.ARMOR_BAR,
@@ -164,7 +168,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 *
 	 * <p>Do not use {@link Map}, it does not preserve insertion order.
 	 */
-	static final Map<Identifier, ToIntFunction<PlayerEntity>> VANILLA_RIGHT_HEIGHT_PROVIDERS = ImmutableMap.of(
+	static final Map<Identifier, StatusBarHeightProvider> VANILLA_RIGHT_HEIGHT_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.MOUNT_HEALTH,
 			MOUNT_HEALTH,
 			VanillaHudElements.FOOD_BAR,
@@ -176,14 +180,14 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 *
 	 * <p>The height providers registered here simply return the height of the corresponding status bar.
 	 */
-	static final Map<Identifier, ToIntFunction<PlayerEntity>> LEFT_HEIGHT_PROVIDERS = new HashMap<>(
+	static final Map<Identifier, StatusBarHeightProvider> LEFT_HEIGHT_PROVIDERS = new HashMap<>(
 			VANILLA_LEFT_HEIGHT_PROVIDERS);
 	/**
 	 * Height providers registered for the right side above the hotbar, like food and air bubbles.
 	 *
 	 * <p>The height providers registered here simply return the height of the corresponding status bar.
 	 */
-	static final Map<Identifier, ToIntFunction<PlayerEntity>> RIGHT_HEIGHT_PROVIDERS = new HashMap<>(
+	static final Map<Identifier, StatusBarHeightProvider> RIGHT_HEIGHT_PROVIDERS = new HashMap<>(
 			VANILLA_RIGHT_HEIGHT_PROVIDERS);
 
 	/**
@@ -194,7 +198,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * which is computed by summing all the heights from providers considered "below" an element.
 	 */
 	@Nullable
-	static Map<Identifier, ToIntFunction<PlayerEntity>> resolvedHeightProviders;
+	static Map<Identifier, ResolvedHeightProvider> resolvedHeightProviders;
 
 	@Override
 	public void onInitializeClient() {
@@ -203,7 +207,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		});
 	}
 
-	public static void addLeft(Identifier id, ToIntFunction<PlayerEntity> heightProvider) {
+	public static void addLeft(Identifier id, StatusBarHeightProvider heightProvider) {
 		if (resolvedHeightProviders == null) {
 			LEFT_HEIGHT_PROVIDERS.put(id, heightProvider);
 		} else {
@@ -211,7 +215,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		}
 	}
 
-	public static void addRight(Identifier id, ToIntFunction<PlayerEntity> heightProvider) {
+	public static void addRight(Identifier id, StatusBarHeightProvider heightProvider) {
 		if (resolvedHeightProviders == null) {
 			RIGHT_HEIGHT_PROVIDERS.put(id, heightProvider);
 		} else {
@@ -243,10 +247,9 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 				RIGHT_HEIGHT_PROVIDERS)) {
 			resolvedHeightProviders = Map.of();
 		} else {
-			ImmutableMap.Builder<Identifier, ToIntFunction<PlayerEntity>> builder = ImmutableMap.builder();
-			ToIntFunction<PlayerEntity> maxLeftHeightProvider = resolveHeightProviders(LEFT_HEIGHT_PROVIDERS,
-					builder::put);
-			ToIntFunction<PlayerEntity> maxRightHeightProvider = resolveHeightProviders(RIGHT_HEIGHT_PROVIDERS,
+			ImmutableMap.Builder<Identifier, ResolvedHeightProvider> builder = ImmutableMap.builder();
+			ResolvedHeightProvider maxLeftHeightProvider = resolveHeightProviders(LEFT_HEIGHT_PROVIDERS, builder::put);
+			ResolvedHeightProvider maxRightHeightProvider = resolveHeightProviders(RIGHT_HEIGHT_PROVIDERS,
 					builder::put);
 			resolvedHeightProviders = builder.build();
 			applyVanillaHeightProviders(resolvedHeightProviders,
@@ -254,7 +257,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		}
 	}
 
-	private static ToIntFunction<PlayerEntity> resolveHeightProviders(Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup, BiConsumer<Identifier, ToIntFunction<PlayerEntity>> heightProviderConsumer) {
+	private static ResolvedHeightProvider resolveHeightProviders(Map<Identifier, StatusBarHeightProvider> heightProviderLookup, BiConsumer<Identifier, ResolvedHeightProvider> heightProviderConsumer) {
 		// called individually for both status bar sides for combining all height providers with the ones below them
 		// finally returns a provider for the total height of all providers on this side
 		SequencedSet<Identifier> orderedHeightProviders = getOrderedHeightProviders(heightProviderLookup);
@@ -266,7 +269,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		}
 
 		for (Identifier resourceLocation : heightProviderLookup.keySet()) {
-			ToIntFunction<PlayerEntity> heightProvider = resolveHeightProvider(resourceLocation,
+			ResolvedHeightProvider heightProvider = resolveHeightProvider(resourceLocation,
 					heightProviderLookup,
 					orderedHeightProviders);
 			heightProviderConsumer.accept(resourceLocation, heightProvider);
@@ -277,7 +280,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 				orderedHeightProviders);
 	}
 
-	private static SequencedSet<Identifier> getOrderedHeightProviders(Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup) {
+	private static SequencedSet<Identifier> getOrderedHeightProviders(Map<Identifier, StatusBarHeightProvider> heightProviderLookup) {
 		// creates an ordered list of all height provider identifiers from the lookup,
 		// with a fixed order provided for some vanilla elements and other elements attached to those via the static map;
 		// all other elements are simply appended in the order they appear in the hud element registry
@@ -304,9 +307,9 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		return orderedHeightProviders;
 	}
 
-	private static ToIntFunction<PlayerEntity> resolveHeightProvider(Identifier resourceLocation, Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup, SequencedCollection<Identifier> orderedHeightProviders) {
+	private static ResolvedHeightProvider resolveHeightProvider(Identifier resourceLocation, Map<Identifier, StatusBarHeightProvider> heightProviderLookup, SequencedCollection<Identifier> orderedHeightProviders) {
 		// combines all height providers "below" a hud element for determining the height at which it should render at
-		ToIntFunction<PlayerEntity> heightProvider = ZERO;
+		ResolvedHeightProvider heightProvider = ResolvedHeightProvider.ZERO;
 
 		for (Identifier heightProviderLocation : orderedHeightProviders) {
 			if (heightProviderLocation.equals(resourceLocation)) {
@@ -321,23 +324,23 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		throw new IllegalStateException();
 	}
 
-	private static ToIntFunction<PlayerEntity> resolveMaximumHeightProvider(Identifier resourceLocation, Map<Identifier, ToIntFunction<PlayerEntity>> heightProviderLookup, SequencedCollection<Identifier> orderedHeightProviders) {
+	private static ResolvedHeightProvider resolveMaximumHeightProvider(Identifier resourceLocation, Map<Identifier, StatusBarHeightProvider> heightProviderLookup, SequencedCollection<Identifier> orderedHeightProviders) {
 		// combines all height providers "below" and including a hud element
-		ToIntFunction<PlayerEntity> heightProvider = resolveHeightProvider(resourceLocation,
+		ResolvedHeightProvider heightProvider = resolveHeightProvider(resourceLocation,
 				heightProviderLookup,
 				orderedHeightProviders);
 		return reduceToIntFunctions(heightProviderLookup.get(resourceLocation), heightProvider, Integer::sum);
 	}
 
-	private static <T> ToIntFunction<T> reduceToIntFunctions(ToIntFunction<T> first, ToIntFunction<T> second, IntBinaryOperator operator) {
-		return (T t) -> operator.applyAsInt(first.applyAsInt(t), second.applyAsInt(t));
+	private static ResolvedHeightProvider reduceToIntFunctions(ToIntFunction<PlayerEntity> first, ToIntFunction<PlayerEntity> second, IntBinaryOperator operator) {
+		return (PlayerEntity player) -> operator.applyAsInt(first.applyAsInt(player), second.applyAsInt(player));
 	}
 
-	private static void applyVanillaHeightProviders(Map<Identifier, ToIntFunction<PlayerEntity>> resolvedHeightProviders, ToIntFunction<PlayerEntity> maxHeightProvider) {
+	private static void applyVanillaHeightProviders(Map<Identifier, ResolvedHeightProvider> resolvedHeightProviders, ResolvedHeightProvider maxHeightProvider) {
 		// wrap vanilla status bars with matrix stack transformations to implement potentially altered height values
-		for (Map.Entry<Identifier, ToIntFunction<PlayerEntity>> entry : VANILLA_HEIGHT_PROVIDERS.entrySet()) {
-			ToIntFunction<PlayerEntity> actualHeightProvider = resolvedHeightProviders.get(entry.getKey());
-			ToIntFunction<PlayerEntity> expectedHeightProvider = entry.getValue();
+		for (Map.Entry<Identifier, ResolvedHeightProvider> entry : VANILLA_HEIGHT_PROVIDERS.entrySet()) {
+			ResolvedHeightProvider actualHeightProvider = resolvedHeightProviders.get(entry.getKey());
+			ResolvedHeightProvider expectedHeightProvider = entry.getValue();
 			replaceVanillaElement(entry.getKey(),
 					reduceToIntFunctions(expectedHeightProvider, actualHeightProvider, (int i1, int i2) -> i1 - i2));
 		}
@@ -351,7 +354,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 						maxHeightProvider.applyAsInt(player) + TEXT_HEIGHT_DELTA));
 	}
 
-	private static void replaceVanillaElement(Identifier resourceLocation, ToIntFunction<PlayerEntity> heightProvider) {
+	private static void replaceVanillaElement(Identifier resourceLocation, ResolvedHeightProvider heightProvider) {
 		HudElementRegistry.replaceElement(resourceLocation, (HudElement layer) -> {
 			return (DrawContext context, RenderTickCounter tickCounter) -> {
 				PlayerEntity player = ((InGameHudAccessor) MinecraftClient.getInstance().inGameHud).callGetCameraPlayer();
@@ -369,5 +372,23 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 				}
 			};
 		});
+	}
+
+	/**
+	 * Returns the sum of all registered provider heights that are considered "below" the position of the element
+	 * associated with the given {@link HudElement}.
+	 *
+	 * @see StatusBarHeightProvider
+	 */
+	@FunctionalInterface
+	public interface ResolvedHeightProvider extends ToIntFunction<PlayerEntity> {
+		ResolvedHeightProvider ZERO = (PlayerEntity player) -> 0;
+
+		/**
+		 * @param player the {@link PlayerEntity} from {@link InGameHud#getCameraPlayer()}
+		 * @return the vertical space occupied by all status bars "below" this one
+		 */
+		@Override
+		int applyAsInt(PlayerEntity value);
 	}
 }
