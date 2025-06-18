@@ -501,6 +501,10 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 			argsOnly = true
 	)
 	private RegistryKey<T> aliasRegistryKeyParameter(RegistryKey<T> original) {
+		if (original == null) {
+			return null;
+		}
+
 		Identifier aliased = aliases.get(original.getValue());
 		return aliased == null ? original : RegistryKey.of(original.getRegistryRef(), aliased);
 	}
