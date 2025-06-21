@@ -29,6 +29,7 @@ import static net.fabricmc.fabric.test.datagen.DataGeneratorTestContent.TEST_DYN
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
@@ -36,6 +37,13 @@ import java.util.function.Consumer;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricBlockModelSupplier;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricTextureMap;
+
+import net.fabricmc.fabric.api.datagen.v1.SimpleBlockStateSupplier;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -294,11 +302,29 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-			blockStateModelGenerator.registerSimpleCubeAll(SIMPLE_BLOCK);
+			// blockStateModelGenerator.registerSimpleCubeAll(SIMPLE_BLOCK);
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_WITHOUT_ITEM);
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_WITHOUT_LOOT_TABLE);
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_WITH_VANILLA_LOOT_TABLE);
 			blockStateModelGenerator.registerSimpleCubeAll(BLOCK_THAT_DROPS_NOTHING);
+
+			// registerSimpleCubeAll() -> FabricBlockModelSupplier::new
+			blockStateModelGenerator.blockStateCollector.accept(new SimpleBlockStateSupplier(SIMPLE_BLOCK, new Identifier(MOD_ID, "simple_block")));
+			blockStateModelGenerator.modelCollector.accept(new Identifier(MOD_ID, "simple_block"),
+					() -> new FabricBlockModelSupplier("cube_all")
+							.addTextureData(new FabricTextureMap("all")
+									.set(new Identifier(MOD_ID, "block/simple_block")))
+							.get());
+
+			/* In reality, for cube_all textures you'd want to try and do a .registerSimpleCubeAll() from
+			   the blockStateModelGenerator. You could also do something like this if you needed to access
+			   it using the FabricBlockModelSupplier:
+
+				blockStateModelGenerator.modelCollector.accept(new Identifier(MOD_ID, "simple_block"),
+					() -> new FabricBlockModelSupplier("cube_all")
+							.simpleCubeAllTextures(new Identifier(MOD_ID, "block/simple_block"))
+							.get());
+			*/
 		}
 
 		@Override
