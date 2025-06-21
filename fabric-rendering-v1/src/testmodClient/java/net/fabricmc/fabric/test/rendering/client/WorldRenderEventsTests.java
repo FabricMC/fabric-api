@@ -18,7 +18,9 @@ package net.fabricmc.fabric.test.rendering.client;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -48,9 +50,16 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 		return true;
 	}
 
+	private static boolean onRenderSky(WorldRenderContext wrc, Runnable fogCallback) {
+		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
+		return !player.isHolding(Items.DEBUG_STICK) || !(player.getY() > 200);
+	}
+
 	// Renders a diamond block above diamond blocks when they are looked at.
 	@Override
 	public void onInitializeClient() {
 		WorldRenderEvents.BLOCK_OUTLINE.register(WorldRenderEventsTests::onBlockOutline);
+		WorldRenderEvents.RENDER_SKY.register(WorldRenderEventsTests::onRenderSky);
 	}
 }

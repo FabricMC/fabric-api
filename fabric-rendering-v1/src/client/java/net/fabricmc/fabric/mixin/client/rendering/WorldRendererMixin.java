@@ -212,4 +212,11 @@ public abstract class WorldRendererMixin {
 			}
 		}
 	}
+
+	@Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At("HEAD"), cancellable = true)
+	private void onRenderSky(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, Camera camera, boolean thickFog, Runnable fogCallback, CallbackInfo info) {
+		if (!WorldRenderEvents.RENDER_SKY.invoker().renderSky(context, fogCallback)) {
+			info.cancel();
+		}
+	}
 }

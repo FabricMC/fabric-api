@@ -224,6 +224,28 @@ public final class WorldRenderEvents {
 	});
 
 	/**
+	 * Called when rendering the world's skybox.
+	 * This happens right before terrain setup.
+	 *
+	 * <p>Use this for rendering custom sky boxes in existing dimensions,
+	 * such as rendering more stars above a current y value.
+	 *
+	 * <p>Returning false will cancel rendering the skybox.  This has no
+	 * effect on other subscribers to this event - all subscribers will always be called.
+	 */
+	public static final Event<RenderSky> RENDER_SKY = EventFactory.createArrayBacked(RenderSky.class, (context, fogCallback) -> true, callbacks -> (context, fogCallback) -> {
+		boolean shouldRender = true;
+
+		for (final RenderSky callback : callbacks) {
+			if (!callback.renderSky(context, fogCallback)) {
+				shouldRender = false;
+			}
+		}
+
+		return shouldRender;
+	});
+
+	/**
 	 * Called after all framebuffer writes are complete but before all world
 	 * rendering is torn down.
 	 *
@@ -300,6 +322,11 @@ public final class WorldRenderEvents {
 	@FunctionalInterface
 	public interface AfterTranslucent {
 		void afterTranslucent(WorldRenderContext context);
+	}
+
+	@FunctionalInterface
+	public interface RenderSky {
+		boolean renderSky(WorldRenderContext context, Runnable fogCallback);
 	}
 
 	@FunctionalInterface
