@@ -5,7 +5,9 @@
   "mixins": [
     "ingredient.IngredientMixin",
     "ingredient.PacketEncoderMixin",
-    "ingredient.ShapelessRecipeMixin"
+    "ingredient.ShapelessRecipeMixin",
+    "cooking.AbstractFurnaceBlockEntityMixin",
+    "cooking.CookingRecipeSerializerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "group": "iron_ingot",
+  "ingredient": {
+    "item": "minecraft:deepslate_iron_ore"
+  },
+  "result": {
+    "item": "minecraft:iron_ingot",
+    "count": 3
+  },
+  "experience": 0,
+  "cookingtime": 1
+}
