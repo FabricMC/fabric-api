@@ -3,7 +3,6 @@
   "package": "net.fabricmc.fabric.mixin.object.builder",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractBlockAccessor",
     "BlockEntityTypeMixin",
     "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin",
@@ -17,5 +16,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

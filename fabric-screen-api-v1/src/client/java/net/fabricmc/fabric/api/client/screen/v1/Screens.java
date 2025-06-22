@@ -50,11 +50,13 @@ public final class Screens {
 	 * Gets a screen's text renderer.
 	 *
 	 * @return the screen's text renderer.
+	 * @deprecated Use {@link Screen#getTextRenderer()} directly
 	 */
+	@Deprecated
 	public static TextRenderer getTextRenderer(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
-		return ((ScreenAccessor) screen).getTextRenderer();
+		return screen.getTextRenderer();
 	}
 
 	public static MinecraftClient getClient(Screen screen) {
