@@ -56,7 +56,7 @@ public final class NetworkingChannelClientTest implements ClientModInitializer {
 		});
 
 		C2SPlayChannelEvents.UNREGISTER.register((handler, sender, client, channels) -> {
-			SUPPORTED_C2S_CHANNELS.removeAll(channels);
+			channels.forEach(SUPPORTED_C2S_CHANNELS::remove);
 
 			if (MinecraftClient.getInstance().currentScreen instanceof ChannelScreen) {
 				((ChannelScreen) MinecraftClient.getInstance().currentScreen).refresh();
