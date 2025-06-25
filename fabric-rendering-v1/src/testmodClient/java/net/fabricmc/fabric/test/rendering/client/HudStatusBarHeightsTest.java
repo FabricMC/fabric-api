@@ -65,7 +65,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						InGameHud hud = minecraft.inGameHud;
 						int width = context.getScaledWindowWidth() / 2 - 91;
 						int height = context.getScaledWindowHeight() - HudStatusBarHeightRegistry.getHeight(id);
-						PlayerEntity player = ((InGameHudAccessor) hud).callGetCameraPlayer();
+						PlayerEntity player = ((InGameHudAccessor) hud).fabric$callGetCameraPlayer();
 						renderArmor(context, player, height, 0, 10, width);
 					}
 				});
@@ -86,12 +86,12 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 
 					if (minecraft.interactionManager.hasStatusBars()) {
 						InGameHud hud = minecraft.inGameHud;
-						LivingEntity livingEntity = ((InGameHudAccessor) hud).callGetRiddenEntity();
+						LivingEntity livingEntity = ((InGameHudAccessor) hud).fabric$callGetRiddenEntity();
 
-						if (((InGameHudAccessor) hud).callGetHeartCount(livingEntity) == 0) {
+						if (((InGameHudAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
 							int width = context.getScaledWindowWidth() / 2 + 91;
 							int height = context.getScaledWindowHeight() - HudStatusBarHeightRegistry.getHeight(id);
-							renderFood(context, ((InGameHudAccessor) hud).callGetCameraPlayer(), height, width);
+							renderFood(context, ((InGameHudAccessor) hud).fabric$callGetCameraPlayer(), height, width);
 						}
 					}
 				});
@@ -100,9 +100,9 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 
 			if (minecraft.interactionManager.hasStatusBars()) {
 				InGameHud hud = minecraft.inGameHud;
-				LivingEntity livingEntity = ((InGameHudAccessor) hud).callGetRiddenEntity();
+				LivingEntity livingEntity = ((InGameHudAccessor) hud).fabric$callGetRiddenEntity();
 
-				if (((InGameHudAccessor) hud).callGetHeartCount(livingEntity) == 0) {
+				if (((InGameHudAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
 					return 10;
 				}
 			}

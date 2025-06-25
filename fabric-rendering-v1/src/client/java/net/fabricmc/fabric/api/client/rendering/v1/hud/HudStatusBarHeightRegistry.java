@@ -45,9 +45,12 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudStatusBarHeightRegistryI
  * registered for elements that would appear "below" it on the same side. This includes all HUD elements that have been
  * attached before it in {@link HudElementRegistry}.
  *
+ * <p>Mods that would otherwise have a mixin for altering a vanilla status bar are encouraged to instead register a full
+ * replacement via {@link HudElementRegistry} and this class.
+ *
  * <p>For vanilla HUD element identifiers, see {@link VanillaHudElements}.
  */
-public interface HudStatusBarHeightRegistry {
+public final class HudStatusBarHeightRegistry {
 	/**
 	 * Adds a height provider for a status bar on the left side above the hotbar.
 	 *
@@ -65,12 +68,12 @@ public interface HudStatusBarHeightRegistry {
 	 *
 	 * <p>Registration is frozen once the client has fully started.
 	 *
-	 * @param id             the {@link Identifier} identifier; must be registered with a corresponding
-	 *                       {@link HudElement} in {@link HudElementRegistry}.
+	 * @param id             the {@link Identifier}; must be registered with a corresponding {@link HudElement} in
+	 *                       {@link HudElementRegistry}.
 	 * @param heightProvider a {@link StatusBarHeightProvider} that takes a {@link PlayerEntity} from
 	 *                       {@link InGameHud#getCameraPlayer()} and returns the height.
 	 */
-	static void addLeft(Identifier id, StatusBarHeightProvider heightProvider) {
+	public static void addLeft(Identifier id, StatusBarHeightProvider heightProvider) {
 		Objects.requireNonNull(id, "id is null");
 		Objects.requireNonNull(heightProvider, "height provider is null");
 		HudStatusBarHeightRegistryImpl.addLeft(id, heightProvider);
@@ -93,12 +96,12 @@ public interface HudStatusBarHeightRegistry {
 	 *
 	 * <p>Registration is frozen once the client has fully started.
 	 *
-	 * @param id             the {@link Identifier} identifier; must be registered with a corresponding
-	 *                       {@link HudElement} in * {@link HudElementRegistry}.
+	 * @param id             the {@link Identifier}; must be registered with a corresponding {@link HudElement} in
+	 *                       {@link HudElementRegistry}.
 	 * @param heightProvider a {@link StatusBarHeightProvider} that takes a {@link PlayerEntity} from
 	 *                       {@link InGameHud#getCameraPlayer()} and returns the height.
 	 */
-	static void addRight(Identifier id, StatusBarHeightProvider heightProvider) {
+	public static void addRight(Identifier id, StatusBarHeightProvider heightProvider) {
 		Objects.requireNonNull(id, "id is null");
 		Objects.requireNonNull(heightProvider, "height provider is null");
 		HudStatusBarHeightRegistryImpl.addRight(id, heightProvider);
@@ -118,11 +121,14 @@ public interface HudStatusBarHeightRegistry {
 	 * <p>Note: The registry must be initialized (frozen) before this method returns
 	 * values without throwing an exception. This initialization happens during the Minecraft client setup.
 	 *
-	 * @param id the {@link Identifier} identifier of the HUD element.
+	 * @param id the {@link Identifier} of the HUD element.
 	 * @return the total height offset.
 	 */
-	static int getHeight(Identifier id) {
+	public static int getHeight(Identifier id) {
 		Objects.requireNonNull(id, "id is null");
 		return HudStatusBarHeightRegistryImpl.getHeight(id);
+	}
+
+	private HudStatusBarHeightRegistry() {
 	}
 }

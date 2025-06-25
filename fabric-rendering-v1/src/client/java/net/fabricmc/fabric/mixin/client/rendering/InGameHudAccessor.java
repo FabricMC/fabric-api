@@ -27,17 +27,17 @@ import net.minecraft.entity.player.PlayerEntity;
 @Mixin(InGameHud.class)
 public interface InGameHudAccessor {
 	@Accessor("renderHealthValue")
-	int getRenderHealthValue();
+	int fabric$getRenderHealthValue();
 
 	@Invoker("getRiddenEntity")
-	LivingEntity callGetRiddenEntity();
+	LivingEntity fabric$callGetRiddenEntity();
 
 	@Invoker("getHeartCount")
-	int callGetHeartCount(LivingEntity entity);
+	int fabric$callGetHeartCount(LivingEntity entity);
 
 	@Invoker("getHeartRows")
-	int callGetHeartRows(int health);
+	int fabric$callGetHeartRows(int health);
 
 	@Invoker("getCameraPlayer")
-	PlayerEntity callGetCameraPlayer();
+	PlayerEntity fabric$callGetCameraPlayer();
 }
