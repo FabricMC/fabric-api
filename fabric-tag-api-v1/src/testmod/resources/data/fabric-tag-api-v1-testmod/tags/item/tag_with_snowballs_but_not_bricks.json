@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "c:remove": [
+    "brick"
+  ],
+  "values": [
+    "snowball",
+    "brick"
+  ]
+}

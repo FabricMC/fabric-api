@@ -4,10 +4,13 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "DataPackContentsMixin",
-    "SimpleRegistryMixin",
     "SimpleRegistry2Mixin",
     "SimpleRegistry3Mixin",
-    "SimpleRegistryTagLookup2Accessor"
+    "SimpleRegistryMixin",
+    "SimpleRegistryTagLookup2Accessor",
+    "TagEntryMixin",
+    "TagFileMixin",
+    "TagGroupLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

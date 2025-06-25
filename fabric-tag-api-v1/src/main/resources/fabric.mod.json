@@ -34,6 +34,11 @@
   ],
   "accessWidener": "fabric-tag-api-v1.accesswidener",
   "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_91": [
+        "net/fabricmc/fabric/api/tag/v1/FabricTagEntry"
+      ]
+    },
     "fabric-api:module-lifecycle": "stable"
   }
 }

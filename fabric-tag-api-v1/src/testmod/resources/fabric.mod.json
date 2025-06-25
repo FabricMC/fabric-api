@@ -10,7 +10,8 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.tag.TagAliasTest"
+      "net.fabricmc.fabric.test.tag.TagAliasTest",
+      "net.fabricmc.fabric.test.tag.TagEntryRemovalTest"
     ],
     "client": [
       "net.fabricmc.fabric.test.tag.client.v1.ClientTagTest"
