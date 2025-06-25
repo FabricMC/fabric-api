@@ -37,16 +37,16 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudStatusBarHeightRegistryI
  * <p>Height providers are associated with an {@link Identifier}. The function itself should return the height of the
  * custom bar. The identifier must also be registered with a corresponding {@link HudElement} in
  * {@link HudElementRegistry}. The relative positioning to other HUD elements is determined from that registration. For
- * instance, registering a height provider for a HUD element attached before {@link VanillaHudElements#ARMOR_BAR} via
- * {@link #addLeft(Identifier, StatusBarHeightProvider)} implies the custom bar is on the left side and affects the
- * vertical positioning of elements starting from the armor bar upwards.
+ * instance, registering a height provider for a HUD element attached before
+ * {@link VanillaHudElements#ARMOR_BAR ARMOR_BAR} via {@link #addLeft(Identifier, StatusBarHeightProvider)} implies the
+ * custom bar is on the left side and affects the vertical positioning of elements starting from the armor bar upwards.
  *
  * <p>The final vertical offset for a HUD element is determined by summing the heights of all custom providers
  * registered for elements that would appear "below" it on the same side. This includes all HUD elements that have been
  * attached before it in {@link HudElementRegistry}.
  *
- * <p>Mods that would otherwise have a mixin for altering a vanilla status bar are encouraged to instead register a full
- * replacement via {@link HudElementRegistry} and this class.
+ * <p>Mods that would otherwise have a mixin for altering a vanilla status bar are encouraged to instead register a
+ * full replacement via {@link HudElementRegistry} and this class.
  *
  * <p>For vanilla HUD element identifiers, see {@link VanillaHudElements}.
  */

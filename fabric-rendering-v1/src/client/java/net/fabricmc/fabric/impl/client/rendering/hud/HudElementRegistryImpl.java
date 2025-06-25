@@ -117,7 +117,7 @@ public class HudElementRegistryImpl {
 
 	public static void removeElement(Identifier identifier) {
 		boolean didChange = findLayer(identifier, (l, iterator) -> {
-			iterator.set(HudLayer.of(l.id(), l::element, true));
+			iterator.set(HudLayer.of(l.id(), l::element, true, l.isReplaced()));
 			return true;
 		});
 
@@ -128,7 +128,7 @@ public class HudElementRegistryImpl {
 
 	public static void replaceElement(Identifier identifier, Function<HudElement, HudElement> replacer) {
 		boolean didChange = findLayer(identifier, (l, iterator) -> {
-			iterator.set(HudLayer.of(l.id(), replacer.compose(l::element), l.isRemoved()));
+			iterator.set(HudLayer.of(l.id(), replacer.compose(l::element), l.isRemoved(), true));
 			return true;
 		});
 

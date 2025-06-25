@@ -23,12 +23,15 @@ import java.util.SequencedCollection;
 import java.util.SequencedSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.IntBinaryOperator;
 import java.util.function.ToIntFunction;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -50,6 +53,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.mixin.client.rendering.InGameHudAccessor;
 
 public final class HudStatusBarHeightRegistryImpl implements ClientModInitializer {
+	public static final Logger LOGGER = LoggerFactory.getLogger("fabric-rendering-v1");
 	/**
 	 * The height at which vanilla begins rendering status bars; this is used for health and food / mount health.
 	 */
@@ -264,23 +268,38 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 
 		for (Identifier id : VANILLA_HEIGHT_PROVIDERS.keySet()) {
 			for (HudLayer hudLayer : HudElementRegistryImpl.ROOT_ELEMENTS.get(id).layers()) {
-				if (heightProviderLookup.containsKey(hudLayer.id())) {
-					orderedHeightProviders.add(hudLayer.id());
-				}
+				addOrderedHeightProvider(hudLayer, heightProviderLookup, orderedHeightProviders::add);
 			}
 		}
 
 		for (Map.Entry<Identifier, HudElementRegistryImpl.RootLayer> entry : HudElementRegistryImpl.ROOT_ELEMENTS.entrySet()) {
 			if (!VANILLA_HEIGHT_PROVIDERS.containsKey(entry.getKey())) {
 				for (HudLayer hudLayer : entry.getValue().layers()) {
-					if (heightProviderLookup.containsKey(hudLayer.id())) {
-						orderedHeightProviders.add(hudLayer.id());
-					}
+					addOrderedHeightProvider(hudLayer, heightProviderLookup, orderedHeightProviders::add);
 				}
 			}
 		}
 
 		return orderedHeightProviders;
+	}
+
+	private static void addOrderedHeightProvider(HudLayer hudLayer, Map<Identifier, StatusBarHeightProvider> heightProviderLookup, Consumer<Identifier> heightProviderConsumer) {
+		// height providers for removed layers are skipped, as there is no way to remove them manually
+		if (!hudLayer.isRemoved() && heightProviderLookup.containsKey(hudLayer.id())) {
+			// replaced vanilla hud elements must have a new height provider registered to replace the functionality
+			// of our wrapping for vanilla hud elements to apply height provider offsets
+			if (hudLayer.isReplaced()) {
+				StatusBarHeightProvider heightProvider = heightProviderLookup.get(hudLayer.id());
+
+				if (heightProvider == VANILLA_LEFT_HEIGHT_PROVIDERS.get(hudLayer.id())
+						|| heightProvider == VANILLA_RIGHT_HEIGHT_PROVIDERS.get(hudLayer.id())) {
+					throw new IllegalStateException("Vanilla hud element " + hudLayer.id()
+							+ " replaced without providing a new status bar height provider in HudStatusBarHeightRegistry");
+				}
+			}
+
+			heightProviderConsumer.accept(hudLayer.id());
+		}
 	}
 
 	private static ResolvedHeightProvider resolveHeightProvider(Identifier id, Map<Identifier, StatusBarHeightProvider> heightProviderLookup, SequencedCollection<Identifier> orderedHeightProviders) {
@@ -313,10 +332,16 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	private static void applyVanillaHeightProviders(Map<Identifier, ResolvedHeightProvider> resolvedHeightProviders, ResolvedHeightProvider maxHeightProvider) {
 		// wrap vanilla status bars with matrix stack transformations to implement potentially altered height values
 		for (Map.Entry<Identifier, ResolvedHeightProvider> entry : VANILLA_HEIGHT_PROVIDERS.entrySet()) {
-			ResolvedHeightProvider actualHeightProvider = resolvedHeightProviders.get(entry.getKey());
-			ResolvedHeightProvider expectedHeightProvider = entry.getValue();
-			replaceVanillaElement(entry.getKey(),
-					reduceToIntFunctions(expectedHeightProvider, actualHeightProvider, (int i1, int i2) -> i1 - i2));
+			if (isVanillaHeightProvider(entry.getKey())) {
+				ResolvedHeightProvider actualHeightProvider = resolvedHeightProviders.get(entry.getKey());
+				ResolvedHeightProvider expectedHeightProvider = entry.getValue();
+				replaceVanillaElement(entry.getKey(),
+						reduceToIntFunctions(expectedHeightProvider,
+								actualHeightProvider,
+								(int i1, int i2) -> i1 - i2));
+			} else {
+				LOGGER.debug("Skipped wrapping hud element {} for applying height provider offsets", entry.getKey());
+			}
 		}
 
 		// offset text above hotbar depending on height values
@@ -326,6 +351,20 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		replaceVanillaElement(VanillaHudElements.OVERLAY_MESSAGE,
 				(PlayerEntity player) -> OVERLAY_MESSAGE_HEIGHT - Math.max(OVERLAY_MESSAGE_HEIGHT,
 						maxHeightProvider.applyAsInt(player) + TEXT_HEIGHT_DELTA));
+	}
+
+	private static boolean isVanillaHeightProvider(Identifier id) {
+		if (LEFT_HEIGHT_PROVIDERS.containsKey(id) && LEFT_HEIGHT_PROVIDERS.get(id) == VANILLA_LEFT_HEIGHT_PROVIDERS.get(
+				id)) {
+			return true;
+		}
+
+		if (RIGHT_HEIGHT_PROVIDERS.containsKey(id)
+				&& RIGHT_HEIGHT_PROVIDERS.get(id) == VANILLA_RIGHT_HEIGHT_PROVIDERS.get(id)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private static void replaceVanillaElement(Identifier id, ResolvedHeightProvider heightProvider) {

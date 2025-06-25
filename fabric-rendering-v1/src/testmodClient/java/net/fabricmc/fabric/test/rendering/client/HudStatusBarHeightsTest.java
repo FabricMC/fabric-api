@@ -28,12 +28,19 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudStatusBarHeightRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.mixin.client.rendering.InGameHudAccessor;
 
 public class HudStatusBarHeightsTest implements ClientModInitializer {
+	private static final Identifier HEART_CONTAINER_TEXTURE = Identifier.ofVanilla("hud/heart/container");
+	private static final Identifier HEART_HALF_TEXTURE = Identifier.ofVanilla("hud/heart/absorbing_half");
+	private static final Identifier HEART_FULL_TEXTURE = Identifier.ofVanilla("hud/heart/absorbing_full");
+	private static final Identifier ARMOR_EMPTY_TEXTURE = Identifier.ofVanilla("hud/armor_empty");
+	private static final Identifier ARMOR_HALF_TEXTURE = Identifier.ofVanilla("hud/armor_half");
+	private static final Identifier ARMOR_FULL_TEXTURE = Identifier.ofVanilla("hud/armor_full");
 	private static final Identifier TOUGHNESS_EMPTY_SPRITE = Identifier.of("fabric-rendering-v1-testmod",
 			"hud/toughness_empty");
 	private static final Identifier TOUGHNESS_HALF_SPRITE = Identifier.of("fabric-rendering-v1-testmod",
@@ -49,8 +56,53 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		testHealthBar();
+		testArmorBar();
 		testToughnessBar();
 		testStaminaBar();
+	}
+
+	private static void testHealthBar() {
+		// register a custom health bar with a different height for large max health;
+		// ideally tested together with a custom armor bar
+		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR,
+				(HudElement element) -> (DrawContext context, RenderTickCounter tickCounter) -> {
+					MinecraftClient minecraft = MinecraftClient.getInstance();
+
+					if (minecraft.interactionManager.hasStatusBars()) {
+						InGameHud hud = minecraft.inGameHud;
+						int width = context.getScaledWindowWidth() / 2 - 91;
+						int height = context.getScaledWindowHeight() - HudStatusBarHeightRegistry.getHeight(
+								VanillaHudElements.HEALTH_BAR);
+						PlayerEntity player = ((InGameHudAccessor) hud).fabric$callGetCameraPlayer();
+						renderHealth(context, player, height, 0, 10, width);
+					}
+				});
+		HudStatusBarHeightRegistry.addLeft(VanillaHudElements.HEALTH_BAR, (PlayerEntity player) -> {
+			MinecraftClient minecraft = MinecraftClient.getInstance();
+			return minecraft.interactionManager.hasStatusBars() ? 10 : 0;
+		});
+	}
+
+	private static void testArmorBar() {
+		// register a custom armor bar with slightly altered rendering compared to the vanilla bar
+		HudElementRegistry.replaceElement(VanillaHudElements.ARMOR_BAR,
+				(HudElement element) -> (DrawContext context, RenderTickCounter tickCounter) -> {
+					MinecraftClient minecraft = MinecraftClient.getInstance();
+
+					if (minecraft.interactionManager.hasStatusBars()) {
+						InGameHud hud = minecraft.inGameHud;
+						int width = context.getScaledWindowWidth() / 2 - 91;
+						int height = context.getScaledWindowHeight() - HudStatusBarHeightRegistry.getHeight(
+								VanillaHudElements.ARMOR_BAR);
+						PlayerEntity player = ((InGameHudAccessor) hud).fabric$callGetCameraPlayer();
+						renderArmor(context, player, height, 0, 10, width);
+					}
+				});
+		HudStatusBarHeightRegistry.addLeft(VanillaHudElements.ARMOR_BAR, (PlayerEntity player) -> {
+			MinecraftClient minecraft = MinecraftClient.getInstance();
+			return minecraft.interactionManager.hasStatusBars() && player.getArmor() > 0 ? 10 : 0;
+		});
 	}
 
 	private static void testToughnessBar() {
@@ -66,7 +118,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						int width = context.getScaledWindowWidth() / 2 - 91;
 						int height = context.getScaledWindowHeight() - HudStatusBarHeightRegistry.getHeight(id);
 						PlayerEntity player = ((InGameHudAccessor) hud).fabric$callGetCameraPlayer();
-						renderArmor(context, player, height, 0, 10, width);
+						renderToughness(context, player, height, 0, 10, width);
 					}
 				});
 		HudStatusBarHeightRegistry.addLeft(id, (PlayerEntity player) -> {
@@ -91,7 +143,10 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						if (((InGameHudAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
 							int width = context.getScaledWindowWidth() / 2 + 91;
 							int height = context.getScaledWindowHeight() - HudStatusBarHeightRegistry.getHeight(id);
-							renderFood(context, ((InGameHudAccessor) hud).fabric$callGetCameraPlayer(), height, width);
+							renderStamina(context,
+									((InGameHudAccessor) hud).fabric$callGetCameraPlayer(),
+									height,
+									width);
 						}
 					}
 				});
@@ -114,7 +169,54 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	/**
 	 * @see InGameHud#renderArmor(DrawContext, PlayerEntity, int, int, int, int)
 	 */
+	private static void renderHealth(DrawContext context, PlayerEntity player, int y, int heartRows, int height, int x) {
+		int l = MathHelper.floor(player.getHealth());
+
+		if (l > 0) {
+			int m = y - (heartRows - 1) * height - 10;
+
+			for (int n = 0; n < 10; ++n) {
+				int o = x + n * 8;
+				context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HEART_CONTAINER_TEXTURE, o, m, 9, 9);
+
+				if (n * 2 + 1 < l) {
+					context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HEART_FULL_TEXTURE, o, m, 9, 9);
+				}
+
+				if (n * 2 + 1 == l) {
+					context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HEART_HALF_TEXTURE, o, m, 9, 9);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @see InGameHud#renderArmor(DrawContext, PlayerEntity, int, int, int, int)
+	 */
 	private static void renderArmor(DrawContext context, PlayerEntity player, int y, int heartRows, int height, int x) {
+		int l = player.getArmor();
+
+		if (l > 0) {
+			int m = y - (heartRows - 1) * height - 10;
+
+			for (int n = 0; n < 10; ++n) {
+				int o = x + n * 8;
+
+				if (n * 2 + 1 < l) {
+					context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ARMOR_FULL_TEXTURE, o, m, 9, 9);
+				}
+
+				if (n * 2 + 1 == l) {
+					context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ARMOR_HALF_TEXTURE, o, m, 9, 9);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @see InGameHud#renderArmor(DrawContext, PlayerEntity, int, int, int, int)
+	 */
+	private static void renderToughness(DrawContext context, PlayerEntity player, int y, int heartRows, int height, int x) {
 		int i = MathHelper.floor(player.getAttributeValue(EntityAttributes.ARMOR_TOUGHNESS));
 
 		if (i > 0) {
@@ -141,7 +243,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	/**
 	 * @see InGameHud#renderFood(DrawContext, PlayerEntity, int, int)
 	 */
-	private static void renderFood(DrawContext context, PlayerEntity player, int y, int x) {
+	private static void renderStamina(DrawContext context, PlayerEntity player, int y, int x) {
 		int k = player.getHungerManager().getFoodLevel();
 
 		for (int l = 0; l < 10; l++) {
