@@ -43,6 +43,7 @@ abstract class HeadFeatureRendererMixin<T extends LivingEntity> {
 			CallbackInfo ci, @Local ItemStack headStack
 	) {
 		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(headStack.getItem());
+
 		if (renderer != null && !renderer.shouldRenderDefaultHeadItem(entity, headStack)) {
 			ci.cancel();
 		}
