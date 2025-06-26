@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.tag;
 
+import net.fabricmc.fabric.impl.tag.FabricTagEntryImpl;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,7 +39,7 @@ public class TagEntryMixin implements FabricTagEntry {
 	public TagEntryMixin() { }
 
 	{
-		removed = net.fabricmc.fabric.impl.tag.FabricTagEntryImpl.REMOVED.get() != null;
+		removed = FabricTagEntryImpl.getCurrentRemovedValue();
 		required = required && !removed;
 	}
 
