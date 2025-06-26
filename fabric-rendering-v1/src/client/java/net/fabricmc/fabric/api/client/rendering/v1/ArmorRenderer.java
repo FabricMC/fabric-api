@@ -80,4 +80,23 @@ public interface ArmorRenderer {
 	 * @param contextModel		the model provided by {@link FeatureRenderer#getContextModel()}
 	 */
 	void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, LivingEntity entity, EquipmentSlot slot, int light, BipedEntityModel<LivingEntity> contextModel);
+
+	/**
+	 * Checks whether an item stack equipped on the head should also be
+	 * rendered as an item. By default, vanilla renders most items with their models (or special item renderers)
+	 * around or on top of the entity's head, but this is often unwanted for custom equipment.
+	 *
+	 * <p>This method only applies to items registered with this renderer.
+	 *
+	 * <p>Note that the item will never be rendered by vanilla code if it's an {@link net.minecraft.item.ArmorItem}
+	 * with {@link EquipmentSlot#HEAD} as its {@linkplain net.minecraft.item.ArmorItem#getSlotType() slot type}.
+	 * This method cannot be used to overwrite that check to re-enable also rendering the item model.
+	 *
+	 * @param entity the equipping entity
+	 * @param stack  the item stack equipped on the head
+	 * @return {@code true} if the head item should be rendered, {@code false} otherwise
+	 */
+	default boolean shouldRenderDefaultHeadItem(LivingEntity entity, ItemStack stack) {
+		return true;
+	}
 }

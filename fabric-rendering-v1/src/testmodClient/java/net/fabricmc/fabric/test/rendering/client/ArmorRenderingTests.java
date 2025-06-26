@@ -17,15 +17,19 @@
 package net.fabricmc.fabric.test.rendering.client;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
+import net.fabricmc.fabric.test.rendering.ArmorRenderingTestsInit;
 
 public class ArmorRenderingTests implements ClientModInitializer {
 	private BipedEntityModel<LivingEntity> armorModel;
@@ -34,18 +38,27 @@ public class ArmorRenderingTests implements ClientModInitializer {
 	// Renders a biped model with dirt texture, replacing diamond helmet and diamond chest plate rendering
 	@Override
 	public void onInitializeClient() {
-		ArmorRenderer.register((matrices, vertexConsumers, stack, entity, slot, light, model) -> {
-			if (armorModel == null) {
-				armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
+		ArmorRenderer renderer = new ArmorRenderer() {
+			@Override
+			public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, LivingEntity entity, EquipmentSlot slot, int light, BipedEntityModel<LivingEntity> model) {
+				if (armorModel == null) {
+					armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
+				}
+
+				model.copyBipedStateTo(armorModel);
+				armorModel.setVisible(false);
+				armorModel.body.visible = slot == EquipmentSlot.CHEST;
+				armorModel.leftArm.visible = slot == EquipmentSlot.CHEST;
+				armorModel.rightArm.visible = slot == EquipmentSlot.CHEST;
+				armorModel.head.visible = slot == EquipmentSlot.HEAD;
+				ArmorRenderer.renderPart(matrices, vertexConsumers, light, stack, armorModel, texture);
 			}
 
-			model.copyBipedStateTo(armorModel);
-			armorModel.setVisible(false);
-			armorModel.body.visible = slot == EquipmentSlot.CHEST;
-			armorModel.leftArm.visible = slot == EquipmentSlot.CHEST;
-			armorModel.rightArm.visible = slot == EquipmentSlot.CHEST;
-			armorModel.head.visible = slot == EquipmentSlot.HEAD;
-			ArmorRenderer.renderPart(matrices, vertexConsumers, light, stack, armorModel, texture);
-		}, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE);
+			@Override
+			public boolean shouldRenderDefaultHeadItem(LivingEntity entity, ItemStack stack) {
+				return !stack.isOf(ArmorRenderingTestsInit.CUSTOM_HELMET);
+			}
+		};
+		ArmorRenderer.register(renderer, ArmorRenderingTestsInit.CUSTOM_HELMET, Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE);
 	}
 }
