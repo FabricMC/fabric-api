@@ -82,6 +82,11 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 			public Advancement.Builder getAdvancementBuilder() {
 				return exporter.getAdvancementBuilder();
 			}
+
+			@Override
+			public Identifier getRecipeIdentifier(Identifier recipeId) {
+				return exporter.getRecipeIdentifier(recipeId);
+			}
 		};
 	}
 
@@ -92,10 +97,8 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 		generate(new RecipeExporter() {
 			@Override
 			public void accept(Identifier recipeId, Recipe<?> recipe, @Nullable AdvancementEntry advancement) {
-				Identifier identifier = getRecipeIdentifier(recipeId);
-
-				if (!generatedRecipes.add(identifier)) {
-					throw new IllegalStateException("Duplicate recipe " + identifier);
+				if (!generatedRecipes.add(recipeId)) {
+					throw new IllegalStateException("Duplicate recipe " + recipeId);
 				}
 
 				RegistryOps<JsonElement> registryOps = wrapperLookup.getOps(JsonOps.INSTANCE);
@@ -103,7 +106,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(recipe);
 				FabricDataGenHelper.addConditions(recipeJson, conditions);
 
-				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(identifier)));
+				list.add(DataProvider.writeToPath(writer, recipeJson, recipesPathResolver.resolveJson(recipeId)));
 
 				if (advancement != null) {
 					JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
@@ -116,6 +119,11 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 			public Advancement.Builder getAdvancementBuilder() {
 				//noinspection removal
 				return Advancement.Builder.createUntelemetered().parent(CraftingRecipeJsonBuilder.ROOT);
+			}
+
+			@Override
+			public Identifier getRecipeIdentifier(Identifier recipeId) {
+				return FabricRecipeProvider.this.getRecipeIdentifier(recipeId);
 			}
 		});
 		return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));

@@ -8,7 +8,11 @@
     "TagBuilderMixin",
     "TagProviderMixin",
     "loot.BlockLootTableGeneratorAccessor",
-    "loot.BlockLootTableGeneratorMixin"
+    "loot.BlockLootTableGeneratorMixin",
+    "recipe.AllCraftingRecipeJsonBuildersMixin",
+    "recipe.ComplexRecipeJsonBuilderMixin",
+    "recipe.SmithingTransformRecipeJsonBuilderMixin",
+    "recipe.SmithingTrimRecipeJsonBuilderMixin"
   ],
   "server": [
     "server.MainMixin"
