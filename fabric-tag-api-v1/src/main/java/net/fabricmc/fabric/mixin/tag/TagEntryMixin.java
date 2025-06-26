@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.tag;
 
-import net.fabricmc.fabric.impl.tag.FabricTagEntryImpl;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,6 +24,7 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.registry.tag.TagEntry;
 
 import net.fabricmc.fabric.api.tag.v1.FabricTagEntry;
+import net.fabricmc.fabric.impl.tag.FabricTagEntryImpl;
 
 @Mixin(TagEntry.class)
 public class TagEntryMixin implements FabricTagEntry {
