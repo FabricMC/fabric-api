@@ -44,18 +44,18 @@ public final class FabricTagEntryImpl {
 	/**
 	 * A Fake Argument to the {@link TagEntry} constructor representing whether the entry will have it's {@code removed} flag set.
 	 */
-	public static final ThreadLocal<Unit> REMOVED = new ThreadLocal<>();
+	private static final ThreadLocal<Unit> REMOVED = new ThreadLocal<>();
 
 	private FabricTagEntryImpl() {
 		throw new UnsupportedOperationException();
 	}
 
-	public static <T> T withRemovedValue(Boolean value, Supplier<T> action) {
+	public static <T> T withRemovedValue(boolean value, Supplier<T> action) {
 		@Nullable
 		Unit initialValue = REMOVED.get();
 
 		try {
-			if (Boolean.TRUE.equals(value)) {
+			if (value) {
 				REMOVED.set(Unit.INSTANCE);
 			} else {
 				REMOVED.remove();
@@ -69,5 +69,9 @@ public final class FabricTagEntryImpl {
 				REMOVED.set(initialValue);
 			}
 		}
+	}
+
+	public static boolean getCurrentRemovedValue() {
+		return REMOVED.get() != null;
 	}
 }
