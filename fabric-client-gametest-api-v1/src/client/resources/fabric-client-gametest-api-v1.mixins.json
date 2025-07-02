@@ -27,7 +27,6 @@
     "threading.MinecraftServerMixin",
     "threading.MainMixin",
     "threading.ThreadExecutorMixin",
-    "world.CreateWorldScreenAccessor",
     "world.CreateWorldScreenMixin"
   ],
   "plugin": "net.fabricmc.fabric.impl.client.gametest.ClientGameTestMixinConfigPlugin",
