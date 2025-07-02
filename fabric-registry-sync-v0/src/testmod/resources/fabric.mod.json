@@ -15,6 +15,7 @@
     "main": [
       "net.fabricmc.fabric.test.registry.sync.CustomDynamicRegistryTest",
       "net.fabricmc.fabric.test.registry.sync.RegistrySyncTest",
+      "net.fabricmc.fabric.test.registry.sync.CustomRegistryEntryListsTest",
       "net.fabricmc.fabric.test.registry.sync.RegistryAliasTest"
     ],
     "client": [
