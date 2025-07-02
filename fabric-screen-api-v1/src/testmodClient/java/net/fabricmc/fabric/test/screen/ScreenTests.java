@@ -26,6 +26,9 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.client.gui.screen.option.ControlsOptionsScreen;
+import net.minecraft.client.gui.screen.option.KeybindsScreen;
+import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
@@ -48,6 +51,16 @@ public final class ScreenTests implements ClientModInitializer {
 		});
 
 		ScreenEvents.AFTER_INIT.register(this::afterInitScreen);
+
+		// skip the control options screen and go directly to keybindings when coming from the main options screen
+		ScreenEvents.OPEN.register((oldScreen, newScreen) -> {
+			if (oldScreen instanceof OptionsScreen && newScreen instanceof ControlsOptionsScreen) {
+				// the new screen does not have a client instance set yet
+				return new KeybindsScreen(newScreen, Screens.getClient(oldScreen).options);
+			} else {
+				return newScreen;
+			}
+		});
 	}
 
 	private void afterInitScreen(MinecraftClient client, Screen screen, int windowWidth, int windowHeight) {

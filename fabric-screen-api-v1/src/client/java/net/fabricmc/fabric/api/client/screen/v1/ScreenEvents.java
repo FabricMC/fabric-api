@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.client.screen.v1;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -43,6 +45,26 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
  */
 
 public final class ScreenEvents {
+	/**
+	 * Called just before a new screen is set to {@link net.minecraft.client.MinecraftClient#currentScreen} in
+	 * {@link net.minecraft.client.MinecraftClient#setScreen(Screen)}, allows for exchanging the new screen with a
+	 * different one, or can prevent a new screen from opening, by returning the original screen.
+	 *
+	 * <p>Note that the old screen has already been removed by calling {@link Screen#removed()}, and the new screen
+	 * will always be initialized via {@link Screen#init(MinecraftClient, int, int)}.
+	 */
+	public static final Event<Open> OPEN = EventFactory.createArrayBacked(Open.class,
+			callbacks -> (oldScreen, newScreen) -> {
+				for (Open callback : callbacks) {
+					Screen screen = callback.onOpen(oldScreen, newScreen);
+
+					if (screen != newScreen) {
+						return screen;
+					}
+				}
+
+				return newScreen;
+			});
 	/**
 	 * An event that is called before {@link Screen#init(MinecraftClient, int, int) a screen is initialized} to its default state.
 	 * It should be noted some methods in {@link Screens} such as a screen's {@link Screen#getTextRenderer text renderer} may not be initialized yet, and as such their use is discouraged.
@@ -157,6 +179,19 @@ public final class ScreenEvents {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterTickEvent();
+	}
+
+	@FunctionalInterface
+	public interface Open {
+		/**
+		 * @param oldScreen the screen that is being removed, which may be {@code null} when opening the screen from
+		 *                  {@link net.minecraft.client.gui.hud.InGameHud}, like
+		 *                  {@link net.minecraft.client.gui.screen.GameMenuScreen}
+		 * @param newScreen the new screen that is being set, which may be {@code null} when closing a screen and returning
+		 *                  to the in-game hud
+		 * @return the screen to be opened, by default the new screen
+		 */
+		@Nullable Screen onOpen(@Nullable Screen oldScreen, @Nullable Screen newScreen);
 	}
 
 	@FunctionalInterface
