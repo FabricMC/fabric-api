@@ -16,7 +16,21 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.networking.v1.CustomClickActionListener;
+import net.fabricmc.fabric.impl.networking.CustomClickEventHandlerRegistry;
+
+import net.minecraft.network.packet.c2s.common.CustomClickActionC2SPacket;
+
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+
+import net.minecraft.server.network.ServerPlayerEntity;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -53,6 +67,23 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 	private void onPlayPong(CommonPongC2SPacket packet, CallbackInfo ci) {
 		if (getAddon() instanceof ServerConfigurationNetworkAddon addon) {
 			addon.onPong(packet.getParameter());
+		}
+	}
+
+	@WrapMethod(method = "onCustomClickAction")
+	protected void overrideCustomClickAction(CustomClickActionC2SPacket packet, Operation<Void> original) {
+		original.call(packet);
+	}
+
+	@Mixin(ServerPlayNetworkHandler.class)
+	private abstract static class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandlerMixin {
+		@Shadow
+		public ServerPlayerEntity player;
+
+		@Override
+		protected void overrideCustomClickAction(CustomClickActionC2SPacket packet, Operation<Void> original) {
+			super.overrideCustomClickAction(packet, original);
+			CustomClickEventHandlerRegistry.invokeListenerEvent(packet.id(), this.player, packet.payload());
 		}
 	}
 }
