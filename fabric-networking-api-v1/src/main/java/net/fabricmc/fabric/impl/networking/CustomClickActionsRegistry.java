@@ -28,11 +28,12 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
 import net.fabricmc.fabric.api.networking.v1.CustomClickActionEvents;
 
-public final class CustomClickActionsRegistry<T extends CustomClickActionEvents.CommonContext> {
-	public static final CustomClickActionsRegistry<CustomClickActionEvents.PlayContext> PLAY_REGISTRY = new CustomClickActionsRegistry<>();
-	public static final CustomClickActionsRegistry<CustomClickActionEvents.ConfigContext> CONFIG_REGISTRY = new CustomClickActionsRegistry<>();
+public final class CustomClickActionsRegistry<T extends CustomClickEventContext> {
+	public static final CustomClickActionsRegistry<CustomClickEventContext.Play> PLAY_REGISTRY = new CustomClickActionsRegistry<>();
+	public static final CustomClickActionsRegistry<CustomClickEventContext.Configuration> CONFIGURATION_REGISTRY = new CustomClickActionsRegistry<>();
 
 	private final Map<Identifier, Event<CustomClickActionEvents.ClickActionReceived<T>>> registry = new HashMap<>();
 
@@ -63,13 +64,13 @@ public final class CustomClickActionsRegistry<T extends CustomClickActionEvents.
 	public record PlayContextImpl(
 			ServerPlayNetworkHandler handler,
 			@Nullable NbtElement payload
-	) implements CustomClickActionEvents.PlayContext {
+	) implements CustomClickEventContext.Play {
 	}
 
-	public record ConfigContextImpl(
+	public record ConfigurationContextImpl(
 			ServerConfigurationNetworkHandler handler,
 			@Nullable NbtElement payload
-	) implements CustomClickActionEvents.ConfigContext {
+	) implements CustomClickEventContext.Configuration {
 	}
 
 	private CustomClickActionsRegistry() {

@@ -201,9 +201,9 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	public void invokeCustomClickActionEvent(Identifier id, @Nullable NbtElement payload) {
-		CustomClickActionsRegistry.CONFIG_REGISTRY.invokeListenerEvent(
+		CustomClickActionsRegistry.CONFIGURATION_REGISTRY.invokeListenerEvent(
 				id,
-				new CustomClickActionsRegistry.ConfigContextImpl(this.handler, payload)
+				new CustomClickActionsRegistry.ConfigurationContextImpl(this.handler, payload)
 		);
 	}
 

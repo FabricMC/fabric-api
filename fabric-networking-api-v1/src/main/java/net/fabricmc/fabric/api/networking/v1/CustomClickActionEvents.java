@@ -18,49 +18,48 @@ package net.fabricmc.fabric.api.networking.v1;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.server.network.ServerCommonNetworkHandler;
-import net.minecraft.server.network.ServerConfigurationNetworkHandler;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
 
+/**
+ * Events for listening to {@linkplain net.minecraft.text.ClickEvent.Custom custom click actions}, such as from a
+ * dialog.
+ */
 public final class CustomClickActionEvents {
-	public static Event<ClickActionReceived<PlayContext>> playClickActionEvent(Identifier id) {
+	/**
+	 * Gets an event that is invoked on the server when a custom click event is received during the PLAY phase. The
+	 * returned event will only be invoked when a click event is received with the given ID.
+	 *
+	 * @param id The of the ID click event to listen to.
+	 * @return Returns an event that will be invoked when a click event with the given ID is received during the PLAY
+	 * phase.
+	 */
+	public static Event<ClickActionReceived<CustomClickEventContext.Play>> playClickActionEvent(Identifier id) {
 		Objects.requireNonNull(id, "ID cannot be null");
 		return CustomClickActionsRegistry.PLAY_REGISTRY.getOrCreateActionEvent(id);
 	}
 
-	public static Event<ClickActionReceived<ConfigContext>> configClickActionEvent(Identifier id) {
+	/**
+	 * Gets an event that is invoked on the server when a custom click event is received during the CONFIGURATION phase.
+	 * The returned event will only be invoked when a click event is received with the given ID.
+	 *
+	 * @param id The of the ID click event to listen to.
+	 * @return Returns an event that will be invoked when a click event with the given ID is received during the
+	 * CONFIGURATION phase.
+	 */
+	public static Event<ClickActionReceived<CustomClickEventContext.Configuration>> configurationClickActionEvent(Identifier id) {
 		Objects.requireNonNull(id, "ID cannot be null");
-		return CustomClickActionsRegistry.CONFIG_REGISTRY.getOrCreateActionEvent(id);
-	}
-
-	@ApiStatus.NonExtendable
-	public interface CommonContext {
-		ServerCommonNetworkHandler handler();
-
-		@Nullable
-		NbtElement payload();
-	}
-
-	@ApiStatus.NonExtendable
-	public interface PlayContext extends CommonContext {
-		ServerPlayNetworkHandler handler();
-	}
-
-	@ApiStatus.NonExtendable
-	public interface ConfigContext extends CommonContext {
-		ServerConfigurationNetworkHandler handler();
+		return CustomClickActionsRegistry.CONFIGURATION_REGISTRY.getOrCreateActionEvent(id);
 	}
 
 	@FunctionalInterface
-	public interface ClickActionReceived<T extends CommonContext> {
+	public interface ClickActionReceived<T extends CustomClickEventContext> {
+		/**
+		 * Handles a custom click event on the server from a given context.
+		 * @param context The context of the event, contains the handler responsible for the action and the payload.
+		 */
 		void handleCustomClickAction(T context);
 	}
 
