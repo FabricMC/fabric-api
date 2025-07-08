@@ -30,7 +30,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
  */
 public sealed interface CustomClickEventContext permits CustomClickEventContext.Play, CustomClickEventContext.Configuration {
 	/**
-	 * The handler responsible for the event
+	 * The handler responsible for the event.
 	 */
 	ServerCommonNetworkHandler handler();
 
@@ -46,7 +46,7 @@ public sealed interface CustomClickEventContext permits CustomClickEventContext.
 	@ApiStatus.NonExtendable
 	non-sealed interface Play extends CustomClickEventContext {
 		/**
-		 * The play handler responsible for the event
+		 * The play handler responsible for the event.
 		 */
 		ServerPlayNetworkHandler handler();
 	}
@@ -57,7 +57,7 @@ public sealed interface CustomClickEventContext permits CustomClickEventContext.
 	@ApiStatus.NonExtendable
 	non-sealed interface Configuration extends CustomClickEventContext {
 		/**
-		 * The configuration handler responsible for the event
+		 * The configuration handler responsible for the event.
 		 */
 		ServerConfigurationNetworkHandler handler();
 	}
