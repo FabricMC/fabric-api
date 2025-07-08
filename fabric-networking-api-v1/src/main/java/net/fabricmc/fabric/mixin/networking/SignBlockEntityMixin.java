@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
 import com.llamalad7.mixinextras.sugar.Local;
 
-import net.fabricmc.fabric.impl.networking.CustomClickEventHandlerRegistry;
+import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
 
 import net.minecraft.block.entity.SignBlockEntity;
 
@@ -32,7 +32,11 @@ public class SignBlockEntityMixin {
 	private void hookCustomClickActionListener(MinecraftServer instance, Identifier id, Optional<NbtElement> payload, Operation<Void> original, @Local(argsOnly = true) PlayerEntity player) {
 		original.call(instance, id, payload);
 
-		// base method has a serverworld parameter, so the player should be a server player
-		CustomClickEventHandlerRegistry.invokeListenerEvent(id, (ServerPlayerEntity) player, payload);
+		if (player instanceof ServerPlayerEntity serverPlayer) {
+			CustomClickActionsRegistry.PLAY_REGISTRY.invokeListenerEvent(
+					id,
+					new CustomClickActionsRegistry.PlayContextImpl(serverPlayer.networkHandler, payload.orElse(null))
+			);
+		}
 	}
 }

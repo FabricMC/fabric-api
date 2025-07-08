@@ -26,6 +26,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import net.minecraft.nbt.NbtElement;
+
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,4 +174,7 @@ public abstract class AbstractNetworkAddon<H> {
 	 * @return whether the channel is reserved
 	 */
 	protected abstract boolean isReservedChannel(Identifier channelName);
+
+	public void invokeCustomClickActionEvent(Identifier id, @Nullable NbtElement payload) {
+	}
 }

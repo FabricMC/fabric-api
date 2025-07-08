@@ -21,6 +21,11 @@ import java.util.List;
 import java.util.Objects;
 
 import io.netty.channel.ChannelFutureListener;
+
+import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
+
+import net.minecraft.nbt.NbtElement;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.NetworkPhase;
@@ -195,6 +200,14 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	public void setReconfiguring() {
 		isReconfiguring = true;
+	}
+
+	@Override
+	public void invokeCustomClickActionEvent(Identifier id, @Nullable NbtElement payload) {
+		CustomClickActionsRegistry.CONFIG_REGISTRY.invokeListenerEvent(
+				id,
+				new CustomClickActionsRegistry.ConfigContextImpl(this.handler, payload)
+		);
 	}
 
 	private enum RegisterState {

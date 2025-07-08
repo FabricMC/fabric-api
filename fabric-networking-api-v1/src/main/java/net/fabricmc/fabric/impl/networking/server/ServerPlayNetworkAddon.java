@@ -20,6 +20,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
+
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.packet.CustomPayload;
@@ -37,6 +40,8 @@ import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
+
+import org.jetbrains.annotations.Nullable;
 
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayPayloadHandler<?>> {
 	private final ServerPlayNetworkHandler handler;
@@ -142,6 +147,14 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	public boolean requestedReconfigure() {
 		return requestedReconfigure;
+	}
+
+	@Override
+	public void invokeCustomClickActionEvent(Identifier id, @Nullable NbtElement payload) {
+		CustomClickActionsRegistry.PLAY_REGISTRY.invokeListenerEvent(
+				id,
+				new CustomClickActionsRegistry.PlayContextImpl(this.handler, payload)
+		);
 	}
 
 	private record ContextImpl(MinecraftServer server, ServerPlayNetworkHandler handler, PacketSender responseSender) implements ServerPlayNetworking.Context {
