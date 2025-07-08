@@ -28,8 +28,8 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
 import net.fabricmc.fabric.api.networking.v1.CustomClickActionEvents;
+import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
 
 public final class CustomClickActionsRegistry<T extends CustomClickEventContext> {
 	public static final CustomClickActionsRegistry<CustomClickEventContext.Play> PLAY_REGISTRY = new CustomClickActionsRegistry<>();

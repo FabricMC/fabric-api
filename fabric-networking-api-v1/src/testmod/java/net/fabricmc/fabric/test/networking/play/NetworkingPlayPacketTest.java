@@ -28,6 +28,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
+import net.minecraft.dialog.type.Dialog;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
@@ -36,6 +37,9 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -56,6 +60,8 @@ import net.fabricmc.fabric.test.networking.common.NetworkingCommonTest;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class NetworkingPlayPacketTest implements ModInitializer {
+	private static final RegistryKey<Dialog> PLAY_TEST_DIALOG = RegistryKey.of(RegistryKeys.DIALOG, NetworkingTestmods.id("play_custom_click_event"));
+
 	private static boolean spamUnknownPackets = false;
 
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
@@ -132,6 +138,14 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					sendToUnknownChannel(player);
 				}
 			}
+		});
+
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			RegistryEntry<Dialog> testDialog = server.getRegistryManager()
+					.getOrThrow(RegistryKeys.DIALOG)
+					.getOrThrow(PLAY_TEST_DIALOG);
+
+			handler.getPlayer().openDialog(testDialog);
 		});
 
 		CustomClickActionEvents.playClickActionEvent(NetworkingTestmods.id("play_event")).register(
