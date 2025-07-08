@@ -16,7 +16,6 @@
     "PlayerManagerMixin",
     "RegistryByteBufMixin",
     "ServerCommonNetworkHandlerMixin",
-    "ServerCommonNetworkHandlerMixin$ServerPlayNetworkHandlerMixin",
     "ServerConfigurationNetworkHandlerMixin",
     "ServerLoginNetworkHandlerMixin",
     "ServerPlayNetworkHandlerMixin",

@@ -48,14 +48,12 @@ public final class CustomClickActionsRegistry<T extends CustomClickActionEvents.
 			ServerPlayNetworkHandler handler,
 			@Nullable NbtElement payload
 	) implements CustomClickActionEvents.PlayContext {
-
 	}
 
 	public record ConfigContextImpl(
 			ServerConfigurationNetworkHandler handler,
 			@Nullable NbtElement payload
 	) implements CustomClickActionEvents.ConfigContext {
-
 	}
 
 	private CustomClickActionsRegistry() {

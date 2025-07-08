@@ -28,6 +28,9 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
+import net.fabricmc.fabric.api.networking.v1.CustomClickActionEvents;
+
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.RegistryByteBuf;
@@ -131,6 +134,15 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				}
 			}
 		});
+
+		CustomClickActionEvents.playClickActionEvent(NetworkingTestmods.id("play_event")).register(
+				context -> {
+					NbtElement payload = context.payload();
+					String payloadString = payload != null ? payload.toString() : "null";
+					Text message = Text.translatable("key.fabric-networking-api-v1-testmod.customClick.play.received", payloadString);
+					context.handler().getPlayer().sendMessage(message);
+				}
+		);
 	}
 
 	public record OverlayPacket(Text message) implements CustomPayload {
