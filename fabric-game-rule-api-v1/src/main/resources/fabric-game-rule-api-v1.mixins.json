@@ -7,7 +7,6 @@
     "GameRuleCommandAccessor",
     "GameRuleCommandVisitorMixin",
     "GameRulesAccessor",
-    "GameRulesIntRuleAccessor",
     "GameRulesKeyMixin"
   ],
   "injectors": {

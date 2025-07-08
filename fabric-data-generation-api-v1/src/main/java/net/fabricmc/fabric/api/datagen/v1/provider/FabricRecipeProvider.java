@@ -126,7 +126,7 @@ public abstract class FabricRecipeProvider extends RecipeGenerator.RecipeProvide
 					if (advancement != null) {
 						JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
 						FabricDataGenHelper.addConditions(advancementJson, conditions);
-						list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(getRecipeIdentifier(advancement.id()))));
+						list.add(DataProvider.writeToPath(writer, advancementJson, advancementsPathResolver.resolveJson(advancement.id())));
 					}
 				}
 
