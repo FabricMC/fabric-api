@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.ClientConnection;
@@ -38,10 +38,9 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
+import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
-
-import org.jetbrains.annotations.Nullable;
 
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayPayloadHandler<?>> {
 	private final ServerPlayNetworkHandler handler;

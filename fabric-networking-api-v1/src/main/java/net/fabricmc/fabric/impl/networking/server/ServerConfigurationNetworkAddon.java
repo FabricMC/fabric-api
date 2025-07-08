@@ -21,13 +21,9 @@ import java.util.List;
 import java.util.Objects;
 
 import io.netty.channel.ChannelFutureListener;
-
-import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
-
-import net.minecraft.nbt.NbtElement;
-
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.packet.BrandCustomPayload;
 import net.minecraft.network.packet.CustomPayload;
@@ -43,6 +39,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
+import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
