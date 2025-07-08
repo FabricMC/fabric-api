@@ -46,7 +46,6 @@ import net.fabricmc.fabric.impl.client.gametest.context.TestSingleplayerContextI
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.fabricmc.fabric.impl.client.gametest.util.ClientGameTestImpl;
 import net.fabricmc.fabric.impl.client.gametest.util.DedicatedServerImplUtil;
-import net.fabricmc.fabric.mixin.client.gametest.world.CreateWorldScreenAccessor;
 
 public class TestWorldBuilderImpl implements TestWorldBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
@@ -117,7 +116,7 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 				throw new AssertionError("CreateWorldScreen.show did not set the current screen");
 			}
 
-			WorldCreator creator = ((CreateWorldScreenAccessor) createWorldScreen).getWorldCreator();
+			WorldCreator creator = createWorldScreen.getWorldCreator();
 
 			if (useConsistentSettings) {
 				setConsistentSettings(creator);
