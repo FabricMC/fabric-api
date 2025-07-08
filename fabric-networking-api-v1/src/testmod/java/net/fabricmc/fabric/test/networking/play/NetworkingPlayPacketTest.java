@@ -108,6 +108,18 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					ServerPlayNetworking.reconfigure(ctx.getSource().getPlayer());
 					return Command.SINGLE_SUCCESS;
 				}))
+				.then(literal("testdialog").executes(ctx -> {
+					ServerPlayerEntity player = ctx.getSource().getPlayer();
+
+					if (player != null) {
+						RegistryEntry<Dialog> testDialog = ctx.getSource()
+								.getRegistryManager()
+								.getOrThrow(RegistryKeys.DIALOG)
+								.getOrThrow(PLAY_TEST_DIALOG);
+						player.openDialog(testDialog);
+					}
+					return Command.SINGLE_SUCCESS;
+				}))
 		);
 	}
 
@@ -138,14 +150,6 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 					sendToUnknownChannel(player);
 				}
 			}
-		});
-
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			RegistryEntry<Dialog> testDialog = server.getRegistryManager()
-					.getOrThrow(RegistryKeys.DIALOG)
-					.getOrThrow(PLAY_TEST_DIALOG);
-
-			handler.getPlayer().openDialog(testDialog);
 		});
 
 		CustomClickActionEvents.playClickActionEvent(NetworkingTestmods.id("play_event")).register(
