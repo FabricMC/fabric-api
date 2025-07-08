@@ -54,6 +54,7 @@ public final class CustomClickActionsRegistry<T extends CustomClickActionEvents.
 
 	public void invokeListenerEvent(Identifier id, T context) {
 		Event<CustomClickActionEvents.ClickActionReceived<T>> event = this.registry.get(id);
+
 		if (event != null) {
 			event.invoker().handleCustomClickAction(context);
 		}
