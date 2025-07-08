@@ -16,6 +16,13 @@
 
 package net.fabricmc.fabric.test.networking.client.configuration;
 
+import net.fabricmc.fabric.test.networking.NetworkingTestmods;
+
+import net.minecraft.nbt.NbtString;
+import net.minecraft.network.packet.c2s.common.CustomClickActionC2SPacket;
+import net.minecraft.network.packet.s2c.common.ShowDialogS2CPacket;
+import net.minecraft.text.ClickEvent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +30,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.test.networking.configuration.NetworkingConfigurationTest;
+
+import java.util.Optional;
 
 public class NetworkingConfigurationClientTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetworkingConfigurationTest.class);
@@ -45,6 +54,19 @@ public class NetworkingConfigurationClientTest implements ClientModInitializer {
 
 			LOGGER.info("Sending configuration start packet to server");
 			ClientConfigurationNetworking.send(NetworkingConfigurationTest.ConfigurationStartPacket.INSTANCE);
+		});
+
+		// This is a test of the CONFIGURATION event in CustomClickActionEvents. When this packet is received, a message
+		// should appear in the log showing the event has been received by the server, with the payload.
+		// Rather than using an actual dialog (which breaks E2E client tests), this mocks the behaviour of clicking on a
+		// custom event button by sending the packet that such an action would normally send.
+		ClientConfigurationNetworking.registerGlobalReceiver(NetworkingConfigurationTest.MockShowDialogPacket.ID, (packet, context) -> {
+			context.responseSender().sendPacket(
+					new CustomClickActionC2SPacket(
+							NetworkingTestmods.id("configuration_event"),
+							Optional.of(NbtString.of("this is a payload"))
+					)
+			);
 		});
 	}
 }

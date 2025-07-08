@@ -56,6 +56,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		PayloadTypeRegistry.configurationS2C().register(ConfigurationPacket.ID, ConfigurationPacket.CODEC);
 		PayloadTypeRegistry.configurationC2S().register(ConfigurationCompletePacket.ID, ConfigurationCompletePacket.CODEC);
 		PayloadTypeRegistry.configurationC2S().register(ConfigurationStartPacket.ID, ConfigurationStartPacket.CODEC);
+		PayloadTypeRegistry.configurationS2C().register(MockShowDialogPacket.ID, MockShowDialogPacket.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			if (ServerConfigurationNetworking.isReconfiguring(handler)) {
@@ -83,13 +84,10 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> DebugConfigCommand.register(dispatcher, registryAccess));
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
-			RegistryEntry<Dialog> testDialog = server.getRegistryManager()
-					.getOrThrow(RegistryKeys.DIALOG)
-					.getOrThrow(CONFIGURATION_TEST_DIALOG);
-
-			// open the dialog screen on the client
+			// open a dialog screen on the client
+			// note: normally you would actually use ShowDialogS2CPacket, a mock packet is used here for testing purposes
 			// important: use a task to prevent this dialog from being quickly skipped over
-			handler.addTask(new TestDialogConfigurationTask(testDialog));
+			handler.addTask(new TestDialogConfigurationTask(CONFIGURATION_TEST_DIALOG));
 		});
 
 		CustomClickActionEvents.configurationClickActionEvent(NetworkingTestmods.id("configuration_event")).register(
@@ -119,13 +117,13 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		}
 	}
 
-	public record TestDialogConfigurationTask(RegistryEntry<Dialog> dialog) implements ServerPlayerConfigurationTask {
+	public record TestDialogConfigurationTask(RegistryKey<Dialog> dialog) implements ServerPlayerConfigurationTask {
 		public static final Key KEY = new Key(Identifier.of(NetworkingTestmods.ID, "configure_dialog").toString());
 
 		@Override
 		public void sendPacket(Consumer<Packet<?>> sender) {
-			var packet = new ShowDialogS2CPacket(dialog);
-			sender.accept(packet);
+			var packet = new MockShowDialogPacket(dialog);
+			sender.accept(ServerConfigurationNetworking.createS2CPacket(packet));
 		}
 
 		@Override
@@ -144,6 +142,24 @@ public class NetworkingConfigurationTest implements ModInitializer {
 
 		public void write(PacketByteBuf buf) {
 			buf.writeString(data);
+		}
+
+		@Override
+		public Id<? extends CustomPayload> getId() {
+			return ID;
+		}
+	}
+
+	public record MockShowDialogPacket(RegistryKey<Dialog> dialog) implements CustomPayload {
+		public static final CustomPayload.Id<MockShowDialogPacket> ID = new Id<>(Identifier.of(NetworkingTestmods.ID, "mock_show_dialog"));
+		public static final PacketCodec<PacketByteBuf, MockShowDialogPacket> CODEC = CustomPayload.codecOf(MockShowDialogPacket::write, MockShowDialogPacket::new);
+
+		public MockShowDialogPacket(PacketByteBuf buf) {
+			this(buf.readRegistryKey(RegistryKeys.DIALOG));
+		}
+
+		public void write(PacketByteBuf buf) {
+			buf.writeRegistryKey(dialog);
 		}
 
 		@Override
