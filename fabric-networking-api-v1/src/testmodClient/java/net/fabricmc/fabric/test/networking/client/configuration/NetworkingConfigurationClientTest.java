@@ -16,22 +16,19 @@
 
 package net.fabricmc.fabric.test.networking.client.configuration;
 
-import net.fabricmc.fabric.test.networking.NetworkingTestmods;
-
-import net.minecraft.nbt.NbtString;
-import net.minecraft.network.packet.c2s.common.CustomClickActionC2SPacket;
-import net.minecraft.network.packet.s2c.common.ShowDialogS2CPacket;
-import net.minecraft.text.ClickEvent;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.nbt.NbtString;
+import net.minecraft.network.packet.c2s.common.CustomClickActionC2SPacket;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
+import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.fabric.test.networking.configuration.NetworkingConfigurationTest;
-
-import java.util.Optional;
 
 public class NetworkingConfigurationClientTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetworkingConfigurationTest.class);

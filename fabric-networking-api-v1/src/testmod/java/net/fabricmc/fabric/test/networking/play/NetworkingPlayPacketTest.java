@@ -118,6 +118,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 								.getOrThrow(PLAY_TEST_DIALOG);
 						player.openDialog(testDialog);
 					}
+
 					return Command.SINGLE_SUCCESS;
 				}))
 		);
