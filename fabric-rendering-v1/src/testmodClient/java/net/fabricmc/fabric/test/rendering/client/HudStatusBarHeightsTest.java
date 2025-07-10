@@ -99,6 +99,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						renderArmor(context, player, height, 0, 10, width);
 					}
 				});
+
 		// it does not matter whether this is registered, as it supplies the same values as the vanilla behavior
 		if (false) {
 			HudStatusBarHeightRegistry.addLeft(VanillaHudElements.ARMOR_BAR, (PlayerEntity player) -> {
