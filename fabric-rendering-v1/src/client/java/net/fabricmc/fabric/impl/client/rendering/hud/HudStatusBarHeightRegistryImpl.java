@@ -286,18 +286,6 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	private static void addOrderedHeightProvider(HudLayer hudLayer, Map<Identifier, StatusBarHeightProvider> heightProviderLookup, Consumer<Identifier> heightProviderConsumer) {
 		// height providers for removed layers are skipped, as there is no way to remove them manually
 		if (!hudLayer.isRemoved() && heightProviderLookup.containsKey(hudLayer.id())) {
-			// replaced vanilla hud elements must have a new height provider registered to replace the functionality
-			// of our wrapping for vanilla hud elements to apply height provider offsets
-			if (hudLayer.isReplaced()) {
-				StatusBarHeightProvider heightProvider = heightProviderLookup.get(hudLayer.id());
-
-				if (heightProvider == VANILLA_LEFT_HEIGHT_PROVIDERS.get(hudLayer.id())
-						|| heightProvider == VANILLA_RIGHT_HEIGHT_PROVIDERS.get(hudLayer.id())) {
-					throw new IllegalStateException("Vanilla hud element " + hudLayer.id()
-							+ " replaced without providing a new status bar height provider in HudStatusBarHeightRegistry");
-				}
-			}
-
 			heightProviderConsumer.accept(hudLayer.id());
 		}
 	}

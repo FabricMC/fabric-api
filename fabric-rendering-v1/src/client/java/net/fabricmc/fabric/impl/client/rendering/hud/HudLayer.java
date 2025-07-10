@@ -29,17 +29,15 @@ public interface HudLayer {
 
 	boolean isRemoved();
 
-	boolean isReplaced();
-
 	static HudLayer ofVanilla(Identifier id) {
-		return of(id, Function.identity(), false, false);
+		return of(id, Function.identity(), false);
 	}
 
 	static HudLayer ofElement(Identifier id, HudElement element) {
-		return of(id, $ -> element, false, false);
+		return of(id, $ -> element, false);
 	}
 
-	static HudLayer of(Identifier id, Function<HudElement, HudElement> operator, boolean isRemoved, boolean isReplaced) {
+	static HudLayer of(Identifier id, Function<HudElement, HudElement> operator, boolean isRemoved) {
 		return new HudLayer() {
 			@Override
 			public Identifier id() {
@@ -54,11 +52,6 @@ public interface HudLayer {
 			@Override
 			public boolean isRemoved() {
 				return isRemoved;
-			}
-
-			@Override
-			public boolean isReplaced() {
-				return isReplaced;
 			}
 		};
 	}

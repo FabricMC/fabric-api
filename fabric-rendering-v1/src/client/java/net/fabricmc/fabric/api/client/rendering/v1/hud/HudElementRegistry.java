@@ -141,8 +141,8 @@ public interface HudElementRegistry {
 	 * <p>The render condition of the vanilla element being replaced, if any, also applies to the new element.
 	 *
 	 * <p>If the replaced element is a status bar (like {@link VanillaHudElements#HEALTH_BAR HEALTH_BAR},
-	 * {@link VanillaHudElements#ARMOR_BAR ARMOR_BAR} or {@link VanillaHudElements#FOOD_BAR FOOD_BAR}) a new
-	 * {@link StatusBarHeightProvider} must also be registered in {@link HudStatusBarHeightRegistry}.
+	 * {@link VanillaHudElements#ARMOR_BAR ARMOR_BAR} or {@link VanillaHudElements#FOOD_BAR FOOD_BAR}), it may be
+	 * necessary to register a new {@link StatusBarHeightProvider} in {@link HudStatusBarHeightRegistry}.
 	 *
 	 * @param identifier the identifier of the element to replace
 	 * @param replacer   a function that takes the old element and returns the new element
