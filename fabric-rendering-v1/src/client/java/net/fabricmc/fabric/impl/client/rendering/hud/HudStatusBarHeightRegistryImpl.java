@@ -31,6 +31,7 @@ import java.util.function.ToIntFunction;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +130,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 			VanillaHudElements.HEALTH_BAR,
 			ResolvedHeightProvider.ZERO,
 			VanillaHudElements.ARMOR_BAR,
-			HEALTH_BAR::applyAsInt,
+			HEALTH_BAR::getStatusBarHeight,
 			VanillaHudElements.MOUNT_HEALTH,
 			ResolvedHeightProvider.ZERO,
 			VanillaHudElements.FOOD_BAR,
@@ -221,7 +222,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 			throw new IllegalStateException("Trying to get status bar height for " + id + " without a camera player");
 		}
 
-		return DEFAULT_HEIGHT + resolvedHeightProviders.get(id).applyAsInt(player);
+		return DEFAULT_HEIGHT + resolvedHeightProviders.get(id).getResolvedHeight(player);
 	}
 
 	static void init() {
@@ -345,10 +346,10 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		// offset text above hotbar depending on height values
 		replaceVanillaElement(VanillaHudElements.HELD_ITEM_TOOLTIP,
 				(PlayerEntity player) -> HELD_ITEM_TOOLTIP_HEIGHT - Math.max(HELD_ITEM_TOOLTIP_HEIGHT,
-						maxHeightProvider.applyAsInt(player)));
+						maxHeightProvider.getResolvedHeight(player)));
 		replaceVanillaElement(VanillaHudElements.OVERLAY_MESSAGE,
 				(PlayerEntity player) -> OVERLAY_MESSAGE_HEIGHT - Math.max(OVERLAY_MESSAGE_HEIGHT,
-						maxHeightProvider.applyAsInt(player) + TEXT_HEIGHT_DELTA));
+						maxHeightProvider.getResolvedHeight(player) + TEXT_HEIGHT_DELTA));
 	}
 
 	private static boolean isVanillaHeightProvider(Identifier id) {
@@ -369,7 +370,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		HudElementRegistry.replaceElement(id, (HudElement layer) -> {
 			return (DrawContext context, RenderTickCounter tickCounter) -> {
 				PlayerEntity player = ((InGameHudAccessor) MinecraftClient.getInstance().inGameHud).fabric$callGetCameraPlayer();
-				int height = player != null ? heightProvider.applyAsInt(player) : 0;
+				int height = player != null ? heightProvider.getResolvedHeight(player) : 0;
 
 				if (height != 0) {
 					context.getMatrices().pushMatrix();
@@ -400,7 +401,12 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		 * @param player the {@link PlayerEntity} from {@link InGameHud#getCameraPlayer()}
 		 * @return the vertical space occupied by all status bars "below" this one
 		 */
+		int getResolvedHeight(PlayerEntity player);
+
+		@ApiStatus.NonExtendable
 		@Override
-		int applyAsInt(PlayerEntity value);
+		default int applyAsInt(PlayerEntity player) {
+			return this.getResolvedHeight(player);
+		}
 	}
 }

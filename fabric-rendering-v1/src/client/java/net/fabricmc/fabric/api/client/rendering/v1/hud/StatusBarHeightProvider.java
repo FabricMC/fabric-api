@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.client.rendering.v1.hud;
 
 import java.util.function.ToIntFunction;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.entity.player.PlayerEntity;
 
 /**
@@ -32,6 +34,11 @@ public interface StatusBarHeightProvider extends ToIntFunction<PlayerEntity> {
 	 * @param player the {@link PlayerEntity} from {@link InGameHud#getCameraPlayer()}
 	 * @return the vertical space occupied by the status bar
 	 */
+	int getStatusBarHeight(PlayerEntity player);
+
+	@ApiStatus.NonExtendable
 	@Override
-	int applyAsInt(PlayerEntity player);
+	default int applyAsInt(PlayerEntity player) {
+		return this.getStatusBarHeight(player);
+	}
 }
