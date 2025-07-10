@@ -99,10 +99,13 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						renderArmor(context, player, height, 0, 10, width);
 					}
 				});
-		HudStatusBarHeightRegistry.addLeft(VanillaHudElements.ARMOR_BAR, (PlayerEntity player) -> {
-			MinecraftClient minecraft = MinecraftClient.getInstance();
-			return minecraft.interactionManager.hasStatusBars() && player.getArmor() > 0 ? 10 : 0;
-		});
+		// it does not matter whether this is registered, as it supplies the same values as the vanilla behavior
+		if (false) {
+			HudStatusBarHeightRegistry.addLeft(VanillaHudElements.ARMOR_BAR, (PlayerEntity player) -> {
+				MinecraftClient minecraft = MinecraftClient.getInstance();
+				return minecraft.interactionManager.hasStatusBars() && player.getArmor() > 0 ? 10 : 0;
+			});
+		}
 	}
 
 	private static void testToughnessBar() {

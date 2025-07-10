@@ -17,8 +17,10 @@
 package net.fabricmc.fabric.impl.client.rendering.hud;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SequencedCollection;
 import java.util.SequencedSet;
 import java.util.Set;
@@ -123,7 +125,8 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 *
 	 * <p>Do not use {@link Map#of()}; it does not preserve insertion order.
 	 */
-	static final Map<Identifier, ResolvedHeightProvider> VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(VanillaHudElements.HEALTH_BAR,
+	static final Map<Identifier, ResolvedHeightProvider> RESOLVED_VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(
+			VanillaHudElements.HEALTH_BAR,
 			ResolvedHeightProvider.ZERO,
 			VanillaHudElements.ARMOR_BAR,
 			HEALTH_BAR::applyAsInt,
@@ -138,7 +141,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 *
 	 * <p>Used for checking if any custom height providers have been registered to potentially skip resolving later on.
 	 */
-	static final Map<Identifier, StatusBarHeightProvider> VANILLA_LEFT_HEIGHT_PROVIDERS = ImmutableMap.of(
+	static final Map<Identifier, StatusBarHeightProvider> LEFT_VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.HEALTH_BAR,
 			HEALTH_BAR,
 			VanillaHudElements.ARMOR_BAR,
@@ -148,7 +151,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 *
 	 * <p>Used for checking if any custom height providers have been registered to potentially skip resolving later on.
 	 */
-	static final Map<Identifier, StatusBarHeightProvider> VANILLA_RIGHT_HEIGHT_PROVIDERS = ImmutableMap.of(
+	static final Map<Identifier, StatusBarHeightProvider> RIGHT_VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.MOUNT_HEALTH,
 			MOUNT_HEALTH,
 			VanillaHudElements.FOOD_BAR,
@@ -161,14 +164,14 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * <p>The height providers registered here simply return the height of the corresponding status bar.
 	 */
 	static final Map<Identifier, StatusBarHeightProvider> LEFT_HEIGHT_PROVIDERS = new HashMap<>(
-			VANILLA_LEFT_HEIGHT_PROVIDERS);
+			LEFT_VANILLA_HEIGHT_PROVIDERS);
 	/**
 	 * Height providers registered for the right side above the hotbar, like food and air bubbles.
 	 *
 	 * <p>The height providers registered here simply return the height of the corresponding status bar.
 	 */
 	static final Map<Identifier, StatusBarHeightProvider> RIGHT_HEIGHT_PROVIDERS = new HashMap<>(
-			VANILLA_RIGHT_HEIGHT_PROVIDERS);
+			RIGHT_VANILLA_HEIGHT_PROVIDERS);
 
 	/**
 	 * Height providers used during rendering computed from everything that was registered.
@@ -223,17 +226,18 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 
 	static void init() {
 		// skip resolving if no custom height providers have been registered
-		if (VANILLA_LEFT_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS) && VANILLA_RIGHT_HEIGHT_PROVIDERS.equals(
+		if (LEFT_VANILLA_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS) && RIGHT_VANILLA_HEIGHT_PROVIDERS.equals(
 				RIGHT_HEIGHT_PROVIDERS)) {
-			resolvedHeightProviders = Map.of();
+			HudStatusBarHeightRegistryImpl.resolvedHeightProviders = Map.of();
 		} else {
-			ImmutableMap.Builder<Identifier, ResolvedHeightProvider> builder = ImmutableMap.builder();
-			ResolvedHeightProvider maxLeftHeightProvider = resolveHeightProviders(LEFT_HEIGHT_PROVIDERS, builder::put);
+			Map<Identifier, ResolvedHeightProvider> resolvedHeightProviders = new LinkedHashMap<>();
+			ResolvedHeightProvider maxLeftHeightProvider = resolveHeightProviders(LEFT_HEIGHT_PROVIDERS,
+					resolvedHeightProviders::put);
 			ResolvedHeightProvider maxRightHeightProvider = resolveHeightProviders(RIGHT_HEIGHT_PROVIDERS,
-					builder::put);
-			resolvedHeightProviders = builder.build();
+					resolvedHeightProviders::put);
 			applyVanillaHeightProviders(resolvedHeightProviders,
 					reduceToIntFunctions(maxLeftHeightProvider, maxRightHeightProvider, Math::max));
+			HudStatusBarHeightRegistryImpl.resolvedHeightProviders = ImmutableMap.copyOf(resolvedHeightProviders);
 		}
 	}
 
@@ -266,14 +270,14 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		// all other elements are simply appended in the order they appear in the hud element registry
 		SequencedSet<Identifier> orderedHeightProviders = new LinkedHashSet<>();
 
-		for (Identifier id : VANILLA_HEIGHT_PROVIDERS.keySet()) {
+		for (Identifier id : RESOLVED_VANILLA_HEIGHT_PROVIDERS.keySet()) {
 			for (HudLayer hudLayer : HudElementRegistryImpl.ROOT_ELEMENTS.get(id).layers()) {
 				addOrderedHeightProvider(hudLayer, heightProviderLookup, orderedHeightProviders::add);
 			}
 		}
 
 		for (Map.Entry<Identifier, HudElementRegistryImpl.RootLayer> entry : HudElementRegistryImpl.ROOT_ELEMENTS.entrySet()) {
-			if (!VANILLA_HEIGHT_PROVIDERS.containsKey(entry.getKey())) {
+			if (!RESOLVED_VANILLA_HEIGHT_PROVIDERS.containsKey(entry.getKey())) {
 				for (HudLayer hudLayer : entry.getValue().layers()) {
 					addOrderedHeightProvider(hudLayer, heightProviderLookup, orderedHeightProviders::add);
 				}
@@ -319,10 +323,16 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 
 	private static void applyVanillaHeightProviders(Map<Identifier, ResolvedHeightProvider> resolvedHeightProviders, ResolvedHeightProvider maxHeightProvider) {
 		// wrap vanilla status bars with matrix stack transformations to implement potentially altered height values
-		for (Map.Entry<Identifier, ResolvedHeightProvider> entry : VANILLA_HEIGHT_PROVIDERS.entrySet()) {
+		for (Map.Entry<Identifier, ResolvedHeightProvider> entry : RESOLVED_VANILLA_HEIGHT_PROVIDERS.entrySet()) {
 			if (isVanillaHeightProvider(entry.getKey())) {
-				ResolvedHeightProvider actualHeightProvider = resolvedHeightProviders.get(entry.getKey());
 				ResolvedHeightProvider expectedHeightProvider = entry.getValue();
+				// the vanilla height provider is still in place, it will undergo our matrix stack transformations;
+				// we therefore have to return a provider in #getHeight(Identifier) that corresponds to vanilla values,
+				// so that the position is correct after matrix stack transformations are applied
+				ResolvedHeightProvider actualHeightProvider = resolvedHeightProviders.put(entry.getKey(),
+						expectedHeightProvider);
+				Objects.requireNonNull(actualHeightProvider,
+						() -> "resolved height provider " + entry.getKey() + " is null");
 				replaceVanillaElement(entry.getKey(),
 						reduceToIntFunctions(expectedHeightProvider,
 								actualHeightProvider,
@@ -342,13 +352,13 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	}
 
 	private static boolean isVanillaHeightProvider(Identifier id) {
-		if (LEFT_HEIGHT_PROVIDERS.containsKey(id) && LEFT_HEIGHT_PROVIDERS.get(id) == VANILLA_LEFT_HEIGHT_PROVIDERS.get(
+		if (LEFT_HEIGHT_PROVIDERS.containsKey(id) && LEFT_HEIGHT_PROVIDERS.get(id) == LEFT_VANILLA_HEIGHT_PROVIDERS.get(
 				id)) {
 			return true;
 		}
 
 		if (RIGHT_HEIGHT_PROVIDERS.containsKey(id)
-				&& RIGHT_HEIGHT_PROVIDERS.get(id) == VANILLA_RIGHT_HEIGHT_PROVIDERS.get(id)) {
+				&& RIGHT_HEIGHT_PROVIDERS.get(id) == RIGHT_VANILLA_HEIGHT_PROVIDERS.get(id)) {
 			return true;
 		}
 
