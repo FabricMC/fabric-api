@@ -119,10 +119,9 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		return isInWater || airSupply < maxAirSupply ? 10 : 0;
 	};
 	/**
-	 * This serves two purposes: it provides a fixed order for some vanilla status bars; and it provides reduced vanilla
-	 * height providers, to compare with the actual height providers during rendering for potential translations for
-	 * vanilla status bars. Translations are achieved via matrix stack transformations; alternatively can also be
-	 * implemented via mixins.
+	 * This serves two purposes: it provides a fixed order for some vanilla status bars; and it provides resolved
+	 * vanilla height providers, to compare with the actual height providers during rendering for potential translations
+	 * for vanilla status bars. Translations are achieved via matrix stack transformations.
 	 *
 	 * <p>Do not use {@link Map#of()}; it does not preserve insertion order.
 	 */
@@ -229,7 +228,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		// skip resolving if no custom height providers have been registered
 		if (LEFT_VANILLA_HEIGHT_PROVIDERS.equals(LEFT_HEIGHT_PROVIDERS) && RIGHT_VANILLA_HEIGHT_PROVIDERS.equals(
 				RIGHT_HEIGHT_PROVIDERS)) {
-			HudStatusBarHeightRegistryImpl.resolvedHeightProviders = Map.of();
+			HudStatusBarHeightRegistryImpl.resolvedHeightProviders = RESOLVED_VANILLA_HEIGHT_PROVIDERS;
 		} else {
 			Map<Identifier, ResolvedHeightProvider> resolvedHeightProviders = new LinkedHashMap<>();
 			ResolvedHeightProvider maxLeftHeightProvider = resolveHeightProviders(LEFT_HEIGHT_PROVIDERS,
