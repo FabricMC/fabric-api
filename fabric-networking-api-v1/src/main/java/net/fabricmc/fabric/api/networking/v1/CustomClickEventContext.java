@@ -55,6 +55,7 @@ public sealed interface CustomClickEventContext permits CustomClickEventContext.
 		/**
 		 * The play handler responsible for the event.
 		 */
+		@Override
 		ServerPlayNetworkHandler handler();
 	}
 
@@ -66,6 +67,7 @@ public sealed interface CustomClickEventContext permits CustomClickEventContext.
 		/**
 		 * The configuration handler responsible for the event.
 		 */
+		@Override
 		ServerConfigurationNetworkHandler handler();
 
 		/**
