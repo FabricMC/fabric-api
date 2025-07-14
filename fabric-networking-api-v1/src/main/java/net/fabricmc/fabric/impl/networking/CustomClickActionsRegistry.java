@@ -32,16 +32,16 @@ import net.fabricmc.fabric.api.networking.v1.CustomClickActionEvents;
 import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
 
 public final class CustomClickActionsRegistry {
-	private static final Map<Identifier, Event<CustomClickActionEvents.ClickActionReceived>> REGISTRY = new HashMap<>();
+	private static final Map<Identifier, Event<CustomClickActionEvents.NamedCustomClickActionReceived>> REGISTRY = new HashMap<>();
 
-	public static Event<CustomClickActionEvents.ClickActionReceived> getOrCreateActionEvent(Identifier id) {
+	public static Event<CustomClickActionEvents.NamedCustomClickActionReceived> getOrCreateActionEvent(Identifier id) {
 		return REGISTRY.computeIfAbsent(
 				id,
 				idx -> {
 					return EventFactory.createArrayBacked(
-							CustomClickActionEvents.ClickActionReceived.class,
+							CustomClickActionEvents.NamedCustomClickActionReceived.class,
 							listeners -> context -> {
-								for (CustomClickActionEvents.ClickActionReceived listener : listeners) {
+								for (CustomClickActionEvents.NamedCustomClickActionReceived listener : listeners) {
 									listener.handleCustomClickAction(context);
 								}
 							}
@@ -51,7 +51,9 @@ public final class CustomClickActionsRegistry {
 	}
 
 	public static void invokeListenerEvent(Identifier id, CustomClickEventContext context) {
-		Event<CustomClickActionEvents.ClickActionReceived> event = REGISTRY.get(id);
+		CustomClickActionEvents.ON_ANY_CUSTOM_CLICK_ACTION_RECEIVED.invoker().handleCustomClickAction(id, context);
+
+		Event<CustomClickActionEvents.NamedCustomClickActionReceived> event = REGISTRY.get(id);
 
 		if (event != null) {
 			event.invoker().handleCustomClickAction(context);

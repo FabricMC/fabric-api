@@ -78,7 +78,14 @@ public class CustomClickActionsTest implements ModInitializer {
 			this.registerCommand(dispatcher);
 		});
 
-		CustomClickActionEvents.clickActionReceivedEvent(NetworkingTestmods.id("test_event")).register(
+		CustomClickActionEvents.ON_ANY_CUSTOM_CLICK_ACTION_RECEIVED.register((id, context) -> {
+			String payloadString = context.payload()
+					.map(NbtElement::toString)
+					.orElse("no payload");
+			NetworkingTestmods.LOGGER.info("Received custom click action with ID {} and payload: {}", id, payloadString);
+		});
+
+		CustomClickActionEvents.customClickActionReceivedEvent(NetworkingTestmods.id("test_event")).register(
 				context -> {
 					context.player().ifPresent(player -> {
 						String payloadString = context.payload()
@@ -101,7 +108,7 @@ public class CustomClickActionsTest implements ModInitializer {
 			}
 		});
 
-		CustomClickActionEvents.clickActionReceivedEvent(NetworkingTestmods.id("test_event")).register(
+		CustomClickActionEvents.customClickActionReceivedEvent(NetworkingTestmods.id("test_event")).register(
 				context -> {
 					switch (context) {
 						case CustomClickEventContext.Configuration configuration -> {
