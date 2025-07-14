@@ -21,14 +21,10 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.dialog.type.Dialog;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.DebugConfigCommand;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.text.Text;
@@ -36,7 +32,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.networking.v1.CustomClickActionEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
@@ -47,14 +42,12 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
  */
 public class NetworkingConfigurationTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetworkingConfigurationTest.class);
-	private static final RegistryKey<Dialog> CONFIGURATION_TEST_DIALOG = RegistryKey.of(RegistryKeys.DIALOG, NetworkingTestmods.id("configuration_custom_click_event"));
 
 	@Override
 	public void onInitialize() {
 		PayloadTypeRegistry.configurationS2C().register(ConfigurationPacket.ID, ConfigurationPacket.CODEC);
 		PayloadTypeRegistry.configurationC2S().register(ConfigurationCompletePacket.ID, ConfigurationCompletePacket.CODEC);
 		PayloadTypeRegistry.configurationC2S().register(ConfigurationStartPacket.ID, ConfigurationStartPacket.CODEC);
-		PayloadTypeRegistry.configurationS2C().register(MockShowDialogPacket.ID, MockShowDialogPacket.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
 			if (ServerConfigurationNetworking.isReconfiguring(handler)) {
@@ -80,24 +73,6 @@ public class NetworkingConfigurationTest implements ModInitializer {
 
 		// Enable the vanilla debugconfig command
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> DebugConfigCommand.register(dispatcher, registryAccess));
-
-		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
-			// open a dialog screen on the client
-			// note: normally you would actually use ShowDialogS2CPacket, a mock packet is used here for testing purposes
-			// important: use a task to prevent this dialog from being quickly skipped over
-			handler.addTask(new TestDialogConfigurationTask(CONFIGURATION_TEST_DIALOG));
-		});
-
-		CustomClickActionEvents.configurationClickActionEvent(NetworkingTestmods.id("configuration_event")).register(
-				context -> {
-					NbtElement payload = context.payload();
-					String payloadString = payload != null ? payload.toString() : "null";
-					NetworkingTestmods.LOGGER.info("Received configuration event with payload: {}", payloadString);
-
-					// important: make sure to complete the task to continue to the game
-					context.handler().completeTask(TestDialogConfigurationTask.KEY);
-				}
-		);
 	}
 
 	public record TestConfigurationTask(String data) implements ServerPlayerConfigurationTask {
@@ -106,21 +81,6 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		@Override
 		public void sendPacket(Consumer<Packet<?>> sender) {
 			var packet = new ConfigurationPacket(data);
-			sender.accept(ServerConfigurationNetworking.createS2CPacket(packet));
-		}
-
-		@Override
-		public Key getKey() {
-			return KEY;
-		}
-	}
-
-	public record TestDialogConfigurationTask(RegistryKey<Dialog> dialog) implements ServerPlayerConfigurationTask {
-		public static final Key KEY = new Key(Identifier.of(NetworkingTestmods.ID, "configure_dialog").toString());
-
-		@Override
-		public void sendPacket(Consumer<Packet<?>> sender) {
-			var packet = new MockShowDialogPacket(dialog);
 			sender.accept(ServerConfigurationNetworking.createS2CPacket(packet));
 		}
 
@@ -140,24 +100,6 @@ public class NetworkingConfigurationTest implements ModInitializer {
 
 		public void write(PacketByteBuf buf) {
 			buf.writeString(data);
-		}
-
-		@Override
-		public Id<? extends CustomPayload> getId() {
-			return ID;
-		}
-	}
-
-	public record MockShowDialogPacket(RegistryKey<Dialog> dialog) implements CustomPayload {
-		public static final CustomPayload.Id<MockShowDialogPacket> ID = new Id<>(Identifier.of(NetworkingTestmods.ID, "mock_show_dialog"));
-		public static final PacketCodec<PacketByteBuf, MockShowDialogPacket> CODEC = CustomPayload.codecOf(MockShowDialogPacket::write, MockShowDialogPacket::new);
-
-		public MockShowDialogPacket(PacketByteBuf buf) {
-			this(buf.readRegistryKey(RegistryKeys.DIALOG));
-		}
-
-		public void write(PacketByteBuf buf) {
-			buf.writeRegistryKey(dialog);
 		}
 
 		@Override

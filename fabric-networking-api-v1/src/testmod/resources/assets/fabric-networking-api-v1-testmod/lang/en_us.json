@@ -2,6 +2,8 @@
   "key.category.fabric-networking-api-v1-testmod": "Fabric Network Test",
   "key.fabric-networking-api-v1-testmod.customClick.dialog.button.noPayload": "Send with no payload",
   "key.fabric-networking-api-v1-testmod.customClick.dialog.button.payload": "Send with payload",
+  "key.fabric-networking-api-v1-testmod.customClick.dialog.configuration.body": "This is a test of the CONFIGURATION event in CustomClickActionEvents. Click a button to invoke this event with or without a payload. When you click a button, a message should appear in the log showing the event has been received by the server, with the payload.",
+  "key.fabric-networking-api-v1-testmod.customClick.dialog.configuration.title": "Configuration Phase Custom Click Event Test",
   "key.fabric-networking-api-v1-testmod.customClick.dialog.play.body": "This is a test of the PLAY event in CustomClickActionEvents. Click a button to invoke this event with or without a payload. When you click a button, a message should appear in the chat showing the event has been received by the server, with the payload.",
   "key.fabric-networking-api-v1-testmod.customClick.dialog.play.title": "Play Phase Custom Click Event Test",
   "key.fabric-networking-api-v1-testmod.customClick.play.received": "Received play event with payload: %s",
