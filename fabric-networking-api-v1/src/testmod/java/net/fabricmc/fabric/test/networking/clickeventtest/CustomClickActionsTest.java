@@ -39,6 +39,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.CustomClickActionEvents;
+import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
@@ -77,12 +78,15 @@ public class CustomClickActionsTest implements ModInitializer {
 			this.registerCommand(dispatcher);
 		});
 
-		CustomClickActionEvents.playClickActionEvent(NetworkingTestmods.id("play_event")).register(
+		CustomClickActionEvents.clickActionReceivedEvent(NetworkingTestmods.id("test_event")).register(
 				context -> {
-					NbtElement payload = context.payload();
-					String payloadString = payload != null ? payload.toString() : "no payload";
-					Text message = Text.translatable("key.fabric-networking-api-v1-testmod.customClick.play.received", payloadString);
-					context.handler().getPlayer().sendMessage(message);
+					context.player().ifPresent(player -> {
+						String payloadString = context.payload()
+								.map(NbtElement::toString)
+								.orElse("no payload");
+						Text message = Text.translatable("key.fabric-networking-api-v1-testmod.customClick.play.received", payloadString);
+						player.sendMessage(message);
+					});
 				}
 		);
 
@@ -97,16 +101,24 @@ public class CustomClickActionsTest implements ModInitializer {
 			}
 		});
 
-		CustomClickActionEvents.configurationClickActionEvent(NetworkingTestmods.id("configuration_event")).register(
+		CustomClickActionEvents.clickActionReceivedEvent(NetworkingTestmods.id("test_event")).register(
 				context -> {
-					NbtElement payload = context.payload();
-					String payloadString = payload != null ? payload.toString() : "no payload";
-					NetworkingTestmods.LOGGER.info("Received configuration event with payload: {}", payloadString);
+					switch (context) {
+						case CustomClickEventContext.Configuration configuration -> {
+							String payloadString = context.payload()
+									.map(NbtElement::toString)
+									.orElse("no payload");
+							NetworkingTestmods.LOGGER.info("Received configuration event with payload: {}", payloadString);
 
-					// important: make sure to complete the task to continue to the game
-					context.handler().completeTask(TestDialogConfigurationTask.KEY);
+							// important: make sure to complete the task to continue to the game
+							configuration.handler().completeTask(TestDialogConfigurationTask.KEY);
 
-					showDialogDuringConfiguration = false;
+							showDialogDuringConfiguration = false;
+						}
+						case CustomClickEventContext.Play play -> {
+							// ignores
+						}
+					}
 				}
 		);
 	}

@@ -16,7 +16,7 @@
       },
       "action": {
         "type": "custom",
-        "id": "fabric-networking-api-v1-testmod:play_event"
+        "id": "fabric-networking-api-v1-testmod:test_event"
       }
     },
     {
@@ -25,7 +25,7 @@
       },
       "action": {
         "type": "custom",
-        "id": "fabric-networking-api-v1-testmod:play_event",
+        "id": "fabric-networking-api-v1-testmod:test_event",
         "payload": {
           "foo": "bar"
         }

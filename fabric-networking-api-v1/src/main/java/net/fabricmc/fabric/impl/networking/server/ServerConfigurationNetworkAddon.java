@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.networking.server;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import io.netty.channel.ChannelFutureListener;
 import org.jetbrains.annotations.Nullable;
@@ -200,8 +201,8 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	@Override
-	public void invokeCustomClickActionEvent(Identifier id, @Nullable NbtElement payload) {
-		CustomClickActionsRegistry.CONFIGURATION_REGISTRY.invokeListenerEvent(
+	public void invokeCustomClickActionEvent(Identifier id, Optional<NbtElement> payload) {
+		CustomClickActionsRegistry.invokeListenerEvent(
 				id,
 				new CustomClickActionsRegistry.ConfigurationContextImpl(this.handler, payload)
 		);

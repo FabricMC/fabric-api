@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -174,6 +175,6 @@ public abstract class AbstractNetworkAddon<H> {
 	 */
 	protected abstract boolean isReservedChannel(Identifier channelName);
 
-	public void invokeCustomClickActionEvent(Identifier id, @Nullable NbtElement payload) {
+	public void invokeCustomClickActionEvent(Identifier id, Optional<NbtElement> payload) {
 	}
 }

@@ -19,8 +19,7 @@ package net.fabricmc.fabric.impl.networking.server;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import org.jetbrains.annotations.Nullable;
+import java.util.Optional;
 
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.ClientConnection;
@@ -149,10 +148,10 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	public void invokeCustomClickActionEvent(Identifier id, @Nullable NbtElement payload) {
-		CustomClickActionsRegistry.PLAY_REGISTRY.invokeListenerEvent(
+	public void invokeCustomClickActionEvent(Identifier id, Optional<NbtElement> payload) {
+		CustomClickActionsRegistry.invokeListenerEvent(
 				id,
-				new CustomClickActionsRegistry.PlayContextImpl(this.handler, payload)
+				new CustomClickActionsRegistry.PlayContextImpl(this.handler, this.handler.getPlayer(), payload)
 		);
 	}
 

@@ -18,12 +18,12 @@ package net.fabricmc.fabric.impl.networking;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jetbrains.annotations.Nullable;
+import java.util.Optional;
 
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -31,20 +31,17 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.networking.v1.CustomClickActionEvents;
 import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
 
-public final class CustomClickActionsRegistry<T extends CustomClickEventContext> {
-	public static final CustomClickActionsRegistry<CustomClickEventContext.Play> PLAY_REGISTRY = new CustomClickActionsRegistry<>();
-	public static final CustomClickActionsRegistry<CustomClickEventContext.Configuration> CONFIGURATION_REGISTRY = new CustomClickActionsRegistry<>();
+public final class CustomClickActionsRegistry {
+	private static final Map<Identifier, Event<CustomClickActionEvents.ClickActionReceived>> REGISTRY = new HashMap<>();
 
-	private final Map<Identifier, Event<CustomClickActionEvents.ClickActionReceived<T>>> registry = new HashMap<>();
-
-	public Event<CustomClickActionEvents.ClickActionReceived<T>> getOrCreateActionEvent(Identifier id) {
-		return this.registry.computeIfAbsent(
+	public static Event<CustomClickActionEvents.ClickActionReceived> getOrCreateActionEvent(Identifier id) {
+		return REGISTRY.computeIfAbsent(
 				id,
 				idx -> {
 					return EventFactory.createArrayBacked(
 							CustomClickActionEvents.ClickActionReceived.class,
 							listeners -> context -> {
-								for (CustomClickActionEvents.ClickActionReceived<T> listener : listeners) {
+								for (CustomClickActionEvents.ClickActionReceived listener : listeners) {
 									listener.handleCustomClickAction(context);
 								}
 							}
@@ -53,8 +50,8 @@ public final class CustomClickActionsRegistry<T extends CustomClickEventContext>
 		);
 	}
 
-	public void invokeListenerEvent(Identifier id, T context) {
-		Event<CustomClickActionEvents.ClickActionReceived<T>> event = this.registry.get(id);
+	public static void invokeListenerEvent(Identifier id, CustomClickEventContext context) {
+		Event<CustomClickActionEvents.ClickActionReceived> event = REGISTRY.get(id);
 
 		if (event != null) {
 			event.invoker().handleCustomClickAction(context);
@@ -63,13 +60,17 @@ public final class CustomClickActionsRegistry<T extends CustomClickEventContext>
 
 	public record PlayContextImpl(
 			ServerPlayNetworkHandler handler,
-			@Nullable NbtElement payload
+			Optional<ServerPlayerEntity> player,
+			Optional<NbtElement> payload
 	) implements CustomClickEventContext.Play {
+		public PlayContextImpl(ServerPlayNetworkHandler handler, ServerPlayerEntity player, Optional<NbtElement> payload) {
+			this(handler, Optional.of(player), payload);
+		}
 	}
 
 	public record ConfigurationContextImpl(
 			ServerConfigurationNetworkHandler handler,
-			@Nullable NbtElement payload
+			Optional<NbtElement> payload
 	) implements CustomClickEventContext.Configuration {
 	}
 

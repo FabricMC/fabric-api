@@ -16,17 +16,20 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 /**
  * Contains data about a {@linkplain net.minecraft.text.ClickEvent.Custom custom click event} when one is received on
- * the server.
+ * the server. Custom click events may be received either during the PLAY or in CONFIGURATION phases. If the event is
+ * received during PLAY, then a player entity will be provided.
  */
 public sealed interface CustomClickEventContext permits CustomClickEventContext.Play, CustomClickEventContext.Configuration {
 	/**
@@ -35,10 +38,14 @@ public sealed interface CustomClickEventContext permits CustomClickEventContext.
 	ServerCommonNetworkHandler handler();
 
 	/**
+	 * The player entity responsible for the event, if in the play phase.
+	 */
+	Optional<ServerPlayerEntity> player();
+
+	/**
 	 * The payload received with this event. If no payload is received, then this payload will be {@code null}.
 	 */
-	@Nullable
-	NbtElement payload();
+	Optional<NbtElement> payload();
 
 	/**
 	 * The context data when a custom click event is received during the PLAY phase on the server.
@@ -60,5 +67,14 @@ public sealed interface CustomClickEventContext permits CustomClickEventContext.
 		 * The configuration handler responsible for the event.
 		 */
 		ServerConfigurationNetworkHandler handler();
+
+		/**
+		 * The configuration phase is too early for an entity to have been created, so an entity is never returned.
+		 *
+		 * @return Returns an empty optional.
+		 */
+		default Optional<ServerPlayerEntity> player() {
+			return Optional.empty();
+		}
 	}
 }

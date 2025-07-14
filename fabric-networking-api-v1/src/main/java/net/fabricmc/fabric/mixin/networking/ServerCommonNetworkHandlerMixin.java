@@ -59,6 +59,6 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 
 	@Inject(method = "onCustomClickAction", at = @At("TAIL"))
 	protected void hookCustomClickActionEvent(CustomClickActionC2SPacket packet, CallbackInfo ci) {
-		getAddon().invokeCustomClickActionEvent(packet.id(), packet.payload().orElse(null));
+		getAddon().invokeCustomClickActionEvent(packet.id(), packet.payload());
 	}
 }
