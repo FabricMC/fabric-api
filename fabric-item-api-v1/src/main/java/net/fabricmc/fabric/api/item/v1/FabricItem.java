@@ -26,6 +26,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.PotionItem;
+import net.minecraft.item.TippedArrowItem;
 import net.minecraft.potion.Potion;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Hand;
@@ -144,7 +145,7 @@ public interface FabricItem {
 	default String getCreatorNamespace(ItemStack stack) {
 		RegistryEntry<?> entry = stack.getRegistryEntry();
 
-		if (this instanceof PotionItem && stack.contains(DataComponentTypes.POTION_CONTENTS)) {
+		if ((this instanceof PotionItem || this instanceof TippedArrowItem) && stack.contains(DataComponentTypes.POTION_CONTENTS)) {
 			Optional<RegistryEntry<Potion>> potion = stack.get(DataComponentTypes.POTION_CONTENTS).potion();
 			if (potion.isPresent()) entry = potion.get();
 		} else if (stack.isOf(Items.ENCHANTED_BOOK) && stack.contains(DataComponentTypes.STORED_ENCHANTMENTS)) {
