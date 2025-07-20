@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(CommandSource.class)
-public class CommandSourceMixin {
+public interface CommandSourceMixin {
 
 	// Minecraft is hardcoded to only autofill identifiers with the "minecraft" namespace. This cancels the check
 	@WrapOperation(
