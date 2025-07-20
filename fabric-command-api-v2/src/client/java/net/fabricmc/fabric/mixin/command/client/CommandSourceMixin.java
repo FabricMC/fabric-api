@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.mixin.registry.sync.client;
+package net.fabricmc.fabric.mixin.command.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;

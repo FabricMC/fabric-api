@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.command.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "CommandSourceMixin",
     "ClientCommandSourceMixin",
     "ClientPlayNetworkHandlerMixin"
   ],
