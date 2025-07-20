@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.registry.sync.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "CommandSourceMixin",
     "BlockColorsMixin",
     "ClientRegistriesMixin",
     "ClientRegistriesDynamicRegistriesAccessor",
