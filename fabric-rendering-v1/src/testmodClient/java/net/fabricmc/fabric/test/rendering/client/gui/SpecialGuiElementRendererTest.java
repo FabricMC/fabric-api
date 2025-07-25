@@ -16,16 +16,35 @@
 
 package net.fabricmc.fabric.test.rendering.client.gui;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import net.minecraft.block.WoodType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.render.GuiRenderer;
+import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
+import net.minecraft.client.gui.render.state.special.SignGuiElementRenderState;
+import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
+import net.minecraft.util.DyeColor;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
+import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRegistryImpl;
+import net.fabricmc.fabric.test.rendering.client.mixin.GameRendererAccessor;
+import net.fabricmc.fabric.test.rendering.client.mixin.GuiRendererAccessor;
 
 /**
  * This test mod renders a banner in the top left corner.
  */
-public class SpecialGuiElementRendererTest implements ClientModInitializer {
+public class SpecialGuiElementRendererTest implements ClientModInitializer, FabricClientGameTest {
 	@Override
 	public void onInitializeClient() {
 		SpecialGuiElementRegistry.register(ctx -> new BannerGuiElementRenderer(ctx.vertexConsumers()));
@@ -33,7 +52,37 @@ public class SpecialGuiElementRendererTest implements ClientModInitializer {
 		// TODO: Migrate to new HUD API once available
 		//noinspection deprecation
 		HudRenderCallback.EVENT.register((context, tickCounter) -> {
-			context.state.addSpecialElement(new BannerGuiElementRenderState(20, 0, 40, 20, new ScreenRect(20, 0, 40, 20)));
+			// render it twice to test that special GUI elements can be added multiple times in the same frame
+			context.state.addSpecialElement(new BannerGuiElementRenderState(DyeColor.BLUE, 20, 0, 40, 20, new ScreenRect(20, 0, 40, 20)));
+			context.state.addSpecialElement(new BannerGuiElementRenderState(DyeColor.RED, 40, 0, 60, 20, new ScreenRect(40, 0, 60, 20)));
+
+			// also render some vanilla some vanilla special GUI elements to check that they still work and can be renderered multiple times
+			context.state.addSpecialElement(createSignState(60, WoodType.BIRCH));
+			context.state.addSpecialElement(createSignState(80, WoodType.DARK_OAK));
+		});
+	}
+
+	private static SignGuiElementRenderState createSignState(int x, WoodType woodType) {
+		Model signModel = SignBlockEntityRenderer.createSignModel(MinecraftClient.getInstance().getLoadedEntityModels(), woodType, true);
+		return new SignGuiElementRenderState(signModel, woodType, x, 0, x + 20, 20, 10f, new ScreenRect(x, 0, x + 20, 20));
+	}
+
+	@Override
+	public void runTest(ClientGameTestContext context) {
+		context.runOnClient(client -> {
+			GuiRenderer guiRenderer = ((GameRendererAccessor) client.gameRenderer).getGuiRenderer();
+			Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> specialElementRenderers = ((GuiRendererAccessor) guiRenderer).getSpecialElementRenderers();
+			Set<Class<? extends SpecialGuiElementRenderState>> missingRenderFactories = new HashSet<>(specialElementRenderers.keySet());
+
+			for (Class<? extends SpecialGuiElementRenderState> registeredFactoryStateClass : SpecialGuiElementRegistryImpl.getRegisteredFactoryStateClasses()) {
+				missingRenderFactories.remove(registeredFactoryStateClass);
+			}
+
+			if (!missingRenderFactories.isEmpty()) {
+				String missingFactoriesString = missingRenderFactories.stream().map(Class::getSimpleName).sorted().collect(Collectors.joining(", "));
+				throw new AssertionError("Missing special GUI element render factories for state classes: " + missingFactoriesString + ". "
+						+ "Please add them to SpecialGuiElementRegistryImpl.registerVanillaFactories");
+			}
 		});
 	}
 }

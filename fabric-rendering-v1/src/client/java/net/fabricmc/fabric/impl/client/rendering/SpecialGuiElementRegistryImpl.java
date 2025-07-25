@@ -17,11 +17,28 @@
 package net.fabricmc.fabric.impl.client.rendering;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
+
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.render.BannerResultGuiElementRenderer;
+import net.minecraft.client.gui.render.BookModelGuiElementRenderer;
+import net.minecraft.client.gui.render.EntityGuiElementRenderer;
+import net.minecraft.client.gui.render.PlayerSkinGuiElementRenderer;
+import net.minecraft.client.gui.render.ProfilerChartGuiElementRenderer;
+import net.minecraft.client.gui.render.SignGuiElementRenderer;
 import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
+import net.minecraft.client.gui.render.state.special.BannerResultGuiElementRenderState;
+import net.minecraft.client.gui.render.state.special.BookModelGuiElementRenderState;
+import net.minecraft.client.gui.render.state.special.EntityGuiElementRenderState;
+import net.minecraft.client.gui.render.state.special.PlayerSkinGuiElementRenderState;
+import net.minecraft.client.gui.render.state.special.ProfilerChartGuiElementRenderState;
+import net.minecraft.client.gui.render.state.special.SignGuiElementRenderState;
 import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
 
@@ -29,6 +46,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
 
 public final class SpecialGuiElementRegistryImpl {
 	private static RegistrationHandler registrationHandler = new EarlyRegistrationHandler();
+	private static final Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRegistry.Factory> FACTORIES = new HashMap<>();
+
+	static {
+		registerVanillaFactories();
+	}
 
 	private SpecialGuiElementRegistryImpl() {
 	}
@@ -46,6 +68,27 @@ public final class SpecialGuiElementRegistryImpl {
 		}
 	}
 
+	@Nullable("null for render states registered outside FAPI")
+	public static <S extends SpecialGuiElementRenderState> SpecialGuiElementRenderer<S> createOverflowRenderer(S state, MinecraftClient client, VertexConsumerProvider.Immediate immediate) {
+		SpecialGuiElementRegistry.Factory factory = FACTORIES.get(state.getClass());
+		return factory == null ? null : (SpecialGuiElementRenderer<S>) factory.createSpecialRenderer(new ContextImpl(client, immediate));
+	}
+
+	private static void registerVanillaFactories() {
+		// Vanilla creates its special element renderers in the GameRenderer constructor
+		FACTORIES.put(EntityGuiElementRenderState.class, context -> new EntityGuiElementRenderer(context.vertexConsumers(), context.client().getEntityRenderDispatcher()));
+		FACTORIES.put(PlayerSkinGuiElementRenderState.class, context -> new PlayerSkinGuiElementRenderer(context.vertexConsumers()));
+		FACTORIES.put(BookModelGuiElementRenderState.class, context -> new BookModelGuiElementRenderer(context.vertexConsumers()));
+		FACTORIES.put(BannerResultGuiElementRenderState.class, context -> new BannerResultGuiElementRenderer(context.vertexConsumers()));
+		FACTORIES.put(SignGuiElementRenderState.class, context -> new SignGuiElementRenderer(context.vertexConsumers()));
+		FACTORIES.put(ProfilerChartGuiElementRenderState.class, context -> new ProfilerChartGuiElementRenderer(context.vertexConsumers()));
+	}
+
+	@VisibleForTesting
+	public static Collection<Class<? extends SpecialGuiElementRenderState>> getRegisteredFactoryStateClasses() {
+		return FACTORIES.keySet();
+	}
+
 	private sealed interface RegistrationHandler permits EarlyRegistrationHandler, LateRegistrationHandler {
 		void register(SpecialGuiElementRegistry.Factory factory);
 
@@ -53,6 +96,7 @@ public final class SpecialGuiElementRegistryImpl {
 									Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> specialElementRenderers) {
 			SpecialGuiElementRenderer<?> elementRenderer = factory.createSpecialRenderer(context);
 			specialElementRenderers.put(elementRenderer.getElementClass(), elementRenderer);
+			FACTORIES.put(elementRenderer.getElementClass(), factory);
 		}
 	}
 
