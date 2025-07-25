@@ -28,6 +28,7 @@ import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
 import net.minecraft.client.gui.render.state.special.SignGuiElementRenderState;
 import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
 import net.minecraft.util.DyeColor;
@@ -37,6 +38,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRegistryImpl;
 import net.fabricmc.fabric.test.rendering.client.mixin.GameRendererAccessor;
 import net.fabricmc.fabric.test.rendering.client.mixin.GuiRendererAccessor;
@@ -59,6 +61,17 @@ public class SpecialGuiElementRendererTest implements ClientModInitializer, Fabr
 			// also render some vanilla some vanilla special GUI elements to check that they still work and can be renderered multiple times
 			context.state.addSpecialElement(createSignState(60, WoodType.BIRCH));
 			context.state.addSpecialElement(createSignState(80, WoodType.DARK_OAK));
+		});
+
+		// Test that InventoryScreen.drawEntity works with the same type of entity more than once
+		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+			if (screen instanceof InventoryScreen) {
+				ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, tickDelta) -> {
+					// no need to modify anything about this player, since they're in different locations they will be
+					// looking towards the mouse at different angles
+					InventoryScreen.drawEntity(context, 26, 8, 75, 78, 30, 0.0625F, mouseX, mouseY, client.player);
+				});
+			}
 		});
 	}
 
