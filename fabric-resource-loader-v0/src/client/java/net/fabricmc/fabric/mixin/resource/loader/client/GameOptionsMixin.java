@@ -25,8 +25,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -136,9 +136,9 @@ public class GameOptionsMixin {
 		this.resourcePacks = new ArrayList<>(resourcePacks);
 	}
 
-	@ModifyExpressionValue(method = "refreshResourcePacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackProfile;isPinned()Z"))
-	private boolean excludeInternalResourcePacksFromRefreshCheck(boolean original, @Local ResourcePackProfile resourcePackProfile) {
+	@WrapOperation(method = "refreshResourcePacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackProfile;isPinned()Z"))
+	private boolean excludeInternalResourcePacksFromRefreshCheck(ResourcePackProfile instance, Operation<Boolean> original) {
 		// Treat Fabric hidden resource packs as pinned during the check for changed resource packs so that they won't count as changed when refreshing resource packs
-		return original || ((FabricResourcePackProfile) resourcePackProfile).fabric_isHidden();
+		return original.call(instance) || ((FabricResourcePackProfile) instance).fabric_isHidden();
 	}
 }
