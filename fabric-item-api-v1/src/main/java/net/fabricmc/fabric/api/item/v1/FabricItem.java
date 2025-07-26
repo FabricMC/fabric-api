@@ -127,7 +127,7 @@ public interface FabricItem {
 	}
 
 	/**
-	 * Gets the namespace of the mod that created this item.
+	 * Gets the namespace of the mod or datapack that created this item.
 	 *
 	 * <p>This can be used if, for example, a library mod registers a generic item that other mods can create new
 	 * variants for, allowing those mods to take credit for those variants if a player wishes to know what mod they
@@ -138,6 +138,9 @@ public interface FabricItem {
 	 *
 	 * <p>Defaults to the namespace of the item's own registry entry, except in the cases of potions or enchanted books,
 	 * in which it uses the namespace of the potion contents or single enchantment applied.</p>
+	 *
+	 * <p>Note that while it is recommended that this reflect a namespace and/or mod ID, it can technically be any
+	 * arbitrary string.</p>
 	 *
 	 * @param stack the current stack
 	 * @return the namespace of the mod that created the item
