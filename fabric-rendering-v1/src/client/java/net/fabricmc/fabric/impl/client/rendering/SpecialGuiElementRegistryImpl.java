@@ -17,54 +17,42 @@
 package net.fabricmc.fabric.impl.client.rendering;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
 import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
 
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
-import net.fabricmc.fabric.mixin.client.rendering.GuiRendererAccessor;
 
 public final class SpecialGuiElementRegistryImpl {
 	private static final List<SpecialGuiElementRegistry.Factory> factories = new ArrayList<>();
-	private static final Collection<GuiRenderer> renderers = Collections.newSetFromMap(new WeakHashMap<>());
+	private static boolean frozen;
 
 	private SpecialGuiElementRegistryImpl() {
 	}
 
 	public static void register(SpecialGuiElementRegistry.Factory factory) {
-		factories.add(factory);
-
-		for (GuiRenderer guiRenderer : renderers) {
-			GuiRendererAccessor guiRendererAcc = (GuiRendererAccessor) guiRenderer;
-			ContextImpl context = new ContextImpl(MinecraftClient.getInstance(), guiRendererAcc.getVertexConsumers());
-			applyFactory(factory, context, guiRendererAcc.getSpecialElementRenderers());
+		if (frozen) {
+			throw new IllegalStateException("Too late to register, GuiRenderer has already been initialized.");
 		}
+
+		factories.add(factory);
 	}
 
 	// Called after the vanilla special renderers are created.
-	public static void onReady(GuiRenderer guiRenderer) {
-		renderers.add(guiRenderer);
+	public static void onReady(MinecraftClient client, VertexConsumerProvider.Immediate immediate,
+								Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> specialElementRenderers) {
+		frozen = true;
 
-		GuiRendererAccessor guiRendererAcc = (GuiRendererAccessor) guiRenderer;
-		ContextImpl context = new ContextImpl(MinecraftClient.getInstance(), guiRendererAcc.getVertexConsumers());
+		ContextImpl context = new ContextImpl(client, immediate);
 
 		for (SpecialGuiElementRegistry.Factory factory : factories) {
-			applyFactory(factory, context, guiRendererAcc.getSpecialElementRenderers());
+			SpecialGuiElementRenderer<?> elementRenderer = factory.createSpecialRenderer(context);
+			specialElementRenderers.put(elementRenderer.getElementClass(), elementRenderer);
 		}
-	}
-
-	private static void applyFactory(SpecialGuiElementRegistry.Factory factory, SpecialGuiElementRegistry.Context context,
-									Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> specialElementRenderers) {
-		SpecialGuiElementRenderer<?> elementRenderer = factory.createSpecialRenderer(context);
-		specialElementRenderers.put(elementRenderer.getElementClass(), elementRenderer);
 	}
 
 	record ContextImpl(MinecraftClient client, VertexConsumerProvider.Immediate vertexConsumers) implements SpecialGuiElementRegistry.Context { }

@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
 import net.minecraft.client.gui.render.state.GuiRenderState;
@@ -46,6 +47,6 @@ abstract class GuiRendererMixin {
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
 	private void mutableSpecialElementRenderers(GuiRenderState state, VertexConsumerProvider.Immediate vertexConsumers, List<SpecialGuiElementRenderer<?>> specialElementRenderers, CallbackInfo ci) {
 		this.specialElementRenderers = new IdentityHashMap<>(this.specialElementRenderers);
-		SpecialGuiElementRegistryImpl.onReady((GuiRenderer) (Object) this);
+		SpecialGuiElementRegistryImpl.onReady(MinecraftClient.getInstance(), vertexConsumers, this.specialElementRenderers);
 	}
 }

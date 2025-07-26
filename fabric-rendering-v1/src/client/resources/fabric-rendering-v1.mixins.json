@@ -16,7 +16,6 @@
     "EntityModelLayersAccessor",
     "EntityModelsMixin",
     "EntityRenderersMixin",
-    "GuiRendererAccessor",
     "GuiRendererMixin",
     "InGameHudMixin",
     "LivingEntityRendererAccessor",
