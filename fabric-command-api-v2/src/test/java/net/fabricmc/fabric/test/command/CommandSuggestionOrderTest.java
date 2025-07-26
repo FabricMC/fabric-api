@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.command.unittest;
+package net.fabricmc.fabric.test.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
