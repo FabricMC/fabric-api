@@ -19,10 +19,12 @@ package net.fabricmc.fabric.impl.networking.server;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import io.netty.channel.ChannelFutureListener;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.packet.BrandCustomPayload;
 import net.minecraft.network.packet.CustomPayload;
@@ -32,12 +34,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.S2CConfigurationChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
+import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
@@ -197,6 +201,12 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		isReconfiguring = true;
 	}
 
+	@Override
+	public void invokeCustomClickActionEvent(Identifier id, Optional<NbtElement> payload) {
+		CustomClickEventContext context = new ConfigurationContextImpl(this.handler);
+		CustomClickActionsRegistry.invokeListenerEvent(id, context, payload);
+	}
+
 	private enum RegisterState {
 		NOT_SENT,
 		SENT,
@@ -214,5 +224,8 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 			Objects.requireNonNull(networkHandler, "networkHandler");
 			Objects.requireNonNull(responseSender, "responseSender");
 		}
+	}
+
+	private record ConfigurationContextImpl(ServerConfigurationNetworkHandler handler) implements CustomClickEventContext.Configuration {
 	}
 }

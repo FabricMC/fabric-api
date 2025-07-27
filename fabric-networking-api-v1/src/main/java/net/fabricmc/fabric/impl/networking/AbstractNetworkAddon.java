@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.Identifier;
 
 /**
@@ -172,4 +174,7 @@ public abstract class AbstractNetworkAddon<H> {
 	 * @return whether the channel is reserved
 	 */
 	protected abstract boolean isReservedChannel(Identifier channelName);
+
+	public void invokeCustomClickActionEvent(Identifier id, Optional<NbtElement> payload) {
+	}
 }

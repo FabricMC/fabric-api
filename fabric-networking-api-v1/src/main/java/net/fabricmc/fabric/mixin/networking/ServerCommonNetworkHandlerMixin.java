@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CommonPongC2SPacket;
+import net.minecraft.network.packet.c2s.common.CustomClickActionC2SPacket;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 
@@ -54,5 +55,10 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 		if (getAddon() instanceof ServerConfigurationNetworkAddon addon) {
 			addon.onPong(packet.getParameter());
 		}
+	}
+
+	@Inject(method = "onCustomClickAction", at = @At("TAIL"))
+	protected void hookCustomClickActionEvent(CustomClickActionC2SPacket packet, CallbackInfo ci) {
+		getAddon().invokeCustomClickActionEvent(packet.id(), packet.payload());
 	}
 }

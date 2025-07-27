@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:multi_action",
+  "title": {
+    "translate": "key.fabric-networking-api-v1-testmod.customClick.dialog.configuration.title"
+  },
+  "body": {
+    "type": "minecraft:plain_message",
+    "contents": {
+      "translate": "key.fabric-networking-api-v1-testmod.customClick.dialog.configuration.body"
+    }
+  },
+  "actions": [
+    {
+      "label": {
+        "translate": "key.fabric-networking-api-v1-testmod.customClick.dialog.button.noPayload"
+      },
+      "action": {
+        "type": "custom",
+        "id": "fabric-networking-api-v1-testmod:test_event"
+      }
+    },
+    {
+      "label": {
+        "translate": "key.fabric-networking-api-v1-testmod.customClick.dialog.button.payload"
+      },
+      "action": {
+        "type": "custom",
+        "id": "fabric-networking-api-v1-testmod:test_event",
+        "payload": {
+          "foo": "bar"
+        }
+      }
+    }
+  ]
+}

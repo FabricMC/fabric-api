@@ -19,7 +19,9 @@ package net.fabricmc.fabric.impl.networking.server;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.packet.CustomPayload;
@@ -29,12 +31,14 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
+import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 
@@ -144,6 +148,12 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		return requestedReconfigure;
 	}
 
+	@Override
+	public void invokeCustomClickActionEvent(Identifier id, Optional<NbtElement> payload) {
+		CustomClickEventContext context = new PlayContextImpl(this.handler);
+		CustomClickActionsRegistry.invokeListenerEvent(id, context, payload);
+	}
+
 	private record ContextImpl(MinecraftServer server, ServerPlayNetworkHandler handler, PacketSender responseSender) implements ServerPlayNetworking.Context {
 		private ContextImpl {
 			Objects.requireNonNull(server, "server");
@@ -155,5 +165,8 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		public ServerPlayerEntity player() {
 			return handler.getPlayer();
 		}
+	}
+
+	public record PlayContextImpl(ServerPlayNetworkHandler handler) implements CustomClickEventContext.Play {
 	}
 }
