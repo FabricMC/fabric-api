@@ -24,12 +24,10 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
 
 /**
  * Contains data about a {@linkplain net.minecraft.text.ClickEvent.Custom custom click event} when one is received on
- * the server. Custom click events may be received either during the PLAY or in CONFIGURATION phases. If the event is
- * received during PLAY, then a player entity will be provided.
+ * the server. Custom click events may be received either during the PLAY or in CONFIGURATION phases.
  */
 public sealed interface CustomClickEventContext permits CustomClickEventContext.Play, CustomClickEventContext.Configuration {
 	/**

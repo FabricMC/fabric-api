@@ -29,8 +29,8 @@ import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
  */
 public final class CustomClickActionEvents {
 	/**
-	 * Gets an event that is invoked on the server when a custom click event is received during the PLAY phase. The
-	 * returned event will only be invoked when a click event is received with the given ID.
+	 * Gets an event that is invoked on the server when a custom click event is received. The returned event will only
+	 * be invoked when a click event is received with the given ID.
 	 *
 	 * @param id The of the ID click event to listen to.
 	 * @return Returns an event that will be invoked when a click event with the given ID is received during the PLAY
@@ -40,18 +40,17 @@ public final class CustomClickActionEvents {
 		Objects.requireNonNull(id, "ID cannot be null");
 		return CustomClickActionsRegistry.getOrCreateActionEvent(id);
 	}
+
 	@FunctionalInterface
 	public interface CustomClickActionReceived {
 		/**
 		 * Handles a custom click event on the server from a given context.
 		 *
-		 * <p>This event only works for click actions with a single ID registered with {@link #customClickActionReceivedEvent(Identifier)},
-		 * for generic events see {@link #ON_ANY_CUSTOM_CLICK_ACTION_RECEIVED}.
-		 *
 		 * @param context The context of the event, contains the handler responsible for the action and the payload.
 		 *                Will either be an instance of {@link CustomClickEventContext.Play} or
 		 *                {@link CustomClickEventContext.Configuration}, depending on when this event was invoked. This
-		 *                can be checked using switch-statement pattern matching.
+		 *                can be checked using switch-statement pattern matching (see testmod if unfamiliar with this
+		 *                syntax).
 		 */
 		void handleCustomClickAction(CustomClickEventContext context);
 	}
