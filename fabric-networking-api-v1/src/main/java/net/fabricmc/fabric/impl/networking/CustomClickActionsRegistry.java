@@ -62,12 +62,8 @@ public final class CustomClickActionsRegistry {
 
 	public record PlayContextImpl(
 			ServerPlayNetworkHandler handler,
-			Optional<ServerPlayerEntity> player,
 			Optional<NbtElement> payload
 	) implements CustomClickEventContext.Play {
-		public PlayContextImpl(ServerPlayNetworkHandler handler, ServerPlayerEntity player, Optional<NbtElement> payload) {
-			this(handler, Optional.of(player), payload);
-		}
 	}
 
 	public record ConfigurationContextImpl(

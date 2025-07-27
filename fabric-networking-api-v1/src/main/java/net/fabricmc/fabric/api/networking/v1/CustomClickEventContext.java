@@ -38,12 +38,7 @@ public sealed interface CustomClickEventContext permits CustomClickEventContext.
 	ServerCommonNetworkHandler handler();
 
 	/**
-	 * The player entity responsible for the event, if in the play phase.
-	 */
-	Optional<ServerPlayerEntity> player();
-
-	/**
-	 * The payload received with this event. If no payload is received, then this payload will be {@code null}.
+	 * The payload received with this event. If no payload is received, then this payload will be empty.
 	 */
 	Optional<NbtElement> payload();
 
@@ -69,14 +64,5 @@ public sealed interface CustomClickEventContext permits CustomClickEventContext.
 		 */
 		@Override
 		ServerConfigurationNetworkHandler handler();
-
-		/**
-		 * The configuration phase is too early for an entity to have been created, so an entity is never returned.
-		 *
-		 * @return Returns an empty optional.
-		 */
-		default Optional<ServerPlayerEntity> player() {
-			return Optional.empty();
-		}
 	}
 }

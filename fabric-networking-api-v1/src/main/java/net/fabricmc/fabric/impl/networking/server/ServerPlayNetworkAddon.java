@@ -151,7 +151,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	public void invokeCustomClickActionEvent(Identifier id, Optional<NbtElement> payload) {
 		CustomClickActionsRegistry.invokeListenerEvent(
 				id,
-				new CustomClickActionsRegistry.PlayContextImpl(this.handler, this.handler.getPlayer(), payload)
+				new CustomClickActionsRegistry.PlayContextImpl(this.handler, payload)
 		);
 	}
 
