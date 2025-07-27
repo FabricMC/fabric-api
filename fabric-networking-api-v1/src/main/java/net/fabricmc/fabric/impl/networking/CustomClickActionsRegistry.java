@@ -27,32 +27,29 @@ import net.fabricmc.fabric.api.networking.v1.CustomClickActionEvents;
 import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
 
 public final class CustomClickActionsRegistry {
-	private static final Map<Identifier, Event<CustomClickActionEvents.NamedCustomClickActionReceived>> REGISTRY = new HashMap<>();
+	private static final Map<Identifier, Event<CustomClickActionEvents.CustomClickActionReceived>> REGISTRY = new HashMap<>();
 
-	public static Event<CustomClickActionEvents.NamedCustomClickActionReceived> getOrCreateActionEvent(Identifier id) {
-		return REGISTRY.computeIfAbsent(
-				id,
-				idx -> {
-					return EventFactory.createArrayBacked(
-							CustomClickActionEvents.NamedCustomClickActionReceived.class,
-							listeners -> context -> {
-								for (CustomClickActionEvents.NamedCustomClickActionReceived listener : listeners) {
-									listener.handleCustomClickAction(context);
-								}
-							}
-					);
-				}
-		);
+	public static Event<CustomClickActionEvents.CustomClickActionReceived> getOrCreateActionEvent(Identifier id) {
+		return REGISTRY.computeIfAbsent(id, idx -> createNewEvent());
 	}
 
 	public static void invokeListenerEvent(Identifier id, CustomClickEventContext context) {
-		CustomClickActionEvents.ON_ANY_CUSTOM_CLICK_ACTION_RECEIVED.invoker().handleCustomClickAction(id, context);
-
-		Event<CustomClickActionEvents.NamedCustomClickActionReceived> event = REGISTRY.get(id);
+		Event<CustomClickActionEvents.CustomClickActionReceived> event = REGISTRY.get(id);
 
 		if (event != null) {
 			event.invoker().handleCustomClickAction(context);
 		}
+	}
+
+	private static Event<CustomClickActionEvents.CustomClickActionReceived> createNewEvent() {
+		return EventFactory.createArrayBacked(
+				CustomClickActionEvents.CustomClickActionReceived.class,
+				listeners -> context -> {
+					for (CustomClickActionEvents.CustomClickActionReceived listener : listeners) {
+						listener.handleCustomClickAction(context);
+					}
+				}
+		);
 	}
 
 	private CustomClickActionsRegistry() {

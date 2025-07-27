@@ -21,7 +21,6 @@ import java.util.Objects;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
 
 /**
@@ -30,19 +29,6 @@ import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
  */
 public final class CustomClickActionEvents {
 	/**
-	 * Invoked when any custom click action is received. If you are only interested in listening to events with a
-	 * specific ID, use {@link #customClickActionReceivedEvent(Identifier)}.
-	 */
-	public static final Event<CustomClickActionReceived> ON_ANY_CUSTOM_CLICK_ACTION_RECEIVED = EventFactory.createArrayBacked(
-			CustomClickActionReceived.class,
-			listeners -> (id, context) -> {
-				for (CustomClickActionReceived listener : listeners) {
-					listener.handleCustomClickAction(id, context);
-				}
-			}
-	);
-
-	/**
 	 * Gets an event that is invoked on the server when a custom click event is received during the PLAY phase. The
 	 * returned event will only be invoked when a click event is received with the given ID.
 	 *
@@ -50,23 +36,12 @@ public final class CustomClickActionEvents {
 	 * @return Returns an event that will be invoked when a click event with the given ID is received during the PLAY
 	 * phase.
 	 */
-	public static Event<NamedCustomClickActionReceived> customClickActionReceivedEvent(Identifier id) {
+	public static Event<CustomClickActionReceived> customClickActionReceivedEvent(Identifier id) {
 		Objects.requireNonNull(id, "ID cannot be null");
 		return CustomClickActionsRegistry.getOrCreateActionEvent(id);
 	}
-
 	@FunctionalInterface
 	public interface CustomClickActionReceived {
-		/**
-		 * Handles any custom click event on the server from a given context.
-		 *
-		 * @param context The context of the event, contains the handler responsible for the action and the payload.
-		 */
-		void handleCustomClickAction(Identifier id, CustomClickEventContext context);
-	}
-
-	@FunctionalInterface
-	public interface NamedCustomClickActionReceived {
 		/**
 		 * Handles a custom click event on the server from a given context.
 		 *
