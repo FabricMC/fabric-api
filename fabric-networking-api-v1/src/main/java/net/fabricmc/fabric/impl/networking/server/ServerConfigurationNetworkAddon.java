@@ -22,6 +22,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 import io.netty.channel.ChannelFutureListener;
+
+import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtElement;
@@ -204,7 +207,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	public void invokeCustomClickActionEvent(Identifier id, Optional<NbtElement> payload) {
 		CustomClickActionsRegistry.invokeListenerEvent(
 				id,
-				new CustomClickActionsRegistry.ConfigurationContextImpl(this.handler, payload)
+				new ConfigurationContextImpl(this.handler, payload)
 		);
 	}
 
@@ -225,5 +228,11 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 			Objects.requireNonNull(networkHandler, "networkHandler");
 			Objects.requireNonNull(responseSender, "responseSender");
 		}
+	}
+
+	private record ConfigurationContextImpl(
+			ServerConfigurationNetworkHandler handler,
+			Optional<NbtElement> payload
+	) implements CustomClickEventContext.Configuration {
 	}
 }

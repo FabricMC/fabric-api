@@ -18,12 +18,7 @@ package net.fabricmc.fabric.impl.networking;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.server.network.ServerConfigurationNetworkHandler;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -58,18 +53,6 @@ public final class CustomClickActionsRegistry {
 		if (event != null) {
 			event.invoker().handleCustomClickAction(context);
 		}
-	}
-
-	public record PlayContextImpl(
-			ServerPlayNetworkHandler handler,
-			Optional<NbtElement> payload
-	) implements CustomClickEventContext.Play {
-	}
-
-	public record ConfigurationContextImpl(
-			ServerConfigurationNetworkHandler handler,
-			Optional<NbtElement> payload
-	) implements CustomClickEventContext.Configuration {
 	}
 
 	private CustomClickActionsRegistry() {

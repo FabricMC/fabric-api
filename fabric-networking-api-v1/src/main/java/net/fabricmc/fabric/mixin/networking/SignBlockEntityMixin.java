@@ -21,6 +21,9 @@ import java.util.Optional;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+
+import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -48,7 +51,7 @@ public class SignBlockEntityMixin {
 		if (player instanceof ServerPlayerEntity serverPlayer) {
 			CustomClickActionsRegistry.invokeListenerEvent(
 					id,
-					new CustomClickActionsRegistry.PlayContextImpl(serverPlayer.networkHandler, payload)
+					new ServerPlayNetworkAddon.PlayContextImpl(serverPlayer.networkHandler, payload)
 			);
 		}
 	}

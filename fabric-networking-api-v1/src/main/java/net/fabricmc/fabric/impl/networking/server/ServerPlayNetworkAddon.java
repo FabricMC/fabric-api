@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
+
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkPhase;
@@ -151,7 +153,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	public void invokeCustomClickActionEvent(Identifier id, Optional<NbtElement> payload) {
 		CustomClickActionsRegistry.invokeListenerEvent(
 				id,
-				new CustomClickActionsRegistry.PlayContextImpl(this.handler, payload)
+				new PlayContextImpl(this.handler, payload)
 		);
 	}
 
@@ -166,5 +168,11 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		public ServerPlayerEntity player() {
 			return handler.getPlayer();
 		}
+	}
+
+	public record PlayContextImpl(
+			ServerPlayNetworkHandler handler,
+			Optional<NbtElement> payload
+	) implements CustomClickEventContext.Play {
 	}
 }
