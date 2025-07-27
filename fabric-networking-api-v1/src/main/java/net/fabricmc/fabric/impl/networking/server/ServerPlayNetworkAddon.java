@@ -151,10 +151,8 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	public void invokeCustomClickActionEvent(Identifier id, Optional<NbtElement> payload) {
-		CustomClickActionsRegistry.invokeListenerEvent(
-				id,
-				new PlayContextImpl(this.handler, payload)
-		);
+		var context = new PlayContextImpl(this.handler);
+		CustomClickActionsRegistry.invokeListenerEvent(id, context, payload);
 	}
 
 	private record ContextImpl(MinecraftServer server, ServerPlayNetworkHandler handler, PacketSender responseSender) implements ServerPlayNetworking.Context {
@@ -170,9 +168,6 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		}
 	}
 
-	public record PlayContextImpl(
-			ServerPlayNetworkHandler handler,
-			Optional<NbtElement> payload
-	) implements CustomClickEventContext.Play {
+	public record PlayContextImpl(ServerPlayNetworkHandler handler) implements CustomClickEventContext.Play {
 	}
 }

@@ -205,10 +205,8 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	public void invokeCustomClickActionEvent(Identifier id, Optional<NbtElement> payload) {
-		CustomClickActionsRegistry.invokeListenerEvent(
-				id,
-				new ConfigurationContextImpl(this.handler, payload)
-		);
+		var context = new ConfigurationContextImpl(this.handler);
+		CustomClickActionsRegistry.invokeListenerEvent(id, context, payload);
 	}
 
 	private enum RegisterState {
@@ -230,9 +228,6 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		}
 	}
 
-	private record ConfigurationContextImpl(
-			ServerConfigurationNetworkHandler handler,
-			Optional<NbtElement> payload
-	) implements CustomClickEventContext.Configuration {
+	private record ConfigurationContextImpl(ServerConfigurationNetworkHandler handler) implements CustomClickEventContext.Configuration {
 	}
 }

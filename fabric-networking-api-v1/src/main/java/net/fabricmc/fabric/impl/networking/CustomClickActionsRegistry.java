@@ -18,7 +18,9 @@ package net.fabricmc.fabric.impl.networking;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -33,20 +35,20 @@ public final class CustomClickActionsRegistry {
 		return REGISTRY.computeIfAbsent(id, idx -> createNewEvent());
 	}
 
-	public static void invokeListenerEvent(Identifier id, CustomClickEventContext context) {
+	public static void invokeListenerEvent(Identifier id, CustomClickEventContext context, Optional<NbtElement> payload) {
 		Event<CustomClickActionEvents.CustomClickActionReceived> event = REGISTRY.get(id);
 
 		if (event != null) {
-			event.invoker().handleCustomClickAction(context);
+			event.invoker().handleCustomClickAction(context, payload);
 		}
 	}
 
 	private static Event<CustomClickActionEvents.CustomClickActionReceived> createNewEvent() {
 		return EventFactory.createArrayBacked(
 				CustomClickActionEvents.CustomClickActionReceived.class,
-				listeners -> context -> {
+				listeners -> (context, payload) -> {
 					for (CustomClickActionEvents.CustomClickActionReceived listener : listeners) {
-						listener.handleCustomClickAction(context);
+						listener.handleCustomClickAction(context, payload);
 					}
 				}
 		);

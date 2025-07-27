@@ -17,7 +17,9 @@
 package net.fabricmc.fabric.api.networking.v1;
 
 import java.util.Objects;
+import java.util.Optional;
 
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -51,8 +53,10 @@ public final class CustomClickActionEvents {
 		 *                {@link CustomClickEventContext.Configuration}, depending on when this event was invoked. This
 		 *                can be checked using switch-statement pattern matching (see testmod if unfamiliar with this
 		 *                syntax).
+		 * @param payload The payload received with this event. If no payload is received, then this payload will be
+		 *                empty.
 		 */
-		void handleCustomClickAction(CustomClickEventContext context);
+		void handleCustomClickAction(CustomClickEventContext context, Optional<NbtElement> payload);
 	}
 
 	private CustomClickActionEvents() {

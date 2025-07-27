@@ -49,10 +49,8 @@ public class SignBlockEntityMixin {
 		original.call(instance, id, payload);
 
 		if (player instanceof ServerPlayerEntity serverPlayer) {
-			CustomClickActionsRegistry.invokeListenerEvent(
-					id,
-					new ServerPlayNetworkAddon.PlayContextImpl(serverPlayer.networkHandler, payload)
-			);
+			var context = new ServerPlayNetworkAddon.PlayContextImpl(serverPlayer.networkHandler);
+			CustomClickActionsRegistry.invokeListenerEvent(id, context, payload);
 		}
 	}
 }

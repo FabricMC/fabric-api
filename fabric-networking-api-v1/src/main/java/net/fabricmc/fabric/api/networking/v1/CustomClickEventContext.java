@@ -36,11 +36,6 @@ public sealed interface CustomClickEventContext permits CustomClickEventContext.
 	ServerCommonNetworkHandler handler();
 
 	/**
-	 * The payload received with this event. If no payload is received, then this payload will be empty.
-	 */
-	Optional<NbtElement> payload();
-
-	/**
 	 * The context data when a custom click event is received during the PLAY phase on the server.
 	 */
 	@ApiStatus.NonExtendable
