@@ -21,9 +21,6 @@ import java.util.Optional;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-
-import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -34,7 +31,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.CustomClickEventContext;
 import net.fabricmc.fabric.impl.networking.CustomClickActionsRegistry;
+import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
 
 @Mixin(SignBlockEntity.class)
 public class SignBlockEntityMixin {
@@ -49,7 +48,7 @@ public class SignBlockEntityMixin {
 		original.call(instance, id, payload);
 
 		if (player instanceof ServerPlayerEntity serverPlayer) {
-			var context = new ServerPlayNetworkAddon.PlayContextImpl(serverPlayer.networkHandler);
+			CustomClickEventContext context = new ServerPlayNetworkAddon.PlayContextImpl(serverPlayer.networkHandler);
 			CustomClickActionsRegistry.invokeListenerEvent(id, context, payload);
 		}
 	}

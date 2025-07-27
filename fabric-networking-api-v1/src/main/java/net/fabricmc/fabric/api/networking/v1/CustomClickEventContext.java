@@ -16,16 +16,12 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import java.util.Optional;
-
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 /**
  * Contains data about a {@linkplain net.minecraft.text.ClickEvent.Custom custom click event} when one is received on
