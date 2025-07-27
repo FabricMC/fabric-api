@@ -153,7 +153,7 @@ public interface FabricItem {
 			if (potion.isPresent()) entry = potion.get();
 		} else if (stack.isOf(Items.ENCHANTED_BOOK) && stack.contains(DataComponentTypes.STORED_ENCHANTMENTS)) {
 			Set<RegistryEntry<Enchantment>> enchantments = stack.get(DataComponentTypes.STORED_ENCHANTMENTS).getEnchantments();
-			if (enchantments.size() == 1) entry = enchantments.stream().findFirst().get();
+			if (enchantments.size() == 1) entry = enchantments.iterator().next();
 		}
 
 		return entry.getKey().orElseThrow().getValue().getNamespace();
