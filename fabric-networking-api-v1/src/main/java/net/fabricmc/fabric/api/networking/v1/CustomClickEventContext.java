@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.networking.v1;
 
 import java.util.Optional;
 
+import net.minecraft.server.network.ServerPlayerEntity;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.nbt.NbtElement;
@@ -45,6 +47,16 @@ public sealed interface CustomClickEventContext permits CustomClickEventContext.
 		 */
 		@Override
 		ServerPlayNetworkHandler handler();
+
+		/**
+		 * The player responsible for the event.
+		 *
+		 * @return Returns exactly the same player as calling {@link ServerPlayNetworkHandler#getPlayer()} on the result
+		 * of {@link #handler()}.
+		 */
+		default ServerPlayerEntity player() {
+			return handler().getPlayer();
+		}
 	}
 
 	/**

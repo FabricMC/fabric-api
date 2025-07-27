@@ -90,11 +90,10 @@ public class CustomClickActionsTest implements ModInitializer {
 		});
 
 		CustomClickActionEvents.customClickActionReceivedEvent(NetworkingTestmods.id("test_event")).register(
-				context -> {
+				(context, payload) -> {
 					switch (context) {
 						case CustomClickEventContext.Configuration configuration -> {
-							String payloadString = context.payload()
-									.map(NbtElement::toString)
+							String payloadString = payload.map(NbtElement::toString)
 									.orElse("no payload");
 							NetworkingTestmods.LOGGER.info("Received configuration event with payload: {}", payloadString);
 
@@ -104,11 +103,10 @@ public class CustomClickActionsTest implements ModInitializer {
 							showDialogDuringConfiguration = false;
 						}
 						case CustomClickEventContext.Play play -> {
-							String payloadString = context.payload()
-									.map(NbtElement::toString)
+							String payloadString = payload.map(NbtElement::toString)
 									.orElse("no payload");
 							Text message = Text.translatable("key.fabric-networking-api-v1-testmod.customClick.play.received", payloadString);
-							play.handler().getPlayer().sendMessage(message);
+							play.player().sendMessage(message);
 						}
 					}
 				}
