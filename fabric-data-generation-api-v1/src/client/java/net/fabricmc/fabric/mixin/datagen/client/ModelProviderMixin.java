@@ -18,12 +18,13 @@ package net.fabricmc.fabric.mixin.datagen.client;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -50,23 +51,23 @@ public class ModelProviderMixin {
 		}
 	}
 
-	@Redirect(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/BlockStateModelGenerator;register()V"))
-	private void registerBlockStateModels(BlockStateModelGenerator instance) {
+	@WrapOperation(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/BlockStateModelGenerator;register()V"))
+	private void registerBlockStateModels(BlockStateModelGenerator instance, Operation<Void> original) {
 		if (((Object) this) instanceof FabricModelProvider fabricModelProvider) {
 			fabricModelProvider.generateBlockStateModels(instance);
 		} else {
 			// Fallback to the vanilla registration when not a fabric provider
-			instance.register();
+			original.call(instance);
 		}
 	}
 
-	@Redirect(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/ItemModelGenerator;register()V"))
-	private void registerItemModels(ItemModelGenerator instance) {
+	@WrapOperation(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/ItemModelGenerator;register()V"))
+	private void registerItemModels(ItemModelGenerator instance, Operation<Void> original) {
 		if (((Object) this) instanceof FabricModelProvider fabricModelProvider) {
 			fabricModelProvider.generateItemModels(instance);
 		} else {
 			// Fallback to the vanilla registration when not a fabric provider
-			instance.register();
+			original.call(instance);
 		}
 	}
 
