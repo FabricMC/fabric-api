@@ -18,15 +18,14 @@ package net.fabricmc.fabric.mixin.datagen.client;
 
 import java.util.function.Predicate;
 
-import net.minecraft.block.Block;
-import net.minecraft.registry.entry.RegistryEntry;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.data.ModelProvider;
+import net.minecraft.registry.entry.RegistryEntry;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.impl.datagen.client.FabricModelProviderDefinitions;
