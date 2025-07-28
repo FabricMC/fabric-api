@@ -19,8 +19,9 @@ package net.fabricmc.fabric.api.resource;
 import java.util.Collection;
 import java.util.Collections;
 
-import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader;
 
 /**
  * Interface for "identifiable" resource reload listeners.
@@ -29,14 +30,12 @@ import net.minecraft.util.Identifier;
  * and can provide dependencies that they would like to see executed before
  * themselves.
  *
- * @see ResourceReloadListenerKeys
+ * @see net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys
+ * @deprecated Use {@link IdentifiableResourceReloader}
+ * and {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#addReloaderOrdering(Identifier, Identifier)} instead.
  */
-public interface IdentifiableResourceReloadListener extends ResourceReloader {
-	/**
-	 * @return The unique identifier of this listener.
-	 */
-	Identifier getFabricId();
-
+@Deprecated
+public interface IdentifiableResourceReloadListener extends IdentifiableResourceReloader {
 	/**
 	 * @return The identifiers of listeners this listener expects to have been
 	 * executed before itself. Please keep in mind that this only takes effect

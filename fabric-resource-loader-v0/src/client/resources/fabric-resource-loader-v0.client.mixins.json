@@ -6,7 +6,6 @@
     "CreateWorldScreenMixin",
     "FontManagerMixin",
     "GameOptionsMixin",
-    "KeyedResourceReloadListenerClientMixin",
     "ResourcePackOrganizerMixin",
     "VanillaResourcePackProviderMixin",
     "GameOptionsWriteVisitorMixin",

@@ -1,11 +1,12 @@
+
 {
   "schemaVersion": 1,
-  "id": "fabric-resource-loader-v0",
-  "name": "Fabric Resource Loader (v0)",
+  "id": "fabric-resource-loader-v1",
+  "name": "Fabric Resource Loader (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-resource-loader-v0/icon.png",
+  "icon": "assets/fabric-resource-loader-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -16,18 +17,16 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
-    "fabric-resource-loader-v1": ">=1.0.0"
+    "fabricloader": ">=0.16.13"
   },
   "description": "Asset and data resource loading.",
   "mixins": [
-    "fabric-resource-loader-v0.mixins.json",
+    "fabric-resource-loader-v1.mixins.json",
     {
-      "config": "fabric-resource-loader-v0.client.mixins.json",
+      "config": "fabric-resource-loader-v1.client.mixins.json",
       "environment": "client"
     }
   ],
-  "accessWidener": "fabric-resource-loader-v0.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }

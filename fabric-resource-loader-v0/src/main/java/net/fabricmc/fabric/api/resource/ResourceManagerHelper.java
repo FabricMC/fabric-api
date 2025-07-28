@@ -38,7 +38,7 @@ public interface ResourceManagerHelper {
 	 * Add a resource reload listener for a given registry.
 	 *
 	 * @param listener The resource reload listener.
-	 * @deprecated Use {@link ResourceManagerHelper#registerReloadListener(IdentifiableResourceReloadListener)}
+	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader)} instead.
 	 */
 	@Deprecated
 	default void addReloadListener(IdentifiableResourceReloadListener listener) {
@@ -49,7 +49,9 @@ public interface ResourceManagerHelper {
 	 * Register a resource reload listener for a given resource manager type.
 	 *
 	 * @param listener The resource reload listener.
+	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader)} instead.
 	 */
+	@Deprecated
 	void registerReloadListener(IdentifiableResourceReloadListener listener);
 
 	/**
@@ -59,7 +61,9 @@ public interface ResourceManagerHelper {
 	 *
 	 * @param identifier The identifier of the listener.
 	 * @param listenerFactory   A function that creates a new instance of the listener with a given registry lookup.
+	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(Identifier, Function)} instead.
 	 */
+	@Deprecated
 	void registerReloadListener(Identifier identifier, Function<RegistryWrapper.WrapperLookup, IdentifiableResourceReloadListener> listenerFactory);
 
 	/**

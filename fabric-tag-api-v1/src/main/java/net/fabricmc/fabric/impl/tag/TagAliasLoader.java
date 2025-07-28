@@ -49,9 +49,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.StrictJsonParser;
 import net.minecraft.util.profiler.Profiler;
 
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader;
 
-public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<RegistryKey<? extends Registry<?>>, List<TagAliasLoader.Data>>> implements IdentifiableResourceReloadListener {
+public final class TagAliasLoader extends SinglePreparationResourceReloader<Map<RegistryKey<? extends Registry<?>>, List<TagAliasLoader.Data>>> implements IdentifiableResourceReloader {
 	public static final Identifier ID = Identifier.of("fabric-tag-api-v1", "tag_alias_groups");
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-tag-api-v1");

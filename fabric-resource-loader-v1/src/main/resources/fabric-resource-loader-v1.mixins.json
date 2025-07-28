@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.resource.v1",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "KeyedResourceReloaderMixin",
+    "LifecycledResourceManagerImplMixin",
+    "ServerRecipeManagerMixin",
+    "SimpleResourceReloadMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

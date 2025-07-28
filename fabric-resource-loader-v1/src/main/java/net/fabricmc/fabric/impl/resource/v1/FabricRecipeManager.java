@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.resource.loader;
+package net.fabricmc.fabric.impl.resource.v1;
 
-import net.minecraft.resource.ResourceType;
+import org.jetbrains.annotations.ApiStatus;
 
-public interface FabricLifecycledResourceManager {
-	ResourceType fabric_getResourceType();
+import net.minecraft.registry.RegistryWrapper;
+
+@ApiStatus.Internal
+public interface FabricRecipeManager {
+	RegistryWrapper.WrapperLookup fabric$getRegistries();
 }

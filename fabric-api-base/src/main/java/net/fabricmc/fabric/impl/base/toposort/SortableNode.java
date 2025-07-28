@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class SortableNode<N extends SortableNode<N>> {
-	final List<N> subsequentNodes = new ArrayList<>();
-	final List<N> previousNodes = new ArrayList<>();
+	protected final List<N> subsequentNodes = new ArrayList<>();
+	protected final List<N> previousNodes = new ArrayList<>();
 	boolean visited = false;
 
 	/**
@@ -29,12 +29,20 @@ public abstract class SortableNode<N extends SortableNode<N>> {
 	 */
 	protected abstract String getDescription();
 
+	protected void addSubsequentNode(N node) {
+		this.subsequentNodes.add(node);
+	}
+
+	protected void addPreviousNode(N node) {
+		this.previousNodes.add(node);
+	}
+
 	public static <N extends SortableNode<N>> void link(N first, N second) {
 		if (first == second) {
 			throw new IllegalArgumentException("Cannot link a node to itself!");
 		}
 
-		first.subsequentNodes.add(second);
-		second.previousNodes.add(first);
+		first.addSubsequentNode(second);
+		second.addPreviousNode(first);
 	}
 }

@@ -136,4 +136,21 @@ public enum TriState {
 
 		throw exceptionSupplier.get();
 	}
+
+	/**
+	 * {@return a parsed TriState from a system property}
+	 *
+	 * @param property the system property
+	 */
+	public static TriState fromProperty(String property) {
+		String value = System.getProperty(property);
+
+		if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value)) {
+			return TRUE;
+		} else if ("false".equalsIgnoreCase(value) || "off".equalsIgnoreCase(value)) {
+			return FALSE;
+		} else {
+			return DEFAULT;
+		}
+	}
 }
