@@ -44,9 +44,10 @@ public class ModelProviderBlockStateSuppliersMixin implements FabricModelProvide
 	@ModifyArg(method = "validate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0, remap = false))
 	private Predicate<RegistryEntry.Reference<Block>> filterBlocksForProcessingMod(Predicate<RegistryEntry.Reference<Block>> original) {
 		if (fabricDataOutput != null) {
-			return block -> fabricDataOutput.isStrictValidationEnabled()
+			return original
+					.and(block -> fabricDataOutput.isStrictValidationEnabled())
 					// Skip over blocks that are not from the mod we are processing.
-					&& block.registryKey().getValue().getNamespace().equals(fabricDataOutput.getModId());
+					.and(block -> block.registryKey().getValue().getNamespace().equals(fabricDataOutput.getModId()));
 		}
 
 		return original;
