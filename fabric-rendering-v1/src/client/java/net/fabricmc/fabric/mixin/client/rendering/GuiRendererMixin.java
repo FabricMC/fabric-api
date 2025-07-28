@@ -38,8 +38,8 @@ import net.minecraft.client.gui.render.state.GuiRenderState;
 import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
 
-import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementOverflowData;
 import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRendererPool;
 
 @Mixin(GuiRenderer.class)
 abstract class GuiRendererMixin {
@@ -52,7 +52,7 @@ abstract class GuiRendererMixin {
 	private VertexConsumerProvider.Immediate vertexConsumers;
 
 	@Unique
-	private final Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementOverflowData<?>> overflowDatas = new HashMap<>();
+	private final Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRendererPool<?>> rendererPools = new HashMap<>();
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
 	private void mutableSpecialElementRenderers(GuiRenderState state, VertexConsumerProvider.Immediate vertexConsumers, List<SpecialGuiElementRenderer<?>> specialElementRenderers, CallbackInfo ci) {
@@ -61,18 +61,23 @@ abstract class GuiRendererMixin {
 	}
 
 	@Inject(method = "prepareSpecialElements", at = @At("HEAD"))
-	private void onPrepareSpecialElements(CallbackInfo ci) {
-		overflowDatas.values().forEach(SpecialGuiElementOverflowData::newFrame);
+	private void prePrepareSpecialElements(CallbackInfo ci) {
+		rendererPools.values().forEach(SpecialGuiElementRendererPool::newFrame);
+	}
+
+	@Inject(method = "prepareSpecialElements", at = @At("RETURN"))
+	private void postPrepareSpecialElements(CallbackInfo ci) {
+		rendererPools.values().forEach(SpecialGuiElementRendererPool::cleanUpUnusedRenderers);
 	}
 
 	@ModifyVariable(method = "prepareSpecialElement", at = @At("STORE"))
-	private <T extends SpecialGuiElementRenderState> SpecialGuiElementRenderer<T> substitueOverflowedSpecialElementRenderer(SpecialGuiElementRenderer<T> original, T elementState) {
-		SpecialGuiElementOverflowData<T> overflowData = (SpecialGuiElementOverflowData<T>) overflowDatas.computeIfAbsent(original.getElementClass(), k -> new SpecialGuiElementOverflowData<>());
-		return overflowData.substitute(original, elementState, MinecraftClient.getInstance(), vertexConsumers);
+	private <T extends SpecialGuiElementRenderState> SpecialGuiElementRenderer<T> substitueSpecialElementRenderer(SpecialGuiElementRenderer<T> original, T elementState) {
+		SpecialGuiElementRendererPool<T> rendererPool = (SpecialGuiElementRendererPool<T>) rendererPools.computeIfAbsent(original.getElementClass(), k -> new SpecialGuiElementRendererPool<>());
+		return rendererPool.substitute(original, elementState, MinecraftClient.getInstance(), vertexConsumers);
 	}
 
 	@Inject(method = "close", at = @At("RETURN"))
-	private void closeOverflowDatas(CallbackInfo ci) {
-		overflowDatas.values().forEach(SpecialGuiElementOverflowData::close);
+	private void closeRendererPools(CallbackInfo ci) {
+		rendererPools.values().forEach(SpecialGuiElementRendererPool::close);
 	}
 }

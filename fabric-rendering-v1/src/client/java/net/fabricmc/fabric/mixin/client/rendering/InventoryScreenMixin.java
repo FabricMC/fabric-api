@@ -26,7 +26,7 @@ import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.Entity;
 
 @Mixin(InventoryScreen.class)
-public class InventoryScreenMixin {
+abstract class InventoryScreenMixin {
 	@Redirect(
 			method = "drawEntity(Lnet/minecraft/client/gui/DrawContext;IIIIFLorg/joml/Vector3f;Lorg/joml/Quaternionf;Lorg/joml/Quaternionf;Lnet/minecraft/entity/LivingEntity;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;getAndUpdateRenderState(Lnet/minecraft/entity/Entity;F)Lnet/minecraft/client/render/entity/state/EntityRenderState;")

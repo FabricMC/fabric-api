@@ -69,7 +69,7 @@ public final class SpecialGuiElementRegistryImpl {
 	}
 
 	@Nullable("null for render states registered outside FAPI")
-	public static <S extends SpecialGuiElementRenderState> SpecialGuiElementRenderer<S> createOverflowRenderer(S state, MinecraftClient client, VertexConsumerProvider.Immediate immediate) {
+	public static <S extends SpecialGuiElementRenderState> SpecialGuiElementRenderer<S> createNewRenderer(S state, MinecraftClient client, VertexConsumerProvider.Immediate immediate) {
 		SpecialGuiElementRegistry.Factory factory = FACTORIES.get(state.getClass());
 		return factory == null ? null : (SpecialGuiElementRenderer<S>) factory.createSpecialRenderer(new ContextImpl(client, immediate));
 	}

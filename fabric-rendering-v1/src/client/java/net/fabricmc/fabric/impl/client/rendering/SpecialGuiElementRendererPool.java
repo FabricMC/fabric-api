@@ -24,7 +24,7 @@ import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
 import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
 
-public final class SpecialGuiElementOverflowData<T extends SpecialGuiElementRenderState> implements AutoCloseable {
+public final class SpecialGuiElementRendererPool<T extends SpecialGuiElementRenderState> implements AutoCloseable {
 	private int index = 0;
 	private final List<SpecialGuiElementRenderer<T>> renderers = new ArrayList<>();
 
@@ -40,17 +40,27 @@ public final class SpecialGuiElementOverflowData<T extends SpecialGuiElementRend
 		} else if (index <= renderers.size()) {
 			return renderers.get(index - 1);
 		} else {
-			SpecialGuiElementRenderer<T> overflowRenderer = SpecialGuiElementRegistryImpl.createOverflowRenderer(elementState, client, immediate);
+			SpecialGuiElementRenderer<T> newRenderer = SpecialGuiElementRegistryImpl.createNewRenderer(elementState, client, immediate);
 
-			if (overflowRenderer == null) {
+			if (newRenderer == null) {
 				// This renderer has been registered in an unofficial way (using mixins rather than through FAPI).
 				// We don't have a factory to create a new renderer, so don't fix in this case.
 				return original;
 			}
 
-			renderers.add(overflowRenderer);
-			return overflowRenderer;
+			renderers.add(newRenderer);
+			return newRenderer;
 		}
+	}
+
+	public void cleanUpUnusedRenderers() {
+		int firstUnusedIndex = Math.max(0, index - 1);
+
+		for (int i = firstUnusedIndex; i < renderers.size(); i++) {
+			renderers.get(i).close();
+		}
+
+		renderers.subList(firstUnusedIndex, renderers.size()).clear();
 	}
 
 	@Override

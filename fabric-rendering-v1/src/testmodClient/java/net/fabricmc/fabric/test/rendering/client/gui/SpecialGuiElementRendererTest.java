@@ -44,7 +44,7 @@ import net.fabricmc.fabric.test.rendering.client.mixin.GameRendererAccessor;
 import net.fabricmc.fabric.test.rendering.client.mixin.GuiRendererAccessor;
 
 /**
- * This test mod renders a banner in the top left corner.
+ * This test mod renders two banners and two signs in the top left corner.
  */
 public class SpecialGuiElementRendererTest implements ClientModInitializer, FabricClientGameTest {
 	@Override
