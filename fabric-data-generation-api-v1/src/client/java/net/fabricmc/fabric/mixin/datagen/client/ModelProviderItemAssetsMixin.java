@@ -76,7 +76,7 @@ public class ModelProviderItemAssetsMixin implements FabricItemAssetDefinitions 
 
 	@ModifyArg(method = "resolveAndValidate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0, remap = false))
 	private Predicate<RegistryEntry.Reference<Item>> filterItemsForProcessingMod(Predicate<RegistryEntry.Reference<Item>> original) {
-		if(fabricDataOutput != null) {
+		if (fabricDataOutput != null) {
 			return item -> fabricDataOutput.isStrictValidationEnabled()
 					// Skip over items that are not from the mod we are processing.
 					&& item.registryKey().getValue().getNamespace().equals(fabricDataOutput.getModId());
