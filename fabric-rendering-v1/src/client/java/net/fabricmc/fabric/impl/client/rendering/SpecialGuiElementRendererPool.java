@@ -56,6 +56,10 @@ public final class SpecialGuiElementRendererPool<T extends SpecialGuiElementRend
 	public void cleanUpUnusedRenderers() {
 		int firstUnusedIndex = Math.max(0, index - 1);
 
+		if (firstUnusedIndex >= renderers.size()) {
+			return;
+		}
+
 		for (int i = firstUnusedIndex; i < renderers.size(); i++) {
 			renderers.get(i).close();
 		}
