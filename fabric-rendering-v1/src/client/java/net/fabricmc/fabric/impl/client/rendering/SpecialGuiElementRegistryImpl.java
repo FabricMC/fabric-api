@@ -28,7 +28,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
 
 public final class SpecialGuiElementRegistryImpl {
-	private static final List<SpecialGuiElementRegistry.Factory> factories = new ArrayList<>();
+	private static final List<SpecialGuiElementRegistry.Factory> FACTORIES = new ArrayList<>();
 	private static boolean frozen;
 
 	private SpecialGuiElementRegistryImpl() {
@@ -39,7 +39,7 @@ public final class SpecialGuiElementRegistryImpl {
 			throw new IllegalStateException("Too late to register, GuiRenderer has already been initialized.");
 		}
 
-		factories.add(factory);
+		FACTORIES.add(factory);
 	}
 
 	// Called after the vanilla special renderers are created.
@@ -49,7 +49,7 @@ public final class SpecialGuiElementRegistryImpl {
 
 		ContextImpl context = new ContextImpl(client, immediate);
 
-		for (SpecialGuiElementRegistry.Factory factory : factories) {
+		for (SpecialGuiElementRegistry.Factory factory : FACTORIES) {
 			SpecialGuiElementRenderer<?> elementRenderer = factory.createSpecialRenderer(context);
 			specialElementRenderers.put(elementRenderer.getElementClass(), elementRenderer);
 		}
