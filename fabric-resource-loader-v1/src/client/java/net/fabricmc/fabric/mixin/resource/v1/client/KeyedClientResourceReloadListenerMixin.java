@@ -46,12 +46,9 @@ import net.minecraft.client.texture.PaintingManager;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader;
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 
-@Environment(EnvType.CLIENT)
 @Mixin({
 		/* public */
 		BakedModelManager.class,

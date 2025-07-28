@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.resource.v1;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resource.ResourceReloader;
@@ -24,7 +23,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 
-@ApiStatus.Internal
 class ResourceReloaderPhaseData extends SortableNode<ResourceReloaderPhaseData> {
 	final Identifier id;
 	ResourceReloader resourceReloader;

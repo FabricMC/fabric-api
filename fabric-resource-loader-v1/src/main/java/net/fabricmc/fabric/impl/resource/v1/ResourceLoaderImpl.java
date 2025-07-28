@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -51,7 +50,6 @@ import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 import net.fabricmc.loader.api.FabricLoader;
 
-@ApiStatus.Internal
 public final class ResourceLoaderImpl implements ResourceLoader {
 	private static final Logger LOGGER = LoggerFactory.getLogger("ResourceLoader");
 	private static final Map<ResourceType, ResourceLoaderImpl> IMPL_MAP = new EnumMap<>(ResourceType.class);

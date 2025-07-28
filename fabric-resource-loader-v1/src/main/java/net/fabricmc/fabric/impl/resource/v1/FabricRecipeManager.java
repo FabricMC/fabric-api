@@ -16,11 +16,8 @@
 
 package net.fabricmc.fabric.impl.resource.v1;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.registry.RegistryWrapper;
 
-@ApiStatus.Internal
 public interface FabricRecipeManager {
 	RegistryWrapper.WrapperLookup fabric$getRegistries();
 }
