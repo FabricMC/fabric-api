@@ -29,6 +29,8 @@ import net.minecraft.component.type.BannerPatternsComponent;
 import net.minecraft.util.DyeColor;
 
 public class BannerGuiElementRenderer extends SpecialGuiElementRenderer<BannerGuiElementRenderState> {
+	private final MinecraftClient client = MinecraftClient.getInstance();
+
 	protected BannerGuiElementRenderer(VertexConsumerProvider.Immediate vertexConsumers) {
 		super(vertexConsumers);
 	}
@@ -40,8 +42,8 @@ public class BannerGuiElementRenderer extends SpecialGuiElementRenderer<BannerGu
 
 	@Override
 	protected void render(BannerGuiElementRenderState state, MatrixStack matrices) {
-		MinecraftClient.getInstance().gameRenderer.getDiffuseLighting().setShaderLights(DiffuseLighting.Type.ITEMS_FLAT);
-		BannerBlockEntityRenderer.renderCanvas(matrices, vertexConsumers, 15728880, OverlayTexture.DEFAULT_UV, MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.STANDING_BANNER_FLAG).getChild("flag"), ModelBaker.BANNER_BASE, true, DyeColor.BLUE, BannerPatternsComponent.DEFAULT);
+		client.gameRenderer.getDiffuseLighting().setShaderLights(DiffuseLighting.Type.ITEMS_FLAT);
+		BannerBlockEntityRenderer.renderCanvas(client.method_72703(), matrices, vertexConsumers, 15728880, OverlayTexture.DEFAULT_UV, MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.STANDING_BANNER_FLAG).getChild("flag"), ModelBaker.BANNER_BASE, true, DyeColor.BLUE, BannerPatternsComponent.DEFAULT);
 	}
 
 	@Override

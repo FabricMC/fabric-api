@@ -62,9 +62,9 @@ abstract class LivingEntityMixin {
 
     @Shadow @Nullable public abstract DamageSource getRecentDamageSource();
 
-    @WrapOperation(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;onKilledOther(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)Z"))
-	private boolean onEntityKilledOther(Entity entity, ServerWorld serverWorld, @Nullable LivingEntity attacker, Operation<Boolean> original) {
-		boolean result = original.call(entity, serverWorld, attacker);
+    @WrapOperation(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;onKilledOther(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/entity/damage/DamageSource;)Z"))
+	private boolean onEntityKilledOther(Entity entity, ServerWorld serverWorld, @Nullable LivingEntity attacker, DamageSource damageSource, Operation<Boolean> original) {
+		boolean result = original.call(entity, serverWorld, attacker, damageSource);
 		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(serverWorld, entity, attacker);
 		return result;
 	}

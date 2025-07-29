@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.client.particle;
 
 import java.util.List;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.texture.Sprite;
@@ -38,7 +39,7 @@ public class FabricSpriteProviderImpl implements FabricSpriteProvider {
 
 	@Override
 	public SpriteAtlasTexture getAtlas() {
-		return ((ParticleManagerAccessor) particleManager).getParticleAtlasTexture();
+		return MinecraftClient.getInstance().method_72703().method_73025(SpriteAtlasTexture.PARTICLE_ATLAS_TEXTURE);
 	}
 
 	@Override

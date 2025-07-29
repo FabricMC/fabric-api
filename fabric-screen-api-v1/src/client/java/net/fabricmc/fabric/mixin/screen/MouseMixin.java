@@ -28,8 +28,8 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 
 @Mixin(Mouse.class)
 abstract class MouseMixin {
-	@WrapOperation(method = "onMouseButton", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z"))
-	private boolean invokeMouseClickedEvents(Screen screen, double mouseX, double mouseY, int button, Operation<Boolean> operation) {
+	@WrapOperation(method = "onMouseButton", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDIZ)Z"))
+	private boolean invokeMouseClickedEvents(Screen screen, double mouseX, double mouseY, int button, boolean doubleClick, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,
 		// regardless of whether the screen changes within the handler or event invocations.
 
@@ -42,7 +42,7 @@ abstract class MouseMixin {
 			ScreenMouseEvents.beforeMouseClick(screen).invoker().beforeMouseClick(screen, mouseX, mouseY, button);
 		}
 
-		boolean result = operation.call(screen, mouseX, mouseY, button);
+		boolean result = operation.call(screen, mouseX, mouseY, button, doubleClick);
 
 		if (screen != null) {
 			ScreenMouseEvents.afterMouseClick(screen).invoker().afterMouseClick(screen, mouseX, mouseY, button);

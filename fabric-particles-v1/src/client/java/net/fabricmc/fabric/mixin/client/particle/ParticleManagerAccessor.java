@@ -27,14 +27,10 @@ import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 
 @Mixin(ParticleManager.class)
 public interface ParticleManagerAccessor {
-	@Accessor("particleAtlasTexture")
-	SpriteAtlasTexture getParticleAtlasTexture();
-
 	@Accessor("factories")
 	Int2ObjectMap<ParticleFactory<?>> getFactories();
 
