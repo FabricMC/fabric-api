@@ -20,7 +20,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.SynchronousResourceReloader;
 
 /**

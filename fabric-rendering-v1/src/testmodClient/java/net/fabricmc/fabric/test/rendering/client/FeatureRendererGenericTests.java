@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.test.rendering.client;
 
 import net.minecraft.class_11659;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
 import net.minecraft.client.render.entity.BipedEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;

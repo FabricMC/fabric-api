@@ -28,7 +28,6 @@ import net.minecraft.resource.ResourceFinder;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.test.TestFailureLogger;
-import net.minecraft.test.TestManager;
 import net.minecraft.test.TestServer;
 import net.minecraft.world.level.storage.LevelStorage;
 

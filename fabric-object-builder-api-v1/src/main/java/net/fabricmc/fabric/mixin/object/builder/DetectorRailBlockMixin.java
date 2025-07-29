@@ -19,8 +19,6 @@ package net.fabricmc.fabric.mixin.object.builder;
 import java.util.List;
 import java.util.function.Predicate;
 
-import net.minecraft.util.math.Direction;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,6 +31,7 @@ import net.minecraft.block.DetectorRailBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.MinecartComparatorLogicRegistry;

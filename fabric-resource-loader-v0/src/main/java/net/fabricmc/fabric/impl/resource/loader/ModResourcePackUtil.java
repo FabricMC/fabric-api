@@ -35,19 +35,14 @@ import java.util.Set;
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-
-import net.minecraft.class_11555;
-
-import net.minecraft.util.dynamic.Range;
-
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.class_11555;
 import net.minecraft.resource.DataConfiguration;
 import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.ResourcePack;
@@ -58,6 +53,7 @@ import net.minecraft.resource.VanillaDataPackProvider;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.text.Text;
+import net.minecraft.util.dynamic.Range;
 import net.minecraft.util.path.SymlinkFinder;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
