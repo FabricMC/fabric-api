@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import net.minecraft.class_11659;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
@@ -41,9 +43,9 @@ public class ArmorRenderingTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		ArmorRenderer armorRenderer = new ArmorRenderer() {
 			@Override
-			public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, BipedEntityRenderState renderState, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel) {
+			public void render(MatrixStack matrices, class_11659 entityRenderQueue, ItemStack stack, BipedEntityRenderState renderState, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel) {
 				if (armorModel == null) {
-					armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_OUTER_ARMOR));
+					armorModel = new BipedEntityModel<>(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER));
 				}
 
 				armorModel.setAngles(renderState);
@@ -52,7 +54,12 @@ public class ArmorRenderingTests implements ClientModInitializer {
 				armorModel.leftArm.visible = slot == EquipmentSlot.CHEST;
 				armorModel.rightArm.visible = slot == EquipmentSlot.CHEST;
 				armorModel.head.visible = slot == EquipmentSlot.HEAD;
-				ArmorRenderer.renderPart(matrices, vertexConsumers, light, stack, armorModel, texture);
+
+				entityRenderQueue.method_72933(armorModel, renderState, matrices, RenderLayer.getArmorCutoutNoCull(texture), light, OverlayTexture.DEFAULT_UV, 0xFFFFFFFF, null, 0, 0);
+
+				if (stack.hasGlint()) {
+					entityRenderQueue.method_72933(armorModel, renderState, matrices, RenderLayer.getArmorEntityGlint(), light, OverlayTexture.DEFAULT_UV, 0xFFFFFFFF, null, 0, 0);
+				}
 			}
 
 			@Override
