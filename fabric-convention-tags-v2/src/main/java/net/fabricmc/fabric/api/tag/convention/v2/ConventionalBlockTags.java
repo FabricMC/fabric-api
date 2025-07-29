@@ -95,6 +95,7 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> BOOKSHELVES = register("bookshelves");
 	public static final TagKey<Block> CHESTS = register("chests");
 	public static final TagKey<Block> WOODEN_CHESTS = register("chests/wooden");
+	public static final TagKey<Block> METAL_CHESTS = register("chests/metal");
 	public static final TagKey<Block> TRAPPED_CHESTS = register("chests/trapped");
 	public static final TagKey<Block> ENDER_CHESTS = register("chests/ender");
 	public static final TagKey<Block> GLASS_BLOCKS = register("glass_blocks");

@@ -75,6 +75,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.BOOKSHELVES, "Bookshelves");
 		translationBuilder.add(ConventionalBlockTags.CHESTS, "Chests");
 		translationBuilder.add(ConventionalBlockTags.WOODEN_CHESTS, "Wooden Chests");
+		translationBuilder.add(ConventionalBlockTags.METAL_CHESTS, "Metal Chests");
 		translationBuilder.add(ConventionalBlockTags.TRAPPED_CHESTS, "Trapped Chests");
 		translationBuilder.add(ConventionalBlockTags.ENDER_CHESTS, "Ender Chests");
 		translationBuilder.add(ConventionalBlockTags.GLASS_BLOCKS, "Glass Blocks");
@@ -305,6 +306,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.BOOKSHELVES, "Bookshelves");
 		translationBuilder.add(ConventionalItemTags.CHESTS, "Chests");
 		translationBuilder.add(ConventionalItemTags.WOODEN_CHESTS, "Wooden Chests");
+		translationBuilder.add(ConventionalItemTags.METAL_CHESTS, "Metal Chests");
 		translationBuilder.add(ConventionalItemTags.TRAPPED_CHESTS, "Trapped Chests");
 		translationBuilder.add(ConventionalItemTags.ENDER_CHESTS, "Ender Chests");
 		translationBuilder.add(ConventionalItemTags.GLASS_BLOCKS, "Glass Blocks");

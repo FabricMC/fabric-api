@@ -313,6 +313,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> BOOKSHELVES = register("bookshelves");
 	public static final TagKey<Item> CHESTS = register("chests");
 	public static final TagKey<Item> WOODEN_CHESTS = register("chests/wooden");
+	public static final TagKey<Item> METAL_CHESTS = register("chests/metal");
 	public static final TagKey<Item> TRAPPED_CHESTS = register("chests/trapped");
 	public static final TagKey<Item> ENDER_CHESTS = register("chests/ender");
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
