@@ -35,7 +35,13 @@ import java.util.Set;
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+
+import net.minecraft.class_11555;
+
+import net.minecraft.util.dynamic.Range;
+
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -184,7 +190,7 @@ public final class ModResourcePackUtil {
 		switch (filename) {
 		case "pack.mcmeta":
 			String description = Objects.requireNonNullElse(container.getMetadata().getId(), "");
-			String metadata = serializeMetadata(SharedConstants.getGameVersion().packVersion(type), description);
+			String metadata = serializeMetadata(SharedConstants.getGameVersion().packVersion(type), description, type);
 			return IOUtils.toInputStream(metadata, Charsets.UTF_8);
 		case "pack.png":
 			Optional<Path> path = container.getMetadata().getIconPath(512).flatMap(container::findPath);
@@ -199,19 +205,20 @@ public final class ModResourcePackUtil {
 		}
 	}
 
-	public static PackResourceMetadata getMetadataPack(int packVersion, Text description) {
-		return new PackResourceMetadata(description, packVersion, Optional.empty());
+	public static PackResourceMetadata getMetadataPack(class_11555 packVersion, Text description) {
+		return new PackResourceMetadata(description, new Range<>(packVersion));
 	}
 
-	public static JsonObject getMetadataPackJson(int packVersion, Text description) {
-		return PackResourceMetadata.SERIALIZER.codec().encodeStart(JsonOps.INSTANCE, getMetadataPack(packVersion, description))
+	public static JsonObject getMetadataPackJson(class_11555 packVersion, Text description, ResourceType resourceType) {
+		return PackResourceMetadata.method_72360(resourceType)
+				.encodeStart(JsonOps.INSTANCE, getMetadataPack(packVersion, description))
 				.getOrThrow()
 				.getAsJsonObject();
 	}
 
-	public static String serializeMetadata(int packVersion, String description) {
+	public static String serializeMetadata(class_11555 packVersion, String description, ResourceType resourceType) {
 		// This seems to be still manually deserialized
-		JsonObject pack = getMetadataPackJson(packVersion, Text.literal(description));
+		JsonObject pack = getMetadataPackJson(packVersion, Text.literal(description), resourceType);
 		JsonObject metadata = new JsonObject();
 		metadata.add("pack", pack);
 		return GSON.toJson(metadata);
