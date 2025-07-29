@@ -2,7 +2,7 @@ plugins {
 	id "java-library"
 	id "eclipse"
 	id "maven-publish"
-	id "fabric-loom" version "1.10.1" apply false
+	id "fabric-loom" version "1.11.4" apply false
 	id "com.diffplug.spotless" version "7.0.2"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
 	id "me.modmuss50.mod-publish-plugin" version "0.8.4"
