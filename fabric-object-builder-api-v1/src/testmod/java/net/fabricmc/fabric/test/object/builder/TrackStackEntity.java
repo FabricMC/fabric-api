@@ -85,7 +85,7 @@ public class TrackStackEntity extends MobEntity {
 		Item item = player.getStackInHand(hand).getItem();
 		this.dataTracker.set(ITEM, item);
 
-		if (!player.getWorld().isClient) {
+		if (!player.getWorld().isClient()) {
 			DyeColor[] colors = DyeColor.values();
 			Optional<DyeColor> color = Optional.of(colors[this.getRandom().nextBetweenExclusive(0, colors.length)]);
 			this.dataTracker.set(OPTIONAL_DYE_COLOR, color);

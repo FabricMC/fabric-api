@@ -18,7 +18,7 @@ package net.fabricmc.fabric.test.object.builder.client;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.class_11659;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.model.ChickenEntityModel;
@@ -38,8 +38,8 @@ public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity
 	}
 
 	@Override
-	public void render(RenderState renderState, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
-		super.render(renderState, matrices, vertexConsumers, light);
+	public void render(RenderState renderState, MatrixStack matrices, class_11659 renderer) {
+		super.render(renderState, matrices, renderer);
 		Iterable<Text> labelLines = renderState.labelLines;
 
 		if (labelLines == null) {
@@ -50,7 +50,7 @@ public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity
 		matrices.translate(0, -2, 0);
 
 		for (Text line : labelLines) {
-			this.renderLabelIfPresent(renderState, line, matrices, vertexConsumers, light);
+			renderer.method_72924(matrices, renderState.nameLabelPos, line, !renderState.sneaking, renderState.field_61820, renderState.squaredDistanceToCamera);
 			matrices.translate(0, 0.25875f, 0);
 		}
 

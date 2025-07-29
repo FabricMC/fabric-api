@@ -49,8 +49,8 @@ public class SpecialBlockRendererTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		SpecialBlockRendererRegistry.register(Blocks.TNT, new SpecialModelRenderer.Unbaked() {
 			@Override
-			public SpecialModelRenderer<?> bake(LoadedEntityModels entityModels) {
-				AllayEntityModel allayModel = new AllayEntityModel(entityModels.getModelPart(EntityModelLayers.ALLAY));
+			public SpecialModelRenderer<?> bake(SpecialModelRenderer.class_11695 ctx) {
+				AllayEntityModel allayModel = new AllayEntityModel(ctx.entityModelSet().getModelPart(EntityModelLayers.ALLAY));
 
 				return new SpecialModelRenderer<>() {
 					@Override

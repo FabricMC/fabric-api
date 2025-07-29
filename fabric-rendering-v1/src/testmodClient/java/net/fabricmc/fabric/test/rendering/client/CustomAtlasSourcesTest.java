@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.rendering.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 
 import com.mojang.logging.LogUtils;
@@ -137,7 +138,7 @@ public class CustomAtlasSourcesTest implements ClientModInitializer {
 					}
 				}
 
-				return new SpriteContents(spriteId, dimensions, doubleImage, metadata);
+				return new SpriteContents(spriteId, dimensions, doubleImage, Optional.of(animationMetadata), List.of());
 			}
 
 			private static void blendRect(NativeImage src, NativeImage dst, int srcX, int srcY, int destX, int destY, int width, int height) {
