@@ -159,7 +159,7 @@ transitive-accessible method net/minecraft/block/CakeBlock <init> (Lnet/minecraf
 transitive-accessible method net/minecraft/block/CandleCakeBlock <init> (Lnet/minecraft/block/Block;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/CartographyTableBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/CarvedPumpkinBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
-transitive-accessible method net/minecraft/block/ChestBlock <init> (Ljava/util/function/Supplier;Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/ChestBlock <init> (Ljava/util/function/Supplier;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/ChorusFlowerBlock <init> (Lnet/minecraft/block/Block;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/ChorusPlantBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/CoralBlock <init> (Lnet/minecraft/block/Block;Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -363,5 +363,6 @@ transitive-accessible field net/minecraft/client/gl/RenderPipelines PARTICLE_SNI
 transitive-accessible field net/minecraft/client/gl/RenderPipelines WEATHER_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/gl/RenderPipelines GUI_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/gl/RenderPipelines POSITION_TEX_COLOR_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines field_61743 Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/gl/RenderPipelines RENDERTYPE_OUTLINE_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible method net/minecraft/client/gl/RenderPipelines register (Lcom/mojang/blaze3d/pipeline/RenderPipeline;)Lcom/mojang/blaze3d/pipeline/RenderPipeline;

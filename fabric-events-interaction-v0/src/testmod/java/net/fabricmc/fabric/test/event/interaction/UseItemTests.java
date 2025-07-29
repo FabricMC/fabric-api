@@ -33,7 +33,7 @@ public class UseItemTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		UseItemCallback.EVENT.register((player, world, hand) -> {
-			LOGGER.info("UseItemCallback: before hook (client-side = %s)".formatted(world.isClient));
+			LOGGER.info("UseItemCallback: before hook (client-side = %s)".formatted(world.isClient()));
 			return ActionResult.PASS;
 		});
 
@@ -53,7 +53,7 @@ public class UseItemTests implements ModInitializer {
 		});
 
 		UseItemCallback.EVENT.register((player, world, hand) -> {
-			LOGGER.info("UseItemCallback: after hook (client-side = %s)".formatted(world.isClient));
+			LOGGER.info("UseItemCallback: after hook (client-side = %s)".formatted(world.isClient()));
 			return ActionResult.PASS;
 		});
 	}

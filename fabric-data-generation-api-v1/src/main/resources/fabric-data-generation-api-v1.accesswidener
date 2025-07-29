@@ -82,6 +82,7 @@ transitive-accessible	method	net/minecraft/data/recipe/RecipeGenerator	createFen
 transitive-accessible	method	net/minecraft/data/recipe/RecipeGenerator	offerPressurePlateRecipe	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;)V
 transitive-accessible	method	net/minecraft/data/recipe/RecipeGenerator	createPressurePlateRecipe	(Lnet/minecraft/recipe/book/RecipeCategory;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/Ingredient;)Lnet/minecraft/data/recipe/CraftingRecipeJsonBuilder;
 transitive-accessible	method	net/minecraft/data/recipe/RecipeGenerator	offerSlabRecipe	(Lnet/minecraft/recipe/book/RecipeCategory;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;)V
+transitive-accessible	method	net/minecraft/data/recipe/RecipeGenerator	method_73067	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/item/ItemConvertible;)V
 transitive-accessible	method	net/minecraft/data/recipe/RecipeGenerator	createSlabRecipe	(Lnet/minecraft/recipe/book/RecipeCategory;Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/Ingredient;)Lnet/minecraft/data/recipe/CraftingRecipeJsonBuilder;
 transitive-accessible	method	net/minecraft/data/recipe/RecipeGenerator	createStairsRecipe	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/Ingredient;)Lnet/minecraft/data/recipe/CraftingRecipeJsonBuilder;
 transitive-accessible	method	net/minecraft/data/recipe/RecipeGenerator	createTrapdoorRecipe	(Lnet/minecraft/item/ItemConvertible;Lnet/minecraft/recipe/Ingredient;)Lnet/minecraft/data/recipe/CraftingRecipeJsonBuilder;
@@ -149,7 +150,10 @@ transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createWeightedVariant	([Lnet/minecraft/client/render/model/json/ModelVariant;)Lnet/minecraft/client/render/model/json/WeightedVariant;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createWeightedVariant	(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/model/json/WeightedVariant;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createMultipartConditionBuilder	()Lnet/minecraft/client/render/model/json/MultipartModelConditionBuilder;
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_72723	(Lnet/minecraft/state/property/EnumProperty;Ljava/lang/Enum;[Ljava/lang/Enum;)Lnet/minecraft/client/render/model/json/MultipartModelConditionBuilder;
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_72722	(Lnet/minecraft/state/property/BooleanProperty;Z)Lnet/minecraft/client/render/model/json/MultipartModelConditionBuilder;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	or	([Lnet/minecraft/client/render/model/json/MultipartModelConditionBuilder;)Lnet/minecraft/client/render/model/json/MultipartModelCondition;
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_72730	([Lnet/minecraft/client/render/model/json/MultipartModelConditionBuilder;)Lnet/minecraft/client/render/model/json/MultipartModelCondition;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createStoneState	(Lnet/minecraft/block/Block;Lnet/minecraft/client/render/model/json/ModelVariant;Lnet/minecraft/client/data/TextureMap;Ljava/util/function/BiConsumer;)Lnet/minecraft/client/data/BlockModelDefinitionCreator;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createMudBrickState	(Lnet/minecraft/block/Block;Lnet/minecraft/client/render/model/json/ModelVariant;Lnet/minecraft/client/data/TextureMap;Ljava/util/function/BiConsumer;)Lnet/minecraft/client/data/BlockModelDefinitionCreator;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createDeepslateState	(Lnet/minecraft/block/Block;Lnet/minecraft/client/render/model/json/ModelVariant;Lnet/minecraft/client/data/TextureMap;Ljava/util/function/BiConsumer;)Lnet/minecraft/client/data/BlockModelDefinitionCreator;
@@ -250,6 +254,7 @@ transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	getDripstoneVariant	(Lnet/minecraft/util/math/Direction;Lnet/minecraft/block/enums/Thickness;)Lnet/minecraft/client/render/model/json/WeightedVariant;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerNetherrackBottomCustomTop	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerRod	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerLightningRod	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	getFireFloorModels	(Lnet/minecraft/block/Block;)Lnet/minecraft/client/render/model/json/WeightedVariant;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	getFireSideModels	(Lnet/minecraft/block/Block;)Lnet/minecraft/client/render/model/json/WeightedVariant;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	getFireUpModels	(Lnet/minecraft/block/Block;)Lnet/minecraft/client/render/model/json/WeightedVariant;
@@ -268,6 +273,10 @@ transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerMultifaceBlockModel	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerPaleMossCarpet	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerHangingMoss	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_72719	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_72721	(Lnet/minecraft/block/Block;Lnet/minecraft/client/data/TextureMap;Lnet/minecraft/client/data/MultipartBlockModelDefinitionCreator;Lnet/minecraft/client/data/Model;Ljava/lang/Boolean;Lnet/minecraft/class_11598;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_72725	(Ljava/util/function/BiConsumer;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_72727	(Lnet/minecraft/util/math/Direction;Ljava/lang/Boolean;Lnet/minecraft/class_11598;)Lnet/minecraft/client/render/model/json/MultipartModelCondition;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	supplyChiseledBookshelfModels	(Lnet/minecraft/client/data/MultipartBlockModelDefinitionCreator;Lnet/minecraft/client/render/model/json/MultipartModelCondition;Lnet/minecraft/client/render/model/json/ModelVariantOperator;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	supplyChiseledBookshelfModel	(Lnet/minecraft/client/data/MultipartBlockModelDefinitionCreator;Lnet/minecraft/client/render/model/json/MultipartModelCondition;Lnet/minecraft/client/render/model/json/ModelVariantOperator;Lnet/minecraft/state/property/BooleanProperty;Lnet/minecraft/client/data/Model;Z)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerShulkerBox	(Lnet/minecraft/block/Block;Lnet/minecraft/util/DyeColor;)V
@@ -275,6 +284,7 @@ transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerRoots	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	addJigsawOrientationToVariant	(Lnet/minecraft/block/enums/Orientation;)Lnet/minecraft/client/render/model/json/ModelVariantOperator;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerSkull	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Lnet/minecraft/block/SkullBlock$SkullType;Lnet/minecraft/util/Identifier;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_72720	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Lnet/minecraft/block/Oxidizable$OxidationLevel;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerBanner	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Lnet/minecraft/util/DyeColor;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerChest	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Lnet/minecraft/util/Identifier;Z)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerBed	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Lnet/minecraft/util/DyeColor;)V

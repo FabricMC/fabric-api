@@ -33,7 +33,7 @@ public class UseBlockTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			LOGGER.info("UseBlockCallback: before chest/water hook (client-side = %s)".formatted(world.isClient));
+			LOGGER.info("UseBlockCallback: before chest/water hook (client-side = %s)".formatted(world.isClient()));
 			return ActionResult.PASS;
 		});
 
@@ -54,7 +54,7 @@ public class UseBlockTests implements ModInitializer {
 		});
 
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			LOGGER.info("UseBlockCallback: after chest/water hook (client-side = %s)".formatted(world.isClient));
+			LOGGER.info("UseBlockCallback: after chest/water hook (client-side = %s)".formatted(world.isClient()));
 			return ActionResult.PASS;
 		});
 	}
