@@ -282,7 +282,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	@Override
 	public <T> T parseMetadata(ResourceMetadataSerializer<T> metaReader) throws IOException {
 		try (InputStream is = Objects.requireNonNull(openFile("pack.mcmeta")).get()) {
-			return AbstractFileResourcePack.parseMetadata(metaReader, is);
+			return AbstractFileResourcePack.parseMetadata(metaReader, is, this.metadata);
 		}
 	}
 
