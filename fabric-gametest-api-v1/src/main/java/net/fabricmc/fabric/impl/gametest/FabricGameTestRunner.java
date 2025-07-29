@@ -58,10 +58,6 @@ public final class FabricGameTestRunner {
 
 		Optional<String> filter = Optional.ofNullable(System.getProperty(GameTestSystemProperties.FILTER));
 		boolean verify = Boolean.getBoolean(GameTestSystemProperties.VERIFY);
-		MinecraftServer.startServer((thread) -> {
-			TestServer testServer = TestServer.create(thread, session, resourcePackManager, filter, verify);
-			TestManager.INSTANCE.startTicking();
-			return testServer;
-		});
+		MinecraftServer.startServer((thread) -> TestServer.create(thread, session, resourcePackManager, filter, verify));
 	}
 }
