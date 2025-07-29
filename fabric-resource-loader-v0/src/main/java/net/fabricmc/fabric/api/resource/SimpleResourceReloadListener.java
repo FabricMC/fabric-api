@@ -16,9 +16,12 @@
 
 package net.fabricmc.fabric.api.resource;
 
-import net.minecraft.resource.SynchronousResourceReloader;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
-import net.fabricmc.fabric.api.resource.v1.reloader.SimpleResourceReloader;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceReloader;
+import net.minecraft.resource.SynchronousResourceReloader;
 
 /**
  * A simplified version of the "resource reload listener" interface, hiding the
@@ -38,8 +41,33 @@ import net.fabricmc.fabric.api.resource.v1.reloader.SimpleResourceReloader;
  * {@link IdentifiableResourceReloadListener}.
  *
  * @param <T> The data object.
- * @deprecated Use {@link SimpleResourceReloader} instead.
+ * @deprecated Use {@link net.minecraft.resource.SinglePreparationResourceReloader} instead.
  */
 @Deprecated
-public interface SimpleResourceReloadListener<T> extends SimpleResourceReloader<T>, IdentifiableResourceReloadListener {
+public interface SimpleResourceReloadListener<T> extends IdentifiableResourceReloadListener {
+	@Override
+	default CompletableFuture<Void> reload(ResourceReloader.Synchronizer helper, ResourceManager manager, Executor loadExecutor, Executor applyExecutor) {
+		return load(manager, loadExecutor).thenCompose(helper::whenPrepared).thenCompose(
+				(o) -> apply(o, manager, applyExecutor)
+		);
+	}
+
+	/**
+	 * Asynchronously process and load resource-based data. The code
+	 * must be thread-safe and not modify game state!
+	 *
+	 * @param manager  The resource manager used during reloading.
+	 * @param executor The executor which should be used for this stage.
+	 * @return A CompletableFuture representing the "data loading" stage.
+	 */
+	CompletableFuture<T> load(ResourceManager manager, Executor executor);
+
+	/**
+	 * Synchronously apply loaded data to the game state.
+	 *
+	 * @param manager  The resource manager used during reloading.
+	 * @param executor The executor which should be used for this stage.
+	 * @return A CompletableFuture representing the "data applying" stage.
+	 */
+	CompletableFuture<Void> apply(T data, ResourceManager manager, Executor executor);
 }

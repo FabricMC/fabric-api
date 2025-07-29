@@ -37,7 +37,12 @@ public interface IdentifiableResourceReloader extends ResourceReloader {
 	/**
 	 * {@return the unique identifier of this resource reloader}
 	 */
-	@NotNull Identifier getFabricId();
+	Identifier getFabricId();
+
+	@Override
+	default String getName() {
+		return this.getFabricId().toString();
+	}
 
 	/**
 	 * Wraps the given resource reloader with an identifier.

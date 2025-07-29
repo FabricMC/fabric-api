@@ -142,7 +142,7 @@ public enum TriState {
 	 *
 	 * @param property the system property
 	 */
-	public static TriState fromProperty(String property) {
+	public static TriState fromSystemProperty(String property) {
 		String value = System.getProperty(property);
 
 		if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value)) {

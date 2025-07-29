@@ -54,9 +54,9 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 	private static final Logger LOGGER = LoggerFactory.getLogger("ResourceLoader");
 	private static final Map<ResourceType, ResourceLoaderImpl> IMPL_MAP = new EnumMap<>(ResourceType.class);
 
-	private static final boolean DEBUG_RELOADERS_IDENTITY = TriState.fromProperty("fabric.resource_loader.debug.reloaders_identity")
+	private static final boolean DEBUG_RELOADERS_IDENTITY = TriState.fromSystemProperty("fabric.resource_loader.debug.reloaders_identity")
 			.orElse(FabricLoader.getInstance().isDevelopmentEnvironment());
-	private static final boolean DEBUG_RELOADERS_ORDER = TriState.fromProperty("fabric.resource_loader.debug.reloaders_order")
+	private static final boolean DEBUG_RELOADERS_ORDER = TriState.fromSystemProperty("fabric.resource_loader.debug.reloaders_order")
 			.orElse(true);
 
 	public static ResourceLoaderImpl get(ResourceType type) {

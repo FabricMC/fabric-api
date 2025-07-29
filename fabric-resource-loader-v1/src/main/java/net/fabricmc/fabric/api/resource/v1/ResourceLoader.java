@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.resource.v1;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceReloader;
@@ -88,5 +87,5 @@ public interface ResourceLoader {
 	 * @see #registerReloader(Identifier, ResourceReloader) register a new resource reloader
 	 * @see #registerReloader(IdentifiableResourceReloader) register a new resource reloader
 	 */
-	void addReloaderOrdering(@NotNull Identifier firstReloader, @NotNull Identifier secondReloader);
+	void addReloaderOrdering(Identifier firstReloader, Identifier secondReloader);
 }
