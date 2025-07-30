@@ -94,5 +94,16 @@ public final class DedicatedServerImplUtil {
 		} catch (IOException e) {
 			LOGGER.error("Failed to write server properties", e);
 		}
+
+		Properties eulaProperties = new Properties();
+		eulaProperties.put("eula", "true");
+
+		try {
+			try (BufferedWriter writer = Files.newBufferedWriter(Path.of("eula.txt"))) {
+				eulaProperties.store(writer, null);
+			}
+		} catch (IOException e) {
+			LOGGER.error("Failed to write eula properties", e);
+		}
 	}
 }
