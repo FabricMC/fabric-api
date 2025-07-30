@@ -116,7 +116,7 @@ public class MinecraftClientMixin {
 		}
 	}
 
-	@Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;sleep(J)V", remap = false))
+	@Inject(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/LevelLoadingScreen;tick()V", remap = false))
 	private void onStartIntegratedServerBusyWait(CallbackInfo ci) {
 		// give the server a chance to tick too
 		preRunTasks();
