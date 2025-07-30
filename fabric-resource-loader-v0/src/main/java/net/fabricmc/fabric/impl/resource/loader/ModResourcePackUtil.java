@@ -42,9 +42,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.class_11555;
 import net.minecraft.resource.DataConfiguration;
 import net.minecraft.resource.DataPackSettings;
+import net.minecraft.resource.PackVersion;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProfile;
@@ -201,18 +201,18 @@ public final class ModResourcePackUtil {
 		}
 	}
 
-	public static PackResourceMetadata getMetadataPack(class_11555 packVersion, Text description) {
+	public static PackResourceMetadata getMetadataPack(PackVersion packVersion, Text description) {
 		return new PackResourceMetadata(description, new Range<>(packVersion));
 	}
 
-	public static JsonObject getMetadataPackJson(class_11555 packVersion, Text description, ResourceType resourceType) {
-		return PackResourceMetadata.method_72360(resourceType)
+	public static JsonObject getMetadataPackJson(PackVersion packVersion, Text description, ResourceType resourceType) {
+		return PackResourceMetadata.createCodec(resourceType)
 				.encodeStart(JsonOps.INSTANCE, getMetadataPack(packVersion, description))
 				.getOrThrow()
 				.getAsJsonObject();
 	}
 
-	public static String serializeMetadata(class_11555 packVersion, String description, ResourceType resourceType) {
+	public static String serializeMetadata(PackVersion packVersion, String description, ResourceType resourceType) {
 		// This seems to be still manually deserialized
 		JsonObject pack = getMetadataPackJson(packVersion, Text.literal(description), resourceType);
 		JsonObject metadata = new JsonObject();

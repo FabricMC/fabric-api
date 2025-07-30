@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.class_11659;
+import net.minecraft.client.render.entity.command.EntityRenderCommandQueue;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
@@ -51,14 +51,14 @@ public interface ArmorRenderer {
 	 * Renders an armor part.
 	 *
 	 * @param matrices			     the matrix stack
-	 * @param entityRenderQueue	     the {@link class_11659} instance
+	 * @param entityRenderQueue	     the {@link EntityRenderCommandQueue} instance
 	 * @param stack				     the item stack of the armor item
 	 * @param bipedEntityRenderState the render state of the entity
 	 * @param slot				     the equipment slot in which the armor stack is worn
 	 * @param light				     packed lightmap coordinates
 	 * @param contextModel		     the model provided by {@link FeatureRenderer#getContextModel()}
 	 */
-	void render(MatrixStack matrices, class_11659 entityRenderQueue, ItemStack stack, BipedEntityRenderState bipedEntityRenderState, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel);
+	void render(MatrixStack matrices, EntityRenderCommandQueue entityRenderQueue, ItemStack stack, BipedEntityRenderState bipedEntityRenderState, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel);
 
 	/**
 	 * Checks whether an item stack equipped on the head should also be

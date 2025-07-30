@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
 @Mixin(ChiseledBookshelfBlockEntity.class)
 public class ChiseledBookshelfBlockEntityMixin implements SpecialLogicInventory {
 	@Shadow
-	private DefaultedList<ItemStack> inventory;
+	private DefaultedList<ItemStack> heldStacks;
 	@Shadow
 	private int lastInteractedSlot; // last interacted slot
 	@Unique
@@ -53,7 +53,7 @@ public class ChiseledBookshelfBlockEntityMixin implements SpecialLogicInventory 
 	@Inject(at = @At("HEAD"), method = "setStack", cancellable = true)
 	public void setStackBypass(int slot, ItemStack stack, CallbackInfo ci) {
 		if (fabric_suppressSpecialLogic) {
-			inventory.set(slot, stack);
+			heldStacks.set(slot, stack);
 			ci.cancel();
 		}
 	}

@@ -144,6 +144,9 @@ transitive-accessible method net/minecraft/block/Blocks never (Lnet/minecraft/bl
 transitive-accessible method net/minecraft/block/Blocks register (Lnet/minecraft/registry/RegistryKey;Ljava/util/function/Function;Lnet/minecraft/block/AbstractBlock$Settings;)Lnet/minecraft/block/Block;
 transitive-accessible method net/minecraft/block/Blocks register (Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/block/AbstractBlock$Settings;)Lnet/minecraft/block/Block;
 
+# Debug HUD Entries
+transitive-accessible method net/minecraft/client/gui/hud/debug/DebugHudEntries register (Lnet/minecraft/util/Identifier;Lnet/minecraft/client/gui/hud/debug/DebugHudEntry;)Lnet/minecraft/util/Identifier;
+
 ### Generated access wideners below
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/block/AttachedStemBlock <init> (Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -205,6 +208,7 @@ transitive-accessible method net/minecraft/block/NetherWartBlock <init> (Lnet/mi
 transitive-accessible method net/minecraft/block/NyliumBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/OxidizableDoorBlock <init> (Lnet/minecraft/block/BlockSetType;Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/OxidizableGrateBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/OxidizableLightningRodBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/OxidizableTrapdoorBlock <init> (Lnet/minecraft/block/BlockSetType;Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/PaneBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/PlayerSkullBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
