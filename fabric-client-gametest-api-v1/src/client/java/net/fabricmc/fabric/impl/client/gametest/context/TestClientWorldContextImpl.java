@@ -86,7 +86,7 @@ public class TestClientWorldContextImpl implements TestClientWorldContext {
 		ClientWorld world = Objects.requireNonNull(client.world);
 		boolean chunkUpdatersEmpty = ((ClientWorldAccessor) world).getChunkUpdaters().isEmpty();
 		boolean terrainRenderComplete = client.worldRenderer.isTerrainRenderComplete();
-		LOGGER.info("Chunk updaters empty: {}, terrain render complete: {}", chunkUpdatersEmpty, terrainRenderComplete);
+		LOGGER.info("Chunk debug info: {}", client.worldRenderer.getChunksDebugString());
 		return chunkUpdatersEmpty && terrainRenderComplete;
 	}
 }
