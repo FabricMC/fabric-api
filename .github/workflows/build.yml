@@ -34,7 +34,6 @@ jobs:
           path: ~/.m2/repository/net/fabricmc/
 
   client_test:
-    if: false
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4

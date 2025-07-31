@@ -18,6 +18,9 @@ package net.fabricmc.fabric.impl.client.gametest.context;
 
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientChunkManager;
 import net.minecraft.client.world.ClientWorld;
@@ -31,6 +34,8 @@ import net.fabricmc.fabric.mixin.client.gametest.ClientChunkManagerClientChunkMa
 import net.fabricmc.fabric.mixin.client.gametest.ClientWorldAccessor;
 
 public class TestClientWorldContextImpl implements TestClientWorldContext {
+	private static final Logger LOGGER = LoggerFactory.getLogger(TestClientWorldContextImpl.class);
+
 	private final ClientGameTestContext context;
 
 	public TestClientWorldContextImpl(ClientGameTestContext context) {
@@ -48,7 +53,14 @@ public class TestClientWorldContextImpl implements TestClientWorldContext {
 	public int waitForChunksRender(boolean waitForDownload, int timeout) {
 		ThreadingImpl.checkOnGametestThread("waitForChunksRender");
 
-		return context.waitFor(client -> (!waitForDownload || areChunksLoaded(client)) && areChunksRendered(client), timeout);
+		return context.waitFor(client -> {
+			boolean areLoaded = (!waitForDownload || areChunksLoaded(client));
+			boolean areRendered = areChunksRendered(client);
+
+			LOGGER.info("Waiting for chunks to be rendered: loaded={}, rendered={}", areLoaded, areRendered);
+
+			return areLoaded && areRendered;
+		}, timeout);
 	}
 
 	private static boolean areChunksLoaded(MinecraftClient client) {

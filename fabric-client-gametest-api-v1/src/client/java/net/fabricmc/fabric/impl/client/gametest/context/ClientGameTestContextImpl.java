@@ -187,6 +187,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 			}
 
 			if (!computeOnClient(predicate::test)) {
+				takeScreenshot("timeout");
 				throw new AssertionError("Timed out waiting for predicate");
 			}
 
