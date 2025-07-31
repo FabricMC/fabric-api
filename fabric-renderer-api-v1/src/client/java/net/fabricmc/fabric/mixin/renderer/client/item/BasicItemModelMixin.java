@@ -63,7 +63,7 @@ abstract class BasicItemModelMixin implements ItemModel, BasicItemModelExtension
 			SpriteFinder spriteFinder = spriteGetter.spriteFinder(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
 			mesh.forEach(quad -> {
-				if (!animated && spriteFinder.find(quad).isAnimated()) {
+				if (!animated && spriteFinder.find(quad).getContents().isAnimated()) {
 					animated = true;
 				}
 			});

@@ -40,7 +40,7 @@ abstract class SpriteLoaderStitchResultMixin implements FabricStitchResult, Stit
 	private Sprite missing;
 	@Shadow
 	@Final
-	private Map<Identifier, Sprite> regions;
+	private Map<Identifier, Sprite> sprites;
 
 	@Unique
 	@Nullable
@@ -55,7 +55,7 @@ abstract class SpriteLoaderStitchResultMixin implements FabricStitchResult, Stit
 				result = spriteFinder;
 
 				if (result == null) {
-					spriteFinder = result = new SpriteFinderImpl(regions, missing);
+					spriteFinder = result = new SpriteFinderImpl(sprites, missing);
 				}
 			}
 		}

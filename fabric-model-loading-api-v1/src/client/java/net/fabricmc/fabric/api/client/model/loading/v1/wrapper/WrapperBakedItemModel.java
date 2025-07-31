@@ -18,11 +18,11 @@ package net.fabricmc.fabric.api.client.model.loading.v1.wrapper;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.class_11566;
 import net.minecraft.client.item.ItemModelManager;
 import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
 
@@ -41,7 +41,7 @@ public abstract class WrapperBakedItemModel implements ItemModel {
 	}
 
 	@Override
-	public void update(ItemRenderState state, ItemStack stack, ItemModelManager resolver, ItemDisplayContext displayContext, @Nullable ClientWorld world, @Nullable LivingEntity user, int seed) {
+	public void update(ItemRenderState state, ItemStack stack, ItemModelManager resolver, ItemDisplayContext displayContext, @Nullable ClientWorld world, @Nullable class_11566 user, int seed) {
 		wrapped.update(state, stack, resolver, displayContext, world, user, seed);
 	}
 }

@@ -42,7 +42,6 @@ import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.client.render.model.ReferencedModelsCollector;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
 
@@ -70,8 +69,8 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 	}
 
 	@Inject(method = "reload", at = @At("HEAD"))
-	private void onHeadReload(ResourceReloader.Synchronizer synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-		eventDispatcherFuture = ModelLoadingPluginManager.preparePlugins(manager, prepareExecutor).thenApplyAsync(ModelLoadingEventDispatcher::new, prepareExecutor);
+	private void onHeadReload(ResourceReloader.class_11558 sharedState, Executor prepareExecutor, ResourceReloader.Synchronizer synchronizer, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
+		eventDispatcherFuture = ModelLoadingPluginManager.preparePlugins(sharedState.method_72361(), prepareExecutor).thenApplyAsync(ModelLoadingEventDispatcher::new, prepareExecutor);
 	}
 
 	@ModifyReturnValue(method = "reload", at = @At("RETURN"))
@@ -93,7 +92,7 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 	}
 
 	@ModifyArg(method = "reload", at = @At(value = "INVOKE", target = "java/util/concurrent/CompletableFuture.thenApplyAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 1), index = 0)
-	private Function<Void, ?> hookTextureCollect(Function<Void, CompletableFuture<?>> function) {
+	private Function<Void, ?> hookModelCollect(Function<Void, CompletableFuture<?>> function) {
 		return withModelDispatcher(function);
 	}
 
@@ -127,8 +126,8 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 		if (eventDispatcher != null) eventDispatcher.getExtraModels().values().forEach(collector::resolve);
 	}
 
-	@Inject(method = "upload", at = @At(value = "INVOKE_STRING", target = "net/minecraft/util/profiler/Profiler.swap(Ljava/lang/String;)V", args = "ldc=cache"))
-	private void onUpload(CallbackInfo ci, @Local ModelBaker.BakedModels bakedModels) {
+	@Inject(method = "upload", at = @At(value = "RETURN"))
+	private void onReturnUpload(CallbackInfo ci, @Local ModelBaker.BakedModels bakedModels) {
 		extraModels = ((BakedModelsHooks) (Object) bakedModels).fabric_getExtraModels();
 	}
 

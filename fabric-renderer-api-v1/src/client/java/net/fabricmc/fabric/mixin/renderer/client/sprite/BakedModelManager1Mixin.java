@@ -16,26 +16,52 @@
 
 package net.fabricmc.fabric.mixin.renderer.client.sprite;
 
-import java.util.Map;
-
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
-import net.minecraft.client.render.model.SpriteAtlasManager;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.SpriteLoader;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
+import net.fabricmc.fabric.impl.renderer.MissingSpriteFinderImpl;
 
 @Mixin(targets = "net/minecraft/client/render/model/BakedModelManager$1")
 abstract class BakedModelManager1Mixin implements ErrorCollectingSpriteGetter {
 	@Shadow
 	@Final
-	Map<Identifier, SpriteAtlasManager.AtlasPreparation> field_55477;
+	private Sprite missingSprite;
+	@Shadow
+	@Final
+	SpriteLoader.StitchResult field_61871;
+
+	@Unique
+	@Nullable
+	private volatile MissingSpriteFinderImpl missingSpriteFinder;
 
 	@Override
 	public SpriteFinder spriteFinder(Identifier atlasId) {
-		return field_55477.get(atlasId).spriteFinder();
+		if (atlasId.equals(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)) {
+			return field_61871.spriteFinder();
+		}
+
+		MissingSpriteFinderImpl result = missingSpriteFinder;
+
+		if (result == null) {
+			synchronized (this) {
+				result = missingSpriteFinder;
+
+				if (result == null) {
+					missingSpriteFinder = result = new MissingSpriteFinderImpl(missingSprite);
+				}
+			}
+		}
+
+		return result;
 	}
 }

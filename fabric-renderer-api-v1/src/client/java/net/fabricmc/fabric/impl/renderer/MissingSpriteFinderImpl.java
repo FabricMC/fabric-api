@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer.client.sprite;
+package net.fabricmc.fabric.impl.renderer;
 
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import net.minecraft.client.texture.Sprite;
 
-import net.minecraft.client.render.model.SpriteAtlasManager;
-import net.minecraft.client.texture.SpriteLoader;
-
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
-import net.fabricmc.fabric.api.renderer.v1.sprite.FabricAtlasPreparation;
 
-@Mixin(SpriteAtlasManager.AtlasPreparation.class)
-abstract class SpriteAtlasManagerAtlasPreparationMixin implements FabricAtlasPreparation {
-	@Shadow
-	@Final
-	private SpriteLoader.StitchResult stitchResult;
+public record MissingSpriteFinderImpl(Sprite missingSprite) implements SpriteFinder {
+	@Override
+	public Sprite find(QuadView quad) {
+		return missingSprite;
+	}
 
 	@Override
-	public SpriteFinder spriteFinder() {
-		return stitchResult.spriteFinder();
+	public Sprite find(float u, float v) {
+		return missingSprite;
 	}
 }
