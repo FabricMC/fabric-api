@@ -84,6 +84,9 @@ public class TestClientWorldContextImpl implements TestClientWorldContext {
 
 	private static boolean areChunksRendered(MinecraftClient client) {
 		ClientWorld world = Objects.requireNonNull(client.world);
-		return ((ClientWorldAccessor) world).getChunkUpdaters().isEmpty() && client.worldRenderer.isTerrainRenderComplete();
+		boolean chunkUpdatersEmpty = ((ClientWorldAccessor) world).getChunkUpdaters().isEmpty();
+		boolean terrainRenderComplete = client.worldRenderer.isTerrainRenderComplete();
+		LOGGER.info("Chunk updaters empty: {}, terrain render complete: {}", chunkUpdatersEmpty, terrainRenderComplete);
+		return chunkUpdatersEmpty && terrainRenderComplete;
 	}
 }
