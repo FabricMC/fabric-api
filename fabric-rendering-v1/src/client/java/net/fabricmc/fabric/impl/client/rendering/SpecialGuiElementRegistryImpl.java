@@ -45,8 +45,9 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
 
 public final class SpecialGuiElementRegistryImpl {
-	private static RegistrationHandler registrationHandler = new EarlyRegistrationHandler();
-	private static final Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRegistry.Factory> FACTORIES = new HashMap<>();
+	private static final List<SpecialGuiElementRegistry.Factory> FACTORIES = new ArrayList<>();
+	private static final Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRegistry.Factory> REGISTERED_FACTORIES = new HashMap<>();
+	private static boolean frozen;
 
 	static {
 		registerVanillaFactories();
@@ -56,79 +57,46 @@ public final class SpecialGuiElementRegistryImpl {
 	}
 
 	public static void register(SpecialGuiElementRegistry.Factory factory) {
-		registrationHandler.register(factory);
+		if (frozen) {
+			throw new IllegalStateException("Too late to register, GuiRenderer has already been initialized.");
+		}
+
+		FACTORIES.add(factory);
 	}
 
 	// Called after the vanilla special renderers are created.
 	public static void onReady(MinecraftClient client, VertexConsumerProvider.Immediate immediate,
 								Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> specialElementRenderers) {
-		switch (registrationHandler) {
-		case EarlyRegistrationHandler handler -> registrationHandler = handler.onCreated(client, immediate, specialElementRenderers);
-		case LateRegistrationHandler handler -> throw new IllegalStateException("Already transitioned to late registration handler");
+		frozen = true;
+
+		ContextImpl context = new ContextImpl(client, immediate);
+
+		for (SpecialGuiElementRegistry.Factory factory : FACTORIES) {
+			SpecialGuiElementRenderer<?> elementRenderer = factory.createSpecialRenderer(context);
+			specialElementRenderers.put(elementRenderer.getElementClass(), elementRenderer);
+			REGISTERED_FACTORIES.put(elementRenderer.getElementClass(), factory);
 		}
 	}
 
 	@Nullable("null for render states registered outside FAPI")
 	public static <S extends SpecialGuiElementRenderState> SpecialGuiElementRenderer<S> createNewRenderer(S state, MinecraftClient client, VertexConsumerProvider.Immediate immediate) {
-		SpecialGuiElementRegistry.Factory factory = FACTORIES.get(state.getClass());
+		SpecialGuiElementRegistry.Factory factory = REGISTERED_FACTORIES.get(state.getClass());
 		return factory == null ? null : (SpecialGuiElementRenderer<S>) factory.createSpecialRenderer(new ContextImpl(client, immediate));
 	}
 
 	private static void registerVanillaFactories() {
 		// Vanilla creates its special element renderers in the GameRenderer constructor
-		FACTORIES.put(EntityGuiElementRenderState.class, context -> new EntityGuiElementRenderer(context.vertexConsumers(), context.client().getEntityRenderDispatcher()));
-		FACTORIES.put(PlayerSkinGuiElementRenderState.class, context -> new PlayerSkinGuiElementRenderer(context.vertexConsumers()));
-		FACTORIES.put(BookModelGuiElementRenderState.class, context -> new BookModelGuiElementRenderer(context.vertexConsumers()));
-		FACTORIES.put(BannerResultGuiElementRenderState.class, context -> new BannerResultGuiElementRenderer(context.vertexConsumers()));
-		FACTORIES.put(SignGuiElementRenderState.class, context -> new SignGuiElementRenderer(context.vertexConsumers()));
-		FACTORIES.put(ProfilerChartGuiElementRenderState.class, context -> new ProfilerChartGuiElementRenderer(context.vertexConsumers()));
+		REGISTERED_FACTORIES.put(EntityGuiElementRenderState.class, context -> new EntityGuiElementRenderer(context.vertexConsumers(), context.client().getEntityRenderDispatcher()));
+		REGISTERED_FACTORIES.put(PlayerSkinGuiElementRenderState.class, context -> new PlayerSkinGuiElementRenderer(context.vertexConsumers()));
+		REGISTERED_FACTORIES.put(BookModelGuiElementRenderState.class, context -> new BookModelGuiElementRenderer(context.vertexConsumers()));
+		REGISTERED_FACTORIES.put(BannerResultGuiElementRenderState.class, context -> new BannerResultGuiElementRenderer(context.vertexConsumers()));
+		REGISTERED_FACTORIES.put(SignGuiElementRenderState.class, context -> new SignGuiElementRenderer(context.vertexConsumers()));
+		REGISTERED_FACTORIES.put(ProfilerChartGuiElementRenderState.class, context -> new ProfilerChartGuiElementRenderer(context.vertexConsumers()));
 	}
 
 	@VisibleForTesting
 	public static Collection<Class<? extends SpecialGuiElementRenderState>> getRegisteredFactoryStateClasses() {
-		return FACTORIES.keySet();
-	}
-
-	private sealed interface RegistrationHandler permits EarlyRegistrationHandler, LateRegistrationHandler {
-		void register(SpecialGuiElementRegistry.Factory factory);
-
-		default void applyFactory(SpecialGuiElementRegistry.Factory factory, SpecialGuiElementRegistry.Context context,
-									Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> specialElementRenderers) {
-			SpecialGuiElementRenderer<?> elementRenderer = factory.createSpecialRenderer(context);
-			specialElementRenderers.put(elementRenderer.getElementClass(), elementRenderer);
-			FACTORIES.put(elementRenderer.getElementClass(), factory);
-		}
-	}
-
-	// Handle calls to register before the vanilla special renderers are created.
-	private static final class EarlyRegistrationHandler implements RegistrationHandler {
-		private List<SpecialGuiElementRegistry.Factory> pendingFactories = new ArrayList<>();
-
-		@Override
-		public void register(SpecialGuiElementRegistry.Factory factory) {
-			pendingFactories.add(factory);
-		}
-
-		// Transition to late registration handler after the vanilla special renderers are created.
-		public LateRegistrationHandler onCreated(MinecraftClient client, VertexConsumerProvider.Immediate immediate,
-												Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> specialElementRenderers) {
-			var context = new ContextImpl(client, immediate);
-
-			for (SpecialGuiElementRegistry.Factory factory : pendingFactories) {
-				applyFactory(factory, context, specialElementRenderers);
-			}
-
-			return new LateRegistrationHandler(context, specialElementRenderers);
-		}
-	}
-
-	// Handle calls to register after the vanilla special renderers are created.
-	private record LateRegistrationHandler(SpecialGuiElementRegistry.Context context,
-														Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> specialElementRenderers) implements RegistrationHandler {
-		@Override
-		public void register(SpecialGuiElementRegistry.Factory factory) {
-			applyFactory(factory, context, specialElementRenderers);
-		}
+		return REGISTERED_FACTORIES.keySet();
 	}
 
 	record ContextImpl(MinecraftClient client, VertexConsumerProvider.Immediate vertexConsumers) implements SpecialGuiElementRegistry.Context { }

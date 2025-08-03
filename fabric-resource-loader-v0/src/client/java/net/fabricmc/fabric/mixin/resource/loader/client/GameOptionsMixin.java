@@ -25,6 +25,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,6 +44,7 @@ import net.minecraft.nbt.NbtString;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 
+import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 import net.fabricmc.loader.api.FabricLoader;
@@ -131,5 +134,11 @@ public class GameOptionsMixin {
 		}
 
 		this.resourcePacks = new ArrayList<>(resourcePacks);
+	}
+
+	@WrapOperation(method = "refreshResourcePacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackProfile;isPinned()Z"))
+	private boolean excludeInternalResourcePacksFromRefreshCheck(ResourcePackProfile instance, Operation<Boolean> original) {
+		// Treat Fabric hidden resource packs as pinned during the check for changed resource packs so that they won't count as changed when refreshing resource packs
+		return original.call(instance) || ((FabricResourcePackProfile) instance).fabric_isHidden();
 	}
 }

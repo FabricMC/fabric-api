@@ -58,6 +58,6 @@ public record TagsPopulatedResourceCondition(Identifier registry, List<Identifie
 
 	@Override
 	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
-		return ResourceConditionsImpl.tagsPopulated(this.registry(), this.tags());
+		return ResourceConditionsImpl.tagsPopulated(registryInfo, this.registry(), this.tags());
 	}
 }

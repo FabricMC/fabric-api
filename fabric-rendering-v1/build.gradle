@@ -2,7 +2,8 @@ version = getSubprojectVersion(project)
 
 moduleDependencies(project, [
 	':fabric-api-base',
-	':fabric-transitive-access-wideners-v1'
+	':fabric-transitive-access-wideners-v1',
+	':fabric-lifecycle-events-v1'
 ])
 
 testDependencies(project, [

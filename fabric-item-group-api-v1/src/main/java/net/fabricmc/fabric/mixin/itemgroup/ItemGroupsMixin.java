@@ -46,6 +46,7 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupImpl;
 
@@ -77,7 +78,7 @@ public class ItemGroupsMixin {
 				return -displayCompare;
 			} else {
 				// Ensure a deterministic order
-				return e1.registryKey().getValue().compareTo(e2.registryKey().getValue());
+				return compareNamespaceFirst(e1.registryKey().getValue(), e2.registryKey().getValue());
 			}
 		};
 		final List<RegistryEntry.Reference<ItemGroup>> sortedItemGroups = Registries.ITEM_GROUP.streamEntries()
@@ -119,5 +120,18 @@ public class ItemGroupsMixin {
 				throw new IllegalArgumentException("Duplicate position: (%s) for item groups %s vs %s".formatted(position, displayName, existingName));
 			}
 		}
+	}
+
+	// Identifier#compareTo checks the path first, but we want to check the namespace first so that groups added by the
+	// same mod appear next to each other.
+	@Unique
+	private static int compareNamespaceFirst(Identifier a, Identifier b) {
+		int c = a.getNamespace().compareTo(b.getNamespace());
+
+		if (c != 0) {
+			return c;
+		}
+
+		return a.getPath().compareTo(b.getPath());
 	}
 }

@@ -176,11 +176,7 @@ public abstract class CreativeInventoryScreenMixin extends HandledScreen<Creativ
 				.filter(itemGroup -> getPage(itemGroup) == page)
 				// Thanks to isXander for the sorting
 				.sorted(Comparator.comparing(ItemGroup::getRow).thenComparingInt(ItemGroup::getColumn))
-				.sorted((a, b) -> {
-					if (a.isSpecial() && !b.isSpecial()) return 1;
-					if (!a.isSpecial() && b.isSpecial()) return -1;
-					return 0;
-				})
+				.sorted((a, b) -> Boolean.compare(a.isSpecial(), b.isSpecial()))
 				.toList();
 	}
 

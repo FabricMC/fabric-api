@@ -17,13 +17,8 @@
 package net.fabricmc.fabric.impl.resource.conditions;
 
 import java.util.Collection;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
@@ -34,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.tag.TagKey;
@@ -108,42 +104,27 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return and;
 	}
 
-	/**
-	 * Stores the tags deserialized before they are bound, to use them in the tags_populated conditions.
-	 * If the resource reload fails, the thread local is not cleared and:
-	 * - the map will remain in memory until the next reload;
-	 * - any call to {@link #tagsPopulated} will check the tags from the failed reload instead of failing directly.
-	 * This is probably acceptable.
-	 */
-	public static final AtomicReference<Map<RegistryKey<?>, Set<Identifier>>> LOADED_TAGS = new AtomicReference<>();
-
-	public static void setTags(List<Registry.PendingTagLoad<?>> tags) {
-		Map<RegistryKey<?>, Set<Identifier>> tagMap = new IdentityHashMap<>();
-
-		for (Registry.PendingTagLoad<?> registryTags : tags) {
-			tagMap.put(registryTags.getKey(), registryTags.getLookup().streamTagKeys().map(TagKey::id).collect(Collectors.toSet()));
-		}
-
-		if (LOADED_TAGS.getAndSet(tagMap) != null) {
-			throw new IllegalStateException("Tags already captured, this should not happen");
-		}
-	}
-
-	// Cannot use registry because tags are not loaded to the registry at this stage yet.
-	public static boolean tagsPopulated(Identifier registryId, List<Identifier> tags) {
-		Map<RegistryKey<?>, Set<Identifier>> tagMap = LOADED_TAGS.get();
-
-		if (tagMap == null) {
+	public static boolean tagsPopulated(@Nullable RegistryOps.RegistryInfoGetter infoGetter, Identifier registryId, List<Identifier> tags) {
+		if (infoGetter == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing tags_populated resource condition check", registryId);
 			return false;
 		}
 
-		Set<Identifier> tagSet = tagMap.get(RegistryKey.ofRegistry(registryId));
+		RegistryKey<? extends Registry<Object>> registryKey = RegistryKey.ofRegistry(registryId);
+		Optional<RegistryOps.RegistryInfo<Object>> optionalInfo = infoGetter.getRegistryInfo(registryKey);
 
-		if (tagSet == null) {
-			return tags.isEmpty();
+		if (optionalInfo.isPresent()) {
+			RegistryEntryLookup<Object> lookup = optionalInfo.get().entryLookup();
+
+			for (Identifier id : tags) {
+				if (lookup.getOptional(TagKey.of(registryKey, id)).isEmpty()) {
+					return false;
+				}
+			}
+
+			return true;
 		} else {
-			return tagSet.containsAll(tags);
+			return tags.isEmpty();
 		}
 	}
 
@@ -166,19 +147,20 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return set.isSubsetOf(currentFeatures);
 	}
 
-	public static boolean registryContains(@Nullable RegistryOps.RegistryInfoGetter registryInfo, Identifier registryId, List<Identifier> entries) {
-		RegistryKey<? extends Registry<Object>> registryKey = RegistryKey.ofRegistry(registryId);
-
-		if (registryInfo == null) {
+	public static boolean registryContains(@Nullable RegistryOps.RegistryInfoGetter infoGetter, Identifier registryId, List<Identifier> entries) {
+		if (infoGetter == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing registry_contains resource condition check", registryId);
 			return false;
 		}
 
-		Optional<RegistryOps.RegistryInfo<Object>> wrapper = registryInfo.getRegistryInfo(registryKey);
+		RegistryKey<? extends Registry<Object>> registryKey = RegistryKey.ofRegistry(registryId);
+		Optional<RegistryOps.RegistryInfo<Object>> optionalInfo = infoGetter.getRegistryInfo(registryKey);
 
-		if (wrapper.isPresent()) {
+		if (optionalInfo.isPresent()) {
+			RegistryEntryLookup<Object> lookup = optionalInfo.get().entryLookup();
+
 			for (Identifier id : entries) {
-				if (wrapper.get().entryLookup().getOptional(RegistryKey.of(registryKey, id)).isEmpty()) {
+				if (lookup.getOptional(RegistryKey.of(registryKey, id)).isEmpty()) {
 					return false;
 				}
 			}

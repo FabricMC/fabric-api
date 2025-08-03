@@ -5,6 +5,7 @@
   "mixins": [
     "ArgumentTypesAccessor",
     "CommandManagerMixin",
+    "CommandSourceMixin",
     "EntitySelectorOptionsAccessor",
     "EntitySelectorReaderMixin",
     "HelpCommandAccessor"

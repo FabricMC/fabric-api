@@ -19,14 +19,13 @@ package net.fabricmc.fabric.mixin.datagen.client;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.data.ModelProvider;
@@ -75,21 +74,15 @@ public class ModelProviderItemAssetsMixin implements FabricItemAssetDefinitions 
 		return original.call(map, o);
 	}
 
-	@Redirect(method = "resolveAndValidate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0, remap = false))
-	private Stream<RegistryEntry.Reference<Item>> filterItemsForProcessingMod(Stream<RegistryEntry.Reference<Item>> instance, Predicate<RegistryEntry.Reference<Item>> predicate) {
-		return instance.filter((item) -> {
-			if (fabricDataOutput != null) {
-				if (!fabricDataOutput.isStrictValidationEnabled()) {
-					return false;
-				}
-
-				if (!item.registryKey().getValue().getNamespace().equals(fabricDataOutput.getModId())) {
+	@ModifyArg(method = "resolveAndValidate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0, remap = false))
+	private Predicate<RegistryEntry.Reference<Item>> filterItemsForProcessingMod(Predicate<RegistryEntry.Reference<Item>> original) {
+		if (fabricDataOutput != null) {
+			return original
+					.and(item -> fabricDataOutput.isStrictValidationEnabled())
 					// Skip over items that are not from the mod we are processing.
-					return false;
-				}
-			}
+					.and(item -> item.registryKey().getValue().getNamespace().equals(fabricDataOutput.getModId()));
+		}
 
-			return predicate.test(item);
-		});
+		return original;
 	}
 }
