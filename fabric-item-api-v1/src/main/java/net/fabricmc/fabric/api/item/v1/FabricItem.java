@@ -16,10 +16,18 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import java.util.Optional;
+import java.util.Set;
+
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.PotionItem;
+import net.minecraft.item.TippedArrowItem;
+import net.minecraft.potion.Potion;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -116,6 +124,39 @@ public interface FabricItem {
 		return context == EnchantingContext.PRIMARY
 				? enchantment.value().isPrimaryItem(stack)
 				: enchantment.value().isAcceptableItem(stack);
+	}
+
+	/**
+	 * Gets the namespace of the mod or datapack that created this item.
+	 *
+	 * <p>This can be used if, for example, a library mod registers a generic item that other mods can create new
+	 * variants for, allowing those mods to take credit for those variants if a player wishes to know what mod they
+	 * come from.</p>
+	 *
+	 * <p>Should be used instead of querying the item ID namespace to determine what mod an item is from when displaying
+	 * to the player.</p>
+	 *
+	 * <p>Defaults to the namespace of the item's own registry entry, except in the cases of potions or enchanted books,
+	 * in which it uses the namespace of the potion contents or single enchantment applied.</p>
+	 *
+	 * <p>Note that while it is recommended that this reflect a namespace and/or mod ID, it can technically be any
+	 * arbitrary string.</p>
+	 *
+	 * @param stack the current stack
+	 * @return the namespace of the mod that created the item
+	 */
+	default String getCreatorNamespace(ItemStack stack) {
+		RegistryEntry<?> entry = stack.getRegistryEntry();
+
+		if ((this instanceof PotionItem || this instanceof TippedArrowItem) && stack.contains(DataComponentTypes.POTION_CONTENTS)) {
+			Optional<RegistryEntry<Potion>> potion = stack.get(DataComponentTypes.POTION_CONTENTS).potion();
+			if (potion.isPresent()) entry = potion.get();
+		} else if (stack.isOf(Items.ENCHANTED_BOOK) && stack.contains(DataComponentTypes.STORED_ENCHANTMENTS)) {
+			Set<RegistryEntry<Enchantment>> enchantments = stack.get(DataComponentTypes.STORED_ENCHANTMENTS).getEnchantments();
+			if (enchantments.size() == 1) entry = enchantments.iterator().next();
+		}
+
+		return entry.getKey().orElseThrow().getValue().getNamespace();
 	}
 
 	/**
