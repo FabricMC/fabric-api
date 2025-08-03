@@ -51,7 +51,7 @@ public class CreatorNamespaceTest implements ModInitializer {
 	public static Item registerItem(String id, Function<Item.Settings, Item> factory) {
 		RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, id(id));
 
-		Item item = factory.apply(new Item.Settings().registryKey(key));
+		Item item = factory.apply(new Item.Settings());
 		return Registry.register(Registries.ITEM, key, item);
 	}
 
