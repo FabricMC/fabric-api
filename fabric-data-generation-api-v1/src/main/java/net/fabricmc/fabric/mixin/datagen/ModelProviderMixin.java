@@ -19,17 +19,20 @@ package net.fabricmc.fabric.mixin.datagen;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.google.gson.JsonElement;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.Block;
 import net.minecraft.data.DataOutput;
@@ -40,6 +43,7 @@ import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.ModelProvider;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -53,6 +57,9 @@ public class ModelProviderMixin {
 	@Unique
 	private static final ThreadLocal<FabricDataOutput> fabricDataOutputThreadLocal = new ThreadLocal<>();
 
+	@Unique
+	private static final ThreadLocal<Map<Block, BlockStateSupplier>> blockStateMapThreadLocal = new ThreadLocal<>();
+
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void init(DataOutput output, CallbackInfo ci) {
 		if (output instanceof FabricDataOutput fabricDataOutput) {
@@ -60,31 +67,28 @@ public class ModelProviderMixin {
 		}
 	}
 
-	@Unique
-	private static ThreadLocal<Map<Block, BlockStateSupplier>> blockStateMapThreadLocal = new ThreadLocal<>();
-
-	@Redirect(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/BlockStateModelGenerator;register()V"))
-	private void registerBlockStateModels(BlockStateModelGenerator instance) {
+	@WrapOperation(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/BlockStateModelGenerator;register()V"))
+	private void registerBlockStateModels(BlockStateModelGenerator instance, Operation<Void> original) {
 		if (((Object) this) instanceof FabricModelProvider fabricModelProvider) {
 			fabricModelProvider.generateBlockStateModels(instance);
 		} else {
 			// Fallback to the vanilla registration when not a fabric provider
-			instance.register();
+			original.call(instance);
 		}
 	}
 
-	@Redirect(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/ItemModelGenerator;register()V"))
-	private void registerItemModels(ItemModelGenerator instance) {
+	@WrapOperation(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/ItemModelGenerator;register()V"))
+	private void registerItemModels(ItemModelGenerator instance, Operation<Void> original) {
 		if (((Object) this) instanceof FabricModelProvider fabricModelProvider) {
 			fabricModelProvider.generateItemModels(instance);
 		} else {
 			// Fallback to the vanilla registration when not a fabric provider
-			instance.register();
+			original.call(instance);
 		}
 	}
 
-	@Inject(method = "run", at = @At(value = "INVOKE_ASSIGN", target = "com/google/common/collect/Maps.newHashMap()Ljava/util/HashMap;", ordinal = 0, remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void runHead(DataWriter writer, CallbackInfoReturnable<CompletableFuture<?>> cir, Map<Block, BlockStateSupplier> map) {
+	@Inject(method = "run", at = @At(value = "INVOKE_ASSIGN", target = "com/google/common/collect/Maps.newHashMap()Ljava/util/HashMap;", ordinal = 0, remap = false))
+	private void runHead(DataWriter writer, CallbackInfoReturnable<CompletableFuture<?>> cir, @Local Map<Block, BlockStateSupplier> map) {
 		fabricDataOutputThreadLocal.set(fabricDataOutput);
 		blockStateMapThreadLocal.set(map);
 	}
@@ -95,25 +99,21 @@ public class ModelProviderMixin {
 		blockStateMapThreadLocal.remove();
 	}
 
-	@Inject(method = "method_25738", at = @At("HEAD"), cancellable = true)
-	private static void filterBlocksForProcessingMod(Map<Block, BlockStateSupplier> map, Block block, CallbackInfoReturnable<Boolean> cir) {
-		FabricDataOutput dataOutput = fabricDataOutputThreadLocal.get();
-
-		if (dataOutput != null) {
-			if (!dataOutput.isStrictValidationEnabled()) {
-				cir.setReturnValue(false);
-				return;
-			}
-
-			if (!Registries.BLOCK.getId(block).getNamespace().equals(dataOutput.getModId())) {
-				// Skip over blocks that are not from the mod we are processing.
-				cir.setReturnValue(false);
-			}
+	// Target the first .filter() call, to filter out blocks that are not from the mod we are processing.
+	@ModifyArg(method = "run", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0, remap = false))
+	private Predicate<Map.Entry<RegistryKey<Block>, Block>> filterBlocksForProcessingMod(Predicate<Map.Entry<RegistryKey<Block>, Block>> original) {
+		if (fabricDataOutput != null) {
+			return original
+					.and(e -> fabricDataOutput.isStrictValidationEnabled())
+					// Skip over blocks that are not from the mod we are processing.
+					.and(e -> e.getKey().getValue().getNamespace().equals(fabricDataOutput.getModId()));
 		}
+
+		return original;
 	}
 
-	@Inject(method = "method_25741", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/ModelIds;getItemModelId(Lnet/minecraft/item/Item;)Lnet/minecraft/util/Identifier;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-	private static void filterItemsForProcessingMod(Set<Item> set, Map<Identifier, Supplier<JsonElement>> map, Block block, CallbackInfo ci, Item item) {
+	@Inject(method = "method_25741", at = @At(value = "INVOKE", target = "Lnet/minecraft/data/client/ModelIds;getItemModelId(Lnet/minecraft/item/Item;)Lnet/minecraft/util/Identifier;"), cancellable = true)
+	private static void filterItemsForProcessingMod(Set<Item> set, Map<Identifier, Supplier<JsonElement>> map, Block block, CallbackInfo ci, @Local Item item) {
 		FabricDataOutput dataOutput = fabricDataOutputThreadLocal.get();
 
 		if (dataOutput != null) {
