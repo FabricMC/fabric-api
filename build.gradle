@@ -3,7 +3,7 @@ plugins {
 	id "eclipse"
 	id "maven-publish"
 	id "fabric-loom" version "1.11.4" apply false
-	id "com.diffplug.spotless" version "7.0.2"
+	id "com.diffplug.spotless" version "7.2.1"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
 	id "me.modmuss50.mod-publish-plugin" version "0.8.4"
 }
@@ -771,7 +771,7 @@ import java.util.stream.Collectors
 tasks.register('checkVersion') {
 	doFirst {
 		def xml = new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text
-		def metadata = new XmlSlurper().parseText(xml)
+		def metadata = new groovy.xml.XmlSlurper().parseText(xml)
 		def versions = metadata.versioning.versions.version*.text();
 		if (versions.contains(version)) {
 			throw new RuntimeException("${version} has already been released!")
