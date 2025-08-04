@@ -55,6 +55,8 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 	private VertexConsumerProvider.Immediate vertexConsumers;
 
 	@Unique
+	private boolean hasFabricInitialized = false;
+	@Unique
 	private final Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRendererPool<?>> rendererPools = new HashMap<>();
 	@Unique
 	private class_11684 renderDispatcher = null;
@@ -68,6 +70,7 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 	public void fabric_onReady(class_11684 renderDispatcher) {
 		this.renderDispatcher = renderDispatcher;
 		SpecialGuiElementRegistryImpl.onReady(MinecraftClient.getInstance(), vertexConsumers, renderDispatcher, this.specialElementRenderers);
+		this.hasFabricInitialized = true;
 	}
 
 	@Inject(method = "prepareSpecialElements", at = @At("HEAD"))
@@ -82,8 +85,8 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 
 	@ModifyVariable(method = "prepareSpecialElement", at = @At("STORE"))
 	private <T extends SpecialGuiElementRenderState> SpecialGuiElementRenderer<T> substitueSpecialElementRenderer(SpecialGuiElementRenderer<T> original, T elementState) {
-		if (original == null) {
-			return null;
+		if (original == null || !hasFabricInitialized) {
+			return original;
 		}
 
 		SpecialGuiElementRendererPool<T> rendererPool = (SpecialGuiElementRendererPool<T>) rendererPools.computeIfAbsent(original.getElementClass(), k -> new SpecialGuiElementRendererPool<>());
