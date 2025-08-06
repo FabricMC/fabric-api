@@ -16,7 +16,7 @@
     "client.block.particle.InGameOverlayRendererMixin",
     "client.block.render.BlockModelRendererMixin",
     "client.block.render.BlockRenderManagerMixin",
-    "client.block.render.class_11681Mixin",
+    "client.block.render.FallingBlockCommandRendererMixin",
     "client.block.render.ItemFrameEntityRendererMixin",
     "client.block.render.MooshroomMushroomFeatureRendererMixin",
     "client.block.render.PistonBlockEntityRendererMixin",

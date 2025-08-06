@@ -259,9 +259,14 @@ transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	getFireSideModels	(Lnet/minecraft/block/Block;)Lnet/minecraft/client/render/model/json/WeightedVariant;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	getFireUpModels	(Lnet/minecraft/block/Block;)Lnet/minecraft/client/render/model/json/WeightedVariant;
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerLantern	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_73138	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_73139	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerTopSoil	(Lnet/minecraft/block/Block;Lnet/minecraft/client/render/model/json/WeightedVariant;Lnet/minecraft/client/render/model/json/WeightedVariant;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerWeightedPressurePlate	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerParented	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_73135	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_73140	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_73137	(Lnet/minecraft/block/Block;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;Lnet/minecraft/util/Identifier;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerNorthDefaultHorizontalRotation	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerPiston	(Lnet/minecraft/block/Block;Lnet/minecraft/client/render/model/json/WeightedVariant;Lnet/minecraft/client/data/TextureMap;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerTorch	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
@@ -289,6 +294,7 @@ transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerChest	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Lnet/minecraft/util/Identifier;Z)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerBed	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;Lnet/minecraft/util/DyeColor;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerSpecialItemModel	(Lnet/minecraft/block/Block;Lnet/minecraft/client/render/item/model/special/SpecialModelRenderer$Unbaked;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	method_73136	(Lnet/minecraft/item/Item;Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerCandle	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/data/loottable/BlockLootTableGenerator	createSilkTouchCondition	()Lnet/minecraft/loot/condition/LootCondition$Builder;
 transitive-accessible	method	net/minecraft/data/loottable/BlockLootTableGenerator	createWithoutSilkTouchCondition	()Lnet/minecraft/loot/condition/LootCondition$Builder;

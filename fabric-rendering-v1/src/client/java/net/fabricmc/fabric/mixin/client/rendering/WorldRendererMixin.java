@@ -99,7 +99,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 			method = "method_62214",
 			at = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/client/render/WorldRenderer;method_72916(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Camera;Lnet/minecraft/class_11658;Lnet/minecraft/client/render/entity/command/EntityRenderCommandQueue;)V"
+				target = "Lnet/minecraft/client/render/WorldRenderer;pushEntityRenders(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/entity/EntityRenderStates;Lnet/minecraft/client/render/entity/command/EntityRenderCommandQueue;)V"
 			)
 	)
 	private void afterTerrainSolid(CallbackInfo ci) {

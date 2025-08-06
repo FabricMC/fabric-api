@@ -31,7 +31,7 @@ import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.item.model.BasicItemModel;
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
-import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.atlas.Atlases;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
@@ -60,10 +60,16 @@ abstract class BasicItemModelMixin implements ItemModel, BasicItemModelExtension
 		this.mesh = mesh;
 
 		if (!animated) {
-			SpriteFinder spriteFinder = spriteGetter.spriteFinder(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+			SpriteFinder spriteFinder = spriteGetter.spriteFinder(Atlases.BLOCKS);
 
 			mesh.forEach(quad -> {
-				if (!animated && spriteFinder.find(quad).getContents().isAnimated()) {
+				if (animated) {
+					return;
+				}
+
+				ItemRenderState.Glint glint = quad.glint();
+
+				if ((glint != null && glint != ItemRenderState.Glint.NONE) || spriteFinder.find(quad).getContents().isAnimated()) {
 					animated = true;
 				}
 			});

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRenderManager;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
@@ -33,7 +33,7 @@ public final class EntityRendererRegistry {
 	 *
 	 * @param entityType the {@link EntityType} to register a renderer for
 	 * @param entityRendererFactory a {@link EntityRendererFactory} that creates a {@link EntityRenderer}, called
-	 *                            when {@link EntityRenderDispatcher} is initialized or immediately if the dispatcher
+	 *                            when {@link EntityRenderManager} is initialized or immediately if the dispatcher
 	 *                            class is already loaded
 	 * @param <E> the {@link Entity}
 	 */

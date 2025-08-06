@@ -21,24 +21,31 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.util.StringIdentifiable;
 
 /**
  * Represents a boolean value which can be true, false or refer to a default value.
  */
-public enum TriState {
+public enum TriState implements StringIdentifiable {
 	/**
 	 * Represents the boolean value of {@code false}.
 	 */
-	FALSE,
+	FALSE("false"),
 	/**
 	 * Represents a value that refers to a "default" value, often as a fallback.
 	 */
-	DEFAULT,
+	DEFAULT("default"),
 	/**
 	 * Represents the boolean value of {@code true}.
 	 */
-	TRUE;
+	TRUE("true");
+
+	public static final Codec<TriState> CODEC = StringIdentifiable.createCodec(TriState::values);
+
+	private final String name;
 
 	/**
 	 * Gets the corresponding tri-state from a boolean value.
@@ -135,5 +142,19 @@ public enum TriState {
 		}
 
 		throw exceptionSupplier.get();
+	}
+
+	/**
+	 * Value of this enum as string.
+	 *
+	 * @return lowercase name of the value.
+	 */
+	@Override
+	public String asString() {
+		return this.name;
+	}
+
+	TriState(String name) {
+		this.name = name;
 	}
 }

@@ -20,15 +20,24 @@
       "net.fabricmc.fabric.test.rendering.client.DimensionalRenderingTest",
       "net.fabricmc.fabric.test.rendering.client.FeatureRendererTest",
       "net.fabricmc.fabric.test.rendering.client.HudAndShaderTest",
+      "net.fabricmc.fabric.test.rendering.client.HudStatusBarHeightsTest",
       "net.fabricmc.fabric.test.rendering.client.HudTests",
       "net.fabricmc.fabric.test.rendering.client.ItemStackOverlayTest",
       "net.fabricmc.fabric.test.rendering.client.SpecialBlockRendererTest",
       "net.fabricmc.fabric.test.rendering.client.TooltipComponentTests",
       "net.fabricmc.fabric.test.rendering.client.WorldRenderEventsTests",
-      "net.fabricmc.fabric.test.rendering.client.gui.SpecialGuiElementRendererTest"
+      "net.fabricmc.fabric.test.rendering.client.gui.SpecialGuiElementRendererTest",
+      "net.fabricmc.fabric.test.rendering.client.gui.SpecialGuiElementRendererTestWithNewGuiRenderer"
     ],
     "fabric-client-gametest": [
-      "net.fabricmc.fabric.test.rendering.client.HudTests"
+      "net.fabricmc.fabric.test.rendering.client.HudTests",
+      "net.fabricmc.fabric.test.rendering.client.gui.SpecialGuiElementRendererTest"
     ]
-  }
+  },
+  "mixins": [
+    {
+      "config": "fabric-rendering-v1-testmod.client.mixins.json",
+      "environment": "client"
+    }
+  ]
 }

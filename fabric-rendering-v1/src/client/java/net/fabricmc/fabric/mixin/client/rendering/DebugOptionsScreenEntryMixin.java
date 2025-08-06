@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.util.Identifier;
 
-@Mixin(targets = "net/minecraft/client/gui/screen/DebugOptionsScreen$class_11647")
+@Mixin(targets = "net/minecraft/client/gui/screen/DebugOptionsScreen$Entry")
 public abstract class DebugOptionsScreenEntryMixin {
 	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Identifier;getPath()Ljava/lang/String;"))
 	private String showNamespace(Identifier instance, Operation<String> original) {

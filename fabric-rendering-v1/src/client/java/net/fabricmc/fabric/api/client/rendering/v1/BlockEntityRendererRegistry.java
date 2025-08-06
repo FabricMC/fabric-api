@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderManager;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 
@@ -38,7 +38,7 @@ public final class BlockEntityRendererRegistry {
 	 *
 	 * @param blockEntityType the {@link BlockEntityType} to register a renderer for
 	 * @param blockEntityRendererFactory a {@link BlockEntityRendererFactory} that creates a {@link BlockEntityRenderer}, called
-	 *                            when {@link BlockEntityRenderDispatcher} is initialized or immediately if the dispatcher
+	 *                            when {@link BlockEntityRenderManager} is initialized or immediately if the dispatcher
 	 *                            class is already loaded
 	 * @param <E> the {@link BlockEntity}
 	 */

@@ -15,9 +15,15 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.client.rendering.hud.HudStatusBarHeightRegistryImpl"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.17.0",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-lifecycle-events-v1": "*"
   },
   "description": "Hooks and registries for rendering-related things.",
   "mixins": [

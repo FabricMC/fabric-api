@@ -69,8 +69,8 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 	}
 
 	@Inject(method = "reload", at = @At("HEAD"))
-	private void onHeadReload(ResourceReloader.class_11558 sharedState, Executor prepareExecutor, ResourceReloader.Synchronizer synchronizer, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-		eventDispatcherFuture = ModelLoadingPluginManager.preparePlugins(sharedState.method_72361(), prepareExecutor).thenApplyAsync(ModelLoadingEventDispatcher::new, prepareExecutor);
+	private void onHeadReload(ResourceReloader.Store sharedState, Executor prepareExecutor, ResourceReloader.Synchronizer synchronizer, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
+		eventDispatcherFuture = ModelLoadingPluginManager.preparePlugins(sharedState.getResourceManager(), prepareExecutor).thenApplyAsync(ModelLoadingEventDispatcher::new, prepareExecutor);
 	}
 
 	@ModifyReturnValue(method = "reload", at = @At("RETURN"))

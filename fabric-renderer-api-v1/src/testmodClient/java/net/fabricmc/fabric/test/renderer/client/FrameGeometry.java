@@ -23,7 +23,7 @@ import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.SimpleModel;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.atlas.Atlases;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -38,7 +38,7 @@ public record FrameGeometry(boolean emissive) implements Geometry {
 	public BakedGeometry bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, SimpleModel model) {
 		MutableMesh builder = Renderer.get().mutableMesh();
 		QuadEmitter emitter = builder.emitter();
-		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.getSpriteGetter().spriteFinder(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE)));
+		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.getSpriteGetter().spriteFinder(Atlases.BLOCKS)));
 
 		Sprite sprite = baker.getSpriteGetter().get(textures.get("frame"), model);
 

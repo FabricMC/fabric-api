@@ -17,14 +17,12 @@
 package net.fabricmc.fabric.mixin.resource.conditions;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.registry.CombinedDynamicRegistries;
@@ -45,14 +43,5 @@ public class DataPackContentsMixin {
 	)
 	private static void hookReload(ResourceManager manager, CombinedDynamicRegistries<ServerDynamicRegistryType> combinedDynamicRegistries, List<Registry.PendingTagLoad<?>> pendingTagLoads, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, int functionPermissionLevel, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
 		ResourceConditionsImpl.currentFeatures = enabledFeatures;
-		ResourceConditionsImpl.setTags(pendingTagLoads);
-	}
-
-	@Inject(
-			method = "applyPendingTagLoads",
-			at = @At("TAIL")
-	)
-	private void removeLoadedTags(CallbackInfo ci) {
-		Objects.requireNonNull(ResourceConditionsImpl.LOADED_TAGS.getAndSet(null), "loaded tags not reset");
 	}
 }

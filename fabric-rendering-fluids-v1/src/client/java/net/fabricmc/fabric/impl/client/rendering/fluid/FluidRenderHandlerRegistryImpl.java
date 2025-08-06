@@ -31,6 +31,7 @@ import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.atlas.Atlases;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -91,8 +92,8 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		LavaRenderHandler.INSTANCE.updateSprites(lavaSprites);
 
 		SpriteAtlasTexture texture = MinecraftClient.getInstance()
-				.method_72703()
-				.method_73025(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+				.getAtlasManager()
+				.getAtlasTexture(Atlases.BLOCKS);
 
 		for (FluidRenderHandler handler : handlers.values()) {
 			handler.reloadTextures(texture);
