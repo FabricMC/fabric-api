@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ChunkBuilderMixin",
+    "ChunkRenderTaskSchedulerMixin",
     "ClientChunkManagerAccessor",
     "ClientChunkManagerClientChunkMapAccessor",
     "ClientWorldAccessor",
@@ -24,9 +25,9 @@
     "screenshot.NativeImageMixin",
     "screenshot.RenderTickCounterConstantAccessor",
     "threading.ClientConnectionMixin",
+    "threading.MainMixin",
     "threading.MinecraftClientMixin",
     "threading.MinecraftServerMixin",
-    "threading.MainMixin",
     "threading.ThreadExecutorMixin",
     "world.CreateWorldScreenMixin"
   ],
