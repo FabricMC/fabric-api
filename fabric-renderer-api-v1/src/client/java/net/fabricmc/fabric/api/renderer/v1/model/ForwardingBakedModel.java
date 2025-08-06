@@ -41,6 +41,13 @@ public abstract class ForwardingBakedModel implements BakedModel, WrapperBakedMo
 	/** implementations must set this somehow. */
 	protected BakedModel wrapped;
 
+	protected ForwardingBakedModel(BakedModel wrapped) {
+		this.wrapped = wrapped;
+	}
+
+	public ForwardingBakedModel() {
+	}
+
 	@Override
 	public boolean isVanillaAdapter() {
 		return wrapped.isVanillaAdapter();
