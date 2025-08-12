@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.content.registry;
 import java.util.Objects;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.CopperBlockSet;
 import net.minecraft.block.Oxidizable;
 import net.minecraft.item.HoneycombItem;
 
@@ -39,6 +40,12 @@ public final class OxidizableBlocksRegistryImpl {
 		Objects.requireNonNull(unwaxed, "Unwaxed block cannot be null!");
 		Objects.requireNonNull(waxed, "Waxed block cannot be null!");
 		HoneycombItem.UNWAXED_TO_WAXED_BLOCKS.get().put(unwaxed, waxed);
+	}
+
+	public static void registerCopperBlockSet(CopperBlockSet blockSet) {
+		Objects.requireNonNull(blockSet, "blockSet cannot be null!");
+		blockSet.getOxidizingMap().forEach(OxidizableBlocksRegistryImpl::registerOxidizableBlockPair);
+		blockSet.getWaxingMap().forEach(OxidizableBlocksRegistryImpl::registerWaxableBlockPair);
 	}
 
 	private static void refreshRandomTickCache(Block block) {
