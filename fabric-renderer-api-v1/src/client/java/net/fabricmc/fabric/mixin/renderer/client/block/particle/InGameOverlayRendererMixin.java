@@ -41,7 +41,7 @@ abstract class InGameOverlayRendererMixin {
 	@Redirect(method = "renderOverlays", at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/BlockModels.getModelParticleSprite(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/texture/Sprite;"))
 	private static Sprite getModelParticleSpriteProxy(BlockModels models, BlockState state, @Local PlayerEntity playerEntity) {
 		if (pos != null) {
-			Sprite sprite = models.getModelParticleSprite(state, playerEntity.getWorld(), pos);
+			Sprite sprite = models.getModelParticleSprite(state, playerEntity.world(), pos);
 			pos = null;
 			return sprite;
 		}

@@ -109,7 +109,7 @@ abstract class LivingEntityMixin {
 	@Dynamic("method_18405: Synthetic lambda body for Optional.map in isSleepingInBed")
 	@Inject(method = "method_18405", at = @At("RETURN"), cancellable = true)
 	private void onIsSleepingInBed(BlockPos sleepingPos, CallbackInfoReturnable<Boolean> info) {
-		BlockState bedState = ((LivingEntity) (Object) this).getWorld().getBlockState(sleepingPos);
+		BlockState bedState = ((LivingEntity) (Object) this).world().getBlockState(sleepingPos);
 		ActionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, bedState, info.getReturnValueZ());
 
 		if (result != ActionResult.PASS) {

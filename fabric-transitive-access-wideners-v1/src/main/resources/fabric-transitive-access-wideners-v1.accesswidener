@@ -206,9 +206,12 @@ transitive-accessible method net/minecraft/block/LoomBlock <init> (Lnet/minecraf
 transitive-accessible method net/minecraft/block/MangroveRootsBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/NetherWartBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/NyliumBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/OxidizableChainBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/OxidizableDoorBlock <init> (Lnet/minecraft/block/BlockSetType;Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/OxidizableGrateBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/OxidizableLanternBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/OxidizableLightningRodBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/OxidizablePaneBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/OxidizableTrapdoorBlock <init> (Lnet/minecraft/block/BlockSetType;Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/PaneBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/PlayerSkullBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V

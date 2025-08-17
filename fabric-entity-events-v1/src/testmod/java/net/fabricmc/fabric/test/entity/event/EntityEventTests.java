@@ -87,7 +87,7 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getWorld().getRegistryKey().getValue(), newPlayer.getWorld().getRegistryKey().getValue());
+			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.world().getRegistryKey().getValue(), newPlayer.world().getRegistryKey().getValue());
 		});
 
 		// No fall damage if holding a feather in the main hand
@@ -144,7 +144,7 @@ public final class EntityEventTests implements ModInitializer {
 
 		EntitySleepEvents.START_SLEEPING.register((entity, sleepingPos) -> {
 			LOGGER.info("Entity {} sleeping at {}", entity, sleepingPos);
-			BlockState bedState = entity.getWorld().getBlockState(sleepingPos);
+			BlockState bedState = entity.world().getBlockState(sleepingPos);
 
 			if (bedState.isOf(TEST_BED)) {
 				boolean shouldBeOccupied = !entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.ORANGE_WOOL);
@@ -164,12 +164,12 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.register((entity, sleepingPos, sleepingDirection) -> {
-			return entity.getWorld().getBlockState(sleepingPos).isOf(TEST_BED) ? Direction.NORTH : sleepingDirection;
+			return entity.world().getBlockState(sleepingPos).isOf(TEST_BED) ? Direction.NORTH : sleepingDirection;
 		});
 
 		EntitySleepEvents.ALLOW_SLEEP_TIME.register((player, sleepingPos, vanillaResult) -> {
 			// Yellow wool allows to sleep during the day
-			if (player.getWorld().isDay() && player.getStackInHand(Hand.MAIN_HAND).isOf(Items.YELLOW_WOOL)) {
+			if (player.world().isDay() && player.getStackInHand(Hand.MAIN_HAND).isOf(Items.YELLOW_WOOL)) {
 				return ActionResult.SUCCESS;
 			}
 

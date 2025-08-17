@@ -255,7 +255,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		valueLookupBuilder(ConventionalBlockTags.ROPES); // Generate tag so others can see it exists through JSON.
 
 		valueLookupBuilder(ConventionalBlockTags.CHAINS)
-				.add(Blocks.CHAIN);
+				.add(Blocks.IRON_CHAIN)
+				.add(Blocks.COPPER_CHAINS.getAll());
 
 		valueLookupBuilder(ConventionalBlockTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
 	}

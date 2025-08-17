@@ -24,7 +24,7 @@ import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EntityPos;
+import net.minecraft.util.HeldItemContext;
 
 /**
  * A simple implementation of {@link ItemModel} that delegates all method calls to the {@link #wrapped} field.
@@ -41,7 +41,7 @@ public abstract class WrapperBakedItemModel implements ItemModel {
 	}
 
 	@Override
-	public void update(ItemRenderState state, ItemStack stack, ItemModelManager resolver, ItemDisplayContext displayContext, @Nullable ClientWorld world, @Nullable EntityPos user, int seed) {
-		wrapped.update(state, stack, resolver, displayContext, world, user, seed);
+	public void update(ItemRenderState state, ItemStack stack, ItemModelManager resolver, ItemDisplayContext displayContext, @Nullable ClientWorld world, @Nullable HeldItemContext heldItemContext, int seed) {
+		wrapped.update(state, stack, resolver, displayContext, world, heldItemContext, seed);
 	}
 }

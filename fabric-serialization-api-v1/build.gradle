@@ -1,0 +1,1 @@
+version = getSubprojectVersion(project)

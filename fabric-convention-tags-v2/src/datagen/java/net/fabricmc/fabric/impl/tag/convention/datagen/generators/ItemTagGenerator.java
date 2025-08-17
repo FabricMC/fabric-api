@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.data.tag.ProvidedTagBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKeys;
@@ -898,8 +900,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		valueLookupBuilder(ConventionalItemTags.ROPES); // Generate tag so others can see it exists through JSON.
 
-		valueLookupBuilder(ConventionalItemTags.CHAINS)
-				.add(Items.CHAIN);
+		ProvidedTagBuilder<Item, Item> chains = valueLookupBuilder(ConventionalItemTags.CHAINS)
+				.add(Items.IRON_CHAIN);
+		Items.COPPER_CHAINS.forEach(chains::add);
 
 		valueLookupBuilder(ConventionalItemTags.ENDER_PEARLS)
 				.add(Items.ENDER_PEARL);
