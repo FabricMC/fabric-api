@@ -3,3 +3,39 @@ version = getSubprojectVersion(project)
 testDependencies(project, [
 	':fabric-command-api-v2'
 ])
+
+sourceSets {
+	buildTools
+	test {
+		compileClasspath += sourceSets.buildTools.output
+		runtimeClasspath += sourceSets.buildTools.output
+	}
+}
+
+configurations {
+	buildToolsRuntimeClasspath {
+		extendsFrom configurations.mappingsFinal
+	}
+	testImplementation {
+		extendsFrom configurations.buildToolsImplementation
+	}
+}
+
+dependencies {
+	buildToolsImplementation 'net.fabricmc:mapping-io:0.7.1'
+}
+
+tasks.register('mappingsPreparation', JavaExec) {
+	def out = layout.buildDirectory.file("mappings.bin")
+
+	mainClass = 'net.fabricmc.fabric.impl.crash.build.MappingsPreparation'
+	outputs.file(out)
+	classpath = sourceSets.buildTools.runtimeClasspath
+	args(out.get().asFile.absolutePath)
+}
+
+jar {
+	from(tasks.mappingsPreparation.outputs) {
+		into 'data/fabric-crash-report-info-v1'
+	}
+}

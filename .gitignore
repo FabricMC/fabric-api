@@ -45,3 +45,4 @@ $RECYCLE.BIN/
 .DS_Store
 
 !/buildSrc/src/**
+!/fabric-crash-report-info-v1/src/buildTools/**

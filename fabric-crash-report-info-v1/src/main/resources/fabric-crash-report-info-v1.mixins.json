@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.crash.report.info",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "CrashReportMixin",
     "DedicatedServerWatchdogMixin",
     "SystemDetailsMixin"
   ],
