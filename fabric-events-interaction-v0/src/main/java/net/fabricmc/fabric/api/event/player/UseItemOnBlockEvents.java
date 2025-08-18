@@ -1,0 +1,101 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.api.event.player;
+
+import net.minecraft.block.AbstractBlock.AbstractBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+
+/**
+ * Contains events triggered when using an item on a block. Fires both on client and server side.
+ */
+public final class UseItemOnBlockEvents {
+	/**
+	 * Called when {@link AbstractBlockState#onUseWithItem} is triggered.
+	 *
+	 * <p>Any other return value than {@link ActionResult#PASS_TO_DEFAULT_BLOCK_ACTION} cancels any further processing and default block interaction.
+	 */
+	public static final Event<Block> BLOCK = EventFactory.createArrayBacked(Block.class,
+			listeners -> ((stack, state, world, pos, player, hand, hit) -> {
+				for (Block event : listeners) {
+					ActionResult result = event.onUseWithItem(stack, state, world, pos, player, hand, hit);
+
+					if (result != ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION) {
+						return result;
+					}
+				}
+
+				return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
+			}));
+
+	/**
+	 * Called when {@link net.minecraft.item.Item#useOnBlock} is triggered.
+	 *
+	 * <p>Any other return value than {@link ActionResult#PASS} cancels any further processing and default block interaction (e.g., placing of blocks in {@link BlockItem#useOnBlock}).
+	 */
+	public static final Event<Item> ITEM = EventFactory.createArrayBacked(Item.class,
+			listeners -> (context -> {
+				for (Item event : listeners) {
+					ActionResult result = event.useItemOnBlock(context);
+
+					if (result != ActionResult.PASS) {
+						return result;
+					}
+				}
+
+				return ActionResult.PASS;
+			}));
+
+	@FunctionalInterface
+	public interface Block {
+		/**
+		 * Called on both client and server side when interacting with a block via an item.
+		 *
+		 * @param stack the item stack in the player's interacting hand
+		 * @param state the block state of the block <b>before</b> interacting
+		 * @param world the {@link World} in which the interaction has happened
+		 * @param pos the position of the block that's been interacted with
+		 * @param player the player which interacted with the block
+		 * @param hand the player's hand
+		 * @param hit the BlockHitResult with all the information about hitting the block
+		 * @return {@link ActionResult#PASS_TO_DEFAULT_BLOCK_ACTION} to further process other actions, any other value cancels other actions
+		 */
+		ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit);
+	}
+
+	@FunctionalInterface
+	public interface Item {
+		/**
+		 * Called on both client and server side when right-clicking ("using") an item on a block.
+		 *
+		 * @param context the context used to implement custom logic
+		 * @return {@link ActionResult#PASS} to further process other actions, any other value cancels  other actions
+		 */
+		ActionResult useItemOnBlock(ItemUsageContext context);
+	}
+}

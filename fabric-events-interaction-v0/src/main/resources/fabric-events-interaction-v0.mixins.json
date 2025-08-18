@@ -3,6 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.event.interaction",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractBlockAbstractBlockStateMixin",
+    "ItemStackMixin",
     "PlayerAdvancementTrackerMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",

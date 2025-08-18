@@ -15,7 +15,8 @@
       "net.fabricmc.fabric.test.event.interaction.PlayerPickItemTests",
       "net.fabricmc.fabric.test.event.interaction.UseBlockTests",
       "net.fabricmc.fabric.test.event.interaction.UseEntityTests",
-      "net.fabricmc.fabric.test.event.interaction.UseItemTests"
+      "net.fabricmc.fabric.test.event.interaction.UseItemTests",
+      "net.fabricmc.fabric.test.event.interaction.UseItemOnBlockTests"
     ],
     "fabric-gametest": [
       "net.fabricmc.fabric.test.event.interaction.FakePlayerTests"
