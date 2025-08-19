@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import net.minecraft.class_11785;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -55,10 +56,11 @@ public class ArmorRenderingTests implements ClientModInitializer {
 				armorModel.rightArm.visible = slot == EquipmentSlot.CHEST;
 				armorModel.head.visible = slot == EquipmentSlot.HEAD;
 
-				entityRenderQueue.pushModel(armorModel, renderState, matrices, RenderLayer.getArmorCutoutNoCull(texture), light, OverlayTexture.DEFAULT_UV, 0xFFFFFFFF, null, 0, 0);
+				class_11785 class11785 = entityRenderQueue.method_73529(0);
+				class11785.method_73490(armorModel, renderState, matrices, RenderLayer.getArmorCutoutNoCull(texture), light, OverlayTexture.DEFAULT_UV, 0xFFFFFFFF, null, 0, null);
 
 				if (stack.hasGlint()) {
-					entityRenderQueue.pushModel(armorModel, renderState, matrices, RenderLayer.getArmorEntityGlint(), light, OverlayTexture.DEFAULT_UV, 0xFFFFFFFF, null, 0, 0);
+					class11785.method_73490(armorModel, renderState, matrices, RenderLayer.getArmorEntityGlint(), light, OverlayTexture.DEFAULT_UV, 0xFFFFFFFF, null, 0, null);
 				}
 			}
 

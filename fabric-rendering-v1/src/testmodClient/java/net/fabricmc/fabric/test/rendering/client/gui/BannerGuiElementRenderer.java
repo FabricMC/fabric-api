@@ -42,7 +42,7 @@ public class BannerGuiElementRenderer extends SpecialGuiElementRenderer<BannerGu
 	@Override
 	protected void render(BannerGuiElementRenderState state, MatrixStack matrices) {
 		client.gameRenderer.getDiffuseLighting().setShaderLights(DiffuseLighting.Type.ITEMS_FLAT);
-		BannerBlockEntityRenderer.renderCanvas(client.getAtlasManager(), matrices, vertexConsumers, 15728880, OverlayTexture.DEFAULT_UV, MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.STANDING_BANNER_FLAG).getChild("flag"), ModelBaker.BANNER_BASE, true, state.color(), BannerPatternsComponent.DEFAULT);
+		BannerBlockEntityRenderer.renderCanvas(client.getAtlasManager(), matrices, client.gameRenderer.getEntityRenderCommandQueue(), 15728880, OverlayTexture.DEFAULT_UV, MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.STANDING_BANNER_FLAG).getChild("flag"), ModelBaker.BANNER_BASE, true, state.color(), BannerPatternsComponent.DEFAULT);
 	}
 
 	@Override

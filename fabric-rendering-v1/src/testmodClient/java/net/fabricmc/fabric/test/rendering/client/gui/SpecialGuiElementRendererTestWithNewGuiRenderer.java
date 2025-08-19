@@ -55,7 +55,7 @@ public class SpecialGuiElementRendererTestWithNewGuiRenderer implements ClientMo
 			ProjectionType orgProjectionType = RenderSystem.getProjectionType();
 			GpuBufferSlice orgShaderFog = RenderSystem.getShaderFog();
 
-			GuiRenderer guiRenderer = new GuiRenderer(newGuiRenderState, mc.getBufferBuilders().getEntityVertexConsumers(), Collections.emptyList());
+			GuiRenderer guiRenderer = new GuiRenderer(newGuiRenderState, mc.getBufferBuilders().getEntityVertexConsumers(), mc.gameRenderer.getEntityRenderCommandQueue(), mc.gameRenderer.getEntityRenderDispatcher(), Collections.emptyList());
 			FogRenderer fogRenderer = new FogRenderer();
 			guiRenderer.render(fogRenderer.getFogBuffer(FogRenderer.FogType.NONE));
 			fogRenderer.close();

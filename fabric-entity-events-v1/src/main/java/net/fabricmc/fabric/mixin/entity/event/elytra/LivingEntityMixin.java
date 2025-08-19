@@ -47,7 +47,7 @@ abstract class LivingEntityMixin extends Entity {
 
 		if (!EntityElytraEvents.ALLOW.invoker().allowElytraFlight(self)) {
 			// The entity is already fall flying by now, we just need to stop it.
-			if (!world().isClient()) {
+			if (!getEntityWorld().isClient()) {
 				setFlag(Entity.GLIDING_FLAG_INDEX, false);
 			}
 

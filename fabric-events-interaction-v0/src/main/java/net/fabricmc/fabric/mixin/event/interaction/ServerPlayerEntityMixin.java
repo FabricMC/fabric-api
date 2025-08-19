@@ -36,7 +36,7 @@ public class ServerPlayerEntityMixin {
 	@Inject(method = "attack", at = @At("HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(Entity target, CallbackInfo info) {
 		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
-		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.world(), Hand.MAIN_HAND, target, null);
+		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), Hand.MAIN_HAND, target, null);
 
 		if (result != ActionResult.PASS) {
 			info.cancel();

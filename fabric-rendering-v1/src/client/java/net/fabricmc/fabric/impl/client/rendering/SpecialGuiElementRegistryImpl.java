@@ -84,7 +84,7 @@ public final class SpecialGuiElementRegistryImpl {
 
 	private static void registerVanillaFactories() {
 		// Vanilla creates its special element renderers in the GameRenderer constructor
-		REGISTERED_FACTORIES.put(EntityGuiElementRenderState.class, context -> new EntityGuiElementRenderer(context.vertexConsumers(), context.client().getEntityRenderDispatcher(), context.entityRenderDispatcher()));
+		REGISTERED_FACTORIES.put(EntityGuiElementRenderState.class, context -> new EntityGuiElementRenderer(context.vertexConsumers(), context.client().getEntityRenderDispatcher()));
 		REGISTERED_FACTORIES.put(PlayerSkinGuiElementRenderState.class, context -> new PlayerSkinGuiElementRenderer(context.vertexConsumers()));
 		REGISTERED_FACTORIES.put(BookModelGuiElementRenderState.class, context -> new BookModelGuiElementRenderer(context.vertexConsumers()));
 		REGISTERED_FACTORIES.put(BannerResultGuiElementRenderState.class, context -> new BannerResultGuiElementRenderer(context.vertexConsumers(), context.client().getAtlasManager()));

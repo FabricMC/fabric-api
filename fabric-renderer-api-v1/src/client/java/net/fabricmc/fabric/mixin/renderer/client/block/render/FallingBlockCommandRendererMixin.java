@@ -27,12 +27,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.class_11788;
+import net.minecraft.class_11791;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.entity.command.BatchingEntityRenderCommandQueue;
 import net.minecraft.client.render.entity.command.FallingBlockCommandRenderer;
-import net.minecraft.client.render.entity.state.FallingBlockEntityRenderState;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 
@@ -46,16 +47,16 @@ abstract class FallingBlockCommandRendererMixin {
 
 	// Support multi-render layer models (FallingBlockCommand).
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "java/util/Iterator.hasNext()Z", remap = false, ordinal = 0))
-	private void beforeRenderFallingBlocks(BatchingEntityRenderCommandQueue commandQueueImpl, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, CallbackInfo ci, @Local Iterator<BatchingEntityRenderCommandQueue.FallingBlockCommand> iterator) {
+	private void beforeRenderFallingBlocks(class_11788 queue, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, CallbackInfo ci, @Local Iterator<BatchingEntityRenderCommandQueue.class_11790> iterator) {
 		while (iterator.hasNext()) {
-			BatchingEntityRenderCommandQueue.FallingBlockCommand fallingBlockCommand = iterator.next();
-			FallingBlockEntityRenderState renderState = fallingBlockCommand.renderState();
-			BlockState blockState = renderState.blockState;
+			BatchingEntityRenderCommandQueue.class_11790 fallingBlockCommand = iterator.next();
+			class_11791 renderState = fallingBlockCommand.movingBlockRenderState();
+			BlockState blockState = renderState.field_62247;
 			BlockStateModel model = blockRenderManager.getModel(blockState);
-			long seed = blockState.getRenderingSeed(renderState.fallingBlockPos);
+			long seed = blockState.getRenderingSeed(renderState.field_62245);
 			matrices.push();
 			matrices.multiplyPositionMatrix(fallingBlockCommand.pose());
-			blockRenderManager.getModelRenderer().render(renderState, model, blockState, renderState.currentPos, matrices, RenderLayerHelper.movingDelegate(vertexConsumers), false, seed, OverlayTexture.DEFAULT_UV);
+			blockRenderManager.getModelRenderer().render(renderState, model, blockState, renderState.field_62246, matrices, RenderLayerHelper.movingDelegate(vertexConsumers), false, seed, OverlayTexture.DEFAULT_UV);
 			matrices.pop();
 		}
 	}

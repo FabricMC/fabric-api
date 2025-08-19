@@ -50,7 +50,7 @@ public class BakedModelFeatureRenderer<S extends LivingEntityRenderState, M exte
 		matrices.translate(-0.5F, 0.75F + aboveHead, -0.5F);
 		// FIXME 1.21.9
 		// FabricBlockModelRenderer.render(matrices.peek(), RenderLayerHelper.entityDelegate(vertexConsumers), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, Blocks.AIR.getDefaultState());
-		commandQueue.pushBlockStateModel(matrices, TexturedRenderLayers.getEntityCutout(), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV);
+		commandQueue.method_73529(0).method_73484(matrices, TexturedRenderLayers.getEntityCutout(), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV, 0);
 		matrices.pop();
 	}
 }

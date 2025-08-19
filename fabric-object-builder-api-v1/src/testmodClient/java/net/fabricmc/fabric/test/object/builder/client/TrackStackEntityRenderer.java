@@ -50,7 +50,7 @@ public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity
 		matrices.translate(0, -2, 0);
 
 		for (Text line : labelLines) {
-			entityRenderCommandQueue.pushLabel(matrices, renderState.nameLabelPos, line, !renderState.sneaking, renderState.light, renderState.squaredDistanceToCamera);
+			entityRenderCommandQueue.method_73529(0).method_73482(matrices, renderState.nameLabelPos, line, !renderState.sneaking, renderState.light, renderState.squaredDistanceToCamera);
 			matrices.translate(0, 0.25875f, 0);
 		}
 

@@ -42,7 +42,7 @@ public class UseItemTests implements ModInitializer {
 			if (!player.isSpectator()) {
 				if (player.getStackInHand(hand).isOf(Items.BLAZE_ROD)) {
 					if (!world.isClient()) {
-						player.world().spawnEntity(new FireballEntity(player.world(), player, new Vec3d(0, 0, 0), 0));
+						player.getEntityWorld().spawnEntity(new FireballEntity(player.getEntityWorld(), player, new Vec3d(0, 0, 0), 0));
 					}
 
 					return ActionResult.SUCCESS;

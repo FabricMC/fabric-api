@@ -99,7 +99,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
 		if (player.isSpectator()) return; // vanilla spectator check happens later, repeat it before the event to avoid false invocations
 
-		ActionResult result = UseBlockCallback.EVENT.invoker().interact(player, player.world(), hand, blockHitResult);
+		ActionResult result = UseBlockCallback.EVENT.invoker().interact(player, player.getEntityWorld(), hand, blockHitResult);
 
 		if (result != ActionResult.PASS) {
 			if (result.isAccepted()) {
@@ -115,12 +115,12 @@ public abstract class ClientPlayerInteractionManagerMixin {
 	public void interactItem(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
 		// hook interactBlock between the spectator check and sending the first packet to invoke the use item event first
 		// this needs to be in interactBlock to avoid sending a packet in line with the event javadoc
-		ActionResult result = UseItemCallback.EVENT.invoker().interact(player, player.world(), hand);
+		ActionResult result = UseItemCallback.EVENT.invoker().interact(player, player.getEntityWorld(), hand);
 
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
 				// send interaction packet to the server with a new sequentially assigned id
-				sendSequencedPacket((ClientWorld) player.world(), id -> new PlayerInteractItemC2SPacket(hand, id, player.getYaw(), player.getPitch()));
+				sendSequencedPacket((ClientWorld) player.getEntityWorld(), id -> new PlayerInteractItemC2SPacket(hand, id, player.getYaw(), player.getPitch()));
 			}
 
 			info.setReturnValue(result);
@@ -129,7 +129,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V", ordinal = 0), method = "attackEntity", cancellable = true)
 	public void attackEntity(PlayerEntity player, Entity entity, CallbackInfo info) {
-		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.world(), Hand.MAIN_HAND /* TODO */, entity, null);
+		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), Hand.MAIN_HAND /* TODO */, entity, null);
 
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {

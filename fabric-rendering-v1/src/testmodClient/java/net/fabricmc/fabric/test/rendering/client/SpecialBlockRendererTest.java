@@ -23,8 +23,8 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.entity.command.EntityRenderCommandQueue;
 import net.minecraft.client.render.entity.model.AllayEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
@@ -53,15 +53,15 @@ public class SpecialBlockRendererTest implements ClientModInitializer {
 
 				return new SpecialModelRenderer<>() {
 					@Override
-					public void render(@Nullable Object data, ItemDisplayContext displayContext, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean glint) {
+					public void render(@Nullable Object data, ItemDisplayContext displayContext, MatrixStack matrices, EntityRenderCommandQueue entityRenderCommandQueue, int light, int overlay, boolean glint) {
 						matrices.push();
 						matrices.translate(0.5f, 0.0f, 0.5f);
 						matrices.translate(0, 1.46875f, 0);
 						matrices.scale(1, -1, 1);
 						matrices.multiply(RotationAxis.POSITIVE_Y.rotation((float) (Util.getMeasuringTimeMs() * 0.001)));
 						matrices.translate(0, -1.46875f, 0);
-						VertexConsumer vertexConsumer = vertexConsumers.getBuffer(allayModel.getLayer(ALLAY_TEXTURE));
-						allayModel.render(matrices, vertexConsumer, light, overlay);
+						entityRenderCommandQueue.method_73529(0)
+								.method_73483(matrices, RenderLayer.getSolid(), (matricesEntry, vertexConsumer) -> allayModel.render(matrices, vertexConsumer, light, overlay));
 						matrices.pop();
 					}
 

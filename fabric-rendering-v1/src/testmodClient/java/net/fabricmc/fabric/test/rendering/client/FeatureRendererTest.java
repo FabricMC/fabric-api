@@ -79,7 +79,7 @@ public final class FeatureRendererTest implements ClientModInitializer {
 			// Translate to center above the player's head
 			matrices.translate(-0.5F, -state.height + 0.25F, -0.5F);
 			// Render a diamond block above the player's head
-			commandQueue.pushBlock(matrices, Blocks.DIAMOND_BLOCK.getDefaultState(), light, OverlayTexture.DEFAULT_UV);
+			commandQueue.method_73529(0).method_73481(matrices, Blocks.DIAMOND_BLOCK.getDefaultState(), light, OverlayTexture.DEFAULT_UV, 0);
 
 			matrices.pop();
 		}
