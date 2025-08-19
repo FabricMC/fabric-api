@@ -38,6 +38,7 @@ import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
 import net.minecraft.client.gui.render.state.GuiRenderState;
 import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.command.EntityRenderCommandQueue;
 import net.minecraft.client.render.entity.command.EntityRenderDispatcher;
 
 import net.fabricmc.fabric.impl.client.rendering.GuiRendererExtensions;
@@ -62,7 +63,7 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 	private EntityRenderDispatcher entityRenderDispatcher = null;
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
-	private void mutableSpecialElementRenderers(GuiRenderState state, VertexConsumerProvider.Immediate vertexConsumers, List<SpecialGuiElementRenderer<?>> specialElementRenderers, CallbackInfo ci) {
+	private void mutableSpecialElementRenderers(GuiRenderState state, VertexConsumerProvider.Immediate vertexConsumers, EntityRenderCommandQueue entityRenderCommandQueue, EntityRenderDispatcher entityRenderDispatcher, List list, CallbackInfo ci) {
 		this.specialElementRenderers = new IdentityHashMap<>(this.specialElementRenderers);
 	}
 

@@ -29,6 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.block.BlockState;
 import net.minecraft.class_11788;
 import net.minecraft.class_11791;
+import net.minecraft.client.render.OutlineVertexConsumerProvider;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
@@ -47,7 +48,7 @@ abstract class FallingBlockCommandRendererMixin {
 
 	// Support multi-render layer models (FallingBlockCommand).
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "java/util/Iterator.hasNext()Z", remap = false, ordinal = 0))
-	private void beforeRenderFallingBlocks(class_11788 queue, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, CallbackInfo ci, @Local Iterator<BatchingEntityRenderCommandQueue.class_11790> iterator) {
+	private void beforeRenderFallingBlocks(class_11788 queue, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, OutlineVertexConsumerProvider outlineVertexConsumerProvider, CallbackInfo ci, @Local Iterator<BatchingEntityRenderCommandQueue.class_11790> iterator) {
 		while (iterator.hasNext()) {
 			BatchingEntityRenderCommandQueue.class_11790 fallingBlockCommand = iterator.next();
 			class_11791 renderState = fallingBlockCommand.movingBlockRenderState();
