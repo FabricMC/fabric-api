@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.event.player;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.AbstractBlock.AbstractBlockState;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,43 +36,35 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Contains events triggered when using an item on a block. Fires both on client and server side.
  *
- * <p><i>This implementation is heavily inspired by NeoForge's <a href="https://github.com/neoforged/NeoForge/blob/1.21.x/src/main/java/net/neoforged/neoforge/event/entity/player/UseItemOnBlockEvent.java">UseItemOnBlockEvent</a>.
+ * <p><i>This implementation is heavily inspired by NeoForge's <a href="https://github.com/neoforged/NeoForge/blob/1.21.x/src/main/java/net/neoforged/neoforge/event/entity/player/UseItemOnBlockEvent.java">UseItemOnBlockEvent</a></i>.
  */
 public final class UseItemOnBlockEvents {
 	/**
 	 * Called when {@link AbstractBlockState#onUseWithItem} is triggered.
 	 *
-	 * <p>Any other return value than {@link ActionResult#PASS_TO_DEFAULT_BLOCK_ACTION} cancels any further processing and default block interaction.
+	 * <p>Any other return value than {@code null} cancels any further processing and default block interaction.
 	 */
 	public static final Event<Block> BLOCK = EventFactory.createArrayBacked(Block.class,
 			listeners -> ((stack, state, world, pos, player, hand, hit) -> {
 				for (Block event : listeners) {
-					ActionResult result = event.onUseWithItem(stack, state, world, pos, player, hand, hit);
-
-					if (result != ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION) {
-						return result;
-					}
+					return event.onUseWithItem(stack, state, world, pos, player, hand, hit);
 				}
 
-				return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
+				return null;
 			}));
 
 	/**
-	 * Called when {@link net.minecraft.item.Item#useOnBlock} is triggered.
+	 * Called when {@link net.minecraft.item.Item#useOnBlock Item.useOnBlock} is triggered.
 	 *
-	 * <p>Any other return value than {@link ActionResult#PASS} cancels any further processing and default block interaction (e.g., placing of blocks in {@link BlockItem#useOnBlock}).
+	 * <p>Any other return value than {@code null} cancels any further processing and default block interaction (e.g., placing of blocks in {@link BlockItem#useOnBlock}).
 	 */
 	public static final Event<Item> ITEM = EventFactory.createArrayBacked(Item.class,
-			listeners -> (context -> {
+			listeners -> ((stack, context) -> {
 				for (Item event : listeners) {
-					ActionResult result = event.useItemOnBlock(context);
-
-					if (result != ActionResult.PASS) {
-						return result;
-					}
+					return event.useItemOnBlock(stack, context);
 				}
 
-				return ActionResult.PASS;
+				return null;
 			}));
 
 	@FunctionalInterface
@@ -85,9 +79,9 @@ public final class UseItemOnBlockEvents {
 		 * @param player the player which interacted with the block
 		 * @param hand the player's hand
 		 * @param hit the BlockHitResult with all the information about hitting the block
-		 * @return {@link ActionResult#PASS_TO_DEFAULT_BLOCK_ACTION} to further process other actions, any other value cancels other actions
+		 * @return {@code null} to further process other actions, any other value cancels other actions
 		 */
-		ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit);
+		@Nullable ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit);
 	}
 
 	@FunctionalInterface
@@ -95,9 +89,10 @@ public final class UseItemOnBlockEvents {
 		/**
 		 * Called on both client and server side when right-clicking ("using") an item on a block.
 		 *
+		 * @param stack the stack containing the used item
 		 * @param context the context used to implement custom logic
-		 * @return {@link ActionResult#PASS} to further process other actions, any other value cancels  other actions
+		 * @return {@code null} to further process other actions, any other value cancels other actions
 		 */
-		ActionResult useItemOnBlock(ItemUsageContext context);
+		@Nullable ActionResult useItemOnBlock(ItemStack stack, ItemUsageContext context);
 	}
 }

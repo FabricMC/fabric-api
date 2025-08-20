@@ -42,7 +42,7 @@ public abstract class AbstractBlockAbstractBlockStateMixin {
 	private void fabric_onUseWithItem(ItemStack stack, World world, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
 		ActionResult result = UseItemOnBlockEvents.BLOCK.invoker().onUseWithItem(stack, this.asBlockState(), world, hit.getBlockPos(), player, hand, hit);
 
-		if (result != ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION) {
+		if (result != null) {
 			cir.setReturnValue(result);
 		}
 	}

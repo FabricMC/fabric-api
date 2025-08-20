@@ -44,7 +44,7 @@ public class UseItemOnBlockTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		UseItemOnBlockEvents.ITEM.register(context -> {
+		UseItemOnBlockEvents.ITEM.register((stack, context) -> {
 			LOGGER.info("Invoked an UseItemOnBlock Event - item side");
 
 			if (context.getStack().isOf(Items.MOSS_BLOCK)) {
@@ -62,7 +62,7 @@ public class UseItemOnBlockTests implements ModInitializer {
 				}
 			}
 
-			return ActionResult.PASS;
+			return null;
 		});
 
 		UseItemOnBlockEvents.BLOCK.register((stack, state, world, pos, player, hand, hit) -> {
@@ -75,7 +75,7 @@ public class UseItemOnBlockTests implements ModInitializer {
 				return ActionResult.SUCCESS;
 			}
 
-			return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
+			return null;
 		});
 	}
 }

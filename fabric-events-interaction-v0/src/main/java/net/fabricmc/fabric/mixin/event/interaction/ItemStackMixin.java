@@ -32,9 +32,9 @@ import net.fabricmc.fabric.api.event.player.UseItemOnBlockEvents;
 public class ItemStackMixin {
 	@WrapOperation(method = "useOnBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;useOnBlock(Lnet/minecraft/item/ItemUsageContext;)Lnet/minecraft/util/ActionResult;"))
 	private ActionResult fabric_useOnBlock(Item instance, ItemUsageContext context, Operation<ActionResult> original) {
-		ActionResult result = UseItemOnBlockEvents.ITEM.invoker().useItemOnBlock(context);
+		ActionResult result = UseItemOnBlockEvents.ITEM.invoker().useItemOnBlock((ItemStack) (Object) this, context);
 
-		if (result != ActionResult.PASS) {
+		if (result != null) {
 			return result;
 		}
 
