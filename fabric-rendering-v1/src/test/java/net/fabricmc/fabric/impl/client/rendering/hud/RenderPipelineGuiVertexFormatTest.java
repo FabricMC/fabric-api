@@ -1,0 +1,113 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.impl.client.rendering.hud;
+
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
+
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
+
+public class RenderPipelineGuiVertexFormatTest {
+	private static final AtomicLong INDEX = new AtomicLong(0);
+
+	@Test
+	void testBuilderTransfersToSnippet() {
+		RenderPipeline.Builder builder = RenderPipeline.builder();
+		builder.withUsePipelineDrawModeForGui(true);
+		RenderPipeline.Snippet snippet = builder.buildSnippet();
+		Assertions.assertEquals(Optional.of(true), snippet.usePipelineDrawModeForGui());
+		builder.withUsePipelineDrawModeForGui(false);
+		snippet = builder.buildSnippet();
+		Assertions.assertEquals(Optional.of(false), snippet.usePipelineDrawModeForGui());
+		builder.withoutUsePipelineDrawModeForGui();
+		snippet = builder.buildSnippet();
+		Assertions.assertEquals(Optional.empty(), snippet.usePipelineDrawModeForGui());
+	}
+
+	@Test
+	void testSnippetTransfersToPipeline() {
+		RenderPipeline.Snippet snippet = FabricRenderPipeline.Snippet.withPipelineDrawModeForGui(createEmptySnippet(), true);
+		RenderPipeline pipeline = RenderPipeline.builder(
+						RenderPipelines.POSITION_COLOR_SNIPPET,
+						RenderPipelines.TRANSFORMS_AND_PROJECTION_SNIPPET,
+						snippet
+				)
+				.withLocation(Identifier.of("test", "pipeline_454b"))
+				.build();
+		Assertions.assertTrue(pipeline.usePipelineDrawModeForGui());
+
+		snippet = FabricRenderPipeline.Snippet.withPipelineDrawModeForGui(createEmptySnippet(), false);
+
+		pipeline = RenderPipeline.builder(
+						RenderPipelines.POSITION_COLOR_SNIPPET,
+						RenderPipelines.TRANSFORMS_AND_PROJECTION_SNIPPET,
+						snippet
+				)
+				.withLocation(Identifier.of("test", "pipeline_454cc"))
+				.build();
+		Assertions.assertFalse(pipeline.usePipelineDrawModeForGui());
+		// now the default should apply if no snippet sets the value, and the value isn't set on the builder
+		snippet = FabricRenderPipeline.Snippet.withoutPipelineDrawModeForGui(createEmptySnippet());
+
+		pipeline = RenderPipeline.builder(
+						RenderPipelines.POSITION_COLOR_SNIPPET,
+						RenderPipelines.TRANSFORMS_AND_PROJECTION_SNIPPET,
+						snippet
+				)
+				.withLocation(Identifier.of("test", "pipeline_4547q"))
+				.build();
+		Assertions.assertFalse(pipeline.usePipelineDrawModeForGui());
+	}
+
+	@Test
+	void testBuilderTransfersToPipeline() {
+		RenderPipeline.Builder builder = RenderPipeline.builder(
+						RenderPipelines.POSITION_COLOR_SNIPPET,
+						RenderPipelines.TRANSFORMS_AND_PROJECTION_SNIPPET
+				)
+				.withUsePipelineDrawModeForGui(true)
+				.withLocation(Identifier.of("test", "pipeline_454gg"));
+		RenderPipeline pipeline = builder.build();
+		Assertions.assertTrue(pipeline.usePipelineDrawModeForGui());
+
+		builder.withUsePipelineDrawModeForGui(false)
+				.withLocation(Identifier.of("test", "pipeline_454ff"));
+		pipeline = builder.build();
+		Assertions.assertFalse(pipeline.usePipelineDrawModeForGui());
+
+		builder.withoutUsePipelineDrawModeForGui()
+				.withLocation(Identifier.of("test", "pipeline_454jj"));
+		pipeline = builder.build();
+		Assertions.assertFalse(pipeline.usePipelineDrawModeForGui());
+	}
+
+	private static RenderPipeline.Snippet createEmptySnippet() {
+		return new RenderPipeline.Snippet(
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+				Optional.empty(), Optional.empty(), Optional.empty()
+		);
+	}
+}

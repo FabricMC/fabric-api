@@ -30,6 +30,17 @@
     "fabric-rendering-v1.mixins.json"
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "com/mojang/blaze3d/pipeline/RenderPipeline": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline"
+      ],
+      "com/mojang/blaze3d/pipeline/RenderPipeline\u0024Snippet": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline\u0024Snippet"
+      ],
+      "com/mojang/blaze3d/pipeline/RenderPipeline\u0024Builder": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline\u0024Builder"
+      ]
+    }
   }
 }
