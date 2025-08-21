@@ -102,6 +102,25 @@ public class RenderPipelineGuiVertexFormatTest {
 		Assertions.assertFalse(pipeline.usePipelineDrawModeForGui());
 	}
 
+	@Test
+	void testSnippetRecordMethods() {
+		FabricRenderPipeline.Snippet snippet = RenderPipeline.builder()
+				.withUsePipelineDrawModeForGui(true)
+				.buildSnippet();
+		String expectedToString = "Snippet[vertexShader=Optional.empty, fragmentShader=Optional.empty, shaderDefines=Optional.empty, samplers=Optional.empty, uniforms=Optional.empty, blendFunction=Optional.empty, depthTestFunction=Optional.empty, polygonMode=Optional.empty, cull=Optional.empty, writeColor=Optional.empty, writeAlpha=Optional.empty, writeDepth=Optional.empty, colorLogic=Optional.empty, vertexFormat=Optional.empty, vertexFormatMode=Optional.empty, usePipelineDrawModeForGui=Optional[true]]";
+		Assertions.assertEquals(expectedToString, snippet.toString());
+		FabricRenderPipeline.Snippet snippet2 = RenderPipeline.builder()
+				.withUsePipelineDrawModeForGui(true)
+				.buildSnippet();
+		Assertions.assertEquals(snippet, snippet2);
+
+		Assertions.assertEquals(snippet.hashCode(), snippet2.hashCode());
+		FabricRenderPipeline.Snippet snippet3 = RenderPipeline.builder()
+				.buildSnippet();
+		Assertions.assertNotEquals(snippet, snippet3);
+		Assertions.assertNotEquals(snippet.hashCode(), snippet3.hashCode());
+	}
+
 	private static RenderPipeline.Snippet createEmptySnippet() {
 		return new RenderPipeline.Snippet(
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),

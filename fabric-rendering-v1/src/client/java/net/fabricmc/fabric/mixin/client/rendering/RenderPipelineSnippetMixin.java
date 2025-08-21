@@ -18,8 +18,11 @@ package net.fabricmc.fabric.mixin.client.rendering;
 
 import java.util.Optional;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
 import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineInternals;
@@ -29,5 +32,40 @@ class RenderPipelineSnippetMixin implements FabricRenderPipeline.Snippet {
 	@Override
 	public Optional<Boolean> usePipelineDrawModeForGui() {
 		return FabricRenderPipelineInternals.getUsePipelineDrawModeForGui((RenderPipeline.Snippet) (Object) this);
+	}
+
+	@ModifyReturnValue(
+			method = "toString",
+			at = @At("RETURN")
+	)
+	private String modifyToStringToIncludeFabricExtraData(String original) {
+		return original.substring(0, original.length() - 1)
+				+ ", usePipelineDrawModeForGui="
+				+ usePipelineDrawModeForGui()
+				+ original.substring(original.length() - 1);
+	}
+
+	@ModifyReturnValue(
+			method = "equals",
+			at = @At("RETURN")
+	)
+	private boolean modifyEqualsToIncludeFabricExtraData(boolean original, Object other) {
+		return original
+				&& other instanceof FabricRenderPipeline.Snippet otherSnippet
+				&& usePipelineDrawModeForGui().equals(otherSnippet.usePipelineDrawModeForGui());
+	}
+
+	@ModifyReturnValue(
+			method = "hashCode",
+			at = @At("RETURN")
+	)
+	private int modifyHashCodeToIncludeFabricExtraData(int original) {
+		return hashCombiner(original, usePipelineDrawModeForGui().hashCode());
+	}
+
+	// taken from java.lang.runtime.ObjectMethods.hashCombiner(int, int)
+	@Unique
+	private static int hashCombiner(int x, int y) {
+		return x * 31 + y;
 	}
 }
