@@ -8,7 +8,6 @@
     "BipedEntityRendererMixin",
     "BlockColorsMixin",
     "BlockEntityRendererFactoriesMixin",
-    "BuilderMixin",
     "CapeFeatureRendererMixin",
     "ClientWorldMixin",
     "DebugOptionsScreenEntryMixin",
@@ -26,8 +25,9 @@
     "LivingEntityRendererAccessor",
     "LivingEntityRendererMixin",
     "RenderLayersMixin",
+    "RenderPipelineBuilderMixin",
     "RenderPipelineMixin",
-    "SnippetMixin",
+    "RenderPipelineSnippetMixin",
     "SpecialModelTypesMixin",
     "TooltipComponentMixin",
     "WorldRendererMixin"

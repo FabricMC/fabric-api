@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
 import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineInternals;
 
 @Mixin(RenderPipeline.Snippet.class)
-class SnippetMixin implements FabricRenderPipeline.Snippet {
+class RenderPipelineSnippetMixin implements FabricRenderPipeline.Snippet {
 	@Override
 	public Optional<Boolean> usePipelineDrawModeForGui() {
 		return FabricRenderPipelineInternals.getUsePipelineDrawModeForGui((RenderPipeline.Snippet) (Object) this);

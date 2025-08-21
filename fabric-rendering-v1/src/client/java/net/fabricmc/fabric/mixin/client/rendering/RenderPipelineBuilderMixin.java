@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
 import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineInternals;
 
 @Mixin(RenderPipeline.Builder.class)
-class BuilderMixin implements FabricRenderPipeline.Builder {
+class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 	@Unique
 	private Optional<Boolean> usePipelineDrawModeForGui = Optional.empty();
 
