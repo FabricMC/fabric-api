@@ -34,7 +34,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 
 public class GuiRendererNonQuadsTest implements ClientModInitializer {
-
 	@Override
 	public void onInitializeClient() {
 		HudElementRegistry.addFirst(Identifier.of("test", "gui_renderer_non_quads_test"), (context, renderTickCounter) -> {
@@ -58,7 +57,7 @@ public class GuiRendererNonQuadsTest implements ClientModInitializer {
 	}
 
 	record CustomTestState(Matrix3x2f matrix, ScreenRect bounds, ScreenRect scissorArea, int x0, int y0, int x1, int y1, int x2, int y2) implements SimpleGuiElementRenderState {
-		public CustomTestState(Matrix3x2f matrix, ScreenRect scissorArea, int x0, int y0, int x1, int y1, int x2, int y2) {
+		CustomTestState(Matrix3x2f matrix, ScreenRect scissorArea, int x0, int y0, int x1, int y1, int x2, int y2) {
 			this(matrix, createTriangleBounds(x0, y0, x1, y1, x2, y2, matrix, scissorArea), scissorArea, x0, y0, x1, y1, x2, y2);
 		}
 
