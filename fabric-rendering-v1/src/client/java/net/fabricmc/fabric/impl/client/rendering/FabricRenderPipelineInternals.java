@@ -45,7 +45,10 @@ public final class FabricRenderPipelineInternals {
 					builder::withoutUsePipelineDrawModeForGui
 			);
 			RenderPipeline.Snippet snippet = builder.buildSnippet();
-			extraData.put(snippet, usePipelineVertexFormat.orElse(null));
+			usePipelineVertexFormat.ifPresentOrElse(
+					value -> extraData.put(snippet, value),
+					() -> extraData.remove(snippet)
+			);
 			return snippet;
 		} finally {
 			MIXIN_PIPELINE_MODIFICATION_REC_GUARD.set(original);
