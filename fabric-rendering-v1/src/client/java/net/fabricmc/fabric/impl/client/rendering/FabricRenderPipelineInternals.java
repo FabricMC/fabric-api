@@ -27,7 +27,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.util.Unit;
 
 public final class FabricRenderPipelineInternals {
-	private static final Map<RenderPipeline.Snippet, Optional<Boolean>> extraData = Collections.synchronizedMap(new IdentityHashMap<>());
+	private static final Map<RenderPipeline.Snippet, Boolean> extraData = Collections.synchronizedMap(new IdentityHashMap<>());
 	public static BiConsumer<RenderPipeline, Boolean> usePipelineDrawModeForGuiSetter;
 	public static ThreadLocal<Unit> MIXIN_PIPELINE_MODIFICATION_REC_GUARD = ThreadLocal.withInitial(() -> null);
 
@@ -45,7 +45,7 @@ public final class FabricRenderPipelineInternals {
 					builder::withoutUsePipelineDrawModeForGui
 			);
 			RenderPipeline.Snippet snippet = builder.buildSnippet();
-			extraData.put(snippet, usePipelineVertexFormat);
+			extraData.put(snippet, usePipelineVertexFormat.orElse(null));
 			return snippet;
 		} finally {
 			MIXIN_PIPELINE_MODIFICATION_REC_GUARD.set(original);
@@ -53,6 +53,6 @@ public final class FabricRenderPipelineInternals {
 	}
 
 	public static Optional<Boolean> getUsePipelineDrawModeForGui(RenderPipeline.Snippet snippet) {
-		return extraData.computeIfAbsent(snippet, ignored -> Optional.empty());
+		return Optional.ofNullable(extraData.get(snippet));
 	}
 }

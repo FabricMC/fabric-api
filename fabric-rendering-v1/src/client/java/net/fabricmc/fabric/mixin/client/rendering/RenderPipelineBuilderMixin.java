@@ -51,7 +51,7 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 			at = @At("TAIL")
 	)
 	private void copyUsePipelineDrawModeForGuiFromSnippet(RenderPipeline.Snippet snippet, CallbackInfo ci) {
-		FabricRenderPipelineInternals.getUsePipelineDrawModeForGui(snippet).ifPresent(value -> this.usePipelineDrawModeForGui = Optional.of(value));
+		snippet.usePipelineDrawModeForGui().ifPresent(value -> this.usePipelineDrawModeForGui = Optional.of(value));
 	}
 
 	@ModifyReturnValue(
@@ -60,7 +60,7 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 	)
 	private RenderPipeline.Snippet copyUsePipelineDrawModeForGuiToSnippet(RenderPipeline.Snippet original) {
 		if (FabricRenderPipelineInternals.MIXIN_PIPELINE_MODIFICATION_REC_GUARD.get() != null) {
-			return original;
+			return original; // the value will be appended after buildSnippet returns, so there is no need to modify it here
 		}
 
 		return FabricRenderPipelineInternals.createSnippetWithPipelineVertexFormatForGui(original, this.usePipelineDrawModeForGui);
