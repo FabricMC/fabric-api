@@ -36,7 +36,8 @@ class RenderPipelineSnippetMixin implements FabricRenderPipeline.Snippet {
 
 	@ModifyReturnValue(
 			method = "toString",
-			at = @At("RETURN")
+			at = @At("RETURN"),
+			remap = false
 	)
 	private String modifyToStringToIncludeFabricExtraData(String original) {
 		return original.substring(0, original.length() - 1)
@@ -47,7 +48,8 @@ class RenderPipelineSnippetMixin implements FabricRenderPipeline.Snippet {
 
 	@ModifyReturnValue(
 			method = "equals",
-			at = @At("RETURN")
+			at = @At("RETURN"),
+			remap = false
 	)
 	private boolean modifyEqualsToIncludeFabricExtraData(boolean original, Object other) {
 		return original
@@ -57,7 +59,8 @@ class RenderPipelineSnippetMixin implements FabricRenderPipeline.Snippet {
 
 	@ModifyReturnValue(
 			method = "hashCode",
-			at = @At("RETURN")
+			at = @At("RETURN"),
+			remap = false
 	)
 	private int modifyHashCodeToIncludeFabricExtraData(int original) {
 		return hashCombiner(original, usePipelineDrawModeForGui().hashCode());
