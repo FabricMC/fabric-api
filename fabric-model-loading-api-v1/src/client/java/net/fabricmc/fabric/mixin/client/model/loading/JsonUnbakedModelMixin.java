@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.client.model.loading.UnbakedModelJsonDeserialize
 
 @Mixin(JsonUnbakedModel.class)
 abstract class JsonUnbakedModelMixin {
-	@ModifyExpressionValue(method = "<clinit>()V", at = @At(value = "NEW", target = "com/google/gson/GsonBuilder", remap = false))
+	@ModifyExpressionValue(method = "<clinit>()V", at = @At(value = "NEW", target = "com/google/gson/GsonBuilder"))
 	private static GsonBuilder addUnbakedModelAdapter(GsonBuilder builder) {
 		return builder.registerTypeHierarchyAdapter(UnbakedModel.class, new UnbakedModelJsonDeserializer());
 	}

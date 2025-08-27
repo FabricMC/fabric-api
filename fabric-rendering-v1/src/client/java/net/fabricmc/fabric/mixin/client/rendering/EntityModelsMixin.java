@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.client.rendering.EntityModelLayerImpl;
 
 @Mixin(EntityModels.class)
 abstract class EntityModelsMixin {
-	@Inject(method = "getModels", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;", remap = false))
+	@Inject(method = "getModels", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;"))
 	private static void registerExtraModelData(CallbackInfoReturnable<Map<EntityModelLayer, TexturedModelData>> info, @Local ImmutableMap.Builder<EntityModelLayer, TexturedModelData> builder) {
 		for (Map.Entry<EntityModelLayer, EntityModelLayerRegistry.TexturedModelDataProvider> entry : EntityModelLayerImpl.PROVIDERS.entrySet()) {
 			builder.put(entry.getKey(), entry.getValue().createModelData());

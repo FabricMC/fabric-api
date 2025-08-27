@@ -42,8 +42,7 @@ public class Schema2832Mixin {
 			},
 			at = @At(
 					value = "INVOKE",
-					target = "Lcom/mojang/datafixers/DSL;taggedChoiceLazy(Ljava/lang/String;Lcom/mojang/datafixers/types/Type;Ljava/util/Map;)Lcom/mojang/datafixers/types/templates/TaggedChoice;",
-					remap = false
+					target = "Lcom/mojang/datafixers/DSL;taggedChoiceLazy(Ljava/lang/String;Lcom/mojang/datafixers/types/Type;Ljava/util/Map;)Lcom/mojang/datafixers/types/templates/TaggedChoice;"
 			)
 	)
 	private static <K> TaggedChoice<K> redirectTaggedChoiceLazy(

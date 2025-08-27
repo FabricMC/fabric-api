@@ -55,7 +55,7 @@ public class ModelProviderItemAssetsMixin implements FabricItemAssetDefinitions 
 		this.fabricDataOutput = fabricDataOutput;
 	}
 
-	@WrapOperation(method = "method_65470", at = @At(value = "INVOKE", target = "Ljava/util/Map;containsKey(Ljava/lang/Object;)Z", ordinal = 1, remap = false))
+	@WrapOperation(method = "method_65470", at = @At(value = "INVOKE", target = "Ljava/util/Map;containsKey(Ljava/lang/Object;)Z", ordinal = 1))
 	private boolean filterItemsForProcessingMod(Map<Item, ItemAsset> map, Object o, Operation<Boolean> original) {
 		BlockItem blockItem = (BlockItem) o;
 
@@ -74,7 +74,7 @@ public class ModelProviderItemAssetsMixin implements FabricItemAssetDefinitions 
 		return original.call(map, o);
 	}
 
-	@ModifyArg(method = "resolveAndValidate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0, remap = false))
+	@ModifyArg(method = "resolveAndValidate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
 	private Predicate<RegistryEntry.Reference<Item>> filterItemsForProcessingMod(Predicate<RegistryEntry.Reference<Item>> original) {
 		if (fabricDataOutput != null) {
 			return original

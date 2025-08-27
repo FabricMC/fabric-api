@@ -143,7 +143,7 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 	// The Pair's type is actually Pair<Identifier, JsonUnbakedModel>, but since generics don't really exist, vanilla
 	// code doesn't explicitly cast the model to JsonUnbakedModel, and the enclosing method returns UnbakedModels per
 	// its return type, it's safe to return an UnbakedModel here.
-	@ModifyArg(method = "method_65750(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "com/mojang/datafixers/util/Pair.of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;", remap = false), index = 1)
+	@ModifyArg(method = "method_65750(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "com/mojang/datafixers/util/Pair.of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;"), index = 1)
 	private static Object actuallyDeserializeModel(Object originalModel, @Local Reader reader) {
 		return UnbakedModelDeserializer.deserialize(reader);
 	}

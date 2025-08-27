@@ -108,7 +108,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		}
 	}
 
-	@Redirect(method = "trySleep", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z", remap = false))
+	@Redirect(method = "trySleep", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"))
 	private boolean hasNoMonstersNearby(List<HostileEntity> monsters, BlockPos pos) {
 		boolean vanillaResult = monsters.isEmpty();
 		ActionResult result = EntitySleepEvents.ALLOW_NEARBY_MONSTERS.invoker().allowNearbyMonsters((PlayerEntity) (Object) this, pos, vanillaResult);

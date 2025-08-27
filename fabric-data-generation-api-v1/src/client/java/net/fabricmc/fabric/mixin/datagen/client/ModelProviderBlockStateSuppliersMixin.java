@@ -41,7 +41,7 @@ public class ModelProviderBlockStateSuppliersMixin implements FabricModelProvide
 	}
 
 	// Target the first .filter() call, to filter out blocks that are not from the mod we are processing.
-	@ModifyArg(method = "validate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0, remap = false))
+	@ModifyArg(method = "validate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
 	private Predicate<RegistryEntry.Reference<Block>> filterBlocksForProcessingMod(Predicate<RegistryEntry.Reference<Block>> original) {
 		if (fabricDataOutput != null) {
 			return original

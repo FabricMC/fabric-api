@@ -31,8 +31,7 @@ public class DedicatedServerWatchdogMixin {
 	@ModifyArg(method = "createCrashReport(Ljava/lang/String;J)Lnet/minecraft/util/crash/CrashReport;",
 			at = @At(value = "INVOKE",
 					target = "Ljava/lang/StringBuilder;append(Ljava/lang/Object;)Ljava/lang/StringBuilder;",
-					ordinal = 0,
-					remap = false)
+					ordinal = 0)
 	)
 	private static Object printEntireThreadDump(Object object) {
 		if (object instanceof ThreadInfo threadInfo) {

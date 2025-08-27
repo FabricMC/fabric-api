@@ -47,7 +47,7 @@ abstract class FallingBlockCommandRendererMixin {
 	private MatrixStack matrices;
 
 	// Support multi-render layer models (FallingBlockCommand).
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "java/util/Iterator.hasNext()Z", remap = false, ordinal = 0))
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "java/util/Iterator.hasNext()Z", ordinal = 0))
 	private void beforeRenderFallingBlocks(BatchingRenderCommandQueue queue, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, OutlineVertexConsumerProvider outlineVertexConsumerProvider, CallbackInfo ci, @Local Iterator<OrderedRenderCommandQueueImpl.MovingBlockCommand> iterator) {
 		while (iterator.hasNext()) {
 			OrderedRenderCommandQueueImpl.MovingBlockCommand fallingBlockCommand = iterator.next();

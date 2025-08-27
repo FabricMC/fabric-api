@@ -39,7 +39,7 @@ public class ThreadExecutorMixin {
 		}
 	}
 
-	@Inject(method = "executeTask", at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", remap = false, shift = At.Shift.AFTER))
+	@Inject(method = "executeTask", at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", shift = At.Shift.AFTER))
 	private void onPacketHandlerRun(Runnable task, CallbackInfo ci) {
 		switch ((Object) this) {
 		case MinecraftClient $ -> NetworkSynchronizer.CLIENTBOUND.postTaskRun(task);
