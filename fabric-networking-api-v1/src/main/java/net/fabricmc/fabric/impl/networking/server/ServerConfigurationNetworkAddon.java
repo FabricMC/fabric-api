@@ -96,7 +96,10 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		}
 
 		// We should have received a response
-		assert registerState == RegisterState.RECEIVED || registerState == RegisterState.NOT_RECEIVED;
+		if (!(registerState == RegisterState.RECEIVED || registerState == RegisterState.NOT_RECEIVED)) {
+			throw new IllegalStateException();
+		}
+
 		return false;
 	}
 

@@ -279,5 +279,10 @@
             "/>
             <message key="matchxpath.match" value="Inject local capture is not allowed, use @Local instead"/>
         </module>
+
+        <module name="MatchXpath">
+            <property name="query" value="//LITERAL_ASSERT"/>
+            <message key="matchxpath.match" value="Avoid using 'assert'."/>
+        </module>
 	</module>
 </module>

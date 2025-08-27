@@ -122,7 +122,10 @@ public final class ClientNetworkingImpl {
 	}
 
 	public static void setClientPlayAddon(ClientPlayNetworkAddon addon) {
-		assert addon == null || currentConfigurationAddon == null;
+		if (!(addon == null || currentConfigurationAddon == null)) {
+			throw new IllegalStateException();
+		}
+
 		currentPlayAddon = addon;
 	}
 

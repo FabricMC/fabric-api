@@ -38,7 +38,10 @@ public class PersistentStateManagerTest implements ModInitializer {
 			ranTests = true;
 
 			TestState.getOrCreate(world).setValue("Hello!");
-			assert Objects.equals(TestState.getOrCreate(world).getValue(), "Hello!");
+
+			if (!Objects.equals(TestState.getOrCreate(world).getValue(), "Hello!")) {
+				throw new IllegalStateException();
+			}
 		});
 	}
 

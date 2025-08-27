@@ -184,7 +184,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	@Override
 	public void onCommonVersionPacket(int negotiatedVersion) {
-		assert negotiatedVersion == 1; // We only support version 1 for now
+		// We only support version 1 for now
+		if (negotiatedVersion != 1) {
+			throw new UnsupportedOperationException("Unsupported common packet version: " + negotiatedVersion);
+		}
 
 		commonVersion = negotiatedVersion;
 		this.logger.debug("Negotiated common packet version {}", commonVersion);
