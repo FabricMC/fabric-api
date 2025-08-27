@@ -67,7 +67,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 			spWorldSave = singleplayer.getWorldSave();
 
 			{
-				enableDebugHud(context);
+				setDebugHud(context, true);
 				singleplayer.getClientWorld().waitForChunksRender();
 				context.takeScreenshot("in_game_overworld");
 			}
@@ -118,6 +118,8 @@ public class ClientGameTestTest implements FabricClientGameTest {
 				}
 			}
 		}
+
+		setDebugHud(context, false);
 	}
 
 	private static void waitForTitleScreenFade(ClientGameTestContext context) {
@@ -126,8 +128,8 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		});
 	}
 
-	private static void enableDebugHud(ClientGameTestContext context) {
-		context.runOnClient(client -> client.debugHudEntryList.toggleF3Enabled());
+	private static void setDebugHud(ClientGameTestContext context, boolean f3Enabled) {
+		context.runOnClient(client -> client.debugHudEntryList.setF3Enabled(f3Enabled));
 	}
 
 	private static void setPerspective(ClientGameTestContext context, Perspective perspective) {
