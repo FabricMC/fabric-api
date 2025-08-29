@@ -53,7 +53,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 
 			for (FluidVariant variant : variants) {
 				Sprite[] sprites = FluidVariantRendering.getSprites(variant);
-				int color = FluidVariantRendering.getColor(variant, player.world(), player.getBlockPos());
+				int color = FluidVariantRendering.getColor(variant, player.getEntityWorld(), player.getBlockPos());
 
 				if (sprites != null) {
 					drawContext.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, sprites[0], 0, renderY, 16, 16, color);

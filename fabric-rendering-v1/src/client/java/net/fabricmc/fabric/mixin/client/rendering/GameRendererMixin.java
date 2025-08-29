@@ -28,7 +28,7 @@ import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.entity.command.EntityRenderDispatcher;
+import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
 import net.minecraft.client.render.item.HeldItemRenderer;
 
 import net.fabricmc.fabric.impl.client.rendering.GuiRendererExtensions;
@@ -41,11 +41,11 @@ public class GameRendererMixin {
 
 	@Shadow
 	@Final
-	private EntityRenderDispatcher entityRenderDispatcher;
+	private OrderedRenderCommandQueueImpl orderedRenderCommandQueue;
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
 	private void guiRendererReady(MinecraftClient client, HeldItemRenderer firstPersonHeldItemRenderer, BufferBuilderStorage buffers, BlockRenderManager blockRenderManager, CallbackInfo ci) {
 		GuiRendererExtensions guiRenderer = (GuiRendererExtensions) this.guiRenderer;
-		guiRenderer.fabric_onReady(this.entityRenderDispatcher);
+		guiRenderer.fabric_onReady(this.orderedRenderCommandQueue);
 	}
 }

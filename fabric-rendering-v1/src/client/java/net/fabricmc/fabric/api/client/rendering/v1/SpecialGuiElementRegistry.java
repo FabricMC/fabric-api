@@ -23,7 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.command.EntityRenderDispatcher;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 
 import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRegistryImpl;
 
@@ -64,8 +64,8 @@ public final class SpecialGuiElementRegistry {
 		MinecraftClient client();
 
 		/**
-		 * @return the {@link EntityRenderDispatcher} instance.
+		 * @return the {@link OrderedRenderCommandQueue} instance.
 		 */
-		EntityRenderDispatcher entityRenderDispatcher();
+		OrderedRenderCommandQueue orderedRenderCommandQueue();
 	}
 }

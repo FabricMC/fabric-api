@@ -18,9 +18,9 @@ package net.fabricmc.fabric.test.object.builder.client;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.command.EntityRenderCommandQueue;
 import net.minecraft.client.render.entity.model.ChickenEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.state.ChickenEntityRenderState;
@@ -38,8 +38,8 @@ public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity
 	}
 
 	@Override
-	public void render(RenderState renderState, MatrixStack matrices, EntityRenderCommandQueue entityRenderCommandQueue) {
-		super.render(renderState, matrices, entityRenderCommandQueue);
+	public void render(RenderState renderState, MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue) {
+		super.render(renderState, matrices, orderedRenderCommandQueue);
 		Iterable<Text> labelLines = renderState.labelLines;
 
 		if (labelLines == null) {
@@ -50,7 +50,7 @@ public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity
 		matrices.translate(0, -2, 0);
 
 		for (Text line : labelLines) {
-			entityRenderCommandQueue.pushLabel(matrices, renderState.nameLabelPos, line, !renderState.sneaking, renderState.light, renderState.squaredDistanceToCamera);
+			orderedRenderCommandQueue.getBatchingQueue(0).submitLabel(matrices, renderState.nameLabelPos, line, !renderState.sneaking, renderState.light, renderState.squaredDistanceToCamera);
 			matrices.translate(0, 0.25875f, 0);
 		}
 

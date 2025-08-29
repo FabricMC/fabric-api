@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.command.EntityRenderCommandQueue;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -73,13 +73,13 @@ public final class FeatureRendererTest implements ClientModInitializer {
 		}
 
 		@Override
-		public void render(MatrixStack matrices, EntityRenderCommandQueue commandQueue, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+		public void render(MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
 			matrices.push();
 
 			// Translate to center above the player's head
 			matrices.translate(-0.5F, -state.height + 0.25F, -0.5F);
 			// Render a diamond block above the player's head
-			commandQueue.pushBlock(matrices, Blocks.DIAMOND_BLOCK.getDefaultState(), light, OverlayTexture.DEFAULT_UV);
+			commandQueue.getBatchingQueue(0).submitBlock(matrices, Blocks.DIAMOND_BLOCK.getDefaultState(), light, OverlayTexture.DEFAULT_UV, 0);
 
 			matrices.pop();
 		}

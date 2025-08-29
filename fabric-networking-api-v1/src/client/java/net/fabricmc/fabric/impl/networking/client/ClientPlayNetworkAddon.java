@@ -42,7 +42,7 @@ public final class ClientPlayNetworkAddon extends ClientCommonNetworkAddon<Clien
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	public ClientPlayNetworkAddon(ClientPlayNetworkHandler handler, MinecraftClient client) {
-		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().getName(), handler, client);
+		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().name(), handler, client);
 		this.context = new ContextImpl(client, this);
 
 		// Must register pending channels via lateinit

@@ -109,10 +109,10 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 				{ // Test that we can enter and exit configuration
 					final GameProfile profile = context.computeOnClient(MinecraftClient::getGameProfile);
-					server.runCommand("debugconfig config " + profile.getName());
+					server.runCommand("debugconfig config " + profile.name());
 					context.waitForScreen(ReconfiguringScreen.class);
 					context.takeScreenshot("server_config");
-					server.runCommand("debugconfig unconfig " + profile.getId());
+					server.runCommand("debugconfig unconfig " + profile.id());
 					// TODO: better way to wait for reconfiguration to end
 					context.waitTicks(100);
 				}

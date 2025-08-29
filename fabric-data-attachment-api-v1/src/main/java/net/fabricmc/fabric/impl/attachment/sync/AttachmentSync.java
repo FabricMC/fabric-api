@@ -106,7 +106,7 @@ public class AttachmentSync implements ModInitializer {
 			ServerPlayerEntity player = handler.player;
 			List<AttachmentChange> changes = new ArrayList<>();
 			// sync world attachments
-			((AttachmentTargetImpl) player.world()).fabric_computeInitialSyncChanges(player, changes::add);
+			((AttachmentTargetImpl) player.getEntityWorld()).fabric_computeInitialSyncChanges(player, changes::add);
 			// sync player's own persistent attachments that couldn't be synced earlier
 			((AttachmentTargetImpl) player).fabric_computeInitialSyncChanges(player, changes::add);
 

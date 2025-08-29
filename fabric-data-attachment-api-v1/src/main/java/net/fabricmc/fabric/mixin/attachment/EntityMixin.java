@@ -44,7 +44,7 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	private int id;
 
 	@Shadow
-	public abstract World world();
+	public abstract World getEntityWorld();
 
 	@Inject(
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;readCustomData(Lnet/minecraft/storage/ReadView;)V"),
@@ -69,7 +69,7 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
-		if (!this.world().isClient()) {
+		if (!this.getEntityWorld().isClient()) {
 			AttachmentSyncPredicate predicate = ((AttachmentTypeImpl<?>) type).syncPredicate();
 
 			if ((Object) this instanceof ServerPlayerEntity self && predicate.test(this, self)) {
@@ -88,11 +88,11 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public boolean fabric_shouldTryToSync() {
-		return !this.world().isClient();
+		return !this.getEntityWorld().isClient();
 	}
 
 	@Override
 	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
-		return this.world().getRegistryManager();
+		return this.getEntityWorld().getRegistryManager();
 	}
 }

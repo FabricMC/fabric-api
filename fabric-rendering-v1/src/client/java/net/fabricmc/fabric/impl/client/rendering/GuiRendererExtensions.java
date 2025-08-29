@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.rendering;
 
-import net.minecraft.client.render.entity.command.EntityRenderDispatcher;
+import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
 
 public interface GuiRendererExtensions {
-	void fabric_onReady(EntityRenderDispatcher entityRenderDispatcher);
+	void fabric_onReady(OrderedRenderCommandQueueImpl orderedRenderCommandQueue);
 }

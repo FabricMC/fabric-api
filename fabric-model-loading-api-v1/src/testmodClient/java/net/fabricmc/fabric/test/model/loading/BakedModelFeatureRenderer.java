@@ -23,7 +23,7 @@ import org.joml.Quaternionf;
 
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.entity.command.EntityRenderCommandQueue;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -41,7 +41,7 @@ public class BakedModelFeatureRenderer<S extends LivingEntityRenderState, M exte
 	}
 
 	@Override
-	public void render(MatrixStack matrices, EntityRenderCommandQueue commandQueue, int light, S state, float limbAngle, float limbDistance) {
+	public void render(MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, S state, float limbAngle, float limbDistance) {
 		BlockStateModel model = modelSupplier.get();
 		matrices.push();
 		matrices.multiply(new Quaternionf(new AxisAngle4f(state.age * 0.07F - state.bodyYaw * MathHelper.RADIANS_PER_DEGREE, 0, 1, 0)));
@@ -50,7 +50,7 @@ public class BakedModelFeatureRenderer<S extends LivingEntityRenderState, M exte
 		matrices.translate(-0.5F, 0.75F + aboveHead, -0.5F);
 		// FIXME 1.21.9
 		// FabricBlockModelRenderer.render(matrices.peek(), RenderLayerHelper.entityDelegate(vertexConsumers), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, Blocks.AIR.getDefaultState());
-		commandQueue.pushBlockStateModel(matrices, TexturedRenderLayers.getEntityCutout(), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV);
+		commandQueue.getBatchingQueue(0).submitBlockStateModel(matrices, TexturedRenderLayers.getEntityCutout(), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV, 0);
 		matrices.pop();
 	}
 }

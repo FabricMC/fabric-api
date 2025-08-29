@@ -58,11 +58,11 @@ public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget 
 	}
 
 	@Override
-	public void render(DrawContext drawContext, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		// FIXME: Param names nightmare
-		this.drawName(drawContext, y, x);
+	public void render(DrawContext drawContext, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		this.drawName(drawContext, this.getContentY(), this.getContentX());
 
-		this.textFieldWidget.setPosition(x + entryWidth - 44, y);
+		this.textFieldWidget.setX(this.getContentRightEnd() - 44);
+		this.textFieldWidget.setY(this.getContentY());
 		this.textFieldWidget.render(drawContext, mouseX, mouseY, tickDelta);
 	}
 }

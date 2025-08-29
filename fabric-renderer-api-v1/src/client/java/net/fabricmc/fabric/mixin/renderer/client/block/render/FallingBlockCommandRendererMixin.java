@@ -27,12 +27,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.OutlineVertexConsumerProvider;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.entity.command.BatchingEntityRenderCommandQueue;
-import net.minecraft.client.render.entity.command.FallingBlockCommandRenderer;
-import net.minecraft.client.render.entity.state.FallingBlockEntityRenderState;
+import net.minecraft.client.render.block.MovingBlockRenderState;
+import net.minecraft.client.render.command.BatchingRenderCommandQueue;
+import net.minecraft.client.render.command.FallingBlockCommandRenderer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 
@@ -46,16 +48,16 @@ abstract class FallingBlockCommandRendererMixin {
 
 	// Support multi-render layer models (FallingBlockCommand).
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "java/util/Iterator.hasNext()Z", remap = false, ordinal = 0))
-	private void beforeRenderFallingBlocks(BatchingEntityRenderCommandQueue commandQueueImpl, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, CallbackInfo ci, @Local Iterator<BatchingEntityRenderCommandQueue.FallingBlockCommand> iterator) {
+	private void beforeRenderFallingBlocks(BatchingRenderCommandQueue queue, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, OutlineVertexConsumerProvider outlineVertexConsumerProvider, CallbackInfo ci, @Local Iterator<OrderedRenderCommandQueueImpl.MovingBlockCommand> iterator) {
 		while (iterator.hasNext()) {
-			BatchingEntityRenderCommandQueue.FallingBlockCommand fallingBlockCommand = iterator.next();
-			FallingBlockEntityRenderState renderState = fallingBlockCommand.renderState();
+			OrderedRenderCommandQueueImpl.MovingBlockCommand fallingBlockCommand = iterator.next();
+			MovingBlockRenderState renderState = fallingBlockCommand.movingBlockRenderState();
 			BlockState blockState = renderState.blockState;
 			BlockStateModel model = blockRenderManager.getModel(blockState);
 			long seed = blockState.getRenderingSeed(renderState.fallingBlockPos);
 			matrices.push();
-			matrices.multiplyPositionMatrix(fallingBlockCommand.pose());
-			blockRenderManager.getModelRenderer().render(renderState, model, blockState, renderState.currentPos, matrices, RenderLayerHelper.movingDelegate(vertexConsumers), false, seed, OverlayTexture.DEFAULT_UV);
+			matrices.multiplyPositionMatrix(fallingBlockCommand.matricesEntry());
+			blockRenderManager.getModelRenderer().render(renderState, model, blockState, renderState.entityBlockPos, matrices, RenderLayerHelper.movingDelegate(vertexConsumers), false, seed, OverlayTexture.DEFAULT_UV);
 			matrices.pop();
 		}
 	}

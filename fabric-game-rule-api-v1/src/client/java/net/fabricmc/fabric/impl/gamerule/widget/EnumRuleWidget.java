@@ -54,11 +54,11 @@ public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen
 	}
 
 	@Override
-	public void render(DrawContext drawContext, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		// FIXME: Param names nightmare
-		this.drawName(drawContext, y, x);
+	public void render(DrawContext drawContext, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		this.drawName(drawContext, this.getContentY(), this.getContentX());
 
-		this.buttonWidget.setPosition(x + entryWidth - 89, y);
+		this.buttonWidget.setX(this.getContentRightEnd() - 89);
+		this.buttonWidget.setY(this.getContentY());
 		this.buttonWidget.render(drawContext, mouseX, mouseY, tickDelta);
 	}
 }

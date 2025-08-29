@@ -77,7 +77,7 @@ class PlayerInventoryStorageImpl extends InventoryStorageImpl implements PlayerI
 
 		// Drop in the world on the server side (will be synced by the game with the client).
 		// Dropping items is server-side only because it involves randomness.
-		if (amount > 0 && !playerInventory.player.world().isClient()) {
+		if (amount > 0 && !playerInventory.player.getEntityWorld().isClient()) {
 			droppedStacks.addDrop(variant, amount, throwRandomly, retainOwnership, transaction);
 		}
 	}

@@ -48,7 +48,7 @@ public class ResourcePackOrganizerMixin {
 	 * They are managed entirely by ResourcePackManager on save, and are invisible to client.
 	 */
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void removeHiddenPacksInit(Runnable updateCallback, Function iconIdSupplier, ResourcePackManager resourcePackManager, Consumer applier, CallbackInfo ci) {
+	private void removeHiddenPacksInit(Consumer<ResourcePackOrganizer.AbstractPack> updateCallback, Function iconIdSupplier, ResourcePackManager resourcePackManager, Consumer applier, CallbackInfo ci) {
 		this.enabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
 		this.disabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
 	}

@@ -79,13 +79,13 @@ public class TrackStackEntity extends MobEntity {
 
 	@Override
 	protected ActionResult interactMob(PlayerEntity player, Hand hand) {
-		GlobalPos globalPos = GlobalPos.create(player.world().getRegistryKey(), player.getBlockPos());
+		GlobalPos globalPos = GlobalPos.create(player.getEntityWorld().getRegistryKey(), player.getBlockPos());
 		this.dataTracker.set(GLOBAL_POS, globalPos);
 
 		Item item = player.getStackInHand(hand).getItem();
 		this.dataTracker.set(ITEM, item);
 
-		if (!player.world().isClient()) {
+		if (!player.getEntityWorld().isClient()) {
 			DyeColor[] colors = DyeColor.values();
 			Optional<DyeColor> color = Optional.of(colors[this.getRandom().nextBetweenExclusive(0, colors.length)]);
 			this.dataTracker.set(OPTIONAL_DYE_COLOR, color);

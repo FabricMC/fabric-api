@@ -278,7 +278,7 @@ transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerMultifaceBlockModel	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerPaleMossCarpet	(Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerHangingMoss	(Lnet/minecraft/block/Block;)V
-transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerShelf	(Lnet/minecraft/block/Block;)V
+transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerShelf	(Lnet/minecraft/block/Block;Lnet/minecraft/block/Block;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	registerShelf	(Lnet/minecraft/block/Block;Lnet/minecraft/client/data/TextureMap;Lnet/minecraft/client/data/MultipartBlockModelDefinitionCreator;Lnet/minecraft/client/data/Model;Ljava/lang/Boolean;Lnet/minecraft/block/enums/SideChainPart;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	forEachHorizontalDirection	(Ljava/util/function/BiConsumer;)V
 transitive-accessible	method	net/minecraft/client/data/BlockStateModelGenerator	createSideChainModelCondition	(Lnet/minecraft/util/math/Direction;Ljava/lang/Boolean;Lnet/minecraft/block/enums/SideChainPart;)Lnet/minecraft/client/render/model/json/MultipartModelCondition;
