@@ -29,8 +29,6 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
 
 public class RenderPipelineGuiVertexFormatTest {
-	private static final AtomicLong INDEX = new AtomicLong(0);
-
 	@Test
 	void testBuilderTransfersToSnippet() {
 		RenderPipeline.Builder builder = RenderPipeline.builder();
@@ -113,8 +111,8 @@ public class RenderPipelineGuiVertexFormatTest {
 				.withUsePipelineDrawModeForGui(true)
 				.buildSnippet();
 		Assertions.assertEquals(snippet, snippet2);
-
 		Assertions.assertEquals(snippet.hashCode(), snippet2.hashCode());
+
 		FabricRenderPipeline.Snippet snippet3 = RenderPipeline.builder()
 				.buildSnippet();
 		Assertions.assertNotEquals(snippet, snippet3);

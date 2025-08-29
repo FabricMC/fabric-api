@@ -20,8 +20,6 @@ import java.util.Optional;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 
-import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineInternals;
-
 /**
  * General purpose fabric extensions to the {@link RenderPipeline} class
  *
@@ -30,6 +28,7 @@ import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineInternals;
 public interface FabricRenderPipeline {
 	/**
 	 * Returns whether the pipeline draw mode should be used for GUI rendering.
+	 *
 	 * @return true if the pipeline draw mode should be used for GUI rendering, false otherwise.
 	 */
 	default boolean usePipelineDrawModeForGui() {
@@ -44,6 +43,7 @@ public interface FabricRenderPipeline {
 	interface Builder {
 		/**
 		 * Sets whether the pipeline draw mode should be used for GUI rendering.
+		 *
 		 * @param usePipelineDrawMode true if the pipeline draw mode should be used for GUI rendering, false otherwise.
 		 * @return this builder instance for chaining.
 		 */
@@ -53,6 +53,7 @@ public interface FabricRenderPipeline {
 
 		/**
 		 * Set the default behavior for GUI rendering regarding the pipeline draw mode.
+		 *
 		 * @return this builder instance for chaining.
 		 */
 		default RenderPipeline.Builder withoutUsePipelineDrawModeForGui() {
@@ -68,6 +69,7 @@ public interface FabricRenderPipeline {
 	interface Snippet {
 		/**
 		 * Returns whether the pipeline draw mode should be used for GUI rendering.
+		 *
 		 * @return an Optional containing true if the pipeline draw mode should be used for GUI rendering, false otherwise.
 		 */
 		default Optional<Boolean> usePipelineDrawModeForGui() {
@@ -76,19 +78,21 @@ public interface FabricRenderPipeline {
 
 		/**
 		 * Creates a new snippet with the specified pipeline draw mode for GUI rendering.
+		 *
 		 * @param usePipelineDrawMode true if the pipeline draw mode should be used for GUI rendering, false otherwise.
 		 * @return a new RenderPipeline.Snippet instance with the specified pipeline draw mode.
 		 */
 		static RenderPipeline.Snippet withPipelineDrawModeForGui(RenderPipeline.Snippet base, boolean usePipelineDrawMode) {
-			return FabricRenderPipelineInternals.createSnippetWithPipelineVertexFormatForGui(base, Optional.of(usePipelineDrawMode));
+			return RenderPipeline.builder(base).withUsePipelineDrawModeForGui(usePipelineDrawMode).buildSnippet();
 		}
 
 		/**
 		 * Creates a new snippet without the pipeline draw mode for GUI rendering.
+		 *
 		 * @return a new RenderPipeline.Snippet instance without any effect on whether the pipeline draw mode will be used for GUI rendering.
 		 */
 		static RenderPipeline.Snippet withoutPipelineDrawModeForGui(RenderPipeline.Snippet base) {
-			return FabricRenderPipelineInternals.createSnippetWithPipelineVertexFormatForGui(base, Optional.empty());
+			return RenderPipeline.builder(base).withoutUsePipelineDrawModeForGui().buildSnippet();
 		}
 	}
 }

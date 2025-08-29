@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,10 +29,17 @@ import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
 import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineInternals;
 
 @Mixin(RenderPipeline.Snippet.class)
+@Debug(export = true)
 class RenderPipelineSnippetMixin implements FabricRenderPipeline.Snippet {
+	@Unique
+	private final Optional<Boolean> usePipelineDrawModeForGui = FabricRenderPipelineInternals.getScopedUsePipelineVertexFormatForGui();
+
+	private RenderPipelineSnippetMixin() {
+	}
+
 	@Override
 	public Optional<Boolean> usePipelineDrawModeForGui() {
-		return FabricRenderPipelineInternals.getUsePipelineDrawModeForGui((RenderPipeline.Snippet) (Object) this);
+		return usePipelineDrawModeForGui;
 	}
 
 	@ModifyReturnValue(

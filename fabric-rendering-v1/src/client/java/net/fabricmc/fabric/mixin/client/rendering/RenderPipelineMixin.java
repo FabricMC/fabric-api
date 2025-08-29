@@ -20,21 +20,20 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
-import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineInternals;
+import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineImpl;
 
 @Mixin(RenderPipeline.class)
-public class RenderPipelineMixin implements FabricRenderPipeline {
+class RenderPipelineMixin implements FabricRenderPipelineImpl {
 	@Unique
-	boolean usePipelineDrawModeForGui = false;
+	private boolean usePipelineDrawModeForGui = false;
 
 	@Override
 	public boolean usePipelineDrawModeForGui() {
 		return usePipelineDrawModeForGui;
 	}
 
-	static {
-		FabricRenderPipelineInternals.usePipelineDrawModeForGuiSetter = (pipeline, value) ->
-				((RenderPipelineMixin) (Object) pipeline).usePipelineDrawModeForGui = value;
+	@Override
+	public void fabric$setUsePipelineDrawModeForGuiSetter(boolean usePipelineDrawModeForGui) {
+		this.usePipelineDrawModeForGui = usePipelineDrawModeForGui;
 	}
 }

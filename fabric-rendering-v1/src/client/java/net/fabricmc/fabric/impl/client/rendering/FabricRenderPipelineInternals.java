@@ -16,46 +16,33 @@
 
 package net.fabricmc.fabric.impl.client.rendering;
 
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 
-import net.minecraft.util.Unit;
-
 public final class FabricRenderPipelineInternals {
-	private static final Map<RenderPipeline.Snippet, Boolean> extraData = Collections.synchronizedMap(new IdentityHashMap<>());
-	public static BiConsumer<RenderPipeline, Boolean> usePipelineDrawModeForGuiSetter;
-	public static ThreadLocal<Unit> MIXIN_PIPELINE_MODIFICATION_REC_GUARD = ThreadLocal.withInitial(() -> null);
+	private static final ThreadLocal<Optional<Boolean>> SCOPED_SNIPPET_USE_PIPELINE_VERTEX_FORMAT_FOR_GUI = ThreadLocal.withInitial(Optional::empty);
 
 	private FabricRenderPipelineInternals() {
 	}
 
-	public static RenderPipeline.Snippet createSnippetWithPipelineVertexFormatForGui(RenderPipeline.Snippet base, Optional<Boolean> usePipelineVertexFormat) {
-		Unit original = MIXIN_PIPELINE_MODIFICATION_REC_GUARD.get();
+	public static RenderPipeline.Snippet withSnippetUsePipelineVertexFormatForGui(Supplier<RenderPipeline.Snippet> factory, Optional<Boolean> usePipelineVertexFormat) {
+		Optional<Boolean> original = SCOPED_SNIPPET_USE_PIPELINE_VERTEX_FORMAT_FOR_GUI.get();
 
 		try {
-			MIXIN_PIPELINE_MODIFICATION_REC_GUARD.set(Unit.INSTANCE);
-			RenderPipeline.Builder builder = RenderPipeline.builder(base);
-			usePipelineVertexFormat.ifPresentOrElse(
-					builder::withUsePipelineDrawModeForGui,
-					builder::withoutUsePipelineDrawModeForGui
-			);
-			RenderPipeline.Snippet snippet = builder.buildSnippet();
-			usePipelineVertexFormat.ifPresentOrElse(
-					value -> extraData.put(snippet, value),
-					() -> extraData.remove(snippet)
-			);
-			return snippet;
+			SCOPED_SNIPPET_USE_PIPELINE_VERTEX_FORMAT_FOR_GUI.set(usePipelineVertexFormat);
+			return factory.get();
 		} finally {
-			MIXIN_PIPELINE_MODIFICATION_REC_GUARD.set(original);
+			if (original.isEmpty()) {
+				SCOPED_SNIPPET_USE_PIPELINE_VERTEX_FORMAT_FOR_GUI.remove();
+			} else {
+				SCOPED_SNIPPET_USE_PIPELINE_VERTEX_FORMAT_FOR_GUI.set(original);
+			}
 		}
 	}
 
-	public static Optional<Boolean> getUsePipelineDrawModeForGui(RenderPipeline.Snippet snippet) {
-		return Optional.ofNullable(extraData.get(snippet));
+	public static Optional<Boolean> getScopedUsePipelineVertexFormatForGui() {
+		return SCOPED_SNIPPET_USE_PIPELINE_VERTEX_FORMAT_FOR_GUI.get();
 	}
 }
