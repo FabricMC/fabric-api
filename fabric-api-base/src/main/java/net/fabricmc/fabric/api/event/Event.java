@@ -127,13 +127,13 @@ public abstract class Event<T> {
 
 	/**
 	 * The identifier of the default phase.
-	 * Have a look at {@link EventFactory#createCancellableWithPhases} for an explanation of event phases.
+	 * Have a look at {@link EventFactory#createWithPhases} for an explanation of event phases.
 	 */
 	public static final Identifier DEFAULT_PHASE = Identifier.of("fabric", "default");
 
 	/**
 	 * Register a listener to the event for the specified phase.
-	 * Have a look at {@link EventFactory#createCancellableWithPhases} for an explanation of event phases.
+	 * Have a look at {@link EventFactory#createWithPhases} for an explanation of event phases.
 	 *
 	 * @param phase Identifier of the phase this listener should be registered for. It will be created if it didn't exist yet.
 	 * @param listener The desired listener.
@@ -149,7 +149,7 @@ public abstract class Event<T> {
 
 	/**
 	 * Request that listeners registered for one phase be executed before listeners registered for another phase.
-	 * Relying on the default phases supplied to {@link EventFactory#createCancellableWithPhases} should be preferred over manually
+	 * Relying on the default phases supplied to {@link EventFactory#createWithPhases} should be preferred over manually
 	 * registering phase ordering dependencies.
 	 *
 	 * <p>Incompatible ordering constraints such as cycles will lead to inconsistent behavior:
