@@ -459,7 +459,7 @@ tasks.register('runProductionClientGametest', net.fabricmc.loom.task.prod.Client
 	])
 	jvmArgs.addAll(debugArgs)
 
-	if (providers.environmentVariable("ENABLE_TRACY").present) {
+	if (providers.environmentVariable("ENABLE_TRACY").getOrNull() == "true") {
 		tracy {
 			tracyCapture = file("tracy-capture")
 			output = file("profile.tracy")
