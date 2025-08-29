@@ -27,6 +27,7 @@ import java.util.function.Function;
 
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.event.CancelStatus;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 
@@ -47,6 +48,13 @@ class ArrayBackedEvent<T> extends Event<T> {
 	ArrayBackedEvent(Class<? super T> type, Function<T[], T> invokerFactory) {
 		this.invokerFactory = invokerFactory;
 		this.handlers = (T[]) Array.newInstance(type, 0);
+		update();
+	}
+
+	@SuppressWarnings("unchecked")
+	ArrayBackedEvent(Function<CancelStatus, Function<T[], T>> invokerFactory, Class<? super T> type) {
+		this.handlers = (T[]) Array.newInstance(type, 0);
+		this.invokerFactory = invokerFactory.apply(this.cancelStatus);
 		update();
 	}
 
@@ -90,7 +98,7 @@ class ArrayBackedEvent<T> extends Event<T> {
 		// Rebuild handlers.
 		if (sortedPhases.size() == 1) {
 			// Special case with a single phase: use the array of the phase directly.
-			handlers = sortedPhases.get(0).listeners;
+			handlers = sortedPhases.getFirst().listeners;
 		} else {
 			@SuppressWarnings("unchecked")
 			T[] newHandlers = (T[]) Array.newInstance(handlers.getClass().getComponentType(), newLength);

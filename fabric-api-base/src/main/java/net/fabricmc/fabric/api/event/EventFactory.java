@@ -45,6 +45,21 @@ public final class EventFactory {
 	}
 
 	/**
+	 * Create an "array-backed" Event instance that allows you to check for the event's cancellation.
+	 *
+	 * @see #createArrayBacked(Class, Function)
+	 *
+	 * @param type           The listener class type.
+	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
+	 *                       Use the {@link CancelStatus} to check if the event is cancelled.
+	 * @param <T>            The listener type.
+	 * @return The Event instance.
+	 */
+	public static <T> Event<T> createCancellable(Class<? super T> type, Function<CancelStatus, Function<T[], T>> invokerFactory) {
+		return EventFactoryImpl.createCancellable(type, invokerFactory);
+	}
+
+	/**
 	 * Create an "array-backed" Event instance with a custom empty invoker,
 	 * for an event whose {@code invokerFactory} only delegates to the listeners.
 	 * <ul>
@@ -77,6 +92,31 @@ public final class EventFactory {
 	}
 
 	/**
+	 * Create an "array-backed" Event instance with a custom empty invoker,
+	 * for an event whose {@code invokerFactory} only delegates to the listeners.
+	 * Also allows you to check for the event's cancellation.
+	 *
+	 * @see #createArrayBacked(Class, Object, Function)
+	 *
+	 * @param type           The listener class type.
+	 * @param emptyInvoker   The custom empty invoker.
+	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
+	 * @param <T>            The listener type.
+	 * @return The Event instance.
+	 */
+	public static <T> Event<T> createCancellable(Class<T> type, T emptyInvoker, Function<CancelStatus, Function<T[], T>> invokerFactory) {
+		return createCancellable(type, (cancelStatus -> listeners -> {
+			if (listeners.length == 0) {
+				return emptyInvoker;
+			} else if (listeners.length == 1) {
+				return listeners[0];
+			} else {
+				return invokerFactory.apply(cancelStatus).apply(listeners);
+			}
+		}));
+	}
+
+	/**
 	 * Create an array-backed event with a list of default phases that get invoked in order.
 	 * Exposing the identifiers of the default phases as {@code public static final} constants is encouraged.
 	 *
@@ -101,6 +141,19 @@ public final class EventFactory {
 		EventFactoryImpl.ensureNoDuplicates(defaultPhases);
 
 		Event<T> event = createArrayBacked(type, invokerFactory);
+
+		for (int i = 1; i < defaultPhases.length; ++i) {
+			event.addPhaseOrdering(defaultPhases[i-1], defaultPhases[i]);
+		}
+
+		return event;
+	}
+
+	public static <T> Event<T> createCancellableWithPhases(Class<? super T> type, Function<CancelStatus, Function<T[], T>> invokerFactory, Identifier... defaultPhases) {
+		EventFactoryImpl.ensureContainsDefault(defaultPhases);
+		EventFactoryImpl.ensureNoDuplicates(defaultPhases);
+
+		Event<T> event = createCancellable(type, invokerFactory);
 
 		for (int i = 1; i < defaultPhases.length; ++i) {
 			event.addPhaseOrdering(defaultPhases[i-1], defaultPhases[i]);

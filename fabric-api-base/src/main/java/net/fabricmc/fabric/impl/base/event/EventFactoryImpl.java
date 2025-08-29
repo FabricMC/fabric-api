@@ -31,6 +31,7 @@ import com.google.common.collect.MapMaker;
 
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.event.CancelStatus;
 import net.fabricmc.fabric.api.event.Event;
 
 public final class EventFactoryImpl {
@@ -45,6 +46,12 @@ public final class EventFactoryImpl {
 
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
 		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, invokerFactory);
+		ARRAY_BACKED_EVENTS.add(event);
+		return event;
+	}
+
+	public static <T> Event<T> createCancellable(Class<? super T> type, Function<CancelStatus, Function<T[], T>> invokerFactory) {
+		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(invokerFactory, type);
 		ARRAY_BACKED_EVENTS.add(event);
 		return event;
 	}

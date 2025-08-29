@@ -41,6 +41,7 @@ public class EventTests {
 		testMultipleDefaultPhases();
 		testAddedPhases();
 		testCycle();
+		testCancellable();
 		NodeSorting.ENABLE_CYCLE_WARNING = false;
 		testDeterministicOrdering();
 		testTwoCycles();
@@ -265,7 +266,7 @@ public class EventTests {
 
 	@SuppressWarnings("SuspiciousListRemoveInLoop")
 	private static <T> void testAllPermutations(List<T> selected, List<T> toSelect, Consumer<List<T>> action) {
-		if (toSelect.size() == 0) {
+		if (toSelect.isEmpty()) {
 			action.accept(selected);
 		} else {
 			for (int i = 0; i < toSelect.size(); ++i) {
@@ -273,7 +274,7 @@ public class EventTests {
 				List<T> remaining = new ArrayList<>(toSelect);
 				remaining.remove(i);
 				testAllPermutations(selected, remaining, action);
-				selected.remove(selected.size()-1);
+				selected.removeLast();
 			}
 		}
 	}
@@ -285,7 +286,48 @@ public class EventTests {
 
 	private static void assertEquals(Object expected, Object actual) {
 		if (!Objects.equals(expected, actual)) {
-			throw new AssertionError(String.format("assertEquals failed%nexpected: %s%n but was: %s", expected, actual));
+			throw new AssertionError(String.format("assertEquals failed%nexpected: %s%nbut was: %s", expected, actual));
 		}
+	}
+
+	@FunctionalInterface
+	interface CancellableTest {
+		int onTest(int i);
+	}
+
+	private static final Event<CancellableTest> CANCELLABLE_EVENT = EventFactory.createCancellable(CancellableTest.class,
+			cancelStatus -> callbacks -> i -> {
+				cancelStatus.reset();
+
+				for (CancellableTest test : callbacks) {
+					if (cancelStatus.isCancelled()) {
+						return i;
+					}
+
+					i = test.onTest(i);
+				}
+
+				return i;
+			});
+
+	private static void testCancellable() {
+		CANCELLABLE_EVENT.registerCancellable(cancel -> i -> i * 4);
+
+		CANCELLABLE_EVENT.registerCancellable(cancel -> i -> {
+			if (i > 12) {
+				cancel.cancel();
+				return i;
+			}
+
+			return i + 5;
+		});
+
+		CANCELLABLE_EVENT.registerCancellable(cancel -> i -> i - 2);
+
+		int total = CANCELLABLE_EVENT.invoker().onTest(6);
+		assertEquals(24, total);
+
+		total = CANCELLABLE_EVENT.invoker().onTest(3);
+		assertEquals(15, total);
 	}
 }

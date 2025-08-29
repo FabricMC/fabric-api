@@ -16,12 +16,71 @@
 
 package net.fabricmc.fabric.api.event;
 
+import java.util.function.Function;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.util.Identifier;
 
 /**
  * Base class for Fabric's event implementations.
+ *
+ * <h1>Cancellable events</h1>
+ *
+ * <p>Cancellable events are events that may be marked as cancelled to prevent the following listeners' code or vanilla behaviour from executing.
+ *
+ * <h2>Creating a cancellable event</h2>
+ *
+ * <p>For event to be practically cancellable, create an event using {@link EventFactory#createCancellable(Class, Function)} or its {@linkplain EventFactory#createCancellable(Class, Object, Function) overload}.
+ * This gives you access to the event's {@link #cancelStatus}, whose methods you can then use to mark the event as cancelled.
+ *
+ * <p>Here's an example of a cancellable event with a void functional method that takes in a parameter of type {@code int}:
+ *
+ * <blockquote><pre>
+ * interface Test {
+ *     Event&lt;Test&gt; EVENT = EventFactory.createCancellable(Test.class,
+ *     	cancelStatus -> listeners -> i -> {
+ *     		cancelStatus.reset(); //*1
+ *
+ *     	    for (Test test : listeners) {
+ *     	        if (cancelStatus.isCancelled()) {
+ *     	            return;
+ *     	        }
+ *
+ *     	        test.onRun(i);
+ *     	    }
+ *     	});
+ *
+ *     void onRun(int i);
+ * }
+ * </pre></blockquote>
+ *
+ * <p>*1: See {@link CancelStatus#reset()} for instructions when and where to call this method.
+ *
+ * <h2>Registering listeners</h2>
+ *
+ * <p>Register listeners using the {@link #registerCancellable(Function)} method to get access to the {@link #cancelStatus}.
+ * Here's an example of such registration and cancellation:
+ *
+ * <blockquote><pre>
+ * Event&lt;...&gt; EVENT = EventFactory.createCancellable(...);
+ *
+ * void onTest();
+ *
+ * void register() {
+ *     EVENT.registerCancellable(cancelStatus -> () -> {
+ *     	if (...) {
+ *     	    cancelStatus.cancel();
+ *     	}
+ *     })
+ * }
+ * </pre></blockquote>
+ *
+ * <p>If you really need to cancel an event, follow these rules:
+ * <ul>
+ *     <li>First, consider if the cancelling is really necessary, and if the logic cannot be implemented somehow else.
+ *     <li>If not, be as specific as you can to avoid stopping other listeners' code from executing.
+ * </ul>
  *
  * @param <T> The listener type.
  * @see EventFactory
@@ -34,6 +93,8 @@ public abstract class Event<T> {
 	 * executed upon event emission.
 	 */
 	protected volatile T invoker;
+
+	protected CancelStatus cancelStatus = new CancelStatus();
 
 	/**
 	 * Returns the invoker instance.
@@ -48,6 +109,14 @@ public abstract class Event<T> {
 		return invoker;
 	}
 
+	public void cancel() {
+		this.cancelStatus.cancel();
+	}
+
+	public boolean isCancelled() {
+		return this.cancelStatus.isCancelled();
+	}
+
 	/**
 	 * Register a listener to the event, in the default phase.
 	 * Have a look at {@link #addPhaseOrdering} for an explanation of event phases.
@@ -58,13 +127,13 @@ public abstract class Event<T> {
 
 	/**
 	 * The identifier of the default phase.
-	 * Have a look at {@link EventFactory#createWithPhases} for an explanation of event phases.
+	 * Have a look at {@link EventFactory#createCancellableWithPhases} for an explanation of event phases.
 	 */
 	public static final Identifier DEFAULT_PHASE = Identifier.of("fabric", "default");
 
 	/**
 	 * Register a listener to the event for the specified phase.
-	 * Have a look at {@link EventFactory#createWithPhases} for an explanation of event phases.
+	 * Have a look at {@link EventFactory#createCancellableWithPhases} for an explanation of event phases.
 	 *
 	 * @param phase Identifier of the phase this listener should be registered for. It will be created if it didn't exist yet.
 	 * @param listener The desired listener.
@@ -74,9 +143,13 @@ public abstract class Event<T> {
 		register(listener);
 	}
 
+	public void registerCancellable(Function<CancelStatus, T> function) {
+		register(function.apply(this.cancelStatus));
+	}
+
 	/**
 	 * Request that listeners registered for one phase be executed before listeners registered for another phase.
-	 * Relying on the default phases supplied to {@link EventFactory#createWithPhases} should be preferred over manually
+	 * Relying on the default phases supplied to {@link EventFactory#createCancellableWithPhases} should be preferred over manually
 	 * registering phase ordering dependencies.
 	 *
 	 * <p>Incompatible ordering constraints such as cycles will lead to inconsistent behavior:
