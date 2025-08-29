@@ -94,6 +94,8 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - custom items prefixed with 'smelting fuels included by' are valid smelting fuels
 		//  - dead bush is now considered as a dangerous block like sweet berry bushes (all entities except foxes should avoid it)
 		//  - quartz pillars are strippable to hay blocks
+		//  - hay blocks are strippable to tnt
+		//  - oak stairs are strippable to spruce stairs, while preserving all block state properties
 		//  - green wool is tillable to lime wool
 		//  - copper ore, iron ore, gold ore, and diamond ore can be waxed into their deepslate variants and scraped back again
 		//  - aforementioned ores can be scraped from diamond -> gold -> iron -> copper
@@ -122,16 +124,8 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		LandPathNodeTypesRegistry.register(Blocks.DEAD_BUSH, PathNodeType.DAMAGE_OTHER, PathNodeType.DANGER_OTHER);
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
-
-		// assert that StrippableBlockRegistry throws when the blocks don't have 'axis'
-		try {
-			StrippableBlockRegistry.register(Blocks.BLUE_WOOL, Blocks.OAK_LOG);
-			StrippableBlockRegistry.register(Blocks.HAY_BLOCK, Blocks.BLUE_WOOL);
-			throw new AssertionError("StrippableBlockRegistry didn't throw when blocks were missing the 'axis' property!");
-		} catch (IllegalArgumentException e) {
-			// expected behavior
-			LOGGER.info("StrippableBlockRegistry test passed!");
-		}
+		StrippableBlockRegistry.register(Blocks.HAY_BLOCK, Blocks.TNT);
+		StrippableBlockRegistry.registerCopyState(Blocks.OAK_STAIRS, Blocks.SPRUCE_STAIRS);
 
 		TillableBlockRegistry.register(Blocks.GREEN_WOOL, context -> true, HoeItem.createTillAction(Blocks.LIME_WOOL.getDefaultState()));
 

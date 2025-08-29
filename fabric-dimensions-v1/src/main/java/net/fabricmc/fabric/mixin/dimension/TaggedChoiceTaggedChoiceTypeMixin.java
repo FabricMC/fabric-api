@@ -20,6 +20,7 @@ import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.types.templates.TaggedChoice;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,11 +54,11 @@ public class TaggedChoiceTaggedChoiceTypeMixin<K> implements TaggedChoiceTypeExt
 	@Inject(
 			method = "getMapCodec", at = @At("HEAD"), cancellable = true, remap = false
 	)
-	private void onGetCodec(K k, CallbackInfoReturnable<DataResult<? extends Codec<?>>> cir) {
+	private void onGetCodec(K k, CallbackInfoReturnable<DataResult<? extends MapCodec<?>>> cir) {
 		if (failSoft) {
 			if (!types.containsKey(k)) {
 				LOGGER.warn("Not recognizing key {}. Using pass-through codec. {}", k, this);
-				cir.setReturnValue(DataResult.success(Codec.PASSTHROUGH));
+				cir.setReturnValue(DataResult.success(MapCodec.assumeMapUnsafe(Codec.PASSTHROUGH)));
 			}
 		}
 	}

@@ -41,6 +41,8 @@ tasks.register('generateAccessWidener') {
 			lines.add("")
 			generateCreatorEntityTrackedDataMethods(lines, fs)
 			lines.add("")
+			generateEnchantmentMethods(lines, fs)
+			lines.add("")
 		}
 
 		Path clientJar = loom.namedMinecraftProvider.parentMinecraftProvider.clientOnlyJar.path
@@ -221,6 +223,21 @@ def generateCreatorEntityTrackedDataMethods(List<String> lines, FileSystem fs) {
 	generateTrackedDataFields("net/minecraft/entity/decoration/DisplayEntity\$BlockDisplayEntity", lines, fs)
 	generateTrackedDataFields("net/minecraft/entity/decoration/DisplayEntity\$TextDisplayEntity", lines, fs)
 	generateTrackedDataFields("net/minecraft/entity/decoration/InteractionEntity", lines, fs, "shouldRespond")
+}
+
+def generateEnchantmentMethods(List<String> lines, FileSystem fs) {
+	lines.add("# Private methods of Enchantment and EnchantmentHelper")
+
+	for (def node : [ loadClass(fs.getPath("net/minecraft/enchantment/EnchantmentHelper.class")), loadClass(fs.getPath("net/minecraft/enchantment/Enchantment.class")) ]) {
+		for (def method : node.methods) {
+			// All private inner methods of EnchantmentHelper
+			if ((method.access & Opcodes.ACC_PRIVATE) != 0 && !method.name.startsWith("method_")) {
+				lines.add("transitive-accessible method $node.name $method.name $method.desc")
+			}
+		}
+	}
+	lines.add('transitive-accessible class net/minecraft/enchantment/EnchantmentHelper$Consumer')
+	lines.add('transitive-accessible class net/minecraft/enchantment/EnchantmentHelper$ContextAwareConsumer')
 }
 
 ClassNode loadClass(Path path) {
