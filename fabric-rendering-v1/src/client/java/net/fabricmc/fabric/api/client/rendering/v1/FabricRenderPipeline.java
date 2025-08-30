@@ -36,7 +36,7 @@ public interface FabricRenderPipeline {
 	}
 
 	/**
-	 * General purpose fabric extensions to the {@link RenderPipeline.Builder} class
+	 * General purpose Fabric extensions to the {@link RenderPipeline.Builder} class.
 	 *
 	 * <p>Note: This interface is automatically implemented on all render pipeline builders via Mixin and interface injection.
 	 */
