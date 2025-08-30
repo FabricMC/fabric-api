@@ -21,7 +21,7 @@ import java.util.Optional;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 
 /**
- * General purpose fabric extensions to the {@link RenderPipeline} class
+ * General purpose Fabric extensions to the {@link RenderPipeline} class.
  *
  * <p>Note: This interface is automatically implemented on all render pipelines via Mixin and interface injection.
  */
