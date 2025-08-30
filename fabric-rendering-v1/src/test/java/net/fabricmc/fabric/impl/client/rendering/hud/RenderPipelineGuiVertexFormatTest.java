@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.client.rendering.hud;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import org.junit.jupiter.api.Assertions;
