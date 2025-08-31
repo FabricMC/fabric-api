@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.LeavesBlock;
-import net.minecraft.block.TransparentBlock;
+import net.minecraft.block.TranslucentBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.block.FluidRenderer;
@@ -82,7 +82,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 
 	@Override
 	public boolean isBlockTransparent(Block block) {
-		return transparencyForOverlay.getOrDefault(block, block instanceof TransparentBlock || block instanceof LeavesBlock);
+		return transparencyForOverlay.getOrDefault(block, block instanceof TranslucentBlock || block instanceof LeavesBlock);
 	}
 
 	public void onFluidRendererReload(FluidRenderer renderer, Sprite[] waterSprites, Sprite[] lavaSprites, Sprite waterOverlay) {
