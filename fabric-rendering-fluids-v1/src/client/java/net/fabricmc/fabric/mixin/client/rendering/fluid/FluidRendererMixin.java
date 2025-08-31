@@ -87,21 +87,28 @@ public class FluidRendererMixin {
 		return info.handler != null ? info.sprites : original;
 	}
 
-	@ModifyVariable(method = "render", at = @At("STORE"), ordinal = 0)
+	@ModifyExpressionValue(
+			method = "render",
+			at = {
+					@At(value = "CONSTANT", args = "intValue=" + 0xffffff),
+					@At(value = "INVOKE", target = "Lnet/minecraft/client/color/world/BiomeColors;getWaterColor(Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/util/math/BlockPos;)I")
+			}
+	)
 	public int modTintColor(int original, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
 		FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
 		return info.handler != null ? info.handler.getFluidColor(world, pos, fluidState) : original;
 	}
 
 	@Definition(id = "getFrameU", method = "Lnet/minecraft/client/texture/Sprite;getFrameU(F)F")
-	@Expression("@(?).getFrameU(0.0)")
+	@Definition(id = "sprite2", local = @Local(type = Sprite.class))
+	@Expression("@(sprite2).getFrameU(0.0)")
 	@ModifyVariable(
 			method = "render",
 			at = @At(value = "MIXINEXTRAS:EXPRESSION", ordinal = 0),
 			slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/render/block/FluidRenderer;waterOverlaySprite:Lnet/minecraft/client/texture/Sprite;"))
 	)
 	private Sprite modifyOverlaySprite(
-			Sprite sprite,
+			Sprite sprite2,
 			BlockRenderView world,
 			@Local(ordinal = 1) BlockPos neighborPos,
 			@Local(ordinal = 0) boolean isLava,
