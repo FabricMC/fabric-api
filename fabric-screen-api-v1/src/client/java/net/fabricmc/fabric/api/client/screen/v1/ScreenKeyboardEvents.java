@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.screen.v1;
 
 import java.util.Objects;
 
+import net.minecraft.class_11908;
 import net.minecraft.client.gui.screen.Screen;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -111,14 +112,12 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Checks if a key should be allowed to be pressed.
 		 *
-		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
-		 * @param scancode the unique/platform-specific scan code of the keyboard input
-		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @param context the context of the key press, containing the key, scancode and modifiers
 		 * @return whether the key press should be processed
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		boolean allowKeyPress(Screen screen, int key, int scancode, int modifiers);
+		boolean allowKeyPress(Screen screen, class_11908 context);
 	}
 
 	@FunctionalInterface
@@ -126,13 +125,11 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called before a key press is handled.
 		 *
-		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
-		 * @param scancode the unique/platform-specific scan code of the keyboard input
-		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @param context the context of the key press, containing the key, scancode and modifiers
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void beforeKeyPress(Screen screen, int key, int scancode, int modifiers);
+		void beforeKeyPress(Screen screen, class_11908 context);
 	}
 
 	@FunctionalInterface
@@ -140,13 +137,11 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called after a key press is handled.
 		 *
-		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
-		 * @param scancode the unique/platform-specific scan code of the keyboard input
-		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @param context the context of the key press, containing the key, scancode and modifiers
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void afterKeyPress(Screen screen, int key, int scancode, int modifiers);
+		void afterKeyPress(Screen screen, class_11908 context);
 	}
 
 	@FunctionalInterface
@@ -154,14 +149,12 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Checks if a pressed key should be allowed to be released.
 		 *
-		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
-		 * @param scancode the unique/platform-specific scan code of the keyboard input
-		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @param context the context of the key press, containing the key, scancode and modifiers
 		 * @return whether the key press should be released
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		boolean allowKeyRelease(Screen screen, int key, int scancode, int modifiers);
+		boolean allowKeyRelease(Screen screen, class_11908 context);
 	}
 
 	@FunctionalInterface
@@ -169,13 +162,11 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called before a pressed key has been released.
 		 *
-		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
-		 * @param scancode the unique/platform-specific scan code of the keyboard input
-		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @param context the context of the key press, containing the key, scancode and modifiers
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void beforeKeyRelease(Screen screen, int key, int scancode, int modifiers);
+		void beforeKeyRelease(Screen screen, class_11908 context);
 	}
 
 	@FunctionalInterface
@@ -183,12 +174,10 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called after a pressed key has been released.
 		 *
-		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
-		 * @param scancode the unique/platform-specific scan code of the keyboard input
-		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @param context the context of the key press, containing the key, scancode and modifiers
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void afterKeyRelease(Screen screen, int key, int scancode, int modifiers);
+		void afterKeyRelease(Screen screen, class_11908 context);
 	}
 }

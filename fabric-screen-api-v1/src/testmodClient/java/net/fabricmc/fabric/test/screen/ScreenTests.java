@@ -84,13 +84,13 @@ public final class ScreenTests implements ClientModInitializer {
 				drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20);
 			});
 
-			ScreenKeyboardEvents.allowKeyPress(screen).register((_screen, key, scancode, modifiers) -> {
-				LOGGER.info("After Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
+			ScreenKeyboardEvents.allowKeyPress(screen).register((_screen, context) -> {
+				LOGGER.info("After Pressed, Context: {}", context);
 				return true; // Let actions continue
 			});
 
-			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, key, scancode, modifiers) -> {
-				LOGGER.warn("Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
+			ScreenKeyboardEvents.afterKeyPress(screen).register((_screen, context) -> {
+				LOGGER.warn("Pressed, Context: {}", context);
 			});
 		} else if (screen instanceof CreativeInventoryScreen) {
 			Screens.getButtons(screen).add(new TestButtonWidget());

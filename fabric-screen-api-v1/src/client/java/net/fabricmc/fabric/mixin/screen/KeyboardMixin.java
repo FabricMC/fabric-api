@@ -21,6 +21,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.minecraft.class_11908;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.gui.screen.Screen;
 
@@ -28,47 +29,47 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 
 @Mixin(Keyboard.class)
 abstract class KeyboardMixin {
-	@WrapOperation(method = "onKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;keyPressed(III)Z"))
-	private boolean invokeKeyPressedEvents(Screen screen, int key, int scancode, int modifiers, Operation<Boolean> operation) {
+	@WrapOperation(method = "onKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;keyPressed(Lnet/minecraft/class_11908;)Z"))
+	private boolean invokeKeyPressedEvents(Screen screen, class_11908 ctx, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,
 		// regardless of whether the screen changes within the handler or event invocations.
 
 		if (screen != null) {
-			if (!ScreenKeyboardEvents.allowKeyPress(screen).invoker().allowKeyPress(screen, key, scancode, modifiers)) {
+			if (!ScreenKeyboardEvents.allowKeyPress(screen).invoker().allowKeyPress(screen, ctx)) {
 				// Set this press action as handled
 				return true;
 			}
 
-			ScreenKeyboardEvents.beforeKeyPress(screen).invoker().beforeKeyPress(screen, key, scancode, modifiers);
+			ScreenKeyboardEvents.beforeKeyPress(screen).invoker().beforeKeyPress(screen, ctx);
 		}
 
-		boolean result = operation.call(screen, key, scancode, modifiers);
+		boolean result = operation.call(screen, ctx);
 
 		if (screen != null) {
-			ScreenKeyboardEvents.afterKeyPress(screen).invoker().afterKeyPress(screen, key, scancode, modifiers);
+			ScreenKeyboardEvents.afterKeyPress(screen).invoker().afterKeyPress(screen, ctx);
 		}
 
 		return result;
 	}
 
-	@WrapOperation(method = "onKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;keyReleased(III)Z"))
-	private boolean invokeKeyReleasedEvents(Screen screen, int key, int scancode, int modifiers, Operation<Boolean> operation) {
+	@WrapOperation(method = "onKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;keyReleased(Lnet/minecraft/class_11908;)Z"))
+	private boolean invokeKeyReleasedEvents(Screen screen, class_11908 ctx, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,
 		// regardless of whether the screen changes within the handler or event invocations.
 
 		if (screen != null) {
-			if (!ScreenKeyboardEvents.allowKeyRelease(screen).invoker().allowKeyRelease(screen, key, scancode, modifiers)) {
+			if (!ScreenKeyboardEvents.allowKeyRelease(screen).invoker().allowKeyRelease(screen, ctx)) {
 				// Set this release action as handled
 				return true;
 			}
 
-			ScreenKeyboardEvents.beforeKeyRelease(screen).invoker().beforeKeyRelease(screen, key, scancode, modifiers);
+			ScreenKeyboardEvents.beforeKeyRelease(screen).invoker().beforeKeyRelease(screen, ctx);
 		}
 
-		boolean result = operation.call(screen, key, scancode, modifiers);
+		boolean result = operation.call(screen, ctx);
 
 		if (screen != null) {
-			ScreenKeyboardEvents.afterKeyRelease(screen).invoker().afterKeyRelease(screen, key, scancode, modifiers);
+			ScreenKeyboardEvents.afterKeyRelease(screen).invoker().afterKeyRelease(screen, ctx);
 		}
 
 		return result;

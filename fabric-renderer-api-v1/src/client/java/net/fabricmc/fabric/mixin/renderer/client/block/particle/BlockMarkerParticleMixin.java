@@ -30,7 +30,7 @@ import net.minecraft.util.math.BlockPos;
 @Mixin(BlockMarkerParticle.class)
 abstract class BlockMarkerParticleMixin {
 	@Redirect(method = "<init>(Lnet/minecraft/client/world/ClientWorld;DDDLnet/minecraft/block/BlockState;)V", at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/BlockModels.getModelParticleSprite(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/texture/Sprite;"))
-	private Sprite getModelParticleSpriteProxy(BlockModels models, BlockState state, ClientWorld world, double x, double y, double z, BlockState state1) {
+	private static Sprite getModelParticleSpriteProxy(BlockModels models, BlockState state, ClientWorld world, double x, double y, double z, BlockState state1) {
 		return models.getModelParticleSprite(state, world, BlockPos.ofFloored(x, y, z));
 	}
 }

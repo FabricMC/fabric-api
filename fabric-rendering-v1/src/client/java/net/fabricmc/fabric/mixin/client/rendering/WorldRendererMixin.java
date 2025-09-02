@@ -112,7 +112,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 		return matrixStack;
 	}
 
-	@Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=blockentities", ordinal = 0))
+	@Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=blockEntities", ordinal = 0))
 	private void afterEntities(CallbackInfo ci) {
 		WorldRenderEvents.AFTER_ENTITIES.invoker().afterEntities(context);
 	}
