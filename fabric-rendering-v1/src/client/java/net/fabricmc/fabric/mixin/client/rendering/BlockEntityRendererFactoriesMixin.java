@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl
 public abstract class BlockEntityRendererFactoriesMixin {
 	@Shadow()
 	@Final
-	private static Map<BlockEntityType<?>, BlockEntityRendererFactory<?>> FACTORIES;
+	private static Map<BlockEntityType<?>, BlockEntityRendererFactory<?, ?>> FACTORIES;
 
 	@Inject(at = @At("RETURN"), method = "<clinit>*")
 	private static void init(CallbackInfo ci) {

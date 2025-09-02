@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.Slice;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.particle.BillboardParticle;
 import net.minecraft.client.particle.BlockDustParticle;
-import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.util.math.BlockPos;
@@ -36,13 +36,13 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleRenderEvents;
 
 // Implements ParticleRenderEvents.ALLOW_BLOCK_DUST_TINT
 @Mixin(BlockDustParticle.class)
-abstract class BlockDustParticleMixin extends SpriteBillboardParticle {
+abstract class BlockDustParticleMixin extends BillboardParticle {
 	@Shadow
 	@Final
 	private BlockPos blockPos;
 
 	private BlockDustParticleMixin() {
-		super(null, 0, 0, 0);
+		super(null, 0, 0, 0, null);
 	}
 
 	@ModifyVariable(
@@ -50,7 +50,7 @@ abstract class BlockDustParticleMixin extends SpriteBillboardParticle {
 			at = @At("LOAD"),
 			argsOnly = true,
 			slice = @Slice(
-					from = @At(value = "FIELD", target = "Lnet/minecraft/client/particle/BlockDustParticle;blue:F", ordinal = 0),
+					from = @At(value = "FIELD", target = "Lnet/minecraft/client/particle/BlockDustParticle;field_62635:F", ordinal = 0),
 					to = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z")
 			),
 			allow = 1

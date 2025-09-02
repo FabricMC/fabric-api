@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.screen;
 
+import net.minecraft.class_11907;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -38,7 +39,7 @@ class StopSoundButton extends PressableWidget {
 	}
 
 	@Override
-	public void onPress() {
+	public void onPress(class_11907 ctx) {
 		MinecraftClient.getInstance().getSoundManager().stopAll();
 	}
 

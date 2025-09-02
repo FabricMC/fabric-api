@@ -21,6 +21,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.minecraft.class_11909;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.screen.Screen;
 
@@ -28,70 +29,70 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 
 @Mixin(Mouse.class)
 abstract class MouseMixin {
-	@WrapOperation(method = "onMouseButton", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDIZ)Z"))
-	private boolean invokeMouseClickedEvents(Screen screen, double mouseX, double mouseY, int button, boolean doubleClick, Operation<Boolean> operation) {
+	@WrapOperation(method = "onMouseButton", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(Lnet/minecraft/class_11909;Z)Z"))
+	private boolean invokeMouseClickedEvents(Screen screen, class_11909 ctx, boolean doubleClick, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,
 		// regardless of whether the screen changes within the handler or event invocations.
 
 		if (screen != null) {
-			if (!ScreenMouseEvents.allowMouseClick(screen).invoker().allowMouseClick(screen, mouseX, mouseY, button)) {
+			if (!ScreenMouseEvents.allowMouseClick(screen).invoker().allowMouseClick(screen, ctx)) {
 				// Set this press action as handled
 				return true;
 			}
 
-			ScreenMouseEvents.beforeMouseClick(screen).invoker().beforeMouseClick(screen, mouseX, mouseY, button);
+			ScreenMouseEvents.beforeMouseClick(screen).invoker().beforeMouseClick(screen, ctx);
 		}
 
-		boolean result = operation.call(screen, mouseX, mouseY, button, doubleClick);
+		boolean result = operation.call(screen, ctx, doubleClick);
 
 		if (screen != null) {
-			ScreenMouseEvents.afterMouseClick(screen).invoker().afterMouseClick(screen, mouseX, mouseY, button);
+			ScreenMouseEvents.afterMouseClick(screen).invoker().afterMouseClick(screen, ctx);
 		}
 
 		return result;
 	}
 
-	@WrapOperation(method = "onMouseButton", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseReleased(DDI)Z"))
-	private boolean invokeMousePressedEvents(Screen screen, double mouseX, double mouseY, int button, Operation<Boolean> operation) {
+	@WrapOperation(method = "onMouseButton", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseReleased(Lnet/minecraft/class_11909;)Z"))
+	private boolean invokeMousePressedEvents(Screen screen, class_11909 ctx, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,
 		// regardless of whether the screen changes within the handler or event invocations.
 
 		if (screen != null) {
-			if (!ScreenMouseEvents.allowMouseRelease(screen).invoker().allowMouseRelease(screen, mouseX, mouseY, button)) {
+			if (!ScreenMouseEvents.allowMouseRelease(screen).invoker().allowMouseRelease(screen, ctx)) {
 				// Set this release action as handled
 				return true;
 			}
 
-			ScreenMouseEvents.beforeMouseRelease(screen).invoker().beforeMouseRelease(screen, mouseX, mouseY, button);
+			ScreenMouseEvents.beforeMouseRelease(screen).invoker().beforeMouseRelease(screen, ctx);
 		}
 
-		boolean result = operation.call(screen, mouseX, mouseY, button);
+		boolean result = operation.call(screen, ctx);
 
 		if (screen != null) {
-			ScreenMouseEvents.afterMouseRelease(screen).invoker().afterMouseRelease(screen, mouseX, mouseY, button);
+			ScreenMouseEvents.afterMouseRelease(screen).invoker().afterMouseRelease(screen, ctx);
 		}
 
 		return result;
 	}
 
-	@WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseDragged(DDIDD)Z"))
-	private boolean invokeMouseDragEvents(Screen screen, double mouseX, double mouseY, int button, double horizontalAmount, double verticalAmount, Operation<Boolean> operation) {
+	@WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseDragged(Lnet/minecraft/class_11909;DD)Z"))
+	private boolean invokeMouseDragEvents(Screen screen, class_11909 ctx, double horizontalAmount, double verticalAmount, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,
 		// regardless of whether the screen changes within the handler or event invocations.
 
 		if (screen != null) {
-			if (!ScreenMouseEvents.allowMouseDrag(screen).invoker().allowMouseDrag(screen, mouseX, mouseY, button, horizontalAmount, verticalAmount)) {
+			if (!ScreenMouseEvents.allowMouseDrag(screen).invoker().allowMouseDrag(screen, ctx, horizontalAmount, verticalAmount)) {
 				// Set this drag action as handled
 				return true;
 			}
 
-			ScreenMouseEvents.beforeMouseDrag(screen).invoker().beforeMouseDrag(screen, mouseX, mouseY, button, horizontalAmount, verticalAmount);
+			ScreenMouseEvents.beforeMouseDrag(screen).invoker().beforeMouseDrag(screen, ctx, horizontalAmount, verticalAmount);
 		}
 
-		boolean result = operation.call(screen, mouseX, mouseY, button, horizontalAmount, verticalAmount);
+		boolean result = operation.call(screen, ctx, horizontalAmount, verticalAmount);
 
 		if (screen != null) {
-			ScreenMouseEvents.afterMouseDrag(screen).invoker().afterMouseDrag(screen, mouseX, mouseY, button, horizontalAmount, verticalAmount);
+			ScreenMouseEvents.afterMouseDrag(screen).invoker().afterMouseDrag(screen, ctx, horizontalAmount, verticalAmount);
 		}
 
 		return result;

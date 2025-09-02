@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.screen.v1;
 
 import java.util.Objects;
 
+import net.minecraft.class_11909;
 import net.minecraft.client.gui.screen.Screen;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -190,12 +191,10 @@ public final class ScreenMouseEvents {
 		 * Checks if the mouse click should be allowed in a screen.
 		 *
 		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param context the context of the mouse click, containing the mouse position and button
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		boolean allowMouseClick(Screen screen, double mouseX, double mouseY, int button);
+		boolean allowMouseClick(Screen screen, class_11909 context);
 	}
 
 	@FunctionalInterface
@@ -204,12 +203,10 @@ public final class ScreenMouseEvents {
 		 * Called before a mouse click in a screen.
 		 *
 		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param context the context of the mouse click, containing the mouse position and button
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void beforeMouseClick(Screen screen, double mouseX, double mouseY, int button);
+		void beforeMouseClick(Screen screen, class_11909 context);
 	}
 
 	@FunctionalInterface
@@ -218,12 +215,10 @@ public final class ScreenMouseEvents {
 		 * Called after a mouse click in a screen.
 		 *
 		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param context the context of the mouse click, containing the mouse position and button
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void afterMouseClick(Screen screen, double mouseX, double mouseY, int button);
+		void afterMouseClick(Screen screen, class_11909 context);
 	}
 
 	@FunctionalInterface
@@ -232,12 +227,10 @@ public final class ScreenMouseEvents {
 		 * Checks if the mouse click should be allowed to release in a screen.
 		 *
 		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param context the context of the mouse release, containing the mouse position and button
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		boolean allowMouseRelease(Screen screen, double mouseX, double mouseY, int button);
+		boolean allowMouseRelease(Screen screen, class_11909 context);
 	}
 
 	@FunctionalInterface
@@ -246,12 +239,10 @@ public final class ScreenMouseEvents {
 		 * Called before a mouse click has released in a screen.
 		 *
 		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param context the context of the mouse release, containing the mouse position and button
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void beforeMouseRelease(Screen screen, double mouseX, double mouseY, int button);
+		void beforeMouseRelease(Screen screen, class_11909 context);
 	}
 
 	@FunctionalInterface
@@ -260,12 +251,10 @@ public final class ScreenMouseEvents {
 		 * Called after a mouse click has released in a screen.
 		 *
 		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param context the context of the mouse release, containing the mouse position and button
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void afterMouseRelease(Screen screen, double mouseX, double mouseY, int button);
+		void afterMouseRelease(Screen screen, class_11909 context);
 	}
 
 	@FunctionalInterface
@@ -275,15 +264,13 @@ public final class ScreenMouseEvents {
 		 * down.
 		 *
 		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param context the context of the mouse drag, containing the mouse position and button
 		 * @param horizontalAmount the horizontal drag amount
 		 * @param verticalAmount the vertical drag amount
 		 * @return whether the mouse should be allowed to drag
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		boolean allowMouseDrag(Screen screen, double mouseX, double mouseY, int button, double horizontalAmount, double verticalAmount);
+		boolean allowMouseDrag(Screen screen, class_11909 context, double horizontalAmount, double verticalAmount);
 	}
 
 	@FunctionalInterface
@@ -292,14 +279,12 @@ public final class ScreenMouseEvents {
 		 * Called before a mouse is dragged on screen.
 		 *
 		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param context the context of the mouse drag, containing the mouse position and button
 		 * @param horizontalAmount the horizontal drag amount
 		 * @param verticalAmount the vertical drag amount
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void beforeMouseDrag(Screen screen, double mouseX, double mouseY, int button, double horizontalAmount, double verticalAmount);
+		void beforeMouseDrag(Screen screen, class_11909 context, double horizontalAmount, double verticalAmount);
 	}
 
 	@FunctionalInterface
@@ -308,14 +293,12 @@ public final class ScreenMouseEvents {
 		 * Called after a mouse is dragged on screen.
 		 *
 		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param context the context of the mouse drag, containing the mouse position and button
 		 * @param horizontalAmount the horizontal drag amount
 		 * @param verticalAmount the vertical drag amount
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void afterMouseDrag(Screen screen, double mouseX, double mouseY, int button, double horizontalAmount, double verticalAmount);
+		void afterMouseDrag(Screen screen, class_11909 context, double horizontalAmount, double verticalAmount);
 	}
 
 	@FunctionalInterface

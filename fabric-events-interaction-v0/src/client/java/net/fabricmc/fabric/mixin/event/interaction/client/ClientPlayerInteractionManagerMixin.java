@@ -104,7 +104,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 		if (result != ActionResult.PASS) {
 			if (result.isAccepted()) {
 				// send interaction packet to the server with a new sequentially assigned id
-				sendSequencedPacket(player.clientWorld, id -> new PlayerInteractBlockC2SPacket(hand, blockHitResult, id));
+				sendSequencedPacket((ClientWorld) player.getEntityWorld(), id -> new PlayerInteractBlockC2SPacket(hand, blockHitResult, id));
 			}
 
 			info.setReturnValue(result);

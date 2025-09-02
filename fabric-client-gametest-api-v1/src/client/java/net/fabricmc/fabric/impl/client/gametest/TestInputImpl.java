@@ -24,10 +24,14 @@ import java.util.function.Function;
 import com.google.common.base.Preconditions;
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.class_11905;
+import net.minecraft.class_11908;
+import net.minecraft.class_11910;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.client.gametest.v1.TestInput;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -39,6 +43,7 @@ import net.fabricmc.fabric.mixin.client.gametest.input.MouseAccessor;
 
 public final class TestInputImpl implements TestInput {
 	private static final Set<InputUtil.Key> KEYS_DOWN = new HashSet<>();
+	private static final boolean IS_MACOS = Util.getOperatingSystem() == Util.OperatingSystem.OSX;
 	private final ClientGameTestContext context;
 
 	public TestInputImpl(ClientGameTestContext context) {
@@ -100,7 +105,7 @@ public final class TestInputImpl implements TestInput {
 	public void holdControl() {
 		ThreadingImpl.checkOnGametestThread("holdControl");
 
-		holdKey(MinecraftClient.IS_SYSTEM_MAC ? InputUtil.GLFW_KEY_LEFT_SUPER : InputUtil.GLFW_KEY_LEFT_CONTROL);
+		holdKey(IS_MACOS ? InputUtil.GLFW_KEY_LEFT_SUPER : InputUtil.GLFW_KEY_LEFT_CONTROL);
 	}
 
 	@Override
@@ -162,7 +167,7 @@ public final class TestInputImpl implements TestInput {
 	public void releaseControl() {
 		ThreadingImpl.checkOnGametestThread("releaseControl");
 
-		releaseKey(MinecraftClient.IS_SYSTEM_MAC ? InputUtil.GLFW_KEY_LEFT_SUPER : InputUtil.GLFW_KEY_LEFT_CONTROL);
+		releaseKey(IS_MACOS ? InputUtil.GLFW_KEY_LEFT_SUPER : InputUtil.GLFW_KEY_LEFT_CONTROL);
 	}
 
 	@Override
@@ -181,9 +186,9 @@ public final class TestInputImpl implements TestInput {
 
 	private static void pressOrReleaseKey(MinecraftClient client, InputUtil.Key key, int action) {
 		switch (key.getCategory()) {
-		case KEYSYM -> client.keyboard.onKey(client.getWindow().getHandle(), key.getCode(), 0, action, 0);
-		case SCANCODE -> client.keyboard.onKey(client.getWindow().getHandle(), GLFW.GLFW_KEY_UNKNOWN, key.getCode(), action, 0);
-		case MOUSE -> ((MouseAccessor) client.mouse).invokeOnMouseButton(client.getWindow().getHandle(), key.getCode(), action, 0);
+		case KEYSYM -> ((KeyboardAccessor) client.keyboard).invokeOnKey(client.getWindow().getHandle(), action, new class_11908(key.getCode(), 0, 0));
+		case SCANCODE -> ((KeyboardAccessor) client.keyboard).invokeOnKey(client.getWindow().getHandle(), action, new class_11908(GLFW.GLFW_KEY_UNKNOWN, key.getCode(), 0));
+		case MOUSE -> ((MouseAccessor) client.mouse).invokeOnMouseButton(client.getWindow().getHandle(), new class_11910(key.getCode(), 0), action);
 		}
 	}
 
@@ -278,7 +283,7 @@ public final class TestInputImpl implements TestInput {
 	public void typeChar(int codePoint) {
 		ThreadingImpl.checkOnGametestThread("typeChar");
 
-		context.runOnClient(client -> ((KeyboardAccessor) client.keyboard).invokeOnChar(client.getWindow().getHandle(), codePoint, 0));
+		context.runOnClient(client -> ((KeyboardAccessor) client.keyboard).invokeOnChar(client.getWindow().getHandle(), new class_11905(codePoint, 0)));
 	}
 
 	@Override
@@ -287,7 +292,7 @@ public final class TestInputImpl implements TestInput {
 
 		context.runOnClient(client -> {
 			chars.chars().forEach(codePoint -> {
-				((KeyboardAccessor) client.keyboard).invokeOnChar(client.getWindow().getHandle(), codePoint, 0);
+				((KeyboardAccessor) client.keyboard).invokeOnChar(client.getWindow().getHandle(), new class_11905(codePoint, 0));
 			});
 		});
 	}

@@ -226,12 +226,12 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		ServerPlayerEvents.JOIN.register(player -> {
-			assertOnServerThread(player.getServer());
+			assertOnServerThread(player.getEntityWorld().getServer());
 			LOGGER.info("Observed player {} joining the game", player.getGameProfile().name());
 		});
 
 		ServerPlayerEvents.LEAVE.register(player -> {
-			assertOnServerThread(player.getServer());
+			assertOnServerThread(player.getEntityWorld().getServer());
 			LOGGER.info("Observed player {} leaving the game", player.getGameProfile().name());
 		});
 	}

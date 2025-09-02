@@ -19,10 +19,15 @@ package net.fabricmc.fabric.mixin.client.gametest.input;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import net.minecraft.class_11905;
+import net.minecraft.class_11908;
 import net.minecraft.client.Keyboard;
 
 @Mixin(Keyboard.class)
 public interface KeyboardAccessor {
 	@Invoker
-	void invokeOnChar(long window, int codePoint, int modifiers);
+	void invokeOnKey(long window, int key, class_11908 arg);
+
+	@Invoker
+	void invokeOnChar(long window, class_11905 arg);
 }

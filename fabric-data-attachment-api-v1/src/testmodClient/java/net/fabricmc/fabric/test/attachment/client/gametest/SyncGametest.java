@@ -145,7 +145,7 @@ public class SyncGametest implements FabricClientGameTest {
 				LOGGER.info("Testing synced attachments (1/2)");
 				context.runOnClient(client -> {
 					ClientWorld world = Objects.requireNonNull(client.world);
-					Entity villager = world.method_66347(state.villagerId);
+					Entity villager = world.getEntity(state.villagerId);
 
 					assertHasSyncedWithAll(world.getBlockEntity(state.furnacePos));
 					assertHasSyncedWithAll(villager);
