@@ -3,7 +3,6 @@
   "package": "net.fabricmc.fabric.mixin.client.gametest",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ChunkRenderTaskSchedulerMixin",
     "ClientChunkManagerAccessor",
     "ClientChunkManagerClientChunkMapAccessor",
     "ClientWorldAccessor",
