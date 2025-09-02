@@ -147,10 +147,14 @@ public final class ScreenEventFactory {
 	}
 
 	public static Event<ScreenMouseEvents.AfterMouseClick> createAfterMouseClickEvent() {
-		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseClick.class, callbacks -> (screen, context) -> {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseClick.class, callbacks -> (screen, context, consumed) -> {
+			boolean consume = false;
+
 			for (ScreenMouseEvents.AfterMouseClick callback : callbacks) {
-				callback.afterMouseClick(screen, context);
+				consume |= callback.afterMouseClick(screen, context, consume | consumed);
 			}
+
+			return consume;
 		});
 	}
 
@@ -175,10 +179,14 @@ public final class ScreenEventFactory {
 	}
 
 	public static Event<ScreenMouseEvents.AfterMouseRelease> createAfterMouseReleaseEvent() {
-		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseRelease.class, callbacks -> (screen, context) -> {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseRelease.class, callbacks -> (screen, context, consumed) -> {
+			boolean consume = false;
+
 			for (ScreenMouseEvents.AfterMouseRelease callback : callbacks) {
-				callback.afterMouseRelease(screen, context);
+				consume |= callback.afterMouseRelease(screen, context, consume | consumed);
 			}
+
+			return consume;
 		});
 	}
 
@@ -203,10 +211,14 @@ public final class ScreenEventFactory {
 	}
 
 	public static Event<ScreenMouseEvents.AfterMouseDrag> createAfterMouseDragEvent() {
-		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseDrag.class, callbacks -> (screen, context, horizontalAmount, verticalAmount) -> {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseDrag.class, callbacks -> (screen, context, horizontalAmount, verticalAmount, consumed) -> {
+			boolean consume = false;
+
 			for (ScreenMouseEvents.AfterMouseDrag callback : callbacks) {
-				callback.afterMouseDrag(screen, context, horizontalAmount, verticalAmount);
+				consume |= callback.afterMouseDrag(screen, context, horizontalAmount, verticalAmount, consume | consumed);
 			}
+
+			return consume;
 		});
 	}
 
@@ -231,10 +243,14 @@ public final class ScreenEventFactory {
 	}
 
 	public static Event<ScreenMouseEvents.AfterMouseScroll> createAfterMouseScrollEvent() {
-		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseScroll.class, callbacks -> (screen, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseScroll.class, callbacks -> (screen, mouseX, mouseY, horizontalAmount, verticalAmount, consumed) -> {
+			boolean consume = false;
+
 			for (ScreenMouseEvents.AfterMouseScroll callback : callbacks) {
-				callback.afterMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount);
+				consume |= callback.afterMouseScroll(screen, mouseX, mouseY, horizontalAmount, verticalAmount, consume | consumed);
 			}
+
+			return consume;
 		});
 	}
 

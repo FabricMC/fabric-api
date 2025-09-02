@@ -39,8 +39,9 @@ public class ScreenMouseEventTests implements ClientModInitializer {
 				ScreenMouseEvents.beforeMouseDrag(screen).register((screen1, context, horizontalAmount, verticalAmount) -> {
 					LOGGER.info("Before Mouse Drag: Screen {}, Horizontal Amount {}, Vertical Amount {}", screen1.getClass().getSimpleName(), horizontalAmount, verticalAmount);
 				});
-				ScreenMouseEvents.afterMouseDrag(screen).register((screen1, context, horizontalAmount, verticalAmount) -> {
+				ScreenMouseEvents.afterMouseDrag(screen).register((screen1, context, horizontalAmount, verticalAmount, consumed) -> {
 					LOGGER.info("After Mouse Drag: Screen {}, Horizontal Amount {}, Vertical Amount {}", screen1.getClass().getSimpleName(), horizontalAmount, verticalAmount);
+					return false;
 				});
 			}
 		});

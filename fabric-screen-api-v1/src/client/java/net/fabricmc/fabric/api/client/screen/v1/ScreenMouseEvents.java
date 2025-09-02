@@ -216,9 +216,10 @@ public final class ScreenMouseEvents {
 		 *
 		 * @param screen the screen
 		 * @param context the context of the mouse click, containing the mouse position and button
+		 * @param consumed whether the mouse click was already consumed
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void afterMouseClick(Screen screen, class_11909 context);
+		boolean afterMouseClick(Screen screen, class_11909 context, boolean consumed);
 	}
 
 	@FunctionalInterface
@@ -252,9 +253,10 @@ public final class ScreenMouseEvents {
 		 *
 		 * @param screen the screen
 		 * @param context the context of the mouse release, containing the mouse position and button
+		 * @param consumed whether the mouse release was already consumed
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void afterMouseRelease(Screen screen, class_11909 context);
+		boolean afterMouseRelease(Screen screen, class_11909 context, boolean consumed);
 	}
 
 	@FunctionalInterface
@@ -296,9 +298,10 @@ public final class ScreenMouseEvents {
 		 * @param context the context of the mouse drag, containing the mouse position and button
 		 * @param horizontalAmount the horizontal drag amount
 		 * @param verticalAmount the vertical drag amount
+		 * @param consumed whether the mouse drag was already consumed
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void afterMouseDrag(Screen screen, class_11909 context, double horizontalAmount, double verticalAmount);
+		boolean afterMouseDrag(Screen screen, class_11909 context, double horizontalAmount, double verticalAmount, boolean consumed);
 	}
 
 	@FunctionalInterface
@@ -340,7 +343,8 @@ public final class ScreenMouseEvents {
 		 * @param mouseY the y position of the mouse
 		 * @param horizontalAmount the horizontal scroll amount
 		 * @param verticalAmount the vertical scroll amount
+		 * @param consumed whether the mouse scroll was already consumed
 		 */
-		void afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
+		boolean afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount, boolean consumed);
 	}
 }
