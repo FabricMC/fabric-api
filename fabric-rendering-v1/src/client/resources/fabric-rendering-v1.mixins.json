@@ -21,9 +21,12 @@
     "InGameHudAccessor",
     "InGameHudMixin",
     "InventoryScreenMixin",
+    "ItemRenderStateLayerRenderStateMixin",
+    "ItemRenderStateMixin",
     "LivingEntityRendererAccessor",
     "LivingEntityRendererMixin",
     "RenderLayersMixin",
+    "RenderStateMixin",
     "SpecialModelTypesMixin",
     "TooltipComponentMixin",
     "WorldRendererMixin"
