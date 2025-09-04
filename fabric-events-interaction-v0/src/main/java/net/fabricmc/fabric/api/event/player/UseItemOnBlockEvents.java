@@ -35,8 +35,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Contains events triggered when using an item on a block. Fires both on client and server side.
- *
- * <p><i>This implementation is heavily inspired by NeoForge's <a href="https://github.com/neoforged/NeoForge/blob/1.21.x/src/main/java/net/neoforged/neoforge/event/entity/player/UseItemOnBlockEvent.java">UseItemOnBlockEvent</a></i>.
  */
 public final class UseItemOnBlockEvents {
 	/**
