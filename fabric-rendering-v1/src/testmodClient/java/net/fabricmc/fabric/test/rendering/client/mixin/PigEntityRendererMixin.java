@@ -16,32 +16,29 @@
 
 package net.fabricmc.fabric.test.rendering.client.mixin;
 
-import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
-
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.block.MovingBlockRenderState;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.PigEntityRenderer;
-
-import net.minecraft.client.render.entity.state.PigEntityRenderState;
-
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.passive.PigEntity;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.block.MovingBlockRenderState;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.entity.PigEntityRenderer;
+import net.minecraft.client.render.entity.state.PigEntityRenderState;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.passive.PigEntity;
+
+import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+
 /**
  * Tests {@link RenderStateDataKey} and {@link FabricRenderState}. Pigs will render the block they're standing on at their location.
  */
 @Mixin(PigEntityRenderer.class)
 public class PigEntityRendererMixin {
-
 	@Unique
 	private static final RenderStateDataKey<MovingBlockRenderState> MOVING_BLOCK = RenderStateDataKey.create(() -> "Moving block");
 
@@ -66,5 +63,4 @@ public class PigEntityRendererMixin {
 			queue.submitMovingBlock(matrices, movingBlockRenderState);
 		}
 	}
-
 }

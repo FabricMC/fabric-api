@@ -16,20 +16,17 @@
 
 package net.fabricmc.fabric.impl.client.rendering.state;
 
-import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
-
-import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
-
-import net.minecraft.class_11954;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-
-import net.minecraft.client.render.item.ItemRenderState;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class RenderStateDataTest {
+import net.minecraft.class_11954;
+import net.minecraft.client.render.entity.state.EntityRenderState;
+import net.minecraft.client.render.item.ItemRenderState;
 
+import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+
+public class RenderStateDataTest {
 	private static final RenderStateDataKey<String> DEBUG = RenderStateDataKey.create(() -> "Debug");
 
 	@Test
@@ -49,5 +46,4 @@ public class RenderStateDataTest {
 			Assertions.assertNull(state.getData(DEBUG));
 		}
 	}
-
 }
