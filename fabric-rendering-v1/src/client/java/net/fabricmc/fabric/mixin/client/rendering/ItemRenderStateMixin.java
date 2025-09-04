@@ -29,6 +29,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 public abstract class ItemRenderStateMixin {
 	@Inject(method = "clear", at = @At("TAIL"))
 	private void clearExtraRenderData(CallbackInfo ci) {
-		((FabricRenderState) this).clearData();
+		((FabricRenderState) this).clearExtraData();
 	}
 }

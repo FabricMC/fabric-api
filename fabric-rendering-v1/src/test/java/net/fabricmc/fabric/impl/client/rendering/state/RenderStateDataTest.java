@@ -42,7 +42,7 @@ public class RenderStateDataTest {
 			Assertions.assertNull(state.getData(DEBUG));
 			state.setData(DEBUG, "test");
 			Assertions.assertEquals("test", state.getData(DEBUG));
-			state.clearData();
+			state.clearExtraData();
 			Assertions.assertNull(state.getData(DEBUG));
 		}
 	}

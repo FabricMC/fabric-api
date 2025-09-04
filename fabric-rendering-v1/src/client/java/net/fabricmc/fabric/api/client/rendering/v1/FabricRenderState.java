@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.class_11954;
@@ -29,6 +30,7 @@ import net.minecraft.client.render.item.ItemRenderState;
  * {@link class_11954}, {@link ItemRenderState} and {@link ItemRenderState.LayerRenderState}
  * via Mixin and interface injection.
  */
+@ApiStatus.NonExtendable
 public interface FabricRenderState {
 	/**
 	 * Get extra render data from the render state.
@@ -47,14 +49,14 @@ public interface FabricRenderState {
 	 * @param value the data
 	 * @param <T> the type of the data
 	 */
-	default <T> void setData(RenderStateDataKey<T> key, T value) {
+	default <T> void setData(RenderStateDataKey<T> key, @Nullable T value) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
 	/**
 	 * Clears all extra render data on the render state.
 	 */
-	default void clearData() {
+	default void clearExtraData() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }
