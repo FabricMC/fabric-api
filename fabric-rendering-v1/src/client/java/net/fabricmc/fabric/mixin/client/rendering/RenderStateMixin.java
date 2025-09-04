@@ -34,7 +34,6 @@ import java.util.Map;
 
 @Mixin({EntityRenderState.class, class_11954.class, ItemRenderState.class, ItemRenderState.LayerRenderState.class})
 public abstract class RenderStateMixin implements FabricRenderState {
-
 	@Unique
 	@Nullable
 	private Map<RenderStateDataKey<?>, Object> renderStateData;

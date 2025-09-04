@@ -34,8 +34,8 @@ public final class RenderStateDataKey<T> {
 	/**
 	 * Creates a new unique data key.
 	 * @param debugName The name of this data key, shown in error messages.
-	 * @return The newly created data key.
 	 * @param <T> The type of the render state data.
+	 * @return The newly created data key.
 	 */
 	public static <T> RenderStateDataKey<T> create(Supplier<String> debugName) {
 		return new RenderStateDataKey<>(debugName);
@@ -43,8 +43,8 @@ public final class RenderStateDataKey<T> {
 
 	/**
 	 * Creates a new unique data key.
-	 * @return The newly created data key.
 	 * @param <T> The type of the render state data.
+	 * @return The newly created data key.
 	 */
 	public static <T> RenderStateDataKey<T> create() {
 		return new RenderStateDataKey<>(() -> "unnamed");

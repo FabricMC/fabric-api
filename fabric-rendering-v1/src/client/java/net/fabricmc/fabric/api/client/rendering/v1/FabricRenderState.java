@@ -24,17 +24,17 @@ import net.minecraft.client.render.item.ItemRenderState;
 
 /**
  * Fabric-provided extensions for render states, allowing for the addition of extra render data.
+ *
  * <p>Note: This interface is automatically implemented on {@link EntityRenderState},
  * {@link class_11954}, {@link ItemRenderState} and {@link ItemRenderState.LayerRenderState}
  * via Mixin and interface injection.
  */
 public interface FabricRenderState {
-
 	/**
 	 * Get extra render data from the render state.
 	 * @param key the key of the data
-	 * @return the data, or {@code null} if it cannot be found.
 	 * @param <T> the type of the data
+	 * @return the data, or {@code null} if it cannot be found.
 	 */
 	@Nullable
 	default <T> T getData(RenderStateDataKey<T> key) {
@@ -57,5 +57,4 @@ public interface FabricRenderState {
 	default void clearData() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
-
 }
