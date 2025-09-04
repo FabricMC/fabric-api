@@ -23,9 +23,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.block.HopperBlock;
+import net.minecraft.block.StairsBlock;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
+import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -154,6 +156,12 @@ public class ContentRegistryGameTest {
 		context.useBlock(pos, player);
 		context.expectBlock(Blocks.HAY_BLOCK, pos);
 		context.assertEquals(axe.getDamage(), 1, Text.literal("axe damage"));
+		context.useBlock(pos, player);
+		context.expectBlock(Blocks.TNT, pos);
+		BlockState oakStairState = Blocks.OAK_STAIRS.getDefaultState().with(StairsBlock.WATERLOGGED, true).with(StairsBlock.HALF, BlockHalf.TOP);
+		context.setBlockState(pos, oakStairState);
+		context.useBlock(pos, player);
+		context.expectBlockState(pos, Blocks.SPRUCE_STAIRS.getStateWithProperties(oakStairState));
 		context.complete();
 	}
 

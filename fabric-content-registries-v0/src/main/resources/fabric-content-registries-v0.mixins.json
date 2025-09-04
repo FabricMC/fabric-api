@@ -3,9 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.content.registry",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractBlockAccessor",
     "AbstractBlockAbstractBlockStateMixin",
+    "AbstractBlockAccessor",
     "AxeItemAccessor",
+    "AxeItemMixin",
     "BrewingRecipeRegistryBuilderMixin",
     "FarmerWorkTaskAccessor",
     "FireBlockMixin",

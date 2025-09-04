@@ -16,56 +16,106 @@
 
 package net.fabricmc.fabric.api.registry;
 
-import java.util.Map;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.state.property.Properties;
+import net.minecraft.state.property.Property;
+import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.impl.content.registry.util.ImmutableCollectionUtils;
-import net.fabricmc.fabric.mixin.content.registry.AxeItemAccessor;
+import net.fabricmc.fabric.impl.content.registry.StrippableBlockRegistryImpl;
 
 /**
  * A registry for axe stripping interactions. A vanilla example is turning logs to stripped logs.
  */
 public final class StrippableBlockRegistry {
-	private static final Logger LOGGER = LoggerFactory.getLogger(StrippableBlockRegistry.class);
-
 	private StrippableBlockRegistry() {
 	}
 
 	/**
 	 * Registers a stripping interaction.
-	 *
-	 * <p>Both blocks must have the {@link Properties#AXIS axis} property.
+	 * The resulting BlockState of stripping of input will only copy the {@link Properties#AXIS axis} property, if it's present.
 	 *
 	 * @param input    the input block that can be stripped
 	 * @param stripped the stripped result block
-	 * @throws IllegalArgumentException if the input or the output doesn't have the {@link Properties#AXIS axis} property
 	 */
 	public static void register(Block input, Block stripped) {
-		requireNonNullAndAxisProperty(input, "input block");
-		requireNonNullAndAxisProperty(stripped, "stripped block");
+		StrippingTransformer transformer;
 
-		Block old = getRegistry().put(input, stripped);
-
-		if (old != null) {
-			LOGGER.debug("Replaced old stripping mapping from {} to {} with {}", input, old, stripped);
+		if (input.getDefaultState().contains(Properties.AXIS) && stripped.getDefaultState().contains(Properties.AXIS)) {
+			transformer = StrippingTransformer.VANILLA;
+		} else {
+			transformer = StrippingTransformer.DEFAULT_STATE;
 		}
+
+		StrippableBlockRegistryImpl.register(input, stripped, transformer);
 	}
 
-	private static void requireNonNullAndAxisProperty(Block block, String name) {
-		Objects.requireNonNull(block, name + " cannot be null");
-
-		if (!block.getStateManager().getProperties().contains(Properties.AXIS)) {
-			throw new IllegalArgumentException(name + " must have the 'axis' property");
-		}
+	/**
+	 * Registers a stripping interaction.
+	 * The resulting BlockState of stripping of input will copy all present properties.
+	 *
+	 * @param input    the input block that can be stripped
+	 * @param stripped the stripped result block
+	 */
+	public static void registerCopyState(Block input, Block stripped) {
+		StrippableBlockRegistryImpl.register(input, stripped, StrippingTransformer.COPY);
 	}
 
-	private static Map<Block, Block> getRegistry() {
-		return ImmutableCollectionUtils.getAsMutableMap(AxeItemAccessor::getStrippedBlocks, AxeItemAccessor::setStrippedBlocks);
+	/**
+	 * Registers a stripping interaction.
+	 * The resulting BlockState of stripping of input will depend on provided transformer.
+	 *
+	 * @param input       the input block that can be stripped
+	 * @param stripped    the stripped result block
+	 * @param transformer the transformer used to provide the resulting block state
+	 */
+	public static void register(Block input, Block stripped, StrippingTransformer transformer) {
+		StrippableBlockRegistryImpl.register(input, stripped, transformer);
+	}
+
+	/**
+	 * Provides result of stripping interaction.
+	 *
+	 * @param blockState original block state
+	 * @return stripped block state if successful, otherwise null
+	 */
+	@Nullable
+	public static BlockState getStrippedBlockState(BlockState blockState) {
+		return StrippableBlockRegistryImpl.getStrippedBlockState(blockState);
+	}
+
+	public interface StrippingTransformer {
+		StrippingTransformer DEFAULT_STATE = (strippedBlock, originalState) -> strippedBlock.getDefaultState();
+		StrippingTransformer VANILLA = (strippedBlock, originalState) -> strippedBlock.getDefaultState().withIfExists(Properties.AXIS, originalState.get(Properties.AXIS, Direction.Axis.Y));
+		StrippingTransformer COPY = Block::getStateWithProperties;
+
+		@Nullable
+		BlockState getStrippedBlockState(Block strippedBlock, BlockState originalState);
+
+		static StrippingTransformer copyOf(Property<?>... properties) {
+			if (properties.length == 0) {
+				return DEFAULT_STATE;
+			}
+
+			if (properties.length == 1 && properties[0] == Properties.AXIS) {
+				return VANILLA;
+			}
+
+			return ((strippedBlock, originalState) -> {
+				BlockState state = strippedBlock.getDefaultState();
+
+				//noinspection rawtypes
+				for (Property property : properties) {
+					if (originalState.contains(property)) {
+						//noinspection unchecked
+						state = state.withIfExists(property, originalState.get(property));
+					}
+				}
+
+				return state;
+			});
+		}
 	}
 }

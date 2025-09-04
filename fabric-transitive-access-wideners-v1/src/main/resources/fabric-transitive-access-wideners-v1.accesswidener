@@ -298,6 +298,22 @@ transitive-accessible method net/minecraft/entity/decoration/InteractionEntity g
 transitive-accessible method net/minecraft/entity/decoration/InteractionEntity setResponse (Z)V
 transitive-accessible method net/minecraft/entity/decoration/InteractionEntity shouldRespond ()Z
 
+# Private methods of Enchantment and EnchantmentHelper
+transitive-accessible method net/minecraft/enchantment/EnchantmentHelper getEnchantmentsComponentType (Lnet/minecraft/item/ItemStack;)Lnet/minecraft/component/ComponentType;
+transitive-accessible method net/minecraft/enchantment/EnchantmentHelper forEachEnchantment (Lnet/minecraft/item/ItemStack;Lnet/minecraft/enchantment/EnchantmentHelper$Consumer;)V
+transitive-accessible method net/minecraft/enchantment/EnchantmentHelper forEachEnchantment (Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EquipmentSlot;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/enchantment/EnchantmentHelper$ContextAwareConsumer;)V
+transitive-accessible method net/minecraft/enchantment/EnchantmentHelper forEachEnchantment (Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/enchantment/EnchantmentHelper$ContextAwareConsumer;)V
+transitive-accessible method net/minecraft/enchantment/Enchantment modifyValue (Lnet/minecraft/component/ComponentType;Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/item/ItemStack;Lorg/apache/commons/lang3/mutable/MutableFloat;)V
+transitive-accessible method net/minecraft/enchantment/Enchantment modifyValue (Lnet/minecraft/component/ComponentType;Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/item/ItemStack;Lnet/minecraft/entity/Entity;Lorg/apache/commons/lang3/mutable/MutableFloat;)V
+transitive-accessible method net/minecraft/enchantment/Enchantment modifyValue (Lnet/minecraft/component/ComponentType;Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/item/ItemStack;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/damage/DamageSource;Lorg/apache/commons/lang3/mutable/MutableFloat;)V
+transitive-accessible method net/minecraft/enchantment/Enchantment createEnchantedItemLootContext (Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/item/ItemStack;)Lnet/minecraft/loot/context/LootContext;
+transitive-accessible method net/minecraft/enchantment/Enchantment createEnchantedLocationLootContext (Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/entity/Entity;Z)Lnet/minecraft/loot/context/LootContext;
+transitive-accessible method net/minecraft/enchantment/Enchantment createEnchantedEntityLootContext (Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/loot/context/LootContext;
+transitive-accessible method net/minecraft/enchantment/Enchantment createHitBlockLootContext (Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/block/BlockState;)Lnet/minecraft/loot/context/LootContext;
+transitive-accessible method net/minecraft/enchantment/Enchantment applyEffects (Ljava/util/List;Lnet/minecraft/loot/context/LootContext;Ljava/util/function/Consumer;)V
+transitive-accessible class net/minecraft/enchantment/EnchantmentHelper$Consumer
+transitive-accessible class net/minecraft/enchantment/EnchantmentHelper$ContextAwareConsumer
+
 # Protected static fields of RenderPhase
 transitive-accessible field net/minecraft/client/render/RenderPhase MIPMAP_BLOCK_ATLAS_TEXTURE Lnet/minecraft/client/render/RenderPhase$Texture;
 transitive-accessible field net/minecraft/client/render/RenderPhase BLOCK_ATLAS_TEXTURE Lnet/minecraft/client/render/RenderPhase$Texture;
