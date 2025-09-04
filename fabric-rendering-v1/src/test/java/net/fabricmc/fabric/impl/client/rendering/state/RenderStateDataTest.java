@@ -20,6 +20,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.class_11954;
+import net.minecraft.client.render.MapRenderState;
+import net.minecraft.client.render.block.MovingBlockRenderState;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
 
@@ -36,7 +38,10 @@ public class RenderStateDataTest {
 				new EntityRenderState(),
 				new class_11954(),
 				itemRenderState,
-				itemRenderState.new LayerRenderState()
+				itemRenderState.new LayerRenderState(),
+				new MapRenderState(),
+				new MapRenderState.Decoration(),
+				new MovingBlockRenderState()
 		};
 		for (FabricRenderState state : states) {
 			Assertions.assertNull(state.getData(DEBUG));

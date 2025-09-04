@@ -20,15 +20,22 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.class_11954;
+import net.minecraft.client.render.MapRenderState;
+import net.minecraft.client.render.block.MovingBlockRenderState;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
 
 /**
  * Fabric-provided extensions for render states, allowing for the addition of extra render data.
  *
- * <p>Note: This interface is automatically implemented on {@link EntityRenderState},
- * {@link class_11954}, {@link ItemRenderState} and {@link ItemRenderState.LayerRenderState}
- * via Mixin and interface injection.
+ * <p>Note: This interface is automatically implemented on the following classes via Mixin and interface injection:
+ * <ul>
+ *     <li>{@link EntityRenderState},
+ *     <li>{@link class_11954}
+ *     <li>{@link ItemRenderState} and {@link ItemRenderState.LayerRenderState}
+ *     <li>{@link MapRenderState} and {@link MapRenderState.Decoration}
+ *     <li>{@link MovingBlockRenderState}
+ * </ul>
  */
 @ApiStatus.NonExtendable
 public interface FabricRenderState {

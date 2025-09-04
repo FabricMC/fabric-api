@@ -19,6 +19,11 @@ package net.fabricmc.fabric.mixin.client.rendering;
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+
+import net.minecraft.client.render.MapRenderState;
+
+import net.minecraft.client.render.block.MovingBlockRenderState;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -30,7 +35,15 @@ import net.minecraft.client.render.item.ItemRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 
-@Mixin({EntityRenderState.class, class_11954.class, ItemRenderState.class, ItemRenderState.LayerRenderState.class})
+@Mixin({
+		EntityRenderState.class,
+		class_11954.class,
+		ItemRenderState.class,
+		ItemRenderState.LayerRenderState.class,
+		MapRenderState.class,
+		MapRenderState.Decoration.class,
+		MovingBlockRenderState.class
+})
 public abstract class RenderStateMixin implements FabricRenderState {
 	@Unique
 	@Nullable
@@ -52,7 +65,7 @@ public abstract class RenderStateMixin implements FabricRenderState {
 	}
 
 	@Override
-	public void clearData() {
+	public void clearExtraData() {
 		if (renderStateData != null) {
 			renderStateData.clear();
 		}
