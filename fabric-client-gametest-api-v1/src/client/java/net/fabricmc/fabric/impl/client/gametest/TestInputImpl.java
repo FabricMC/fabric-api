@@ -24,10 +24,10 @@ import java.util.function.Function;
 import com.google.common.base.Preconditions;
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.class_11905;
-import net.minecraft.class_11908;
-import net.minecraft.class_11910;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -186,9 +186,9 @@ public final class TestInputImpl implements TestInput {
 
 	private static void pressOrReleaseKey(MinecraftClient client, InputUtil.Key key, int action) {
 		switch (key.getCategory()) {
-		case KEYSYM -> ((KeyboardAccessor) client.keyboard).invokeOnKey(client.getWindow().getHandle(), action, new class_11908(key.getCode(), 0, 0));
-		case SCANCODE -> ((KeyboardAccessor) client.keyboard).invokeOnKey(client.getWindow().getHandle(), action, new class_11908(GLFW.GLFW_KEY_UNKNOWN, key.getCode(), 0));
-		case MOUSE -> ((MouseAccessor) client.mouse).invokeOnMouseButton(client.getWindow().getHandle(), new class_11910(key.getCode(), 0), action);
+		case KEYSYM -> ((KeyboardAccessor) client.keyboard).invokeOnKey(client.getWindow().getHandle(), action, new KeyInput(key.getCode(), 0, 0));
+		case SCANCODE -> ((KeyboardAccessor) client.keyboard).invokeOnKey(client.getWindow().getHandle(), action, new KeyInput(GLFW.GLFW_KEY_UNKNOWN, key.getCode(), 0));
+		case MOUSE -> ((MouseAccessor) client.mouse).invokeOnMouseButton(client.getWindow().getHandle(), new MouseInput(key.getCode(), 0), action);
 		}
 	}
 
@@ -283,7 +283,7 @@ public final class TestInputImpl implements TestInput {
 	public void typeChar(int codePoint) {
 		ThreadingImpl.checkOnGametestThread("typeChar");
 
-		context.runOnClient(client -> ((KeyboardAccessor) client.keyboard).invokeOnChar(client.getWindow().getHandle(), new class_11905(codePoint, 0)));
+		context.runOnClient(client -> ((KeyboardAccessor) client.keyboard).invokeOnChar(client.getWindow().getHandle(), new CharInput(codePoint, 0)));
 	}
 
 	@Override
@@ -292,7 +292,7 @@ public final class TestInputImpl implements TestInput {
 
 		context.runOnClient(client -> {
 			chars.chars().forEach(codePoint -> {
-				((KeyboardAccessor) client.keyboard).invokeOnChar(client.getWindow().getHandle(), new class_11905(codePoint, 0));
+				((KeyboardAccessor) client.keyboard).invokeOnChar(client.getWindow().getHandle(), new CharInput(codePoint, 0));
 			});
 		});
 	}
@@ -342,7 +342,7 @@ public final class TestInputImpl implements TestInput {
 		InputUtil.Key boundKey = ((KeyBindingAccessor) keyBinding).getBoundKey();
 
 		if (boundKey == InputUtil.UNKNOWN_KEY) {
-			throw new AssertionError("Cannot %s binding '%s' because it isn't bound to a key".formatted(action, keyBinding.getTranslationKey()));
+			throw new AssertionError("Cannot %s binding '%s' because it isn't bound to a key".formatted(action, keyBinding.getId()));
 		}
 
 		return boundKey;

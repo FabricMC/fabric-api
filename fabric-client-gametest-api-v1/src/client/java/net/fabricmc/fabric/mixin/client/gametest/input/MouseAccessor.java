@@ -19,13 +19,13 @@ package net.fabricmc.fabric.mixin.client.gametest.input;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.class_11910;
 import net.minecraft.client.Mouse;
+import net.minecraft.client.input.MouseInput;
 
 @Mixin(Mouse.class)
 public interface MouseAccessor {
 	@Invoker
-	void invokeOnMouseButton(long window, class_11910 arg, int action);
+	void invokeOnMouseButton(long window, MouseInput arg, int action);
 
 	@Invoker
 	void invokeOnMouseScroll(long window, double horizontal, double vertical);

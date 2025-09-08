@@ -29,11 +29,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_11908;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen.CreativeScreenHandler;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
@@ -111,7 +111,7 @@ public abstract class CreativeInventoryScreenMixin extends HandledScreen<Creativ
 	}
 
 	@Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
-	private void keyPressed(class_11908 context, CallbackInfoReturnable<Boolean> cir) {
+	private void keyPressed(KeyInput context, CallbackInfoReturnable<Boolean> cir) {
 		if (context.key() == GLFW.GLFW_KEY_PAGE_UP) {
 			if (switchToPreviousPage()) {
 				cir.setReturnValue(true);

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.screen.v1;
 
 import java.util.Objects;
 
-import net.minecraft.class_11909;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.Screen;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -194,7 +194,7 @@ public final class ScreenMouseEvents {
 		 * @param context the context of the mouse click, containing the mouse position and button
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		boolean allowMouseClick(Screen screen, class_11909 context);
+		boolean allowMouseClick(Screen screen, Click context);
 	}
 
 	@FunctionalInterface
@@ -206,7 +206,7 @@ public final class ScreenMouseEvents {
 		 * @param context the context of the mouse click, containing the mouse position and button
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void beforeMouseClick(Screen screen, class_11909 context);
+		void beforeMouseClick(Screen screen, Click context);
 	}
 
 	@FunctionalInterface
@@ -219,7 +219,7 @@ public final class ScreenMouseEvents {
 		 * @param consumed whether the mouse click was already consumed
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		boolean afterMouseClick(Screen screen, class_11909 context, boolean consumed);
+		boolean afterMouseClick(Screen screen, Click context, boolean consumed);
 	}
 
 	@FunctionalInterface
@@ -231,7 +231,7 @@ public final class ScreenMouseEvents {
 		 * @param context the context of the mouse release, containing the mouse position and button
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		boolean allowMouseRelease(Screen screen, class_11909 context);
+		boolean allowMouseRelease(Screen screen, Click context);
 	}
 
 	@FunctionalInterface
@@ -243,7 +243,7 @@ public final class ScreenMouseEvents {
 		 * @param context the context of the mouse release, containing the mouse position and button
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void beforeMouseRelease(Screen screen, class_11909 context);
+		void beforeMouseRelease(Screen screen, Click context);
 	}
 
 	@FunctionalInterface
@@ -256,7 +256,7 @@ public final class ScreenMouseEvents {
 		 * @param consumed whether the mouse release was already consumed
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		boolean afterMouseRelease(Screen screen, class_11909 context, boolean consumed);
+		boolean afterMouseRelease(Screen screen, Click context, boolean consumed);
 	}
 
 	@FunctionalInterface
@@ -272,7 +272,7 @@ public final class ScreenMouseEvents {
 		 * @return whether the mouse should be allowed to drag
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		boolean allowMouseDrag(Screen screen, class_11909 context, double horizontalAmount, double verticalAmount);
+		boolean allowMouseDrag(Screen screen, Click context, double horizontalAmount, double verticalAmount);
 	}
 
 	@FunctionalInterface
@@ -286,7 +286,7 @@ public final class ScreenMouseEvents {
 		 * @param verticalAmount the vertical drag amount
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void beforeMouseDrag(Screen screen, class_11909 context, double horizontalAmount, double verticalAmount);
+		void beforeMouseDrag(Screen screen, Click context, double horizontalAmount, double verticalAmount);
 	}
 
 	@FunctionalInterface
@@ -301,7 +301,7 @@ public final class ScreenMouseEvents {
 		 * @param consumed whether the mouse drag was already consumed
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		boolean afterMouseDrag(Screen screen, class_11909 context, double horizontalAmount, double verticalAmount, boolean consumed);
+		boolean afterMouseDrag(Screen screen, Click context, double horizontalAmount, double verticalAmount, boolean consumed);
 	}
 
 	@FunctionalInterface
