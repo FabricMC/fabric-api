@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.screen.world.WorldCreator;
 import net.minecraft.registry.RegistryKeys;
@@ -110,7 +111,8 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 
 	private Path navigateCreateWorldScreen() {
 		Path saveDirectory = context.computeOnClient(client -> {
-			CreateWorldScreen.show(client, null);
+			Screen oldScreen = client.currentScreen;
+			CreateWorldScreen.show(client, () -> client.setScreen(oldScreen));
 
 			if (!(client.currentScreen instanceof CreateWorldScreen createWorldScreen)) {
 				throw new AssertionError("CreateWorldScreen.show did not set the current screen");
