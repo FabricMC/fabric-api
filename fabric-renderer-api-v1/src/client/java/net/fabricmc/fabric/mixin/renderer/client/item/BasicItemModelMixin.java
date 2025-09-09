@@ -31,7 +31,7 @@ import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.render.item.model.BasicItemModel;
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
-import net.minecraft.client.texture.atlas.Atlases;
+import net.minecraft.util.Atlases;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;

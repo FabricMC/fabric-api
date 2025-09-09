@@ -23,7 +23,7 @@ import net.minecraft.client.render.model.ModelBakeSettings;
 import net.minecraft.client.render.model.ModelTextures;
 import net.minecraft.client.render.model.SimpleModel;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.atlas.Atlases;
+import net.minecraft.util.Atlases;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;

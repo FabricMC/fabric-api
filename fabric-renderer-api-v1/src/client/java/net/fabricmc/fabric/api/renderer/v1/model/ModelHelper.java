@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.texture.atlas.Atlases;
+import net.minecraft.util.Atlases;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
