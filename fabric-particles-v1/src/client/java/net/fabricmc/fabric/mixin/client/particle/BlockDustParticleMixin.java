@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.particle;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -50,12 +51,12 @@ abstract class BlockDustParticleMixin extends BillboardParticle {
 			at = @At("LOAD"),
 			argsOnly = true,
 			slice = @Slice(
-					from = @At(value = "FIELD", target = "Lnet/minecraft/client/particle/BlockDustParticle;field_62635:F", ordinal = 0),
+					from = @At(value = "FIELD", target = "Lnet/minecraft/client/particle/BlockDustParticle;blue:F", ordinal = 0),
 					to = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z")
 			),
 			allow = 1
 	)
-	private BlockState removeUntintableParticles(BlockState state) {
+	private static BlockState removeUntintableParticles(BlockState state, @Local(argsOnly = true) ClientWorld world, @Local(argsOnly = true) BlockPos blockPos) {
 		if (!ParticleRenderEvents.ALLOW_BLOCK_DUST_TINT.invoker().allowBlockDustTint(state, world, blockPos)) {
 			// As of 1.20.1, vanilla hardcodes grass block particles to not get tinted.
 			return Blocks.GRASS_BLOCK.getDefaultState();

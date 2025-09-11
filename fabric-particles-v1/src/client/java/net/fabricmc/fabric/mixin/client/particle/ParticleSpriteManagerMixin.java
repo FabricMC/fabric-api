@@ -21,14 +21,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.particle.ParticleSpriteManager;
 
 import net.fabricmc.fabric.impl.client.particle.ParticleFactoryRegistryImpl;
 
-@Mixin(ParticleManager.class)
-public abstract class ParticleManagerMixin {
-	@Inject(method = "registerDefaultFactories()V", at = @At("RETURN"))
+@Mixin(ParticleSpriteManager.class)
+public abstract class ParticleSpriteManagerMixin {
+	@Inject(method = "init", at = @At("RETURN"))
 	private void onRegisterDefaultFactories(CallbackInfo info) {
-		ParticleFactoryRegistryImpl.INSTANCE.initialize((ParticleManager) (Object) this);
+		ParticleFactoryRegistryImpl.INSTANCE.initialize((ParticleSpriteManager) (Object) this);
 	}
 }
