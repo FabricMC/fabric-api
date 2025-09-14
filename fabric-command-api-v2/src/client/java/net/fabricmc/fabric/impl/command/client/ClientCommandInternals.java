@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 import net.minecraft.util.profiler.Profilers;
@@ -53,6 +54,7 @@ public final class ClientCommandInternals {
 	private static final String API_COMMAND_NAME = "fabric-command-api-v2:client";
 	private static final String SHORT_API_COMMAND_NAME = "fcc";
 	private static @Nullable CommandDispatcher<FabricClientCommandSource> activeDispatcher;
+	private static @Nullable CommandDispatcher<ClientCommandSource> vanillaDispatcher;
 
 	public static void setActiveDispatcher(@Nullable CommandDispatcher<FabricClientCommandSource> dispatcher) {
 		ClientCommandInternals.activeDispatcher = dispatcher;
@@ -80,11 +82,13 @@ public final class ClientCommandInternals {
 		Profilers.get().push(command);
 
 		try {
-			// TODO: Check for server commands before executing.
-			//   This requires parsing the command, checking if they match a server command
-			//   and then executing the command with the parse results.
-			activeDispatcher.execute(command, commandSource);
-			return true;
+			ParseResults<ClientCommandSource> parse = vanillaDispatcher.parse(command, client.getNetworkHandler().getCommandSource());
+			if (parse.getReader().canRead()) {
+				activeDispatcher.execute(command, commandSource);
+				return true;
+			} else {
+				return false;
+			}
 		} catch (CommandSyntaxException e) {
 			boolean ignored = isIgnoredException(e.getType());
 
@@ -177,6 +181,10 @@ public final class ClientCommandInternals {
 	}
 
 	public static void addCommands(CommandDispatcher<FabricClientCommandSource> target, FabricClientCommandSource source) {
+		CommandDispatcher<ClientCommandSource> serverDispatcher = new CommandDispatcher<>();
+		for (CommandNode a : target.getRoot().getChildren())
+			serverDispatcher.getRoot().addChild((CommandNode<ClientCommandSource>) a);
+		vanillaDispatcher = serverDispatcher;
 		Map<CommandNode<FabricClientCommandSource>, CommandNode<FabricClientCommandSource>> originalToCopy = new HashMap<>();
 		originalToCopy.put(activeDispatcher.getRoot(), target.getRoot());
 		copyChildren(activeDispatcher.getRoot(), target.getRoot(), source, originalToCopy);
