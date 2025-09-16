@@ -16,13 +16,10 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.class_12074;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexRendering;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -30,7 +27,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class WorldRenderEventsTests implements ClientModInitializer {
-	private static boolean onBlockOutline(WorldRenderContext wrc, WorldRenderContext.BlockOutlineContext blockOutlineContext) {
+	private static boolean onBlockOutline(WorldRenderContext wrc, class_12074 blockOutlineContext) {
+		/* TODO 1.21.9
+
 		if (blockOutlineContext.blockState().isOf(Blocks.DIAMOND_BLOCK)) {
 			MatrixStack matrixStack = new MatrixStack();
 			matrixStack.push();
@@ -48,6 +47,8 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 
 			matrixStack.pop();
 		}
+
+		 */
 
 		return true;
 	}

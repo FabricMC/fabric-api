@@ -30,8 +30,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRendererFactories;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.EntityRenderers;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.entity.EntityType;
@@ -41,8 +41,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRe
 import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.RegistrationHelperImpl;
 
-@Mixin(EntityRenderers.class)
-public abstract class EntityRenderersMixin {
+@Mixin(EntityRendererFactories.class)
+public abstract class EntityRendererFactoriesMixin {
 	@Shadow()
 	@Final
 	private static Map<EntityType<?>, EntityRendererFactory<?>> RENDERER_FACTORIES;

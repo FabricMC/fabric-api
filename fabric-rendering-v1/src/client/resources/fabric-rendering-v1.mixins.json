@@ -16,7 +16,7 @@
     "DrawContextMixin",
     "EntityModelLayersAccessor",
     "EntityModelsMixin",
-    "EntityRenderersMixin",
+    "EntityRendererFactoriesMixin",
     "GameRendererMixin",
     "GuiRendererMixin",
     "InGameHudAccessor",
