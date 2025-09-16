@@ -143,7 +143,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 			method = "method_62214",
 			at = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDD)V",
+				target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDDZ)V",
 				ordinal = 0
 			)
 	)
@@ -176,7 +176,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 	}
 
 	@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
-	private void renderWeather(FrameGraphBuilder frameGraphBuilder, Vec3d vec3d, float f, GpuBufferSlice fog, CallbackInfo info) {
+	private void renderWeather(FrameGraphBuilder frameGraphBuilder, Vec3d cameraPos, GpuBufferSlice gpuBufferSlice, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.WeatherRenderer renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
 
@@ -200,7 +200,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 	}
 
 	@Inject(at = @At(value = "HEAD"), method = "renderSky", cancellable = true)
-	private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickDelta, GpuBufferSlice fog, CallbackInfo info) {
+	private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, GpuBufferSlice gpuBufferSlice, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.SkyRenderer renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
 
