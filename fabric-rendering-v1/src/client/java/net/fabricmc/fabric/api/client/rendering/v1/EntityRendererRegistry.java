@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.EntityRenderManager;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -38,11 +36,11 @@ public final class EntityRendererRegistry {
 	/**
 	 * Register an {@link EntityRenderer} for an {@link EntityType}. Can be called clientside before the world is rendered.
 	 *
-	 * @param entityType the {@link EntityType} to register a renderer for
+	 * @param entityType            the {@link EntityType} to register a renderer for
 	 * @param entityRendererFactory a {@link EntityRendererFactory} that creates a {@link EntityRenderer}, called
-	 *                            when {@link EntityRenderManager} is initialized or immediately if the dispatcher
-	 *                            class is already loaded
-	 * @param <E> the {@link Entity}
+	 *                              when {@link EntityRenderManager} is initialized or immediately if the dispatcher
+	 *                              class is already loaded
+	 * @param <E>                   the {@link Entity}
 	 */
 	public static <E extends Entity> void register(EntityType<? extends E> entityType, EntityRendererFactory<E> entityRendererFactory) {
 		EntityRendererRegistryImpl.register(entityType, entityRendererFactory);
