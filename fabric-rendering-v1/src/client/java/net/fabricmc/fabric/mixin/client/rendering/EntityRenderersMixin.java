@@ -21,6 +21,9 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+
+import net.minecraft.client.render.entity.EntityRendererFactories;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,7 +34,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.EntityRenderers;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.entity.EntityType;
@@ -41,13 +43,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRe
 import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.RegistrationHelperImpl;
 
-@Mixin(EntityRenderers.class)
+@Mixin(EntityRendererFactories.class)
 public abstract class EntityRenderersMixin {
 	@Shadow()
 	@Final
 	private static Map<EntityType<?>, EntityRendererFactory<?>> RENDERER_FACTORIES;
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Inject(method = "<clinit>*", at = @At(value = "RETURN"))
 	private static void onRegisterRenderers(CallbackInfo info) {
 		EntityRendererRegistryImpl.setup(((t, factory) -> RENDERER_FACTORIES.put(t, factory)));
