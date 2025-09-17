@@ -56,7 +56,8 @@ public record PlaceholderResourcePack(ResourceType type, ResourcePackInfo metada
 			switch (segments[0]) {
 			case "pack.mcmeta":
 				return () -> {
-					DataResult<JsonElement> result = PackResourceMetadata.SERIALIZER.codec().encodeStart(JsonOps.INSTANCE, getMetadata());
+					DataResult<JsonElement> result = PackResourceMetadata.createCodec(type)
+							.encodeStart(JsonOps.INSTANCE, getMetadata());
 					String metadata = result.getOrThrow().toString();
 					return IOUtils.toInputStream(metadata, StandardCharsets.UTF_8);
 				};
@@ -89,7 +90,7 @@ public record PlaceholderResourcePack(ResourceType type, ResourcePackInfo metada
 	@Nullable
 	@Override
 	public <T> T parseMetadata(ResourceMetadataSerializer<T> metaReader) {
-		return ResourceMetadataMap.of(PackResourceMetadata.SERIALIZER, getMetadata()).get(metaReader);
+		return ResourceMetadataMap.of(PackResourceMetadata.getSerializerFor(type), getMetadata()).get(metaReader);
 	}
 
 	@Override

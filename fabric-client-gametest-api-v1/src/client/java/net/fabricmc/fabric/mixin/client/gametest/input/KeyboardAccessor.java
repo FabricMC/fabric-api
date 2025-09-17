@@ -20,9 +20,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.client.Keyboard;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 
 @Mixin(Keyboard.class)
 public interface KeyboardAccessor {
 	@Invoker
-	void invokeOnChar(long window, int codePoint, int modifiers);
+	void invokeOnKey(long window, int key, KeyInput arg);
+
+	@Invoker
+	void invokeOnChar(long window, CharInput arg);
 }

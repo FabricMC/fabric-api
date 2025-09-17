@@ -144,6 +144,9 @@ transitive-accessible method net/minecraft/block/Blocks never (Lnet/minecraft/bl
 transitive-accessible method net/minecraft/block/Blocks register (Lnet/minecraft/registry/RegistryKey;Ljava/util/function/Function;Lnet/minecraft/block/AbstractBlock$Settings;)Lnet/minecraft/block/Block;
 transitive-accessible method net/minecraft/block/Blocks register (Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/block/AbstractBlock$Settings;)Lnet/minecraft/block/Block;
 
+# Debug HUD Entries
+transitive-accessible method net/minecraft/client/gui/hud/debug/DebugHudEntries register (Lnet/minecraft/util/Identifier;Lnet/minecraft/client/gui/hud/debug/DebugHudEntry;)Lnet/minecraft/util/Identifier;
+
 ### Generated access wideners below
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/block/AttachedStemBlock <init> (Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -159,7 +162,7 @@ transitive-accessible method net/minecraft/block/CakeBlock <init> (Lnet/minecraf
 transitive-accessible method net/minecraft/block/CandleCakeBlock <init> (Lnet/minecraft/block/Block;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/CartographyTableBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/CarvedPumpkinBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
-transitive-accessible method net/minecraft/block/ChestBlock <init> (Ljava/util/function/Supplier;Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/ChestBlock <init> (Ljava/util/function/Supplier;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/ChorusFlowerBlock <init> (Lnet/minecraft/block/Block;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/ChorusPlantBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/CoralBlock <init> (Lnet/minecraft/block/Block;Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -183,7 +186,6 @@ transitive-accessible method net/minecraft/block/EndPortalBlock <init> (Lnet/min
 transitive-accessible method net/minecraft/block/EndRodBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/EnderChestBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/FarmlandBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
-transitive-accessible method net/minecraft/block/FletchingTableBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/FlowerbedBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/FluidBlock <init> (Lnet/minecraft/fluid/FlowableFluid;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/FungusBlock <init> (Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/block/Block;Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -203,8 +205,12 @@ transitive-accessible method net/minecraft/block/LoomBlock <init> (Lnet/minecraf
 transitive-accessible method net/minecraft/block/MangroveRootsBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/NetherWartBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/NyliumBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/OxidizableChainBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/OxidizableDoorBlock <init> (Lnet/minecraft/block/BlockSetType;Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/OxidizableGrateBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/OxidizableLanternBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/OxidizableLightningRodBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
+transitive-accessible method net/minecraft/block/OxidizablePaneBlock <init> (Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/OxidizableTrapdoorBlock <init> (Lnet/minecraft/block/BlockSetType;Lnet/minecraft/block/Oxidizable$OxidationLevel;Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/PaneBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
 transitive-accessible method net/minecraft/block/PlayerSkullBlock <init> (Lnet/minecraft/block/AbstractBlock$Settings;)V
@@ -298,6 +304,22 @@ transitive-accessible method net/minecraft/entity/decoration/InteractionEntity g
 transitive-accessible method net/minecraft/entity/decoration/InteractionEntity setResponse (Z)V
 transitive-accessible method net/minecraft/entity/decoration/InteractionEntity shouldRespond ()Z
 
+# Private methods of Enchantment and EnchantmentHelper
+transitive-accessible method net/minecraft/enchantment/EnchantmentHelper getEnchantmentsComponentType (Lnet/minecraft/item/ItemStack;)Lnet/minecraft/component/ComponentType;
+transitive-accessible method net/minecraft/enchantment/EnchantmentHelper forEachEnchantment (Lnet/minecraft/item/ItemStack;Lnet/minecraft/enchantment/EnchantmentHelper$Consumer;)V
+transitive-accessible method net/minecraft/enchantment/EnchantmentHelper forEachEnchantment (Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EquipmentSlot;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/enchantment/EnchantmentHelper$ContextAwareConsumer;)V
+transitive-accessible method net/minecraft/enchantment/EnchantmentHelper forEachEnchantment (Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/enchantment/EnchantmentHelper$ContextAwareConsumer;)V
+transitive-accessible method net/minecraft/enchantment/Enchantment modifyValue (Lnet/minecraft/component/ComponentType;Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/item/ItemStack;Lorg/apache/commons/lang3/mutable/MutableFloat;)V
+transitive-accessible method net/minecraft/enchantment/Enchantment modifyValue (Lnet/minecraft/component/ComponentType;Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/item/ItemStack;Lnet/minecraft/entity/Entity;Lorg/apache/commons/lang3/mutable/MutableFloat;)V
+transitive-accessible method net/minecraft/enchantment/Enchantment modifyValue (Lnet/minecraft/component/ComponentType;Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/item/ItemStack;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/damage/DamageSource;Lorg/apache/commons/lang3/mutable/MutableFloat;)V
+transitive-accessible method net/minecraft/enchantment/Enchantment createEnchantedItemLootContext (Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/item/ItemStack;)Lnet/minecraft/loot/context/LootContext;
+transitive-accessible method net/minecraft/enchantment/Enchantment createEnchantedLocationLootContext (Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/entity/Entity;Z)Lnet/minecraft/loot/context/LootContext;
+transitive-accessible method net/minecraft/enchantment/Enchantment createEnchantedEntityLootContext (Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/loot/context/LootContext;
+transitive-accessible method net/minecraft/enchantment/Enchantment createHitBlockLootContext (Lnet/minecraft/server/world/ServerWorld;ILnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/block/BlockState;)Lnet/minecraft/loot/context/LootContext;
+transitive-accessible method net/minecraft/enchantment/Enchantment applyEffects (Ljava/util/List;Lnet/minecraft/loot/context/LootContext;Ljava/util/function/Consumer;)V
+transitive-accessible class net/minecraft/enchantment/EnchantmentHelper$Consumer
+transitive-accessible class net/minecraft/enchantment/EnchantmentHelper$ContextAwareConsumer
+
 # Protected static fields of RenderPhase
 transitive-accessible field net/minecraft/client/render/RenderPhase MIPMAP_BLOCK_ATLAS_TEXTURE Lnet/minecraft/client/render/RenderPhase$Texture;
 transitive-accessible field net/minecraft/client/render/RenderPhase BLOCK_ATLAS_TEXTURE Lnet/minecraft/client/render/RenderPhase$Texture;
@@ -315,8 +337,6 @@ transitive-accessible field net/minecraft/client/render/RenderPhase VIEW_OFFSET_
 transitive-accessible field net/minecraft/client/render/RenderPhase VIEW_OFFSET_Z_LAYERING_FORWARD Lnet/minecraft/client/render/RenderPhase$Layering;
 transitive-accessible field net/minecraft/client/render/RenderPhase MAIN_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase OUTLINE_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
-transitive-accessible field net/minecraft/client/render/RenderPhase TRANSLUCENT_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
-transitive-accessible field net/minecraft/client/render/RenderPhase PARTICLES_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase WEATHER_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase ITEM_ENTITY_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase FULL_LINE_WIDTH Lnet/minecraft/client/render/RenderPhase$LineWidth;
@@ -363,5 +383,6 @@ transitive-accessible field net/minecraft/client/gl/RenderPipelines PARTICLE_SNI
 transitive-accessible field net/minecraft/client/gl/RenderPipelines WEATHER_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/gl/RenderPipelines GUI_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/gl/RenderPipelines POSITION_TEX_COLOR_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+transitive-accessible field net/minecraft/client/gl/RenderPipelines GUI_TEXT_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible field net/minecraft/client/gl/RenderPipelines RENDERTYPE_OUTLINE_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 transitive-accessible method net/minecraft/client/gl/RenderPipelines register (Lcom/mojang/blaze3d/pipeline/RenderPipeline;)Lcom/mojang/blaze3d/pipeline/RenderPipeline;

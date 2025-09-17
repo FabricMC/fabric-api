@@ -127,7 +127,7 @@ public final class AttachmentRegistry {
 		Builder<A> persistent(Codec<A> codec);
 
 		/**
-		 * Declares that when a player dies and respawns, the attachments of this type should remain.
+		 * Declares that when a player dies and respawns or when a mob is converted (e.g. zombie → drowned), the attachments of this type should remain.
 		 *
 		 * @return the builder
 		 */

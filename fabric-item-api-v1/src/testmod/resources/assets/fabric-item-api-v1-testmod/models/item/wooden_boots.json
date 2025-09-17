@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "minecraft:block/oak_log",
-    "layer1": "minecraft:item/leather_boots",
-    "layer2": "minecraft:item/leather_boots_overlay"
-  }
-}

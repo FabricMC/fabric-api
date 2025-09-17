@@ -48,6 +48,7 @@ public class FakePlayerTests {
 		context.setBlockState(basePos, Blocks.STONE.getDefaultState());
 
 		PlayerEntity fakePlayer = FakePlayer.get(context.getWorld());
+		context.assertFalse(fakePlayer.isInCreativeMode(), Text.literal("Fake player is in creative mode"));
 
 		BlockPos fakePlayerPos = context.getAbsolutePos(signPos.add(2, 0, 2));
 		fakePlayer.setPosition(fakePlayerPos.getX(), fakePlayerPos.getY(), fakePlayerPos.getZ());

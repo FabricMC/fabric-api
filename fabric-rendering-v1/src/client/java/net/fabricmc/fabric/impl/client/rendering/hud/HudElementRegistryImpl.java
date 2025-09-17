@@ -54,7 +54,6 @@ public class HudElementRegistryImpl {
 			VanillaHudElements.BOSS_BAR,
 			VanillaHudElements.SLEEP,
 			VanillaHudElements.DEMO_TIMER,
-			VanillaHudElements.DEBUG,
 			VanillaHudElements.SCOREBOARD,
 			VanillaHudElements.OVERLAY_MESSAGE,
 			VanillaHudElements.TITLE_AND_SUBTITLE,

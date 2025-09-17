@@ -52,8 +52,13 @@ public final class GlobalReceiverRegistry<H> {
 		this.payloadTypeRegistry = payloadTypeRegistry;
 
 		if (payloadTypeRegistry != null) {
-			assert phase == payloadTypeRegistry.getPhase();
-			assert side == payloadTypeRegistry.getSide();
+			if (phase != payloadTypeRegistry.getPhase()) {
+				throw new IllegalStateException();
+			}
+
+			if (side != payloadTypeRegistry.getSide()) {
+				throw new IllegalStateException();
+			}
 		}
 	}
 

@@ -16,21 +16,15 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.model.Model;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
@@ -54,33 +48,17 @@ public interface ArmorRenderer {
 	}
 
 	/**
-	 * Helper method for rendering a specific armor model, comes after setting visibility.
-	 *
-	 * <p>This primarily handles applying glint and the correct {@link RenderLayer}
-	 * @param matrices			the matrix stack
-	 * @param vertexConsumers	the vertex consumer provider
-	 * @param light				packed lightmap coordinates
-	 * @param stack				the item stack of the armor item
-	 * @param model				the model to be rendered
-	 * @param texture			the texture to be applied
-	 */
-	static void renderPart(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ItemStack stack, Model model, Identifier texture) {
-		VertexConsumer vertexConsumer = ItemRenderer.getArmorGlintConsumer(vertexConsumers, RenderLayer.getArmorCutoutNoCull(texture), stack.hasGlint());
-		model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 0xFFFFFFFF);
-	}
-
-	/**
 	 * Renders an armor part.
 	 *
-	 * @param matrices			     the matrix stack
-	 * @param vertexConsumers	     the vertex consumer provider
-	 * @param stack				     the item stack of the armor item
-	 * @param bipedEntityRenderState the render state of the entity
-	 * @param slot				     the equipment slot in which the armor stack is worn
-	 * @param light				     packed lightmap coordinates
-	 * @param contextModel		     the model provided by {@link FeatureRenderer#getContextModel()}
+	 * @param matrices			   	  	the matrix stack
+	 * @param orderedRenderCommandQueue	the {@link OrderedRenderCommandQueue} instance
+	 * @param stack				        the item stack of the armor item
+	 * @param bipedEntityRenderState    the render state of the entity
+	 * @param slot				        the equipment slot in which the armor stack is worn
+	 * @param light				        packed lightmap coordinates
+	 * @param contextModel		        the model provided by {@link FeatureRenderer#getContextModel()}
 	 */
-	void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, BipedEntityRenderState bipedEntityRenderState, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel);
+	void render(MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue, ItemStack stack, BipedEntityRenderState bipedEntityRenderState, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel);
 
 	/**
 	 * Checks whether an item stack equipped on the head should also be

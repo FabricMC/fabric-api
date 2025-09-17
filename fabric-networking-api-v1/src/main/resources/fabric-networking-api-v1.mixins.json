@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.networking",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BundlePacketMixin",
     "PacketCodecDispatcherMixin",
     "ClientConnectionMixin",
     "CommandManagerMixin",

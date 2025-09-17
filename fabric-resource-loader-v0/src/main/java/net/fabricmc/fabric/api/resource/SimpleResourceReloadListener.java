@@ -20,7 +20,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.SynchronousResourceReloader;
 
 /**
@@ -46,9 +45,9 @@ import net.minecraft.resource.SynchronousResourceReloader;
 @Deprecated
 public interface SimpleResourceReloadListener<T> extends IdentifiableResourceReloadListener {
 	@Override
-	default CompletableFuture<Void> reload(ResourceReloader.Synchronizer helper, ResourceManager manager, Executor loadExecutor, Executor applyExecutor) {
-		return load(manager, loadExecutor).thenCompose(helper::whenPrepared).thenCompose(
-				(o) -> apply(o, manager, applyExecutor)
+	default CompletableFuture<Void> reload(Store store, Executor loadExecutor, Synchronizer helper, Executor applyExecutor) {
+		return load(store.getResourceManager(), loadExecutor).thenCompose(helper::whenPrepared).thenCompose(
+				(o) -> apply(o, store.getResourceManager(), applyExecutor)
 		);
 	}
 

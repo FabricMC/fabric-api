@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.test.rendering.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "GameRendererAccessor",
+    "GuiRendererAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

@@ -18,19 +18,19 @@ package net.fabricmc.fabric.test.networking.common;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
@@ -39,7 +39,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 public class NetworkingCommonTest implements ModInitializer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(NetworkingCommonTest.class);
 	private boolean firstLoad = true;
 	private List<String> receivedPlay = new ArrayList<>();
 	private List<String> receivedConfig = new ArrayList<>();
@@ -58,7 +57,10 @@ public class NetworkingCommonTest implements ModInitializer {
 
 		// Store the player uuid once received from the client
 		ServerPlayNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedPlay.add(context.player().getUuidAsString()));
-		ServerConfigurationNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedConfig.add(context.networkHandler().getDebugProfile().getId().toString()));
+		ServerConfigurationNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedConfig.add(context.networkHandler().getDebugProfile().id().toString()));
+
+		AtomicLong runOnTick = new AtomicLong(-1);
+		AtomicReference<String> uuid = new AtomicReference<>();
 
 		// Ensure that the packets were received on the server
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
@@ -70,19 +72,25 @@ public class NetworkingCommonTest implements ModInitializer {
 			firstLoad = false;
 
 			if (entity instanceof ServerPlayerEntity player) {
-				final String uuid = player.getUuidAsString();
-
-				// Allow a few ticks for the packets to be received
-				executeIn(world.getServer(), 50, () -> {
-					if (!receivedPlay.remove(uuid)) {
-						throw new IllegalStateException("Did not receive play response");
-					}
-
-					if (!receivedConfig.remove(uuid)) {
-						throw new IllegalStateException("Did not receive configuration response");
-					}
-				});
+				uuid.set(player.getUuidAsString());
+				runOnTick.set(player.getEntityWorld().getServer().getWorld(World.OVERWORLD).getTime() + 50);
 			}
+		});
+
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			if (server.getWorld(World.OVERWORLD).getTime() != runOnTick.get()) {
+				return;
+			}
+
+			if (!receivedPlay.remove(uuid.get())) {
+				throw new IllegalStateException("Did not receive play response");
+			}
+
+			if (!receivedConfig.remove(uuid.get())) {
+				throw new IllegalStateException("Did not receive configuration response");
+			}
+
+			runOnTick.set(-1);
 		});
 	}
 
@@ -96,25 +104,5 @@ public class NetworkingCommonTest implements ModInitializer {
 		public Id<? extends CustomPayload> getId() {
 			return ID;
 		}
-	}
-
-	private static void executeIn(MinecraftServer server, int ticks, Runnable runnable) {
-		int targetTime = server.getTicks() + ticks;
-		server.execute(new Runnable() {
-			@Override
-			public void run() {
-				if (!server.isRunning()) {
-					LOGGER.warn("Server is no longer running, cannot execute task");
-					return;
-				}
-
-				if (server.getTicks() >= targetTime) {
-					runnable.run();
-					return;
-				}
-
-				server.execute(this);
-			}
-		});
 	}
 }

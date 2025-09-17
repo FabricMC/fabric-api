@@ -32,7 +32,7 @@ public final class FakePlayerNetworkHandler extends ServerPlayNetworkHandler imp
 	private static final ClientConnection FAKE_CONNECTION = new FakeClientConnection();
 
 	public FakePlayerNetworkHandler(ServerPlayerEntity player) {
-		super(player.getServer(), FAKE_CONNECTION, player, ConnectedClientData.createDefault(player.getGameProfile(), false));
+		super(player.getEntityWorld().getServer(), FAKE_CONNECTION, player, ConnectedClientData.createDefault(player.getGameProfile(), false));
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class BoxBlock extends BlockWithEntity {
@@ -45,7 +46,7 @@ public class BoxBlock extends BlockWithEntity {
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if (!world.isClient) {
+		if (!world.isClient()) {
 			NamedScreenHandlerFactory screenHandlerFactory = state.createScreenHandlerFactory(world, pos);
 
 			if (screenHandlerFactory != null) {
@@ -79,7 +80,7 @@ public class BoxBlock extends BlockWithEntity {
 	}
 
 	@Override
-	public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+	public int getComparatorOutput(BlockState state, World world, BlockPos pos, Direction direction) {
 		return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(pos));
 	}
 }

@@ -35,12 +35,12 @@ import net.fabricmc.fabric.impl.client.model.loading.CustomUnbakedBlockStateMode
 
 @Mixin(BlockStateModel.Unbaked.class)
 interface BlockStateModelUnbakedMixin {
-	@Redirect(method = "<clinit>()V", at = @At(value = "INVOKE", target = "com/mojang/serialization/Codec.flatComapMap(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false, ordinal = 0))
+	@Redirect(method = "<clinit>()V", at = @At(value = "INVOKE", target = "com/mojang/serialization/Codec.flatComapMap(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", ordinal = 0))
 	private static Codec<WeightedBlockStateModel.Unbaked> replaceWeightedCodec(Codec<List<Weighted<ModelVariant>>> codec, Function<?, ?> to, Function<?, ?> from) {
 		return CustomUnbakedBlockStateModelRegistry.WEIGHTED_MODEL_CODEC;
 	}
 
-	@Redirect(method = "<clinit>()V", at = @At(value = "INVOKE", target = "com/mojang/serialization/Codec.flatComapMap(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", remap = false, ordinal = 1))
+	@Redirect(method = "<clinit>()V", at = @At(value = "INVOKE", target = "com/mojang/serialization/Codec.flatComapMap(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", ordinal = 1))
 	private static Codec<BlockStateModel.Unbaked> replaceCodec(Codec<Either<WeightedBlockStateModel.Unbaked, SimpleBlockStateModel.Unbaked>> codec, Function<?, ?> to, Function<?, ?> from) {
 		return CustomUnbakedBlockStateModelRegistry.MODEL_CODEC;
 	}

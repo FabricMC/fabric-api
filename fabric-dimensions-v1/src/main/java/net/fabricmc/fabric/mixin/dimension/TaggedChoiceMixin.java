@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.fabricmc.fabric.impl.dimension.TaggedChoiceExtension;
 import net.fabricmc.fabric.impl.dimension.TaggedChoiceTypeExtension;
 
-@Mixin(value = TaggedChoice.class, remap = false)
+@Mixin(value = TaggedChoice.class)
 public class TaggedChoiceMixin implements TaggedChoiceExtension {
 	@Unique
 	boolean failSoft = false;
@@ -43,7 +43,7 @@ public class TaggedChoiceMixin implements TaggedChoiceExtension {
 	 */
 	@SuppressWarnings("rawtypes")
 	@Inject(
-			method = "lambda$apply$0", at = @At("RETURN"), remap = false
+			method = "lambda$apply$0", at = @At("RETURN")
 	)
 	private void onApply(Pair key, CallbackInfoReturnable<Type> cir) {
 		if (failSoft) {

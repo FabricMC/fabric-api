@@ -90,7 +90,10 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	private void onClientReady(CallbackInfo ci) {
 		// Send the initial channel registration packet
 		if (this.addon.startConfiguration()) {
-			assert currentTask == null;
+			if (currentTask != null) {
+				throw new IllegalStateException("A task is already running: " + currentTask.getKey().id());
+			}
+
 			ci.cancel();
 			return;
 		}
@@ -113,8 +116,9 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 		}
 
 		// All early tasks should have been completed
-		assert currentTask == null;
-		assert tasks.isEmpty();
+		if (currentTask != null || !tasks.isEmpty()) {
+			throw new IllegalStateException("All early tasks should have been completed, current: " + currentTask + ", queued: " + tasks.size());
+		}
 
 		// Run the vanilla tasks.
 		this.addon.configuration();

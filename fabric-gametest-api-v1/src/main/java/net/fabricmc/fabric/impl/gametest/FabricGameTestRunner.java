@@ -28,7 +28,6 @@ import net.minecraft.resource.ResourceFinder;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.test.TestFailureLogger;
-import net.minecraft.test.TestManager;
 import net.minecraft.test.TestServer;
 import net.minecraft.world.level.storage.LevelStorage;
 
@@ -58,10 +57,6 @@ public final class FabricGameTestRunner {
 
 		Optional<String> filter = Optional.ofNullable(System.getProperty(GameTestSystemProperties.FILTER));
 		boolean verify = Boolean.getBoolean(GameTestSystemProperties.VERIFY);
-		MinecraftServer.startServer((thread) -> {
-			TestServer testServer = TestServer.create(thread, session, resourcePackManager, filter, verify);
-			TestManager.INSTANCE.startTicking();
-			return testServer;
-		});
+		MinecraftServer.startServer((thread) -> TestServer.create(thread, session, resourcePackManager, filter, verify));
 	}
 }

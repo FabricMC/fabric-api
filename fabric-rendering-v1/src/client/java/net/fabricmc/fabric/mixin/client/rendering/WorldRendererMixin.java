@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.class_12074;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.render.BufferBuilderStorage;
@@ -42,10 +42,10 @@ import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.entity.EntityRenderStates;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
@@ -71,14 +71,14 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 	@Unique private boolean isRendering = false;
 
 	@Inject(method = "render", at = @At("HEAD"))
-	private void beforeRender(ObjectAllocator objectAllocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f projectionMatrix, GpuBufferSlice slice, Vector4f skyColor, boolean thinFog, CallbackInfo ci) {
+	private void beforeRender(ObjectAllocator objectAllocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f projectionMatrix, Matrix4f matrix4f2, GpuBufferSlice gpuBufferSlice, Vector4f vector4f, boolean bl, CallbackInfo ci) {
 		context.prepare((WorldRenderer) (Object) this, tickCounter, renderBlockOutline, camera, this.client.gameRenderer, positionMatrix, projectionMatrix, bufferBuilders.getEntityVertexConsumers(), MinecraftClient.isFabulousGraphicsOrBetter(), world);
 		isRendering = true;
 		WorldRenderEvents.START.invoker().onStart(context);
 	}
 
-	@Inject(method = "setupTerrain", at = @At("RETURN"))
-	private void afterTerrainSetup(Camera camera, Frustum frustum, boolean hasForcedFrustum, boolean spectator, CallbackInfo ci) {
+	@Inject(method = "render", at = @At(value = "CONSTANT", args = "stringValue=setupFrameGraph"))
+	private void afterTerrainSetup(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f matrix4f, Matrix4f projectionMatrix, Matrix4f matrix4f2, GpuBufferSlice gpuBufferSlice, Vector4f vector4f, boolean bl, CallbackInfo ci, @Local Frustum frustum) {
 		context.setFrustum(frustum);
 	}
 
@@ -99,7 +99,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 			method = "method_62214",
 			at = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/client/render/WorldRenderer;renderEntities(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/RenderTickCounter;Ljava/util/List;)V"
+				target = "Lnet/minecraft/client/render/WorldRenderer;pushEntityRenders(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/entity/EntityRenderStates;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;)V"
 			)
 	)
 	private void afterTerrainSolid(CallbackInfo ci) {
@@ -112,20 +112,20 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 		return matrixStack;
 	}
 
-	@Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=blockentities", ordinal = 0))
+	@Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=submitBlockEntities", ordinal = 0))
 	private void afterEntities(CallbackInfo ci) {
 		WorldRenderEvents.AFTER_ENTITIES.invoker().afterEntities(context);
 	}
 
 	@Inject(method = "renderTargetBlockOutline", at = @At("HEAD"))
-	private void beforeRenderOutline(Camera camera, VertexConsumerProvider.Immediate vertexConsumers, MatrixStack matrices, boolean translucent, CallbackInfo ci) {
+	private void beforeRenderOutline(VertexConsumerProvider.Immediate immediate, MatrixStack matrixStack, boolean translucent, EntityRenderStates entityRenderStates, CallbackInfo ci) {
 		context.setTranslucentBlockOutline(translucent);
 		context.renderBlockOutline = WorldRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(context, client.crosshairTarget);
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "renderTargetBlockOutline", at = @At(value = "INVOKE", target = "net/minecraft/client/option/GameOptions.getHighContrastBlockOutline()Lnet/minecraft/client/option/SimpleOption;"), cancellable = true)
-	private void onDrawBlockOutline(Camera camera, VertexConsumerProvider.Immediate vertexConsumers, MatrixStack matrices, boolean translucent, CallbackInfo ci, @Local BlockPos blockPos, @Local BlockState blockState, @Local Vec3d cameraPos) {
+	@Inject(method = "renderTargetBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/class_12075;field_63078:Lnet/minecraft/util/math/Vec3d;"), cancellable = true)
+	private void onDrawBlockOutline(VertexConsumerProvider.Immediate vertexConsumers, MatrixStack matrixStack, boolean bl, EntityRenderStates entityRenderStates, CallbackInfo ci, @Local class_12074 blockOutlineRenderState) {
 		if (!context.renderBlockOutline) {
 			// Was cancelled before we got here, so do not
 			// fire the BLOCK_OUTLINE event per contract of the API.
@@ -133,9 +133,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 			return;
 		}
 
-		context.prepareBlockOutline(camera.getFocusedEntity(), cameraPos.x, cameraPos.y, cameraPos.z, blockPos, blockState);
-
-		if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(context, context)) {
+		if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(context, blockOutlineRenderState)) {
 			vertexConsumers.drawCurrentLayer();
 			ci.cancel();
 		}
@@ -145,7 +143,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 			method = "method_62214",
 			at = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDD)V",
+				target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDDZ)V",
 				ordinal = 0
 			)
 	)
@@ -178,7 +176,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 	}
 
 	@Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
-	private void renderWeather(FrameGraphBuilder frameGraphBuilder, Vec3d vec3d, float f, GpuBufferSlice fog, CallbackInfo info) {
+	private void renderWeather(FrameGraphBuilder frameGraphBuilder, Vec3d cameraPos, GpuBufferSlice gpuBufferSlice, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.WeatherRenderer renderer = DimensionRenderingRegistry.getWeatherRenderer(world.getRegistryKey());
 
@@ -202,7 +200,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 	}
 
 	@Inject(at = @At(value = "HEAD"), method = "renderSky", cancellable = true)
-	private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickDelta, GpuBufferSlice fog, CallbackInfo info) {
+	private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, GpuBufferSlice gpuBufferSlice, CallbackInfo info) {
 		if (this.client.world != null) {
 			DimensionRenderingRegistry.SkyRenderer renderer = DimensionRenderingRegistry.getSkyRenderer(world.getRegistryKey());
 

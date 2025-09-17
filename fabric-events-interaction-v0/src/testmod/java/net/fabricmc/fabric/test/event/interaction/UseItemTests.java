@@ -33,7 +33,7 @@ public class UseItemTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		UseItemCallback.EVENT.register((player, world, hand) -> {
-			LOGGER.info("UseItemCallback: before hook (client-side = %s)".formatted(world.isClient));
+			LOGGER.info("UseItemCallback: before hook (client-side = %s)".formatted(world.isClient()));
 			return ActionResult.PASS;
 		});
 
@@ -42,7 +42,7 @@ public class UseItemTests implements ModInitializer {
 			if (!player.isSpectator()) {
 				if (player.getStackInHand(hand).isOf(Items.BLAZE_ROD)) {
 					if (!world.isClient()) {
-						player.getWorld().spawnEntity(new FireballEntity(player.getWorld(), player, new Vec3d(0, 0, 0), 0));
+						player.getEntityWorld().spawnEntity(new FireballEntity(player.getEntityWorld(), player, new Vec3d(0, 0, 0), 0));
 					}
 
 					return ActionResult.SUCCESS;
@@ -53,7 +53,7 @@ public class UseItemTests implements ModInitializer {
 		});
 
 		UseItemCallback.EVENT.register((player, world, hand) -> {
-			LOGGER.info("UseItemCallback: after hook (client-side = %s)".formatted(world.isClient));
+			LOGGER.info("UseItemCallback: after hook (client-side = %s)".formatted(world.isClient()));
 			return ActionResult.PASS;
 		});
 	}

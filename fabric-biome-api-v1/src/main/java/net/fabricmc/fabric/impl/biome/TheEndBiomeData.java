@@ -148,7 +148,9 @@ public final class TheEndBiomeData {
 
 				return pick(highlandsReplacement, vanillaBiome, map, x, z, noise);
 			} else {
-				assert END_BIOMES_MAP.containsKey(vanillaBiome.getKey().orElseThrow());
+				if (!END_BIOMES_MAP.containsKey(vanillaBiome.getKey().orElseThrow())) {
+					throw new IllegalStateException("Biome is not an End biome: " + vanillaBiome);
+				}
 
 				return pick(vanillaBiome, vanillaBiome, endBiomesMap, x, z, noise);
 			}

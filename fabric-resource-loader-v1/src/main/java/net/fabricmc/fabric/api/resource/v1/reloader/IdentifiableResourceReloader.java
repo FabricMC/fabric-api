@@ -21,7 +21,6 @@ import java.util.concurrent.Executor;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
 
@@ -66,8 +65,8 @@ public interface IdentifiableResourceReloader extends ResourceReloader {
 				}
 
 				@Override
-				public CompletableFuture<Void> reload(Synchronizer synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor) {
-					return reloader.reload(synchronizer, manager, prepareExecutor, applyExecutor);
+				public CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer synchronizer, Executor applyExecutor) {
+					return reloader.reload(store, prepareExecutor, synchronizer, applyExecutor);
 				}
 			};
 		}

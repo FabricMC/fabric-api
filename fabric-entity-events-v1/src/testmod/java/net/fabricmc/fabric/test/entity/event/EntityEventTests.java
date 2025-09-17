@@ -83,11 +83,11 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
-			LOGGER.info("Copied data for {} from {} to {}", oldPlayer.getGameProfile().getName(), oldPlayer, newPlayer);
+			LOGGER.info("Copied data for {} from {} to {}", oldPlayer.getGameProfile().name(), oldPlayer, newPlayer);
 		});
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getWorld().getRegistryKey().getValue(), newPlayer.getWorld().getRegistryKey().getValue());
+			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().name(), oldPlayer.getEntityWorld().getRegistryKey().getValue(), newPlayer.getEntityWorld().getRegistryKey().getValue());
 		});
 
 		// No fall damage if holding a feather in the main hand
@@ -144,7 +144,7 @@ public final class EntityEventTests implements ModInitializer {
 
 		EntitySleepEvents.START_SLEEPING.register((entity, sleepingPos) -> {
 			LOGGER.info("Entity {} sleeping at {}", entity, sleepingPos);
-			BlockState bedState = entity.getWorld().getBlockState(sleepingPos);
+			BlockState bedState = entity.getEntityWorld().getBlockState(sleepingPos);
 
 			if (bedState.isOf(TEST_BED)) {
 				boolean shouldBeOccupied = !entity.getStackInHand(Hand.MAIN_HAND).isOf(Items.ORANGE_WOOL);
@@ -164,12 +164,12 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.register((entity, sleepingPos, sleepingDirection) -> {
-			return entity.getWorld().getBlockState(sleepingPos).isOf(TEST_BED) ? Direction.NORTH : sleepingDirection;
+			return entity.getEntityWorld().getBlockState(sleepingPos).isOf(TEST_BED) ? Direction.NORTH : sleepingDirection;
 		});
 
 		EntitySleepEvents.ALLOW_SLEEP_TIME.register((player, sleepingPos, vanillaResult) -> {
 			// Yellow wool allows to sleep during the day
-			if (player.getWorld().isDay() && player.getStackInHand(Hand.MAIN_HAND).isOf(Items.YELLOW_WOOL)) {
+			if (player.getEntityWorld().isDay() && player.getStackInHand(Hand.MAIN_HAND).isOf(Items.YELLOW_WOOL)) {
 				return ActionResult.SUCCESS;
 			}
 
@@ -226,13 +226,13 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		ServerPlayerEvents.JOIN.register(player -> {
-			assertOnServerThread(player.getServer());
-			LOGGER.info("Observed player {} joining the game", player.getGameProfile().getName());
+			assertOnServerThread(player.getEntityWorld().getServer());
+			LOGGER.info("Observed player {} joining the game", player.getGameProfile().name());
 		});
 
 		ServerPlayerEvents.LEAVE.register(player -> {
-			assertOnServerThread(player.getServer());
-			LOGGER.info("Observed player {} leaving the game", player.getGameProfile().getName());
+			assertOnServerThread(player.getEntityWorld().getServer());
+			LOGGER.info("Observed player {} leaving the game", player.getGameProfile().name());
 		});
 	}
 

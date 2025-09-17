@@ -18,9 +18,10 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderManager;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
 
 import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 
@@ -38,11 +39,11 @@ public final class BlockEntityRendererRegistry {
 	 *
 	 * @param blockEntityType the {@link BlockEntityType} to register a renderer for
 	 * @param blockEntityRendererFactory a {@link BlockEntityRendererFactory} that creates a {@link BlockEntityRenderer}, called
-	 *                            when {@link BlockEntityRenderDispatcher} is initialized or immediately if the dispatcher
+	 *                            when {@link BlockEntityRenderManager} is initialized or immediately if the dispatcher
 	 *                            class is already loaded
 	 * @param <E> the {@link BlockEntity}
 	 */
-	public static <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E> blockEntityRendererFactory) {
+	public static <E extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E, ? super S> blockEntityRendererFactory) {
 		BlockEntityRendererRegistryImpl.register(blockEntityType, blockEntityRendererFactory);
 	}
 

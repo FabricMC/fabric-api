@@ -17,13 +17,12 @@
 package net.fabricmc.fabric.impl.renderer;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.GatherDebugTextEvents;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
 
+// FIXME 1.21.9
 public class DebugHudClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		GatherDebugTextEvents.LEFT.register(lines -> lines.addLast(
-				"[Fabric] Active renderer: " + Renderer.get().getClass().getSimpleName()));
+		// GatherDebugTextEvents.LEFT.register(lines -> lines.addLast(
+		//		"[Fabric] Active renderer: " + Renderer.get().getClass().getSimpleName()));
 	}
 }

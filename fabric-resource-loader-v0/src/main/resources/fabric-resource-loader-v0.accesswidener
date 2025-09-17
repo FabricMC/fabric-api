@@ -4,3 +4,4 @@ accessible method net/minecraft/resource/NamespaceResourceManager getMetadataPat
 accessible method net/minecraft/resource/NamespaceResourceManager loadMetadata (Lnet/minecraft/resource/InputSupplier;)Lnet/minecraft/resource/metadata/ResourceMetadata;
 accessible field net/minecraft/resource/FileResourcePackProvider source Lnet/minecraft/resource/ResourcePackSource;
 accessible field net/minecraft/resource/ResourcePackManager providers Ljava/util/Set;
+accessible method net/minecraft/resource/metadata/PackResourceMetadata createCodec (Lnet/minecraft/resource/ResourceType;)Lcom/mojang/serialization/Codec;

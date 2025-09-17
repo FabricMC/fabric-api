@@ -343,7 +343,11 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 
 			// Add the new object
 			rawIdToEntry.size(Math.max(this.rawIdToEntry.size(), id + 1));
-			assert rawIdToEntry.get(id) == null;
+
+			if (rawIdToEntry.get(id) != null) {
+				throw new IllegalStateException("Raw ID already populated");
+			}
+
 			rawIdToEntry.set(id, object);
 			entryToRawId.put(object.value(), id);
 		}
@@ -359,7 +363,10 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 			// Emit AddObject events for previously culled objects.
 			for (Identifier id : fabric_prevEntries.keySet()) {
 				if (!idToEntry.containsKey(id)) {
-					assert fabric_prevIndexedEntries.containsKey(id);
+					if (!fabric_prevIndexedEntries.containsKey(id)) {
+						throw new IllegalStateException("id missing from previous indexed entries");
+					}
+
 					addedIds.add(id);
 				}
 			}

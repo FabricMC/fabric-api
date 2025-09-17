@@ -33,6 +33,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen.CreativeScreenHandler;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
@@ -110,12 +111,12 @@ public abstract class CreativeInventoryScreenMixin extends HandledScreen<Creativ
 	}
 
 	@Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
-	private void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-		if (keyCode == GLFW.GLFW_KEY_PAGE_UP) {
+	private void keyPressed(KeyInput context, CallbackInfoReturnable<Boolean> cir) {
+		if (context.key() == GLFW.GLFW_KEY_PAGE_UP) {
 			if (switchToPreviousPage()) {
 				cir.setReturnValue(true);
 			}
-		} else if (keyCode == GLFW.GLFW_KEY_PAGE_DOWN) {
+		} else if (context.key() == GLFW.GLFW_KEY_PAGE_DOWN) {
 			if (switchToNextPage()) {
 				cir.setReturnValue(true);
 			}
@@ -176,11 +177,7 @@ public abstract class CreativeInventoryScreenMixin extends HandledScreen<Creativ
 				.filter(itemGroup -> getPage(itemGroup) == page)
 				// Thanks to isXander for the sorting
 				.sorted(Comparator.comparing(ItemGroup::getRow).thenComparingInt(ItemGroup::getColumn))
-				.sorted((a, b) -> {
-					if (a.isSpecial() && !b.isSpecial()) return 1;
-					if (!a.isSpecial() && b.isSpecial()) return -1;
-					return 0;
-				})
+				.sorted((a, b) -> Boolean.compare(a.isSpecial(), b.isSpecial()))
 				.toList();
 	}
 

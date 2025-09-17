@@ -22,13 +22,16 @@ import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BannerBlockEntityRenderer;
+import net.minecraft.client.render.block.entity.model.BannerBlockModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.type.BannerPatternsComponent;
-import net.minecraft.util.DyeColor;
+import net.minecraft.util.Unit;
 
 public class BannerGuiElementRenderer extends SpecialGuiElementRenderer<BannerGuiElementRenderState> {
+	private final MinecraftClient client = MinecraftClient.getInstance();
+
 	protected BannerGuiElementRenderer(VertexConsumerProvider.Immediate vertexConsumers) {
 		super(vertexConsumers);
 	}
@@ -40,8 +43,25 @@ public class BannerGuiElementRenderer extends SpecialGuiElementRenderer<BannerGu
 
 	@Override
 	protected void render(BannerGuiElementRenderState state, MatrixStack matrices) {
-		MinecraftClient.getInstance().gameRenderer.getDiffuseLighting().setShaderLights(DiffuseLighting.Type.ITEMS_FLAT);
-		BannerBlockEntityRenderer.renderCanvas(matrices, vertexConsumers, 15728880, OverlayTexture.DEFAULT_UV, MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.STANDING_BANNER_FLAG).getChild("flag"), ModelBaker.BANNER_BASE, true, DyeColor.BLUE, BannerPatternsComponent.DEFAULT);
+		if (true) {
+			// TODO 1.21.9 - Disable as it breaks everything, pls help
+			return;
+		}
+
+		client.gameRenderer.getDiffuseLighting().setShaderLights(DiffuseLighting.Type.ITEMS_FLAT);
+		BannerBlockEntityRenderer.renderCanvas(
+				client.getAtlasManager(),
+				matrices,
+				client.gameRenderer.getEntityRenderCommandQueue(),
+				15728880,
+				OverlayTexture.DEFAULT_UV,
+				new BannerBlockModel(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.STANDING_BANNER_FLAG).getChild("flag")),
+				Unit.INSTANCE,
+				ModelBaker.BANNER_BASE,
+				true,
+				state.color(),
+				BannerPatternsComponent.DEFAULT,
+				null);
 	}
 
 	@Override

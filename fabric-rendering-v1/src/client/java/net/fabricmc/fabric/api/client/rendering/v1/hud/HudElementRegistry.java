@@ -27,10 +27,16 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
  * A registry of identified hud layers with methods to add layers in specific positions.
  *
  * <p>Operations relative to a vanilla element will inherit that element's render condition.
- * The render condition for all vanilla layers except {@link VanillaHudElements#SLEEP} is {@link net.minecraft.client.option.GameOptions#hudHidden}.
- * Only {@link #addFirst(Identifier, HudElement)} and {@link #addLast(Identifier, HudElement)} will not inherit any render condition.
- * There is currently no mechanism to change the render condition of a vanilla element.
- * For vanilla layers, see {@link VanillaHudElements}.
+ *
+ * <p>The render condition for all vanilla layers except {@link VanillaHudElements#SLEEP} is
+ * {@link net.minecraft.client.option.GameOptions#hudHidden}.
+ *
+ * <p>Only {@link #addFirst(Identifier, HudElement)} and {@link #addLast(Identifier, HudElement)} will not inherit any
+ * render condition.
+ *
+ * <p>There is currently no mechanism to change the render condition of a vanilla element.
+ *
+ * <p>For vanilla layers, see {@link VanillaHudElements}.
  *
  * <p>Common places to add layers (as of 1.21.6):
  * <table>
@@ -133,6 +139,10 @@ public interface HudElementRegistry {
 	 * Replaces an element with the specified identifier, the element retains its original identifier.
 	 *
 	 * <p>The render condition of the vanilla element being replaced, if any, also applies to the new element.
+	 *
+	 * <p>If the replaced element is a status bar (like {@link VanillaHudElements#HEALTH_BAR HEALTH_BAR},
+	 * {@link VanillaHudElements#ARMOR_BAR ARMOR_BAR} or {@link VanillaHudElements#FOOD_BAR FOOD_BAR}), it may be
+	 * necessary to register a new {@link StatusBarHeightProvider} in {@link HudStatusBarHeightRegistry}.
 	 *
 	 * @param identifier the identifier of the element to replace
 	 * @param replacer   a function that takes the old element and returns the new element

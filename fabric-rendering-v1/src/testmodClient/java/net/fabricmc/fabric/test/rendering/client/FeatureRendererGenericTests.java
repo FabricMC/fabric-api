@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
 import net.minecraft.client.render.entity.BipedEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -97,7 +97,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 		}
 
 		@Override
-		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+		public void render(MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
 		}
 	}
 
@@ -107,7 +107,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 		}
 
 		@Override
-		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T state, float limbAngle, float limbDistance) {
+		public void render(MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
 		}
 	}
 
@@ -117,7 +117,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 		}
 
 		@Override
-		public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorStandEntityRenderState state, float limbAngle, float limbDistance) {
+		public void render(MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, ArmorStandEntityRenderState state, float limbAngle, float limbDistance) {
 		}
 	}
 }

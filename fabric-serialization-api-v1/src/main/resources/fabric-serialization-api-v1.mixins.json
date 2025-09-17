@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.serialization",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "NbtReadViewMixin",
+    "NbtWriteViewMixin",
+    "ReadViewMixin",
+    "WriteViewMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

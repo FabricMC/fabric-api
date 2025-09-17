@@ -45,7 +45,7 @@ class LanguageMixin {
 	@Final
 	private static Logger LOGGER;
 
-	@Redirect(method = "create", at = @At(value = "INVOKE", target = "Ljava/util/Map;copyOf(Ljava/util/Map;)Ljava/util/Map;", remap = false))
+	@Redirect(method = "create", at = @At(value = "INVOKE", target = "Ljava/util/Map;copyOf(Ljava/util/Map;)Ljava/util/Map;"))
 	private static Map<String, String> create(Map<String, String> map) {
 		for (Path path : ServerLanguageUtil.getModLanguageFiles()) {
 			loadFromPath(path, map::put);

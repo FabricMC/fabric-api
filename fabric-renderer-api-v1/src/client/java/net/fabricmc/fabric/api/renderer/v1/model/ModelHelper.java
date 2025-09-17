@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.util.Atlases;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -71,7 +71,7 @@ public final class ModelHelper {
 	 * <p>Retrieves sprites from the block texture atlas via {@link SpriteFinder}.
 	 */
 	public static List<BakedQuad>[] toQuadLists(Mesh mesh) {
-		SpriteFinder finder = MinecraftClient.getInstance().getBakedModelManager().getAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).spriteFinder();
+		SpriteFinder finder = MinecraftClient.getInstance().getAtlasManager().getAtlasTexture(Atlases.BLOCKS).spriteFinder();
 
 		@SuppressWarnings("unchecked")
 		final ImmutableList.Builder<BakedQuad>[] builders = new ImmutableList.Builder[7];

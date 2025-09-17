@@ -32,15 +32,16 @@ public class ScreenMouseEventTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (screen instanceof HopperScreen) {
-				ScreenMouseEvents.allowMouseDrag(screen).register((screen1, mouseX, mouseY, button, horizontalAmount, verticalAmount) -> {
+				ScreenMouseEvents.allowMouseDrag(screen).register((screen1, context, horizontalAmount, verticalAmount) -> {
 					LOGGER.info("Allow Mouse Drag: Screen {}, Horizontal Amount {}, Vertical Amount {}", screen1.getClass().getSimpleName(), horizontalAmount, verticalAmount);
 					return true;
 				});
-				ScreenMouseEvents.beforeMouseDrag(screen).register((screen1, mouseX, mouseY, button, horizontalAmount, verticalAmount) -> {
+				ScreenMouseEvents.beforeMouseDrag(screen).register((screen1, context, horizontalAmount, verticalAmount) -> {
 					LOGGER.info("Before Mouse Drag: Screen {}, Horizontal Amount {}, Vertical Amount {}", screen1.getClass().getSimpleName(), horizontalAmount, verticalAmount);
 				});
-				ScreenMouseEvents.afterMouseDrag(screen).register((screen1, mouseX, mouseY, button, horizontalAmount, verticalAmount) -> {
+				ScreenMouseEvents.afterMouseDrag(screen).register((screen1, context, horizontalAmount, verticalAmount, consumed) -> {
 					LOGGER.info("After Mouse Drag: Screen {}, Horizontal Amount {}, Vertical Amount {}", screen1.getClass().getSimpleName(), horizontalAmount, verticalAmount);
+					return false;
 				});
 			}
 		});

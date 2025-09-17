@@ -139,4 +139,7 @@ transitive-accessible method net/minecraft/block/Blocks never (Lnet/minecraft/bl
 transitive-accessible method net/minecraft/block/Blocks register (Lnet/minecraft/registry/RegistryKey;Ljava/util/function/Function;Lnet/minecraft/block/AbstractBlock$Settings;)Lnet/minecraft/block/Block;
 transitive-accessible method net/minecraft/block/Blocks register (Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/block/AbstractBlock$Settings;)Lnet/minecraft/block/Block;
 
+# Debug HUD Entries
+transitive-accessible method net/minecraft/client/gui/hud/debug/DebugHudEntries register (Lnet/minecraft/util/Identifier;Lnet/minecraft/client/gui/hud/debug/DebugHudEntry;)Lnet/minecraft/util/Identifier;
+
 ### Generated access wideners below

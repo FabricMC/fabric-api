@@ -67,7 +67,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 			spWorldSave = singleplayer.getWorldSave();
 
 			{
-				enableDebugHud(context);
+				setDebugHud(context, true);
 				singleplayer.getClientWorld().waitForChunksRender();
 				context.takeScreenshot("in_game_overworld");
 			}
@@ -109,15 +109,17 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 				{ // Test that we can enter and exit configuration
 					final GameProfile profile = context.computeOnClient(MinecraftClient::getGameProfile);
-					server.runCommand("debugconfig config " + profile.getName());
+					server.runCommand("debugconfig config " + profile.name());
 					context.waitForScreen(ReconfiguringScreen.class);
 					context.takeScreenshot("server_config");
-					server.runCommand("debugconfig unconfig " + profile.getId());
+					server.runCommand("debugconfig unconfig " + profile.id());
 					// TODO: better way to wait for reconfiguration to end
 					context.waitTicks(100);
 				}
 			}
 		}
+
+		setDebugHud(context, false);
 	}
 
 	private static void waitForTitleScreenFade(ClientGameTestContext context) {
@@ -126,8 +128,8 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		});
 	}
 
-	private static void enableDebugHud(ClientGameTestContext context) {
-		context.runOnClient(client -> client.inGameHud.getDebugHud().toggleDebugHud());
+	private static void setDebugHud(ClientGameTestContext context, boolean f3Enabled) {
+		context.runOnClient(client -> client.debugHudEntryList.setF3Enabled(f3Enabled));
 	}
 
 	private static void setPerspective(ClientGameTestContext context, Perspective perspective) {

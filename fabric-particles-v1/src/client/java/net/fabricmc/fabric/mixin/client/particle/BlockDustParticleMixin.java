@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.particle;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,8 +27,8 @@ import org.spongepowered.asm.mixin.injection.Slice;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.particle.BillboardParticle;
 import net.minecraft.client.particle.BlockDustParticle;
-import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.util.math.BlockPos;
@@ -36,13 +37,13 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleRenderEvents;
 
 // Implements ParticleRenderEvents.ALLOW_BLOCK_DUST_TINT
 @Mixin(BlockDustParticle.class)
-abstract class BlockDustParticleMixin extends SpriteBillboardParticle {
+abstract class BlockDustParticleMixin extends BillboardParticle {
 	@Shadow
 	@Final
 	private BlockPos blockPos;
 
 	private BlockDustParticleMixin() {
-		super(null, 0, 0, 0);
+		super(null, 0, 0, 0, null);
 	}
 
 	@ModifyVariable(
@@ -55,7 +56,7 @@ abstract class BlockDustParticleMixin extends SpriteBillboardParticle {
 			),
 			allow = 1
 	)
-	private BlockState removeUntintableParticles(BlockState state) {
+	private static BlockState removeUntintableParticles(BlockState state, @Local(argsOnly = true) ClientWorld world, @Local(argsOnly = true) BlockPos blockPos) {
 		if (!ParticleRenderEvents.ALLOW_BLOCK_DUST_TINT.invoker().allowBlockDustTint(state, world, blockPos)) {
 			// As of 1.20.1, vanilla hardcodes grass block particles to not get tinted.
 			return Blocks.GRASS_BLOCK.getDefaultState();

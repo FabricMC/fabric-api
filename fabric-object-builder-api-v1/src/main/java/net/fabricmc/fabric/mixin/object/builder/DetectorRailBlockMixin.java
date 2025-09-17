@@ -31,6 +31,7 @@ import net.minecraft.block.DetectorRailBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.MinecartComparatorLogicRegistry;
@@ -40,7 +41,7 @@ public abstract class DetectorRailBlockMixin {
 	@Shadow protected abstract <T extends AbstractMinecartEntity> List<T> getCarts(World world, BlockPos pos, Class<T> entityClass, @Nullable Predicate<Entity> entityPredicate);
 
 	@Inject(at = @At("HEAD"), method = "getComparatorOutput", cancellable = true)
-	private void getCustomComparatorOutput(BlockState state, World world, BlockPos pos, CallbackInfoReturnable<Integer> cir) {
+	private void getCustomComparatorOutput(BlockState state, World world, BlockPos pos, Direction direction, CallbackInfoReturnable<Integer> cir) {
 		if (state.get(DetectorRailBlock.POWERED)) {
 			List<AbstractMinecartEntity> carts = getCarts(world, pos, AbstractMinecartEntity.class,
 					cart -> MinecartComparatorLogicRegistry.getCustomComparatorLogic(cart.getType()) != null);

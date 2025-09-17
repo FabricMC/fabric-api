@@ -56,7 +56,7 @@ public final class ResourceReloaderKeys {
 		public static final Identifier FOLIAGE_COLORMAP = Identifier.ofVanilla("foliage_colormap");
 		public static final Identifier FONTS = Identifier.ofVanilla("fonts");
 		public static final Identifier GRASS_COLORMAP = Identifier.ofVanilla("grass_colormap");
-		public static final Identifier GUI_ATLAS = Identifier.ofVanilla("gui_atlas");
+		public static final Identifier ATLAS = Identifier.ofVanilla("atlas");
 		public static final Identifier LANGUAGES = Identifier.ofVanilla("languages");
 		public static final Identifier MAP_DECORATIONS = Identifier.ofVanilla("map_decorations");
 		public static final Identifier MODELS = Identifier.ofVanilla("models");

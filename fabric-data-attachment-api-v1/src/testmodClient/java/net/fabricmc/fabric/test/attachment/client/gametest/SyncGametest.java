@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.attachment.client.gametest;
 
 import java.util.Objects;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +87,7 @@ public class SyncGametest implements FabricClientGameTest {
 		try (TestDedicatedServerContext serverContext = context.worldBuilder().createServer(serverProps)) {
 			var state = new Object() {
 				BlockPos furnacePos;
-				int villagerId;
+				UUID villagerId;
 			};
 
 			context.runOnClient(client -> {
@@ -107,7 +108,7 @@ public class SyncGametest implements FabricClientGameTest {
 				var villager = new VillagerEntity(EntityType.VILLAGER, world);
 				villager.setAiDisabled(true);
 				villager.setInvulnerable(true);
-				state.villagerId = villager.getId();
+				state.villagerId = villager.getUuid();
 				world.spawnEntity(villager);
 				setSyncedWithAll(villager);
 				set(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
@@ -144,7 +145,7 @@ public class SyncGametest implements FabricClientGameTest {
 				LOGGER.info("Testing synced attachments (1/2)");
 				context.runOnClient(client -> {
 					ClientWorld world = Objects.requireNonNull(client.world);
-					Entity villager = world.getEntityById(state.villagerId);
+					Entity villager = world.getEntity(state.villagerId);
 
 					assertHasSyncedWithAll(world.getBlockEntity(state.furnacePos));
 					assertHasSyncedWithAll(villager);

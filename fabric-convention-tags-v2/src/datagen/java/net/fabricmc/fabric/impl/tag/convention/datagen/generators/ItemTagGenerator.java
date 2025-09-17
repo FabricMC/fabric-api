@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.data.tag.ProvidedTagBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKeys;
@@ -673,6 +675,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		valueLookupBuilder(ConventionalItemTags.MINING_TOOL_TOOLS)
 				.add(Items.WOODEN_PICKAXE)
 				.add(Items.STONE_PICKAXE)
+				.add(Items.COPPER_PICKAXE)
 				.add(Items.GOLDEN_PICKAXE)
 				.add(Items.IRON_PICKAXE)
 				.add(Items.DIAMOND_PICKAXE)
@@ -684,12 +687,14 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.TRIDENT)
 				.add(Items.WOODEN_SWORD)
 				.add(Items.STONE_SWORD)
+				.add(Items.COPPER_SWORD)
 				.add(Items.GOLDEN_SWORD)
 				.add(Items.IRON_SWORD)
 				.add(Items.DIAMOND_SWORD)
 				.add(Items.NETHERITE_SWORD)
 				.add(Items.WOODEN_AXE)
 				.add(Items.STONE_AXE)
+				.add(Items.COPPER_AXE)
 				.add(Items.GOLDEN_AXE)
 				.add(Items.IRON_AXE)
 				.add(Items.DIAMOND_AXE)
@@ -744,6 +749,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		valueLookupBuilder(ConventionalItemTags.MINING_TOOLS)
 				.add(Items.WOODEN_PICKAXE)
 				.add(Items.STONE_PICKAXE)
+				.add(Items.COPPER_PICKAXE)
 				.add(Items.GOLDEN_PICKAXE)
 				.add(Items.IRON_PICKAXE)
 				.add(Items.DIAMOND_PICKAXE)
@@ -752,12 +758,14 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		valueLookupBuilder(ConventionalItemTags.MELEE_WEAPONS_TOOLS)
 				.add(Items.WOODEN_SWORD)
 				.add(Items.STONE_SWORD)
+				.add(Items.COPPER_SWORD)
 				.add(Items.GOLDEN_SWORD)
 				.add(Items.IRON_SWORD)
 				.add(Items.DIAMOND_SWORD)
 				.add(Items.NETHERITE_SWORD)
 				.add(Items.WOODEN_AXE)
 				.add(Items.STONE_AXE)
+				.add(Items.COPPER_AXE)
 				.add(Items.GOLDEN_AXE)
 				.add(Items.IRON_AXE)
 				.add(Items.DIAMOND_AXE)
@@ -892,8 +900,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		valueLookupBuilder(ConventionalItemTags.ROPES); // Generate tag so others can see it exists through JSON.
 
-		valueLookupBuilder(ConventionalItemTags.CHAINS)
-				.add(Items.CHAIN);
+		ProvidedTagBuilder<Item, Item> chains = valueLookupBuilder(ConventionalItemTags.CHAINS)
+				.add(Items.IRON_CHAIN);
+		Items.COPPER_CHAINS.forEach(chains::add);
 
 		valueLookupBuilder(ConventionalItemTags.ENDER_PEARLS)
 				.add(Items.ENDER_PEARL);

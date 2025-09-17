@@ -43,7 +43,7 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 	private boolean hasStarted;
 
 	public ClientConfigurationNetworkAddon(ClientConfigurationNetworkHandler handler, MinecraftClient client) {
-		super(ClientNetworkingImpl.CONFIGURATION, ((ClientCommonNetworkHandlerAccessor) handler).getConnection(), "ClientPlayNetworkAddon for " + ((ClientConfigurationNetworkHandlerAccessor) handler).getProfile().getName(), handler, client);
+		super(ClientNetworkingImpl.CONFIGURATION, ((ClientCommonNetworkHandlerAccessor) handler).getConnection(), "ClientPlayNetworkAddon for " + ((ClientConfigurationNetworkHandlerAccessor) handler).getProfile().name(), handler, client);
 		this.context = new ContextImpl(client, handler, this);
 
 		// Must register pending channels via lateinit

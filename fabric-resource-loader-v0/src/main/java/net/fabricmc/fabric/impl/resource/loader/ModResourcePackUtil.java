@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.DataConfiguration;
 import net.minecraft.resource.DataPackSettings;
+import net.minecraft.resource.PackVersion;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProfile;
@@ -52,6 +53,7 @@ import net.minecraft.resource.VanillaDataPackProvider;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.resource.metadata.PackResourceMetadata;
 import net.minecraft.text.Text;
+import net.minecraft.util.dynamic.Range;
 import net.minecraft.util.path.SymlinkFinder;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
@@ -184,7 +186,7 @@ public final class ModResourcePackUtil {
 		switch (filename) {
 		case "pack.mcmeta":
 			String description = Objects.requireNonNullElse(container.getMetadata().getId(), "");
-			String metadata = serializeMetadata(SharedConstants.getGameVersion().packVersion(type), description);
+			String metadata = serializeMetadata(SharedConstants.getGameVersion().packVersion(type), description, type);
 			return IOUtils.toInputStream(metadata, Charsets.UTF_8);
 		case "pack.png":
 			Optional<Path> path = container.getMetadata().getIconPath(512).flatMap(container::findPath);
@@ -199,19 +201,20 @@ public final class ModResourcePackUtil {
 		}
 	}
 
-	public static PackResourceMetadata getMetadataPack(int packVersion, Text description) {
-		return new PackResourceMetadata(description, packVersion, Optional.empty());
+	public static PackResourceMetadata getMetadataPack(PackVersion packVersion, Text description) {
+		return new PackResourceMetadata(description, new Range<>(packVersion));
 	}
 
-	public static JsonObject getMetadataPackJson(int packVersion, Text description) {
-		return PackResourceMetadata.SERIALIZER.codec().encodeStart(JsonOps.INSTANCE, getMetadataPack(packVersion, description))
+	public static JsonObject getMetadataPackJson(PackVersion packVersion, Text description, ResourceType resourceType) {
+		return PackResourceMetadata.createCodec(resourceType)
+				.encodeStart(JsonOps.INSTANCE, getMetadataPack(packVersion, description))
 				.getOrThrow()
 				.getAsJsonObject();
 	}
 
-	public static String serializeMetadata(int packVersion, String description) {
+	public static String serializeMetadata(PackVersion packVersion, String description, ResourceType resourceType) {
 		// This seems to be still manually deserialized
-		JsonObject pack = getMetadataPackJson(packVersion, Text.literal(description));
+		JsonObject pack = getMetadataPackJson(packVersion, Text.literal(description), resourceType);
 		JsonObject metadata = new JsonObject();
 		metadata.add("pack", pack);
 		return GSON.toJson(metadata);

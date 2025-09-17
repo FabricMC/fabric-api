@@ -32,7 +32,7 @@ public class AttackBlockTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, side) -> {
-			LOGGER.info("AttackBlockCallback: before chest/lava hook (client-side = %s)".formatted(world.isClient));
+			LOGGER.info("AttackBlockCallback: before chest/lava hook (client-side = %s)".formatted(world.isClient()));
 			return ActionResult.PASS;
 		});
 		// If a chest is attacked and the player holds a lava bucket, delete it!
@@ -49,7 +49,7 @@ public class AttackBlockTests implements ModInitializer {
 			return ActionResult.PASS;
 		});
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, side) -> {
-			LOGGER.info("AttackBlockCallback: after chest/lava hook (client-side = %s)".formatted(world.isClient));
+			LOGGER.info("AttackBlockCallback: after chest/lava hook (client-side = %s)".formatted(world.isClient()));
 			return ActionResult.PASS;
 		});
 	}

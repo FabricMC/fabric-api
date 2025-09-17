@@ -40,6 +40,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerConfigEntry;
 import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.server.network.ServerPlayerConfigurationTask;
 import net.minecraft.text.MutableText;
@@ -67,7 +68,7 @@ public final class RegistrySyncManager {
 	private RegistrySyncManager() { }
 
 	public static void configureClient(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
-		if (!DEBUG && server.isHost(handler.getDebugProfile())) {
+		if (!DEBUG && server.isHost(new PlayerConfigEntry(handler.getDebugProfile()))) {
 			// Dont send in singleplayer
 			return;
 		}

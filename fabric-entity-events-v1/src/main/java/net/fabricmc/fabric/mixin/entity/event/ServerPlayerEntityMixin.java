@@ -53,7 +53,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 @Mixin(ServerPlayerEntity.class)
 abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	@Shadow
-	public abstract ServerWorld getWorld();
+	public abstract ServerWorld getEntityWorld();
 
 	/**
 	 * Minecraft by default does not call Entity#onKilledOther for a ServerPlayerEntity being killed.
@@ -66,8 +66,8 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 
 		// If the damage source that killed the player was an entity, then fire the event.
 		if (attacker != null) {
-			attacker.onKilledOther(this.getWorld(), (ServerPlayerEntity) (Object) this);
-			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getWorld(), attacker, (ServerPlayerEntity) (Object) this);
+			attacker.onKilledOther(this.getEntityWorld(), (ServerPlayerEntity) (Object) this, source);
+			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getEntityWorld(), attacker, (ServerPlayerEntity) (Object) this);
 		}
 	}
 
@@ -81,7 +81,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	 */
 	@Inject(method = "worldChanged(Lnet/minecraft/server/world/ServerWorld;)V", at = @At("TAIL"))
 	private void afterWorldChanged(ServerWorld origin, CallbackInfo ci) {
-		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.invoker().afterChangeWorld((ServerPlayerEntity) (Object) this, origin, this.getWorld());
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.invoker().afterChangeWorld((ServerPlayerEntity) (Object) this, origin, this.getEntityWorld());
 	}
 
 	@Inject(method = "copyFrom", at = @At("TAIL"))
@@ -103,12 +103,12 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 
 	@WrapOperation(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;setSpawnPoint(Lnet/minecraft/server/network/ServerPlayerEntity$Respawn;Z)V"))
 	private void onSetSpawnPoint(ServerPlayerEntity player, ServerPlayerEntity.Respawn spawnPoint, boolean sendMessage, Operation<Void> original) {
-		if (EntitySleepEvents.ALLOW_SETTING_SPAWN.invoker().allowSettingSpawn(player, spawnPoint.pos())) {
+		if (EntitySleepEvents.ALLOW_SETTING_SPAWN.invoker().allowSettingSpawn(player, spawnPoint.respawnData().method_74897())) {
 			original.call(player, spawnPoint, sendMessage);
 		}
 	}
 
-	@Redirect(method = "trySleep", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z", remap = false))
+	@Redirect(method = "trySleep", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z"))
 	private boolean hasNoMonstersNearby(List<HostileEntity> monsters, BlockPos pos) {
 		boolean vanillaResult = monsters.isEmpty();
 		ActionResult result = EntitySleepEvents.ALLOW_NEARBY_MONSTERS.invoker().allowNearbyMonsters((PlayerEntity) (Object) this, pos, vanillaResult);

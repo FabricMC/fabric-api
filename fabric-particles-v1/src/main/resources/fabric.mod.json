@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.16.13",
+    "fabricloader": ">=0.17.0",
     "fabric-networking-api-v1": "*"
   },
   "entrypoints": {

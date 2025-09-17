@@ -23,11 +23,10 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.model.AllayEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
 import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemDisplayContext;
@@ -49,20 +48,20 @@ public class SpecialBlockRendererTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		SpecialBlockRendererRegistry.register(Blocks.TNT, new SpecialModelRenderer.Unbaked() {
 			@Override
-			public SpecialModelRenderer<?> bake(LoadedEntityModels entityModels) {
-				AllayEntityModel allayModel = new AllayEntityModel(entityModels.getModelPart(EntityModelLayers.ALLAY));
+			public SpecialModelRenderer<?> bake(SpecialModelRenderer.BakeContext ctx) {
+				AllayEntityModel allayModel = new AllayEntityModel(ctx.entityModelSet().getModelPart(EntityModelLayers.ALLAY));
 
 				return new SpecialModelRenderer<>() {
 					@Override
-					public void render(@Nullable Object data, ItemDisplayContext displayContext, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean glint) {
+					public void render(@Nullable Object data, ItemDisplayContext displayContext, MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue, int light, int overlay, boolean glint) {
 						matrices.push();
 						matrices.translate(0.5f, 0.0f, 0.5f);
 						matrices.translate(0, 1.46875f, 0);
 						matrices.scale(1, -1, 1);
 						matrices.multiply(RotationAxis.POSITIVE_Y.rotation((float) (Util.getMeasuringTimeMs() * 0.001)));
 						matrices.translate(0, -1.46875f, 0);
-						VertexConsumer vertexConsumer = vertexConsumers.getBuffer(allayModel.getLayer(ALLAY_TEXTURE));
-						allayModel.render(matrices, vertexConsumer, light, overlay);
+						orderedRenderCommandQueue.getBatchingQueue(0)
+								.submitCustom(matrices, RenderLayer.getSolid(), (matricesEntry, vertexConsumer) -> allayModel.render(matrices, vertexConsumer, light, overlay));
 						matrices.pop();
 					}
 

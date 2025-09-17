@@ -30,7 +30,7 @@ import net.minecraft.util.math.BlockPos;
 @Mixin(BlockDustParticle.class)
 abstract class BlockDustParticleMixin {
 	@Redirect(method = "<init>(Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;)V", at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/BlockModels.getModelParticleSprite(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/texture/Sprite;"))
-	private Sprite getModelParticleSpriteProxy(BlockModels models, BlockState state, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state1, BlockPos blockPos) {
+	private static Sprite getModelParticleSpriteProxy(BlockModels models, BlockState state, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state1, BlockPos blockPos) {
 		return models.getModelParticleSprite(state, world, blockPos);
 	}
 }

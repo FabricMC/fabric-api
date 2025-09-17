@@ -46,6 +46,6 @@ public class ChuteBlock extends BlockWithEntity {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return world.isClient ? null : validateTicker(type, FabricApiLookupTest.CHUTE_BLOCK_ENTITY_TYPE, ChuteBlockEntity::serverTick);
+		return world.isClient() ? null : validateTicker(type, FabricApiLookupTest.CHUTE_BLOCK_ENTITY_TYPE, ChuteBlockEntity::serverTick);
 	}
 }

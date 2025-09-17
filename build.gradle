@@ -2,8 +2,8 @@ plugins {
 	id "java-library"
 	id "eclipse"
 	id "maven-publish"
-	id "fabric-loom" version "1.10.1" apply false
-	id "com.diffplug.spotless" version "7.0.2"
+	id "fabric-loom" version "1.11.7" apply false
+	id "com.diffplug.spotless" version "7.2.1"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
 	id "me.modmuss50.mod-publish-plugin" version "0.8.4"
 }
@@ -454,11 +454,12 @@ tasks.register('runProductionClientGametest', net.fabricmc.loom.task.prod.Client
 	jvmArgs.addAll([
 		"-Dfabric.client.gametest",
 		"-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail",
-		"-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
+		"-Dfabric-tag-conventions-v1.legacyTagWarning=fail",
+		"-Dfabric.client.gametest.disableNetworkSynchronizer=true"
 	])
 	jvmArgs.addAll(debugArgs)
 
-	if (providers.environmentVariable("ENABLE_TRACY").present) {
+	if (providers.environmentVariable("ENABLE_TRACY").getOrNull() == "true") {
 		tracy {
 			tracyCapture = file("tracy-capture")
 			output = file("profile.tracy")
@@ -771,7 +772,7 @@ import java.util.stream.Collectors
 tasks.register('checkVersion') {
 	doFirst {
 		def xml = new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text
-		def metadata = new XmlSlurper().parseText(xml)
+		def metadata = new groovy.xml.XmlSlurper().parseText(xml)
 		def versions = metadata.versioning.versions.version*.text();
 		if (versions.contains(version)) {
 			throw new RuntimeException("${version} has already been released!")

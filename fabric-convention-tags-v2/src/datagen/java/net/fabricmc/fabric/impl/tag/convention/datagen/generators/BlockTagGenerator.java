@@ -184,7 +184,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		valueLookupBuilder(ConventionalBlockTags.CHESTS)
 				.addTag(ConventionalBlockTags.WOODEN_CHESTS)
 				.addTag(ConventionalBlockTags.TRAPPED_CHESTS)
-				.addTag(ConventionalBlockTags.ENDER_CHESTS);
+				.addTag(ConventionalBlockTags.ENDER_CHESTS)
+				.addOptionalTag(BlockTags.COPPER_CHESTS);
 		valueLookupBuilder(ConventionalBlockTags.BOOKSHELVES)
 				.add(Blocks.BOOKSHELF);
 		generateGlassTags();
@@ -254,7 +255,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 		valueLookupBuilder(ConventionalBlockTags.ROPES); // Generate tag so others can see it exists through JSON.
 
 		valueLookupBuilder(ConventionalBlockTags.CHAINS)
-				.add(Blocks.CHAIN);
+				.add(Blocks.IRON_CHAIN)
+				.add(Blocks.COPPER_CHAINS.getAll());
 
 		valueLookupBuilder(ConventionalBlockTags.HIDDEN_FROM_RECIPE_VIEWERS); // Generate tag so others can see it exists through JSON.
 	}

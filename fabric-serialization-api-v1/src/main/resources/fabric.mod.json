@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-serialization-api-v1",
+  "name": "Fabric Serialization API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-serialization-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "mixins": [
+    "fabric-serialization-api-v1.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.17.0"
+  },
+  "description": "Extensions for improved serialization.",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable",
+    "loom:injected_interfaces": {
+      "net/minecraft/class_11368": ["net/fabricmc/fabric/api/serialization/v1/view/FabricReadView"],
+      "net/minecraft/class_11372": ["net/fabricmc/fabric/api/serialization/v1/view/FabricWriteView"]
+    }
+  }
+}

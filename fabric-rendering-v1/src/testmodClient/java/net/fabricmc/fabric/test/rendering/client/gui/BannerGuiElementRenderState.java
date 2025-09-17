@@ -18,10 +18,11 @@ package net.fabricmc.fabric.test.rendering.client.gui;
 
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
+import net.minecraft.util.DyeColor;
 
-public record BannerGuiElementRenderState(int x1, int y1, int x2, int y2, ScreenRect scissorArea, ScreenRect bounds) implements SpecialGuiElementRenderState {
-	public BannerGuiElementRenderState(int x1, int y1, int x2, int y2, ScreenRect scissorArea) {
-		this(x1, y1, x2, y2, scissorArea, SpecialGuiElementRenderState.createBounds(x1, y1, x2, y2, scissorArea));
+public record BannerGuiElementRenderState(DyeColor color, int x1, int y1, int x2, int y2, ScreenRect scissorArea, ScreenRect bounds) implements SpecialGuiElementRenderState {
+	public BannerGuiElementRenderState(DyeColor color, int x1, int y1, int x2, int y2, ScreenRect scissorArea) {
+		this(color, x1, y1, x2, y2, scissorArea, SpecialGuiElementRenderState.createBounds(x1, y1, x2, y2, scissorArea));
 	}
 
 	@Override

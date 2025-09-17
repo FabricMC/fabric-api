@@ -20,6 +20,7 @@ import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.types.templates.TaggedChoice;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +34,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.fabricmc.fabric.impl.dimension.TaggedChoiceTypeExtension;
 
-@Mixin(value = TaggedChoice.TaggedChoiceType.class, remap = false)
+@Mixin(value = TaggedChoice.TaggedChoiceType.class)
 public class TaggedChoiceTaggedChoiceTypeMixin<K> implements TaggedChoiceTypeExtension {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("TaggedChoiceType_DimDataFix");
 
-	@Shadow(remap = false)
+	@Shadow
 	@Final
 	protected Object2ObjectMap<K, Type<?>> types;
 
@@ -51,13 +52,13 @@ public class TaggedChoiceTaggedChoiceTypeMixin<K> implements TaggedChoiceTypeExt
 	 * This will avoid deserialization failure from DFU when upgrading level.dat that contains mod custom generator types.
 	 */
 	@Inject(
-			method = "getMapCodec", at = @At("HEAD"), cancellable = true, remap = false
+			method = "getMapCodec", at = @At("HEAD"), cancellable = true
 	)
-	private void onGetCodec(K k, CallbackInfoReturnable<DataResult<? extends Codec<?>>> cir) {
+	private void onGetCodec(K k, CallbackInfoReturnable<DataResult<? extends MapCodec<?>>> cir) {
 		if (failSoft) {
 			if (!types.containsKey(k)) {
 				LOGGER.warn("Not recognizing key {}. Using pass-through codec. {}", k, this);
-				cir.setReturnValue(DataResult.success(Codec.PASSTHROUGH));
+				cir.setReturnValue(DataResult.success(MapCodec.assumeMapUnsafe(Codec.PASSTHROUGH)));
 			}
 		}
 	}

@@ -36,9 +36,11 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
+import net.minecraft.resource.PackVersion;
 import net.minecraft.resource.ResourcePackInfo;
 import net.minecraft.resource.ResourcePackPosition;
 import net.minecraft.resource.ResourcePackProfile;
+import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
@@ -246,7 +248,7 @@ public class ModResourcePackUtilTests {
 	}
 
 	private void testMetadataSerialization(String description) throws JsonParseException {
-		String metadata = ModResourcePackUtil.serializeMetadata(1, description);
+		String metadata = ModResourcePackUtil.serializeMetadata(new PackVersion(1, 0), description, ResourceType.CLIENT_RESOURCES);
 		JsonObject json = assertDoesNotThrow(() -> GSON.fromJson(metadata, JsonObject.class), () -> "Failed to serialize " + description);
 
 		String parsedDescription = json.get("pack").getAsJsonObject().get("description").getAsString();

@@ -135,11 +135,6 @@ abstract class InGameHudMixin {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.DEMO_TIMER).render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, tc));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderDebugHud(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"))
-	private void wrapDebugHud(InGameHud instance, DrawContext context, RenderTickCounter tickCounter, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.DEBUG).render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, tc));
-	}
-
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"))
 	private void wrapScoreboardSidebar(InGameHud instance, DrawContext context, RenderTickCounter tickCounter, Operation<Void> renderVanilla) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.SCOREBOARD).render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, tc));
@@ -165,8 +160,8 @@ abstract class InGameHudMixin {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.PLAYER_LIST).render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, tc));
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderSubtitlesHud(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V"))
-	private void wrapSubtitlesHud(InGameHud instance, DrawContext context, RenderTickCounter tickCounter, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, tc));
+	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderSubtitlesHud(Lnet/minecraft/client/gui/DrawContext;Z)V"))
+	private void wrapSubtitlesHud(InGameHud instance, DrawContext context, boolean bl, Operation<Void> renderVanilla, @Local(argsOnly = true) RenderTickCounter tickCounter) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, bl));
 	}
 }

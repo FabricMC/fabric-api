@@ -52,7 +52,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	private boolean isReconfiguring = false;
 
 	public ServerConfigurationNetworkAddon(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
-		super(ServerNetworkingImpl.CONFIGURATION, ((ServerCommonNetworkHandlerAccessor) handler).getConnection(), "ServerConfigurationNetworkAddon for " + handler.getDebugProfile().getName());
+		super(ServerNetworkingImpl.CONFIGURATION, ((ServerCommonNetworkHandlerAccessor) handler).getConnection(), "ServerConfigurationNetworkAddon for " + handler.getDebugProfile().name());
 		this.handler = handler;
 		this.server = server;
 		this.context = new ContextImpl(server, handler, this);
@@ -96,7 +96,10 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		}
 
 		// We should have received a response
-		assert registerState == RegisterState.RECEIVED || registerState == RegisterState.NOT_RECEIVED;
+		if (!(registerState == RegisterState.RECEIVED || registerState == RegisterState.NOT_RECEIVED)) {
+			throw new IllegalStateException();
+		}
+
 		return false;
 	}
 

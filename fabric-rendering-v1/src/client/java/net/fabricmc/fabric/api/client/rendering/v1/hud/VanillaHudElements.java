@@ -99,10 +99,6 @@ public final class VanillaHudElements {
 	 */
 	public static final Identifier DEMO_TIMER = Identifier.ofVanilla("demo_timer");
 	/**
-	 * The identifier for the vanilla debug hud element.
-	 */
-	public static final Identifier DEBUG = Identifier.ofVanilla("debug");
-	/**
 	 * The identifier for the vanilla scoreboard element.
 	 */
 	public static final Identifier SCOREBOARD = Identifier.ofVanilla("scoreboard");

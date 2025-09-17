@@ -78,7 +78,7 @@ public abstract class StructureTemplateManagerMixin {
 		return finder.findResources(this.resourceManager).keySet().stream().map(finder::toResourceId);
 	}
 
-	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList$Builder;add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 2, shift = At.Shift.AFTER, remap = false))
+	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList$Builder;add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 2, shift = At.Shift.AFTER))
 	private void addFabricTemplateProvider(ResourceManager resourceManager, LevelStorage.Session session, DataFixer dataFixer, RegistryEntryLookup<Block> blockLookup, CallbackInfo ci, @Local ImmutableList.Builder<StructureTemplateManager.Provider> builder) {
 		builder.add(new StructureTemplateManager.Provider(this::fabric_loadSnbtFromResource, this::streamTemplatesFromResource));
 	}
