@@ -27,7 +27,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -65,7 +64,6 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 
 	private final Set<Identifier> addedReloaderIds = new ObjectOpenHashSet<>();
 	private final Set<IdentifiableResourceReloader> addedReloaders = new LinkedHashSet<>();
-	private final Set<RegistryResourceReloaderFactory> addedReloaderFactories = new LinkedHashSet<>();
 	private final Set<ReloaderOrder> reloadersOrdering = new LinkedHashSet<>();
 	private final ResourceType type;
 
@@ -90,22 +88,6 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 	}
 
 	@Override
-	public void registerReloader(Identifier id, Function<RegistryWrapper.WrapperLookup, ResourceReloader> reloaderFactory) {
-		if (this.type == ResourceType.CLIENT_RESOURCES) {
-			throw new IllegalArgumentException("Cannot register a registry listener for the client resource type!");
-		}
-
-		if (!this.addedReloaderIds.add(id)) {
-			LOGGER.warn("Tried to register resource reload listener {} twice!", id);
-			return;
-		}
-
-		if (!this.addedReloaderFactories.add(new RegistryResourceReloaderFactory(id, reloaderFactory))) {
-			throw new RuntimeException("Listener with previously unknown ID %s already in listener set!".formatted(id));
-		}
-	}
-
-	@Override
 	public void addReloaderOrdering(@NotNull Identifier firstReloader, @NotNull Identifier secondReloader) {
 		Objects.requireNonNull(firstReloader, "The first reloader identifier should not be null.");
 		Objects.requireNonNull(secondReloader, "The second reloader identifier should not be null.");
@@ -125,7 +107,7 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 		ResourceLoaderImpl instance = get(type);
 
 		if (instance != null) {
-			var mutable = new ArrayList<ResourceReloader>(listeners);
+			var mutable = new ArrayList<>(listeners);
 			instance.sort(mutable);
 			return Collections.unmodifiableList(mutable);
 		}
@@ -140,12 +122,10 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 	 */
 	private void sort(List<ResourceReloader> reloaders) {
 		// Build the actual full list of resource reloaders to add.
-		final RegistryWrapper.WrapperLookup wrapperLookup = this.getWrapperLookup(reloaders);
 		final Set<IdentifiableResourceReloader> reloadersToAdd = new LinkedHashSet<>(this.addedReloaders);
 
-		for (RegistryResourceReloaderFactory addedReloaderFactory : this.addedReloaderFactories) {
-			reloadersToAdd.add(addedReloaderFactory.get(wrapperLookup));
-		}
+		// Locate and extract the setup marker.
+		ResourceReloader setupReloader = this.extractSetupMarker(reloaders);
 
 		// Remove any modded reloaders to sort properly.
 		reloaders.removeAll(reloadersToAdd);
@@ -238,6 +218,11 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 		// Apply the sorting!
 		reloaders.clear();
 
+		// Inject back the setup reloader at the beginning.
+		if (setupReloader != null) {
+			reloaders.add(setupReloader);
+		}
+
 		for (ResourceReloaderPhaseData phase : phases) {
 			if (phase.resourceReloader != null) {
 				reloaders.add(phase.resourceReloader);
@@ -257,35 +242,35 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 		}
 	}
 
-	// A bit of a hack to get the registry, but it works.
-	private @Nullable RegistryWrapper.WrapperLookup getWrapperLookup(List<ResourceReloader> listeners) {
+	private ResourceReloader extractSetupMarker(List<ResourceReloader> reloaders) {
 		if (type == ResourceType.CLIENT_RESOURCES) {
 			// We don't need the registry for client resources.
 			return null;
 		}
 
-		for (ResourceReloader resourceReloader : listeners) {
+		Iterator<ResourceReloader> it = reloaders.iterator();
+
+		while (it.hasNext()) {
+			if (it.next() instanceof SetupMarkerResourceReloader marker) {
+				it.remove();
+				return marker;
+			}
+		}
+
+		throw new IllegalStateException("No SetupMarkerResourceReloader found in reloaders!");
+	}
+
+	// A bit of a hack to get the registry, but it works.
+	public static @Nullable RegistryWrapper.WrapperLookup getWrapperLookup(List<ResourceReloader> reloaders) {
+		for (ResourceReloader resourceReloader : reloaders) {
 			if (resourceReloader instanceof FabricRecipeManager recipeManager) {
 				return recipeManager.fabric$getRegistries();
 			}
 		}
 
-		throw new IllegalStateException("No ServerRecipeManager found in listeners!");
+		throw new IllegalStateException("No ServerRecipeManager found in reloaders!");
 	}
 
 	private record ReloaderOrder(Identifier first, Identifier second) {
-	}
-
-	private record RegistryResourceReloaderFactory(
-			Identifier id,
-			Function<RegistryWrapper.WrapperLookup, ResourceReloader> listenerFactory
-	) {
-		private RegistryResourceReloaderFactory {
-			Objects.requireNonNull(listenerFactory);
-		}
-
-		public IdentifiableResourceReloader get(RegistryWrapper.WrapperLookup registry) {
-			return IdentifiableResourceReloader.wrap(this.id, this.listenerFactory.apply(registry));
-		}
 	}
 }

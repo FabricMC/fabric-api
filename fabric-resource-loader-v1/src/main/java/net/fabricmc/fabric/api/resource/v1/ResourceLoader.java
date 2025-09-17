@@ -16,13 +16,12 @@
 
 package net.fabricmc.fabric.api.resource.v1;
 
-import java.util.function.Function;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader;
@@ -33,6 +32,19 @@ import net.fabricmc.fabric.impl.resource.v1.ResourceLoaderImpl;
  */
 @ApiStatus.NonExtendable
 public interface ResourceLoader {
+	/**
+	 * The resource reloader store key for the registry lookup.
+	 *
+	 * @apiNote The registry lookup is only available in {@linkplain ResourceType#SERVER_DATA server data} resource reloaders.
+	 */
+	ResourceReloader.Key<RegistryWrapper.WrapperLookup> RELOADER_REGISTRY_LOOKUP_KEY = new ResourceReloader.Key<>();
+	/**
+	 * The resource reloader store key for the currently enabled feature set.
+	 *
+	 * @apiNote The feature set is only available in {@linkplain ResourceType#SERVER_DATA server data} resource reloaders.
+	 */
+	ResourceReloader.Key<FeatureSet> RELOADER_FEATURE_SET_KEY = new ResourceReloader.Key<>();
+
 	static ResourceLoader get(ResourceType type) {
 		return ResourceLoaderImpl.get(type);
 	}
@@ -42,7 +54,6 @@ public interface ResourceLoader {
 	 *
 	 * @param reloader the resource reloader
 	 * @see #registerReloader(Identifier, ResourceReloader)
-	 * @see #registerReloader(Identifier, Function)
 	 * @see #addReloaderOrdering(Identifier, Identifier)
 	 */
 	void registerReloader(IdentifiableResourceReloader reloader);
@@ -53,25 +64,11 @@ public interface ResourceLoader {
 	 * @param id the identifier of the resource reloader
 	 * @param reloader the resource reloader
 	 * @see #registerReloader(IdentifiableResourceReloader)
-	 * @see #registerReloader(Identifier, Function)
 	 * @see #addReloaderOrdering(Identifier, Identifier)
 	 */
 	default void registerReloader(Identifier id, ResourceReloader reloader) {
 		this.registerReloader(IdentifiableResourceReloader.wrap(id, reloader));
 	}
-
-	/**
-	 * Register a resource reloader for a given resource manager type.
-	 *
-	 * <p>Note: This is only supported for server data reloaders.
-	 *
-	 * @param id the identifier of the resource reloader
-	 * @param reloaderFactory a function that creates a new instance of the listener with a given registry lookup
-	 * @see #registerReloader(IdentifiableResourceReloader)
-	 * @see #registerReloader(Identifier, ResourceReloader)
-	 * @see #addReloaderOrdering(Identifier, Identifier)
-	 */
-	void registerReloader(Identifier id, Function<RegistryWrapper.WrapperLookup, ResourceReloader> reloaderFactory);
 
 	/**
 	 * Requests that resource reloaders registered as the first identifier is applied before the other referenced resource reloader.

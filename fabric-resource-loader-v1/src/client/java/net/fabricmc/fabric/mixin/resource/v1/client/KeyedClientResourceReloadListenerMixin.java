@@ -18,19 +18,18 @@ package net.fabricmc.fabric.mixin.resource.v1.client;
 
 import java.util.Locale;
 
-import net.minecraft.client.particle.ParticleSpriteManager;
-import net.minecraft.client.render.entity.EntityRenderManager;
-
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.client.font.FontManager;
 import net.minecraft.client.gl.ShaderLoader;
+import net.minecraft.client.particle.ParticleSpriteManager;
 import net.minecraft.client.render.CloudRenderer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.block.entity.BlockEntityRenderManager;
+import net.minecraft.client.render.entity.EntityRenderManager;
 import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.resource.DryFoliageColormapResourceSupplier;

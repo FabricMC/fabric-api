@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.test.resource.loader.v1;
 
-import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.SynchronousResourceReloader;
 import net.minecraft.util.Identifier;
@@ -80,16 +81,17 @@ public class ResourceReloaderTestMod implements ModInitializer {
 		});
 		resourceLoader.registerReloader(serverFirstId, (SynchronousResourceReloader) manager -> serverResources = true);
 		resourceLoader.addReloaderOrdering(serverFirstId, serverSecondId);
-		resourceLoader.registerReloader(RegistryReloader.ID, RegistryReloader::new);
+		resourceLoader.registerReloader(RegistryReloader.ID, new RegistryReloader());
 	}
 
-	private record RegistryReloader(RegistryWrapper.WrapperLookup wrapperLookup) implements SynchronousResourceReloader {
+	private static class RegistryReloader implements ResourceReloader {
 		private static final Identifier ID = Identifier.of(NAMESPACE, "registry_reloader");
 
 		@Override
-		public void reload(ResourceManager manager) {
-			Objects.requireNonNull(wrapperLookup);
-			wrapperLookup.getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+		public CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer reloadSynchronizer, Executor applyExecutor) {
+			RegistryWrapper.WrapperLookup registries = store.getOrThrow(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY);
+			registries.getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+			return CompletableFuture.completedFuture(null);
 		}
 	}
 }

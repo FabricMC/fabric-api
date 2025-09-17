@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -161,6 +163,14 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 	@Override
 	public void registerReloadListener(Identifier identifier, Function<RegistryWrapper.WrapperLookup, IdentifiableResourceReloadListener> listenerFactory) {
-		this.resourceLoader.registerReloader(identifier, listenerFactory.andThen(ResourceReloader.class::cast));
+		this.resourceLoader.registerReloader(identifier, new ResourceReloader() {
+			@Override
+			public CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer reloadSynchronizer, Executor applyExecutor) {
+				RegistryWrapper.WrapperLookup registries = store.getOrThrow(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY);
+				ResourceReloader resourceReloader = listenerFactory.apply(registries);
+
+				return resourceReloader.reload(store, prepareExecutor, reloadSynchronizer, applyExecutor);
+			}
+		});
 	}
 }
