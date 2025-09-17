@@ -20,15 +20,20 @@ import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
-import net.minecraft.client.render.MapRenderState;
-
-import net.minecraft.client.render.block.MovingBlockRenderState;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.class_11954;
+import net.minecraft.class_12073;
+import net.minecraft.class_12074;
+import net.minecraft.class_12075;
+import net.minecraft.class_12076;
+import net.minecraft.class_12077;
+import net.minecraft.class_12078;
+import net.minecraft.client.render.MapRenderState;
+import net.minecraft.client.render.block.MovingBlockRenderState;
+import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
+import net.minecraft.client.render.entity.EntityRenderStates;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
 
@@ -37,12 +42,19 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 
 @Mixin({
 		EntityRenderState.class,
-		class_11954.class,
+		BlockEntityRenderState.class,
 		ItemRenderState.class,
 		ItemRenderState.LayerRenderState.class,
 		MapRenderState.class,
 		MapRenderState.Decoration.class,
-		MovingBlockRenderState.class
+		MovingBlockRenderState.class,
+		EntityRenderStates.class,
+		class_12073.class,
+		class_12074.class,
+		class_12075.class,
+		class_12076.class,
+		class_12077.class,
+		class_12078.class
 })
 public abstract class RenderStateMixin implements FabricRenderState {
 	@Unique

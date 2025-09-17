@@ -56,10 +56,31 @@
       "net/minecraft/class_10444\u0024class_10446": [
         "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
       ],
+      "net/minecraft/class_11658": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
       "net/minecraft/class_11791": [
         "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
       ],
       "net/minecraft/class_11954": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_12073": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_12074": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_12075": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_12076": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_12077": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_12078": [
         "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
       ]
     }

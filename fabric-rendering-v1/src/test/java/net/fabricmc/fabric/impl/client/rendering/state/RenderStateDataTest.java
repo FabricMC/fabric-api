@@ -19,9 +19,14 @@ package net.fabricmc.fabric.impl.client.rendering.state;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.class_11954;
+import net.minecraft.class_12075;
+import net.minecraft.class_12076;
+import net.minecraft.class_12077;
+import net.minecraft.class_12078;
 import net.minecraft.client.render.MapRenderState;
 import net.minecraft.client.render.block.MovingBlockRenderState;
+import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
+import net.minecraft.client.render.entity.EntityRenderStates;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
 
@@ -36,12 +41,17 @@ public class RenderStateDataTest {
 		ItemRenderState itemRenderState = new ItemRenderState();
 		FabricRenderState[] states = new FabricRenderState[]{
 				new EntityRenderState(),
-				new class_11954(),
+				new BlockEntityRenderState(),
 				itemRenderState,
 				itemRenderState.new LayerRenderState(),
 				new MapRenderState(),
 				new MapRenderState.Decoration(),
-				new MovingBlockRenderState()
+				new MovingBlockRenderState(),
+				new EntityRenderStates(),
+				new class_12075(),
+				new class_12076(),
+				new class_12077(),
+				new class_12078()
 		};
 		for (FabricRenderState state : states) {
 			Assertions.assertNull(state.getData(DEBUG));

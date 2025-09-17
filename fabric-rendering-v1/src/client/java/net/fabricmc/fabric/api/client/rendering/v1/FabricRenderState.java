@@ -16,12 +16,20 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import net.minecraft.client.render.entity.EntityRenderStates;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.class_11954;
+import net.minecraft.class_12073;
+import net.minecraft.class_12074;
+import net.minecraft.class_12075;
+import net.minecraft.class_12076;
+import net.minecraft.class_12077;
+import net.minecraft.class_12078;
 import net.minecraft.client.render.MapRenderState;
 import net.minecraft.client.render.block.MovingBlockRenderState;
+import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
 
@@ -31,10 +39,17 @@ import net.minecraft.client.render.item.ItemRenderState;
  * <p>Note: This interface is automatically implemented on the following classes via Mixin and interface injection:
  * <ul>
  *     <li>{@link EntityRenderState},
- *     <li>{@link class_11954}
+ *     <li>{@link BlockEntityRenderState}
  *     <li>{@link ItemRenderState} and {@link ItemRenderState.LayerRenderState}
  *     <li>{@link MapRenderState} and {@link MapRenderState.Decoration}
  *     <li>{@link MovingBlockRenderState}
+ *     <li>{@link EntityRenderStates}
+ *     <li>{@link class_12073}
+ *     <li>{@link class_12074}
+ *     <li>{@link class_12075}
+ *     <li>{@link class_12076}
+ *     <li>{@link class_12077}
+ *     <li>{@link class_12078}
  * </ul>
  */
 @ApiStatus.NonExtendable
