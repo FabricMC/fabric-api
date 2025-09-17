@@ -32,13 +32,36 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_10017": ["net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"],
-      "net/minecraft/class_10090": ["net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"],
-      "net/minecraft/class_10090\u0024class_10091": ["net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"],
-      "net/minecraft/class_10444": ["net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"],
-      "net/minecraft/class_10444\u0024class_10446": ["net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"],
-      "net/minecraft/class_11791": ["net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"],
-      "net/minecraft/class_11954": ["net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"]
+      "com/mojang/blaze3d/pipeline/RenderPipeline": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline"
+      ],
+      "com/mojang/blaze3d/pipeline/RenderPipeline\u0024Snippet": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline\u0024Snippet"
+      ],
+      "com/mojang/blaze3d/pipeline/RenderPipeline\u0024Builder": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline\u0024Builder"
+      ],
+      "net/minecraft/class_10017": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_10090": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_10090\u0024class_10091": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_10444": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_10444\u0024class_10446": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_11791": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ],
+      "net/minecraft/class_11954": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
+      ]
     }
   }
 }

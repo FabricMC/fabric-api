@@ -337,8 +337,6 @@ transitive-accessible field net/minecraft/client/render/RenderPhase VIEW_OFFSET_
 transitive-accessible field net/minecraft/client/render/RenderPhase VIEW_OFFSET_Z_LAYERING_FORWARD Lnet/minecraft/client/render/RenderPhase$Layering;
 transitive-accessible field net/minecraft/client/render/RenderPhase MAIN_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase OUTLINE_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
-transitive-accessible field net/minecraft/client/render/RenderPhase TRANSLUCENT_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
-transitive-accessible field net/minecraft/client/render/RenderPhase PARTICLES_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase WEATHER_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase ITEM_ENTITY_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
 transitive-accessible field net/minecraft/client/render/RenderPhase FULL_LINE_WIDTH Lnet/minecraft/client/render/RenderPhase$LineWidth;

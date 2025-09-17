@@ -21,14 +21,14 @@ import java.util.function.BiConsumer;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.class_11954;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
 
 public final class BlockEntityRendererRegistryImpl {
 	private static final HashMap<BlockEntityType<?>, BlockEntityRendererFactory<?, ?>> MAP = new HashMap<>();
 	private static BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?, ?>> handler = (type, function) -> MAP.put(type, function);
 
-	public static <E extends BlockEntity, S extends class_11954> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E, ? super S> blockEntityRendererFactory) {
+	public static <E extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E, ? super S> blockEntityRendererFactory) {
 		handler.accept(blockEntityType, blockEntityRendererFactory);
 	}
 

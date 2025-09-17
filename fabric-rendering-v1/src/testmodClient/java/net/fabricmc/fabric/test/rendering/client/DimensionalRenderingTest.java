@@ -31,7 +31,7 @@ public class DimensionalRenderingTest implements ClientModInitializer {
 	private static final Identifier SKY_TEXTURE = Identifier.ofVanilla("textures/block/dirt.png");
 
 	private static void render(WorldRenderContext context) {
-		VertexConsumer vertexConsumer = context.consumers().getBuffer(RenderLayer.getCelestial(SKY_TEXTURE));
+		VertexConsumer vertexConsumer = context.consumers().getBuffer(RenderLayer.getText(SKY_TEXTURE)); // TODO 1.21.9 fix me
 		vertexConsumer.vertex(-100.0f, -100.0f, -100.0f).texture(0.0F, 0.0F).color(255, 255, 255, 255);
 		vertexConsumer.vertex(-100.0f, -100.0f, 100.0f).texture(0.0F, 1.0F).color(255, 255, 255, 255);
 		vertexConsumer.vertex(100.0f, -100.0f, 100.0f).texture(1.0F, 1.0F).color(255, 255, 255, 255);

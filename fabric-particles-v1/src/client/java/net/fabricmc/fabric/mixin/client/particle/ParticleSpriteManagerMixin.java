@@ -14,30 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry.sync.client;
+package net.fabricmc.fabric.mixin.client.particle;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_11939;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.registry.Registries;
+import net.minecraft.client.particle.ParticleSpriteManager;
 
-import net.fabricmc.fabric.impl.registry.sync.trackers.Int2ObjectMapTracker;
+import net.fabricmc.fabric.impl.client.particle.ParticleFactoryRegistryImpl;
 
-@Mixin(class_11939.class)
-public class ParticleResourceReloaderMixin {
-	@Final
-	@Shadow
-	private Int2ObjectMap<ParticleFactory<?>> field_62628;
-
-	@Inject(method = "<init>", at = @At("RETURN"))
-	public void onInit(CallbackInfo info) {
-		Int2ObjectMapTracker.register(Registries.PARTICLE_TYPE, "ParticleManager.factories", field_62628);
+@Mixin(ParticleSpriteManager.class)
+public abstract class ParticleSpriteManagerMixin {
+	@Inject(method = "init", at = @At("RETURN"))
+	private void onRegisterDefaultFactories(CallbackInfo info) {
+		ParticleFactoryRegistryImpl.INSTANCE.initialize((ParticleSpriteManager) (Object) this);
 	}
 }

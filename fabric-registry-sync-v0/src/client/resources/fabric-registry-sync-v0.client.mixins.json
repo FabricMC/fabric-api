@@ -7,7 +7,7 @@
     "ClientRegistriesMixin",
     "ClientRegistriesDynamicRegistriesAccessor",
     "MinecraftClientMixin",
-    "ParticleResourceReloaderMixin"
+    "ParticleSpriteManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

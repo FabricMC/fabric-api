@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteLoader;
-import net.minecraft.client.texture.atlas.Atlases;
+import net.minecraft.util.Atlases;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;

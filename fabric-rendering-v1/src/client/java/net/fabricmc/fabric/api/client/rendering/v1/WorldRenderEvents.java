@@ -18,12 +18,12 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.class_12074;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.util.hit.HitResult;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext.BlockOutlineContext;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -292,7 +292,7 @@ public final class WorldRenderEvents {
 
 	@FunctionalInterface
 	public interface BlockOutline {
-		boolean onBlockOutline(WorldRenderContext worldRenderContext, BlockOutlineContext blockOutlineContext);
+		boolean onBlockOutline(WorldRenderContext worldRenderContext, class_12074 blockOutlineContext);
 	}
 
 	@FunctionalInterface

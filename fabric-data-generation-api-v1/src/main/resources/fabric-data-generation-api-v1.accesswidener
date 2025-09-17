@@ -323,7 +323,7 @@ transitive-accessible	method	net/minecraft/data/loottable/BlockLootTableGenerato
 transitive-accessible	method	net/minecraft/data/loottable/BlockLootTableGenerator	beeNestDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/loottable/BlockLootTableGenerator	beehiveDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/loottable/BlockLootTableGenerator	glowBerryDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
-transitive-accessible	method	net/minecraft/data/loottable/BlockLootTableGenerator	method_74433	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
+transitive-accessible	method	net/minecraft/data/loottable/BlockLootTableGenerator	copperGolemStatueDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/loottable/BlockLootTableGenerator	oreDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/item/Item;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/loottable/BlockLootTableGenerator	mushroomBlockDrops	(Lnet/minecraft/block/Block;Lnet/minecraft/item/ItemConvertible;)Lnet/minecraft/loot/LootTable$Builder;
 transitive-accessible	method	net/minecraft/data/loottable/BlockLootTableGenerator	shortPlantDrops	(Lnet/minecraft/block/Block;)Lnet/minecraft/loot/LootTable$Builder;

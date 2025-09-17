@@ -4,9 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BlockDustParticleMixin",
-    "ParticleManagerMixin",
-    "ParticleManagerAccessor",
-    "ParticleManagerAccessor$SimpleSpriteProviderAccessor"
+    "ParticleSpriteManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

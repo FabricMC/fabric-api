@@ -21,9 +21,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.class_11909;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
@@ -106,7 +106,7 @@ public final class ScreenTests implements ClientModInitializer {
 		}
 
 		@Override
-		public boolean mouseReleased(class_11909 ctx) {
+		public boolean mouseReleased(Click ctx) {
 			LOGGER.info("Released");
 			return true;
 		}

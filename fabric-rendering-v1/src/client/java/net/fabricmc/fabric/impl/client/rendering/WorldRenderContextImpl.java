@@ -19,23 +19,18 @@ package net.fabricmc.fabric.impl.client.rendering;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
-public final class WorldRenderContextImpl implements WorldRenderContext.BlockOutlineContext, WorldRenderContext {
+public final class WorldRenderContextImpl implements WorldRenderContext {
 	private WorldRenderer worldRenderer;
 	private RenderTickCounter tickCounter;
 	private boolean blockOutlines;
@@ -52,13 +47,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	@Nullable
 	private MatrixStack matrixStack;
 	private boolean translucentBlockOutline;
-
-	private Entity entity;
-	private double cameraX;
-	private double cameraY;
-	private double cameraZ;
-	private BlockPos blockPos;
-	private BlockState blockState;
 
 	public boolean renderBlockOutline = true;
 
@@ -99,22 +87,6 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 
 	public void setTranslucentBlockOutline(boolean translucentBlockOutline) {
 		this.translucentBlockOutline = translucentBlockOutline;
-	}
-
-	public void prepareBlockOutline(
-			Entity entity,
-			double cameraX,
-			double cameraY,
-			double cameraZ,
-			BlockPos blockPos,
-			BlockState blockState
-	) {
-		this.entity = entity;
-		this.cameraX = cameraX;
-		this.cameraY = cameraY;
-		this.cameraZ = cameraZ;
-		this.blockPos = blockPos;
-		this.blockState = blockState;
 	}
 
 	@Override
@@ -182,41 +154,5 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	@Override
 	public boolean translucentBlockOutline() {
 		return translucentBlockOutline;
-	}
-
-	@Override
-	public Entity entity() {
-		return entity;
-	}
-
-	@Override
-	public double cameraX() {
-		return cameraX;
-	}
-
-	@Override
-	public double cameraY() {
-		return cameraY;
-	}
-
-	@Override
-	public double cameraZ() {
-		return cameraZ;
-	}
-
-	@Override
-	public BlockPos blockPos() {
-		return blockPos;
-	}
-
-	@Override
-	public BlockState blockState() {
-		return blockState;
-	}
-
-	@Deprecated
-	@Override
-	public VertexConsumer vertexConsumer() {
-		return consumers.getBuffer(RenderLayer.getLines());
 	}
 }

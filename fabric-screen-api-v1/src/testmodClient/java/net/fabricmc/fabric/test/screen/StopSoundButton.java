@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.test.screen;
 
-import net.minecraft.class_11907;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.text.Text;
 
 class StopSoundButton extends PressableWidget {
@@ -39,7 +39,7 @@ class StopSoundButton extends PressableWidget {
 	}
 
 	@Override
-	public void onPress(class_11907 ctx) {
+	public void onPress(AbstractInput ctx) {
 		MinecraftClient.getInstance().getSoundManager().stopAll();
 	}
 

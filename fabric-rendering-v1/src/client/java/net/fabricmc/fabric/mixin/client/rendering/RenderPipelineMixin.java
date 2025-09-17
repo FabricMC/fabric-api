@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.gametest.input;
+package net.fabricmc.fabric.mixin.client.rendering;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.client.Keyboard;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
+import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineImpl;
 
-@Mixin(Keyboard.class)
-public interface KeyboardAccessor {
-	@Invoker
-	void invokeOnKey(long window, int key, KeyInput arg);
+@Mixin(RenderPipeline.class)
+class RenderPipelineMixin implements FabricRenderPipelineImpl {
+	@Unique
+	private boolean usePipelineDrawModeForGui = false;
 
-	@Invoker
-	void invokeOnChar(long window, CharInput arg);
+	@Override
+	public boolean usePipelineDrawModeForGui() {
+		return usePipelineDrawModeForGui;
+	}
+
+	@Override
+	public void fabric$setUsePipelineDrawModeForGuiSetter(boolean usePipelineDrawModeForGui) {
+		this.usePipelineDrawModeForGui = usePipelineDrawModeForGui;
+	}
 }

@@ -27,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_11897;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.NbtReadView;
@@ -37,6 +36,7 @@ import net.minecraft.util.ErrorReporter;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.PalettesFactory;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.SerializedChunk;
 import net.minecraft.world.poi.PointOfInterestStorage;
@@ -56,7 +56,7 @@ abstract class SerializedChunkMixin {
 	private NbtCompound attachmentNbtData;
 
 	@Inject(method = "fromNbt", at = @At("RETURN"))
-	private static void storeAttachmentNbtData(HeightLimitView heightLimitView, class_11897 arg, NbtCompound nbt, CallbackInfoReturnable<SerializedChunk> cir, @Share("attachmentDataNbt") LocalRef<NbtCompound> attachmentDataNbt) {
+	private static void storeAttachmentNbtData(HeightLimitView heightLimitView, PalettesFactory arg, NbtCompound nbt, CallbackInfoReturnable<SerializedChunk> cir, @Share("attachmentDataNbt") LocalRef<NbtCompound> attachmentDataNbt) {
 		final SerializedChunk serializer = cir.getReturnValue();
 
 		if (serializer == null) {

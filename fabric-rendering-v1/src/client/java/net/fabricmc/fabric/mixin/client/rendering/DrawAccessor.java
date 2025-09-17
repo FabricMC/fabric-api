@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.particle;
+package net.fabricmc.fabric.mixin.client.rendering;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.particle.ParticleManager;
+@Mixin(targets = "net/minecraft/client/gui/render/GuiRenderer$Draw")
+interface DrawAccessor {
+	@Accessor("pipeline")
+	RenderPipeline fabric$pipeline();
 
-import net.fabricmc.fabric.impl.client.particle.ParticleFactoryRegistryImpl;
-
-@Mixin(ParticleManager.class)
-public abstract class ParticleManagerMixin {
-	@Inject(method = "registerDefaultFactories()V", at = @At("RETURN"))
-	private void onRegisterDefaultFactories(CallbackInfo info) {
-		ParticleFactoryRegistryImpl.INSTANCE.initialize((ParticleManager) (Object) this);
-	}
+	@Accessor("indexCount")
+	int fabric$indexCount();
 }

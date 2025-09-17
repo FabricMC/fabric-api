@@ -20,18 +20,14 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.impl.client.rendering.WorldRendererHooks;
 
@@ -130,28 +126,4 @@ public interface WorldRenderContext {
 	 * it is being rendered after solid terrain
 	 */
 	boolean translucentBlockOutline();
-
-	/**
-	 * Used in {@link WorldRenderEvents#BLOCK_OUTLINE} to convey the parameters normally sent to
-	 * {@code WorldRenderer.drawBlockOutline}.
-	 */
-	interface BlockOutlineContext {
-		Entity entity();
-
-		double cameraX();
-
-		double cameraY();
-
-		double cameraZ();
-
-		BlockPos blockPos();
-
-		BlockState blockState();
-
-		/**
-		 * @deprecated Use {@link #consumers()} directly.
-		 */
-		@Deprecated
-		VertexConsumer vertexConsumer();
-	}
 }

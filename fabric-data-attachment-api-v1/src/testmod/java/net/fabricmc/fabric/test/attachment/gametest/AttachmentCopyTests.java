@@ -30,6 +30,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
@@ -61,7 +62,8 @@ public class AttachmentCopyTests {
 		entity.setAttached(DUMMY, () -> 10);
 		entity.setAttached(COPY_ON_DEATH, () -> 10);
 
-		Entity moved = entity.teleportTo(new TeleportTarget(end, entity, TeleportTarget.NO_OP));
+		Vec3d spawnPos = entity.getWorldSpawnPos(end, end.method_74854().method_74897()).toBottomCenterPos();
+		Entity moved = entity.teleportTo(new TeleportTarget(end, spawnPos, Vec3d.ZERO, 0.0F, 0.0F, TeleportTarget.NO_OP));
 		if (moved == null) throw context.createError("Cross-world teleportation failed");
 
 		IntSupplier attached1 = moved.getAttached(DUMMY);

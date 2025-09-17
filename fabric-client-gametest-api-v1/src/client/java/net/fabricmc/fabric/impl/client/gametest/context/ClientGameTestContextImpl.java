@@ -41,7 +41,6 @@ import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.class_11910;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
@@ -50,6 +49,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.SimpleOption;
@@ -268,7 +268,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	}
 
 	private static boolean pressMatchingButton(ClickableWidget widget, String text) {
-		var clickEvent = new class_11910(GLFW.GLFW_KEY_UNKNOWN, 0);
+		var clickEvent = new MouseInput(GLFW.GLFW_KEY_UNKNOWN, 0);
 
 		if (widget instanceof ButtonWidget buttonWidget) {
 			if (text.equals(buttonWidget.getMessage().getString())) {

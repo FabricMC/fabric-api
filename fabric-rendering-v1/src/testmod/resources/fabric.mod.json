@@ -27,7 +27,8 @@
       "net.fabricmc.fabric.test.rendering.client.TooltipComponentTests",
       "net.fabricmc.fabric.test.rendering.client.WorldRenderEventsTests",
       "net.fabricmc.fabric.test.rendering.client.gui.SpecialGuiElementRendererTest",
-      "net.fabricmc.fabric.test.rendering.client.gui.SpecialGuiElementRendererTestWithNewGuiRenderer"
+      "net.fabricmc.fabric.test.rendering.client.gui.SpecialGuiElementRendererTestWithNewGuiRenderer",
+      "net.fabricmc.fabric.test.rendering.client.GuiRendererNonQuadsTest"
     ],
     "fabric-client-gametest": [
       "net.fabricmc.fabric.test.rendering.client.HudTests",

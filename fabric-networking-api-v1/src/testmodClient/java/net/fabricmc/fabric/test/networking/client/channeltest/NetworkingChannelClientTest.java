@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 public final class NetworkingChannelClientTest implements ClientModInitializer {
-	public static final KeyBinding OPEN = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-networking-api-v1-testmod.open", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_MENU, KeyBinding.class_11900.MISC));
+	public static final KeyBinding OPEN = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-networking-api-v1-testmod.open", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_MENU, KeyBinding.Category.MISC));
 	static final Set<Identifier> SUPPORTED_C2S_CHANNELS = new HashSet<>();
 
 	@Override

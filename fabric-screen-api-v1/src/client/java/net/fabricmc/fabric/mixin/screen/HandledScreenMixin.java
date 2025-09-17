@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_11909;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.text.Text;
@@ -33,14 +33,14 @@ public abstract class HandledScreenMixin extends Screen {
 	}
 
 	@Inject(method = "mouseReleased", at = @At("HEAD"), cancellable = true)
-	private void callSuperMouseReleased(class_11909 ctx, CallbackInfoReturnable<Boolean> cir) {
+	private void callSuperMouseReleased(Click ctx, CallbackInfoReturnable<Boolean> cir) {
 		if (super.mouseReleased(ctx)) {
 			cir.setReturnValue(true);
 		}
 	}
 
 	@Inject(method = "mouseDragged", at = @At("HEAD"), cancellable = true)
-	private void callSuperMouseReleased(class_11909 ctx, double deltaX, double deltaY, CallbackInfoReturnable<Boolean> cir) {
+	private void callSuperMouseReleased(Click ctx, double deltaX, double deltaY, CallbackInfoReturnable<Boolean> cir) {
 		if (super.mouseDragged(ctx, deltaX, deltaY)) {
 			cir.setReturnValue(true);
 		}
