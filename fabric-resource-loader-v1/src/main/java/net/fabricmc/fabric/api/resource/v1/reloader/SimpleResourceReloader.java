@@ -23,8 +23,8 @@ import java.util.concurrent.Executor;
 import net.minecraft.resource.ResourceReloader;
 
 /**
- * A simplified version of the "resource reloader" interface, hiding the
- * peculiarities of the API.
+ * A variant of {@link net.minecraft.resource.SinglePreparationResourceReloader}
+ * which passes the shared state store instead of the resource manager in its methods.
  *
  * <p>In essence, there are two stages:
  *
@@ -38,7 +38,7 @@ import net.minecraft.resource.ResourceReloader;
  * <p>For a fully synchronous alternative, consider using
  * {@link net.minecraft.resource.SynchronousResourceReloader}.
  *
- * @param <T> The data object.
+ * @param <T> the data object
  */
 public abstract class SimpleResourceReloader<T> implements ResourceReloader {
 	public final CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer reloadSynchronizer, Executor applyExecutor) {
@@ -49,18 +49,18 @@ public abstract class SimpleResourceReloader<T> implements ResourceReloader {
 	}
 
 	/**
-	 * Asynchronously processes and loads resource-based data.
+	 * Asynchronously processes and prepares resource-based data.
 	 * The code must be thread-safe and not modify game state!
 	 *
 	 * @param store the data store used for sharing state between resource reloaders
-	 * @return a CompletableFuture representing the "data loading" stage
+	 * @return the prepared data
 	 */
 	protected abstract T prepare(Store store);
 
 	/**
-	 * Synchronously applies loaded data to the game state.
+	 * Synchronously applies prepared data to the game state.
 	 *
-	 * @param prepared the loaded data
+	 * @param prepared the prepared data
 	 * @param store the data store used for sharing state between resource reloaders
 	 */
 	protected abstract void apply(T prepared, Store store);
