@@ -26,6 +26,25 @@ import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 class ResourceReloaderPhaseData extends SortableNode<ResourceReloaderPhaseData> {
 	final Identifier id;
 	ResourceReloader resourceReloader;
+	/**
+	 * This is used to keep track of the source and ordering expectation of this resource reloader.
+	 * <ul>
+	 *   <li>A resource reloader that is Vanilla must abide by Vanilla's ordering.</li>
+	 *   <li>
+	 *     A resource reloader that is before one of the Vanilla reloaders
+	 *     will be considered as before Vanilla,
+	 *     any other resource reloaders that must happen before
+	 *     will also be considered as before Vanilla.
+	 *   </li>
+	 *   <li>
+	 *     A resource reloader that is after Vanilla must happen after Vanilla, reloaders depending on it must
+	 *     also happen after Vanilla.
+	 *   </li>
+	 *   <li>
+	 *     A resource reloader that doesn't have anything specified will be automatically ordered after Vanilla.
+	 *   </li>
+	 * </ul>
+	 */
 	VanillaStatus vanillaStatus = VanillaStatus.NONE;
 
 	ResourceReloaderPhaseData(Identifier id, @Nullable ResourceReloader resourceReloader) {
