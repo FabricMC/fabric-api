@@ -91,7 +91,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 		public CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer reloadSynchronizer, Executor applyExecutor) {
 			RegistryWrapper.WrapperLookup registries = store.getOrThrow(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY);
 			registries.getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
-			return CompletableFuture.completedFuture(null);
+			return reloadSynchronizer.whenPrepared(null);
 		}
 	}
 }
