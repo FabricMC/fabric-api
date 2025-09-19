@@ -30,7 +30,7 @@ public class CategoryComparator implements Comparator<KeyBinding.Category> {
 		boolean o2Vanilla = o2.id().getNamespace().equals(Identifier.DEFAULT_NAMESPACE);
 
 		// If both are from vanilla, don't reorder them. Assumes sort is stable.
-		if (o1Vanilla & o2Vanilla) {
+		if (o1Vanilla && o2Vanilla) {
 			return 0;
 		}
 
