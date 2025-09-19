@@ -242,7 +242,7 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 		}
 	}
 
-	private ResourceReloader extractSetupMarker(List<ResourceReloader> reloaders) {
+	private @Nullable ResourceReloader extractSetupMarker(List<ResourceReloader> reloaders) {
 		if (type == ResourceType.CLIENT_RESOURCES) {
 			// We don't need the registry for client resources.
 			return null;
@@ -261,7 +261,7 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 	}
 
 	// A bit of a hack to get the registry, but it works.
-	public static @Nullable RegistryWrapper.WrapperLookup getWrapperLookup(List<ResourceReloader> reloaders) {
+	public static RegistryWrapper.WrapperLookup getWrapperLookup(List<ResourceReloader> reloaders) {
 		for (ResourceReloader resourceReloader : reloaders) {
 			if (resourceReloader instanceof FabricRecipeManager recipeManager) {
 				return recipeManager.fabric$getRegistries();
