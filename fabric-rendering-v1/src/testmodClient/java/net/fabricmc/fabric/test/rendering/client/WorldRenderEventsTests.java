@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.class_12074;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexRendering;
+import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 
@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class WorldRenderEventsTests implements ClientModInitializer {
-	private static boolean onBlockOutline(WorldRenderContext wrc, class_12074 blockOutlineContext) {
+	private static boolean onBlockOutline(WorldRenderContext wrc, OutlineRenderState outlineState) {
 		/* TODO 1.21.9
 
 		if (blockOutlineContext.blockState().isOf(Blocks.DIAMOND_BLOCK)) {

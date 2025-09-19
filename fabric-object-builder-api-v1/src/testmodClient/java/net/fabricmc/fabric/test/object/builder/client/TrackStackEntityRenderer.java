@@ -18,13 +18,13 @@ package net.fabricmc.fabric.test.object.builder.client;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.class_12075;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.render.entity.model.ChickenEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.state.ChickenEntityRenderState;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EntityAttachmentType;
@@ -39,8 +39,8 @@ public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity
 	}
 
 	@Override
-	public void render(RenderState renderState, MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue, class_12075 arg) {
-		super.render(renderState, matrices, orderedRenderCommandQueue, arg);
+	public void render(RenderState renderState, MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue, CameraRenderState cameraState) {
+		super.render(renderState, matrices, orderedRenderCommandQueue, cameraState);
 		Iterable<Text> labelLines = renderState.labelLines;
 
 		if (labelLines == null) {
@@ -51,7 +51,7 @@ public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity
 		matrices.translate(0, -2, 0);
 
 		for (Text line : labelLines) {
-			orderedRenderCommandQueue.getBatchingQueue(0).submitLabel(matrices, renderState.nameLabelPos, line, !renderState.sneaking, renderState.light, renderState.squaredDistanceToCamera, new class_12075());
+			orderedRenderCommandQueue.getBatchingQueue(0).submitLabel(matrices, renderState.nameLabelPos, 0, line, !renderState.sneaking, renderState.light, renderState.squaredDistanceToCamera, cameraState);
 			matrices.translate(0, 0.25875f, 0);
 		}
 
