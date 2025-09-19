@@ -28,11 +28,11 @@ import net.minecraft.resource.ResourceReloader;
  *
  * <p>In essence, there are two stages:
  *
- * <ul><li>load: create an instance of your data object containing all loaded and
+ * <ul><li>prepare: create an instance of your data object containing all loaded and
  * processed information,
  * <li>apply: apply the information from the data object to the game instance.</ul>
  *
- * <p>The load stage should be self-contained as it can run on any thread! However,
+ * <p>The prepare stage should be self-contained as it can run on any thread! However,
  * the apply stage is guaranteed to run on the game thread.
  *
  * <p>For a fully synchronous alternative, consider using
