@@ -30,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_12074;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.render.BufferBuilderStorage;
@@ -42,7 +41,8 @@ import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.entity.EntityRenderStates;
+import net.minecraft.client.render.state.OutlineRenderState;
+import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
@@ -99,7 +99,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 			method = "method_62214",
 			at = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/client/render/WorldRenderer;pushEntityRenders(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/entity/EntityRenderStates;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;)V"
+				target = "Lnet/minecraft/client/render/WorldRenderer;pushEntityRenders(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/state/WorldRenderState;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;)V"
 			)
 	)
 	private void afterTerrainSolid(CallbackInfo ci) {
@@ -118,14 +118,14 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 	}
 
 	@Inject(method = "renderTargetBlockOutline", at = @At("HEAD"))
-	private void beforeRenderOutline(VertexConsumerProvider.Immediate immediate, MatrixStack matrixStack, boolean translucent, EntityRenderStates entityRenderStates, CallbackInfo ci) {
+	private void beforeRenderOutline(VertexConsumerProvider.Immediate immediate, MatrixStack matrixStack, boolean translucent, WorldRenderState worldRenderState, CallbackInfo ci) {
 		context.setTranslucentBlockOutline(translucent);
 		context.renderBlockOutline = WorldRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(context, client.crosshairTarget);
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "renderTargetBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/class_12075;field_63078:Lnet/minecraft/util/math/Vec3d;"), cancellable = true)
-	private void onDrawBlockOutline(VertexConsumerProvider.Immediate vertexConsumers, MatrixStack matrixStack, boolean bl, EntityRenderStates entityRenderStates, CallbackInfo ci, @Local class_12074 blockOutlineRenderState) {
+	@Inject(method = "renderTargetBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/state/CameraRenderState;pos:Lnet/minecraft/util/math/Vec3d;"), cancellable = true)
+	private void onDrawBlockOutline(VertexConsumerProvider.Immediate vertexConsumers, MatrixStack matrixStack, boolean bl, WorldRenderState worldRenderState, CallbackInfo ci, @Local OutlineRenderState outlineState) {
 		if (!context.renderBlockOutline) {
 			// Was cancelled before we got here, so do not
 			// fire the BLOCK_OUTLINE event per contract of the API.
@@ -133,7 +133,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 			return;
 		}
 
-		if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(context, blockOutlineRenderState)) {
+		if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(context, outlineState)) {
 			vertexConsumers.drawCurrentLayer();
 			ci.cancel();
 		}
