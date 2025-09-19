@@ -65,9 +65,6 @@
       "net/minecraft/class_11954": [
         "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
       ],
-      "net/minecraft/class_12073": [
-        "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
-      ],
       "net/minecraft/class_12074": [
         "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
       ],

@@ -24,18 +24,17 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.class_12073;
-import net.minecraft.class_12074;
-import net.minecraft.class_12075;
-import net.minecraft.class_12076;
-import net.minecraft.class_12077;
-import net.minecraft.class_12078;
 import net.minecraft.client.render.MapRenderState;
 import net.minecraft.client.render.block.MovingBlockRenderState;
 import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
-import net.minecraft.client.render.entity.EntityRenderStates;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.client.render.state.CameraRenderState;
+import net.minecraft.client.render.state.OutlineRenderState;
+import net.minecraft.client.render.state.SkyRenderState;
+import net.minecraft.client.render.state.WeatherRenderState;
+import net.minecraft.client.render.state.WorldBorderRenderState;
+import net.minecraft.client.render.state.WorldRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
@@ -48,13 +47,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 		MapRenderState.class,
 		MapRenderState.Decoration.class,
 		MovingBlockRenderState.class,
-		EntityRenderStates.class,
-		class_12073.class,
-		class_12074.class,
-		class_12075.class,
-		class_12076.class,
-		class_12077.class,
-		class_12078.class
+		WorldRenderState.class,
+		CameraRenderState.class,
+		OutlineRenderState.class,
+		WeatherRenderState.class,
+		WorldBorderRenderState.class,
+		SkyRenderState.class
 })
 public abstract class RenderStateMixin implements FabricRenderState {
 	@Unique

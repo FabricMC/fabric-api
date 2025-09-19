@@ -22,11 +22,22 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.client.render.state.SkyRenderState;
+import net.minecraft.client.render.state.WeatherRenderState;
+import net.minecraft.client.render.state.WorldBorderRenderState;
+import net.minecraft.client.render.state.WorldRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 
-@Mixin(ItemRenderState.class)
-public abstract class ItemRenderStateMixin {
+@Mixin({
+		ItemRenderState.class,
+		ItemRenderState.LayerRenderState.class,
+		WorldRenderState.class,
+		WeatherRenderState.class,
+		WorldBorderRenderState.class,
+		SkyRenderState.class
+})
+public class ClearableRenderStateMixin {
 	@Inject(method = "clear", at = @At("TAIL"))
 	private void clearExtraRenderData(CallbackInfo ci) {
 		((FabricRenderState) this).clearExtraData();

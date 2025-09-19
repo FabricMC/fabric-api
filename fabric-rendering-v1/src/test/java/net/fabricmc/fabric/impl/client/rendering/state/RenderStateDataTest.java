@@ -19,16 +19,16 @@ package net.fabricmc.fabric.impl.client.rendering.state;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.class_12075;
-import net.minecraft.class_12076;
-import net.minecraft.class_12077;
-import net.minecraft.class_12078;
 import net.minecraft.client.render.MapRenderState;
 import net.minecraft.client.render.block.MovingBlockRenderState;
 import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
-import net.minecraft.client.render.entity.EntityRenderStates;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.client.render.state.CameraRenderState;
+import net.minecraft.client.render.state.SkyRenderState;
+import net.minecraft.client.render.state.WeatherRenderState;
+import net.minecraft.client.render.state.WorldBorderRenderState;
+import net.minecraft.client.render.state.WorldRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
@@ -47,11 +47,11 @@ public class RenderStateDataTest {
 				new MapRenderState(),
 				new MapRenderState.Decoration(),
 				new MovingBlockRenderState(),
-				new EntityRenderStates(),
-				new class_12075(),
-				new class_12076(),
-				new class_12077(),
-				new class_12078()
+				new WorldRenderState(),
+				new CameraRenderState(),
+				new WeatherRenderState(),
+				new WorldBorderRenderState(),
+				new SkyRenderState()
 		};
 		for (FabricRenderState state : states) {
 			Assertions.assertNull(state.getData(DEBUG));
