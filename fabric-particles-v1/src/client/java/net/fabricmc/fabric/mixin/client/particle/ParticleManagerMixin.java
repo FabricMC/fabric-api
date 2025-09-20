@@ -45,7 +45,6 @@ public abstract class ParticleManagerMixin {
 	@Inject(method = "<clinit>", at = @At("RETURN"))
 	private static void classInit(CallbackInfo ci) {
 		PARTICLE_TEXTURE_SHEETS = new ArrayList<>(PARTICLE_TEXTURE_SHEETS); // Make it mutable
-		ParticleRendererRegistryImpl.INSTANCE = new ParticleRendererRegistryImpl(PARTICLE_TEXTURE_SHEETS);
 	}
 
 	@Inject(method = "createParticleRenderer", at = @At(value = "NEW", target = "(Lnet/minecraft/client/particle/ParticleManager;)Lnet/minecraft/client/particle/NoRenderParticleRenderer;"), cancellable = true)
