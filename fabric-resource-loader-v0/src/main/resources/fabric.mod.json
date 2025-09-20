@@ -17,7 +17,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.17.0",
-    "fabric-api-base": "*"
+    "fabric-resource-loader-v1": ">=1.0.0"
   },
   "description": "Asset and data resource loading.",
   "mixins": [

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.loader;
+package net.fabricmc.fabric.mixin.resource.v1;
 
 import java.util.List;
 
@@ -28,20 +28,20 @@ import net.minecraft.resource.LifecycledResourceManagerImpl;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 
-import net.fabricmc.fabric.impl.resource.loader.FabricLifecycledResourceManager;
+import net.fabricmc.fabric.impl.resource.v1.FabricLifecycledResourceManager;
 
 @Mixin(LifecycledResourceManagerImpl.class)
 public class LifecycledResourceManagerImplMixin implements FabricLifecycledResourceManager {
 	@Unique
-	private ResourceType fabric_ResourceType;
+	private ResourceType resourceType;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(ResourceType resourceType, List<ResourcePack> list, CallbackInfo ci) {
-		this.fabric_ResourceType = resourceType;
+		this.resourceType = resourceType;
 	}
 
 	@Override
-	public ResourceType fabric_getResourceType() {
-		return fabric_ResourceType;
+	public ResourceType fabric$getResourceType() {
+		return this.resourceType;
 	}
 }

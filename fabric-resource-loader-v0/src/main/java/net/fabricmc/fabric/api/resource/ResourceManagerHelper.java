@@ -22,6 +22,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -38,7 +39,7 @@ public interface ResourceManagerHelper {
 	 * Add a resource reload listener for a given registry.
 	 *
 	 * @param listener The resource reload listener.
-	 * @deprecated Use {@link ResourceManagerHelper#registerReloadListener(IdentifiableResourceReloadListener)}
+	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(Identifier, ResourceReloader)} instead.
 	 */
 	@Deprecated
 	default void addReloadListener(IdentifiableResourceReloadListener listener) {
@@ -49,7 +50,9 @@ public interface ResourceManagerHelper {
 	 * Register a resource reload listener for a given resource manager type.
 	 *
 	 * @param listener The resource reload listener.
+	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(Identifier, ResourceReloader)} instead.
 	 */
+	@Deprecated
 	void registerReloadListener(IdentifiableResourceReloadListener listener);
 
 	/**
@@ -59,7 +62,9 @@ public interface ResourceManagerHelper {
 	 *
 	 * @param identifier The identifier of the listener.
 	 * @param listenerFactory   A function that creates a new instance of the listener with a given registry lookup.
+	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#RELOADER_REGISTRY_LOOKUP_KEY} with {@link net.minecraft.resource.ResourceReloader.Store} instead.
 	 */
+	@Deprecated
 	void registerReloadListener(Identifier identifier, Function<RegistryWrapper.WrapperLookup, IdentifiableResourceReloadListener> listenerFactory);
 
 	/**

@@ -34,10 +34,10 @@ import net.fabricmc.fabric.impl.registry.sync.trackers.Int2ObjectMapTracker;
 public class ParticleSpriteManagerMixin {
 	@Final
 	@Shadow
-	private Int2ObjectMap<ParticleFactory<?>> PARTICLE_FACTORIES;
+	private Int2ObjectMap<ParticleFactory<?>> particleFactories;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void onInit(CallbackInfo info) {
-		Int2ObjectMapTracker.register(Registries.PARTICLE_TYPE, "ParticleManager.factories", PARTICLE_FACTORIES);
+		Int2ObjectMapTracker.register(Registries.PARTICLE_TYPE, "ParticleManager.factories", particleFactories);
 	}
 }

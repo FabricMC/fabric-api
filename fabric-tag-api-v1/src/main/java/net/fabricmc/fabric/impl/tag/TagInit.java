@@ -19,11 +19,11 @@ package net.fabricmc.fabric.impl.tag;
 import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 
 public final class TagInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(TagAliasLoader.ID, TagAliasLoader::new);
+		ResourceLoader.get(ResourceType.SERVER_DATA).registerReloader(TagAliasLoader.ID, new TagAliasLoader());
 	}
 }

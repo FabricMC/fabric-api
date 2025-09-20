@@ -94,7 +94,7 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 	}
 
 	@ModifyVariable(method = "prepareSpecialElement", at = @At("STORE"))
-	private <T extends SpecialGuiElementRenderState> SpecialGuiElementRenderer<T> substitueSpecialElementRenderer(SpecialGuiElementRenderer<T> original, T elementState) {
+	private <T extends SpecialGuiElementRenderState> SpecialGuiElementRenderer<T> substituteSpecialElementRenderer(SpecialGuiElementRenderer<T> original, T elementState) {
 		if (original == null || !hasFabricInitialized) {
 			return original;
 		}
