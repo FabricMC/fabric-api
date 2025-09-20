@@ -157,7 +157,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 	@Override
 	public void registerReloadListener(IdentifiableResourceReloadListener listener) {
-		this.resourceLoader.registerReloader(listener);
+		this.resourceLoader.registerReloader(listener.getFabricId(), listener);
 		listener.getFabricDependencies().forEach(dependency -> this.resourceLoader.addReloaderOrdering(dependency, listener.getFabricId()));
 	}
 

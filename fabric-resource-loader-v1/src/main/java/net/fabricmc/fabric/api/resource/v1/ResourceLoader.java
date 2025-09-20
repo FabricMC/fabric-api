@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.resource.v1;
 
-import java.util.Objects;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.registry.RegistryWrapper;
@@ -26,7 +24,6 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader;
 import net.fabricmc.fabric.impl.resource.v1.ResourceLoaderImpl;
 
 /**
@@ -54,26 +51,11 @@ public interface ResourceLoader {
 	/**
 	 * Register a resource reloader for a given resource manager type.
 	 *
-	 * @param reloader the resource reloader
-	 * @see #registerReloader(Identifier, ResourceReloader)
-	 * @see #addReloaderOrdering(Identifier, Identifier)
-	 */
-	void registerReloader(IdentifiableResourceReloader reloader);
-
-	/**
-	 * Register a resource reloader for a given resource manager type.
-	 *
 	 * @param id the identifier of the resource reloader
 	 * @param reloader the resource reloader
-	 * @see #registerReloader(IdentifiableResourceReloader)
 	 * @see #addReloaderOrdering(Identifier, Identifier)
 	 */
-	default void registerReloader(Identifier id, ResourceReloader reloader) {
-		Objects.requireNonNull(id, "The reloader identifier should not be null.");
-		Objects.requireNonNull(reloader, "The reloader should not be null.");
-
-		this.registerReloader(IdentifiableResourceReloader.wrap(id, reloader));
-	}
+	void registerReloader(Identifier id, ResourceReloader reloader);
 
 	/**
 	 * Requests that resource reloaders registered as the first identifier is applied before the other referenced resource reloader.
@@ -87,7 +69,6 @@ public interface ResourceLoader {
 	 * @param secondReloader the identifier of the resource reloader that should run after the other
 	 * @see net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys identifiers of Vanilla resource reloaders
 	 * @see #registerReloader(Identifier, ResourceReloader) register a new resource reloader
-	 * @see #registerReloader(IdentifiableResourceReloader) register a new resource reloader
 	 */
 	void addReloaderOrdering(Identifier firstReloader, Identifier secondReloader);
 }

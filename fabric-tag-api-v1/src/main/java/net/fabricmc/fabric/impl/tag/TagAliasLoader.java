@@ -47,7 +47,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.StrictJsonParser;
 
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
-import net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader;
+import net.fabricmc.fabric.impl.resource.v1.IdentifiableResourceReloader;
 import net.fabricmc.fabric.api.resource.v1.reloader.SimpleResourceReloader;
 
 public final class TagAliasLoader extends SimpleResourceReloader<Map<RegistryKey<? extends Registry<?>>, List<TagAliasLoader.Data>>> implements IdentifiableResourceReloader {

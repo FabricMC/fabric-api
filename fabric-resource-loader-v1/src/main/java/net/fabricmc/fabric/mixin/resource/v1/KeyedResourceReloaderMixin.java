@@ -26,8 +26,8 @@ import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.function.FunctionLoader;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader;
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
+import net.fabricmc.fabric.impl.resource.v1.IdentifiableResourceReloader;
 
 @Mixin({
 		/* public */

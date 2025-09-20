@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -31,7 +32,6 @@ import java.util.stream.Collectors;
 
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -41,7 +41,6 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
-import net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader;
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
@@ -60,8 +59,7 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 		return IMPL_MAP.computeIfAbsent(type, ResourceLoaderImpl::new);
 	}
 
-	private final Set<Identifier> addedReloaderIds = new ObjectOpenHashSet<>();
-	private final Set<IdentifiableResourceReloader> addedReloaders = new LinkedHashSet<>();
+	private final Map<Identifier, ResourceReloader> addedReloaders = new LinkedHashMap<>();
 	private final Set<ReloaderOrder> reloadersOrdering = new LinkedHashSet<>();
 	private final ResourceType type;
 
@@ -70,22 +68,26 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 	}
 
 	@Override
-	public void registerReloader(IdentifiableResourceReloader reloader) {
-		if (this.addedReloaderIds.contains(reloader.getFabricId())) {
+	public void registerReloader(Identifier id, ResourceReloader reloader) {
+		Objects.requireNonNull(id, "The reloader identifier should not be null.");
+		Objects.requireNonNull(reloader, "The reloader should not be null.");
+
+		if (this.addedReloaders.containsKey(id)) {
 			throw new IllegalStateException(
-					"Tried to register resource reloader %s twice!".formatted(reloader.getFabricId())
+					"Tried to register resource reloader %s twice!".formatted(id)
 			);
 		}
 
-		if (this.addedReloaders.contains(reloader)) {
-			throw new IllegalStateException(
-					"Resource reloader with previously unknown ID %s already in resource reloader set!"
-							.formatted(reloader.getFabricId())
-			);
+		for (Map.Entry<Identifier, ResourceReloader> entry : this.addedReloaders.entrySet()) {
+			if (entry.getValue() == reloader) {
+				throw new IllegalStateException(
+						"Resource reloader with ID %s already in resource reloader set with ID %s!"
+								.formatted(id, entry.getKey())
+				);
+			}
 		}
 
-		this.addedReloaderIds.add(reloader.getFabricId());
-		this.addedReloaders.add(reloader);
+		this.addedReloaders.put(id, reloader);
 	}
 
 	@Override
@@ -141,13 +143,14 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 	 */
 	private void sort(List<ResourceReloader> reloaders) {
 		// Build the actual full list of resource reloaders to add.
-		final Set<IdentifiableResourceReloader> reloadersToAdd = new LinkedHashSet<>(this.addedReloaders);
+		final Set<Map.Entry<Identifier, ResourceReloader>> reloadersToAdd
+				= new LinkedHashSet<>(this.addedReloaders.entrySet());
 
 		// Locate and extract the setup marker.
 		ResourceReloader setupReloader = this.extractSetupMarker(reloaders);
 
 		// Remove any modded reloaders to sort properly.
-		reloaders.removeAll(reloadersToAdd);
+		reloadersToAdd.stream().map(Map.Entry::getValue).forEach(reloaders::remove);
 
 		// General rules:
 		// - We *do not* touch the ordering of vanilla reloaders. Ever.
@@ -182,8 +185,8 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 		SortableNode.link(last, afterVanilla);
 
 		// Add the modded reloaders.
-		for (IdentifiableResourceReloader moddedReloader : reloadersToAdd) {
-			var phase = new ResourceReloaderPhaseData(moddedReloader.getFabricId(), moddedReloader);
+		for (Map.Entry<Identifier, ResourceReloader> moddedReloader : reloadersToAdd) {
+			var phase = new ResourceReloaderPhaseData(moddedReloader.getKey(), moddedReloader.getValue());
 			runtimePhases.put(phase.id, phase);
 		}
 

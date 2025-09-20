@@ -22,6 +22,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -38,7 +39,7 @@ public interface ResourceManagerHelper {
 	 * Add a resource reload listener for a given registry.
 	 *
 	 * @param listener The resource reload listener.
-	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader)} instead.
+	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(Identifier, ResourceReloader)} instead.
 	 */
 	@Deprecated
 	default void addReloadListener(IdentifiableResourceReloadListener listener) {
@@ -49,7 +50,7 @@ public interface ResourceManagerHelper {
 	 * Register a resource reload listener for a given resource manager type.
 	 *
 	 * @param listener The resource reload listener.
-	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(net.fabricmc.fabric.api.resource.v1.reloader.IdentifiableResourceReloader)} instead.
+	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(Identifier, ResourceReloader)} instead.
 	 */
 	@Deprecated
 	void registerReloadListener(IdentifiableResourceReloadListener listener);
