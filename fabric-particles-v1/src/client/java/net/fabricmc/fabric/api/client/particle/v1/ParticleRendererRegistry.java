@@ -46,10 +46,10 @@ public interface ParticleRendererRegistry {
 
 	/**
 	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
-	 * <p>
-	 * The first texture sheet will be rendered before the second texture sheet.
-	 * <p>
-	 * Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
+	 *
+	 * <p>The first texture sheet will be rendered before the second texture sheet.
+	 *
+	 * <p>Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
 	 * and you cannot change the order of vanilla texture sheets with this method.
 	 *
 	 * @param first  the texture sheet to render first
@@ -61,10 +61,10 @@ public interface ParticleRendererRegistry {
 
 	/**
 	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
-	 * <p>
-	 * The first texture sheet will be rendered before the second texture sheet.
-	 * <p>
-	 * Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
+	 *
+	 * <p>The first texture sheet will be rendered before the second texture sheet.
+	 *
+	 * <p>Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
 	 * and you cannot change the order of vanilla texture sheets with this method.
 	 *
 	 * @param first  the texture sheet to render first
@@ -76,10 +76,10 @@ public interface ParticleRendererRegistry {
 
 	/**
 	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
-	 * <p>
-	 * The first texture sheet will be rendered before the second texture sheet.
-	 * <p>
-	 * Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
+	 *
+	 * <p>The first texture sheet will be rendered before the second texture sheet.
+	 *
+	 * <p>Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
 	 * and you cannot change the order of vanilla texture sheets with this method.
 	 *
 	 * @param first  the texture sheet to render first
@@ -91,10 +91,10 @@ public interface ParticleRendererRegistry {
 
 	/**
 	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
-	 * <p>
-	 * The first texture sheet will be rendered before the second texture sheet.
-	 * <p>
-	 * Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
+	 *
+	 * <p>The first texture sheet will be rendered before the second texture sheet.
+	 *
+	 * <p>Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
 	 * and you cannot change the order of vanilla texture sheets with this method.
 	 *
 	 * @param first  the texture sheet to render first

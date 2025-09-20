@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.particle.client;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.particle.BillboardParticle;
 import net.minecraft.client.particle.BillboardParticleSubmittable;
 import net.minecraft.client.particle.Particle;
@@ -32,16 +34,19 @@ import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 
 public class ParticleRendererRegistryTests implements ClientModInitializer {
-	private static final Identifier PARTICLE_ID = Identifier.of("fabric-particles-v1-testmod", "simple");
+	private static final Identifier PARTICLE_ID = Identifier.of("fabric-particles-v1-testmod", "test");
 	private static final SimpleParticleType TEST_PARTICLE_TYPE = FabricParticleTypes.simple();
 	private static final ParticleTextureSheet TEST_PARTICLE_TEXTURE_SHEET = new ParticleTextureSheet(PARTICLE_ID.toString());
 
@@ -52,12 +57,31 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 
 		ParticleRendererRegistry.register(TEST_PARTICLE_TEXTURE_SHEET, TestParticleRenderer::new);
 		ParticleRendererRegistry.registerOrdering(TEST_PARTICLE_TEXTURE_SHEET, ParticleTextureSheet.ITEM_PICKUP);
+
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+				dispatcher.register(ClientCommandManager.literal("custom_particles").executes(context -> {
+					ClientWorld world = MinecraftClient.getInstance().world;
+					Random random = world.getRandom();
+					ClientPlayerEntity player = context.getSource().getPlayer();
+
+					for (int i = 0; i < 35; i++) {
+						world.addParticleClient(
+								TEST_PARTICLE_TYPE,
+								player.getX(), player.getY(), player.getZ(),
+								MathHelper.nextBetween(random, -1.0F, 1.0F),
+								0.5F,
+								MathHelper.nextBetween(random, -1.0F, 1.0F)
+						);
+					}
+
+					return 1;
+				})));
 	}
 
 	private record TestParticleFactory(FabricSpriteProvider spriteProvider) implements ParticleFactory<SimpleParticleType> {
 		@Override
 		public Particle createParticle(SimpleParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Random random) {
-			return new TestParticle(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.getFirst());
+			return new TestParticle(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.getSprite(random));
 		}
 	}
 

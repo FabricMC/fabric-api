@@ -52,7 +52,7 @@ public class ParticleRendererRegistryTest {
 		var registry = new ParticleRendererRegistryImpl(sheets);
 
 		var customSheet = new ParticleTextureSheet("mymod:custom");
-		registry.register(customSheet,particleManager -> null);
+		registry.register(customSheet, particleManager -> null);
 		registry.registerOrdering(getId(customSheet), getId(ITEM_PICKUP));
 
 		assertSame(customSheet, sheets.getFirst()); // TODO is this expected behavior?
