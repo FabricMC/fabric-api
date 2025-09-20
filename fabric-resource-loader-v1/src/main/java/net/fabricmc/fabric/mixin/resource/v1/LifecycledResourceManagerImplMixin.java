@@ -33,15 +33,15 @@ import net.fabricmc.fabric.impl.resource.v1.FabricLifecycledResourceManager;
 @Mixin(LifecycledResourceManagerImpl.class)
 public class LifecycledResourceManagerImplMixin implements FabricLifecycledResourceManager {
 	@Unique
-	private ResourceType fabric$resourceType;
+	private ResourceType resourceType;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(ResourceType resourceType, List<ResourcePack> list, CallbackInfo ci) {
-		this.fabric$resourceType = resourceType;
+		this.resourceType = resourceType;
 	}
 
 	@Override
 	public ResourceType fabric$getResourceType() {
-		return this.fabric$resourceType;
+		return this.resourceType;
 	}
 }

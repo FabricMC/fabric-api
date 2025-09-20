@@ -18,7 +18,6 @@ package net.fabricmc.fabric.mixin.resource.v1;
 
 import java.util.Locale;
 
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -41,7 +40,7 @@ public abstract class KeyedResourceReloaderMixin implements IdentifiableResource
 
 	@Override
 	@SuppressWarnings({"ConstantConditions"})
-	public @NotNull Identifier getFabricId() {
+	public Identifier getFabricId() {
 		if (this.id == null) {
 			Object self = this;
 

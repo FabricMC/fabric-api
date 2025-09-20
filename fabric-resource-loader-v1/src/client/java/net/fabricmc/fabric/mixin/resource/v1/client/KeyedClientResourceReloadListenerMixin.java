@@ -18,7 +18,6 @@ package net.fabricmc.fabric.mixin.resource.v1.client;
 
 import java.util.Locale;
 
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -73,54 +72,54 @@ import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 })
 public abstract class KeyedClientResourceReloadListenerMixin implements IdentifiableResourceReloader {
 	@Unique
-	private Identifier fabric$id;
+	private Identifier id;
 
 	@Override
-	public @NotNull Identifier getFabricId() {
-		if (this.fabric$id == null) {
+	public Identifier getFabricId() {
+		if (this.id == null) {
 			Object self = this;
 
 			if (self instanceof AtlasManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.ATLAS;
+				this.id = ResourceReloaderKeys.Client.ATLAS;
 			} else if (self instanceof BakedModelManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.MODELS;
+				this.id = ResourceReloaderKeys.Client.MODELS;
 			} else if (self instanceof BlockEntityRenderManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_ENTITY_RENDERERS;
+				this.id = ResourceReloaderKeys.Client.BLOCK_ENTITY_RENDERERS;
 			} else if (self instanceof BlockRenderManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_RENDER_MANAGER;
+				this.id = ResourceReloaderKeys.Client.BLOCK_RENDER_MANAGER;
 			} else if (self instanceof CloudRenderer) {
-				this.fabric$id = ResourceReloaderKeys.Client.CLOUD_CELLS;
+				this.id = ResourceReloaderKeys.Client.CLOUD_CELLS;
 			} else if (self instanceof DryFoliageColormapResourceSupplier) {
-				this.fabric$id = ResourceReloaderKeys.Client.DRY_FOLIAGE_COLORMAP;
+				this.id = ResourceReloaderKeys.Client.DRY_FOLIAGE_COLORMAP;
 			} else if (self instanceof EquipmentModelLoader) {
-				this.fabric$id = ResourceReloaderKeys.Client.EQUIPMENT_MODELS;
+				this.id = ResourceReloaderKeys.Client.EQUIPMENT_MODELS;
 			} else if (self instanceof EntityRenderManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.ENTITY_RENDERERS;
+				this.id = ResourceReloaderKeys.Client.ENTITY_RENDERERS;
 			} else if (self instanceof FontManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.FONTS;
+				this.id = ResourceReloaderKeys.Client.FONTS;
 			} else if (self instanceof FoliageColormapResourceSupplier) {
-				this.fabric$id = ResourceReloaderKeys.Client.FOLIAGE_COLORMAP;
+				this.id = ResourceReloaderKeys.Client.FOLIAGE_COLORMAP;
 			} else if (self instanceof GrassColormapResourceSupplier) {
-				this.fabric$id = ResourceReloaderKeys.Client.GRASS_COLORMAP;
+				this.id = ResourceReloaderKeys.Client.GRASS_COLORMAP;
 			} else if (self instanceof LanguageManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.LANGUAGES;
+				this.id = ResourceReloaderKeys.Client.LANGUAGES;
 			} else if (self instanceof ParticleSpriteManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.PARTICLES;
+				this.id = ResourceReloaderKeys.Client.PARTICLES;
 			} else if (self instanceof ShaderLoader) {
-				this.fabric$id = ResourceReloaderKeys.Client.SHADERS;
+				this.id = ResourceReloaderKeys.Client.SHADERS;
 			} else if (self instanceof SplashTextResourceSupplier) {
-				this.fabric$id = ResourceReloaderKeys.Client.SPLASH_TEXTS;
+				this.id = ResourceReloaderKeys.Client.SPLASH_TEXTS;
 			} else if (self instanceof SoundManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.SOUNDS;
+				this.id = ResourceReloaderKeys.Client.SOUNDS;
 			} else if (self instanceof TextureManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.TEXTURES;
+				this.id = ResourceReloaderKeys.Client.TEXTURES;
 			} else if (self instanceof WaypointStyleAssetManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.WAYPOINT_STYLE_ASSETS;
+				this.id = ResourceReloaderKeys.Client.WAYPOINT_STYLE_ASSETS;
 			} else {
-				this.fabric$id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
+				this.id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
 		}
 
-		return this.fabric$id;
+		return this.id;
 	}
 }

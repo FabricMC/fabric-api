@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.resource.v1;
 
+import java.util.Objects;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.registry.RegistryWrapper;
@@ -67,6 +69,9 @@ public interface ResourceLoader {
 	 * @see #addReloaderOrdering(Identifier, Identifier)
 	 */
 	default void registerReloader(Identifier id, ResourceReloader reloader) {
+		Objects.requireNonNull(id, "The reloader identifier should not be null.");
+		Objects.requireNonNull(reloader, "The reloader should not be null.");
+
 		this.registerReloader(IdentifiableResourceReloader.wrap(id, reloader));
 	}
 

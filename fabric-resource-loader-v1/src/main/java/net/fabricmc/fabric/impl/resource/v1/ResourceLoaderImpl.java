@@ -29,12 +29,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceReloader;
@@ -50,13 +49,12 @@ import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class ResourceLoaderImpl implements ResourceLoader {
-	private static final Logger LOGGER = LoggerFactory.getLogger("ResourceLoader");
+	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Map<ResourceType, ResourceLoaderImpl> IMPL_MAP = new EnumMap<>(ResourceType.class);
 
 	private static final boolean DEBUG_RELOADERS_IDENTITY = TriState.fromSystemProperty("fabric.resource_loader.debug.reloaders_identity")
 			.orElse(FabricLoader.getInstance().isDevelopmentEnvironment());
-	private static final boolean DEBUG_RELOADERS_ORDER = TriState.fromSystemProperty("fabric.resource_loader.debug.reloaders_order")
-			.orElse(true);
+	private static final boolean DEBUG_RELOADERS_ORDER = Boolean.getBoolean("fabric.resource_loader.debug.reloaders_order");
 
 	public static ResourceLoaderImpl get(ResourceType type) {
 		return IMPL_MAP.computeIfAbsent(type, ResourceLoaderImpl::new);
@@ -73,22 +71,25 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 
 	@Override
 	public void registerReloader(IdentifiableResourceReloader reloader) {
-		if (!this.addedReloaderIds.add(reloader.getFabricId())) {
+		if (this.addedReloaderIds.contains(reloader.getFabricId())) {
 			throw new IllegalStateException(
 					"Tried to register resource reloader %s twice!".formatted(reloader.getFabricId())
 			);
 		}
 
-		if (!this.addedReloaders.add(reloader)) {
+		if (this.addedReloaders.contains(reloader)) {
 			throw new IllegalStateException(
 					"Resource reloader with previously unknown ID %s already in resource reloader set!"
 							.formatted(reloader.getFabricId())
 			);
 		}
+
+		this.addedReloaderIds.add(reloader.getFabricId());
+		this.addedReloaders.add(reloader);
 	}
 
 	@Override
-	public void addReloaderOrdering(@NotNull Identifier firstReloader, @NotNull Identifier secondReloader) {
+	public void addReloaderOrdering(Identifier firstReloader, Identifier secondReloader) {
 		Objects.requireNonNull(firstReloader, "The first reloader identifier should not be null.");
 		Objects.requireNonNull(secondReloader, "The second reloader identifier should not be null.");
 
@@ -99,6 +100,28 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 		this.reloadersOrdering.add(new ReloaderOrder(firstReloader, secondReloader));
 	}
 
+	private Identifier getResourceReloaderIdForSorting(ResourceReloader reloader) {
+		if (reloader instanceof IdentifiableResourceReloader identifiable) {
+			return identifiable.getFabricId();
+		} else {
+			if (DEBUG_RELOADERS_IDENTITY) {
+				LOGGER.warn(
+						"The resource reloader at {} does not implement IdentifiableResourceReloader "
+								+ "making ordering support more difficult for other modders.",
+						reloader.getClass().getName()
+				);
+			}
+
+			return Identifier.of("unknown",
+					"private/"
+							+ reloader.getClass().getName()
+							.replace(".", "/")
+							.replace("$", "_")
+							.toLowerCase(Locale.ROOT)
+			);
+		}
+	}
+
 	public static List<ResourceReloader> sort(ResourceType type, List<ResourceReloader> listeners) {
 		if (type == null) {
 			return listeners;
@@ -106,13 +129,9 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 
 		ResourceLoaderImpl instance = get(type);
 
-		if (instance != null) {
-			var mutable = new ArrayList<>(listeners);
-			instance.sort(mutable);
-			return Collections.unmodifiableList(mutable);
-		}
-
-		return listeners;
+		var mutable = new ArrayList<>(listeners);
+		instance.sort(mutable);
+		return Collections.unmodifiableList(mutable);
 	}
 
 	/**
@@ -147,27 +166,7 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 		// Add all the Vanilla reloaders.
 		while (itPhases.hasNext()) {
 			ResourceReloader currentReloader = itPhases.next();
-			Identifier id;
-
-			if (currentReloader instanceof IdentifiableResourceReloader identifiable) {
-				id = identifiable.getFabricId();
-			} else {
-				id = Identifier.of("unknown",
-						"private/"
-								+ currentReloader.getClass().getName()
-								.replace(".", "/")
-								.replace("$", "_")
-								.toLowerCase(Locale.ROOT)
-				);
-
-				if (DEBUG_RELOADERS_IDENTITY) {
-					LOGGER.warn(
-							"The resource reloader at {} does not implement IdentifiableResourceReloader "
-									+ "making ordering support more difficult for other modders.",
-							currentReloader.getClass().getName()
-					);
-				}
-			}
+			Identifier id = this.getResourceReloaderIdForSorting(currentReloader);
 
 			var current = new ResourceReloaderPhaseData(id, currentReloader);
 			current.setVanillaStatus(ResourceReloaderPhaseData.VanillaStatus.VANILLA);

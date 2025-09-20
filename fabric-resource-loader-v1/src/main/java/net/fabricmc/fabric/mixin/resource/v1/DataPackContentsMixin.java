@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.resource.v1;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.llamalad7.mixinextras.sugar.Local;
@@ -51,6 +52,6 @@ public class DataPackContentsMixin {
 						featureSet
 				)
 		);
-		return list;
+		return Collections.unmodifiableList(list);
 	}
 }

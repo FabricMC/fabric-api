@@ -152,13 +152,11 @@ public enum TriState implements StringIdentifiable {
 	public static TriState fromSystemProperty(String property) {
 		String value = System.getProperty(property);
 
-		if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value)) {
-			return TRUE;
-		} else if ("false".equalsIgnoreCase(value) || "off".equalsIgnoreCase(value)) {
-			return FALSE;
-		} else {
-			return DEFAULT;
+		if (value != null) {
+			return Boolean.parseBoolean(value) ? TRUE : FALSE;
 		}
+
+		return DEFAULT;
 	}
 
 	/**
