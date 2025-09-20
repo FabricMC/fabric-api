@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.gamerule;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Cancellable;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -51,8 +54,11 @@ public abstract class GameRuleManagementHandlerImplMixin {
 	@Final
 	private ManagementLogger logger;
 
-	@Inject(method = "updateRule", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/GameRules$Rule;serialize()Ljava/lang/String;"), cancellable = true)
-	private void updateRule(GameRuleRpcDispatcher.UntypedRule untypedRule, ManagementConnectionId remote, CallbackInfoReturnable<GameRuleRpcDispatcher.TypedRule> cir, @Local GameRules.Rule<?> rule, @Local String from) {
+	@WrapOperation(method = "updateRule", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules$Rule;serialize()Ljava/lang/String;"))
+	private String updateRule(GameRules.Rule<?> rule, Operation<String> original, @Cancellable CallbackInfoReturnable<GameRuleRpcDispatcher.TypedRule> cir,
+								@Local(argsOnly = true) GameRuleRpcDispatcher.UntypedRule untypedRule, @Local(argsOnly = true) ManagementConnectionId remote) {
+		final String from = original.call(rule);
+
 		try {
 			if (rule instanceof DoubleRule doubleRule) {
 				doubleRule.set(Double.parseDouble(untypedRule.value()), server);
@@ -64,6 +70,8 @@ public abstract class GameRuleManagementHandlerImplMixin {
 		} catch (IllegalArgumentException e) {
 			throw new RpcException(e.getMessage());
 		}
+
+		return from;
 	}
 
 	@Inject(method = "toTypedRule", at = @At("HEAD"), cancellable = true)
