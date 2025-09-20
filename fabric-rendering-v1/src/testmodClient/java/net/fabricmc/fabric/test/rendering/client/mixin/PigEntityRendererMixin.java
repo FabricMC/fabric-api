@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.rendering.client.mixin;
 
+import net.minecraft.client.render.state.CameraRenderState;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -45,7 +47,8 @@ public class PigEntityRendererMixin {
 	@Inject(method = "updateRenderState(Lnet/minecraft/entity/passive/PigEntity;Lnet/minecraft/client/render/entity/state/PigEntityRenderState;F)V", at = @At("TAIL"))
 	private void updateRenderStateData(PigEntity entity, PigEntityRenderState state, float tickProgress, CallbackInfo ci) {
 		BlockState blockState = entity.getSteppingBlockState();
-		if(blockState.getRenderType() != BlockRenderType.INVISIBLE) {
+
+		if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
 			MovingBlockRenderState movingBlockRenderState = new MovingBlockRenderState();
 			movingBlockRenderState.fallingBlockPos = entity.getSteppingPos();
 			movingBlockRenderState.entityBlockPos = entity.getBlockPos();
@@ -56,9 +59,10 @@ public class PigEntityRendererMixin {
 		}
 	}
 
-	@Inject(method = "render(Lnet/minecraft/client/render/entity/state/PigEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/MobEntityRenderer;render(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;)V"))
-	private void renderUsingRenderStateData(PigEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CallbackInfo ci) {
+	@Inject(method = "render(Lnet/minecraft/client/render/entity/state/PigEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/MobEntityRenderer;render(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V"))
+	private void renderUsingRenderStateData(PigEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraRenderState, CallbackInfo ci) {
 		MovingBlockRenderState movingBlockRenderState = state.getData(MOVING_BLOCK);
+
 		if (movingBlockRenderState != null) {
 			queue.submitMovingBlock(matrices, movingBlockRenderState);
 		}

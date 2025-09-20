@@ -53,6 +53,7 @@ public class RenderStateDataTest {
 				new WorldBorderRenderState(),
 				new SkyRenderState()
 		};
+
 		for (FabricRenderState state : states) {
 			Assertions.assertNull(state.getData(DEBUG));
 			state.setData(DEBUG, "test");
