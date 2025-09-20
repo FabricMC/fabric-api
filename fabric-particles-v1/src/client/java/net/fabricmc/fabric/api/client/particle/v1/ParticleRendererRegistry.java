@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.client.particle.v1;
 import java.util.Locale;
 import java.util.function.Function;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.particle.ParticleManager;
@@ -32,15 +31,14 @@ import net.fabricmc.fabric.impl.client.particle.ParticleRendererRegistryImpl;
 /**
  * A registry for custom {@link ParticleRenderer}s.
  */
-@ApiStatus.NonExtendable
-public interface ParticleRendererRegistry {
+public final class ParticleRendererRegistry {
 	/**
 	 * Registers a {@link ParticleRenderer} factory for the given {@link ParticleTextureSheet}.
 	 *
 	 * @param textureSheet the texture sheet
 	 * @param function the factory function
 	 */
-	static void register(ParticleTextureSheet textureSheet, Function<ParticleManager, ParticleRenderer<?>> function) {
+	public static void register(ParticleTextureSheet textureSheet, Function<ParticleManager, ParticleRenderer<?>> function) {
 		ParticleRendererRegistryImpl.INSTANCE.register(textureSheet, function);
 	}
 
@@ -55,7 +53,7 @@ public interface ParticleRendererRegistry {
 	 * @param first  the texture sheet to render first
 	 * @param second the texture sheet to render second
 	 */
-	static void registerOrdering(ParticleTextureSheet first, Identifier second) {
+	public static void registerOrdering(ParticleTextureSheet first, Identifier second) {
 		registerOrdering(getId(first), second);
 	}
 
@@ -70,7 +68,7 @@ public interface ParticleRendererRegistry {
 	 * @param first  the texture sheet to render first
 	 * @param second the texture sheet to render second
 	 */
-	static void registerOrdering(ParticleTextureSheet first, ParticleTextureSheet second) {
+	public static void registerOrdering(ParticleTextureSheet first, ParticleTextureSheet second) {
 		registerOrdering(getId(first), getId(second));
 	}
 
@@ -85,7 +83,7 @@ public interface ParticleRendererRegistry {
 	 * @param first  the texture sheet to render first
 	 * @param second the texture sheet to render second
 	 */
-	static void registerOrdering(Identifier first, ParticleTextureSheet second) {
+	public static void registerOrdering(Identifier first, ParticleTextureSheet second) {
 		registerOrdering(first, getId(second));
 	}
 
@@ -100,7 +98,7 @@ public interface ParticleRendererRegistry {
 	 * @param first  the texture sheet to render first
 	 * @param second the texture sheet to render second
 	 */
-	static void registerOrdering(Identifier first, Identifier second) {
+	public static void registerOrdering(Identifier first, Identifier second) {
 		ParticleRendererRegistryImpl.INSTANCE.registerOrdering(first, second);
 	}
 
@@ -110,7 +108,7 @@ public interface ParticleRendererRegistry {
 	 * @param id the identifier of the texture sheet
 	 * @return the texture sheet, or null if none is registered with the given identifier
 	 */
-	static @Nullable ParticleTextureSheet getParticleTextureSheet(Identifier id) {
+	public static @Nullable ParticleTextureSheet getParticleTextureSheet(Identifier id) {
 		return ParticleRendererRegistryImpl.INSTANCE.getParticleTextureSheet(id);
 	}
 
@@ -120,7 +118,7 @@ public interface ParticleRendererRegistry {
 	 * @param textureSheet the texture sheet
 	 * @return the identifier
 	 */
-	static Identifier getId(ParticleTextureSheet textureSheet) {
+	public static Identifier getId(ParticleTextureSheet textureSheet) {
 		if (textureSheet == ParticleTextureSheet.SINGLE_QUADS
 				|| textureSheet == ParticleTextureSheet.NO_RENDER
 				|| textureSheet == ParticleTextureSheet.ELDER_GUARDIANS
@@ -129,5 +127,8 @@ public interface ParticleRendererRegistry {
 		}
 
 		return Identifier.of(textureSheet.name());
+	}
+
+	private ParticleRendererRegistry() {
 	}
 }
