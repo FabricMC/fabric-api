@@ -53,17 +53,16 @@ public abstract class GameRuleManagementHandlerImplMixin {
 
 	@Inject(method = "updateRule", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/GameRules$Rule;serialize()Ljava/lang/String;"), cancellable = true)
 	private void updateRule(GameRuleRpcDispatcher.UntypedRule untypedRule, ManagementConnectionId remote, CallbackInfoReturnable<GameRuleRpcDispatcher.TypedRule> cir, @Local GameRules.Rule<?> rule, @Local String from) {
-		if (rule instanceof DoubleRule doubleRule) {
-			doubleRule.set(Double.parseDouble(untypedRule.value()), server);
-			cir.setReturnValue(doUpdate(untypedRule, remote, rule, from));
-		} else if (rule instanceof EnumRule<?> enumRule) {
-			try {
+		try {
+			if (rule instanceof DoubleRule doubleRule) {
+				doubleRule.set(Double.parseDouble(untypedRule.value()), server);
+				cir.setReturnValue(doUpdate(untypedRule, remote, rule, from));
+			} else if (rule instanceof EnumRule<?> enumRule) {
 				enumRule.set(untypedRule.value(), server);
-			} catch (IllegalArgumentException e) {
-				throw new RpcException(e.getMessage());
+				cir.setReturnValue(doUpdate(untypedRule, remote, rule, from));
 			}
-
-			cir.setReturnValue(doUpdate(untypedRule, remote, rule, from));
+		} catch (IllegalArgumentException e) {
+			throw new RpcException(e.getMessage());
 		}
 	}
 

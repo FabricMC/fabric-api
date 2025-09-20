@@ -31,6 +31,7 @@ public enum FabricGameRuleType implements StringIdentifiable {
 		this.name = name;
 	}
 
+	@Override
 	public String asString() {
 		return this.name;
 	}

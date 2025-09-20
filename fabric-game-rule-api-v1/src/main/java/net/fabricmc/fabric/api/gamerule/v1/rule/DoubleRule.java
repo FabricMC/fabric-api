@@ -130,6 +130,10 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 	}
 
 	public void set(double value, @Nullable MinecraftServer server) {
+		if (!this.inBounds(value)) {
+			throw new IllegalArgumentException(String.format("Could not set value to %s. Was out of bounds %s - %s", value, this.minimumValue, this.maximumValue));
+		}
+
 		this.value = value;
 		this.changed(server);
 	}
