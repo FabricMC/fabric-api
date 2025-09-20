@@ -52,12 +52,8 @@ public class ParticleRendererRegistryTest {
 		var registry = new ParticleRendererRegistryImpl(sheets);
 
 		var customSheet = new ParticleTextureSheet("mymod:custom");
-
-		registry.register(
-				ParticleRendererRegistryImpl.Order.BEFORE,
-				getId(ITEM_PICKUP),
-				customSheet,
-				particleManager -> null);
+		registry.register(customSheet,particleManager -> null);
+		registry.registerOrdering(getId(customSheet), getId(ITEM_PICKUP));
 
 		assertSame(customSheet, sheets.getFirst()); // TODO is this expected behavior?
 		assertSame(SINGLE_QUADS, sheets.get(1));
@@ -72,12 +68,8 @@ public class ParticleRendererRegistryTest {
 		var registry = new ParticleRendererRegistryImpl(sheets);
 
 		var customSheet = new ParticleTextureSheet("mymod:custom");
-
-		registry.register(
-				ParticleRendererRegistryImpl.Order.AFTER,
-				getId(ITEM_PICKUP),
-				customSheet,
-				particleManager -> null);
+		registry.register(customSheet, particleManager -> null);
+		registry.registerOrdering(getId(ITEM_PICKUP), getId(customSheet));
 
 		assertSame(SINGLE_QUADS, sheets.getFirst());
 		assertSame(ITEM_PICKUP, sheets.get(1));

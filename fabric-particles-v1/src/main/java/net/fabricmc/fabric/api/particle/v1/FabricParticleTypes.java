@@ -37,8 +37,8 @@ import net.minecraft.particle.SimpleParticleType;
  *
  * {@literal @}Override
  * public void onInitialize() {
- *     Registry.register(Registry.PARTICLE_TYPE, Identifier.of("testmod", "simple"), SIMPLE_TEST_PARTICLE);
- *     Registry.register(Registry.PARTICLE_TYPE, Identifier.of("testmod", "custom"), CUSTOM_TEST_PARTICLE);
+ *     Registry.register(Registries.PARTICLE_TYPE, Identifier.of("testmod", "simple"), SIMPLE_TEST_PARTICLE);
+ *     Registry.register(Registries.PARTICLE_TYPE, Identifier.of("testmod", "custom"), CUSTOM_TEST_PARTICLE);
  * }}
  * </pre>
  * </blockquote>

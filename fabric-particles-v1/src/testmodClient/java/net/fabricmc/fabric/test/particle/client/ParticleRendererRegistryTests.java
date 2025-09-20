@@ -1,0 +1,88 @@
+package net.fabricmc.fabric.test.particle.client;
+
+import net.minecraft.client.particle.BillboardParticle;
+import net.minecraft.client.particle.BillboardParticleSubmittable;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleFactory;
+import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.particle.ParticleRenderer;
+import net.minecraft.client.particle.ParticleTextureSheet;
+import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.Frustum;
+import net.minecraft.client.render.Submittable;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.particle.SimpleParticleType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.random.Random;
+
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+
+public class ParticleRendererRegistryTests implements ClientModInitializer {
+	private static final Identifier PARTICLE_ID = Identifier.of("fabric-particles-v1-testmod", "simple");
+	private static final SimpleParticleType TEST_PARTICLE_TYPE = FabricParticleTypes.simple();
+	private static final ParticleTextureSheet TEST_PARTICLE_TEXTURE_SHEET = new ParticleTextureSheet(PARTICLE_ID.toString());
+
+	@Override
+	public void onInitializeClient() {
+		Registry.register(Registries.PARTICLE_TYPE, PARTICLE_ID, TEST_PARTICLE_TYPE);
+		ParticleFactoryRegistry.getInstance().register(TEST_PARTICLE_TYPE, TestParticleFactory::new);
+
+		ParticleRendererRegistry.register(TEST_PARTICLE_TEXTURE_SHEET, TestParticleRenderer::new);
+		ParticleRendererRegistry.registerOrdering(TEST_PARTICLE_TEXTURE_SHEET, ParticleTextureSheet.ITEM_PICKUP);
+	}
+
+	private record TestParticleFactory(FabricSpriteProvider spriteProvider) implements ParticleFactory<SimpleParticleType> {
+		@Override
+		public Particle createParticle(SimpleParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Random random) {
+			return new TestParticle(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.getFirst());
+		}
+	}
+
+	private static class TestParticle extends BillboardParticle {
+		public TestParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Sprite sprite) {
+			super(world, x, y, z, velocityX, velocityY, velocityZ, sprite);
+		}
+
+		@Override
+		protected RenderType getRenderType() {
+			return RenderType.field_62640;
+		}
+
+		@Override
+		public ParticleTextureSheet textureSheet() {
+			return TEST_PARTICLE_TEXTURE_SHEET;
+		}
+
+		private boolean intersectPoint(Frustum frustum) {
+			return frustum.intersectPoint(x, y, z);
+		}
+	}
+
+	private static class TestParticleRenderer extends ParticleRenderer<TestParticle> {
+		final BillboardParticleSubmittable submittable = new BillboardParticleSubmittable();
+
+		public TestParticleRenderer(ParticleManager particleManager) {
+			super(particleManager);
+		}
+
+		@Override
+		public Submittable render(Frustum frustum, Camera camera, float tickProgress) {
+			for(TestParticle particle : this.particles) {
+				if (!particle.intersectPoint(frustum)) {
+					continue;
+				}
+
+				particle.render(this.submittable, camera, tickProgress);
+			}
+
+			return submittable;
+		}
+	}
+}

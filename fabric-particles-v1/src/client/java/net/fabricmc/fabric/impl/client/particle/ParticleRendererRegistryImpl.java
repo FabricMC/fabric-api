@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntLinkedOpenHashMap;
@@ -73,7 +74,7 @@ public final class ParticleRendererRegistryImpl {
 		assertIdentical(textureSheets, copyOfTextureSheets);
 	}
 
-	public void register(Order order, Identifier other, ParticleTextureSheet textureSheet, Function<ParticleManager, ParticleRenderer<?>> function) {
+	public void register(ParticleTextureSheet textureSheet, Function<ParticleManager, ParticleRenderer<?>> function) {
 		final Identifier id = getId(textureSheet);
 
 		if (nodes.containsKey(id)) {
@@ -84,24 +85,37 @@ public final class ParticleRendererRegistryImpl {
 			throw new IllegalArgumentException("The specified ParticleTextureSheet instance has already been registered.");
 		}
 
-		var newEntry = new ParticleTextureNode(id, textureSheet);
-		ParticleTextureNode otherEntry = nodes.get(other);
-
-		if (otherEntry == null) {
-			throw new IllegalArgumentException("The specified other ParticleTextureSheet " + other + " does not exist.");
-		}
-
-		nodes.put(id, newEntry);
-
-		switch (order) {
-		case BEFORE -> ParticleTextureNode.link(newEntry, otherEntry);
-		case AFTER -> ParticleTextureNode.link(otherEntry, newEntry);
-		}
-
+		var node = new ParticleTextureNode(id, textureSheet);
+		nodes.put(id, node);
 		textureSheets.add(textureSheet);
 		factories.put(textureSheet, function);
 
 		sort();
+	}
+
+	public void registerOrdering(Identifier first, Identifier second) {
+		Objects.requireNonNull(first);
+		Objects.requireNonNull(second);
+
+		ParticleTextureNode firstEntry = nodes.get(first);
+		ParticleTextureNode secondEntry = nodes.get(second);
+
+		if (firstEntry == null) {
+			throw new IllegalArgumentException("The specified first id " + first + " does not correspond to a registered ParticleTextureSheet.");
+		}
+
+		if (secondEntry == null) {
+			throw new IllegalArgumentException("The specified second id " + second + " does not correspond to a registered ParticleTextureSheet.");
+		}
+
+		ParticleTextureNode.link(firstEntry, secondEntry);
+		sort();
+	}
+
+	public @Nullable ParticleTextureSheet getParticleTextureSheet(Identifier id) {
+		Objects.requireNonNull(id);
+		ParticleTextureNode entry = nodes.get(id);
+		return entry != null ? entry.textureSheet : null;
 	}
 
 	@Nullable
@@ -152,10 +166,5 @@ public final class ParticleRendererRegistryImpl {
 		protected String getDescription() {
 			return id.toString();
 		}
-	}
-
-	public enum Order {
-		BEFORE,
-		AFTER
 	}
 }

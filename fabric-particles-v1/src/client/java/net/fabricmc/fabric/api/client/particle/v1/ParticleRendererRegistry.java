@@ -19,6 +19,9 @@ package net.fabricmc.fabric.api.client.particle.v1;
 import java.util.Locale;
 import java.util.function.Function;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.ParticleRenderer;
 import net.minecraft.client.particle.ParticleTextureSheet;
@@ -26,39 +29,105 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.particle.ParticleRendererRegistryImpl;
 
+/**
+ * A registry for custom {@link ParticleRenderer}s.
+ */
+@ApiStatus.NonExtendable
 public interface ParticleRendererRegistry {
+	/**
+	 * Registers a {@link ParticleRenderer} factory for the given {@link ParticleTextureSheet}.
+	 *
+	 * @param textureSheet the texture sheet
+	 * @param function the factory function
+	 */
 	static void register(ParticleTextureSheet textureSheet, Function<ParticleManager, ParticleRenderer<?>> function) {
-		registerBefore(ParticleTextureSheet.NO_RENDER, textureSheet, function);
+		ParticleRendererRegistryImpl.INSTANCE.register(textureSheet, function);
 	}
 
-	static void registerAfter(ParticleTextureSheet other, ParticleTextureSheet textureSheet, Function<ParticleManager, ParticleRenderer<?>> function) {
-		registerAfter(getId(other), textureSheet, function);
+	/**
+	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
+	 * <p>
+	 * The first texture sheet will be rendered before the second texture sheet.
+	 * <p>
+	 * Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
+	 * and you cannot change the order of vanilla texture sheets with this method.
+	 *
+	 * @param first  the texture sheet to render first
+	 * @param second the texture sheet to render second
+	 */
+	static void registerOrdering(ParticleTextureSheet first, Identifier second) {
+		registerOrdering(getId(first), second);
 	}
 
-	static void registerAfter(Identifier other, ParticleTextureSheet textureSheet, Function<ParticleManager, ParticleRenderer<?>> function) {
-		ParticleRendererRegistryImpl.INSTANCE.register(ParticleRendererRegistryImpl.Order.AFTER, other, textureSheet, function);
+	/**
+	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
+	 * <p>
+	 * The first texture sheet will be rendered before the second texture sheet.
+	 * <p>
+	 * Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
+	 * and you cannot change the order of vanilla texture sheets with this method.
+	 *
+	 * @param first  the texture sheet to render first
+	 * @param second the texture sheet to render second
+	 */
+	static void registerOrdering(ParticleTextureSheet first, ParticleTextureSheet second) {
+		registerOrdering(getId(first), getId(second));
 	}
 
-	static void registerBefore(ParticleTextureSheet other, ParticleTextureSheet textureSheet, Function<ParticleManager, ParticleRenderer<?>> function) {
-		registerBefore(getId(other), textureSheet, function);
+	/**
+	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
+	 * <p>
+	 * The first texture sheet will be rendered before the second texture sheet.
+	 * <p>
+	 * Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
+	 * and you cannot change the order of vanilla texture sheets with this method.
+	 *
+	 * @param first  the texture sheet to render first
+	 * @param second the texture sheet to render second
+	 */
+	static void registerOrdering(Identifier first, ParticleTextureSheet second) {
+		registerOrdering(first, getId(second));
 	}
 
-	static void registerBefore(Identifier other, ParticleTextureSheet textureSheet, Function<ParticleManager, ParticleRenderer<?>> function) {
-		ParticleRendererRegistryImpl.INSTANCE.register(ParticleRendererRegistryImpl.Order.BEFORE, other, textureSheet, function);
+	/**
+	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
+	 * <p>
+	 * The first texture sheet will be rendered before the second texture sheet.
+	 * <p>
+	 * Note that the rendering order of vanilla texture sheets is already defined by Minecraft,
+	 * and you cannot change the order of vanilla texture sheets with this method.
+	 *
+	 * @param first  the texture sheet to render first
+	 * @param second the texture sheet to render second
+	 */
+	static void registerOrdering(Identifier first, Identifier second) {
+		ParticleRendererRegistryImpl.INSTANCE.registerOrdering(first, second);
 	}
 
+	/**
+	 * Gets the {@link ParticleTextureSheet} registered with the given identifier.
+	 *
+	 * @param id the identifier of the texture sheet
+	 * @return the texture sheet, or null if none is registered with the given identifier
+	 */
+	static @Nullable ParticleTextureSheet getParticleTextureSheet(Identifier id) {
+		return ParticleRendererRegistryImpl.INSTANCE.getParticleTextureSheet(id);
+	}
+
+	/**
+	 * Gets the identifier for the given {@link ParticleTextureSheet}.
+	 *
+	 * @param textureSheet the texture sheet
+	 * @return the identifier
+	 */
 	static Identifier getId(ParticleTextureSheet textureSheet) {
 		if (textureSheet == ParticleTextureSheet.SINGLE_QUADS
 				|| textureSheet == ParticleTextureSheet.NO_RENDER
 				|| textureSheet == ParticleTextureSheet.ELDER_GUARDIANS
 				|| textureSheet == ParticleTextureSheet.ITEM_PICKUP) {
-			return ofVanilla(textureSheet);
+			return Identifier.ofVanilla(textureSheet.name().toLowerCase(Locale.ROOT));
 		}
 
 		return Identifier.of(textureSheet.name());
-	}
-
-	private static Identifier ofVanilla(ParticleTextureSheet sheet) {
-		return Identifier.ofVanilla(sheet.name().toLowerCase(Locale.ROOT));
 	}
 }
