@@ -72,54 +72,54 @@ import net.fabricmc.fabric.impl.resource.v1.FabricResourceReloader;
 })
 public abstract class KeyedClientResourceReloadListenerMixin implements FabricResourceReloader {
 	@Unique
-	private Identifier id;
+	private Identifier fabric$id;
 
 	@Override
 	public Identifier fabric$getId() {
-		if (this.id == null) {
+		if (this.fabric$id == null) {
 			Object self = this;
 
 			if (self instanceof AtlasManager) {
-				this.id = ResourceReloaderKeys.Client.ATLAS;
+				this.fabric$id = ResourceReloaderKeys.Client.ATLAS;
 			} else if (self instanceof BakedModelManager) {
-				this.id = ResourceReloaderKeys.Client.MODELS;
+				this.fabric$id = ResourceReloaderKeys.Client.MODELS;
 			} else if (self instanceof BlockEntityRenderManager) {
-				this.id = ResourceReloaderKeys.Client.BLOCK_ENTITY_RENDERERS;
+				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_ENTITY_RENDERERS;
 			} else if (self instanceof BlockRenderManager) {
-				this.id = ResourceReloaderKeys.Client.BLOCK_RENDER_MANAGER;
+				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_RENDER_MANAGER;
 			} else if (self instanceof CloudRenderer) {
-				this.id = ResourceReloaderKeys.Client.CLOUD_CELLS;
+				this.fabric$id = ResourceReloaderKeys.Client.CLOUD_CELLS;
 			} else if (self instanceof DryFoliageColormapResourceSupplier) {
-				this.id = ResourceReloaderKeys.Client.DRY_FOLIAGE_COLORMAP;
+				this.fabric$id = ResourceReloaderKeys.Client.DRY_FOLIAGE_COLORMAP;
 			} else if (self instanceof EquipmentModelLoader) {
-				this.id = ResourceReloaderKeys.Client.EQUIPMENT_MODELS;
+				this.fabric$id = ResourceReloaderKeys.Client.EQUIPMENT_MODELS;
 			} else if (self instanceof EntityRenderManager) {
-				this.id = ResourceReloaderKeys.Client.ENTITY_RENDERERS;
+				this.fabric$id = ResourceReloaderKeys.Client.ENTITY_RENDERERS;
 			} else if (self instanceof FontManager) {
-				this.id = ResourceReloaderKeys.Client.FONTS;
+				this.fabric$id = ResourceReloaderKeys.Client.FONTS;
 			} else if (self instanceof FoliageColormapResourceSupplier) {
-				this.id = ResourceReloaderKeys.Client.FOLIAGE_COLORMAP;
+				this.fabric$id = ResourceReloaderKeys.Client.FOLIAGE_COLORMAP;
 			} else if (self instanceof GrassColormapResourceSupplier) {
-				this.id = ResourceReloaderKeys.Client.GRASS_COLORMAP;
+				this.fabric$id = ResourceReloaderKeys.Client.GRASS_COLORMAP;
 			} else if (self instanceof LanguageManager) {
-				this.id = ResourceReloaderKeys.Client.LANGUAGES;
+				this.fabric$id = ResourceReloaderKeys.Client.LANGUAGES;
 			} else if (self instanceof ParticleSpriteManager) {
-				this.id = ResourceReloaderKeys.Client.PARTICLES;
+				this.fabric$id = ResourceReloaderKeys.Client.PARTICLES;
 			} else if (self instanceof ShaderLoader) {
-				this.id = ResourceReloaderKeys.Client.SHADERS;
+				this.fabric$id = ResourceReloaderKeys.Client.SHADERS;
 			} else if (self instanceof SplashTextResourceSupplier) {
-				this.id = ResourceReloaderKeys.Client.SPLASH_TEXTS;
+				this.fabric$id = ResourceReloaderKeys.Client.SPLASH_TEXTS;
 			} else if (self instanceof SoundManager) {
-				this.id = ResourceReloaderKeys.Client.SOUNDS;
+				this.fabric$id = ResourceReloaderKeys.Client.SOUNDS;
 			} else if (self instanceof TextureManager) {
-				this.id = ResourceReloaderKeys.Client.TEXTURES;
+				this.fabric$id = ResourceReloaderKeys.Client.TEXTURES;
 			} else if (self instanceof WaypointStyleAssetManager) {
-				this.id = ResourceReloaderKeys.Client.WAYPOINT_STYLE_ASSETS;
+				this.fabric$id = ResourceReloaderKeys.Client.WAYPOINT_STYLE_ASSETS;
 			} else {
-				this.id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
+				this.fabric$id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
 		}
 
-		return this.id;
+		return this.fabric$id;
 	}
 }

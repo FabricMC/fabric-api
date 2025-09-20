@@ -34,10 +34,10 @@ import net.fabricmc.fabric.impl.client.keybinding.CategoryComparator;
 abstract class KeyBindingCategoryMixin {
 	@Shadow
 	@Final
-	static List<KeyBinding.Category> field_62925;
+	static List<KeyBinding.Category> CATEGORIES;
 
-	@Inject(method = "method_74698", at = @At("RETURN"))
+	@Inject(method = "create(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/option/KeyBinding$Category;", at = @At("RETURN"))
 	private static void onReturnRegister(Identifier id, CallbackInfoReturnable<KeyBinding.Category> cir) {
-		field_62925.sort(CategoryComparator.INSTANCE);
+		CATEGORIES.sort(CategoryComparator.INSTANCE);
 	}
 }
