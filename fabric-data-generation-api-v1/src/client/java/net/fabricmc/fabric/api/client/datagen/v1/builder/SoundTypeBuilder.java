@@ -92,7 +92,7 @@ public interface SoundTypeBuilder {
 	 * <p>This is a shorthand method for quickly adding multiple
 	 * entries where each sound is a variant with an index at the end of their name.
 	 *
-	 * <p>Calling this with the a count value of {@code 3} is the equivalent of doing:
+	 * <p>Calling this with the count value of {@code 3} is the equivalent of doing:
 	 *
 	 * <p>{@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("1"));}
 	 * {@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("2"));}
@@ -153,7 +153,7 @@ public interface SoundTypeBuilder {
 		int DEFAULT_WEIGHT = 1;
 
 		/**
-		 * The default attentuation distance for a sound (16 blocks).
+		 * The default attenuation distance for a sound (16 blocks).
 		 */
 		int DEFAULT_ATTENUATION_DISTANCE = 16;
 
@@ -243,7 +243,7 @@ public interface SoundTypeBuilder {
 		EntryBuilder stream(boolean stream);
 
 		/**
-		 * Configures whether the sound must be pre-loaded by the game.
+		 * Configures whether the sound must be preloaded by the game.
 		 * By default, sounds are only loaded upon playing.
 		 *
 		 * <p>Setting this to {@code true} will cause them to be loaded when the game starts.

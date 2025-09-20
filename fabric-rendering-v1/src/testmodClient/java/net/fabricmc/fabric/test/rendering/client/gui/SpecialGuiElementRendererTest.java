@@ -58,7 +58,7 @@ public class SpecialGuiElementRendererTest implements ClientModInitializer, Fabr
 			context.state.addSpecialElement(new BannerGuiElementRenderState(DyeColor.BLUE, 20, 0, 40, 20, new ScreenRect(20, 0, 40, 20)));
 			context.state.addSpecialElement(new BannerGuiElementRenderState(DyeColor.RED, 40, 0, 60, 20, new ScreenRect(40, 0, 60, 20)));
 
-			// also render some vanilla some vanilla special GUI elements to check that they still work and can be renderered multiple times
+			// also render some vanilla special GUI elements to check that they still work and can be rendered multiple times
 			context.state.addSpecialElement(createSignState(60, WoodType.BIRCH));
 			context.state.addSpecialElement(createSignState(80, WoodType.DARK_OAK));
 		});

@@ -62,7 +62,7 @@ public class AttachmentCopyTests {
 		entity.setAttached(DUMMY, () -> 10);
 		entity.setAttached(COPY_ON_DEATH, () -> 10);
 
-		Vec3d spawnPos = entity.getWorldSpawnPos(end, end.method_74854().method_74897()).toBottomCenterPos();
+		Vec3d spawnPos = entity.getWorldSpawnPos(end, end.getSpawnPoint().getPos()).toBottomCenterPos();
 		Entity moved = entity.teleportTo(new TeleportTarget(end, spawnPos, Vec3d.ZERO, 0.0F, 0.0F, TeleportTarget.NO_OP));
 		if (moved == null) throw context.createError("Cross-world teleportation failed");
 

@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.class_12074;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.util.hit.HitResult;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -175,11 +175,11 @@ public final class WorldRenderEvents {
 	 * be accomplished by mixin to the block outline render routine itself, typically
 	 * by targeting {@link net.minecraft.client.render.VertexRendering#drawOutline}.
 	 */
-	public static final Event<BlockOutline> BLOCK_OUTLINE = EventFactory.createArrayBacked(BlockOutline.class, (worldRenderContext, blockOutlineContext) -> true, callbacks -> (worldRenderContext, blockOutlineContext) -> {
+	public static final Event<BlockOutline> BLOCK_OUTLINE = EventFactory.createArrayBacked(BlockOutline.class, (worldRenderContext, outlineState) -> true, callbacks -> (worldRenderContext, outlineState) -> {
 		boolean shouldRender = true;
 
 		for (final BlockOutline callback : callbacks) {
-			if (!callback.onBlockOutline(worldRenderContext, blockOutlineContext)) {
+			if (!callback.onBlockOutline(worldRenderContext, outlineState)) {
 				shouldRender = false;
 			}
 		}
@@ -292,7 +292,7 @@ public final class WorldRenderEvents {
 
 	@FunctionalInterface
 	public interface BlockOutline {
-		boolean onBlockOutline(WorldRenderContext worldRenderContext, class_12074 blockOutlineContext);
+		boolean onBlockOutline(WorldRenderContext worldRenderContext, OutlineRenderState outlineState);
 	}
 
 	@FunctionalInterface
