@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.gamerule.v1.rule;
 
 import com.mojang.brigadier.context.CommandContext;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,6 +127,11 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 
 	public double get() {
 		return this.value;
+	}
+
+	public void set(double value, @Nullable MinecraftServer server) {
+		this.value = value;
+		this.changed(server);
 	}
 
 	private boolean inBounds(double value) {
