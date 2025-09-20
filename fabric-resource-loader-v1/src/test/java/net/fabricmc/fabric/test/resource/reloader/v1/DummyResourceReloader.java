@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.loader.client;
+package net.fabricmc.fabric.test.resource.reloader.v1;
 
-import org.spongepowered.asm.mixin.Mixin;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.SynchronousResourceReloader;
 
-import net.minecraft.client.font.FontManager;
-import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
-
-@Mixin(FontManager.class)
-public abstract class FontManagerMixin implements IdentifiableResourceReloadListener {
+public class DummyResourceReloader implements SynchronousResourceReloader {
 	@Override
-	public Identifier getFabricId() {
-		return ResourceReloadListenerKeys.FONTS;
+	public void reload(ResourceManager manager) {
+		// Do nothing.
 	}
 }

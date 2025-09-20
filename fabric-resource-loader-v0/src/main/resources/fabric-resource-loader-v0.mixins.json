@@ -4,8 +4,6 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "DatapackCommandMixin",
-    "KeyedResourceReloadListenerMixin",
-    "LifecycledResourceManagerImplMixin",
     "MinecraftServerMixin",
     "ResourceMixin",
     "ResourcePackManagerMixin",
@@ -13,8 +11,6 @@
     "SelectKnownPacksC2SPacketMixin",
     "ServerConfigurationNetworkHandlerMixin",
     "ServerPropertiesHandlerMixin",
-    "ServerRecipeManagerMixin",
-    "SimpleResourceReloadMixin",
     "SynchronizeRegistriesTaskMixin",
     "TestServerMixin"
   ],

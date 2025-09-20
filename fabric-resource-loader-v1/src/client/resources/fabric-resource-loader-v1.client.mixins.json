@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.resource.v1.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "KeyedClientResourceReloadListenerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

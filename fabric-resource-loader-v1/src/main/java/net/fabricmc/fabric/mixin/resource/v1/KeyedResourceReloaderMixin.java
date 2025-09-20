@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.loader;
+package net.fabricmc.fabric.mixin.resource.v1;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Locale;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,47 +26,35 @@ import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.function.FunctionLoader;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
+import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
+import net.fabricmc.fabric.impl.resource.v1.FabricResourceReloader;
 
 @Mixin({
 		/* public */
 		ServerRecipeManager.class, ServerAdvancementLoader.class, FunctionLoader.class
 		/* private */
 })
-public abstract class KeyedResourceReloadListenerMixin implements IdentifiableResourceReloadListener {
+public abstract class KeyedResourceReloaderMixin implements FabricResourceReloader {
 	@Unique
 	private Identifier id;
-	@Unique
-	private Collection<Identifier> dependencies;
 
 	@Override
-	@SuppressWarnings({"ConstantConditions", "RedundantCast"})
-	public Identifier getFabricId() {
+	@SuppressWarnings({"ConstantConditions"})
+	public Identifier fabric$getId() {
 		if (this.id == null) {
 			Object self = this;
 
 			if (self instanceof ServerRecipeManager) {
-				this.id = ResourceReloadListenerKeys.RECIPES;
+				this.id = ResourceReloaderKeys.Server.RECIPES;
 			} else if (self instanceof ServerAdvancementLoader) {
-				this.id = ResourceReloadListenerKeys.ADVANCEMENTS;
+				this.id = ResourceReloaderKeys.Server.ADVANCEMENTS;
 			} else if (self instanceof FunctionLoader) {
-				this.id = ResourceReloadListenerKeys.FUNCTIONS;
+				this.id = ResourceReloaderKeys.Server.FUNCTIONS;
 			} else {
 				this.id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
 		}
 
 		return this.id;
-	}
-
-	@Override
-	@SuppressWarnings({"ConstantConditions", "RedundantCast"})
-	public Collection<Identifier> getFabricDependencies() {
-		if (this.dependencies == null) {
-			this.dependencies = Collections.emptyList();
-		}
-
-		return this.dependencies;
 	}
 }

@@ -145,6 +145,21 @@ public enum TriState implements StringIdentifiable {
 	}
 
 	/**
+	 * {@return a parsed TriState from a system property}
+	 *
+	 * @param property the system property
+	 */
+	public static TriState fromSystemProperty(String property) {
+		String value = System.getProperty(property);
+
+		if (value != null) {
+			return Boolean.parseBoolean(value) ? TRUE : FALSE;
+		}
+
+		return DEFAULT;
+	}
+
+	/**
 	 * Value of this enum as string.
 	 *
 	 * @return lowercase name of the value.

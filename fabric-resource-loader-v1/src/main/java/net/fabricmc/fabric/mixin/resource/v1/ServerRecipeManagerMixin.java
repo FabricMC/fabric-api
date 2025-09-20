@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.loader;
+package net.fabricmc.fabric.mixin.resource.v1;
 
 import java.util.Objects;
 
@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.recipe.ServerRecipeManager;
 import net.minecraft.registry.RegistryWrapper;
 
-import net.fabricmc.fabric.impl.resource.loader.FabricRecipeManager;
+import net.fabricmc.fabric.impl.resource.v1.FabricRecipeManager;
 
 @Mixin(ServerRecipeManager.class)
 public class ServerRecipeManagerMixin implements FabricRecipeManager {
@@ -40,7 +40,7 @@ public class ServerRecipeManagerMixin implements FabricRecipeManager {
 	}
 
 	@Override
-	public RegistryWrapper.WrapperLookup fabric_getRegistries() {
+	public RegistryWrapper.WrapperLookup fabric$getRegistries() {
 		return Objects.requireNonNull(registries);
 	}
 }
