@@ -27,7 +27,7 @@ public interface FabricTypedRule {
 	void setFabricType(FabricGameRuleType type);
 
 	static GameRuleRpcDispatcher.TypedRule create(String name, String value, FabricGameRuleType type) {
-		GameRuleRpcDispatcher.TypedRule typedRule = new GameRuleRpcDispatcher.TypedRule(name, value, GameRuleRpcDispatcher.GameRuleType.INT);
+		GameRuleRpcDispatcher.TypedRule typedRule = new GameRuleRpcDispatcher.TypedRule(name, value, null);
 		((FabricTypedRule) (Object) typedRule).setFabricType(type);
 		return typedRule;
 	}
