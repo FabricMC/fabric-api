@@ -19,21 +19,9 @@ package net.fabricmc.fabric.impl.resource.v1;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
-
-/**
- * Interface for "identifiable" resource reloaders.
- *
- * @see ResourceReloaderKeys
- */
-public interface IdentifiableResourceReloader extends ResourceReloader {
+public interface FabricResourceReloader extends ResourceReloader {
 	/**
-	 * {@return the unique identifier of this resource reloader}
+	 * {@return the unique identifier of this Vanilla resource reloader}
 	 */
-	Identifier getFabricId();
-
-	@Override
-	default String getName() {
-		return this.getFabricId().toString();
-	}
+	Identifier fabric$getId();
 }

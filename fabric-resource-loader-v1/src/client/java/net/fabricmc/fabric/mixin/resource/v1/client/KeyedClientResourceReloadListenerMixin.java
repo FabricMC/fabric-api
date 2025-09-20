@@ -45,7 +45,7 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
-import net.fabricmc.fabric.impl.resource.v1.IdentifiableResourceReloader;
+import net.fabricmc.fabric.impl.resource.v1.FabricResourceReloader;
 
 @Mixin({
 		/* public */
@@ -70,12 +70,12 @@ import net.fabricmc.fabric.impl.resource.v1.IdentifiableResourceReloader;
 		/* private */
 		WorldRenderer.class, VideoWarningManager.class, PeriodicNotificationManager.class
 })
-public abstract class KeyedClientResourceReloadListenerMixin implements IdentifiableResourceReloader {
+public abstract class KeyedClientResourceReloadListenerMixin implements FabricResourceReloader {
 	@Unique
 	private Identifier id;
 
 	@Override
-	public Identifier getFabricId() {
+	public Identifier fabric$getId() {
 		if (this.id == null) {
 			Object self = this;
 

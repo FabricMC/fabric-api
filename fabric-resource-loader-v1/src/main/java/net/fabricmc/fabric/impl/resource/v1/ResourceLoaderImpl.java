@@ -103,8 +103,8 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 	}
 
 	private Identifier getResourceReloaderIdForSorting(ResourceReloader reloader) {
-		if (reloader instanceof IdentifiableResourceReloader identifiable) {
-			return identifiable.getFabricId();
+		if (reloader instanceof FabricResourceReloader identifiable) {
+			return identifiable.fabric$getId();
 		} else {
 			if (DEBUG_RELOADERS_IDENTITY) {
 				LOGGER.warn(

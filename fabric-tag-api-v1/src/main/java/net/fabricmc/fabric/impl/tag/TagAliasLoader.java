@@ -47,18 +47,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.StrictJsonParser;
 
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
-import net.fabricmc.fabric.impl.resource.v1.IdentifiableResourceReloader;
 import net.fabricmc.fabric.api.resource.v1.reloader.SimpleResourceReloader;
 
-public final class TagAliasLoader extends SimpleResourceReloader<Map<RegistryKey<? extends Registry<?>>, List<TagAliasLoader.Data>>> implements IdentifiableResourceReloader {
+public final class TagAliasLoader extends SimpleResourceReloader<Map<RegistryKey<? extends Registry<?>>, List<TagAliasLoader.Data>>> {
 	public static final Identifier ID = Identifier.of("fabric-tag-api-v1", "tag_alias_groups");
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-tag-api-v1");
-
-	@Override
-	public Identifier getFabricId() {
-		return ID;
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override

@@ -27,20 +27,20 @@ import net.minecraft.server.function.FunctionLoader;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
-import net.fabricmc.fabric.impl.resource.v1.IdentifiableResourceReloader;
+import net.fabricmc.fabric.impl.resource.v1.FabricResourceReloader;
 
 @Mixin({
 		/* public */
 		ServerRecipeManager.class, ServerAdvancementLoader.class, FunctionLoader.class
 		/* private */
 })
-public abstract class KeyedResourceReloaderMixin implements IdentifiableResourceReloader {
+public abstract class KeyedResourceReloaderMixin implements FabricResourceReloader {
 	@Unique
 	private Identifier id;
 
 	@Override
 	@SuppressWarnings({"ConstantConditions"})
-	public Identifier getFabricId() {
+	public Identifier fabric$getId() {
 		if (this.id == null) {
 			Object self = this;
 

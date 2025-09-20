@@ -58,9 +58,7 @@ public final class ResourceReloaderKeys {
 		public static final Identifier GRASS_COLORMAP = Identifier.ofVanilla("grass_colormap");
 		public static final Identifier ATLAS = Identifier.ofVanilla("atlas");
 		public static final Identifier LANGUAGES = Identifier.ofVanilla("languages");
-		public static final Identifier MAP_DECORATIONS = Identifier.ofVanilla("map_decorations");
 		public static final Identifier MODELS = Identifier.ofVanilla("models");
-		public static final Identifier PAINTINGS = Identifier.ofVanilla("paintings");
 		public static final Identifier PARTICLES = Identifier.ofVanilla("particles");
 		public static final Identifier SHADERS = Identifier.ofVanilla("shaders");
 		public static final Identifier SOUNDS = Identifier.ofVanilla("sounds");
