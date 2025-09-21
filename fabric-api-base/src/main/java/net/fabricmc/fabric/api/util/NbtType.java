@@ -42,13 +42,5 @@ public final class NbtType {
 	public static final int INT_ARRAY = 11;
 	public static final int LONG_ARRAY = 12;
 
-	/**
-	 * Any numeric value: byte, short, int, long, float, double.
-	 * @deprecated This constant is no longer accepted by any vanilla method,
-	 * and therefore is completely useless.
-	 */
-	@Deprecated(forRemoval = true)
-	public static final int NUMBER = 99;
-
 	private NbtType() { }
 }
