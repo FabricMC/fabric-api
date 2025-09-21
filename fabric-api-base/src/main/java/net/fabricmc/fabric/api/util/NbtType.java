@@ -24,7 +24,6 @@ import net.minecraft.nbt.NbtElement;
  *
  * <p>For the current list of types, check with {@link NbtElement}.
  *
- * @see NbtCompound#contains(String, int)
  * @see net.minecraft.nbt.NbtTypes#byId(int)
  * @deprecated Use the constants in {@link NbtElement} instead.
  */
@@ -46,9 +45,10 @@ public final class NbtType {
 
 	/**
 	 * Any numeric value: byte, short, int, long, float, double.
-	 *
-	 * @see NbtCompound#contains(String, int)
+	 * @deprecated This constant is no longer accepted by any vanilla method,
+	 * and therefore is completely useless.
 	 */
+	@Deprecated(forRemoval = true)
 	public static final int NUMBER = 99;
 
 	private NbtType() { }
