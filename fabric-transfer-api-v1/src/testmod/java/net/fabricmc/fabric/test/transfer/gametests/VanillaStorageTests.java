@@ -30,6 +30,7 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.ChiseledBookshelfBlockEntity;
 import net.minecraft.block.entity.FurnaceBlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
+import net.minecraft.block.entity.ShelfBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -109,7 +110,8 @@ public class VanillaStorageTests {
 		World world = context.getWorld();
 
 		BlockPos pos = new BlockPos(0, 2, 0);
-		context.setBlockState(pos, block.getDefaultState());
+		// Shelf comparator output is directional
+		context.setBlockState(pos, block.getDefaultState().withIfExists(Properties.HORIZONTAL_FACING, Direction.WEST));
 		T inventory = context.getBlockEntity(pos, inventoryClass);
 		InventoryStorage storage = InventoryStorage.of(inventory, null);
 
@@ -149,6 +151,14 @@ public class VanillaStorageTests {
 	@GameTest
 	public void testChestComparator(TestContext context) {
 		testComparatorOnInventory(context, Blocks.CHEST, ItemVariant.of(Items.DIAMOND), ChestBlockEntity.class);
+	}
+
+	/**
+	 * Same as {@link #testChestComparator} but for shelves.
+	 */
+	@GameTest
+	public void testShelfComparator(TestContext context) {
+		testComparatorOnInventory(context, Blocks.OAK_SHELF, ItemVariant.of(Items.DIAMOND), ShelfBlockEntity.class);
 	}
 
 	/**
