@@ -21,7 +21,6 @@
     "GuiRendererMixin",
     "InGameHudAccessor",
     "InGameHudMixin",
-    "InventoryScreenMixin",
     "LivingEntityRendererAccessor",
     "LivingEntityRendererMixin",
     "RenderLayersMixin",
