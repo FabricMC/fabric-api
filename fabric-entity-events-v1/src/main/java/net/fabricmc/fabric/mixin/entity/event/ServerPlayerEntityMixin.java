@@ -67,7 +67,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		// If the damage source that killed the player was an entity, then fire the event.
 		if (attacker != null) {
 			attacker.onKilledOther(this.getEntityWorld(), (ServerPlayerEntity) (Object) this, source);
-			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getEntityWorld(), attacker, (ServerPlayerEntity) (Object) this);
+			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getEntityWorld(), attacker, (ServerPlayerEntity) (Object) this, source);
 		}
 	}
 

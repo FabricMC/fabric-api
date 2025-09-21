@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.util;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 
 /**
