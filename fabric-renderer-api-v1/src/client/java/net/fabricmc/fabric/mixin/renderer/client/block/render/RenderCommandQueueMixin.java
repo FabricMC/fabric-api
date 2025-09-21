@@ -18,20 +18,10 @@ package net.fabricmc.fabric.mixin.renderer.client.block.render;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.render.block.entity.PistonBlockEntityRenderer;
+import net.minecraft.client.render.command.RenderCommandQueue;
 
-@Mixin(PistonBlockEntityRenderer.class)
-abstract class PistonBlockEntityRendererMixin {
-	/* TODO 1.21.9
-	@Shadow
-	@Final
-	private BlockRenderManager manager;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricRenderCommandQueue;
 
-	// Support multi-render layer models.
-	@Overwrite
-	private void renderModel(BlockPos pos, BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, World world, boolean cull, int overlay) {
-		manager.getModelRenderer().render(world, manager.getModel(state), state, pos, matrices, RenderLayerHelper.movingDelegate(vertexConsumers), cull, state.getRenderingSeed(pos), overlay);
-	}
-
-	 */
+@Mixin(RenderCommandQueue.class)
+interface RenderCommandQueueMixin extends FabricRenderCommandQueue {
 }

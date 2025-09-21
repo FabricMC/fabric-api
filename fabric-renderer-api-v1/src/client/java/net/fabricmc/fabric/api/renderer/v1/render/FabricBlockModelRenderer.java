@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.renderer.v1.render;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import net.minecraft.block.BlockState;
@@ -90,6 +91,8 @@ public interface FabricBlockModelRenderer {
 	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ORIGIN} if the world is empty.
 	 *            </b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
+	 *
+	 * @see FabricRenderCommandQueue#submitBlockStateModel(MatrixStack, Function, BlockStateModel, float, float, float, int, int, int, BlockRenderView, BlockPos, BlockState)
 	 */
 	static void render(MatrixStack.Entry matrices, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
 		Renderer.get().render(matrices, vertexConsumers, model, red, green, blue, light, overlay, blockView, pos, state);

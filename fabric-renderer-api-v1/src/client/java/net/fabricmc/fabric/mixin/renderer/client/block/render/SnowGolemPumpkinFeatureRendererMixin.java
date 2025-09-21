@@ -16,27 +16,34 @@
 
 package net.fabricmc.fabric.mixin.renderer.client.block.render;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.feature.SnowGolemPumpkinFeatureRenderer;
+import net.minecraft.client.render.entity.state.SnowGolemEntityRenderState;
+import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.EmptyBlockRenderView;
 
-// FIXME 1.21.9
+import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
+
 @Mixin(SnowGolemPumpkinFeatureRenderer.class)
 abstract class SnowGolemPumpkinFeatureRendererMixin {
-//	@Shadow
-//	@Final
-//	private BlockRenderManager blockRenderManager;
-//
-//	@Redirect(method = "render", at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/BlockModelRenderer.render(Lnet/minecraft/client/util/math/MatrixStack$Entry;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/client/render/model/BlockStateModel;FFFII)V"))
-//	private void renderProxy(MatrixStack.Entry entry, VertexConsumer vertexConsumer, BlockStateModel model, float red, float green, float blue, int light, int overlay, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light1, SnowGolemEntityRenderState renderState, float f, float g, @Local BlockState blockState) {
-//		// If true, the vertex consumer is for an outline render layer, and we want all geometry to go into this vertex
-//		// consumer.
-//		if (renderState.hasOutline() && renderState.invisible) {
-//			// Fix tinted quads being rendered completely black and provide the BlockState as context.
-//			FabricBlockModelRenderer.render(entry, layer -> vertexConsumer, model, 1, 1, 1, light, overlay, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, blockState);
-//		} else {
-//			// Support multi-render layer models, fix tinted quads being rendered completely black, and provide the BlockState as context.
-//			FabricBlockModelRenderer.render(entry, RenderLayerHelper.entityDelegate(vertexConsumers), model, 1, 1, 1, light, overlay, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, blockState);
-//		}
-//	}
+	@Redirect(method = "render", at = @At(value = "INVOKE", target = "net/minecraft/client/render/command/OrderedRenderCommandQueue.submitBlockStateModel(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/RenderLayer;Lnet/minecraft/client/render/model/BlockStateModel;FFFIII)V"))
+	private void renderProxy(OrderedRenderCommandQueue commandQueue, MatrixStack matrices, RenderLayer renderLayer, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local SnowGolemEntityRenderState renderState, @Local BlockState blockState) {
+		// If true, the render layer is an outline render layer, and we want all geometry to use this render layer.
+		if (renderState.hasOutline() && renderState.invisible) {
+			// Fix tinted quads being rendered completely black and provide the BlockState as context.
+			commandQueue.submitBlockStateModel(matrices, blockLayer -> renderLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, blockState);
+		} else {
+			// Support multi-render layer models, fix tinted quads being rendered completely black, and provide the BlockState as context.
+			commandQueue.submitBlockStateModel(matrices, RenderLayerHelper::getEntityBlockLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, blockState);
+		}
+	}
 }
