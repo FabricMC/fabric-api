@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.rendering.client;
+package net.fabricmc.fabric.test.rendering.client.gui;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -39,13 +39,13 @@ public class GuiRendererNonQuadsTest implements ClientModInitializer {
 		HudElementRegistry.addFirst(Identifier.of("test", "gui_renderer_non_quads_test"), (context, renderTickCounter) -> {
 			context.getMatrices().pushMatrix();
 			context.getMatrices().rotateAbout(
-					(float) Util.getMeasuringTimeMs() / 30000,
+					(float) Util.getMeasuringTimeMs() / 3000,
 					(float) context.getScaledWindowHeight() / 8,
 					(float) context.getScaledWindowHeight() / 8
 			);
 
 			context.state.addSimpleElement(new CustomTestState(
-					context.getMatrices(),
+					new Matrix3x2f(context.getMatrices()),
 					context.scissorStack.peekLast(),
 					context.getScaledWindowHeight() / 8, context.getScaledWindowHeight() / 8,
 					context.getScaledWindowHeight() / 8 + 16, context.getScaledWindowHeight() / 8 + 16,
@@ -69,9 +69,9 @@ public class GuiRendererNonQuadsTest implements ClientModInitializer {
 
 		@Override
 		public void setupVertices(VertexConsumer vertices) {
-			vertices.vertex(matrix, x0, y0).color(0x99FFFFFF)
-					.vertex(matrix, x1, y1).color(0x99FFFFFF)
-					.vertex(matrix, x2, y2).color(0x99FFFFFF);
+			vertices.vertex(matrix, x0, y0).color(0x99FFFF00)
+					.vertex(matrix, x1, y1).color(0x99FF00FF)
+					.vertex(matrix, x2, y2).color(0x9900FFFF);
 		}
 
 		@Override
