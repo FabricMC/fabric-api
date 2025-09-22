@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.gamerule.v1.rule;
 
 import com.mojang.brigadier.context.CommandContext;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,6 +127,15 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 
 	public double get() {
 		return this.value;
+	}
+
+	public void set(double value, @Nullable MinecraftServer server) {
+		if (!this.inBounds(value)) {
+			throw new IllegalArgumentException(String.format("Could not set value to %s. Was out of bounds %s - %s", value, this.minimumValue, this.maximumValue));
+		}
+
+		this.value = value;
+		this.changed(server);
 	}
 
 	private boolean inBounds(double value) {

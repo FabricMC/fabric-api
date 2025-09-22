@@ -65,7 +65,7 @@ public final class BiomeModifications {
 	 * Convenience method to add an entity spawn to one or more biomes.
 	 *
 	 * @see BiomeSelectors
-	 * @see net.minecraft.world.biome.SpawnSettings.Builder#spawn(SpawnGroup, SpawnSettings.SpawnEntry)
+	 * @see net.minecraft.world.biome.SpawnSettings.Builder#spawn(SpawnGroup, int, SpawnSettings.SpawnEntry)
 	 */
 	public static void addSpawn(Predicate<BiomeSelectionContext> biomeSelector,
 								SpawnGroup spawnGroup, EntityType<?> entityType,

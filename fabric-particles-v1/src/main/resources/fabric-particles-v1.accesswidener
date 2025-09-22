@@ -7,3 +7,4 @@ accessible field net/minecraft/client/particle/ParticleSpriteManager spriteAware
 
 accessible method net/minecraft/client/particle/ParticleSpriteManager$SimpleSpriteProvider  <init>  ()V
 accessible field net/minecraft/client/particle/ParticleSpriteManager$SimpleSpriteProvider sprites Ljava/util/List;
+

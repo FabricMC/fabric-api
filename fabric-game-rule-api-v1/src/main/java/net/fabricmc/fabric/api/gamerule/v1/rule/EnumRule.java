@@ -155,4 +155,15 @@ public final class EnumRule<E extends Enum<E>> extends GameRules.Rule<EnumRule<E
 		this.value = value;
 		this.changed(server);
 	}
+
+	public void set(String value, @Nullable MinecraftServer server) throws IllegalArgumentException {
+		for (E constant : getEnumClass().getEnumConstants()) {
+			if (constant.name().equalsIgnoreCase(value)) {
+				this.set(constant, server);
+				return;
+			}
+		}
+
+		throw new IllegalArgumentException("Tried to set an unsupported value: " + value);
+	}
 }

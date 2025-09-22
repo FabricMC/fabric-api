@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.rendering;
+package net.fabricmc.fabric.impl.gamerule.rpc;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import org.jetbrains.annotations.Nullable;
 
-public interface WorldRendererHooks {
-	WorldRenderContext fabric$getWorldRenderContext();
+import net.minecraft.server.dedicated.management.dispatch.GameRuleRpcDispatcher;
+
+public interface FabricTypedRule {
+	@Nullable
+	FabricGameRuleType getFabricType();
+
+	void setFabricType(FabricGameRuleType type);
+
+	static GameRuleRpcDispatcher.TypedRule create(String name, String value, FabricGameRuleType type) {
+		GameRuleRpcDispatcher.TypedRule typedRule = new GameRuleRpcDispatcher.TypedRule(name, value, null);
+		((FabricTypedRule) (Object) typedRule).setFabricType(type);
+		return typedRule;
+	}
 }

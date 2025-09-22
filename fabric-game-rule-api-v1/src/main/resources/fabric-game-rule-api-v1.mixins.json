@@ -3,10 +3,12 @@
   "package": "net.fabricmc.fabric.mixin.gamerule",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "GameRulesBooleanRuleAccessor",
     "GameRuleCommandAccessor",
     "GameRuleCommandVisitorMixin",
+    "GameRuleManagementHandlerImplMixin",
+    "GameRuleRpcDispatcherTypedRuleMixin",
     "GameRulesAccessor",
+    "GameRulesBooleanRuleAccessor",
     "GameRulesKeyMixin"
   ],
   "injectors": {

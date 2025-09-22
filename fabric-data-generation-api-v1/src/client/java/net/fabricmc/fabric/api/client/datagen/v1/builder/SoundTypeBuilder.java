@@ -198,7 +198,7 @@ public interface SoundTypeBuilder {
 		 *
 		 * <p>Must be a value between {@code 0} and {@code 1} (inclusive).
 		 *
-		 * <p>The default volume is {@link EntryBuilder.DEFAULT_VOLUME} ({@code 1F}).
+		 * <p>The default volume is {@value EntryBuilder#DEFAULT_VOLUME}.
 		 *
 		 * @see net.minecraft.client.sound.SoundSystem#MIN_VOLUME
 		 * @see net.minecraft.client.sound.SoundSystem#MAX_VOLUME
@@ -210,7 +210,7 @@ public interface SoundTypeBuilder {
 		 *
 		 * <p>Must be a value between {@code 0.5} and {@code 2}.
 		 *
-		 * <p>The default pitch is {@link EntryBuilder.DEFAULT_PITCH} ({@code 1F}).
+		 * <p>The default pitch is {@link EntryBuilder#DEFAULT_PITCH} ({@code 1F}).
 		 *
 		 * @see net.minecraft.client.sound.SoundSystem#MIN_PITCH
 		 * @see net.minecraft.client.sound.SoundSystem#MAX_PITCH
@@ -220,7 +220,7 @@ public interface SoundTypeBuilder {
 		/**
 		 * Sets the attenuation block distance of the sound.
 		 *
-		 * <p>The default attenuation is {@link EntryBuilder.DEFAULT_ATTENUATION_DISTANCE} ({@code 16} blocks). Setting it to
+		 * <p>The default attenuation is {@value EntryBuilder#DEFAULT_ATTENUATION_DISTANCE} blocks. Setting it to
 		 * higher will cause the sound to be heard from greater distances.
 		 */
 		EntryBuilder attenuationDistance(int attenuationDistance);
@@ -229,7 +229,7 @@ public interface SoundTypeBuilder {
 		 * Sets the weight or "chance" that this sound has of playing when
 		 * its parent sound event is called upon.
 		 *
-		 * <p>The default weight is {@link EntryBuilder.DEFAULT_WEIGHT} ({@code 1}).
+		 * <p>The default weight is {@value EntryBuilder#DEFAULT_WEIGHT}.
 		 */
 		EntryBuilder weight(int weight);
 
