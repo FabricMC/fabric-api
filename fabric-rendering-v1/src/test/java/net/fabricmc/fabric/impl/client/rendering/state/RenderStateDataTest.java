@@ -17,8 +17,11 @@
 package net.fabricmc.fabric.impl.client.rendering.state;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.render.MapRenderState;
 import net.minecraft.client.render.block.MovingBlockRenderState;
 import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
@@ -35,6 +38,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 
 public class RenderStateDataTest {
 	private static final RenderStateDataKey<String> DEBUG = RenderStateDataKey.create(() -> "Debug");
+
+	@BeforeAll
+	static void beforeAll() {
+		SharedConstants.createGameVersion();
+		Bootstrap.initialize();
+	}
 
 	@Test
 	void assertFabricRenderStateMethods() {

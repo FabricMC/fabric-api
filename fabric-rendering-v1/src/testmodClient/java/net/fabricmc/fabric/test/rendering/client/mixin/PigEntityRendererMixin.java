@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.rendering.client.mixin;
 
-import net.minecraft.client.render.state.CameraRenderState;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,6 +28,7 @@ import net.minecraft.client.render.block.MovingBlockRenderState;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.PigEntityRenderer;
 import net.minecraft.client.render.entity.state.PigEntityRenderState;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.passive.PigEntity;
 

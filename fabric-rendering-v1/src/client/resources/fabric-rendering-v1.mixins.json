@@ -9,7 +9,6 @@
     "BlockColorsMixin",
     "BlockEntityRendererFactoriesMixin",
     "CapeFeatureRendererMixin",
-    "ClearableRenderStateMixin",
     "ClientWorldMixin",
     "DebugOptionsScreenEntryMixin",
     "DimensionEffectsAccessor",
@@ -31,7 +30,13 @@
     "RenderStateMixin",
     "SpecialModelTypesMixin",
     "TooltipComponentMixin",
-    "WorldRendererMixin"
+    "WorldRendererMixin",
+    "renderstate.ItemRenderStateLayerRenderStateMixin",
+    "renderstate.ItemRenderStateMixin",
+    "renderstate.SkyRenderStateMixin",
+    "renderstate.WeatherRenderStateMixin",
+    "renderstate.WorldBorderRenderStateMixin",
+    "renderstate.WorldRenderStateMixin"
   ],
   "injectors": {
     "defaultRequire": 1
