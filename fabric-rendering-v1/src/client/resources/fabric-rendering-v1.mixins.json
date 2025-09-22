@@ -23,9 +23,12 @@
     "LivingEntityRendererAccessor",
     "LivingEntityRendererMixin",
     "RenderLayersMixin",
+    "RenderStateMixin",
     "SpecialModelTypesMixin",
     "TooltipComponentMixin",
-    "WorldRendererMixin"
+    "WorldRendererMixin",
+    "renderstate.ItemRenderStateLayerRenderStateMixin",
+    "renderstate.ItemRenderStateMixin"
   ],
   "injectors": {
     "defaultRequire": 1

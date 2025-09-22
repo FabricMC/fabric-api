@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "GameRendererAccessor",
-    "GuiRendererAccessor"
+    "GuiRendererAccessor",
+    "PigEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
