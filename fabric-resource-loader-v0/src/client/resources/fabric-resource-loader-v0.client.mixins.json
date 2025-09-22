@@ -4,9 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "CreateWorldScreenMixin",
-    "FontManagerMixin",
     "GameOptionsMixin",
-    "KeyedResourceReloadListenerClientMixin",
     "ResourcePackOrganizerMixin",
     "VanillaResourcePackProviderMixin",
     "GameOptionsWriteVisitorMixin",

@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BlockDustParticleMixin",
+    "ParticleManagerAccessor",
+    "ParticleManagerMixin",
     "ParticleSpriteManagerMixin"
   ],
   "injectors": {

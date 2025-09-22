@@ -67,7 +67,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		// If the damage source that killed the player was an entity, then fire the event.
 		if (attacker != null) {
 			attacker.onKilledOther(this.getEntityWorld(), (ServerPlayerEntity) (Object) this, source);
-			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getEntityWorld(), attacker, (ServerPlayerEntity) (Object) this);
+			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getEntityWorld(), attacker, (ServerPlayerEntity) (Object) this, source);
 		}
 	}
 
@@ -103,7 +103,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 
 	@WrapOperation(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;setSpawnPoint(Lnet/minecraft/server/network/ServerPlayerEntity$Respawn;Z)V"))
 	private void onSetSpawnPoint(ServerPlayerEntity player, ServerPlayerEntity.Respawn spawnPoint, boolean sendMessage, Operation<Void> original) {
-		if (EntitySleepEvents.ALLOW_SETTING_SPAWN.invoker().allowSettingSpawn(player, spawnPoint.pos())) {
+		if (EntitySleepEvents.ALLOW_SETTING_SPAWN.invoker().allowSettingSpawn(player, spawnPoint.respawnData().getPos())) {
 			original.call(player, spawnPoint, sendMessage);
 		}
 	}

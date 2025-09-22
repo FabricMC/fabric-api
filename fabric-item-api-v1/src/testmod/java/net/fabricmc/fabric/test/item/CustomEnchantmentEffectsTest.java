@@ -65,7 +65,7 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 								EnchantmentEffectComponentTypes.DAMAGE,
 								new AddEnchantmentEffect(EnchantmentLevelBasedValue.linear(2.5f)),
 								EntityPropertiesLootCondition.builder(
-										LootContext.EntityTarget.THIS,
+										LootContext.EntityReference.THIS,
 										EntityPredicate.Builder.create()
 												.type(EntityTypePredicate.create(Registries.ENTITY_TYPE, EntityType.ZOMBIE))
 								)

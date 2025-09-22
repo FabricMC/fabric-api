@@ -3,8 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.client.keybinding",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "GameOptionsMixin",
     "KeyBindingAccessor",
-    "GameOptionsMixin"
+    "KeyBindingCategoryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

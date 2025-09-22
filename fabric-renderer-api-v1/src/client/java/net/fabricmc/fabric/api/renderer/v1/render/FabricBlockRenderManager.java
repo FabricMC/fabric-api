@@ -55,6 +55,8 @@ public interface FabricBlockRenderManager {
 	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockRenderView}).</b>
 	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ORIGIN} if the world is empty.
 	 *            </b>
+	 *
+	 * @see FabricRenderCommandQueue#submitBlock(MatrixStack, BlockState, int, int, int, BlockRenderView, BlockPos)
 	 */
 	default void renderBlockAsEntity(BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BlockRenderView blockView, BlockPos pos) {
 		Renderer.get().renderBlockAsEntity((BlockRenderManager) this, state, matrices, vertexConsumers, light, overlay, blockView, pos);

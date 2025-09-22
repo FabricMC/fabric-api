@@ -18,22 +18,15 @@ package net.fabricmc.fabric.impl.resource.loader;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
-import com.google.common.collect.Lists;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.OverlayResourcePack;
@@ -50,20 +43,17 @@ import net.minecraft.util.Pair;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
 	private static final Set<Pair<Text, ModNioResourcePack>> builtinResourcePacks = new HashSet<>();
-	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceManagerHelperImpl.class);
 
-	private final Set<Identifier> addedListenerIds = new HashSet<>();
-	private final Set<ListenerFactory> listenerFactories = new LinkedHashSet<>();
-	private final Set<IdentifiableResourceReloadListener> addedListeners = new LinkedHashSet<>();
-	private final ResourceType type;
+	private final ResourceLoader resourceLoader;
 
 	private ResourceManagerHelperImpl(ResourceType type) {
-		this.type = type;
+		this.resourceLoader = ResourceLoader.get(type);
 	}
 
 	public static ResourceManagerHelperImpl get(ResourceType type) {
@@ -165,146 +155,22 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}
 	}
 
-	public static List<ResourceReloader> sort(ResourceType type, List<ResourceReloader> listeners) {
-		if (type == null) {
-			return listeners;
-		}
-
-		ResourceManagerHelperImpl instance = get(type);
-
-		if (instance != null) {
-			List<ResourceReloader> mutable = new ArrayList<>(listeners);
-			instance.sort(mutable);
-			return Collections.unmodifiableList(mutable);
-		}
-
-		return listeners;
-	}
-
-	protected void sort(List<ResourceReloader> listeners) {
-		listeners.removeAll(addedListeners);
-
-		// General rules:
-		// - We *do not* touch the ordering of vanilla listeners. Ever.
-		//   While dependency values are provided where possible, we cannot
-		//   trust them 100%. Only code doesn't lie.
-		// - We addReloadListener all custom listeners after vanilla listeners. Same reasons.
-
-		final RegistryWrapper.WrapperLookup wrapperLookup = getWrapperLookup(listeners);
-		List<IdentifiableResourceReloadListener> listenersToAdd = Lists.newArrayList();
-
-		for (ListenerFactory addedListener : listenerFactories) {
-			listenersToAdd.add(addedListener.get(wrapperLookup));
-		}
-
-		addedListeners.clear();
-		addedListeners.addAll(listenersToAdd);
-
-		Set<Identifier> resolvedIds = new HashSet<>();
-
-		for (ResourceReloader listener : listeners) {
-			if (listener instanceof IdentifiableResourceReloadListener) {
-				resolvedIds.add(((IdentifiableResourceReloadListener) listener).getFabricId());
-			}
-		}
-
-		int lastSize = -1;
-
-		while (listeners.size() != lastSize) {
-			lastSize = listeners.size();
-
-			Iterator<IdentifiableResourceReloadListener> it = listenersToAdd.iterator();
-
-			while (it.hasNext()) {
-				IdentifiableResourceReloadListener listener = it.next();
-
-				if (resolvedIds.containsAll(listener.getFabricDependencies())) {
-					resolvedIds.add(listener.getFabricId());
-					listeners.add(listener);
-					it.remove();
-				}
-			}
-		}
-
-		for (IdentifiableResourceReloadListener listener : listenersToAdd) {
-			LOGGER.warn("Could not resolve dependencies for listener: " + listener.getFabricId() + "!");
-		}
-	}
-
-	// A bit of a hack to get the registry, but it works.
-	@Nullable
-	private RegistryWrapper.WrapperLookup getWrapperLookup(List<ResourceReloader> listeners) {
-		if (type == ResourceType.CLIENT_RESOURCES) {
-			// We don't need the registry for client resources.
-			return null;
-		}
-
-		for (ResourceReloader resourceReloader : listeners) {
-			if (resourceReloader instanceof FabricRecipeManager recipeManager) {
-				return recipeManager.fabric_getRegistries();
-			}
-		}
-
-		throw new IllegalStateException("No ServerRecipeManager found in listeners!");
-	}
-
 	@Override
 	public void registerReloadListener(IdentifiableResourceReloadListener listener) {
-		registerReloadListener(new SimpleResourceReloaderFactory(listener));
+		this.resourceLoader.registerReloader(listener.getFabricId(), listener);
+		listener.getFabricDependencies().forEach(dependency -> this.resourceLoader.addReloaderOrdering(dependency, listener.getFabricId()));
 	}
 
 	@Override
 	public void registerReloadListener(Identifier identifier, Function<RegistryWrapper.WrapperLookup, IdentifiableResourceReloadListener> listenerFactory) {
-		if (type == ResourceType.CLIENT_RESOURCES) {
-			throw new IllegalArgumentException("Cannot register a registry listener for the client resource type!");
-		}
+		this.resourceLoader.registerReloader(identifier, new ResourceReloader() {
+			@Override
+			public CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer reloadSynchronizer, Executor applyExecutor) {
+				RegistryWrapper.WrapperLookup registries = store.getOrThrow(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY);
+				ResourceReloader resourceReloader = listenerFactory.apply(registries);
 
-		registerReloadListener(new RegistryResourceReloaderFactory(identifier, listenerFactory));
-	}
-
-	private void registerReloadListener(ListenerFactory factory) {
-		if (!addedListenerIds.add(factory.id())) {
-			LOGGER.warn("Tried to register resource reload listener " + factory.id() + " twice!");
-			return;
-		}
-
-		if (!listenerFactories.add(factory)) {
-			throw new RuntimeException("Listener with previously unknown ID " + factory.id() + " already in listener set!");
-		}
-	}
-
-	private sealed interface ListenerFactory permits SimpleResourceReloaderFactory, RegistryResourceReloaderFactory {
-		Identifier id();
-
-		IdentifiableResourceReloadListener get(RegistryWrapper.WrapperLookup registry);
-	}
-
-	private record SimpleResourceReloaderFactory(IdentifiableResourceReloadListener listener) implements ListenerFactory {
-		@Override
-		public Identifier id() {
-			return listener.getFabricId();
-		}
-
-		@Override
-		public IdentifiableResourceReloadListener get(RegistryWrapper.WrapperLookup registry) {
-			return listener;
-		}
-	}
-
-	private record RegistryResourceReloaderFactory(Identifier id, Function<RegistryWrapper.WrapperLookup, IdentifiableResourceReloadListener> listenerFactory) implements ListenerFactory {
-		private RegistryResourceReloaderFactory {
-			Objects.requireNonNull(listenerFactory);
-		}
-
-		@Override
-		public IdentifiableResourceReloadListener get(RegistryWrapper.WrapperLookup registry) {
-			final IdentifiableResourceReloadListener listener = listenerFactory.apply(registry);
-
-			if (!id.equals(listener.getFabricId())) {
-				throw new IllegalStateException("Listener factory for " + id + " created a listener with ID " + listener.getFabricId());
+				return resourceReloader.reload(store, prepareExecutor, reloadSynchronizer, applyExecutor);
 			}
-
-			return listener;
-		}
+		});
 	}
 }

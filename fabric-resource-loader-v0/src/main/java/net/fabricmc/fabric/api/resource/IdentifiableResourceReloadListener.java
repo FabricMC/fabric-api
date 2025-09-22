@@ -29,8 +29,11 @@ import net.minecraft.util.Identifier;
  * and can provide dependencies that they would like to see executed before
  * themselves.
  *
- * @see ResourceReloadListenerKeys
+ * @see net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys
+ * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(Identifier, ResourceReloader)}
+ * and {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#addReloaderOrdering(Identifier, Identifier)} instead.
  */
+@Deprecated
 public interface IdentifiableResourceReloadListener extends ResourceReloader {
 	/**
 	 * @return The unique identifier of this listener.

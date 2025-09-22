@@ -63,14 +63,14 @@ public final class ParticleFactoryRegistryImpl implements ParticleFactoryRegistr
 	record DirectParticleFactoryRegistry(ParticleSpriteManager particleSpriteManager) implements ParticleFactoryRegistry {
 		@Override
 		public <T extends ParticleEffect> void register(ParticleType<T> type, ParticleFactory<T> factory) {
-			particleSpriteManager.PARTICLE_FACTORIES.put(Registries.PARTICLE_TYPE.getRawId(type), factory);
+			particleSpriteManager.particleFactories.put(Registries.PARTICLE_TYPE.getRawId(type), factory);
 		}
 
 		@Override
 		public <T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> constructor) {
 			var delegate = new ParticleSpriteManager.SimpleSpriteProvider();
 			var fabricSpriteProvider = new FabricSpriteProviderImpl(delegate);
-			particleSpriteManager.SPRITE_AWARE_PARTICLE_FACTORIES.put(Registries.PARTICLE_TYPE.getId(type), delegate);
+			particleSpriteManager.spriteAwareParticleFactories.put(Registries.PARTICLE_TYPE.getId(type), delegate);
 			register(type, constructor.create(fabricSpriteProvider));
 		}
 	}

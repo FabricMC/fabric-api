@@ -70,8 +70,8 @@ public final class EntityEventTests implements ModInitializer {
 		Registry.register(Registries.ITEM, TEST_BED_KEY.getValue(), new BlockItem(TEST_BED, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, TEST_BED_KEY.getValue()))));
 		Registry.register(Registries.ITEM, DIAMOND_ELYTRA_KEY, DIAMOND_ELYTRA);
 
-		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
-			LOGGER.info("Entity {} Killed: {}", entity, killed);
+		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed, damageSource) -> {
+			LOGGER.info("Entity {} Killed: {}, source {}", entity, killed, damageSource);
 		});
 
 		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {

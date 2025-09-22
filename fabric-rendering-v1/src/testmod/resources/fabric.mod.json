@@ -17,7 +17,6 @@
       "net.fabricmc.fabric.test.rendering.client.CustomAtlasSourcesTest",
       "net.fabricmc.fabric.test.rendering.client.CustomColorResolverTest",
       "net.fabricmc.fabric.test.rendering.client.DebugOptionsTests",
-      "net.fabricmc.fabric.test.rendering.client.DimensionalRenderingTest",
       "net.fabricmc.fabric.test.rendering.client.FeatureRendererTest",
       "net.fabricmc.fabric.test.rendering.client.HudAndShaderTest",
       "net.fabricmc.fabric.test.rendering.client.HudStatusBarHeightsTest",
@@ -25,10 +24,9 @@
       "net.fabricmc.fabric.test.rendering.client.ItemStackOverlayTest",
       "net.fabricmc.fabric.test.rendering.client.SpecialBlockRendererTest",
       "net.fabricmc.fabric.test.rendering.client.TooltipComponentTests",
-      "net.fabricmc.fabric.test.rendering.client.WorldRenderEventsTests",
       "net.fabricmc.fabric.test.rendering.client.gui.SpecialGuiElementRendererTest",
       "net.fabricmc.fabric.test.rendering.client.gui.SpecialGuiElementRendererTestWithNewGuiRenderer",
-      "net.fabricmc.fabric.test.rendering.client.GuiRendererNonQuadsTest"
+      "net.fabricmc.fabric.test.rendering.client.gui.GuiRendererNonQuadsTest"
     ],
     "fabric-client-gametest": [
       "net.fabricmc.fabric.test.rendering.client.HudTests",

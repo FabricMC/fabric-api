@@ -356,7 +356,7 @@ public interface BiomeModificationContext {
 		 * Associated JSON property: <code>spawners</code>.
 		 *
 		 * @see SpawnSettings#getSpawnEntries(SpawnGroup)
-		 * @see SpawnSettings.Builder#spawn(SpawnGroup, SpawnSettings.SpawnEntry)
+		 * @see SpawnSettings.Builder#spawn(SpawnGroup, int, SpawnSettings.SpawnEntry)
 		 */
 		void addSpawn(SpawnGroup spawnGroup, SpawnSettings.SpawnEntry spawnEntry, int weight);
 

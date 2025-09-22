@@ -40,7 +40,9 @@ import net.minecraft.resource.SynchronousResourceReloader;
  * {@link IdentifiableResourceReloadListener}.
  *
  * @param <T> The data object.
+ * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.reloader.SimpleResourceReloader} instead.
  */
+@Deprecated
 public interface SimpleResourceReloadListener<T> extends IdentifiableResourceReloadListener {
 	@Override
 	default CompletableFuture<Void> reload(Store store, Executor loadExecutor, Synchronizer helper, Executor applyExecutor) {

@@ -17,6 +17,10 @@
   ],
   "depends": {
     "fabricloader": ">=0.17.0",
+    "fabric-convention-tags-v2": "*",
+    "fabric-recipe-api-v1": "*",
+    "fabric-registry-sync-v0": "*",
+    "fabric-resource-conditions-api-v1": "*",
     "fabric-tag-api-v1": "*"
   },
   "description": "Allows for automatic data generation.",

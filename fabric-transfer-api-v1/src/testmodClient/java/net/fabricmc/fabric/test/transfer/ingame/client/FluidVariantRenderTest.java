@@ -27,9 +27,10 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
@@ -42,11 +43,11 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		FluidVariantAttributes.enableColoredVanillaFluidNames();
 
-		HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
+		HudElementRegistry.addLast(Identifier.of("fabric-transfer-api-v1-testmod", "fluid_variant"), (drawContext, tickDelta) -> {
 			PlayerEntity player = MinecraftClient.getInstance().player;
 			if (player == null) return;
 
-			if (MinecraftClient.getInstance().inGameHud.getDebugHud().shouldShowDebugHud()) return;
+			if (MinecraftClient.getInstance().debugHudEntryList.isF3Enabled()) return;
 
 			int renderY = 0;
 			List<FluidVariant> variants = List.of(FluidVariant.of(Fluids.WATER), FluidVariant.of(Fluids.LAVA));

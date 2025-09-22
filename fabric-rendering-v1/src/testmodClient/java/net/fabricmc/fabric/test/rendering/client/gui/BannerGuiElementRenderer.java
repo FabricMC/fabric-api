@@ -19,10 +19,12 @@ package net.fabricmc.fabric.test.rendering.client.gui;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
 import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BannerBlockEntityRenderer;
 import net.minecraft.client.render.block.entity.model.BannerBlockModel;
+import net.minecraft.client.render.command.RenderDispatcher;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.model.ModelBaker;
 import net.minecraft.client.util.math.MatrixStack;
@@ -30,8 +32,6 @@ import net.minecraft.component.type.BannerPatternsComponent;
 import net.minecraft.util.Unit;
 
 public class BannerGuiElementRenderer extends SpecialGuiElementRenderer<BannerGuiElementRenderState> {
-	private final MinecraftClient client = MinecraftClient.getInstance();
-
 	protected BannerGuiElementRenderer(VertexConsumerProvider.Immediate vertexConsumers) {
 		super(vertexConsumers);
 	}
@@ -43,17 +43,14 @@ public class BannerGuiElementRenderer extends SpecialGuiElementRenderer<BannerGu
 
 	@Override
 	protected void render(BannerGuiElementRenderState state, MatrixStack matrices) {
-		if (true) {
-			// TODO 1.21.9 - Disable as it breaks everything, pls help
-			return;
-		}
-
+		MinecraftClient client = MinecraftClient.getInstance();
 		client.gameRenderer.getDiffuseLighting().setShaderLights(DiffuseLighting.Type.ITEMS_FLAT);
+		RenderDispatcher renderDispatcher = client.gameRenderer.getEntityRenderDispatcher();
 		BannerBlockEntityRenderer.renderCanvas(
 				client.getAtlasManager(),
 				matrices,
-				client.gameRenderer.getEntityRenderCommandQueue(),
-				15728880,
+				renderDispatcher.getQueue(),
+				LightmapTextureManager.MAX_LIGHT_COORDINATE,
 				OverlayTexture.DEFAULT_UV,
 				new BannerBlockModel(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.STANDING_BANNER_FLAG).getChild("flag")),
 				Unit.INSTANCE,
@@ -62,6 +59,7 @@ public class BannerGuiElementRenderer extends SpecialGuiElementRenderer<BannerGu
 				state.color(),
 				BannerPatternsComponent.DEFAULT,
 				null);
+		renderDispatcher.render();
 	}
 
 	@Override

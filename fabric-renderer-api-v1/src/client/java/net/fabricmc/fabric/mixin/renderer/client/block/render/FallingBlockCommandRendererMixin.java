@@ -38,7 +38,12 @@ import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 
+import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
+import net.fabricmc.fabric.impl.renderer.BatchingRenderCommandQueueExtension;
+import net.fabricmc.fabric.impl.renderer.DelegatingBlockVertexConsumerProviderImpl;
+import net.fabricmc.fabric.impl.renderer.ExtendedBlockCommand;
+import net.fabricmc.fabric.impl.renderer.ExtendedBlockStateModelCommand;
 
 @Mixin(FallingBlockCommandRenderer.class)
 abstract class FallingBlockCommandRendererMixin {
@@ -46,19 +51,50 @@ abstract class FallingBlockCommandRendererMixin {
 	@Final
 	private MatrixStack matrices;
 
-	// Support multi-render layer models (FallingBlockCommand).
+	// Support multi-render layer models (MovingBlockCommand).
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "java/util/Iterator.hasNext()Z", ordinal = 0))
-	private void beforeRenderFallingBlocks(BatchingRenderCommandQueue queue, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, OutlineVertexConsumerProvider outlineVertexConsumerProvider, CallbackInfo ci, @Local Iterator<OrderedRenderCommandQueueImpl.MovingBlockCommand> iterator) {
+	private void beforeRenderMovingBlocks(BatchingRenderCommandQueue queue, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, OutlineVertexConsumerProvider outlineVertexConsumers, CallbackInfo ci, @Local Iterator<OrderedRenderCommandQueueImpl.MovingBlockCommand> iterator) {
 		while (iterator.hasNext()) {
-			OrderedRenderCommandQueueImpl.MovingBlockCommand fallingBlockCommand = iterator.next();
-			MovingBlockRenderState renderState = fallingBlockCommand.movingBlockRenderState();
+			OrderedRenderCommandQueueImpl.MovingBlockCommand command = iterator.next();
+			MovingBlockRenderState renderState = command.movingBlockRenderState();
 			BlockState blockState = renderState.blockState;
 			BlockStateModel model = blockRenderManager.getModel(blockState);
 			long seed = blockState.getRenderingSeed(renderState.fallingBlockPos);
 			matrices.push();
-			matrices.multiplyPositionMatrix(fallingBlockCommand.matricesEntry());
+			matrices.multiplyPositionMatrix(command.matricesEntry());
 			blockRenderManager.getModelRenderer().render(renderState, model, blockState, renderState.entityBlockPos, matrices, RenderLayerHelper.movingDelegate(vertexConsumers), false, seed, OverlayTexture.DEFAULT_UV);
 			matrices.pop();
+		}
+	}
+
+	// Support ExtendedBlockCommand and ExtendedBlockStateModelCommand.
+	@Inject(method = "render", at = @At("RETURN"))
+	private void onReturnRender(BatchingRenderCommandQueue queue, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, OutlineVertexConsumerProvider outlineVertexConsumers, CallbackInfo ci) {
+		DelegatingBlockVertexConsumerProviderImpl blockVertexConsumerProvider = new DelegatingBlockVertexConsumerProviderImpl();
+
+		for (ExtendedBlockCommand command : ((BatchingRenderCommandQueueExtension) queue).fabric_getExtendedBlockCommands()) {
+			matrices.push();
+			matrices.peek().copy(command.matricesEntry());
+			blockRenderManager.renderBlockAsEntity(command.state(), matrices, vertexConsumers, command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos());
+
+			if (command.outlineColor() != 0) {
+				outlineVertexConsumers.setColor(command.outlineColor());
+				blockRenderManager.renderBlockAsEntity(command.state(), matrices, outlineVertexConsumers, command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos());
+			}
+
+			matrices.pop();
+		}
+
+		for (ExtendedBlockStateModelCommand command : ((BatchingRenderCommandQueueExtension) queue).fabric_getExtendedBlockStateModelCommands()) {
+			blockVertexConsumerProvider.renderLayerFunction = command.renderLayerFunction();
+			blockVertexConsumerProvider.vertexConsumerProvider = vertexConsumers;
+			FabricBlockModelRenderer.render(command.matricesEntry(), blockVertexConsumerProvider, command.model(), command.r(), command.g(), command.b(), command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos(), command.state());
+
+			if (command.outlineColor() != 0) {
+				outlineVertexConsumers.setColor(command.outlineColor());
+				blockVertexConsumerProvider.vertexConsumerProvider = outlineVertexConsumers;
+				FabricBlockModelRenderer.render(command.matricesEntry(), blockVertexConsumerProvider, command.model(), command.r(), command.g(), command.b(), command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos(), command.state());
+			}
 		}
 	}
 }

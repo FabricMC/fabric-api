@@ -16,7 +16,9 @@
     "HopperBlockEntityMixin",
     "ItemMixin",
     "JukeboxBlockEntityMixin",
+    "ListInventoryMixin",
     "LockableContainerBlockEntityMixin",
+    "ShelfBlockEntityMixin",
     "SimpleInventoryMixin"
   ],
   "injectors": {
