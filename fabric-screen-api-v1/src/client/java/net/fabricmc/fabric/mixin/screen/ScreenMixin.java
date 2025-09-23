@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
@@ -63,6 +64,8 @@ abstract class ScreenMixin implements ScreenExtensions {
 	private Event<ScreenEvents.AfterTick> afterTickEvent;
 	@Unique
 	private Event<ScreenEvents.BeforeRender> beforeRenderEvent;
+	@Unique
+	private Event<ScreenEvents.AfterBackground> afterBackgroundEvent;
 	@Unique
 	private Event<ScreenEvents.AfterRender> afterRenderEvent;
 
@@ -106,6 +109,11 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Unique
 	private Event<ScreenMouseEvents.AfterMouseScroll> afterMouseScrollEvent;
 
+	@Inject(method = "renderWithTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderBackground(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.AFTER))
+	public final void renderWithTooltip(DrawContext context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+		ScreenEvents.afterBackground(((Screen) (Object) this)).invoker().afterBackground((Screen) (Object) this, context, mouseX, mouseY, deltaTicks);
+	}
+
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("HEAD"))
 	private void beforeInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
 		beforeInit(client, width, height);
@@ -132,6 +140,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 		this.fabricButtons = null;
 		this.removeEvent = ScreenEventFactory.createRemoveEvent();
 		this.beforeRenderEvent = ScreenEventFactory.createBeforeRenderEvent();
+		this.afterBackgroundEvent = ScreenEventFactory.createAfterBackgroundEvent();
 		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
 		this.beforeTickEvent = ScreenEventFactory.createBeforeTickEvent();
 		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
@@ -203,6 +212,11 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Override
 	public Event<ScreenEvents.BeforeRender> fabric_getBeforeRenderEvent() {
 		return ensureEventsAreInitialized(this.beforeRenderEvent);
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterBackground> fabric_getAfterBackgroundEvent() {
+		return ensureEventsAreInitialized(this.afterBackgroundEvent);
 	}
 
 	@Override

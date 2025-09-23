@@ -41,6 +41,8 @@ public interface ScreenExtensions {
 
 	Event<ScreenEvents.BeforeRender> fabric_getBeforeRenderEvent();
 
+	Event<ScreenEvents.AfterBackground> fabric_getAfterBackgroundEvent();
+
 	Event<ScreenEvents.AfterRender> fabric_getAfterRenderEvent();
 
 	// Keyboard
