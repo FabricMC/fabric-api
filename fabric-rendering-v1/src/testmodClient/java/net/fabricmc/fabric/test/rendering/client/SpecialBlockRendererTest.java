@@ -53,7 +53,7 @@ public class SpecialBlockRendererTest implements ClientModInitializer {
 
 				return new SpecialModelRenderer<>() {
 					@Override
-					public void render(@Nullable Object data, ItemDisplayContext displayContext, MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue, int light, int overlay, boolean glint) {
+					public void render(@Nullable Object data, ItemDisplayContext displayContext, MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue, int light, int overlay, boolean glint, int outlineColor) {
 						matrices.push();
 						matrices.translate(0.5f, 0.0f, 0.5f);
 						matrices.translate(0, 1.46875f, 0);

@@ -72,7 +72,7 @@ public interface FabricClientCommandSource extends CommandSource {
 	 * @return the position
 	 */
 	default Vec3d getPosition() {
-		return getPlayer().getPos();
+		return getPlayer().getEntityPos();
 	}
 
 	/**

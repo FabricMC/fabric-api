@@ -62,7 +62,7 @@ abstract class BatchingRenderCommandQueueMixin implements RenderCommandQueue, Ba
 	public void submitBlock(MatrixStack matrices, BlockState state, int light, int overlay, int outlineColor, BlockRenderView blockView, BlockPos pos) {
 		hasCommands = true;
 		extendedBlockCommands.add(new ExtendedBlockCommand(matrices.peek().copy(), state, light, overlay, outlineColor, blockView, pos));
-		MinecraftClient.getInstance().getBakedModelManager().getBlockEntityModelsSupplier().get().render(state.getBlock(), ItemDisplayContext.NONE, matrices, orderedQueueImpl, light, overlay);
+		MinecraftClient.getInstance().getBakedModelManager().getBlockEntityModelsSupplier().get().render(state.getBlock(), ItemDisplayContext.NONE, matrices, orderedQueueImpl, light, overlay, outlineColor);
 	}
 
 	@Override

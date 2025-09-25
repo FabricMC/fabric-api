@@ -58,7 +58,9 @@ public class BannerGuiElementRenderer extends SpecialGuiElementRenderer<BannerGu
 				true,
 				state.color(),
 				BannerPatternsComponent.DEFAULT,
-				null);
+				false,
+				null,
+				0);
 		renderDispatcher.render();
 	}
 

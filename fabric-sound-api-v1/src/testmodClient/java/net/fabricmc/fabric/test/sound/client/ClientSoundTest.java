@@ -33,7 +33,7 @@ public class ClientSoundTest implements ClientModInitializer {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {
 			dispatcher.register(ClientCommandManager.literal("sine").executes(o -> {
 				MinecraftClient client = o.getSource().getClient();
-				client.getSoundManager().play(new SineSound(client.player.getPos()));
+				client.getSoundManager().play(new SineSound(client.player.getEntityPos()));
 				return 0;
 			}));
 		});
