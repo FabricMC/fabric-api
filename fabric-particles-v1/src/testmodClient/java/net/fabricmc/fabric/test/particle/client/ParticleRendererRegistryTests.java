@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.particle.client;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.particle.BillboardParticle;
 import net.minecraft.client.particle.BillboardParticleSubmittable;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
@@ -27,14 +26,24 @@ import net.minecraft.client.particle.ParticleRenderer;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.Submittable;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Atlases;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -44,6 +53,11 @@ import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+
+import org.joml.Vector3f;
+
+import java.util.Arrays;
+import java.util.Iterator;
 
 public class ParticleRendererRegistryTests implements ClientModInitializer {
 	private static final Identifier PARTICLE_ID = Identifier.of("fabric-particles-v1-testmod", "test");
@@ -78,21 +92,20 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 				})));
 	}
 
-	private record TestParticleFactory(FabricSpriteProvider spriteProvider) implements ParticleFactory<SimpleParticleType> {
+	private record TestParticleFactory(
+			FabricSpriteProvider spriteProvider) implements ParticleFactory<SimpleParticleType> {
 		@Override
 		public Particle createParticle(SimpleParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Random random) {
 			return new TestParticle(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.getSprite(random));
 		}
 	}
 
-	private static class TestParticle extends BillboardParticle {
-		TestParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Sprite sprite) {
-			super(world, x, y, z, velocityX, velocityY, velocityZ, sprite);
-		}
+	private static class TestParticle extends Particle {
+		private final Sprite sprite;
 
-		@Override
-		protected RenderType getRenderType() {
-			return RenderType.field_62640;
+		TestParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Sprite sprite) {
+			super(world, x, y, z, velocityX, velocityY, velocityZ);
+			this.sprite = sprite;
 		}
 
 		@Override
@@ -103,10 +116,17 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 		private boolean intersectPoint(Frustum frustum) {
 			return frustum.intersectPoint(x, y, z);
 		}
+
+		public void render(TestParticleSubmittable submittable, Camera camera, float tickProgress) {
+			double frameX = MathHelper.lerp(tickProgress, lastX, x) - camera.getPos().x;
+			double frameY = MathHelper.lerp(tickProgress, lastY, y) - camera.getPos().y;
+			double frameZ = MathHelper.lerp(tickProgress, lastZ, z) - camera.getPos().z;
+			submittable.addParticle(frameX, frameY, frameZ);
+		}
 	}
 
 	private static class TestParticleRenderer extends ParticleRenderer<TestParticle> {
-		final BillboardParticleSubmittable submittable = new BillboardParticleSubmittable();
+		final TestParticleSubmittable submittable = new TestParticleSubmittable();
 
 		TestParticleRenderer(ParticleManager particleManager) {
 			super(particleManager);
@@ -123,6 +143,106 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 			}
 
 			return submittable;
+		}
+	}
+
+	private static class TestParticleSubmittable implements Submittable {
+		private final TestParticlePositions positions = new TestParticlePositions();
+
+		@Override
+		public void submit(OrderedRenderCommandQueue queue, CameraRenderState cameraRenderState) {
+			MatrixStack matrices = new MatrixStack();
+
+			for (int i = 0; i < positions.getStoredPoints(); i++) {
+				matrices.push();
+				Vec3d position = positions.getPoint(i);
+
+				matrices.translate(position);
+
+				queue.submitCustom(
+						matrices,
+						//help: find a better way to do this
+						RenderLayer.getEntityCutout(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE),
+						(matrixEntry, vertexConsumer) -> {
+							//yes, this will render the entire atlas
+							//also is in the shape of a rectangle, a shape impossible to create with a BillboardParticle
+							vertexConsumer.vertex(matrixEntry, 0.5f, 0.0f, -1.0f)
+									.texture(1f, 1f)
+									.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)
+									.overlay(OverlayTexture.DEFAULT_UV)
+									.color(-1)
+									.normal(matrixEntry, 0f, 1f, 0f);
+							vertexConsumer.vertex(matrixEntry, 0.5f, 0.0f, 1.0f)
+									.texture(0f, 1f)
+									.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)
+									.overlay(OverlayTexture.DEFAULT_UV)
+									.color(-1)
+									.normal(matrixEntry, 0f, 1f, 0f);
+							vertexConsumer.vertex(matrixEntry, -0.5f, 0.0f, 1.0f)
+									.texture(0f, 0f)
+									.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)
+									.overlay(OverlayTexture.DEFAULT_UV)
+									.color(-1)
+									.normal(matrixEntry, 0f, 1f, 0f);
+							vertexConsumer.vertex(matrixEntry, -0.5f, 0.0f, -1.0f)
+									.texture(1f, 0f)
+									.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)
+									.overlay(OverlayTexture.DEFAULT_UV)
+									.color(-1)
+									.normal(matrixEntry, 0f, 1f, 0f);
+						}
+				);
+				matrices.pop();
+			}
+		}
+
+		@Override
+		public void onFrameEnd() {
+			positions.reset();
+		}
+
+		public void addParticle(double x, double y, double z) {
+			positions.addPoint(x, y, z);
+		}
+	}
+
+	private static class TestParticlePositions {
+		//note: this could be any kind of data, see BillboardParticleSubmittable for a more involved example
+		private int maxPoints = 128;
+		private double[] positionData = new double[maxPoints * 3];
+		private int nextVertexIndex = 0;
+
+		public void addPoint(double x, double y, double z) {
+			if (nextVertexIndex >= maxPoints) {
+				increaseCapacity();
+			}
+			int currentIndex = nextVertexIndex * 3;
+			positionData[currentIndex++] = x;
+			positionData[currentIndex++] = y;
+			positionData[currentIndex] = z;
+			++nextVertexIndex;
+		}
+
+		public Vec3d getPoint(int index) {
+			int lookupIndex = index * 3;
+			return new Vec3d(
+					positionData[lookupIndex++],
+					positionData[lookupIndex++],
+					positionData[lookupIndex]
+			);
+		}
+
+		public int getStoredPoints() {
+			return nextVertexIndex + 1;
+		}
+
+		public void reset() {
+			nextVertexIndex = 0;
+		}
+
+		private void increaseCapacity() {
+			maxPoints *= 2;
+			positionData = Arrays.copyOf(positionData, maxPoints * 3);
 		}
 	}
 }
