@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.biome.v1;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.BiPredicate;
@@ -31,6 +32,7 @@ import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.collection.Pool;
+import net.minecraft.util.collection.Weighted;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.BiomeParticleConfig;
@@ -351,6 +353,15 @@ public interface BiomeModificationContext {
 		 * @see SpawnSettings.Builder#creatureSpawnProbability(float)
 		 */
 		void setCreatureSpawnProbability(float probability);
+
+		/**
+		 * Provides a view of all spawns of the given spawn group.
+		 *
+		 * <p>Associated JSON property: <code>spawners</code>.
+		 *
+		 * @see SpawnSettings#getSpawnEntries(SpawnGroup)
+		 */
+		List<Weighted<SpawnSettings.SpawnEntry>> getSpawnEntries(SpawnGroup spawnGroup);
 
 		/**
 		 * Associated JSON property: <code>spawners</code>.

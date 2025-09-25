@@ -395,6 +395,13 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
+		public List<Weighted<SpawnSettings.SpawnEntry>> getSpawnEntries(SpawnGroup spawnGroup) {
+			Objects.requireNonNull(spawnGroup);
+
+			return Collections.unmodifiableList(fabricSpawners.get(spawnGroup));
+		}
+
+		@Override
 		public void addSpawn(SpawnGroup spawnGroup, SpawnSettings.SpawnEntry spawnEntry, int weight) {
 			Objects.requireNonNull(spawnGroup);
 			Objects.requireNonNull(spawnEntry);
