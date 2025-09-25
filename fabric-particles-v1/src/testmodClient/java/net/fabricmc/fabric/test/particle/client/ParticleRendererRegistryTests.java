@@ -16,9 +16,10 @@
 
 package net.fabricmc.fabric.test.particle.client;
 
+import java.util.Arrays;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.particle.BillboardParticleSubmittable;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
@@ -30,7 +31,6 @@ import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.Submittable;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.texture.Sprite;
@@ -40,7 +40,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.Atlases;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -53,11 +52,6 @@ import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
-
-import org.joml.Vector3f;
-
-import java.util.Arrays;
-import java.util.Iterator;
 
 public class ParticleRendererRegistryTests implements ClientModInitializer {
 	private static final Identifier PARTICLE_ID = Identifier.of("fabric-particles-v1-testmod", "test");
@@ -216,6 +210,7 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 			if (nextVertexIndex >= maxPoints) {
 				increaseCapacity();
 			}
+
 			int currentIndex = nextVertexIndex * 3;
 			positionData[currentIndex++] = x;
 			positionData[currentIndex++] = y;
