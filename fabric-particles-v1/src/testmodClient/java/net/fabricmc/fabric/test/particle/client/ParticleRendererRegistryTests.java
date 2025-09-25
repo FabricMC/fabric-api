@@ -33,7 +33,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.Submittable;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
@@ -90,16 +89,13 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 			FabricSpriteProvider spriteProvider) implements ParticleFactory<SimpleParticleType> {
 		@Override
 		public Particle createParticle(SimpleParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Random random) {
-			return new TestParticle(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.getSprite(random));
+			return new TestParticle(world, x, y, z, velocityX, velocityY, velocityZ);
 		}
 	}
 
 	private static class TestParticle extends Particle {
-		private final Sprite sprite;
-
-		TestParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Sprite sprite) {
+		TestParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
 			super(world, x, y, z, velocityX, velocityY, velocityZ);
-			this.sprite = sprite;
 		}
 
 		@Override
