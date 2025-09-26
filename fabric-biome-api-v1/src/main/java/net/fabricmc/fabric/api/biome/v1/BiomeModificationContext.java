@@ -22,6 +22,7 @@ import java.util.OptionalInt;
 import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -361,7 +362,7 @@ public interface BiomeModificationContext {
 		 *
 		 * @see SpawnSettings#getSpawnEntries(SpawnGroup)
 		 */
-		List<Weighted<SpawnSettings.SpawnEntry>> getSpawnEntries(SpawnGroup spawnGroup);
+		@UnmodifiableView List<Weighted<SpawnSettings.SpawnEntry>> getSpawnEntries(SpawnGroup spawnGroup);
 
 		/**
 		 * Associated JSON property: <code>spawners</code>.

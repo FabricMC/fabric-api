@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -395,7 +396,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public List<Weighted<SpawnSettings.SpawnEntry>> getSpawnEntries(SpawnGroup spawnGroup) {
+		public @UnmodifiableView List<Weighted<SpawnSettings.SpawnEntry>> getSpawnEntries(SpawnGroup spawnGroup) {
 			Objects.requireNonNull(spawnGroup);
 
 			return Collections.unmodifiableList(fabricSpawners.get(spawnGroup));
