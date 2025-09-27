@@ -47,7 +47,7 @@ public abstract class ParticleManagerMixin {
 		PARTICLE_TEXTURE_SHEETS = new ArrayList<>(PARTICLE_TEXTURE_SHEETS); // Make it mutable
 	}
 
-	@Inject(method = "createParticleRenderer", at = @At(value = "NEW", target = "(Lnet/minecraft/client/particle/ParticleManager;)Lnet/minecraft/client/particle/NoRenderParticleRenderer;"), cancellable = true)
+	@Inject(method = "createParticleRenderer", at = @At(value = "NEW", target = "(Lnet/minecraft/client/particle/ParticleManager;Lnet/minecraft/client/particle/ParticleTextureSheet;)Lnet/minecraft/client/particle/BillboardParticleRenderer;"), cancellable = true)
 	private void createParticleRenderer(ParticleTextureSheet textureSheet, CallbackInfoReturnable<ParticleRenderer<?>> cir) {
 		Function<ParticleManager, ParticleRenderer<?>> factory = ParticleRendererRegistryImpl.INSTANCE.getFactory(textureSheet);
 
