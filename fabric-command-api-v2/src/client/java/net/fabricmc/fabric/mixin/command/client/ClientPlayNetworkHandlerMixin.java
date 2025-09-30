@@ -72,6 +72,11 @@ abstract class ClientPlayNetworkHandlerMixin {
 		ClientCommandInternals.addCommands((CommandDispatcher) commandDispatcher, (FabricClientCommandSource) commandSource);
 	}
 
+	@Inject(method = "onCommandTree", at = @At("HEAD"))
+	private void setLastReceivedCommandsPacket(CommandTreeS2CPacket packet, CallbackInfo ci) {
+		ClientCommandInternals.setLastReceivedCommandsPacket(packet);
+	}
+
 	@Inject(method = "runClickEventCommand", at = @At("HEAD"), cancellable = true)
 	private void onSendCommand(String command, Screen screen, CallbackInfo info) {
 		if (ClientCommandInternals.executeCommand(command)) {

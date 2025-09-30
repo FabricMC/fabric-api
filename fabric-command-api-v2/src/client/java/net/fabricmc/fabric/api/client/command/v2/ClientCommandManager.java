@@ -22,6 +22,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
+
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 
 /**
@@ -73,6 +77,29 @@ public final class ClientCommandManager {
 	 */
 	public static @Nullable CommandDispatcher<FabricClientCommandSource> getActiveDispatcher() {
 		return ClientCommandInternals.getActiveDispatcher();
+	}
+
+	/**
+	 * Refresh the command completions. This is helpful when a condition as defined using {@link LiteralArgumentBuilder#requires}
+	 * changes for a client command. The method uses the last received {@code minecraft:commands}
+	 * packet and calls its handler. This triggers the client command's condition to be reevaluated.
+	 *
+	 * <p>Will not do anything when not connected to a server (dedicated or integrated).</p>
+	 */
+	public static void refreshCommandCompletions() {
+		ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
+
+		if (networkHandler == null) {
+			return;
+		}
+
+		CommandTreeS2CPacket lastReceivedCommandsPacket = ClientCommandInternals.getLastReceivedCommandsPacket();
+
+		if (lastReceivedCommandsPacket == null) {
+			return;
+		}
+
+		networkHandler.onCommandTree(lastReceivedCommandsPacket);
 	}
 
 	/**
