@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.command.client;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -41,6 +42,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 	private static final DynamicCommandExceptionType IS_NULL = new DynamicCommandExceptionType(x -> Text.literal("The " + x + " is null"));
 	private static final SimpleCommandExceptionType UNEXECUTABLE_EXECUTED = new SimpleCommandExceptionType(Text.literal("Executed an unexecutable command!"));
 
+	private boolean commandFlag = false;
 	private boolean wasTested = false;
 
 	@Override
@@ -90,6 +92,14 @@ public final class ClientCommandTest implements ClientModInitializer {
 						return 0;
 					})
 			));
+
+			// Command with condition that changes
+			dispatcher.register(ClientCommandManager.literal("test_client_command_with_condition_change").requires(source -> commandFlag).executes(context -> Command.SINGLE_SUCCESS));
+			dispatcher.register(ClientCommandManager.literal("test_client_command_that_toggles_condition").executes(context -> {
+				commandFlag = !commandFlag;
+				ClientCommandManager.refreshCommandCompletions();
+				return Command.SINGLE_SUCCESS;
+			}));
 
 			// Tests
 

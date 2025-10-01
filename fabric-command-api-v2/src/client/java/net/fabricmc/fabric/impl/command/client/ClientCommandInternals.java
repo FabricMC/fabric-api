@@ -54,7 +54,6 @@ public final class ClientCommandInternals {
 	private static final String API_COMMAND_NAME = "fabric-command-api-v2:client";
 	private static final String SHORT_API_COMMAND_NAME = "fcc";
 	private static @Nullable CommandDispatcher<FabricClientCommandSource> activeDispatcher;
-	private static @Nullable CommandTreeS2CPacket lastReceivedCommandsPacket = null;
 
 	public static void setActiveDispatcher(@Nullable CommandDispatcher<FabricClientCommandSource> dispatcher) {
 		ClientCommandInternals.activeDispatcher = dispatcher;
@@ -62,14 +61,6 @@ public final class ClientCommandInternals {
 
 	public static @Nullable CommandDispatcher<FabricClientCommandSource> getActiveDispatcher() {
 		return activeDispatcher;
-	}
-
-	public static void setLastReceivedCommandsPacket(@Nullable CommandTreeS2CPacket commandsPacket) {
-		lastReceivedCommandsPacket = commandsPacket;
-	}
-
-	public static @Nullable CommandTreeS2CPacket getLastReceivedCommandsPacket() {
-		return lastReceivedCommandsPacket;
 	}
 
 	/**
@@ -233,5 +224,9 @@ public final class ClientCommandInternals {
 				copyChildren(child, result, source, originalToCopy);
 			}
 		}
+	}
+
+	public interface LastReceivedCommandsPacketAccessor {
+		@Nullable CommandTreeS2CPacket fabric_api$getLastReceivedCommandsPacket();
 	}
 }

@@ -84,19 +84,20 @@ public final class ClientCommandManager {
 	 * changes for a client command. The method uses the last received {@code minecraft:commands}
 	 * packet and calls its handler. This triggers the client command's condition to be reevaluated.
 	 *
-	 * <p>Will not do anything when not connected to a server (dedicated or integrated).</p>
+	 * @throws IllegalStateException if not connected to a server (dedicated or integrated) or no
+	 * {@code minecraft:commands} packet has been received yet
 	 */
 	public static void refreshCommandCompletions() {
 		ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
 
 		if (networkHandler == null) {
-			return;
+			throw new IllegalStateException("Not connected to a server (dedicated or integrated)!");
 		}
 
-		CommandTreeS2CPacket lastReceivedCommandsPacket = ClientCommandInternals.getLastReceivedCommandsPacket();
+		CommandTreeS2CPacket lastReceivedCommandsPacket = ((ClientCommandInternals.LastReceivedCommandsPacketAccessor) networkHandler).fabric_api$getLastReceivedCommandsPacket();
 
 		if (lastReceivedCommandsPacket == null) {
-			return;
+			throw new IllegalStateException("Not yet received a 'minecraft:commands' packet!");
 		}
 
 		networkHandler.onCommandTree(lastReceivedCommandsPacket);
