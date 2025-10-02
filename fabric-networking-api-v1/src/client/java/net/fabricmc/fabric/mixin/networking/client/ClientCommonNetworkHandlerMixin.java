@@ -25,8 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.NetworkThreadUtils;
+import net.minecraft.network.OffThreadException;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 
@@ -42,22 +41,24 @@ public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerE
 
 	@Inject(method = "onCustomPayload(Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;)V", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
-		if ((Object) this instanceof ClientPlayNetworkHandler clientPlayNetworkHandler) {
-			NetworkThreadUtils.forceMainThread(packet, clientPlayNetworkHandler, this.client.getPacketApplyBatcher());
-		}
-
 		final CustomPayload payload = packet.payload();
-		boolean handled;
 
-		if (this.getAddon() instanceof ClientPlayNetworkAddon addon) {
-			handled = addon.handle(payload);
-		} else if (this.getAddon() instanceof ClientConfigurationNetworkAddon addon) {
-			handled = addon.handle(payload);
-		} else {
-			throw new IllegalStateException("Unknown network addon");
-		}
+		try {
+			boolean handled;
 
-		if (handled) {
+			if (this.getAddon() instanceof ClientPlayNetworkAddon addon) {
+				handled = addon.handle(payload);
+			} else if (this.getAddon() instanceof ClientConfigurationNetworkAddon addon) {
+				handled = addon.handle(payload);
+			} else {
+				throw new IllegalStateException("Unknown network addon");
+			}
+
+			if (handled) {
+				ci.cancel();
+			}
+		} catch (OffThreadException e) {
+			this.client.getPacketApplyBatcher().add((ClientCommonNetworkHandler) (Object) this, packet);
 			ci.cancel();
 		}
 	}

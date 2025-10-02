@@ -85,6 +85,12 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 		return result;
 	}
 
+	@Override
+	protected boolean isOnReceiveThread() {
+		// Configuration packets are handled on the network thread.
+		return true;
+	}
+
 	private void invokeStartEvent() {
 		if (!hasStarted) {
 			hasStarted = true;

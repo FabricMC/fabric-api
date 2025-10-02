@@ -68,10 +68,13 @@ public final class ClientPlayNetworkAddon extends ClientCommonNetworkAddon<Clien
 	}
 
 	@Override
+	protected boolean isOnReceiveThread() {
+		return client.getPacketApplyBatcher().isOnThread();
+	}
+
+	@Override
 	protected void receive(ClientPlayNetworking.PlayPayloadHandler<?> handler, CustomPayload payload) {
-		this.client.execute(() -> {
-			((ClientPlayNetworking.PlayPayloadHandler) handler).receive(payload, context);
-		});
+		((ClientPlayNetworking.PlayPayloadHandler) handler).receive(payload, context);
 	}
 
 	// impl details

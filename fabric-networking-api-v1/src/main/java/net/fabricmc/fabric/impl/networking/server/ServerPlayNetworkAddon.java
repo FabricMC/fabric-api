@@ -69,10 +69,13 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
+	protected boolean isOnReceiveThread() {
+		return server.getPacketApplyBatcher().isOnThread();
+	}
+
+	@Override
 	protected void receive(ServerPlayNetworking.PlayPayloadHandler<?> payloadHandler, CustomPayload payload) {
-		this.server.execute(() -> {
-			((ServerPlayNetworking.PlayPayloadHandler) payloadHandler).receive(payload, ServerPlayNetworkAddon.this.context);
-		});
+		((ServerPlayNetworking.PlayPayloadHandler) payloadHandler).receive(payload, ServerPlayNetworkAddon.this.context);
 	}
 
 	// impl details
