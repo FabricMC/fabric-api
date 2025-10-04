@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.impl.registry.sync.trackers;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -33,13 +35,19 @@ import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.impl.registry.sync.RemovableIdList;
 
 public final class StateIdTracker<T, S> implements RegistryIdRemapCallback<T>, RegistryEntryAddedCallback<T> {
-	private final Logger logger = LoggerFactory.getLogger(StateIdTracker.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StateIdTracker.class);
+	private static final Set<Identifier> TRACKED = new HashSet<>();
+
 	private final Registry<T> registry;
 	private final IdList<S> stateList;
 	private final Function<T, Collection<S>> stateGetter;
 	private int currentHighestId = 0;
 
 	public static <T, S> void register(Registry<T> registry, IdList<S> stateList, Function<T, Collection<S>> stateGetter) {
+		if (!TRACKED.add(registry.getKey().getValue())) {
+			throw new IllegalStateException("Trying to register a tracker for registry " + registry.getKey().getValue() + " more than once!");
+		}
+
 		StateIdTracker<T, S> tracker = new StateIdTracker<>(registry, stateList, stateGetter);
 		RegistryEntryAddedCallback.event(registry).register(tracker);
 		RegistryIdRemapCallback.event(registry).register(tracker);
@@ -59,7 +67,7 @@ public final class StateIdTracker<T, S> implements RegistryIdRemapCallback<T>, R
 			stateGetter.apply(object).forEach(stateList::add);
 			currentHighestId = rawId;
 		} else {
-			logger.debug("[fabric-registry-sync] Non-sequential RegistryEntryAddedCallback for " + object.getClass().getSimpleName() + " ID tracker (at " + id + "), forcing state map recalculation...");
+			LOGGER.debug("[fabric-registry-sync] Non-sequential RegistryEntryAddedCallback for " + object.getClass().getSimpleName() + " ID tracker (at " + id + "), forcing state map recalculation...");
 			recalcStateMap();
 		}
 	}

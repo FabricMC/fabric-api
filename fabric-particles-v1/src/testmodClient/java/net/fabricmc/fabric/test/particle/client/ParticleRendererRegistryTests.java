@@ -92,7 +92,7 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 
 		@Override
 		protected RenderType getRenderType() {
-			return RenderType.field_62640;
+			return RenderType.PARTICLE_ATLAS_OPAQUE;
 		}
 
 		@Override

@@ -32,9 +32,10 @@ import org.slf4j.Logger;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
+import net.minecraft.client.texture.AtlasManager;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceFinder;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
@@ -70,8 +71,10 @@ public class PreparablePluginTest implements ClientModInitializer {
 	/**
 	 * Adaptation of the {@link BakedModelManager} method.
 	 */
-	private static CompletableFuture<Map<Identifier, JsonUnbakedModel>> loadModelReplacements(ResourceManager resourceManager, Executor executor) {
-		return CompletableFuture.supplyAsync(() -> MODEL_REPLACEMENTS_FINDER.findResources(resourceManager), executor).thenCompose(models2 -> {
+	private static CompletableFuture<Map<Identifier, JsonUnbakedModel>> loadModelReplacements(ResourceReloader.Store resourceReloaderStore, Executor executor) {
+		Objects.requireNonNull(resourceReloaderStore.getOrThrow(AtlasManager.stitchKey));
+
+		return CompletableFuture.supplyAsync(() -> MODEL_REPLACEMENTS_FINDER.findResources(resourceReloaderStore.getResourceManager()), executor).thenCompose(models2 -> {
 			ArrayList<CompletableFuture<Pair<Identifier, JsonUnbakedModel>>> list = new ArrayList<>(models2.size());
 
 			for (Map.Entry<Identifier, Resource> entry : models2.entrySet()) {

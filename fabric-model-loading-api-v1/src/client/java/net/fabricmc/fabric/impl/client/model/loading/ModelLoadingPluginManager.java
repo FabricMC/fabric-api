@@ -25,7 +25,7 @@ import java.util.concurrent.Executor;
 
 import org.jetbrains.annotations.UnmodifiableView;
 
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
@@ -53,7 +53,7 @@ public final class ModelLoadingPluginManager {
 		PREPARABLE_PLUGINS.add(new HolderImpl<>(loader, plugin));
 	}
 
-	public static CompletableFuture<List<ModelLoadingPlugin>> preparePlugins(ResourceManager resourceManager, Executor executor) {
+	public static CompletableFuture<List<ModelLoadingPlugin>> preparePlugins(ResourceReloader.Store resourceReloaderStore, Executor executor) {
 		List<CompletableFuture<ModelLoadingPlugin>> futures = new ArrayList<>();
 
 		for (ModelLoadingPlugin plugin : PLUGINS) {
@@ -61,14 +61,14 @@ public final class ModelLoadingPluginManager {
 		}
 
 		for (HolderImpl<?> holder : PREPARABLE_PLUGINS) {
-			futures.add(preparePlugin(holder, resourceManager, executor));
+			futures.add(preparePlugin(holder, resourceReloaderStore, executor));
 		}
 
 		return Util.combineSafe(futures);
 	}
 
-	private static <T> CompletableFuture<ModelLoadingPlugin> preparePlugin(HolderImpl<T> holder, ResourceManager resourceManager, Executor executor) {
-		CompletableFuture<T> dataFuture = holder.loader.load(resourceManager, executor);
+	private static <T> CompletableFuture<ModelLoadingPlugin> preparePlugin(HolderImpl<T> holder, ResourceReloader.Store resourceReloaderStore, Executor executor) {
+		CompletableFuture<T> dataFuture = holder.loader.load(resourceReloaderStore, executor);
 		return dataFuture.thenApply(data -> pluginContext -> holder.plugin.initialize(data, pluginContext));
 	}
 

@@ -72,6 +72,12 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	@Override
+	protected boolean isOnReceiveThread() {
+		// Configuration packets are handled on the network thread.
+		return true;
+	}
+
+	@Override
 	protected void invokeInitEvent() {
 	}
 

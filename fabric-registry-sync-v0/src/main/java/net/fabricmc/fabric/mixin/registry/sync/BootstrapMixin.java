@@ -36,8 +36,8 @@ import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockItemTracker;
 
 @Mixin(Bootstrap.class)
 public class BootstrapMixin {
-	@Inject(method = "setOutputStreams", at = @At("RETURN"))
-	private static void initialize(CallbackInfo info) {
+	@Inject(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/Bootstrap;setOutputStreams()V"))
+	private static void afterInitialize(CallbackInfo info) {
 		// These seemingly pointless accesses are done to make sure each
 		// static initializer is called, to register vanilla-provided blocks
 		// and items from the respective classes - otherwise, they would
@@ -57,7 +57,7 @@ public class BootstrapMixin {
 	}
 
 	@Redirect(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/Registries;bootstrap()V"))
-	private static void initialize() {
+	private static void delayRegistryFreeze() {
 		Registries.init();
 	}
 }

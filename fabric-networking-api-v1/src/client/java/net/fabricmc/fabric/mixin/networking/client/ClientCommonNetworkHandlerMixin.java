@@ -16,12 +16,16 @@
 
 package net.fabricmc.fabric.mixin.networking.client;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
+import net.minecraft.network.OffThreadException;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 
@@ -31,20 +35,30 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 
 @Mixin(ClientCommonNetworkHandler.class)
 public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
+	@Shadow
+	@Final
+	protected MinecraftClient client;
+
 	@Inject(method = "onCustomPayload(Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;)V", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
 		final CustomPayload payload = packet.payload();
-		boolean handled;
 
-		if (this.getAddon() instanceof ClientPlayNetworkAddon addon) {
-			handled = addon.handle(payload);
-		} else if (this.getAddon() instanceof ClientConfigurationNetworkAddon addon) {
-			handled = addon.handle(payload);
-		} else {
-			throw new IllegalStateException("Unknown network addon");
-		}
+		try {
+			boolean handled;
 
-		if (handled) {
+			if (this.getAddon() instanceof ClientPlayNetworkAddon addon) {
+				handled = addon.handle(payload);
+			} else if (this.getAddon() instanceof ClientConfigurationNetworkAddon addon) {
+				handled = addon.handle(payload);
+			} else {
+				throw new IllegalStateException("Unknown network addon");
+			}
+
+			if (handled) {
+				ci.cancel();
+			}
+		} catch (OffThreadException e) {
+			this.client.getPacketApplyBatcher().add((ClientCommonNetworkHandler) (Object) this, packet);
 			ci.cancel();
 		}
 	}

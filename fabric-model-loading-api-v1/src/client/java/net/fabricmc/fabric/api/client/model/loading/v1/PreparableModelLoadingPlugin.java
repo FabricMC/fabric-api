@@ -25,6 +25,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceReloader;
 
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 
@@ -70,10 +71,10 @@ public interface PreparableModelLoadingPlugin<T> {
 		 * {@link CompletableFuture#supplyAsync(Supplier, Executor)} to compute the data.
 		 * The completable future should be scheduled to run using the passed executor.
 		 *
-		 * @param resourceManager The resource manager that can be used to retrieve resources.
+		 * @param resourceReloaderStore The {@link ResourceReloader.Store} instance. Use {@link ResourceReloader.Store#getResourceManager()} to retrieve resources.
 		 * @param executor The executor that <b>must</b> be used to schedule any completable future.
 		 */
-		CompletableFuture<T> load(ResourceManager resourceManager, Executor executor);
+		CompletableFuture<T> load(ResourceReloader.Store resourceReloaderStore, Executor executor);
 	}
 
 	/**

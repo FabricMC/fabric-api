@@ -26,6 +26,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -39,6 +40,7 @@ import net.fabricmc.fabric.impl.gamerule.rpc.FabricTypedRule;
 public class GameRuleRpcDispatcherTypedRuleMixin implements FabricTypedRule {
 	@Shadow
 	@Final
+	@Mutable
 	public static MapCodec<GameRuleRpcDispatcher.TypedRule> CODEC;
 
 	static {

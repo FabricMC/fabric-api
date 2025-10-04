@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkPhase;
+import net.minecraft.network.OffThreadException;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.text.Text;
@@ -93,6 +94,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			return false;
 		}
 
+		if (!isOnReceiveThread()) {
+			throw OffThreadException.INSTANCE;
+		}
+
 		try {
 			this.receive(handler, payload);
 		} catch (Throwable ex) {
@@ -102,6 +107,8 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 		return true;
 	}
+
+	protected abstract boolean isOnReceiveThread();
 
 	protected abstract void receive(H handler, CustomPayload payload);
 

@@ -127,6 +127,17 @@ public final class ScreenEvents {
 	}
 
 	/**
+	 * An event that is called after a screen's background is rendered.
+	 *
+	 * @return the event
+	 */
+	public static Event<AfterBackground> afterBackground(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getAfterBackgroundEvent();
+	}
+
+	/**
 	 * An event that is called after a screen is rendered.
 	 *
 	 * @return the event
@@ -177,6 +188,11 @@ public final class ScreenEvents {
 	@FunctionalInterface
 	public interface BeforeRender {
 		void beforeRender(Screen screen, DrawContext drawContext, int mouseX, int mouseY, float tickDelta);
+	}
+
+	@FunctionalInterface
+	public interface AfterBackground {
+		void afterBackground(Screen screen, DrawContext drawContext, int mouseX, int mouseY, float tickDelta);
 	}
 
 	@FunctionalInterface
