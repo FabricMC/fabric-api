@@ -16,16 +16,25 @@
 
 package net.fabricmc.fabric.mixin.client.indigo.renderer;
 
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
+import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessRenderCommandQueue;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 
 @Mixin(value = ItemRenderState.LayerRenderState.class)
@@ -38,17 +47,15 @@ abstract class ItemRenderStateLayerRenderStateMixin implements FabricLayerRender
 		mutableMesh.clear();
 	}
 
-	/* TODO 1.21.9
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "net/minecraft/client/render/item/ItemRenderer.renderItem(Lnet/minecraft/item/ItemDisplayContext;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;II[ILjava/util/List;Lnet/minecraft/client/render/RenderLayer;Lnet/minecraft/client/render/item/ItemRenderState$Glint;)V"))
-	private void renderItemProxy(ItemDisplayContext displayContext, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, int[] tints, List<BakedQuad> quads, RenderLayer layer, ItemRenderState.Glint glint) {
-		if (mutableMesh.size() > 0) {
-			ItemRenderContext.POOL.get().renderItem(displayContext, matrices, vertexConsumers, light, overlay, tints, quads, mutableMesh, layer, glint);
+	@Redirect(method = "render", at = @At(value = "INVOKE", target = "net/minecraft/client/render/command/OrderedRenderCommandQueue.submitItem(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/item/ItemDisplayContext;III[ILjava/util/List;Lnet/minecraft/client/render/RenderLayer;Lnet/minecraft/client/render/item/ItemRenderState$Glint;)V"))
+	private void submitItemProxy(OrderedRenderCommandQueue commandQueue, MatrixStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColor, int[] tints, List<BakedQuad> quads, RenderLayer layer, ItemRenderState.Glint glint) {
+		if (mutableMesh.size() > 0 && commandQueue instanceof AccessRenderCommandQueue access) {
+			// We don't have to copy the mesh here because vanilla doesn't copy the tint array or quad list either.
+			access.fabric_submitItem(matrices, displayContext, light, overlay, outlineColor, tints, quads, layer, glint, mutableMesh);
 		} else {
-			ItemRenderer.renderItem(displayContext, matrices, vertexConsumers, light, overlay, tints, quads, layer, glint);
+			commandQueue.submitItem(matrices, displayContext, light, overlay, outlineColor, tints, quads, layer, glint);
 		}
 	}
-
-	 */
 
 	@Override
 	public MutableMeshImpl fabric_getMutableMesh() {

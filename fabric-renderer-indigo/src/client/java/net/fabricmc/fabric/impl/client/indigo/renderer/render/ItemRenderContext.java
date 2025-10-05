@@ -34,11 +34,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.util.math.MatrixUtil;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
 
@@ -48,8 +48,6 @@ import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
 public class ItemRenderContext extends AbstractRenderContext {
 	private static final int GLINT_COUNT = ItemRenderState.Glint.values().length;
 
-	public static final ThreadLocal<ItemRenderContext> POOL = ThreadLocal.withInitial(ItemRenderContext::new);
-
 	private ItemDisplayContext displayContext;
 	private VertexConsumerProvider vertexConsumers;
 	private int light;
@@ -57,11 +55,12 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	private RenderLayer defaultLayer;
 	private ItemRenderState.Glint defaultGlint;
+	private boolean ignoreQuadGlint;
 
 	private MatrixStack.Entry specialGlintEntry;
 	private final VertexConsumer[] vertexConsumerCache = new VertexConsumer[3 * GLINT_COUNT];
 
-	public void renderItem(ItemDisplayContext displayContext, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay, int[] tints, List<BakedQuad> vanillaQuads, MeshViewImpl mesh, RenderLayer layer, ItemRenderState.Glint glint) {
+	public void renderItem(ItemDisplayContext displayContext, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay, int[] tints, List<BakedQuad> vanillaQuads, MeshView mesh, RenderLayer layer, ItemRenderState.Glint glint, boolean ignoreQuadGlint) {
 		this.displayContext = displayContext;
 		matrices = matrixStack.peek();
 		this.vertexConsumers = vertexConsumers;
@@ -71,6 +70,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 		defaultLayer = layer;
 		defaultGlint = glint;
+		this.ignoreQuadGlint = ignoreQuadGlint;
 
 		bufferQuads(vanillaQuads, mesh);
 
@@ -84,7 +84,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 		Arrays.fill(vertexConsumerCache, null);
 	}
 
-	private void bufferQuads(List<BakedQuad> vanillaQuads, MeshViewImpl mesh) {
+	private void bufferQuads(List<BakedQuad> vanillaQuads, MeshView mesh) {
 		QuadEmitter emitter = getEmitter();
 
 		final int vanillaQuadCount = vanillaQuads.size();
@@ -143,7 +143,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 			layer = RenderLayerHelper.getEntityBlockLayer(quadRenderLayer);
 		}
 
-		if (quadGlint == null) {
+		if (ignoreQuadGlint || quadGlint == null) {
 			glint = defaultGlint;
 		} else {
 			glint = quadGlint;
