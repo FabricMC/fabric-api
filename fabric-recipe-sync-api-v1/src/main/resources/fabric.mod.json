@@ -30,8 +30,5 @@
       "net.fabricmc.fabric.impl.recipe.sync.ClientPacketRegistrar::registerReceiver"
     ]
   },
-  "description": "Recipe sync API to help sync recipes on demand, useful in APIs like JEI (Just Enough Items).",
-  "custom": {
-    "fabric-api:module-lifecycle": "stable"
-  }
+  "description": "Recipe sync API to help sync recipes on demand, useful in APIs like JEI (Just Enough Items)."
 }
