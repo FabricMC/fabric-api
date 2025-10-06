@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-recipe-sync-api-v1",
+  "name": "Fabric Recipe Sync API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-recipe-sync-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "mixins": [
+    "fabric-recipe-sync-api-v1.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.17.2",
+    "fabric-networking-api-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.recipe.sync.PacketRegistrar::registerPayload"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.recipe.sync.ClientPacketRegistrar::registerReceiver"
+    ]
+  },
+  "description": "Recipe sync API to help sync recipes on demand, useful in APIs like JEI (Just Enough Items).",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
+}
