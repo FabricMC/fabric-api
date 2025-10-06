@@ -7,4 +7,3 @@ accessible    method   net/minecraft/recipe/Ingredient createDisplayWithRemainde
 accessible    field    net/minecraft/network/ClientConnection    channel    Lio/netty/channel/Channel;
 
 accessible    field    net/minecraft/server/network/ServerLoginNetworkHandler    connection    Lnet/minecraft/network/ClientConnection;
-accessible    field    net/minecraft/recipe/ServerRecipeManager    preparedRecipes    Lnet/minecraft/recipe/PreparedRecipes;

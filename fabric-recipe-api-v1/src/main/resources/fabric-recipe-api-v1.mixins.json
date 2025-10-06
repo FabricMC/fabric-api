@@ -3,8 +3,6 @@
   "package": "net.fabricmc.fabric.mixin.recipe",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "PlayerManagerMixin",
-    "ServerRecipeManagerMixin",
     "ingredient.ClientConnectionMixin",
     "ingredient.EncoderHandlerMixin",
     "ingredient.IngredientMixin",
