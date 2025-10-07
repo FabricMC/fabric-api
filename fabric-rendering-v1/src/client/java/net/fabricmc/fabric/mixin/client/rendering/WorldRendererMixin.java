@@ -102,21 +102,20 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.END_EXTRACTION.invoker().endExtraction(extractionContext);
 	}
 
+	@ModifyExpressionValue(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderBlockLayers(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/render/SectionRenderState;"))
+	private SectionRenderState onRenderBlockLayers(SectionRenderState sectionRenderState) {
+		renderContext.prepare(client.gameRenderer, (WorldRenderer) (Object) this, worldRenderState, sectionRenderState, entityRenderCommandQueue, bufferBuilders.getEntityVertexConsumers());
+		return sectionRenderState;
+	}
+
 	@WrapOperation(method = "method_62214",
 			slice = @Slice(from = @At(value = "INVOKE", target = "renderBlockLayers")),
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/SectionRenderState;renderSection(Lnet/minecraft/client/render/BlockRenderLayerGroup;)V", ordinal = 0)
 	)
 	private void onTerrainRender(SectionRenderState instance, BlockRenderLayerGroup group, Operation<Void> original) {
-		renderContext.prepare(client.gameRenderer, (WorldRenderer) (Object) this, worldRenderState, entityRenderCommandQueue, bufferBuilders.getEntityVertexConsumers());
 		WorldRenderEvents.START_RENDER.invoker().startRender(renderContext);
 		original.call(instance, group);
 		WorldRenderEvents.AFTER_TERRAIN_RENDER.invoker().afterTerrainRender(renderContext);
-	}
-
-	@ModifyExpressionValue(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderBlockLayers(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/render/SectionRenderState;"))
-	private SectionRenderState onRenderBlockLayers(SectionRenderState sectionRenderState) {
-		renderContext.setSectionRenderState(sectionRenderState);
-		return sectionRenderState;
 	}
 
 	@ModifyExpressionValue(method = "method_62214", at = @At(value = "NEW", target = "Lnet/minecraft/client/util/math/MatrixStack;"))

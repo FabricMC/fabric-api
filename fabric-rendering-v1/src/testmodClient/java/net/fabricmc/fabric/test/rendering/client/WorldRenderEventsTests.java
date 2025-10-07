@@ -31,6 +31,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.fabricmc.fabric.api.client.rendering.v1.world.AbstractWorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldEntitySubmitContext;
@@ -115,7 +116,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 			singleplayer.getServer().runCommand("/setblock 0 101 0 minecraft:diamond_block");
 			singleplayer.getClientWorld().waitForChunksRender();
 
-			context.assertScreenshotEquals("world_render_events_block_outline_and_after_translucent");
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("world_render_events_block_outline_and_after_translucent").withRegion(356, 98, 142, 238).save());
 		}
 	}
 

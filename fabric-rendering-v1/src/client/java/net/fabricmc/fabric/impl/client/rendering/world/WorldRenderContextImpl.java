@@ -47,22 +47,19 @@ public final class WorldRenderContextImpl implements AbstractWorldRenderContext,
 			GameRenderer gameRenderer,
 			WorldRenderer worldRenderer,
 			WorldRenderState worldRenderState,
+			SectionRenderState sectionRenderState,
 			OrderedRenderCommandQueue commandQueue,
 			VertexConsumerProvider consumers
 	) {
 		this.gameRenderer = gameRenderer;
 		this.worldRenderer = worldRenderer;
 		this.worldRenderState = worldRenderState;
+		this.sectionRenderState = sectionRenderState;
 
 		this.commandQueue = commandQueue;
 		this.consumers = consumers;
 
-		sectionRenderState = null;
 		matrixStack = null;
-	}
-
-	public void setSectionRenderState(SectionRenderState sectionRenderState) {
-		this.sectionRenderState = sectionRenderState;
 	}
 
 	public void setMatrixStack(@Nullable MatrixStack matrixStack) {
