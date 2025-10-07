@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.entity.event.client;
 
+import net.minecraft.item.Items;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRenderEvents;
 import net.fabricmc.fabric.test.entity.event.EntityEventTests;
@@ -24,7 +26,7 @@ public class EntityEventTestsClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		LivingEntityFeatureRenderEvents.ALLOW_CAPE_RENDER.register(state -> {
-			return !state.equippedChestStack.isOf(EntityEventTests.DIAMOND_ELYTRA);
+			return !(state.equippedChestStack.isOf(EntityEventTests.DIAMOND_ELYTRA) || state.equippedChestStack.isOf(Items.IRON_CHESTPLATE));
 		});
 	}
 }
