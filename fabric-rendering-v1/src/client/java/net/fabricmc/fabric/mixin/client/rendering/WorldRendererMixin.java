@@ -119,7 +119,7 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 		return sectionRenderState;
 	}
 
-	@ModifyExpressionValue(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;<init>()V"))
+	@ModifyExpressionValue(method = "method_62214", at = @At(value = "NEW", target = "Lnet/minecraft/client/util/math/MatrixStack;"))
 	private MatrixStack onCreateMatrixStack(MatrixStack matrixStack) {
 		context.setMatrixStack(matrixStack);
 		return matrixStack;

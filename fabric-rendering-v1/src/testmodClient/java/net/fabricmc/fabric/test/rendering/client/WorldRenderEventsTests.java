@@ -43,7 +43,7 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 	}
 
 	private static boolean onBlockOutline(WorldRenderContext context) {
-		if (context.worldRenderState().outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE)) {
+		if (Boolean.TRUE.equals(context.worldRenderState().outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE))) {
 			MatrixStack matrixStack = new MatrixStack();
 			matrixStack.push();
 			Vec3d cameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
