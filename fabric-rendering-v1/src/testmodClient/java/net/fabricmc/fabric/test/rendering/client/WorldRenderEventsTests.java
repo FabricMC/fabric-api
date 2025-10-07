@@ -20,24 +20,34 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.SectionRenderState;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexRendering;
-import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 
 public class WorldRenderEventsTests implements ClientModInitializer {
-	private static boolean onBlockOutline(WorldRenderState state, MatrixStack matrices, VertexConsumerProvider consumers) {
-		if (state.outlineRenderState.getData(WorldRenderEvents.BLOCK_OUTLINE_BLOCK_STATE).isOf(Blocks.DIAMOND_BLOCK)) {
+	private static final RenderStateDataKey<Boolean> DIAMOND_BLOCK_OUTLINE = RenderStateDataKey.create(() -> "fabric api test mod block outline diamond block");
+
+	private static void extractBlockOutline(WorldExtractionContext context, HitResult hitResult) {
+		if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() != HitResult.Type.MISS && context.world().getBlockState(blockHitResult.getBlockPos()).isOf(Blocks.DIAMOND_BLOCK)) {
+			context.worldRenderState().outlineRenderState.setData(DIAMOND_BLOCK_OUTLINE, true);
+		}
+	}
+
+	private static boolean onBlockOutline(WorldRenderContext context) {
+		if (context.worldRenderState().outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE)) {
 			MatrixStack matrixStack = new MatrixStack();
 			matrixStack.push();
 			Vec3d cameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
-			BlockPos pos = state.outlineRenderState.pos();
+			BlockPos pos = context.worldRenderState().outlineRenderState.pos();
 			double x = pos.getX() - cameraPos.x;
 			double y = pos.getY() - cameraPos.y;
 			double z = pos.getZ() - cameraPos.z;
@@ -46,7 +56,7 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 
 			MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
 					Blocks.DIAMOND_BLOCK.getDefaultState(),
-					matrixStack, consumers, 15728880, OverlayTexture.DEFAULT_UV
+					matrixStack, context.consumers(), 15728880, OverlayTexture.DEFAULT_UV
 			);
 
 			matrixStack.pop();
@@ -58,20 +68,21 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 	/**
 	 * Renders a translucent filled box at (0, 100, 0).
 	 */
-	private static void renderAfterTranslucent(WorldRenderState state, SectionRenderState sectionState, MatrixStack matrices, VertexConsumerProvider consumers) {
-		Vec3d camera = state.cameraRenderState.pos;
+	private static void renderAfterTranslucent(WorldRenderContext context) {
+		Vec3d camera = context.worldRenderState().cameraRenderState.pos;
 
-		matrices.push();
-		matrices.translate(-camera.x, -camera.y, -camera.z);
+		context.matrixStack().push();
+		context.matrixStack().translate(-camera.x, -camera.y, -camera.z);
 
-		VertexRendering.drawFilledBox(matrices, consumers.getBuffer(RenderLayer.getDebugFilledBox()), 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
+		VertexRendering.drawFilledBox(context.matrixStack(), context.consumers().getBuffer(RenderLayer.getDebugFilledBox()), 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
 
-		matrices.pop();
+		context.matrixStack().pop();
 	}
 
 	@Override
 	public void onInitializeClient() {
 		// Renders a diamond block above diamond blocks when they are looked at.
+		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register(WorldRenderEventsTests::extractBlockOutline);
 		WorldRenderEvents.BEFORE_BLOCK_OUTLINE_RENDER.register(WorldRenderEventsTests::onBlockOutline);
 		// Renders a translucent filled box at (0, 100, 0)
 		WorldRenderEvents.AFTER_TRANSLUCENT_RENDER.register(WorldRenderEventsTests::renderAfterTranslucent);
