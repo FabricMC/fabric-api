@@ -38,24 +38,6 @@ public final class WorldRenderEvents {
 		}
 	});
 
-	public static final Event<AfterTerrainExtraction> AFTER_TERRAIN_EXTRACTION = EventFactory.createArrayBacked(AfterTerrainExtraction.class, callbacks -> (state, world) -> {
-		for (AfterTerrainExtraction callback : callbacks) {
-			callback.afterTerrainExtraction(state, world);
-		}
-	});
-
-	public static final Event<AfterEntityExtraction> AFTER_ENTITY_EXTRACTION = EventFactory.createArrayBacked(AfterEntityExtraction.class, callbacks -> (state, world) -> {
-		for (AfterEntityExtraction callback : callbacks) {
-			callback.afterEntityExtraction(state, world);
-		}
-	});
-
-	public static final Event<AfterBlockOutlineExtraction> AFTER_BLOCK_OUTLINE_EXTRACTION = EventFactory.createArrayBacked(AfterBlockOutlineExtraction.class, callbacks -> (state, world) -> {
-		for (AfterBlockOutlineExtraction callback : callbacks) {
-			callback.afterBlockOutlineExtraction(state, world);
-		}
-	});
-
 	public static final Event<EndExtraction> END_EXTRACTION = EventFactory.createArrayBacked(EndExtraction.class, callbacks -> (state, world) -> {
 		for (EndExtraction callback : callbacks) {
 			callback.endExtraction(state, world);
@@ -132,21 +114,6 @@ public final class WorldRenderEvents {
 	@FunctionalInterface
 	public interface StartExtraction {
 		void startExtraction(WorldRenderState state, ClientWorld world);
-	}
-
-	@FunctionalInterface
-	public interface AfterTerrainExtraction {
-		void afterTerrainExtraction(WorldRenderState state, ClientWorld world);
-	}
-
-	@FunctionalInterface
-	public interface AfterEntityExtraction {
-		void afterEntityExtraction(WorldRenderState state, ClientWorld world);
-	}
-
-	@FunctionalInterface
-	public interface AfterBlockOutlineExtraction {
-		void afterBlockOutlineExtraction(WorldRenderState state, ClientWorld world);
 	}
 
 	@FunctionalInterface

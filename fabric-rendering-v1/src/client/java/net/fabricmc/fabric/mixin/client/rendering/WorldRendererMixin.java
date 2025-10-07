@@ -30,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BlockRenderLayerGroup;
-import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.SectionRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -67,18 +66,6 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.START_EXTRACTION.invoker().startExtraction(worldRenderState, world);
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;updateChunks(Lnet/minecraft/client/render/Camera;)V"))
-	private void onUpdateChunks(WorldRenderer instance, Camera camera, Operation<Void> original) {
-		original.call(instance, camera);
-		WorldRenderEvents.AFTER_TERRAIN_EXTRACTION.invoker().afterTerrainExtraction(worldRenderState, world);
-	}
-
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;fillBlockEntityRenderStates(Lnet/minecraft/client/render/Camera;FLnet/minecraft/client/render/state/WorldRenderState;)V"))
-	private void onBlockEntitiesExtraction(WorldRenderer instance, Camera camera, float tickProgress, WorldRenderState worldRenderState, Operation<Void> original) {
-		original.call(instance, camera, tickProgress, worldRenderState);
-		WorldRenderEvents.AFTER_ENTITY_EXTRACTION.invoker().afterEntityExtraction(worldRenderState, world);
-	}
-
 	@WrapOperation(method = "fillEntityOutlineRenderStates",
 			slice = @Slice(from = @At(value = "NEW", target = "(Lnet/minecraft/util/math/BlockPos;ZZLnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/shape/VoxelShape;)Lnet/minecraft/client/render/state/OutlineRenderState;")),
 			at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/state/WorldRenderState;outlineRenderState:Lnet/minecraft/client/render/state/OutlineRenderState;")
@@ -86,10 +73,6 @@ public abstract class WorldRendererMixin {
 	private void onBlockOutlineExtraction(WorldRenderState worldRenderState, OutlineRenderState outlineRenderState, Operation<Void> operation, @Local BlockState blockState) {
 		operation.call(worldRenderState, outlineRenderState);
 		outlineRenderState.setData(WorldRenderEvents.BLOCK_OUTLINE_BLOCK_STATE, blockState);
-		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.invoker().afterBlockOutlineExtraction(worldRenderState, world);
-		if (worldRenderState.outlineRenderState != outlineRenderState) {
-			outlineRenderState.setData(WorldRenderEvents.BLOCK_OUTLINE_BLOCK_STATE, blockState);
-		}
 	}
 
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldBorderRendering;updateRenderState(Lnet/minecraft/world/border/WorldBorder;Lnet/minecraft/util/math/Vec3d;DLnet/minecraft/client/render/state/WorldBorderRenderState;)V"))
