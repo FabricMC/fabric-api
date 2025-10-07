@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BlockRenderLayerGroup;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
@@ -37,6 +38,7 @@ import net.minecraft.client.render.WorldBorderRendering;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
 import net.minecraft.client.render.debug.DebugRenderer;
+import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.client.render.state.WorldBorderRenderState;
 import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -75,6 +77,19 @@ public abstract class WorldRendererMixin {
 	private void onBlockEntitiesExtraction(WorldRenderer instance, Camera camera, float tickProgress, WorldRenderState worldRenderState, Operation<Void> original) {
 		original.call(instance, camera, tickProgress, worldRenderState);
 		WorldRenderEvents.AFTER_ENTITY_EXTRACTION.invoker().afterEntityExtraction(worldRenderState, world);
+	}
+
+	@WrapOperation(method = "fillEntityOutlineRenderStates",
+			slice = @Slice(from = @At(value = "NEW", target = "(Lnet/minecraft/util/math/BlockPos;ZZLnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/shape/VoxelShape;)Lnet/minecraft/client/render/state/OutlineRenderState;")),
+			at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/state/WorldRenderState;outlineRenderState:Lnet/minecraft/client/render/state/OutlineRenderState;")
+	)
+	private void onBlockOutlineExtraction(WorldRenderState worldRenderState, OutlineRenderState outlineRenderState, Operation<Void> operation, @Local BlockState blockState) {
+		operation.call(worldRenderState, outlineRenderState);
+		outlineRenderState.setData(WorldRenderEvents.BLOCK_OUTLINE_BLOCK_STATE, blockState);
+		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.invoker().afterBlockOutlineExtraction(worldRenderState, world);
+		if (worldRenderState.outlineRenderState != outlineRenderState) {
+			outlineRenderState.setData(WorldRenderEvents.BLOCK_OUTLINE_BLOCK_STATE, blockState);
+		}
 	}
 
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldBorderRendering;updateRenderState(Lnet/minecraft/world/border/WorldBorder;Lnet/minecraft/util/math/Vec3d;DLnet/minecraft/client/render/state/WorldBorderRenderState;)V"))
@@ -127,6 +142,14 @@ public abstract class WorldRendererMixin {
 	private void onTranslucentRender(SectionRenderState instance, BlockRenderLayerGroup group, Operation<Void> original, @Local MatrixStack matrices, @Local(ordinal = 0) VertexConsumerProvider.Immediate consumers) {
 		original.call(instance, group);
 		WorldRenderEvents.AFTER_TRANSLUCENT_RENDER.invoker().afterTranslucentRender(worldRenderState, instance, matrices, consumers);
+	}
+
+	@Inject(method = "renderTargetBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/state/CameraRenderState;pos:Lnet/minecraft/util/math/Vec3d;"), cancellable = true)
+	private void onDrawBlockOutline(VertexConsumerProvider.Immediate consumers, MatrixStack matrices, boolean bl, WorldRenderState worldRenderState, CallbackInfo ci) {
+		if (!WorldRenderEvents.BEFORE_BLOCK_OUTLINE_RENDER.invoker().beforeBlockOutlineRender(worldRenderState, matrices, consumers)) {
+			consumers.drawCurrentLayer();
+			ci.cancel();
+		}
 	}
 
 	@Inject(method = "method_62214", at = @At("RETURN"))

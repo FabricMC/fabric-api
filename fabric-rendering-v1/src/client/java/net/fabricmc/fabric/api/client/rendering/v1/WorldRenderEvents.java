@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.SectionRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
@@ -28,6 +29,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class WorldRenderEvents {
 	private WorldRenderEvents() { }
+
+	public static final RenderStateDataKey<BlockState> BLOCK_OUTLINE_BLOCK_STATE = RenderStateDataKey.create(() -> "block outline block state");
 
 	public static final Event<StartExtraction> START_EXTRACTION = EventFactory.createArrayBacked(StartExtraction.class, callbacks -> (state, world) -> {
 		for (StartExtraction callback : callbacks) {
@@ -44,6 +47,12 @@ public final class WorldRenderEvents {
 	public static final Event<AfterEntityExtraction> AFTER_ENTITY_EXTRACTION = EventFactory.createArrayBacked(AfterEntityExtraction.class, callbacks -> (state, world) -> {
 		for (AfterEntityExtraction callback : callbacks) {
 			callback.afterEntityExtraction(state, world);
+		}
+	});
+
+	public static final Event<AfterBlockOutlineExtraction> AFTER_BLOCK_OUTLINE_EXTRACTION = EventFactory.createArrayBacked(AfterBlockOutlineExtraction.class, callbacks -> (state, world) -> {
+		for (AfterBlockOutlineExtraction callback : callbacks) {
+			callback.afterBlockOutlineExtraction(state, world);
 		}
 	});
 
@@ -102,6 +111,18 @@ public final class WorldRenderEvents {
 		}
 	});
 
+	public static final Event<BeforeBlockOutlineRender> BEFORE_BLOCK_OUTLINE_RENDER = EventFactory.createArrayBacked(BeforeBlockOutlineRender.class, callbacks -> (state, matrices, consumers) -> {
+		boolean shouldRender = true;
+
+		for (final BeforeBlockOutlineRender callback : callbacks) {
+			if (!callback.beforeBlockOutlineRender(state, matrices, consumers)) {
+				shouldRender = false;
+			}
+		}
+
+		return shouldRender;
+	});
+
 	public static final Event<EndRender> END_RENDER = EventFactory.createArrayBacked(EndRender.class, callbacks -> (state, sectionState, matrices, consumers) -> {
 		for (EndRender callback : callbacks) {
 			callback.endRender(state, sectionState, matrices, consumers);
@@ -121,6 +142,11 @@ public final class WorldRenderEvents {
 	@FunctionalInterface
 	public interface AfterEntityExtraction {
 		void afterEntityExtraction(WorldRenderState state, ClientWorld world);
+	}
+
+	@FunctionalInterface
+	public interface AfterBlockOutlineExtraction {
+		void afterBlockOutlineExtraction(WorldRenderState state, ClientWorld world);
 	}
 
 	@FunctionalInterface
@@ -166,6 +192,11 @@ public final class WorldRenderEvents {
 	@FunctionalInterface
 	public interface AfterTranslucentRender {
 		void afterTranslucentRender(WorldRenderState state, SectionRenderState sectionState, MatrixStack matrices, VertexConsumerProvider consumers);
+	}
+
+	@FunctionalInterface
+	public interface BeforeBlockOutlineRender {
+		boolean beforeBlockOutlineRender(WorldRenderState state, MatrixStack matrices, VertexConsumerProvider consumers);
 	}
 
 	@FunctionalInterface

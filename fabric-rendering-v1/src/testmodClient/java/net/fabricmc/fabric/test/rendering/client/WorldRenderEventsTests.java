@@ -16,41 +16,44 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.SectionRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexRendering;
 import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class WorldRenderEventsTests implements ClientModInitializer {
-	/* TODO 1.21.9
-	private static boolean onBlockOutline(WorldRenderContext wrc, OutlineRenderState outlineState) {
-		if (blockOutlineContext.blockState().isOf(Blocks.DIAMOND_BLOCK)) {
+	private static boolean onBlockOutline(WorldRenderState state, MatrixStack matrices, VertexConsumerProvider consumers) {
+		if (state.outlineRenderState.getData(WorldRenderEvents.BLOCK_OUTLINE_BLOCK_STATE).isOf(Blocks.DIAMOND_BLOCK)) {
 			MatrixStack matrixStack = new MatrixStack();
 			matrixStack.push();
 			Vec3d cameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
-			BlockPos pos = blockOutlineContext.blockPos();
+			BlockPos pos = state.outlineRenderState.pos();
 			double x = pos.getX() - cameraPos.x;
 			double y = pos.getY() - cameraPos.y;
 			double z = pos.getZ() - cameraPos.z;
-			matrixStack.translate(x+0.25, y+0.25+1, z+0.25);
+			matrixStack.translate(x + 0.25, y + 0.25 + 1, z + 0.25);
 			matrixStack.scale(0.5f, 0.5f, 0.5f);
 
 			MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
 					Blocks.DIAMOND_BLOCK.getDefaultState(),
-					matrixStack, wrc.consumers(), 15728880, OverlayTexture.DEFAULT_UV);
+					matrixStack, consumers, 15728880, OverlayTexture.DEFAULT_UV
+			);
 
 			matrixStack.pop();
 		}
 
 		return true;
 	}
-	*/
 
 	/**
 	 * Renders a translucent filled box at (0, 100, 0).
@@ -69,7 +72,7 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// Renders a diamond block above diamond blocks when they are looked at.
-		// WorldRenderEvents.BLOCK_OUTLINE.register(WorldRenderEventsTests::onBlockOutline);
+		WorldRenderEvents.BEFORE_BLOCK_OUTLINE_RENDER.register(WorldRenderEventsTests::onBlockOutline);
 		// Renders a translucent filled box at (0, 100, 0)
 		WorldRenderEvents.AFTER_TRANSLUCENT_RENDER.register(WorldRenderEventsTests::renderAfterTranslucent);
 	}
