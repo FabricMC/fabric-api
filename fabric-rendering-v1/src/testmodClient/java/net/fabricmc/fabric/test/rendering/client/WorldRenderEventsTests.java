@@ -32,6 +32,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import net.fabricmc.fabric.api.client.rendering.v1.world.AbstractWorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldEntitySubmitContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
@@ -119,9 +120,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	}
 
 	private static void assertExtractionContext(WorldExtractionContext context) {
-		assertNotNull(context.gameRenderer(), "gameRenderer is null");
-		assertNotNull(context.worldRenderer(), "worldRenderer is null");
-		assertNotNull(context.worldRenderState(), "worldRenderState is null");
+		assertAbstractRenderContext(context);
 		assertNotNull(context.world(), "world is null");
 		assertNotNull(context.camera(), "camera is null");
 		assertNotNull(context.frustum(), "frustum is null");
@@ -142,16 +141,13 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	}
 
 	private static void assertTerrainRenderContext(WorldTerrainRenderContext context) {
+		assertNotNull(context.sectionRenderState(), "sectionRenderState is null");
+	}
+
+	private static void assertAbstractRenderContext(AbstractWorldRenderContext context) {
 		assertNotNull(context.gameRenderer(), "gameRenderer is null");
 		assertNotNull(context.worldRenderer(), "worldRenderer is null");
 		assertNotNull(context.worldRenderState(), "worldRenderState is null");
-		assertNotNull(context.sectionRenderState(), "sectionRenderState is null");
-		assertNotNull(context.world(), "world is null");
-		assertNotNull(context.camera(), "camera is null");
-		assertNotNull(context.frustum(), "frustum is null");
-		assertNotNull(context.tickCounter(), "tickCounter is null");
-		assertNotNull(context.positionMatrix(), "positionMatrix is null");
-		assertNotNull(context.projectionMatrix(), "projectionMatrix is null");
 	}
 
 	private static void assertNotNull(Object object, String message) {

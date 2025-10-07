@@ -16,27 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.world;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.client.render.SectionRenderState;
-import net.minecraft.client.render.WorldRenderer;
 
-import net.fabricmc.fabric.impl.client.rendering.world.WorldRendererHooks;
-
-public interface WorldTerrainRenderContext extends WorldExtractionContext {
-	/**
-	 * Returns the {@code WorldTerrainRenderContext} for the given {@code WorldRenderer} instance, for use in cases where you
-	 * have access to the world renderer but not the world render context. World render events always pass the world
-	 * render context as a parameter, so always prefer to use that over this method.
-	 *
-	 * @param worldRenderer The world renderer
-	 * @return The world render context for the world renderer
-	 * @throws IllegalStateException If not currently rendering the world
-	 */
-	static WorldTerrainRenderContext getInstance(WorldRenderer worldRenderer) {
-		Preconditions.checkNotNull(worldRenderer, "worldRenderer");
-		return ((WorldRendererHooks) worldRenderer).fabric$getWorldRenderContext();
-	}
-
+public interface WorldTerrainRenderContext extends AbstractWorldRenderContext {
 	SectionRenderState sectionRenderState();
 }
