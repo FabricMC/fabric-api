@@ -530,6 +530,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.GOLD_INGOTS)
 				.addOptionalTag(ConventionalItemTags.NETHERITE_INGOTS);
 		valueLookupBuilder(ConventionalItemTags.NUGGETS)
+				.addOptionalTag(ConventionalItemTags.COPPER_NUGGETS)
 				.addOptionalTag(ConventionalItemTags.IRON_NUGGETS)
 				.addOptionalTag(ConventionalItemTags.GOLD_NUGGETS);
 		copy(ConventionalBlockTags.ORES, ConventionalItemTags.ORES);
@@ -608,6 +609,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		valueLookupBuilder(ConventionalItemTags.PRISMARINE_GEMS)
 				.add(Items.PRISMARINE_CRYSTALS);
 
+		valueLookupBuilder(ConventionalItemTags.COPPER_NUGGETS)
+				.add(Items.COPPER_NUGGET);
 		valueLookupBuilder(ConventionalItemTags.IRON_NUGGETS)
 				.add(Items.IRON_NUGGET);
 		valueLookupBuilder(ConventionalItemTags.GOLD_NUGGETS)

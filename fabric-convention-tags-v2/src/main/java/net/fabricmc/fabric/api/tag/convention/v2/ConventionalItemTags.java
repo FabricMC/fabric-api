@@ -172,6 +172,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> PRISMARINE_GEMS = register("gems/prismarine");
 
 	// Nuggets - vanilla instances
+	public static final TagKey<Item> COPPER_NUGGETS = register("nuggets/copper");
 	public static final TagKey<Item> IRON_NUGGETS = register("nuggets/iron");
 	public static final TagKey<Item> GOLD_NUGGETS = register("nuggets/gold");
 

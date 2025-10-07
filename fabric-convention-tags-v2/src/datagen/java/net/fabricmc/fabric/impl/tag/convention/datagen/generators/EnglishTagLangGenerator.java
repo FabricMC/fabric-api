@@ -247,6 +247,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.AMETHYST_GEMS, "Amethyst Gems");
 		translationBuilder.add(ConventionalItemTags.EMERALD_GEMS, "Emerald Gems");
 		translationBuilder.add(ConventionalItemTags.PRISMARINE_GEMS, "Prismarine Gems");
+		translationBuilder.add(ConventionalItemTags.COPPER_NUGGETS, "Copper Nuggets");
 		translationBuilder.add(ConventionalItemTags.IRON_NUGGETS, "Iron Nuggets");
 		translationBuilder.add(ConventionalItemTags.GOLD_NUGGETS, "Gold Nuggets");
 		translationBuilder.add(ConventionalItemTags.REDSTONE_DUSTS, "Redstone Dusts");
