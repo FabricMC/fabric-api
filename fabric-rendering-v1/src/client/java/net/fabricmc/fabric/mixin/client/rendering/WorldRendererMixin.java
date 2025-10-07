@@ -54,11 +54,11 @@ import net.minecraft.world.border.WorldBorder;
 
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.fabricmc.fabric.impl.client.rendering.world.WorldExtractionContextImpl;
 import net.fabricmc.fabric.impl.client.rendering.world.WorldRenderContextImpl;
-import net.fabricmc.fabric.impl.client.rendering.world.WorldRendererHooks;
 
 @Mixin(WorldRenderer.class)
-public abstract class WorldRendererMixin implements WorldRendererHooks {
+public abstract class WorldRendererMixin {
 	@Shadow
 	@Final
 	private MinecraftClient client;
@@ -76,31 +76,30 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 	private OrderedRenderCommandQueueImpl entityRenderCommandQueue;
 
 	@Unique
-	private final WorldRenderContextImpl context = new WorldRenderContextImpl();
+	private final WorldRenderContextImpl renderContext = new WorldRenderContextImpl();
 	@Unique
-	private boolean isRendering = false;
+	private final WorldExtractionContextImpl extractionContext = new WorldExtractionContextImpl();
 
 	@Inject(method = "render", at = @At("HEAD"))
 	private void beforeRender(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f matrix4f, Matrix4f projectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo ci) {
-		context.prepare(client.gameRenderer, (WorldRenderer) (Object) this, worldRenderState, world, tickCounter, renderBlockOutline, camera, positionMatrix, projectionMatrix, entityRenderCommandQueue, bufferBuilders.getEntityVertexConsumers());
-		isRendering = true;
+		extractionContext.prepare(client.gameRenderer, (WorldRenderer) (Object) this, worldRenderState, world, tickCounter, renderBlockOutline, camera, positionMatrix, projectionMatrix);
 	}
 
 	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;setupFrustum(Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/client/render/Frustum;"))
 	private Frustum onSetupFrustum(Frustum frustum) {
-		context.setFrustum(frustum);
+		extractionContext.setFrustum(frustum);
 		return frustum;
 	}
 
 	@Inject(method = "fillEntityOutlineRenderStates", at = @At("RETURN"))
 	private void afterBlockOutlineExtraction(Camera camera, WorldRenderState renderStates, CallbackInfo ci) {
-		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.invoker().afterBlockOutlineExtraction(context, client.crosshairTarget);
+		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.invoker().afterBlockOutlineExtraction(extractionContext, client.crosshairTarget);
 	}
 
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldBorderRendering;updateRenderState(Lnet/minecraft/world/border/WorldBorder;Lnet/minecraft/util/math/Vec3d;DLnet/minecraft/client/render/state/WorldBorderRenderState;)V"))
 	private void onWorldBorderExtraction(WorldBorderRendering instance, WorldBorder worldBorder, Vec3d vec3d, double d, WorldBorderRenderState worldBorderRenderState, Operation<Void> original) {
 		original.call(instance, worldBorder, vec3d, d, worldBorderRenderState);
-		WorldRenderEvents.END_EXTRACTION.invoker().endExtraction(context);
+		WorldRenderEvents.END_EXTRACTION.invoker().endExtraction(extractionContext);
 	}
 
 	@WrapOperation(method = "method_62214",
@@ -108,32 +107,33 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/SectionRenderState;renderSection(Lnet/minecraft/client/render/BlockRenderLayerGroup;)V", ordinal = 0)
 	)
 	private void onTerrainRender(SectionRenderState instance, BlockRenderLayerGroup group, Operation<Void> original) {
-		WorldRenderEvents.START_RENDER.invoker().startRender(context);
+		renderContext.prepare(client.gameRenderer, (WorldRenderer) (Object) this, worldRenderState, entityRenderCommandQueue, bufferBuilders.getEntityVertexConsumers());
+		WorldRenderEvents.START_RENDER.invoker().startRender(renderContext);
 		original.call(instance, group);
-		WorldRenderEvents.AFTER_TERRAIN_RENDER.invoker().afterTerrainRender(context);
+		WorldRenderEvents.AFTER_TERRAIN_RENDER.invoker().afterTerrainRender(renderContext);
 	}
 
 	@ModifyExpressionValue(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderBlockLayers(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/render/SectionRenderState;"))
 	private SectionRenderState onRenderBlockLayers(SectionRenderState sectionRenderState) {
-		context.setSectionRenderState(sectionRenderState);
+		renderContext.setSectionRenderState(sectionRenderState);
 		return sectionRenderState;
 	}
 
 	@ModifyExpressionValue(method = "method_62214", at = @At(value = "NEW", target = "Lnet/minecraft/client/util/math/MatrixStack;"))
 	private MatrixStack onCreateMatrixStack(MatrixStack matrixStack) {
-		context.setMatrixStack(matrixStack);
+		renderContext.setMatrixStack(matrixStack);
 		return matrixStack;
 	}
 
 	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;pushEntityRenders(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/state/WorldRenderState;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;)V"))
 	private void onPushEntityRenders(CallbackInfo ci) {
-		WorldRenderEvents.BEFORE_SUBMIT_ENTITY_COMMANDS.invoker().beforeSubmitEntityCommands(context);
+		WorldRenderEvents.BEFORE_SUBMIT_ENTITY_COMMANDS.invoker().beforeSubmitEntityCommands(renderContext);
 	}
 
 	@WrapOperation(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderBlockEntities(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/state/WorldRenderState;Lnet/minecraft/client/render/command/OrderedRenderCommandQueueImpl;)V"))
 	private void onPushBlockEntityRenders(WorldRenderer instance, MatrixStack matrices, WorldRenderState worldRenderState, OrderedRenderCommandQueueImpl commandQueue, Operation<Void> original) {
 		original.call(instance, matrices, worldRenderState, commandQueue);
-		WorldRenderEvents.AFTER_SUBMIT_ENTITY_COMMANDS.invoker().afterSubmitEntityCommands(context);
+		WorldRenderEvents.AFTER_SUBMIT_ENTITY_COMMANDS.invoker().afterSubmitEntityCommands(renderContext);
 	}
 
 	@WrapOperation(method = "method_62214",
@@ -141,15 +141,15 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;drawCurrentLayer()V")
 	)
 	private void onEntityRender(VertexConsumerProvider.Immediate instance, Operation<Void> original) {
-		WorldRenderEvents.BEFORE_ENTITY_RENDER.invoker().beforeEntityRender(context);
+		WorldRenderEvents.BEFORE_ENTITY_RENDER.invoker().beforeEntityRender(renderContext);
 		original.call(instance);
-		WorldRenderEvents.AFTER_ENTITY_RENDER.invoker().afterEntityRender(context);
+		WorldRenderEvents.AFTER_ENTITY_RENDER.invoker().afterEntityRender(renderContext);
 	}
 
 	@WrapOperation(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDDZ)V"))
 	private void onDebugRender(DebugRenderer instance, MatrixStack matrices, Frustum frustum, VertexConsumerProvider.Immediate consumers, double cameraX, double cameraY, double cameraZ, boolean lateDebug, Operation<Void> original) {
 		original.call(instance, matrices, frustum, consumers, cameraX, cameraY, cameraZ, lateDebug);
-		WorldRenderEvents.AFTER_DEBUG_RENDER.invoker().afterDebugRender(context);
+		WorldRenderEvents.AFTER_DEBUG_RENDER.invoker().afterDebugRender(renderContext);
 	}
 
 	@WrapOperation(method = "method_62214",
@@ -158,12 +158,12 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 	)
 	private void onTranslucentRender(SectionRenderState instance, BlockRenderLayerGroup group, Operation<Void> original) {
 		original.call(instance, group);
-		WorldRenderEvents.AFTER_TRANSLUCENT_RENDER.invoker().afterTranslucentRender(context);
+		WorldRenderEvents.AFTER_TRANSLUCENT_RENDER.invoker().afterTranslucentRender(renderContext);
 	}
 
 	@Inject(method = "renderTargetBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/state/CameraRenderState;pos:Lnet/minecraft/util/math/Vec3d;"), cancellable = true)
 	private void onDrawBlockOutline(VertexConsumerProvider.Immediate consumers, MatrixStack matrices, boolean bl, WorldRenderState worldRenderState, CallbackInfo ci) {
-		if (!WorldRenderEvents.BEFORE_BLOCK_OUTLINE_RENDER.invoker().beforeBlockOutlineRender(context)) {
+		if (!WorldRenderEvents.BEFORE_BLOCK_OUTLINE_RENDER.invoker().beforeBlockOutlineRender(renderContext)) {
 			consumers.drawCurrentLayer();
 			ci.cancel();
 		}
@@ -171,21 +171,11 @@ public abstract class WorldRendererMixin implements WorldRendererHooks {
 
 	@Inject(method = "method_62214", at = @At("RETURN"))
 	private void afterRender(CallbackInfo ci) {
-		WorldRenderEvents.END_RENDER.invoker().endRender(context);
-		isRendering = false;
+		WorldRenderEvents.END_RENDER.invoker().endRender(renderContext);
 	}
 
 	@Inject(method = "reload()V", at = @At("HEAD"))
 	private void onReload(CallbackInfo ci) {
 		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
-	}
-
-	@Override
-	public WorldRenderContextImpl fabric$getWorldRenderContext() {
-		if (!isRendering) {
-			throw new IllegalStateException("WorldRenderer is not rendering");
-		}
-
-		return context;
 	}
 }

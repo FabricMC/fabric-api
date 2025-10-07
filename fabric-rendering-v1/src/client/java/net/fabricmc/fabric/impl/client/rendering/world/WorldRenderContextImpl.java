@@ -17,38 +17,25 @@
 package net.fabricmc.fabric.impl.client.rendering.world;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.SectionRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
 
+import net.fabricmc.fabric.api.client.rendering.v1.world.AbstractWorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldEntitySubmitContext;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldTerrainRenderContext;
 
-public final class WorldRenderContextImpl implements WorldExtractionContext, WorldTerrainRenderContext, WorldRenderContext, WorldEntitySubmitContext {
+public final class WorldRenderContextImpl implements AbstractWorldRenderContext, WorldTerrainRenderContext, WorldRenderContext, WorldEntitySubmitContext {
 	private GameRenderer gameRenderer;
 	private WorldRenderer worldRenderer;
 	private WorldRenderState worldRenderState;
-	private ClientWorld world;
-	private Camera camera;
-	@Nullable
-	private Frustum frustum;
-	private RenderTickCounter tickCounter;
-	private Matrix4f positionMatrix;
-	private Matrix4f projectionMatrix;
-	private boolean blockOutlines;
 
 	private SectionRenderState sectionRenderState;
 	private OrderedRenderCommandQueue commandQueue;
@@ -60,36 +47,18 @@ public final class WorldRenderContextImpl implements WorldExtractionContext, Wor
 			GameRenderer gameRenderer,
 			WorldRenderer worldRenderer,
 			WorldRenderState worldRenderState,
-			ClientWorld world,
-			RenderTickCounter tickCounter,
-			boolean blockOutlines,
-			Camera camera,
-			Matrix4f positionMatrix,
-			Matrix4f projectionMatrix,
 			OrderedRenderCommandQueue commandQueue,
 			VertexConsumerProvider consumers
 	) {
 		this.gameRenderer = gameRenderer;
 		this.worldRenderer = worldRenderer;
 		this.worldRenderState = worldRenderState;
-		this.world = world;
-
-		this.tickCounter = tickCounter;
-		this.blockOutlines = blockOutlines;
-		this.camera = camera;
-		this.positionMatrix = positionMatrix;
-		this.projectionMatrix = projectionMatrix;
 
 		this.commandQueue = commandQueue;
 		this.consumers = consumers;
 
-		frustum = null;
 		sectionRenderState = null;
 		matrixStack = null;
-	}
-
-	public void setFrustum(@Nullable Frustum frustum) {
-		this.frustum = frustum;
 	}
 
 	public void setSectionRenderState(SectionRenderState sectionRenderState) {
@@ -113,42 +82,6 @@ public final class WorldRenderContextImpl implements WorldExtractionContext, Wor
 	@Override
 	public WorldRenderState worldRenderState() {
 		return worldRenderState;
-	}
-
-	@Override
-	public ClientWorld world() {
-		return world;
-	}
-
-	@Override
-	public Camera camera() {
-		return camera;
-	}
-
-	@Override
-	@Nullable
-	public Frustum frustum() {
-		return frustum;
-	}
-
-	@Override
-	public RenderTickCounter tickCounter() {
-		return this.tickCounter;
-	}
-
-	@Override
-	public Matrix4f positionMatrix() {
-		return positionMatrix;
-	}
-
-	@Override
-	public Matrix4f projectionMatrix() {
-		return projectionMatrix;
-	}
-
-	@Override
-	public boolean blockOutlines() {
-		return blockOutlines;
 	}
 
 	@Override
