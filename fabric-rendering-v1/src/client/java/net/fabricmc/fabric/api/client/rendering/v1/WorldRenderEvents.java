@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import net.minecraft.client.render.SectionRenderState;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -27,81 +29,147 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class WorldRenderEvents {
 	private WorldRenderEvents() { }
 
-	public static final Event<Start> START = EventFactory.createArrayBacked(Start.class, callbacks -> context -> {
-		for (final Start callback : callbacks) {
-			callback.onStart(context);
+	public static final Event<StartExtraction> START_EXTRACTION = EventFactory.createArrayBacked(StartExtraction.class, callbacks -> (state, world) -> {
+		for (StartExtraction callback : callbacks) {
+			callback.startExtraction(state, world);
 		}
 	});
 
-	public static final Event<UpdateState> UPDATE_STATE = EventFactory.createArrayBacked(UpdateState.class, callbacks -> (context, world) -> {
-		for (final UpdateState callback : callbacks) {
-			callback.afterStateUpdate(context, world);
+	public static final Event<AfterTerrainExtraction> AFTER_TERRAIN_EXTRACTION = EventFactory.createArrayBacked(AfterTerrainExtraction.class, callbacks -> (state, world) -> {
+		for (AfterTerrainExtraction callback : callbacks) {
+			callback.afterTerrainExtraction(state, world);
 		}
 	});
 
-	public static final Event<BeforeEntities> BEFORE_ENTITIES = EventFactory.createArrayBacked(BeforeEntities.class, callbacks -> context -> {
-		for (final BeforeEntities callback : callbacks) {
-			callback.beforeEntities(context);
+	public static final Event<AfterEntityExtraction> AFTER_ENTITY_EXTRACTION = EventFactory.createArrayBacked(AfterEntityExtraction.class, callbacks -> (state, world) -> {
+		for (AfterEntityExtraction callback : callbacks) {
+			callback.afterEntityExtraction(state, world);
 		}
 	});
 
-	public static final Event<AfterEntities> AFTER_ENTITIES = EventFactory.createArrayBacked(AfterEntities.class, callbacks -> context -> {
-		for (final AfterEntities callback : callbacks) {
-			callback.afterEntities(context);
+	public static final Event<EndExtraction> END_EXTRACTION = EventFactory.createArrayBacked(EndExtraction.class, callbacks -> (state, world) -> {
+		for (EndExtraction callback : callbacks) {
+			callback.endExtraction(state, world);
 		}
 	});
 
-	public static final Event<DebugRender> BEFORE_DEBUG_RENDER = EventFactory.createArrayBacked(DebugRender.class, callbacks -> context -> {
-		for (final DebugRender callback : callbacks) {
-			callback.beforeDebugRender(context);
+	public static final Event<BeforeSubmitEntityCommands> BEFORE_SUBMIT_ENTITY_COMMANDS = EventFactory.createArrayBacked(BeforeSubmitEntityCommands.class, callbacks -> (state, matrices, commandQueue, consumers) -> {
+		for (BeforeSubmitEntityCommands callback : callbacks) {
+			callback.beforeSubmitEntityCommands(state, matrices, commandQueue, consumers);
 		}
 	});
 
-	public static final Event<AfterTranslucent> AFTER_TRANSLUCENT = EventFactory.createArrayBacked(AfterTranslucent.class, callbacks -> context -> {
-		for (final AfterTranslucent callback : callbacks) {
-			callback.afterTranslucent(context);
+	public static final Event<AfterSubmitEntityCommands> AFTER_SUBMIT_ENTITY_COMMANDS = EventFactory.createArrayBacked(AfterSubmitEntityCommands.class, callbacks -> (state, matrices, commandQueue, consumers) -> {
+		for (AfterSubmitEntityCommands callback : callbacks) {
+			callback.afterSubmitEntityCommands(state, matrices, commandQueue, consumers);
 		}
 	});
 
-	public static final Event<Last> LAST = EventFactory.createArrayBacked(Last.class, callbacks -> context -> {
-		for (final Last callback : callbacks) {
-			callback.onLast(context);
+	public static final Event<StartRender> START_RENDER = EventFactory.createArrayBacked(StartRender.class, callbacks -> (state, sectionState) -> {
+		for (StartRender callback : callbacks) {
+			callback.startRender(state, sectionState);
 		}
 	});
 
+	public static final Event<AfterTerrainRender> AFTER_TERRAIN_RENDER = EventFactory.createArrayBacked(AfterTerrainRender.class, callbacks -> (state, sectionState) -> {
+		for (AfterTerrainRender callback : callbacks) {
+			callback.afterTerrainRender(state, sectionState);
+		}
+	});
+
+	// This might be merged into after terrain render in the future, but right now, these two events are not in the same place.
+	public static final Event<BeforeEntityRender> BEFORE_ENTITY_RENDER = EventFactory.createArrayBacked(BeforeEntityRender.class, callbacks -> (state, sectionState, matrices, consumers) -> {
+		for (BeforeEntityRender callback : callbacks) {
+			callback.beforeEntityRender(state, sectionState, matrices, consumers);
+		}
+	});
+
+	public static final Event<AfterEntityRender> AFTER_ENTITY_RENDER = EventFactory.createArrayBacked(AfterEntityRender.class, callbacks -> (state, sectionState, matrices, consumers) -> {
+		for (AfterEntityRender callback : callbacks) {
+			callback.afterEntityRender(state, sectionState, matrices, consumers);
+		}
+	});
+
+	public static final Event<AfterDebugRender> AFTER_DEBUG_RENDER = EventFactory.createArrayBacked(AfterDebugRender.class, callbacks -> (state, sectionState, matrices, consumers) -> {
+		for (AfterDebugRender callback : callbacks) {
+			callback.afterDebugRender(state, sectionState, matrices, consumers);
+		}
+	});
+
+	public static final Event<AfterTranslucentRender> AFTER_TRANSLUCENT_RENDER = EventFactory.createArrayBacked(AfterTranslucentRender.class, callbacks -> (state, sectionState, matrices, consumers) -> {
+		for (AfterTranslucentRender callback : callbacks) {
+			callback.afterTranslucentRender(state, sectionState, matrices, consumers);
+		}
+	});
+
+	public static final Event<EndRender> END_RENDER = EventFactory.createArrayBacked(EndRender.class, callbacks -> (state, sectionState, matrices, consumers) -> {
+		for (EndRender callback : callbacks) {
+			callback.endRender(state, sectionState, matrices, consumers);
+		}
+	});
 
 	@FunctionalInterface
-	public interface Start {
-		void onStart(WorldRenderState worldRenderState);
+	public interface StartExtraction {
+		void startExtraction(WorldRenderState state, ClientWorld world);
 	}
 
 	@FunctionalInterface
-	public interface UpdateState {
-		void afterStateUpdate(WorldRenderState worldRenderState, ClientWorld world);
+	public interface AfterTerrainExtraction {
+		void afterTerrainExtraction(WorldRenderState state, ClientWorld world);
 	}
 
 	@FunctionalInterface
-	public interface BeforeEntities {
-		void beforeEntities(WorldRenderState worldRenderState, MatrixStack matrixStack, OrderedRenderCommandQueue renderCommandQueue);
+	public interface AfterEntityExtraction {
+		void afterEntityExtraction(WorldRenderState state, ClientWorld world);
 	}
 
 	@FunctionalInterface
-	public interface AfterEntities {
-		void afterEntities(WorldRenderState worldRenderState, MatrixStack matrixStack, OrderedRenderCommandQueue renderCommandQueue);
+	public interface EndExtraction {
+		void endExtraction(WorldRenderState state, ClientWorld world);
 	}
 
 	@FunctionalInterface
-	public interface DebugRender {
-		void beforeDebugRender(WorldRenderState worldRenderState);
+	public interface BeforeSubmitEntityCommands {
+		void beforeSubmitEntityCommands(WorldRenderState state, MatrixStack matrices, OrderedRenderCommandQueue commandQueue, VertexConsumerProvider consumers);
 	}
 
 	@FunctionalInterface
-	public interface AfterTranslucent {
-		void afterTranslucent(WorldRenderState worldRenderState);
+	public interface AfterSubmitEntityCommands {
+		void afterSubmitEntityCommands(WorldRenderState state, MatrixStack matrices, OrderedRenderCommandQueue commandQueue, VertexConsumerProvider consumers);
 	}
 
 	@FunctionalInterface
-	public interface Last {
-		void onLast(WorldRenderState worldRenderState);
+	public interface StartRender {
+		void startRender(WorldRenderState state, SectionRenderState sectionState);
+	}
+
+	@FunctionalInterface
+	public interface AfterTerrainRender {
+		void afterTerrainRender(WorldRenderState state, SectionRenderState sectionState);
+	}
+
+	@FunctionalInterface
+	public interface BeforeEntityRender {
+		void beforeEntityRender(WorldRenderState state, SectionRenderState sectionState, MatrixStack matrices, VertexConsumerProvider consumers);
+	}
+
+	@FunctionalInterface
+	public interface AfterEntityRender {
+		void afterEntityRender(WorldRenderState state, SectionRenderState sectionState, MatrixStack matrices, VertexConsumerProvider consumers);
+	}
+
+	@FunctionalInterface
+	public interface AfterDebugRender {
+		void afterDebugRender(WorldRenderState state, SectionRenderState sectionState, MatrixStack matrices, VertexConsumerProvider consumers);
+	}
+
+	@FunctionalInterface
+	public interface AfterTranslucentRender {
+		void afterTranslucentRender(WorldRenderState state, SectionRenderState sectionState, MatrixStack matrices, VertexConsumerProvider consumers);
+	}
+
+	@FunctionalInterface
+	public interface EndRender {
+		void endRender(WorldRenderState state, SectionRenderState sectionState, MatrixStack matrices, VertexConsumerProvider consumers);
 	}
 }
