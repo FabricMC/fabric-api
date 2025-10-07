@@ -109,7 +109,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@WrapOperation(method = "method_62214",
-			slice = @Slice(from = @At(value = "INVOKE", target = "renderBlockLayers")),
+			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderBlockLayers(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/render/SectionRenderState;")),
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/SectionRenderState;renderSection(Lnet/minecraft/client/render/BlockRenderLayerGroup;)V", ordinal = 0)
 	)
 	private void onTerrainRender(SectionRenderState instance, BlockRenderLayerGroup group, Operation<Void> original) {
