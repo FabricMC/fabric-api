@@ -11,6 +11,7 @@
     "CapeFeatureRendererMixin",
     "ClientWorldMixin",
     "DebugOptionsScreenEntryMixin",
+    "DebugOptionsScreenListWidgetMixin",
     "DimensionEffectsAccessor",
     "DrawAccessor",
     "DrawContextMixin",
