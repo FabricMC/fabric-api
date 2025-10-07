@@ -109,7 +109,7 @@ public final class WorldRenderEvents {
 
 	@FunctionalInterface
 	public interface AfterBlockOutlineExtraction {
-		void afterBlockOutlineExtraction(WorldRenderContext context, HitResult result);
+		void afterBlockOutlineExtraction(WorldExtractionContext context, HitResult result);
 	}
 
 	@FunctionalInterface

@@ -28,12 +28,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldEntitySubmitContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldTerrainRenderContext;
 
-public class WorldRenderEventsTests implements ClientModInitializer {
+public class WorldRenderEventsTests implements ClientModInitializer, FabricClientGameTest {
 	private static final RenderStateDataKey<Boolean> DIAMOND_BLOCK_OUTLINE = RenderStateDataKey.create(() -> "fabric api test mod block outline diamond block");
 
 	private static void extractBlockOutline(WorldExtractionContext context, HitResult hitResult) {
@@ -86,5 +91,78 @@ public class WorldRenderEventsTests implements ClientModInitializer {
 		WorldRenderEvents.BEFORE_BLOCK_OUTLINE_RENDER.register(WorldRenderEventsTests::onBlockOutline);
 		// Renders a translucent filled box at (0, 100, 0)
 		WorldRenderEvents.AFTER_TRANSLUCENT_RENDER.register(WorldRenderEventsTests::renderAfterTranslucent);
+	}
+
+	@Override
+	public void runTest(ClientGameTestContext context) {
+		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register((renderContext, hitResult) -> assertExtractionContext(renderContext));
+		WorldRenderEvents.END_EXTRACTION.register(WorldRenderEventsTests::assertExtractionContext);
+		WorldRenderEvents.BEFORE_SUBMIT_ENTITY_COMMANDS.register(WorldRenderEventsTests::assertSubmitEntityContext);
+		WorldRenderEvents.AFTER_SUBMIT_ENTITY_COMMANDS.register(WorldRenderEventsTests::assertSubmitEntityContext);
+		WorldRenderEvents.START_RENDER.register(WorldRenderEventsTests::assertTerrainRenderContext);
+		WorldRenderEvents.AFTER_TERRAIN_RENDER.register(WorldRenderEventsTests::assertTerrainRenderContext);
+		WorldRenderEvents.BEFORE_ENTITY_RENDER.register(WorldRenderEventsTests::assertRenderContext);
+		WorldRenderEvents.AFTER_ENTITY_RENDER.register(WorldRenderEventsTests::assertRenderContext);
+		WorldRenderEvents.AFTER_DEBUG_RENDER.register(WorldRenderEventsTests::assertRenderContext);
+		WorldRenderEvents.AFTER_TRANSLUCENT_RENDER.register(WorldRenderEventsTests::assertRenderContext);
+		WorldRenderEvents.END_RENDER.register(WorldRenderEventsTests::assertRenderContext);
+
+		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
+			// Set up the test world
+			singleplayer.getServer().runCommand("/setblock 0 99 -3 minecraft:stone");
+			singleplayer.getServer().runCommand("/tp @a 0 100 -3");
+			singleplayer.getServer().runCommand("/setblock 0 101 0 minecraft:diamond_block");
+			singleplayer.getClientWorld().waitForChunksRender();
+
+			context.assertScreenshotEquals("world_render_events_block_outline_and_after_translucent");
+		}
+	}
+
+	private static void assertExtractionContext(WorldExtractionContext context) {
+		assertNotNull(context.gameRenderer(), "gameRenderer is null");
+		assertNotNull(context.worldRenderer(), "worldRenderer is null");
+		assertNotNull(context.worldRenderState(), "worldRenderState is null");
+		assertNotNull(context.world(), "world is null");
+		assertNotNull(context.camera(), "camera is null");
+		assertNotNull(context.frustum(), "frustum is null");
+		assertNotNull(context.tickCounter(), "tickCounter is null");
+		assertNotNull(context.positionMatrix(), "positionMatrix is null");
+		assertNotNull(context.projectionMatrix(), "projectionMatrix is null");
+	}
+
+	private static void assertSubmitEntityContext(WorldEntitySubmitContext context) {
+		assertRenderContext(context);
+		assertNotNull(context.commandQueue(), "commandQueue is null");
+	}
+
+	private static void assertRenderContext(WorldRenderContext context) {
+		assertTerrainRenderContext(context);
+		assertNotNull(context.matrixStack(), "matrixStack is null");
+		assertNotNull(context.consumers(), "consumers is null");
+	}
+
+	private static void assertTerrainRenderContext(WorldTerrainRenderContext context) {
+		assertNotNull(context.gameRenderer(), "gameRenderer is null");
+		assertNotNull(context.worldRenderer(), "worldRenderer is null");
+		assertNotNull(context.worldRenderState(), "worldRenderState is null");
+		assertNotNull(context.sectionRenderState(), "sectionRenderState is null");
+		assertNotNull(context.world(), "world is null");
+		assertNotNull(context.camera(), "camera is null");
+		assertNotNull(context.frustum(), "frustum is null");
+		assertNotNull(context.tickCounter(), "tickCounter is null");
+		assertNotNull(context.positionMatrix(), "positionMatrix is null");
+		assertNotNull(context.projectionMatrix(), "projectionMatrix is null");
+	}
+
+	private static void assertNotNull(Object object, String message) {
+		if (object == null) {
+			throw new AssertionError(message);
+		}
+	}
+
+	private static void assertNull(Object object, String message) {
+		if (object != null) {
+			throw new AssertionError(message);
+		}
 	}
 }
