@@ -20,28 +20,23 @@ import java.util.Comparator;
 
 import net.minecraft.util.Identifier;
 
-// Same logic from CategoryComparator in keybindings
 public class DebugOptionsComparator implements Comparator<Identifier> {
 	public static final DebugOptionsComparator INSTANCE = new DebugOptionsComparator();
 
 	@Override
 	public int compare(Identifier o1, Identifier o2) {
-		boolean o1Vanilla = o1.getNamespace().equals(Identifier.DEFAULT_NAMESPACE);
-		boolean o2Vanilla = o2.getNamespace().equals(Identifier.DEFAULT_NAMESPACE);
+		// Sort 'minecraft' namespace first, then alphabetically by namespace, then path.
+		boolean o1IsMinecraft = Identifier.DEFAULT_NAMESPACE.equals(o1.getNamespace());
+		boolean o2IsMinecraft = Identifier.DEFAULT_NAMESPACE.equals(o2.getNamespace());
 
-		// If both are from vanilla, don't reorder them. Assumes sort is stable.
-		if (o1Vanilla && o2Vanilla) {
-			return 0;
+		if (o1IsMinecraft && !o2IsMinecraft) {
+			return -1;
 		}
 
-		// If exactly one is from vanilla, sort the one from vanilla first.
-		if (o1Vanilla) {
-			return -1;
-		} else if (o2Vanilla) {
+		if (!o1IsMinecraft && o2IsMinecraft) {
 			return 1;
 		}
 
-		// If neither is from vanilla, sort alphabetically by namespace and then path.
 		int c = o1.getNamespace().compareTo(o2.getNamespace());
 
 		if (c != 0) {
