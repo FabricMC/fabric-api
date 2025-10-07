@@ -53,6 +53,7 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 
 	private static final boolean DEBUG_RELOADERS_IDENTITY = TriState.fromSystemProperty("fabric.resource_loader.debug.reloaders_identity")
 			.orElse(FabricLoader.getInstance().isDevelopmentEnvironment());
+	public static final boolean DEBUG_PROFILE_RESOURCE_RELOADERS = Boolean.getBoolean("fabric.resource_loader.debug.profile_resource_reloaders");
 	private static final boolean DEBUG_RELOADERS_ORDER = Boolean.getBoolean("fabric.resource_loader.debug.reloaders_order");
 
 	public static ResourceLoaderImpl get(ResourceType type) {

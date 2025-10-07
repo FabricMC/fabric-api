@@ -22,6 +22,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
@@ -60,5 +61,14 @@ public class SimpleResourceReloadMixin {
 		}
 
 		return reloaders;
+	}
+
+	@ModifyVariable(
+			method = "start(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/resource/ResourceReload;",
+			at = @At(value = "LOAD", ordinal = 0),
+			argsOnly = true
+	)
+	private static boolean adjustProfiledCheck(boolean profiled) {
+		return profiled || ResourceLoaderImpl.DEBUG_PROFILE_RESOURCE_RELOADERS;
 	}
 }
