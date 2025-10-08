@@ -168,7 +168,7 @@ public abstract class WorldRendererMixin {
 		}
 	}
 
-	@Inject(method = "method_62214", at = @At("RETURN"))
+	@Inject(method = "method_62214", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;draw()V"))
 	private void afterRender(CallbackInfo ci) {
 		WorldRenderEvents.END_RENDER.invoker().endRender(renderContext);
 	}
