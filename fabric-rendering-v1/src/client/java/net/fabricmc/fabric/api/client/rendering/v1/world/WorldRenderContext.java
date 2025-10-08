@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.world;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.util.math.MatrixStack;
 
 /**
@@ -25,6 +28,9 @@ import net.minecraft.client.util.math.MatrixStack;
  * {@link WorldRenderer#render}.
  */
 public interface WorldRenderContext extends WorldTerrainRenderContext {
+	@ApiStatus.Experimental
+	OrderedRenderCommandQueue commandQueue();
+
 	/**
 	 * The matrix stack is only not null in {@link WorldRenderEvents#AFTER_ENTITIES} or later events.
 	 */

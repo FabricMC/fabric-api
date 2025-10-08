@@ -28,11 +28,10 @@ import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.world.AbstractWorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldEntitySubmitContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldTerrainRenderContext;
 
-public final class WorldRenderContextImpl implements AbstractWorldRenderContext, WorldTerrainRenderContext, WorldRenderContext, WorldEntitySubmitContext {
+public final class WorldRenderContextImpl implements AbstractWorldRenderContext, WorldTerrainRenderContext, WorldRenderContext {
 	private GameRenderer gameRenderer;
 	private WorldRenderer worldRenderer;
 	private WorldRenderState worldRenderState;

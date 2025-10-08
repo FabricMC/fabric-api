@@ -107,14 +107,12 @@ public abstract class WorldRendererMixin {
 		return sectionRenderState;
 	}
 
-	@WrapOperation(method = "method_62214",
+	@Inject(method = "method_62214",
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderBlockLayers(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/render/SectionRenderState;")),
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/SectionRenderState;renderSection(Lnet/minecraft/client/render/BlockRenderLayerGroup;)V", ordinal = 0)
 	)
-	private void onTerrainRender(SectionRenderState instance, BlockRenderLayerGroup group, Operation<Void> original) {
+	private void beforeTerrainRender(CallbackInfo ci) {
 		WorldRenderEvents.START_RENDER.invoker().startRender(renderContext);
-		original.call(instance, group);
-		WorldRenderEvents.AFTER_TERRAIN_RENDER.invoker().afterTerrainRender(renderContext);
 	}
 
 	@ModifyExpressionValue(method = "method_62214", at = @At(value = "NEW", target = "Lnet/minecraft/client/util/math/MatrixStack;"))
@@ -123,29 +121,18 @@ public abstract class WorldRendererMixin {
 		return matrixStack;
 	}
 
-	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;pushEntityRenders(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/state/WorldRenderState;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;)V"))
-	private void onPushEntityRenders(CallbackInfo ci) {
-		WorldRenderEvents.BEFORE_SUBMIT_ENTITY_COMMANDS.invoker().beforeSubmitEntityCommands(renderContext);
-	}
-
-	@WrapOperation(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderBlockEntities(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/state/WorldRenderState;Lnet/minecraft/client/render/command/OrderedRenderCommandQueueImpl;)V"))
-	private void onPushBlockEntityRenders(WorldRenderer instance, MatrixStack matrices, WorldRenderState worldRenderState, OrderedRenderCommandQueueImpl commandQueue, Operation<Void> original) {
-		original.call(instance, matrices, worldRenderState, commandQueue);
-		WorldRenderEvents.AFTER_SUBMIT_ENTITY_COMMANDS.invoker().afterSubmitEntityCommands(renderContext);
-	}
-
 	@WrapOperation(method = "method_62214",
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/command/RenderDispatcher;render()V")),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;drawCurrentLayer()V")
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;drawCurrentLayer()V", ordinal = 0)
 	)
 	private void onEntityRender(VertexConsumerProvider.Immediate instance, Operation<Void> original) {
-		WorldRenderEvents.BEFORE_ENTITY_RENDER.invoker().beforeEntityRender(renderContext);
+		WorldRenderEvents.BEFORE_ENTITIES.invoker().beforeEntities(renderContext);
 		original.call(instance);
-		WorldRenderEvents.AFTER_ENTITY_RENDER.invoker().afterEntityRender(renderContext);
+		WorldRenderEvents.AFTER_ENTITIES.invoker().afterEntities(renderContext);
 	}
 
 	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDDZ)V"))
-	private void onDebugRender(CallbackInfo ci) {
+	private void beforeDebugRender(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.invoker().beforeDebugRender(renderContext);
 	}
 

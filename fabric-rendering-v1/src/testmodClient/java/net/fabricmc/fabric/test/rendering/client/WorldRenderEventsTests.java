@@ -35,7 +35,6 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.fabricmc.fabric.api.client.rendering.v1.world.AbstractWorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldEntitySubmitContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
@@ -100,12 +99,9 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	public void runTest(ClientGameTestContext context) {
 		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register((renderContext, hitResult) -> assertExtractionContext(renderContext));
 		WorldRenderEvents.END_EXTRACTION.register(WorldRenderEventsTests::assertExtractionContext);
-		WorldRenderEvents.BEFORE_SUBMIT_ENTITY_COMMANDS.register(WorldRenderEventsTests::assertSubmitEntityContext);
-		WorldRenderEvents.AFTER_SUBMIT_ENTITY_COMMANDS.register(WorldRenderEventsTests::assertSubmitEntityContext);
 		WorldRenderEvents.START_RENDER.register(WorldRenderEventsTests::assertTerrainRenderContext);
-		WorldRenderEvents.AFTER_TERRAIN_RENDER.register(WorldRenderEventsTests::assertTerrainRenderContext);
-		WorldRenderEvents.BEFORE_ENTITY_RENDER.register(WorldRenderEventsTests::assertRenderContext);
-		WorldRenderEvents.AFTER_ENTITY_RENDER.register(WorldRenderEventsTests::assertRenderContext);
+		WorldRenderEvents.BEFORE_ENTITIES.register(WorldRenderEventsTests::assertRenderContext);
+		WorldRenderEvents.AFTER_ENTITIES.register(WorldRenderEventsTests::assertRenderContext);
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.register(WorldRenderEventsTests::assertRenderContext);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(WorldRenderEventsTests::assertRenderContext);
 		WorldRenderEvents.LAST.register(WorldRenderEventsTests::assertRenderContext);
@@ -129,11 +125,6 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 		assertNotNull(context.tickCounter(), "tickCounter is null");
 		assertNotNull(context.positionMatrix(), "positionMatrix is null");
 		assertNotNull(context.projectionMatrix(), "projectionMatrix is null");
-	}
-
-	private static void assertSubmitEntityContext(WorldEntitySubmitContext context) {
-		assertRenderContext(context);
-		assertNotNull(context.commandQueue(), "commandQueue is null");
 	}
 
 	private static void assertRenderContext(WorldRenderContext context) {

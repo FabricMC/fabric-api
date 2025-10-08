@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.world;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.util.hit.HitResult;
@@ -39,42 +39,21 @@ public final class WorldRenderEvents {
 		}
 	});
 
-	@ApiStatus.Experimental
-	public static final Event<BeforeSubmitEntityCommands> BEFORE_SUBMIT_ENTITY_COMMANDS = EventFactory.createArrayBacked(BeforeSubmitEntityCommands.class, callbacks -> context -> {
-		for (final BeforeSubmitEntityCommands callback : callbacks) {
-			callback.beforeSubmitEntityCommands(context);
-		}
-	});
-
-	@ApiStatus.Experimental
-	public static final Event<AfterSubmitEntityCommands> AFTER_SUBMIT_ENTITY_COMMANDS = EventFactory.createArrayBacked(AfterSubmitEntityCommands.class, callbacks -> context -> {
-		for (final AfterSubmitEntityCommands callback : callbacks) {
-			callback.afterSubmitEntityCommands(context);
-		}
-	});
-
 	public static final Event<StartRender> START_RENDER = EventFactory.createArrayBacked(StartRender.class, callbacks -> context -> {
 		for (final StartRender callback : callbacks) {
 			callback.startRender(context);
 		}
 	});
 
-	public static final Event<AfterTerrainRender> AFTER_TERRAIN_RENDER = EventFactory.createArrayBacked(AfterTerrainRender.class, callbacks -> context -> {
-		for (final AfterTerrainRender callback : callbacks) {
-			callback.afterTerrainRender(context);
+	public static final Event<BeforeEntities> BEFORE_ENTITIES = EventFactory.createArrayBacked(BeforeEntities.class, callbacks -> context -> {
+		for (final BeforeEntities callback : callbacks) {
+			callback.beforeEntities(context);
 		}
 	});
 
-	// This might be merged into after terrain render in the future, but right now, these two events are not in the same place.
-	public static final Event<BeforeEntityRender> BEFORE_ENTITY_RENDER = EventFactory.createArrayBacked(BeforeEntityRender.class, callbacks -> context -> {
-		for (final BeforeEntityRender callback : callbacks) {
-			callback.beforeEntityRender(context);
-		}
-	});
-
-	public static final Event<AfterEntityRender> AFTER_ENTITY_RENDER = EventFactory.createArrayBacked(AfterEntityRender.class, callbacks -> context -> {
-		for (final AfterEntityRender callback : callbacks) {
-			callback.afterEntityRender(context);
+	public static final Event<AfterEntities> AFTER_ENTITIES = EventFactory.createArrayBacked(AfterEntities.class, callbacks -> context -> {
+		for (final AfterEntities callback : callbacks) {
+			callback.afterEntities(context);
 		}
 	});
 
@@ -110,7 +89,7 @@ public final class WorldRenderEvents {
 
 	@FunctionalInterface
 	public interface AfterBlockOutlineExtraction {
-		void afterBlockOutlineExtraction(WorldExtractionContext context, HitResult result);
+		void afterBlockOutlineExtraction(WorldExtractionContext context, @Nullable HitResult result);
 	}
 
 	@FunctionalInterface
@@ -119,33 +98,18 @@ public final class WorldRenderEvents {
 	}
 
 	@FunctionalInterface
-	public interface BeforeSubmitEntityCommands {
-		void beforeSubmitEntityCommands(WorldEntitySubmitContext context);
-	}
-
-	@FunctionalInterface
-	public interface AfterSubmitEntityCommands {
-		void afterSubmitEntityCommands(WorldEntitySubmitContext context);
-	}
-
-	@FunctionalInterface
 	public interface StartRender {
 		void startRender(WorldTerrainRenderContext context);
 	}
 
 	@FunctionalInterface
-	public interface AfterTerrainRender {
-		void afterTerrainRender(WorldTerrainRenderContext context);
+	public interface BeforeEntities {
+		void beforeEntities(WorldRenderContext context);
 	}
 
 	@FunctionalInterface
-	public interface BeforeEntityRender {
-		void beforeEntityRender(WorldRenderContext context);
-	}
-
-	@FunctionalInterface
-	public interface AfterEntityRender {
-		void afterEntityRender(WorldRenderContext context);
+	public interface AfterEntities {
+		void afterEntities(WorldRenderContext context);
 	}
 
 	@FunctionalInterface
