@@ -129,6 +129,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 
 	private static void assertRenderContext(WorldRenderContext context) {
 		assertTerrainRenderContext(context);
+		assertNotNull(context.commandQueue(), "commandQueue is null");
 		assertNotNull(context.matrixStack(), "matrixStack is null");
 		assertNotNull(context.consumers(), "consumers is null");
 	}

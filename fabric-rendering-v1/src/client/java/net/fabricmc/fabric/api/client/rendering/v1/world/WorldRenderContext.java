@@ -19,21 +19,13 @@ package net.fabricmc.fabric.api.client.rendering.v1.world;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.util.math.MatrixStack;
 
-/**
- * Except as noted below, the properties exposed here match the parameters passed to
- * {@link WorldRenderer#render}.
- */
 public interface WorldRenderContext extends WorldTerrainRenderContext {
 	@ApiStatus.Experimental
 	OrderedRenderCommandQueue commandQueue();
 
-	/**
-	 * The matrix stack is only not null in {@link WorldRenderEvents#AFTER_ENTITIES} or later events.
-	 */
 	MatrixStack matrixStack();
 
 	/**
@@ -58,9 +50,7 @@ public interface WorldRenderContext extends WorldTerrainRenderContext {
 	 * be consistent with other quads emitted by the world renderer and other mods.  If this isn't
 	 * possible, caller should use a separate "immediate" instance.
 	 *
-	 * <p>This property is {@code null} before {@link WorldRenderEvents#BEFORE_ENTITIES} and after
-	 * {@link WorldRenderEvents#BLOCK_OUTLINE} (translucent) because the consumer buffers are not available before or
-	 * drawn after that in vanilla world rendering.  Renders that cannot draw in one of the supported events
+	 * <p>Renders that cannot draw in one of the supported events
 	 * must be drawn directly to the frame buffer, preferably in {@link WorldRenderEvents#LAST} to avoid being
 	 * overdrawn or cleared.
 	 */

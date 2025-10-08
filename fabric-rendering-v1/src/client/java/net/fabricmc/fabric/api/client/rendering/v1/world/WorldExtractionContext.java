@@ -21,13 +21,8 @@ import org.joml.Matrix4f;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
 
-/**
- * Except as noted below, the properties exposed here match the parameters passed to
- * {@link WorldRenderer#render}.
- */
 public interface WorldExtractionContext extends AbstractWorldRenderContext {
 	/**
 	 * Convenient access to {WorldRenderer.world}.

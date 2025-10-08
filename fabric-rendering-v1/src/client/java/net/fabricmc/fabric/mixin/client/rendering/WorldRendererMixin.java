@@ -37,6 +37,7 @@ import net.minecraft.client.render.BlockRenderLayerGroup;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.SectionRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -128,6 +129,14 @@ public abstract class WorldRendererMixin {
 	private void onEntityRender(VertexConsumerProvider.Immediate instance, Operation<Void> original) {
 		WorldRenderEvents.BEFORE_ENTITIES.invoker().beforeEntities(renderContext);
 		original.call(instance);
+	}
+
+	@WrapOperation(method = "method_62214",
+			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TexturedRenderLayers;getEntityCutout()Lnet/minecraft/client/render/RenderLayer;")),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;draw(Lnet/minecraft/client/render/RenderLayer;)V", ordinal = 0)
+	)
+	private void onEntityCutoutRender(VertexConsumerProvider.Immediate instance, RenderLayer layer, Operation<Void> original) {
+		original.call(instance, layer);
 		WorldRenderEvents.AFTER_ENTITIES.invoker().afterEntities(renderContext);
 	}
 
@@ -138,7 +147,7 @@ public abstract class WorldRendererMixin {
 
 	@WrapOperation(method = "method_62214",
 			slice = @Slice(from = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", args = "ldc=translucent")),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/SectionRenderState;renderSection(Lnet/minecraft/client/render/BlockRenderLayerGroup;)V")
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/SectionRenderState;renderSection(Lnet/minecraft/client/render/BlockRenderLayerGroup;)V", ordinal = 0)
 	)
 	private void onTranslucentRender(SectionRenderState instance, BlockRenderLayerGroup group, Operation<Void> original) {
 		original.call(instance, group);

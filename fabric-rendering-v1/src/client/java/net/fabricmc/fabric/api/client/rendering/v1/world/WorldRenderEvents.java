@@ -18,57 +18,169 @@ package net.fabricmc.fabric.api.client.rendering.v1.world;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.util.hit.HitResult;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * Mods should use these events to introduce custom rendering during {@link WorldRenderer#render}
+ * without adding complicated and conflict-prone injections there.  Using these events also enables 3rd-party renderers
+ * that make large-scale rendering changes to maintain compatibility by calling any broken event invokers directly.
+ *
+ * <p>These events can be separated into two categories, the "extraction" events and the "drawing" events,
+ * reflecting the respective vanilla phases. All data needed for rendering should be prepared in the "extraction" phase
+ * and drawn to the frame buffer during the "drawing" phase. All "extraction" events have the suffix "Extraction".
+ *
+ * <p>These events are not dependent on the Fabric rendering API or Indigo but work when those are present.
+ */
 public final class WorldRenderEvents {
 	private WorldRenderEvents() { }
 
+	/**
+	 * Called after default block outline extraction and before rendering.
+	 * Can optionally cancel the default rendering by setting the outline render state to null
+	 * but all event handlers will always be called.
+	 *
+	 * <p>Use this to extract custom data needed when decorating or replacing
+	 * the default block outline rendering for specific modded blocks
+	 * or when normally, the block outline would not be extracted to be rendered.
+	 * Normally, outline rendering will not happen for entities, fluids,
+	 * or other game objects that do not register a block-type hit.
+	 *
+	 * <p>Setting the outline render state to null by any event subscriber
+	 * will cancel the default block outline render and suppress the {@link #BLOCK_OUTLINE} event.
+	 * This has no effect on other subscribers to this event - all subscribers will always be called.
+	 * Setting outline render state to null here is appropriate
+	 * when there is still a valid block hit (with a fluid, for example)
+	 * and you don't want the block outline render to appear.
+	 *
+	 * <p>This event should NOT be used for general-purpose replacement of
+	 * the default block outline rendering because it will interfere with mod-specific
+	 * renders.  Mods that replace the default block outline for specific blocks
+	 * should instead subscribe to {@link #BLOCK_OUTLINE}.
+	 */
 	public static final Event<AfterBlockOutlineExtraction> AFTER_BLOCK_OUTLINE_EXTRACTION = EventFactory.createArrayBacked(AfterBlockOutlineExtraction.class, callbacks -> (context, hit) -> {
 		for (final AfterBlockOutlineExtraction callback : callbacks) {
 			callback.afterBlockOutlineExtraction(context, hit);
 		}
 	});
 
+	/**
+	 * Called after the extraction phase is complete.
+	 * Use this to extract general custom data needed for rendering.
+	 *
+	 * <p>To attach data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState}.
+	 */
 	public static final Event<EndExtraction> END_EXTRACTION = EventFactory.createArrayBacked(EndExtraction.class, callbacks -> context -> {
 		for (final EndExtraction callback : callbacks) {
 			callback.endExtraction(context);
 		}
 	});
 
+	/**
+	 * Called after all chunks to be rendered are identified, rebuilt, and uploaded to GPU.
+	 */
 	public static final Event<StartRender> START_RENDER = EventFactory.createArrayBacked(StartRender.class, callbacks -> context -> {
 		for (final StartRender callback : callbacks) {
 			callback.startRender(context);
 		}
 	});
 
+	/**
+	 * Called after the Solid, Cutout, and Cutout Mipped terrain layers have been output to the framebuffer.
+	 *
+	 * <p>Use to render non-translucent terrain to the framebuffer.
+	 *
+	 * <p>Note that 3rd-party renderers may combine these passes or otherwise alter the
+	 * rendering pipeline for sake of performance or features. This can break direct writes to the
+	 * framebuffer.  Use this event for cases that cannot be satisfied by FabricBakedModel,
+	 * BlockEntityRenderer or other existing abstraction. If at all possible, use an existing terrain
+	 * RenderLayer instead of outputting to the framebuffer directly with GL calls.
+	 *
+	 * <p>The consumer is responsible for setup and tear down of GL state appropriate for the intended output.
+	 *
+	 * <p>Because solid and cutout quads are depth-tested, order of output does not matter except to improve
+	 * culling performance, which should not be significant after primary terrain rendering. This means
+	 * mods that currently hook calls to individual render layers can simply execute them all at once when
+	 * the event is called.
+	 *
+	 * <p>This event fires before entities and block entities are rendered and may be useful to prepare them.
+	 * However, you should not access any data outside the provided render states. If more data is needed,
+	 * extract them during {@link #END_EXTRACTION}.
+	 */
 	public static final Event<BeforeEntities> BEFORE_ENTITIES = EventFactory.createArrayBacked(BeforeEntities.class, callbacks -> context -> {
 		for (final BeforeEntities callback : callbacks) {
 			callback.beforeEntities(context);
 		}
 	});
 
+	/**
+	 * Called after entities are rendered and after solid and cutout entity layers
+	 * have been drawn to the main frame buffer target, before most block entity rendering begins.
+	 */
 	public static final Event<AfterEntities> AFTER_ENTITIES = EventFactory.createArrayBacked(AfterEntities.class, callbacks -> context -> {
 		for (final AfterEntities callback : callbacks) {
 			callback.afterEntities(context);
 		}
 	});
 
+	/**
+	 * Called before vanilla debug renderers are output to the framebuffer.
+	 * This happens very soon after entities, block breaking and most other
+	 * non-translucent renders but before translucency is drawn.
+	 *
+	 * <p>The OpenGL render state view matrix will be transformed to match the camera view
+	 * before the event is called.
+	 *
+	 * <p>Use to drawn lines, overlays and other content similar to vanilla
+	 * debug renders.
+	 */
 	public static final Event<DebugRender> BEFORE_DEBUG_RENDER = EventFactory.createArrayBacked(DebugRender.class, callbacks -> context -> {
 		for (final DebugRender callback : callbacks) {
 			callback.beforeDebugRender(context);
 		}
 	});
 
+	/**
+	 * Called after entity, terrain, and particle translucent layers have been
+	 * drawn to the framebuffer but before translucency combine has happened
+	 * in fabulous mode.
+	 *
+	 * <p>Use for drawing overlays or other effects on top of those targets
+	 * (or the main target when fabulous isn't active) before clouds and weather
+	 * are drawn.
+	 */
 	public static final Event<AfterTranslucent> AFTER_TRANSLUCENT = EventFactory.createArrayBacked(AfterTranslucent.class, callbacks -> context -> {
 		for (final AfterTranslucent callback : callbacks) {
 			callback.afterTranslucent(context);
 		}
 	});
 
+	/**
+	 * Called after block outline render checks are made and before the
+	 * default block outline render runs.  Will NOT be called if the default outline render state
+	 * was set to null in {@link #AFTER_BLOCK_OUTLINE_EXTRACTION}.
+	 *
+	 * <p>Use this to replace the default block outline rendering for specific blocks that
+	 * need special outline rendering or to add information that doesn't replace the block outline.
+	 * Subscribers cannot affect each other or detect if another subscriber is also
+	 * handling a specific block.  If two subscribers render for the same block, both
+	 * renders will appear.
+	 *
+	 * <p>Returning false from any event subscriber will cancel the default block
+	 * outline render.  This has no effect on other subscribers to this event -
+	 * all subscribers will always be called.  Canceling is appropriate when the
+	 * subscriber replacing the default block outline render for a specific block.
+	 *
+	 * <p>This event is not appropriate for mods that replace the default block
+	 * outline render for <em>all</em> blocks because all event subscribers will
+	 * always render - only the default outline render can be cancelled.  That should
+	 * be accomplished by mixin to the block outline render routine itself, typically
+	 * by targeting {@link net.minecraft.client.render.VertexRendering#drawOutline}.
+	 */
 	public static final Event<BlockOutline> BLOCK_OUTLINE = EventFactory.createArrayBacked(BlockOutline.class, callbacks -> (context, outlineRenderState) -> {
 		boolean shouldRender = true;
 
@@ -81,6 +193,15 @@ public final class WorldRenderEvents {
 		return shouldRender;
 	});
 
+	/**
+	 * Called before the last framebuffer write and before all world
+	 * rendering is torn down.
+	 *
+	 * <p>The OpenGL render state view matrix will be transformed to match the camera view
+	 * before the event is called.
+	 *
+	 * <p>Use to draw content that should appear on top of the world before hand and GUI rendering occur.
+	 */
 	public static final Event<Last> LAST = EventFactory.createArrayBacked(Last.class, callbacks -> context -> {
 		for (final Last callback : callbacks) {
 			callback.onLast(context);
