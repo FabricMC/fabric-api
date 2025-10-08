@@ -21,6 +21,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexRendering;
+import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -49,12 +50,12 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 		}
 	}
 
-	private static boolean onBlockOutline(WorldRenderContext context) {
-		if (Boolean.TRUE.equals(context.worldRenderState().outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE))) {
+	private static boolean onBlockOutline(WorldRenderContext context, OutlineRenderState outlineRenderState) {
+		if (Boolean.TRUE.equals(outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE))) {
 			MatrixStack matrixStack = new MatrixStack();
 			matrixStack.push();
 			Vec3d cameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
-			BlockPos pos = context.worldRenderState().outlineRenderState.pos();
+			BlockPos pos = outlineRenderState.pos();
 			double x = pos.getX() - cameraPos.x;
 			double y = pos.getY() - cameraPos.y;
 			double z = pos.getZ() - cameraPos.z;
@@ -90,9 +91,9 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	public void onInitializeClient() {
 		// Renders a diamond block above diamond blocks when they are looked at.
 		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register(WorldRenderEventsTests::extractBlockOutline);
-		WorldRenderEvents.BEFORE_BLOCK_OUTLINE_RENDER.register(WorldRenderEventsTests::onBlockOutline);
+		WorldRenderEvents.BLOCK_OUTLINE.register(WorldRenderEventsTests::onBlockOutline);
 		// Renders a translucent filled box at (0, 100, 0)
-		WorldRenderEvents.AFTER_TRANSLUCENT_RENDER.register(WorldRenderEventsTests::renderAfterTranslucent);
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(WorldRenderEventsTests::renderAfterTranslucent);
 	}
 
 	@Override
@@ -105,9 +106,9 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 		WorldRenderEvents.AFTER_TERRAIN_RENDER.register(WorldRenderEventsTests::assertTerrainRenderContext);
 		WorldRenderEvents.BEFORE_ENTITY_RENDER.register(WorldRenderEventsTests::assertRenderContext);
 		WorldRenderEvents.AFTER_ENTITY_RENDER.register(WorldRenderEventsTests::assertRenderContext);
-		WorldRenderEvents.AFTER_DEBUG_RENDER.register(WorldRenderEventsTests::assertRenderContext);
-		WorldRenderEvents.AFTER_TRANSLUCENT_RENDER.register(WorldRenderEventsTests::assertRenderContext);
-		WorldRenderEvents.END_RENDER.register(WorldRenderEventsTests::assertRenderContext);
+		WorldRenderEvents.BEFORE_DEBUG_RENDER.register(WorldRenderEventsTests::assertRenderContext);
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(WorldRenderEventsTests::assertRenderContext);
+		WorldRenderEvents.LAST.register(WorldRenderEventsTests::assertRenderContext);
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			// Set up the test world

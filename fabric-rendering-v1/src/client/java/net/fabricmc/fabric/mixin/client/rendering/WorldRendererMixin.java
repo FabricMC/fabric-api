@@ -43,7 +43,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldBorderRendering;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
-import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.render.state.WorldBorderRenderState;
 import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.ObjectAllocator;
@@ -145,10 +144,9 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.AFTER_ENTITY_RENDER.invoker().afterEntityRender(renderContext);
 	}
 
-	@WrapOperation(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDDZ)V"))
-	private void onDebugRender(DebugRenderer instance, MatrixStack matrices, Frustum frustum, VertexConsumerProvider.Immediate consumers, double cameraX, double cameraY, double cameraZ, boolean lateDebug, Operation<Void> original) {
-		original.call(instance, matrices, frustum, consumers, cameraX, cameraY, cameraZ, lateDebug);
-		WorldRenderEvents.AFTER_DEBUG_RENDER.invoker().afterDebugRender(renderContext);
+	@Inject(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDDZ)V"))
+	private void onDebugRender(CallbackInfo ci) {
+		WorldRenderEvents.BEFORE_DEBUG_RENDER.invoker().beforeDebugRender(renderContext);
 	}
 
 	@WrapOperation(method = "method_62214",
@@ -157,12 +155,12 @@ public abstract class WorldRendererMixin {
 	)
 	private void onTranslucentRender(SectionRenderState instance, BlockRenderLayerGroup group, Operation<Void> original) {
 		original.call(instance, group);
-		WorldRenderEvents.AFTER_TRANSLUCENT_RENDER.invoker().afterTranslucentRender(renderContext);
+		WorldRenderEvents.AFTER_TRANSLUCENT.invoker().afterTranslucent(renderContext);
 	}
 
 	@Inject(method = "renderTargetBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/state/CameraRenderState;pos:Lnet/minecraft/util/math/Vec3d;"), cancellable = true)
 	private void onDrawBlockOutline(VertexConsumerProvider.Immediate consumers, MatrixStack matrices, boolean bl, WorldRenderState worldRenderState, CallbackInfo ci) {
-		if (!WorldRenderEvents.BEFORE_BLOCK_OUTLINE_RENDER.invoker().beforeBlockOutlineRender(renderContext)) {
+		if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(renderContext, renderContext.worldRenderState().outlineRenderState)) {
 			consumers.drawCurrentLayer();
 			ci.cancel();
 		}
@@ -170,7 +168,7 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "method_62214", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;draw()V"))
 	private void afterRender(CallbackInfo ci) {
-		WorldRenderEvents.END_RENDER.invoker().endRender(renderContext);
+		WorldRenderEvents.LAST.invoker().onLast(renderContext);
 	}
 
 	@Inject(method = "reload()V", at = @At("HEAD"))

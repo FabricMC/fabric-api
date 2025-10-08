@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.rendering.v1.world;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.util.hit.HitResult;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -27,73 +28,73 @@ public final class WorldRenderEvents {
 	private WorldRenderEvents() { }
 
 	public static final Event<AfterBlockOutlineExtraction> AFTER_BLOCK_OUTLINE_EXTRACTION = EventFactory.createArrayBacked(AfterBlockOutlineExtraction.class, callbacks -> (context, hit) -> {
-		for (AfterBlockOutlineExtraction callback : callbacks) {
+		for (final AfterBlockOutlineExtraction callback : callbacks) {
 			callback.afterBlockOutlineExtraction(context, hit);
 		}
 	});
 
 	public static final Event<EndExtraction> END_EXTRACTION = EventFactory.createArrayBacked(EndExtraction.class, callbacks -> context -> {
-		for (EndExtraction callback : callbacks) {
+		for (final EndExtraction callback : callbacks) {
 			callback.endExtraction(context);
 		}
 	});
 
 	@ApiStatus.Experimental
-	public static final Event<BeforeSubmitEntityCommands> BEFORE_SUBMIT_ENTITY_COMMANDS = EventFactory.createArrayBacked(BeforeSubmitEntityCommands.class, callbacks -> (context) -> {
-		for (BeforeSubmitEntityCommands callback : callbacks) {
+	public static final Event<BeforeSubmitEntityCommands> BEFORE_SUBMIT_ENTITY_COMMANDS = EventFactory.createArrayBacked(BeforeSubmitEntityCommands.class, callbacks -> context -> {
+		for (final BeforeSubmitEntityCommands callback : callbacks) {
 			callback.beforeSubmitEntityCommands(context);
 		}
 	});
 
 	@ApiStatus.Experimental
-	public static final Event<AfterSubmitEntityCommands> AFTER_SUBMIT_ENTITY_COMMANDS = EventFactory.createArrayBacked(AfterSubmitEntityCommands.class, callbacks -> (context) -> {
-		for (AfterSubmitEntityCommands callback : callbacks) {
+	public static final Event<AfterSubmitEntityCommands> AFTER_SUBMIT_ENTITY_COMMANDS = EventFactory.createArrayBacked(AfterSubmitEntityCommands.class, callbacks -> context -> {
+		for (final AfterSubmitEntityCommands callback : callbacks) {
 			callback.afterSubmitEntityCommands(context);
 		}
 	});
 
-	public static final Event<StartRender> START_RENDER = EventFactory.createArrayBacked(StartRender.class, callbacks -> (context) -> {
-		for (StartRender callback : callbacks) {
+	public static final Event<StartRender> START_RENDER = EventFactory.createArrayBacked(StartRender.class, callbacks -> context -> {
+		for (final StartRender callback : callbacks) {
 			callback.startRender(context);
 		}
 	});
 
-	public static final Event<AfterTerrainRender> AFTER_TERRAIN_RENDER = EventFactory.createArrayBacked(AfterTerrainRender.class, callbacks -> (context) -> {
-		for (AfterTerrainRender callback : callbacks) {
+	public static final Event<AfterTerrainRender> AFTER_TERRAIN_RENDER = EventFactory.createArrayBacked(AfterTerrainRender.class, callbacks -> context -> {
+		for (final AfterTerrainRender callback : callbacks) {
 			callback.afterTerrainRender(context);
 		}
 	});
 
 	// This might be merged into after terrain render in the future, but right now, these two events are not in the same place.
-	public static final Event<BeforeEntityRender> BEFORE_ENTITY_RENDER = EventFactory.createArrayBacked(BeforeEntityRender.class, callbacks -> (context) -> {
-		for (BeforeEntityRender callback : callbacks) {
+	public static final Event<BeforeEntityRender> BEFORE_ENTITY_RENDER = EventFactory.createArrayBacked(BeforeEntityRender.class, callbacks -> context -> {
+		for (final BeforeEntityRender callback : callbacks) {
 			callback.beforeEntityRender(context);
 		}
 	});
 
-	public static final Event<AfterEntityRender> AFTER_ENTITY_RENDER = EventFactory.createArrayBacked(AfterEntityRender.class, callbacks -> (context) -> {
-		for (AfterEntityRender callback : callbacks) {
+	public static final Event<AfterEntityRender> AFTER_ENTITY_RENDER = EventFactory.createArrayBacked(AfterEntityRender.class, callbacks -> context -> {
+		for (final AfterEntityRender callback : callbacks) {
 			callback.afterEntityRender(context);
 		}
 	});
 
-	public static final Event<AfterDebugRender> AFTER_DEBUG_RENDER = EventFactory.createArrayBacked(AfterDebugRender.class, callbacks -> (context) -> {
-		for (AfterDebugRender callback : callbacks) {
-			callback.afterDebugRender(context);
+	public static final Event<DebugRender> BEFORE_DEBUG_RENDER = EventFactory.createArrayBacked(DebugRender.class, callbacks -> context -> {
+		for (final DebugRender callback : callbacks) {
+			callback.beforeDebugRender(context);
 		}
 	});
 
-	public static final Event<AfterTranslucentRender> AFTER_TRANSLUCENT_RENDER = EventFactory.createArrayBacked(AfterTranslucentRender.class, callbacks -> (context) -> {
-		for (AfterTranslucentRender callback : callbacks) {
-			callback.afterTranslucentRender(context);
+	public static final Event<AfterTranslucent> AFTER_TRANSLUCENT = EventFactory.createArrayBacked(AfterTranslucent.class, callbacks -> context -> {
+		for (final AfterTranslucent callback : callbacks) {
+			callback.afterTranslucent(context);
 		}
 	});
 
-	public static final Event<BeforeBlockOutlineRender> BEFORE_BLOCK_OUTLINE_RENDER = EventFactory.createArrayBacked(BeforeBlockOutlineRender.class, callbacks -> (context) -> {
+	public static final Event<BlockOutline> BLOCK_OUTLINE = EventFactory.createArrayBacked(BlockOutline.class, callbacks -> (context, outlineRenderState) -> {
 		boolean shouldRender = true;
 
-		for (final BeforeBlockOutlineRender callback : callbacks) {
-			if (!callback.beforeBlockOutlineRender(context)) {
+		for (final BlockOutline callback : callbacks) {
+			if (!callback.onBlockOutline(context, outlineRenderState)) {
 				shouldRender = false;
 			}
 		}
@@ -101,9 +102,9 @@ public final class WorldRenderEvents {
 		return shouldRender;
 	});
 
-	public static final Event<EndRender> END_RENDER = EventFactory.createArrayBacked(EndRender.class, callbacks -> (context) -> {
-		for (EndRender callback : callbacks) {
-			callback.endRender(context);
+	public static final Event<Last> LAST = EventFactory.createArrayBacked(Last.class, callbacks -> context -> {
+		for (final Last callback : callbacks) {
+			callback.onLast(context);
 		}
 	});
 
@@ -148,22 +149,22 @@ public final class WorldRenderEvents {
 	}
 
 	@FunctionalInterface
-	public interface AfterDebugRender {
-		void afterDebugRender(WorldRenderContext context);
+	public interface DebugRender {
+		void beforeDebugRender(WorldRenderContext context);
 	}
 
 	@FunctionalInterface
-	public interface AfterTranslucentRender {
-		void afterTranslucentRender(WorldRenderContext context);
+	public interface AfterTranslucent {
+		void afterTranslucent(WorldRenderContext context);
 	}
 
 	@FunctionalInterface
-	public interface BeforeBlockOutlineRender {
-		boolean beforeBlockOutlineRender(WorldRenderContext context);
+	public interface BlockOutline {
+		boolean onBlockOutline(WorldRenderContext context, OutlineRenderState outlineRenderState);
 	}
 
 	@FunctionalInterface
-	public interface EndRender {
-		void endRender(WorldRenderContext context);
+	public interface Last {
+		void onLast(WorldRenderContext context);
 	}
 }
