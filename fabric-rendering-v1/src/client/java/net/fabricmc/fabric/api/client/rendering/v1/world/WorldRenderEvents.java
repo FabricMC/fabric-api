@@ -34,6 +34,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * reflecting the respective vanilla phases. All data needed for rendering should be prepared in the "extraction" phase
  * and drawn to the frame buffer during the "drawing" phase. All "extraction" events have the suffix "Extraction".
  *
+ * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
+ * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.world.ClientWorld}.
+ *
  * <p>These events are not dependent on the Fabric rendering API or Indigo but work when those are present.
  */
 public final class WorldRenderEvents {
@@ -49,6 +52,9 @@ public final class WorldRenderEvents {
 	 * or when normally, the block outline would not be extracted to be rendered.
 	 * Normally, outline rendering will not happen for entities, fluids,
 	 * or other game objects that do not register a block-type hit.
+	 *
+	 * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
+	 * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.world.ClientWorld}.
 	 *
 	 * <p>Setting the outline render state to null by any event subscriber
 	 * will cancel the default block outline render and suppress the {@link #BLOCK_OUTLINE} event.
@@ -72,7 +78,8 @@ public final class WorldRenderEvents {
 	 * Called after the extraction phase is complete.
 	 * Use this to extract general custom data needed for rendering.
 	 *
-	 * <p>To attach data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState}.
+	 * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
+	 * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.world.ClientWorld}.
 	 */
 	public static final Event<EndExtraction> END_EXTRACTION = EventFactory.createArrayBacked(EndExtraction.class, callbacks -> context -> {
 		for (final EndExtraction callback : callbacks) {
