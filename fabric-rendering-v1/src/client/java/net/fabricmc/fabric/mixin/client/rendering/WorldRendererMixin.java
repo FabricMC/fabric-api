@@ -156,7 +156,7 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "renderTargetBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/state/CameraRenderState;pos:Lnet/minecraft/util/math/Vec3d;"), cancellable = true)
 	private void onDrawBlockOutline(VertexConsumerProvider.Immediate consumers, MatrixStack matrices, boolean bl, WorldRenderState worldRenderState, CallbackInfo ci) {
-		if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(renderContext, renderContext.worldRenderState().outlineRenderState)) {
+		if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(renderContext, renderContext.worldState().outlineRenderState)) {
 			consumers.drawCurrentLayer();
 			ci.cancel();
 		}

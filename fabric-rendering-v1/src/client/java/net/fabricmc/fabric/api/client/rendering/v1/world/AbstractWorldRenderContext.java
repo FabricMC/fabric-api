@@ -43,5 +43,5 @@ public interface AbstractWorldRenderContext {
 	 *
 	 * @return WorldRenderState instance
 	 */
-	WorldRenderState worldRenderState();
+	WorldRenderState worldState();
 }

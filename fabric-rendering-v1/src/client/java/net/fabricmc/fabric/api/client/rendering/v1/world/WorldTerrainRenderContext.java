@@ -22,5 +22,5 @@ import net.minecraft.client.render.SectionRenderState;
 
 @ApiStatus.NonExtendable
 public interface WorldTerrainRenderContext extends AbstractWorldRenderContext {
-	SectionRenderState sectionRenderState();
+	SectionRenderState sectionState();
 }

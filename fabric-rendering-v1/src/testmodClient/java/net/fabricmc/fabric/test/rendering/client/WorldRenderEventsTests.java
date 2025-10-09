@@ -45,7 +45,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 
 	private static void extractBlockOutline(WorldExtractionContext context, HitResult hitResult) {
 		if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() != HitResult.Type.MISS && context.world().getBlockState(blockHitResult.getBlockPos()).isOf(Blocks.DIAMOND_BLOCK)) {
-			context.worldRenderState().outlineRenderState.setData(DIAMOND_BLOCK_OUTLINE, true);
+			context.worldState().outlineRenderState.setData(DIAMOND_BLOCK_OUTLINE, true);
 		}
 	}
 
@@ -76,7 +76,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	 * Renders a translucent filled box at (0, 100, 0).
 	 */
 	private static void renderAfterTranslucent(WorldRenderContext context) {
-		Vec3d camera = context.worldRenderState().cameraRenderState.pos;
+		Vec3d camera = context.worldState().cameraRenderState.pos;
 
 		context.matrices().push();
 		context.matrices().translate(-camera.x, -camera.y, -camera.z);
@@ -135,13 +135,13 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	}
 
 	private static void assertTerrainRenderContext(WorldTerrainRenderContext context) {
-		assertNotNull(context.sectionRenderState(), "sectionRenderState is null");
+		assertNotNull(context.sectionState(), "sectionRenderState is null");
 	}
 
 	private static void assertAbstractRenderContext(AbstractWorldRenderContext context) {
 		assertNotNull(context.gameRenderer(), "gameRenderer is null");
 		assertNotNull(context.worldRenderer(), "worldRenderer is null");
-		assertNotNull(context.worldRenderState(), "worldRenderState is null");
+		assertNotNull(context.worldState(), "worldRenderState is null");
 	}
 
 	private static void assertNotNull(Object object, String message) {

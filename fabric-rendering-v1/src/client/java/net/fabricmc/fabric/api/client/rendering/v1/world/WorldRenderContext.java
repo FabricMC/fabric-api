@@ -24,7 +24,6 @@ import net.minecraft.client.util.math.MatrixStack;
 
 @ApiStatus.NonExtendable
 public interface WorldRenderContext extends WorldTerrainRenderContext {
-	@ApiStatus.Experimental
 	OrderedRenderCommandQueue commandQueue();
 
 	MatrixStack matrices();

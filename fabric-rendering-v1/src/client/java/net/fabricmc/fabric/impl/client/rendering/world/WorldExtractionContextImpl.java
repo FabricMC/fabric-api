@@ -82,7 +82,7 @@ public class WorldExtractionContextImpl implements WorldExtractionContext {
 	}
 
 	@Override
-	public WorldRenderState worldRenderState() {
+	public WorldRenderState worldState() {
 		return worldRenderState;
 	}
 

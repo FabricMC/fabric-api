@@ -76,12 +76,12 @@ public final class WorldRenderContextImpl implements AbstractWorldRenderContext,
 	}
 
 	@Override
-	public WorldRenderState worldRenderState() {
+	public WorldRenderState worldState() {
 		return worldRenderState;
 	}
 
 	@Override
-	public SectionRenderState sectionRenderState() {
+	public SectionRenderState sectionState() {
 		return sectionRenderState;
 	}
 
