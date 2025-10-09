@@ -16,10 +16,19 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import com.mojang.datafixers.util.Pair;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.model.Model;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.command.ModelCommandRenderer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.command.RenderCommandQueue;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -32,10 +41,22 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
  * Armor renderers render worn armor items with custom code.
  * They may be used to render armor with special models or effects.
  *
- * <p>The renderers are registered with {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer#register(ArmorRenderer, ItemConvertible...)}.
+ * <p>The renderers are registered with {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer#register(Factory, ItemConvertible...)}
+ * or {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer#register(ArmorRenderer, ItemConvertible...)}.
  */
 @FunctionalInterface
 public interface ArmorRenderer {
+	/**
+	 * Registers the armor renderer for the specified items.
+	 * @param factory	the renderer factory
+	 * @param items		the items
+	 * @throws IllegalArgumentException if an item already has a registered armor renderer
+	 * @throws NullPointerException if either an item or the factory is null
+	 */
+	static void register(ArmorRenderer.Factory factory, ItemConvertible... items) {
+		ArmorRendererRegistryImpl.register(factory, items);
+	}
+
 	/**
 	 * Registers the armor renderer for the specified items.
 	 * @param renderer	the renderer
@@ -45,6 +66,54 @@ public interface ArmorRenderer {
 	 */
 	static void register(ArmorRenderer renderer, ItemConvertible... items) {
 		ArmorRendererRegistryImpl.register(renderer, items);
+	}
+
+	/**
+	 * Helper method for rendering a {@link TransformCopyingModel}, which will copy transforms from a source model to
+	 * a delegate model when it is rendered.
+	 * @param sourceModel			the model whose transforms will be copied
+	 * @param sourceModelState		the model state of the source model
+	 * @param delegateModel			the model that will be rendered with transforms copied from the source model
+	 * @param delegateModelState	the model state of the delegate model
+	 * @param setDelegateAngles		{@code true} if the {@link Model#setAngles(Object)} method should be called for the
+	 *                              delegate model after it is called for the source model
+	 * @param queue					the {@link RenderCommandQueue}
+	 * @param matrices				the matrix stack
+	 * @param renderLayer			the render layer
+	 * @param light					packed lightmap coordinates
+	 * @param overlay				packed overlay texture coordinates
+	 * @param tintedColor			the color to tint the model with
+	 * @param sprite				the sprite to render the model with, or {@code null} to use the render layer instead
+	 * @param outlineColor			the outline color of the model
+	 * @param crumblingOverlay		the crumbling overlay, or {@code null} for no crumbling overlay
+	 * @param <S>					state type of the source model
+	 * @param <D>					state type of the delegate model
+	 */
+	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, RenderCommandQueue queue, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int tintedColor, @Nullable Sprite sprite, int outlineColor, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
+		queue.submitModel(new TransformCopyingModel<>(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, tintedColor, sprite, outlineColor, crumblingOverlay);
+	}
+
+	/**
+	 * Helper method for rendering a {@link TransformCopyingModel}, which will copy transforms from its source model to
+	 * its delegate model when it is rendered.
+	 * @param sourceModel			the model whose transforms will be copied
+	 * @param sourceModelState		the model state of the source model
+	 * @param delegateModel			the model that will be rendered with transforms copied from the source model
+	 * @param delegateModelState	the model state of the delegate model
+	 * @param setDelegateAngles		{@code true} if the {@link Model#setAngles(Object)} method should be called for the
+	 *                                             delegate model after it is called for the source model
+	 * @param queue					the {@link RenderCommandQueue}
+	 * @param matrices				the matrix stack
+	 * @param renderLayer			the render layer
+	 * @param light					packed lightmap coordinates
+	 * @param overlay				packed overlay texture coordinates
+	 * @param outlineColor			the outline color of the model
+	 * @param crumblingOverlay		the crumbling overlay, or {@code null} for no crumbling overlay
+	 * @param <S>					state type of the source model
+	 * @param <D>					state type of the delegate model
+	 */
+	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, RenderCommandQueue queue, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int outlineColor, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
+		queue.submitModel(new TransformCopyingModel<>(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, outlineColor, crumblingOverlay);
 	}
 
 	/**
@@ -78,5 +147,13 @@ public interface ArmorRenderer {
 	 */
 	default boolean shouldRenderDefaultHeadItem(LivingEntity entity, ItemStack stack) {
 		return true;
+	}
+
+	/**
+	 * A factory to create an {@link ArmorRenderer} instance.
+	 */
+	@FunctionalInterface
+	interface Factory {
+		ArmorRenderer createArmorRenderer(EntityRendererFactory.Context context);
 	}
 }

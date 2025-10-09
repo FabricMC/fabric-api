@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.registry.Registries;
@@ -28,10 +29,11 @@ import net.minecraft.registry.Registries;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 
 public class ArmorRendererRegistryImpl {
+	private static final HashMap<Item, ArmorRenderer.Factory> FACTORIES = new HashMap<>();
 	private static final HashMap<Item, ArmorRenderer> RENDERERS = new HashMap<>();
 
-	public static void register(ArmorRenderer renderer, ItemConvertible... items) {
-		Objects.requireNonNull(renderer, "renderer is null");
+	public static void register(ArmorRenderer.Factory factory, ItemConvertible... items) {
+		Objects.requireNonNull(factory, "renderer factory is null");
 
 		if (items.length == 0) {
 			throw new IllegalArgumentException("Armor renderer registered for no item");
@@ -40,14 +42,30 @@ public class ArmorRendererRegistryImpl {
 		for (ItemConvertible item : items) {
 			Objects.requireNonNull(item.asItem(), "armor item is null");
 
-			if (RENDERERS.putIfAbsent(item.asItem(), renderer) != null) {
+			if (FACTORIES.putIfAbsent(item.asItem(), factory) != null) {
 				throw new IllegalArgumentException("Custom armor renderer already exists for " + Registries.ITEM.getId(item.asItem()));
 			}
 		}
 	}
 
+	public static void register(ArmorRenderer renderer, ItemConvertible... items) {
+		Objects.requireNonNull(renderer, "renderer is null");
+		register(context -> renderer, items);
+	}
+
 	@Nullable
 	public static ArmorRenderer get(Item item) {
 		return RENDERERS.get(item);
+	}
+
+	public static void createArmorRenderers(EntityRendererFactory.Context context) {
+		RENDERERS.clear();
+		FACTORIES.forEach((item, factory) -> {
+			try {
+				RENDERERS.put(item, factory.createArmorRenderer(context));
+			} catch (Exception exception) {
+				throw new IllegalArgumentException("Failed to create armor renderer for " + item);
+			}
+		});
 	}
 }
