@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.model.Model;
@@ -26,6 +27,7 @@ import net.minecraft.client.model.ModelPart;
  *
  * <p>Note: This interface is automatically implemented on all render pipelines via Mixin and interface injection.
  */
+@ApiStatus.NonExtendable
 public interface FabricModel<S> {
 	/**
 	 * Returns a child model part of the given name, or {@code null} if one is not found.
