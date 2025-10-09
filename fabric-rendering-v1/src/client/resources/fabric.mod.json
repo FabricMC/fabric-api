@@ -41,6 +41,9 @@
       "com/mojang/blaze3d/pipeline/RenderPipeline\u0024Builder": [
         "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderPipeline\u0024Builder"
       ],
+      "net/minecraft/class_3879": [
+        "net/fabricmc/fabric/api/client/rendering/v1/FabricModel<TS;>"
+      ],
       "net/minecraft/class_10017": [
         "net/fabricmc/fabric/api/client/rendering/v1/FabricRenderState"
       ],
