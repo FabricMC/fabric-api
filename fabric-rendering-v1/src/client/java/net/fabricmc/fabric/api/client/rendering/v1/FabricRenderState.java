@@ -63,6 +63,17 @@ public interface FabricRenderState {
 	}
 
 	/**
+	 * Get extra render data from the render state, or a default value if it cannot be found.
+	 * @param key the key of the data
+	 * @param defaultValue the default value
+	 * @param <T> the type of the data
+	 * @return the data, or the default value if it cannot be found.
+	 */
+	default <T> T getDataOrDefault(RenderStateDataKey<T> key, T defaultValue) {
+		throw new UnsupportedOperationException("Implemented via mixin");
+	}
+
+	/**
 	 * Set extra render data to the render state.
 	 * @param key the key of the data
 	 * @param value the data

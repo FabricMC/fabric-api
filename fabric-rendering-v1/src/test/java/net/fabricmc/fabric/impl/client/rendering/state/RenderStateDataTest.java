@@ -65,10 +65,13 @@ public class RenderStateDataTest {
 
 		for (FabricRenderState state : states) {
 			Assertions.assertNull(state.getData(DEBUG));
+			Assertions.assertEquals("pass", state.getDataOrDefault(DEBUG, "pass"));
 			state.setData(DEBUG, "test");
 			Assertions.assertEquals("test", state.getData(DEBUG));
+			Assertions.assertEquals("test", state.getDataOrDefault(DEBUG, "fail"));
 			state.clearExtraData();
 			Assertions.assertNull(state.getData(DEBUG));
+			Assertions.assertEquals("pass", state.getDataOrDefault(DEBUG, "pass"));
 		}
 	}
 }

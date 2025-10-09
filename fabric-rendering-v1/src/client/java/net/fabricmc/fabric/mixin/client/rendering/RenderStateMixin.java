@@ -65,6 +65,12 @@ public abstract class RenderStateMixin implements FabricRenderState {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getDataOrDefault(RenderStateDataKey<T> key, T defaultValue) {
+		return renderStateData == null ? defaultValue : (T) renderStateData.getOrDefault(key, defaultValue);
+	}
+
+	@Override
 	public <T> void setData(RenderStateDataKey<T> key, T value) {
 		if (renderStateData == null) {
 			renderStateData = new Reference2ObjectOpenHashMap<>();
