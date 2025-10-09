@@ -16,19 +16,23 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.world;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
 
+@ApiStatus.NonExtendable
 public interface WorldExtractionContext extends AbstractWorldRenderContext {
 	/**
-	 * Convenient access to {WorldRenderer.world}.
+	 * Convenient access to {@link WorldRenderer#world}.
 	 *
 	 * @return world renderer's client world instance
 	 */
+	@SuppressWarnings("JavadocReference")
 	ClientWorld world();
 
 	Camera camera();

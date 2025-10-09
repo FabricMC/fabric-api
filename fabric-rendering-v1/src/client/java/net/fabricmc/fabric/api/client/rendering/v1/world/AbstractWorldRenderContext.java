@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.world;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.state.WorldRenderState;
 
+@ApiStatus.NonExtendable
 public interface AbstractWorldRenderContext {
 	/**
 	 * The game renderer instance.

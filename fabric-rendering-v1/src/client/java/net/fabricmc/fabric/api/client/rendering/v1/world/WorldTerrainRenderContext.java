@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.world;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.render.SectionRenderState;
 
+@ApiStatus.NonExtendable
 public interface WorldTerrainRenderContext extends AbstractWorldRenderContext {
 	SectionRenderState sectionRenderState();
 }

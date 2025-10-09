@@ -78,12 +78,12 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	private static void renderAfterTranslucent(WorldRenderContext context) {
 		Vec3d camera = context.worldRenderState().cameraRenderState.pos;
 
-		context.matrixStack().push();
-		context.matrixStack().translate(-camera.x, -camera.y, -camera.z);
+		context.matrices().push();
+		context.matrices().translate(-camera.x, -camera.y, -camera.z);
 
-		VertexRendering.drawFilledBox(context.matrixStack(), context.consumers().getBuffer(RenderLayer.getDebugFilledBox()), 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
+		VertexRendering.drawFilledBox(context.matrices(), context.consumers().getBuffer(RenderLayer.getDebugFilledBox()), 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
 
-		context.matrixStack().pop();
+		context.matrices().pop();
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	private static void assertRenderContext(WorldRenderContext context) {
 		assertTerrainRenderContext(context);
 		assertNotNull(context.commandQueue(), "commandQueue is null");
-		assertNotNull(context.matrixStack(), "matrixStack is null");
+		assertNotNull(context.matrices(), "matrices is null");
 		assertNotNull(context.consumers(), "consumers is null");
 	}
 

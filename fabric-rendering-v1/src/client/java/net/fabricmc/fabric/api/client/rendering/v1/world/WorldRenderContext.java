@@ -22,11 +22,12 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.util.math.MatrixStack;
 
+@ApiStatus.NonExtendable
 public interface WorldRenderContext extends WorldTerrainRenderContext {
 	@ApiStatus.Experimental
 	OrderedRenderCommandQueue commandQueue();
 
-	MatrixStack matrixStack();
+	MatrixStack matrices();
 
 	/**
 	 * Test to know if "fabulous" graphics mode is enabled.

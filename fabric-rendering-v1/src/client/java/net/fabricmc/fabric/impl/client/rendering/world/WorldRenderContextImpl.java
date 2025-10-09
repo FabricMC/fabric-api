@@ -92,7 +92,7 @@ public final class WorldRenderContextImpl implements AbstractWorldRenderContext,
 
 	@Override
 	@Nullable
-	public MatrixStack matrixStack() {
+	public MatrixStack matrices() {
 		return matrixStack;
 	}
 
