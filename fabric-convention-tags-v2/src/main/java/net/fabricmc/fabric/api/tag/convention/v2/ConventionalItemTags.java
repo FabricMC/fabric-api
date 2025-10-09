@@ -91,9 +91,26 @@ public final class ConventionalItemTags {
 
 	// Armor tags
 	/**
-	 * Collects the 4 vanilla armor tags into one parent collection for ease.
+	 * A tag containing all conventional armor tags.
+	 * Note that this can contain armor that does not necessarily fit on a player. For that, see {@link ConventionalItemTags#HUMANOID_ARMORS}
 	 */
 	public static final TagKey<Item> ARMORS = register("armors");
+	/**
+	 * Armor that can fit on a humanoid mob like the Player. This tag collects the 4 vanilla armor tags into one parent collection for ease.
+	 */
+	public static final TagKey<Item> HUMANOID_ARMORS = register("armors/humanoid");
+	/**
+	 * A tag containing armor that can fit on a Horse.
+	 */
+	public static final TagKey<Item> HORSE_ARMORS = register("armors/horse");
+	/**
+	 * A tag containing armor that can fit on a Nautilus.
+	 */
+	public static final TagKey<Item> NAUTILUS_ARMORS = register("armors/nautilus");
+	/**
+	 * A tag containing armor that can fit on a Wolf.
+	 */
+	public static final TagKey<Item> WOLF_ARMORS = register("armors/wolf");
 
 	// Tools/Armor tags
 	/**

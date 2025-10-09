@@ -711,6 +711,12 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.RANGED_WEAPONS_TOOLS);
 
 		valueLookupBuilder(ConventionalItemTags.ARMORS)
+				.addOptionalTag(ConventionalItemTags.HUMANOID_ARMORS)
+				.addOptionalTag(ConventionalItemTags.HORSE_ARMORS)
+				.addOptionalTag(ConventionalItemTags.NAUTILUS_ARMORS)
+				.addOptionalTag(ConventionalItemTags.WOLF_ARMORS);
+
+		valueLookupBuilder(ConventionalItemTags.HUMANOID_ARMORS)
 				.addOptionalTag(ItemTags.HEAD_ARMOR)
 				.addOptionalTag(ItemTags.CHEST_ARMOR)
 				.addOptionalTag(ItemTags.LEG_ARMOR)

@@ -199,6 +199,10 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.RANGED_WEAPONS_TOOLS, "Ranged Weapons");
 		translationBuilder.add(ConventionalItemTags.MINING_TOOLS, "Mining Tools");
 		translationBuilder.add(ConventionalItemTags.ARMORS, "Armors");
+		translationBuilder.add(ConventionalItemTags.HUMANOID_ARMORS, "Humanoid Armors");
+		translationBuilder.add(ConventionalItemTags.HORSE_ARMORS, "Horse Armors");
+		translationBuilder.add(ConventionalItemTags.NAUTILUS_ARMORS, "Nautilus Armors");
+		translationBuilder.add(ConventionalItemTags.WOLF_ARMORS, "Wolf Armors");
 		translationBuilder.add(ConventionalItemTags.ENCHANTABLES, "Enchantables");
 		translationBuilder.add(ConventionalItemTags.BRICKS, "Bricks");
 		translationBuilder.add(ConventionalItemTags.DUSTS, "Dusts");
