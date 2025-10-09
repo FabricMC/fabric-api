@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.client.render.entity.model.EquipmentModelData;
 
 import net.fabricmc.fabric.impl.client.rendering.EntityModelLayerImpl;
 import net.fabricmc.fabric.mixin.client.rendering.EntityModelLayersAccessor;
@@ -45,6 +46,22 @@ public final class EntityModelLayerRegistry {
 		EntityModelLayersAccessor.getLayers().add(modelLayer);
 	}
 
+	/**
+	 * Registers entity equipment model layers and registers a provider for a {@link EquipmentModelData} of type {@link TexturedModelData}.
+	 * @param equipmentModelData the equipment model data of type {@link EntityModelLayer}
+	 * @param provider the provider for the textured equipment model data
+	 */
+	public static void registerEquipmentModelLayers(EquipmentModelData<EntityModelLayer> equipmentModelData, TexturedEquipmentModelDataProvider provider) {
+		Objects.requireNonNull(equipmentModelData, "EquipmentModelData cannot be null");
+		Objects.requireNonNull(provider, "TexturedEquipmentModelDataProvider cannot be null");
+
+		if (EntityModelLayerImpl.EQUIPMENT_PROVIDERS.putIfAbsent(equipmentModelData, provider) != null) {
+			throw new IllegalArgumentException(String.format("Cannot replace registration for entity equipment model layer \"%s\"", equipmentModelData));
+		}
+
+		equipmentModelData.map(EntityModelLayersAccessor.getLayers()::add);
+	}
+
 	private EntityModelLayerRegistry() {
 	}
 
@@ -56,5 +73,15 @@ public final class EntityModelLayerRegistry {
 		 * @return the textured model data for the entity model layer.
 		 */
 		TexturedModelData createModelData();
+	}
+
+	@FunctionalInterface
+	public interface TexturedEquipmentModelDataProvider {
+		/**
+		 * Creates the textured model data for use in a {@link EquipmentModelData} of type {@link TexturedModelData}.
+		 *
+		 * @return the textured model data for the entity model layer.
+		 */
+		EquipmentModelData<TexturedModelData> createEquipmentModelData();
 	}
 }

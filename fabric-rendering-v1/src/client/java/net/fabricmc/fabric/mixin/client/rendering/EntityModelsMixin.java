@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.EntityModels;
+import net.minecraft.client.render.entity.model.EquipmentModelData;
 
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.impl.client.rendering.EntityModelLayerImpl;
@@ -38,6 +39,10 @@ abstract class EntityModelsMixin {
 	private static void registerExtraModelData(CallbackInfoReturnable<Map<EntityModelLayer, TexturedModelData>> info, @Local ImmutableMap.Builder<EntityModelLayer, TexturedModelData> builder) {
 		for (Map.Entry<EntityModelLayer, EntityModelLayerRegistry.TexturedModelDataProvider> entry : EntityModelLayerImpl.PROVIDERS.entrySet()) {
 			builder.put(entry.getKey(), entry.getValue().createModelData());
+		}
+
+		for (Map.Entry<EquipmentModelData<EntityModelLayer>, EntityModelLayerRegistry.TexturedEquipmentModelDataProvider> entry : EntityModelLayerImpl.EQUIPMENT_PROVIDERS.entrySet()) {
+			entry.getKey().addTo(entry.getValue().createEquipmentModelData(), builder);
 		}
 	}
 }
