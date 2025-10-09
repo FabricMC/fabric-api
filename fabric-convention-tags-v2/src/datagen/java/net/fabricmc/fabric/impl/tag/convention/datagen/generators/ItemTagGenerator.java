@@ -716,6 +716,23 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.NAUTILUS_ARMORS)
 				.addOptionalTag(ConventionalItemTags.WOLF_ARMORS);
 
+		valueLookupBuilder(ConventionalItemTags.HORSE_ARMORS)
+				.add(Items.LEATHER_HORSE_ARMOR)
+				.add(Items.COPPER_HORSE_ARMOR)
+				.add(Items.IRON_HORSE_ARMOR)
+				.add(Items.DIAMOND_HORSE_ARMOR)
+				.add(Items.GOLDEN_HORSE_ARMOR);
+
+		valueLookupBuilder(ConventionalItemTags.NAUTILUS_ARMORS)
+				.add(Items.COPPER_NAUTILUS_ARMOR)
+				.add(Items.IRON_NAUTILUS_ARMOR)
+				.add(Items.DIAMOND_NAUTILUS_ARMOR)
+				.add(Items.GOLDEN_NAUTILUS_ARMOR)
+				.add(Items.NETHERITE_NAUTILUS_ARMOR);
+
+		valueLookupBuilder(ConventionalItemTags.WOLF_ARMORS)
+				.add(Items.WOLF_ARMOR);
+
 		valueLookupBuilder(ConventionalItemTags.HUMANOID_ARMORS)
 				.addOptionalTag(ItemTags.HEAD_ARMOR)
 				.addOptionalTag(ItemTags.CHEST_ARMOR)
