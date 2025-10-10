@@ -36,7 +36,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricModel;
 
 @Mixin(Model.class)
-public abstract class ModelMixin<S> implements FabricModel<S> {
+abstract class ModelMixin<S> implements FabricModel<S> {
 	@Shadow
 	public abstract ModelPart getRootPart();
 	@Unique
