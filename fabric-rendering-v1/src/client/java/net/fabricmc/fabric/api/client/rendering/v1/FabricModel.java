@@ -25,7 +25,7 @@ import net.minecraft.client.model.ModelPart;
 /**
  * General purpose Fabric extensions to the {@link Model} class.
  *
- * <p>Note: This interface is automatically implemented on all render pipelines via Mixin and interface injection.
+ * <p>Note: This interface is automatically implemented on all {@link Model} instances via Mixin and interface injection.
  */
 @ApiStatus.NonExtendable
 public interface FabricModel<S> {
