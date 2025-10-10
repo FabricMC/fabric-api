@@ -29,7 +29,7 @@ import net.minecraft.resource.ResourceManager;
 import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
 @Mixin(EntityRenderManager.class)
-public class EntityRenderManagerMixin {
+class EntityRenderManagerMixin {
 	@Inject(method = "reload", at = @At("TAIL"))
 	private void createArmorRenderers(ResourceManager manager, CallbackInfo ci, @Local EntityRendererFactory.Context context) {
 		ArmorRendererRegistryImpl.createArmorRenderers(context);
