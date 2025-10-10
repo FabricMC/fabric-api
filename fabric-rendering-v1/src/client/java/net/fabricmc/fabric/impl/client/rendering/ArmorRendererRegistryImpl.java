@@ -60,12 +60,6 @@ public class ArmorRendererRegistryImpl {
 
 	public static void createArmorRenderers(EntityRendererFactory.Context context) {
 		RENDERERS.clear();
-		FACTORIES.forEach((item, factory) -> {
-			try {
-				RENDERERS.put(item, factory.createArmorRenderer(context));
-			} catch (Exception exception) {
-				throw new IllegalArgumentException("Failed to create armor renderer for " + item);
-			}
-		});
+		FACTORIES.forEach((item, factory) -> RENDERERS.put(item, factory.createArmorRenderer(context)));
 	}
 }
