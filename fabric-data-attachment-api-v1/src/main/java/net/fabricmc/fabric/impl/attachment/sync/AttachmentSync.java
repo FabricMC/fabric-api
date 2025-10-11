@@ -30,11 +30,11 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
@@ -102,8 +102,7 @@ public class AttachmentSync implements ModInitializer {
 		// Play
 		PayloadTypeRegistry.playS2C().register(AttachmentSyncPayloadS2C.ID, AttachmentSyncPayloadS2C.CODEC);
 
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			ServerPlayerEntity player = handler.player;
+		ServerPlayerEvents.JOIN.register((player) -> {
 			List<AttachmentChange> changes = new ArrayList<>();
 			// sync world attachments
 			((AttachmentTargetImpl) player.getEntityWorld()).fabric_computeInitialSyncChanges(player, changes::add);
