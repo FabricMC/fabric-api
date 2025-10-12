@@ -32,7 +32,6 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Y;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -225,7 +224,6 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	@NotNull
 	public final Direction lightFace() {
 		computeGeometry();
 		return EncodingFormat.lightFace(data[baseIndex + HEADER_BITS]);
