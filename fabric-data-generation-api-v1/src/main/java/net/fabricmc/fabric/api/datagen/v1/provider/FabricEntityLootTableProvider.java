@@ -93,19 +93,23 @@ public abstract class FabricEntityLootTableProvider extends EntityLootTableGener
 
 			// Find any entity types from this mod that are missing their main loot table
 			for (Identifier entityTypeId : Registries.ENTITY_TYPE.getIds()) {
-				if (entityTypeId.getNamespace().equals(this.output.getModId())) {
-					EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
-
-					entityType.getLootTableKey().ifPresent(mainLootTableKey -> {
-						if (mainLootTableKey.getValue().getNamespace().equals(this.output.getModId())) {
-							Map<RegistryKey<LootTable>, LootTable.Builder> tables = this.lootTables.get(entityType);
-
-							if (tables == null || !tables.containsKey(mainLootTableKey)) {
-								missing.add(entityTypeId);
-							}
-						}
-					});
+				if (!entityTypeId.getNamespace().equals(this.output.getModId())) {
+					continue;
 				}
+
+				EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
+
+				entityType.getLootTableKey().ifPresent(mainLootTableKey -> {
+					if (!mainLootTableKey.getValue().getNamespace().equals(this.output.getModId())) {
+						return;
+					}
+
+					Map<RegistryKey<LootTable>, LootTable.Builder> tables = this.lootTables.get(entityType);
+
+					if (tables == null || !tables.containsKey(mainLootTableKey)) {
+						missing.add(entityTypeId);
+					}
+				});
 			}
 
 			missing.removeAll(this.excludedFromStrictValidation);

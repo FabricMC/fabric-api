@@ -289,5 +289,10 @@
             <property name="query" value="//ANNOTATION/IDENT[@text='Debug']"/>
             <message key="matchxpath.match" value="@Debug annotation is not allowed"/>
         </module>
+
+        <module name="MatchXpath">
+            <property name="query" value="//SLIST[count(ancestor::SLIST) >= 6]"/>
+            <message key="matchxpath.match" value="Code blocks must not be nested more than 6 times"/>
+        </module>
 	</module>
 </module>
