@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.lookup.compat;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -26,9 +25,9 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
 
-public class InventoryInsertableProvider implements BlockApiLookup.BlockEntityApiProvider<ItemInsertable, @NotNull Direction> {
+public class InventoryInsertableProvider implements BlockApiLookup.BlockEntityApiProvider<ItemInsertable, Direction> {
 	@Override
-	public @Nullable ItemInsertable find(BlockEntity blockEntity, @NotNull Direction context) {
+	public @Nullable ItemInsertable find(BlockEntity blockEntity, Direction context) {
 		if (blockEntity instanceof Inventory) {
 			return new WrappedInventory((Inventory) blockEntity);
 		}

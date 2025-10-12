@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,7 +44,7 @@ abstract class ComponentMapBuilderMixin implements FabricComponentMapBuilder {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T getOrCreate(ComponentType<T> type, Supplier<@NotNull T> fallback) {
+	public <T> T getOrCreate(ComponentType<T> type, Supplier<T> fallback) {
 		if (!this.components.containsKey(type)) {
 			T defaultValue = fallback.get();
 			Objects.requireNonNull(defaultValue, "Cannot insert null values to component map builder");

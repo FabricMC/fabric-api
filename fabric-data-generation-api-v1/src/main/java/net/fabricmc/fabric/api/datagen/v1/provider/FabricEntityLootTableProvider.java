@@ -23,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 import com.google.common.collect.Sets;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.data.DataWriter;
 import net.minecraft.data.loottable.EntityLootTableGenerator;
@@ -53,7 +52,7 @@ public abstract class FabricEntityLootTableProvider extends EntityLootTableGener
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
 	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture;
 
-	protected FabricEntityLootTableProvider(FabricDataOutput output, @NotNull CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+	protected FabricEntityLootTableProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
 		super(FeatureFlags.FEATURE_MANAGER.getFeatureSet(), registryLookup.join());
 
 		this.output = output;

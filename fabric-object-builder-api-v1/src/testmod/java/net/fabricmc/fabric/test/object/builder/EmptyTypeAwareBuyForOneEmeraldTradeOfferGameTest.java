@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.test.object.builder;
 
 import com.google.common.collect.ImmutableMap;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.VillagerEntity;
@@ -30,7 +29,7 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class EmptyTypeAwareBuyForOneEmeraldTradeOfferGameTest {
 	@GameTest
-	public void testEmptyTypeAwareTradeOffer(@NotNull TestContext context) {
+	public void testEmptyTypeAwareTradeOffer(TestContext context) {
 		VillagerEntity villager = new VillagerEntity(EntityType.VILLAGER, context.getWorld(), VillagerType.PLAINS);
 
 		// Create a type-aware trade offer with no villager types specified

@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.lookup;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
@@ -92,7 +90,7 @@ public class FabricApiLookupTest implements ModInitializer {
 	}
 
 	private static void testLookupRegistry() {
-		BlockApiLookup<ItemInsertable, @NotNull Direction> insertable2 = BlockApiLookup.get(Identifier.of("testmod", "item_insertable"), ItemInsertable.class, Direction.class);
+		BlockApiLookup<ItemInsertable, Direction> insertable2 = BlockApiLookup.get(Identifier.of("testmod", "item_insertable"), ItemInsertable.class, Direction.class);
 
 		if (insertable2 != ItemApis.INSERTABLE) {
 			throw new AssertionError("The registry should have returned the same instance.");

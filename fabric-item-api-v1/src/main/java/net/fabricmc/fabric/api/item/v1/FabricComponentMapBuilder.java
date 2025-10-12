@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.component.ComponentType;
 
@@ -42,7 +41,7 @@ public interface FabricComponentMapBuilder {
 	 * @return Returns the current value in the map builder, or the default value provided by the fallback if not present
 	 * @see #getOrEmpty(ComponentType)
 	 */
-	default <T> T getOrCreate(ComponentType<T> type, Supplier<@NotNull T> fallback) {
+	default <T> T getOrCreate(ComponentType<T> type, Supplier<T> fallback) {
 		throw new AssertionError("Implemented in Mixin");
 	}
 
@@ -54,7 +53,7 @@ public interface FabricComponentMapBuilder {
 	 * @param <T>          The type of the component data
 	 * @return Returns the current value in the map builder, or the default value if not present
 	 */
-	default <T> T getOrDefault(ComponentType<T> type, @NotNull T defaultValue) {
+	default <T> T getOrDefault(ComponentType<T> type, T defaultValue) {
 		Objects.requireNonNull(defaultValue, "Cannot insert null values to component map builder");
 		return getOrCreate(type, () -> defaultValue);
 	}

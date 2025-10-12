@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.datagen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -109,7 +108,7 @@ public class DataGeneratorTestContent implements ModInitializer {
 		return block;
 	}
 
-	private static <E extends Entity> EntityType<E> createEntityType(String name, EntityType.@NotNull Builder<E> builder) {
+	private static <E extends Entity> EntityType<E> createEntityType(String name, EntityType.Builder<E> builder) {
 		RegistryKey<EntityType<?>> key = RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(MOD_ID, name));
 
 		return Registry.register(Registries.ENTITY_TYPE, key, builder.build(key));

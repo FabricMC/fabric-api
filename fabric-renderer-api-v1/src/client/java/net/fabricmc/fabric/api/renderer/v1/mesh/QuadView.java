@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -147,7 +146,6 @@ public interface QuadView {
 	 *
 	 * <p>This method is equivalent to {@link BakedQuad#face()}.
 	 */
-	@NotNull
 	Direction lightFace();
 
 	/**

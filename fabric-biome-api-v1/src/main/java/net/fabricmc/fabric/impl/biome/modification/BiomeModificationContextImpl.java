@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -165,7 +164,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void setGrassColorModifier(@NotNull BiomeEffects.GrassColorModifier colorModifier) {
+		public void setGrassColorModifier(BiomeEffects.GrassColorModifier colorModifier) {
 			effects.grassColorModifier = Objects.requireNonNull(colorModifier);
 		}
 

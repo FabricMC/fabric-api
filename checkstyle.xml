@@ -289,5 +289,10 @@
             <property name="query" value="//ANNOTATION/IDENT[@text='Debug']"/>
             <message key="matchxpath.match" value="@Debug annotation is not allowed"/>
         </module>
+
+        <module name="MatchXpath">
+            <property name="query" value="//ANNOTATION/IDENT[@text='NotNull']"/>
+            <message key="matchxpath.match" value="@NotNull annotation is not allowed"/>
+        </module>
 	</module>
 </module>

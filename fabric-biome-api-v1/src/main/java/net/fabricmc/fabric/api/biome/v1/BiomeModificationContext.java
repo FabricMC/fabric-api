@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.BiPredicate;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.entity.EntityType;
@@ -180,7 +179,7 @@ public interface BiomeModificationContext {
 		 * @see BiomeEffects#getGrassColorModifier()
 		 * @see BiomeEffects.Builder#grassColorModifier(BiomeEffects.GrassColorModifier)
 		 */
-		void setGrassColorModifier(@NotNull BiomeEffects.GrassColorModifier colorModifier);
+		void setGrassColorModifier(BiomeEffects.GrassColorModifier colorModifier);
 
 		/**
 		 * @see BiomeEffects#getParticleConfig()
@@ -192,7 +191,7 @@ public interface BiomeModificationContext {
 		 * @see BiomeEffects#getParticleConfig()
 		 * @see BiomeEffects.Builder#particleConfig(BiomeParticleConfig)
 		 */
-		default void setParticleConfig(@NotNull BiomeParticleConfig particleConfig) {
+		default void setParticleConfig(BiomeParticleConfig particleConfig) {
 			setParticleConfig(Optional.of(particleConfig));
 		}
 
@@ -214,7 +213,7 @@ public interface BiomeModificationContext {
 		 * @see BiomeEffects#getLoopSound()
 		 * @see BiomeEffects.Builder#loopSound(RegistryEntry)
 		 */
-		default void setAmbientSound(@NotNull RegistryEntry<SoundEvent> sound) {
+		default void setAmbientSound(RegistryEntry<SoundEvent> sound) {
 			setAmbientSound(Optional.of(sound));
 		}
 
@@ -236,7 +235,7 @@ public interface BiomeModificationContext {
 		 * @see BiomeEffects#getMoodSound()
 		 * @see BiomeEffects.Builder#moodSound(BiomeMoodSound)
 		 */
-		default void setMoodSound(@NotNull BiomeMoodSound sound) {
+		default void setMoodSound(BiomeMoodSound sound) {
 			setMoodSound(Optional.of(sound));
 		}
 
@@ -258,7 +257,7 @@ public interface BiomeModificationContext {
 		 * @see BiomeEffects#getAdditionsSound()
 		 * @see BiomeEffects.Builder#additionsSound(BiomeAdditionsSound)
 		 */
-		default void setAdditionsSound(@NotNull BiomeAdditionsSound sound) {
+		default void setAdditionsSound(BiomeAdditionsSound sound) {
 			setAdditionsSound(Optional.of(sound));
 		}
 
@@ -280,7 +279,7 @@ public interface BiomeModificationContext {
 		 * @see BiomeEffects#getMusic()
 		 * @see BiomeEffects.Builder#music(MusicSound)
 		 */
-		default void setMusic(@NotNull Pool<MusicSound> sound) {
+		default void setMusic(Pool<MusicSound> sound) {
 			setMusic(Optional.of(sound));
 		}
 
@@ -288,7 +287,7 @@ public interface BiomeModificationContext {
 		 * @see BiomeEffects#getMusic()
 		 * @see BiomeEffects.Builder#music(MusicSound)
 		 */
-		default void setMusic(@NotNull MusicSound sound) {
+		default void setMusic(MusicSound sound) {
 			setMusic(Pool.of(sound));
 		}
 

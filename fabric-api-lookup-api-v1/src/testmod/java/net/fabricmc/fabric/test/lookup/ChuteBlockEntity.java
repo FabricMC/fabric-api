@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.test.lookup;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -33,8 +31,8 @@ import net.fabricmc.fabric.test.lookup.api.ItemUtils;
 
 public class ChuteBlockEntity extends BlockEntity {
 	private int moveDelay = 0;
-	private BlockApiCache<ItemInsertable, @NotNull Direction> cachedInsertable = null;
-	private BlockApiCache<ItemExtractable, @NotNull Direction> cachedExtractable = null;
+	private BlockApiCache<ItemInsertable, Direction> cachedInsertable = null;
+	private BlockApiCache<ItemExtractable, Direction> cachedExtractable = null;
 
 	public ChuteBlockEntity(BlockPos pos, BlockState state) {
 		super(FabricApiLookupTest.CHUTE_BLOCK_ENTITY_TYPE, pos, state);
