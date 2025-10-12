@@ -113,7 +113,7 @@ public abstract class WorldRendererMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/SectionRenderState;renderSection(Lnet/minecraft/client/render/BlockRenderLayerGroup;)V", ordinal = 0)
 	)
 	private void beforeTerrainRender(CallbackInfo ci) {
-		WorldRenderEvents.START_RENDER.invoker().startRender(renderContext);
+		WorldRenderEvents.START_MAIN.invoker().startMain(renderContext);
 	}
 
 	@ModifyExpressionValue(method = "method_62214", at = @At(value = "NEW", target = "Lnet/minecraft/client/util/math/MatrixStack;"))

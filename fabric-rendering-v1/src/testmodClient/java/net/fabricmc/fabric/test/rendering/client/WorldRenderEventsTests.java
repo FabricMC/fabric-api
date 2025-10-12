@@ -99,7 +99,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	public void runTest(ClientGameTestContext context) {
 		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register((renderContext, hitResult) -> assertExtractionContext(renderContext));
 		WorldRenderEvents.END_EXTRACTION.register(WorldRenderEventsTests::assertExtractionContext);
-		WorldRenderEvents.START_RENDER.register(WorldRenderEventsTests::assertTerrainRenderContext);
+		WorldRenderEvents.START_MAIN.register(WorldRenderEventsTests::assertTerrainRenderContext);
 		WorldRenderEvents.BEFORE_ENTITIES.register(WorldRenderEventsTests::assertRenderContext);
 		WorldRenderEvents.AFTER_ENTITIES.register(WorldRenderEventsTests::assertRenderContext);
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.register(WorldRenderEventsTests::assertRenderContext);

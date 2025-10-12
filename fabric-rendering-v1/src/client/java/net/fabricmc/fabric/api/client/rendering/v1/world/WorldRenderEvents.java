@@ -90,9 +90,9 @@ public final class WorldRenderEvents {
 	/**
 	 * Called after all chunks to be rendered are identified, rebuilt, and uploaded to GPU.
 	 */
-	public static final Event<StartRender> START_RENDER = EventFactory.createArrayBacked(StartRender.class, callbacks -> context -> {
-		for (final StartRender callback : callbacks) {
-			callback.startRender(context);
+	public static final Event<StartMain> START_MAIN = EventFactory.createArrayBacked(StartMain.class, callbacks -> context -> {
+		for (final StartMain callback : callbacks) {
+			callback.startMain(context);
 		}
 	});
 
@@ -226,8 +226,8 @@ public final class WorldRenderEvents {
 	}
 
 	@FunctionalInterface
-	public interface StartRender {
-		void startRender(WorldTerrainRenderContext context);
+	public interface StartMain {
+		void startMain(WorldTerrainRenderContext context);
 	}
 
 	@FunctionalInterface
