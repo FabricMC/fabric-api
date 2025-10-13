@@ -49,7 +49,7 @@ public class DebugHudClient implements ClientModInitializer {
 
 		@Override
 		public DebugHudEntryCategory getCategory() {
-			return DebugHudEntryCategory.RENDERER;
+			return DebugHudEntryCategory.TEXT;
 		}
 	}
 }
