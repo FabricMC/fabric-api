@@ -209,9 +209,9 @@ public final class WorldRenderEvents {
 	 *
 	 * <p>Use to draw content that should appear on top of the world before hand and GUI rendering occur.
 	 */
-	public static final Event<Last> LAST = EventFactory.createArrayBacked(Last.class, callbacks -> context -> {
-		for (final Last callback : callbacks) {
-			callback.onLast(context);
+	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, callbacks -> context -> {
+		for (final EndMain callback : callbacks) {
+			callback.endMain(context);
 		}
 	});
 
@@ -256,7 +256,7 @@ public final class WorldRenderEvents {
 	}
 
 	@FunctionalInterface
-	public interface Last {
-		void onLast(WorldRenderContext context);
+	public interface EndMain {
+		void endMain(WorldRenderContext context);
 	}
 }

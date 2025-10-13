@@ -104,7 +104,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 		WorldRenderEvents.AFTER_ENTITIES.register(WorldRenderEventsTests::assertRenderContext);
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.register(WorldRenderEventsTests::assertRenderContext);
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(WorldRenderEventsTests::assertRenderContext);
-		WorldRenderEvents.LAST.register(WorldRenderEventsTests::assertRenderContext);
+		WorldRenderEvents.END_MAIN.register(WorldRenderEventsTests::assertRenderContext);
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
 			// Set up the test world

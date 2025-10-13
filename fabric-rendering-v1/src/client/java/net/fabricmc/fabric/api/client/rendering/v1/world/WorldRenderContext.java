@@ -51,7 +51,7 @@ public interface WorldRenderContext extends WorldTerrainRenderContext {
 	 * possible, caller should use a separate "immediate" instance.
 	 *
 	 * <p>Renders that cannot draw in one of the supported events
-	 * must be drawn directly to the frame buffer, preferably in {@link WorldRenderEvents#LAST} to avoid being
+	 * must be drawn directly to the frame buffer, preferably in {@link WorldRenderEvents#END_MAIN} to avoid being
 	 * overdrawn or cleared.
 	 */
 	VertexConsumerProvider consumers();
