@@ -24,19 +24,16 @@ import java.util.function.BiPredicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import net.minecraft.class_12197;
+import net.minecraft.class_12199;
+import net.minecraft.class_12206;
+import net.minecraft.class_12212;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.sound.BiomeAdditionsSound;
-import net.minecraft.sound.BiomeMoodSound;
-import net.minecraft.sound.MusicSound;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.collection.Pool;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
-import net.minecraft.world.biome.BiomeParticleConfig;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
@@ -50,6 +47,11 @@ public interface BiomeModificationContext {
 	 * Returns the modification context for the biomes weather properties.
 	 */
 	WeatherContext getWeather();
+
+	/**
+	 * Returns the modification context for the biomes environment attributes.
+	 */
+	AttributesContext getAttributes();
 
 	/**
 	 * Returns the modification context for the biomes effects.
@@ -91,11 +93,37 @@ public interface BiomeModificationContext {
 		void setDownfall(float downfall);
 	}
 
+	interface AttributesContext {
+		/**
+		 * @see Biome.Builder#method_75739(class_12199)
+		 */
+		void addAll(class_12199 map);
+
+		/**
+		 * @see Biome.Builder#method_75738(class_12199.class_12200)
+		 */
+		default void addAll(class_12199.class_12200 map) {
+			this.addAll(map.method_75672());
+		}
+
+		/**
+		 * @see Biome.Builder#method_75737(class_12197, Object)
+		 */
+		<T> void set(class_12197<T> key, T value);
+
+		/**
+		 * @see Biome.Builder#method_75736(class_12197, class_12212, Object)
+		 */
+		<T, M> void setModifier(class_12197<T> key, class_12212<T, M> modifier, M value);
+	}
+
 	interface EffectsContext {
 		/**
-		 * @see BiomeEffects#getFogColor()
-		 * @see BiomeEffects.Builder#fogColor(int)
+		 * @deprecated Set the fog color using environment attributes instead
+		 * @see BiomeModificationContext#getAttributes()
+		 * @see class_12206#FOG_COLOR_VISUAL
 		 */
+		@Deprecated
 		void setFogColor(int color);
 
 		/**
@@ -105,15 +133,19 @@ public interface BiomeModificationContext {
 		void setWaterColor(int color);
 
 		/**
-		 * @see BiomeEffects#getWaterFogColor()
-		 * @see BiomeEffects.Builder#waterFogColor(int)
+		 * @deprecated Set the water fog color using environment attributes instead
+		 * @see BiomeModificationContext#getAttributes()
+		 * @see class_12206#WATER_FOG_COLOR_VISUAL
 		 */
+		@Deprecated
 		void setWaterFogColor(int color);
 
 		/**
-		 * @see BiomeEffects#getSkyColor()
-		 * @see BiomeEffects.Builder#skyColor(int)
+		 * @deprecated Set the sky color using environment attributes instead
+		 * @see BiomeModificationContext#getAttributes()
+		 * @see class_12206#SKY_COLOR_VISUAL
 		 */
+		@Deprecated
 		void setSkyColor(int color);
 
 		/**
@@ -183,127 +215,11 @@ public interface BiomeModificationContext {
 		void setGrassColorModifier(@NotNull BiomeEffects.GrassColorModifier colorModifier);
 
 		/**
-		 * @see BiomeEffects#getParticleConfig()
-		 * @see BiomeEffects.Builder#particleConfig(BiomeParticleConfig)
+		 * @deprecated Set the music volume using environment attributes instead
+		 * @see BiomeModificationContext#getAttributes()
+		 * @see class_12206#MUSIC_VOLUME_AUDIO
 		 */
-		void setParticleConfig(Optional<BiomeParticleConfig> particleConfig);
-
-		/**
-		 * @see BiomeEffects#getParticleConfig()
-		 * @see BiomeEffects.Builder#particleConfig(BiomeParticleConfig)
-		 */
-		default void setParticleConfig(@NotNull BiomeParticleConfig particleConfig) {
-			setParticleConfig(Optional.of(particleConfig));
-		}
-
-		/**
-		 * @see BiomeEffects#getParticleConfig()
-		 * @see BiomeEffects.Builder#particleConfig(BiomeParticleConfig)
-		 */
-		default void clearParticleConfig() {
-			setParticleConfig(Optional.empty());
-		}
-
-		/**
-		 * @see BiomeEffects#getLoopSound()
-		 * @see BiomeEffects.Builder#loopSound(RegistryEntry)
-		 */
-		void setAmbientSound(Optional<RegistryEntry<SoundEvent>> sound);
-
-		/**
-		 * @see BiomeEffects#getLoopSound()
-		 * @see BiomeEffects.Builder#loopSound(RegistryEntry)
-		 */
-		default void setAmbientSound(@NotNull RegistryEntry<SoundEvent> sound) {
-			setAmbientSound(Optional.of(sound));
-		}
-
-		/**
-		 * @see BiomeEffects#getLoopSound()
-		 * @see BiomeEffects.Builder#loopSound(RegistryEntry)
-		 */
-		default void clearAmbientSound() {
-			setAmbientSound(Optional.empty());
-		}
-
-		/**
-		 * @see BiomeEffects#getMoodSound()
-		 * @see BiomeEffects.Builder#moodSound(BiomeMoodSound)
-		 */
-		void setMoodSound(Optional<BiomeMoodSound> sound);
-
-		/**
-		 * @see BiomeEffects#getMoodSound()
-		 * @see BiomeEffects.Builder#moodSound(BiomeMoodSound)
-		 */
-		default void setMoodSound(@NotNull BiomeMoodSound sound) {
-			setMoodSound(Optional.of(sound));
-		}
-
-		/**
-		 * @see BiomeEffects#getMoodSound()
-		 * @see BiomeEffects.Builder#moodSound(BiomeMoodSound)
-		 */
-		default void clearMoodSound() {
-			setMoodSound(Optional.empty());
-		}
-
-		/**
-		 * @see BiomeEffects#getAdditionsSound()
-		 * @see BiomeEffects.Builder#additionsSound(BiomeAdditionsSound)
-		 */
-		void setAdditionsSound(Optional<BiomeAdditionsSound> sound);
-
-		/**
-		 * @see BiomeEffects#getAdditionsSound()
-		 * @see BiomeEffects.Builder#additionsSound(BiomeAdditionsSound)
-		 */
-		default void setAdditionsSound(@NotNull BiomeAdditionsSound sound) {
-			setAdditionsSound(Optional.of(sound));
-		}
-
-		/**
-		 * @see BiomeEffects#getAdditionsSound()
-		 * @see BiomeEffects.Builder#additionsSound(BiomeAdditionsSound)
-		 */
-		default void clearAdditionsSound() {
-			setAdditionsSound(Optional.empty());
-		}
-
-		/**
-		 * @see BiomeEffects#getMusic()
-		 * @see BiomeEffects.Builder#music(MusicSound)
-		 */
-		void setMusic(Optional<Pool<MusicSound>> sound);
-
-		/**
-		 * @see BiomeEffects#getMusic()
-		 * @see BiomeEffects.Builder#music(MusicSound)
-		 */
-		default void setMusic(@NotNull Pool<MusicSound> sound) {
-			setMusic(Optional.of(sound));
-		}
-
-		/**
-		 * @see BiomeEffects#getMusic()
-		 * @see BiomeEffects.Builder#music(MusicSound)
-		 */
-		default void setMusic(@NotNull MusicSound sound) {
-			setMusic(Pool.of(sound));
-		}
-
-		/**
-		 * @see BiomeEffects#getMusic()
-		 * @see BiomeEffects.Builder#music(MusicSound)
-		 */
-		default void clearMusic() {
-			setMusic(Optional.empty());
-		}
-
-		/**
-		 * @see BiomeEffects#getMusicVolume()
-		 * @see BiomeEffects.Builder#musicVolume(float)
-		 */
+		@Deprecated
 		void setMusicVolume(float volume);
 	}
 

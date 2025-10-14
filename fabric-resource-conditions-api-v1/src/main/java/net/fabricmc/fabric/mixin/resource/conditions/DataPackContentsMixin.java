@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.class_12096;
+import net.minecraft.command.permission.PermissionPredicate;
 import net.minecraft.registry.CombinedDynamicRegistries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.ServerDynamicRegistryType;
@@ -42,7 +42,7 @@ public class DataPackContentsMixin {
 			method = "reload",
 			at = @At("HEAD")
 	)
-	private static void hookReload(ResourceManager resourceManager, CombinedDynamicRegistries<ServerDynamicRegistryType> dynamicRegistries, List<Registry.PendingTagLoad<?>> pendingTagLoads, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, class_12096 arg, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
+	private static void hookReload(ResourceManager resourceManager, CombinedDynamicRegistries<ServerDynamicRegistryType> dynamicRegistries, List<Registry.PendingTagLoad<?>> pendingTagLoads, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, PermissionPredicate permissionPredicate, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
 		ResourceConditionsImpl.currentFeatures = enabledFeatures;
 	}
 }

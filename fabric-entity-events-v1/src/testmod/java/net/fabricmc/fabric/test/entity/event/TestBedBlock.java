@@ -19,6 +19,8 @@ package net.fabricmc.fabric.test.entity.event;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.class_12195;
+import net.minecraft.class_12206;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -52,10 +54,12 @@ public class TestBedBlock extends Block {
 			return ActionResult.CONSUME;
 		}
 
-		if (world.getDimension().bedWorks()) {
+		class_12195 bedRule = world.method_75598().method_75697(class_12206.BED_RULE_GAMEPLAY, pos);
+
+		if (bedRule.canSleep().method_75646(world)) {
 			if (!world.isClient()) {
 				player.trySleep(pos).ifLeft(sleepFailureReason -> {
-					Text message = sleepFailureReason.getMessage();
+					Text message = sleepFailureReason.message();
 
 					if (message != null) {
 						player.sendMessage(message, true);

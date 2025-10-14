@@ -76,6 +76,8 @@ public final class EntityEventTests implements ModInitializer {
 																.build()
 												).registryKey(DIAMOND_ELYTRA_KEY));
 
+	private static final PlayerEntity.SleepFailureReason SLEEP_FAILURE_REASON = new PlayerEntity.SleepFailureReason(Text.literal("Cannot sleep while holding blue wool!"));
+
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.BLOCK, TEST_BED_KEY, TEST_BED);
@@ -148,7 +150,7 @@ public final class EntityEventTests implements ModInitializer {
 		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {
 			// Can't sleep if holds blue wool
 			if (player.getStackInHand(Hand.MAIN_HAND).isOf(Items.BLUE_WOOL)) {
-				return PlayerEntity.SleepFailureReason.OTHER_PROBLEM;
+				return SLEEP_FAILURE_REASON;
 			}
 
 			return null;
@@ -177,15 +179,6 @@ public final class EntityEventTests implements ModInitializer {
 
 		EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.register((entity, sleepingPos, sleepingDirection) -> {
 			return entity.getEntityWorld().getBlockState(sleepingPos).isOf(TEST_BED) ? Direction.NORTH : sleepingDirection;
-		});
-
-		EntitySleepEvents.ALLOW_SLEEP_TIME.register((player, sleepingPos, vanillaResult) -> {
-			// Yellow wool allows to sleep during the day
-			if (player.getEntityWorld().isDay() && player.getStackInHand(Hand.MAIN_HAND).isOf(Items.YELLOW_WOOL)) {
-				return ActionResult.SUCCESS;
-			}
-
-			return ActionResult.PASS;
 		});
 
 		EntitySleepEvents.ALLOW_NEARBY_MONSTERS.register((player, sleepingPos, vanillaResult) -> {

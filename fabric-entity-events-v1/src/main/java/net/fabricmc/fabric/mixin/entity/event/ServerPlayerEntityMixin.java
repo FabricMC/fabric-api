@@ -95,7 +95,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		Direction dir = EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.invoker().modifySleepDirection((LivingEntity) (Object) this, pos, initial);
 
 		if (dir == null) {
-			cir.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE));
+			cir.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.field_7531));
 		}
 
 		return dir;
@@ -113,17 +113,5 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		boolean vanillaResult = monsters.isEmpty();
 		ActionResult result = EntitySleepEvents.ALLOW_NEARBY_MONSTERS.invoker().allowNearbyMonsters((PlayerEntity) (Object) this, pos, vanillaResult);
 		return result != ActionResult.PASS ? result.isAccepted() : vanillaResult;
-	}
-
-	@Redirect(method = "trySleep", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;isDay()Z"))
-	private boolean redirectDaySleepCheck(ServerWorld world, BlockPos pos) {
-		boolean day = world.isDay();
-		ActionResult result = EntitySleepEvents.ALLOW_SLEEP_TIME.invoker().allowSleepTime((PlayerEntity) (Object) this, pos, !day);
-
-		if (result != ActionResult.PASS) {
-			return !result.isAccepted(); // true from the event = night-like conditions, so we have to invert
-		}
-
-		return day;
 	}
 }

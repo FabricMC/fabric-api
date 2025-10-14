@@ -17,9 +17,7 @@
 package net.fabricmc.fabric.test.screen;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.input.AbstractInput;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -28,20 +26,13 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.random.Random;
 
-class SoundButton extends PressableWidget {
+class SoundButton extends ButtonWidget.class_12231 {
 	private static final Random RANDOM = Random.create();
 
 	SoundButton(int x, int y, int width, int height) {
-		super(x, y, width, height, Text.of("Sound Button"));
-	}
-
-	@Override
-	public void onPress(AbstractInput ctx) {
-		final SoundEvent event = Registries.SOUND_EVENT.getRandom(RANDOM).map(RegistryEntry::value).orElse(SoundEvents.ENTITY_GENERIC_EXPLODE.value());
-		MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event, 1.0F, 1.0F));
-	}
-
-	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder narrationMessageBuilder) {
+		super(x, y, width, height, Text.of("Sound Button"), ctx -> {
+			final SoundEvent event = Registries.SOUND_EVENT.getRandom(RANDOM).map(RegistryEntry::value).orElse(SoundEvents.ENTITY_GENERIC_EXPLODE.value());
+			MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event, 1.0F, 1.0F));
+		}, null);
 	}
 }

@@ -34,6 +34,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import net.minecraft.class_12197;
+import net.minecraft.class_12199;
+import net.minecraft.class_12199.class_12200;
+import net.minecraft.class_12206;
+import net.minecraft.class_12212;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.DynamicRegistryManager;
@@ -42,15 +47,10 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.sound.BiomeAdditionsSound;
-import net.minecraft.sound.BiomeMoodSound;
-import net.minecraft.sound.MusicSound;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.collection.Pool;
 import net.minecraft.util.collection.Weighted;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
-import net.minecraft.world.biome.BiomeParticleConfig;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
@@ -64,6 +64,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private final DynamicRegistryManager registries;
 	private final Biome biome;
 	private final WeatherContext weather;
+	private final AttributesContext attributes;
 	private final EffectsContext effects;
 	private final GenerationSettingsContextImpl generationSettings;
 	private final SpawnSettingsContextImpl spawnSettings;
@@ -72,6 +73,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		this.registries = registries;
 		this.biome = biome;
 		this.weather = new WeatherContextImpl();
+		this.attributes = new AttributesContextImpl();
 		this.effects = new EffectsContextImpl();
 		this.generationSettings = new GenerationSettingsContextImpl();
 		this.spawnSettings = new SpawnSettingsContextImpl();
@@ -80,6 +82,11 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	@Override
 	public WeatherContext getWeather() {
 		return weather;
+	}
+
+	@Override
+	public AttributesContext getAttributes() {
+		return attributes;
 	}
 
 	@Override
@@ -131,12 +138,35 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 	}
 
+	private class AttributesContextImpl implements AttributesContext {
+		@Override
+		public void addAll(class_12199 map) {
+			class_12200 attributes = class_12199.method_75661().method_75675(biome.method_75734());
+			attributes.method_75675(map);
+			biome.field_63809 = attributes.method_75672();
+		}
+
+		@Override
+		public <T> void set(class_12197<T> key, T value) {
+			class_12200 attributes = class_12199.method_75661().method_75675(biome.method_75734());
+			attributes.method_75674(key, value);
+			biome.field_63809 = attributes.method_75672();
+		}
+
+		@Override
+		public <T, M> void setModifier(class_12197<T> key, class_12212<T, M> modifier, M value) {
+			class_12200 attributes = class_12199.method_75661().method_75675(biome.method_75734());
+			attributes.method_75673(key, modifier, value);
+			biome.field_63809 = attributes.method_75672();
+		}
+	}
+
 	private class EffectsContextImpl implements EffectsContext {
 		private final BiomeEffects effects = biome.getEffects();
 
 		@Override
 		public void setFogColor(int color) {
-			effects.fogColor = color;
+			attributes.set(class_12206.FOG_COLOR_VISUAL, color);
 		}
 
 		@Override
@@ -146,12 +176,12 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public void setWaterFogColor(int color) {
-			effects.waterFogColor = color;
+			attributes.set(class_12206.WATER_FOG_COLOR_VISUAL, color);
 		}
 
 		@Override
 		public void setSkyColor(int color) {
-			effects.skyColor = color;
+			attributes.set(class_12206.SKY_COLOR_VISUAL, color);
 		}
 
 		@Override
@@ -170,33 +200,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void setParticleConfig(Optional<BiomeParticleConfig> particleConfig) {
-			effects.particleConfig = Objects.requireNonNull(particleConfig);
-		}
-
-		@Override
-		public void setAmbientSound(Optional<RegistryEntry<SoundEvent>> sound) {
-			effects.loopSound = Objects.requireNonNull(sound);
-		}
-
-		@Override
-		public void setMoodSound(Optional<BiomeMoodSound> sound) {
-			effects.moodSound = Objects.requireNonNull(sound);
-		}
-
-		@Override
-		public void setAdditionsSound(Optional<BiomeAdditionsSound> sound) {
-			effects.additionsSound = Objects.requireNonNull(sound);
-		}
-
-		@Override
-		public void setMusic(Optional<Pool<MusicSound>> sound) {
-			effects.music = Objects.requireNonNull(sound);
-		}
-
-		@Override
 		public void setMusicVolume(float volume) {
-			effects.musicVolume = volume;
+			attributes.set(class_12206.MUSIC_VOLUME_AUDIO, volume);
 		}
 	}
 

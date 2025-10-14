@@ -25,7 +25,6 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -61,7 +60,7 @@ public class GameRulesTestMod implements ModInitializer {
 	public static final GameRules.Key<GameRules.BooleanRule> GREEN_BOOLEAN = register("greenBoolean", GREEN_CATEGORY, GameRuleFactory.createBooleanRule(false));
 
 	// An enum rule with no "toString" logic
-	public static final GameRules.Key<EnumRule<PlayerEntity.SleepFailureReason>> RED_SLEEP_FAILURE_ENUM = register("redSleepFailureEnum", RED_CATEGORY, GameRuleFactory.createEnumRule(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE));
+	public static final GameRules.Key<EnumRule<TestEnum>> RED_ENUM = register("redEnum", RED_CATEGORY, GameRuleFactory.createEnumRule(TestEnum.SCISSORS));
 
 	private static <T extends GameRules.Rule<T>> GameRules.Key<T> register(String name, GameRules.Category category, GameRules.Type<T> type) {
 		return GameRuleRegistry.register(name, category, type);
@@ -81,8 +80,8 @@ public class GameRulesTestMod implements ModInitializer {
 		}
 
 		// Test our own rule
-		if (!GameRuleRegistry.hasRegistration("redSleepFailureEnum")) {
-			throw new AssertionError("Expected to find \"redSleepFailureEnum\" already registered, but it was not detected as registered");
+		if (!GameRuleRegistry.hasRegistration("redEnum")) {
+			throw new AssertionError("Expected to find \"redEnum\" already registered, but it was not detected as registered");
 		}
 
 		LOGGER.info("Loaded GameRules test mod.");

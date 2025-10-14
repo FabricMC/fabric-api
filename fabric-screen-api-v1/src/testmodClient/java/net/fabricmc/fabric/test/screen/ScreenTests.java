@@ -114,7 +114,7 @@ public final class ScreenTests implements ClientModInitializer {
 	}
 
 	// Test that mouseReleased is called
-	private static final class TestButtonWidget extends ButtonWidget {
+	private static final class TestButtonWidget extends ButtonWidget.class_12231 {
 		private TestButtonWidget() {
 			super(10, 10, 10, 10, Text.literal("X"), button -> {
 				LOGGER.info("Pressed");

@@ -4,6 +4,8 @@ accessible  class   net/minecraft/world/biome/Biome$Weather
 # Top-Level Biome Fields Access
 accessible field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;
 mutable field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;
+accessible field net/minecraft/world/biome/Biome field_63809 Lnet/minecraft/class_12199;
+mutable field net/minecraft/world/biome/Biome field_63809 Lnet/minecraft/class_12199;
 accessible field net/minecraft/world/biome/Biome generationSettings Lnet/minecraft/world/biome/GenerationSettings;
 accessible field net/minecraft/world/biome/Biome spawnSettings Lnet/minecraft/world/biome/SpawnSettings;
 
@@ -11,32 +13,14 @@ accessible field net/minecraft/world/biome/Biome spawnSettings Lnet/minecraft/wo
 accessible method net/minecraft/world/biome/Biome$Weather <init> (ZFLnet/minecraft/world/biome/Biome$TemperatureModifier;F)V
 
 # Biome Effects
-accessible field net/minecraft/world/biome/BiomeEffects fogColor I
-mutable field net/minecraft/world/biome/BiomeEffects fogColor I
 accessible field net/minecraft/world/biome/BiomeEffects waterColor I
 mutable field net/minecraft/world/biome/BiomeEffects waterColor I
-accessible field net/minecraft/world/biome/BiomeEffects waterFogColor I
-mutable field net/minecraft/world/biome/BiomeEffects waterFogColor I
-accessible field net/minecraft/world/biome/BiomeEffects skyColor I
-mutable field net/minecraft/world/biome/BiomeEffects skyColor I
 accessible field net/minecraft/world/biome/BiomeEffects foliageColor Ljava/util/Optional;
 mutable field net/minecraft/world/biome/BiomeEffects foliageColor Ljava/util/Optional;
 accessible field net/minecraft/world/biome/BiomeEffects grassColor Ljava/util/Optional;
 mutable field net/minecraft/world/biome/BiomeEffects grassColor Ljava/util/Optional;
 accessible field net/minecraft/world/biome/BiomeEffects grassColorModifier Lnet/minecraft/world/biome/BiomeEffects$GrassColorModifier;
 mutable field net/minecraft/world/biome/BiomeEffects grassColorModifier Lnet/minecraft/world/biome/BiomeEffects$GrassColorModifier;
-accessible field net/minecraft/world/biome/BiomeEffects particleConfig Ljava/util/Optional;
-mutable field net/minecraft/world/biome/BiomeEffects particleConfig Ljava/util/Optional;
-accessible field net/minecraft/world/biome/BiomeEffects loopSound Ljava/util/Optional;
-mutable field net/minecraft/world/biome/BiomeEffects loopSound Ljava/util/Optional;
-accessible field net/minecraft/world/biome/BiomeEffects moodSound Ljava/util/Optional;
-mutable field net/minecraft/world/biome/BiomeEffects moodSound Ljava/util/Optional;
-accessible field net/minecraft/world/biome/BiomeEffects additionsSound Ljava/util/Optional;
-mutable field net/minecraft/world/biome/BiomeEffects additionsSound Ljava/util/Optional;
-accessible field net/minecraft/world/biome/BiomeEffects music Ljava/util/Optional;
-mutable field net/minecraft/world/biome/BiomeEffects music Ljava/util/Optional;
-accessible field net/minecraft/world/biome/BiomeEffects musicVolume F
-mutable field net/minecraft/world/biome/BiomeEffects musicVolume F
 
 # Spawn Settings / Density
 accessible field net/minecraft/world/biome/SpawnSettings creatureSpawnProbability F
