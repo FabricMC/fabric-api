@@ -291,6 +291,11 @@
         </module>
 
         <module name="MatchXpath">
+            <property name="query" value="//SLIST[count(ancestor::SLIST) >= 6]"/>
+            <message key="matchxpath.match" value="Code blocks must not be nested more than 6 times"/>
+        </module>
+
+        <module name="MatchXpath">
             <property name="query" value="//ANNOTATION/IDENT[@text='NotNull']"/>
             <message key="matchxpath.match" value="@NotNull annotation is not allowed"/>
         </module>

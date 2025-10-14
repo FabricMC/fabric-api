@@ -379,7 +379,7 @@ transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	regist
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	createModelWithInHandVariant	(Lnet/minecraft/client/render/item/model/ItemModel$Unbaked;Lnet/minecraft/client/render/item/model/ItemModel$Unbaked;)Lnet/minecraft/client/render/item/model/ItemModel$Unbaked;
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	registerWithInHandModel	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	registerTrident	(Lnet/minecraft/item/Item;)V
-transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	method_75342	(Lnet/minecraft/item/Item;)V
+transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	registerSpear	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	registerPotionTinted	(Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;)V
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	registerPotion	(Lnet/minecraft/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/ItemModelGenerator	registerTippedArrow	(Lnet/minecraft/item/Item;)V

@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.test.biome;
 
+import net.minecraft.class_12190;
+import net.minecraft.class_12206;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
@@ -62,12 +63,12 @@ public final class TestBiomes {
 				.temperature(0.8f)
 				.downfall(0.4f)
 				.precipitation(false)
+				.method_75737(class_12206.SKY_COLOR_VISUAL, 7907327)
+				.method_75737(class_12206.FOG_COLOR_VISUAL, 12638463)
+				.method_75737(class_12206.WATER_FOG_COLOR_VISUAL, 329011)
 				.effects(
 					new BiomeEffects.Builder()
-						.skyColor(7907327)
-						.fogColor(12638463)
 						.waterColor(4159204)
-						.waterFogColor(329011)
 						.build()
 				)
 				.spawnSettings(
@@ -98,7 +99,21 @@ public final class TestBiomes {
 	private static Biome composeEndSpawnSettings(GenerationSettings.Builder builder) {
 		SpawnSettings.Builder builder2 = new SpawnSettings.Builder();
 		DefaultBiomeFeatures.addPlainsMobs(builder2);
-		return (new Biome.Builder()).precipitation(false).temperature(0.5F).downfall(0.5F).effects((new BiomeEffects.Builder()).waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0).moodSound(
-				BiomeMoodSound.CAVE).build()).spawnSettings(builder2.build()).generationSettings(builder.build()).build();
+		return new Biome.Builder()
+				.precipitation(false)
+				.temperature(0.5F)
+				.downfall(0.5F)
+				.method_75737(class_12206.WATER_FOG_COLOR_VISUAL, 329011)
+				.method_75737(class_12206.FOG_COLOR_VISUAL, 10518688)
+				.method_75737(class_12206.SKY_COLOR_VISUAL, 0)
+				.method_75737(class_12206.AMBIENT_SOUNDS_AUDIO, class_12190.field_63685)
+				.effects(
+					new BiomeEffects.Builder()
+						.waterColor(4159204)
+						.build()
+				)
+				.spawnSettings(builder2.build())
+				.generationSettings(builder.build())
+				.build();
 	}
 }

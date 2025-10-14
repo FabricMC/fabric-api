@@ -56,7 +56,7 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		protected void renderWidget(DrawContext drawContext, int mouseX, int mouseY, float delta) {
+		protected void method_75752(DrawContext drawContext, int mouseX, int mouseY, float delta) {
 			this.active = type.isEnabled.test(screen);
 			this.visible = screen.hasAdditionalPages();
 

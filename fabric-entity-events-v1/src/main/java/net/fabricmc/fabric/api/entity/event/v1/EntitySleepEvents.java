@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>These events can be categorized into three groups:
  * <ol>
  * <li>Simple listeners: {@link #START_SLEEPING} and {@link #STOP_SLEEPING}</li>
- * <li>Predicates: {@link #ALLOW_BED}, {@link #ALLOW_SLEEP_TIME}, {@link #ALLOW_RESETTING_TIME},
+ * <li>Predicates: {@link #ALLOW_BED}, {@link #ALLOW_RESETTING_TIME},
  * {@link #ALLOW_NEARBY_MONSTERS}, {@link #ALLOW_SETTING_SPAWN} and {@link #ALLOW_SLEEPING}
  *
  * <p><b>Note:</b> Only the {@link #ALLOW_BED} event applies to non-player entities.</li>
@@ -52,16 +52,16 @@ public final class EntitySleepEvents {
 	 * An event that checks whether a player can start to sleep in a bed-like block.
 	 * This event only applies to sleeping using {@link PlayerEntity#trySleep(BlockPos)}.
 	 *
-	 * <p><b>Note:</b> Please use the more detailed events {@link #ALLOW_SLEEP_TIME} and {@link #ALLOW_NEARBY_MONSTERS}
-	 * if they match your use case! This helps with mod compatibility.
+	 * <p><b>Note:</b> Please use the more detailed event {@link #ALLOW_NEARBY_MONSTERS}
+	 * if it matches your use case! This helps with mod compatibility.
 	 *
 	 * <p>If this event returns a {@link net.minecraft.entity.player.PlayerEntity.SleepFailureReason}, it is used
 	 * as the return value of {@link PlayerEntity#trySleep(BlockPos)} and sleeping fails. A {@code null} return value
 	 * means that the player will start sleeping.
 	 *
 	 * <p>When this event is called, all vanilla sleeping checks have already succeeded, i.e. this event
-	 * is used in addition to vanilla checks. The more detailed events {@link #ALLOW_SLEEP_TIME} and {@link #ALLOW_NEARBY_MONSTERS}
-	 * are also checked before this event.
+	 * is used in addition to vanilla checks. The more detailed event {@link #ALLOW_NEARBY_MONSTERS}
+	 * is also checked before this event.
 	 */
 	public static final Event<AllowSleeping> ALLOW_SLEEPING = EventFactory.createArrayBacked(AllowSleeping.class, callbacks -> (player, sleepingPos) -> {
 		for (AllowSleeping callback : callbacks) {
@@ -108,24 +108,6 @@ public final class EntitySleepEvents {
 	public static final Event<AllowBed> ALLOW_BED = EventFactory.createArrayBacked(AllowBed.class, callbacks -> (entity, sleepingPos, state, vanillaResult) -> {
 		for (AllowBed callback : callbacks) {
 			ActionResult result = callback.allowBed(entity, sleepingPos, state, vanillaResult);
-
-			if (result != ActionResult.PASS) {
-				return result;
-			}
-		}
-
-		return ActionResult.PASS;
-	});
-
-	/**
-	 * An event that checks whether the current time of day is valid for sleeping.
-	 *
-	 * <p>Note that if sleeping during day time is allowed, the game will still reset the time to 0 if the usual
-	 * conditions are met, unless forbidden with {@link #ALLOW_RESETTING_TIME}.
-	 */
-	public static final Event<AllowSleepTime> ALLOW_SLEEP_TIME = EventFactory.createArrayBacked(AllowSleepTime.class, callbacks -> (player, sleepingPos, vanillaResult) -> {
-		for (AllowSleepTime callback : callbacks) {
-			ActionResult result = callback.allowSleepTime(player, sleepingPos, vanillaResult);
 
 			if (result != ActionResult.PASS) {
 				return result;

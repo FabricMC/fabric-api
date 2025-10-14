@@ -73,12 +73,12 @@ public class NetworkingCommonTest implements ModInitializer {
 
 			if (entity instanceof ServerPlayerEntity player) {
 				uuid.set(player.getUuidAsString());
-				runOnTick.set(player.getEntityWorld().getServer().getWorld(World.OVERWORLD).method_75260() + 50);
+				runOnTick.set(player.getEntityWorld().getServer().getWorld(World.OVERWORLD).getTime() + 50);
 			}
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			if (server.getWorld(World.OVERWORLD).method_75260() != runOnTick.get()) {
+			if (server.getWorld(World.OVERWORLD).getTime() != runOnTick.get()) {
 				return;
 			}
 

@@ -203,13 +203,15 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 			List<String> strings = null;
 
 			for (Identifier remoteId : remoteIndexedEntries.keySet()) {
-				if (!this.containsId(remoteId)) {
-					if (strings == null) {
-						strings = new ArrayList<>();
-					}
-
-					strings.add(" - " + remoteId);
+				if (this.containsId(remoteId)) {
+					continue;
 				}
+
+				if (strings == null) {
+					strings = new ArrayList<>();
+				}
+
+				strings.add(" - " + remoteId);
 			}
 
 			if (strings != null) {
@@ -275,24 +277,21 @@ public abstract class SimpleRegistryMixin<T> implements MutableRegistry<T>, Rema
 			int maxId = -1;
 
 			for (Identifier id : getIds()) {
-				if (!remoteIndexedEntries.containsKey(id)) {
-					if (maxId < 0) {
-						for (int value : remoteIndexedEntries.values()) {
-							if (value > maxId) {
-								maxId = value;
-							}
-						}
-					}
-
-					if (maxId < 0) {
-						throw new RemapException("Failed to assign new id to client only registry entry");
-					}
-
-					maxId++;
-
-					FABRIC_LOGGER.debug("An ID for {} was not sent by the server, assuming client only registry entry and assigning a new id ({}) in {}", id.toString(), maxId, getKey().getValue().toString());
-					remoteIndexedEntries.put(id, maxId);
+				if (remoteIndexedEntries.containsKey(id)) {
+					continue;
 				}
+
+				if (maxId < 0) {
+					maxId = remoteIndexedEntries.values()
+							.intStream()
+							.max()
+							.orElseThrow(() -> new RemapException("Failed to assign new id to client only registry entry"));
+				}
+
+				maxId++;
+
+				FABRIC_LOGGER.debug("An ID for {} was not sent by the server, assuming client only registry entry and assigning a new id ({}) in {}", id.toString(), maxId, getKey().getValue().toString());
+				remoteIndexedEntries.put(id, maxId);
 			}
 
 			break;

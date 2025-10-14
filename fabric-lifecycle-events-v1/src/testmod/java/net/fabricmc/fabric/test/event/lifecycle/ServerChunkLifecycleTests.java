@@ -103,7 +103,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		});
 
 		ServerTickEvents.END_WORLD_TICK.register(world -> {
-			if (world.method_75260() % 20 == 0) { // limit to 1 per second
+			if (world.getTime() % 20 == 0) { // limit to 1 per second
 				Object2IntMap<ChunkLevelType> levelTypes = worldsChunkLevelEvents.get(world.getRegistryKey().getValue());
 
 				if (levelTypes != null && !levelTypes.isEmpty()) {

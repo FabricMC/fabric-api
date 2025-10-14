@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.class_12206;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -204,7 +205,7 @@ public final class FluidVariantAttributes {
 
 			@Override
 			public int getViscosity(FluidVariant variant, @Nullable World world) {
-				if (world != null && world.getDimension().ultrawarm()) {
+				if (world != null && world.method_75598().method_75694(class_12206.FAST_LAVA_GAMEPLAY)) {
 					return FluidConstants.LAVA_VISCOSITY_NETHER;
 				} else {
 					return FluidConstants.LAVA_VISCOSITY;
