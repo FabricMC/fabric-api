@@ -25,6 +25,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Oxidizable;
 import net.minecraft.block.OxidizableBlock;
+import net.minecraft.component.type.FireworkExplosionComponent;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.HoeItem;
@@ -55,6 +56,7 @@ import net.minecraft.world.event.GameEvent;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
+import net.fabricmc.fabric.api.registry.FireworkStarExplosionTypeRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
@@ -107,6 +109,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - instant health potions can be brewed from awkward potions with any item in the 'minecraft:small_flowers' tag
 		//  - if Redstone Experiments experiment is enabled, luck potions can be brewed from awkward potions with a bundle
 		//  - dirty potions can be brewed by adding any item in the 'minecraft:dirt' tag to any standard potion
+		//  - nether stars can be used to create a firework star with the star explosion type
 
 		CompostingChanceRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
@@ -195,6 +198,8 @@ public final class ContentRegistryTest implements ModInitializer {
 				builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.ofItems(Items.BUNDLE), Potions.LUCK);
 			}
 		});
+
+		FireworkStarExplosionTypeRegistry.register(Items.NETHER_STAR, FireworkExplosionComponent.Type.STAR);
 	}
 
 	public static class TestEventBlock extends Block {

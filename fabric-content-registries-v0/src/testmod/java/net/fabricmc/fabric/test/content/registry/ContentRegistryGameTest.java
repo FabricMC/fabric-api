@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.test.content.registry;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import it.unimi.dsi.fastutil.ints.IntList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -29,13 +32,18 @@ import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.FireworkExplosionComponent;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potions;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.input.CraftingRecipeInput;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -242,5 +250,26 @@ public class ContentRegistryGameTest {
 			context.assertTrue(bottle.getItem() instanceof ContentRegistryTest.DirtyPotionItem, Text.literal("potion became dirty"));
 			context.complete();
 		});
+	}
+
+	@GameTest
+	public void testFireworkStarExplosionTypeRegistry(TestContext context) {
+		CraftingRecipeInput inventory = CraftingRecipeInput.create(1, 3, List.of(
+				Items.GUNPOWDER.getDefaultStack(),
+				Items.RED_DYE.getDefaultStack(),
+				Items.NETHER_STAR.getDefaultStack()));
+		ServerWorld world = context.getWorld();
+		ItemStack result = world.getRecipeManager().getFirstMatch(RecipeType.CRAFTING, inventory, world)
+				.map(recipe -> recipe.value().craft(inventory, world.getRegistryManager()))
+				.orElse(ItemStack.EMPTY);
+		ItemStack expected = Items.FIREWORK_STAR.getDefaultStack();
+		expected.set(DataComponentTypes.FIREWORK_EXPLOSION, new FireworkExplosionComponent(
+				FireworkExplosionComponent.Type.STAR,
+				IntList.of(DyeColor.RED.getFireworkColor()),
+				IntList.of(),
+				false,
+				false));
+		context.assertTrue(ItemStack.areEqual(result, expected), Text.literal("crafting result should be red firework star with star explosion type"));
+		context.complete();
 	}
 }
