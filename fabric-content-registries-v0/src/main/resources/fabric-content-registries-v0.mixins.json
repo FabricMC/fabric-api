@@ -10,6 +10,7 @@
     "BrewingRecipeRegistryBuilderMixin",
     "FarmerWorkTaskAccessor",
     "FireBlockMixin",
+    "FireworkStarRecipeAccessor",
     "FuelRegistryMixin",
     "GiveGiftsToHeroTaskAccessor",
     "GiveGiftsToHeroTaskMixin",
