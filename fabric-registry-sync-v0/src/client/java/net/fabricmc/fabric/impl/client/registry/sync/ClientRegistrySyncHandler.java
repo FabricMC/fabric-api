@@ -62,7 +62,7 @@ public final class ClientRegistrySyncHandler {
 				context.responseSender().sendPacket(SyncCompletePayload.INSTANCE);
 			} catch (Throwable e) {
 				LOGGER.error("Registry remapping failed!", e);
-				context.client().execute(() -> context.responseSender().disconnect(getText(e)));
+				context.responseSender().disconnect(getText(e));
 				return;
 			}
 		});
