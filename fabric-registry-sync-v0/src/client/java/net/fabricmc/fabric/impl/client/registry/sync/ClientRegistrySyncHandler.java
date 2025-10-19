@@ -52,6 +52,7 @@ public final class ClientRegistrySyncHandler {
 
 	public static void receivePacket(RegistrySyncPayload payload, ClientConfigurationNetworking.Context context) {
 		if (!RegistrySyncManager.DEBUG && context.client().isInSingleplayer()) {
+			context.responseSender().sendPacket(SyncCompletePayload.INSTANCE);
 			return;
 		}
 
