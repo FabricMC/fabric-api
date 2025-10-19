@@ -17,18 +17,12 @@
 package net.fabricmc.fabric.test.registry.sync;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -50,11 +44,9 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.impl.client.registry.sync.ClientRegistrySyncHandler;
 import net.fabricmc.fabric.impl.registry.sync.RegistryAttributeImpl;
-import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
-import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
-import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistrySyncPayload;
 
 public class RegistryRemapTest {
 	private RegistryKey<Registry<String>> testRegistryKey;
@@ -125,19 +117,9 @@ public class RegistryRemapTest {
 				id("zero"), 2
 		);
 
-		var payloads = new ArrayList<DirectRegistryPacketHandler.Payload>();
+		var payload = new RegistrySyncPayload(Map.of(testRegistryKey.getValue(), asFastMap(idMap)));
 
-		RegistrySyncManager.DIRECT_PACKET_HANDLER.sendPacket(
-				payloads::add,
-				Map.of(testRegistryKey.getValue(), asFastMap(idMap))
-		);
-
-		List<Boolean> results = receivePayloads(payloads);
-
-		// Expect 2 packets, 1 with the data (as it fits in one packet) and 1 empty packet to signal the end
-		assertEquals(2, results.size());
-		assertFalse(results.getFirst());
-		assertTrue(results.get(1));
+		ClientRegistrySyncHandler.apply(payload);
 
 		assertEquals(2, testRegistry.getRawId("zero"));
 		assertEquals(1, testRegistry.getRawId("one"));
@@ -159,14 +141,9 @@ public class RegistryRemapTest {
 				id("unknown"), 3
 		);
 
-		var payloads = new ArrayList<DirectRegistryPacketHandler.Payload>();
+		var payload = new RegistrySyncPayload(Map.of(testRegistryKey.getValue(), asFastMap(idMap)));
 
-		RegistrySyncManager.DIRECT_PACKET_HANDLER.sendPacket(
-				payloads::add,
-				Map.of(testRegistryKey.getValue(), asFastMap(idMap))
-		);
-
-		RemapException remapException = assertThrows(RemapException.class, () -> receivePayloads(payloads));
+		RemapException remapException = assertThrows(RemapException.class, () -> ClientRegistrySyncHandler.apply(payload));
 		assertTrue(remapException.getMessage().contains("unknown-remote"));
 	}
 
@@ -178,14 +155,9 @@ public class RegistryRemapTest {
 				id("zero"), 2
 		);
 
-		var payloads = new ArrayList<DirectRegistryPacketHandler.Payload>();
+		var payload = new RegistrySyncPayload(Map.of(id("unknown"), asFastMap(idMap)));
 
-		RegistrySyncManager.DIRECT_PACKET_HANDLER.sendPacket(
-				payloads::add,
-				Map.of(id("unknown"), asFastMap(idMap))
-		);
-
-		RemapException remapException = assertThrows(RemapException.class, () -> receivePayloads(payloads));
+		RemapException remapException = assertThrows(RemapException.class, () -> ClientRegistrySyncHandler.apply(payload));
 		assertTrue(remapException.getMessage().contains("unknown-registry"));
 	}
 
@@ -200,18 +172,10 @@ public class RegistryRemapTest {
 		RegistryAttributeImpl holder = (RegistryAttributeImpl) RegistryAttributeHolder.get(testRegistryKey);
 		holder.addAttribute(RegistryAttribute.OPTIONAL);
 
-		var payloads = new ArrayList<DirectRegistryPacketHandler.Payload>();
-
-		RegistrySyncManager.DIRECT_PACKET_HANDLER.sendPacket(
-				payloads::add,
-				Map.of(testRegistryKey.getValue(), asFastMap(idMap))
-		);
+		var payload = new RegistrySyncPayload(Map.of(testRegistryKey.getValue(), asFastMap(idMap)));
 
 		// Packet should be handled without issue.
-		List<Boolean> results = receivePayloads(payloads);
-		assertEquals(2, results.size());
-		assertFalse(results.getFirst());
-		assertTrue(results.get(1));
+		ClientRegistrySyncHandler.apply(payload);
 
 		holder.removeAttribute(RegistryAttribute.OPTIONAL);
 	}
@@ -229,14 +193,9 @@ public class RegistryRemapTest {
 				id("zero"), 1
 		);
 
-		var payloads = new ArrayList<DirectRegistryPacketHandler.Payload>();
+		var payload = new RegistrySyncPayload(Map.of(testRegistryKey.getValue(), asFastMap(idMap)));
 
-		RegistrySyncManager.DIRECT_PACKET_HANDLER.sendPacket(
-				payloads::add,
-				Map.of(testRegistryKey.getValue(), asFastMap(idMap))
-		);
-
-		receivePayloads(payloads);
+		ClientRegistrySyncHandler.apply(payload);
 
 		assertEquals(0, testRegistry.getRawId("two"));
 		assertEquals(1, testRegistry.getRawId("zero"));
@@ -258,7 +217,7 @@ public class RegistryRemapTest {
 		assertEquals(1, testRegistry.getRawId("one"));
 		assertEquals(2, testRegistry.getRawId("two"));
 
-		ClientRegistrySyncHandler.apply(new RegistryPacketHandler.SyncedPacketData(
+		ClientRegistrySyncHandler.apply(new RegistrySyncPayload(
 				Map.of(
 					testRegistryKey.getValue(), asFastMap(Map.of(
 						id("zero"), 2,
@@ -288,7 +247,7 @@ public class RegistryRemapTest {
 		assertEquals(1, testRegistry.getRawId("one"));
 		assertEquals(2, testRegistry.getRawId("two"));
 
-		ClientRegistrySyncHandler.apply(new RegistryPacketHandler.SyncedPacketData(
+		ClientRegistrySyncHandler.apply(new RegistrySyncPayload(
 				Map.of(
 					testRegistryKey.getValue(), asFastMap(Map.of(
 							id("zero"), 2,
@@ -313,32 +272,6 @@ public class RegistryRemapTest {
 		assertEquals(0, testRegistry.getRawId("zero"));
 		assertEquals(1, testRegistry.getRawId("one"));
 		assertEquals(2, testRegistry.getRawId("two"));
-	}
-
-	private static List<Boolean> receivePayloads(List<DirectRegistryPacketHandler.Payload> payloads) throws RemapException {
-		var results = new ArrayList<Boolean>();
-
-		try {
-			for (DirectRegistryPacketHandler.Payload payload : payloads) {
-				CompletableFuture<Boolean> future = ClientRegistrySyncHandler.receivePacket(
-						ThisThreadExecutor.INSTANCE,
-						RegistrySyncManager.DIRECT_PACKET_HANDLER,
-						payload,
-						true
-				);
-				results.add(future.get());
-			}
-		} catch (CompletionException e) {
-			if (e.getCause() instanceof RemapException remapException) {
-				throw remapException;
-			}
-
-			throw e;
-		} catch (ExecutionException | InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-
-		return results;
 	}
 
 	private static Object2IntMap<Identifier> asFastMap(Map<Identifier, Integer> map) {

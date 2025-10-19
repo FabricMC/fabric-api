@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.api.event.registry;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistryAttributeImpl;
 
+@ApiStatus.NonExtendable
 public interface RegistryAttributeHolder {
 	static RegistryAttributeHolder get(RegistryKey<?> registryKey) {
 		return RegistryAttributeImpl.getHolder(registryKey);
