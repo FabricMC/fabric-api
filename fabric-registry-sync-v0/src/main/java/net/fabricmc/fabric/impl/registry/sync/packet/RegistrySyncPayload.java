@@ -56,8 +56,8 @@ public record RegistrySyncPayload(
 		Map<Identifier, Object2IntMap<Identifier>> registryMap,
 		Map<Identifier, EnumSet<RegistryAttribute>> registryAttributes
 ) implements CustomPayload {
-	public static CustomPayload.Id<RegistrySyncPayload> ID = new CustomPayload.Id<>(Identifier.of("fabric", "registry/sync"));
-	public static PacketCodec<PacketByteBuf, RegistrySyncPayload> CODEC = CustomPayload.codecOf(RegistrySyncPayload::write, RegistrySyncPayload::read);
+	public static final CustomPayload.Id<RegistrySyncPayload> ID = new CustomPayload.Id<>(Identifier.of("fabric", "registry/sync"));
+	public static final PacketCodec<PacketByteBuf, RegistrySyncPayload> CODEC = CustomPayload.codecOf(RegistrySyncPayload::write, RegistrySyncPayload::read);
 
 	public RegistrySyncPayload(Map<Identifier, Object2IntMap<Identifier>> registryMap) {
 		this(registryMap, getRegistryAttributeMap(registryMap));
