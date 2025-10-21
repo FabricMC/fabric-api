@@ -485,6 +485,9 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
 	// Logs
+	public static final TagKey<Item> NETHER_NATURAL_LOGS = register("nether_natural_logs");
+	public static final TagKey<Item> NATURAL_LOGS = register("natural_logs");
+	public static final TagKey<Item> NATURAL_WOODS = register("natural_woods");
 	public static final TagKey<Item> STRIPPED_LOGS = register("stripped_logs");
 	public static final TagKey<Item> STRIPPED_WOODS = register("stripped_woods");
 

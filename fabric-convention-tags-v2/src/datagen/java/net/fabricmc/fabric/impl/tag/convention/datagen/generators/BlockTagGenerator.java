@@ -676,6 +676,27 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateLogTags() {
+		valueLookupBuilder(ConventionalBlockTags.NETHER_NATURAL_LOGS)
+				.add(Blocks.CRIMSON_STEM)
+				.add(Blocks.WARPED_STEM);
+
+		valueLookupBuilder(ConventionalBlockTags.NATURAL_LOGS)
+				.addOptionalTag(BlockTags.OVERWORLD_NATURAL_LOGS)
+				.addOptionalTag(ConventionalBlockTags.NETHER_NATURAL_LOGS);
+
+		valueLookupBuilder(ConventionalBlockTags.NATURAL_WOODS)
+				.add(Blocks.ACACIA_WOOD)
+				.add(Blocks.BIRCH_WOOD)
+				.add(Blocks.CHERRY_WOOD)
+				.add(Blocks.DARK_OAK_WOOD)
+				.add(Blocks.JUNGLE_WOOD)
+				.add(Blocks.MANGROVE_WOOD)
+				.add(Blocks.OAK_WOOD)
+				.add(Blocks.PALE_OAK_WOOD)
+				.add(Blocks.SPRUCE_WOOD)
+				.add(Blocks.CRIMSON_HYPHAE)
+				.add(Blocks.WARPED_HYPHAE);
+
 		valueLookupBuilder(ConventionalBlockTags.STRIPPED_LOGS)
 				.add(Blocks.STRIPPED_ACACIA_LOG)
 				.add(Blocks.STRIPPED_BAMBOO_BLOCK)

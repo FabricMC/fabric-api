@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#minecraft:overworld_natural_logs",
+      "required": false
+    },
+    {
+      "id": "#c:nether_natural_logs",
+      "required": false
+    }
+  ]
+}

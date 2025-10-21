@@ -243,6 +243,9 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
 	// Logs
+	public static final TagKey<Block> NETHER_NATURAL_LOGS = register("nether_natural_logs");
+	public static final TagKey<Block> NATURAL_LOGS = register("natural_logs");
+	public static final TagKey<Block> NATURAL_WOODS = register("natural_woods");
 	public static final TagKey<Block> STRIPPED_LOGS = register("stripped_logs");
 	public static final TagKey<Block> STRIPPED_WOODS = register("stripped_woods");
 
