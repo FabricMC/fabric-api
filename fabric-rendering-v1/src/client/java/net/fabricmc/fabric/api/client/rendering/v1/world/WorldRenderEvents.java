@@ -88,7 +88,8 @@ public final class WorldRenderEvents {
 	});
 
 	/**
-	 * Called after all chunks to be rendered are identified, rebuilt, and uploaded to GPU.
+	 * Called after all chunks to be rendered are uploaded to GPU,
+	 * before any chunks are output to the framebuffer.
 	 */
 	public static final Event<StartMain> START_MAIN = EventFactory.createArrayBacked(StartMain.class, callbacks -> context -> {
 		for (final StartMain callback : callbacks) {
