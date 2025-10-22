@@ -1,10 +1,12 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.screenhandler",
+  "package": "net.fabricmc.fabric.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "NamedScreenHandlerFactoryMixin",
-    "ServerPlayerEntityMixin"
+    "screenhandler.NamedScreenHandlerFactoryMixin",
+    "screenhandler.ServerPlayerEntityMixin",
+    "inventory.ScreenHandlerAccessorMixin",
+    "inventory.ScreenHandlerMixin"
   ],
   "client": [
   ],
