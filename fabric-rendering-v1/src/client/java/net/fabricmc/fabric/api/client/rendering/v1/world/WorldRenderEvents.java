@@ -160,9 +160,9 @@ public final class WorldRenderEvents {
 	 * (or the main target when fabulous isn't active) before clouds and weather
 	 * are drawn.
 	 */
-	public static final Event<AfterTranslucent> AFTER_TRANSLUCENT = EventFactory.createArrayBacked(AfterTranslucent.class, callbacks -> context -> {
-		for (final AfterTranslucent callback : callbacks) {
-			callback.afterTranslucent(context);
+	public static final Event<BeforeTranslucent> BEFORE_TRANSLUCENT = EventFactory.createArrayBacked(BeforeTranslucent.class, callbacks -> context -> {
+		for (final BeforeTranslucent callback : callbacks) {
+			callback.beforeTranslucent(context);
 		}
 	});
 
@@ -240,8 +240,8 @@ public final class WorldRenderEvents {
 	}
 
 	@FunctionalInterface
-	public interface AfterTranslucent {
-		void afterTranslucent(WorldRenderContext context);
+	public interface BeforeTranslucent {
+		void beforeTranslucent(WorldRenderContext context);
 	}
 
 	@FunctionalInterface

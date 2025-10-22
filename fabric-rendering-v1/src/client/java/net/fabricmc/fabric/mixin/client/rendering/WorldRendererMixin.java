@@ -33,7 +33,6 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BlockRenderLayerGroup;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
@@ -141,17 +140,13 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.invoker().beforeDebugRender(renderContext);
 	}
 
-	@WrapOperation(method = "method_62214",
-			slice = @Slice(from = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", args = "ldc=translucent")),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/SectionRenderState;renderSection(Lnet/minecraft/client/render/BlockRenderLayerGroup;)V", ordinal = 0)
-	)
-	private void onTranslucentRender(SectionRenderState instance, BlockRenderLayerGroup group, Operation<Void> original) {
-		original.call(instance, group);
-		WorldRenderEvents.AFTER_TRANSLUCENT.invoker().afterTranslucent(renderContext);
+	@Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", args = "ldc=translucent"))
+	private void beforeTranslucentRender(CallbackInfo ci) {
+		WorldRenderEvents.BEFORE_TRANSLUCENT.invoker().beforeTranslucent(renderContext);
 	}
 
 	@Inject(method = "renderTargetBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/state/CameraRenderState;pos:Lnet/minecraft/util/math/Vec3d;"), cancellable = true)
-	private void onDrawBlockOutline(VertexConsumerProvider.Immediate consumers, MatrixStack matrices, boolean bl, WorldRenderState worldRenderState, CallbackInfo ci) {
+	private void beforeDrawBlockOutline(VertexConsumerProvider.Immediate consumers, MatrixStack matrices, boolean bl, WorldRenderState worldRenderState, CallbackInfo ci) {
 		if (!WorldRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(renderContext, renderContext.worldState().outlineRenderState)) {
 			consumers.drawCurrentLayer();
 			ci.cancel();
@@ -159,7 +154,7 @@ public abstract class WorldRendererMixin {
 	}
 
 	@Inject(method = "method_62214", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;draw()V"))
-	private void afterRender(CallbackInfo ci) {
+	private void endMainRender(CallbackInfo ci) {
 		WorldRenderEvents.END_MAIN.invoker().endMain(renderContext);
 	}
 

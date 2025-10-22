@@ -49,7 +49,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 		}
 	}
 
-	private static boolean onBlockOutline(WorldRenderContext context, OutlineRenderState outlineRenderState) {
+	private static boolean beforeBlockOutline(WorldRenderContext context, OutlineRenderState outlineRenderState) {
 		if (Boolean.TRUE.equals(outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE))) {
 			MatrixStack matrixStack = new MatrixStack();
 			matrixStack.push();
@@ -75,7 +75,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	/**
 	 * Renders a translucent filled box at (0, 100, 0).
 	 */
-	private static void renderAfterTranslucent(WorldRenderContext context) {
+	private static void renderBeforeTranslucent(WorldRenderContext context) {
 		Vec3d camera = context.worldState().cameraRenderState.pos;
 
 		context.matrices().push();
@@ -90,9 +90,9 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	public void onInitializeClient() {
 		// Renders a diamond block above diamond blocks when they are looked at.
 		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register(WorldRenderEventsTests::extractBlockOutline);
-		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(WorldRenderEventsTests::onBlockOutline);
+		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(WorldRenderEventsTests::beforeBlockOutline);
 		// Renders a translucent filled box at (0, 100, 0)
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(WorldRenderEventsTests::renderAfterTranslucent);
+		WorldRenderEvents.BEFORE_TRANSLUCENT.register(WorldRenderEventsTests::renderBeforeTranslucent);
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 		WorldRenderEvents.BEFORE_ENTITIES.register(WorldRenderEventsTests::assertRenderContext);
 		WorldRenderEvents.AFTER_ENTITIES.register(WorldRenderEventsTests::assertRenderContext);
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.register(WorldRenderEventsTests::assertRenderContext);
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(WorldRenderEventsTests::assertRenderContext);
+		WorldRenderEvents.BEFORE_TRANSLUCENT.register(WorldRenderEventsTests::assertRenderContext);
 		WorldRenderEvents.END_MAIN.register(WorldRenderEventsTests::assertRenderContext);
 
 		try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
