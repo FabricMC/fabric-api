@@ -22,7 +22,6 @@ import org.jetbrains.annotations.ApiStatus;
  * });
  * </pre>
  *
- * <p>Note: When returning {@code ActionResult.FAIL}, the server cancels the action, but client-side state (e.g., cursor or slot contents) may not automatically sync. Modders should manually sync state if needed using {@code ScreenHandler.syncState()}.
  */
 @ApiStatus.Experimental
 public final class InventoryEvents {
@@ -35,7 +34,7 @@ public final class InventoryEvents {
 	 * <ul>
 	 *     <li>{@code ActionResult.PASS} → Let vanilla and other listeners handle it</li>
 	 *     <li>{@code ActionResult.SUCCESS} → Stop propagation (no further listeners), allow vanilla action</li>
-	 *     <li>{@code ActionResult.FAIL} → Cancel the action (client sync may be required)</li>
+	 *     <li>{@code ActionResult.FAIL} → Cancel the action </li>
 	 * </ul>
 	 */
 	public static final Event<SlotClickCallback> SLOT_CLICK_EVENT = EventFactory.createArrayBacked(
