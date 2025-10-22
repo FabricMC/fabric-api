@@ -123,8 +123,8 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 		assertNotNull(context.camera(), "camera is null");
 		assertNotNull(context.frustum(), "frustum is null");
 		assertNotNull(context.tickCounter(), "tickCounter is null");
-		assertNotNull(context.positionMatrix(), "positionMatrix is null");
-		assertNotNull(context.projectionMatrix(), "projectionMatrix is null");
+		assertNotNull(context.viewMatrix(), "viewMatrix is null");
+		assertNotNull(context.cullProjectionMatrix(), "cullProjectionMatrix is null");
 	}
 
 	private static void assertRenderContext(WorldRenderContext context) {

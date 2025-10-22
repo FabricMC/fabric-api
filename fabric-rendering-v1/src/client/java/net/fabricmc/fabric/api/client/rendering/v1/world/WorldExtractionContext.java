@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.client.rendering.v1.world;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
@@ -44,9 +44,9 @@ public interface WorldExtractionContext extends AbstractWorldRenderContext {
 
 	RenderTickCounter tickCounter();
 
-	Matrix4f positionMatrix();
+	Matrix4fc viewMatrix();
 
-	Matrix4f projectionMatrix();
+	Matrix4fc cullProjectionMatrix();
 
 	boolean blockOutlines();
 }

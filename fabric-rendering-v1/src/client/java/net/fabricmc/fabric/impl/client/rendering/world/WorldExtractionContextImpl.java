@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.client.rendering.world;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
@@ -38,8 +39,8 @@ public class WorldExtractionContextImpl implements WorldExtractionContext {
 	@Nullable
 	private Frustum frustum;
 	private RenderTickCounter tickCounter;
-	private Matrix4f positionMatrix;
-	private Matrix4f projectionMatrix;
+	private Matrix4f viewMatrix;
+	private Matrix4f cullProjectionMatrix;
 	private boolean blockOutlines;
 
 	public void prepare(
@@ -50,8 +51,8 @@ public class WorldExtractionContextImpl implements WorldExtractionContext {
 			RenderTickCounter tickCounter,
 			boolean blockOutlines,
 			Camera camera,
-			Matrix4f positionMatrix,
-			Matrix4f projectionMatrix
+			Matrix4f viewMatrix,
+			Matrix4f cullProjectionMatrix
 	) {
 		this.gameRenderer = gameRenderer;
 		this.worldRenderer = worldRenderer;
@@ -61,8 +62,8 @@ public class WorldExtractionContextImpl implements WorldExtractionContext {
 		this.tickCounter = tickCounter;
 		this.blockOutlines = blockOutlines;
 		this.camera = camera;
-		this.positionMatrix = positionMatrix;
-		this.projectionMatrix = projectionMatrix;
+		this.viewMatrix = viewMatrix;
+		this.cullProjectionMatrix = cullProjectionMatrix;
 
 		frustum = null;
 	}
@@ -108,13 +109,13 @@ public class WorldExtractionContextImpl implements WorldExtractionContext {
 	}
 
 	@Override
-	public Matrix4f positionMatrix() {
-		return positionMatrix;
+	public Matrix4fc viewMatrix() {
+		return viewMatrix;
 	}
 
 	@Override
-	public Matrix4f projectionMatrix() {
-		return projectionMatrix;
+	public Matrix4fc cullProjectionMatrix() {
+		return cullProjectionMatrix;
 	}
 
 	@Override

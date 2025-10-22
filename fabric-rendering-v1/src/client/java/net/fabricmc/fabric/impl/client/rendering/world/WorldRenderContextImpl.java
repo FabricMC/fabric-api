@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.client.rendering.world;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.SectionRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -94,11 +93,6 @@ public final class WorldRenderContextImpl implements AbstractWorldRenderContext,
 	@Nullable
 	public MatrixStack matrices() {
 		return matrixStack;
-	}
-
-	@Override
-	public boolean advancedTranslucency() {
-		return MinecraftClient.isFabulousGraphicsOrBetter();
 	}
 
 	@Override

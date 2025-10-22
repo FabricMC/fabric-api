@@ -29,19 +29,6 @@ public interface WorldRenderContext extends WorldTerrainRenderContext {
 	MatrixStack matrices();
 
 	/**
-	 * Test to know if "fabulous" graphics mode is enabled.
-	 *
-	 * <p>Use this for renders that need to render on top of all translucency to activate or deactivate different
-	 * event handlers to get optimal depth testing results. When fabulous is off, it may be better to render
-	 * during {@code WorldRenderLastCallback} after clouds and weather are drawn. Conversely, when fabulous mode is on,
-	 * it may be better to draw during {@code WorldRenderPostTranslucentCallback}, before the fabulous mode composite
-	 * shader runs, depending on which translucent buffer is being targeted.
-	 *
-	 * @return {@code true} when "fabulous" graphics mode is enabled.
-	 */
-	boolean advancedTranslucency();
-
-	/**
 	 * The {@code VertexConsumerProvider} instance being used by the world renderer for most non-terrain renders.
 	 * Generally this will be better for most use cases because quads for the same layer can be buffered
 	 * incrementally and then drawn all at once by the world renderer.
