@@ -125,8 +125,7 @@ public final class WorldRenderEvents {
 	});
 
 	/**
-	 * Called after entities are rendered and after solid and cutout entity layers
-	 * have been drawn to the main frame buffer target, before most block entity rendering begins.
+	 * Called after entities and block entities are rendered and drawn to the main frame buffer target.
 	 */
 	public static final Event<AfterEntities> AFTER_ENTITIES = EventFactory.createArrayBacked(AfterEntities.class, callbacks -> context -> {
 		for (final AfterEntities callback : callbacks) {

@@ -37,7 +37,7 @@ import net.minecraft.client.render.BlockRenderLayerGroup;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Frustum;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.OutlineVertexConsumerProvider;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.SectionRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -122,21 +122,17 @@ public abstract class WorldRendererMixin {
 		return matrixStack;
 	}
 
-	@WrapOperation(method = "method_62214",
-			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/command/RenderDispatcher;render()V")),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;drawCurrentLayer()V", ordinal = 0)
-	)
-	private void onEntityRender(VertexConsumerProvider.Immediate instance, Operation<Void> original) {
+	@Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", args = "ldc=submitEntities"))
+	private void beforeEntitySubmission(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_ENTITIES.invoker().beforeEntities(renderContext);
-		original.call(instance);
 	}
 
 	@WrapOperation(method = "method_62214",
-			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/TexturedRenderLayers;getEntityCutout()Lnet/minecraft/client/render/RenderLayer;")),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;draw(Lnet/minecraft/client/render/RenderLayer;)V", ordinal = 0)
+			slice = @Slice(from = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", args = "ldc=submitEntities")),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/OutlineVertexConsumerProvider;draw()V")
 	)
-	private void onEntityCutoutRender(VertexConsumerProvider.Immediate instance, RenderLayer layer, Operation<Void> original) {
-		original.call(instance, layer);
+	private void afterEntityRender(OutlineVertexConsumerProvider instance, Operation<Void> original) {
+		original.call(instance);
 		WorldRenderEvents.AFTER_ENTITIES.invoker().afterEntities(renderContext);
 	}
 
