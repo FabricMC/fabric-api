@@ -90,7 +90,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	public void onInitializeClient() {
 		// Renders a diamond block above diamond blocks when they are looked at.
 		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.register(WorldRenderEventsTests::extractBlockOutline);
-		WorldRenderEvents.BLOCK_OUTLINE.register(WorldRenderEventsTests::onBlockOutline);
+		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(WorldRenderEventsTests::onBlockOutline);
 		// Renders a translucent filled box at (0, 100, 0)
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(WorldRenderEventsTests::renderAfterTranslucent);
 	}

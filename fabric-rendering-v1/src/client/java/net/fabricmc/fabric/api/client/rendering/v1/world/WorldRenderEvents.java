@@ -57,7 +57,7 @@ public final class WorldRenderEvents {
 	 * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.world.ClientWorld}.
 	 *
 	 * <p>Setting the outline render state to null by any event subscriber
-	 * will cancel the default block outline render and suppress the {@link #BLOCK_OUTLINE} event.
+	 * will cancel the default block outline render and suppress the {@link #BEFORE_BLOCK_OUTLINE} event.
 	 * This has no effect on other subscribers to this event - all subscribers will always be called.
 	 * Setting outline render state to null here is appropriate
 	 * when there is still a valid block hit (with a fluid, for example)
@@ -66,7 +66,7 @@ public final class WorldRenderEvents {
 	 * <p>This event should NOT be used for general-purpose replacement of
 	 * the default block outline rendering because it will interfere with mod-specific
 	 * renders.  Mods that replace the default block outline for specific blocks
-	 * should instead subscribe to {@link #BLOCK_OUTLINE}.
+	 * should instead subscribe to {@link #BEFORE_BLOCK_OUTLINE}.
 	 */
 	public static final Event<AfterBlockOutlineExtraction> AFTER_BLOCK_OUTLINE_EXTRACTION = EventFactory.createArrayBacked(AfterBlockOutlineExtraction.class, callbacks -> (context, hit) -> {
 		for (final AfterBlockOutlineExtraction callback : callbacks) {
@@ -181,18 +181,12 @@ public final class WorldRenderEvents {
 	 * outline render.  This has no effect on other subscribers to this event -
 	 * all subscribers will always be called.  Canceling is appropriate when the
 	 * subscriber replacing the default block outline render for a specific block.
-	 *
-	 * <p>This event is not appropriate for mods that replace the default block
-	 * outline render for <em>all</em> blocks because all event subscribers will
-	 * always render - only the default outline render can be cancelled.  That should
-	 * be accomplished by mixin to the block outline render routine itself, typically
-	 * by targeting {@link net.minecraft.client.render.VertexRendering#drawOutline}.
 	 */
-	public static final Event<BlockOutline> BLOCK_OUTLINE = EventFactory.createArrayBacked(BlockOutline.class, callbacks -> (context, outlineRenderState) -> {
+	public static final Event<BeforeBlockOutline> BEFORE_BLOCK_OUTLINE = EventFactory.createArrayBacked(BeforeBlockOutline.class, callbacks -> (context, outlineRenderState) -> {
 		boolean shouldRender = true;
 
-		for (final BlockOutline callback : callbacks) {
-			if (!callback.onBlockOutline(context, outlineRenderState)) {
+		for (final BeforeBlockOutline callback : callbacks) {
+			if (!callback.beforeBlockOutline(context, outlineRenderState)) {
 				shouldRender = false;
 			}
 		}
@@ -251,8 +245,8 @@ public final class WorldRenderEvents {
 	}
 
 	@FunctionalInterface
-	public interface BlockOutline {
-		boolean onBlockOutline(WorldRenderContext context, OutlineRenderState outlineRenderState);
+	public interface BeforeBlockOutline {
+		boolean beforeBlockOutline(WorldRenderContext context, OutlineRenderState outlineRenderState);
 	}
 
 	@FunctionalInterface
