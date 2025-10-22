@@ -34,9 +34,9 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 @Mixin(Entity.class)
 abstract class EntityMixin implements AttachmentTargetImpl {
@@ -68,19 +68,19 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
 		if (!this.getEntityWorld().isClient()) {
 			AttachmentSyncPredicate predicate = ((AttachmentTypeImpl<?>) type).syncPredicate();
 
 			if ((Object) this instanceof ServerPlayerEntity self && predicate.test(this, self)) {
 				// Players do not track themselves
-				AttachmentSync.trySync(payload, self);
+				AttachmentSync.trySync(change, self);
 			}
 
 			PlayerLookup.tracking((Entity) (Object) this)
 					.forEach(player -> {
 						if (predicate.test(this, player)) {
-							AttachmentSync.trySync(payload, player);
+							AttachmentSync.trySync(change, player);
 						}
 					});
 		}

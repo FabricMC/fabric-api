@@ -35,7 +35,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 @Mixin(WrapperProtoChunk.class)
 abstract class WrapperProtoChunkMixin extends AttachmentTargetsMixin {
@@ -96,8 +95,8 @@ abstract class WrapperProtoChunkMixin extends AttachmentTargetsMixin {
 	}
 
 	@Override
-	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
-		((AttachmentTargetImpl) wrapped).fabric_syncChange(type, payload);
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
+		((AttachmentTargetImpl) wrapped).fabric_syncChange(type, change);
 	}
 
 	@Override

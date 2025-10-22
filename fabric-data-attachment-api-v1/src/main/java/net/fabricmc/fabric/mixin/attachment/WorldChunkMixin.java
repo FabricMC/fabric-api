@@ -42,7 +42,6 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 @Mixin(WorldChunk.class)
 abstract class WorldChunkMixin extends AttachmentTargetsMixin implements AttachmentTargetImpl {
@@ -68,13 +67,13 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 	}
 
 	@Override
-	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
 		if (this.world instanceof ServerWorld serverWorld) {
 			// can't shadow from Chunk because this already extends a supermixin
 			PlayerLookup.tracking(serverWorld, ((Chunk) (Object) this).getPos())
 					.forEach(player -> {
 						if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
-							AttachmentSync.trySync(payload, player);
+							AttachmentSync.trySync(change, player);
 						}
 					});
 		}

@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.mixin.attachment;
 
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -44,7 +43,6 @@ import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 @Mixin({BlockEntity.class, Entity.class, World.class, Chunk.class})
 abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
@@ -95,7 +93,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			if (this.fabric_shouldTryToSync() && type.isSynced()) {
 				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getDynamicRegistryManager());
 				acknowledgeSyncedEntry(type, change);
-				this.fabric_syncChange(type, new AttachmentSyncPayloadS2C(List.of(change)));
+				this.fabric_syncChange(type, change);
 			}
 		}
 
