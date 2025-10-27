@@ -30,16 +30,13 @@ public interface WorldExtractionContext extends AbstractWorldRenderContext {
 	/**
 	 * Convenient access to {@link WorldRenderer#world}.
 	 *
-	 * @return world renderer's client world instance
+	 * @return the world renderer's client world instance
 	 */
 	@SuppressWarnings("JavadocReference")
 	ClientWorld world();
 
 	Camera camera();
 
-	/**
-	 * The view frustum.
-	 */
 	Frustum frustum();
 
 	RenderTickCounter tickCounter();

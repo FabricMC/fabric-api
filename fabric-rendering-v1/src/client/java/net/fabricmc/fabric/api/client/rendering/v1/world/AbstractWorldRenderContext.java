@@ -39,7 +39,10 @@ public interface AbstractWorldRenderContext {
 	WorldRenderer worldRenderer();
 
 	/**
-	 * The world render state, containing information used for rendering.
+	 * The render state for the world being rendered.
+	 *
+	 * <p>Render states contain information about the current frame used for rendering,
+	 * and should be used instead of accessing the world or other objects directly from rendering events.
 	 *
 	 * @return WorldRenderState instance
 	 */

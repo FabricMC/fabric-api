@@ -37,9 +37,8 @@ public interface WorldRenderContext extends WorldTerrainRenderContext {
 	 * be consistent with other quads emitted by the world renderer and other mods.  If this isn't
 	 * possible, caller should use a separate "immediate" instance.
 	 *
-	 * <p>Renders that cannot draw in one of the supported events
-	 * must be drawn directly to the frame buffer, preferably in {@link WorldRenderEvents#END_MAIN} to avoid being
-	 * overdrawn or cleared.
+	 * <p>Renders that cannot draw in one of the supported events must be drawn directly to the frame buffer,
+	 * preferably in {@link WorldRenderEvents#END_MAIN} to avoid being overdrawn or cleared.
 	 */
 	VertexConsumerProvider consumers();
 }

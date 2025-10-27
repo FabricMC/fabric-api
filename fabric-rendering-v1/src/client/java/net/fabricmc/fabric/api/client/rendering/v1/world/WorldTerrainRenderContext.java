@@ -22,5 +22,11 @@ import net.minecraft.client.render.SectionRenderState;
 
 @ApiStatus.NonExtendable
 public interface WorldTerrainRenderContext extends AbstractWorldRenderContext {
+	/**
+	 * The render state for all chunk section to be rendered.
+	 *
+	 * <p>Render states contain information about the current frame used for rendering,
+	 * and should be used instead of accessing the world or other objects directly from rendering events.
+	 */
 	SectionRenderState sectionState();
 }
