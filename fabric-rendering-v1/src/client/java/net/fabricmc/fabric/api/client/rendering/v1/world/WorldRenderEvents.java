@@ -33,19 +33,18 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>These events can be separated into two categories, the "extraction" events and the "drawing" events,
  * reflecting the respective vanilla phases. All data needed for rendering should be prepared in the "extraction" phase
  * and drawn to the frame buffer during the "drawing" phase. All "extraction" events have the suffix "Extraction".
+ * All events without the "Extraction" suffix are "drawing" events. All "drawing" events support OpenGL calls.
  *
  * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
  * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.world.ClientWorld}.
- *
- * <p>These events are not dependent on the Fabric rendering API or Indigo but work when those are present.
  */
 public final class WorldRenderEvents {
 	private WorldRenderEvents() { }
 
 	/**
-	 * Called after default block outline extraction and before rendering.
+	 * Called after the block outline render state is extracted, before it is drawn.
 	 * Can optionally cancel the default rendering by setting the outline render state to null
-	 * but all event handlers will always be called.
+	 * but all handlers for this event will always be called.
 	 *
 	 * <p>Use this to extract custom data needed when decorating or replacing
 	 * the default block outline rendering for specific modded blocks
@@ -75,7 +74,7 @@ public final class WorldRenderEvents {
 	});
 
 	/**
-	 * Called after the extraction phase is complete.
+	 * Called after all render states are extracted, before any is drawn.
 	 * Use this to extract general custom data needed for rendering.
 	 *
 	 * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
@@ -89,7 +88,7 @@ public final class WorldRenderEvents {
 
 	/**
 	 * Called after all chunks to be rendered are uploaded to GPU,
-	 * before any chunks are output to the framebuffer.
+	 * before any chunks are drawn to the framebuffer.
 	 */
 	public static final Event<StartMain> START_MAIN = EventFactory.createArrayBacked(StartMain.class, callbacks -> context -> {
 		for (final StartMain callback : callbacks) {
@@ -98,7 +97,9 @@ public final class WorldRenderEvents {
 	});
 
 	/**
-	 * Called after the Solid, Cutout, and Cutout Mipped terrain layers have been output to the framebuffer.
+	 * Called after the {@link net.minecraft.client.render.BlockRenderLayer#SOLID SOLID}, {@link net.minecraft.client.render.BlockRenderLayer#CUTOUT CUTOUT},
+	 * and {@link net.minecraft.client.render.BlockRenderLayer#CUTOUT_MIPPED CUTOUT_MIPPED} terrain layers are drawn to the framebuffer,
+	 * before entity and block entities are submitted and drawn to the framebuffer.
 	 *
 	 * <p>Use to render non-translucent terrain to the framebuffer.
 	 *
@@ -114,8 +115,6 @@ public final class WorldRenderEvents {
 	 * culling performance, which should not be significant after primary terrain rendering. This means
 	 * mods that currently hook calls to individual render layers can simply execute them all at once when
 	 * the event is called.
-	 *
-	 * <p>This event fires before entities and block entities are rendered and may be useful to prepare them.
 	 * However, you should not access any data outside the provided render states. If more data is needed,
 	 * extract them during {@link #END_EXTRACTION}.
 	 */
@@ -126,7 +125,7 @@ public final class WorldRenderEvents {
 	});
 
 	/**
-	 * Called after entities and block entities are rendered and drawn to the main frame buffer target.
+	 * Called after entities and block entities are drawn to the framebuffer.
 	 */
 	public static final Event<AfterEntities> AFTER_ENTITIES = EventFactory.createArrayBacked(AfterEntities.class, callbacks -> context -> {
 		for (final AfterEntities callback : callbacks) {
@@ -135,15 +134,10 @@ public final class WorldRenderEvents {
 	});
 
 	/**
-	 * Called before vanilla debug renderers are output to the framebuffer.
-	 * This happens very soon after entities, block breaking and most other
-	 * non-translucent renders but before translucency is drawn.
+	 * Called after entities, block breaking, and most non-translucent objects are drawn to the framebuffer,
+	 * before vanilla debug renderers and translucency are drawn to the framebuffer.
 	 *
-	 * <p>The OpenGL render state view matrix will be transformed to match the camera view
-	 * before the event is called.
-	 *
-	 * <p>Use to drawn lines, overlays and other content similar to vanilla
-	 * debug renders.
+	 * <p>Use to drawn lines, overlays and other content similar to vanilla debug renders.
 	 */
 	public static final Event<DebugRender> BEFORE_DEBUG_RENDER = EventFactory.createArrayBacked(DebugRender.class, callbacks -> context -> {
 		for (final DebugRender callback : callbacks) {
@@ -152,13 +146,12 @@ public final class WorldRenderEvents {
 	});
 
 	/**
-	 * Called after entity, terrain, and particle translucent layers have been
-	 * drawn to the framebuffer but before translucency combine has happened
-	 * in fabulous mode.
+	 * Called after entities and block entities are drawn to the framebuffer,
+	 * before translucent terrain is drawn to the framebuffer,
+	 * and before translucency combine has happened in fabulous mode.
 	 *
-	 * <p>Use for drawing overlays or other effects on top of those targets
-	 * (or the main target when fabulous isn't active) before clouds and weather
-	 * are drawn.
+	 * <p>Use to draw on top of the main and entity framebuffer targets
+	 * before clouds and weather are drawn.
 	 */
 	public static final Event<BeforeTranslucent> BEFORE_TRANSLUCENT = EventFactory.createArrayBacked(BeforeTranslucent.class, callbacks -> context -> {
 		for (final BeforeTranslucent callback : callbacks) {
@@ -167,8 +160,9 @@ public final class WorldRenderEvents {
 	});
 
 	/**
-	 * Called after block outline render checks are made and before the
-	 * default block outline render runs.  Will NOT be called if the default outline render state
+	 * Called after block outline render checks are made
+	 * and before the default block outline is drawn to the framebuffer.
+	 * This will NOT be called if the default outline render state
 	 * was set to null in {@link #AFTER_BLOCK_OUTLINE_EXTRACTION}.
 	 *
 	 * <p>Use this to replace the default block outline rendering for specific blocks that
@@ -195,13 +189,11 @@ public final class WorldRenderEvents {
 	});
 
 	/**
-	 * Called before the last framebuffer write and before all world
-	 * rendering is torn down.
+	 * Called at the end of the main render pass,
+	 * after entities, block entities, terrain, translucent terrain,
+	 * clouds, and weather are drawn to the framebuffer.
 	 *
-	 * <p>The OpenGL render state view matrix will be transformed to match the camera view
-	 * before the event is called.
-	 *
-	 * <p>Use to draw content that should appear on top of the world before hand and GUI rendering occur.
+	 * <p>Use to draw on top of the world before hand and GUI are drawn.
 	 */
 	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, callbacks -> context -> {
 		for (final EndMain callback : callbacks) {
