@@ -30,6 +30,8 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.resource.v1.DataResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.DataResourceStore;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -52,6 +54,8 @@ public class ResourceReloaderTestMod implements ModInitializer {
 			if (!serverResources) {
 				throw new AssertionError("Server reload listener was not called.");
 			}
+
+			((DataResourceStore) world.getServer()).getOrThrow(RegistryReloader.STORE_KEY);
 		});
 	}
 
@@ -73,7 +77,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 		Identifier serverFirstId = Identifier.of(NAMESPACE, "server_first");
 		Identifier serverSecondId = Identifier.of(NAMESPACE, "server_second");
 
-		ResourceLoader resourceLoader = ResourceLoader.get(ResourceType.SERVER_DATA);
+		DataResourceLoader resourceLoader = DataResourceLoader.get();
 		resourceLoader.registerReloader(serverSecondId, (SynchronousResourceReloader) manager -> {
 			if (!serverResources) {
 				throw new AssertionError("Second reload listener was called before the first!");
@@ -82,15 +86,31 @@ public class ResourceReloaderTestMod implements ModInitializer {
 		resourceLoader.registerReloader(serverFirstId, (SynchronousResourceReloader) manager -> serverResources = true);
 		resourceLoader.addReloaderOrdering(serverFirstId, serverSecondId);
 		resourceLoader.registerReloader(RegistryReloader.ID, new RegistryReloader());
+		resourceLoader.registerReloader(StatefulRegistryReloader.ID, StatefulRegistryReloader::new);
 	}
 
 	private static class RegistryReloader implements ResourceReloader {
 		private static final Identifier ID = Identifier.of(NAMESPACE, "registry_reloader");
+		private static final DataResourceStore.Key<String> STORE_KEY = new DataResourceStore.Key<>();
 
 		@Override
 		public CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer reloadSynchronizer, Executor applyExecutor) {
 			RegistryWrapper.WrapperLookup registries = store.getOrThrow(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY);
 			registries.getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+			return reloadSynchronizer.whenPrepared(null).thenRunAsync(
+					() -> store.getOrThrow(DataResourceLoader.DATA_RESOURCE_STORE)
+							.put(STORE_KEY, "Hello from RegistryReloader."),
+					applyExecutor
+			);
+		}
+	}
+
+	private record StatefulRegistryReloader(RegistryWrapper.WrapperLookup registries) implements ResourceReloader {
+		private static final Identifier ID = Identifier.of(NAMESPACE, "stateful_registry_reloader");
+
+		@Override
+		public CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer reloadSynchronizer, Executor applyExecutor) {
+			this.registries.getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
 			return reloadSynchronizer.whenPrepared(null);
 		}
 	}

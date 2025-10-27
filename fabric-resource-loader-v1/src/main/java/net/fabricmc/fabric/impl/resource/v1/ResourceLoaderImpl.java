@@ -47,7 +47,7 @@ import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 import net.fabricmc.loader.api.FabricLoader;
 
-public final class ResourceLoaderImpl implements ResourceLoader {
+public sealed class ResourceLoaderImpl implements ResourceLoader permits DataResourceLoaderImpl {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Map<ResourceType, ResourceLoaderImpl> IMPL_MAP = new EnumMap<>(ResourceType.class);
 
@@ -57,27 +57,36 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 	private static final boolean DEBUG_RELOADERS_ORDER = Boolean.getBoolean("fabric.resource_loader.debug.reloaders_order");
 
 	public static ResourceLoaderImpl get(ResourceType type) {
-		return IMPL_MAP.computeIfAbsent(type, ResourceLoaderImpl::new);
+		return IMPL_MAP.computeIfAbsent(type, target ->
+				target == ResourceType.SERVER_DATA ? DataResourceLoaderImpl.INSTANCE : new ResourceLoaderImpl(type)
+		);
 	}
 
 	private final Map<Identifier, ResourceReloader> addedReloaders = new LinkedHashMap<>();
 	private final Set<ReloaderOrder> reloadersOrdering = new LinkedHashSet<>();
 	private final ResourceType type;
 
-	private ResourceLoaderImpl(ResourceType type) {
+	ResourceLoaderImpl(ResourceType type) {
 		this.type = type;
+	}
+
+	protected boolean hasResourceReloader(Identifier id) {
+		return this.addedReloaders.containsKey(id);
+	}
+
+	protected final void checkUniqueResourceReloader(Identifier id) {
+		if (this.hasResourceReloader(id)) {
+			throw new IllegalStateException(
+					"Tried to register resource reloader %s twice!".formatted(id)
+			);
+		}
 	}
 
 	@Override
 	public void registerReloader(Identifier id, ResourceReloader reloader) {
 		Objects.requireNonNull(id, "The reloader identifier should not be null.");
 		Objects.requireNonNull(reloader, "The reloader should not be null.");
-
-		if (this.addedReloaders.containsKey(id)) {
-			throw new IllegalStateException(
-					"Tried to register resource reloader %s twice!".formatted(id)
-			);
-		}
+		this.checkUniqueResourceReloader(id);
 
 		for (Map.Entry<Identifier, ResourceReloader> entry : this.addedReloaders.entrySet()) {
 			if (entry.getValue() == reloader) {
@@ -109,7 +118,7 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 		} else {
 			if (DEBUG_RELOADERS_IDENTITY) {
 				LOGGER.warn(
-						"The resource reloader at {} does not implement IdentifiableResourceReloader "
+						"The resource reloader at {} does not use identifiable registration "
 								+ "making ordering support more difficult for other modders.",
 						reloader.getClass().getName()
 				);
@@ -137,18 +146,23 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 		return Collections.unmodifiableList(mutable);
 	}
 
+	protected Set<Map.Entry<Identifier, ResourceReloader>> collectReloadersToAdd(
+			@Nullable SetupMarkerResourceReloader setupMarker
+	) {
+		return new LinkedHashSet<>(this.addedReloaders.entrySet());
+	}
+
 	/**
 	 * Sorts the given resource reloaders to satisfy dependencies.
 	 *
 	 * @param reloaders the resource reloaders to sort
 	 */
 	private void sort(List<ResourceReloader> reloaders) {
-		// Build the actual full list of resource reloaders to add.
-		final Set<Map.Entry<Identifier, ResourceReloader>> reloadersToAdd
-				= new LinkedHashSet<>(this.addedReloaders.entrySet());
-
 		// Locate and extract the setup marker.
-		ResourceReloader setupReloader = this.extractSetupMarker(reloaders);
+		SetupMarkerResourceReloader setupReloader = this.extractSetupMarker(reloaders);
+
+		// Build the actual full list of resource reloaders to add.
+		final Set<Map.Entry<Identifier, ResourceReloader>> reloadersToAdd = this.collectReloadersToAdd(setupReloader);
 
 		// Remove any modded reloaders to sort properly.
 		reloadersToAdd.stream().map(Map.Entry::getValue).forEach(reloaders::remove);
@@ -245,7 +259,7 @@ public final class ResourceLoaderImpl implements ResourceLoader {
 		}
 	}
 
-	private @Nullable ResourceReloader extractSetupMarker(List<ResourceReloader> reloaders) {
+	private @Nullable SetupMarkerResourceReloader extractSetupMarker(List<ResourceReloader> reloaders) {
 		if (type == ResourceType.CLIENT_RESOURCES) {
 			// We don't need the registry for client resources.
 			return null;

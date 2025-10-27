@@ -49,7 +49,7 @@ public interface ResourceLoader {
 	}
 
 	/**
-	 * Register a resource reloader for a given resource manager type.
+	 * Registers a resource reloader for a given resource manager type.
 	 *
 	 * @param id the identifier of the resource reloader
 	 * @param reloader the resource reloader

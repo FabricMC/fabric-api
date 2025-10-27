@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
@@ -29,11 +30,16 @@ import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.DataPackContents;
 
-import net.fabricmc.fabric.impl.resource.v1.ResourceLoaderImpl;
+import net.fabricmc.fabric.api.resource.v1.DataResourceStore;
+import net.fabricmc.fabric.impl.resource.v1.DataResourceStoreImpl;
+import net.fabricmc.fabric.impl.resource.v1.FabricDataResourceStoreHolder;
 import net.fabricmc.fabric.impl.resource.v1.SetupMarkerResourceReloader;
 
 @Mixin(DataPackContents.class)
-public class DataPackContentsMixin {
+public class DataPackContentsMixin implements FabricDataResourceStoreHolder {
+	@Unique
+	private final DataResourceStore.Mutable dataResourceStore = new DataResourceStoreImpl();
+
 	@ModifyArg(
 			method = "method_58296",
 			at = @At(
@@ -43,15 +49,21 @@ public class DataPackContentsMixin {
 	)
 	private static List<ResourceReloader> onSetupDataReloaders(
 			List<ResourceReloader> reloaders,
-			@Local(argsOnly = true) FeatureSet featureSet
+			@Local(argsOnly = true) FeatureSet featureSet,
+			@Local DataPackContents dataPackContents
 	) {
 		var list = new ArrayList<>(reloaders);
 		list.addFirst(
 				new SetupMarkerResourceReloader(
-						ResourceLoaderImpl.getWrapperLookup(reloaders),
+						dataPackContents,
 						featureSet
 				)
 		);
 		return Collections.unmodifiableList(list);
+	}
+
+	@Override
+	public DataResourceStore.Mutable fabric$getDataResourceStore() {
+		return this.dataResourceStore;
 	}
 }
