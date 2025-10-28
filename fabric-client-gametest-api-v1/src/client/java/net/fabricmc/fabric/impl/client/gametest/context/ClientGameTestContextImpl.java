@@ -102,6 +102,12 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		// Just annoying
 		options.getSoundVolumeOption(SoundCategory.MUSIC).setValue(0.0);
 
+		// Disable Anisotropic Filtering
+		options.method_76247().setValue(0);
+
+		// Disable chunk fade
+		options.method_76253().setValue(0D);
+
 		((GameOptionsAccessor) options).invokeAccept(new GameOptions.Visitor() {
 			@Override
 			public int visitInt(String key, int current) {
