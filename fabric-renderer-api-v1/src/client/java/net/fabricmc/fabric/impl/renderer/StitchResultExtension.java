@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.renderer;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 

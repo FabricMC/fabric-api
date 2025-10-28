@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

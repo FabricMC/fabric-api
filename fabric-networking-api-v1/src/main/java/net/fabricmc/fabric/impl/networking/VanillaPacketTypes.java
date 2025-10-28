@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.networking;
 
 import java.util.ArrayList;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.PacketType;

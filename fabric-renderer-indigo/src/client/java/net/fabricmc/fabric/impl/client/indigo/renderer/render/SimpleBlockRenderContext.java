@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BlockRenderLayer;

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.item;
 
 import java.util.WeakHashMap;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.item.Item;
 

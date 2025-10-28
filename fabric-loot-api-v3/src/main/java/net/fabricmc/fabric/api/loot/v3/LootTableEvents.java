@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.loot.v3;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootTable;

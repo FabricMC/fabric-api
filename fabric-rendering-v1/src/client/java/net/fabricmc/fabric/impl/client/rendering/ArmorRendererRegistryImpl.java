@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.rendering;
 import java.util.HashMap;
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;

@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.item;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;

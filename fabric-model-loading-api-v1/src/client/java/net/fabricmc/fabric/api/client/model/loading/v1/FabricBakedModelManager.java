@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.render.model.BakedModelManager;
 

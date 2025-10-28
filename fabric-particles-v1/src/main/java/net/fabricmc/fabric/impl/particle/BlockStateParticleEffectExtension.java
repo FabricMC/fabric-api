@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.particle;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.util.math.BlockPos;
 

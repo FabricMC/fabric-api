@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.blockview.v2;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.registry.entry.RegistryEntry;

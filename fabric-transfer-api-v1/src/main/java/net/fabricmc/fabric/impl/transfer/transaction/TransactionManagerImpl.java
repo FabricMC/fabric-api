@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.transfer.transaction;
 
 import java.util.ArrayList;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;

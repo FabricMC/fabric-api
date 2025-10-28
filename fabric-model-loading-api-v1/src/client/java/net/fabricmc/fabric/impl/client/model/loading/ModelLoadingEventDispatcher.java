@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableList;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,8 +127,7 @@ public class ModelLoadingEventDispatcher {
 				resolvedModels.forEach(output);
 			} else {
 				for (BlockState state : allStates) {
-					@Nullable
-					BlockStateModel.UnbakedGrouped model = resolvedModels.get(state);
+					BlockStateModel.@Nullable UnbakedGrouped model = resolvedModels.get(state);
 
 					if (model == null) {
 						LOGGER.error("Block state resolver did not provide a model for state {} in block {}. Using missing model.", state, block);

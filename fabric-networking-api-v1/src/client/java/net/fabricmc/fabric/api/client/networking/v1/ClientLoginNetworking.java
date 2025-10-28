@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import io.netty.channel.ChannelFutureListener;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
@@ -70,8 +70,7 @@ public final class ClientLoginNetworking {
 	 * @see ClientLoginNetworking#registerGlobalReceiver(Identifier, LoginQueryRequestHandler)
 	 * @see ClientLoginNetworking#unregisterReceiver(Identifier)
 	 */
-	@Nullable
-	public static ClientLoginNetworking.LoginQueryRequestHandler unregisterGlobalReceiver(Identifier channelName) {
+	public static ClientLoginNetworking.@Nullable LoginQueryRequestHandler unregisterGlobalReceiver(Identifier channelName) {
 		return ClientNetworkingImpl.LOGIN.unregisterGlobalReceiver(channelName);
 	}
 

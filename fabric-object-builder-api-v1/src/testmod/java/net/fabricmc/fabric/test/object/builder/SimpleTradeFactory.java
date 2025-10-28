@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;

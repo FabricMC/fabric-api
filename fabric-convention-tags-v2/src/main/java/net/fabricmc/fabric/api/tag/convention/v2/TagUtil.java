@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.tag.convention.v2;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.Registries;

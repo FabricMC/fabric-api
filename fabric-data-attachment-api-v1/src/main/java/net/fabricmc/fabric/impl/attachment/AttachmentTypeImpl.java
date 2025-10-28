@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.attachment;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;

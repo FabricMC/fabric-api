@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;

@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import net.minecraft.registry.RegistryWrapper;

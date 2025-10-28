@@ -22,7 +22,7 @@ import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

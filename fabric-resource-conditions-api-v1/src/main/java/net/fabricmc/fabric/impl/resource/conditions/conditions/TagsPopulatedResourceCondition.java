@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryOps;
@@ -57,7 +57,7 @@ public record TagsPopulatedResourceCondition(Identifier registry, List<Identifie
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
+	public boolean test(RegistryOps.@Nullable RegistryInfoGetter registryInfo) {
 		return ResourceConditionsImpl.tagsPopulated(registryInfo, this.registry(), this.tags());
 	}
 }

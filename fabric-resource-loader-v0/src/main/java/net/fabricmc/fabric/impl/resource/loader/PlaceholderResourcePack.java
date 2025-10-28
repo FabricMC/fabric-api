@@ -25,7 +25,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.InputSupplier;

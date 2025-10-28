@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.itemgroup;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.RegistryKey;

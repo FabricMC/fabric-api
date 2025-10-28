@@ -19,7 +19,7 @@ package net.fabricmc.fabric.mixin.attachment;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

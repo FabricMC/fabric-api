@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -334,7 +334,7 @@ public interface MutableQuadView extends QuadView {
 	 * <p>This property is guaranteed to be respected in item contexts. Some renderers may also respect it in block
 	 * contexts, but this is not guaranteed.
 	 */
-	MutableQuadView glint(@Nullable ItemRenderState.Glint glint);
+	MutableQuadView glint(ItemRenderState.@Nullable Glint glint);
 
 	/**
 	 * A hint to the renderer about how this quad is intended to be shaded, for example through ambient occlusion and

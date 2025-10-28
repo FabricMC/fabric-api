@@ -32,10 +32,10 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Y;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.item.ItemRenderState;
@@ -263,8 +263,7 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	@Nullable
-	public ItemRenderState.Glint glint() {
+	public ItemRenderState.@Nullable Glint glint() {
 		return EncodingFormat.glint(data[baseIndex + HEADER_BITS]);
 	}
 

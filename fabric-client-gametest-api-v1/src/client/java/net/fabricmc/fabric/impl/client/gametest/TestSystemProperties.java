@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.gametest;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class TestSystemProperties {
 	private TestSystemProperties() {

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.FlowableFluid;

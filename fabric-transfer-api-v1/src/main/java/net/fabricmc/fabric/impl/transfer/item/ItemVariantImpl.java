@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.transfer.item;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentMap;

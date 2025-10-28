@@ -18,8 +18,8 @@ package net.fabricmc.fabric.test.rendering.client.gui;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.ScreenRect;

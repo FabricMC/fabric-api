@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.blockview.v2;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;

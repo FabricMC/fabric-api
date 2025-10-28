@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
@@ -169,7 +169,7 @@ public abstract class FabricTagProvider<T> extends TagProvider<T> {
 		 *
 		 * @param output The {@link FabricDataOutput} instance
 		 */
-		public ItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, @Nullable FabricTagProvider.BlockTagProvider blockTagProvider) {
+		public ItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, FabricTagProvider.@Nullable BlockTagProvider blockTagProvider) {
 			super(output, RegistryKeys.ITEM, registriesFuture, item -> item.getRegistryEntry().registryKey());
 
 			this.blockTagBuilderProvider = blockTagProvider == null ? null : blockTagProvider::getTagBuilder;

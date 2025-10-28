@@ -19,8 +19,8 @@ package net.fabricmc.fabric.impl.client.gametest.screenshot;
 import java.nio.file.Path;
 
 import com.google.common.base.Preconditions;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
+import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotCommonOptions;
 

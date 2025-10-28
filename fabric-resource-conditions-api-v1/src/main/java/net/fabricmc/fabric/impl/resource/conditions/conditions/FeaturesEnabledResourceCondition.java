@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.resource.featuretoggle.FeatureFlag;
@@ -52,7 +52,7 @@ public record FeaturesEnabledResourceCondition(Collection<Identifier> features) 
 	}
 
 	@Override
-	public boolean test(@Nullable RegistryOps.RegistryInfoGetter registryInfo) {
+	public boolean test(RegistryOps.@Nullable RegistryInfoGetter registryInfo) {
 		return ResourceConditionsImpl.featuresEnabled(this.features());
 	}
 }

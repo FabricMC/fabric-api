@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import io.netty.channel.ChannelFutureListener;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.packet.BrandCustomPayload;

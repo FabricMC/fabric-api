@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.particle.v1;
 import java.util.Locale;
 import java.util.function.Function;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.ParticleRenderer;

@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -186,8 +186,7 @@ public interface QuadView {
 	/**
 	 * @see MutableQuadView#glint(ItemRenderState.Glint)
 	 */
-	@Nullable
-	ItemRenderState.Glint glint();
+	ItemRenderState.@Nullable Glint glint();
 
 	/**
 	 * @see MutableQuadView#shadeMode(ShadeMode)

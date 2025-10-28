@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.transfer.ingame;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;

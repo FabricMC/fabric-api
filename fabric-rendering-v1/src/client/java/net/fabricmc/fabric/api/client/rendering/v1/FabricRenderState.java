@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.render.MapRenderState;
 import net.minecraft.client.render.block.MovingBlockRenderState;

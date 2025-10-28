@@ -19,8 +19,8 @@ package net.fabricmc.fabric.test.rendering.client;
 import java.util.Set;
 
 import com.mojang.serialization.MapCodec;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.RenderLayers;

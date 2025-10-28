@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.render.fluid.v1;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.LeavesBlock;

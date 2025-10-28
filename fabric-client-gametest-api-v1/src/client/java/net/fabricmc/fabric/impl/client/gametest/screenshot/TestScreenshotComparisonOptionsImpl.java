@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Either;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.util.math.Rect2i;
@@ -106,8 +106,7 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 		return this.getTemplateImagePath().orElseThrow();
 	}
 
-	@Nullable
-	public TestScreenshotComparisonAlgorithm.RawImage<byte[]> getGrayscaleTemplateImage() {
+	public TestScreenshotComparisonAlgorithm.@Nullable RawImage<byte[]> getGrayscaleTemplateImage() {
 		return this.templateImage.map(fileName -> {
 			try (NativeImage image = loadNativeImage(fileName)) {
 				if (image == null) {
@@ -126,8 +125,7 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 		});
 	}
 
-	@Nullable
-	public TestScreenshotComparisonAlgorithm.RawImage<int[]> getColorTemplateImage() {
+	public TestScreenshotComparisonAlgorithm.@Nullable RawImage<int[]> getColorTemplateImage() {
 		return this.templateImage.map(fileName -> {
 			try (NativeImage image = loadNativeImage(fileName)) {
 				if (image == null) {

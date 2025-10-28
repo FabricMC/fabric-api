@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.message.v1;
 import java.time.Instant;
 
 import com.mojang.authlib.GameProfile;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.network.message.MessageType;

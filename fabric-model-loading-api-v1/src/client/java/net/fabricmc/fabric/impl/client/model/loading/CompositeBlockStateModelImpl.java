@@ -24,9 +24,9 @@ import java.util.function.Predicate;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.Baker;

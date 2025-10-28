@@ -22,8 +22,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.resource.ResourcePackInfo;
 import net.minecraft.resource.ResourcePackPosition;

@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -68,8 +68,7 @@ public final class ServerLoginNetworking {
 	 * @see ServerLoginNetworking#registerGlobalReceiver(Identifier, LoginQueryResponseHandler)
 	 * @see ServerLoginNetworking#unregisterReceiver(ServerLoginNetworkHandler, Identifier)
 	 */
-	@Nullable
-	public static ServerLoginNetworking.LoginQueryResponseHandler unregisterGlobalReceiver(Identifier channelName) {
+	public static ServerLoginNetworking.@Nullable LoginQueryResponseHandler unregisterGlobalReceiver(Identifier channelName) {
 		return ServerNetworkingImpl.LOGIN.unregisterGlobalReceiver(channelName);
 	}
 
@@ -108,8 +107,7 @@ public final class ServerLoginNetworking {
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel name
 	 */
-	@Nullable
-	public static ServerLoginNetworking.LoginQueryResponseHandler unregisterReceiver(ServerLoginNetworkHandler networkHandler, Identifier channelName) {
+	public static ServerLoginNetworking.@Nullable LoginQueryResponseHandler unregisterReceiver(ServerLoginNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);

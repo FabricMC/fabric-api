@@ -23,7 +23,7 @@ import java.util.zip.Deflater;
 
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;

@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
@@ -84,8 +84,7 @@ public final class ClientConfigurationNetworking {
 	 * @see ClientConfigurationNetworking#registerGlobalReceiver(CustomPayload.Id, ConfigurationPayloadHandler)
 	 * @see ClientConfigurationNetworking#unregisterReceiver(Identifier)
 	 */
-	@Nullable
-	public static ClientConfigurationNetworking.ConfigurationPayloadHandler<?> unregisterGlobalReceiver(CustomPayload.Id<?> id) {
+	public static ClientConfigurationNetworking.@Nullable ConfigurationPayloadHandler<?> unregisterGlobalReceiver(CustomPayload.Id<?> id) {
 		return ClientNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(id.id());
 	}
 
@@ -135,8 +134,7 @@ public final class ClientConfigurationNetworking {
 	 * or it was not registered using {@link #registerReceiver(CustomPayload.Id, ConfigurationPayloadHandler)}
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	@Nullable
-	public static ClientConfigurationNetworking.ConfigurationPayloadHandler<?> unregisterReceiver(Identifier id) {
+	public static ClientConfigurationNetworking.@Nullable ConfigurationPayloadHandler<?> unregisterReceiver(Identifier id) {
 		final ClientConfigurationNetworkAddon addon = ClientNetworkingImpl.getClientConfigurationAddon();
 
 		if (addon != null) {

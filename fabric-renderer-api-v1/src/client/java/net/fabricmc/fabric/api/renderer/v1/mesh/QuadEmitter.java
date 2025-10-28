@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.item.ItemRenderState;
@@ -136,7 +136,7 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter ambientOcclusion(TriState ao);
 
 	@Override
-	QuadEmitter glint(@Nullable ItemRenderState.Glint glint);
+	QuadEmitter glint(ItemRenderState.@Nullable Glint glint);
 
 	@Override
 	QuadEmitter shadeMode(ShadeMode mode);

@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.render.BannerResultGuiElementRenderer;
@@ -76,7 +76,8 @@ public final class SpecialGuiElementRegistryImpl {
 		}
 	}
 
-	@Nullable("null for render states registered outside FAPI")
+	// null for render states registered outside FAPI
+	@Nullable
 	public static <S extends SpecialGuiElementRenderState> SpecialGuiElementRenderer<S> createNewRenderer(S state, MinecraftClient client, VertexConsumerProvider.Immediate immediate, OrderedRenderCommandQueue orderedRenderCommandQueue) {
 		SpecialGuiElementRegistry.Factory factory = REGISTERED_FACTORIES.get(state.getClass());
 		return factory == null ? null : (SpecialGuiElementRenderer<S>) factory.createSpecialRenderer(new ContextImpl(client, immediate, orderedRenderCommandQueue));

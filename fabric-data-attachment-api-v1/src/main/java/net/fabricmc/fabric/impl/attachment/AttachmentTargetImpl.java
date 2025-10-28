@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.attachment;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.server.network.ServerPlayerEntity;
