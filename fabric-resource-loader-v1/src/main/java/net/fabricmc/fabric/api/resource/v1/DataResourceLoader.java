@@ -18,15 +18,13 @@ package net.fabricmc.fabric.api.resource.v1;
 
 import java.util.function.Function;
 
-import net.minecraft.recipe.ServerRecipeManager;
-
-import net.minecraft.server.ServerAdvancementLoader;
-
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.recipe.ServerRecipeManager;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.resource.v1.DataResourceLoaderImpl;
