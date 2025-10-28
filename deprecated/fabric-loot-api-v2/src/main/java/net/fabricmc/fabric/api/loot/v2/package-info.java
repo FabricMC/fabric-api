@@ -32,4 +32,7 @@
  * They let you add pre-built objects instead of builders, and collections of objects to the builder
  * with one method call.
  */
+@NullMarked
 package net.fabricmc.fabric.api.loot.v2;
+
+import org.jspecify.annotations.NullMarked;

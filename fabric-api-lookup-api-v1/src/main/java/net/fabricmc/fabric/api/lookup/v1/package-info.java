@@ -79,4 +79,8 @@
  *     <li>See {@link net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap ApiLookupMap} for example code.</li>
  * </ul>
  */
+
+@NullMarked
 package net.fabricmc.fabric.api.lookup.v1;
+
+import org.jspecify.annotations.NullMarked;

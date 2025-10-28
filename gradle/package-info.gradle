@@ -7,10 +7,10 @@ for (def sourceSet in [
 	// We have to capture the source set name for the lazy string literals,
 	// otherwise it'll just be whatever the last source set is in the list.
 	def sourceSetName = sourceSet.name
-	def taskName = sourceSet.getTaskName('generate', 'ImplPackageInfos')
-	def task = tasks.register(taskName, GenerateImplPackageInfos) {
+	def taskName = sourceSet.getTaskName('generate', 'PackageInfos')
+	def task = tasks.register(taskName, GeneratePackageInfos) {
 		group = 'fabric'
-		description = "Generates package-info files for $sourceSetName implementation packages."
+		description = "Generates package-info files for $sourceSetName packages."
 
 		// Only apply to default source directory since we also add the generated
 		// sources to the source set.
@@ -20,14 +20,14 @@ for (def sourceSet in [
 	}
 	sourceSet.java.srcDir task
 
-	def cleanTask = tasks.register(sourceSet.getTaskName('clean', 'ImplPackageInfos'), Delete) {
+	def cleanTask = tasks.register(sourceSet.getTaskName('clean', 'PackageInfos'), Delete) {
 		group = 'fabric'
 		delete file("src/generated/$sourceSetName")
 	}
 	clean.dependsOn cleanTask
 }
 
-abstract class GenerateImplPackageInfos extends DefaultTask {
+abstract class GeneratePackageInfos extends DefaultTask {
 	@InputFile
 	File header
 
@@ -41,7 +41,7 @@ abstract class GenerateImplPackageInfos extends DefaultTask {
 	@OutputDirectory
 	final DirectoryProperty outputDir = project.objects.directoryProperty()
 
-	GenerateImplPackageInfos() {
+	GeneratePackageInfos() {
 		projectName.set(project.name)
 	}
 
@@ -52,35 +52,62 @@ abstract class GenerateImplPackageInfos extends DefaultTask {
 		def headerText = header.readLines().join("\n") // normalize line endings
 		def root = sourceRoot.get().asFile.toPath()
 
-		for (def dir in ['impl', 'mixin']) {
-			def implDir = root.resolve("net/fabricmc/fabric/$dir")
-
-			if (Files.notExists(implDir)) {
-				continue
+		root.eachDirRecurse {
+			def containsJava = Files.list(it).any {
+				Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
 			}
 
-			implDir.eachDirRecurse {
-				def containsJava = Files.list(it).any {
-					Files.isRegularFile(it) && it.fileName.toString().endsWith('.java')
+			if (!containsJava) {
+				return
+			}
+
+			// Check existing package-info.java to ensure it has @NullMarked
+			def existingPackageInfo = it.resolve('package-info.java')
+			if (Files.exists(existingPackageInfo)) {
+				if (!existingPackageInfo.text.contains("@NullMarked")) {
+					throw new RuntimeException("package-info.java ${existingPackageInfo} is missing @NullMarked annotation.")
 				}
 
-				if (containsJava && Files.notExists(it.resolve('package-info.java'))) {
-					def relativePath = root.relativize(it)
-					def target = output.resolve(relativePath)
-					Files.createDirectories(target)
+				return
+			}
 
-					target.resolve('package-info.java').withWriter {
-						def packageName = relativePath.toString().replace(File.separator, '.')
-						it.write("""$headerText
+			def relativePath = root.relativize(it)
+			def target = output.resolve(relativePath)
+			Files.createDirectories(target)
+
+			def packageName = relativePath.toString().replace(File.separator, '.')
+
+			if (packageName == "net.fabricmc.fabric.api.util" && projectName.get() == "fabric-content-registries-v0") {
+				// Hack: This package clashes with api-base, don't generate any annotations for it.
+				return
+			}
+
+			def implPattern = /^(net[\/\\]fabricmc[\/\\]fabric[\/\\](impl|mixin))/
+			def isImpl = relativePath.toString() ==~ implPattern
+
+			target.resolve('package-info.java').withWriter {
+				if (isImpl) {
+					it.write("""$headerText
 						|/**
 						| * Implementation code for ${projectName.get()}.
 						| */
 						|@ApiStatus.Internal
+						|@NullMarked
 						|package $packageName;
 						|
 						|import org.jetbrains.annotations.ApiStatus;
+						|import org.jspecify.annotations.NullMarked;
 						|""".stripMargin())
-					}
+				} else {
+					it.write("""$headerText
+						|/**
+						| * API code for ${projectName.get()}.
+						| */
+						|@NullMarked
+						|package $packageName;
+						|
+						|import org.jspecify.annotations.NullMarked;
+						|""".stripMargin())
 				}
 			}
 		}

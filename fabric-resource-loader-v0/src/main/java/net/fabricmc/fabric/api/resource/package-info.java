@@ -67,4 +67,7 @@
  * A resource reload listener can depend on another and vanilla resource reload listener identifiers may be found in {@link net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys}.
  */
 
+@NullMarked
 package net.fabricmc.fabric.api.resource;
+
+import org.jspecify.annotations.NullMarked;

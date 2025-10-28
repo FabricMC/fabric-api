@@ -48,4 +48,7 @@
  * net.fabricmc.fabric.api.networking.v1.PlayerLookup player lookups}.
  */
 
+@NullMarked
 package net.fabricmc.fabric.api.networking.v1;
+
+import org.jspecify.annotations.NullMarked;

@@ -27,4 +27,7 @@
  *
  * @see net.fabricmc.fabric.api.client.screen.v1.Screens
  */
+@NullMarked
 package net.fabricmc.fabric.api.client.screen.v1;
+
+import org.jspecify.annotations.NullMarked;

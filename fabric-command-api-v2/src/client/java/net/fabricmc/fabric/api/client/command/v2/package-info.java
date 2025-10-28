@@ -19,4 +19,7 @@
  *
  * @see net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
  */
+@NullMarked
 package net.fabricmc.fabric.api.client.command.v2;
+
+import org.jspecify.annotations.NullMarked;
