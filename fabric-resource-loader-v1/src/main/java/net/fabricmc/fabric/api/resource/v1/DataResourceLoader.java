@@ -18,6 +18,10 @@ package net.fabricmc.fabric.api.resource.v1;
 
 import java.util.function.Function;
 
+import net.minecraft.recipe.ServerRecipeManager;
+
+import net.minecraft.server.ServerAdvancementLoader;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.registry.RegistryWrapper;
@@ -33,13 +37,31 @@ import net.fabricmc.fabric.impl.resource.v1.DataResourceLoaderImpl;
 @ApiStatus.NonExtendable
 public interface DataResourceLoader extends ResourceLoader {
 	/**
+	 * The resource reloader store key for the recipe manager.
+	 *
+	 * @apiNote The recipe manager is only available in {@linkplain ResourceType#SERVER_DATA server data} resource reloaders.
+	 * <br/>
+	 * It should <b>only</b> be accessed in the application phase of the resource reloader,
+	 * and you should depend on {@link net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server#RECIPES}.
+	 */
+	ResourceReloader.Key<ServerRecipeManager> RECIPE_MANAGER_KEY = new ResourceReloader.Key<>();
+	/**
+	 * The resource reloader store key for the advancement loader.
+	 *
+	 * @apiNote The advancement loader is only available in {@linkplain ResourceType#SERVER_DATA server data} resource reloaders.
+	 * <br/>
+	 * It should <b>only</b> be accessed in the application phase of the resource reloader,
+	 * and you should depend on {@link net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server#ADVANCEMENTS}.
+	 */
+	ResourceReloader.Key<ServerAdvancementLoader> ADVANCEMENT_LOADER_KEY = new ResourceReloader.Key<>();
+	/**
 	 * The resource reloader store key for the data resource store.
 	 *
-	 * @apiNote The registry lookup is only available in {@linkplain ResourceType#SERVER_DATA server data} resource reloaders.
+	 * @apiNote The data resource store is only available in {@linkplain ResourceType#SERVER_DATA server data} resource reloaders.
 	 * <br/>
 	 * It should <b>only</b> be mutated in the application phase of the resource reloader.
 	 */
-	ResourceReloader.Key<DataResourceStore.Mutable> DATA_RESOURCE_STORE = new ResourceReloader.Key<>();
+	ResourceReloader.Key<DataResourceStore.Mutable> DATA_RESOURCE_STORE_KEY = new ResourceReloader.Key<>();
 
 	static DataResourceLoader get() {
 		return DataResourceLoaderImpl.INSTANCE;

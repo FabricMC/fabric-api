@@ -23,17 +23,18 @@ import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.DataPackContents;
 
 import net.fabricmc.fabric.api.resource.v1.DataResourceLoader;
-import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 
 // Used to inject into the ResourceReloader store.
 public record SetupMarkerResourceReloader(DataPackContents dataPackContents, FeatureSet featureSet) implements SynchronousResourceReloader {
 	@Override
 	public void prepareSharedState(Store store) {
 		RegistryWrapper.WrapperLookup registries = this.dataPackContents.getReloadableRegistries().createRegistryLookup();
-		store.put(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY, registries);
-		store.put(ResourceLoader.RELOADER_FEATURE_SET_KEY, this.featureSet);
+		store.put(DataResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY, registries);
+		store.put(DataResourceLoader.RELOADER_FEATURE_SET_KEY, this.featureSet);
+		store.put(DataResourceLoader.ADVANCEMENT_LOADER_KEY, this.dataPackContents.getServerAdvancementLoader());
+		store.put(DataResourceLoader.RECIPE_MANAGER_KEY, this.dataPackContents.getRecipeManager());
 		store.put(
-				DataResourceLoader.DATA_RESOURCE_STORE,
+				DataResourceLoader.DATA_RESOURCE_STORE_KEY,
 				((FabricDataResourceStoreHolder) this.dataPackContents).fabric$getDataResourceStore()
 		);
 	}

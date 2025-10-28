@@ -7,7 +7,6 @@
     "KeyedResourceReloaderMixin",
     "LifecycledResourceManagerImplMixin",
     "MinecraftServerMixin",
-    "ServerRecipeManagerMixin",
     "SimpleResourceReloadMixin"
   ],
   "injectors": {

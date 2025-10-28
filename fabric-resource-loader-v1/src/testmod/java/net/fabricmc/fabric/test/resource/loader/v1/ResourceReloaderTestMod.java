@@ -98,7 +98,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 			RegistryWrapper.WrapperLookup registries = store.getOrThrow(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY);
 			registries.getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
 			return reloadSynchronizer.whenPrepared(null).thenRunAsync(
-					() -> store.getOrThrow(DataResourceLoader.DATA_RESOURCE_STORE)
+					() -> store.getOrThrow(DataResourceLoader.DATA_RESOURCE_STORE_KEY)
 							.put(STORE_KEY, "Hello from RegistryReloader."),
 					applyExecutor
 			);

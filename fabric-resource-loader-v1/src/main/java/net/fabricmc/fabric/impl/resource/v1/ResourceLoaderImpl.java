@@ -35,7 +35,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -275,17 +274,6 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		}
 
 		throw new IllegalStateException("No SetupMarkerResourceReloader found in reloaders!");
-	}
-
-	// A bit of a hack to get the registry, but it works.
-	public static RegistryWrapper.WrapperLookup getWrapperLookup(List<ResourceReloader> reloaders) {
-		for (ResourceReloader resourceReloader : reloaders) {
-			if (resourceReloader instanceof FabricRecipeManager recipeManager) {
-				return recipeManager.fabric$getRegistries();
-			}
-		}
-
-		throw new IllegalStateException("No ServerRecipeManager found in reloaders!");
 	}
 
 	private record ReloaderOrder(Identifier first, Identifier second) {
