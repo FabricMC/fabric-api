@@ -2,10 +2,10 @@ plugins {
 	id "java-library"
 	id "eclipse"
 	id "maven-publish"
-	id "fabric-loom" version "1.11.7" apply false
+	id "fabric-loom" version "1.12.1" apply false
 	id "com.diffplug.spotless" version "7.2.1"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
-	id "me.modmuss50.mod-publish-plugin" version "0.8.4"
+	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
 
 def branchProvider = providers.of(GitBranchValueSource.class) {}
@@ -156,9 +156,6 @@ allprojects {
 
 	loom {
 		splitEnvironmentSourceSets()
-		mixin {
-			useLegacyMixinAp = false
-		}
 	}
 
 	sourceSets {
