@@ -6,10 +6,7 @@
     "GameRuleCommandAccessor",
     "GameRuleCommandVisitorMixin",
     "GameRuleManagementHandlerImplMixin",
-    "GameRuleRpcDispatcherTypedRuleMixin",
-    "GameRulesAccessor",
-    "GameRulesBooleanRuleAccessor",
-    "GameRulesKeyMixin"
+    "GameRuleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

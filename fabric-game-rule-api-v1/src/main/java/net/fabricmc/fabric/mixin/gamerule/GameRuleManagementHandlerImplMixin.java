@@ -20,6 +20,15 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Cancellable;
 import com.llamalad7.mixinextras.sugar.Local;
+
+import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
+
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.rule.GameRule;
+
+import net.minecraft.world.rule.GameRules;
+
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,10 +43,7 @@ import net.minecraft.server.dedicated.management.RpcException;
 import net.minecraft.server.dedicated.management.dispatch.GameRuleRpcDispatcher;
 import net.minecraft.server.dedicated.management.handler.GameRuleManagementHandlerImpl;
 import net.minecraft.server.dedicated.management.network.ManagementConnectionId;
-import net.minecraft.world.GameRules;
 
-import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
-import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricTypedRule;
 
@@ -48,16 +54,16 @@ public abstract class GameRuleManagementHandlerImplMixin {
 	private MinecraftDedicatedServer server;
 
 	@Shadow
-	public abstract GameRuleRpcDispatcher.TypedRule toTypedRule(String name, GameRules.Rule<?> gameRule);
-
-	@Shadow
 	@Final
 	private ManagementLogger logger;
 
-	@WrapOperation(method = "updateRule", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules$Rule;serialize()Ljava/lang/String;"))
-	private String updateRule(GameRules.Rule<?> rule, Operation<String> original, @Cancellable CallbackInfoReturnable<GameRuleRpcDispatcher.TypedRule> cir,
-								@Local(argsOnly = true) GameRuleRpcDispatcher.UntypedRule untypedRule, @Local(argsOnly = true) ManagementConnectionId remote) {
-		final String from = original.call(rule);
+	@Shadow
+	public abstract <T> GameRuleRpcDispatcher.class_12254<T> toTypedRule(GameRule<T> gameRule, T object);
+
+	/*
+	@WrapOperation(method = "updateRule", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/rule/GameRules;setValue(Lnet/minecraft/world/rule/GameRule;Ljava/lang/Object;Lnet/minecraft/server/MinecraftServer;)V"))
+	private <T> void updateRule(GameRules instance, GameRule<T> rule, T value, @Nullable MinecraftServer server, Operation<Void> original, GameRuleRpcDispatcher.class_12254<T> untypedRule, ManagementConnectionId remote, @Cancellable CallbackInfoReturnable<GameRuleRpcDispatcher.class_12254<T>> cir) {
+		final String from = original.call(instance, rule, value, server);
 
 		try {
 			if (rule instanceof DoubleRule doubleRule) {
@@ -73,22 +79,25 @@ public abstract class GameRuleManagementHandlerImplMixin {
 
 		return from;
 	}
+	 */
 
 	@Inject(method = "toTypedRule", at = @At("HEAD"), cancellable = true)
-	public void toTypedRule(String name, GameRules.Rule<?> rule, CallbackInfoReturnable<GameRuleRpcDispatcher.TypedRule> cir) {
-		if (rule instanceof DoubleRule) {
-			cir.setReturnValue(FabricTypedRule.create(name, rule.serialize(), FabricGameRuleType.DOUBLE));
-		} else if (rule instanceof EnumRule<?>) {
-			cir.setReturnValue(FabricTypedRule.create(name, rule.serialize(), FabricGameRuleType.ENUM));
+	public <T> void toTypedRule(GameRule<T> gameRule, T object, CallbackInfoReturnable<GameRuleRpcDispatcher.class_12254<T>> cir) {
+		FabricGameRuleType type = ((RuleTypeExtensions) (Object) gameRule).fabric_getType();
+		if (type != null) {
+			cir.setReturnValue(FabricTypedRule.create(gameRule, object, type));
 		}
 	}
 
+	/*
 	@Unique
-	private GameRuleRpcDispatcher.TypedRule doUpdate(GameRuleRpcDispatcher.UntypedRule untypedRule, ManagementConnectionId remote, GameRules.Rule<?> rule, String from) {
+	private <T> GameRuleRpcDispatcher.class_12254<T> doUpdate(GameRuleRpcDispatcher.UntypedRule untypedRule, ManagementConnectionId remote, GameRules.Rule<?> rule, String from) {
 		// 3 lines copied from vanilla:
-		GameRuleRpcDispatcher.TypedRule typedRule = this.toTypedRule(untypedRule.key(), rule);
+		GameRuleRpcDispatcher.class_12254<T> typedRule = this.toTypedRule(untypedRule.key(), rule);
 		this.logger.logAction(remote, "Game rule '{}' updated from '{}' to '{}'", typedRule.key(), from, typedRule.value());
 		this.server.onGameRuleUpdated(untypedRule.key(), rule);
 		return typedRule;
 	}
+
+	 */
 }

@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.gamerule.rpc;
 import net.minecraft.util.StringIdentifiable;
 
 /**
- * Extensions to {@link net.minecraft.server.dedicated.management.dispatch.GameRuleRpcDispatcher.GameRuleType}.
+ * Extensions to {@link net.minecraft.server.dedicated.management.dispatch.GameRuleType}.
  */
 public enum FabricGameRuleType implements StringIdentifiable {
 	DOUBLE("fabric:double"),

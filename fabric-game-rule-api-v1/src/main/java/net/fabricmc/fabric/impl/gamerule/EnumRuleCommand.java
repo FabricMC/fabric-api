@@ -23,36 +23,45 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 
+import com.mojang.brigadier.tree.LiteralCommandNode;
+
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import net.minecraft.world.GameRules;
 
-import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 import net.fabricmc.fabric.mixin.gamerule.GameRuleCommandAccessor;
 
+import net.minecraft.world.rule.GameRule;
+
 public final class EnumRuleCommand {
-	public static <E extends Enum<E>> void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRules.Key<EnumRule<E>> key, EnumRuleType<E> type) {
-		literalArgumentBuilder.then(literal(key.getName()).executes(context -> {
+	public static <E extends Enum<E>> void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRule<E> enumRule) {
+		String name = enumRule.getSimplifiedPath();
+		literalArgumentBuilder.then(literal(name).executes(context -> {
 			// We can use the vanilla query method
-			return GameRuleCommandAccessor.invokeExecuteQuery(context.getSource(), key);
+			return GameRuleCommandAccessor.invokeExecuteQuery(context.getSource(), enumRule);
 		}));
 
 		// The LiteralRuleType handles the executeSet
-		type.register(literalArgumentBuilder, key);
+		LiteralCommandNode<ServerCommandSource> ruleNode = literal(name).build();
+
+		// I believe usage of var is justified here as the two E parameters conflict, and I cast this var to the method E anyway
+		for (var supportedValue : ((RuleTypeExtensions) (Object) enumRule).fabric_getSupportedEnumValues()) {
+			ruleNode.addChild(literal(supportedValue.toString()).executes(context -> EnumRuleCommand.executeAndSetEnum(context, (E) supportedValue, enumRule)).build());
+		}
+
+		literalArgumentBuilder.then(ruleNode);
 	}
 
-	public static <E extends Enum<E>> int executeAndSetEnum(CommandContext<ServerCommandSource> context, E value, GameRules.Key<EnumRule<E>> key) throws CommandSyntaxException {
+	public static <E extends Enum<E>> int executeAndSetEnum(CommandContext<ServerCommandSource> context, E value, GameRule<E> enumRule) throws CommandSyntaxException {
 		// Mostly copied from vanilla, but tweaked so we can use literals
 		ServerCommandSource serverCommandSource = context.getSource();
-		EnumRule<E> rule = serverCommandSource.getWorld().getGameRules().get(key);
 
 		try {
-			rule.set(value, serverCommandSource.getServer());
+			serverCommandSource.getWorld().getGameRules().setValue(enumRule, value, serverCommandSource.getServer());
 		} catch (IllegalArgumentException e) {
 			throw new SimpleCommandExceptionType(Text.literal(e.getMessage())).create();
 		}
 
-		serverCommandSource.sendFeedback(() -> Text.translatable("commands.gamerule.set", key.getName(), rule.toString()), true);
-		return rule.getCommandResult();
+		serverCommandSource.sendFeedback(() -> Text.translatable("commands.gamerule.set", enumRule.getSimplifiedPath(), enumRule.getValueName(value)), true);
+		return enumRule.getCommandResult(value);
 	}
 }

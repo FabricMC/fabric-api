@@ -19,30 +19,34 @@ package net.fabricmc.fabric.impl.gamerule.widget;
 import java.util.List;
 import java.util.Locale;
 
+import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.minecraft.world.rule.GameRule;
 
-import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
+import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
 public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen.NamedRuleWidget {
 	private final ButtonWidget buttonWidget;
 	private final String rootTranslationKey;
 
-	public EnumRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<OrderedText> description, final String ruleName, EnumRule<E> rule, String translationKey) {
+	public EnumRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<OrderedText> description, final String ruleName, GameRule<E> enumRule, String translationKey) {
 		gameRuleScreen.super(description, name);
+		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
 
 		// Overwrite line wrapping to account for button larger than vanilla's by 44 pixels.
 		this.name = MinecraftClient.getInstance().textRenderer.wrapLines(name, 175 - 44);
 
 		// Base translation key needs to be set before the button widget is created.
 		this.rootTranslationKey = translationKey;
-		this.buttonWidget = ButtonWidget.builder(this.getValueText(rule.get()), (buttonWidget) -> {
-			rule.cycle();
-			buttonWidget.setMessage(this.getValueText(rule.get()));
+		this.buttonWidget = ButtonWidget.builder(this.getValueText(accessor.getGameRules().getValue(enumRule)), (buttonWidget) -> {
+			((RuleTypeExtensions) (Object) enumRule).fabric_enumCycle(accessor.getGameRules().getValue(enumRule));
+			buttonWidget.setMessage(this.getValueText(accessor.getGameRules().getValue(enumRule)));
 		}).position(10, 5).size(88, 20).build();
 
 		this.children.add(this.buttonWidget);

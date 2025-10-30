@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.mixin.gamerule.client;
 
+import net.minecraft.world.rule.GameRules;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
@@ -28,4 +31,7 @@ public interface EditGameRulesScreenAccessor {
 
 	@Invoker("markInvalid")
 	void callMarkInvalid(EditGameRulesScreen.AbstractRuleWidget ruleWidget);
+
+	@Accessor("gameRules")
+	GameRules getGameRules();
 }

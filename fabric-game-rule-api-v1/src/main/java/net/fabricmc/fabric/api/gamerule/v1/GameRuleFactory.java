@@ -16,273 +16,130 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.function.ToIntFunction;
 
-import java.util.function.BiConsumer;
+import com.mojang.brigadier.arguments.ArgumentType;
 
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import org.jspecify.annotations.Nullable;
+import com.mojang.serialization.Codec;
+
+import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
+
+import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
+import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
+
+import net.minecraft.server.dedicated.management.dispatch.GameRuleType;
+import net.minecraft.world.Category;
+import net.minecraft.world.Visitor;
+
+import net.minecraft.world.rule.GameRule;
+
+import net.minecraft.world.rule.GameRules;
 
 import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.GameRules;
 
-import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
-import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
-import net.fabricmc.fabric.impl.gamerule.EnumRuleType;
-import net.fabricmc.fabric.impl.gamerule.rule.BoundedIntRule;
-import net.fabricmc.fabric.mixin.gamerule.GameRulesBooleanRuleAccessor;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A utility class containing factory methods to create game rule types.
  * A game rule is a persisted, per server data value which may control gameplay aspects.
  *
- * <p>Some factory methods allow specification of a callback that is invoked when the value of a game rule has changed.
- * Typically, the callback is used for game rules which may influence game logic, such as {@link GameRules#DISABLE_RAIDS disabling raids}.
- *
- * <p>To register a game rule, you can use {@link GameRuleRegistry#register(String, GameRules.Category, GameRules.Type)}.
- * For example, to register a game rule that is an integer where the acceptable values are between 0 and 10, one would use the following:
+ * <p>To register a game rule, you can use {@link GameRuleRegistry#register(String, GameRule)} or any register method from {@link GameRules}.
+ * For example, to register a game rule that is an integer where the default value is 1 and the acceptable values are between 0 and 10, one would use the following:
  * <blockquote><pre>
- * public static final GameRules.Key&lt;GameRules.IntRule&gt; EXAMPLE_INT_RULE = GameRuleRegistry.register("exampleIntRule", GameRules.Category.UPDATES, GameRuleFactory.createIntRule(1, 10));
+ * public static final GameRule&lt;Integer&gt; EXAMPLE_INT_RULE = GameRules.registerIntRule("example_int_rule", Category.MISC, 1, 0, 10);
  * </pre></blockquote>
+ * Please note that all register methods in {@link GameRules} internally construct and register the rule.
  *
- * <p>To register a game rule in a custom category, {@link GameRuleRegistry#register(String, CustomGameRuleCategory, GameRules.Type)} should be used.
+ * <p>To register a game rule in a custom category, {@link GameRuleRegistry#register(String, GameRule, CustomGameRuleCategory)} should be used.
+ * Alternatively, cast the {@link GameRule} to {@link RuleCategoryExtensions} and call {@link RuleCategoryExtensions#fabric_setCustomCategory(CustomGameRuleCategory)}.
  *
  * @see GameRuleRegistry
  */
 public final class GameRuleFactory {
-	/**
-	 * Creates a boolean rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @return a boolean rule type
-	 */
-	public static GameRules.Type<GameRules.BooleanRule> createBooleanRule(boolean defaultValue) {
-		return createBooleanRule(defaultValue, (server, rule) -> {
-		});
+
+	private GameRuleFactory() {
 	}
 
-	/**
-	 * Creates a boolean rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param changedCallback a callback that is invoked when the value of a game rule has changed
-	 * @return a boolean rule type
-	 */
-	public static GameRules.Type<GameRules.BooleanRule> createBooleanRule(boolean defaultValue, BiConsumer<MinecraftServer, GameRules.BooleanRule> changedCallback) {
-		return GameRulesBooleanRuleAccessor.invokeCreate(defaultValue, changedCallback);
+	// BOOLEAN
+	public static GameRule<Boolean> createBooleanRule(boolean defaultValue) {
+		return create(Category.MISC, GameRuleType.BOOL, BoolArgumentType.bool(), Codec.BOOL, defaultValue, FeatureSet.empty(), Visitor::visitBoolean, (bool) -> bool ? 1 : 0);
 	}
 
-	/**
-	 * Creates an integer rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @return an integer rule type
-	 */
-	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue) {
-		return createIntRule(defaultValue, (server, rule) -> {
-		});
+	public static GameRule<Boolean> createBooleanRule(Category category, boolean defaultValue) {
+		return create(category, GameRuleType.BOOL, BoolArgumentType.bool(), Codec.BOOL, defaultValue, FeatureSet.empty(), Visitor::visitBoolean, (bool) -> bool ? 1 : 0);
 	}
 
-	/**
-	 * Creates an integer rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param minimumValue the minimum value the game rule may accept
-	 * @return an integer rule type
-	 */
-	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, int minimumValue) {
-		return createIntRule(defaultValue, minimumValue, Integer.MAX_VALUE, (server, rule) -> {
-		});
+	// INTEGER
+	public static GameRule<Integer> createIntRule(int defaultValue, int minValue) {
+		return createIntRule(Category.MISC, defaultValue, minValue);
 	}
 
-	/**
-	 * Creates an integer rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param minimumValue the minimum value the game rule may accept
-	 * @param changedCallback a callback that is invoked when the value of a game rule has changed
-	 * @return an integer rule type
-	 */
-	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, int minimumValue, BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
-		return createIntRule(defaultValue, minimumValue, Integer.MAX_VALUE, changedCallback);
+	public static GameRule<Integer> createIntRule(Category category, int defaultValue, int minValue) {
+		return createIntRule(category, defaultValue, minValue, Integer.MAX_VALUE, FeatureSet.empty());
 	}
 
-	/**
-	 * Creates an integer rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param minimumValue the minimum value the game rule may accept
-	 * @param maximumValue the maximum value the game rule may accept
-	 * @return an integer rule type
-	 */
-	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, int minimumValue, int maximumValue) {
-		return createIntRule(defaultValue, minimumValue, maximumValue, (server, rule) -> {
-		});
+	public static GameRule<Integer> createIntRule(int defaultValue, int minValue, int maxValue) {
+		return createIntRule(Category.MISC, defaultValue, minValue, maxValue);
 	}
 
-	/**
-	 * Creates an integer rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param changedCallback a callback that is invoked when the value of a game rule has changed
-	 * @return an integer rule type
-	 */
-	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
-		return createIntRule(defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, changedCallback);
+	public static GameRule<Integer> createIntRule(Category category, int defaultValue, int minValue, int maxValue) {
+		return createIntRule(category, defaultValue, minValue, maxValue, FeatureSet.empty());
 	}
 
-	/**
-	 * Creates an integer rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param minimumValue the minimum value the game rule may accept
-	 * @param maximumValue the maximum value the game rule may accept
-	 * @param changedCallback a callback that is invoked when the value of a game rule has changed
-	 * @return an integer rule type
-	 */
-	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, int minimumValue, int maximumValue, @Nullable BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
-		return new GameRules.Type<>(
-				() -> IntegerArgumentType.integer(minimumValue, maximumValue),
-				type -> new BoundedIntRule(type, defaultValue, minimumValue, maximumValue), // Internally use a bounded int rule
-				changedCallback,
-				GameRules.Visitor::visitInt,
-				GameRules.IntRule.class,
-				FeatureSet.empty()
-		);
+	public static GameRule<Integer> createIntRule(int defaultValue, int minValue, int maxValue, FeatureSet featureSet) {
+		return createIntRule(Category.MISC, defaultValue, minValue, maxValue, featureSet);
 	}
 
-	/**
-	 * Creates a double rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @return a double rule type
-	 */
-	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue) {
-		return createDoubleRule(defaultValue, (server, rule) -> {
-		});
+	public static GameRule<Integer> createIntRule(Category category, int defaultValue, int minValue, int maxValue, FeatureSet featureSet) {
+		return create(category, GameRuleType.INT, IntegerArgumentType.integer(minValue, maxValue), Codec.intRange(minValue, maxValue), defaultValue, featureSet, Visitor::visitInt, (integer) -> integer);
 	}
 
-	/**
-	 * Creates a double rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param minimumValue the minimum value the game rule may accept
-	 * @return a double rule type
-	 */
-	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double minimumValue) {
-		return createDoubleRule(defaultValue, minimumValue, Double.MAX_VALUE, (server, rule) -> {
-		});
+	// DOUBLE
+	public static GameRule<Double> createDoubleRule(double defaultValue, double minValue) {
+		return createDoubleRule(Category.MISC, defaultValue, minValue);
 	}
 
-	/**
-	 * Creates a double rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param minimumValue the minimum value the game rule may accept
-	 * @param changedCallback a callback that is invoked when the value of a game rule has changed
-	 * @return a double rule type
-	 */
-	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double minimumValue, BiConsumer<MinecraftServer, DoubleRule> changedCallback) {
-		return createDoubleRule(defaultValue, minimumValue, Double.MAX_VALUE, changedCallback);
+	public static GameRule<Double> createDoubleRule(Category category, double defaultValue, double minValue) {
+		return createDoubleRule(category, defaultValue, minValue, Double.MAX_VALUE, FeatureSet.empty());
 	}
 
-	/**
-	 * Creates a double rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param minimumValue the minimum value the game rule may accept
-	 * @param maximumValue the maximum value the game rule may accept
-	 * @return a double rule type
-	 */
-	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double minimumValue, double maximumValue) {
-		return createDoubleRule(defaultValue, minimumValue, maximumValue, (server, rule) -> {
-		});
+	public static GameRule<Double> createDoubleRule(double defaultValue, double minValue, double maxValue) {
+		return createDoubleRule(Category.MISC, defaultValue, minValue, maxValue);
 	}
 
-	/**
-	 * Creates a double rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param changedCallback a callback that is invoked when the value of a game rule has changed
-	 * @return a double rule type
-	 */
-	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, BiConsumer<MinecraftServer, DoubleRule> changedCallback) {
-		return createDoubleRule(defaultValue, Double.MIN_VALUE, Double.MAX_VALUE, changedCallback);
+	public static GameRule<Double> createDoubleRule(Category category, double defaultValue, double minValue, double maxValue) {
+		return createDoubleRule(category, defaultValue, minValue, maxValue, FeatureSet.empty());
 	}
 
-	/**
-	 * Creates a double rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param minimumValue the minimum value the game rule may accept
-	 * @param maximumValue the maximum value the game rule may accept
-	 * @param changedCallback a callback that is invoked when the value of a game rule has changed
-	 * @return a double rule type
-	 */
-	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double minimumValue, double maximumValue, BiConsumer<MinecraftServer, DoubleRule> changedCallback) {
-		return new GameRules.Type<>(
-				() -> DoubleArgumentType.doubleArg(minimumValue, maximumValue),
-				type -> new DoubleRule(type, defaultValue, minimumValue, maximumValue),
-				changedCallback,
-				GameRuleFactory::visitDouble,
-				DoubleRule.class,
-				FeatureSet.empty()
-		);
+	public static GameRule<Double> createDoubleRule(double defaultValue, double minValue, double maxValue, FeatureSet featureSet) {
+		return createDoubleRule(Category.MISC, defaultValue, minValue, maxValue, featureSet);
 	}
 
-	/**
-	 * Creates an enum rule type.
-	 *
-	 * <p>All enum values are supported.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param <E> the type of enum this game rule stores
-	 * @return an enum rule type
-	 */
-	public static <E extends Enum<E>> GameRules.Type<EnumRule<E>> createEnumRule(E defaultValue) {
-		return createEnumRule(defaultValue, (server, rule) -> {
-		});
+	public static GameRule<Double> createDoubleRule(Category category, double defaultValue, double minValue, double maxValue, FeatureSet featureSet) {
+		return create(category, FabricGameRuleType.DOUBLE, DoubleArgumentType.doubleArg(minValue, maxValue), Codec.doubleRange(minValue, maxValue), defaultValue, featureSet, GameRuleFactory::visitDouble, (value) -> Double.compare(value, 0.0D));
 	}
 
-	/**
-	 * Creates an enum rule type.
-	 *
-	 * <p>All enum values are supported.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param changedCallback a callback that is invoked when the value of a game rule has changed
-	 * @param <E> the type of enum this game rule stores
-	 * @return an enum rule type
-	 */
-	public static <E extends Enum<E>> GameRules.Type<EnumRule<E>> createEnumRule(E defaultValue, BiConsumer<MinecraftServer, EnumRule<E>> changedCallback) {
-		return createEnumRule(defaultValue, defaultValue.getDeclaringClass().getEnumConstants(), changedCallback);
+	// ENUM
+	public static <E extends Enum<E>> GameRule<E> createEnumRule(E defaultValue, Codec<E> codec) {
+		return createEnumRule(Category.MISC, defaultValue, codec);
 	}
 
-	/**
-	 * Creates an enum rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param supportedValues the values the game rule may support
-	 * @param <E> the type of enum this game rule stores
-	 * @return an enum rule type
-	 */
-	public static <E extends Enum<E>> GameRules.Type<EnumRule<E>> createEnumRule(E defaultValue, E[] supportedValues) {
-		return createEnumRule(defaultValue, supportedValues, (server, rule) -> {
-		});
+	public static <E extends Enum<E>> GameRule<E> createEnumRule(Category category, E defaultValue, Codec<E> codec) {
+		return createEnumRule(category, defaultValue, defaultValue.getDeclaringClass().getEnumConstants(), codec, FeatureSet.empty());
 	}
 
-	/**
-	 * Creates an enum rule type.
-	 *
-	 * @param defaultValue the default value of the game rule
-	 * @param supportedValues the values the game rule may support
-	 * @param changedCallback a callback that is invoked when the value of a game rule has changed.
-	 * @param <E> the type of enum this game rule stores
-	 * @return an enum rule type
-	 */
-	public static <E extends Enum<E>> GameRules.Type<EnumRule<E>> createEnumRule(E defaultValue, E[] supportedValues, BiConsumer<MinecraftServer, EnumRule<E>> changedCallback) {
+	public static <E extends Enum<E>> GameRule<E> createEnumRule(E defaultValue, E[] supportedValues, Codec<E> codec) {
+		return createEnumRule(Category.MISC, defaultValue, supportedValues, codec, FeatureSet.empty());
+	}
+
+	public static <E extends Enum<E>> GameRule<E> createEnumRule(Category category, E defaultValue, E[] supportedValues, Codec<E> codec) {
+		return createEnumRule(category, defaultValue, supportedValues, codec, FeatureSet.empty());
+	}
+
+	public static <E extends Enum<E>> GameRule<E> createEnumRule(Category category, E defaultValue, E[] supportedValues, Codec<E> codec, FeatureSet featureSet) {
 		checkNotNull(defaultValue, "Default rule value cannot be null");
 		checkNotNull(supportedValues, "Supported Values cannot be null");
 
@@ -290,29 +147,45 @@ public final class GameRuleFactory {
 			throw new IllegalArgumentException("Cannot register an enum rule where no values are supported");
 		}
 
-		return new EnumRuleType<>(
-				type -> new EnumRule<>(type, defaultValue, supportedValues),
-				changedCallback,
-				supportedValues,
+		GameRule<E> enumRule = create(category,
+				FabricGameRuleType.ENUM,
+				null, // passing in null here is actually fine because we mixin everywhere this is used so an NPE should never occur
+				codec,
+				defaultValue,
+				featureSet,
 				GameRuleFactory::visitEnum,
-				(Class<EnumRule<E>>) (Object) EnumRule.class
-		);
+				(value -> {
+					// For now we are gonna use the ordinal as the command result. Could be changed or set to relate to something else entirely.
+					return value.ordinal();
+				}
+			));
+
+		((RuleTypeExtensions) (Object) enumRule).fabric_setSupportedEnumValues(supportedValues);
+
+		return enumRule;
+	}
+
+	public static <T> GameRule<T> create(Category category, GameRuleType type, ArgumentType<T> argumentType, Codec<T> codec, T defaultValue, FeatureSet featureSet, GameRules.Acceptor<T> acceptor, ToIntFunction<T> commandResultSupplier) {
+		return new GameRule<>(category, type, argumentType, acceptor, codec, commandResultSupplier, defaultValue, featureSet);
+	}
+
+	public static <T> GameRule<T> create(Category category, FabricGameRuleType type, ArgumentType<T> argumentType, Codec<T> codec, T defaultValue, FeatureSet featureSet, GameRules.Acceptor<T> acceptor, ToIntFunction<T> commandResultSupplier) {
+		GameRule<T> rule = new GameRule<>(category, GameRuleType.INT, argumentType, acceptor, codec, commandResultSupplier, defaultValue, featureSet);
+		((RuleTypeExtensions) (Object) rule).fabric_setType(type);
+		return rule;
 	}
 
 	// RULE VISITORS - INTERNAL
 
-	private static void visitDouble(GameRules.Visitor visitor, GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
+	private static void visitDouble(Visitor visitor, GameRule<Double> rule) {
 		if (visitor instanceof FabricGameRuleVisitor) {
-			((FabricGameRuleVisitor) visitor).visitDouble(key, type);
+			((FabricGameRuleVisitor) visitor).visitDouble(rule);
 		}
 	}
 
-	private static <E extends Enum<E>> void visitEnum(GameRules.Visitor visitor, GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
+	private static <E extends Enum<E>> void visitEnum(Visitor visitor, GameRule<E> rule) {
 		if (visitor instanceof FabricGameRuleVisitor) {
-			((FabricGameRuleVisitor) visitor).visitEnum(key, type);
+			((FabricGameRuleVisitor) visitor).visitEnum(rule);
 		}
-	}
-
-	private GameRuleFactory() {
 	}
 }

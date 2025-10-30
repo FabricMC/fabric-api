@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.gamerule.widget;
 
 import java.util.List;
 
+import com.mojang.serialization.DataResult;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
@@ -25,14 +27,14 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.minecraft.world.rule.GameRule;
 
-import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
 public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget {
 	private final TextFieldWidget textFieldWidget;
 
-	public DoubleRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<OrderedText> description, final String ruleName, DoubleRule rule) {
+	public DoubleRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<OrderedText> description, final String ruleName, final GameRule<Double> doubleRule) {
 		gameRuleScreen.super(description, name);
 		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
 
@@ -43,11 +45,13 @@ public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget 
 				.append(ScreenTexts.LINE_BREAK)
 		);
 
-		this.textFieldWidget.setText(Double.toString(rule.get()));
+		this.textFieldWidget.setText(accessor.getGameRules().getRuleValueName(doubleRule));
 		this.textFieldWidget.setChangedListener(value -> {
-			if (rule.validate(value)) {
+			DataResult<Double> dataResult = doubleRule.deserialize(value);
+			if (dataResult.isSuccess()) {
 				this.textFieldWidget.setEditableColor(0xE0E0E0);
 				accessor.callMarkValid(this);
+				accessor.getGameRules().setValue(doubleRule, dataResult.getOrThrow(), null);
 			} else {
 				this.textFieldWidget.setEditableColor(0xFF0000);
 				accessor.callMarkInvalid(this);

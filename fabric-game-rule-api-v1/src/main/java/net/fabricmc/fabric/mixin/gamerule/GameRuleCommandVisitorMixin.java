@@ -17,6 +17,13 @@
 package net.fabricmc.fabric.mixin.gamerule;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+
+import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
+
+import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
+
+import net.minecraft.world.rule.GameRule;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,10 +32,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.impl.gamerule.EnumRuleCommand;
-import net.fabricmc.fabric.impl.gamerule.EnumRuleType;
 
 @Mixin(targets = "net/minecraft/server/command/GameRuleCommand$1")
 public abstract class GameRuleCommandVisitorMixin {
@@ -36,12 +41,12 @@ public abstract class GameRuleCommandVisitorMixin {
 	@Shadow
 	LiteralArgumentBuilder<ServerCommandSource> field_19419;
 
-	@Inject(at = @At("HEAD"), method = "visit(Lnet/minecraft/world/GameRules$Key;Lnet/minecraft/world/GameRules$Type;)V", cancellable = true)
-	private <T extends GameRules.Rule<T>> void onRegisterCommand(GameRules.Key<T> key, GameRules.Type<T> type, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), method = "visit", cancellable = true)
+	private <T> void onRegisterCommand(GameRule<T> rule, CallbackInfo ci) {
 		// Check if our type is a EnumRuleType
-		if (type instanceof EnumRuleType) {
+		if (((RuleTypeExtensions) (Object) rule).fabric_getType() == FabricGameRuleType.ENUM) {
 			//noinspection rawtypes,unchecked
-			EnumRuleCommand.register(this.field_19419, (GameRules.Key) key, (EnumRuleType) type);
+			EnumRuleCommand.register(this.field_19419, (GameRule<? extends Enum>) rule);
 			ci.cancel();
 		}
 	}

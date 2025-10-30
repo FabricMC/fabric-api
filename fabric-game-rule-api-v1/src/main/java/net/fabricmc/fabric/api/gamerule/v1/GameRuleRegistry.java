@@ -16,52 +16,51 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
-import net.minecraft.world.GameRules;
+import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
 
-import net.fabricmc.fabric.impl.gamerule.RuleKeyExtensions;
-import net.fabricmc.fabric.mixin.gamerule.GameRulesAccessor;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.rule.GameRule;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility class which allows for registration of game rules.
- * Note game rules with duplicate keys are not allowed.
- * Checking if a game rule key is already taken can be done using {@link GameRuleRegistry#hasRegistration(String)}.
  *
- * <p>Creation of rule types is done using {@link GameRuleFactory}.
- *
- * @see GameRuleFactory
+ * Note that {@link net.minecraft.world.rule.GameRules} already
+ * contains many registration methods not found here.
  */
 public final class GameRuleRegistry {
+
+	public static final Logger LOGGER = LoggerFactory.getLogger(GameRuleRegistry.class);
+
 	private GameRuleRegistry() {
 	}
 
 	/**
-	 * Registers a {@link GameRules.Rule}.
+	 * Registers a {@link GameRule}.
 	 *
 	 * @param name   the name of the rule
-	 * @param category the category of this rule
-	 * @param type the rule type
+	 * @param rule the rule
 	 * @param <T>  the type of rule
-	 * @return a rule key which can be used to query the value of the rule
-	 * @throws IllegalStateException if a rule of the same name already exists
 	 */
-	public static <T extends GameRules.Rule<T>> GameRules.Key<T> register(String name, GameRules.Category category, GameRules.Type<T> type) {
-		return GameRulesAccessor.callRegister(name, category, type);
+	public static <T> GameRule<T> register(String name, GameRule<T> rule) {
+		return Registry.register(Registries.GAME_RULE, name, rule);
 	}
 
 	/**
-	 * Registers a {@link GameRules.Rule} with a custom category.
+	 * Registers a {@link GameRule} with a custom category.
 	 *
 	 * @param name 	the name of the rule
-	 * @param category the category of this rule
-	 * @param type the rule type
+	 * @param rule the rule
+	 * @param category the rule type
 	 * @param <T>  the type of rule
-	 * @return a rule key which can be used to query the value of the rule
-	 * @throws IllegalStateException if a rule of the same name already exists
 	 */
-	public static <T extends GameRules.Rule<T>> GameRules.Key<T> register(String name, CustomGameRuleCategory category, GameRules.Type<T> type) {
-		final GameRules.Key<T> key = GameRulesAccessor.callRegister(name, GameRules.Category.MISC, type);
-		((RuleKeyExtensions) (Object) key).fabric_setCustomCategory(category);
-		return key;
+	public static <T> GameRule<T> register(String name, GameRule<T> rule, CustomGameRuleCategory category) {
+		((RuleCategoryExtensions) (Object) rule).fabric_setCustomCategory(category);
+		return Registry.register(Registries.GAME_RULE, name, rule);
 	}
 
 	/**
@@ -71,6 +70,6 @@ public final class GameRuleRegistry {
 	 * @return true if the name is taken.
 	 */
 	public static boolean hasRegistration(String ruleName) {
-		return GameRulesAccessor.getRuleTypes().keySet().stream().anyMatch(key -> key.getName().equals(ruleName));
+		return Registries.GAME_RULE.containsId(Identifier.tryParse(ruleName));
 	}
 }

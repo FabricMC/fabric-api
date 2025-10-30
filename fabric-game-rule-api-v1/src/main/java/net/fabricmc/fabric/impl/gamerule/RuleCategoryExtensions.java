@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.gamerule;
+package net.fabricmc.fabric.impl.gamerule;
 
-import java.util.function.BiConsumer;
+import org.jspecify.annotations.Nullable;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.GameRules;
+public interface RuleCategoryExtensions {
+	@Nullable
+	CustomGameRuleCategory fabric_getCustomCategory();
 
-@Mixin(GameRules.BooleanRule.class)
-public interface GameRulesBooleanRuleAccessor {
-	@Invoker
-	static GameRules.Type<GameRules.BooleanRule> invokeCreate(boolean initialValue, BiConsumer<MinecraftServer, GameRules.BooleanRule> changeCallback) {
-		throw new AssertionError("This shouldn't happen!");
-	}
+	void fabric_setCustomCategory(CustomGameRuleCategory customCategory);
 }

@@ -34,7 +34,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
-import net.minecraft.world.GameRules;
+import net.minecraft.world.rule.GameRules;
 import net.minecraft.world.gen.WorldPreset;
 import net.minecraft.world.gen.WorldPresets;
 
@@ -139,8 +139,8 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 		creator.setWorldType(new WorldCreator.WorldType(flatPreset));
 		creator.setSeed("1");
 		creator.setGenerateStructures(false);
-		creator.getGameRules().method_76186(GameRules.ADVANCE_TIME, false, null);
-		creator.getGameRules().method_76186(GameRules.ADVANCE_WEATHER, false, null);
-		creator.getGameRules().method_76186(GameRules.DO_MOB_SPAWNING, false, null);
+		creator.getGameRules().setValue(GameRules.ADVANCE_TIME, false, null);
+		creator.getGameRules().setValue(GameRules.ADVANCE_WEATHER, false, null);
+		creator.getGameRules().setValue(GameRules.DO_MOB_SPAWNING, false, null);
 	}
 }

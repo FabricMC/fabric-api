@@ -22,11 +22,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
 import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+
+import net.minecraft.registry.Registries;
+import net.minecraft.world.rule.GameRule;
+
 import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -39,11 +42,8 @@ import net.minecraft.server.dedicated.management.handler.GameRuleManagementHandl
 import net.minecraft.server.dedicated.management.handler.GameRuleManagementHandlerImpl;
 import net.minecraft.server.dedicated.management.network.ManagementConnectionId;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.GameRules;
+import net.minecraft.world.rule.GameRules;
 import net.minecraft.world.SaveProperties;
-
-import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
-import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 
 public class GameRuleManagementHandlerImplTest {
 	static {
@@ -62,15 +62,15 @@ public class GameRuleManagementHandlerImplTest {
 		when(saveProperties.getGameRules()).thenReturn(GAME_RULES);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.TypedRule result = handler.updateRule(new GameRuleRpcDispatcher.UntypedRule("oneToTenDouble", "5.5"), CONNECTION_ID);
+		GameRuleRpcDispatcher.class_12254<Double> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.ONE_TO_TEN_DOUBLE, 5.5D), CONNECTION_ID);
 
 		assertEquals("""
-				{"key":"oneToTenDouble","value":"5.5","type":"fabric:double"}
+				{"key":"one_to_ten_double","value":"5.5","type":"fabric:double"}
 				""", result);
 
 		verify(server).onGameRuleUpdated(
-				eq("oneToTenDouble"),
-				argThat(rule -> rule instanceof DoubleRule doubleRule && doubleRule.get() == 5.5D));
+				eq(GameRulesTestMod.ONE_TO_TEN_DOUBLE),
+				argThat(rule -> handler.getRule(GameRulesTestMod.ONE_TO_TEN_DOUBLE) == 5.5D));
 	}
 
 	@Test
@@ -81,15 +81,15 @@ public class GameRuleManagementHandlerImplTest {
 		when(saveProperties.getGameRules()).thenReturn(GAME_RULES);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.TypedRule result = handler.updateRule(new GameRuleRpcDispatcher.UntypedRule("cardinalDirection", "north"), CONNECTION_ID);
+		GameRuleRpcDispatcher.class_12254<Direction> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.CARDINAL_DIRECTION_ENUM, Direction.NORTH), CONNECTION_ID);
 
 		assertEquals("""
-				{"key":"cardinalDirection","value":"NORTH","type":"fabric:enum"}
+				{"key":"cardinal_direction","value":"NORTH","type":"fabric:enum"}
 				""", result);
 
 		verify(server).onGameRuleUpdated(
-				eq("cardinalDirection"),
-				argThat(rule -> rule instanceof EnumRule<?> enumRule && enumRule.get() == Direction.NORTH)
+				eq(GameRulesTestMod.CARDINAL_DIRECTION_ENUM),
+				argThat(rule -> handler.getRule(GameRulesTestMod.CARDINAL_DIRECTION_ENUM) == Direction.NORTH)
 		);
 	}
 
@@ -101,15 +101,15 @@ public class GameRuleManagementHandlerImplTest {
 		when(saveProperties.getGameRules()).thenReturn(GAME_RULES);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.TypedRule result = handler.updateRule(new GameRuleRpcDispatcher.UntypedRule("doFireTick", "false"), CONNECTION_ID);
+		GameRuleRpcDispatcher.class_12254<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.FIRE_DAMAGE, false), CONNECTION_ID);
 
 		assertEquals("""
-				{"key":"doFireTick","value":"false","type":"boolean"}
+				{"key":"fire_damage","value":"false","type":"boolean"}
 				""", result);
 
 		verify(server).onGameRuleUpdated(
-				eq("doFireTick"),
-				argThat(rule -> rule instanceof GameRules.BooleanRule booleanRule && !booleanRule.get()));
+				eq(GameRules.FIRE_DAMAGE),
+				argThat(rule -> !handler.getRule(GameRules.FIRE_DAMAGE)));
 	}
 
 	@Test
@@ -120,19 +120,19 @@ public class GameRuleManagementHandlerImplTest {
 		when(saveProperties.getGameRules()).thenReturn(GAME_RULES);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.TypedRule result = handler.updateRule(new GameRuleRpcDispatcher.UntypedRule("randomTickSpeed", "123"), CONNECTION_ID);
+		GameRuleRpcDispatcher.class_12254<Integer> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.RANDOM_TICK_SPEED, 123), CONNECTION_ID);
 
 		assertEquals("""
-				{"key":"randomTickSpeed","value":"123","type":"integer"}
+				{"key":"random_tick_speed","value":"123","type":"integer"}
 				""", result);
 
 		verify(server).onGameRuleUpdated(
-				eq("randomTickSpeed"),
-				argThat(rule -> rule instanceof GameRules.IntRule intRule && intRule.get() == 123));
+				eq(GameRules.RANDOM_TICK_SPEED),
+				argThat(rule -> handler.getRule(GameRules.RANDOM_TICK_SPEED) == 123));
 	}
 
-	private static void assertEquals(@Language("JSON") String expected, GameRuleRpcDispatcher.TypedRule rule) {
-		JsonElement jsonElement = GameRuleRpcDispatcher.TypedRule.CODEC.codec().encodeStart(JsonOps.INSTANCE, rule).getOrThrow();
+	private static <T> void assertEquals(@Language("JSON") String expected, GameRuleRpcDispatcher.class_12254<T> rule) {
+		JsonElement jsonElement = GameRuleRpcDispatcher.class_12254.field_64088.encodeStart(JsonOps.INSTANCE, rule).getOrThrow();
 		Assertions.assertEquals(expected.trim(), jsonElement.toString());
 	}
 
@@ -141,9 +141,8 @@ public class GameRuleManagementHandlerImplTest {
 			super(server, logger);
 		}
 
-		@Override
-		public Stream<Map.Entry<GameRules.Key<?>, GameRules.Type<?>>> getRules() {
-			return GameRules.streamAllRules(FeatureSet.empty());
+		public Stream<GameRule<?>> getRules() {
+			return Registries.GAME_RULE.stream().filter(rule -> rule.getFeatureSet().isSubsetOf(FeatureSet.empty()));
 		}
 	}
 }

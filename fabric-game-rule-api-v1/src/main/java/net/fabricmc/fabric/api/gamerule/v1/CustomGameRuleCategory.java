@@ -18,36 +18,27 @@ package net.fabricmc.fabric.api.gamerule.v1;
 
 import java.util.Optional;
 
+import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
+
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.GameRules;
 
-import net.fabricmc.fabric.impl.gamerule.RuleKeyExtensions;
+import net.minecraft.world.rule.GameRule;
 
 /**
- * Utility class for creating custom game rule categories outside of the categories {@link GameRules.Category Minecraft provides}.
+ * Utility class for creating custom game rule categories with full control over the name.
+ *
+ * @see net.minecraft.world.Category
  */
-public final class CustomGameRuleCategory {
-	private final Identifier id;
-	private final Text name;
+public record CustomGameRuleCategory(Identifier id, Text name) {
 
 	/**
 	 * Creates a custom game rule category.
 	 *
-	 * @param id the id of this category
+	 * @param id   the id of this category
 	 * @param name the name of this category
 	 */
-	public CustomGameRuleCategory(Identifier id, Text name) {
-		this.id = id;
-		this.name = name;
-	}
-
-	public Identifier getId() {
-		return this.id;
-	}
-
-	public Text getName() {
-		return this.name;
+	public CustomGameRuleCategory {
 	}
 
 	@Override
@@ -66,13 +57,13 @@ public final class CustomGameRuleCategory {
 	}
 
 	/**
-	 * Gets the custom category a {@link GameRules.Key game rule key} is registered to.
+	 * Gets the custom category a {@link GameRule game rule} is registered to.
 	 *
-	 * @param key the rule key
-	 * @param <T> the type of value the rule holds
+	 * @param rule the rule
+	 * @param <T>  the type of value the rule holds
 	 * @return the custom category this rule belongs to. Otherwise {@link Optional#empty() empty}
 	 */
-	public static <T extends GameRules.Rule<T>> Optional<CustomGameRuleCategory> getCategory(GameRules.Key<T> key) {
-		return Optional.ofNullable(((RuleKeyExtensions) (Object) key).fabric_getCustomCategory());
+	public static <T> Optional<CustomGameRuleCategory> getCategory(GameRule<T> rule) {
+		return Optional.ofNullable(((RuleCategoryExtensions) (Object) rule).fabric_getCustomCategory());
 	}
 }

@@ -18,59 +18,65 @@ package net.fabricmc.fabric.mixin.gamerule.client;
 
 import java.util.Locale;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+
+import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
+import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
+
+import net.minecraft.world.Visitor;
+
+import net.minecraft.world.rule.GameRule;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.FabricGameRuleVisitor;
-import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
-import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 import net.fabricmc.fabric.impl.gamerule.widget.DoubleRuleWidget;
 import net.fabricmc.fabric.impl.gamerule.widget.EnumRuleWidget;
 
 @Mixin(targets = "net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleListWidget$1")
-public abstract class RuleListWidgetVisitorMixin implements GameRules.Visitor, FabricGameRuleVisitor {
+public abstract class RuleListWidgetVisitorMixin implements Visitor, FabricGameRuleVisitor {
 	@Final
 	@Shadow
 	private EditGameRulesScreen field_24314;
 	@Shadow
-	protected abstract <T extends GameRules.Rule<T>> void createRuleWidget(GameRules.Key<T> key, EditGameRulesScreen.RuleWidgetFactory<T> ruleWidgetFactory);
+	protected abstract <T> void createRuleWidget(GameRule<T> key, EditGameRulesScreen.RuleWidgetFactory<T> widgetFactory);
 
 	@Override
-	public void visitDouble(GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
-		this.createRuleWidget(key, (name, description, ruleName, rule) -> {
+	public void visitDouble(GameRule<Double> doubleRule) {
+		this.createRuleWidget(doubleRule, (name, description, ruleName, rule) -> {
 			return new DoubleRuleWidget(this.field_24314, name, description, ruleName, rule);
 		});
 	}
 
 	@Override
-	public <E extends Enum<E>> void visitEnum(GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
-		this.createRuleWidget(key, (name, description, ruleName, rule) -> {
-			return new EnumRuleWidget<>(this.field_24314, name, description, ruleName, rule, key.getTranslationKey());
+	public <E extends Enum<E>> void visitEnum(GameRule<E> enumRule) {
+		this.createRuleWidget(enumRule, (name, description, ruleName, rule) -> {
+			return new EnumRuleWidget<>(this.field_24314, name, description, ruleName, rule, enumRule.getTranslationKey());
 		});
 	}
 
 	/**
 	 * @reason We need to display an enum rule's default value as translated.
 	 */
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules$Rule;serialize()Ljava/lang/String;"), method = "net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleListWidget$1.createRuleWidget(Lnet/minecraft/world/GameRules$Key;Lnet/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleWidgetFactory;)V")
-	private <T extends GameRules.Rule<T>> String displayProperEnumName(GameRules.Rule<T> rule, GameRules.Key<T> key, EditGameRulesScreen.RuleWidgetFactory<T> widgetFactory) {
-		if (rule instanceof EnumRule) {
-			String translationKey = key.getTranslationKey() + "." + ((EnumRule<?>) rule).get().name().toLowerCase(Locale.ROOT);
+	@WrapOperation(method = "createRuleWidget(Lnet/minecraft/world/rule/GameRule;Lnet/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleWidgetFactory;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/rule/GameRule;getValueName(Ljava/lang/Object;)Ljava/lang/String;"))
+	private <T> String displayProperEnumName(GameRule<T> instance, T value, Operation<String> original) {
+		String valueName = original.call(instance, value);
+		if (((RuleTypeExtensions) (Object) instance).fabric_getType() != FabricGameRuleType.ENUM) {
+			return valueName;
+		}
+		String translationKey = instance.getTranslationKey() + "." + valueName.toLowerCase(Locale.ROOT);
 
-			if (I18n.hasTranslation(translationKey)) {
-				return I18n.translate(translationKey);
-			}
-
-			return ((EnumRule<?>) rule).get().toString();
+		if (I18n.hasTranslation(translationKey)) {
+			return I18n.translate(translationKey);
 		}
 
-		return rule.serialize();
+		return valueName;
 	}
 }
