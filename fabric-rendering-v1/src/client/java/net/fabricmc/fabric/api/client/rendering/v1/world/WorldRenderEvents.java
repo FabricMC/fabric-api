@@ -189,9 +189,9 @@ public final class WorldRenderEvents {
 	});
 
 	/**
-	 * Called at the end of the main render pass,
-	 * after entities, block entities, terrain, translucent terrain,
-	 * clouds, and weather are drawn to the framebuffer.
+	 * Called at the end of the main render pass, after entities, block entities,
+	 * terrain, and translucent terrain are drawn to the framebuffer,
+	 * before particles, clouds, weather, and late debug are drawn to the framebuffer.
 	 *
 	 * <p>Use to draw on top of the world before hand and GUI are drawn.
 	 */
