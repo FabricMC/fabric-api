@@ -24,14 +24,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.rule.GameRule;
 
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
 	@WrapMethod(method = "onGameRuleUpdated")
 	private <T> void invokeChangeCallbacks(GameRule<T> rule, T object, Operation<Void> original) {
-		GameRuleRegistry.LOGGER.info("updated");
-		GameRuleEvents.CHANGED_CALLBACK.invoker().accept(rule, object, (MinecraftServer) (Object) this);
 		original.call(rule, object);
+		GameRuleEvents.CHANGED_CALLBACK.invoker().accept(rule, object, (MinecraftServer) (Object) this);
 	}
 }

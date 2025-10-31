@@ -6,8 +6,7 @@
     "GameRuleCommandAccessor",
     "GameRuleCommandVisitorMixin",
     "GameRuleMixin",
-    "GameRuleRpcDispatcherMixin",
-    "GameRuleRpcDispatcherMixin$class_12254Mixin",
+    "GameRuleRpcDispatcherclass_12254Mixin",
     "MinecraftServerMixin"
   ],
   "injectors": {
