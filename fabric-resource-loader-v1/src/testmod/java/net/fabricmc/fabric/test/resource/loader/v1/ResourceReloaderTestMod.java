@@ -55,7 +55,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 				throw new AssertionError("Server reload listener was not called.");
 			}
 
-			((DataResourceStore) world.getServer()).getOrThrow(RegistryReloader.STORE_KEY);
+			world.getServer().getOrThrow(RegistryReloader.STORE_KEY);
 		});
 	}
 
