@@ -90,7 +90,7 @@ public interface ArmorRenderer {
 	 * @param <D>					state type of the delegate model
 	 */
 	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, RenderCommandQueue queue, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int tintedColor, @Nullable Sprite sprite, int outlineColor, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
-		queue.submitModel(new TransformCopyingModel<>(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, tintedColor, sprite, outlineColor, crumblingOverlay);
+		queue.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, tintedColor, sprite, outlineColor, crumblingOverlay);
 	}
 
 	/**
@@ -113,7 +113,7 @@ public interface ArmorRenderer {
 	 * @param <D>					state type of the delegate model
 	 */
 	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, RenderCommandQueue queue, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int outlineColor, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
-		queue.submitModel(new TransformCopyingModel<>(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, outlineColor, crumblingOverlay);
+		queue.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, outlineColor, crumblingOverlay);
 	}
 
 	/**

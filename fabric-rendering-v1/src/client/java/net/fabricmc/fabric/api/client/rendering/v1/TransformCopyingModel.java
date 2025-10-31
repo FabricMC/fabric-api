@@ -27,10 +27,10 @@ import net.minecraft.client.model.Model;
  * @param <S> type of the source model state
  * @param <D> type of the delegate model state
  */
-public class TransformCopyingModel<S, D> extends Model<Pair<S, D>> {
-	protected final Model<? super S> source;
-	protected final Model<? super D> delegate;
-	protected final boolean setDelegateAngles;
+public final class TransformCopyingModel<S, D> extends Model<Pair<S, D>> {
+	private final Model<? super S> source;
+	private final Model<? super D> delegate;
+	private final boolean setDelegateAngles;
 
 	/**
 	 * @param source the model whose transforms will be copied
@@ -38,7 +38,11 @@ public class TransformCopyingModel<S, D> extends Model<Pair<S, D>> {
 	 * @param setDelegateAngles {@code true} if the {@link Model#setAngles(Object)} method should be called for the
 	 *                                         delegate model after it is called for the source model
 	 */
-	public TransformCopyingModel(Model<? super S> source, Model<? super D> delegate, boolean setDelegateAngles) {
+	public static <S, D> TransformCopyingModel<S, D> create(Model<? super S> source, Model<? super D> delegate, boolean setDelegateAngles) {
+		return new TransformCopyingModel<>(source, delegate, setDelegateAngles);
+	}
+
+	private TransformCopyingModel(Model<? super S> source, Model<? super D> delegate, boolean setDelegateAngles) {
 		super(delegate.getRootPart(), delegate::getLayer);
 		this.source = source;
 		this.delegate = delegate;
