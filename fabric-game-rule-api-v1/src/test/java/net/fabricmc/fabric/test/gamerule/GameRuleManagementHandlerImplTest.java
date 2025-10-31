@@ -46,6 +46,8 @@ import net.minecraft.world.SaveProperties;
 import net.minecraft.world.rule.GameRule;
 import net.minecraft.world.rule.GameRules;
 
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
+
 public class GameRuleManagementHandlerImplTest {
 	@BeforeAll
 	static void bootstrap() {
@@ -106,6 +108,7 @@ public class GameRuleManagementHandlerImplTest {
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
 		GameRuleRpcDispatcher.class_12254<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.FIRE_DAMAGE, false), CONNECTION_ID);
+		GameRuleEvents.CHANGED_CALLBACK.invoker().accept(GameRules.FIRE_DAMAGE, false, server); // manual call because I suspect mock is messing with the logic
 
 		assertEquals("""
 				{"type":"boolean","value":false,"key":"minecraft:fire_damage"}

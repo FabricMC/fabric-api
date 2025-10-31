@@ -147,6 +147,7 @@ public class GameRulesTestMod implements ModInitializer {
 
 		GameRuleEvents.CHANGED_CALLBACK.register((rule, value, server) -> {
 			GameRuleRegistry.LOGGER.info("A rule was changed! Rule was {}", rule.getSimplifiedPath());
+
 			if (rule.equals(GameRules.FIRE_DAMAGE)) {
 				FIRE_DAMAGE_CHANGED.set(true);
 			}
