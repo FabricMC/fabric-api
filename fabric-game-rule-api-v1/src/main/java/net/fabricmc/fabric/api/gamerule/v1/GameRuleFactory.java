@@ -16,31 +16,26 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.function.ToIntFunction;
 
 import com.mojang.brigadier.arguments.ArgumentType;
-
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.serialization.Codec;
 
-import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
-
-import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
-import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
-
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.dedicated.management.dispatch.GameRuleType;
 import net.minecraft.world.Category;
 import net.minecraft.world.Visitor;
-
 import net.minecraft.world.rule.GameRule;
-
 import net.minecraft.world.rule.GameRules;
 
-import net.minecraft.resource.featuretoggle.FeatureSet;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
+import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
+import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 
 /**
  * A utility class containing factory methods to create game rule types.

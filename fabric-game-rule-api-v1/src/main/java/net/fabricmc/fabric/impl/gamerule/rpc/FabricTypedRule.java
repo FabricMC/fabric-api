@@ -16,11 +16,10 @@
 
 package net.fabricmc.fabric.impl.gamerule.rpc;
 
-import net.minecraft.world.rule.GameRule;
-
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.server.dedicated.management.dispatch.GameRuleRpcDispatcher;
+import net.minecraft.world.rule.GameRule;
 
 public interface FabricTypedRule {
 	@Nullable

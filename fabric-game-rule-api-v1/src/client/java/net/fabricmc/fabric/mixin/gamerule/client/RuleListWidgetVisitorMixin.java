@@ -20,14 +20,6 @@ import java.util.Locale;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-
-import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
-import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
-
-import net.minecraft.world.Visitor;
-
-import net.minecraft.world.rule.GameRule;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,8 +27,12 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.world.Visitor;
+import net.minecraft.world.rule.GameRule;
 
 import net.fabricmc.fabric.api.gamerule.v1.FabricGameRuleVisitor;
+import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
+import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 import net.fabricmc.fabric.impl.gamerule.widget.DoubleRuleWidget;
 import net.fabricmc.fabric.impl.gamerule.widget.EnumRuleWidget;
 

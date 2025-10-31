@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.gamerule;
 
-import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
-
 import org.jspecify.annotations.Nullable;
+
+import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 
 public interface RuleTypeExtensions {
 	@Nullable

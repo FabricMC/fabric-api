@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
-import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.rule.GameRule;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
 
 /**
  * A utility class which allows for registration of game rules.

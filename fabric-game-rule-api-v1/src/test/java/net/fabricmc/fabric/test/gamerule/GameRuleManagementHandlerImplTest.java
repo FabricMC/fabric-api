@@ -26,14 +26,11 @@ import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
-
-import net.minecraft.registry.Registries;
-import net.minecraft.world.rule.GameRule;
-
 import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.server.dedicated.management.ManagementLogger;
@@ -42,8 +39,9 @@ import net.minecraft.server.dedicated.management.handler.GameRuleManagementHandl
 import net.minecraft.server.dedicated.management.handler.GameRuleManagementHandlerImpl;
 import net.minecraft.server.dedicated.management.network.ManagementConnectionId;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.rule.GameRules;
 import net.minecraft.world.SaveProperties;
+import net.minecraft.world.rule.GameRule;
+import net.minecraft.world.rule.GameRules;
 
 public class GameRuleManagementHandlerImplTest {
 	static {

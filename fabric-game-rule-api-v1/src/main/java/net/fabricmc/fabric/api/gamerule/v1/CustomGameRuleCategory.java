@@ -18,12 +18,11 @@ package net.fabricmc.fabric.api.gamerule.v1;
 
 import java.util.Optional;
 
-import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
-
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
 import net.minecraft.world.rule.GameRule;
+
+import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
 
 /**
  * Utility class for creating custom game rule categories with full control over the name.

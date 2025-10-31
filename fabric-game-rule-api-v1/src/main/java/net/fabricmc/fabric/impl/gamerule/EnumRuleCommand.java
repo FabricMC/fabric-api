@@ -22,15 +22,13 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.world.rule.GameRule;
 
 import net.fabricmc.fabric.mixin.gamerule.GameRuleCommandAccessor;
-
-import net.minecraft.world.rule.GameRule;
 
 public final class EnumRuleCommand {
 	public static <E extends Enum<E>> void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRule<E> enumRule) {

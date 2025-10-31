@@ -21,10 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.client.gui.widget.EntryListWidget;
-
-import net.minecraft.world.rule.GameRule;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,6 +29,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
+import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.world.rule.GameRule;
 import net.minecraft.world.rule.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
@@ -51,7 +49,7 @@ public abstract class EditGameRulesScreenRuleListWidgetMixin extends EntryListWi
 	@Inject(method = "<init>(Lnet/minecraft/client/gui/screen/world/EditGameRulesScreen;Lnet/minecraft/world/rule/GameRules;)V", at = @At("TAIL"))
 	private void initializeFabricGameruleCategories(EditGameRulesScreen screen, GameRules gameRules, CallbackInfo ci) {
 		this.fabricCategories.forEach((category, widgetList) -> {
-			this.addEntry(screen.new RuleCategoryWidget(category.name()));
+			this.addEntry(screen.new RuleCategoryWidget(category.getName()));
 
 			for (EditGameRulesScreen.AbstractRuleWidget widget : widgetList) {
 				this.addEntry(widget);

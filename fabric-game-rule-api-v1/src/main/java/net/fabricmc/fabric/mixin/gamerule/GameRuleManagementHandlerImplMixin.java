@@ -16,34 +16,21 @@
 
 package net.fabricmc.fabric.mixin.gamerule;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Cancellable;
-import com.llamalad7.mixinextras.sugar.Local;
 
-import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
-
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.rule.GameRule;
-
-import net.minecraft.world.rule.GameRules;
-
-import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.server.dedicated.management.ManagementLogger;
-import net.minecraft.server.dedicated.management.RpcException;
 import net.minecraft.server.dedicated.management.dispatch.GameRuleRpcDispatcher;
 import net.minecraft.server.dedicated.management.handler.GameRuleManagementHandlerImpl;
-import net.minecraft.server.dedicated.management.network.ManagementConnectionId;
+import net.minecraft.world.rule.GameRule;
 
+import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricTypedRule;
 

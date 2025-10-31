@@ -19,8 +19,6 @@ package net.fabricmc.fabric.impl.gamerule.widget;
 import java.util.List;
 import java.util.Locale;
 
-import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
@@ -29,6 +27,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.world.rule.GameRule;
 
+import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
 public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen.NamedRuleWidget {
