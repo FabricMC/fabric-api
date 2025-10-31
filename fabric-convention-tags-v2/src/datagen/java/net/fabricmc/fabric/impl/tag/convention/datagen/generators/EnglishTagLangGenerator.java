@@ -151,6 +151,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_RESIN, "Resin Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
+		translationBuilder.add(ConventionalBlockTags.OVERWORLD_NATURAL_LOGS, "Overworld Natural Logs");
 		translationBuilder.add(ConventionalBlockTags.NETHER_NATURAL_LOGS, "Nether Natural Logs");
 		translationBuilder.add(ConventionalBlockTags.NATURAL_LOGS, "Natural Logs");
 		translationBuilder.add(ConventionalBlockTags.NATURAL_WOODS, "Natural Woods");
@@ -404,6 +405,7 @@ public class EnglishTagLangGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_RESIN, "Resin Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_SLIME, "Slime Storage Blocks");
 		translationBuilder.add(ConventionalItemTags.STORAGE_BLOCKS_WHEAT, "Wheat Storage Blocks");
+		translationBuilder.add(ConventionalItemTags.OVERWORLD_NATURAL_LOGS, "Overworld Natural Log Blocks");
 		translationBuilder.add(ConventionalItemTags.NETHER_NATURAL_LOGS, "Nether Natural Log Blocks");
 		translationBuilder.add(ConventionalItemTags.NATURAL_LOGS, "Natural Log Blocks");
 		translationBuilder.add(ConventionalItemTags.NATURAL_WOODS, "Natural Wood Blocks");

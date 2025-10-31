@@ -24,6 +24,7 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
@@ -177,6 +178,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_SLIME, ConventionalItemTags.STORAGE_BLOCKS_SLIME);
 		copy(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT, ConventionalItemTags.STORAGE_BLOCKS_WHEAT);
 
+		copy(ConventionalBlockTags.OVERWORLD_NATURAL_LOGS, ConventionalItemTags.OVERWORLD_NATURAL_LOGS);
 		copy(ConventionalBlockTags.NETHER_NATURAL_LOGS, ConventionalItemTags.NETHER_NATURAL_LOGS);
 		copy(ConventionalBlockTags.NATURAL_LOGS, ConventionalItemTags.NATURAL_LOGS);
 		copy(ConventionalBlockTags.NATURAL_WOODS, ConventionalItemTags.NATURAL_WOODS);
