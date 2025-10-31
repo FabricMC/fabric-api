@@ -18,18 +18,9 @@ package net.fabricmc.fabric.impl.gamerule.rpc;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.server.dedicated.management.dispatch.GameRuleRpcDispatcher;
-import net.minecraft.world.rule.GameRule;
-
 public interface FabricTypedRule {
 	@Nullable
 	FabricGameRuleType getFabricType();
 
 	void setFabricType(FabricGameRuleType type);
-
-	static <T> GameRuleRpcDispatcher.class_12254<T> create(GameRule<T> rule, T value, FabricGameRuleType type) {
-		GameRuleRpcDispatcher.class_12254<T> typedRule = new GameRuleRpcDispatcher.class_12254<>(rule, value);
-		((FabricTypedRule) (Object) typedRule).setFabricType(type);
-		return typedRule;
-	}
 }

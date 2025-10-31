@@ -18,15 +18,13 @@ package net.fabricmc.fabric.test.gamerule;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-
-import net.minecraft.Bootstrap;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,10 +34,12 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.rule.GameRule;
+import net.minecraft.world.rule.GameRules;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 
@@ -62,6 +62,8 @@ public class GameRulesTestMod implements ModInitializer {
 
 	// An enum rule with no "toString" logic
 	public static final GameRule<TestEnum> RED_ENUM = register("red_enum", RED_CATEGORY, GameRuleFactory.createEnumRule(TestEnum.SCISSORS, createEnumCodec(TestEnum.class)));
+
+	public static final AtomicBoolean FIRE_DAMAGE_CHANGED = new AtomicBoolean(false);
 
 	private static <T> GameRule<T> register(String name, GameRule<T> rule) {
 		return GameRuleRegistry.register(name, rule);
@@ -141,6 +143,13 @@ public class GameRulesTestMod implements ModInitializer {
 			});
 
 			LOGGER.info("GameRule command checks have passed. Try giving the enum rules a test.");
+		});
+
+		GameRuleEvents.CHANGED_CALLBACK.register((rule, value, server) -> {
+			GameRuleRegistry.LOGGER.info("A rule was changed! Rule was {}", rule.getSimplifiedPath());
+			if (rule.equals(GameRules.FIRE_DAMAGE)) {
+				FIRE_DAMAGE_CHANGED.set(true);
+			}
 		});
 	}
 

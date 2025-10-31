@@ -22,16 +22,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
-
 import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
@@ -45,30 +46,30 @@ import net.minecraft.world.SaveProperties;
 import net.minecraft.world.rule.GameRule;
 import net.minecraft.world.rule.GameRules;
 
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
-
 public class GameRuleManagementHandlerImplTest {
-
-	static {
+	@BeforeAll
+	static void bootstrap() {
+		SharedConstants.createGameVersion();
+		Bootstrap.initialize();
 		new GameRulesTestMod().onInitialize();
 	}
 
 	private static final ManagementConnectionId CONNECTION_ID = new ManagementConnectionId(-1);
 	private static final ManagementLogger MANAGEMENT_LOGGER = new ManagementLogger();
-	private static final GameRules GAME_RULES = new GameRules(FeatureSet.empty());
+	private final GameRules gameRules = new GameRules(FeatureSet.empty());
 
 	@Test
 	void testUpdateDouble() {
 		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
 		SaveProperties saveProperties = mock(SaveProperties.class);
 		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(GAME_RULES);
+		when(saveProperties.getGameRules()).thenReturn(gameRules);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
 		GameRuleRpcDispatcher.class_12254<Double> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.ONE_TO_TEN_DOUBLE, 5.5D), CONNECTION_ID);
 
 		assertEquals("""
-				{"key":"one_to_ten_double","value":"5.5","type":"fabric:double"}
+				{"type":"fabric:double","value":5.5,"key":"minecraft:one_to_ten_double"}
 				""", result);
 
 		verify(server).onGameRuleUpdated(
@@ -81,18 +82,18 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
 		SaveProperties saveProperties = mock(SaveProperties.class);
 		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(GAME_RULES);
+		when(saveProperties.getGameRules()).thenReturn(gameRules);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.class_12254<Direction> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.CARDINAL_DIRECTION_ENUM, Direction.NORTH), CONNECTION_ID);
+		GameRuleRpcDispatcher.class_12254<Direction> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.CARDINAL_DIRECTION_ENUM, Direction.EAST), CONNECTION_ID);
 
 		assertEquals("""
-				{"key":"cardinal_direction","value":"NORTH","type":"fabric:enum"}
+				{"type":"fabric:enum","value":"EAST","key":"minecraft:cardinal_direction"}
 				""", result);
 
 		verify(server).onGameRuleUpdated(
 				eq(GameRulesTestMod.CARDINAL_DIRECTION_ENUM),
-				argThat(rule -> handler.getRule(GameRulesTestMod.CARDINAL_DIRECTION_ENUM) == Direction.NORTH)
+				argThat(rule -> handler.getRule(GameRulesTestMod.CARDINAL_DIRECTION_ENUM) == Direction.EAST)
 		);
 	}
 
@@ -101,24 +102,16 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
 		SaveProperties saveProperties = mock(SaveProperties.class);
 		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(GAME_RULES);
+		when(saveProperties.getGameRules()).thenReturn(gameRules);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
-
-		AtomicBoolean changeDetected = new AtomicBoolean(false);
-
-		GameRuleEvents.CHANGED_CALLBACK.register((rule, value, mServer) -> {
-			if (rule.equals(GameRules.FIRE_DAMAGE)) {
-				changeDetected.set(true);
-			}
-		});
 
 		GameRuleRpcDispatcher.class_12254<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.FIRE_DAMAGE, false), CONNECTION_ID);
 
 		assertEquals("""
-				{"key":"fire_damage","value":"false","type":"boolean"}
+				{"type":"boolean","value":false,"key":"minecraft:fire_damage"}
 				""", result);
 
-		Assertions.assertTrue(changeDetected.get());
+		Assertions.assertTrue(GameRulesTestMod.FIRE_DAMAGE_CHANGED.get());
 
 		verify(server).onGameRuleUpdated(
 				eq(GameRules.FIRE_DAMAGE),
@@ -130,13 +123,13 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
 		SaveProperties saveProperties = mock(SaveProperties.class);
 		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(GAME_RULES);
+		when(saveProperties.getGameRules()).thenReturn(gameRules);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
 		GameRuleRpcDispatcher.class_12254<Integer> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.RANDOM_TICK_SPEED, 123), CONNECTION_ID);
 
 		assertEquals("""
-				{"key":"random_tick_speed","value":"123","type":"integer"}
+				{"type":"integer","value":123,"key":"minecraft:random_tick_speed"}
 				""", result);
 
 		verify(server).onGameRuleUpdated(
