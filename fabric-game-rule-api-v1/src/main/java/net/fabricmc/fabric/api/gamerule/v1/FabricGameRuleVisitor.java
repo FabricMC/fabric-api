@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
-
 import net.minecraft.world.Visitor;
 import net.minecraft.world.rule.GameRule;
 

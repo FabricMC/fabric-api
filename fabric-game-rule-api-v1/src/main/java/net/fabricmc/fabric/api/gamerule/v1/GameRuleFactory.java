@@ -54,13 +54,12 @@ import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
  * @see GameRuleRegistry
  */
 public final class GameRuleFactory {
-
 	private GameRuleFactory() {
 	}
 
 	// BOOLEAN
 	public static GameRule<Boolean> createBooleanRule(boolean defaultValue) {
-		return create(Category.MISC, GameRuleType.BOOL, BoolArgumentType.bool(), Codec.BOOL, defaultValue, FeatureSet.empty(), Visitor::visitBoolean, (bool) -> bool ? 1 : 0);
+		return createBooleanRule(Category.MISC, defaultValue);
 	}
 
 	public static GameRule<Boolean> createBooleanRule(Category category, boolean defaultValue) {

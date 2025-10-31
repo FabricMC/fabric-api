@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.gamerule;
 
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -56,9 +55,13 @@ public abstract class GameRuleManagementHandlerImplMixin {
 			if (rule instanceof DoubleRule doubleRule) {
 				doubleRule.set(Double.parseDouble(untypedRule.value()), server);
 				cir.setReturnValue(doUpdate(untypedRule, remote, rule, from));
-			} else if (rule instanceof EnumRule<?> enumRule) {
+				return;
+			}
+
+			if (rule instanceof EnumRule<?> enumRule) {
 				enumRule.set(untypedRule.value(), server);
 				cir.setReturnValue(doUpdate(untypedRule, remote, rule, from));
+				return;
 			}
 		} catch (IllegalArgumentException e) {
 			throw new RpcException(e.getMessage());
@@ -66,11 +69,13 @@ public abstract class GameRuleManagementHandlerImplMixin {
 
 		return from;
 	}
-	 */
+
+	*/
 
 	@Inject(method = "toTypedRule", at = @At("HEAD"), cancellable = true)
 	public <T> void toTypedRule(GameRule<T> gameRule, T object, CallbackInfoReturnable<GameRuleRpcDispatcher.class_12254<T>> cir) {
 		FabricGameRuleType type = ((RuleTypeExtensions) (Object) gameRule).fabric_getType();
+
 		if (type != null) {
 			cir.setReturnValue(FabricTypedRule.create(gameRule, object, type));
 		}
@@ -86,5 +91,5 @@ public abstract class GameRuleManagementHandlerImplMixin {
 		return typedRule;
 	}
 
-	 */
+	*/
 }

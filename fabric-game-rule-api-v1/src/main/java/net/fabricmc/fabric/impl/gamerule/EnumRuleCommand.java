@@ -41,8 +41,7 @@ public final class EnumRuleCommand {
 		// The LiteralRuleType handles the executeSet
 		LiteralCommandNode<ServerCommandSource> ruleNode = literal(name).build();
 
-		// I believe usage of var is justified here as the two E parameters conflict, and I cast this var to the method E anyway
-		for (var supportedValue : ((RuleTypeExtensions) (Object) enumRule).fabric_getSupportedEnumValues()) {
+		for (Enum<?> supportedValue : ((RuleTypeExtensions) (Object) enumRule).fabric_getSupportedEnumValues()) {
 			ruleNode.addChild(literal(supportedValue.toString()).executes(context -> EnumRuleCommand.executeAndSetEnum(context, (E) supportedValue, enumRule)).build());
 		}
 

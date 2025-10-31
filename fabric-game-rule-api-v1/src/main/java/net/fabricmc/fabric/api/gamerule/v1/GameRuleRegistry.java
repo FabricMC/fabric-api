@@ -29,11 +29,11 @@ import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
 /**
  * A utility class which allows for registration of game rules.
  *
+ * <p>
  * Note that {@link net.minecraft.world.rule.GameRules} already
  * contains many registration methods not found here.
  */
 public final class GameRuleRegistry {
-
 	public static final Logger LOGGER = LoggerFactory.getLogger(GameRuleRegistry.class);
 
 	private GameRuleRegistry() {

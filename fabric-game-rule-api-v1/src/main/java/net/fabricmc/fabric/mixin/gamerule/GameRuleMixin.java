@@ -76,6 +76,7 @@ public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTy
 		if (this.fabric_getType() != FabricGameRuleType.ENUM) {
 			return RuleTypeExtensions.super.fabric_enumCycle(currentValue);
 		}
+
 		int index = this.enumSupportedValues.indexOf((T) currentValue);
 
 		if (index < 0) {
@@ -90,6 +91,7 @@ public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTy
 		if (this.fabric_getType() != FabricGameRuleType.ENUM) {
 			return RuleTypeExtensions.super.fabric_getSupportedEnumValues();
 		}
+
 		return (Iterable<E>) this.enumSupportedValues;
 	}
 
@@ -99,6 +101,7 @@ public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTy
 			RuleTypeExtensions.super.fabric_setSupportedEnumValues(supportedValues);
 			return;
 		}
+
 		this.enumSupportedValues.clear();
 		Collections.addAll((List<E>) this.enumSupportedValues, supportedValues);
 	}
@@ -108,6 +111,7 @@ public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTy
 		if (this.fabric_getType() != FabricGameRuleType.ENUM) {
 			return original.call(value);
 		}
+
 		try {
 			Class<E> classType = (Class<E>) this.getValueClass();
 			final E deserialized = Enum.valueOf(classType, value);

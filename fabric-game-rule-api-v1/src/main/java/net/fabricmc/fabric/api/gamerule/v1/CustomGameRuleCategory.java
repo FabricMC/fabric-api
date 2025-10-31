@@ -30,7 +30,6 @@ import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
  * @see net.minecraft.world.Category
  */
 public final class CustomGameRuleCategory {
-
 	private final Identifier id;
 	private final Text name;
 
