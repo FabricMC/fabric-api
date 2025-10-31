@@ -64,9 +64,11 @@ public abstract class RuleListWidgetVisitorMixin implements Visitor, FabricGameR
 	@WrapOperation(method = "createRuleWidget(Lnet/minecraft/world/rule/GameRule;Lnet/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleWidgetFactory;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/rule/GameRule;getValueName(Ljava/lang/Object;)Ljava/lang/String;"))
 	private <T> String displayProperEnumName(GameRule<T> instance, T value, Operation<String> original) {
 		String valueName = original.call(instance, value);
+
 		if (((RuleTypeExtensions) (Object) instance).fabric_getType() != FabricGameRuleType.ENUM) {
 			return valueName;
 		}
+
 		String translationKey = instance.getTranslationKey() + "." + valueName.toLowerCase(Locale.ROOT);
 
 		if (I18n.hasTranslation(translationKey)) {

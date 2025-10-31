@@ -4,8 +4,11 @@ loom {
 	accessWidenerPath = file("src/main/resources/fabric-game-rule-api-v1.accesswidener")
 }
 
+moduleDependencies(project, ['fabric-api-base', 'fabric-content-registries-v0',])
+
 testDependencies(project, [
 	':fabric-api-base',
+	':fabric-content-registries-v0',
 	':fabric-lifecycle-events-v1',
 	':fabric-resource-loader-v0'
 ])

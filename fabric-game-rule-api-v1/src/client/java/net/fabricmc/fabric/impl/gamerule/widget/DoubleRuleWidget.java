@@ -48,6 +48,7 @@ public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget 
 		this.textFieldWidget.setText(accessor.getGameRules().getRuleValueName(doubleRule));
 		this.textFieldWidget.setChangedListener(value -> {
 			DataResult<Double> dataResult = doubleRule.deserialize(value);
+
 			if (dataResult.isSuccess()) {
 				this.textFieldWidget.setEditableColor(0xE0E0E0);
 				accessor.callMarkValid(this);

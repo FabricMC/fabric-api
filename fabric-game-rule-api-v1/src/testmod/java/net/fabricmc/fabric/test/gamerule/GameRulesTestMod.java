@@ -24,6 +24,9 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+
+import net.minecraft.Bootstrap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

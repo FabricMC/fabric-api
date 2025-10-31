@@ -22,10 +22,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+
 import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -43,7 +45,10 @@ import net.minecraft.world.SaveProperties;
 import net.minecraft.world.rule.GameRule;
 import net.minecraft.world.rule.GameRules;
 
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
+
 public class GameRuleManagementHandlerImplTest {
+
 	static {
 		new GameRulesTestMod().onInitialize();
 	}
@@ -99,11 +104,21 @@ public class GameRuleManagementHandlerImplTest {
 		when(saveProperties.getGameRules()).thenReturn(GAME_RULES);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
+		AtomicBoolean changeDetected = new AtomicBoolean(false);
+
+		GameRuleEvents.CHANGED_CALLBACK.register((rule, value, mServer) -> {
+			if (rule.equals(GameRules.FIRE_DAMAGE)) {
+				changeDetected.set(true);
+			}
+		});
+
 		GameRuleRpcDispatcher.class_12254<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.FIRE_DAMAGE, false), CONNECTION_ID);
 
 		assertEquals("""
 				{"key":"fire_damage","value":"false","type":"boolean"}
 				""", result);
+
+		Assertions.assertTrue(changeDetected.get());
 
 		verify(server).onGameRuleUpdated(
 				eq(GameRules.FIRE_DAMAGE),

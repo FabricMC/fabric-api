@@ -6,7 +6,8 @@
     "GameRuleCommandAccessor",
     "GameRuleCommandVisitorMixin",
     "GameRuleManagementHandlerImplMixin",
-    "GameRuleMixin"
+    "GameRuleMixin",
+    "MinecraftServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
