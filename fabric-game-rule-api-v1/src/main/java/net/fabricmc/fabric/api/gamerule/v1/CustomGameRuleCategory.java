@@ -29,7 +29,10 @@ import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
  *
  * @see net.minecraft.world.Category
  */
-public record CustomGameRuleCategory(Identifier id, Text name) {
+public final class CustomGameRuleCategory {
+
+	private final Identifier id;
+	private final Text name;
 
 	/**
 	 * Creates a custom game rule category.
@@ -37,7 +40,17 @@ public record CustomGameRuleCategory(Identifier id, Text name) {
 	 * @param id   the id of this category
 	 * @param name the name of this category
 	 */
-	public CustomGameRuleCategory {
+	public CustomGameRuleCategory(Identifier id, Text name) {
+		this.id = id;
+		this.name = name;
+	}
+
+	public Identifier getId() {
+		return this.id;
+	}
+
+	public Text getName() {
+		return this.name;
 	}
 
 	@Override
