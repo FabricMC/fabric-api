@@ -45,7 +45,7 @@ import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 
 public class GameRulesTestMod implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameRulesTestMod.class);
-	private static final Direction[] CARDINAL_DIRECTIONS = Arrays.stream(Direction.values()).filter(direction -> direction != Direction.UP && direction != Direction.DOWN).toArray(Direction[]::new);
+	public static final Direction[] CARDINAL_DIRECTIONS = Arrays.stream(Direction.values()).filter(direction -> direction != Direction.UP && direction != Direction.DOWN).toArray(Direction[]::new);
 	public static final CustomGameRuleCategory GREEN_CATEGORY = new CustomGameRuleCategory(Identifier.of("fabric", "green"), Text.literal("This One is Green").styled(style -> style.withBold(true).withColor(Formatting.DARK_GREEN)));
 	public static final CustomGameRuleCategory RED_CATEGORY = new CustomGameRuleCategory(Identifier.of("fabric", "red"), Text.literal("This One is Red").styled(style -> style.withBold(true).withColor(Formatting.DARK_RED)));
 
@@ -54,7 +54,7 @@ public class GameRulesTestMod implements ModInitializer {
 	public static final GameRule<Double> ONE_TO_TEN_DOUBLE = register("one_to_ten_double", GameRuleFactory.createDoubleRule(1.0D, 1.0D, 10.0D));
 
 	// Test enum rule, with only some supported values.
-	public static final GameRule<Direction> CARDINAL_DIRECTION_ENUM = register("cardinal_direction", GameRuleFactory.createEnumRule(Direction.NORTH, CARDINAL_DIRECTIONS, createEnumCodec(Direction.class)));
+	public static final GameRule<Direction> CARDINAL_DIRECTION_ENUM_RULE = register("cardinal_direction", GameRuleFactory.createEnumRule(Direction.NORTH, CARDINAL_DIRECTIONS, createEnumCodec(Direction.class)));
 
 	// Rules in custom categories
 	public static final GameRule<Boolean> RED_BOOLEAN = register("red_boolean", RED_CATEGORY, GameRuleFactory.createBooleanRule(true));
@@ -146,8 +146,6 @@ public class GameRulesTestMod implements ModInitializer {
 		});
 
 		GameRuleEvents.CHANGED_CALLBACK.register((rule, value, server) -> {
-			GameRuleRegistry.LOGGER.info("A rule was changed! Rule was {}", rule.getSimplifiedPath());
-
 			if (rule.equals(GameRules.FIRE_DAMAGE)) {
 				FIRE_DAMAGE_CHANGED.set(true);
 			}

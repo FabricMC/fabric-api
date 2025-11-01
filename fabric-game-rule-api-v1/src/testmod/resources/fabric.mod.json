@@ -13,6 +13,9 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.gamerule.GameRulesTestMod"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.gamerule.GameRuleChangeCallbackGameTest"
     ]
   }
 }

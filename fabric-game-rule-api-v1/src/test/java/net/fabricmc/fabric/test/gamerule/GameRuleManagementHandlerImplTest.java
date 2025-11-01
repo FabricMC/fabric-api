@@ -46,8 +46,6 @@ import net.minecraft.world.SaveProperties;
 import net.minecraft.world.rule.GameRule;
 import net.minecraft.world.rule.GameRules;
 
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
-
 public class GameRuleManagementHandlerImplTest {
 	@BeforeAll
 	static void bootstrap() {
@@ -65,7 +63,7 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
 		SaveProperties saveProperties = mock(SaveProperties.class);
 		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(gameRules);
+		when(saveProperties.getGameRules()).thenReturn(this.gameRules);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
 		GameRuleRpcDispatcher.class_12254<Double> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.ONE_TO_TEN_DOUBLE, 5.5D), CONNECTION_ID);
@@ -84,18 +82,18 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
 		SaveProperties saveProperties = mock(SaveProperties.class);
 		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(gameRules);
+		when(saveProperties.getGameRules()).thenReturn(this.gameRules);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.class_12254<Direction> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.CARDINAL_DIRECTION_ENUM, Direction.EAST), CONNECTION_ID);
+		GameRuleRpcDispatcher.class_12254<Direction> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE, Direction.EAST), CONNECTION_ID);
 
 		assertEquals("""
 				{"type":"fabric:enum","value":"EAST","key":"minecraft:cardinal_direction"}
 				""", result);
 
 		verify(server).onGameRuleUpdated(
-				eq(GameRulesTestMod.CARDINAL_DIRECTION_ENUM),
-				argThat(rule -> handler.getRule(GameRulesTestMod.CARDINAL_DIRECTION_ENUM) == Direction.EAST)
+				eq(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE),
+				argThat(rule -> handler.getRule(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE) == Direction.EAST)
 		);
 	}
 
@@ -104,17 +102,14 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
 		SaveProperties saveProperties = mock(SaveProperties.class);
 		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(gameRules);
+		when(saveProperties.getGameRules()).thenReturn(this.gameRules);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
 		GameRuleRpcDispatcher.class_12254<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.FIRE_DAMAGE, false), CONNECTION_ID);
-		GameRuleEvents.CHANGED_CALLBACK.invoker().accept(GameRules.FIRE_DAMAGE, false, server); // manual call because I suspect mock is messing with the logic
 
 		assertEquals("""
 				{"type":"boolean","value":false,"key":"minecraft:fire_damage"}
 				""", result);
-
-		Assertions.assertTrue(GameRulesTestMod.FIRE_DAMAGE_CHANGED.get());
 
 		verify(server).onGameRuleUpdated(
 				eq(GameRules.FIRE_DAMAGE),
@@ -126,7 +121,7 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
 		SaveProperties saveProperties = mock(SaveProperties.class);
 		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(gameRules);
+		when(saveProperties.getGameRules()).thenReturn(this.gameRules);
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
 		GameRuleRpcDispatcher.class_12254<Integer> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.RANDOM_TICK_SPEED, 123), CONNECTION_ID);
