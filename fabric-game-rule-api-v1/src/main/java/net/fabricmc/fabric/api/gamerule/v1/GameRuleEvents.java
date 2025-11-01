@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.rule.GameRule;
 
@@ -26,29 +30,37 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Provides events for updating {@link GameRule}s.
  */
 public final class GameRuleEvents {
-	private GameRuleEvents() { }
+	private GameRuleEvents() {
+	}
 
-	public static final Event<ValueUpdate> CHANGED_CALLBACK = EventFactory.createArrayBacked(
-			ValueUpdate.class,
-			callbacks -> (rule, value, server) -> {
-				for (ValueUpdate changedCallback : callbacks) {
-					changedCallback.accept(rule, value, server);
+	private static final Map<GameRule<?>, Event<ValueUpdate<?>>> VALUE_UPDATES = new HashMap<>();
+
+	public static <T> Event<ValueUpdate<T>> changeCallback(GameRule<T> rule) {
+		//noinspection unchecked
+		return (Event<ValueUpdate<T>>) (Event<?>) VALUE_UPDATES.computeIfAbsent(rule, gameRule -> {
+			//noinspection unchecked
+			return (Event<ValueUpdate<?>>) (Event<?>) EventFactory.createArrayBacked(ValueUpdate.class, (Function<ValueUpdate<T>[], ValueUpdate<T>>) callbacks -> (value, server) -> {
+				for (ValueUpdate<T> changedCallback : callbacks) {
+					changedCallback.onGameRuleUpdated(value, server);
 				}
-			}
-	);
+			});
+		});
+	}
 
+	/**
+	 * A functional interface used as a change callback for {@link GameRule} updates.
+	 * @param <T> the type of the value
+	 */
 	@FunctionalInterface
-	public interface ValueUpdate {
+	public interface ValueUpdate<T> {
 		/**
 		 * Called when a GameRule's value is updated in {@link MinecraftServer}.
-		 * @param rule the rule
 		 * @param value the updated value
 		 * @param server the server
 		 * @see MinecraftServer#onGameRuleUpdated(GameRule, Object)
 		 */
-		void accept(
-				GameRule<?> rule,
-				Object value,
+		void onGameRuleUpdated(
+				T value,
 				MinecraftServer server
 		);
 	}

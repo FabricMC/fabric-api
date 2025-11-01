@@ -23,8 +23,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +37,8 @@ import net.minecraft.world.rule.GameRules;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 
 public class GameRulesTestMod implements ModInitializer {
@@ -50,28 +48,32 @@ public class GameRulesTestMod implements ModInitializer {
 	public static final CustomGameRuleCategory RED_CATEGORY = new CustomGameRuleCategory(Identifier.of("fabric", "red"), Text.literal("This One is Red").styled(style -> style.withBold(true).withColor(Formatting.DARK_RED)));
 
 	// Bounded, Integer, Double and Float rules
-	public static final GameRule<Integer> POSITIVE_ONLY_TEST_INT = register("positive_only_test_integer", GameRuleFactory.createIntRule(2, 0));
-	public static final GameRule<Double> ONE_TO_TEN_DOUBLE = register("one_to_ten_double", GameRuleFactory.createDoubleRule(1.0D, 1.0D, 10.0D));
+	public static final GameRule<Integer> POSITIVE_ONLY_TEST_INT = GameRuleBuilder.integerRuleBuilder(2)
+			.clamped(0)
+			.buildAndRegister("positive_only_test_integer");
+	public static final GameRule<Double> ONE_TO_TEN_DOUBLE = GameRuleBuilder.doubleRuleBuilder(1.0D)
+			.clamped(1.0D, 10.0D)
+			.buildAndRegister("one_to_ten_double");
 
 	// Test enum rule, with only some supported values.
-	public static final GameRule<Direction> CARDINAL_DIRECTION_ENUM_RULE = register("cardinal_direction", GameRuleFactory.createEnumRule(Direction.NORTH, CARDINAL_DIRECTIONS, createEnumCodec(Direction.class)));
+	public static final GameRule<Direction> CARDINAL_DIRECTION_ENUM_RULE = GameRuleBuilder.enumRuleBuilder(Direction.NORTH)
+			.supportedValues(CARDINAL_DIRECTIONS)
+			.buildAndRegister("cardinal_direction");
 
 	// Rules in custom categories
-	public static final GameRule<Boolean> RED_BOOLEAN = register("red_boolean", RED_CATEGORY, GameRuleFactory.createBooleanRule(true));
-	public static final GameRule<Boolean> GREEN_BOOLEAN = register("green_boolean", GREEN_CATEGORY, GameRuleFactory.createBooleanRule(false));
+	public static final GameRule<Boolean> RED_BOOLEAN = GameRuleBuilder.booleanRuleBuilder(true)
+			.category(RED_CATEGORY)
+			.buildAndRegister(Identifier.of("fabric", "red_boolean"));
+	public static final GameRule<Boolean> GREEN_BOOLEAN = GameRuleBuilder.booleanRuleBuilder(false)
+			.category(GREEN_CATEGORY)
+			.buildAndRegister("green_boolean");
 
 	// An enum rule with no "toString" logic
-	public static final GameRule<TestEnum> RED_ENUM = register("red_enum", RED_CATEGORY, GameRuleFactory.createEnumRule(TestEnum.SCISSORS, createEnumCodec(TestEnum.class)));
+	public static final GameRule<TestEnum> RED_ENUM = GameRuleBuilder.enumRuleBuilder(TestEnum.SCISSORS)
+			.category(RED_CATEGORY)
+			.buildAndRegister("red_enum");
 
 	public static final AtomicBoolean FIRE_DAMAGE_CHANGED = new AtomicBoolean(false);
-
-	private static <T> GameRule<T> register(String name, GameRule<T> rule) {
-		return GameRuleRegistry.register(name, rule);
-	}
-
-	private static <T> GameRule<T> register(String name, CustomGameRuleCategory category, GameRule<T> rule) {
-		return GameRuleRegistry.register(name, rule, category);
-	}
 
 	@Override
 	public void onInitialize() {
@@ -145,20 +147,8 @@ public class GameRulesTestMod implements ModInitializer {
 			LOGGER.info("GameRule command checks have passed. Try giving the enum rules a test.");
 		});
 
-		GameRuleEvents.CHANGED_CALLBACK.register((rule, value, server) -> {
-			if (rule.equals(GameRules.FIRE_DAMAGE)) {
-				FIRE_DAMAGE_CHANGED.set(true);
-			}
-		});
-	}
-
-	public static <E extends Enum<E>> Codec<E> createEnumCodec(Class<E> clazz) {
-		return Codec.STRING.comapFlatMap(string -> {
-			try {
-				return DataResult.success(Enum.valueOf(clazz, string));
-			} catch (IllegalArgumentException exception) {
-				return DataResult.error(() -> string + " is not a valid value for enum + " + clazz);
-			}
-		}, Enum::name);
+		GameRuleEvents.changeCallback(GameRules.FIRE_DAMAGE).register(
+				(value, server) -> FIRE_DAMAGE_CHANGED.set(true)
+		);
 	}
 }

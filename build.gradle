@@ -119,10 +119,6 @@ allprojects {
 		enabled = false
 	}
 
-	repositories {
-		mavenLocal()
-	}
-
 	remoteSign {
 		requestUrl = providers.environmentVariable("SIGNING_SERVER")
 		pgpAuthKey = providers.environmentVariable("SIGNING_PGP_KEY")

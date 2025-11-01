@@ -60,10 +60,7 @@ public class GameRuleManagementHandlerImplTest {
 
 	@Test
 	void testUpdateDouble() {
-		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
-		SaveProperties saveProperties = mock(SaveProperties.class);
-		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(this.gameRules);
+		MinecraftDedicatedServer server = mockServer();
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
 		GameRuleRpcDispatcher.class_12254<Double> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.ONE_TO_TEN_DOUBLE, 5.5D), CONNECTION_ID);
@@ -78,11 +75,20 @@ public class GameRuleManagementHandlerImplTest {
 	}
 
 	@Test
+	void testFabricId() {
+		MinecraftDedicatedServer server = mockServer();
+		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
+
+		GameRuleRpcDispatcher.class_12254<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.RED_BOOLEAN, false), CONNECTION_ID);
+
+		assertEquals("""
+				{"type":"boolean","value":false,"key":"fabric:red_boolean"}
+				""", result);
+	}
+
+	@Test
 	void testUpdateEnum() {
-		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
-		SaveProperties saveProperties = mock(SaveProperties.class);
-		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(this.gameRules);
+		MinecraftDedicatedServer server = mockServer();
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
 		GameRuleRpcDispatcher.class_12254<Direction> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE, Direction.EAST), CONNECTION_ID);
@@ -99,10 +105,7 @@ public class GameRuleManagementHandlerImplTest {
 
 	@Test
 	void testUpdateVanillaBoolean() {
-		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
-		SaveProperties saveProperties = mock(SaveProperties.class);
-		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(this.gameRules);
+		MinecraftDedicatedServer server = mockServer();
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
 		GameRuleRpcDispatcher.class_12254<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.FIRE_DAMAGE, false), CONNECTION_ID);
@@ -118,10 +121,7 @@ public class GameRuleManagementHandlerImplTest {
 
 	@Test
 	void testUpdateVanillaInt() {
-		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
-		SaveProperties saveProperties = mock(SaveProperties.class);
-		when(server.getSaveProperties()).thenReturn(saveProperties);
-		when(saveProperties.getGameRules()).thenReturn(this.gameRules);
+		MinecraftDedicatedServer server = mockServer();
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
 		GameRuleRpcDispatcher.class_12254<Integer> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.RANDOM_TICK_SPEED, 123), CONNECTION_ID);
@@ -133,6 +133,14 @@ public class GameRuleManagementHandlerImplTest {
 		verify(server).onGameRuleUpdated(
 				eq(GameRules.RANDOM_TICK_SPEED),
 				argThat(rule -> handler.getRule(GameRules.RANDOM_TICK_SPEED) == 123));
+	}
+
+	private MinecraftDedicatedServer mockServer() {
+		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
+		SaveProperties saveProperties = mock(SaveProperties.class);
+		when(server.getSaveProperties()).thenReturn(saveProperties);
+		when(saveProperties.getGameRules()).thenReturn(this.gameRules);
+		return server;
 	}
 
 	private static <T> void assertEquals(@Language("JSON") String expected, GameRuleRpcDispatcher.class_12254<T> rule) {

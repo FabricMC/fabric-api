@@ -28,8 +28,8 @@ import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
 	@WrapMethod(method = "onGameRuleUpdated")
-	private <T> void invokeChangeCallbacks(GameRule<T> rule, T object, Operation<Void> original) {
-		original.call(rule, object);
-		GameRuleEvents.CHANGED_CALLBACK.invoker().accept(rule, object, (MinecraftServer) (Object) this);
+	private <T> void invokeChangeCallbacks(GameRule<T> rule, T value, Operation<Void> original) {
+		original.call(rule, value);
+		GameRuleEvents.changeCallback(rule).invoker().onGameRuleUpdated(value, (MinecraftServer) (Object) this);
 	}
 }
