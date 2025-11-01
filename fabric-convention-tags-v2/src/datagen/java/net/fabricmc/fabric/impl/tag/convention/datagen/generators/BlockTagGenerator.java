@@ -756,7 +756,6 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateTagAlias() {
-
 		aliasGroup("natural_logs/overworld").add(BlockTags.OVERWORLD_NATURAL_LOGS, ConventionalBlockTags.OVERWORLD_NATURAL_LOGS);
 
 		aliasGroup("ores/coal").add(BlockTags.COAL_ORES, ConventionalBlockTags.COAL_ORES);
