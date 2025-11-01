@@ -28,6 +28,7 @@
   "accessWidener" : "fabric-content-registries-v0.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable",
+    "loom:provided_javadoc": "fabric-content-registries-v0.mapping",
     "loom:injected_interfaces": {
       "net/minecraft/class_1845\u0024class_9665": ["net/fabricmc/fabric/api/registry/FabricBrewingRecipeRegistryBuilder"]
     }
