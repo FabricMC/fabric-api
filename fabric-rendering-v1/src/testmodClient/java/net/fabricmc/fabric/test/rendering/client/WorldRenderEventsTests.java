@@ -25,6 +25,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -80,7 +82,9 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 		context.matrices().push();
 		context.matrices().translate(-camera.x, -camera.y, -camera.z);
 
-		TestRenderUtils.drawFilledBox(context.matrices(), context.consumers().getBuffer(RenderLayers.debugFilledBox()), 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
+		Box box = new Box(BlockPos.ORIGIN.up(100));
+		int color = ColorHelper.fromFloats(0.5f, 0, 1, 0);
+		TestRenderUtils.drawFilledBox(context.matrices(), context.consumers().getBuffer(RenderLayers.debugFilledBox()), box, color);
 
 		context.matrices().pop();
 	}

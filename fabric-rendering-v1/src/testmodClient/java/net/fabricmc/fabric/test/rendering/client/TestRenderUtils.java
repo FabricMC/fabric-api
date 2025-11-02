@@ -20,39 +20,45 @@ import org.joml.Matrix4f;
 
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Box;
 
 public class TestRenderUtils {
-	public static void drawFilledBox(MatrixStack matrices, VertexConsumer vertexConsumers, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float red, float green, float blue, float alpha) {
+	public static void drawFilledBox(MatrixStack matrices, VertexConsumer vertexConsumers, Box box, int color) {
 		Matrix4f matrix4f = matrices.peek().getPositionMatrix();
+		float red = (float) (color >> 16 & 0xFF) / 255.0F;
+		float green = (float) (color >> 8 & 0xFF) / 255.0F;
+		float blue = (float) (color & 0xFF) / 255.0F;
+		float alpha = (float) (color >> 24 & 0xFF) / 255.0F;
+
 		// Front
-		vertexConsumers.vertex(matrix4f, minX, minY, minZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, maxX, minY, minZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, maxX, maxY, minZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, minX, maxY, minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha);
 		// Back
-		vertexConsumers.vertex(matrix4f, maxX, minY, maxZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, minX, minY, maxZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, minX, maxY, maxZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, maxX, maxY, maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha);
 		// Left
-		vertexConsumers.vertex(matrix4f, minX, minY, maxZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, minX, minY, minZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, minX, maxY, minZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, minX, maxY, maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha);
 		// Right
-		vertexConsumers.vertex(matrix4f, maxX, minY, minZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, maxX, minY, maxZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, maxX, maxY, maxZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, maxX, maxY, minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha);
 		// Top
-		vertexConsumers.vertex(matrix4f, minX, maxY, minZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, maxX, maxY, minZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, maxX, maxY, maxZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, minX, maxY, maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha);
 		// Bottom
-		vertexConsumers.vertex(matrix4f, minX, minY, maxZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, maxX, minY, maxZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, maxX, minY, minZ).color(red, green, blue, alpha);
-		vertexConsumers.vertex(matrix4f, minX, minY, minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.maxX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha);
+		vertexConsumers.vertex(matrix4f, (float) box.minX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha);
 	}
 }
