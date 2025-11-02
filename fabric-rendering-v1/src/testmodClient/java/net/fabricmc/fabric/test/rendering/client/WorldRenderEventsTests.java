@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.rendering.client;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.state.OutlineRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.BlockHitResult;
@@ -30,6 +31,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 import net.fabricmc.fabric.api.client.rendering.v1.world.AbstractWorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
@@ -78,9 +80,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 		context.matrices().push();
 		context.matrices().translate(-camera.x, -camera.y, -camera.z);
 
-		// TODO 1.21.11 - FIXME
-		// Box box = Box.of(new Vec3d(0, 100, 0), 1, 1, 1);
-		// GizmoDrawing.box(box, DrawStyle.filled(ColorHelper.fromFloats(0.5f, 0, 1, 0)));
+		TestRenderUtils.drawFilledBox(context.matrices(), context.consumers().getBuffer(RenderLayers.debugFilledBox()), 0, 100, 0, 1, 101, 1, 0, 1, 0, 0.5f);
 
 		context.matrices().pop();
 	}
@@ -112,8 +112,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 			singleplayer.getServer().runCommand("/setblock 0 101 0 minecraft:diamond_block");
 			singleplayer.getClientWorld().waitForChunksRender();
 
-			// TODO 1.21.11 - FIXME
-			// context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("world_render_events_block_outline_and_after_translucent").withRegion(356, 98, 142, 238).save());
+			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("world_render_events_block_outline_and_after_translucent").withRegion(356, 98, 142, 238).save());
 		}
 	}
 
