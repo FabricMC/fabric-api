@@ -48,8 +48,8 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 public interface ArmorRenderer {
 	/**
 	 * Registers the armor renderer for the specified items.
-	 * @param factory	the renderer factory
-	 * @param items		the items
+	 * @param factory   the renderer factory
+	 * @param items     the items
 	 * @throws IllegalArgumentException if an item already has a registered armor renderer
 	 * @throws NullPointerException if either an item or the factory is null
 	 */
@@ -59,8 +59,8 @@ public interface ArmorRenderer {
 
 	/**
 	 * Registers the armor renderer for the specified items.
-	 * @param renderer	the renderer
-	 * @param items		the items
+	 * @param renderer  the renderer
+	 * @param items     the items
 	 * @throws IllegalArgumentException if an item already has a registered armor renderer
 	 * @throws NullPointerException if either an item or the renderer is null
 	 */
@@ -71,23 +71,23 @@ public interface ArmorRenderer {
 	/**
 	 * Helper method for rendering a {@link TransformCopyingModel}, which will copy transforms from a source model to
 	 * a delegate model when it is rendered.
-	 * @param sourceModel			the model whose transforms will be copied
-	 * @param sourceModelState		the model state of the source model
-	 * @param delegateModel			the model that will be rendered with transforms copied from the source model
-	 * @param delegateModelState	the model state of the delegate model
-	 * @param setDelegateAngles		{@code true} if the {@link Model#setAngles(Object)} method should be called for the
-	 *                              delegate model after it is called for the source model
-	 * @param queue					the {@link RenderCommandQueue}
-	 * @param matrices				the matrix stack
-	 * @param renderLayer			the render layer
-	 * @param light					packed lightmap coordinates
-	 * @param overlay				packed overlay texture coordinates
-	 * @param tintedColor			the color to tint the model with
-	 * @param sprite				the sprite to render the model with, or {@code null} to use the render layer instead
-	 * @param outlineColor			the outline color of the model
-	 * @param crumblingOverlay		the crumbling overlay, or {@code null} for no crumbling overlay
-	 * @param <S>					state type of the source model
-	 * @param <D>					state type of the delegate model
+	 * @param sourceModel           the model whose transforms will be copied
+	 * @param sourceModelState      the model state of the source model
+	 * @param delegateModel         the model that will be rendered with transforms copied from the source model
+	 * @param delegateModelState    the model state of the delegate model
+	 * @param setDelegateAngles     {@code true} if the {@link Model#setAngles(Object)} method should be called for the
+	 *                                             delegate model after it is called for the source model
+	 * @param queue                 the {@link RenderCommandQueue}
+	 * @param matrices              the matrix stack
+	 * @param renderLayer           the render layer
+	 * @param light                 packed lightmap coordinates
+	 * @param overlay               packed overlay texture coordinates
+	 * @param tintedColor           the color to tint the model with
+	 * @param sprite                the sprite to render the model with, or {@code null} to use the render layer instead
+	 * @param outlineColor          the outline color of the model
+	 * @param crumblingOverlay      the crumbling overlay, or {@code null} for no crumbling overlay
+	 * @param <S>                   state type of the source model
+	 * @param <D>                   state type of the delegate model
 	 */
 	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, RenderCommandQueue queue, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int tintedColor, @Nullable Sprite sprite, int outlineColor, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
 		queue.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, tintedColor, sprite, outlineColor, crumblingOverlay);
@@ -96,21 +96,21 @@ public interface ArmorRenderer {
 	/**
 	 * Helper method for rendering a {@link TransformCopyingModel}, which will copy transforms from its source model to
 	 * its delegate model when it is rendered.
-	 * @param sourceModel			the model whose transforms will be copied
-	 * @param sourceModelState		the model state of the source model
-	 * @param delegateModel			the model that will be rendered with transforms copied from the source model
-	 * @param delegateModelState	the model state of the delegate model
-	 * @param setDelegateAngles		{@code true} if the {@link Model#setAngles(Object)} method should be called for the
+	 * @param sourceModel           the model whose transforms will be copied
+	 * @param sourceModelState      the model state of the source model
+	 * @param delegateModel         the model that will be rendered with transforms copied from the source model
+	 * @param delegateModelState    the model state of the delegate model
+	 * @param setDelegateAngles     {@code true} if the {@link Model#setAngles(Object)} method should be called for the
 	 *                                             delegate model after it is called for the source model
-	 * @param queue					the {@link RenderCommandQueue}
-	 * @param matrices				the matrix stack
-	 * @param renderLayer			the render layer
-	 * @param light					packed lightmap coordinates
-	 * @param overlay				packed overlay texture coordinates
-	 * @param outlineColor			the outline color of the model
-	 * @param crumblingOverlay		the crumbling overlay, or {@code null} for no crumbling overlay
-	 * @param <S>					state type of the source model
-	 * @param <D>					state type of the delegate model
+	 * @param queue                 the {@link RenderCommandQueue}
+	 * @param matrices              the matrix stack
+	 * @param renderLayer           the render layer
+	 * @param light                 packed lightmap coordinates
+	 * @param overlay               packed overlay texture coordinates
+	 * @param outlineColor          the outline color of the model
+	 * @param crumblingOverlay      the crumbling overlay, or {@code null} for no crumbling overlay
+	 * @param <S>                   state type of the source model
+	 * @param <D>                   state type of the delegate model
 	 */
 	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, RenderCommandQueue queue, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int outlineColor, @Nullable ModelCommandRenderer.CrumblingOverlayCommand crumblingOverlay) {
 		queue.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, outlineColor, crumblingOverlay);
@@ -119,13 +119,13 @@ public interface ArmorRenderer {
 	/**
 	 * Renders an armor part.
 	 *
-	 * @param matrices			   	  	the matrix stack
-	 * @param orderedRenderCommandQueue	the {@link OrderedRenderCommandQueue} instance
-	 * @param stack				        the item stack of the armor item
+	 * @param matrices                  the matrix stack
+	 * @param orderedRenderCommandQueue the {@link OrderedRenderCommandQueue} instance
+	 * @param stack                     the item stack of the armor item
 	 * @param bipedEntityRenderState    the render state of the entity
-	 * @param slot				        the equipment slot in which the armor stack is worn
-	 * @param light				        packed lightmap coordinates
-	 * @param contextModel		        the model provided by {@link FeatureRenderer#getContextModel()}
+	 * @param slot                      the equipment slot in which the armor stack is worn
+	 * @param light                     packed lightmap coordinates
+	 * @param contextModel              the model provided by {@link FeatureRenderer#getContextModel()}
 	 */
 	void render(MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue, ItemStack stack, BipedEntityRenderState bipedEntityRenderState, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel);
 
