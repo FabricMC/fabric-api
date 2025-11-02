@@ -243,7 +243,6 @@ public class GameRuleBuilder<T> {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	public abstract static class NumberRuleBuilder<T extends Number> extends GameRuleBuilder<T> {
 		NumberRuleBuilder(T defaultValue) {
 			super(defaultValue);

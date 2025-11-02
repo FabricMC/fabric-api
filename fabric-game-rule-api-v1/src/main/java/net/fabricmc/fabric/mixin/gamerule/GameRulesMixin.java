@@ -18,18 +18,27 @@ package net.fabricmc.fabric.mixin.gamerule;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.rule.GameRule;
+import net.minecraft.world.rule.GameRules;
 
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
+import net.fabricmc.fabric.impl.gamerule.GameRuleEventsImpl;
 
-@Mixin(MinecraftServer.class)
-public abstract class MinecraftServerMixin {
-	@WrapMethod(method = "onGameRuleUpdated")
-	private <T> void invokeChangeCallbacks(GameRule<T> rule, T value, Operation<Void> original) {
-		original.call(rule, value);
-		GameRuleEvents.changeCallback(rule).invoker().onGameRuleUpdated(value, (MinecraftServer) (Object) this);
+@Mixin(GameRules.class)
+public abstract class GameRulesMixin {
+	@WrapMethod(method = "setValue")
+	private <T> void invokeChangeCallbacks(GameRule<T> rule, T value, @Nullable MinecraftServer server, Operation<Void> original) {
+		original.call(rule, value, server);
+
+		Event<GameRuleEvents.ValueUpdate<T>> event = GameRuleEventsImpl.getValueUpdate(rule);
+
+		if (event != null) {
+			event.invoker().onGameRuleUpdated(value, server);
+		}
 	}
 }

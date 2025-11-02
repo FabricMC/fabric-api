@@ -16,15 +16,13 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.rule.GameRule;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.impl.gamerule.GameRuleEventsImpl;
 
 /**
  * Provides events for updating {@link GameRule}s.
@@ -33,18 +31,8 @@ public final class GameRuleEvents {
 	private GameRuleEvents() {
 	}
 
-	private static final Map<GameRule<?>, Event<ValueUpdate<?>>> VALUE_UPDATES = new HashMap<>();
-
 	public static <T> Event<ValueUpdate<T>> changeCallback(GameRule<T> rule) {
-		//noinspection unchecked
-		return (Event<ValueUpdate<T>>) (Event<?>) VALUE_UPDATES.computeIfAbsent(rule, gameRule -> {
-			//noinspection unchecked
-			return (Event<ValueUpdate<?>>) (Event<?>) EventFactory.createArrayBacked(ValueUpdate.class, (Function<ValueUpdate<T>[], ValueUpdate<T>>) callbacks -> (value, server) -> {
-				for (ValueUpdate<T> changedCallback : callbacks) {
-					changedCallback.onGameRuleUpdated(value, server);
-				}
-			});
-		});
+		return GameRuleEventsImpl.changeCallback(rule);
 	}
 
 	/**
@@ -61,7 +49,7 @@ public final class GameRuleEvents {
 		 */
 		void onGameRuleUpdated(
 				T value,
-				MinecraftServer server
+				@Nullable MinecraftServer server
 		);
 	}
 }

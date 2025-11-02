@@ -7,7 +7,7 @@
     "GameRuleCommandVisitorMixin",
     "GameRuleMixin",
     "GameRuleRpcDispatcherclass_12254Mixin",
-    "MinecraftServerMixin"
+    "GameRulesMixin"
   ],
   "injectors": {
     "defaultRequire": 1
