@@ -30,7 +30,6 @@ import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.GrindstoneScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -114,9 +113,9 @@ public final class ScreenTests implements ClientModInitializer {
 	}
 
 	// Test that mouseReleased is called
-	private static final class TestButtonWidget extends ButtonWidget.class_12231 {
+	private static final class TestButtonWidget extends ButtonWidget.Text {
 		private TestButtonWidget() {
-			super(10, 10, 10, 10, Text.literal("X"), button -> {
+			super(10, 10, 10, 10, net.minecraft.text.Text.literal("X"), button -> {
 				LOGGER.info("Pressed");
 			}, DEFAULT_NARRATION_SUPPLIER);
 		}

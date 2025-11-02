@@ -30,7 +30,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import java.util.Objects;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -200,7 +200,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl glint(@Nullable ItemRenderState.Glint glint) {
+	public MutableQuadViewImpl glint(ItemRenderState.@Nullable Glint glint) {
 		data[baseIndex + HEADER_BITS] = EncodingFormat.glint(data[baseIndex + HEADER_BITS], glint);
 		return this;
 	}

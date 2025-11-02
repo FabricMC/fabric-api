@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.item;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;

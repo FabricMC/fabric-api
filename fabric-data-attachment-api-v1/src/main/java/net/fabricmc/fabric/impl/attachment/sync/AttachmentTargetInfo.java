@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.attachment.sync;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;

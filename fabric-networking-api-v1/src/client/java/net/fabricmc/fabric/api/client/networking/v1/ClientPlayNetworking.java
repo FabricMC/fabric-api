@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -84,8 +84,7 @@ public final class ClientPlayNetworking {
 	 * @see ClientPlayNetworking#registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)
 	 * @see ClientPlayNetworking#unregisterReceiver(Identifier)
 	 */
-	@Nullable
-	public static ClientPlayNetworking.PlayPayloadHandler<?> unregisterGlobalReceiver(Identifier id) {
+	public static ClientPlayNetworking.@Nullable PlayPayloadHandler<?> unregisterGlobalReceiver(Identifier id) {
 		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(id);
 	}
 
@@ -135,8 +134,7 @@ public final class ClientPlayNetworking {
 	 * or it was not registered using {@link #registerReceiver(CustomPayload.Id, PlayPayloadHandler)}
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	@Nullable
-	public static ClientPlayNetworking.PlayPayloadHandler<?> unregisterReceiver(Identifier id) {
+	public static ClientPlayNetworking.@Nullable PlayPayloadHandler<?> unregisterReceiver(Identifier id) {
 		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
 
 		if (addon != null) {

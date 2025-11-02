@@ -21,7 +21,7 @@ import static net.minecraft.util.math.Direction.UP;
 import java.util.Map;
 
 import com.google.common.collect.MapMaker;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ComposterBlock;

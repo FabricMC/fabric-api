@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.renderer;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.BlockModelPart;

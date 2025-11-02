@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

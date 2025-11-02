@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.gamerule.rpc;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.server.dedicated.management.dispatch.GameRuleRpcDispatcher;
 

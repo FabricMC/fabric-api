@@ -22,7 +22,7 @@ import java.util.concurrent.Semaphore;
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.function.FailableRunnable;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

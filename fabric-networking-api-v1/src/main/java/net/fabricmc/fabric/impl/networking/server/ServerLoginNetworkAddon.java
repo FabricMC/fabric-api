@@ -27,7 +27,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.netty.channel.ChannelFutureListener;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketByteBuf;
@@ -141,7 +141,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		}
 
 		boolean understood = originalBuf != null;
-		@Nullable ServerLoginNetworking.LoginQueryResponseHandler handler = this.getHandler(channel);
+		ServerLoginNetworking.@Nullable LoginQueryResponseHandler handler = this.getHandler(channel);
 
 		if (handler == null) {
 			return false;

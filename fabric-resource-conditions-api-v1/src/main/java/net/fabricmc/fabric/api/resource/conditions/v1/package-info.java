@@ -51,4 +51,7 @@
  * net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition} to a generated file.
  * Please check the documentation of the Data Generation API.
  */
+@NullMarked
 package net.fabricmc.fabric.api.resource.conditions.v1;
+
+import org.jspecify.annotations.NullMarked;

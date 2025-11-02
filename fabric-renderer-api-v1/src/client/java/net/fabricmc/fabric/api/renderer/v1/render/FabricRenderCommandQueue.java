@@ -21,8 +21,8 @@ import java.util.function.Predicate;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.BlockRenderLayers;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.command.RenderCommandQueue;
 import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
@@ -97,6 +97,6 @@ public interface FabricRenderCommandQueue {
 	 * @see FabricBlockModelRenderer#render(MatrixStack.Entry, BlockVertexConsumerProvider, BlockStateModel, float, float, float, int, int, BlockRenderView, BlockPos, BlockState)
 	 */
 	default void submitBlockStateModel(MatrixStack matrices, Function<BlockRenderLayer, RenderLayer> renderLayerFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockRenderView blockView, BlockPos pos, BlockState state) {
-		((RenderCommandQueue) this).submitBlockStateModel(matrices, renderLayerFunction.apply(RenderLayers.getBlockLayer(state)), model, r, g, b, light, overlay, outlineColor);
+		((RenderCommandQueue) this).submitBlockStateModel(matrices, renderLayerFunction.apply(BlockRenderLayers.getBlockLayer(state)), model, r, g, b, light, overlay, outlineColor);
 	}
 }

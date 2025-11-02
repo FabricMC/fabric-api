@@ -19,7 +19,7 @@ package net.fabricmc.fabric.mixin.client.rendering;
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 

@@ -23,14 +23,13 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.random.Random;
 
-class SoundButton extends ButtonWidget.class_12231 {
+class SoundButton extends ButtonWidget.Text {
 	private static final Random RANDOM = Random.create();
 
 	SoundButton(int x, int y, int width, int height) {
-		super(x, y, width, height, Text.of("Sound Button"), ctx -> {
+		super(x, y, width, height, net.minecraft.text.Text.of("Sound Button"), ctx -> {
 			final SoundEvent event = Registries.SOUND_EVENT.getRandom(RANDOM).map(RegistryEntry::value).orElse(SoundEvents.ENTITY_GENERIC_EXPLODE.value());
 			MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event, 1.0F, 1.0F));
 		}, null);

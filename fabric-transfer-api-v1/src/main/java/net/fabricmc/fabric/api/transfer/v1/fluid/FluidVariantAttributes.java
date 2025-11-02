@@ -18,10 +18,9 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.class_12206;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -31,6 +30,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
@@ -205,7 +205,7 @@ public final class FluidVariantAttributes {
 
 			@Override
 			public int getViscosity(FluidVariant variant, @Nullable World world) {
-				if (world != null && world.method_75598().method_75694(class_12206.FAST_LAVA_GAMEPLAY)) {
+				if (world != null && world.getEnvironmentAttributes().getAttributeValue(EnvironmentAttributes.FAST_LAVA_GAMEPLAY)) {
 					return FluidConstants.LAVA_VISCOSITY_NETHER;
 				} else {
 					return FluidConstants.LAVA_VISCOSITY;

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.netty.channel.ChannelFutureListener;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
@@ -67,7 +67,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 			this.firstResponse = false;
 		}
 
-		@Nullable ClientLoginNetworking.LoginQueryRequestHandler handler = this.getHandler(channelName);
+		ClientLoginNetworking.@Nullable LoginQueryRequestHandler handler = this.getHandler(channelName);
 
 		if (handler == null) {
 			return false;

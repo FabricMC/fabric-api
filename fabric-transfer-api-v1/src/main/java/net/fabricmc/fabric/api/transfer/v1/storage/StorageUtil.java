@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.inventory.Inventory;
 import net.minecraft.screen.ScreenHandler;

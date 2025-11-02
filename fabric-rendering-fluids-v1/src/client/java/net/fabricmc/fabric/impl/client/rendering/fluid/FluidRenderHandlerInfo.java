@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;

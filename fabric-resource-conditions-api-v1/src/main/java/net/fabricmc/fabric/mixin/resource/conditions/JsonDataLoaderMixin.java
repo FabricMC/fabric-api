@@ -26,7 +26,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -51,7 +51,7 @@ public class JsonDataLoaderMixin {
 														@Local(argsOnly = true) ResourceFinder resourceFinder,
 														@Local Map.Entry<Identifier, Resource> entry) {
 		final JsonElement resourceData = (JsonElement) object;
-		@Nullable RegistryOps.RegistryInfoGetter registryInfo = null;
+		RegistryOps.@Nullable RegistryInfoGetter registryInfo = null;
 
 		if (dynamicOps instanceof RegistryOpsAccessor registryOps) {
 			registryInfo = registryOps.getRegistryInfoGetter();

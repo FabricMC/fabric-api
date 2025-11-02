@@ -30,14 +30,9 @@ import java.util.stream.Collectors;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.Nullable;
 
-import net.minecraft.class_12197;
-import net.minecraft.class_12199;
-import net.minecraft.class_12199.class_12200;
-import net.minecraft.class_12206;
-import net.minecraft.class_12212;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.DynamicRegistryManager;
@@ -48,6 +43,10 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.util.collection.Pool;
 import net.minecraft.util.collection.Weighted;
+import net.minecraft.world.attribute.EnvironmentAttribute;
+import net.minecraft.world.attribute.EnvironmentAttributeMap;
+import net.minecraft.world.attribute.EnvironmentAttributeModifier;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
@@ -139,24 +138,24 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 	private class AttributesContextImpl implements AttributesContext {
 		@Override
-		public void addAll(class_12199 map) {
-			class_12200 attributes = class_12199.method_75661().method_75675(biome.method_75734());
-			attributes.method_75675(map);
-			biome.field_63809 = attributes.method_75672();
+		public void addAll(EnvironmentAttributeMap map) {
+			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().addAll(biome.getEnvironmentAttributes());
+			attributes.addAll(map);
+			biome.environmentAttributes = attributes.build();
 		}
 
 		@Override
-		public <T> void set(class_12197<T> key, T value) {
-			class_12200 attributes = class_12199.method_75661().method_75675(biome.method_75734());
-			attributes.method_75674(key, value);
-			biome.field_63809 = attributes.method_75672();
+		public <T> void set(EnvironmentAttribute<T> key, T value) {
+			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().addAll(biome.getEnvironmentAttributes());
+			attributes.with(key, value);
+			biome.environmentAttributes = attributes.build();
 		}
 
 		@Override
-		public <T, M> void setModifier(class_12197<T> key, class_12212<T, M> modifier, M value) {
-			class_12200 attributes = class_12199.method_75661().method_75675(biome.method_75734());
-			attributes.method_75673(key, modifier, value);
-			biome.field_63809 = attributes.method_75672();
+		public <T, M> void setModifier(EnvironmentAttribute<T> key, EnvironmentAttributeModifier<T, M> modifier, M value) {
+			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().addAll(biome.getEnvironmentAttributes());
+			attributes.with(key, modifier, value);
+			biome.environmentAttributes = attributes.build();
 		}
 	}
 
@@ -165,7 +164,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public void setFogColor(int color) {
-			attributes.set(class_12206.FOG_COLOR_VISUAL, color);
+			attributes.set(EnvironmentAttributes.FOG_COLOR_VISUAL, color);
 		}
 
 		@Override
@@ -175,12 +174,12 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public void setWaterFogColor(int color) {
-			attributes.set(class_12206.WATER_FOG_COLOR_VISUAL, color);
+			attributes.set(EnvironmentAttributes.WATER_FOG_COLOR_VISUAL, color);
 		}
 
 		@Override
 		public void setSkyColor(int color) {
-			attributes.set(class_12206.SKY_COLOR_VISUAL, color);
+			attributes.set(EnvironmentAttributes.SKY_COLOR_VISUAL, color);
 		}
 
 		@Override
@@ -200,7 +199,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public void setMusicVolume(float volume) {
-			attributes.set(class_12206.MUSIC_VOLUME_AUDIO, volume);
+			attributes.set(EnvironmentAttributes.MUSIC_VOLUME_AUDIO, volume);
 		}
 	}
 

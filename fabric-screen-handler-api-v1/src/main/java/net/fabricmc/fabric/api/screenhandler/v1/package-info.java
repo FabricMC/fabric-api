@@ -50,4 +50,7 @@
  * on the screen handler factory to return {@code false} and passing that to the {@code
  * openHandledScreen} method, it will stop closing the screen and instead "overwrites" it.
  */
+@NullMarked
 package net.fabricmc.fabric.api.screenhandler.v1;
+
+import org.jspecify.annotations.NullMarked;

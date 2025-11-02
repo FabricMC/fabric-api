@@ -20,7 +20,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,8 +62,7 @@ public final class StrippableBlockRegistryImpl {
 		return TRANSFORMERS.getOrDefault(state.getBlock(), StrippableBlockRegistry.StrippingTransformer.VANILLA).getStrippedBlockState(strippedBlock, state);
 	}
 
-	@Nullable
-	public static StrippableBlockRegistry.StrippingTransformer getTransformer(Block block) {
+	public static StrippableBlockRegistry.@Nullable StrippingTransformer getTransformer(Block block) {
 		return TRANSFORMERS.get(block);
 	}
 }

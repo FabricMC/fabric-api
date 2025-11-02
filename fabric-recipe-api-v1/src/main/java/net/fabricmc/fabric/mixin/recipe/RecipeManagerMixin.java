@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.gametest;
+package net.fabricmc.fabric.mixin.recipe;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.gui.widget.CyclingButtonWidget;
-import net.minecraft.text.Text;
+import net.minecraft.recipe.RecipeManager;
 
-@Mixin(CyclingButtonWidget.class)
-public interface CyclingButtonWidgetAccessor {
-	@Accessor
-	Text getOptionText();
+import net.fabricmc.fabric.api.recipe.v1.FabricRecipeManager;
+
+@Mixin(RecipeManager.class)
+public interface RecipeManagerMixin extends FabricRecipeManager {
 }

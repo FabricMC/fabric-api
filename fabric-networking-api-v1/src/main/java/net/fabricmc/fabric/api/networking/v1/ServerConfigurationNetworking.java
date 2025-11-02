@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.CustomPayload;
@@ -81,8 +81,7 @@ public final class ServerConfigurationNetworking {
 	 * @see ServerConfigurationNetworking#registerGlobalReceiver(CustomPayload.Id, ConfigurationPacketHandler)
 	 * @see ServerConfigurationNetworking#unregisterReceiver(ServerConfigurationNetworkHandler, Identifier)
 	 */
-	@Nullable
-	public static ServerConfigurationNetworking.ConfigurationPacketHandler<?> unregisterGlobalReceiver(Identifier id) {
+	public static ServerConfigurationNetworking.@Nullable ConfigurationPacketHandler<?> unregisterGlobalReceiver(Identifier id) {
 		return ServerNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(id);
 	}
 
@@ -124,8 +123,7 @@ public final class ServerConfigurationNetworking {
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
 	 * or it was not registered using {@link #registerReceiver(ServerConfigurationNetworkHandler, CustomPayload.Id, ConfigurationPacketHandler)}
 	 */
-	@Nullable
-	public static ServerConfigurationNetworking.ConfigurationPacketHandler<?> unregisterReceiver(ServerConfigurationNetworkHandler networkHandler, Identifier id) {
+	public static ServerConfigurationNetworking.@Nullable ConfigurationPacketHandler<?> unregisterReceiver(ServerConfigurationNetworkHandler networkHandler, Identifier id) {
 		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(id);
 	}
 

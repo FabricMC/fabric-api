@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.test.renderer;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

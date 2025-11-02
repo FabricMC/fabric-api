@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.transfer.v1.transaction;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;

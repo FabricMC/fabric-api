@@ -22,7 +22,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.util.StringIdentifiable;
 

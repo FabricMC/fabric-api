@@ -56,7 +56,7 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		protected void method_75752(DrawContext drawContext, int mouseX, int mouseY, float delta) {
+		protected void drawIcon(DrawContext drawContext, int mouseX, int mouseY, float delta) {
 			this.active = type.isEnabled.test(screen);
 			this.visible = screen.hasAdditionalPages();
 
@@ -69,7 +69,7 @@ public class FabricCreativeGuiComponents {
 			drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 10 : 0), v, 10, 12, 256, 256);
 
 			if (this.isHovered()) {
-				drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, Text.translatable("fabric.gui.creativeTabPage", screen.getCurrentPage() + 1, getPageCount()), mouseX, mouseY);
+				drawContext.drawTooltip(MinecraftClient.getInstance().textRenderer, net.minecraft.text.Text.translatable("fabric.gui.creativeTabPage", screen.getCurrentPage() + 1, getPageCount()), mouseX, mouseY);
 			}
 		}
 	}

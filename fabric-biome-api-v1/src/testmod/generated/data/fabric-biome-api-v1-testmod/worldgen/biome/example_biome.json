@@ -7,7 +7,7 @@
   "carvers": [],
   "downfall": 0.4,
   "effects": {
-    "water_color": 4159204
+    "water_color": "#3f76e4"
   },
   "features": [],
   "has_precipitation": false,

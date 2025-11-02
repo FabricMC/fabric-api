@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.impl.event.interaction;
 
 import io.netty.channel.ChannelFutureListener;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;

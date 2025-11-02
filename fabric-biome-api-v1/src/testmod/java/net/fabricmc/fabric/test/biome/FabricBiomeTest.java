@@ -21,11 +21,11 @@ import static net.fabricmc.fabric.test.biome.DataGeneratorEntrypoint.PLACED_COMM
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.class_12206;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.gen.GenerationStep;
@@ -80,7 +80,7 @@ public class FabricBiomeTest implements ModInitializer {
 						})
 				.add(ModificationPhase.ADDITIONS,
 						BiomeSelectors.tag(TagKey.of(RegistryKeys.BIOME, Identifier.of(MOD_ID, "tag_selector_test"))),
-						context -> context.getAttributes().set(class_12206.SKY_COLOR_VISUAL, 0x770000))
+						context -> context.getAttributes().set(EnvironmentAttributes.SKY_COLOR_VISUAL, 0x770000))
 				.add(ModificationPhase.ADDITIONS, BiomeSelectors.foundInOverworld(), context ->
 						context.getGenerationSettings().addFeature(GenerationStep.Feature.UNDERGROUND_ORES, PLACED_COMMON_ORE)
 				);

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.tag.TagKey;

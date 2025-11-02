@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.transfer.v1.context;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

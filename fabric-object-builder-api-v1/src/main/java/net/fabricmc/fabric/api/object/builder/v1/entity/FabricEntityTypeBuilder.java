@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import com.google.common.collect.ImmutableSet;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;

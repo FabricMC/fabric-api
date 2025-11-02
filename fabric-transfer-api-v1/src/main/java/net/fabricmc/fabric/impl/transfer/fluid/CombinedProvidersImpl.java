@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.transfer.fluid;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

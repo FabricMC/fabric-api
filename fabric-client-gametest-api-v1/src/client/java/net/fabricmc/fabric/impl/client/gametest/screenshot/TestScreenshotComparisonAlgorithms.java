@@ -20,8 +20,8 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 import com.google.common.base.Preconditions;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.util.math.ColorHelper;

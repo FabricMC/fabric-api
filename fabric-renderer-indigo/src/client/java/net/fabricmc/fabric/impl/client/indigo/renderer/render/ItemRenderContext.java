@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -133,7 +133,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	private VertexConsumer getVertexConsumer(@Nullable BlockRenderLayer quadRenderLayer, @Nullable ItemRenderState.Glint quadGlint) {
+	private VertexConsumer getVertexConsumer(@Nullable BlockRenderLayer quadRenderLayer, ItemRenderState.@Nullable Glint quadGlint) {
 		RenderLayer layer;
 		ItemRenderState.Glint glint;
 

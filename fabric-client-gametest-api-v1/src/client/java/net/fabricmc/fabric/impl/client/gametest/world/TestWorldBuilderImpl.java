@@ -139,8 +139,8 @@ public class TestWorldBuilderImpl implements TestWorldBuilder {
 		creator.setWorldType(new WorldCreator.WorldType(flatPreset));
 		creator.setSeed("1");
 		creator.setGenerateStructures(false);
-		creator.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null);
-		creator.getGameRules().get(GameRules.DO_WEATHER_CYCLE).set(false, null);
-		creator.getGameRules().get(GameRules.DO_MOB_SPAWNING).set(false, null);
+		creator.getGameRules().method_76186(GameRules.ADVANCE_TIME, false, null);
+		creator.getGameRules().method_76186(GameRules.ADVANCE_WEATHER, false, null);
+		creator.getGameRules().method_76186(GameRules.DO_MOB_SPAWNING, false, null);
 	}
 }

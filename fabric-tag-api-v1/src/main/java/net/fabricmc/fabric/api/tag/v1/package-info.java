@@ -49,4 +49,7 @@
  * tags almost fully indistinguishable since they get the exact same content, and you have to override the alias group
  * in a higher-priority data pack to unlink them.
  */
+@NullMarked
 package net.fabricmc.fabric.api.tag.v1;
+
+import org.jspecify.annotations.NullMarked;

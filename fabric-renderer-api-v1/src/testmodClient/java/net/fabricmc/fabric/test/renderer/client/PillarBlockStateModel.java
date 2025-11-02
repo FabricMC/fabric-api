@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.mojang.serialization.MapCodec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.Baker;

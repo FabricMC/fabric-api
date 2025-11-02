@@ -23,14 +23,14 @@ import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.UnmodifiableView;
 
-import net.minecraft.class_12197;
-import net.minecraft.class_12199;
-import net.minecraft.class_12206;
-import net.minecraft.class_12212;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.collection.Weighted;
+import net.minecraft.world.attribute.EnvironmentAttribute;
+import net.minecraft.world.attribute.EnvironmentAttributeMap;
+import net.minecraft.world.attribute.EnvironmentAttributeModifier;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.SpawnSettings;
@@ -94,33 +94,33 @@ public interface BiomeModificationContext {
 
 	interface AttributesContext {
 		/**
-		 * @see Biome.Builder#method_75739(class_12199)
+		 * @see Biome.Builder#addEnvironmentAttributes(EnvironmentAttributeMap)
 		 */
-		void addAll(class_12199 map);
+		void addAll(EnvironmentAttributeMap map);
 
 		/**
-		 * @see Biome.Builder#method_75738(class_12199.class_12200)
+		 * @see Biome.Builder#addEnvironmentAttributes(EnvironmentAttributeMap.Builder)
 		 */
-		default void addAll(class_12199.class_12200 map) {
-			this.addAll(map.method_75672());
+		default void addAll(EnvironmentAttributeMap.Builder map) {
+			this.addAll(map.build());
 		}
 
 		/**
-		 * @see Biome.Builder#method_75737(class_12197, Object)
+		 * @see Biome.Builder#setEnvironmentAttribute(EnvironmentAttribute, Object)
 		 */
-		<T> void set(class_12197<T> key, T value);
+		<T> void set(EnvironmentAttribute<T> key, T value);
 
 		/**
-		 * @see Biome.Builder#method_75736(class_12197, class_12212, Object)
+		 * @see Biome.Builder#setEnvironmentAttributeModifier(EnvironmentAttribute, EnvironmentAttributeModifier, Object)
 		 */
-		<T, M> void setModifier(class_12197<T> key, class_12212<T, M> modifier, M value);
+		<T, M> void setModifier(EnvironmentAttribute<T> key, EnvironmentAttributeModifier<T, M> modifier, M value);
 	}
 
 	interface EffectsContext {
 		/**
 		 * @deprecated Set the fog color using environment attributes instead
 		 * @see BiomeModificationContext#getAttributes()
-		 * @see class_12206#FOG_COLOR_VISUAL
+		 * @see EnvironmentAttributes#FOG_COLOR_VISUAL
 		 */
 		@Deprecated
 		void setFogColor(int color);
@@ -134,7 +134,7 @@ public interface BiomeModificationContext {
 		/**
 		 * @deprecated Set the water fog color using environment attributes instead
 		 * @see BiomeModificationContext#getAttributes()
-		 * @see class_12206#WATER_FOG_COLOR_VISUAL
+		 * @see EnvironmentAttributes#WATER_FOG_COLOR_VISUAL
 		 */
 		@Deprecated
 		void setWaterFogColor(int color);
@@ -142,7 +142,7 @@ public interface BiomeModificationContext {
 		/**
 		 * @deprecated Set the sky color using environment attributes instead
 		 * @see BiomeModificationContext#getAttributes()
-		 * @see class_12206#SKY_COLOR_VISUAL
+		 * @see EnvironmentAttributes#SKY_COLOR_VISUAL
 		 */
 		@Deprecated
 		void setSkyColor(int color);
@@ -216,7 +216,7 @@ public interface BiomeModificationContext {
 		/**
 		 * @deprecated Set the music volume using environment attributes instead
 		 * @see BiomeModificationContext#getAttributes()
-		 * @see class_12206#MUSIC_VOLUME_AUDIO
+		 * @see EnvironmentAttributes#MUSIC_VOLUME_AUDIO
 		 */
 		@Deprecated
 		void setMusicVolume(float volume);

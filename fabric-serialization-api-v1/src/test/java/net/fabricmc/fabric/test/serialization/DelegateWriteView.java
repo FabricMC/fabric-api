@@ -18,7 +18,7 @@ package net.fabricmc.fabric.test.serialization;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.storage.WriteView;
 

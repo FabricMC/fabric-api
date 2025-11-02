@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.text.Text;
 

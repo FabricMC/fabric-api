@@ -54,7 +54,7 @@ public final class ModelBakeSettingsHelper {
 		Matrix4fc matrix = transformation.getMatrix();
 
 		if (MatrixUtil.isIdentity(matrix)) {
-			return ModelRotation.field_63619;
+			return ModelRotation.IDENTITY;
 		}
 
 		if (!uvLock) {
@@ -199,8 +199,8 @@ public final class ModelBakeSettingsHelper {
 				Sprite sprite = spriteFinder.find(quad);
 
 				for (int vertexIndex = 0; vertexIndex < 4; vertexIndex++) {
-					float frameU = sprite.getFrameFromU(quad.u(vertexIndex));
-					float frameV = sprite.getFrameFromV(quad.v(vertexIndex));
+					float frameU = getFrameFromU(sprite, quad.u(vertexIndex));
+					float frameV = getFrameFromV(sprite, quad.v(vertexIndex));
 					vec3.set(frameU - 0.5f, frameV - 0.5f, 0.0f);
 					reverseMatrix.transformPosition(vec3);
 					frameU = vec3.x + 0.5f;
@@ -230,5 +230,15 @@ public final class ModelBakeSettingsHelper {
 
 			return true;
 		};
+	}
+
+	private static float getFrameFromU(Sprite sprite, float u) {
+		float f = sprite.getMaxU() - sprite.getMinU();
+		return (u - sprite.getMinU()) / f;
+	}
+
+	private static float getFrameFromV(Sprite sprite, float v) {
+		float f = sprite.getMaxV() - sprite.getMinV();
+		return (v - sprite.getMinV()) / f;
 	}
 }

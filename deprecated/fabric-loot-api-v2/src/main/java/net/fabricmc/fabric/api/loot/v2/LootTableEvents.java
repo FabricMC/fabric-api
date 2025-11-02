@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.loot.v2;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.loot.LootTable;
 import net.minecraft.registry.Registry;

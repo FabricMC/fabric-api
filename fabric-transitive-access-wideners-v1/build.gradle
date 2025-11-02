@@ -48,12 +48,6 @@ tasks.register('generateAccessWidener') {
 		Path clientJar = loom.namedMinecraftProvider.parentMinecraftProvider.clientOnlyJar.path
 
 		FileSystems.newFileSystem(URI.create("jar:${clientJar.toUri()}"), [create: false]).withCloseable { fs ->
-			generateRenderPhaseFields(lines, fs)
-			lines.add("")
-			generateRenderPhaseInnerClasses(lines, fs)
-			lines.add("")
-			generateRenderLayerBuilderMethods(lines, fs)
-			lines.add("")
 			generateRenderPipelinesFields(lines, fs)
 		}
 
@@ -113,41 +107,6 @@ def generateItemConstructors(List<String> lines, FileSystem fs) {
 					}
 				}
 			}
-}
-
-def generateRenderPhaseFields(List<String> lines, FileSystem fs) {
-	lines.add("# Protected static fields of RenderPhase")
-
-	for (def field : loadClass(fs.getPath("net/minecraft/client/render/RenderPhase.class")).fields) {
-		// All protected static fields of RenderPhase
-		if ((field.access & Opcodes.ACC_PROTECTED) != 0 && (field.access & Opcodes.ACC_STATIC) != 0) {
-			lines.add("transitive-accessible field net/minecraft/client/render/RenderPhase ${field.name} ${field.desc}")
-		}
-	}
-}
-
-def generateRenderPhaseInnerClasses(List<String> lines, FileSystem fs) {
-	lines.add("# Protected static inner classes of RenderPhase")
-
-	for (def innerClass : loadClass(fs.getPath("net/minecraft/client/render/RenderPhase.class")).innerClasses) {
-		// All protected static inner classes of RenderPhase
-		if ((innerClass.access & Opcodes.ACC_PROTECTED) != 0 && (innerClass.access & Opcodes.ACC_STATIC) != 0) {
-			lines.add("transitive-accessible class net/minecraft/client/render/RenderPhase\$${innerClass.innerName}")
-		}
-	}
-}
-
-def generateRenderLayerBuilderMethods(List<String> lines, FileSystem fs) {
-	lines.add("# Protected methods of RenderLayer.MultiPhaseParameters.Builder")
-
-	def node = loadClass(fs.getPath("net/minecraft/client/render/RenderLayer\$MultiPhaseParameters\$Builder.class"))
-
-	for (def method : node.methods) {
-		// All protected inner methods of MultiPhaseParameters.Builder
-		if ((method.access & Opcodes.ACC_PROTECTED) != 0) {
-			lines.add("transitive-accessible method $node.name $method.name $method.desc")
-		}
-	}
 }
 
 def generateRenderPipelinesFields(List<String> lines, FileSystem fs) {

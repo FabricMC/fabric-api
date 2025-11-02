@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.BlockRenderLayers;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -100,7 +100,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		this.overlay = overlay;
 
 		this.vertexConsumers = vertexConsumers;
-		this.defaultRenderLayer = RenderLayers.getBlockLayer(state);
+		this.defaultRenderLayer = BlockRenderLayers.getBlockLayer(state);
 		this.red = MathHelper.clamp(red, 0, 1);
 		this.green = MathHelper.clamp(green, 0, 1);
 		this.blue = MathHelper.clamp(blue, 0, 1);

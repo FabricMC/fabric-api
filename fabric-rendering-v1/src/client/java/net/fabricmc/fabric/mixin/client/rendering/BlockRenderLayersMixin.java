@@ -27,13 +27,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.BlockRenderLayers;
 import net.minecraft.fluid.Fluid;
 
 import net.fabricmc.fabric.impl.client.rendering.BlockRenderLayerMapImpl;
 
-@Mixin(RenderLayers.class)
-abstract class RenderLayersMixin {
+@Mixin(BlockRenderLayers.class)
+abstract class BlockRenderLayersMixin {
 	@Shadow
 	@Final
 	private static Map<Block, BlockRenderLayer> BLOCKS;

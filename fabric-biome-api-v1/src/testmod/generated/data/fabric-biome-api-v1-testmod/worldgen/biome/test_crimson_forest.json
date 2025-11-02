@@ -33,7 +33,7 @@
   "carvers": "minecraft:nether_cave",
   "downfall": 0.0,
   "effects": {
-    "water_color": 4159204
+    "water_color": "#3f76e4"
   },
   "features": [
     [],

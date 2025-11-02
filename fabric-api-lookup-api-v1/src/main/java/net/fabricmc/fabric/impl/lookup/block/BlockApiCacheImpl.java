@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.lookup.block;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;

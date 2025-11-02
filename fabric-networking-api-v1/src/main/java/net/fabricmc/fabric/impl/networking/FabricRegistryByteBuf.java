@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.networking;
 
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 

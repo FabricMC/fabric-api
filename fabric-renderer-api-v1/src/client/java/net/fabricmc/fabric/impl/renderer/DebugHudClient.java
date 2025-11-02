@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.renderer;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.gui.hud.debug.DebugHudEntries;
 import net.minecraft.client.gui.hud.debug.DebugHudEntry;

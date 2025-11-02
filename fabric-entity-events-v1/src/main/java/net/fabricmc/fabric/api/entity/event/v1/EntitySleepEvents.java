@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -221,8 +221,7 @@ public final class EntitySleepEvents {
 		 * @return {@code null} if the player can sleep, or a failure reason if they cannot
 		 * @see PlayerEntity#trySleep(BlockPos)
 		 */
-		@Nullable
-		PlayerEntity.SleepFailureReason allowSleep(PlayerEntity player, BlockPos sleepingPos);
+		PlayerEntity.@Nullable SleepFailureReason allowSleep(PlayerEntity player, BlockPos sleepingPos);
 	}
 
 	@FunctionalInterface

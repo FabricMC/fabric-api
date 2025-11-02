@@ -29,7 +29,7 @@ import net.minecraft.world.World;
 /**
  * General-purpose Fabric-provided extensions for {@link ServerRecipeManager} class.
  */
-public interface FabricServerRecipeManager {
+public interface FabricServerRecipeManager extends FabricRecipeManager {
 	/**
 	 * Creates a stream of all recipe entries of the given {@code type} that match the
 	 * given {@code input} and {@code world}.

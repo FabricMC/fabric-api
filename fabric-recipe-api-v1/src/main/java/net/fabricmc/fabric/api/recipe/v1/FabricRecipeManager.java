@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.gametest;
+package net.fabricmc.fabric.api.recipe.v1;
 
-import java.util.List;
+import net.minecraft.recipe.RecipeManager;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
+import net.fabricmc.fabric.impl.recipe.sync.SynchronizedRecipesImpl;
 
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.screen.Screen;
-
-@Mixin(Screen.class)
-public interface ScreenAccessor {
-	@Accessor
-	List<Drawable> getDrawables();
+/**
+ * General-purpose Fabric-provided extensions for {@link RecipeManager} class.
+ */
+public interface FabricRecipeManager {
+	default SynchronizedRecipes getSynchronizedRecipes() {
+		// Fallback implementation in case someone implements RecipeManager interface on a custom class.
+		return SynchronizedRecipesImpl.EMPTY;
+	}
 }

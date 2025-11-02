@@ -21,7 +21,7 @@ import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 import java.util.stream.IntStream;
 
 import io.netty.buffer.Unpooled;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

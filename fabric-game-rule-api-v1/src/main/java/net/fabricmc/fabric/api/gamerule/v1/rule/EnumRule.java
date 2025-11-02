@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.mojang.brigadier.context.CommandContext;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

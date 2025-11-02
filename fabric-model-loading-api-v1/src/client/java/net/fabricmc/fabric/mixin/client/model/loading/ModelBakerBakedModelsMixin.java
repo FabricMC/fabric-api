@@ -18,7 +18,7 @@ package net.fabricmc.fabric.mixin.client.model.loading;
 
 import java.util.Map;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 

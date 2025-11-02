@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.resource.v1;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.util.Identifier;

@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import io.netty.buffer.Unpooled;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;

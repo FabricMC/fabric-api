@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.test.lookup;
 
 import com.mojang.serialization.MapCodec;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;

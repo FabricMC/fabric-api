@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.recipe.v1.ingredient;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;

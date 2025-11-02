@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.VertexFormats;
@@ -87,7 +87,7 @@ public final class EncodingFormat {
 	private static final int NULLABLE_BLOCK_RENDER_LAYER_COUNT = NULLABLE_BLOCK_RENDER_LAYERS.length;
 	private static final TriState[] TRI_STATES = TriState.values();
 	private static final int TRI_STATE_COUNT = TRI_STATES.length;
-	private static final @Nullable ItemRenderState.Glint[] NULLABLE_GLINTS = ArrayUtils.add(ItemRenderState.Glint.values(), null);
+	private static final ItemRenderState.@Nullable Glint[] NULLABLE_GLINTS = ArrayUtils.add(ItemRenderState.Glint.values(), null);
 	private static final int NULLABLE_GLINT_COUNT = NULLABLE_GLINTS.length;
 	private static final ShadeMode[] SHADE_MODES = ShadeMode.values();
 	private static final int SHADE_MODE_COUNT = SHADE_MODES.length;
@@ -205,12 +205,11 @@ public final class EncodingFormat {
 		return (bits & ~AO_MASK) | (ao.ordinal() << AO_BIT_OFFSET);
 	}
 
-	@Nullable
-	static ItemRenderState.Glint glint(int bits) {
+	static ItemRenderState.@Nullable Glint glint(int bits) {
 		return NULLABLE_GLINTS[(bits & GLINT_MASK) >>> GLINT_BIT_OFFSET];
 	}
 
-	static int glint(int bits, @Nullable ItemRenderState.Glint glint) {
+	static int glint(int bits, ItemRenderState.@Nullable Glint glint) {
 		int index = glint == null ? NULL_GLINT_INDEX : glint.ordinal();
 		return (bits & ~GLINT_MASK) | (index << GLINT_BIT_OFFSET);
 	}

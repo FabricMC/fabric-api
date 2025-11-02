@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.entity.data.TrackedDataHandler;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;

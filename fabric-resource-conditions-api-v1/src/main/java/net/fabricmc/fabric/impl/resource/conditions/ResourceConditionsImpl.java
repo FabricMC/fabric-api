@@ -24,7 +24,7 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		ResourceConditions.register(DefaultResourceConditionTypes.REGISTRY_CONTAINS);
 	}
 
-	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, @Nullable RegistryOps.RegistryInfoGetter registryInfo) {
+	public static boolean applyResourceConditions(JsonObject obj, String dataType, Identifier key, RegistryOps.@Nullable RegistryInfoGetter registryInfo) {
 		boolean debugLogEnabled = ResourceConditionsImpl.LOGGER.isDebugEnabled();
 
 		if (obj.has(ResourceConditions.CONDITIONS_KEY)) {
@@ -84,7 +84,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 
 	// Condition implementations
 
-	public static boolean conditionsMet(List<ResourceCondition> conditions, @Nullable RegistryOps.RegistryInfoGetter registryInfo, boolean and) {
+	public static boolean conditionsMet(List<ResourceCondition> conditions, RegistryOps.@Nullable RegistryInfoGetter registryInfo, boolean and) {
 		for (ResourceCondition condition : conditions) {
 			if (condition.test(registryInfo) != and) {
 				return !and;
@@ -104,7 +104,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return and;
 	}
 
-	public static boolean tagsPopulated(@Nullable RegistryOps.RegistryInfoGetter infoGetter, Identifier registryId, List<Identifier> tags) {
+	public static boolean tagsPopulated(RegistryOps.@Nullable RegistryInfoGetter infoGetter, Identifier registryId, List<Identifier> tags) {
 		if (infoGetter == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing tags_populated resource condition check", registryId);
 			return false;
@@ -147,7 +147,7 @@ public final class ResourceConditionsImpl implements ModInitializer {
 		return set.isSubsetOf(currentFeatures);
 	}
 
-	public static boolean registryContains(@Nullable RegistryOps.RegistryInfoGetter infoGetter, Identifier registryId, List<Identifier> entries) {
+	public static boolean registryContains(RegistryOps.@Nullable RegistryInfoGetter infoGetter, Identifier registryId, List<Identifier> entries) {
 		if (infoGetter == null) {
 			LOGGER.warn("Can't retrieve registry {}, failing registry_contains resource condition check", registryId);
 			return false;

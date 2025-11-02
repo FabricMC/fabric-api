@@ -44,4 +44,7 @@
  * </dl>
  */
 
+@NullMarked
 package net.fabricmc.fabric.api.client.networking.v1;
+
+import org.jspecify.annotations.NullMarked;

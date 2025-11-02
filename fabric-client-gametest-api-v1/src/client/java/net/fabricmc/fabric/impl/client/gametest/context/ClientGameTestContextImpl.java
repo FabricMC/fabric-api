@@ -35,8 +35,8 @@ import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.commons.lang3.function.FailableFunction;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
+import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,8 +74,8 @@ import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotCompari
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotOptionsImpl;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.fabricmc.fabric.impl.client.gametest.world.TestWorldBuilderImpl;
-import net.fabricmc.fabric.mixin.client.gametest.CyclingButtonWidgetAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.ScreenAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.gui.CyclingButtonWidgetAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.gui.ScreenAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.lifecycle.GameOptionsAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.screenshot.RenderTickCounterConstantAccessor;
 import net.fabricmc.loader.api.FabricLoader;
@@ -101,6 +101,12 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 		// Just annoying
 		options.getSoundVolumeOption(SoundCategory.MUSIC).setValue(0.0);
+
+		// Disable Anisotropic Filtering
+		options.method_76247().setValue(0);
+
+		// Disable chunk fade
+		options.method_76253().setValue(0D);
 
 		((GameOptionsAccessor) options).invokeAccept(new GameOptions.Visitor() {
 			@Override

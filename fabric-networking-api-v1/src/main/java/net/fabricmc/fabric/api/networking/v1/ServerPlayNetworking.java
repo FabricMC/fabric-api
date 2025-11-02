@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.listener.ClientCommonPacketListener;
 import net.minecraft.network.packet.CustomPayload;
@@ -90,8 +90,7 @@ public final class ServerPlayNetworking {
 	 * @see ServerPlayNetworking#registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)
 	 * @see ServerPlayNetworking#unregisterReceiver(ServerPlayNetworkHandler, Identifier)
 	 */
-	@Nullable
-	public static ServerPlayNetworking.PlayPayloadHandler<?> unregisterGlobalReceiver(Identifier id) {
+	public static ServerPlayNetworking.@Nullable PlayPayloadHandler<?> unregisterGlobalReceiver(Identifier id) {
 		return ServerNetworkingImpl.PLAY.unregisterGlobalReceiver(id);
 	}
 
@@ -136,8 +135,7 @@ public final class ServerPlayNetworking {
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
 	 * or it was not registered using {@link #registerReceiver(ServerPlayNetworkHandler, CustomPayload.Id, PlayPayloadHandler)}
 	 */
-	@Nullable
-	public static ServerPlayNetworking.PlayPayloadHandler<?> unregisterReceiver(ServerPlayNetworkHandler networkHandler, Identifier id) {
+	public static ServerPlayNetworking.@Nullable PlayPayloadHandler<?> unregisterReceiver(ServerPlayNetworkHandler networkHandler, Identifier id) {
 		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(id);
 	}
 

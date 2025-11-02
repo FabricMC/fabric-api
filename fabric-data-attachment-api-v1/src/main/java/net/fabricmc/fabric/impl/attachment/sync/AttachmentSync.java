@@ -51,9 +51,12 @@ public class AttachmentSync implements ModInitializer {
 		return new AcceptedAttachmentsPayloadC2S(AttachmentRegistryImpl.getSyncableAttachments());
 	}
 
-	public static void trySync(AttachmentSyncPayloadS2C payload, ServerPlayerEntity player) {
-		if (!payload.attachments().isEmpty()) {
-			ServerPlayNetworking.send(player, payload);
+	public static void trySync(AttachmentChange change, ServerPlayerEntity player) {
+		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonNetworkHandlerAccessor) player.networkHandler).getConnection())
+				.fabric_getSupportedAttachments();
+
+		if (supported.contains(change.type().identifier())) {
+			ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(List.of(change)));
 		}
 	}
 

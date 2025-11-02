@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.client.fluid;
 
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.tooltip.TooltipType;

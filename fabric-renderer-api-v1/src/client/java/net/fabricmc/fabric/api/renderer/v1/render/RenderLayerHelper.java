@@ -28,20 +28,20 @@ public final class RenderLayerHelper {
 	}
 
 	/**
-	 * Same logic as {@link RenderLayers#getMovingBlockLayer}, but accepts a {@link BlockRenderLayer} instead of a
+	 * Same logic as {@link net.minecraft.client.render.BlockRenderLayers#getMovingBlockLayer}, but accepts a {@link BlockRenderLayer} instead of a
 	 * {@link BlockState}.
 	 */
 	public static RenderLayer getMovingBlockLayer(BlockRenderLayer layer) {
 		return switch (layer) {
-		case SOLID -> RenderLayer.getSolid();
-		case CUTOUT -> RenderLayer.getCutout();
-		case TRANSLUCENT -> RenderLayer.getTranslucentMovingBlock();
-		case TRIPWIRE -> RenderLayer.getTripwire();
+		case SOLID -> RenderLayers.solid();
+		case CUTOUT -> RenderLayers.cutout();
+		case TRANSLUCENT -> RenderLayers.translucentMovingBlock();
+		case TRIPWIRE -> RenderLayers.tripwire();
 		};
 	}
 
 	/**
-	 * Same logic as {@link RenderLayers#getEntityBlockLayer}, but accepts a {@link BlockRenderLayer} instead of a
+	 * Same logic as {@link net.minecraft.client.render.BlockRenderLayers#getEntityBlockLayer}, but accepts a {@link BlockRenderLayer} instead of a
 	 * {@link BlockState}.
 	 */
 	public static RenderLayer getEntityBlockLayer(BlockRenderLayer layer) {

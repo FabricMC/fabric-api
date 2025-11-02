@@ -4,8 +4,8 @@ accessible  class   net/minecraft/world/biome/Biome$Weather
 # Top-Level Biome Fields Access
 accessible field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;
 mutable field net/minecraft/world/biome/Biome weather Lnet/minecraft/world/biome/Biome$Weather;
-accessible field net/minecraft/world/biome/Biome field_63809 Lnet/minecraft/class_12199;
-mutable field net/minecraft/world/biome/Biome field_63809 Lnet/minecraft/class_12199;
+accessible field net/minecraft/world/biome/Biome environmentAttributes Lnet/minecraft/world/attribute/EnvironmentAttributeMap;
+mutable field net/minecraft/world/biome/Biome environmentAttributes Lnet/minecraft/world/attribute/EnvironmentAttributeMap;
 accessible field net/minecraft/world/biome/Biome generationSettings Lnet/minecraft/world/biome/GenerationSettings;
 accessible field net/minecraft/world/biome/Biome spawnSettings Lnet/minecraft/world/biome/SpawnSettings;
 

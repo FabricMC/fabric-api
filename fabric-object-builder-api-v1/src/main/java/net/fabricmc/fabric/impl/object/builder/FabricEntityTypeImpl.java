@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;

@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.BlockRenderLayers;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
@@ -62,7 +62,7 @@ public class BlockRenderInfo {
 		useAo = MinecraftClient.isAmbientOcclusionEnabled();
 		defaultAo = useAo && blockState.getLuminance() == 0;
 
-		defaultLayer = RenderLayers.getBlockLayer(blockState);
+		defaultLayer = BlockRenderLayers.getBlockLayer(blockState);
 
 		cullCompletionFlags = 0;
 		cullResultFlags = 0;

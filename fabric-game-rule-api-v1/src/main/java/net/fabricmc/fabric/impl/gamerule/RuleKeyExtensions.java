@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.gamerule;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
 

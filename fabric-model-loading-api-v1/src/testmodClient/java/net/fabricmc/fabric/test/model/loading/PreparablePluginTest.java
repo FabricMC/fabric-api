@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import net.minecraft.client.render.model.BakedModelManager;

@@ -80,4 +80,8 @@
  *
  * @see net.fabricmc.fabric.api.gametest.v1.GameTest
  */
+
+@NullMarked
 package net.fabricmc.fabric.api.gametest.v1;
+
+import org.jspecify.annotations.NullMarked;

@@ -95,7 +95,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		Direction dir = EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.invoker().modifySleepDirection((LivingEntity) (Object) this, pos, initial);
 
 		if (dir == null) {
-			cir.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.field_7531));
+			cir.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.OTHER));
 		}
 
 		return dir;

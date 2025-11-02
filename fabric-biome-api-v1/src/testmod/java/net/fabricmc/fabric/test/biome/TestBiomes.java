@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.test.biome;
 
-import net.minecraft.class_12190;
-import net.minecraft.class_12206;
 import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.attribute.AmbientSounds;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
@@ -63,9 +63,9 @@ public final class TestBiomes {
 				.temperature(0.8f)
 				.downfall(0.4f)
 				.precipitation(false)
-				.method_75737(class_12206.SKY_COLOR_VISUAL, 7907327)
-				.method_75737(class_12206.FOG_COLOR_VISUAL, 12638463)
-				.method_75737(class_12206.WATER_FOG_COLOR_VISUAL, 329011)
+				.setEnvironmentAttribute(EnvironmentAttributes.SKY_COLOR_VISUAL, 7907327)
+				.setEnvironmentAttribute(EnvironmentAttributes.FOG_COLOR_VISUAL, 12638463)
+				.setEnvironmentAttribute(EnvironmentAttributes.WATER_FOG_COLOR_VISUAL, 329011)
 				.effects(
 					new BiomeEffects.Builder()
 						.waterColor(4159204)
@@ -103,10 +103,10 @@ public final class TestBiomes {
 				.precipitation(false)
 				.temperature(0.5F)
 				.downfall(0.5F)
-				.method_75737(class_12206.WATER_FOG_COLOR_VISUAL, 329011)
-				.method_75737(class_12206.FOG_COLOR_VISUAL, 10518688)
-				.method_75737(class_12206.SKY_COLOR_VISUAL, 0)
-				.method_75737(class_12206.AMBIENT_SOUNDS_AUDIO, class_12190.field_63685)
+				.setEnvironmentAttribute(EnvironmentAttributes.WATER_FOG_COLOR_VISUAL, 329011)
+				.setEnvironmentAttribute(EnvironmentAttributes.FOG_COLOR_VISUAL, 10518688)
+				.setEnvironmentAttribute(EnvironmentAttributes.SKY_COLOR_VISUAL, 0)
+				.setEnvironmentAttribute(EnvironmentAttributes.AMBIENT_SOUNDS_AUDIO, AmbientSounds.CAVE)
 				.effects(
 					new BiomeEffects.Builder()
 						.waterColor(4159204)

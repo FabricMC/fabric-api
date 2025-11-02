@@ -23,7 +23,7 @@ import java.util.Objects;
 import io.netty.buffer.ByteBufUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.NetworkPhase;
 import net.minecraft.network.NetworkSide;
@@ -103,13 +103,11 @@ public class PayloadTypeRegistryImpl<B extends PacketByteBuf> implements Payload
 		return type;
 	}
 
-	@Nullable
-	public CustomPayload.Type<B, ? extends CustomPayload> get(Identifier id) {
+	public CustomPayload.@Nullable Type<B, ? extends CustomPayload> get(Identifier id) {
 		return packetTypes.get(id);
 	}
 
-	@Nullable
-	public <T extends CustomPayload> CustomPayload.Type<B, T> get(CustomPayload.Id<T> id) {
+	public <T extends CustomPayload> CustomPayload.@Nullable Type<B, T> get(CustomPayload.Id<T> id) {
 		//noinspection unchecked
 		return (CustomPayload.Type<B, T>) packetTypes.get(id.id());
 	}

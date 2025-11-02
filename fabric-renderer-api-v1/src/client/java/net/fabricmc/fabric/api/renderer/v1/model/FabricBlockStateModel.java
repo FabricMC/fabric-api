@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.renderer.v1.model;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BlockModelPart;

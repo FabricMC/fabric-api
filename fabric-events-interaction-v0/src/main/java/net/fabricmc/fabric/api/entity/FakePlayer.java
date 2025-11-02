@@ -23,7 +23,7 @@ import java.util.UUID;
 
 import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.entity.Entity;

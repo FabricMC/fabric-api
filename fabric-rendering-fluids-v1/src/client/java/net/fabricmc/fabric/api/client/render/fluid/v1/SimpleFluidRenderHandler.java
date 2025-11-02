@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;

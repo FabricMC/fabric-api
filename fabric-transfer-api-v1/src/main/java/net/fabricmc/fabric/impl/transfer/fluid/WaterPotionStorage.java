@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.transfer.fluid;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.PotionContentsComponent;

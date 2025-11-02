@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.mojang.datafixers.types.Type;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
