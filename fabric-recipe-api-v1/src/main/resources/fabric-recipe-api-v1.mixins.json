@@ -3,11 +3,16 @@
   "package": "net.fabricmc.fabric.mixin.recipe",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "RecipeManagerMixin",
     "ServerRecipeManagerMixin",
     "ingredient.ClientConnectionMixin",
     "ingredient.EncoderHandlerMixin",
     "ingredient.IngredientMixin",
-    "ingredient.ShapelessRecipeMixin"
+    "ingredient.ShapelessRecipeMixin",
+    "sync.ClientConnectionMixin",
+    "sync.PreparedRecipesMixin",
+    "sync.ServerCommonNetworkHandlerAccessor",
+    "sync.ServerRecipeManagerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

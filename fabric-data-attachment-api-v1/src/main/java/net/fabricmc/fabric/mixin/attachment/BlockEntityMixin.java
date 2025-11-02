@@ -35,9 +35,9 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 @Mixin(BlockEntity.class)
 abstract class BlockEntityMixin implements AttachmentTargetImpl {
@@ -81,11 +81,11 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
 		PlayerLookup.tracking((BlockEntity) (Object) this)
 				.forEach(player -> {
 					if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
-						AttachmentSync.trySync(payload, player);
+						AttachmentSync.trySync(change, player);
 					}
 				});
 	}

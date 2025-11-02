@@ -243,7 +243,30 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
 	// Logs
+	/**
+	 * For logs found naturally in the Overworld, does not include Stripped Logs.
+	 * Aliased with {@link BlockTags#OVERWORLD_NATURAL_LOGS} for consistency.
+	 */
+	public static final TagKey<Block> OVERWORLD_NATURAL_LOGS = register("natural_logs/overworld");
+	/**
+	 * For logs, including Stems, found naturally in the Nether, does not include Stripped Logs.
+	 */
+	public static final TagKey<Block> NETHER_NATURAL_LOGS = register("natural_logs/nether");
+	/**
+	 * For logs, including Stems, found naturally that have not been stripped.
+	 */
+	public static final TagKey<Block> NATURAL_LOGS = register("natural_logs");
+	/**
+	 * For six-sided wood blocks, including Hyphae, found naturally that have not been stripped.
+	 */
+	public static final TagKey<Block> NATURAL_WOODS = register("natural_woods");
+	/**
+	 * For logs, including Stems, found naturally that have been stripped.
+	 */
 	public static final TagKey<Block> STRIPPED_LOGS = register("stripped_logs");
+	/**
+	 * For six-sided wood blocks, including Hyphae, found naturally that have been stripped.
+	 */
 	public static final TagKey<Block> STRIPPED_WOODS = register("stripped_woods");
 
 	// Misc

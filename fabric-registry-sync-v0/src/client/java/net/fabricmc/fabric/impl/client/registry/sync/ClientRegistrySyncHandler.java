@@ -21,7 +21,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -36,13 +35,14 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.thread.ThreadExecutor;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
-import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.SyncCompletePayload;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistrySyncPayload;
 
 public final class ClientRegistrySyncHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientRegistrySyncHandler.class);
@@ -50,45 +50,30 @@ public final class ClientRegistrySyncHandler {
 	private ClientRegistrySyncHandler() {
 	}
 
-	public static <T extends RegistryPacketHandler.RegistrySyncPayload> CompletableFuture<Boolean> receivePacket(ThreadExecutor<?> executor, RegistryPacketHandler<T> handler, T payload, boolean accept) {
-		handler.receivePayload(payload);
-
-		if (!handler.isPacketFinished()) {
-			return CompletableFuture.completedFuture(false);
+	public static void receivePacket(RegistrySyncPayload payload, ClientConfigurationNetworking.Context context) {
+		if (!RegistrySyncManager.DEBUG && context.client().isInSingleplayer()) {
+			context.responseSender().sendPacket(SyncCompletePayload.INSTANCE);
+			return;
 		}
 
-		if (RegistrySyncManager.DEBUG) {
-			String handlerName = handler.getClass().getSimpleName();
-			LOGGER.info("{} total packet: {}", handlerName, handler.getTotalPacketReceived());
-			LOGGER.info("{} raw size: {}", handlerName, handler.getRawBufSize());
-			LOGGER.info("{} deflated size: {}", handlerName, handler.getDeflatedBufSize());
-		}
-
-		RegistryPacketHandler.SyncedPacketData data = handler.getSyncedPacketData();
-
-		if (!accept) {
-			return CompletableFuture.completedFuture(true);
-		}
-
-		return executor.submit(() -> {
-			if (data == null) {
-				throw new CompletionException(new RemapException("Received null map in sync packet!"));
-			}
-
+		context.client().execute(() -> {
 			try {
-				apply(data);
-				return true;
-			} catch (RemapException e) {
-				throw new CompletionException(e);
+				apply(payload);
+				context.responseSender().sendPacket(SyncCompletePayload.INSTANCE);
+			} catch (Throwable e) {
+				LOGGER.error("Registry remapping failed!", e);
+				context.responseSender().disconnect(getText(e));
+				return;
 			}
 		});
 	}
 
-	public static void apply(RegistryPacketHandler.SyncedPacketData data) throws RemapException {
+	@VisibleForTesting
+	public static void apply(RegistrySyncPayload data) throws RemapException {
 		// First check that all of the data provided is valid before making any changes
 		checkRemoteRemap(data);
 
-		for (Map.Entry<Identifier, Object2IntMap<Identifier>> entry : data.idMap().entrySet()) {
+		for (Map.Entry<Identifier, Object2IntMap<Identifier>> entry : data.registryMap().entrySet()) {
 			final Identifier registryId = entry.getKey();
 
 			Registry<?> registry = Registries.REGISTRIES.get(registryId);
@@ -112,8 +97,8 @@ public final class ClientRegistrySyncHandler {
 	}
 
 	@VisibleForTesting
-	public static void checkRemoteRemap(RegistryPacketHandler.SyncedPacketData data) throws RemapException {
-		Map<Identifier, Object2IntMap<Identifier>> map = data.idMap();
+	public static void checkRemoteRemap(RegistrySyncPayload data) throws RemapException {
+		Map<Identifier, Object2IntMap<Identifier>> map = data.registryMap();
 		ArrayList<Identifier> missingRegistries = new ArrayList<>();
 		Map<Identifier, List<Identifier>> missingEntries = new HashMap<>();
 
@@ -232,8 +217,22 @@ public final class ClientRegistrySyncHandler {
 		return text;
 	}
 
-	private static boolean isRegistryOptional(Identifier registryId, RegistryPacketHandler.SyncedPacketData data) {
-		EnumSet<RegistryAttribute> registryAttributes = data.attributes().get(registryId);
+	private static boolean isRegistryOptional(Identifier registryId, RegistrySyncPayload data) {
+		EnumSet<RegistryAttribute> registryAttributes = data.registryAttributes().get(registryId);
 		return registryAttributes.contains(RegistryAttribute.OPTIONAL);
+	}
+
+	private static Text getText(Throwable e) {
+		if (e instanceof RemapException remapException) {
+			final Text text = remapException.getText();
+
+			if (text != null) {
+				return text;
+			}
+		} else if (e instanceof CompletionException completionException) {
+			return getText(completionException.getCause());
+		}
+
+		return Text.literal("Registry remapping failed: " + e.getMessage());
 	}
 }

@@ -30,7 +30,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 public interface AttachmentTargetImpl extends AttachmentTarget {
 	/**
@@ -85,7 +84,7 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
+	default void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
 	}
 
 	default void fabric_markChanged(AttachmentType<?> type) {

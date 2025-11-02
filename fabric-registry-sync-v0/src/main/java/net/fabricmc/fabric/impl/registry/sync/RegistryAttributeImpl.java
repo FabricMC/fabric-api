@@ -59,4 +59,8 @@ public final class RegistryAttributeImpl implements RegistryAttributeHolder {
 	public boolean hasAttribute(RegistryAttribute attribute) {
 		return attributes.contains(attribute);
 	}
+
+	public EnumSet<RegistryAttribute> getAttributes() {
+		return attributes;
+	}
 }

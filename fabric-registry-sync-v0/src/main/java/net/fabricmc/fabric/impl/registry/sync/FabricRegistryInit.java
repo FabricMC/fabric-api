@@ -24,13 +24,15 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistrySyncPayload;
 
 public class FabricRegistryInit implements ModInitializer {
+	private static final int MAX_PACKET_SIZE = Integer.getInteger("fabric.registry.sync.max_packet_size", 128 * 1024 * 1024);
+
 	@Override
 	public void onInitialize() {
 		PayloadTypeRegistry.configurationC2S().register(SyncCompletePayload.ID, SyncCompletePayload.CODEC);
-		PayloadTypeRegistry.configurationS2C().register(DirectRegistryPacketHandler.Payload.ID, DirectRegistryPacketHandler.Payload.CODEC);
+		PayloadTypeRegistry.configurationS2C().registerLarge(RegistrySyncPayload.ID, RegistrySyncPayload.CODEC, MAX_PACKET_SIZE);
 
 		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(RegistrySyncManager::configureClient);
 		ServerConfigurationNetworking.registerGlobalReceiver(SyncCompletePayload.ID, (payload, context) -> {

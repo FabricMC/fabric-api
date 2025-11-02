@@ -52,12 +52,10 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
-import net.fabricmc.fabric.impl.registry.sync.packet.DirectRegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistrySyncPayload;
 
 public final class RegistrySyncManager {
 	public static final boolean DEBUG = Boolean.getBoolean("fabric.registry.debug");
-
-	public static final DirectRegistryPacketHandler DIRECT_PACKET_HANDLER = new DirectRegistryPacketHandler();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = Boolean.getBoolean("fabric.registry.debug.writeContentsAsCsv");
@@ -80,7 +78,7 @@ public final class RegistrySyncManager {
 			return;
 		}
 
-		if (!ServerConfigurationNetworking.canSend(handler, DIRECT_PACKET_HANDLER.getPacketId())) {
+		if (!ServerConfigurationNetworking.canSend(handler, RegistrySyncPayload.ID)) {
 			if (areAllRegistriesOptional(map)) {
 				// Allow the client to connect if all of the registries we want to sync are optional
 				return;
@@ -144,7 +142,7 @@ public final class RegistrySyncManager {
 
 		@Override
 		public void sendPacket(Consumer<Packet<?>> sender) {
-			DIRECT_PACKET_HANDLER.sendPacket(payload -> handler.sendPacket(ServerConfigurationNetworking.createS2CPacket(payload)), map);
+			sender.accept(ServerConfigurationNetworking.createS2CPacket(new RegistrySyncPayload(map)));
 		}
 
 		@Override

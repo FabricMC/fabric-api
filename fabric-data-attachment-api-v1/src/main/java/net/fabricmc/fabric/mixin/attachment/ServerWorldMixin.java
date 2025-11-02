@@ -38,9 +38,9 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 @Mixin(ServerWorld.class)
 abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
@@ -75,12 +75,12 @@ abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_syncChange(AttachmentType<?> type, AttachmentSyncPayloadS2C payload) {
+	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
 		if ((Object) this instanceof ServerWorld serverWorld) {
 			PlayerLookup.world(serverWorld)
 					.forEach(player -> {
 						if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
-							AttachmentSync.trySync(payload, player);
+							AttachmentSync.trySync(change, player);
 						}
 					});
 		}

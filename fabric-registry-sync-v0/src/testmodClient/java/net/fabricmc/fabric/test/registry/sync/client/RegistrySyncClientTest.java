@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.impl.client.registry.sync.ClientRegistrySyncHandler;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
-import net.fabricmc.fabric.impl.registry.sync.packet.RegistryPacketHandler;
+import net.fabricmc.fabric.impl.registry.sync.packet.RegistrySyncPayload;
 
 public class RegistrySyncClientTest implements ClientModInitializer {
 	@Override
@@ -50,7 +50,7 @@ public class RegistrySyncClientTest implements ClientModInitializer {
 					);
 
 					try {
-						ClientRegistrySyncHandler.checkRemoteRemap(new RegistryPacketHandler.SyncedPacketData(registryData, attributes));
+						ClientRegistrySyncHandler.checkRemoteRemap(new RegistrySyncPayload(registryData, attributes));
 					} catch (RemapException e) {
 						final ServerPlayerEntity player = context.getSource().getPlayer();
 

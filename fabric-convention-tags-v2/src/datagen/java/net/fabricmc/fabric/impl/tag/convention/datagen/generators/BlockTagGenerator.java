@@ -676,6 +676,39 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateLogTags() {
+		valueLookupBuilder(ConventionalBlockTags.OVERWORLD_NATURAL_LOGS)
+				.add(Blocks.ACACIA_LOG)
+				.add(Blocks.BAMBOO_BLOCK)
+				.add(Blocks.BIRCH_LOG)
+				.add(Blocks.CHERRY_LOG)
+				.add(Blocks.DARK_OAK_LOG)
+				.add(Blocks.JUNGLE_LOG)
+				.add(Blocks.MANGROVE_LOG)
+				.add(Blocks.OAK_LOG)
+				.add(Blocks.PALE_OAK_LOG)
+				.add(Blocks.SPRUCE_LOG);
+
+		valueLookupBuilder(ConventionalBlockTags.NETHER_NATURAL_LOGS)
+				.add(Blocks.CRIMSON_STEM)
+				.add(Blocks.WARPED_STEM);
+
+		valueLookupBuilder(ConventionalBlockTags.NATURAL_LOGS)
+				.addOptionalTag(ConventionalBlockTags.OVERWORLD_NATURAL_LOGS)
+				.addOptionalTag(ConventionalBlockTags.NETHER_NATURAL_LOGS);
+
+		valueLookupBuilder(ConventionalBlockTags.NATURAL_WOODS)
+				.add(Blocks.ACACIA_WOOD)
+				.add(Blocks.BIRCH_WOOD)
+				.add(Blocks.CHERRY_WOOD)
+				.add(Blocks.DARK_OAK_WOOD)
+				.add(Blocks.JUNGLE_WOOD)
+				.add(Blocks.MANGROVE_WOOD)
+				.add(Blocks.OAK_WOOD)
+				.add(Blocks.PALE_OAK_WOOD)
+				.add(Blocks.SPRUCE_WOOD)
+				.add(Blocks.CRIMSON_HYPHAE)
+				.add(Blocks.WARPED_HYPHAE);
+
 		valueLookupBuilder(ConventionalBlockTags.STRIPPED_LOGS)
 				.add(Blocks.STRIPPED_ACACIA_LOG)
 				.add(Blocks.STRIPPED_BAMBOO_BLOCK)
@@ -723,6 +756,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	private void generateTagAlias() {
+		aliasGroup("natural_logs/overworld").add(BlockTags.OVERWORLD_NATURAL_LOGS, ConventionalBlockTags.OVERWORLD_NATURAL_LOGS);
+
 		aliasGroup("ores/coal").add(BlockTags.COAL_ORES, ConventionalBlockTags.COAL_ORES);
 		aliasGroup("ores/copper").add(BlockTags.COPPER_ORES, ConventionalBlockTags.COPPER_ORES);
 		aliasGroup("ores/diamond").add(BlockTags.DIAMOND_ORES, ConventionalBlockTags.DIAMOND_ORES);

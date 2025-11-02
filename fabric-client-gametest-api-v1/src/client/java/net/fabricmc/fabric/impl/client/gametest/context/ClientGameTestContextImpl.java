@@ -74,8 +74,8 @@ import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotCompari
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotOptionsImpl;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.fabricmc.fabric.impl.client.gametest.world.TestWorldBuilderImpl;
-import net.fabricmc.fabric.mixin.client.gametest.CyclingButtonWidgetAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.ScreenAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.gui.CyclingButtonWidgetAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.gui.ScreenAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.lifecycle.GameOptionsAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.screenshot.RenderTickCounterConstantAccessor;
 import net.fabricmc.loader.api.FabricLoader;
