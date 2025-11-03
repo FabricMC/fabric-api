@@ -26,6 +26,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import org.jetbrains.annotations.ApiStatus;
+import com.mojang.serialization.JavaOps;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.registry.Registries;
@@ -146,6 +147,8 @@ public class GameRuleBuilder<T> {
 		Objects.requireNonNull(this.defaultValue, "GameRule defaultValue cannot be null!");
 		Objects.requireNonNull(this.requiredFeatures, "GameRule requiredFeatures cannot be null! Consider using FeatureSet.empty() instead.");
 
+		this.codec.encodeStart(JavaOps.INSTANCE, this.defaultValue).getOrThrow(error -> new IllegalStateException("Failed to serialize default value: " + error));
+
 		GameRule<T> rule = new GameRule<>(this.category, this.type, this.argumentType, this.acceptor, this.codec, this.commandResultSupplier, this.defaultValue, this.requiredFeatures);
 
 		if (this.fabricCategory != null) {
@@ -232,8 +235,8 @@ public class GameRuleBuilder<T> {
 			super(defaultValue);
 		}
 
-		public abstract NumberRuleBuilder<T> clamped(T minValue);
-		public abstract NumberRuleBuilder<T> clamped(T minValue, T maxValue);
+		public abstract NumberRuleBuilder<T> minValue(T minValue);
+		public abstract NumberRuleBuilder<T> range(T minValue, T maxValue);
 	}
 
 	public static final class IntegerRuleBuilder extends NumberRuleBuilder<Integer> {
@@ -283,12 +286,16 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public IntegerRuleBuilder clamped(Integer minValue) {
-			return clamped(minValue, Integer.MAX_VALUE);
+		public IntegerRuleBuilder minValue(Integer minValue) {
+			return range(minValue, Integer.MAX_VALUE);
 		}
 
 		@Override
-		public IntegerRuleBuilder clamped(Integer minValue, Integer maxValue) {
+		public IntegerRuleBuilder range(Integer minValue, Integer maxValue) {
+			if (this.defaultValue < minValue || this.defaultValue > maxValue) {
+				throw new IllegalArgumentException("Default value is out-of-bounds: " + this.defaultValue);
+			}
+
 			return this.argumentType(IntegerArgumentType.integer(minValue, maxValue)).codec(Codec.intRange(minValue, maxValue));
 		}
 	}
@@ -340,12 +347,16 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public DoubleRuleBuilder clamped(Double minValue) {
-			return clamped(minValue, Double.MAX_VALUE);
+		public DoubleRuleBuilder minValue(Double minValue) {
+			return range(minValue, Double.MAX_VALUE);
 		}
 
 		@Override
-		public DoubleRuleBuilder clamped(Double minValue, Double maxValue) {
+		public DoubleRuleBuilder range(Double minValue, Double maxValue) {
+			if (this.defaultValue < minValue || this.defaultValue > maxValue) {
+				throw new IllegalArgumentException("Default value is out-of-bounds: " + this.defaultValue);
+			}
+
 			return this.argumentType(DoubleArgumentType.doubleArg(minValue, maxValue)).codec(Codec.doubleRange(minValue, maxValue));
 		}
 	}

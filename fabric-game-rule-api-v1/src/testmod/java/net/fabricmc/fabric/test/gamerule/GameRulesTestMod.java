@@ -48,10 +48,10 @@ public class GameRulesTestMod implements ModInitializer {
 
 	// Bounded, Integer, Double and Float rules
 	public static final GameRule<Integer> POSITIVE_ONLY_TEST_INT = GameRuleBuilder.forInteger(2)
-			.clamped(0)
+			.minValue(0)
 			.buildAndRegister(id("positive_only_test_integer"));
 	public static final GameRule<Double> ONE_TO_TEN_DOUBLE = GameRuleBuilder.forDouble(1.0D)
-			.clamped(1.0D, 10.0D)
+			.range(1.0D, 10.0D)
 			.buildAndRegister(id("one_to_ten_double"));
 
 	// Test enum rule, with only some supported values.
