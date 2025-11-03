@@ -27,6 +27,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import org.jetbrains.annotations.ApiStatus;
 import com.mojang.serialization.JavaOps;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.registry.Registries;
@@ -417,6 +418,8 @@ public class GameRuleBuilder<T> {
 		@SafeVarargs
 		public final EnumRuleBuilder<E> supportedValues(E... supportedValues) {
 			if (Nullables.isEmpty(supportedValues)) throw new IllegalArgumentException("No values are supported!");
+
+			if (!ArrayUtils.contains(supportedValues, this.defaultValue)) throw new IllegalArgumentException("Supported enum value must include the default " + this.defaultValue);
 
 			this.supportedValues = supportedValues;
 			return this;
