@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
-import org.jspecify.annotations.Nullable;
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.rule.GameRule;
 
@@ -42,14 +40,14 @@ public final class GameRuleEvents {
 	@FunctionalInterface
 	public interface ValueUpdate<T> {
 		/**
-		 * Called when a GameRule's value is updated in {@link MinecraftServer}.
+		 * Called when a GameRule's value is updated in the server.
 		 * @param value the updated value
 		 * @param server the server
 		 * @see MinecraftServer#onGameRuleUpdated(GameRule, Object)
 		 */
 		void onGameRuleUpdated(
 				T value,
-				@Nullable MinecraftServer server
+				MinecraftServer server
 		);
 	}
 }

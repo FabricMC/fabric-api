@@ -69,11 +69,11 @@ public final class CustomGameRuleCategory {
 	}
 
 	/**
-	 * Gets the custom category a {@link GameRule game rule} is registered to.
+	 * Gets the custom category a {@linkplain GameRule game rule} is registered to.
 	 *
 	 * @param rule the rule
 	 * @param <T>  the type of value the rule holds
-	 * @return the custom category this rule belongs to. Otherwise {@link Optional#empty() empty}
+	 * @return the custom category this rule belongs to. Otherwise {@linkplain Optional#empty() empty}
 	 */
 	public static <T> Optional<CustomGameRuleCategory> getCategory(GameRule<T> rule) {
 		return Optional.ofNullable(((RuleCategoryExtensions) (Object) rule).fabric_getCustomCategory());

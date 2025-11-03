@@ -39,7 +39,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleEvents;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 
 public class GameRulesTestMod implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GameRulesTestMod.class);
@@ -48,28 +47,28 @@ public class GameRulesTestMod implements ModInitializer {
 	public static final CustomGameRuleCategory RED_CATEGORY = new CustomGameRuleCategory(Identifier.of("fabric", "red"), Text.literal("This One is Red").styled(style -> style.withBold(true).withColor(Formatting.DARK_RED)));
 
 	// Bounded, Integer, Double and Float rules
-	public static final GameRule<Integer> POSITIVE_ONLY_TEST_INT = GameRuleBuilder.integerRuleBuilder(2)
+	public static final GameRule<Integer> POSITIVE_ONLY_TEST_INT = GameRuleBuilder.forInteger(2)
 			.clamped(0)
 			.buildAndRegister(id("positive_only_test_integer"));
-	public static final GameRule<Double> ONE_TO_TEN_DOUBLE = GameRuleBuilder.doubleRuleBuilder(1.0D)
+	public static final GameRule<Double> ONE_TO_TEN_DOUBLE = GameRuleBuilder.forDouble(1.0D)
 			.clamped(1.0D, 10.0D)
 			.buildAndRegister(id("one_to_ten_double"));
 
 	// Test enum rule, with only some supported values.
-	public static final GameRule<Direction> CARDINAL_DIRECTION_ENUM_RULE = GameRuleBuilder.enumRuleBuilder(Direction.NORTH)
+	public static final GameRule<Direction> CARDINAL_DIRECTION_ENUM_RULE = GameRuleBuilder.forEnum(Direction.NORTH)
 			.supportedValues(CARDINAL_DIRECTIONS)
 			.buildAndRegister(id("cardinal_direction"));
 
 	// Rules in custom categories
-	public static final GameRule<Boolean> RED_BOOLEAN = GameRuleBuilder.booleanRuleBuilder(true)
+	public static final GameRule<Boolean> RED_BOOLEAN = GameRuleBuilder.forBoolean(true)
 			.category(RED_CATEGORY)
 			.buildAndRegister(Identifier.of("fabric", "red_boolean"));
-	public static final GameRule<Boolean> GREEN_BOOLEAN = GameRuleBuilder.booleanRuleBuilder(false)
+	public static final GameRule<Boolean> GREEN_BOOLEAN = GameRuleBuilder.forBoolean(false)
 			.category(GREEN_CATEGORY)
 			.buildAndRegister(id("green_boolean"));
 
 	// An enum rule with no "toString" logic
-	public static final GameRule<TestEnum> RED_ENUM = GameRuleBuilder.enumRuleBuilder(TestEnum.SCISSORS)
+	public static final GameRule<TestEnum> RED_ENUM = GameRuleBuilder.forEnum(TestEnum.SCISSORS)
 			.category(RED_CATEGORY)
 			.buildAndRegister(id("red_enum"));
 
@@ -81,18 +80,6 @@ public class GameRulesTestMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Loading GameRules test mod.");
-
-		// Test a vanilla rule
-		if (!GameRuleRegistry.hasRegistration("keep_inventory")) {
-			throw new AssertionError("Expected to find \"keep_inventory\" already registered, but it was not detected as registered");
-		}
-
-		// Test our own rule
-		if (!GameRuleRegistry.hasRegistration("red_enum")) {
-			throw new AssertionError("Expected to find \"red_enum\" already registered, but it was not detected as registered");
-		}
-
 		LOGGER.info("Loaded GameRules test mod.");
 
 		// Validate the EnumRule has registered its commands
@@ -152,7 +139,7 @@ public class GameRulesTestMod implements ModInitializer {
 		});
 
 		GameRuleEvents.changeCallback(GameRules.FIRE_DAMAGE).register(
-				(value, server) -> FIRE_DAMAGE_CHANGED.set(true)
+				(rule, value, server) -> FIRE_DAMAGE_CHANGED.set(true)
 		);
 	}
 }

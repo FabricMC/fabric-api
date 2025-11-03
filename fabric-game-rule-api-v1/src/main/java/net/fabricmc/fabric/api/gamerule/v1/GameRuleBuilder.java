@@ -28,8 +28,11 @@ import com.mojang.serialization.DataResult;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Nullables;
 import net.minecraft.world.rule.GameRule;
 import net.minecraft.world.rule.GameRuleCategory;
 import net.minecraft.world.rule.GameRuleType;
@@ -44,16 +47,13 @@ import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
  * A utility class containing classes and methods for building {@link GameRule}s.
  * A game rule is a persisted, per server data value which may control gameplay aspects.
  *
- * <p>To register a game rule, you can use {@link GameRuleRegistry#register(Identifier, GameRule)} or {@link GameRuleBuilder#buildAndRegister(Identifier)}.
+ * <p>To register a game rule, you can use {@link GameRuleBuilder#buildAndRegister(Identifier)}.
  * For example, to register a game rule that is an integer where the default value is 1 and the acceptable values are between 0 and 10, one would use the following:
  * <blockquote><pre>
- * public static final GameRule&lt;Integer&gt; EXAMPLE_INT_RULE = GameRuleBuilder.integerRuleBuilder(1).clamped(0, 10).buildAndRegister(Identifier.of(MOD_ID, "example_int_rule"));
+ * public static final GameRule&lt;Integer&gt; EXAMPLE_INT_RULE = GameRuleBuilder.forInteger(1).clamped(0, 10).buildAndRegister(Identifier.of(MOD_ID, "example_int_rule"));
  * </pre></blockquote>
  *
- * <p>To register a game rule in a custom category, {@link GameRuleRegistry#register(Identifier, GameRule, CustomGameRuleCategory)} should be used.
- * Alternatively, call {@link GameRuleBuilder#category(CustomGameRuleCategory)} on the builder to set the custom category.
- *
- * @see GameRuleRegistry
+ * <p>To register a game rule in a custom category, call {@link GameRuleBuilder#category(CustomGameRuleCategory)} on the builder.
  */
 @SuppressWarnings("UnusedReturnValue")
 @ApiStatus.NonExtendable
@@ -74,25 +74,25 @@ public class GameRuleBuilder<T> {
 	protected GameRules.Acceptor<T> acceptor;
 	protected Codec<T> codec;
 	protected ToIntFunction<T> commandResultSupplier;
-	protected FeatureSet featureSet = FeatureSet.empty();
+	protected FeatureSet requiredFeatures = FeatureSet.empty();
 
 	protected GameRuleBuilder(T defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 
-	public static BooleanRuleBuilder booleanRuleBuilder(boolean defaultValue) {
+	public static BooleanRuleBuilder forBoolean(boolean defaultValue) {
 		return new BooleanRuleBuilder(defaultValue);
 	}
 
-	public static IntegerRuleBuilder integerRuleBuilder(int defaultValue) {
+	public static IntegerRuleBuilder forInteger(int defaultValue) {
 		return new IntegerRuleBuilder(defaultValue);
 	}
 
-	public static DoubleRuleBuilder doubleRuleBuilder(double defaultValue) {
+	public static DoubleRuleBuilder forDouble(double defaultValue) {
 		return new DoubleRuleBuilder(defaultValue);
 	}
 
-	public static <E extends Enum<E>> EnumRuleBuilder<E> enumRuleBuilder(E defaultValue) {
+	public static <E extends Enum<E>> EnumRuleBuilder<E> forEnum(E defaultValue) {
 		return new EnumRuleBuilder<>(defaultValue);
 	}
 
@@ -113,7 +113,7 @@ public class GameRuleBuilder<T> {
 	}
 
 	/**
-	 * Specifies the ArgumentType for the builder. Please note that this is not necessary for enum rules.
+	 * Specifies the ArgumentType for the builder. Please note that this is specified by default and is usually not necessary.
 	 * @param argumentType the ArgumentType
 	 * @return the builder, for chaining
 	 */
@@ -127,8 +127,8 @@ public class GameRuleBuilder<T> {
 		return this;
 	}
 
-	public GameRuleBuilder<T> featureSet(FeatureSet featureSet) {
-		this.featureSet = featureSet;
+	public GameRuleBuilder<T> requiredFeatures(FeatureSet requiredFeatures) {
+		this.requiredFeatures = requiredFeatures;
 		return this;
 	}
 
@@ -144,9 +144,9 @@ public class GameRuleBuilder<T> {
 		Objects.requireNonNull(this.codec, "GameRule codec cannot be null!");
 		Objects.requireNonNull(this.commandResultSupplier, "GameRule commandResultSupplier cannot be null!");
 		Objects.requireNonNull(this.defaultValue, "GameRule defaultValue cannot be null!");
-		Objects.requireNonNull(this.featureSet, "GameRule featureSet cannot be null! Consider using FeatureSet.empty() instead.");
+		Objects.requireNonNull(this.requiredFeatures, "GameRule requiredFeatures cannot be null! Consider using FeatureSet.empty() instead.");
 
-		GameRule<T> rule = new GameRule<>(this.category, this.type, this.argumentType, this.acceptor, this.codec, this.commandResultSupplier, this.defaultValue, this.featureSet);
+		GameRule<T> rule = new GameRule<>(this.category, this.type, this.argumentType, this.acceptor, this.codec, this.commandResultSupplier, this.defaultValue, this.requiredFeatures);
 
 		if (this.fabricCategory != null) {
 			((RuleCategoryExtensions) (Object) rule).fabric_setCustomCategory(this.fabricCategory);
@@ -166,7 +166,7 @@ public class GameRuleBuilder<T> {
 	 */
 	public GameRule<T> buildAndRegister(Identifier id) {
 		GameRule<T> rule = this.build();
-		return GameRuleRegistry.register(id, rule);
+		return Registry.register(Registries.GAME_RULE, id, rule);
 	}
 
 	// RULE VISITORS
@@ -187,9 +187,9 @@ public class GameRuleBuilder<T> {
 			super(defaultValue);
 			this.type = GameRuleType.BOOL;
 			this.acceptor = GameRuleVisitor::visitBoolean;
-			this.argumentType(BoolArgumentType.bool());
-			this.codec(Codec.BOOL);
-			this.commandResultSupplier(bool -> bool ? 1 : 0);
+			this.argumentType = BoolArgumentType.bool();
+			this.codec = Codec.BOOL;
+			this.commandResultSupplier = bool -> bool ? 1 : 0;
 		}
 
 		@Override
@@ -221,8 +221,8 @@ public class GameRuleBuilder<T> {
 			return this;
 		}
 
-		public BooleanRuleBuilder featureSet(FeatureSet featureSet) {
-			super.featureSet(featureSet);
+		public BooleanRuleBuilder requiredFeatures(FeatureSet requiredFeatures) {
+			super.requiredFeatures(requiredFeatures);
 			return this;
 		}
 	}
@@ -241,9 +241,9 @@ public class GameRuleBuilder<T> {
 			super(defaultValue);
 			this.type = GameRuleType.INT;
 			this.acceptor = GameRuleVisitor::visitInt;
-			this.argumentType(IntegerArgumentType.integer());
-			this.codec(Codec.INT);
-			this.commandResultSupplier(integer -> integer);
+			this.argumentType = IntegerArgumentType.integer();
+			this.codec = Codec.INT;
+			this.commandResultSupplier = integer -> integer;
 		}
 
 		@Override
@@ -277,8 +277,8 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public IntegerRuleBuilder featureSet(FeatureSet featureSet) {
-			super.featureSet(featureSet);
+		public IntegerRuleBuilder requiredFeatures(FeatureSet requiredFeatures) {
+			super.requiredFeatures(requiredFeatures);
 			return this;
 		}
 
@@ -298,9 +298,9 @@ public class GameRuleBuilder<T> {
 			super(defaultValue);
 			this.fabricType = FabricGameRuleType.DOUBLE;
 			this.acceptor = GameRuleBuilder::visitDouble;
-			this.argumentType(DoubleArgumentType.doubleArg());
-			this.codec(Codec.DOUBLE);
-			this.commandResultSupplier(value -> Double.compare(value, 0.0D));
+			this.argumentType = DoubleArgumentType.doubleArg();
+			this.codec = Codec.DOUBLE;
+			this.commandResultSupplier = value -> Double.compare(value, 0.0D);
 		}
 
 		@Override
@@ -334,8 +334,8 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public DoubleRuleBuilder featureSet(FeatureSet featureSet) {
-			super.featureSet(featureSet);
+		public DoubleRuleBuilder requiredFeatures(FeatureSet requiredFeatures) {
+			super.requiredFeatures(requiredFeatures);
 			return this;
 		}
 
@@ -357,14 +357,14 @@ public class GameRuleBuilder<T> {
 			super(defaultValue);
 			this.fabricType = FabricGameRuleType.ENUM;
 			this.acceptor = GameRuleBuilder::visitEnum;
-			this.argumentType(null);
-			this.codec(createEnumCodec(defaultValue.getDeclaringClass()));
-			this.commandResultSupplier(value -> {
+			this.argumentType = null;
+			this.codec = createEnumCodec(defaultValue.getDeclaringClass());
+			this.commandResultSupplier = value -> {
 				// For now, we are going to use the ordinal as the command result. Could be changed or set to relate to something else entirely. -i509VCB
 				//noinspection Convert2MethodRef
 				return value.ordinal();
-			});
-			this.supportedValues(defaultValue.getDeclaringClass().getEnumConstants());
+			};
+			this.supportedValues = defaultValue.getDeclaringClass().getEnumConstants();
 		}
 
 		@Override
@@ -398,12 +398,15 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public EnumRuleBuilder<E> featureSet(FeatureSet featureSet) {
-			super.featureSet(featureSet);
+		public EnumRuleBuilder<E> requiredFeatures(FeatureSet requiredFeatures) {
+			super.requiredFeatures(requiredFeatures);
 			return this;
 		}
 
-		public EnumRuleBuilder<E> supportedValues(E[] supportedValues) {
+		@SafeVarargs
+		public final EnumRuleBuilder<E> supportedValues(E... supportedValues) {
+			if (Nullables.isEmpty(supportedValues)) throw new IllegalArgumentException("No values are supported!");
+
 			this.supportedValues = supportedValues;
 			return this;
 		}
@@ -412,18 +415,12 @@ public class GameRuleBuilder<T> {
 		public GameRule<E> build() {
 			GameRule<E> rule = super.build();
 
-			Objects.requireNonNull(supportedValues, "Enum rule supportedValues cannot be null!");
-
-			if (supportedValues.length == 0) {
-				throw new IllegalArgumentException("Cannot register an enum rule where no values are supported!");
-			}
-
 			((RuleTypeExtensions) (Object) rule).fabric_setSupportedEnumValues(this.supportedValues);
 
 			return rule;
 		}
 
-		public static <E extends Enum<E>> Codec<E> createEnumCodec(Class<E> clazz) {
+		private static <E extends Enum<E>> Codec<E> createEnumCodec(Class<E> clazz) {
 			return Codec.STRING.comapFlatMap(string -> {
 				try {
 					return DataResult.success(Enum.valueOf(clazz, string));
