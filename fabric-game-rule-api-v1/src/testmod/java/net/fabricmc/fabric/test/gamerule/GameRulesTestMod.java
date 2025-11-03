@@ -50,15 +50,15 @@ public class GameRulesTestMod implements ModInitializer {
 	// Bounded, Integer, Double and Float rules
 	public static final GameRule<Integer> POSITIVE_ONLY_TEST_INT = GameRuleBuilder.integerRuleBuilder(2)
 			.clamped(0)
-			.buildAndRegister("positive_only_test_integer");
+			.buildAndRegister(id("positive_only_test_integer"));
 	public static final GameRule<Double> ONE_TO_TEN_DOUBLE = GameRuleBuilder.doubleRuleBuilder(1.0D)
 			.clamped(1.0D, 10.0D)
-			.buildAndRegister("one_to_ten_double");
+			.buildAndRegister(id("one_to_ten_double"));
 
 	// Test enum rule, with only some supported values.
 	public static final GameRule<Direction> CARDINAL_DIRECTION_ENUM_RULE = GameRuleBuilder.enumRuleBuilder(Direction.NORTH)
 			.supportedValues(CARDINAL_DIRECTIONS)
-			.buildAndRegister("cardinal_direction");
+			.buildAndRegister(id("cardinal_direction"));
 
 	// Rules in custom categories
 	public static final GameRule<Boolean> RED_BOOLEAN = GameRuleBuilder.booleanRuleBuilder(true)
@@ -66,14 +66,18 @@ public class GameRulesTestMod implements ModInitializer {
 			.buildAndRegister(Identifier.of("fabric", "red_boolean"));
 	public static final GameRule<Boolean> GREEN_BOOLEAN = GameRuleBuilder.booleanRuleBuilder(false)
 			.category(GREEN_CATEGORY)
-			.buildAndRegister("green_boolean");
+			.buildAndRegister(id("green_boolean"));
 
 	// An enum rule with no "toString" logic
 	public static final GameRule<TestEnum> RED_ENUM = GameRuleBuilder.enumRuleBuilder(TestEnum.SCISSORS)
 			.category(RED_CATEGORY)
-			.buildAndRegister("red_enum");
+			.buildAndRegister(id("red_enum"));
 
 	public static final AtomicBoolean FIRE_DAMAGE_CHANGED = new AtomicBoolean(false);
+
+	private static Identifier id(String name) {
+		return Identifier.ofVanilla(name); // TODO replace once MC-303846 is fixed
+	}
 
 	@Override
 	public void onInitialize() {
@@ -91,7 +95,7 @@ public class GameRulesTestMod implements ModInitializer {
 
 		LOGGER.info("Loaded GameRules test mod.");
 
-		// Validate the EnumRule has registered it's commands
+		// Validate the EnumRule has registered its commands
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			RootCommandNode<ServerCommandSource> dispatcher = server.getCommandManager().getDispatcher().getRoot();
 			// Find the GameRule node
