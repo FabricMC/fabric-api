@@ -27,10 +27,10 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 @Mixin(Level.class)
 abstract class WorldMixin implements AttachmentTargetImpl {
 	@Shadow
-	public abstract RegistryAccess registryAccess();
+	public abstract boolean isClientSide();
 
 	@Shadow
-	public abstract boolean isClientSide();
+	public abstract RegistryAccess registryAccess();
 
 	@Override
 	public boolean fabric_shouldTryToSync() {
