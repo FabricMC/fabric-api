@@ -42,7 +42,7 @@ public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTy
 
 	@Unique
 	@Nullable
-	private CustomGameRuleCategory customCategory;
+	private CustomGameRuleCategory fabricCategory;
 
 	@Unique
 	@Nullable
@@ -53,12 +53,12 @@ public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTy
 
 	@Override
 	public CustomGameRuleCategory fabric_getCustomCategory() {
-		return this.customCategory;
+		return this.fabricCategory;
 	}
 
 	@Override
 	public void fabric_setCustomCategory(CustomGameRuleCategory customCategory) {
-		this.customCategory = customCategory;
+		this.fabricCategory = customCategory;
 	}
 
 	@Override

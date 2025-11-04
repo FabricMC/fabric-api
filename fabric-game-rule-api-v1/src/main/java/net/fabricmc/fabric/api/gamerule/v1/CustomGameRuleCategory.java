@@ -27,8 +27,9 @@ import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
 /**
  * Utility class for creating custom game rule categories with full control over the name.
  *
- * @see net.minecraft.world.Category
+ * @see net.minecraft.world.rule.GameRuleCategory
  */
+@SuppressWarnings("ClassCanBeRecord")
 public final class CustomGameRuleCategory {
 	private final Identifier id;
 	private final Text name;

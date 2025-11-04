@@ -6,7 +6,7 @@
     "GameRuleCommandAccessor",
     "GameRuleCommandVisitorMixin",
     "GameRuleMixin",
-    "GameRuleRpcDispatcherclass_12254Mixin",
+    "GameRuleRpcDispatcherRuleEntryMixin",
     "GameRulesMixin"
   ],
   "injectors": {

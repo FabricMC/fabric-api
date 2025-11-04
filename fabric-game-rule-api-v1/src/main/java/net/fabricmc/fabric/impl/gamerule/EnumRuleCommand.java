@@ -32,7 +32,7 @@ import net.fabricmc.fabric.mixin.gamerule.GameRuleCommandAccessor;
 
 public final class EnumRuleCommand {
 	public static <E extends Enum<E>> void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRule<E> enumRule) {
-		String name = enumRule.getSimplifiedPath();
+		String name = enumRule.toString();
 		literalArgumentBuilder.then(literal(name).executes(context -> {
 			// We can use the vanilla query method
 			return GameRuleCommandAccessor.invokeExecuteQuery(context.getSource(), enumRule);
@@ -58,7 +58,7 @@ public final class EnumRuleCommand {
 			throw new SimpleCommandExceptionType(Text.literal(e.getMessage())).create();
 		}
 
-		serverCommandSource.sendFeedback(() -> Text.translatable("commands.gamerule.set", enumRule.getSimplifiedPath(), enumRule.getValueName(value)), true);
+		serverCommandSource.sendFeedback(() -> Text.translatable("commands.gamerule.set", enumRule.toShortString(), enumRule.getValueName(value)), true);
 		return enumRule.getCommandResult(value);
 	}
 }

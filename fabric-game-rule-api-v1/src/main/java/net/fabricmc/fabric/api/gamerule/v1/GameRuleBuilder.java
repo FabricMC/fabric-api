@@ -31,11 +31,11 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.server.dedicated.management.dispatch.GameRuleType;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.Category;
-import net.minecraft.world.Visitor;
 import net.minecraft.world.rule.GameRule;
+import net.minecraft.world.rule.GameRuleCategory;
+import net.minecraft.world.rule.GameRuleType;
+import net.minecraft.world.rule.GameRuleVisitor;
 import net.minecraft.world.rule.GameRules;
 
 import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
@@ -62,7 +62,7 @@ import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 public class GameRuleBuilder<T> {
 	protected final T defaultValue;
 
-	protected Category category = Category.MISC;
+	protected GameRuleCategory category = GameRuleCategory.MISC;
 	@Nullable
 	protected CustomGameRuleCategory fabricCategory = null;
 
@@ -98,13 +98,13 @@ public class GameRuleBuilder<T> {
 		return new EnumRuleBuilder<>(defaultValue);
 	}
 
-	public GameRuleBuilder<T> category(Category category) {
+	public GameRuleBuilder<T> category(GameRuleCategory category) {
 		this.category = category;
 		return this;
 	}
 
 	public GameRuleBuilder<T> category(CustomGameRuleCategory category) {
-		category(Category.MISC);
+		category(GameRuleCategory.MISC);
 		this.fabricCategory = category;
 		return this;
 	}
@@ -135,7 +135,7 @@ public class GameRuleBuilder<T> {
 	}
 
 	public GameRule<T> build() {
-		Objects.requireNonNull(this.category, "GameRule category cannot be null! Consider using Category.MISC instead.");
+		Objects.requireNonNull(this.category, "GameRule category cannot be null! Consider using GameRuleCategory.MISC instead.");
 		Objects.requireNonNull(this.type, "GameRule type cannot be null! Consider using GameRuleType.INT instead.");
 
 		if (this.fabricType != FabricGameRuleType.ENUM) {
@@ -185,14 +185,14 @@ public class GameRuleBuilder<T> {
 
 	// RULE VISITORS
 	@ApiStatus.Internal
-	private static void visitDouble(Visitor visitor, GameRule<Double> rule) {
+	private static void visitDouble(GameRuleVisitor visitor, GameRule<Double> rule) {
 		if (visitor instanceof FabricGameRuleVisitor) {
 			((FabricGameRuleVisitor) visitor).visitDouble(rule);
 		}
 	}
 
 	@ApiStatus.Internal
-	private static <E extends Enum<E>> void visitEnum(Visitor visitor, GameRule<E> rule) {
+	private static <E extends Enum<E>> void visitEnum(GameRuleVisitor visitor, GameRule<E> rule) {
 		if (visitor instanceof FabricGameRuleVisitor) {
 			((FabricGameRuleVisitor) visitor).visitEnum(rule);
 		}
@@ -202,14 +202,14 @@ public class GameRuleBuilder<T> {
 		BooleanRuleBuilder(boolean defaultValue) {
 			super(defaultValue);
 			this.type = GameRuleType.BOOL;
-			this.acceptor = Visitor::visitBoolean;
+			this.acceptor = GameRuleVisitor::visitBoolean;
 			this.argumentType(BoolArgumentType.bool());
 			this.codec(Codec.BOOL);
 			this.commandResultSupplier(bool -> bool ? 1 : 0);
 		}
 
 		@Override
-		public BooleanRuleBuilder category(Category category) {
+		public BooleanRuleBuilder category(GameRuleCategory category) {
 			super.category(category);
 			return this;
 		}
@@ -256,14 +256,14 @@ public class GameRuleBuilder<T> {
 		IntegerRuleBuilder(int defaultValue) {
 			super(defaultValue);
 			this.type = GameRuleType.INT;
-			this.acceptor = Visitor::visitInt;
+			this.acceptor = GameRuleVisitor::visitInt;
 			this.argumentType(IntegerArgumentType.integer());
 			this.codec(Codec.INT);
 			this.commandResultSupplier(integer -> integer);
 		}
 
 		@Override
-		public IntegerRuleBuilder category(Category category) {
+		public IntegerRuleBuilder category(GameRuleCategory category) {
 			super.category(category);
 			return this;
 		}
@@ -320,7 +320,7 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public DoubleRuleBuilder category(Category category) {
+		public DoubleRuleBuilder category(GameRuleCategory category) {
 			super.category(category);
 			return this;
 		}
@@ -384,7 +384,7 @@ public class GameRuleBuilder<T> {
 		}
 
 		@Override
-		public EnumRuleBuilder<E> category(Category category) {
+		public EnumRuleBuilder<E> category(GameRuleCategory category) {
 			super.category(category);
 			return this;
 		}

@@ -40,8 +40,8 @@ import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricTypedRule;
 
-@Mixin(GameRuleRpcDispatcher.class_12254.class)
-public abstract class GameRuleRpcDispatcherclass_12254Mixin implements FabricTypedRule {
+@Mixin(GameRuleRpcDispatcher.RuleEntry.class)
+public abstract class GameRuleRpcDispatcherRuleEntryMixin implements FabricTypedRule {
 	@Nullable
 	@Unique
 	private FabricGameRuleType fabricGameRuleType = null;
@@ -67,9 +67,9 @@ public abstract class GameRuleRpcDispatcherclass_12254Mixin implements FabricTyp
 		this.setFabricType(type);
 	}
 
-	@ModifyReturnValue(method = "method_76054", at = @At("RETURN"))
-	private static <T, R extends GameRuleRpcDispatcher.class_12254<T>> MapCodec<R> fabricTypeCodec(MapCodec<? extends GameRuleRpcDispatcher.class_12254<T>> original, GameRule<T> gameRule) {
-		MapCodec<? extends GameRuleRpcDispatcher.class_12254<?>> fabricTypedCodec = fabric_createTypedCodec(gameRule);
+	@ModifyReturnValue(method = "typedCodec", at = @At("RETURN"))
+	private static <T, R extends GameRuleRpcDispatcher.RuleEntry<T>> MapCodec<R> fabricTypeCodec(MapCodec<? extends GameRuleRpcDispatcher.RuleEntry<T>> original, GameRule<T> gameRule) {
+		MapCodec<? extends GameRuleRpcDispatcher.RuleEntry<?>> fabricTypedCodec = fabric_createTypedCodec(gameRule);
 		//noinspection unchecked
 		return (MapCodec<R>) Codec.mapEither(fabricTypedCodec, original).xmap(
 				either -> either.map(Function.identity(), Function.identity()),
@@ -77,22 +77,22 @@ public abstract class GameRuleRpcDispatcherclass_12254Mixin implements FabricTyp
 	}
 
 	@Unique
-	private static <T> GameRuleRpcDispatcher.class_12254<T> fabric_checkType(GameRule<T> gameRule, FabricGameRuleType type, T object) {
+	private static <T> GameRuleRpcDispatcher.RuleEntry<T> fabric_checkType(GameRule<T> gameRule, FabricGameRuleType type, T object) {
 		FabricGameRuleType gameRuleType = ((RuleTypeExtensions) (Object) gameRule).fabric_getType();
 
 		if (gameRuleType != type) {
-			throw new RpcException("Stated type \"" + type + "\" mismatches with actual type \"" + gameRuleType + "\" of gamerule \"" + gameRule.getSimplifiedPath() + "\"");
+			throw new RpcException("Stated type \"" + type + "\" mismatches with actual type \"" + gameRuleType + "\" of gamerule \"" + gameRule.toShortString() + "\"");
 		} else {
-			return new GameRuleRpcDispatcher.class_12254<T>(gameRule, object);
+			return new GameRuleRpcDispatcher.RuleEntry<>(gameRule, object);
 		}
 	}
 
 	@Unique
-	private static <T> MapCodec<? extends GameRuleRpcDispatcher.class_12254<T>> fabric_createTypedCodec(GameRule<T> rule) {
+	private static <T> MapCodec<? extends GameRuleRpcDispatcher.RuleEntry<T>> fabric_createTypedCodec(GameRule<T> rule) {
 		return RecordCodecBuilder.mapCodec((instance) ->
 				instance.group(
 						StringIdentifiable.createCodec(FabricGameRuleType::values).fieldOf("type").forGetter((arg) -> ((RuleTypeExtensions) (Object) arg.gameRule()).fabric_getType()),
-						rule.getCodec().fieldOf("value").forGetter(GameRuleRpcDispatcher.class_12254::value)
+						rule.getCodec().fieldOf("value").forGetter(GameRuleRpcDispatcher.RuleEntry::value)
 				).apply(instance, (type, object) -> fabric_checkType(rule, type, object)));
 	}
 }
