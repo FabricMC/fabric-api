@@ -1,38 +1,54 @@
 accessWidener	v2	named
+
+# DO NOT EDIT BY HAND! This file is generated automatically.
+# Edit "template.accesswidener" instead then run "gradlew generateAccessWidener".
+
 accessible	field	net/minecraft/data/DataGenerator	vanillaPackOutput	Lnet/minecraft/data/PackOutput;
 mutable	field	net/minecraft/data/DataGenerator	vanillaPackOutput	Lnet/minecraft/data/PackOutput;
+
 accessible	class	net/minecraft/data/recipes/RecipeProvider$Runner
 transitive-extendable	method	net/minecraft/data/recipes/RecipeProvider$Runner	run	(Lnet/minecraft/data/CachedOutput;)Ljava/util/concurrent/CompletableFuture;
+
 accessible	field	net/minecraft/data/tags/TagsProvider	builders	Ljava/util/Map;
+
 accessible	field	net/minecraft/data/loot/BlockLootSubProvider	map	Ljava/util/Map;
 accessible	field	net/minecraft/data/loot/EntityLootSubProvider	map	Ljava/util/Map;
 transitive-accessible	method	net/minecraft/data/loot/EntityLootSubProvider	add	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/storage/loot/LootTable$Builder;)V
 transitive-accessible	method	net/minecraft/data/loot/EntityLootSubProvider	add	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/storage/loot/LootTable$Builder;)V
+
 extendable	method	net/minecraft/tags/TagEntry	<init>	(Lnet/minecraft/resources/Identifier;ZZ)V
 accessible	field	net/minecraft/tags/TagEntry	id	Lnet/minecraft/resources/Identifier;
 accessible	field	net/minecraft/tags/TagEntry	tag	Z
 accessible	field	net/minecraft/tags/TagEntry	required	Z
+
 extendable	method	net/minecraft/data/PackOutput$PathProvider	<init>	(Lnet/minecraft/data/PackOutput;Lnet/minecraft/data/PackOutput$Target;Ljava/lang/String;)V
 accessible	field	net/minecraft/data/PackOutput$PathProvider	root	Ljava/nio/file/Path;
 accessible	field	net/minecraft/data/PackOutput$PathProvider	kind	Ljava/lang/String;
+
 extendable	method	net/minecraft/data/DataGenerator$PackGenerator	<init>	(Lnet/minecraft/data/DataGenerator;ZLjava/lang/String;Lnet/minecraft/data/PackOutput;)V
+
 accessible	field	net/minecraft/data/registries/VanillaRegistries	BUILDER	Lnet/minecraft/core/RegistrySetBuilder;
 accessible	method	net/minecraft/data/registries/VanillaRegistries	validateThatAllBiomeFeaturesHaveBiomeFilter	(Lnet/minecraft/core/HolderLookup$Provider;)V
 accessible	field	net/minecraft/core/RegistrySetBuilder	entries	Ljava/util/List;
 accessible	class	net/minecraft/core/RegistrySetBuilder$RegistryStub
+
 accessible	field	net/minecraft/world/level/storage/loot/parameters/LootContextParamSets	REGISTRY	Lcom/google/common/collect/BiMap;
+
 transitive-accessible	method	net/minecraft/data/BlockFamilies	familyBuilder	(Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/data/BlockFamily$Builder;
 transitive-accessible	field	net/minecraft/client/data/models/BlockModelGenerators	blockStateOutput	Ljava/util/function/Consumer;
 transitive-accessible	field	net/minecraft/client/data/models/BlockModelGenerators	modelOutput	Ljava/util/function/BiConsumer;
 transitive-accessible	field	net/minecraft/client/data/models/BlockModelGenerators	itemModelOutput	Lnet/minecraft/client/data/models/ItemModelOutput;
 transitive-accessible	field	net/minecraft/client/data/models/ItemModelGenerators	itemModelOutput	Lnet/minecraft/client/data/models/ItemModelOutput;
 transitive-accessible	field	net/minecraft/client/data/models/ItemModelGenerators	modelOutput	Ljava/util/function/BiConsumer;
+
 transitive-accessible	method	net/minecraft/client/data/models/model/TextureSlot	create	(Ljava/lang/String;)Lnet/minecraft/client/data/models/model/TextureSlot;
 transitive-accessible	method	net/minecraft/client/data/models/model/TextureSlot	create	(Ljava/lang/String;Lnet/minecraft/client/data/models/model/TextureSlot;)Lnet/minecraft/client/data/models/model/TextureSlot;
 transitive-accessible	method	net/minecraft/client/data/models/model/TexturedModel	createDefault	(Ljava/util/function/Function;Lnet/minecraft/client/data/models/model/ModelTemplate;)Lnet/minecraft/client/data/models/model/TexturedModel$Provider;
+
 transitive-accessible	class	net/minecraft/client/data/models/BlockModelGenerators$BlockFamilyProvider
 transitive-accessible	class	net/minecraft/client/data/models/BlockModelGenerators$WoodProvider
 transitive-accessible	class	net/minecraft/client/data/models/BlockModelGenerators$PlantType
+
 accessible	class	net/minecraft/client/data/models/ModelProvider$ItemInfoCollector
 accessible	class	net/minecraft/client/data/models/ModelProvider$BlockStateGeneratorCollector
 accessible	field	net/minecraft/client/data/models/ModelProvider$BlockStateGeneratorCollector	generators	Ljava/util/Map;
@@ -367,15 +383,15 @@ transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerator
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateDyedItem	(Lnet/minecraft/world/item/Item;I)V
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateTwoLayerDyedItem	(Lnet/minecraft/world/item/Item;)V
 transitive-extendable	method	net/minecraft/client/data/models/ModelProvider	getName	()Ljava/lang/String;
-transitive-extendable	method	net/minecraft/data/registries/RegistriesDatapackGenerator	getName	()Ljava/lang/String;
-transitive-extendable	method	net/minecraft/data/metadata/PackMetadataGenerator	getName	()Ljava/lang/String;
-transitive-extendable	method	net/minecraft/data/structures/SnbtToNbt	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/advancements/AdvancementProvider	getName	()Ljava/lang/String;
-transitive-extendable	method	net/minecraft/data/structures/NbtToSnbt	getName	()Ljava/lang/String;
-transitive-extendable	method	net/minecraft/data/loot/LootTableProvider	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/info/BiomeParametersDumpReport	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/info/BlockListReport	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/info/CommandsReport	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/info/ItemListReport	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/info/RegistryDumpReport	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/loot/LootTableProvider	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/metadata/PackMetadataGenerator	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/registries/RegistriesDatapackGenerator	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/structures/NbtToSnbt	getName	()Ljava/lang/String;
+transitive-extendable	method	net/minecraft/data/structures/SnbtToNbt	getName	()Ljava/lang/String;
 transitive-extendable	method	net/minecraft/data/tags/TagsProvider	getName	()Ljava/lang/String;

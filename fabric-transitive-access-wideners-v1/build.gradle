@@ -37,8 +37,6 @@ tasks.register('generateAccessWidener') {
 		FileSystems.newFileSystem(URI.create("jar:${commonJar.toUri()}"), [create: false]).withCloseable { fs ->
 			generateBlockConstructors(lines, fs)
 			lines.add("")
-			generateItemConstructors(lines, fs)
-			lines.add("")
 			generateCreatorEntityTrackedDataMethods(lines, fs)
 			lines.add("")
 			generateEnchantmentMethods(lines, fs)
@@ -73,33 +71,7 @@ def generateBlockConstructors(List<String> lines, FileSystem fs) {
 					//  - only taking into account non-abstract classes and non-public constructors
 
 					// Block constructor...
-					if (method.name == "<init>" && Type.getArgumentTypes(method.desc).any { it.internalName == 'net/minecraft/block/AbstractBlock$Settings' }) {
-						// ...and non-public
-						if ((method.access & Opcodes.ACC_PUBLIC) == 0) {
-							lines.add("transitive-accessible method $node.name <init> $method.desc")
-						}
-					}
-				}
-			}
-}
-
-def generateItemConstructors(List<String> lines, FileSystem fs) {
-	lines.add("# Constructors of non-abstract item classes")
-	Files.list(fs.getPath("net/minecraft/item"))
-			.filter { Files.isRegularFile(it) && it.toString().endsWith(".class") }
-			.map { loadClass(it) }
-			.sorted(Comparator.comparing { it.name })
-			.filter { (it.access & Opcodes.ACC_ABSTRACT) == 0 }
-			.forEach { node ->
-				for (def method : node.methods) {
-					// Checklist for finding item constructors as of 1.19.3:
-					//  - class directly in net.minecraft.item (excluding subpackages)
-					//  - method name == <init> (by definition)
-					//  - contains an Item$Settings parameter
-					//  - only taking into account non-abstract classes and non-public constructors
-
-					// Item constructor...
-					if (method.name == "<init>" && Type.getArgumentTypes(method.desc).any { it.internalName == 'net/minecraft/item/Item$Settings' }) {
+					if (method.name == "<init>" && Type.getArgumentTypes(method.desc).any { it.internalName == 'net/minecraft/world/level/block/state/BlockBehaviour$Properties' }) {
 						// ...and non-public
 						if ((method.access & Opcodes.ACC_PUBLIC) == 0) {
 							lines.add("transitive-accessible method $node.name <init> $method.desc")
@@ -162,7 +134,7 @@ def generateTrackedDataFields(String className, List<String> lines, FileSystem f
 					@Override
 					void visitFieldInsn(int opcode, String owner, String fieldName, String fieldDescriptor) {
 						// check references its dataTracker field
-						if (isExtra || (fieldName == "dataTracker" && opcode == Opcodes.GETFIELD)) {
+						if (isExtra || (fieldName == "entityData" && opcode == Opcodes.GETFIELD)) {
 							collectedWideners.add("transitive-accessible method $className $name $descriptor")
 						}
 					}
@@ -187,7 +159,7 @@ def generateCreatorEntityTrackedDataMethods(List<String> lines, FileSystem fs) {
 def generateEnchantmentMethods(List<String> lines, FileSystem fs) {
 	lines.add("# Private methods of Enchantment and EnchantmentHelper")
 
-	for (def node : [ loadClass(fs.getPath("net/minecraft/world/item/enchantment/EnchantmentHelper.class")), loadClass(fs.getPath("net/minecraft/enchantment/Enchantment.class")) ]) {
+	for (def node : [ loadClass(fs.getPath("net/minecraft/world/item/enchantment/EnchantmentHelper.class")), loadClass(fs.getPath("net/minecraft/world/item/enchantment/Enchantment.class")) ]) {
 		for (def method : node.methods) {
 			// All private inner methods of EnchantmentHelper
 			if ((method.access & Opcodes.ACC_PRIVATE) != 0 && !method.name.startsWith("method_")) {
