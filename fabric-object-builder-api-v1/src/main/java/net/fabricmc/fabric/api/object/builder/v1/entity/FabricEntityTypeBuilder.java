@@ -131,7 +131,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return a new mob entity type builder
 	 * @deprecated use {@link FabricEntityType.Builder#createMob(EntityType.EntityFactory, MobCategory, UnaryOperator)}
 	 */
-	public static <T extends Mob> FabricEntityTypeBuilder.Mob<T> createMob() {
+	public static <T extends net.minecraft.world.entity.Mob> FabricEntityTypeBuilder.Mob<T> createMob() {
 		return new FabricEntityTypeBuilder.Mob<>(MobCategory.MISC, FabricEntityTypeBuilder::emptyFactory);
 	}
 
@@ -494,7 +494,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> Entity class.
 	 */
 	@Deprecated
-	public static class Mob<T extends Mob> extends FabricEntityTypeBuilder.Living<T> {
+	public static class Mob<T extends net.minecraft.world.entity.Mob> extends FabricEntityTypeBuilder.Living<T> {
 		private SpawnPlacementType spawnLocation;
 		private Heightmap.Types restrictionHeightmap;
 		private SpawnPlacements.SpawnPredicate<T> spawnPredicate;

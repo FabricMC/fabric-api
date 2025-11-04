@@ -83,7 +83,7 @@ public interface FabricEntityType {
 		 *
 		 * @return a new mob entity type builder
 		 */
-		static <T extends Mob> EntityType.Builder<T> createMob(EntityType.EntityFactory<T> factory, MobCategory spawnGroup, UnaryOperator<Mob<T>> mobBuilder) {
+		static <T extends net.minecraft.world.entity.Mob> EntityType.Builder<T> createMob(EntityType.EntityFactory<T> factory, MobCategory spawnGroup, UnaryOperator<Mob<T>> mobBuilder) {
 			return FabricEntityTypeImpl.Builder.createMob(factory, spawnGroup, mobBuilder);
 		}
 
@@ -105,7 +105,7 @@ public interface FabricEntityType {
 		 * A builder for additional properties of a mob entity, use via {@link #createMob(EntityType.EntityFactory, MobCategory, UnaryOperator)}.
 		 * @param <T> the type of mob entity
 		 */
-		interface Mob<T extends Mob> extends Living<T> {
+		interface Mob<T extends net.minecraft.world.entity.Mob> extends Living<T> {
 			/**
 			 * Registers a spawn restriction for this entity.
 			 *

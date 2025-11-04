@@ -41,7 +41,7 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	private Block block = null;
 
 	public FrameBlockEntity(BlockPos blockPos, BlockState blockState) {
-		super(Registration.FRAME_BLOCK_ENTITY_TYPE, blockPos, blockState);
+		super(net.fabricmc.fabric.test.renderer.Registration.FRAME_BLOCK_ENTITY_TYPE, blockPos, blockState);
 	}
 
 	@Override

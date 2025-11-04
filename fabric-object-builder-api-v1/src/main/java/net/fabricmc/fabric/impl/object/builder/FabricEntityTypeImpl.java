@@ -42,7 +42,7 @@ public interface FabricEntityTypeImpl {
 	interface Builder {
 		void fabric_setLivingEntityBuilder(Living<? extends LivingEntity> livingBuilder);
 
-		void fabric_setMobEntityBuilder(Mob<? extends Mob> mobBuilder);
+		void fabric_setMobEntityBuilder(Mob<? extends net.minecraft.world.entity.Mob> mobBuilder);
 
 		static <T extends LivingEntity> EntityType.Builder<T> createLiving(EntityType.EntityFactory<T> factory, MobCategory spawnGroup, UnaryOperator<FabricEntityType.Builder.Living<T>> livingBuilder) {
 			EntityType.Builder<T> builder = EntityType.Builder.of(factory, spawnGroup);
@@ -52,7 +52,7 @@ public interface FabricEntityTypeImpl {
 			return builder;
 		}
 
-		static <T extends Mob> EntityType.Builder<T> createMob(EntityType.EntityFactory<T> factory, MobCategory spawnGroup, UnaryOperator<FabricEntityType.Builder.Mob<T>> mobBuilder) {
+		static <T extends net.minecraft.world.entity.Mob> EntityType.Builder<T> createMob(EntityType.EntityFactory<T> factory, MobCategory spawnGroup, UnaryOperator<FabricEntityType.Builder.Mob<T>> mobBuilder) {
 			EntityType.Builder<T> builder = EntityType.Builder.of(factory, spawnGroup);
 			Mob<T> builderImpl = new Mob<>();
 			mobBuilder.apply(builderImpl);
@@ -78,7 +78,7 @@ public interface FabricEntityTypeImpl {
 			}
 		}
 
-		final class Mob<T extends Mob> extends Living<T> implements FabricEntityType.Builder.Mob<T> {
+		final class Mob<T extends net.minecraft.world.entity.Mob> extends Living<T> implements FabricEntityType.Builder.Mob<T> {
 			private SpawnPlacementType restrictionLocation;
 			private Heightmap.Types restrictionHeightmap;
 			private SpawnPlacements.SpawnPredicate<T> spawnPredicate;
