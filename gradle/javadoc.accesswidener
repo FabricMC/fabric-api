@@ -1,5 +1,3 @@
 accessWidener	v2	named
-# Place access wideners that are required during javadoc generation here
-
-accessible class net/minecraft/data/recipe/RecipeGenerator$RecipeProvider
-accessible class net/minecraft/item/ItemGroup$StackVisibility
+accessible	class	net/minecraft/data/recipes/RecipeProvider$Runner
+accessible	class	net/minecraft/world/item/CreativeModeTab$TabVisibility

@@ -1,5 +1,3 @@
-accessWidener v2 named
-
-accessible class net/minecraft/client/render/model/MultipartBlockStateModel$MultipartBakedModel
-
-accessible method net/minecraft/client/render/model/BakedGeometry <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+accessWidener	v2	named
+accessible	class	net/minecraft/client/renderer/block/model/multipart/MultiPartModel$SharedBakedState
+accessible	method	net/minecraft/client/resources/model/QuadCollection	<init>	(Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V

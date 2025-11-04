@@ -1,6 +1,4 @@
 accessWidener	v2	named
-
-accessible class net/minecraft/client/render/block/BlockModelRenderer$LightmapCache
-accessible class net/minecraft/client/render/block/BlockModelRenderer$AmbientOcclusionCalculator
-
-accessible method net/minecraft/client/render/block/BlockModelRenderer getQuadDimensions (Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;[ILnet/minecraft/util/math/Direction;Lnet/minecraft/client/render/block/BlockModelRenderer$LightmapCache;)V
+accessible	class	net/minecraft/client/renderer/block/ModelBlockRenderer$CommonRenderStorage
+accessible	class	net/minecraft/client/renderer/block/ModelBlockRenderer$AmbientOcclusionRenderStorage
+accessible	method	net/minecraft/client/renderer/block/ModelBlockRenderer	calculateShape	(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;[ILnet/minecraft/core/Direction;Lnet/minecraft/client/renderer/block/ModelBlockRenderer$CommonRenderStorage;)V

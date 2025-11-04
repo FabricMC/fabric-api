@@ -1,5 +1,3 @@
-accessWidener v2 named
-
-# fields for mods to check whether the environment is as desired for registration
-transitive-accessible field net/minecraft/server/command/CommandManager$RegistrationEnvironment dedicated Z
-transitive-accessible field net/minecraft/server/command/CommandManager$RegistrationEnvironment integrated Z
+accessWidener	v2	named
+transitive-accessible	field	net/minecraft/commands/Commands$CommandSelection	includeDedicated	Z
+transitive-accessible	field	net/minecraft/commands/Commands$CommandSelection	includeIntegrated	Z

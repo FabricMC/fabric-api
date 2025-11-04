@@ -1,5 +1,4 @@
-accessWidener v2 named
-
-accessible field net/minecraft/network/encoding/VarInts MAX_BYTES I
-accessible field net/minecraft/network/packet/c2s/common/CustomPayloadC2SPacket MAX_PAYLOAD_SIZE I
-accessible field net/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket MAX_PAYLOAD_SIZE I
+accessWidener	v2	named
+accessible	field	net/minecraft/network/VarInt	MAX_VARINT_SIZE	I
+accessible	field	net/minecraft/network/protocol/common/ServerboundCustomPayloadPacket	MAX_PAYLOAD_SIZE	I
+accessible	field	net/minecraft/network/protocol/common/ClientboundCustomPayloadPacket	MAX_PAYLOAD_SIZE	I

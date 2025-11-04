@@ -1,5 +1,4 @@
 accessWidener	v2	named
-
-accessible    class    net/minecraft/server/MinecraftServer$ResourceManagerHolder
-accessible    class    net/minecraft/client/world/ClientChunkManager$ClientChunkMap
-accessible    method    net/minecraft/client/world/ClientChunkManager$ClientChunkMap    isInRadius    (II)Z
+accessible	class	net/minecraft/server/MinecraftServer$ReloadableResources
+accessible	class	net/minecraft/client/multiplayer/ClientChunkCache$Storage
+accessible	method	net/minecraft/client/multiplayer/ClientChunkCache$Storage	inRange	(II)Z

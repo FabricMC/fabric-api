@@ -1,10 +1,6 @@
 accessWidener	v1	named
-
-accessible field net/minecraft/client/particle/ParticleManager spriteManager Lnet/minecraft/client/particle/ParticleSpriteManager;
-
-accessible field net/minecraft/client/particle/ParticleSpriteManager particleFactories Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;
-accessible field net/minecraft/client/particle/ParticleSpriteManager spriteAwareParticleFactories Ljava/util/Map;
-
-accessible method net/minecraft/client/particle/ParticleSpriteManager$SimpleSpriteProvider  <init>  ()V
-accessible field net/minecraft/client/particle/ParticleSpriteManager$SimpleSpriteProvider sprites Ljava/util/List;
-
+accessible	field	net/minecraft/client/particle/ParticleEngine	resourceManager	Lnet/minecraft/client/particle/ParticleResources;
+accessible	field	net/minecraft/client/particle/ParticleResources	providers	Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;
+accessible	field	net/minecraft/client/particle/ParticleResources	spriteSets	Ljava/util/Map;
+accessible	method	net/minecraft/client/particle/ParticleResources$MutableSpriteSet	<init>	()V
+accessible	field	net/minecraft/client/particle/ParticleResources$MutableSpriteSet	sprites	Ljava/util/List;

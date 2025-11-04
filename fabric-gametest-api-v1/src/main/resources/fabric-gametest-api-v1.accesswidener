@@ -1,6 +1,4 @@
-accessWidener v2 named
-
-accessible class net/minecraft/structure/StructureTemplateManager$Provider
-accessible method net/minecraft/structure/StructureTemplateManager$Provider <init> (Ljava/util/function/Function;Ljava/util/function/Supplier;)V
-
-accessible class net/minecraft/registry/RegistryLoader$Loader
+accessWidener	v2	named
+accessible	class	net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager$Source
+accessible	method	net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager$Source	<init>	(Ljava/util/function/Function;Ljava/util/function/Supplier;)V
+accessible	class	net/minecraft/resources/RegistryDataLoader$Loader

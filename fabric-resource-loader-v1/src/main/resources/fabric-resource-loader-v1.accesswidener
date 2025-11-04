@@ -1,3 +1,2 @@
 accessWidener	v2	named
-
-accessible class net/minecraft/server/MinecraftServer$ResourceManagerHolder
+accessible	class	net/minecraft/server/MinecraftServer$ReloadableResources

@@ -1,12 +1,9 @@
 accessWidener	v2	named
-
-accessible    field    net/minecraft/registry/SimpleRegistry frozen Z
-accessible method net/minecraft/registry/entry/RegistryEntry$Reference setValue (Ljava/lang/Object;)V
-accessible    method    net/minecraft/registry/Registries    init    ()V
-
-accessible field net/minecraft/registry/RegistryLoader SYNCED_REGISTRIES Ljava/util/List;
-mutable field net/minecraft/registry/RegistryLoader SYNCED_REGISTRIES Ljava/util/List;
-accessible field net/minecraft/registry/SerializableRegistries SYNCED_REGISTRIES Ljava/util/Set;
-mutable field net/minecraft/registry/SerializableRegistries SYNCED_REGISTRIES Ljava/util/Set;
-
-accessible class net/minecraft/registry/RegistryLoader$Loader
+accessible	field	net/minecraft/core/MappedRegistry	frozen	Z
+accessible	method	net/minecraft/core/Holder$Reference	bindValue	(Ljava/lang/Object;)V
+accessible	method	net/minecraft/core/registries/BuiltInRegistries	createContents	()V
+accessible	field	net/minecraft/resources/RegistryDataLoader	SYNCHRONIZED_REGISTRIES	Ljava/util/List;
+mutable	field	net/minecraft/resources/RegistryDataLoader	SYNCHRONIZED_REGISTRIES	Ljava/util/List;
+accessible	field	net/minecraft/core/RegistrySynchronization	NETWORKABLE_REGISTRIES	Ljava/util/Set;
+mutable	field	net/minecraft/core/RegistrySynchronization	NETWORKABLE_REGISTRIES	Ljava/util/Set;
+accessible	class	net/minecraft/resources/RegistryDataLoader$Loader

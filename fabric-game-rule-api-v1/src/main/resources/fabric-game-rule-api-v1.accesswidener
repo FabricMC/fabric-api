@@ -1,5 +1,5 @@
 accessWidener	v2	named
-accessible  class   net/minecraft/world/rule/GameRules$Acceptor
-accessible  class   net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleWidgetFactory
-accessible  field   net/minecraft/client/gui/screen/world/EditGameRulesScreen$NamedRuleWidget name  Ljava/util/List;
-mutable  field   net/minecraft/client/gui/screen/world/EditGameRulesScreen$NamedRuleWidget name  Ljava/util/List;
+accessible	class	net/minecraft/world/level/gamerules/GameRules$VisitorCaller
+accessible	class	net/minecraft/client/gui/screens/worldselection/EditGameRulesScreen$EntryFactory
+accessible	field	net/minecraft/client/gui/screens/worldselection/EditGameRulesScreen$GameRuleEntry	label	Ljava/util/List;
+mutable	field	net/minecraft/client/gui/screens/worldselection/EditGameRulesScreen$GameRuleEntry	label	Ljava/util/List;

@@ -1,2 +1,2 @@
-accessWidener v2 named
-accessible class net/minecraft/client/render/model/ModelBaker$BakerImpl
+accessWidener	v2	named
+accessible	class	net/minecraft/client/resources/model/ModelBakery$ModelBakerImpl

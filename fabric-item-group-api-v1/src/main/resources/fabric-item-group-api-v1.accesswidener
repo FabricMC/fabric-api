@@ -1,21 +1,19 @@
-accessWidener v2 named
-
-transitive-accessible field net/minecraft/item/ItemGroups BUILDING_BLOCKS Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups COLORED_BLOCKS Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups NATURAL Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups FUNCTIONAL Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups REDSTONE Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups HOTBAR Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups SEARCH Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups TOOLS Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups COMBAT Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups FOOD_AND_DRINK Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups INGREDIENTS Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups SPAWN_EGGS Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups OPERATOR Lnet/minecraft/registry/RegistryKey;
-transitive-accessible field net/minecraft/item/ItemGroups INVENTORY Lnet/minecraft/registry/RegistryKey;
-accessible field net/minecraft/item/ItemGroups displayContext Lnet/minecraft/item/ItemGroup$DisplayContext;
-transitive-accessible class net/minecraft/item/ItemGroup$StackVisibility
-
-transitive-accessible class net/minecraft/item/ItemGroup$Entries
-accessible class net/minecraft/item/ItemGroup$EntriesImpl
+accessWidener	v2	named
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	BUILDING_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	COLORED_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	NATURAL_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	FUNCTIONAL_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	REDSTONE_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	HOTBAR	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	SEARCH	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	TOOLS_AND_UTILITIES	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	COMBAT	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	FOOD_AND_DRINKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	INGREDIENTS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	SPAWN_EGGS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	OP_BLOCKS	Lnet/minecraft/resources/ResourceKey;
+transitive-accessible	field	net/minecraft/world/item/CreativeModeTabs	INVENTORY	Lnet/minecraft/resources/ResourceKey;
+accessible	field	net/minecraft/world/item/CreativeModeTabs	CACHED_PARAMETERS	Lnet/minecraft/world/item/CreativeModeTab$ItemDisplayParameters;
+transitive-accessible	class	net/minecraft/world/item/CreativeModeTab$TabVisibility
+transitive-accessible	class	net/minecraft/world/item/CreativeModeTab$Output
+accessible	class	net/minecraft/world/item/CreativeModeTab$ItemDisplayBuilder

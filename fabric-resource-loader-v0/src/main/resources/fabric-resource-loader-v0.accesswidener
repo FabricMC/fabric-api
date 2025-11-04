@@ -1,7 +1,7 @@
 accessWidener	v2	named
-accessible field net/minecraft/resource/NamespaceResourceManager type Lnet/minecraft/resource/ResourceType;
-accessible method net/minecraft/resource/NamespaceResourceManager getMetadataPath (Lnet/minecraft/util/Identifier;)Lnet/minecraft/util/Identifier;
-accessible method net/minecraft/resource/NamespaceResourceManager loadMetadata (Lnet/minecraft/resource/InputSupplier;)Lnet/minecraft/resource/metadata/ResourceMetadata;
-accessible field net/minecraft/resource/FileResourcePackProvider source Lnet/minecraft/resource/ResourcePackSource;
-accessible field net/minecraft/resource/ResourcePackManager providers Ljava/util/Set;
-accessible method net/minecraft/resource/metadata/PackResourceMetadata createCodec (Lnet/minecraft/resource/ResourceType;)Lcom/mojang/serialization/Codec;
+accessible	field	net/minecraft/server/packs/resources/FallbackResourceManager	type	Lnet/minecraft/server/packs/PackType;
+accessible	method	net/minecraft/server/packs/resources/FallbackResourceManager	getMetadataLocation	(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/resources/Identifier;
+accessible	method	net/minecraft/server/packs/resources/FallbackResourceManager	parseMetadata	(Lnet/minecraft/server/packs/resources/IoSupplier;)Lnet/minecraft/server/packs/resources/ResourceMetadata;
+accessible	field	net/minecraft/server/packs/repository/FolderRepositorySource	packSource	Lnet/minecraft/server/packs/repository/PackSource;
+accessible	field	net/minecraft/server/packs/repository/PackRepository	sources	Ljava/util/Set;
+accessible	method	net/minecraft/server/packs/metadata/pack/PackMetadataSection	codecForPackType	(Lnet/minecraft/server/packs/PackType;)Lcom/mojang/serialization/Codec;

@@ -1,10 +1,8 @@
 accessWidener	v1	named
-accessible	class	net/minecraft/screen/ScreenHandlerType$Factory
-accessible	method	net/minecraft/screen/ScreenHandlerType <init> (Lnet/minecraft/screen/ScreenHandlerType$Factory;Lnet/minecraft/resource/featuretoggle/FeatureSet;)V
-extendable	method	net/minecraft/screen/ScreenHandlerType <init> (Lnet/minecraft/screen/ScreenHandlerType$Factory;Lnet/minecraft/resource/featuretoggle/FeatureSet;)V
-
-accessible	class	net/minecraft/client/gui/screen/ingame/HandledScreens$Provider
-accessible	method	net/minecraft/client/gui/screen/ingame/HandledScreens register (Lnet/minecraft/screen/ScreenHandlerType;Lnet/minecraft/client/gui/screen/ingame/HandledScreens$Provider;)V
-accessible	method	net/minecraft/client/gui/screen/ingame/HandledScreens getProvider (Lnet/minecraft/screen/ScreenHandlerType;)Lnet/minecraft/client/gui/screen/ingame/HandledScreens$Provider;
-
-accessible	field	net/minecraft/screen/SimpleNamedScreenHandlerFactory baseFactory Lnet/minecraft/screen/ScreenHandlerFactory;
+accessible	class	net/minecraft/world/inventory/MenuType$MenuSupplier
+accessible	method	net/minecraft/world/inventory/MenuType	<init>	(Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
+extendable	method	net/minecraft/world/inventory/MenuType	<init>	(Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
+accessible	class	net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor
+accessible	method	net/minecraft/client/gui/screens/MenuScreens	register	(Lnet/minecraft/world/inventory/MenuType;Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;)V
+accessible	method	net/minecraft/client/gui/screens/MenuScreens	getConstructor	(Lnet/minecraft/world/inventory/MenuType;)Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;
+accessible	field	net/minecraft/world/SimpleMenuProvider	menuConstructor	Lnet/minecraft/world/inventory/MenuConstructor;

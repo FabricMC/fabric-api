@@ -1,17 +1,12 @@
 accessWidener	v1	named
-extendable  method    net/minecraft/block/AbstractBlock$Settings    <init>  ()V
-
-accessible    method    net/minecraft/world/poi/PointOfInterestTypes    register    (Lnet/minecraft/registry/Registry;Lnet/minecraft/registry/RegistryKey;Ljava/util/Set;II)Lnet/minecraft/world/poi/PointOfInterestType;
-
-extendable class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
-accessible method net/minecraft/block/entity/BlockEntityType <init> (Lnet/minecraft/block/entity/BlockEntityType$BlockEntityFactory;Ljava/util/Set;)V
-accessible class net/minecraft/village/TradeOffers$TypeAwareBuyForOneEmeraldFactory
-mutable field net/minecraft/village/TradeOffers REBALANCED_PROFESSION_TO_LEVELED_TRADE Ljava/util/Map;
-mutable field net/minecraft/village/TradeOffers WANDERING_TRADER_TRADES Ljava/util/List;
-
-accessible method net/minecraft/entity/SpawnRestriction register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/SpawnLocation;Lnet/minecraft/world/Heightmap$Type;Lnet/minecraft/entity/SpawnRestriction$SpawnPredicate;)V
-
-accessible field net/minecraft/village/VillagerType BIOME_TO_TYPE Ljava/util/Map;
-
-accessible method net/minecraft/block/WoodType register (Lnet/minecraft/block/WoodType;)Lnet/minecraft/block/WoodType;
-accessible method net/minecraft/block/BlockSetType register (Lnet/minecraft/block/BlockSetType;)Lnet/minecraft/block/BlockSetType;
+extendable	method	net/minecraft/world/level/block/state/BlockBehaviour$Properties	<init>	()V
+accessible	method	net/minecraft/world/entity/ai/village/poi/PoiTypes	register	(Lnet/minecraft/core/Registry;Lnet/minecraft/resources/ResourceKey;Ljava/util/Set;II)Lnet/minecraft/world/entity/ai/village/poi/PoiType;
+extendable	class	net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
+accessible	method	net/minecraft/world/level/block/entity/BlockEntityType	<init>	(Lnet/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier;Ljava/util/Set;)V
+accessible	class	net/minecraft/world/entity/npc/VillagerTrades$EmeraldsForVillagerTypeItem
+mutable	field	net/minecraft/world/entity/npc/VillagerTrades	EXPERIMENTAL_TRADES	Ljava/util/Map;
+mutable	field	net/minecraft/world/entity/npc/VillagerTrades	WANDERING_TRADER_TRADES	Ljava/util/List;
+accessible	method	net/minecraft/world/entity/SpawnPlacements	register	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/SpawnPlacementType;Lnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/entity/SpawnPlacements$SpawnPredicate;)V
+accessible	field	net/minecraft/world/entity/npc/VillagerType	BY_BIOME	Ljava/util/Map;
+accessible	method	net/minecraft/world/level/block/state/properties/WoodType	register	(Lnet/minecraft/world/level/block/state/properties/WoodType;)Lnet/minecraft/world/level/block/state/properties/WoodType;
+accessible	method	net/minecraft/world/level/block/state/properties/BlockSetType	register	(Lnet/minecraft/world/level/block/state/properties/BlockSetType;)Lnet/minecraft/world/level/block/state/properties/BlockSetType;
