@@ -27,8 +27,8 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.world.Visitor;
 import net.minecraft.world.rule.GameRule;
+import net.minecraft.world.rule.GameRuleVisitor;
 
 import net.fabricmc.fabric.api.gamerule.v1.FabricGameRuleVisitor;
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
@@ -37,7 +37,7 @@ import net.fabricmc.fabric.impl.gamerule.widget.DoubleRuleWidget;
 import net.fabricmc.fabric.impl.gamerule.widget.EnumRuleWidget;
 
 @Mixin(targets = "net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleListWidget$1")
-public abstract class RuleListWidgetVisitorMixin implements Visitor, FabricGameRuleVisitor {
+public abstract class RuleListWidgetVisitorMixin implements GameRuleVisitor, FabricGameRuleVisitor {
 	@Final
 	@Shadow
 	private EditGameRulesScreen field_24314;

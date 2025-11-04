@@ -139,7 +139,7 @@ public class GameRulesTestMod implements ModInitializer {
 		});
 
 		GameRuleEvents.changeCallback(GameRules.FIRE_DAMAGE).register(
-				(rule, value, server) -> FIRE_DAMAGE_CHANGED.set(true)
+				(value, server) -> FIRE_DAMAGE_CHANGED.set(true)
 		);
 	}
 }

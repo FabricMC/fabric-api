@@ -63,7 +63,7 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mockServer();
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.class_12254<Double> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.ONE_TO_TEN_DOUBLE, 5.5D), CONNECTION_ID);
+		GameRuleRpcDispatcher.RuleEntry<Double> result = handler.updateRule(new GameRuleRpcDispatcher.RuleEntry<>(GameRulesTestMod.ONE_TO_TEN_DOUBLE, 5.5D), CONNECTION_ID);
 
 		assertEquals("""
 				{"type":"fabric:double","value":5.5,"key":"minecraft:one_to_ten_double"}
@@ -71,7 +71,7 @@ public class GameRuleManagementHandlerImplTest {
 
 		verify(server).onGameRuleUpdated(
 				eq(GameRulesTestMod.ONE_TO_TEN_DOUBLE),
-				argThat(rule -> handler.getRule(GameRulesTestMod.ONE_TO_TEN_DOUBLE) == 5.5D));
+				argThat(rule -> handler.getValue(GameRulesTestMod.ONE_TO_TEN_DOUBLE) == 5.5D));
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mockServer();
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.class_12254<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.RED_BOOLEAN, false), CONNECTION_ID);
+		GameRuleRpcDispatcher.RuleEntry<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.RuleEntry<>(GameRulesTestMod.RED_BOOLEAN, false), CONNECTION_ID);
 
 		assertEquals("""
 				{"type":"boolean","value":false,"key":"fabric:red_boolean"}
@@ -91,7 +91,7 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mockServer();
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.class_12254<Direction> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE, Direction.EAST), CONNECTION_ID);
+		GameRuleRpcDispatcher.RuleEntry<Direction> result = handler.updateRule(new GameRuleRpcDispatcher.RuleEntry<>(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE, Direction.EAST), CONNECTION_ID);
 
 		assertEquals("""
 				{"type":"fabric:enum","value":"EAST","key":"minecraft:cardinal_direction"}
@@ -99,7 +99,7 @@ public class GameRuleManagementHandlerImplTest {
 
 		verify(server).onGameRuleUpdated(
 				eq(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE),
-				argThat(rule -> handler.getRule(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE) == Direction.EAST)
+				argThat(rule -> handler.getValue(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE) == Direction.EAST)
 		);
 	}
 
@@ -108,7 +108,7 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mockServer();
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.class_12254<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.FIRE_DAMAGE, false), CONNECTION_ID);
+		GameRuleRpcDispatcher.RuleEntry<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.RuleEntry<>(GameRules.FIRE_DAMAGE, false), CONNECTION_ID);
 
 		assertEquals("""
 				{"type":"boolean","value":false,"key":"minecraft:fire_damage"}
@@ -116,7 +116,7 @@ public class GameRuleManagementHandlerImplTest {
 
 		verify(server).onGameRuleUpdated(
 				eq(GameRules.FIRE_DAMAGE),
-				argThat(rule -> !handler.getRule(GameRules.FIRE_DAMAGE)));
+				argThat(rule -> !handler.getValue(GameRules.FIRE_DAMAGE)));
 	}
 
 	@Test
@@ -124,7 +124,7 @@ public class GameRuleManagementHandlerImplTest {
 		MinecraftDedicatedServer server = mockServer();
 		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.class_12254<Integer> result = handler.updateRule(new GameRuleRpcDispatcher.class_12254<>(GameRules.RANDOM_TICK_SPEED, 123), CONNECTION_ID);
+		GameRuleRpcDispatcher.RuleEntry<Integer> result = handler.updateRule(new GameRuleRpcDispatcher.RuleEntry<>(GameRules.RANDOM_TICK_SPEED, 123), CONNECTION_ID);
 
 		assertEquals("""
 				{"type":"integer","value":123,"key":"minecraft:random_tick_speed"}
@@ -132,7 +132,7 @@ public class GameRuleManagementHandlerImplTest {
 
 		verify(server).onGameRuleUpdated(
 				eq(GameRules.RANDOM_TICK_SPEED),
-				argThat(rule -> handler.getRule(GameRules.RANDOM_TICK_SPEED) == 123));
+				argThat(rule -> handler.getValue(GameRules.RANDOM_TICK_SPEED) == 123));
 	}
 
 	private MinecraftDedicatedServer mockServer() {
@@ -143,8 +143,8 @@ public class GameRuleManagementHandlerImplTest {
 		return server;
 	}
 
-	private static <T> void assertEquals(@Language("JSON") String expected, GameRuleRpcDispatcher.class_12254<T> rule) {
-		JsonElement jsonElement = GameRuleRpcDispatcher.class_12254.field_64088.encodeStart(JsonOps.INSTANCE, rule).getOrThrow();
+	private static <T> void assertEquals(@Language("JSON") String expected, GameRuleRpcDispatcher.RuleEntry<T> rule) {
+		JsonElement jsonElement = GameRuleRpcDispatcher.RuleEntry.TYPED_CODEC.encodeStart(JsonOps.INSTANCE, rule).getOrThrow();
 		Assertions.assertEquals(expected.trim(), jsonElement.toString());
 	}
 
@@ -154,7 +154,7 @@ public class GameRuleManagementHandlerImplTest {
 		}
 
 		public Stream<GameRule<?>> getRules() {
-			return Registries.GAME_RULE.stream().filter(rule -> rule.getFeatureSet().isSubsetOf(FeatureSet.empty()));
+			return Registries.GAME_RULE.stream().filter(rule -> rule.getRequiredFeatures().isSubsetOf(FeatureSet.empty()));
 		}
 	}
 }
