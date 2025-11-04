@@ -25,7 +25,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 @Mixin(BuiltInRegistries.class)
 public interface RegistriesAccessor<T> {
 	@Accessor()
-	static WritableRegistry<WritableRegistry<?>> getROOT() {
+	static WritableRegistry<WritableRegistry<?>> getWRITABLE_REGISTRY() {
 		throw new UnsupportedOperationException();
 	}
 }

@@ -33,8 +33,8 @@ public final class BlockInitTracker {
 		final int xLength = Mth.ceil(Mth.sqrt(blockStateList.size()));
 		final int zLength = Mth.ceil(blockStateList.size() / (float) xLength);
 
-		DebugChunkGeneratorAccessor.setBLOCK_STATES(blockStateList);
-		DebugChunkGeneratorAccessor.setX_SIDE_LENGTH(xLength);
-		DebugChunkGeneratorAccessor.setZ_SIDE_LENGTH(zLength);
+		DebugChunkGeneratorAccessor.setALL_BLOCKS(blockStateList);
+		DebugChunkGeneratorAccessor.setGRID_WIDTH(xLength);
+		DebugChunkGeneratorAccessor.setGRID_HEIGHT(zLength);
 	}
 }

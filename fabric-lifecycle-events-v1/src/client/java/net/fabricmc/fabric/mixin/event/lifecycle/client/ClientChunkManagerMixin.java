@@ -65,7 +65,7 @@ public abstract class ClientChunkManagerMixin {
 			method = "updateViewRadius",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/multiplayer/ClientChunkCache;net/minecraft/client/world/ClientChunkManager$ClientChunkMap.isInRadius(II)Z"
+					target = "Lnet/minecraft/client/multiplayer/ClientChunkCache$Storage;inRange(II)Z"
 			)
 	)
 	private void onUpdateLoadDistance(int loadDistance, CallbackInfo ci, @Local ClientChunkCache.Storage clientChunkMap, @Local LevelChunk oldChunk, @Local ChunkPos chunkPos) {
