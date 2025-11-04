@@ -115,7 +115,7 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.START_MAIN.invoker().startMain(renderContext);
 	}
 
-	@ModifyExpressionValue(method = "method_62214", at = @At(value = "NEW", target = "Lnet/minecraft/client/util/math/MatrixStack;"))
+	@ModifyExpressionValue(method = "method_62214", at = @At(value = "NEW", target = "Lcom/mojang/blaze3d/vertex/PoseStack;"))
 	private PoseStack onCreateMatrixStack(PoseStack matrixStack) {
 		renderContext.setMatrixStack(matrixStack);
 		return matrixStack;
@@ -153,7 +153,7 @@ public abstract class WorldRendererMixin {
 		}
 	}
 
-	@Inject(method = "method_62214", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;draw()V"))
+	@Inject(method = "method_62214", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V"))
 	private void endMainRender(CallbackInfo ci) {
 		WorldRenderEvents.END_MAIN.invoker().endMain(renderContext);
 	}

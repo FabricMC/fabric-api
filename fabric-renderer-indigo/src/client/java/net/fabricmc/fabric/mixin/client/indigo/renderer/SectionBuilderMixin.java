@@ -92,8 +92,8 @@ abstract class SectionBuilderMixin {
 	 * This is the hook that actually implements the rendering API for terrain rendering.
 	 *
 	 * <p>It's unusual to have a @Redirect in a Fabric library, but in this case it is our explicit intention that
-	 * {@link BlockStateModel#addParts(RandomSource, List)} and
-	 * {@link BlockRenderDispatcher#renderBlock(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)}
+	 * {@link BlockStateModel#collectParts(RandomSource, List)} and
+	 * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)}
 	 * do not execute for models that will be rendered by our renderer. For performance and convenience, just skip the
 	 * entire if block.
 	 *

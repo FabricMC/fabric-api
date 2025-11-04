@@ -42,7 +42,7 @@ abstract class ItemRenderStateMixin {
 		pipeRef.set(new QuadToPosPipe(posConsumer, vec));
 	}
 
-	@Inject(method = "visitExtents(Ljava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;net/minecraft/client/util/math/MatrixStack$Entry.loadIdentity()V", shift = At.Shift.BEFORE))
+	@Inject(method = "visitExtents(Ljava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack$Pose;setIdentity()V", shift = At.Shift.BEFORE))
 	private void afterLayerLoad(Consumer<Vector3fc> posConsumer, CallbackInfo ci, @Local(ordinal = 0) Vector3f vec, @Local ItemStackRenderState.LayerRenderState layer, @Local Matrix4f matrix, @Share("pipe") LocalRef<QuadToPosPipe> pipeRef) {
 		MutableMeshImpl mutableMesh = ((AccessLayerRenderState) layer).fabric_getMutableMesh();
 

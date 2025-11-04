@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 
 @Mixin(SnowGolemHeadLayer.class)
 abstract class SnowGolemPumpkinFeatureRendererMixin {
-	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/SnowGolemHeadLayer;net/minecraft/client/render/command/OrderedRenderCommandQueue.submitBlockStateModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/block/model/BlockStateModel;FFFIII)V"))
+	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitBlockModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/block/model/BlockStateModel;FFFIII)V"))
 	private void renderProxy(SubmitNodeCollector commandQueue, PoseStack matrices, RenderType renderLayer, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local SnowGolemRenderState renderState, @Local BlockState blockState) {
 		// If true, the render layer is an outline render layer, and we want all geometry to use this render layer.
 		if (renderState.appearsGlowing() && renderState.isInvisible) {
