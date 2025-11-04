@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.Set;
 
+import net.minecraft.core.BlockPos;
+
 import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.client.renderer.BiomeColors;
@@ -28,7 +30,7 @@ import net.fabricmc.fabric.impl.client.rendering.ColorResolverRegistryImpl;
 
 /**
  * The registry for custom {@link ColorResolver}s. Custom resolvers must be registered during client initialization for
- * them to be usable in {@link BlockAndTintGetter#getColor}. Calling this method may throw an exception if the passed
+ * them to be usable in {@link BlockAndTintGetter#getBlockTint}. Calling this method may throw an exception if the passed
  * resolver is not registered with this class. Vanilla resolvers found in {@link BiomeColors} are automatically
  * registered.
  *
@@ -40,7 +42,7 @@ public final class ColorResolverRegistry {
 	}
 
 	/**
-	 * Registers a custom {@link ColorResolver} for use in {@link BlockAndTintGetter#getColor}. This method should be
+	 * Registers a custom {@link ColorResolver} for use in {@link BlockAndTintGetter#getBlockTint}. This method should be
 	 * called during client initialization.
 	 *
 	 * @param resolver the resolver to register

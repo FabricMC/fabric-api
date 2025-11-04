@@ -60,7 +60,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootSubProvider 
 	/**
 	 * Implement this method to add block drops.
 	 *
-	 * <p>Use the range of {@link BlockLootSubProvider#addDrop} methods to generate block drops.
+	 * <p>Use the range of {@link BlockLootSubProvider#add} methods to generate block drops.
 	 */
 	@Override
 	public abstract void generate();

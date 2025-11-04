@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @FunctionalInterface
 public interface DrawItemStackOverlayCallback {
 	/**
-	 * Fires at the end of {@link GuiGraphics#drawStackOverlay(Font, ItemStack, int, int, String)} and allows
+	 * Fires at the end of {@link GuiGraphics#renderItemDecorations(Font, ItemStack, int, int, String)} and allows
 	 * for drawing custom item stack decorations.
 	 *
 	 * <p>In vanilla these are: durability bar, cooldown overlay and stack count.
