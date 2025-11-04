@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.material.FlowingFluid;
 
 /**
@@ -70,7 +71,7 @@ public final class FluidConstants {
 	public static final int LAVA_VISCOSITY = 6000;
 	public static final int LAVA_VISCOSITY_NETHER = 2000;
 	/**
-	 * For flowable fluids, the viscosity should match {@code VISCOSITY_RATIO} * {@link FlowingFluid#getMaxFlowDistance}.
+	 * For flowable fluids, the viscosity should match {@code VISCOSITY_RATIO} * {@link FlowingFluid#getSlopeFindDistance}.
 	 */
 	public static final int VISCOSITY_RATIO = 200;
 

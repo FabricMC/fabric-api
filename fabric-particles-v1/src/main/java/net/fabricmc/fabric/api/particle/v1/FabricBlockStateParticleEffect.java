@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectFactoryImpl;
  */
 public interface FabricBlockStateParticleEffect {
 	/**
-	 * Alternative for {@link BlockParticleOption#BlockStateParticleEffect(ParticleType, BlockState)} that also
+	 * Alternative for {@link BlockParticleOption#BlockParticleOption(ParticleType, BlockState)} that also
 	 * accepts a {@link BlockPos}. This method should be used instead of the vanilla constructor when the block state
 	 * is retrieved using a block pos, most commonly through {@link BlockGetter#getBlockState(BlockPos)}. This ensures
 	 * that any particles created from this effect use an accurate pos for any client-side logic.
@@ -50,7 +50,7 @@ public interface FabricBlockStateParticleEffect {
 	}
 
 	/**
-	 * @return the block pos from which {@linkplain BlockParticleOption#getBlockState() the block state} was
+	 * @return the block pos from which {@linkplain BlockParticleOption#getState()}  the block state} was
 	 * retrieved, or {@code null} if not applicable or this instance was synced from a remote server that does not have
 	 * this Fabric API module installed
 	 */
