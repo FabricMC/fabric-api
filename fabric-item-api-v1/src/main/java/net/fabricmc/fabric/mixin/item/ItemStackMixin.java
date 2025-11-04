@@ -131,7 +131,7 @@ public abstract class ItemStackMixin implements FabricItemStack {
 		preAppendTooltip(DataComponents.ATTRIBUTE_MODIFIERS, context, displayComponent, textConsumer, type, index);
 	}
 
-	@Inject(method = "addDetailsToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/DefaultedRegistry;getId(Ljava/lang/Object;)Lnet/minecraft/resources/Identifier;"))
+	@Inject(method = "addDetailsToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/DefaultedRegistry;getKey(Ljava/lang/Object;)Lnet/minecraft/resources/Identifier;"))
 	private void postTooltipsAdvanced(
 			Item.TooltipContext context,
 			TooltipDisplay displayComponent,

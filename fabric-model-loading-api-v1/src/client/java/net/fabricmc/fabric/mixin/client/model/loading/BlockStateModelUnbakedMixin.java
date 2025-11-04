@@ -40,7 +40,7 @@ interface BlockStateModelUnbakedMixin {
 		return CustomUnbakedBlockStateModelRegistry.WEIGHTED_MODEL_CODEC;
 	}
 
-	@Redirect(method = "<clinit>()V", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;flatComapMap(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;",ordinal = 1))
+	@Redirect(method = "<clinit>()V", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Codec;flatComapMap(Ljava/util/function/Function;Ljava/util/function/Function;)Lcom/mojang/serialization/Codec;", ordinal = 1))
 	private static Codec<BlockStateModel.Unbaked> replaceCodec(Codec<Either<WeightedVariants.Unbaked, SingleVariant.Unbaked>> codec, Function<?, ?> to, Function<?, ?> from) {
 		return CustomUnbakedBlockStateModelRegistry.MODEL_CODEC;
 	}

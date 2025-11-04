@@ -35,7 +35,7 @@ public class SimpleInventoryMixin implements SpecialLogicInventory {
 	private boolean fabric_suppressSpecialLogic = false;
 
 	@Redirect(
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/SimpleContainer;markDirty()V"),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/SimpleContainer;setChanged()V"),
 			method = "setItem(ILnet/minecraft/world/item/ItemStack;)V"
 	)
 	public void fabric_redirectMarkDirty(SimpleContainer self) {

@@ -85,21 +85,21 @@ public class MinecraftClientMixin {
 		return capturedTicksPerFrame;
 	}
 
-	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;runTasks()V"))
+	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;runAllTasks()V"))
 	private void preRunTasksHook(CallbackInfo ci) {
-		// "merge" multiple possible iterations of runTasks into one block from the point of view of locking
+		// "merge" multiple possible iterations of runAllTasks into one block from the point of view of locking
 		if (!inMergedRunTasksLoop) {
 			inMergedRunTasksLoop = true;
 			preRunTasks();
 		}
 
-		// we still allow runTasks() to go ahead even when ticksPerFrame is 0, as the results of these tasks won't be
+		// we still allow runAllTasks() to go ahead even when ticksPerFrame is 0, as the results of these tasks won't be
 		// observable until the next tick or gametest thread unlock anyway
 	}
 
-	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;runTasks()V", shift = At.Shift.AFTER))
+	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;runAllTasks()V", shift = At.Shift.AFTER))
 	private void postRunTasksHook(CallbackInfo ci, @Share("ticksPerFrame") LocalIntRef ticksPerFrame) {
-		// end our "merged" runTasks block if there is going to be a tick this frame
+		// end our "merged" runAllTasks block if there is going to be a tick this frame
 		if (ticksPerFrame.get() > 0) {
 			NetworkSynchronizer.CLIENTBOUND.waitForPacketHandlers((BlockableEventLoop<?>) (Object) this);
 			postRunTasks();
@@ -116,7 +116,7 @@ public class MinecraftClientMixin {
 		}
 	}
 
-	@Inject(method = "doWorldLoad", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;runTasks(Ljava/util/function/BooleanSupplier;)V"))
+	@Inject(method = "doWorldLoad", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;managedBlock(Ljava/util/function/BooleanSupplier;)V"))
 	private void onStartIntegratedServerBusyWait(CallbackInfo ci) {
 		// give the server a chance to tick too
 		preRunTasks();
@@ -132,7 +132,7 @@ public class MinecraftClientMixin {
 		}
 	}
 
-	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;cancelTasks()V"))
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dropAllTasks()V"))
 	private void onDisconnectCancelTasks(CallbackInfo ci) {
 		NetworkSynchronizer.CLIENTBOUND.reset();
 	}

@@ -136,7 +136,7 @@ abstract class LivingEntityMixin {
 
 	// The injector is shared because method_18404 and sleep share much of the structure here.
 	@Dynamic("method_18404: Synthetic lambda body for Optional.ifPresent in wakeUp")
-	@Redirect(method = {"method_18404", "startSleeping"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlockState(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
+	@Redirect(method = {"method_18404", "startSleeping"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
 	private boolean setOccupiedState(Level world, BlockPos pos, BlockState state, int flags) {
 		// This might have been replaced by a red bed above, so we get it again.
 		// Note that we *need* to replace it so the state.with(OCCUPIED, ...) call doesn't crash
