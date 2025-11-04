@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.renderer.BasicItemModelExtension;
 
 @Mixin(BlockModelWrapper.Unbaked.class)
 abstract class BasicItemModelUnbakedMixin {
-	@ModifyExpressionValue(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/BlockModelWrapper$Unbaked;net/minecraft/client/render/model/BakedSimpleModel.bakeGeometry(Lnet/minecraft/client/renderer/block/model/TextureSlots;Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/client/resources/model/ModelState;)Lnet/minecraft/client/resources/model/QuadCollection;"))
+	@ModifyExpressionValue(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ResolvedModel;bakeTopGeometry(Lnet/minecraft/client/renderer/block/model/TextureSlots;Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/client/resources/model/ModelState;)Lnet/minecraft/client/resources/model/QuadCollection;"))
 	private QuadCollection captureMesh(QuadCollection geometry, @Share("mesh") LocalRef<Mesh> meshRef) {
 		if (geometry instanceof MeshBakedGeometry meshBakedGeometry) {
 			meshRef.set(meshBakedGeometry.getMesh());

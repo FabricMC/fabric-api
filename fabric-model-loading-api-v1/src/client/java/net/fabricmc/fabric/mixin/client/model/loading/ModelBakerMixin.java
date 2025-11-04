@@ -100,7 +100,7 @@ abstract class ModelBakerMixin {
 		});
 	}
 
-	@WrapOperation(method = "method_68018", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelBakery;net/minecraft/client/render/model/BlockStateModel$UnbakedGrouped.bake(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/resources/model/ModelBaker;)Lnet/minecraft/client/renderer/block/model/BlockStateModel;"))
+	@WrapOperation(method = "method_68018", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/model/BlockStateModel$UnbakedRoot;bake(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/resources/model/ModelBaker;)Lnet/minecraft/client/renderer/block/model/BlockStateModel;"))
 	private static BlockStateModel wrapBlockModelBake(BlockStateModel.UnbakedRoot unbakedModel, BlockState state, ModelBaker baker, Operation<BlockStateModel> operation) {
 		ModelLoadingEventDispatcher eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
 
@@ -111,7 +111,7 @@ abstract class ModelBakerMixin {
 		return eventDispatcher.modifyBlockModel(unbakedModel, state, baker, operation);
 	}
 
-	@WrapOperation(method = "method_68019", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelBakery;net/minecraft/client/render/item/model/ItemModel$Unbaked.bake(Lnet/minecraft/client/renderer/item/ItemModel$BakingContext;)Lnet/minecraft/client/renderer/item/ItemModel;"))
+	@WrapOperation(method = "method_68019", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemModel$Unbaked;bake(Lnet/minecraft/client/renderer/item/ItemModel$BakingContext;)Lnet/minecraft/client/renderer/item/ItemModel;"))
 	private ItemModel wrapItemModelBake(ItemModel.Unbaked unbakedModel, ItemModel.BakingContext bakeContext, Operation<ItemModel> operation, @Local Identifier itemId) {
 		if (fabric_eventDispatcher == null) {
 			return operation.call(unbakedModel, bakeContext);

@@ -92,8 +92,8 @@ abstract class SectionBuilderMixin {
 	 * This is the hook that actually implements the rendering API for terrain rendering.
 	 *
 	 * <p>It's unusual to have a @Redirect in a Fabric library, but in this case it is our explicit intention that
-	 * {@link BlockStateModel#addParts(RandomSource, List)} and
-	 * {@link BlockRenderDispatcher#renderBlock(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)}
+	 * {@link BlockStateModel#collectParts(RandomSource, List)} and
+	 * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)}
 	 * do not execute for models that will be rendered by our renderer. For performance and convenience, just skip the
 	 * entire if block.
 	 *
@@ -101,7 +101,7 @@ abstract class SectionBuilderMixin {
 	 * renderer should not be present, or the mod should probably instead be relying on the renderer API
 	 * which was specifically created to provide for enhanced terrain rendering.
 	 */
-	@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/SectionCompiler;net/minecraft/block/BlockState.getRenderType()Lnet/minecraft/world/level/block/RenderShape;"))
+	@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getRenderShape()Lnet/minecraft/world/level/block/RenderShape;"))
 	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack allocatorStorage, @Local(ordinal = 2) BlockPos blockPos) {
 		RenderShape blockRenderType = blockState.getRenderShape();
 

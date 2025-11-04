@@ -52,7 +52,7 @@ abstract class FallingBlockCommandRendererMixin {
 	private PoseStack poseStack;
 
 	// Support multi-render layer models (MovingBlockCommand).
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/BlockFeatureRenderer;java/util/Iterator.hasNext()Z", ordinal = 0))
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0))
 	private void beforeRenderMovingBlocks(SubmitNodeCollection queue, MultiBufferSource.BufferSource vertexConsumers, BlockRenderDispatcher blockRenderManager, OutlineBufferSource outlineVertexConsumers, CallbackInfo ci, @Local Iterator<SubmitNodeStorage.MovingBlockSubmit> iterator) {
 		while (iterator.hasNext()) {
 			SubmitNodeStorage.MovingBlockSubmit command = iterator.next();

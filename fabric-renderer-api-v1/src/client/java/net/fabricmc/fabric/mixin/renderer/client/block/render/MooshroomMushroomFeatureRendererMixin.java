@@ -33,7 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 @Mixin(MushroomCowMushroomLayer.class)
 abstract class MooshroomMushroomFeatureRendererMixin {
 	// Fix tinted quads being rendered completely black and provide the BlockState as context.
-	@Redirect(method = "submitMushroomBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/MushroomCowMushroomLayer;net/minecraft/client/render/command/OrderedRenderCommandQueue.submitBlockStateModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/block/model/BlockStateModel;FFFIII)V"))
+	@Redirect(method = "submitMushroomBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitBlockModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/block/model/BlockStateModel;FFFIII)V"))
 	private void renderProxy(SubmitNodeCollector commandQueue, PoseStack matrices, RenderType renderLayer, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local BlockState blockState) {
 		commandQueue.submitBlockStateModel(matrices, blockLayer -> renderLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, blockState);
 	}
