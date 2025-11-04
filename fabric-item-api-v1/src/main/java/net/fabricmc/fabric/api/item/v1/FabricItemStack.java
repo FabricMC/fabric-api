@@ -33,7 +33,7 @@ public interface FabricItemStack {
 	 *
 	 * <p>See {@link FabricItem#getRecipeRemainder(ItemStack)} for a more in depth description.
 	 *
-	 * <p>Stack-aware version of {@link Item#getRecipeRemainder()}.
+	 * <p>Stack-aware version of {@link Item#getCraftingRemainder()}.
 	 *
 	 * @return the leftover item
 	 */
@@ -45,7 +45,7 @@ public interface FabricItemStack {
 	 * Determines whether this {@link ItemStack} can be enchanted with the given {@link Enchantment}.
 	 *
 	 * <p>When checking whether an enchantment can be applied to an {@link ItemStack}, use this method instead of
-	 * {@link Enchantment#isAcceptableItem(ItemStack)} or {@link Enchantment#isPrimaryItem(ItemStack)}, with the appropriate
+	 * {@link Enchantment#canEnchant(ItemStack)} or {@link Enchantment#isPrimaryItem(ItemStack)}, with the appropriate
 	 * {@link EnchantingContext}.</p>
 	 *
 	 * @param enchantment the enchantment to check

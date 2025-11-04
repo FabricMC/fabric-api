@@ -214,7 +214,7 @@ public class FabricItemGroupEntries implements CreativeModeTab.Output {
 	/**
 	 * Adds stacks after an existing stack in the group, or at the end, if the stack isn't in the group.
 	 *
-	 * @param afterLast  Add {@code newStacks} after the last group entry matching this stack (compared using {@link ItemStack#areItemsAndComponentsEqual}).
+	 * @param afterLast  Add {@code newStacks} after the last group entry matching this stack (compared using {@link ItemStack#isSameItemSameComponents}).
 	 * @param newStacks  The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
 	 * @param visibility Determines whether the stack will be shown in the tab itself, returned
 	 *                   for searches, or both.
@@ -331,7 +331,7 @@ public class FabricItemGroupEntries implements CreativeModeTab.Output {
 	/**
 	 * Adds stacks before an existing stack to the group, or at the end, if the stack isn't in the group.
 	 *
-	 * @param beforeFirst Add {@code newStacks} before the first group entry matching this stack (compared using {@link ItemStack#areItemsAndComponentsEqual}).
+	 * @param beforeFirst Add {@code newStacks} before the first group entry matching this stack (compared using {@link ItemStack#isSameItemSameComponents}).
 	 * @param newStacks   The stacks to add. Only {@linkplain #isEnabled(ItemStack) enabled} stacks will be added.
 	 * @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	 *                    for searches, or both.

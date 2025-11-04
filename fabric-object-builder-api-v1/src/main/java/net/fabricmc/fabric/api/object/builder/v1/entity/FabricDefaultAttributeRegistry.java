@@ -35,7 +35,7 @@ import net.fabricmc.fabric.mixin.object.builder.DefaultAttributeRegistryAccessor
  * FabricEntityTypeBuilder} for utility on entity type registration in general.</p>
  *
  * <p>A registered default attribute for an entity type can be retrieved through
- * {@link net.minecraft.world.entity.ai.attributes.DefaultAttributes#get(EntityType)}.</p>
+ * {@link net.minecraft.world.entity.ai.attributes.DefaultAttributes#getSupplier(EntityType)}.</p>
  *
  * @see net.minecraft.world.entity.ai.attributes.DefaultAttributes
  */

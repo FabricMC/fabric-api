@@ -53,7 +53,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
  *
  * <p>When generating tags for modded dynamic registry entries (such as biomes), either the entry
  * must be added to the registry using {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint#buildRegistry(RegistrySetBuilder)}
- * or {@link TagBuilder#addOptional(Identifier)} must be used. Otherwise, the data generator cannot
+ * or {@link TagBuilder#addOptionalElement(Identifier)} must be used. Otherwise, the data generator cannot
  * find the entry and crashes.
  *
  * <p>Commonly used implementations of this class are provided:
