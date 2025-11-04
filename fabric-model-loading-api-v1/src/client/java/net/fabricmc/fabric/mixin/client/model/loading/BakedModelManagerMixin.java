@@ -81,22 +81,22 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 		});
 	}
 
-	@ModifyExpressionValue(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelManager;net/minecraft/client/render/model/BakedModelManager.reloadModels(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
+	@ModifyExpressionValue(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelManager;loadBlockModels(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
 	private CompletableFuture<Map<Identifier, UnbakedModel>> hookModels(CompletableFuture<Map<Identifier, UnbakedModel>> modelsFuture) {
 		return modelsFuture.thenCombine(eventDispatcherFuture, (models, eventDispatcher) -> eventDispatcher.modifyModelsOnLoad(models));
 	}
 
-	@ModifyExpressionValue(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelManager;net/minecraft/client/render/model/BlockStatesLoader.load(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
+	@ModifyExpressionValue(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/BlockStateModelLoader;loadBlockStates(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
 	private CompletableFuture<BlockStateModelLoader.LoadedModels> hookBlockStateModels(CompletableFuture<BlockStateModelLoader.LoadedModels> modelsFuture) {
 		return modelsFuture.thenCombine(eventDispatcherFuture, (models, eventDispatcher) -> eventDispatcher.modifyBlockModelsOnLoad(models));
 	}
 
-	@ModifyArg(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelManager;java/util/concurrent/CompletableFuture.thenApplyAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 1), index = 0)
+	@ModifyArg(method = "reload", at = @At(value = "INVOKE", target = "java/util/concurrent/CompletableFuture.thenApplyAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 1), index = 0)
 	private Function<Void, ?> hookModelCollect(Function<Void, CompletableFuture<?>> function) {
 		return withModelDispatcher(function);
 	}
 
-	@ModifyArg(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelManager;java/util/concurrent/CompletableFuture.thenComposeAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0), index = 0)
+	@ModifyArg(method = "reload", at = @At(value = "INVOKE", target = "java/util/concurrent/CompletableFuture.thenComposeAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0), index = 0)
 	private Function<Void, CompletableFuture<?>> hookModelBaking(Function<Void, CompletableFuture<?>> function) {
 		return withModelDispatcher(function);
 	}
@@ -116,7 +116,7 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 		};
 	}
 
-	@Inject(method = "discoverModelDependencies", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelManager;net/minecraft/client/render/model/ReferencedModelsCollector.collectModels()Ljava/util/Map;"))
+	@Inject(method = "discoverModelDependencies", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelDiscovery;resolve()Ljava/util/Map;"))
 	private static void resolveExtraModels(
 			Map<Identifier, UnbakedModel> modelMap, BlockStateModelLoader.LoadedModels stateDefinition, ClientItemInfoLoader.LoadedClientInfos result, CallbackInfoReturnable<?> cir,
 			@Local ModelDiscovery collector
@@ -134,7 +134,7 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 	// We want to redirect the JsonUnbakedModel.deserialize call, but its return type is JsonUnbakedModel, so we can't
 	// do that directly.
 	// Instead, cancel the original call and then modify the null value when it's being used to construct the Pair.
-	@Redirect(method = "method_65750(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelManager;net/minecraft/client/render/model/json/JsonUnbakedModel.deserialize(Ljava/io/Reader;)Lnet/minecraft/client/renderer/block/model/BlockModel;"))
+	@Redirect(method = "method_65750(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/model/BlockModel;fromStream(Ljava/io/Reader;)Lnet/minecraft/client/renderer/block/model/BlockModel;"))
 	private static BlockModel cancelVanillaDeserialize(Reader reader) {
 		return null;
 	}
@@ -143,7 +143,7 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 	// The Pair's type is actually Pair<Identifier, JsonUnbakedModel>, but since generics don't really exist, vanilla
 	// code doesn't explicitly cast the model to JsonUnbakedModel, and the enclosing method returns UnbakedModels per
 	// its return type, it's safe to return an UnbakedModel here.
-	@ModifyArg(method = "method_65750(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelManager;com/mojang/datafixers/util/Pair.of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;"), index = 1)
+	@ModifyArg(method = "method_65750(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "com/mojang/datafixers/util/Pair.of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;"), index = 1)
 	private static Object actuallyDeserializeModel(Object originalModel, @Local Reader reader) {
 		return UnbakedModelDeserializer.deserialize(reader);
 	}

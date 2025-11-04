@@ -58,7 +58,7 @@ public abstract class ClientWorldMixin {
 		}
 	}
 
-	@ModifyExpressionValue(method = "getBlockTint(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/ColorResolver;)I", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap.get(Ljava/lang/Object;)Ljava/lang/Object;"))
+	@ModifyExpressionValue(method = "getBlockTint(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/ColorResolver;)I", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2ObjectArrayMap;get(Ljava/lang/Object;)Ljava/lang/Object;"))
 	private Object modifyNullCache(/* BiomeColorCache */ Object cache, BlockPos pos, ColorResolver resolver) {
 		if (cache == null) {
 			cache = customColorCache.get(resolver);
