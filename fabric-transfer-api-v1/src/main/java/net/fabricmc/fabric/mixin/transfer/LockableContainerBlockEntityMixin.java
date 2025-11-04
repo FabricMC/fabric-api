@@ -36,7 +36,7 @@ public class LockableContainerBlockEntityMixin implements SpecialLogicInventory 
 	private boolean fabric_suppressSpecialLogic = false;
 
 	@WrapOperation(
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BaseContainerBlockEntity;markDirty()V"),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BaseContainerBlockEntity;setChanged()V"),
 			method = "setItem(ILnet/minecraft/world/item/ItemStack;)V"
 	)
 	public void fabric_redirectMarkDirty(BaseContainerBlockEntity instance, Operation<Void> original) {
