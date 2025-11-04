@@ -25,13 +25,13 @@ import java.util.function.BiConsumer;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Holder;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
 
 import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;

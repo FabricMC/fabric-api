@@ -26,10 +26,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.chunk.ImposterProtoChunk;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.ImposterProtoChunk;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;

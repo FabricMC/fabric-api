@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.tags.ItemTags;
 import net.minecraft.ChatFormatting;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ARGB;
 
 import net.fabricmc.api.ClientModInitializer;

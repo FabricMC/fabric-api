@@ -25,8 +25,8 @@ import net.minecraft.world.Container;
 @Mixin(CompoundContainer.class)
 public interface DoubleInventoryAccessor {
 	@Accessor("container1")
-    Container fabric_getFirst();
+	Container fabric_getFirst();
 
 	@Accessor("container2")
-    Container fabric_getSecond();
+	Container fabric_getSecond();
 }

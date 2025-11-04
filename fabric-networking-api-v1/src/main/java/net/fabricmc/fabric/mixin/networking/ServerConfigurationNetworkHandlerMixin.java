@@ -32,14 +32,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.Connection;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.network.ConfigurationTask;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
-import net.minecraft.server.network.ConfigurationTask;
 
 import net.fabricmc.fabric.api.networking.v1.FabricServerConfigurationNetworkHandler;
 import net.fabricmc.fabric.impl.networking.FabricRegistryByteBuf;
@@ -56,7 +56,7 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	protected abstract void onTaskFinished(ConfigurationTask.Type key);
 
 	@Shadow
@@ -66,13 +66,13 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract boolean isAcceptingMessages();
 
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract void sendConfigurations();
 
 	@Unique

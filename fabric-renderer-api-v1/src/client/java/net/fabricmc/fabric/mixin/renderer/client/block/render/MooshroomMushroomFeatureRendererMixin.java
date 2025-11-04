@@ -17,18 +17,18 @@
 package net.fabricmc.fabric.mixin.renderer.client.block.render;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.layers.MushroomCowMushroomLayer;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.entity.layers.MushroomCowMushroomLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 
 @Mixin(MushroomCowMushroomLayer.class)
 abstract class MooshroomMushroomFeatureRendererMixin {

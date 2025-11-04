@@ -28,11 +28,11 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.level.saveddata.SavedData;
 
 /**
  * Backing storage for server-side world attachments.

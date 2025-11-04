@@ -22,10 +22,10 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
 
 import net.fabricmc.fabric.impl.object.builder.TradeOfferInternals;
 

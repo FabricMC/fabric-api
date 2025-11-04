@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.util.Unit;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 

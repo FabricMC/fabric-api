@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexSorting;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,21 +32,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.SectionBufferBuilderPack;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.chunk.RenderSectionRegion;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRendererRegion;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderContext;
@@ -76,12 +76,12 @@ abstract class SectionBuilderMixin {
 	@Inject(method = "compile",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;betweenClosed(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;)Ljava/lang/Iterable;"))
 	private void hookBuild(SectionPos sectionPos, RenderSectionRegion region, VertexSorting sorter,
-                           SectionBufferBuilderPack allocators,
-                           CallbackInfoReturnable<SectionCompiler.Results> cir,
-                           @Local(ordinal = 0) BlockPos sectionOrigin,
-                           @Local(ordinal = 0) PoseStack matrixStack,
-                           @Local(ordinal = 0) Map<ChunkSectionLayer, BufferBuilder> builderMap,
-                           @Local(ordinal = 0) RandomSource random) {
+						SectionBufferBuilderPack allocators,
+						CallbackInfoReturnable<SectionCompiler.Results> cir,
+						@Local(ordinal = 0) BlockPos sectionOrigin,
+						@Local(ordinal = 0) PoseStack matrixStack,
+						@Local(ordinal = 0) Map<ChunkSectionLayer, BufferBuilder> builderMap,
+						@Local(ordinal = 0) RandomSource random) {
 		// hook just before iterating over the render chunk's blocks to capture the buffer builder map
 		TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
 		renderer.prepare(region, sectionOrigin, matrixStack, random, layer -> getOrBeginLayer(builderMap, allocators, layer));

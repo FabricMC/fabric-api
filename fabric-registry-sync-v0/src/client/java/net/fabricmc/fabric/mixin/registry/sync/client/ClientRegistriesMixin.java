@@ -29,9 +29,9 @@ import org.spongepowered.asm.mixin.injection.Coerce;
 
 import net.minecraft.client.multiplayer.RegistryDataCollector;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.core.RegistrySynchronization;
+import net.minecraft.resources.RegistryDataLoader;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceProvider;
 
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;

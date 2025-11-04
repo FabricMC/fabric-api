@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 

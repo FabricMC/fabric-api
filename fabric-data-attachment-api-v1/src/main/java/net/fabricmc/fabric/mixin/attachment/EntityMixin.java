@@ -22,12 +22,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -46,7 +46,7 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract Level getEntityWorld();
 
 	@Inject(

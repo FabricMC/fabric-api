@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -99,9 +99,9 @@ public final class EnchantmentEvents {
 		 * @see EnchantingContext
 		 */
 		TriState allowEnchanting(
-                Holder<Enchantment> enchantment,
-                ItemStack target,
-                EnchantingContext enchantingContext
+				Holder<Enchantment> enchantment,
+				ItemStack target,
+				EnchantingContext enchantingContext
 		);
 	}
 
@@ -115,9 +115,9 @@ public final class EnchantmentEvents {
 		 * @param source The source of the enchantment
 		 */
 		void modify(
-                ResourceKey<Enchantment> key,
-                Enchantment.Builder builder,
-                EnchantmentSource source
+				ResourceKey<Enchantment> key,
+				Enchantment.Builder builder,
+				EnchantmentSource source
 		);
 	}
 }

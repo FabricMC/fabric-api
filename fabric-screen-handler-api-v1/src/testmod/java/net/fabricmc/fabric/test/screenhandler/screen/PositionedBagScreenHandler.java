@@ -18,13 +18,13 @@ package net.fabricmc.fabric.test.screenhandler.screen;
 
 import java.util.Optional;
 
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
 
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
 

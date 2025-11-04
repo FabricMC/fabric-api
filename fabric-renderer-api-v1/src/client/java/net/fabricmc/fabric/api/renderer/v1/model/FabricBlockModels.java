@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.renderer.v1.model;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Note: This interface is automatically implemented on {@link BlockModelShaper} via Mixin and interface injection.

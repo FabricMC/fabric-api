@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.hud;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphics;
 
 /**
  * Represents a mod added {@link net.minecraft.client.gui.Gui} element that can be rendered on the screen.

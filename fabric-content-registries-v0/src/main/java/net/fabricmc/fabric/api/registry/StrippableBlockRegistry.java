@@ -18,11 +18,11 @@ package net.fabricmc.fabric.api.registry;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.impl.content.registry.StrippableBlockRegistryImpl;
 
@@ -92,7 +92,7 @@ public final class StrippableBlockRegistry {
 		StrippingTransformer COPY = Block::withPropertiesOf;
 
 		@Nullable
-        BlockState getStrippedBlockState(Block strippedBlock, BlockState originalState);
+		BlockState getStrippedBlockState(Block strippedBlock, BlockState originalState);
 
 		static StrippingTransformer copyOf(Property<?>... properties) {
 			if (properties.length == 0) {

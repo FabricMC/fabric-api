@@ -18,12 +18,12 @@ package net.fabricmc.fabric.test.item.gametest;
 
 import java.util.List;
 
+import net.minecraft.core.NonNullList;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.fabric.test.item.CustomDamageTest;

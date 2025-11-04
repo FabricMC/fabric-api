@@ -29,5 +29,5 @@ public interface ServerLoginNetworkHandlerAccessor {
 	MinecraftServer getServer();
 
 	@Accessor
-    Connection getConnection();
+	Connection getConnection();
 }

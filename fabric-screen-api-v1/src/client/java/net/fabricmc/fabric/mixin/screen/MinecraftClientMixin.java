@@ -42,7 +42,7 @@ abstract class MinecraftClientMixin {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public Screen currentScreen;
 
 	@Shadow

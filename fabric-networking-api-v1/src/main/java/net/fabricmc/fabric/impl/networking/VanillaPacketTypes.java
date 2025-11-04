@@ -20,10 +20,10 @@ import java.util.ArrayList;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.network.ProtocolInfo;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.PacketType;
 import net.minecraft.network.protocol.configuration.ConfigurationProtocols;
-import net.minecraft.network.ProtocolInfo;
 import net.minecraft.network.protocol.game.GameProtocols;
 
 public record VanillaPacketTypes(PacketType<?>[] ids) {

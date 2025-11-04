@@ -22,15 +22,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.blaze3d.pipeline.MainTarget;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.pipeline.MainTarget;
 import net.minecraft.client.gui.screens.multiplayer.ServerReconfigScreen;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
-import net.minecraft.client.CameraType;
-import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.platform.InputConstants;
 
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;

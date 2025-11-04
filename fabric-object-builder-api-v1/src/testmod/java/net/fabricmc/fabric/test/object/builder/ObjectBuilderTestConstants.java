@@ -19,10 +19,10 @@ package net.fabricmc.fabric.test.object.builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
 
 public final class ObjectBuilderTestConstants {
 	public static final String MOD_ID = "fabric-object-builder-api-v1-testmod";

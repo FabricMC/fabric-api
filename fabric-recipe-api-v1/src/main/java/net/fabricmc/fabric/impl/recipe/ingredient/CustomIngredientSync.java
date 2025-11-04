@@ -21,8 +21,8 @@ import java.util.function.Consumer;
 
 import net.minecraft.network.PacketEncoder;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.server.network.ConfigurationTask;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.network.ConfigurationTask;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;

@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.api.renderer.v1.render;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
 
 /**
  * Like {@link MultiBufferSource}, but takes {@link ChunkSectionLayer} instead of {@link RenderType}. Primarily

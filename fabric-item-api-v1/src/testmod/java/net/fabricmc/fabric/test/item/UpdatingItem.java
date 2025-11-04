@@ -18,20 +18,20 @@ package net.fabricmc.fabric.test.item;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class UpdatingItem extends Item {
 	private static final Identifier PLUS_FIVE_ID = Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "plus_five");

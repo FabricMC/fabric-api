@@ -25,5 +25,5 @@ import net.minecraft.network.Connection;
 @Mixin(ClientHandshakePacketListenerImpl.class)
 public interface ClientLoginNetworkHandlerAccessor {
 	@Accessor
-    Connection getConnection();
+	Connection getConnection();
 }

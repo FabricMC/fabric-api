@@ -24,10 +24,10 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.datafixers.util.Either;
 import org.jspecify.annotations.Nullable;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.renderer.Rect2i;
 
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonAlgorithm;

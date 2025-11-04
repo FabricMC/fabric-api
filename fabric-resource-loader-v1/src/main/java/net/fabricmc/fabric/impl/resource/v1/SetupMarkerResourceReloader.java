@@ -17,10 +17,10 @@
 package net.fabricmc.fabric.impl.resource.v1;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.server.ReloadableServerResources;
 
 import net.fabricmc.fabric.api.resource.v1.DataResourceLoader;
 

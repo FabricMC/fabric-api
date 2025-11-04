@@ -35,15 +35,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.resources.model.ClientItemInfoLoader;
-import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.BlockStateModelLoader;
+import net.minecraft.client.resources.model.ClientItemInfoLoader;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelDiscovery;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.FabricBakedModelManager;
@@ -118,8 +118,8 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 
 	@Inject(method = "discoverModelDependencies", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelManager;net/minecraft/client/render/model/ReferencedModelsCollector.collectModels()Ljava/util/Map;"))
 	private static void resolveExtraModels(
-            Map<Identifier, UnbakedModel> modelMap, BlockStateModelLoader.LoadedModels stateDefinition, ClientItemInfoLoader.LoadedClientInfos result, CallbackInfoReturnable<?> cir,
-            @Local ModelDiscovery collector
+			Map<Identifier, UnbakedModel> modelMap, BlockStateModelLoader.LoadedModels stateDefinition, ClientItemInfoLoader.LoadedClientInfos result, CallbackInfoReturnable<?> cir,
+			@Local ModelDiscovery collector
 	) {
 		// We know eventDispatcherFuture is available, as it is required by the item and block models (hookModels).
 		ModelLoadingEventDispatcher eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();

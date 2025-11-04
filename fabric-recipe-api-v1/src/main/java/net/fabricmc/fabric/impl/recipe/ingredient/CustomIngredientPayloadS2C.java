@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.impl.recipe.ingredient;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public record CustomIngredientPayloadS2C(int protocolVersion) implements CustomPacketPayload {

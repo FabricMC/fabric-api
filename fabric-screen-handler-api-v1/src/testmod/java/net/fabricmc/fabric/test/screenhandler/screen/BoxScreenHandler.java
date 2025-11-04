@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.test.screenhandler.screen;
 
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.DispenserMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
 

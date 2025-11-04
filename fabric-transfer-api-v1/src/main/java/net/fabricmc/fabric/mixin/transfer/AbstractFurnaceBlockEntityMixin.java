@@ -23,14 +23,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
 
@@ -42,7 +42,7 @@ public abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlock
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	protected NonNullList<ItemStack> inventory;
 	@Shadow
 	int cookingTimer;

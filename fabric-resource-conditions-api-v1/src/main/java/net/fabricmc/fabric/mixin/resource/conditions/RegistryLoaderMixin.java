@@ -29,11 +29,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.WritableRegistry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.core.RegistrationInfo;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -63,8 +63,8 @@ public class RegistryLoaderMixin {
 			cancellable = true
 	)
 	private static <E> void checkResourceCondition(
-            WritableRegistry<E> registry, Decoder<E> decoder, RegistryOps<JsonElement> ops, ResourceKey<E> key, Resource resource, RegistrationInfo entryInfo,
-            CallbackInfo ci, @Local Reader reader, @Local JsonElement jsonElement
+			WritableRegistry<E> registry, Decoder<E> decoder, RegistryOps<JsonElement> ops, ResourceKey<E> key, Resource resource, RegistrationInfo entryInfo,
+			CallbackInfo ci, @Local Reader reader, @Local JsonElement jsonElement
 	) throws IOException {
 		// This method is called both on the server (when loading resources) and on the client (when syncing from the
 		// server). We only want to apply resource conditions when loading via loadFromResource.

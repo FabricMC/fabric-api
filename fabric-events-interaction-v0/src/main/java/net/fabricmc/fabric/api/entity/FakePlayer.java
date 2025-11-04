@@ -25,18 +25,18 @@ import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
-import net.minecraft.world.Container;
-import net.minecraft.server.level.ClientInformation;
-import net.minecraft.world.scores.PlayerTeam;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.stats.Stat;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ClientInformation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stat;
+import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.scores.PlayerTeam;
 
 import net.fabricmc.fabric.impl.event.interaction.FakePlayerNetworkHandler;
 

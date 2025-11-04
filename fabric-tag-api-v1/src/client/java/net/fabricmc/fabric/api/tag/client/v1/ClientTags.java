@@ -19,10 +19,10 @@ package net.fabricmc.fabric.api.tag.client.v1;
 import java.util.Objects;
 import java.util.Set;
 
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.Holder;
-import net.minecraft.tags.TagKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.impl.tag.client.ClientTagsImpl;
 

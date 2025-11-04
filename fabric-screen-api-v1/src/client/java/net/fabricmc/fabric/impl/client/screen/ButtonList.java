@@ -19,10 +19,10 @@ package net.fabricmc.fabric.impl.client.screen;
 import java.util.AbstractList;
 import java.util.List;
 
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.components.AbstractWidget;
 
 // TODO: When events for listening to addition of child elements are added, fire events from this list.
 public final class ButtonList extends AbstractList<AbstractWidget> {

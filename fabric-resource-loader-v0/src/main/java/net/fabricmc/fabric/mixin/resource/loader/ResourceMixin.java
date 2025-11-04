@@ -18,8 +18,8 @@ package net.fabricmc.fabric.mixin.resource.loader;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.server.packs.resources.Resource;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResource;
 import net.fabricmc.fabric.impl.resource.loader.ResourcePackSourceTracker;

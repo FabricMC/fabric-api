@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.test.screenhandler.item;
 
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.ItemContainerContents;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 
 final class BagInventory implements ImplementedInventory {
 	private final ItemStack stack;

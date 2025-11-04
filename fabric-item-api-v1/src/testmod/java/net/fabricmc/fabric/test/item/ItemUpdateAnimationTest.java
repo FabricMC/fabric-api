@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.world.item.Item;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.api.ModInitializer;
 

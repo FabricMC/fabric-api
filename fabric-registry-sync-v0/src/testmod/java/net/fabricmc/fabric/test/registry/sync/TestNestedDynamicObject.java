@@ -19,8 +19,8 @@ package net.fabricmc.fabric.test.registry.sync;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.RegistryFileCodec;
 
 public record TestNestedDynamicObject(Holder<TestDynamicObject> nested) {
 	public static final Codec<TestNestedDynamicObject> CODEC = RecordCodecBuilder.create(instance -> instance.group(

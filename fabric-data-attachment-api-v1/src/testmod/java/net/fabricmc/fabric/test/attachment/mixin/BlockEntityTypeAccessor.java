@@ -27,5 +27,5 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 @Mixin(BlockEntityType.class)
 public interface BlockEntityTypeAccessor {
 	@Accessor("validBlocks")
-    Set<Block> getBlocks();
+	Set<Block> getBlocks();
 }

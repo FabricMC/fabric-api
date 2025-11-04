@@ -23,11 +23,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.RegistrySynchronization;
+import net.minecraft.resources.ResourceKey;
 
 @Mixin(targets = "net.minecraft.client.multiplayer.RegistryDataCollector$ContentsCollector")
 public interface ClientRegistriesDynamicRegistriesAccessor {
 	@Accessor("elements")
-    Map<ResourceKey<? extends Registry<?>>, List<RegistrySynchronization.PackedRegistryEntry>> getDynamicRegistries();
+	Map<ResourceKey<? extends Registry<?>>, List<RegistrySynchronization.PackedRegistryEntry>> getDynamicRegistries();
 }

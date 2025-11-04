@@ -21,10 +21,10 @@ import java.util.Locale;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.ServerFunctionLibrary;
-import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.RecipeManager;
 
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 import net.fabricmc.fabric.impl.resource.v1.FabricResourceReloader;

@@ -20,8 +20,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import net.minecraft.client.gui.Gui;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Player;
 
 import net.fabricmc.fabric.impl.client.rendering.hud.HudStatusBarHeightRegistryImpl;
 

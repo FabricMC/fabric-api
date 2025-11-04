@@ -20,9 +20,9 @@ import java.util.Map;
 
 import com.google.common.collect.MapMaker;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 

@@ -26,9 +26,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.commands.DebugConfigCommand;
-import net.minecraft.commands.CommandSourceStack;
 
 import net.fabricmc.loader.api.FabricLoader;
 

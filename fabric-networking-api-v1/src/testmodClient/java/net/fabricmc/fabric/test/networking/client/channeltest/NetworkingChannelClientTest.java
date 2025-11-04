@@ -19,11 +19,11 @@ package net.fabricmc.fabric.test.networking.client.channeltest;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
-import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;

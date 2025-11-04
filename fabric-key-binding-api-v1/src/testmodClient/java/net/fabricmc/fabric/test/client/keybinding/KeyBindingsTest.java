@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.test.client.keybinding;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.ToggleKeyMapping;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 

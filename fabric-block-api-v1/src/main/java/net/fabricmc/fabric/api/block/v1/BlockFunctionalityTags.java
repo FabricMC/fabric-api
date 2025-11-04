@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.block.v1;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.tags.TagKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 
 /**
  * Contains block tags that add extra functionality to blocks.

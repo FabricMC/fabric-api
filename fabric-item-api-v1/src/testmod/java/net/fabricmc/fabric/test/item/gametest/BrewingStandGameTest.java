@@ -16,17 +16,17 @@
 
 package net.fabricmc.fabric.test.item.gametest;
 
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.core.Holder;
-import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.fabric.test.item.CustomDamageTest;

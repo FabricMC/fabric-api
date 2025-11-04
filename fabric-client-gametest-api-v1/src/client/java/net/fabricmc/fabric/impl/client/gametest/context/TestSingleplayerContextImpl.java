@@ -19,8 +19,8 @@ package net.fabricmc.fabric.impl.client.gametest.context;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.screens.GenericMessageScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext;

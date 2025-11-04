@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.lookup.item;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.test.lookup.api.Inspectable;
 

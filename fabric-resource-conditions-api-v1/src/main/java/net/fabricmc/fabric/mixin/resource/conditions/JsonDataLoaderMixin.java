@@ -33,11 +33,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.resources.RegistryOps;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 

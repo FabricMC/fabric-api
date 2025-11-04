@@ -18,13 +18,13 @@ package net.fabricmc.fabric.api.renderer.v1.model;
 
 import java.util.List;
 
-import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.UnbakedGeometry;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.UnbakedGeometry;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 

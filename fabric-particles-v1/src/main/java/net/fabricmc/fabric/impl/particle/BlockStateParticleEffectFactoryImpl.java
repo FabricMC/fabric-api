@@ -18,10 +18,10 @@ package net.fabricmc.fabric.impl.particle;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class BlockStateParticleEffectFactoryImpl {
 	private BlockStateParticleEffectFactoryImpl() {

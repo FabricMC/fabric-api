@@ -18,8 +18,9 @@ package net.fabricmc.fabric.api.client.keybinding.v1;
 
 import java.util.Objects;
 
-import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
+
+import net.minecraft.client.KeyMapping;
 
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;

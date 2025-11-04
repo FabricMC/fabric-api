@@ -27,9 +27,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
+import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.impl.client.rendering.SpecialBlockRendererRegistryImpl;
 
@@ -43,7 +43,7 @@ abstract class SpecialModelTypesMixin {
 	// TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported
-    @Inject(at = @At("RETURN"), method = "<clinit>*")
+	@Inject(at = @At("RETURN"), method = "<clinit>*")
 	private static void onReturnClinit(CallbackInfo ci) {
 		// The map is normally an ImmutableMap.
 		if (!(STATIC_BLOCK_MAPPING instanceof HashMap)) {

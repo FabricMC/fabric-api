@@ -24,5 +24,5 @@ import net.minecraft.client.gui.screens.TitleScreen;
 @Mixin(TitleScreen.class)
 public interface TitleScreenAccessor {
 	@Accessor("fading")
-    boolean getDoBackgroundFade();
+	boolean getDoBackgroundFade();
 }

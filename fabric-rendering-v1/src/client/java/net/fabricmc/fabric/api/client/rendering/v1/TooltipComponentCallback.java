@@ -19,8 +19,8 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -50,5 +50,5 @@ public interface TooltipComponentCallback {
 	 * Return the tooltip component for the passed data, or null if none is available.
 	 */
 	@Nullable
-    ClientTooltipComponent getComponent(TooltipComponent data);
+	ClientTooltipComponent getComponent(TooltipComponent data);
 }

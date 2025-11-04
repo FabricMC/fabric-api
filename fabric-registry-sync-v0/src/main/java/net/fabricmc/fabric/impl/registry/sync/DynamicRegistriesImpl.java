@@ -26,9 +26,9 @@ import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Unmodifiable;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.core.RegistrySynchronization;
+import net.minecraft.resources.RegistryDataLoader;
+import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 

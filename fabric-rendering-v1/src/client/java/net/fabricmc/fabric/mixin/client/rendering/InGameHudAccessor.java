@@ -30,7 +30,7 @@ public interface InGameHudAccessor {
 	int fabric$getRenderHealthValue();
 
 	@Invoker("getPlayerVehicleWithHealth")
-    LivingEntity fabric$callGetRiddenEntity();
+	LivingEntity fabric$callGetRiddenEntity();
 
 	@Invoker("getVehicleMaxHearts")
 	int fabric$callGetHeartCount(LivingEntity entity);
@@ -39,5 +39,5 @@ public interface InGameHudAccessor {
 	int fabric$callGetHeartRows(int health);
 
 	@Invoker("getCameraPlayer")
-    Player fabric$callGetCameraPlayer();
+	Player fabric$callGetCameraPlayer();
 }

@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
 import net.minecraft.network.protocol.login.ClientboundCustomQueryPacket;
+import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 
@@ -41,7 +41,7 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	protected abstract void tickVerify(GameProfile profile);
 
 	@Unique

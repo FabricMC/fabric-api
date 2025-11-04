@@ -42,18 +42,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.world.level.WorldDataConfiguration;
-import net.minecraft.world.level.DataPackConfig;
-import net.minecraft.server.packs.metadata.pack.PackFormat;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.repository.ServerPacksSource;
-import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.metadata.pack.PackFormat;
+import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.ServerPacksSource;
 import net.minecraft.util.InclusiveRange;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.level.DataPackConfig;
+import net.minecraft.world.level.WorldDataConfiguration;
 import net.minecraft.world.level.validation.DirectoryValidator;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;

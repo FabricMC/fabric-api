@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.test.transfer.unittests;
 
-import net.minecraft.server.Bootstrap;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.Bootstrap;
 
 public abstract class AbstractTransferApiTest {
 	protected static void bootstrap() {

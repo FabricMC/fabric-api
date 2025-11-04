@@ -23,8 +23,8 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraft.util.Util;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.message.v1.ServerMessageDecoratorEvent;

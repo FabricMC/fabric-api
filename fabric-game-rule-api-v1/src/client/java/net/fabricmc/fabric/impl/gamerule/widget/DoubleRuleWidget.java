@@ -22,11 +22,11 @@ import com.mojang.serialization.DataResult;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;

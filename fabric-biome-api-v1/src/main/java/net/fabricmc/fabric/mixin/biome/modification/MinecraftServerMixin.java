@@ -32,7 +32,7 @@ public abstract class MinecraftServerMixin {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract RegistryAccess.Frozen getRegistryManager();
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))

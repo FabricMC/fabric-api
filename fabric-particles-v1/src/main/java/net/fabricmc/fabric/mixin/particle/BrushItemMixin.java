@@ -20,13 +20,13 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.BrushItem;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.item.BrushItem;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectExtension;
 

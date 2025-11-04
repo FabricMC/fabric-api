@@ -20,12 +20,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.PackType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.enchantment.Enchantments;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;

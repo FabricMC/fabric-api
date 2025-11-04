@@ -19,11 +19,11 @@ package net.fabricmc.fabric.test.registry.sync;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.Holder;
-import net.minecraft.tags.TagKey;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;

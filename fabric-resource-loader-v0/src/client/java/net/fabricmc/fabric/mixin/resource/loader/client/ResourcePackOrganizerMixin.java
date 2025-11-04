@@ -28,8 +28,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.gui.screens.packs.PackSelectionModel;
-import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackRepository;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
 

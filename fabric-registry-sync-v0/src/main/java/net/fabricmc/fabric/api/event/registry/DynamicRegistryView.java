@@ -21,8 +21,8 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 
 /**

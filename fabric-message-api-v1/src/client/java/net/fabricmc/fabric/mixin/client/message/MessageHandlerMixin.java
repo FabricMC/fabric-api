@@ -31,8 +31,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.multiplayer.chat.ChatListener;
 import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.PlayerChatMessage;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 

@@ -49,13 +49,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.core.WritableRegistry;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Holder;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
+import net.minecraft.core.Registry;
+import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -93,19 +93,19 @@ public abstract class SimpleRegistryMixin<T> implements WritableRegistry<T>, Rem
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract Optional<ResourceKey<T>> getResourceKey(T entry);
 
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract @Nullable T getValue(@Nullable Identifier id);
 
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract ResourceKey<? extends Registry<T>> key();
 
 	@Unique
@@ -128,7 +128,7 @@ public abstract class SimpleRegistryMixin<T> implements WritableRegistry<T>, Rem
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract boolean containsKey(Identifier id);
 
 	@Shadow
@@ -141,7 +141,7 @@ public abstract class SimpleRegistryMixin<T> implements WritableRegistry<T>, Rem
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	protected abstract void assertNotFrozen();
 
 	@Override
@@ -469,9 +469,9 @@ public abstract class SimpleRegistryMixin<T> implements WritableRegistry<T>, Rem
 
 	@ModifyVariable(
 			method = {
-                    "get(Lnet/minecraft/resources/Identifier;)Ljava/util/Optional;",
-                    "getValue(Lnet/minecraft/resources/Identifier;)Ljava/lang/Object;",
-                    "containsKey"
+					"get(Lnet/minecraft/resources/Identifier;)Ljava/util/Optional;",
+					"getValue(Lnet/minecraft/resources/Identifier;)Ljava/lang/Object;",
+					"containsKey"
 			},
 			at = @At("HEAD"),
 			argsOnly = true
@@ -482,11 +482,11 @@ public abstract class SimpleRegistryMixin<T> implements WritableRegistry<T>, Rem
 
 	@ModifyVariable(
 			method = {
-                    "getValue(Lnet/minecraft/resources/ResourceKey;)Ljava/lang/Object;",
-                    "get(Lnet/minecraft/resources/ResourceKey;)Ljava/util/Optional;",
-                    "getOrCreateHolderOrThrow",
-                    "containsKey",
-                    "registrationInfo"
+					"getValue(Lnet/minecraft/resources/ResourceKey;)Ljava/lang/Object;",
+					"get(Lnet/minecraft/resources/ResourceKey;)Ljava/util/Optional;",
+					"getOrCreateHolderOrThrow",
+					"containsKey",
+					"registrationInfo"
 			},
 			at = @At("HEAD"),
 			argsOnly = true

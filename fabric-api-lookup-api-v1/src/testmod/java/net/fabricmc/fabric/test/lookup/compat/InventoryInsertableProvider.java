@@ -18,9 +18,9 @@ package net.fabricmc.fabric.test.lookup.compat;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.Container;
 import net.minecraft.core.Direction;
+import net.minecraft.world.Container;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.test.lookup.api.ItemInsertable;

@@ -42,7 +42,7 @@ abstract class ComponentMapBuilderMixin implements FabricComponentMapBuilder {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract <T> DataComponentMap.Builder add(DataComponentType<T> type, @Nullable T value);
 
 	@Override

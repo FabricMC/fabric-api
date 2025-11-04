@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.resource.v1;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 

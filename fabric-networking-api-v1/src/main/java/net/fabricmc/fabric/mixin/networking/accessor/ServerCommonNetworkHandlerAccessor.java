@@ -26,7 +26,7 @@ import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 @Mixin(ServerCommonPacketListenerImpl.class)
 public interface ServerCommonNetworkHandlerAccessor {
 	@Accessor
-    Connection getConnection();
+	Connection getConnection();
 
 	@Accessor
 	MinecraftServer getServer();

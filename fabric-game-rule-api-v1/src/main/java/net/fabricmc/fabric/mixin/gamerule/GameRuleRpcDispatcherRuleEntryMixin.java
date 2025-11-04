@@ -31,8 +31,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.server.jsonrpc.methods.InvalidParameterJsonRpcException;
 import net.minecraft.server.jsonrpc.methods.GameRulesService;
+import net.minecraft.server.jsonrpc.methods.InvalidParameterJsonRpcException;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.gamerules.GameRule;
 

@@ -22,9 +22,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.renderer.MaterialMapper;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.renderer.MaterialMapper;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.object.builder.client.SignTypeTextureHelper;
@@ -34,7 +34,7 @@ abstract class TexturedRenderLayersMixin {
 	// TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported
-    @Inject(method = "<clinit>*", at = @At("RETURN"))
+	@Inject(method = "<clinit>*", at = @At("RETURN"))
 	private static void onReturnClinit(CallbackInfo ci) {
 		SignTypeTextureHelper.shouldAddTextures = true;
 	}

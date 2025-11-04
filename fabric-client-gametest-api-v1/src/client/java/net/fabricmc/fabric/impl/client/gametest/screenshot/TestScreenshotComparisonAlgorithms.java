@@ -20,10 +20,10 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 

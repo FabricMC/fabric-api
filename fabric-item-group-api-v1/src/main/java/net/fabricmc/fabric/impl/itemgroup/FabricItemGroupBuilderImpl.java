@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.itemgroup;
 
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
 
 public final class FabricItemGroupBuilderImpl extends CreativeModeTab.Builder {
 	private boolean hasDisplayName = false;

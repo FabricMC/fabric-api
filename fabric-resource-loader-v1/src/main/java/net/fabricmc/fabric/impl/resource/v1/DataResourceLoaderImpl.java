@@ -25,9 +25,9 @@ import java.util.function.Function;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import net.fabricmc.fabric.api.resource.v1.DataResourceLoader;
 

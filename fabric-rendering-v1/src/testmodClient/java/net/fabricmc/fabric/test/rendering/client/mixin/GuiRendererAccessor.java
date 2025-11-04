@@ -28,5 +28,5 @@ import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
 @Mixin(GuiRenderer.class)
 public interface GuiRendererAccessor {
 	@Accessor("pictureInPictureRenderers")
-    Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRenderer<?>> getSpecialElementRenderers();
+	Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRenderer<?>> getSpecialElementRenderers();
 }

@@ -18,13 +18,13 @@ package net.fabricmc.fabric.api.client.model.loading.v1.wrapper;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.entity.ItemOwner;
 
 /**
  * A simple implementation of {@link ItemModel} that delegates all method calls to the {@link #wrapped} field.

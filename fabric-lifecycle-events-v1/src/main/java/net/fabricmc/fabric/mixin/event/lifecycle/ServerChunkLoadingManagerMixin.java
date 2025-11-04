@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 public abstract class ServerChunkLoadingManagerMixin {
 	@Shadow
 	@Final
-    ServerLevel level;
+	ServerLevel level;
 
 	/**
 	 * Injection is inside of tryUnloadChunk.

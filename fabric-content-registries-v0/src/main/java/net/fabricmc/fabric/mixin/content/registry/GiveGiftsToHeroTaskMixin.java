@@ -27,10 +27,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.entity.ai.behavior.GiveGiftToHero;
-import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.ai.behavior.GiveGiftToHero;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 @Mixin(GiveGiftToHero.class)
 public class GiveGiftsToHeroTaskMixin {

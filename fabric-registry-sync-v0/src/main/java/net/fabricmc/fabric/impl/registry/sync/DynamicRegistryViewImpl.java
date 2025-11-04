@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistryView;

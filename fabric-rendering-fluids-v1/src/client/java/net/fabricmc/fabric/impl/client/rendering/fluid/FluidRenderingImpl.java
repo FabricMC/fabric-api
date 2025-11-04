@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
-import net.minecraft.world.level.block.state.BlockState;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRendering;

@@ -79,7 +79,7 @@ class LanguageMixin {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public static void load(InputStream inputStream, BiConsumer<String, String> entryConsumer) {
 	}
 }

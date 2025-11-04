@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.client.rendering.fluid;
 
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;

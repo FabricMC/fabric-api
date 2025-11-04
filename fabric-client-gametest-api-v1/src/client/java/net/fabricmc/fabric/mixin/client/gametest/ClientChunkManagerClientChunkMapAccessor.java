@@ -24,8 +24,8 @@ import net.minecraft.client.multiplayer.ClientChunkCache;
 @Mixin(ClientChunkCache.Storage.class)
 public interface ClientChunkManagerClientChunkMapAccessor {
 	@Accessor("viewCenterX")
-    int getCenterChunkX();
+	int getCenterChunkX();
 
 	@Accessor("viewCenterZ")
-    int getCenterChunkZ();
+	int getCenterChunkZ();
 }

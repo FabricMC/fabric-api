@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.block.type;
 
-import net.minecraft.world.level.block.state.properties.BlockSetType;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 
 /**
  * This class allows easy creation of {@link BlockSetType}s.

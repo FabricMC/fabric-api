@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.lookup.api;
 
-import net.minecraft.resources.Identifier;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 

@@ -21,10 +21,10 @@ import static net.fabricmc.fabric.test.biome.DataGeneratorEntrypoint.PLACED_COMM
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.tags.TagKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.Climate;

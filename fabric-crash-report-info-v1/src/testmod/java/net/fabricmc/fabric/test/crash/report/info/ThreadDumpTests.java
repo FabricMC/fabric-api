@@ -22,11 +22,11 @@ import com.mojang.brigadier.context.CommandContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.dedicated.ServerWatchdog;
-import net.minecraft.network.chat.Component;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportType;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.dedicated.ServerWatchdog;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;

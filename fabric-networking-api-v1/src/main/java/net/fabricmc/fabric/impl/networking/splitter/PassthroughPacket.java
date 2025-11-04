@@ -18,10 +18,10 @@ package net.fabricmc.fabric.impl.networking.splitter;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.PacketEncoder;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.PacketType;
 import net.minecraft.resources.Identifier;
 

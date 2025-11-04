@@ -34,11 +34,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.include.com.google.common.base.Preconditions;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Holder;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 
 import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
 

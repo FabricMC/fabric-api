@@ -23,15 +23,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
@@ -39,16 +39,16 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 public abstract class ServerPlayNetworkHandlerInteractEntityHandlerMixin implements ServerboundInteractPacket.Handler {
 	@Shadow
 	@Final
-    ServerGamePacketListenerImpl this$0;
+	ServerGamePacketListenerImpl this$0;
 
 	@Shadow
 	@Final
-    Entity val$target;
+	Entity val$target;
 
 	// TODO(Ravel): target method interactAt with the signature not found
 // TODO(Ravel): target method interactAt with the signature not found
 // TODO(Ravel): target method interactAt with the signature not found
-    @Inject(method = "interactAt(Lnet/minecraft/util/Hand;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "HEAD"), cancellable = true)
+	@Inject(method = "interactAt(Lnet/minecraft/util/Hand;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(InteractionHand hand, Vec3 hitPosition, CallbackInfo info) {
 		Player player = this$0.player;
 		Level world = player.level();
@@ -64,7 +64,7 @@ public abstract class ServerPlayNetworkHandlerInteractEntityHandlerMixin impleme
 	// TODO(Ravel): target method interact with the signature not found
 // TODO(Ravel): target method interact with the signature not found
 // TODO(Ravel): target method interact with the signature not found
-    @Inject(method = "interact(Lnet/minecraft/util/Hand;)V", at = @At(value = "HEAD"), cancellable = true)
+	@Inject(method = "interact(Lnet/minecraft/util/Hand;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(InteractionHand hand, CallbackInfo info) {
 		Player player = this$0.player;
 		Level world = player.level();

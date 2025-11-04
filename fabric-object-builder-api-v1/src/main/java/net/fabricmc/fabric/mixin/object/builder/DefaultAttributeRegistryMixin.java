@@ -42,7 +42,7 @@ public abstract class DefaultAttributeRegistryMixin {
 	// TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported
-    @Inject(method = "<clinit>*", at = @At("TAIL"))
+	@Inject(method = "<clinit>*", at = @At("TAIL"))
 	private static void injectAttributes(CallbackInfo ci) {
 		SUPPLIERS = new IdentityHashMap<>(SUPPLIERS);
 	}

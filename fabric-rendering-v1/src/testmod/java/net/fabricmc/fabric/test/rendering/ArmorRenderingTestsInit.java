@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.test.rendering;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.equipment.Equippable;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;

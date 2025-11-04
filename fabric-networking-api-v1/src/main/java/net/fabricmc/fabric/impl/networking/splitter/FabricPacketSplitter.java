@@ -26,12 +26,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToMessageEncoder;
 
-import net.minecraft.network.VarInt;
 import net.minecraft.network.PacketEncoder;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.VarInt;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
@@ -61,7 +61,7 @@ public class FabricPacketSplitter extends MessageToMessageEncoder<Packet<?>> {
 	}
 
 	public static void genericPacketSplitter(Identifier packetId, ChannelHandlerContext channelHandlerContext, PacketEncoder<?> encoder, Packet<?> packet,
-                                             Function<CustomPacketPayload, Packet<?>> packetConstructor, Consumer<Packet<?>> consumer, int maxChunkSize, int maxPacketSize) throws Exception {
+											Function<CustomPacketPayload, Packet<?>> packetConstructor, Consumer<Packet<?>> consumer, int maxChunkSize, int maxPacketSize) throws Exception {
 		ByteBuf buf = Unpooled.buffer();
 		((EncoderHandlerAccessor) encoder).fabric_encode(channelHandlerContext, packet, buf);
 

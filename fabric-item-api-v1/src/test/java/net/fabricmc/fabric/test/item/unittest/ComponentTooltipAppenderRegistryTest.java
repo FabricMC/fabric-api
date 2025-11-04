@@ -24,16 +24,16 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.server.Bootstrap;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.Bootstrap;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Unit;
+import net.minecraft.world.item.component.ItemLore;
 
 import net.fabricmc.fabric.impl.item.DefaultItemComponentImpl;
 import net.fabricmc.fabric.test.item.ComponentTooltipAppenderTest;

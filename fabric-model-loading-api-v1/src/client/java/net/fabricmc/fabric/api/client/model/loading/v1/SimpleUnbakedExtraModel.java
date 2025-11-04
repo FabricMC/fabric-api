@@ -18,14 +18,14 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import java.util.function.BiFunction;
 
-import net.minecraft.client.resources.model.ResolvedModel;
-import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.block.model.SingleVariant;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.resources.Identifier;
 
 /**

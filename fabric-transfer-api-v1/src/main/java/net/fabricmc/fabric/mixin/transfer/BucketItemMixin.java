@@ -22,9 +22,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;

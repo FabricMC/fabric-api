@@ -19,12 +19,12 @@ package net.fabricmc.fabric.api.blockview.v2;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Holder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * General-purpose Fabric-provided extensions for {@link BlockGetter} subclasses.

@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.event.lifecycle;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
 import net.fabricmc.api.ModInitializer;

@@ -22,9 +22,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 // Vanilla doesn't mark namespaces in the directories of tags and dynamic registry elements at all,
 // so we prepend the directories with the namespace if it's a modded registry id.

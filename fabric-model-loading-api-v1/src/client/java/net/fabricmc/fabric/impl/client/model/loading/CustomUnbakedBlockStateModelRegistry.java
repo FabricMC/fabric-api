@@ -34,12 +34,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SingleVariant;
-import net.minecraft.client.resources.model.WeightedVariants;
 import net.minecraft.client.renderer.block.model.Variant;
+import net.minecraft.client.resources.model.WeightedVariants;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.random.WeightedList;
-import net.minecraft.util.random.Weighted;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 

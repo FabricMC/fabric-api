@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.registry;
 
+import net.minecraft.core.Holder;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.core.Holder;
-import net.minecraft.world.flag.FeatureFlagSet;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import net.minecraft.client.resources.model.QuadCollection;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.UnbakedGeometry;
-import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.renderer.block.model.TextureSlots;
-import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.UnbakedGeometry;
 import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;

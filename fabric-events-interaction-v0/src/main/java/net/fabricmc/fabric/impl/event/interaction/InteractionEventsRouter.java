@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.impl.event.interaction;
 
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.block.BlockAttackInteractionAware;

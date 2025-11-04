@@ -25,5 +25,5 @@ import net.minecraft.server.level.ChunkMap;
 @Mixin(ChunkMap.class)
 public interface ServerChunkLoadingManagerAccessor {
 	@Accessor("entityMap")
-    Int2ObjectMap<EntityTrackerAccessor> getEntityTrackers();
+	Int2ObjectMap<EntityTrackerAccessor> getEntityTrackers();
 }

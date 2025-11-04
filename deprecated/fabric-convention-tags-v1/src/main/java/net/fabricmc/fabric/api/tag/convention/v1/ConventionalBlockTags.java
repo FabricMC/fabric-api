@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 

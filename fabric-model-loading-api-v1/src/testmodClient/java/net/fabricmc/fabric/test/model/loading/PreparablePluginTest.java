@@ -29,14 +29,14 @@ import com.mojang.logging.LogUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.AtlasManager;
-import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.Util;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -57,7 +57,7 @@ public class PreparablePluginTest implements ClientModInitializer {
 		PreparableModelLoadingPlugin.register(PreparablePluginTest::loadModelReplacements, (replacementModels, pluginContext) -> {
 			pluginContext.modifyModelOnLoad().register((model, ctx) -> {
 				@Nullable
-                UnbakedModel replacementModel = replacementModels.get(ctx.id());
+				UnbakedModel replacementModel = replacementModels.get(ctx.id());
 
 				if (replacementModel != null) {
 					return replacementModel;

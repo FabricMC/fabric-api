@@ -20,14 +20,14 @@ import java.util.EnumSet;
 
 import com.mojang.serialization.Lifecycle;
 
-import net.minecraft.core.DefaultedRegistry;
-import net.minecraft.core.WritableRegistry;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.DefaultedMappedRegistry;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
+import net.minecraft.core.Registry;
+import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.mixin.registry.sync.RegistriesAccessor;
 

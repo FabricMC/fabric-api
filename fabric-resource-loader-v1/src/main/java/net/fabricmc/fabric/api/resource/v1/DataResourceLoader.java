@@ -20,12 +20,12 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.world.item.crafting.RecipeManager;
 
 import net.fabricmc.fabric.impl.resource.v1.DataResourceLoaderImpl;
 
@@ -81,7 +81,7 @@ public interface DataResourceLoader extends ResourceLoader {
 	 * as storing a state may easily lead to incomplete or leaking data.
 	 */
 	void registerReloader(
-            Identifier id,
-            Function<HolderLookup.Provider, PreparableReloadListener> factory
+			Identifier id,
+			Function<HolderLookup.Provider, PreparableReloadListener> factory
 	);
 }

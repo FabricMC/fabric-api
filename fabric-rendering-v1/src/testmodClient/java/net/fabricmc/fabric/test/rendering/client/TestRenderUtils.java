@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.world.phys.AABB;
 
 public class TestRenderUtils {

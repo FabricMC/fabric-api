@@ -27,5 +27,5 @@ import net.minecraft.network.Connection;
 public interface MinecraftClientAccessor {
 	@Nullable
 	@Accessor("pendingConnection")
-    Connection getConnection();
+	Connection getConnection();
 }

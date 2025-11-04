@@ -21,19 +21,19 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerConnection;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerPlayerConnection;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkSource;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.mixin.networking.accessor.EntityTrackerAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerChunkLoadingManagerAccessor;

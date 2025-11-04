@@ -25,12 +25,12 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.TooltipProvider;
 
 public final class ComponentTooltipAppenderRegistryImpl {
 	private static final List<DataComponentType<? extends TooltipProvider>> first = new ArrayList<>();
@@ -69,11 +69,11 @@ public final class ComponentTooltipAppenderRegistryImpl {
 	}
 
 	public static void onFirst(
-            ItemStack stack,
-            Item.TooltipContext context,
-            TooltipDisplay displayComponent,
-            Consumer<Component> textConsumer,
-            TooltipFlag type
+			ItemStack stack,
+			Item.TooltipContext context,
+			TooltipDisplay displayComponent,
+			Consumer<Component> textConsumer,
+			TooltipFlag type
 	) {
 		Set<DataComponentType<?>> cycleDetector = new HashSet<>();
 
@@ -83,11 +83,11 @@ public final class ComponentTooltipAppenderRegistryImpl {
 	}
 
 	public static void onLast(
-            ItemStack stack,
-            Item.TooltipContext context,
-            TooltipDisplay displayComponent,
-            Consumer<Component> textConsumer,
-            TooltipFlag type
+			ItemStack stack,
+			Item.TooltipContext context,
+			TooltipDisplay displayComponent,
+			Consumer<Component> textConsumer,
+			TooltipFlag type
 	) {
 		Set<DataComponentType<?>> cycleDetector = new HashSet<>();
 
@@ -97,13 +97,13 @@ public final class ComponentTooltipAppenderRegistryImpl {
 	}
 
 	public static void onBefore(
-            ItemStack stack,
-            DataComponentType<?> componentType,
-            Item.TooltipContext context,
-            TooltipDisplay displayComponent,
-            Consumer<Component> textConsumer,
-            TooltipFlag type,
-            Set<DataComponentType<?>> cycleDetector
+			ItemStack stack,
+			DataComponentType<?> componentType,
+			Item.TooltipContext context,
+			TooltipDisplay displayComponent,
+			Consumer<Component> textConsumer,
+			TooltipFlag type,
+			Set<DataComponentType<?>> cycleDetector
 	) {
 		List<DataComponentType<? extends TooltipProvider>> befores = before.get(componentType);
 
@@ -115,13 +115,13 @@ public final class ComponentTooltipAppenderRegistryImpl {
 	}
 
 	public static void onAfter(
-            ItemStack stack,
-            DataComponentType<?> componentType,
-            Item.TooltipContext context,
-            TooltipDisplay displayComponent,
-            Consumer<Component> textConsumer,
-            TooltipFlag type,
-            Set<DataComponentType<?>> cycleDetector
+			ItemStack stack,
+			DataComponentType<?> componentType,
+			Item.TooltipContext context,
+			TooltipDisplay displayComponent,
+			Consumer<Component> textConsumer,
+			TooltipFlag type,
+			Set<DataComponentType<?>> cycleDetector
 	) {
 		List<DataComponentType<? extends TooltipProvider>> afters = after.get(componentType);
 
@@ -133,13 +133,13 @@ public final class ComponentTooltipAppenderRegistryImpl {
 	}
 
 	private static void appendCustomComponentTooltip(
-            ItemStack stack,
-            DataComponentType<? extends TooltipProvider> componentType,
-            Item.TooltipContext context,
-            TooltipDisplay displayComponent,
-            Consumer<Component> textConsumer,
-            TooltipFlag type,
-            Set<DataComponentType<?>> cycleDetector
+			ItemStack stack,
+			DataComponentType<? extends TooltipProvider> componentType,
+			Item.TooltipContext context,
+			TooltipDisplay displayComponent,
+			Consumer<Component> textConsumer,
+			TooltipFlag type,
+			Set<DataComponentType<?>> cycleDetector
 	) {
 		if (!cycleDetector.add(componentType)) {
 			return;

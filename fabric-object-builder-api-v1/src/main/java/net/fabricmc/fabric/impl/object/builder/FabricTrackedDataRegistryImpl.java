@@ -24,10 +24,10 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.CrudeIncrementalIntIdentityHashBiMap;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;

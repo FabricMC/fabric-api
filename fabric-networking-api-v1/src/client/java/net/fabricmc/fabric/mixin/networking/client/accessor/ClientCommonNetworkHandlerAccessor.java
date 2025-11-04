@@ -25,5 +25,5 @@ import net.minecraft.network.Connection;
 @Mixin(ClientCommonPacketListenerImpl.class)
 public interface ClientCommonNetworkHandlerAccessor {
 	@Accessor
-    Connection getConnection();
+	Connection getConnection();
 }

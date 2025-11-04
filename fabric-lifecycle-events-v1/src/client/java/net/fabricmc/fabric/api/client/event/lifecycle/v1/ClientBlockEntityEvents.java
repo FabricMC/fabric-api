@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

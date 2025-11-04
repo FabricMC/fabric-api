@@ -26,13 +26,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.DetectorRailBlock;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DetectorRailBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.MinecartComparatorLogicRegistry;
 
@@ -41,7 +41,7 @@ public abstract class DetectorRailBlockMixin {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow protected abstract <T extends AbstractMinecart> List<T> getCarts(Level world, BlockPos pos, Class<T> entityClass, @Nullable Predicate<Entity> entityPredicate);
+	@Shadow protected abstract <T extends AbstractMinecart> List<T> getCarts(Level world, BlockPos pos, Class<T> entityClass, @Nullable Predicate<Entity> entityPredicate);
 
 	@Inject(at = @At("HEAD"), method = "getAnalogOutputSignal", cancellable = true)
 	private void getCustomComparatorOutput(BlockState state, Level world, BlockPos pos, Direction direction, CallbackInfoReturnable<Integer> cir) {

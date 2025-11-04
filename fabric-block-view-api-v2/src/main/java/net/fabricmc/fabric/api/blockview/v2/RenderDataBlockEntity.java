@@ -18,9 +18,9 @@ package net.fabricmc.fabric.api.blockview.v2;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * Extensions that allow {@link BlockEntity} subclasses to provide render data.

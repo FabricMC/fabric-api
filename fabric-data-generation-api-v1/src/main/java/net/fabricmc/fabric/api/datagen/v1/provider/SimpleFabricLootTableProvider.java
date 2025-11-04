@@ -19,10 +19,10 @@ package net.fabricmc.fabric.api.datagen.v1.provider;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.data.CachedOutput;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.util.context.ContextKeySet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;

@@ -22,6 +22,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,14 +32,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -102,7 +102,7 @@ public class FluidRendererMixin {
 	// TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
 // TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
 // TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
-    @Definition(id = "getFrameU", method = "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;getU(F)F")
+	@Definition(id = "getFrameU", method = "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;getU(F)F")
 	@Definition(id = "sprite2", local = @Local(type = TextureAtlasSprite.class))
 	@Expression("@(sprite2).getFrameU(0.0)")
 	@ModifyVariable(
@@ -111,12 +111,12 @@ public class FluidRendererMixin {
 			slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;waterOverlay:Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;"))
 	)
 	private TextureAtlasSprite modifyOverlaySprite(
-            TextureAtlasSprite sprite2,
-            BlockAndTintGetter world,
-            @Local(ordinal = 1) BlockPos neighborPos,
-            @Local(ordinal = 0) boolean isLava,
-            @Local TextureAtlasSprite[] sprites,
-            @Share("useOverlay") LocalBooleanRef useOverlay
+			TextureAtlasSprite sprite2,
+			BlockAndTintGetter world,
+			@Local(ordinal = 1) BlockPos neighborPos,
+			@Local(ordinal = 0) boolean isLava,
+			@Local TextureAtlasSprite[] sprites,
+			@Share("useOverlay") LocalBooleanRef useOverlay
 	) {
 		final FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
 		boolean hasOverlay = info.handler != null ? info.hasOverlay : !isLava;
@@ -134,7 +134,7 @@ public class FluidRendererMixin {
 	// TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
 // TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
 // TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
-    @Definition(id = "sprite2", local = @Local(type = TextureAtlasSprite.class))
+	@Definition(id = "sprite2", local = @Local(type = TextureAtlasSprite.class))
 	@Definition(id = "waterOverlaySprite", field = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;waterOverlay:Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;")
 	@Expression("sprite2 != this.waterOverlaySprite")
 	@ModifyExpressionValue(method = "tesselate", at = @At("MIXINEXTRAS:EXPRESSION"))

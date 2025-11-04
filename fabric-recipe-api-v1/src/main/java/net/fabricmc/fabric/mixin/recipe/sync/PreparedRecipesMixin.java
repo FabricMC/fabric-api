@@ -32,8 +32,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import net.fabricmc.fabric.impl.recipe.sync.RecipeSyncImpl;
@@ -46,7 +46,7 @@ public class PreparedRecipesMixin implements SyncedSerializerAwarePreparedRecipe
 
 	@Inject(method = "create", at = @At("HEAD"))
 	private static void provideSerializerMap(Iterable<RecipeHolder<?>> recipes, CallbackInfoReturnable<RecipeMap> cir,
-                                             @Share("bySerializer") LocalRef<IdentityHashMap<RecipeSerializer<?>, List<RecipeHolder<?>>>> bySerializer) {
+											@Share("bySerializer") LocalRef<IdentityHashMap<RecipeSerializer<?>, List<RecipeHolder<?>>>> bySerializer) {
 		var map = new IdentityHashMap<RecipeSerializer<?>, List<RecipeHolder<?>>>();
 
 		for (RecipeSerializer<?> serializer : RecipeSyncImpl.getSyncedSerializers()) {
@@ -58,7 +58,7 @@ public class PreparedRecipesMixin implements SyncedSerializerAwarePreparedRecipe
 
 	@Inject(method = "create", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;"))
 	private static void fillSerializerMap(Iterable<RecipeHolder<?>> recipes, CallbackInfoReturnable<RecipeMap> cir, @Local RecipeHolder<?> entry,
-                                          @Share("bySerializer") LocalRef<IdentityHashMap<RecipeSerializer<?>, List<RecipeHolder<?>>>> bySerializer) {
+										@Share("bySerializer") LocalRef<IdentityHashMap<RecipeSerializer<?>, List<RecipeHolder<?>>>> bySerializer) {
 		List<RecipeHolder<?>> list = bySerializer.get().get(entry.value().getSerializer());
 
 		if (list != null) {
@@ -68,7 +68,7 @@ public class PreparedRecipesMixin implements SyncedSerializerAwarePreparedRecipe
 
 	@ModifyReturnValue(method = "create", at = @At("RETURN"))
 	private static RecipeMap attachSerializerMap(RecipeMap original,
-                                                 @Share("bySerializer") LocalRef<IdentityHashMap<RecipeSerializer<?>, List<RecipeHolder<?>>>> bySerializer) {
+												@Share("bySerializer") LocalRef<IdentityHashMap<RecipeSerializer<?>, List<RecipeHolder<?>>>> bySerializer) {
 		((PreparedRecipesMixin) (Object) original).bySyncedSerializer = bySerializer.get();
 		return original;
 	}

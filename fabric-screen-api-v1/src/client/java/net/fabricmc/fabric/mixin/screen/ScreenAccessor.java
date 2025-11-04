@@ -25,5 +25,5 @@ import net.minecraft.client.gui.screens.Screen;
 @Mixin(Screen.class)
 public interface ScreenAccessor {
 	@Accessor("minecraft")
-    Minecraft getClient();
+	Minecraft getClient();
 }

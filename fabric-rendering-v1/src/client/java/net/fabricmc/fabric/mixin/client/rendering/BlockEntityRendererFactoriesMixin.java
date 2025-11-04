@@ -25,9 +25,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 
@@ -40,7 +40,7 @@ public abstract class BlockEntityRendererFactoriesMixin {
 	// TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported
-    @Inject(at = @At("RETURN"), method = "<clinit>*")
+	@Inject(at = @At("RETURN"), method = "<clinit>*")
 	private static void init(CallbackInfo ci) {
 		BlockEntityRendererRegistryImpl.setup(((t, factory) -> PROVIDERS.put(t, factory)));
 	}

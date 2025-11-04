@@ -27,10 +27,10 @@ import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryDataLoader;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import net.fabricmc.fabric.impl.gametest.FabricGameTestModInitializer;

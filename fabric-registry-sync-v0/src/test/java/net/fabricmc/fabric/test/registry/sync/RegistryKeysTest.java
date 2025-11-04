@@ -21,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.server.Bootstrap;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.Bootstrap;
 
 public class RegistryKeysTest {
 	private static final ResourceKey<Registry<Object>> TEST_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("registry-keys", "test"));

@@ -24,9 +24,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.Main;
+import net.minecraft.world.item.CreativeModeTabs;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;

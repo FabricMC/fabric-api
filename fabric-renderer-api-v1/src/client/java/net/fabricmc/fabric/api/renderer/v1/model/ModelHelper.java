@@ -24,8 +24,8 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.core.Direction;
+import net.minecraft.data.AtlasIds;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 

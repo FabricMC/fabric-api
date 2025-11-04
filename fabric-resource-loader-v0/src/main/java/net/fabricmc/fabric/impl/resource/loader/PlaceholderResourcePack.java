@@ -28,16 +28,16 @@ import org.apache.commons.io.IOUtils;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.server.packs.resources.IoSupplier;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.PackLocationInfo;
-import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
-import net.minecraft.server.packs.BuiltInMetadata;
-import net.minecraft.server.packs.metadata.MetadataSectionType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.BuiltInMetadata;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
+import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.resources.IoSupplier;
 
 public record PlaceholderResourcePack(PackType type, PackLocationInfo metadata) implements PackResources {
 	private static final Component DESCRIPTION_TEXT = Component.translatable("pack.description.modResources");

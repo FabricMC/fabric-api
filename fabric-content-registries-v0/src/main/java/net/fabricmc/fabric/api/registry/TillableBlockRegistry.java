@@ -22,11 +22,11 @@ import java.util.function.Predicate;
 
 import com.mojang.datafixers.util.Pair;
 
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.item.context.UseOnContext;
 
 import net.fabricmc.fabric.mixin.content.registry.HoeItemAccessor;
 

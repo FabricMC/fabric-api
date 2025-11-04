@@ -19,13 +19,13 @@ package net.fabricmc.fabric.mixin.client.gametest.input;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.opengl.DirectStateAccess;
+import com.mojang.blaze3d.opengl.GlCommandEncoder;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.opengl.DirectStateAccess;
-import com.mojang.blaze3d.opengl.GlCommandEncoder;
 
 import net.fabricmc.fabric.impl.client.gametest.util.WindowHooks;
 

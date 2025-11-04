@@ -23,12 +23,12 @@ import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.data.registries.RegistryPatchGenerator;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.loader.api.ModContainer;

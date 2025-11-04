@@ -19,11 +19,11 @@ package net.fabricmc.fabric.test.sound.client;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.client.resources.sounds.AbstractSoundInstance;
-import net.minecraft.client.sounds.AudioStream;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.AudioStream;
 import net.minecraft.client.sounds.SoundBufferLibrary;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 
 class SineSound extends AbstractSoundInstance {

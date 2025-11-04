@@ -17,12 +17,12 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;

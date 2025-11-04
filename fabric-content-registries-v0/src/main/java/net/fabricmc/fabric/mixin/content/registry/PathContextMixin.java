@@ -23,11 +23,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.PathfindingContext;
-import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.CollisionGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.PathfindingContext;
 
 import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 
@@ -39,7 +39,7 @@ public abstract class PathContextMixin {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract CollisionGetter getWorld();
 
 	/**

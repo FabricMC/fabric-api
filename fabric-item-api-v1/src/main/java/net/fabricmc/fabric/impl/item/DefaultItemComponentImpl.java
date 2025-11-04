@@ -20,8 +20,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.world.item.Item;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.fabricmc.fabric.mixin.item.ItemAccessor;

@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
-import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 
 import net.fabricmc.api.ModInitializer;

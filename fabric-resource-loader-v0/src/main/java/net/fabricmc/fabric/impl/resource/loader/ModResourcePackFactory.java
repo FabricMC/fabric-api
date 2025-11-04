@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.server.packs.CompositePackResources;
-import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.repository.Pack;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;

@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.test.screenhandler.client;
 
-import net.minecraft.client.gui.screens.inventory.DispenserScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.inventory.DispenserScreen;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;

@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
-import net.minecraft.world.WorldlyContainer;
 import net.minecraft.core.Direction;
+import net.minecraft.world.WorldlyContainer;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;

@@ -20,6 +20,8 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.jspecify.annotations.Nullable;
@@ -32,24 +34,22 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.WorldBorderRenderer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.SubmitNodeStorage;
-import net.minecraft.client.renderer.state.WorldBorderRenderState;
-import net.minecraft.client.renderer.state.LevelRenderState;
-import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OutlineBufferSource;
+import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.WorldBorderRenderer;
+import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.WorldBorderRenderState;
 import net.minecraft.world.level.border.WorldBorder;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
@@ -124,7 +124,7 @@ public abstract class WorldRendererMixin {
 	// TODO(Ravel): @At.args is not supported
 // TODO(Ravel): @At.args is not supported
 // TODO(Ravel): @At.args is not supported
-    @Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities"))
+	@Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities"))
 	private void beforeEntitySubmission(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_ENTITIES.invoker().beforeEntities(renderContext);
 	}
@@ -132,7 +132,7 @@ public abstract class WorldRendererMixin {
 	// TODO(Ravel): @At.args is not supported
 // TODO(Ravel): @At.args is not supported
 // TODO(Ravel): @At.args is not supported
-    @WrapOperation(method = "method_62214",
+	@WrapOperation(method = "method_62214",
 			slice = @Slice(from = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities")),
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V")
 	)
@@ -149,7 +149,7 @@ public abstract class WorldRendererMixin {
 	// TODO(Ravel): @At.args is not supported
 // TODO(Ravel): @At.args is not supported
 // TODO(Ravel): @At.args is not supported
-    @Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V", args = "ldc=translucent"))
+	@Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V", args = "ldc=translucent"))
 	private void beforeTranslucentRender(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_TRANSLUCENT.invoker().beforeTranslucent(renderContext);
 	}
@@ -165,7 +165,7 @@ public abstract class WorldRendererMixin {
 	// TODO(Ravel): Unknown injection point INVOKE:LAST
 // TODO(Ravel): Unknown injection point INVOKE:LAST
 // TODO(Ravel): Unknown injection point INVOKE:LAST
-    @Inject(method = "method_62214", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;draw()V"))
+	@Inject(method = "method_62214", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;draw()V"))
 	private void endMainRender(CallbackInfo ci) {
 		WorldRenderEvents.END_MAIN.invoker().endMain(renderContext);
 	}

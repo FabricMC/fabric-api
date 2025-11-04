@@ -18,10 +18,10 @@ package net.fabricmc.fabric.impl.datagen.loot;
 
 import java.util.Collections;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;

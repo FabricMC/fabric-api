@@ -38,15 +38,15 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.registries.VanillaRegistries;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.RegistryDataLoader;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;

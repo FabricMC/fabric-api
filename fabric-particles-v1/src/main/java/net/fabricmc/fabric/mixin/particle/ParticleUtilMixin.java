@@ -20,9 +20,9 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.util.ParticleUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 
 import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectExtension;

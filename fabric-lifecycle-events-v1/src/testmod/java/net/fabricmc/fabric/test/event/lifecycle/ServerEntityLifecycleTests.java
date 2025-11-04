@@ -22,8 +22,8 @@ import java.util.List;
 import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;

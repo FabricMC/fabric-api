@@ -19,9 +19,9 @@ package net.fabricmc.fabric.test.networking.login;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.FutureTask;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 
 import net.fabricmc.api.ModInitializer;

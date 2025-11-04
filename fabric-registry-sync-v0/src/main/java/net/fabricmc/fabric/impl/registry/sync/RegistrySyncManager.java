@@ -35,18 +35,18 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Registry;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.players.NameAndId;
-import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
-import net.minecraft.server.network.ConfigurationTask;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ConfigurationTask;
+import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
+import net.minecraft.server.players.NameAndId;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
@@ -135,8 +135,8 @@ public final class RegistrySyncManager {
 	}
 
 	public record SyncConfigurationTask(
-            ServerConfigurationPacketListenerImpl handler,
-            Map<Identifier, Object2IntMap<Identifier>> map
+			ServerConfigurationPacketListenerImpl handler,
+			Map<Identifier, Object2IntMap<Identifier>> map
 	) implements ConfigurationTask {
 		public static final Type KEY = new Type("fabric:registry/sync");
 

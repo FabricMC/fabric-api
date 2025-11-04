@@ -24,5 +24,5 @@ import net.minecraft.resources.FileToIdConverter;
 @Mixin(FileToIdConverter.class)
 public interface ResourceFinderAccessor {
 	@Accessor("prefix")
-    String getDirectoryName();
+	String getDirectoryName();
 }

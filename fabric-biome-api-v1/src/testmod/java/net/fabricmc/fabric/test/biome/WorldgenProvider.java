@@ -18,8 +18,8 @@ package net.fabricmc.fabric.test.biome;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;

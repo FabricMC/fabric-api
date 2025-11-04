@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
 public final class BlockRenderLayerMapImpl {

@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.event.registry;
 
 import java.util.function.Consumer;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;

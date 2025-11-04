@@ -20,8 +20,8 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BannerBlockEntity;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 

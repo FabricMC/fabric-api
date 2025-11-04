@@ -18,9 +18,9 @@ package net.fabricmc.fabric.test.object.builder;
 
 import java.util.List;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 

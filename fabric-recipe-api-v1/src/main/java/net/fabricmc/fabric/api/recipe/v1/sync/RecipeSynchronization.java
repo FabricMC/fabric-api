@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.recipe.v1.sync;
 
 import java.util.Objects;
 
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;

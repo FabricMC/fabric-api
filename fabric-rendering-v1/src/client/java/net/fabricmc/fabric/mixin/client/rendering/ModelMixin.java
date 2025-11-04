@@ -40,7 +40,7 @@ abstract class ModelMixin<S> implements FabricModel<S> {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract ModelPart getRootPart();
 	@Unique
 	private final Map<String, ModelPart> childPartMap = new Object2ObjectOpenHashMap<>();

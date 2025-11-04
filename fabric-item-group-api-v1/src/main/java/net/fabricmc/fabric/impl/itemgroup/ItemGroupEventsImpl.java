@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTab;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

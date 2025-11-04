@@ -20,10 +20,10 @@ import com.google.common.base.Preconditions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.world.level.levelgen.synth.ImprovedNoise;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.levelgen.synth.ImprovedNoise;
 
 import net.fabricmc.fabric.impl.biome.MultiNoiseSamplerHooks;
 

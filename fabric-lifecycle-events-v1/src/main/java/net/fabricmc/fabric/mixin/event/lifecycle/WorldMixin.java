@@ -33,7 +33,7 @@ public abstract class WorldMixin implements LoadedChunksCache {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract boolean isClient();
 
 	@Unique

@@ -25,9 +25,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.impl.client.rendering.BlockRenderLayerMapImpl;
@@ -44,7 +44,7 @@ abstract class BlockRenderLayersMixin {
 	// TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported
-    @Inject(method = "<clinit>*", at = @At("RETURN"))
+	@Inject(method = "<clinit>*", at = @At("RETURN"))
 	private static void onInitialize(CallbackInfo ci) {
 		BlockRenderLayerMapImpl.setup(TYPE_BY_BLOCK::put, LAYER_BY_FLUID::put);
 	}

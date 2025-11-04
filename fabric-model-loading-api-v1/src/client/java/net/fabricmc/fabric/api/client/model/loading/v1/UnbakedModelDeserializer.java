@@ -23,12 +23,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.client.renderer.block.model.BlockElementFace;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemTransform;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.client.model.loading.UnbakedModelDeserializerRegistry;

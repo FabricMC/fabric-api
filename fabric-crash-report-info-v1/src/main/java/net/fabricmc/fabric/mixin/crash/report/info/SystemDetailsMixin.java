@@ -37,7 +37,7 @@ public abstract class SystemDetailsMixin {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract void addSection(String string, Supplier<String> supplier);
 
 	@Inject(at = @At("RETURN"), method = "<init>")

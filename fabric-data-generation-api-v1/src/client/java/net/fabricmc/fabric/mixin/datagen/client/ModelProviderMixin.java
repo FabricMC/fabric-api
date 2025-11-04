@@ -31,8 +31,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.CachedOutput;
+import net.minecraft.data.PackOutput;
 
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -73,8 +73,8 @@ public class ModelProviderMixin {
 
 	@Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/models/BlockModelGenerators;run()V"))
 	private void setFabricDataOutput(CachedOutput writer, CallbackInfoReturnable<CompletableFuture<?>> cir,
-                                     @Local ModelProvider.BlockStateGeneratorCollector blockStateSuppliers,
-                                     @Local ModelProvider.ItemInfoCollector itemAssets) {
+									@Local ModelProvider.BlockStateGeneratorCollector blockStateSuppliers,
+									@Local ModelProvider.ItemInfoCollector itemAssets) {
 		((FabricModelProviderDefinitions) blockStateSuppliers).setFabricDataOutput(fabricDataOutput);
 		((FabricModelProviderDefinitions) itemAssets).setFabricDataOutput(fabricDataOutput);
 		((FabricItemAssetDefinitions) itemAssets).fabric_setProcessedBlocks(blockStateSuppliers.generators.keySet());

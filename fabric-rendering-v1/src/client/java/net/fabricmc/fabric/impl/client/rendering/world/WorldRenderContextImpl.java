@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.impl.client.rendering.world;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
 import net.minecraft.client.renderer.state.LevelRenderState;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.world.AbstractWorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
@@ -42,12 +42,12 @@ public final class WorldRenderContextImpl implements AbstractWorldRenderContext,
 	private MultiBufferSource consumers;
 
 	public void prepare(
-            GameRenderer gameRenderer,
-            LevelRenderer worldRenderer,
-            LevelRenderState worldRenderState,
-            ChunkSectionsToRender sectionRenderState,
-            SubmitNodeCollector commandQueue,
-            MultiBufferSource consumers
+			GameRenderer gameRenderer,
+			LevelRenderer worldRenderer,
+			LevelRenderState worldRenderState,
+			ChunkSectionsToRender sectionRenderState,
+			SubmitNodeCollector commandQueue,
+			MultiBufferSource consumers
 	) {
 		this.gameRenderer = gameRenderer;
 		this.worldRenderer = worldRenderer;

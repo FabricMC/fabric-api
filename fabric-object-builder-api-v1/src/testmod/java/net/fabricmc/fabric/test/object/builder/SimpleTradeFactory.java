@@ -18,11 +18,11 @@ package net.fabricmc.fabric.test.object.builder;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.trading.MerchantOffer;
 
 class SimpleTradeFactory implements VillagerTrades.ItemListing {
 	private final MerchantOffer offer;

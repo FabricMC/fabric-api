@@ -22,9 +22,9 @@ import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 

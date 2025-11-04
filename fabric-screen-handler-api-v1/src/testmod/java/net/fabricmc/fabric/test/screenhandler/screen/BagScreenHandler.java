@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.test.screenhandler.screen;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.DispenserMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
 import net.fabricmc.fabric.test.screenhandler.item.BagItem;

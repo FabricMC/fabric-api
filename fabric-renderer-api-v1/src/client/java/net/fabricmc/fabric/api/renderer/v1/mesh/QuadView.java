@@ -16,16 +16,16 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.LightTexture;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 
@@ -152,19 +152,19 @@ public interface QuadView {
 	 * @see MutableQuadView#nominalFace(Direction)
 	 */
 	@Nullable
-    Direction nominalFace();
+	Direction nominalFace();
 
 	/**
 	 * @see MutableQuadView#cullFace(Direction)
 	 */
 	@Nullable
-    Direction cullFace();
+	Direction cullFace();
 
 	/**
 	 * @see MutableQuadView#renderLayer(ChunkSectionLayer)
 	 */
 	@Nullable
-    ChunkSectionLayer renderLayer();
+	ChunkSectionLayer renderLayer();
 
 	/**
 	 * @see MutableQuadView#emissive(boolean)

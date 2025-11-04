@@ -25,14 +25,14 @@ import com.mojang.serialization.Decoder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.core.WritableRegistry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.RegistryDataLoader;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistrationInfo;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.resources.RegistryDataLoader;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 
@@ -47,17 +47,17 @@ abstract class RegistryLoaderMixin {
 	)
 	@SuppressWarnings("unchecked")
 	private static <T> Holder.Reference<T> enchantmentKey(
-            WritableRegistry<T> instance,
-            ResourceKey<T> objectKey,
-            Object object,
-            RegistrationInfo registryEntryInfo,
-            Operation<Holder.Reference<T>> original,
-            WritableRegistry<T> registry,
-            Decoder<T> decoder,
-            RegistryOps<JsonElement> ops,
-            ResourceKey<T> registryKey,
-            Resource resource,
-            RegistrationInfo entryInfo
+			WritableRegistry<T> instance,
+			ResourceKey<T> objectKey,
+			Object object,
+			RegistrationInfo registryEntryInfo,
+			Operation<Holder.Reference<T>> original,
+			WritableRegistry<T> registry,
+			Decoder<T> decoder,
+			RegistryOps<JsonElement> ops,
+			ResourceKey<T> registryKey,
+			Resource resource,
+			RegistrationInfo entryInfo
 	) {
 		if (object instanceof Enchantment enchantment) {
 			Enchantment modified = EnchantmentUtil.modify((ResourceKey<Enchantment>) objectKey, enchantment, EnchantmentUtil.determineSource(resource));

@@ -25,9 +25,9 @@ import org.junit.jupiter.api.Test;
 import net.minecraft.client.PeriodicNotificationManager;
 import net.minecraft.client.resources.SplashManager;
 import net.minecraft.client.resources.language.LanguageManager;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;

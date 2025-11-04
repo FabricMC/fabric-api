@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
-import static net.minecraft.commands.arguments.EntityArgument.entity;
-import static net.minecraft.commands.arguments.EntityArgument.getEntity;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
+import static net.minecraft.commands.arguments.EntityArgument.entity;
+import static net.minecraft.commands.arguments.EntityArgument.getEntity;
 
 import java.util.Optional;
 
@@ -27,19 +27,19 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.WanderingTrader;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.trading.MerchantOffer;
-import net.minecraft.world.entity.npc.VillagerTrades;
-import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.item.trading.MerchantOffer;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;

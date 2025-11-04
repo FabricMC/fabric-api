@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.monster.creaking.Creaking;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.PlayerPickItemEvents;

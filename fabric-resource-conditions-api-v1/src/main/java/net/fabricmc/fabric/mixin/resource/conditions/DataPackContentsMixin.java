@@ -25,14 +25,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.server.permissions.PermissionSet;
+import net.minecraft.commands.Commands;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.Registry;
 import net.minecraft.server.RegistryLayer;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.server.ReloadableServerResources;
-import net.minecraft.commands.Commands;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.permissions.PermissionSet;
+import net.minecraft.world.flag.FeatureFlagSet;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 

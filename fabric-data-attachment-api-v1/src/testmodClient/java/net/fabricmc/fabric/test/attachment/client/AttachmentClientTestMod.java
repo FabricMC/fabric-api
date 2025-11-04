@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.test.attachment.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.OptionInstance;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;

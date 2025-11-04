@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.datagen;
 
 import java.util.function.Predicate;
 
-import net.minecraft.tags.TagEntry;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagEntry;
 
 public class ForcedTagEntry extends TagEntry {
 	public ForcedTagEntry(Identifier id) {

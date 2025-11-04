@@ -24,5 +24,5 @@ import net.minecraft.client.Options;
 @Mixin(Options.class)
 public interface GameOptionsAccessor {
 	@Invoker("processOptions")
-    void invokeAccept(Options.FieldAccess visitor);
+	void invokeAccept(Options.FieldAccess visitor);
 }

@@ -35,15 +35,15 @@ import com.mojang.serialization.Lifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.LayeredRegistryAccess;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.tags.TagKey;
-import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.core.LayeredRegistryAccess;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.StrictJsonParser;
 
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;

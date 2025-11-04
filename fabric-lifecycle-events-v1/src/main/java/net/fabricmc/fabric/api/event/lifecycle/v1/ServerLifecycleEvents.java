@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
-import net.minecraft.server.packs.resources.CloseableResourceManager;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.players.PlayerList;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.CloseableResourceManager;
+import net.minecraft.server.players.PlayerList;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

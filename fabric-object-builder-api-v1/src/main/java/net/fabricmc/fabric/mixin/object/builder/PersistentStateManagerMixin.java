@@ -22,8 +22,8 @@ import com.mojang.datafixers.DataFixer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 
 @Mixin(DimensionDataStorage.class)

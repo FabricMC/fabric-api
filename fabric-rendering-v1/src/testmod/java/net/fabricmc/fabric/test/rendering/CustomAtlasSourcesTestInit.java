@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.test.rendering;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.api.ModInitializer;
 

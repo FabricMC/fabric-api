@@ -24,11 +24,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.gametest.framework.GlobalTestReporter;
 import net.minecraft.gametest.framework.GameTestServer;
+import net.minecraft.gametest.framework.GlobalTestReporter;
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.world.level.storage.LevelStorageSource;
 
 public final class FabricGameTestRunner {

@@ -16,16 +16,16 @@
 
 package net.fabricmc.fabric.test.resource.conditions;
 
-import net.minecraft.world.level.block.entity.BannerPattern;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.core.Registry;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.ReloadableServerRegistries;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 

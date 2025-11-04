@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.GuiRenderer;
@@ -32,6 +31,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.state.properties.WoodType;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;

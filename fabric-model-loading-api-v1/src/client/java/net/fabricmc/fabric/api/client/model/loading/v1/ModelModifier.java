@@ -18,13 +18,13 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.event.Event;
 

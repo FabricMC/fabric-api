@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.aocalc;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 

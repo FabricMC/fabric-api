@@ -19,9 +19,9 @@ package net.fabricmc.fabric.test.event.interaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.api.ModInitializer;

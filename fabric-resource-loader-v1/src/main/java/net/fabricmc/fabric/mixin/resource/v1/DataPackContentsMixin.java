@@ -26,9 +26,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
+import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.server.ReloadableServerResources;
 
 import net.fabricmc.fabric.api.resource.v1.DataResourceStore;
 import net.fabricmc.fabric.impl.resource.v1.DataResourceStoreImpl;

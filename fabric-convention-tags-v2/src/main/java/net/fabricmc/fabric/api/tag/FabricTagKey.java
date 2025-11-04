@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.tag;
 
-import net.minecraft.tags.TagKey;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 
 /**
  * General-purpose Fabric-provided extensions for {@link TagKey} subclasses.

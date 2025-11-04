@@ -18,10 +18,11 @@ package net.fabricmc.fabric.impl.renderer;
 
 import java.util.function.Function;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
 
 import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
 

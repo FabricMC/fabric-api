@@ -23,12 +23,6 @@ package net.fabricmc.fabric.test.gamerule;
 // TODO(Ravel): ambiguous static import, members with name argThat have different new names
 //
 import static org.mockito.Mockito.argThat;
-// TODO(Ravel): ambiguous static import, members with name eq have different new names
-//
-// TODO(Ravel): ambiguous static import, members with name eq have different new names
-//
-// TODO(Ravel): ambiguous static import, members with name eq have different new names
-//
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -43,20 +37,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.server.Bootstrap;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.jsonrpc.JsonRpcLogger;
-import net.minecraft.server.jsonrpc.methods.GameRulesService;
 import net.minecraft.server.jsonrpc.internalapi.MinecraftGameRuleService;
 import net.minecraft.server.jsonrpc.internalapi.MinecraftGameRuleServiceImpl;
 import net.minecraft.server.jsonrpc.methods.ClientInfo;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.storage.WorldData;
+import net.minecraft.server.jsonrpc.methods.GameRulesService;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.storage.WorldData;
 
 public class GameRuleManagementHandlerImplTest {
 	@BeforeAll

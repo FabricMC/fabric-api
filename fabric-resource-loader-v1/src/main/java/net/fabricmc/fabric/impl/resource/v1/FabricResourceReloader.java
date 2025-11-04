@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.resource.v1;
 
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 public interface FabricResourceReloader extends PreparableReloadListener {
 	/**

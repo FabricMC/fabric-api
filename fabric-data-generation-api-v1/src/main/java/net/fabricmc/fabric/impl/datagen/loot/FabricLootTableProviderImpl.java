@@ -28,14 +28,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.util.context.ContextKeySet;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
@@ -49,11 +49,11 @@ public final class FabricLootTableProviderImpl {
 	 * Shared run logic for {@link FabricBlockLootTableProvider} and {@link SimpleFabricLootTableProvider}.
 	 */
 	public static CompletableFuture<?> run(
-            CachedOutput writer,
-            FabricLootTableProvider provider,
-            ContextKeySet contextType,
-            FabricDataOutput fabricDataOutput,
-            CompletableFuture<HolderLookup.Provider> registryLookup) {
+			CachedOutput writer,
+			FabricLootTableProvider provider,
+			ContextKeySet contextType,
+			FabricDataOutput fabricDataOutput,
+			CompletableFuture<HolderLookup.Provider> registryLookup) {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
 		HashMap<Identifier, ResourceCondition[]> conditionMap = new HashMap<>();
 

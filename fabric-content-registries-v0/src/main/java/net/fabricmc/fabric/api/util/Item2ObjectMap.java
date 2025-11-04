@@ -18,9 +18,9 @@ package net.fabricmc.fabric.api.util;
 
 import org.jspecify.annotations.NullMarked;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.tags.TagKey;
 
 @NullMarked
 public interface Item2ObjectMap<V> {

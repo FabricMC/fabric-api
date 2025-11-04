@@ -20,10 +20,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 
 @Mixin(SpecialRecipeBuilder.class)
 abstract class ComplexRecipeJsonBuilderMixin {

@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
-import net.minecraft.world.level.block.ComposterBlock;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.ComposterBlock;
 
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 

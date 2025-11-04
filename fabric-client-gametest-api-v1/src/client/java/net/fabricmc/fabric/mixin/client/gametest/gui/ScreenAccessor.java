@@ -27,5 +27,5 @@ import net.minecraft.client.gui.screens.Screen;
 @Mixin(Screen.class)
 public interface ScreenAccessor {
 	@Accessor("renderables")
-    List<Renderable> getDrawables();
+	List<Renderable> getDrawables();
 }

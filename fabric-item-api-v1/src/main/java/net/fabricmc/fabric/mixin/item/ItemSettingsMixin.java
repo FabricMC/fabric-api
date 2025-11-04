@@ -21,9 +21,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.resources.DependantName;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.FabricItem;
 

@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.loot.v2;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -121,7 +121,7 @@ public final class LootTableEvents {
 		 * @return the new loot table, or null if it wasn't replaced
 		 */
 		@Nullable
-        LootTable replaceLootTable(ResourceKey<LootTable> key, LootTable original, LootTableSource source);
+		LootTable replaceLootTable(ResourceKey<LootTable> key, LootTable original, LootTableSource source);
 	}
 
 	@Deprecated

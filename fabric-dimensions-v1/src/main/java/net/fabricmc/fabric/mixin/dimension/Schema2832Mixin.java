@@ -38,7 +38,7 @@ public class Schema2832Mixin {
 	 */
 	@Redirect(
 			method = {
-                    "method_38837", "method_38838"
+					"method_38837", "method_38838"
 			},
 			at = @At(
 					value = "INVOKE",

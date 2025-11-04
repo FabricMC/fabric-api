@@ -44,7 +44,7 @@ public abstract class ClientWorldMixin {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract int calculateColor(BlockPos pos, ColorResolver colorResolver);
 
 	@Inject(method = "onChunkLoaded(Lnet/minecraft/world/level/ChunkPos;)V", at = @At("RETURN"))

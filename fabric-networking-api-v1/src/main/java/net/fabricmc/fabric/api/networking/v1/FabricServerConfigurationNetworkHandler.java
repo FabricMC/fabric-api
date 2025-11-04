@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
-import net.minecraft.server.network.ConfigurationTask;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.network.ConfigurationTask;
+import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 
 /**
  * Fabric-provided extensions for {@link ServerConfigurationPacketListenerImpl}.

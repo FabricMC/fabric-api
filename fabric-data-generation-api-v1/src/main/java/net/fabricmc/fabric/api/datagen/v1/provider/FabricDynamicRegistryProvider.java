@@ -35,19 +35,19 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.core.Registry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderOwner;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderOwner;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
@@ -224,8 +224,8 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		Map<ResourceKey<T>, ConditionalEntry<T>> entries = new IdentityHashMap<>();
 
 		RegistryEntries(HolderOwner<T> lookup,
-                        ResourceKey<? extends Registry<T>> registry,
-                        Codec<T> elementCodec) {
+						ResourceKey<? extends Registry<T>> registry,
+						Codec<T> elementCodec) {
 			this.lookup = lookup;
 			this.registry = registry;
 			this.elementCodec = elementCodec;

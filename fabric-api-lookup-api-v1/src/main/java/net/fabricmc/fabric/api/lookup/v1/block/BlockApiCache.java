@@ -21,10 +21,10 @@ import java.util.Objects;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.lookup.block.BlockApiCacheImpl;
 import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
@@ -72,7 +72,7 @@ public interface BlockApiCache<A, C> {
 	 * unless the block entity has been loaded or unloaded since the last query, the result will be cached.
 	 */
 	@Nullable
-    BlockEntity getBlockEntity();
+	BlockEntity getBlockEntity();
 
 	/**
 	 * Return the lookup this cache is bound to.

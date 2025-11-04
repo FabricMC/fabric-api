@@ -24,5 +24,5 @@ import net.minecraft.resources.RegistryOps;
 @Mixin(RegistryOps.class)
 public interface RegistryOpsAccessor {
 	@Accessor("lookupProvider")
-    RegistryOps.RegistryInfoLookup getRegistryInfoGetter();
+	RegistryOps.RegistryInfoLookup getRegistryInfoGetter();
 }

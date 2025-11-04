@@ -36,12 +36,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.server.packs.repository.FolderRepositorySource;
-import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.repository.RepositorySource;
-import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.FolderRepositorySource;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.server.packs.repository.RepositorySource;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
@@ -55,7 +55,7 @@ public abstract class ResourcePackManagerMixin {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	@Final
 	@Mutable
 	public Set<RepositorySource> providers;

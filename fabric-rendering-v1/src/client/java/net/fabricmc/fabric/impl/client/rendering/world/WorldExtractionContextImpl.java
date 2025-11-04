@@ -21,12 +21,12 @@ import org.joml.Matrix4fc;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.state.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
 
@@ -44,15 +44,15 @@ public class WorldExtractionContextImpl implements WorldExtractionContext {
 	private boolean blockOutlines;
 
 	public void prepare(
-            GameRenderer gameRenderer,
-            LevelRenderer worldRenderer,
-            LevelRenderState worldRenderState,
-            ClientLevel world,
-            DeltaTracker tickCounter,
-            boolean blockOutlines,
-            Camera camera,
-            Matrix4f viewMatrix,
-            Matrix4f cullProjectionMatrix
+			GameRenderer gameRenderer,
+			LevelRenderer worldRenderer,
+			LevelRenderState worldRenderState,
+			ClientLevel world,
+			DeltaTracker tickCounter,
+			boolean blockOutlines,
+			Camera camera,
+			Matrix4f viewMatrix,
+			Matrix4f cullProjectionMatrix
 	) {
 		this.gameRenderer = gameRenderer;
 		this.worldRenderer = worldRenderer;

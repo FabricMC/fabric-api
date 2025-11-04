@@ -23,8 +23,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
 
@@ -36,7 +36,7 @@ public abstract class JukeboxBlockEntityMixin implements SpecialLogicInventory {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract void setStack(ItemStack stack);
 
 	@Unique

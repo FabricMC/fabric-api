@@ -24,9 +24,9 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ServerCommonPacketListener;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;

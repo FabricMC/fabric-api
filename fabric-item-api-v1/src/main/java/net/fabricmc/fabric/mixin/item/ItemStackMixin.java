@@ -38,16 +38,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;
@@ -63,7 +63,7 @@ public abstract class ItemStackMixin implements FabricItemStack {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract void decrement(int amount);
 
 	@WrapOperation(method = "hurtAndBreak(ILnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/EquipmentSlot;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;hurtAndBreak(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/server/level/ServerPlayer;Ljava/util/function/Consumer;)V"))
@@ -96,12 +96,12 @@ public abstract class ItemStackMixin implements FabricItemStack {
 
 	@ModifyArg(method = "addDetailsToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;addToTooltip(Lnet/minecraft/core/component/DataComponentType;Lnet/minecraft/world/item/Item$TooltipContext;Lnet/minecraft/world/item/component/TooltipDisplay;Ljava/util/function/Consumer;Lnet/minecraft/world/item/TooltipFlag;)V"))
 	private DataComponentType<?> preAppendComponentTooltip(
-            DataComponentType<?> componentType,
-            @Local(argsOnly = true) Item.TooltipContext context,
-            @Local(argsOnly = true) TooltipDisplay displayComponent,
-            @Local(argsOnly = true) TooltipFlag type,
-            @Local(argsOnly = true) Consumer<Component> textConsumer,
-            @Share("index") LocalIntRef index
+			DataComponentType<?> componentType,
+			@Local(argsOnly = true) Item.TooltipContext context,
+			@Local(argsOnly = true) TooltipDisplay displayComponent,
+			@Local(argsOnly = true) TooltipFlag type,
+			@Local(argsOnly = true) Consumer<Component> textConsumer,
+			@Share("index") LocalIntRef index
 	) {
 		preAppendTooltip(componentType, context, displayComponent, textConsumer, type, index);
 		return componentType;
@@ -109,12 +109,12 @@ public abstract class ItemStackMixin implements FabricItemStack {
 
 	@ModifyArg(method = "addDetailsToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/component/TooltipDisplay;shows(Lnet/minecraft/core/component/DataComponentType;)Z"))
 	private DataComponentType<?> preShouldDisplay(
-            DataComponentType<?> componentType,
-            @Local(argsOnly = true) Item.TooltipContext context,
-            @Local(argsOnly = true) TooltipDisplay displayComponent,
-            @Local(argsOnly = true) TooltipFlag type,
-            @Local(argsOnly = true) Consumer<Component> textConsumer,
-            @Share("index") LocalIntRef index
+			DataComponentType<?> componentType,
+			@Local(argsOnly = true) Item.TooltipContext context,
+			@Local(argsOnly = true) TooltipDisplay displayComponent,
+			@Local(argsOnly = true) TooltipFlag type,
+			@Local(argsOnly = true) Consumer<Component> textConsumer,
+			@Share("index") LocalIntRef index
 	) {
 		preAppendTooltip(componentType, context, displayComponent, textConsumer, type, index);
 		return componentType;
@@ -122,13 +122,13 @@ public abstract class ItemStackMixin implements FabricItemStack {
 
 	@Inject(method = "addDetailsToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;addAttributeTooltips(Ljava/util/function/Consumer;Lnet/minecraft/world/item/component/TooltipDisplay;Lnet/minecraft/world/entity/player/Player;)V"))
 	private void preAttributeModifiers(
-            Item.TooltipContext context,
-            TooltipDisplay displayComponent,
-            @Nullable Player player,
-            TooltipFlag type,
-            Consumer<Component> textConsumer,
-            CallbackInfo ci,
-            @Share("index") LocalIntRef index
+			Item.TooltipContext context,
+			TooltipDisplay displayComponent,
+			@Nullable Player player,
+			TooltipFlag type,
+			Consumer<Component> textConsumer,
+			CallbackInfo ci,
+			@Share("index") LocalIntRef index
 	) {
 		// Special case: attribute modifiers are extracted into a separate method
 		preAppendTooltip(DataComponents.ATTRIBUTE_MODIFIERS, context, displayComponent, textConsumer, type, index);
@@ -136,26 +136,26 @@ public abstract class ItemStackMixin implements FabricItemStack {
 
 	@Inject(method = "addDetailsToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/DefaultedRegistry;getId(Ljava/lang/Object;)Lnet/minecraft/resources/Identifier;"))
 	private void postTooltipsAdvanced(
-            Item.TooltipContext context,
-            TooltipDisplay displayComponent,
-            @Nullable Player player,
-            TooltipFlag type,
-            Consumer<Component> textConsumer,
-            CallbackInfo ci,
-            @Share("index") LocalIntRef index
+			Item.TooltipContext context,
+			TooltipDisplay displayComponent,
+			@Nullable Player player,
+			TooltipFlag type,
+			Consumer<Component> textConsumer,
+			CallbackInfo ci,
+			@Share("index") LocalIntRef index
 	) {
 		preAppendTooltip(null, context, displayComponent, textConsumer, type, index);
 	}
 
 	@ModifyExpressionValue(method = "addDetailsToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/TooltipFlag;isAdvanced()Z"))
 	private boolean postTooltipsNonAdvanced(
-            boolean isAdvanced,
-            Item.TooltipContext context,
-            TooltipDisplay displayComponent,
-            @Nullable Player player,
-            TooltipFlag type,
-            Consumer<Component> textConsumer,
-            @Share("index") LocalIntRef index
+			boolean isAdvanced,
+			Item.TooltipContext context,
+			TooltipDisplay displayComponent,
+			@Nullable Player player,
+			TooltipFlag type,
+			Consumer<Component> textConsumer,
+			@Share("index") LocalIntRef index
 	) {
 		if (!isAdvanced) {
 			preAppendTooltip(null, context, displayComponent, textConsumer, type, index);
@@ -166,12 +166,12 @@ public abstract class ItemStackMixin implements FabricItemStack {
 
 	@Unique
 	private void preAppendTooltip(
-            @Nullable DataComponentType<?> componentType,
-            Item.TooltipContext context,
-            TooltipDisplay displayComponent,
-            Consumer<Component> textConsumer,
-            TooltipFlag tooltipType,
-            LocalIntRef index
+			@Nullable DataComponentType<?> componentType,
+			Item.TooltipContext context,
+			TooltipDisplay displayComponent,
+			Consumer<Component> textConsumer,
+			TooltipFlag tooltipType,
+			LocalIntRef index
 	) {
 		if (!ComponentTooltipAppenderRegistryImpl.hasModdedEntries()) {
 			return;

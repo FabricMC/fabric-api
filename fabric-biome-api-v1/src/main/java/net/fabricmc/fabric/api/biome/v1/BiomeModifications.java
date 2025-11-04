@@ -20,11 +20,11 @@ import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
@@ -68,8 +68,8 @@ public final class BiomeModifications {
 	 * @see net.minecraft.world.level.biome.MobSpawnSettings.Builder#spawn(MobCategory, int, MobSpawnSettings.SpawnerData)
 	 */
 	public static void addSpawn(Predicate<BiomeSelectionContext> biomeSelector,
-                                MobCategory spawnGroup, EntityType<?> entityType,
-                                int weight, int minGroupSize, int maxGroupSize) {
+								MobCategory spawnGroup, EntityType<?> entityType,
+								int weight, int minGroupSize, int maxGroupSize) {
 		// See constructor of SpawnSettings.SpawnEntry for context
 		Preconditions.checkArgument(entityType.getCategory() != MobCategory.MISC,
 				"Cannot add spawns for entities with spawnGroup=MISC since they'd be replaced by pigs.");

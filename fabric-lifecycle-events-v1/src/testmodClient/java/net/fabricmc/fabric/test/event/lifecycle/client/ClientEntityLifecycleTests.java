@@ -22,8 +22,8 @@ import java.util.List;
 import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.Entity;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;

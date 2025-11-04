@@ -20,16 +20,16 @@ import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.WorldlyContainerHolder;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.Container;
-import net.minecraft.world.WorldlyContainer;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.item.Items;
-import net.minecraft.resources.Identifier;
-import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;

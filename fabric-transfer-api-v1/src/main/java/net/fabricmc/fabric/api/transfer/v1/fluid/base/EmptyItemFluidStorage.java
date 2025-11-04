@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;

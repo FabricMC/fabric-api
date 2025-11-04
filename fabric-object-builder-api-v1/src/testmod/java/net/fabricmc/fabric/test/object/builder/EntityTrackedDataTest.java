@@ -18,19 +18,19 @@ package net.fabricmc.fabric.test.object.builder;
 
 import java.util.Optional;
 
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
-import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.Item;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.resources.Identifier;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;

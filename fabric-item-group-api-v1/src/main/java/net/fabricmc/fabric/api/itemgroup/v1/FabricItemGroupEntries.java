@@ -23,11 +23,11 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 /**
  * This class allows the entries of {@linkplain CreativeModeTab item groups} to be modified by the events in {@link ItemGroupEvents}.

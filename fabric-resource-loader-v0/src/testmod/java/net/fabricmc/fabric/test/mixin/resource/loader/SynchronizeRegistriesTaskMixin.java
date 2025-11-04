@@ -28,8 +28,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.server.packs.repository.KnownPack;
 import net.minecraft.server.network.config.SynchronizeRegistriesTask;
+import net.minecraft.server.packs.repository.KnownPack;
 
 import net.fabricmc.fabric.test.resource.loader.BuiltinResourcePackTestMod;
 

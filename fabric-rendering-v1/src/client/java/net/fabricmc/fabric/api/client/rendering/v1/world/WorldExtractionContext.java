@@ -20,10 +20,10 @@ import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4fc;
 
 import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.culling.Frustum;
 
 @ApiStatus.NonExtendable
 public interface WorldExtractionContext extends AbstractWorldRenderContext {
@@ -33,7 +33,7 @@ public interface WorldExtractionContext extends AbstractWorldRenderContext {
 	 * @return the world renderer's client world instance
 	 */
 	@SuppressWarnings("JavadocReference")
-    ClientLevel world();
+	ClientLevel world();
 
 	Camera camera();
 

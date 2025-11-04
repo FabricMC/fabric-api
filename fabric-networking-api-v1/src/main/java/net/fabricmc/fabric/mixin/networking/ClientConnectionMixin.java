@@ -34,13 +34,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.Connection;
 import net.minecraft.network.ConnectionProtocol;
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.PacketDecoder;
 import net.minecraft.network.PacketEncoder;
-import net.minecraft.network.UnconfiguredPipelineHandler;
 import net.minecraft.network.PacketListener;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.ProtocolInfo;
+import net.minecraft.network.UnconfiguredPipelineHandler;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;

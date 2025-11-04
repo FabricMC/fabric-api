@@ -41,9 +41,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 import net.minecraft.util.profiling.Profiler;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;

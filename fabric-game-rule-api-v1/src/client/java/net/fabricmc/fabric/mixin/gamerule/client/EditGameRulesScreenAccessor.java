@@ -32,5 +32,5 @@ public interface EditGameRulesScreenAccessor {
 	void callMarkInvalid(EditGameRulesScreen.RuleEntry ruleWidget);
 
 	@Accessor("gameRules")
-    GameRules getGameRules();
+	GameRules getGameRules();
 }

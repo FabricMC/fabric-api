@@ -44,7 +44,7 @@ public abstract class RuleListWidgetVisitorMixin implements GameRuleTypeVisitor,
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	protected abstract <T> void createRuleWidget(GameRule<T> key, EditGameRulesScreen.EntryFactory<T> widgetFactory);
 
 	@Override

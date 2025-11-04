@@ -38,7 +38,7 @@ interface ProvidedTagBuilderMixin<E, T> extends FabricProvidedTagBuilder<E, T> {
 		// the builder param
 		@Shadow
 		@Final
-        TagBuilder val$builder;
+		TagBuilder val$builder;
 
 		@Override
 		public TagAppender<E, T> setReplace(boolean replace) {
@@ -58,7 +58,7 @@ interface ProvidedTagBuilderMixin<E, T> extends FabricProvidedTagBuilder<E, T> {
 		// ProvidedTagBuilder.this
 		@Shadow
 		@Final
-        TagAppender val$original;
+		TagAppender val$original;
 
 		@Override
 		public TagAppender<E, T> setReplace(boolean replace) {

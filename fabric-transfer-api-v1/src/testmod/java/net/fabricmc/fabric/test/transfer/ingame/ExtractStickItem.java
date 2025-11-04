@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.test.transfer.ingame;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;

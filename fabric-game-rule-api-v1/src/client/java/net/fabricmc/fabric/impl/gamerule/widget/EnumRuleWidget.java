@@ -21,10 +21,10 @@ import java.util.Locale;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;

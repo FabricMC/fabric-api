@@ -40,7 +40,7 @@ public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTy
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract Class<T> getValueClass();
 
 	@Unique

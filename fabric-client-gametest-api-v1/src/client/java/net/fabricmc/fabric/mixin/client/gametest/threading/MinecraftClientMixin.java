@@ -31,8 +31,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.WorldStem;
+import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.level.storage.LevelStorageSource;
 

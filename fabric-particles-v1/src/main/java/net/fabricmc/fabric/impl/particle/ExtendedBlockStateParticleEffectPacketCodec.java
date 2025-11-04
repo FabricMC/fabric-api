@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.particle;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.BlockPos;
 
 public class ExtendedBlockStateParticleEffectPacketCodec implements StreamCodec<RegistryFriendlyByteBuf, BlockParticleOption> {
 	private static final int PACKET_MARKER = -1;

@@ -16,15 +16,16 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.world.level.block.Blocks;
+import com.mojang.blaze3d.platform.InputConstants;
+
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.DeltaTracker;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.CommonColors;
-import net.minecraft.resources.Identifier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;

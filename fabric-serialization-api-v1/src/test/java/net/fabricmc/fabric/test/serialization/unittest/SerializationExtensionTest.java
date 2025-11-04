@@ -26,14 +26,14 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.util.ProblemReporter;
 
 import net.fabricmc.fabric.test.serialization.DelegateReadView;
 import net.fabricmc.fabric.test.serialization.DelegateWriteView;

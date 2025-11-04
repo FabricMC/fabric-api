@@ -21,8 +21,8 @@ import java.util.Objects;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.screens.Screen;
 
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 import net.fabricmc.fabric.mixin.screen.ScreenAccessor;

@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.test.lookup.entity;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Pig;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.test.lookup.api.Inspectable;

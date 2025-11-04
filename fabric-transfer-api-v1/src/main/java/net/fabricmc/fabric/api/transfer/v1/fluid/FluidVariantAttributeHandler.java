@@ -20,16 +20,16 @@ import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Util;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Util;
-import net.minecraft.world.level.Level;
 
 /**
  * Defines the common attributes of {@linkplain FluidVariant fluid variants} of a given Fluid.

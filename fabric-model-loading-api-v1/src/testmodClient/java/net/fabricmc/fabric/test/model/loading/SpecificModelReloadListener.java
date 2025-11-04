@@ -18,9 +18,9 @@ package net.fabricmc.fabric.test.model.loading;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.resources.Identifier;
 
 public class SpecificModelReloadListener implements ResourceManagerReloadListener {
 	public static final SpecificModelReloadListener INSTANCE = new SpecificModelReloadListener();

@@ -24,11 +24,11 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
 
 /**
  * A registry to associate block states with specific path node types.
@@ -197,7 +197,7 @@ public final class LandPathNodeTypesRegistry {
 		 * @return the custom {@link PathType} registered for the specified block state.
 		 */
 		@Nullable
-        PathType getPathNodeType(BlockState state, boolean neighbor);
+		PathType getPathNodeType(BlockState state, boolean neighbor);
 	}
 
 	/**
@@ -225,6 +225,6 @@ public final class LandPathNodeTypesRegistry {
 		 * @return the custom {@link PathType} registered for the specified block state at the specified position.
 		 */
 		@Nullable
-        PathType getPathNodeType(BlockState state, BlockGetter world, BlockPos pos, boolean neighbor);
+		PathType getPathNodeType(BlockState state, BlockGetter world, BlockPos pos, boolean neighbor);
 	}
 }

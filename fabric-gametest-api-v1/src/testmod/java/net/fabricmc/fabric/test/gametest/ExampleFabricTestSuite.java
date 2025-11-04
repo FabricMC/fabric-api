@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.test.gametest;
 
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 

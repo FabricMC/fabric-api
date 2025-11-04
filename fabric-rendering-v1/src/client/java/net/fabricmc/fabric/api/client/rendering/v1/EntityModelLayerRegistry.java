@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.Objects;
 
-import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
 
 import net.fabricmc.fabric.impl.client.rendering.EntityModelLayerImpl;

@@ -19,19 +19,19 @@ package net.fabricmc.fabric.test.rendering;
 import java.util.Map;
 import java.util.Optional;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.ArmorMaterial;
-import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.ArmorType;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import net.fabricmc.api.ModInitializer;
 

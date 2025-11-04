@@ -19,9 +19,9 @@ package net.fabricmc.fabric.api.biome.v1;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.LevelStem;

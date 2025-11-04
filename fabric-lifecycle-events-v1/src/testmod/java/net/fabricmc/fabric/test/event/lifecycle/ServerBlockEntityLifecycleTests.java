@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
 import net.fabricmc.api.ModInitializer;

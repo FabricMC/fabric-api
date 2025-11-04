@@ -24,8 +24,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.server.packs.PackType;
 import net.minecraft.locale.Language;
+import net.minecraft.server.packs.PackType;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;

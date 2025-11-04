@@ -25,8 +25,8 @@ import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.color.block.BlockTintCache;
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.world.level.ColorResolver;
 
 public final class ColorResolverRegistryImpl {

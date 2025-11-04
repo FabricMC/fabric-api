@@ -21,10 +21,10 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.impl.content.registry.VillagerInteractionRegistriesImpl;
 import net.fabricmc.fabric.mixin.content.registry.GiveGiftsToHeroTaskAccessor;

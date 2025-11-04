@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.registry.sync.trackers.vanilla;
 
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 

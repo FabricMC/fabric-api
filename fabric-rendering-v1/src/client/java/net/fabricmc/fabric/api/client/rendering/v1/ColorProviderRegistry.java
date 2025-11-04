@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl;
 

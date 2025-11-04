@@ -35,14 +35,14 @@ abstract class ChunkMixin implements AttachmentTargetImpl {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	@Final
 	protected ChunkPos pos;
 
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract ChunkStatus getStatus();
 
 	@Shadow
@@ -51,7 +51,7 @@ abstract class ChunkMixin implements AttachmentTargetImpl {
 	// TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
 // TODO(Ravel): only private and package-private shadow is supported
-    @Shadow
+	@Shadow
 	public abstract void markNeedsSaving();
 
 	@Override

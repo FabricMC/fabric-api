@@ -25,5 +25,5 @@ import net.minecraft.network.Connection;
 @Mixin(ConnectScreen.class)
 public interface ConnectScreenAccessor {
 	@Accessor
-    Connection getConnection();
+	Connection getConnection();
 }

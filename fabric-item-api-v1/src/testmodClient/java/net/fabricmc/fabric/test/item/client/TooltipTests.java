@@ -18,8 +18,8 @@ package net.fabricmc.fabric.test.item.client;
 
 import java.util.Optional;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;

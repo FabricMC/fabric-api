@@ -21,8 +21,8 @@ import static net.minecraft.commands.Commands.literal;
 
 import com.mojang.brigadier.context.CommandContext;
 
-import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
