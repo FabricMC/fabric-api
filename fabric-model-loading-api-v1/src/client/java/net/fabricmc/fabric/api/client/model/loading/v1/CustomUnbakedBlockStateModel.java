@@ -43,7 +43,7 @@ import net.fabricmc.fabric.impl.client.model.loading.CustomUnbakedBlockStateMode
  * the object will never be parsed as a {@link Variant}, even if the custom type does not exist or is not able to
  * parse the object.
  *
- * <p>{@link BlockStateModel.Unbaked#CODEC} and {@link BlockStateModel.Unbaked#WEIGHTED_CODEC} are automatically patched
+ * <p>{@link BlockStateModel.Unbaked#CODEC} and {@link BlockStateModel.Unbaked#HARDCODED_WEIGHTED_CODEC} are automatically patched
  * to support custom models. Custom types are encouraged to use {@link BlockStateModel.Unbaked#CODEC} to
  * deserialize/serialize submodels.
  *

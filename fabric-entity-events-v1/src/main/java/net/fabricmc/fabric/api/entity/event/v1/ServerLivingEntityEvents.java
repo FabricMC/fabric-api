@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class ServerLivingEntityEvents {
 	/**
 	 * An event that is called when a living entity is going to take damage.
-	 * This is fired from {@link LivingEntity#damage}, before armor or any other mitigation are applied.
+	 * This is fired from {@link LivingEntity#hurtServer}, before armor or any other mitigation are applied.
 	 * Mods can cancel this to prevent the damage entirely.
 	 */
 	public static final Event<AllowDamage> ALLOW_DAMAGE = EventFactory.createArrayBacked(AllowDamage.class, callbacks -> (entity, source, amount) -> {
@@ -44,7 +44,7 @@ public final class ServerLivingEntityEvents {
 	});
 
 	/**
-	 * An event that is called after an entity is damaged. This is fired from {@link LivingEntity#damage} after damage
+	 * An event that is called after an entity is damaged. This is fired from {@link LivingEntity#hurtServer} after damage
 	 * is applied, or after that damage was blocked by a shield.
 	 *
 	 * <p>The base damage taken is the damage initially applied to the entity. Damage taken is the amount of damage the
@@ -64,7 +64,7 @@ public final class ServerLivingEntityEvents {
 	 *
 	 * <p>Mods can cancel this to keep the entity alive.
 	 *
-	 * <p>Vanilla checks for entity health {@code <= 0} each tick (with {@link LivingEntity#isDead()}), and kills if true -
+	 * <p>Vanilla checks for entity health {@code <= 0} each tick (with {@link LivingEntity#isDeadOrDying()}), and kills if true -
 	 * so the entity will still die next tick if this event is cancelled.
 	 * It's assumed that the listener will do something to prevent this, for example, if the entity is a player:
 	 * <ul>

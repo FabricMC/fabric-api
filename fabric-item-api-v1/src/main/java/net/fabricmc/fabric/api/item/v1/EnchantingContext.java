@@ -27,7 +27,7 @@ public enum EnchantingContext {
 	 * When checking if an item is <em>acceptable</em> for a given enchantment, i.e if the item should be able to bear
 	 * that enchantment. This includes anvils, the {@code enchant_randomly} loot function, and the {@code /enchant} command.
 	 *
-	 * @see Enchantment#isAcceptableItem(ItemStack)
+	 * @see Enchantment#canEnchant(ItemStack) 
 	 */
 	ACCEPTABLE,
 	/**

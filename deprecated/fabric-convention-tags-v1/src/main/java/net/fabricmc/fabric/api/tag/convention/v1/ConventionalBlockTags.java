@@ -63,7 +63,7 @@ public final class ConventionalBlockTags {
 	/**
 	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
 	 * upon being moved, such as chunk loaders or pipes,
-	 * for mods that move blocks but do not respect {@link BlockBehaviour.BlockStateBase#getPistonBehavior}.
+	 * for mods that move blocks but do not respect {@link BlockBehaviour.BlockStateBase#getPistonPushReaction()}.
 	 */
 	public static final TagKey<Block> MOVEMENT_RESTRICTED = register("movement_restricted");
 

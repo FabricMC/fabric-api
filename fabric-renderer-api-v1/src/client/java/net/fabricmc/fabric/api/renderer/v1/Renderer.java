@@ -50,15 +50,15 @@ import net.fabricmc.fabric.impl.renderer.RendererManager;
  * {@link SectionCompiler} in vanilla; this code is not patched automatically. Renderers must also ensure that the
  * following vanilla methods support {@link BlockStateModel#emitQuads}; these methods are not patched automatically.
  *
- * <ul><li>{@link ModelBlockRenderer#render(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
+ * <ul><li>{@link ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
  *
- * <li>{@link BlockRenderDispatcher#renderDamage(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)}
+ * <li>{@link BlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)}
  *
- * <li>{@link BlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int)}</ul>
+ * <li>{@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)}</ul>
  *
- * <p>All other places in vanilla code that invoke {@link BlockStateModel#addParts(RandomSource, List)},
- * {@link BlockStateModel#getParts(RandomSource)}, or
- * {@link ModelBlockRenderer#render(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
+ * <p>All other places in vanilla code that invoke {@link BlockStateModel#collectParts(RandomSource, List)},
+ * {@link BlockStateModel#collectParts(RandomSource)}, or
+ * {@link ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
  * are, where appropriate, patched automatically to invoke the corresponding method above or the corresponding method in
  * {@link FabricBlockModelRenderer} or {@link FabricBlockRenderManager}.
  */
