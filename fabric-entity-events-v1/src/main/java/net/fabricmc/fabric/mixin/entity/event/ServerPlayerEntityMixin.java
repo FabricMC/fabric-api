@@ -60,7 +60,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	 * This is a Mojang bug.
 	 * This is implements the method call on the server player entity and then calls the corresponding event.
 	 */
-	@Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getPrimeAdversary()Lnet/minecraft/world/entity/LivingEntity;"))
+	@Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getKillCredit()Lnet/minecraft/world/entity/LivingEntity;"))
 	private void callOnKillForPlayer(DamageSource source, CallbackInfo ci) {
 		final Entity attacker = source.getEntity();
 
@@ -89,7 +89,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		ServerPlayerEvents.COPY_FROM.invoker().copyFromPlayer(oldPlayer, (ServerPlayer) (Object) this, alive);
 	}
 
-	@WrapOperation(method = "startSleepInBed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;get(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
+	@WrapOperation(method = "startSleepInBed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;"))
 	private Comparable<?> redirectSleepDirection(BlockState instance, Property<Direction> property, Operation<Comparable<Direction>> original, BlockPos pos, @Cancellable CallbackInfoReturnable<Either<Player.BedSleepingProblem, Unit>> cir) {
 		Direction initial = (Direction) (instance.hasProperty(property) ? original.call(instance, property) : null);
 		Direction dir = EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.invoker().modifySleepDirection((LivingEntity) (Object) this, pos, initial);
