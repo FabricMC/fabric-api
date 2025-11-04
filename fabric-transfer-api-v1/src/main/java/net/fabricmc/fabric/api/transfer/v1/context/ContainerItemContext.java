@@ -90,7 +90,7 @@ public interface ContainerItemContext {
 	 *
 	 * <p>In creative mode, {@link #forCreativeInteraction} is used with the hand stack.
 	 * Otherwise, {@link #ofPlayerHand} is used.
-	 * This matches the behavior of {@link ItemUtils#exchangeStack}.
+	 * This matches the behavior of {@link ItemUtils#createFilledResult}.
 	 */
 	static ContainerItemContext forPlayerInteraction(Player player, InteractionHand hand) {
 		if (player.hasInfiniteMaterials()) {
@@ -105,7 +105,7 @@ public interface ContainerItemContext {
 	 *
 	 * <p>The stack will never be modified, and any updated stack will only be added to the player's inventory
 	 * if the player's inventory doesn't already contain it.
-	 * This matches the creative behavior of {@link ItemUtils#exchangeStack}.
+	 * This matches the creative behavior of {@link ItemUtils#createFilledResult}.
 	 */
 	static ContainerItemContext forCreativeInteraction(Player player, ItemStack interactingStack) {
 		return new CreativeInteractionContainerItemContext(ItemVariant.of(interactingStack), interactingStack.getCount(), player);
@@ -247,7 +247,7 @@ public interface ContainerItemContext {
 	SingleSlotStorage<ItemVariant> getMainSlot();
 
 	/**
-	 * Try to insert items into this context, without prioritizing a specific slot, similar to {@link Inventory#offerOrDrop}.
+	 * Try to insert items into this context, without prioritizing a specific slot, similar to {@link Inventory#placeItemBackInInventory}.
 	 * This should be used for insertion after insertion into the main slot failed.
 	 * {@link #insert} can be used to insert into the main slot first, then send any overflow through this function.
 	 *

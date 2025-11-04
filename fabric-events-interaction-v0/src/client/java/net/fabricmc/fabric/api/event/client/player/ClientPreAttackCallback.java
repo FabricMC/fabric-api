@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * To check whether the attack key is just clicked, use {@code clickCount != 0}
  *
  * <p>The vanilla attack cooldown and player game mode does not affect this event.
- * The mod probably needs to check {@link net.minecraft.client.Minecraft#attackCooldown} and the game mode.
+ * The mod probably needs to check {@link net.minecraft.client.Minecraft#missTime} and the game mode.
  * {@link net.minecraft.world.item.ItemCooldowns} can be used for custom item cooldown handling.
  */
 public interface ClientPreAttackCallback {

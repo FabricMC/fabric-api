@@ -20,6 +20,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import net.minecraft.core.HolderLookup;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
@@ -38,7 +40,7 @@ import net.fabricmc.fabric.api.event.Event;
  * <p>Fabric implements this on {@link Entity}, {@link BlockEntity}, {@link ServerLevel} and {@link ChunkAccess} via mixin.</p>
  *
  * <p>Note about {@link BlockEntity} and {@link ChunkAccess} targets: these objects need to be notified of changes to their
- * state (using {@link BlockEntity#markDirty()} and {@link ChunkAccess#markNeedsSaving()} respectively), otherwise the modifications will not take effect properly.
+ * state (using {@link BlockEntity#setChanged()} and {@link ChunkAccess#markUnsaved()} respectively), otherwise the modifications will not take effect properly.
  * The {@link #setAttached(AttachmentType, Object)} method handles this automatically, but this needs to be done manually
  * when attached data is mutable, for example:
  * <pre>{@code
@@ -53,7 +55,7 @@ import net.fabricmc.fabric.api.event.Event;
  * <p>
  * Note about {@link BlockEntity} targets: by default, many block entities use their NBT to synchronize with the client.
  * That would mean persistent attachments are automatically synced with the client for those block entities. As this is
- * undesirable behavior, the API completely removes attachments from the result of {@link BlockEntity#toInitialChunkDataNbt},
+ * undesirable behavior, the API completely removes attachments from the result of {@link BlockEntity#getUpdateTag},
  * which takes care of all vanilla types. However, modded block entities may be coded differently, so be wary of this
  * when attaching data to modded block entities.
  * </p>

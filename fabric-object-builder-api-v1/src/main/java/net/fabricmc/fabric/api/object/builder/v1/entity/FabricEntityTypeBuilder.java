@@ -71,7 +71,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
-	 * @deprecated use {@link EntityType.Builder#create(MobCategory)}
+	 * @deprecated use {@link EntityType.Builder#createNothing(MobCategory)}
 	 */
 	@Deprecated
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create() {
@@ -85,7 +85,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
-	 * @deprecated use {@link EntityType.Builder#create(MobCategory)}
+	 * @deprecated use {@link EntityType.Builder#createNothing(MobCategory)}
 	 */
 	@Deprecated
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(MobCategory spawnGroup) {
@@ -100,7 +100,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
-	 * @deprecated use {@link EntityType.Builder#create(EntityType.EntityFactory, MobCategory)}
+	 * @deprecated use {@link EntityType.Builder#of(EntityType.EntityFactory, MobCategory)}
 	 */
 	@Deprecated
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(MobCategory spawnGroup, EntityType.EntityFactory<T> factory) {
@@ -156,7 +156,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * Whether this entity type is summonable using the {@code /summon} command.
 	 *
 	 * @return this builder for chaining
-	 * @deprecated use {@link EntityType.Builder#disableSummon()}
+	 * @deprecated use {@link EntityType.Builder#noSummon()}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> disableSummon() {
@@ -165,7 +165,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * @deprecated use {@link EntityType.Builder#disableSaving()}
+	 * @deprecated use {@link EntityType.Builder#noSave()}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> disableSaving() {
@@ -177,7 +177,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * Sets this entity type to be fire immune.
 	 *
 	 * @return this builder for chaining
-	 * @deprecated use {@link EntityType.Builder#makeFireImmune()}
+	 * @deprecated use {@link EntityType.Builder#fireImmune()}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> fireImmune() {
@@ -189,7 +189,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * Sets whether this entity type can be spawned far away from a player.
 	 *
 	 * @return this builder for chaining
-	 * @deprecated use {@link EntityType.Builder#spawnableFarFromPlayer()}
+	 * @deprecated use {@link EntityType.Builder#canSpawnFarFromPlayer()}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> spawnableFarFromPlayer() {
@@ -203,7 +203,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param dimensions the dimensions representing the entity's size
 	 *
 	 * @return this builder for chaining
-	 * @deprecated use {@link EntityType.Builder#dimensions(float, float)}
+	 * @deprecated use {@link EntityType.Builder#sized(float, float)}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> dimensions(EntityDimensions dimensions) {
@@ -281,7 +281,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 *
 	 * @param blocks the blocks the entity can spawn on
 	 * @return this builder for chaining
-	 * @deprecated use {@link EntityType.Builder#allowSpawningInside(Block...)}
+	 * @deprecated use {@link EntityType.Builder#immuneTo(Block...)}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> specificSpawnBlocks(Block... blocks) {
@@ -294,7 +294,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * the entity cannot be spawned, and existing ones will despawn immediately.
 	 * @param requiredFeatures the features
 	 * @return this builder for chaining
-	 * @deprecated use {@link EntityType.Builder#requires(FeatureFlag...)}
+	 * @deprecated use {@link EntityType.Builder#requiredFeatures(FeatureFlag...)}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> requires(FeatureFlag... requiredFeatures) {

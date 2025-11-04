@@ -270,7 +270,7 @@ public final class ClientPlayNetworking {
 		 * });
 		 * }</pre>
 		 *
-		 * <p>The network handler can be accessed via {@link LocalPlayer#networkHandler}.
+		 * <p>The network handler can be accessed via {@link LocalPlayer#connection}.
 		 *
 		 * @param payload the packet payload
 		 * @param context the play networking context

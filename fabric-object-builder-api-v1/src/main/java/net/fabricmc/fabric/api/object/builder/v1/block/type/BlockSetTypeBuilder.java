@@ -107,7 +107,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's door close sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_DOOR_CLOSE}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_DOOR_CLOSE}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -119,7 +119,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's door open sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_DOOR_OPEN}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_DOOR_OPEN}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -131,7 +131,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's trapdoor close sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_TRAPDOOR_CLOSE}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_TRAPDOOR_CLOSE}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -143,7 +143,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's trapdoor open sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_TRAPDOOR_OPEN}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_TRAPDOOR_OPEN}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -155,7 +155,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's pressure plate click off sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_PRESSURE_PLATE_CLICK_OFF}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_PRESSURE_PLATE_CLICK_OFF}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -167,7 +167,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's pressure plate click on sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_PRESSURE_PLATE_CLICK_ON}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_PRESSURE_PLATE_CLICK_ON}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -179,7 +179,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's button click off sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_BUTTON_CLICK_OFF}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_BUTTON_CLICK_OFF}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -191,7 +191,7 @@ public final class BlockSetTypeBuilder {
 	/**
 	 * Sets this block set type's button click on sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_WOODEN_BUTTON_CLICK_ON}.
+	 * <p>Defaults to {@link SoundEvents#WOODEN_BUTTON_CLICK_ON}.
 	 *
 	 * @return this builder for chaining
 	 */

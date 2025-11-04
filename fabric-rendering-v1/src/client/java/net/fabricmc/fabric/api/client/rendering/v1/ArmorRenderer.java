@@ -75,7 +75,7 @@ public interface ArmorRenderer {
 	 * @param sourceModelState      the model state of the source model
 	 * @param delegateModel         the model that will be rendered with transforms copied from the source model
 	 * @param delegateModelState    the model state of the delegate model
-	 * @param setDelegateAngles     {@code true} if the {@link Model#setAngles(Object)} method should be called for the
+	 * @param setDelegateAngles     {@code true} if the {@link Model#setupAnim(Object)} method should be called for the
 	 *                                             delegate model after it is called for the source model
 	 * @param queue                 the {@link OrderedSubmitNodeCollector}
 	 * @param matrices              the matrix stack
@@ -100,7 +100,7 @@ public interface ArmorRenderer {
 	 * @param sourceModelState      the model state of the source model
 	 * @param delegateModel         the model that will be rendered with transforms copied from the source model
 	 * @param delegateModelState    the model state of the delegate model
-	 * @param setDelegateAngles     {@code true} if the {@link Model#setAngles(Object)} method should be called for the
+	 * @param setDelegateAngles     {@code true} if the {@link Model#setupAnim(Object)} method should be called for the
 	 *                                             delegate model after it is called for the source model
 	 * @param queue                 the {@link OrderedSubmitNodeCollector}
 	 * @param matrices              the matrix stack
@@ -125,7 +125,7 @@ public interface ArmorRenderer {
 	 * @param bipedEntityRenderState    the render state of the entity
 	 * @param slot                      the equipment slot in which the armor stack is worn
 	 * @param light                     packed lightmap coordinates
-	 * @param contextModel              the model provided by {@link RenderLayer#getContextModel()}
+	 * @param contextModel              the model provided by {@link RenderLayer#getParentModel()}
 	 */
 	void render(PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, ItemStack stack, HumanoidRenderState bipedEntityRenderState, EquipmentSlot slot, int light, HumanoidModel<HumanoidRenderState> contextModel);
 
@@ -139,7 +139,7 @@ public interface ArmorRenderer {
 	 * <p>Note that the item will never be rendered by vanilla code if it has an armor model defined
 	 * by the {@link net.minecraft.core.component.DataComponents#EQUIPPABLE minecraft:equippable} component.
 	 * This method cannot be used to overwrite that check to re-enable also rendering the item model.
-	 * See {@link net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer#hasModel(ItemStack, EquipmentSlot)}.
+	 * See {@link net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer#shouldRender(ItemStack, EquipmentSlot)}.
 	 *
 	 * @param entity the equipping entity
 	 * @param stack  the item stack equipped on the head

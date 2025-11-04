@@ -47,7 +47,7 @@ public final class EnchantmentEvents {
 	 * only that it isn't forbidden from doing so.</p>
 	 *
 	 * @see AllowEnchanting#allowEnchanting(Holder, ItemStack, EnchantingContext)
-	 * @see Enchantment#isAcceptableItem(ItemStack)
+	 * @see Enchantment#canEnchant(ItemStack) 
 	 * @see FabricItem#canBeEnchantedWith(ItemStack, Holder, EnchantingContext)
 	 */
 	public static final Event<AllowEnchanting> ALLOW_ENCHANTING = EventFactory.createArrayBacked(

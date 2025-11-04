@@ -208,7 +208,7 @@ public interface BlockApiLookup<A, C> {
 	 * This overload allows using the correct block entity class directly.
 	 *
 	 * <p>Note: The type is not used directly for detecting the supported blocks and block entities in the world, but it is converted to
-	 * its {@linkplain BlockEntityType#blocks} when this method is called.
+	 * its {@linkplain BlockEntityType#validBlocks} when this method is called.
 	 * If the {@code blocks} field is empty, {@link IllegalArgumentException} is thrown.
 	 *
 	 * @param <T> The block entity class for which an API is exposed.
@@ -228,7 +228,7 @@ public interface BlockApiLookup<A, C> {
 	 * but due to how generics work in java, the provider has to cast to the correct block entity class if necessary.
 	 *
 	 * <p>Note: The type is not used directly for detecting the supported blocks and block entities in the world, but it is converted to
-	 * its {@linkplain BlockEntityType#blocks} when this method is called.
+	 * its {@linkplain BlockEntityType#validBlocks} when this method is called.
 	 * If the {@code blocks} field is empty, {@link IllegalArgumentException} is thrown.
 	 *
 	 * @param provider The provider.

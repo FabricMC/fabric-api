@@ -21,7 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Allows an item to run custom logic when {@link ItemStack#damage(int, LivingEntity, EquipmentSlot)} is called.
+ * Allows an item to run custom logic when {@link ItemStack#hurtAndBreak(int, LivingEntity, EquipmentSlot)} is called.
  * This is useful for items that, for example, may drain durability from some other source before damaging
  * the stack itself.
  *

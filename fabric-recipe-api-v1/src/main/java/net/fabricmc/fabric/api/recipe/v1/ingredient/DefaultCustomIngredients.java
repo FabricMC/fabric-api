@@ -23,6 +23,7 @@ import java.util.function.UnaryOperator;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -170,7 +171,7 @@ public final class DefaultCustomIngredients {
 	 * components(base, builder -> builder.remove(DataComponentTypes.CUSTOM_DATA));
 	 * }</pre>
 	 *
-	 * <p>See {@link NbtUtils#matches} for how matching works.
+	 * <p>See {@link NbtUtils#compareNbt} for how matching works.
 	 *
 	 * <p>The JSON format is as follows:
 	 * <pre>{@code

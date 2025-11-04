@@ -46,7 +46,7 @@ public interface FabricBlock {
 	 * identified by the optional {@code sourcePos} and {@code sourceState} parameters.
 	 *
 	 * <p>When a block changes appearance, it should trigger a chunk remesh for itself and the adjacent blocks,
-	 * for example by calling {@link Level#updateListeners}.
+	 * for example by calling {@link Level#sendBlockUpdated}.
 	 *
 	 * <p>Note: Overriding this method for a block does <strong>not</strong> change how it renders.
 	 * It's up to modded models to check for the appearance of nearby blocks and adjust accordingly.

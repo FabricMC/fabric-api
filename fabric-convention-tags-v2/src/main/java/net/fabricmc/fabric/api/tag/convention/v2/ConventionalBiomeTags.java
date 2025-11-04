@@ -50,7 +50,7 @@ public final class ConventionalBiomeTags {
 	 * side effects from {@link net.minecraft.tags.BiomeTags#IS_OVERWORLD}.
 	 *
 	 * <p>NOTE: If you do not add to the vanilla Overworld tag, be sure to add to
-	 * {@link net.minecraft.tags.BiomeTags#STRONGHOLD_HAS_STRUCTURE} so
+	 * {@link net.minecraft.tags.BiomeTags#HAS_STRONGHOLD} so
 	 * some Strongholds do not go missing.)
 	 */
 	public static final TagKey<Biome> IS_OVERWORLD = register("is_overworld");

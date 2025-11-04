@@ -84,7 +84,7 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 
 	/**
 	 * Makes the built {@link BlockEntityType} return {@code true} from
-	 * {@link BlockEntityType#canPotentiallyExecuteCommands()}.
+	 * {@link BlockEntityType#onlyOpCanSetNbt()}.
 	 *
 	 * @param canPotentiallyExecuteCommands whether the block entity is able to execute commands
 	 * @return this builder

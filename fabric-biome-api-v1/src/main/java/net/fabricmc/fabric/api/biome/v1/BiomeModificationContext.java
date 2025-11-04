@@ -70,18 +70,18 @@ public interface BiomeModificationContext {
 	interface WeatherContext {
 		/**
 		 * @see Biome#hasPrecipitation()
-		 * @see Biome.BiomeBuilder#precipitation(boolean)
+		 * @see Biome.BiomeBuilder#hasPrecipitation(boolean)
 		 */
 		void setPrecipitation(boolean hasPrecipitation);
 
 		/**
-		 * @see Biome#getTemperature()
+		 * @see Biome#getBaseTemperature()
 		 * @see Biome.BiomeBuilder#temperature(float)
 		 */
 		void setTemperature(float temperature);
 
 		/**
-		 * @see Biome.BiomeBuilder#temperatureModifier(Biome.TemperatureModifier)
+		 * @see Biome.BiomeBuilder#temperatureAdjustment(Biome.TemperatureModifier)
 		 */
 		void setTemperatureModifier(Biome.TemperatureModifier temperatureModifier);
 
@@ -265,8 +265,8 @@ public interface BiomeModificationContext {
 		/**
 		 * Associated JSON property: <code>creature_spawn_probability</code>.
 		 *
-		 * @see MobSpawnSettings#getCreatureSpawnProbability()
-		 * @see MobSpawnSettings.Builder#creatureSpawnProbability(float)
+		 * @see MobSpawnSettings#getCreatureProbability()
+		 * @see MobSpawnSettings.Builder#creatureGenerationProbability(float)
 		 */
 		void setCreatureSpawnProbability(float probability);
 
