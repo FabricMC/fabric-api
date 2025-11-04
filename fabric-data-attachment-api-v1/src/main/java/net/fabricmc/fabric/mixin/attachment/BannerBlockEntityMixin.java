@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 
 @Mixin(BannerBlockEntity.class)
 abstract class BannerBlockEntityMixin {
-	@ModifyExpressionValue(method = "getUpdateTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BannerBlockEntity;createNbt(Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/nbt/CompoundTag;"))
+	@ModifyExpressionValue(method = "getUpdateTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BannerBlockEntity;saveWithoutMetadata(Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/nbt/CompoundTag;"))
 	private CompoundTag removeAttachments(CompoundTag original) {
 		original.remove(AttachmentTarget.NBT_ATTACHMENT_KEY);
 		return original;

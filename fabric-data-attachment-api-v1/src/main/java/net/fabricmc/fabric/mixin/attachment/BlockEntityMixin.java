@@ -64,7 +64,7 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Inject(
-			method = "saveWithoutMetadata",
+			method = "saveWithoutMetadata(Lnet/minecraft/world/level/storage/ValueOutput;)V",
 			at = @At(value = "TAIL")
 	)
 	private void writeBlockEntityAttachments(ValueOutput view, CallbackInfo ci) {
