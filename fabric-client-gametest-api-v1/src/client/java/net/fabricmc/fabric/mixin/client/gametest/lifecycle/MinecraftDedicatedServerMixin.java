@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.client.gametest.util.DedicatedServerImplUtil;
 
 @Mixin(DedicatedServer.class)
 public abstract class MinecraftDedicatedServerMixin {
-	@Inject(method = "initServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadWorld()V"))
+	@Inject(method = "initServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadLevel()V"))
 	private void captureServerInstance(CallbackInfoReturnable<Boolean> cir) {
 		// Capture the server instance once the server is ready to be connected to
 		CompletableFuture<DedicatedServer> serverFuture = DedicatedServerImplUtil.serverFuture;

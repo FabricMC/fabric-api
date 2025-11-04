@@ -59,7 +59,7 @@ public class EncoderHandlerMixin {
 					// In the catch handler in case some exception was thrown
 					@At(
 							value = "INVOKE",
-							target = "Lnet/minecraft/network/PacketEncoder;net/minecraft/network/packet/Packet.isWritingErrorSkippable()Z"
+							target = "Lnet/minecraft/network/protocol/Packet;isSkippable()Z"
 					)
 			},
 			method = "encode(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;Lio/netty/buffer/ByteBuf;)V"

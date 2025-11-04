@@ -35,10 +35,10 @@ import net.fabricmc.fabric.impl.tag.TagAliasEnabledRegistryWrapper;
 abstract class SimpleRegistry2Mixin<T> implements TagAliasEnabledRegistryWrapper {
 	// returns SimpleRegistry.this, which implements TagAliasEnabledRegistry
 	@Shadow
-	public abstract HolderLookup.RegistryLookup<T> getBase();
+	public abstract HolderLookup.RegistryLookup<T> parent();
 
 	@Override
 	public void fabric_loadTagAliases(Map<TagKey<?>, Set<TagKey<?>>> aliasGroups) {
-		((TagAliasEnabledRegistryWrapper) getBase()).fabric_loadTagAliases(aliasGroups);
+		((TagAliasEnabledRegistryWrapper) parent()).fabric_loadTagAliases(aliasGroups);
 	}
 }
