@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 public abstract class ServerPlayNetworkHandlerInteractEntityHandlerMixin implements ServerboundInteractPacket.Handler {
 	@Shadow
 	@Final
-	ServerGamePacketListenerImpl this$0;
+	ServerGamePacketListenerImpl field_28963;
 
 	@Shadow
 	@Final
@@ -47,7 +47,7 @@ public abstract class ServerPlayNetworkHandlerInteractEntityHandlerMixin impleme
 
 	@Inject(method = "onInteraction(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/Vec3;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(InteractionHand hand, Vec3 hitPosition, CallbackInfo info) {
-		Player player = this$0.player;
+		Player player = this.field_28963.player;
 		Level world = player.level();
 
 		EntityHitResult hitResult = new EntityHitResult(val$target, hitPosition.add(val$target.getX(), val$target.getY(), val$target.getZ()));
@@ -60,7 +60,7 @@ public abstract class ServerPlayNetworkHandlerInteractEntityHandlerMixin impleme
 
 	@Inject(method = "onInteraction(Lnet/minecraft/world/InteractionHand;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(InteractionHand hand, CallbackInfo info) {
-		Player player = this$0.player;
+		Player player = this.field_28963.player;
 		Level world = player.level();
 
 		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, world, hand, val$target, null);
