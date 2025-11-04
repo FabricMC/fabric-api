@@ -21,28 +21,28 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.thread.ThreadExecutor;
+import net.minecraft.util.thread.BlockableEventLoop;
 
 import net.fabricmc.fabric.impl.client.gametest.threading.NetworkSynchronizer;
 
-@Mixin(ThreadExecutor.class)
+@Mixin(BlockableEventLoop.class)
 public class ThreadExecutorMixin {
-	@Inject(method = "send", at = @At("HEAD"))
+	@Inject(method = "schedule", at = @At("HEAD"))
 	private void onPacketHandlerSchedule(Runnable task, CallbackInfo ci) {
 		switch ((Object) this) {
-		case MinecraftClient $ -> NetworkSynchronizer.CLIENTBOUND.preTaskAdded(task);
+		case Minecraft $ -> NetworkSynchronizer.CLIENTBOUND.preTaskAdded(task);
 		case MinecraftServer $ -> NetworkSynchronizer.SERVERBOUND.preTaskAdded(task);
 		default -> {
 		}
 		}
 	}
 
-	@Inject(method = "executeTask", at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", shift = At.Shift.AFTER))
+	@Inject(method = "doRunTask", at = @At(value = "INVOKE", target = "Ljava/lang/Runnable;run()V", shift = At.Shift.AFTER))
 	private void onPacketHandlerRun(Runnable task, CallbackInfo ci) {
 		switch ((Object) this) {
-		case MinecraftClient $ -> NetworkSynchronizer.CLIENTBOUND.postTaskRun(task);
+		case Minecraft $ -> NetworkSynchronizer.CLIENTBOUND.postTaskRun(task);
 		case MinecraftServer $ -> NetworkSynchronizer.SERVERBOUND.postTaskRun(task);
 		default -> {
 		}

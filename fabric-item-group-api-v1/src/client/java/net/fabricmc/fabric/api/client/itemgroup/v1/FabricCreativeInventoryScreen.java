@@ -18,11 +18,11 @@ package net.fabricmc.fabric.api.client.itemgroup.v1;
 
 import java.util.List;
 
-import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.world.item.CreativeModeTab;
 
 /**
- * Fabric provided extensions to {@link CreativeInventoryScreen}.
+ * Fabric provided extensions to {@link CreativeModeInventoryScreen}.
  * This interface is automatically implemented on all creative inventory screens via Mixin and interface injection.
  */
 public interface FabricCreativeInventoryScreen {
@@ -71,7 +71,7 @@ public interface FabricCreativeInventoryScreen {
 	/**
 	 * Returns an ordered list containing the item groups on the requested page.
 	 */
-	default List<ItemGroup> getItemGroupsOnPage(int page) {
+	default List<CreativeModeTab> getItemGroupsOnPage(int page) {
 		throw new AssertionError("Implemented by mixin");
 	}
 
@@ -83,7 +83,7 @@ public interface FabricCreativeInventoryScreen {
 	 * @param itemGroup the item group to get the page index for
 	 * @return the page index of the item group
 	 */
-	default int getPage(ItemGroup itemGroup) {
+	default int getPage(CreativeModeTab itemGroup) {
 		throw new AssertionError("Implemented by mixin");
 	}
 
@@ -97,21 +97,21 @@ public interface FabricCreativeInventoryScreen {
 	}
 
 	/**
-	 * Returns the {@link ItemGroup} that is associated with the currently selected tab.
+	 * Returns the {@link CreativeModeTab} that is associated with the currently selected tab.
 	 *
-	 * @return the currently selected {@link ItemGroup}
+	 * @return the currently selected {@link CreativeModeTab}
 	 */
-	default ItemGroup getSelectedItemGroup() {
+	default CreativeModeTab getSelectedItemGroup() {
 		throw new AssertionError("Implemented by mixin");
 	}
 
 	/**
-	 * Sets the currently selected tab to the given {@link ItemGroup}.
+	 * Sets the currently selected tab to the given {@link CreativeModeTab}.
 	 *
-	 * @param itemGroup the {@link ItemGroup} to select
+	 * @param itemGroup the {@link CreativeModeTab} to select
 	 * @return true if the tab was successfully selected
 	 */
-	default boolean setSelectedItemGroup(ItemGroup itemGroup) {
+	default boolean setSelectedItemGroup(CreativeModeTab itemGroup) {
 		throw new AssertionError("Implemented by mixin");
 	}
 }

@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1.hud;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.DeltaTracker;
 
 /**
- * Represents a mod added {@link net.minecraft.client.gui.hud.InGameHud} element that can be rendered on the screen.
+ * Represents a mod added {@link net.minecraft.client.gui.Gui} element that can be rendered on the screen.
  *
  *
  * <p>HUD elements should be registered using {@link HudElementRegistry}
@@ -29,8 +29,8 @@ public interface HudElement {
 	/**
 	 * Renders the HUD element.
 	 *
-	 * @param context the {@link DrawContext} used for rendering
-	 * @param tickCounter the {@link RenderTickCounter} providing timing information
+	 * @param context the {@link GuiGraphics} used for rendering
+	 * @param tickCounter the {@link DeltaTracker} providing timing information
 	 */
-	void render(DrawContext context, RenderTickCounter tickCounter);
+	void render(GuiGraphics context, DeltaTracker tickCounter);
 }

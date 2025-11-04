@@ -19,17 +19,17 @@ package net.fabricmc.fabric.test.rendering.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.Registries;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
@@ -43,14 +43,14 @@ public final class FeatureRendererTest implements ClientModInitializer {
 		LOGGER.info("Registering feature renderer tests");
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
 			// minecraft:player SHOULD be printed twice
-			LOGGER.info(String.format("Received registration for %s", Registries.ENTITY_TYPE.getId(entityType)));
+			LOGGER.info(String.format("Received registration for %s", BuiltInRegistries.ENTITY_TYPE.getKey(entityType)));
 
 			if (entityType == EntityType.PLAYER) {
 				this.playerRegistrations++;
 			}
 
-			if (entityRenderer instanceof PlayerEntityRenderer) {
-				registrationHelper.register(new TestPlayerFeatureRenderer((PlayerEntityRenderer) entityRenderer));
+			if (entityRenderer instanceof AvatarRenderer) {
+				registrationHelper.register(new TestPlayerFeatureRenderer((AvatarRenderer) entityRenderer));
 			}
 		});
 
@@ -67,21 +67,21 @@ public final class FeatureRendererTest implements ClientModInitializer {
 		});*/
 	}
 
-	private static class TestPlayerFeatureRenderer extends FeatureRenderer<PlayerEntityRenderState, PlayerEntityModel> {
-		TestPlayerFeatureRenderer(FeatureRendererContext<PlayerEntityRenderState, PlayerEntityModel> featureRendererContext) {
+	private static class TestPlayerFeatureRenderer extends RenderLayer<AvatarRenderState, PlayerModel> {
+		TestPlayerFeatureRenderer(RenderLayerParent<AvatarRenderState, PlayerModel> featureRendererContext) {
 			super(featureRendererContext);
 		}
 
 		@Override
-		public void render(MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
-			matrices.push();
+		public void submit(PoseStack matrices, SubmitNodeCollector commandQueue, int light, AvatarRenderState state, float limbAngle, float limbDistance) {
+			matrices.pushPose();
 
 			// Translate to center above the player's head
-			matrices.translate(-0.5F, -state.height + 0.25F, -0.5F);
+			matrices.translate(-0.5F, -state.boundingBoxHeight + 0.25F, -0.5F);
 			// Render a diamond block above the player's head
-			commandQueue.getBatchingQueue(0).submitBlock(matrices, Blocks.DIAMOND_BLOCK.getDefaultState(), light, OverlayTexture.DEFAULT_UV, 0);
+			commandQueue.order(0).submitBlock(matrices, Blocks.DIAMOND_BLOCK.defaultBlockState(), light, OverlayTexture.NO_OVERLAY, 0);
 
-			matrices.pop();
+			matrices.popPose();
 		}
 	}
 }

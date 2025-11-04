@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.test.item.gametest;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraft.block.entity.FurnaceBlockEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.test.TestContext;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.fabric.test.item.CustomDamageTest;
@@ -32,8 +32,8 @@ public class FurnaceGameTest {
 	private static final BlockPos POS = new BlockPos(0, 1, 0);
 
 	@GameTest
-	public void basicSmelt(TestContext context) {
-		context.setBlockState(POS, Blocks.FURNACE);
+	public void basicSmelt(GameTestHelper context) {
+		context.setBlock(POS, Blocks.FURNACE);
 		FurnaceBlockEntity blockEntity = context.getBlockEntity(POS, FurnaceBlockEntity.class);
 
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 8), new ItemStack(Items.COAL, 2));
@@ -50,12 +50,12 @@ public class FurnaceGameTest {
 				new ItemStack(Items.COAL, 1),
 				new ItemStack(Blocks.STONE, 8));
 
-		context.complete();
+		context.succeed();
 	}
 
 	@GameTest
-	public void vanillaRemainderTest(TestContext context) {
-		context.setBlockState(POS, Blocks.FURNACE);
+	public void vanillaRemainderTest(GameTestHelper context) {
+		context.setBlock(POS, Blocks.FURNACE);
 		FurnaceBlockEntity blockEntity = context.getBlockEntity(POS, FurnaceBlockEntity.class);
 
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 64), new ItemStack(Items.LAVA_BUCKET));
@@ -66,12 +66,12 @@ public class FurnaceGameTest {
 				new ItemStack(Items.BUCKET),
 				new ItemStack(Blocks.STONE, 64));
 
-		context.complete();
+		context.succeed();
 	}
 
 	@GameTest
-	public void fabricRemainderTest(TestContext context) {
-		context.setBlockState(POS, Blocks.FURNACE);
+	public void fabricRemainderTest(GameTestHelper context) {
+		context.setBlock(POS, Blocks.FURNACE);
 		FurnaceBlockEntity blockEntity = context.getBlockEntity(POS, FurnaceBlockEntity.class);
 
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 32), new ItemStack(CustomDamageTest.WEIRD_PICK));
@@ -94,26 +94,26 @@ public class FurnaceGameTest {
 				ItemStack.EMPTY,
 				new ItemStack(Blocks.STONE, 32));
 
-		context.complete();
+		context.succeed();
 	}
 
 	private void setInputs(FurnaceBlockEntity blockEntity, ItemStack ingredient, ItemStack fuel) {
-		blockEntity.setStack(0, ingredient);
-		blockEntity.setStack(1, fuel);
+		blockEntity.setItem(0, ingredient);
+		blockEntity.setItem(1, fuel);
 	}
 
 	private void assertInventory(FurnaceBlockEntity blockEntity, String extraErrorInfo, ItemStack... stacks) {
 		for (int i = 0; i < stacks.length; i++) {
-			ItemStack currentStack = blockEntity.getStack(i);
+			ItemStack currentStack = blockEntity.getItem(i);
 			ItemStack expectedStack = stacks[i];
 
 			RecipeGameTest.assertStacks(currentStack, expectedStack, extraErrorInfo);
 		}
 	}
 
-	private void cook(FurnaceBlockEntity blockEntity, TestContext context, int items) {
+	private void cook(FurnaceBlockEntity blockEntity, GameTestHelper context, int items) {
 		for (int i = 0; i < COOK_TIME * items; i++) {
-			AbstractFurnaceBlockEntity.tick(context.getWorld(), POS, context.getBlockState(POS), blockEntity);
+			AbstractFurnaceBlockEntity.serverTick(context.getLevel(), POS, context.getBlockState(POS), blockEntity);
 		}
 	}
 }

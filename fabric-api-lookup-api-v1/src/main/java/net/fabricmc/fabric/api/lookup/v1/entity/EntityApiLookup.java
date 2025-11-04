@@ -21,9 +21,9 @@ import java.util.function.BiFunction;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
 

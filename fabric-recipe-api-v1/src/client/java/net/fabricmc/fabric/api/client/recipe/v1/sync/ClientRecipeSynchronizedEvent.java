@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.recipe.v1.sync;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -35,5 +35,5 @@ public interface ClientRecipeSynchronizedEvent {
 				}
 			}));
 
-	void onRecipesSynchronized(MinecraftClient client, SynchronizedRecipes recipes);
+	void onRecipesSynchronized(Minecraft client, SynchronizedRecipes recipes);
 }

@@ -16,21 +16,21 @@
 
 package net.fabricmc.fabric.impl.particle;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.BlockPos;
 
-public class ExtendedBlockStateParticleEffectPacketCodec implements PacketCodec<RegistryByteBuf, BlockStateParticleEffect> {
+public class ExtendedBlockStateParticleEffectPacketCodec implements StreamCodec<RegistryFriendlyByteBuf, BlockParticleOption> {
 	private static final int PACKET_MARKER = -1;
-	private final PacketCodec<? super RegistryByteBuf, BlockStateParticleEffect> fallback;
+	private final StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> fallback;
 
-	public ExtendedBlockStateParticleEffectPacketCodec(PacketCodec<? super RegistryByteBuf, BlockStateParticleEffect> fallback) {
+	public ExtendedBlockStateParticleEffectPacketCodec(StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> fallback) {
 		this.fallback = fallback;
 	}
 
 	@Override
-	public BlockStateParticleEffect decode(RegistryByteBuf buf) {
+	public BlockParticleOption decode(RegistryFriendlyByteBuf buf) {
 		int index = buf.readerIndex();
 
 		if (buf.readVarInt() != PACKET_MARKER) {
@@ -39,14 +39,14 @@ public class ExtendedBlockStateParticleEffectPacketCodec implements PacketCodec<
 			return fallback.decode(buf);
 		}
 
-		BlockStateParticleEffect value = fallback.decode(buf);
-		BlockPos pos = BlockPos.PACKET_CODEC.decode(buf);
+		BlockParticleOption value = fallback.decode(buf);
+		BlockPos pos = BlockPos.STREAM_CODEC.decode(buf);
 		((BlockStateParticleEffectExtension) value).fabric_setBlockPos(pos);
 		return value;
 	}
 
 	@Override
-	public void encode(RegistryByteBuf buf, BlockStateParticleEffect value) {
+	public void encode(RegistryFriendlyByteBuf buf, BlockParticleOption value) {
 		BlockPos pos = value.getBlockPos();
 
 		if (pos == null || ExtendedBlockStateParticleEffectSync.shouldEncodeFallback(buf)) {
@@ -56,6 +56,6 @@ public class ExtendedBlockStateParticleEffectPacketCodec implements PacketCodec<
 
 		buf.writeVarInt(PACKET_MARKER);
 		fallback.encode(buf, value);
-		BlockPos.PACKET_CODEC.encode(buf, pos);
+		BlockPos.STREAM_CODEC.encode(buf, pos);
 	}
 }

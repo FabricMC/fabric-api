@@ -21,9 +21,9 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.function.LootFunction;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 
 import net.fabricmc.fabric.mixin.loot.LootTableAccessor;
 
@@ -51,7 +51,7 @@ public interface FabricLootTableBuilder {
 	 * @param function the applied function
 	 * @return this builder
 	 */
-	default LootTable.Builder apply(LootFunction function) {
+	default LootTable.Builder apply(LootItemFunction function) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -71,7 +71,7 @@ public interface FabricLootTableBuilder {
 	 * @param functions the applied functions
 	 * @return this builder
 	 */
-	default LootTable.Builder apply(Collection<? extends LootFunction> functions) {
+	default LootTable.Builder apply(Collection<? extends LootItemFunction> functions) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -99,13 +99,13 @@ public interface FabricLootTableBuilder {
 	 * @return the copied builder
 	 */
 	static LootTable.Builder copyOf(LootTable table) {
-		LootTable.Builder builder = LootTable.builder();
+		LootTable.Builder builder = LootTable.lootTable();
 		LootTableAccessor accessor = (LootTableAccessor) table;
 
-		builder.type(table.getType());
+		builder.setParamSet(table.getParamSet());
 		builder.pools(accessor.fabric_getPools());
 		builder.apply(accessor.fabric_getFunctions());
-		accessor.fabric_getRandomSequenceId().ifPresent(builder::randomSequenceId);
+		accessor.fabric_getRandomSequenceId().ifPresent(builder::setRandomSequence);
 
 		return builder;
 	}

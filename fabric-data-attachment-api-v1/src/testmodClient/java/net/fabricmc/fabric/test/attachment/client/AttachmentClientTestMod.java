@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.test.attachment.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.option.SimpleOption;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.OptionInstance;
+import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
@@ -29,13 +29,13 @@ public class AttachmentClientTestMod implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
-			if (entity instanceof ClientPlayerEntity) {
+			if (entity instanceof LocalPlayer) {
 				entity.onAttachedSet(AttachmentTestMod.SYNCED_RENDER_DISTANCE).register((oldValue, newValue) -> {
-					SimpleOption<Integer> viewDistance = MinecraftClient.getInstance().options.getViewDistance();
+					OptionInstance<Integer> viewDistance = Minecraft.getInstance().options.renderDistance();
 
-					if (viewDistance.getValue() < newValue) {
-						viewDistance.setValue(newValue);
-						MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("The server requested to up the render distance to " + newValue));
+					if (viewDistance.get() < newValue) {
+						viewDistance.set(newValue);
+						Minecraft.getInstance().gui.getChat().addMessage(Component.nullToEmpty("The server requested to up the render distance to " + newValue));
 					}
 				});
 			}

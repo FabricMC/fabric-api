@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.client.networking.v1;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientLoginNetworkHandler;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -79,7 +79,7 @@ public final class ClientLoginConnectionEvents {
 	 */
 	@FunctionalInterface
 	public interface Init {
-		void onLoginStart(ClientLoginNetworkHandler handler, MinecraftClient client);
+		void onLoginStart(ClientHandshakePacketListenerImpl handler, Minecraft client);
 	}
 
 	/**
@@ -87,7 +87,7 @@ public final class ClientLoginConnectionEvents {
 	 */
 	@FunctionalInterface
 	public interface QueryStart {
-		void onLoginQueryStart(ClientLoginNetworkHandler handler, MinecraftClient client);
+		void onLoginQueryStart(ClientHandshakePacketListenerImpl handler, Minecraft client);
 	}
 
 	/**
@@ -95,6 +95,6 @@ public final class ClientLoginConnectionEvents {
 	 */
 	@FunctionalInterface
 	public interface Disconnect {
-		void onLoginDisconnect(ClientLoginNetworkHandler handler, MinecraftClient client);
+		void onLoginDisconnect(ClientHandshakePacketListenerImpl handler, Minecraft client);
 	}
 }

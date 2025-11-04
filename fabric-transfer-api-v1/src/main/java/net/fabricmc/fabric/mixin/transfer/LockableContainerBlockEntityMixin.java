@@ -22,24 +22,24 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
 
 /**
  * Defer markDirty until the outer transaction close callback when setStack is called from an inventory wrapper.
  */
-@Mixin(LockableContainerBlockEntity.class)
+@Mixin(BaseContainerBlockEntity.class)
 public class LockableContainerBlockEntityMixin implements SpecialLogicInventory {
 	@Unique
 	private boolean fabric_suppressSpecialLogic = false;
 
 	@WrapOperation(
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/LockableContainerBlockEntity;markDirty()V"),
-			method = "setStack(ILnet/minecraft/item/ItemStack;)V"
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BaseContainerBlockEntity;markDirty()V"),
+			method = "setItem(ILnet/minecraft/world/item/ItemStack;)V"
 	)
-	public void fabric_redirectMarkDirty(LockableContainerBlockEntity instance, Operation<Void> original) {
+	public void fabric_redirectMarkDirty(BaseContainerBlockEntity instance, Operation<Void> original) {
 		if (!fabric_suppressSpecialLogic) {
 			original.call(instance);
 		}

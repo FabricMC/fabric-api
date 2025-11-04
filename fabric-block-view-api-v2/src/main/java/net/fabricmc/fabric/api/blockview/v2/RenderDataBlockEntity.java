@@ -18,16 +18,16 @@ package net.fabricmc.fabric.api.blockview.v2;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 
 /**
  * Extensions that allow {@link BlockEntity} subclasses to provide render data.
  *
  * <p>Block entity render data is arbitrary data that captures some useful state of the
  * {@link BlockEntity} and is safe to use in a multithreaded environment. In these environments,
- * accessing and using a {@link BlockEntity} directly via {@link BlockView#getBlockEntity(BlockPos)}
+ * accessing and using a {@link BlockEntity} directly via {@link BlockGetter#getBlockEntity(BlockPos)}
  * may not be thread-safe since the {@link BlockEntity} may be modified on a different thread, and it
  * may not be consistent since accessing the internal state of the {@link BlockEntity} could modify it
  * in a non-atomic way (such as through lazy computation). Using render data avoids these issues.

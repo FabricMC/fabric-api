@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.api.tag.convention.v2;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
 /**
- * See {@link net.minecraft.registry.tag.BlockTags} for vanilla tags.
+ * See {@link net.minecraft.tags.BlockTags} for vanilla tags.
  * Note that addition to some vanilla tags implies having certain functionality.
  */
 public final class ConventionalBlockTags {
@@ -276,7 +276,7 @@ public final class ConventionalBlockTags {
 	 * Blocks should be included in this tag if their movement/relocation can cause serious issues such
 	 * as world corruption upon being moved or for balance reason where the block should not be able to be relocated.
 	 * Example: Chunk loaders or pipes where other mods that move blocks do not respect
-	 * {@link AbstractBlock.AbstractBlockState#getPistonBehavior}.
+	 * {@link BlockBehaviour.BlockStateBase#getPistonBehavior}.
 	 */
 	public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = register("relocation_not_supported");
 	/**
@@ -339,7 +339,7 @@ public final class ConventionalBlockTags {
 	public static final TagKey<Block> ORES_IN_GROUND_STONE = register("ores_in_ground/stone");
 
 	/**
-	 * This tag is redundant. Please use {@link net.minecraft.registry.tag.BlockTags#SHULKER_BOXES} tag instead.
+	 * This tag is redundant. Please use {@link net.minecraft.tags.BlockTags#SHULKER_BOXES} tag instead.
 	 */
 	@Deprecated
 	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");

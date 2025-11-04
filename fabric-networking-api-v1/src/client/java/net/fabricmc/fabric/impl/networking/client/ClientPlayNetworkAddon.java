@@ -22,13 +22,13 @@ import java.util.Objects;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.network.NetworkPhase;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.ConnectionProtocol;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -36,17 +36,17 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 
-public final class ClientPlayNetworkAddon extends ClientCommonNetworkAddon<ClientPlayNetworking.PlayPayloadHandler<?>, ClientPlayNetworkHandler> {
+public final class ClientPlayNetworkAddon extends ClientCommonNetworkAddon<ClientPlayNetworking.PlayPayloadHandler<?>, ClientPacketListener> {
 	private final ContextImpl context;
 
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	public ClientPlayNetworkAddon(ClientPlayNetworkHandler handler, MinecraftClient client) {
-		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().name(), handler, client);
+	public ClientPlayNetworkAddon(ClientPacketListener handler, Minecraft client) {
+		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getLocalGameProfile().name(), handler, client);
 		this.context = new ContextImpl(client, this);
 
 		// Must register pending channels via lateinit
-		this.registerPendingChannels((ChannelInfoHolder) this.connection, NetworkPhase.PLAY);
+		this.registerPendingChannels((ChannelInfoHolder) this.connection, ConnectionProtocol.PLAY);
 	}
 
 	@Override
@@ -69,17 +69,17 @@ public final class ClientPlayNetworkAddon extends ClientCommonNetworkAddon<Clien
 
 	@Override
 	protected boolean isOnReceiveThread() {
-		return client.getPacketApplyBatcher().isOnThread();
+		return client.packetProcessor().isSameThread();
 	}
 
 	@Override
-	protected void receive(ClientPlayNetworking.PlayPayloadHandler<?> handler, CustomPayload payload) {
+	protected void receive(ClientPlayNetworking.PlayPayloadHandler<?> handler, CustomPacketPayload payload) {
 		((ClientPlayNetworking.PlayPayloadHandler) handler).receive(payload, context);
 	}
 
 	// impl details
 	@Override
-	public Packet<?> createPacket(CustomPayload packet) {
+	public Packet<?> createPacket(CustomPacketPayload packet) {
 		return ClientPlayNetworking.createC2SPacket(packet);
 	}
 
@@ -98,14 +98,14 @@ public final class ClientPlayNetworkAddon extends ClientCommonNetworkAddon<Clien
 		ClientPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.client);
 	}
 
-	private record ContextImpl(MinecraftClient client, PacketSender responseSender) implements ClientPlayNetworking.Context {
+	private record ContextImpl(Minecraft client, PacketSender responseSender) implements ClientPlayNetworking.Context {
 		private ContextImpl {
 			Objects.requireNonNull(client, "client");
 			Objects.requireNonNull(responseSender, "responseSender");
 		}
 
 		@Override
-		public ClientPlayerEntity player() {
+		public LocalPlayer player() {
 			return Objects.requireNonNull(client.player, "player");
 		}
 	}

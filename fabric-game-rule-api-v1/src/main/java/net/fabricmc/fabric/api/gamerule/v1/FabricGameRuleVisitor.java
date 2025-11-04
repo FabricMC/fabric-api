@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
-import net.minecraft.world.rule.GameRule;
-import net.minecraft.world.rule.GameRuleVisitor;
+import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRuleTypeVisitor;
 
 /**
  * An extended game rule visitor which supports Fabric's own rule types.
@@ -28,7 +28,7 @@ import net.minecraft.world.rule.GameRuleVisitor;
  * <p>Rule types specified by this interface are not exhaustive.
  * New entries may be added in the future.
  */
-public interface FabricGameRuleVisitor extends GameRuleVisitor {
+public interface FabricGameRuleVisitor extends GameRuleTypeVisitor {
 	/**
 	 * Visit a double rule.
 	 */

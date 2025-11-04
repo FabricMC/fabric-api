@@ -20,18 +20,18 @@ import java.util.List;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.BlockModelRenderer;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.chunk.SectionBuilder;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.chunk.SectionCompiler;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -47,18 +47,18 @@ import net.fabricmc.fabric.impl.renderer.RendererManager;
  * enhanced model rendering interfaces specified by the Fabric API.
  *
  * <p>Renderers must ensure that terrain buffering supports {@link BlockStateModel#emitQuads}, which happens in
- * {@link SectionBuilder} in vanilla; this code is not patched automatically. Renderers must also ensure that the
+ * {@link SectionCompiler} in vanilla; this code is not patched automatically. Renderers must also ensure that the
  * following vanilla methods support {@link BlockStateModel#emitQuads}; these methods are not patched automatically.
  *
- * <ul><li>{@link BlockModelRenderer#render(MatrixStack.Entry, VertexConsumer, BlockStateModel, float, float, float, int, int)}
+ * <ul><li>{@link ModelBlockRenderer#render(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
  *
- * <li>{@link BlockRenderManager#renderDamage(BlockState, BlockPos, BlockRenderView, MatrixStack, VertexConsumer)}
+ * <li>{@link BlockRenderDispatcher#renderDamage(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)}
  *
- * <li>{@link BlockRenderManager#renderBlockAsEntity(BlockState, MatrixStack, VertexConsumerProvider, int, int)}</ul>
+ * <li>{@link BlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int)}</ul>
  *
- * <p>All other places in vanilla code that invoke {@link BlockStateModel#addParts(Random, List)},
- * {@link BlockStateModel#getParts(Random)}, or
- * {@link BlockModelRenderer#render(MatrixStack.Entry, VertexConsumer, BlockStateModel, float, float, float, int, int)}
+ * <p>All other places in vanilla code that invoke {@link BlockStateModel#addParts(RandomSource, List)},
+ * {@link BlockStateModel#getParts(RandomSource)}, or
+ * {@link ModelBlockRenderer#render(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
  * are, where appropriate, patched automatically to invoke the corresponding method above or the corresponding method in
  * {@link FabricBlockModelRenderer} or {@link FabricBlockRenderManager}.
  */
@@ -92,26 +92,26 @@ public interface Renderer {
 	MutableMesh mutableMesh();
 
 	/**
-	 * @see FabricBlockModelRenderer#render(BlockRenderView, BlockStateModel, BlockState, BlockPos, MatrixStack, BlockVertexConsumerProvider, boolean, long, int)
+	 * @see FabricBlockModelRenderer#render(BlockAndTintGetter, BlockStateModel, BlockState, BlockPos, PoseStack, BlockVertexConsumerProvider, boolean, long, int)
 	 */
 	@ApiStatus.OverrideOnly
-	void render(BlockModelRenderer modelRenderer, BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrices, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay);
+	void render(ModelBlockRenderer modelRenderer, BlockAndTintGetter blockView, BlockStateModel model, BlockState state, BlockPos pos, PoseStack matrices, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay);
 
 	/**
-	 * @see FabricBlockModelRenderer#render(MatrixStack.Entry, BlockVertexConsumerProvider, BlockStateModel, float, float, float, int, int, BlockRenderView, BlockPos, BlockState)
+	 * @see FabricBlockModelRenderer#render(PoseStack.Pose, BlockVertexConsumerProvider, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
 	@ApiStatus.OverrideOnly
-	void render(MatrixStack.Entry matrices, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state);
+	void render(PoseStack.Pose matrices, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos, BlockState state);
 
 	/**
-	 * @see FabricBlockRenderManager#renderBlockAsEntity(BlockState, MatrixStack, VertexConsumerProvider, int, int, BlockRenderView, BlockPos)
+	 * @see FabricBlockRenderManager#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
 	 */
 	@ApiStatus.OverrideOnly
-	void renderBlockAsEntity(BlockRenderManager renderManager, BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BlockRenderView blockView, BlockPos pos);
+	void renderBlockAsEntity(BlockRenderDispatcher renderManager, BlockState state, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos);
 
 	/**
 	 * @see FabricLayerRenderState#emitter()
 	 */
 	@ApiStatus.OverrideOnly
-	QuadEmitter getLayerRenderStateEmitter(ItemRenderState.LayerRenderState layer);
+	QuadEmitter getLayerRenderStateEmitter(ItemStackRenderState.LayerRenderState layer);
 }

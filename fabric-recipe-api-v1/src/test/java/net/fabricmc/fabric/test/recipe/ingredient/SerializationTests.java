@@ -29,13 +29,13 @@ import com.mojang.serialization.JsonOps;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.Bootstrap;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryOps;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.RegistryOps;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientInit;
@@ -43,8 +43,8 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientInit;
 public class SerializationTests {
 	@BeforeAll
 	static void beforeAll() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 		new CustomIngredientInit().onInitialize();
 	}
 
@@ -79,14 +79,14 @@ public class SerializationTests {
 	 */
 	@Test
 	public void testCustomIngredientSerialization() {
-		RegistryOps<JsonElement> registryOps = RegistryOps.of(JsonOps.INSTANCE, DynamicRegistryManager.of(Registries.REGISTRIES));
+		RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
 
 		String ingredientJson = """
 					{"ingredients":["minecraft:stone"],"fabric:type":"fabric:all"}
 					""".trim();
 
 		Ingredient ingredient = DefaultCustomIngredients.all(
-				Ingredient.ofItems(Items.STONE)
+				Ingredient.of(Items.STONE)
 		);
 		JsonObject json = Ingredient.CODEC.encodeStart(registryOps, ingredient).getOrThrow(IllegalStateException::new).getAsJsonObject();
 		assertEquals(json.toString(), ingredientJson, "Unexpected json: " + json);

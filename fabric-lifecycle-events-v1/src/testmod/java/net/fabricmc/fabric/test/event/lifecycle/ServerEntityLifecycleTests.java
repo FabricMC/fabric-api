@@ -22,8 +22,8 @@ import java.util.List;
 import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -68,11 +68,11 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 			if (this.serverTicks++ % 200 == 0) {
 				int entities = 0;
 
-				for (ServerWorld world : server.getWorlds()) {
-					final int worldEntities = Iterables.size(world.iterateEntities());
+				for (ServerLevel world : server.getAllLevels()) {
+					final int worldEntities = Iterables.size(world.getAllEntities());
 
 					if (PRINT_SERVER_ENTITY_MESSAGES) {
-						logger.info("[SERVER] Tracked Entities in " + world.getRegistryKey().toString() + " - " + worldEntities);
+						logger.info("[SERVER] Tracked Entities in " + world.dimension().toString() + " - " + worldEntities);
 					}
 
 					entities += worldEntities;

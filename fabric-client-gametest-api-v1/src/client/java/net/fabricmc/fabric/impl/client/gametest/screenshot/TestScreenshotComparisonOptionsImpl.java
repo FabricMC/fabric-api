@@ -27,8 +27,8 @@ import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Either;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.util.math.Rect2i;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.renderer.Rect2i;
 
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonAlgorithm;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonOptions;

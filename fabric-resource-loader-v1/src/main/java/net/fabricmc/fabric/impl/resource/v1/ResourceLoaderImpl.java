@@ -35,9 +35,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import net.minecraft.resource.ResourceReloader;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
@@ -48,24 +48,24 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public sealed class ResourceLoaderImpl implements ResourceLoader permits DataResourceLoaderImpl {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private static final Map<ResourceType, ResourceLoaderImpl> IMPL_MAP = new EnumMap<>(ResourceType.class);
+	private static final Map<PackType, ResourceLoaderImpl> IMPL_MAP = new EnumMap<>(PackType.class);
 
 	private static final boolean DEBUG_RELOADERS_IDENTITY = TriState.fromSystemProperty("fabric.resource_loader.debug.reloaders_identity")
 			.orElse(FabricLoader.getInstance().isDevelopmentEnvironment());
 	public static final boolean DEBUG_PROFILE_RESOURCE_RELOADERS = Boolean.getBoolean("fabric.resource_loader.debug.profile_resource_reloaders");
 	private static final boolean DEBUG_RELOADERS_ORDER = Boolean.getBoolean("fabric.resource_loader.debug.reloaders_order");
 
-	public static ResourceLoaderImpl get(ResourceType type) {
+	public static ResourceLoaderImpl get(PackType type) {
 		return IMPL_MAP.computeIfAbsent(type, target ->
-				target == ResourceType.SERVER_DATA ? DataResourceLoaderImpl.INSTANCE : new ResourceLoaderImpl(type)
+				target == PackType.SERVER_DATA ? DataResourceLoaderImpl.INSTANCE : new ResourceLoaderImpl(type)
 		);
 	}
 
-	private final Map<Identifier, ResourceReloader> addedReloaders = new LinkedHashMap<>();
+	private final Map<Identifier, PreparableReloadListener> addedReloaders = new LinkedHashMap<>();
 	private final Set<ReloaderOrder> reloadersOrdering = new LinkedHashSet<>();
-	private final ResourceType type;
+	private final PackType type;
 
-	ResourceLoaderImpl(ResourceType type) {
+	ResourceLoaderImpl(PackType type) {
 		this.type = type;
 	}
 
@@ -82,12 +82,12 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 	}
 
 	@Override
-	public void registerReloader(Identifier id, ResourceReloader reloader) {
+	public void registerReloader(Identifier id, PreparableReloadListener reloader) {
 		Objects.requireNonNull(id, "The reloader identifier should not be null.");
 		Objects.requireNonNull(reloader, "The reloader should not be null.");
 		this.checkUniqueResourceReloader(id);
 
-		for (Map.Entry<Identifier, ResourceReloader> entry : this.addedReloaders.entrySet()) {
+		for (Map.Entry<Identifier, PreparableReloadListener> entry : this.addedReloaders.entrySet()) {
 			if (entry.getValue() == reloader) {
 				throw new IllegalStateException(
 						"Resource reloader with ID %s already in resource reloader set with ID %s!"
@@ -111,7 +111,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		this.reloadersOrdering.add(new ReloaderOrder(firstReloader, secondReloader));
 	}
 
-	private Identifier getResourceReloaderIdForSorting(ResourceReloader reloader) {
+	private Identifier getResourceReloaderIdForSorting(PreparableReloadListener reloader) {
 		if (reloader instanceof FabricResourceReloader identifiable) {
 			return identifiable.fabric$getId();
 		} else {
@@ -123,7 +123,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 				);
 			}
 
-			return Identifier.of("unknown",
+			return Identifier.fromNamespaceAndPath("unknown",
 					"private/"
 							+ reloader.getClass().getName()
 							.replace(".", "/")
@@ -133,7 +133,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		}
 	}
 
-	public static List<ResourceReloader> sort(ResourceType type, List<ResourceReloader> listeners) {
+	public static List<PreparableReloadListener> sort(PackType type, List<PreparableReloadListener> listeners) {
 		if (type == null) {
 			return listeners;
 		}
@@ -145,7 +145,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		return Collections.unmodifiableList(mutable);
 	}
 
-	protected Set<Map.Entry<Identifier, ResourceReloader>> collectReloadersToAdd(
+	protected Set<Map.Entry<Identifier, PreparableReloadListener>> collectReloadersToAdd(
 			@Nullable SetupMarkerResourceReloader setupMarker
 	) {
 		return new LinkedHashSet<>(this.addedReloaders.entrySet());
@@ -156,12 +156,12 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 	 *
 	 * @param reloaders the resource reloaders to sort
 	 */
-	private void sort(List<ResourceReloader> reloaders) {
+	private void sort(List<PreparableReloadListener> reloaders) {
 		// Locate and extract the setup marker.
 		SetupMarkerResourceReloader setupReloader = this.extractSetupMarker(reloaders);
 
 		// Build the actual full list of resource reloaders to add.
-		final Set<Map.Entry<Identifier, ResourceReloader>> reloadersToAdd = this.collectReloadersToAdd(setupReloader);
+		final Set<Map.Entry<Identifier, PreparableReloadListener>> reloadersToAdd = this.collectReloadersToAdd(setupReloader);
 
 		// Remove any modded reloaders to sort properly.
 		reloadersToAdd.stream().map(Map.Entry::getValue).forEach(reloaders::remove);
@@ -174,7 +174,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 
 		var runtimePhases = new Object2ObjectOpenHashMap<Identifier, ResourceReloaderPhaseData>();
 
-		Iterator<ResourceReloader> itPhases = reloaders.iterator();
+		Iterator<PreparableReloadListener> itPhases = reloaders.iterator();
 		// Add the virtual before Vanilla phase.
 		ResourceReloaderPhaseData last = new ResourceReloaderPhaseData(ResourceReloaderKeys.BEFORE_VANILLA, null);
 		last.setVanillaStatus(ResourceReloaderPhaseData.VanillaStatus.VANILLA);
@@ -182,7 +182,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 
 		// Add all the Vanilla reloaders.
 		while (itPhases.hasNext()) {
-			ResourceReloader currentReloader = itPhases.next();
+			PreparableReloadListener currentReloader = itPhases.next();
 			Identifier id = this.getResourceReloaderIdForSorting(currentReloader);
 
 			var current = new ResourceReloaderPhaseData(id, currentReloader);
@@ -199,7 +199,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		SortableNode.link(last, afterVanilla);
 
 		// Add the modded reloaders.
-		for (Map.Entry<Identifier, ResourceReloader> moddedReloader : reloadersToAdd) {
+		for (Map.Entry<Identifier, PreparableReloadListener> moddedReloader : reloadersToAdd) {
 			var phase = new ResourceReloaderPhaseData(moddedReloader.getKey(), moddedReloader.getValue());
 			runtimePhases.put(phase.id, phase);
 		}
@@ -258,13 +258,13 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		}
 	}
 
-	private @Nullable SetupMarkerResourceReloader extractSetupMarker(List<ResourceReloader> reloaders) {
-		if (type == ResourceType.CLIENT_RESOURCES) {
+	private @Nullable SetupMarkerResourceReloader extractSetupMarker(List<PreparableReloadListener> reloaders) {
+		if (type == PackType.CLIENT_RESOURCES) {
 			// We don't need the registry for client resources.
 			return null;
 		}
 
-		Iterator<ResourceReloader> it = reloaders.iterator();
+		Iterator<PreparableReloadListener> it = reloaders.iterator();
 
 		while (it.hasNext()) {
 			if (it.next() instanceof SetupMarkerResourceReloader marker) {

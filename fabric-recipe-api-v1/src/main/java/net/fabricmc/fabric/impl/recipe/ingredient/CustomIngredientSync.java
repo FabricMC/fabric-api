@@ -19,10 +19,10 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import net.minecraft.network.handler.EncoderHandler;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.server.network.ServerPlayerConfigurationTask;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.PacketEncoder;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.network.ConfigurationTask;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -38,13 +38,13 @@ import net.fabricmc.fabric.mixin.recipe.ingredient.EncoderHandlerMixin;
  *
  * <ul>
  *     <li>Each client sends a packet with the set of custom ingredients it supports.</li>
- *     <li>We store that set inside the {@link EncoderHandler} using {@link EncoderHandlerMixin}.</li>
- *     <li>When serializing a custom ingredient, we get access to the current {@link EncoderHandler},
+ *     <li>We store that set inside the {@link PacketEncoder} using {@link EncoderHandlerMixin}.</li>
+ *     <li>When serializing a custom ingredient, we get access to the current {@link PacketEncoder},
  *     and based on that we decide whether to send the custom ingredient, or a vanilla ingredient with the matching stacks.</li>
  * </ul>
  */
 public class CustomIngredientSync implements ModInitializer {
-	public static final Identifier PACKET_ID = Identifier.of("fabric", "custom_ingredient_sync");
+	public static final Identifier PACKET_ID = Identifier.fromNamespaceAndPath("fabric", "custom_ingredient_sync");
 	public static final int PROTOCOL_VERSION_1 = 1;
 	public static final ThreadLocal<Set<Identifier>> CURRENT_SUPPORTED_INGREDIENTS = new ThreadLocal<>();
 
@@ -93,18 +93,18 @@ public class CustomIngredientSync implements ModInitializer {
 		});
 	}
 
-	private record IngredientSyncTask() implements ServerPlayerConfigurationTask {
-		public static final Key KEY = new Key(PACKET_ID.toString());
+	private record IngredientSyncTask() implements ConfigurationTask {
+		public static final Type KEY = new Type(PACKET_ID.toString());
 
 		@Override
-		public void sendPacket(Consumer<Packet<?>> sender) {
+		public void start(Consumer<Packet<?>> sender) {
 			// Send packet with 1 so the client can send us back the list of supported tags.
 			// 1 is sent in case we need a different protocol later for some reason.
 			sender.accept(ServerConfigurationNetworking.createS2CPacket(new CustomIngredientPayloadS2C(PROTOCOL_VERSION_1)));
 		}
 
 		@Override
-		public Key getKey() {
+		public Type type() {
 			return KEY;
 		}
 	}

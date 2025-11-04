@@ -26,24 +26,24 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.network.SequencedPacketCreator;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.multiplayer.prediction.PredictiveAction;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
+import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
@@ -51,95 +51,98 @@ import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 
-@Mixin(ClientPlayerInteractionManager.class)
+@Mixin(MultiPlayerGameMode.class)
 public abstract class ClientPlayerInteractionManagerMixin {
 	@Shadow
 	@Final
-	private MinecraftClient client;
+	private Minecraft minecraft;
 	@Shadow
 	@Final
-	private ClientPlayNetworkHandler networkHandler;
+	private ClientPacketListener connection;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getAbilities()Lnet/minecraft/entity/player/PlayerAbilities;", ordinal = 0), method = "attackBlock", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getAbilities()Lnet/minecraft/world/entity/player/Abilities;", ordinal = 0), method = "startDestroyBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
 		fabric_fireAttackBlockCallback(pos, direction, info);
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getAbilities()Lnet/minecraft/entity/player/PlayerAbilities;", ordinal = 0), method = "updateBlockBreakingProgress", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getAbilities()Lnet/minecraft/world/entity/player/Abilities;", ordinal = 0), method = "continueDestroyBlock", cancellable = true)
 	public void method_2902(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
-		if (this.client.player.getAbilities().creativeMode) {
+		if (this.minecraft.player.getAbilities().instabuild) {
 			fabric_fireAttackBlockCallback(pos, direction, info);
 		}
 	}
 
 	@Unique
 	private void fabric_fireAttackBlockCallback(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
-		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN_HAND, pos, direction);
+		InteractionResult result = AttackBlockCallback.EVENT.invoker().interact(minecraft.player, minecraft.level, InteractionHand.MAIN_HAND, pos, direction);
 
-		if (result != ActionResult.PASS) {
+		if (result != InteractionResult.PASS) {
 			// Returning true will spawn particles and trigger the animation of the hand -> only for SUCCESS.
-			info.setReturnValue(result == ActionResult.SUCCESS);
+			info.setReturnValue(result == InteractionResult.SUCCESS);
 
 			// We also need to let the server process the action if it's accepted.
-			if (result.isAccepted()) {
-				sendSequencedPacket(client.world, id -> new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction, id));
+			if (result.consumesAction()) {
+				sendSequencedPacket(minecraft.level, id -> new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, pos, direction, id));
 			}
 		}
 	}
 
-	@Inject(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"))
+	@Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;destroy(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"))
 	private void fabric$onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockState blockState) {
-		ClientPlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(client.world, client.player, pos, blockState);
+		ClientPlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(minecraft.level, minecraft.player, pos, blockState);
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;sendSequencedPacket(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/network/SequencedPacketCreator;)V"), method = "interactBlock", cancellable = true)
-	public void interactBlock(ClientPlayerEntity player, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> info) {
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V"), method = "useItemOn", cancellable = true)
+	public void interactBlock(LocalPlayer player, InteractionHand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> info) {
 		// hook interactBlock between the world border check and the actual block interaction to invoke the use block event first
 		// this needs to be in interactBlock to avoid sending a packet in line with the event javadoc
 
 		if (player.isSpectator()) return; // vanilla spectator check happens later, repeat it before the event to avoid false invocations
 
-		ActionResult result = UseBlockCallback.EVENT.invoker().interact(player, player.getEntityWorld(), hand, blockHitResult);
+		InteractionResult result = UseBlockCallback.EVENT.invoker().interact(player, player.level(), hand, blockHitResult);
 
-		if (result != ActionResult.PASS) {
-			if (result.isAccepted()) {
+		if (result != InteractionResult.PASS) {
+			if (result.consumesAction()) {
 				// send interaction packet to the server with a new sequentially assigned id
-				sendSequencedPacket((ClientWorld) player.getEntityWorld(), id -> new PlayerInteractBlockC2SPacket(hand, blockHitResult, id));
+				sendSequencedPacket((ClientLevel) player.level(), id -> new ServerboundUseItemOnPacket(hand, blockHitResult, id));
 			}
 
 			info.setReturnValue(result);
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;syncSelectedSlot()V", ordinal = 0), method = "interactItem", cancellable = true)
-	public void interactItem(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;ensureHasSentCarriedItem()V", ordinal = 0), method = "useItem", cancellable = true)
+	public void interactItem(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
 		// hook interactBlock between the spectator check and sending the first packet to invoke the use item event first
 		// this needs to be in interactBlock to avoid sending a packet in line with the event javadoc
-		ActionResult result = UseItemCallback.EVENT.invoker().interact(player, player.getEntityWorld(), hand);
+		InteractionResult result = UseItemCallback.EVENT.invoker().interact(player, player.level(), hand);
 
-		if (result != ActionResult.PASS) {
-			if (result == ActionResult.SUCCESS) {
+		if (result != InteractionResult.PASS) {
+			if (result == InteractionResult.SUCCESS) {
 				// send interaction packet to the server with a new sequentially assigned id
-				sendSequencedPacket((ClientWorld) player.getEntityWorld(), id -> new PlayerInteractItemC2SPacket(hand, id, player.getYaw(), player.getPitch()));
+				sendSequencedPacket((ClientLevel) player.level(), id -> new ServerboundUseItemPacket(hand, id, player.getYRot(), player.getXRot()));
 			}
 
 			info.setReturnValue(result);
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V", ordinal = 0), method = "attackEntity", cancellable = true)
-	public void attackEntity(PlayerEntity player, Entity entity, CallbackInfo info) {
-		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), Hand.MAIN_HAND /* TODO */, entity, null);
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientPacketListener;sendPacket(Lnet/minecraft/network/protocol/Packet;)V", ordinal = 0), method = "attack", cancellable = true)
+	public void attackEntity(Player player, Entity entity, CallbackInfo info) {
+		InteractionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.level(), InteractionHand.MAIN_HAND /* TODO */, entity, null);
 
-		if (result != ActionResult.PASS) {
-			if (result == ActionResult.SUCCESS) {
-				this.networkHandler.sendPacket(PlayerInteractEntityC2SPacket.attack(entity, player.isSneaking()));
+		if (result != InteractionResult.PASS) {
+			if (result == InteractionResult.SUCCESS) {
+				this.connection.send(ServerboundInteractPacket.createAttackPacket(entity, player.isShiftKeyDown()));
 			}
 
 			info.cancel();
 		}
 	}
 
-	@Shadow
-	protected abstract void sendSequencedPacket(ClientWorld clientWorld, SequencedPacketCreator supplier);
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
+	protected abstract void sendSequencedPacket(ClientLevel clientWorld, PredictiveAction supplier);
 }

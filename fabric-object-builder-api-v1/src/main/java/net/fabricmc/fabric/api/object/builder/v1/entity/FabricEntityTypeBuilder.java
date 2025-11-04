@@ -23,27 +23,27 @@ import java.util.function.UnaryOperator;
 import com.google.common.collect.ImmutableSet;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.entity.SpawnLocation;
-import net.minecraft.entity.SpawnRestriction;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.resource.featuretoggle.FeatureFlag;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.SpawnPlacementType;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.flag.FeatureFlag;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.Level;
 
 /**
  * @deprecated replace with {@link EntityType.Builder}
  */
 @Deprecated
 public class FabricEntityTypeBuilder<T extends Entity> {
-	private SpawnGroup spawnGroup;
+	private MobCategory spawnGroup;
 	private EntityType.EntityFactory<T> factory;
 	private boolean saveable = true;
 	private boolean summonable = true;
@@ -52,31 +52,31 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private Boolean forceTrackedVelocityUpdates;
 	private boolean fireImmune = false;
 	private boolean spawnableFarFromPlayer;
-	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
+	private EntityDimensions dimensions = EntityDimensions.scalable(-1.0f, -1.0f);
 	private ImmutableSet<Block> specificSpawnBlocks = ImmutableSet.of();
 
 	@Nullable
 	private FeatureFlag[] requiredFeatures = null;
 
-	protected FabricEntityTypeBuilder(SpawnGroup spawnGroup, EntityType.EntityFactory<T> factory) {
+	protected FabricEntityTypeBuilder(MobCategory spawnGroup, EntityType.EntityFactory<T> factory) {
 		this.spawnGroup = spawnGroup;
 		this.factory = factory;
-		this.spawnableFarFromPlayer = spawnGroup == SpawnGroup.CREATURE || spawnGroup == SpawnGroup.MISC;
+		this.spawnableFarFromPlayer = spawnGroup == MobCategory.CREATURE || spawnGroup == MobCategory.MISC;
 	}
 
 	/**
 	 * Creates an entity type builder.
 	 *
-	 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
+	 * <p>This entity's spawn group will automatically be set to {@link MobCategory#MISC}.
 	 *
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
-	 * @deprecated use {@link EntityType.Builder#create(SpawnGroup)}
+	 * @deprecated use {@link EntityType.Builder#create(MobCategory)}
 	 */
 	@Deprecated
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create() {
-		return create(SpawnGroup.MISC);
+		return create(MobCategory.MISC);
 	}
 
 	/**
@@ -86,10 +86,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
-	 * @deprecated use {@link EntityType.Builder#create(SpawnGroup)}
+	 * @deprecated use {@link EntityType.Builder#create(MobCategory)}
 	 */
 	@Deprecated
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup) {
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(MobCategory spawnGroup) {
 		return create(spawnGroup, FabricEntityTypeBuilder::emptyFactory);
 	}
 
@@ -101,26 +101,26 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
-	 * @deprecated use {@link EntityType.Builder#create(EntityType.EntityFactory, SpawnGroup)}
+	 * @deprecated use {@link EntityType.Builder#create(EntityType.EntityFactory, MobCategory)}
 	 */
 	@Deprecated
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup, EntityType.EntityFactory<T> factory) {
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(MobCategory spawnGroup, EntityType.EntityFactory<T> factory) {
 		return new FabricEntityTypeBuilder<>(spawnGroup, factory);
 	}
 
 	/**
 	 * Creates an entity type builder for a living entity.
 	 *
-	 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
+	 * <p>This entity's spawn group will automatically be set to {@link MobCategory#MISC}.
 	 *
 	 * @param <T> the type of entity
 	 *
 	 * @return a new living entity type builder
-	 * @deprecated use {@link FabricEntityType.Builder#createLiving(EntityType.EntityFactory, SpawnGroup, UnaryOperator)}
+	 * @deprecated use {@link FabricEntityType.Builder#createLiving(EntityType.EntityFactory, MobCategory, UnaryOperator)}
 	 */
 	@Deprecated
 	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving() {
-		return new FabricEntityTypeBuilder.Living<>(SpawnGroup.MISC, FabricEntityTypeBuilder::emptyFactory);
+		return new FabricEntityTypeBuilder.Living<>(MobCategory.MISC, FabricEntityTypeBuilder::emptyFactory);
 	}
 
 	/**
@@ -129,18 +129,18 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @param <T> the type of entity
 	 *
 	 * @return a new mob entity type builder
-	 * @deprecated use {@link FabricEntityType.Builder#createMob(EntityType.EntityFactory, SpawnGroup, UnaryOperator)}
+	 * @deprecated use {@link FabricEntityType.Builder#createMob(EntityType.EntityFactory, MobCategory, UnaryOperator)}
 	 */
-	public static <T extends MobEntity> FabricEntityTypeBuilder.Mob<T> createMob() {
-		return new FabricEntityTypeBuilder.Mob<>(SpawnGroup.MISC, FabricEntityTypeBuilder::emptyFactory);
+	public static <T extends Mob> FabricEntityTypeBuilder.Mob<T> createMob() {
+		return new FabricEntityTypeBuilder.Mob<>(MobCategory.MISC, FabricEntityTypeBuilder::emptyFactory);
 	}
 
-	private static <T extends Entity> T emptyFactory(EntityType<T> type, World world) {
+	private static <T extends Entity> T emptyFactory(EntityType<T> type, Level world) {
 		return null;
 	}
 
 	@Deprecated
-	public FabricEntityTypeBuilder<T> spawnGroup(SpawnGroup group) {
+	public FabricEntityTypeBuilder<T> spawnGroup(MobCategory group) {
 		Objects.requireNonNull(group, "Spawn group cannot be null");
 		this.spawnGroup = group;
 		return this;
@@ -307,34 +307,34 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * Creates the entity type.
 	 *
 	 * @return a new {@link EntityType}
-	 * @deprecated use {@link EntityType.Builder#build(net.minecraft.registry.RegistryKey)}
+	 * @deprecated use {@link EntityType.Builder#build(net.minecraft.resources.ResourceKey)}
 	 */
 	@Deprecated
-	public EntityType<T> build(RegistryKey<EntityType<?>> key) {
-		EntityType.Builder<T> builder = EntityType.Builder.create(this.factory, this.spawnGroup)
-				.allowSpawningInside(specificSpawnBlocks.toArray(Block[]::new))
-				.maxTrackingRange(this.trackRange)
-				.trackingTickInterval(this.trackedUpdateRate)
-				.dimensions(this.dimensions.width(), this.dimensions.height());
+	public EntityType<T> build(ResourceKey<EntityType<?>> key) {
+		EntityType.Builder<T> builder = EntityType.Builder.of(this.factory, this.spawnGroup)
+				.immuneTo(specificSpawnBlocks.toArray(Block[]::new))
+				.clientTrackingRange(this.trackRange)
+				.updateInterval(this.trackedUpdateRate)
+				.sized(this.dimensions.width(), this.dimensions.height());
 
 		if (!this.saveable) {
-			builder = builder.disableSaving();
+			builder = builder.noSave();
 		}
 
 		if (!this.summonable) {
-			builder = builder.disableSummon();
+			builder = builder.noSummon();
 		}
 
 		if (this.fireImmune) {
-			builder = builder.makeFireImmune();
+			builder = builder.fireImmune();
 		}
 
 		if (this.spawnableFarFromPlayer) {
-			builder = builder.spawnableFarFromPlayer();
+			builder = builder.canSpawnFarFromPlayer();
 		}
 
 		if (this.requiredFeatures != null) {
-			builder = builder.requires(this.requiredFeatures);
+			builder = builder.requiredFeatures(this.requiredFeatures);
 		}
 
 		if (this.forceTrackedVelocityUpdates != null) {
@@ -348,19 +348,19 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * An extended version of {@link FabricEntityTypeBuilder} with support for features on present on {@link LivingEntity living entities}, such as default attributes.
 	 *
 	 * @param <T> Entity class.
-	 * @deprecated use {@link EntityType.Builder#createLiving(EntityType.EntityFactory, SpawnGroup, UnaryOperator)}
+	 * @deprecated use {@link EntityType.Builder#createLiving(EntityType.EntityFactory, MobCategory, UnaryOperator)}
 	 */
 	@Deprecated
 	public static class Living<T extends LivingEntity> extends FabricEntityTypeBuilder<T> {
 		@Nullable
-		private Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder;
+		private Supplier<AttributeSupplier.Builder> defaultAttributeBuilder;
 
-		protected Living(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
+		protected Living(MobCategory spawnGroup, EntityType.EntityFactory<T> function) {
 			super(spawnGroup, function);
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Living<T> spawnGroup(SpawnGroup group) {
+		public FabricEntityTypeBuilder.Living<T> spawnGroup(MobCategory group) {
 			super.spawnGroup(group);
 			return this;
 		}
@@ -469,7 +469,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		 * @deprecated use {@link FabricEntityType.Builder.Living#defaultAttributes(Supplier)}
 		 */
 		@Deprecated
-		public FabricEntityTypeBuilder.Living<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
+		public FabricEntityTypeBuilder.Living<T> defaultAttributes(Supplier<AttributeSupplier.Builder> defaultAttributeBuilder) {
 			Objects.requireNonNull(defaultAttributeBuilder, "Cannot set null attribute builder");
 			this.defaultAttributeBuilder = defaultAttributeBuilder;
 			return this;
@@ -477,7 +477,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 
 		@Deprecated
 		@Override
-		public EntityType<T> build(RegistryKey<EntityType<?>> key) {
+		public EntityType<T> build(ResourceKey<EntityType<?>> key) {
 			final EntityType<T> type = super.build(key);
 
 			if (this.defaultAttributeBuilder != null) {
@@ -489,22 +489,22 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * An extended version of {@link FabricEntityTypeBuilder} with support for features on present on {@link MobEntity mob entities}, such as spawn restrictions.
+	 * An extended version of {@link FabricEntityTypeBuilder} with support for features on present on {@link Mob mob entities}, such as spawn restrictions.
 	 *
 	 * @param <T> Entity class.
 	 */
 	@Deprecated
-	public static class Mob<T extends MobEntity> extends FabricEntityTypeBuilder.Living<T> {
-		private SpawnLocation spawnLocation;
-		private Heightmap.Type restrictionHeightmap;
-		private SpawnRestriction.SpawnPredicate<T> spawnPredicate;
+	public static class Mob<T extends Mob> extends FabricEntityTypeBuilder.Living<T> {
+		private SpawnPlacementType spawnLocation;
+		private Heightmap.Types restrictionHeightmap;
+		private SpawnPlacements.SpawnPredicate<T> spawnPredicate;
 
-		protected Mob(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
+		protected Mob(MobCategory spawnGroup, EntityType.EntityFactory<T> function) {
 			super(spawnGroup, function);
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Mob<T> spawnGroup(SpawnGroup group) {
+		public FabricEntityTypeBuilder.Mob<T> spawnGroup(MobCategory group) {
 			super.spawnGroup(group);
 			return this;
 		}
@@ -596,7 +596,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Mob<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
+		public FabricEntityTypeBuilder.Mob<T> defaultAttributes(Supplier<AttributeSupplier.Builder> defaultAttributeBuilder) {
 			super.defaultAttributes(defaultAttributeBuilder);
 			return this;
 		}
@@ -607,10 +607,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		 * <p>This is used by mobs to determine whether Minecraft should spawn an entity within a certain context.
 		 *
 		 * @return this builder for chaining.
-		 * @deprecated use {@link FabricEntityType.Builder.Mob#spawnRestriction(SpawnLocation, Heightmap.Type, SpawnRestriction.SpawnPredicate)}
+		 * @deprecated use {@link FabricEntityType.Builder.Mob#spawnRestriction(SpawnPlacementType, Heightmap.Types, SpawnPlacements.SpawnPredicate)}
 		 */
 		@Deprecated
-		public FabricEntityTypeBuilder.Mob<T> spawnRestriction(SpawnLocation spawnLocation, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate) {
+		public FabricEntityTypeBuilder.Mob<T> spawnRestriction(SpawnPlacementType spawnLocation, Heightmap.Types heightmap, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
 			this.spawnLocation = Objects.requireNonNull(spawnLocation, "Spawn location cannot be null.");
 			this.restrictionHeightmap = Objects.requireNonNull(heightmap, "Heightmap type cannot be null.");
 			this.spawnPredicate = Objects.requireNonNull(spawnPredicate, "Spawn predicate cannot be null.");
@@ -618,11 +618,11 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		@Override
-		public EntityType<T> build(RegistryKey<EntityType<?>> key) {
+		public EntityType<T> build(ResourceKey<EntityType<?>> key) {
 			EntityType<T> type = super.build(key);
 
 			if (this.spawnPredicate != null) {
-				SpawnRestriction.register(type, this.spawnLocation, this.restrictionHeightmap, this.spawnPredicate);
+				SpawnPlacements.register(type, this.spawnLocation, this.restrictionHeightmap, this.spawnPredicate);
 			}
 
 			return type;

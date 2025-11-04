@@ -23,25 +23,25 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.EntityTrackerEntry;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 
-@Mixin(EntityTrackerEntry.class)
+@Mixin(ServerEntity.class)
 abstract class EntityTrackerEntryMixin {
 	@Shadow
 	@Final
 	private Entity entity;
 
-	@Inject(method = "startTracking", at = @At("TAIL"))
-	private void onStartTracking(ServerPlayerEntity player, CallbackInfo ci) {
+	@Inject(method = "addPairing", at = @At("TAIL"))
+	private void onStartTracking(ServerPlayer player, CallbackInfo ci) {
 		EntityTrackingEvents.START_TRACKING.invoker().onStartTracking(this.entity, player);
 	}
 
-	@Inject(method = "stopTracking", at = @At("HEAD"))
-	private void onStopTracking(ServerPlayerEntity player, CallbackInfo ci) {
+	@Inject(method = "removePairing", at = @At("HEAD"))
+	private void onStopTracking(ServerPlayer player, CallbackInfo ci) {
 		EntityTrackingEvents.STOP_TRACKING.invoker().onStopTracking(this.entity, player);
 	}
 }

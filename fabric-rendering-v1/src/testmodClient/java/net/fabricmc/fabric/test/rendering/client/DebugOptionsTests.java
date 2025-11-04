@@ -16,25 +16,25 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.client.gui.hud.debug.DebugHudEntries;
-import net.minecraft.client.gui.hud.debug.DebugHudEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.components.debug.DebugScreenEntries;
+import net.minecraft.client.gui.components.debug.DebugScreenEntry;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 
 public class DebugOptionsTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		DebugHudEntries.register(Identifier.of("fabric-rendering", "example"), (lines, world, clientChunk, chunk) -> {
+		DebugScreenEntries.register(Identifier.fromNamespaceAndPath("fabric-rendering", "example"), (lines, world, clientChunk, chunk) -> {
 			lines.addLine("Very important debug information");
 		});
 
-		DebugHudEntry nope = (lines, world, clientChunk, chunk) -> {
+		DebugScreenEntry nope = (lines, world, clientChunk, chunk) -> {
 		};
 
 		// Test sorting
-		DebugHudEntries.register(Identifier.of("fabric-rendering", "a"), nope);
-		DebugHudEntries.register(Identifier.of("fabric-rendering", "b"), nope);
-		DebugHudEntries.register(Identifier.of("fabric-rendering", "z"), nope);
+		DebugScreenEntries.register(Identifier.fromNamespaceAndPath("fabric-rendering", "a"), nope);
+		DebugScreenEntries.register(Identifier.fromNamespaceAndPath("fabric-rendering", "b"), nope);
+		DebugScreenEntries.register(Identifier.fromNamespaceAndPath("fabric-rendering", "z"), nope);
 	}
 }

@@ -18,9 +18,9 @@ package net.fabricmc.fabric.api.client.rendering.v1.world;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.state.WorldRenderState;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.state.LevelRenderState;
 
 @ApiStatus.NonExtendable
 public interface AbstractWorldRenderContext {
@@ -36,7 +36,7 @@ public interface AbstractWorldRenderContext {
 	 *
 	 * @return WorldRenderer instance invoking the event
 	 */
-	WorldRenderer worldRenderer();
+	LevelRenderer worldRenderer();
 
 	/**
 	 * The render state for the world being rendered.
@@ -46,5 +46,5 @@ public interface AbstractWorldRenderContext {
 	 *
 	 * @return WorldRenderState instance
 	 */
-	WorldRenderState worldState();
+	LevelRenderState worldState();
 }

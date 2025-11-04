@@ -20,29 +20,38 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
-@Mixin(Chunk.class)
+@Mixin(ChunkAccess.class)
 abstract class ChunkMixin implements AttachmentTargetImpl {
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	@Final
 	protected ChunkPos pos;
 
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	public abstract ChunkStatus getStatus();
 
 	@Shadow
 	public abstract ChunkPos getPos();
 
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	public abstract void markNeedsSaving();
 
 	@Override
@@ -70,7 +79,7 @@ abstract class ChunkMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
+	public RegistryAccess fabric_getDynamicRegistryManager() {
 		// Should never happen as this is only used for sync
 		throw new UnsupportedOperationException("Chunk does not have a DynamicRegistryManager.");
 	}

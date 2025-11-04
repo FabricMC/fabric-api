@@ -22,13 +22,13 @@ import java.util.Set;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.network.listener.ClientCommonPacketListener;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.protocol.common.ClientCommonPacketListener;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerConfigurationNetworkHandler;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.thread.ThreadExecutor;
+import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.thread.BlockableEventLoop;
 
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
@@ -56,16 +56,16 @@ public final class ServerConfigurationNetworking {
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(ServerConfigurationNetworkHandler, Identifier)} to unregister the existing handler.
+	 * Use {@link #unregisterReceiver(ServerConfigurationPacketListenerImpl, Identifier)} to unregister the existing handler.
 	 *
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered to the channel
 	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#configurationC2S() registered} yet
 	 * @see ServerConfigurationNetworking#unregisterGlobalReceiver(Identifier)
-	 * @see ServerConfigurationNetworking#registerReceiver(ServerConfigurationNetworkHandler, CustomPayload.Id, ConfigurationPacketHandler)
+	 * @see ServerConfigurationNetworking#registerReceiver(ServerConfigurationPacketListenerImpl, CustomPacketPayload.Type, ConfigurationPacketHandler)
 	 */
-	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Id<T> type, ConfigurationPacketHandler<T> handler) {
+	public static <T extends CustomPacketPayload> boolean registerGlobalReceiver(CustomPacketPayload.Type<T> type, ConfigurationPacketHandler<T> handler) {
 		return ServerNetworkingImpl.CONFIGURATION.registerGlobalReceiver(type.id(), handler);
 	}
 
@@ -77,9 +77,9 @@ public final class ServerConfigurationNetworking {
 	 *
 	 * @param id the packet payload id
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerGlobalReceiver(CustomPayload.Id, ConfigurationPacketHandler)}
-	 * @see ServerConfigurationNetworking#registerGlobalReceiver(CustomPayload.Id, ConfigurationPacketHandler)
-	 * @see ServerConfigurationNetworking#unregisterReceiver(ServerConfigurationNetworkHandler, Identifier)
+	 * or it was not registered using {@link #registerGlobalReceiver(CustomPacketPayload.Type, ConfigurationPacketHandler)}
+	 * @see ServerConfigurationNetworking#registerGlobalReceiver(CustomPacketPayload.Type, ConfigurationPacketHandler)
+	 * @see ServerConfigurationNetworking#unregisterReceiver(ServerConfigurationPacketListenerImpl, Identifier)
 	 */
 	public static ServerConfigurationNetworking.@Nullable ConfigurationPacketHandler<?> unregisterGlobalReceiver(Identifier id) {
 		return ServerNetworkingImpl.CONFIGURATION.unregisterGlobalReceiver(id);
@@ -97,11 +97,11 @@ public final class ServerConfigurationNetworking {
 
 	/**
 	 * Registers a handler for a payload type.
-	 * This method differs from {@link ServerConfigurationNetworking#registerGlobalReceiver(CustomPayload.Id, ConfigurationPacketHandler)} since
-	 * the channel handler will only be applied to the client represented by the {@link ServerConfigurationNetworkHandler}.
+	 * This method differs from {@link ServerConfigurationNetworking#registerGlobalReceiver(CustomPacketPayload.Type, ConfigurationPacketHandler)} since
+	 * the channel handler will only be applied to the client represented by the {@link ServerConfigurationPacketListenerImpl}.
 	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(ServerConfigurationNetworkHandler, Identifier)} to unregister the existing handler.
+	 * Use {@link #unregisterReceiver(ServerConfigurationPacketListenerImpl, Identifier)} to unregister the existing handler.
 	 *
 	 * @param networkHandler the network handler
 	 * @param type the packet type
@@ -110,7 +110,7 @@ public final class ServerConfigurationNetworking {
 	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#configurationC2S() registered} yet
 	 * @see ServerPlayConnectionEvents#INIT
 	 */
-	public static <T extends CustomPayload> boolean registerReceiver(ServerConfigurationNetworkHandler networkHandler, CustomPayload.Id<T> type, ConfigurationPacketHandler<T> handler) {
+	public static <T extends CustomPacketPayload> boolean registerReceiver(ServerConfigurationPacketListenerImpl networkHandler, CustomPacketPayload.Type<T> type, ConfigurationPacketHandler<T> handler) {
 		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(type.id(), handler);
 	}
 
@@ -121,9 +121,9 @@ public final class ServerConfigurationNetworking {
 	 *
 	 * @param id the id of the payload
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerReceiver(ServerConfigurationNetworkHandler, CustomPayload.Id, ConfigurationPacketHandler)}
+	 * or it was not registered using {@link #registerReceiver(ServerConfigurationPacketListenerImpl, CustomPacketPayload.Type, ConfigurationPacketHandler)}
 	 */
-	public static ServerConfigurationNetworking.@Nullable ConfigurationPacketHandler<?> unregisterReceiver(ServerConfigurationNetworkHandler networkHandler, Identifier id) {
+	public static ServerConfigurationNetworking.@Nullable ConfigurationPacketHandler<?> unregisterReceiver(ServerConfigurationPacketListenerImpl networkHandler, Identifier id) {
 		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(id);
 	}
 
@@ -133,7 +133,7 @@ public final class ServerConfigurationNetworking {
 	 * @param handler the network handler
 	 * @return All the channel names that the server can receive packets on
 	 */
-	public static Set<Identifier> getReceived(ServerConfigurationNetworkHandler handler) {
+	public static Set<Identifier> getReceived(ServerConfigurationPacketListenerImpl handler) {
 		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler).getReceivableChannels();
@@ -145,7 +145,7 @@ public final class ServerConfigurationNetworking {
 	 * @param handler the network handler
 	 * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
 	 */
-	public static Set<Identifier> getSendable(ServerConfigurationNetworkHandler handler) {
+	public static Set<Identifier> getSendable(ServerConfigurationPacketListenerImpl handler) {
 		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler).getSendableChannels();
@@ -158,7 +158,7 @@ public final class ServerConfigurationNetworking {
 	 * @param channelName the channel name
 	 * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
 	 */
-	public static boolean canSend(ServerConfigurationNetworkHandler handler, Identifier channelName) {
+	public static boolean canSend(ServerConfigurationPacketListenerImpl handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
@@ -172,7 +172,7 @@ public final class ServerConfigurationNetworking {
 	 * @param id the payload id
 	 * @return {@code true} if the connected client has declared the ability to receive a specific type of packet
 	 */
-	public static boolean canSend(ServerConfigurationNetworkHandler handler, CustomPayload.Id<?> id) {
+	public static boolean canSend(ServerConfigurationPacketListenerImpl handler, CustomPacketPayload.Type<?> id) {
 		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
 		Objects.requireNonNull(id, "Payload id cannot be null");
 
@@ -185,9 +185,9 @@ public final class ServerConfigurationNetworking {
 	 * @param payload the payload
 	 * @return a new packet
 	 */
-	public static Packet<ClientCommonPacketListener> createS2CPacket(CustomPayload payload) {
+	public static Packet<ClientCommonPacketListener> createS2CPacket(CustomPacketPayload payload) {
 		Objects.requireNonNull(payload, "Payload cannot be null");
-		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
+		Objects.requireNonNull(payload.type(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
 		return ServerNetworkingImpl.createS2CPacket(payload);
 	}
@@ -198,7 +198,7 @@ public final class ServerConfigurationNetworking {
 	 * @param handler the network handler, representing the connection to the player/client
 	 * @return the packet sender
 	 */
-	public static PacketSender getSender(ServerConfigurationNetworkHandler handler) {
+	public static PacketSender getSender(ServerConfigurationPacketListenerImpl handler) {
 		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler);
@@ -212,12 +212,12 @@ public final class ServerConfigurationNetworking {
 	 * @param handler the network handler to send the packet to
 	 * @param payload to be sent
 	 */
-	public static void send(ServerConfigurationNetworkHandler handler, CustomPayload payload) {
+	public static void send(ServerConfigurationPacketListenerImpl handler, CustomPacketPayload payload) {
 		Objects.requireNonNull(handler, "Server configuration handler cannot be null");
 		Objects.requireNonNull(payload, "Payload cannot be null");
-		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
+		Objects.requireNonNull(payload.type(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
-		handler.sendPacket(createS2CPacket(payload));
+		handler.send(createS2CPacket(payload));
 	}
 
 	// Helper methods
@@ -227,7 +227,7 @@ public final class ServerConfigurationNetworking {
 	 *
 	 * @param handler the server configuration network handler
 	 */
-	public static MinecraftServer getServer(ServerConfigurationNetworkHandler handler) {
+	public static MinecraftServer getServer(ServerConfigurationPacketListenerImpl handler) {
 		Objects.requireNonNull(handler, "Network handler cannot be null");
 
 		return ((ServerCommonNetworkHandlerAccessor) handler).getServer();
@@ -239,7 +239,7 @@ public final class ServerConfigurationNetworking {
 	 * @param handler the server configuration network handler
 	 * @return {@code true} if the client is reconfiguring
 	 */
-	public static boolean isReconfiguring(ServerConfigurationNetworkHandler handler) {
+	public static boolean isReconfiguring(ServerConfigurationPacketListenerImpl handler) {
 		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler).isReconfiguring();
@@ -249,16 +249,16 @@ public final class ServerConfigurationNetworking {
 	}
 
 	/**
-	 * A packet handler utilizing {@link CustomPayload}.
+	 * A packet handler utilizing {@link CustomPacketPayload}.
 	 * @param <T> the type of the packet
 	 */
 	@FunctionalInterface
-	public interface ConfigurationPacketHandler<T extends CustomPayload> {
+	public interface ConfigurationPacketHandler<T extends CustomPacketPayload> {
 		/**
 		 * Handles an incoming packet.
 		 *
 		 * <p>Unlike {@link ServerPlayNetworking.PlayPayloadHandler} this method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
-		 * Modification to the game should be {@linkplain ThreadExecutor#submit(Runnable) scheduled} using the Minecraft server instance from {@link ServerConfigurationNetworking#getServer(ServerConfigurationNetworkHandler)}.
+		 * Modification to the game should be {@linkplain BlockableEventLoop#submit(Runnable) scheduled} using the Minecraft server instance from {@link ServerConfigurationNetworking#getServer(ServerConfigurationPacketListenerImpl)}.
 		 *
 		 * <p>An example usage of this:
 		 * <pre>{@code
@@ -271,7 +271,7 @@ public final class ServerConfigurationNetworking {
 		 *
 		 * @param payload the packet payload
 		 * @param context the configuration networking context
-		 * @see CustomPayload
+		 * @see CustomPacketPayload
 		 */
 		void receive(T payload, Context context);
 	}
@@ -286,7 +286,7 @@ public final class ServerConfigurationNetworking {
 		/**
 		 * @return The ServerConfigurationNetworkHandler instance
 		 */
-		ServerConfigurationNetworkHandler networkHandler();
+		ServerConfigurationPacketListenerImpl networkHandler();
 
 		/**
 		 * @return The packet sender

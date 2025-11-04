@@ -20,18 +20,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.Bootstrap;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.render.MapRenderState;
-import net.minecraft.client.render.block.MovingBlockRenderState;
-import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.render.state.SkyRenderState;
-import net.minecraft.client.render.state.WeatherRenderState;
-import net.minecraft.client.render.state.WorldBorderRenderState;
-import net.minecraft.client.render.state.WorldRenderState;
+import net.minecraft.client.renderer.state.MapRenderState;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.SkyRenderState;
+import net.minecraft.client.renderer.state.WeatherRenderState;
+import net.minecraft.client.renderer.state.WorldBorderRenderState;
+import net.minecraft.client.renderer.state.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
@@ -41,22 +41,22 @@ public class RenderStateDataTest {
 
 	@BeforeAll
 	static void beforeAll() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 	}
 
 	@Test
 	void assertFabricRenderStateMethods() {
-		ItemRenderState itemRenderState = new ItemRenderState();
+		ItemStackRenderState itemRenderState = new ItemStackRenderState();
 		FabricRenderState[] states = new FabricRenderState[]{
 				new EntityRenderState(),
 				new BlockEntityRenderState(),
 				itemRenderState,
 				itemRenderState.new LayerRenderState(),
 				new MapRenderState(),
-				new MapRenderState.Decoration(),
+				new MapRenderState.MapDecorationRenderState(),
 				new MovingBlockRenderState(),
-				new WorldRenderState(),
+				new LevelRenderState(),
 				new CameraRenderState(),
 				new WeatherRenderState(),
 				new WorldBorderRenderState(),

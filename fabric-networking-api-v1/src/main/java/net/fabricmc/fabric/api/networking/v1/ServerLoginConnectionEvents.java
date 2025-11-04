@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.api.networking.v1;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerLoginNetworkHandler;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.network.ServerLoginPacketListenerImpl;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -30,7 +30,7 @@ public final class ServerLoginConnectionEvents {
 	/**
 	 * Event indicating a connection entered the LOGIN state, ready for registering query response handlers.
 	 *
-	 * @see ServerLoginNetworking#registerReceiver(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)
+	 * @see ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)
 	 */
 	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (handler, server) -> {
 		for (Init callback : callbacks) {
@@ -41,7 +41,7 @@ public final class ServerLoginConnectionEvents {
 	/**
 	 * An event for the start of login queries of the server login network handler.
 	 * This event may be used to register {@link ServerLoginNetworking.LoginQueryResponseHandler login query response handlers}
-	 * using {@link ServerLoginNetworking#registerReceiver(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
+	 * using {@link ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
 	 * since this event is fired just before the first login query response is processed.
 	 *
 	 * <p>You may send login queries to the connected client using the provided {@link LoginPacketSender}.
@@ -71,7 +71,7 @@ public final class ServerLoginConnectionEvents {
 	 */
 	@FunctionalInterface
 	public interface Init {
-		void onLoginInit(ServerLoginNetworkHandler handler, MinecraftServer server);
+		void onLoginInit(ServerLoginPacketListenerImpl handler, MinecraftServer server);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public final class ServerLoginConnectionEvents {
 	 */
 	@FunctionalInterface
 	public interface QueryStart {
-		void onLoginStart(ServerLoginNetworkHandler handler, MinecraftServer server, LoginPacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer);
+		void onLoginStart(ServerLoginPacketListenerImpl handler, MinecraftServer server, LoginPacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer);
 	}
 
 	/**
@@ -87,6 +87,6 @@ public final class ServerLoginConnectionEvents {
 	 */
 	@FunctionalInterface
 	public interface Disconnect {
-		void onLoginDisconnect(ServerLoginNetworkHandler handler, MinecraftServer server);
+		void onLoginDisconnect(ServerLoginPacketListenerImpl handler, MinecraftServer server);
 	}
 }

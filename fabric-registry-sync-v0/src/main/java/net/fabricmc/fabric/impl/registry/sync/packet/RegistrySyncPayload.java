@@ -28,12 +28,12 @@ import java.util.stream.Collectors;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
@@ -55,9 +55,9 @@ import net.fabricmc.fabric.impl.registry.sync.RegistryAttributeImpl;
 public record RegistrySyncPayload(
 		Map<Identifier, Object2IntMap<Identifier>> registryMap,
 		Map<Identifier, EnumSet<RegistryAttribute>> registryAttributes
-) implements CustomPayload {
-	public static final CustomPayload.Id<RegistrySyncPayload> ID = new CustomPayload.Id<>(Identifier.of("fabric", "registry/sync"));
-	public static final PacketCodec<PacketByteBuf, RegistrySyncPayload> CODEC = CustomPayload.codecOf(RegistrySyncPayload::write, RegistrySyncPayload::read);
+) implements CustomPacketPayload {
+	public static final CustomPacketPayload.Type<RegistrySyncPayload> ID = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath("fabric", "registry/sync"));
+	public static final StreamCodec<FriendlyByteBuf, RegistrySyncPayload> CODEC = CustomPacketPayload.codec(RegistrySyncPayload::write, RegistrySyncPayload::read);
 
 	public RegistrySyncPayload(Map<Identifier, Object2IntMap<Identifier>> registryMap) {
 		this(registryMap, getRegistryAttributeMap(registryMap));
@@ -66,24 +66,24 @@ public record RegistrySyncPayload(
 	private static Map<Identifier, EnumSet<RegistryAttribute>> getRegistryAttributeMap(Map<Identifier, Object2IntMap<Identifier>> registryMap) {
 		Map<Identifier, EnumSet<RegistryAttribute>> registryAttributes = new LinkedHashMap<>();
 		registryMap.forEach((regId, idMap) -> {
-			RegistryKey<Registry<Object>> registryKey = RegistryKey.ofRegistry(regId);
+			ResourceKey<Registry<Object>> registryKey = ResourceKey.createRegistryKey(regId);
 			RegistryAttributeImpl holder = (RegistryAttributeImpl) RegistryAttributeHolder.get(registryKey);
 			registryAttributes.put(regId, holder.getAttributes());
 		});
 		return registryAttributes;
 	}
 
-	private static RegistrySyncPayload read(PacketByteBuf combinedBuf) {
+	private static RegistrySyncPayload read(FriendlyByteBuf combinedBuf) {
 		Map<Identifier, Object2IntMap<Identifier>> syncedRegistryMap = new LinkedHashMap<>();
 		Map<Identifier, EnumSet<RegistryAttribute>> syncedRegistryAttributes = new LinkedHashMap<>();
 		int regNamespaceGroupAmount = combinedBuf.readVarInt();
 
 		for (int i = 0; i < regNamespaceGroupAmount; i++) {
-			String regNamespace = unoptimizeNamespace(combinedBuf.readString());
+			String regNamespace = unoptimizeNamespace(combinedBuf.readUtf());
 			int regNamespaceGroupLength = combinedBuf.readVarInt();
 
 			for (int j = 0; j < regNamespaceGroupLength; j++) {
-				String regPath = combinedBuf.readString();
+				String regPath = combinedBuf.readUtf();
 				EnumSet<RegistryAttribute> attributes = decodeRegistryAttributes(combinedBuf.readByte());
 				Object2IntMap<Identifier> idMap = new Object2IntLinkedOpenHashMap<>();
 				int idNamespaceGroupAmount = combinedBuf.readVarInt();
@@ -91,7 +91,7 @@ public record RegistrySyncPayload(
 				int lastBulkLastRawId = 0;
 
 				for (int k = 0; k < idNamespaceGroupAmount; k++) {
-					String idNamespace = unoptimizeNamespace(combinedBuf.readString());
+					String idNamespace = unoptimizeNamespace(combinedBuf.readUtf());
 					int rawIdBulkAmount = combinedBuf.readVarInt();
 
 					for (int l = 0; l < rawIdBulkAmount; l++) {
@@ -102,15 +102,15 @@ public record RegistrySyncPayload(
 
 						for (int m = 0; m < bulkSize; m++) {
 							currentRawId++;
-							String idPath = combinedBuf.readString();
-							idMap.put(Identifier.of(idNamespace, idPath), currentRawId);
+							String idPath = combinedBuf.readUtf();
+							idMap.put(Identifier.fromNamespaceAndPath(idNamespace, idPath), currentRawId);
 						}
 
 						lastBulkLastRawId = currentRawId;
 					}
 				}
 
-				Identifier registryId = Identifier.of(regNamespace, regPath);
+				Identifier registryId = Identifier.fromNamespaceAndPath(regNamespace, regPath);
 				syncedRegistryMap.put(registryId, idMap);
 				syncedRegistryAttributes.put(registryId, attributes);
 			}
@@ -119,7 +119,7 @@ public record RegistrySyncPayload(
 		return new RegistrySyncPayload(syncedRegistryMap, syncedRegistryAttributes);
 	}
 
-	private void write(PacketByteBuf buf) {
+	private void write(FriendlyByteBuf buf) {
 		// Group registry ids with same namespace.
 		Map<String, List<Identifier>> regNamespaceGroups = registryMap.keySet().stream()
 				.collect(Collectors.groupingBy(Identifier::getNamespace));
@@ -127,11 +127,11 @@ public record RegistrySyncPayload(
 		buf.writeVarInt(regNamespaceGroups.size());
 
 		regNamespaceGroups.forEach((regNamespace, regIds) -> {
-			buf.writeString(optimizeNamespace(regNamespace));
+			buf.writeUtf(optimizeNamespace(regNamespace));
 			buf.writeVarInt(regIds.size());
 
 			for (Identifier regId : regIds) {
-				buf.writeString(regId.getPath());
+				buf.writeUtf(regId.getPath());
 				buf.writeByte(encodeRegistryAttributes(registryAttributes.getOrDefault(regId, EnumSet.noneOf(RegistryAttribute.class))));
 
 				Object2IntMap<Identifier> idMap = registryMap.get(regId);
@@ -170,7 +170,7 @@ public record RegistrySyncPayload(
 
 					bulks.add(currentBulk);
 
-					buf.writeString(optimizeNamespace(idNamespaceEntry.getKey()));
+					buf.writeUtf(optimizeNamespace(idNamespaceEntry.getKey()));
 					buf.writeVarInt(bulks.size());
 
 					for (List<Object2IntMap.Entry<Identifier>> bulk : bulks) {
@@ -181,7 +181,7 @@ public record RegistrySyncPayload(
 						buf.writeVarInt(bulk.size());
 
 						for (Object2IntMap.Entry<Identifier> idPair : bulk) {
-							buf.writeString(idPair.getKey().getPath());
+							buf.writeUtf(idPair.getKey().getPath());
 
 							lastBulkLastRawId = idPair.getIntValue();
 						}
@@ -221,7 +221,7 @@ public record RegistrySyncPayload(
 	}
 
 	@Override
-	public Id<RegistrySyncPayload> getId() {
+	public Type<RegistrySyncPayload> type() {
 		return ID;
 	}
 }

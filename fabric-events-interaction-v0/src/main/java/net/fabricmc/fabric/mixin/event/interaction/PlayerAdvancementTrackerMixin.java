@@ -23,28 +23,28 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.advancement.PlayerAdvancementTracker;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.level.ServerPlayer;
 
 import net.fabricmc.fabric.api.entity.FakePlayer;
 
-@Mixin(PlayerAdvancementTracker.class)
+@Mixin(PlayerAdvancements.class)
 public class PlayerAdvancementTrackerMixin {
 	@Shadow
-	private ServerPlayerEntity owner;
+	private ServerPlayer player;
 
-	@Inject(method = "setOwner", at = @At("HEAD"), cancellable = true)
-	void preventOwnerOverride(ServerPlayerEntity newOwner, CallbackInfo ci) {
+	@Inject(method = "setPlayer", at = @At("HEAD"), cancellable = true)
+	void preventOwnerOverride(ServerPlayer newOwner, CallbackInfo ci) {
 		if (newOwner instanceof FakePlayer) {
 			// Prevent fake players with the same UUID as a real player from stealing the real player's advancement tracker.
 			ci.cancel();
 		}
 	}
 
-	@Inject(method = "grantCriterion", at = @At("HEAD"), cancellable = true)
-	void preventGrantCriterion(AdvancementEntry advancement, String criterionName, CallbackInfoReturnable<Boolean> ci) {
-		if (owner instanceof FakePlayer) {
+	@Inject(method = "award", at = @At("HEAD"), cancellable = true)
+	void preventGrantCriterion(AdvancementHolder advancement, String criterionName, CallbackInfoReturnable<Boolean> ci) {
+		if (player instanceof FakePlayer) {
 			// Prevent granting advancements to fake players.
 			ci.setReturnValue(false);
 		}

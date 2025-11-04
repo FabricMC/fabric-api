@@ -25,13 +25,13 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -152,75 +152,75 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(ConventionalBiomeTags.FLOWER_FORESTS, net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags.IS_FLOWER_FOREST),
 
 			// Commonly used `c` tags that are using discouraged conventions. (Not plural or not folder form)
-			createMapEntry(RegistryKeys.BLOCK, "barrel", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.BARRELS),
-			createMapEntry(RegistryKeys.BLOCK, "chest", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.CHESTS),
-			createMapEntry(RegistryKeys.BLOCK, "wooden_chests", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.WOODEN_CHESTS),
-			createMapEntry(RegistryKeys.BLOCK, "glass", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.GLASS_BLOCKS),
-			createMapEntry(RegistryKeys.BLOCK, "glass_pane", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.GLASS_PANES),
-			createMapEntry(RegistryKeys.BLOCK, "immobile", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.RELOCATION_NOT_SUPPORTED),
-			createMapEntry(RegistryKeys.BLOCK, "stone", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.STONES),
-			createMapEntry(RegistryKeys.BLOCK, "cobblestone", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.COBBLESTONES),
-			createMapEntry(RegistryKeys.BLOCK, "workbench", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
-			createMapEntry(RegistryKeys.BLOCK, "workbenches", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
-			createMapEntry(RegistryKeys.BLOCK, "workstation", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
-			createMapEntry(RegistryKeys.BLOCK, "workstations", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
-			createMapEntry(RegistryKeys.BLOCK, "crafting_table", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES),
-			createMapEntry(RegistryKeys.BLOCK, "crafting_tables", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES),
-			createMapEntry(RegistryKeys.BLOCK, "furnace", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES),
-			createMapEntry(RegistryKeys.BLOCK, "furnaces", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES),
+			createMapEntry(Registries.BLOCK, "barrel", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.BARRELS),
+			createMapEntry(Registries.BLOCK, "chest", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.CHESTS),
+			createMapEntry(Registries.BLOCK, "wooden_chests", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.WOODEN_CHESTS),
+			createMapEntry(Registries.BLOCK, "glass", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.GLASS_BLOCKS),
+			createMapEntry(Registries.BLOCK, "glass_pane", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.GLASS_PANES),
+			createMapEntry(Registries.BLOCK, "immobile", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.RELOCATION_NOT_SUPPORTED),
+			createMapEntry(Registries.BLOCK, "stone", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.STONES),
+			createMapEntry(Registries.BLOCK, "cobblestone", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.COBBLESTONES),
+			createMapEntry(Registries.BLOCK, "workbench", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
+			createMapEntry(Registries.BLOCK, "workbenches", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
+			createMapEntry(Registries.BLOCK, "workstation", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
+			createMapEntry(Registries.BLOCK, "workstations", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.VILLAGER_JOB_SITES),
+			createMapEntry(Registries.BLOCK, "crafting_table", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES),
+			createMapEntry(Registries.BLOCK, "crafting_tables", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES),
+			createMapEntry(Registries.BLOCK, "furnace", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES),
+			createMapEntry(Registries.BLOCK, "furnaces", net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.PLAYER_WORKSTATIONS_FURNACES),
 
-			createMapEntry(RegistryKeys.ITEM, "axes", ItemTags.AXES),
-			createMapEntry(RegistryKeys.ITEM, "pickaxes", ItemTags.PICKAXES),
-			createMapEntry(RegistryKeys.ITEM, "hoes", ItemTags.HOES),
-			createMapEntry(RegistryKeys.ITEM, "shovels", ItemTags.SHOVELS),
-			createMapEntry(RegistryKeys.ITEM, "swords", ItemTags.SWORDS),
-			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "axes"), ItemTags.AXES),
-			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "pickaxes"), ItemTags.PICKAXES),
-			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "hoes"), ItemTags.HOES),
-			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "shovels"), ItemTags.SHOVELS),
-			createMapEntry(createTagKeyUnderFabric(RegistryKeys.ITEM, "swords"), ItemTags.SWORDS),
-			createMapEntry(RegistryKeys.ITEM, "wrenches", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WRENCH_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "tools/wrenches", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WRENCH_TOOLS),
-			createMapEntry(RegistryKeys.ITEM, "barrel", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BARRELS),
-			createMapEntry(RegistryKeys.ITEM, "chest", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CHESTS),
-			createMapEntry(RegistryKeys.ITEM, "glass", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.GLASS_BLOCKS),
-			createMapEntry(RegistryKeys.ITEM, "glass_pane", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.GLASS_PANES),
-			createMapEntry(RegistryKeys.ITEM, "glowstone_dusts", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.GLOWSTONE_DUSTS),
-			createMapEntry(RegistryKeys.ITEM, "redstone_dusts", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.REDSTONE_DUSTS),
-			createMapEntry(RegistryKeys.ITEM, "stone", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STONES),
-			createMapEntry(RegistryKeys.ITEM, "string", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STRINGS),
-			createMapEntry(RegistryKeys.ITEM, "sticks", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WOODEN_RODS),
-			createMapEntry(RegistryKeys.ITEM, "wooden_rods", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WOODEN_RODS),
-			createMapEntry(RegistryKeys.ITEM, "food", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FOODS),
-			createMapEntry(RegistryKeys.ITEM, "fruit", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FRUIT_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "fruits", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FRUIT_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "vegetable", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.VEGETABLE_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "vegetables", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.VEGETABLE_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "berry", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BERRY_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "berries", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BERRY_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "bread", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BREAD_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "breads", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BREAD_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "cookie", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKIE_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "cookies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKIE_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "raw_meat", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_MEAT_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "raw_meats", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_MEAT_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "raw_fish", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_FISH_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "raw_fishes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_FISH_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "cooked_meat", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_MEAT_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "cooked_meats", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_MEAT_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "cooked_fish", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_FISH_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "cooked_fishes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_FISH_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "soup", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUP_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "soups", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUP_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "stew", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUP_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "stews", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUP_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "candy", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDY_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDY_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "pie", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.PIE_FOODS),
-			createMapEntry(RegistryKeys.ITEM, "pies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.PIE_FOODS),
-			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "music_discs")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MUSIC_DISCS),
-			createMapEntry(TagKey.of(RegistryKeys.ITEM, Identifier.of("minecraft", "tall_flowers")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.TALL_FLOWERS),
-			createMapEntry(TagKey.of(RegistryKeys.BLOCK, Identifier.of("minecraft", "tall_flowers")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.TALL_FLOWERS)
+			createMapEntry(Registries.ITEM, "axes", ItemTags.AXES),
+			createMapEntry(Registries.ITEM, "pickaxes", ItemTags.PICKAXES),
+			createMapEntry(Registries.ITEM, "hoes", ItemTags.HOES),
+			createMapEntry(Registries.ITEM, "shovels", ItemTags.SHOVELS),
+			createMapEntry(Registries.ITEM, "swords", ItemTags.SWORDS),
+			createMapEntry(createTagKeyUnderFabric(Registries.ITEM, "axes"), ItemTags.AXES),
+			createMapEntry(createTagKeyUnderFabric(Registries.ITEM, "pickaxes"), ItemTags.PICKAXES),
+			createMapEntry(createTagKeyUnderFabric(Registries.ITEM, "hoes"), ItemTags.HOES),
+			createMapEntry(createTagKeyUnderFabric(Registries.ITEM, "shovels"), ItemTags.SHOVELS),
+			createMapEntry(createTagKeyUnderFabric(Registries.ITEM, "swords"), ItemTags.SWORDS),
+			createMapEntry(Registries.ITEM, "wrenches", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WRENCH_TOOLS),
+			createMapEntry(Registries.ITEM, "tools/wrenches", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WRENCH_TOOLS),
+			createMapEntry(Registries.ITEM, "barrel", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BARRELS),
+			createMapEntry(Registries.ITEM, "chest", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CHESTS),
+			createMapEntry(Registries.ITEM, "glass", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.GLASS_BLOCKS),
+			createMapEntry(Registries.ITEM, "glass_pane", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.GLASS_PANES),
+			createMapEntry(Registries.ITEM, "glowstone_dusts", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.GLOWSTONE_DUSTS),
+			createMapEntry(Registries.ITEM, "redstone_dusts", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.REDSTONE_DUSTS),
+			createMapEntry(Registries.ITEM, "stone", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STONES),
+			createMapEntry(Registries.ITEM, "string", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.STRINGS),
+			createMapEntry(Registries.ITEM, "sticks", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WOODEN_RODS),
+			createMapEntry(Registries.ITEM, "wooden_rods", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.WOODEN_RODS),
+			createMapEntry(Registries.ITEM, "food", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FOODS),
+			createMapEntry(Registries.ITEM, "fruit", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FRUIT_FOODS),
+			createMapEntry(Registries.ITEM, "fruits", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.FRUIT_FOODS),
+			createMapEntry(Registries.ITEM, "vegetable", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.VEGETABLE_FOODS),
+			createMapEntry(Registries.ITEM, "vegetables", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.VEGETABLE_FOODS),
+			createMapEntry(Registries.ITEM, "berry", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BERRY_FOODS),
+			createMapEntry(Registries.ITEM, "berries", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BERRY_FOODS),
+			createMapEntry(Registries.ITEM, "bread", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BREAD_FOODS),
+			createMapEntry(Registries.ITEM, "breads", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.BREAD_FOODS),
+			createMapEntry(Registries.ITEM, "cookie", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKIE_FOODS),
+			createMapEntry(Registries.ITEM, "cookies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKIE_FOODS),
+			createMapEntry(Registries.ITEM, "raw_meat", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_MEAT_FOODS),
+			createMapEntry(Registries.ITEM, "raw_meats", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_MEAT_FOODS),
+			createMapEntry(Registries.ITEM, "raw_fish", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_FISH_FOODS),
+			createMapEntry(Registries.ITEM, "raw_fishes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.RAW_FISH_FOODS),
+			createMapEntry(Registries.ITEM, "cooked_meat", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_MEAT_FOODS),
+			createMapEntry(Registries.ITEM, "cooked_meats", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_MEAT_FOODS),
+			createMapEntry(Registries.ITEM, "cooked_fish", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_FISH_FOODS),
+			createMapEntry(Registries.ITEM, "cooked_fishes", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.COOKED_FISH_FOODS),
+			createMapEntry(Registries.ITEM, "soup", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUP_FOODS),
+			createMapEntry(Registries.ITEM, "soups", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUP_FOODS),
+			createMapEntry(Registries.ITEM, "stew", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUP_FOODS),
+			createMapEntry(Registries.ITEM, "stews", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUP_FOODS),
+			createMapEntry(Registries.ITEM, "candy", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDY_FOODS),
+			createMapEntry(Registries.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDY_FOODS),
+			createMapEntry(Registries.ITEM, "pie", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.PIE_FOODS),
+			createMapEntry(Registries.ITEM, "pies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.PIE_FOODS),
+			createMapEntry(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("minecraft", "music_discs")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MUSIC_DISCS),
+			createMapEntry(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("minecraft", "tall_flowers")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.TALL_FLOWERS),
+			createMapEntry(TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("minecraft", "tall_flowers")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags.TALL_FLOWERS)
 	);
 
 	@Override
@@ -234,13 +234,13 @@ public class ConventionLogWarnings implements ModInitializer {
 		// Log tags that are still using legacy conventions under 'c' namespace
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			List<TagKey<?>> legacyTags = new ObjectArrayList<>();
-			DynamicRegistryManager.Immutable dynamicRegistries = server.getRegistryManager();
+			RegistryAccess.Frozen dynamicRegistries = server.registryAccess();
 
 			// We only care about vanilla registries
-			dynamicRegistries.streamAllRegistries().forEach(registryEntry -> {
-				if (registryEntry.key().getValue().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
-					registryEntry.value().streamTags().forEach(listEntry -> {
-						TagKey<?> tagKey = TagKey.of(registryEntry.key(), listEntry.getTag().id());
+			dynamicRegistries.registries().forEach(registryEntry -> {
+				if (registryEntry.key().identifier().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+					registryEntry.value().getTags().forEach(listEntry -> {
+						TagKey<?> tagKey = TagKey.create(registryEntry.key(), listEntry.key().location());
 
 						// Grab legacy tags we migrated or discourage
 						if (LEGACY_C_TAGS.containsKey(tagKey)) {
@@ -286,19 +286,19 @@ public class ConventionLogWarnings implements ModInitializer {
 		return new AbstractMap.SimpleEntry<>(tag1, tag2);
 	}
 
-	private static <T> AbstractMap.SimpleEntry<TagKey<T>, TagKey<T>> createMapEntry(RegistryKey<Registry<T>> registryKey, String tagId1, TagKey<T> tag2) {
+	private static <T> AbstractMap.SimpleEntry<TagKey<T>, TagKey<T>> createMapEntry(ResourceKey<Registry<T>> registryKey, String tagId1, TagKey<T> tag2) {
 		return new AbstractMap.SimpleEntry<>(createTagKeyUnderC(registryKey, tagId1), tag2);
 	}
 
-	private static <T> AbstractMap.SimpleEntry<TagKey<T>, TagKey<T>> createMapEntry(RegistryKey<Registry<T>> registryKey, String tagId1, String tagId2) {
+	private static <T> AbstractMap.SimpleEntry<TagKey<T>, TagKey<T>> createMapEntry(ResourceKey<Registry<T>> registryKey, String tagId1, String tagId2) {
 		return new AbstractMap.SimpleEntry<>(createTagKeyUnderC(registryKey, tagId1), createTagKeyUnderC(registryKey, tagId2));
 	}
 
-	private static <T> TagKey<T> createTagKeyUnderC(RegistryKey<Registry<T>> registryKey, String tagId) {
-		return TagKey.of(registryKey, Identifier.of(TagUtil.C_TAG_NAMESPACE, tagId));
+	private static <T> TagKey<T> createTagKeyUnderC(ResourceKey<Registry<T>> registryKey, String tagId) {
+		return TagKey.create(registryKey, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, tagId));
 	}
 
-	private static <T> TagKey<T> createTagKeyUnderFabric(RegistryKey<Registry<T>> registryKey, String tagId) {
-		return TagKey.of(registryKey, Identifier.of(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
+	private static <T> TagKey<T> createTagKeyUnderFabric(ResourceKey<Registry<T>> registryKey, String tagId) {
+		return TagKey.create(registryKey, Identifier.fromNamespaceAndPath(TagUtil.FABRIC_TAG_NAMESPACE, tagId));
 	}
 }

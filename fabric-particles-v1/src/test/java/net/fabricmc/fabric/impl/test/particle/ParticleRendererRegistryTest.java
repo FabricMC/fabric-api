@@ -17,10 +17,10 @@
 package net.fabricmc.fabric.impl.test.particle;
 
 import static net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry.getId;
-import static net.minecraft.client.particle.ParticleTextureSheet.ELDER_GUARDIANS;
-import static net.minecraft.client.particle.ParticleTextureSheet.ITEM_PICKUP;
-import static net.minecraft.client.particle.ParticleTextureSheet.NO_RENDER;
-import static net.minecraft.client.particle.ParticleTextureSheet.SINGLE_QUADS;
+import static net.minecraft.client.particle.ParticleRenderType.ELDER_GUARDIANS;
+import static net.minecraft.client.particle.ParticleRenderType.ITEM_PICKUP;
+import static net.minecraft.client.particle.ParticleRenderType.NO_RENDER;
+import static net.minecraft.client.particle.ParticleRenderType.SINGLE_QUADS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
@@ -29,12 +29,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.client.particle.ParticleTextureSheet;
+import net.minecraft.client.particle.ParticleRenderType;
 
 import net.fabricmc.fabric.impl.client.particle.ParticleRendererRegistryImpl;
 
 public class ParticleRendererRegistryTest {
-	List<ParticleTextureSheet> sheets = getVanillaSheets();
+	List<ParticleRenderType> sheets = getVanillaSheets();
 
 	@Test
 	void testInitialSorting() {
@@ -51,7 +51,7 @@ public class ParticleRendererRegistryTest {
 	void insertBefore() {
 		var registry = new ParticleRendererRegistryImpl(sheets);
 
-		var customSheet = new ParticleTextureSheet("mymod:custom");
+		var customSheet = new ParticleRenderType("mymod:custom");
 		registry.register(customSheet, particleManager -> null);
 		registry.registerOrdering(getId(customSheet), getId(ITEM_PICKUP));
 
@@ -67,7 +67,7 @@ public class ParticleRendererRegistryTest {
 	void insertAfter() {
 		var registry = new ParticleRendererRegistryImpl(sheets);
 
-		var customSheet = new ParticleTextureSheet("mymod:custom");
+		var customSheet = new ParticleRenderType("mymod:custom");
 		registry.register(customSheet, particleManager -> null);
 		registry.registerOrdering(getId(ITEM_PICKUP), getId(customSheet));
 
@@ -79,8 +79,8 @@ public class ParticleRendererRegistryTest {
 		assertEquals(5, sheets.size());
 	}
 
-	private static List<ParticleTextureSheet> getVanillaSheets() {
-		var list = new ArrayList<ParticleTextureSheet>();
+	private static List<ParticleRenderType> getVanillaSheets() {
+		var list = new ArrayList<ParticleRenderType>();
 		list.add(SINGLE_QUADS);
 		list.add(ITEM_PICKUP);
 		list.add(ELDER_GUARDIANS);

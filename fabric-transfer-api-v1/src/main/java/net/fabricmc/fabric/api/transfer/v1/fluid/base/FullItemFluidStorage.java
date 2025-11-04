@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.fluid.base;
 
 import java.util.function.Function;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;

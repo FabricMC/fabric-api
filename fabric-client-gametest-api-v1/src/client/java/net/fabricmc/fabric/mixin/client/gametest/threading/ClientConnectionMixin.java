@@ -26,21 +26,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.Packet;
 
 import net.fabricmc.fabric.impl.client.gametest.threading.NetworkSynchronizer;
 
-@Mixin(ClientConnection.class)
+@Mixin(Connection.class)
 public class ClientConnectionMixin {
 	@Shadow
 	@Final
-	private NetworkSide side;
+	private PacketFlow receiving;
 
-	@WrapMethod(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V")
+	@WrapMethod(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V")
 	private void onNettyReceivePacket(ChannelHandlerContext context, Packet<?> packet, Operation<Void> original) {
-		NetworkSynchronizer synchronizer = side == NetworkSide.CLIENTBOUND ? NetworkSynchronizer.CLIENTBOUND : NetworkSynchronizer.SERVERBOUND;
+		NetworkSynchronizer synchronizer = receiving == PacketFlow.CLIENTBOUND ? NetworkSynchronizer.CLIENTBOUND : NetworkSynchronizer.SERVERBOUND;
 		synchronizer.preNettyHandlePacket();
 
 		try {
@@ -50,9 +50,9 @@ public class ClientConnectionMixin {
 		}
 	}
 
-	@Inject(method = "sendImmediately", at = @At("HEAD"))
+	@Inject(method = "sendPacket", at = @At("HEAD"))
 	private void onSendPacket(CallbackInfo ci) {
-		NetworkSynchronizer synchronizer = side == NetworkSide.CLIENTBOUND ? NetworkSynchronizer.SERVERBOUND : NetworkSynchronizer.CLIENTBOUND;
+		NetworkSynchronizer synchronizer = receiving == PacketFlow.CLIENTBOUND ? NetworkSynchronizer.SERVERBOUND : NetworkSynchronizer.CLIENTBOUND;
 		synchronizer.preSendPacket();
 	}
 }

@@ -21,17 +21,17 @@ import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 
 /**
  * A Helper class for checking whether a {@link TagKey} contains some entry.
- * This can be useful for {@link TagKey}s whose type has no easy way of querying if they are in a tag, such as {@link net.minecraft.enchantment.Enchantment}s.
+ * This can be useful for {@link TagKey}s whose type has no easy way of querying if they are in a tag, such as {@link net.minecraft.world.item.enchantment.Enchantment}s.
  *
- * <p>For dynamic registry entries, use {@link #isIn(DynamicRegistryManager, TagKey, Object)} with a non-null dynamic registry manager.
+ * <p>For dynamic registry entries, use {@link #isIn(RegistryAccess, TagKey, Object)} with a non-null dynamic registry manager.
  * For non-dynamic registry entries, the simpler {@link #isIn(TagKey, Object)} can be used.
  */
 public final class TagUtil {
@@ -42,8 +42,8 @@ public final class TagUtil {
 	}
 
 	/**
-	 * See {@link TagUtil#isIn(DynamicRegistryManager, TagKey, Object)} to check tags that refer to entries in dynamic
-	 * registries, such as {@link net.minecraft.world.biome.Biome}s.
+	 * See {@link TagUtil#isIn(RegistryAccess, TagKey, Object)} to check tags that refer to entries in dynamic
+	 * registries, such as {@link net.minecraft.world.level.biome.Biome}s.
 	 * @return if the entry is in the provided tag.
 	 */
 	public static <T> boolean isIn(TagKey<T> tagKey, T entry) {
@@ -52,32 +52,32 @@ public final class TagUtil {
 
 	/**
 	 * @param registryManager the registry manager instance of the client or server. If the tag refers to entries
-	 *                        within a dynamic registry, such as {@link net.minecraft.world.biome.Biome}s,
+	 *                        within a dynamic registry, such as {@link net.minecraft.world.level.biome.Biome}s,
 	 *                        this must be passed to correctly evaluate the tag. Otherwise, the registry is found by
-	 *                        looking in {@link Registries#REGISTRIES}.
+	 *                        looking in {@link BuiltInRegistries#REGISTRIES}.
 	 * @return if the entry is in the provided tag.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> boolean isIn(@Nullable DynamicRegistryManager registryManager, TagKey<T> tagKey, T entry) {
+	public static <T> boolean isIn(@Nullable RegistryAccess registryManager, TagKey<T> tagKey, T entry) {
 		Optional<? extends Registry<?>> maybeRegistry;
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(entry);
 
 		if (registryManager != null) {
-			maybeRegistry = registryManager.getOptional(tagKey.registryRef());
+			maybeRegistry = registryManager.lookup(tagKey.registry());
 		} else {
-			maybeRegistry = Registries.REGISTRIES.getOptionalValue(tagKey.registryRef().getValue());
+			maybeRegistry = BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().identifier());
 		}
 
 		if (maybeRegistry.isPresent()) {
-			if (tagKey.isOf(maybeRegistry.get().getKey())) {
+			if (tagKey.isFor(maybeRegistry.get().key())) {
 				Registry<T> registry = (Registry<T>) maybeRegistry.get();
 
-				Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
+				Optional<ResourceKey<T>> maybeKey = registry.getResourceKey(entry);
 
 				// Check synced tag
 				if (maybeKey.isPresent()) {
-					return registry.getOrThrow(maybeKey.get()).isIn(tagKey);
+					return registry.getOrThrow(maybeKey.get()).is(tagKey);
 				}
 			}
 		}

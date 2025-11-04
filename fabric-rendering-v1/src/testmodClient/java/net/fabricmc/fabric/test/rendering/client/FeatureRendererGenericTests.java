@@ -16,22 +16,22 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
-import net.minecraft.client.render.entity.BipedEntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
-import net.minecraft.client.render.entity.model.ArmorStandArmorEntityModel;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.ArmorStandRenderer;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.client.model.ArmorStandArmorModel;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
@@ -45,39 +45,39 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		// These aren't tests in the normal sense. These exist to test that generics are sane.
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
-			if (entityRenderer instanceof PlayerEntityRenderer) {
-				registrationHelper.register(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
+			if (entityRenderer instanceof AvatarRenderer) {
+				registrationHelper.register(new TestPlayerFeature((AvatarRenderer) entityRenderer));
 
 				// This is T extends AbstractClientPlayerEntity
-				registrationHelper.register(new GenericTestPlayerFeature<>((PlayerEntityRenderer) entityRenderer));
+				registrationHelper.register(new GenericTestPlayerFeature<>((AvatarRenderer) entityRenderer));
 			}
 
-			if (entityRenderer instanceof ArmorStandEntityRenderer) {
-				registrationHelper.register(new TestArmorStandFeature((ArmorStandEntityRenderer) entityRenderer));
+			if (entityRenderer instanceof ArmorStandRenderer) {
+				registrationHelper.register(new TestArmorStandFeature((ArmorStandRenderer) entityRenderer));
 			}
 
 			// Obviously not recommended, just used for testing generics
 			// TODO 1.21.2
 			// registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.getModelLoader()));
 
-			if (entityRenderer instanceof BipedEntityRenderer) {
+			if (entityRenderer instanceof HumanoidMobRenderer) {
 				// It works, method ref is encouraged
-				registrationHelper.register(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?, ?>) entityRenderer));
+				registrationHelper.register(new ItemInHandLayer<>((HumanoidMobRenderer<?, ?, ?>) entityRenderer));
 			}
 		});
 
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.register(this::registerFeatures);
 	}
 
-	private void registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?, ?> entityRenderer, LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper registrationHelper, EntityRendererFactory.Context context) {
-		if (entityRenderer instanceof PlayerEntityRenderer playerEntityRenderer) {
+	private void registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?, ?> entityRenderer, LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper registrationHelper, EntityRendererProvider.Context context) {
+		if (entityRenderer instanceof AvatarRenderer playerEntityRenderer) {
 			registrationHelper.register(new TestPlayerFeature(playerEntityRenderer));
 
 			// This is T extends AbstractClientPlayerEntity
 			registrationHelper.register(new GenericTestPlayerFeature<>(playerEntityRenderer));
 		}
 
-		if (entityRenderer instanceof ArmorStandEntityRenderer armorStandEntityRenderer) {
+		if (entityRenderer instanceof ArmorStandRenderer armorStandEntityRenderer) {
 			registrationHelper.register(new TestArmorStandFeature(armorStandEntityRenderer));
 		}
 
@@ -85,39 +85,39 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 		// TODO 1.21.2
 		// registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.getModelLoader()));
 
-		if (entityRenderer instanceof BipedEntityRenderer<?, ?, ?> bipedEntityRenderer) {
+		if (entityRenderer instanceof HumanoidMobRenderer<?, ?, ?> bipedEntityRenderer) {
 			// It works, method ref is encouraged
-			registrationHelper.register(new HeldItemFeatureRenderer<>(bipedEntityRenderer));
+			registrationHelper.register(new ItemInHandLayer<>(bipedEntityRenderer));
 		}
 	}
 
-	static class TestPlayerFeature extends FeatureRenderer<PlayerEntityRenderState, PlayerEntityModel> {
-		TestPlayerFeature(FeatureRendererContext<PlayerEntityRenderState, PlayerEntityModel> featureRendererContext) {
+	static class TestPlayerFeature extends RenderLayer<AvatarRenderState, PlayerModel> {
+		TestPlayerFeature(RenderLayerParent<AvatarRenderState, PlayerModel> featureRendererContext) {
 			super(featureRendererContext);
 		}
 
 		@Override
-		public void render(MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+		public void submit(PoseStack matrices, SubmitNodeCollector commandQueue, int light, AvatarRenderState state, float limbAngle, float limbDistance) {
 		}
 	}
 
-	static class GenericTestPlayerFeature<T extends PlayerEntityRenderState, M extends PlayerEntityModel> extends FeatureRenderer<T, M> {
-		GenericTestPlayerFeature(FeatureRendererContext<T, M> featureRendererContext) {
+	static class GenericTestPlayerFeature<T extends AvatarRenderState, M extends PlayerModel> extends RenderLayer<T, M> {
+		GenericTestPlayerFeature(RenderLayerParent<T, M> featureRendererContext) {
 			super(featureRendererContext);
 		}
 
 		@Override
-		public void render(MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, PlayerEntityRenderState state, float limbAngle, float limbDistance) {
+		public void submit(PoseStack matrices, SubmitNodeCollector commandQueue, int light, AvatarRenderState state, float limbAngle, float limbDistance) {
 		}
 	}
 
-	static class TestArmorStandFeature extends FeatureRenderer<ArmorStandEntityRenderState, ArmorStandArmorEntityModel> {
-		TestArmorStandFeature(FeatureRendererContext<ArmorStandEntityRenderState, ArmorStandArmorEntityModel> context) {
+	static class TestArmorStandFeature extends RenderLayer<ArmorStandRenderState, ArmorStandArmorModel> {
+		TestArmorStandFeature(RenderLayerParent<ArmorStandRenderState, ArmorStandArmorModel> context) {
 			super(context);
 		}
 
 		@Override
-		public void render(MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, ArmorStandEntityRenderState state, float limbAngle, float limbDistance) {
+		public void submit(PoseStack matrices, SubmitNodeCollector commandQueue, int light, ArmorStandRenderState state, float limbAngle, float limbDistance) {
 		}
 	}
 }

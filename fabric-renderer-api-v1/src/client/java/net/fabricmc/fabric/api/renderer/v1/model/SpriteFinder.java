@@ -20,14 +20,14 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -37,16 +37,16 @@ import net.fabricmc.fabric.api.renderer.v1.sprite.FabricSpriteAtlasTexture;
 import net.fabricmc.fabric.api.renderer.v1.sprite.FabricStitchResult;
 
 /**
- * Indexes a texture atlas to allow fast lookup of {@link Sprite}s from baked texture coordinates.
+ * Indexes a texture atlas to allow fast lookup of {@link TextureAtlasSprite}s from baked texture coordinates.
  *
  * <p>Example use cases include interpolating the textures of a submodel's quads in
- * {@link FabricBlockStateModel#emitQuads(QuadEmitter, BlockRenderView, BlockPos, BlockState, Random, Predicate)} or
- * finding the sprite for use in {@link QuadView#toBakedQuad(Sprite)}.
+ * {@link FabricBlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} or
+ * finding the sprite for use in {@link QuadView#toBakedQuad(TextureAtlasSprite)}.
  *
  * <p>A sprite finder can be retrieved from various vanilla objects. Always use
  * {@link FabricErrorCollectingSpriteGetter#spriteFinder(Identifier)} or {@link FabricStitchResult#spriteFinder()}
  * whenever an applicable instance is available. For example, model baking is supplied with a
- * {@link ErrorCollectingSpriteGetter}, so it should be used to retrieve the sprite finder. In most other cases, it is
+ * {@link SpriteGetter}, so it should be used to retrieve the sprite finder. In most other cases, it is
  * safe to use {@link FabricSpriteAtlasTexture#spriteFinder()}.
  */
 @ApiStatus.NonExtendable
@@ -60,26 +60,26 @@ public interface SpriteFinder {
 	 * Note that all the above refers to u,v coordinates. Geometric vertex does not matter,
 	 * except to the extent it was used to determine u,v.
 	 */
-	Sprite find(QuadView quad);
+	TextureAtlasSprite find(QuadView quad);
 
 	/**
 	 * Alternative to {@link #find(QuadView, int)} when vertex centroid is already
 	 * known or unsuitable.  Expects normalized (0-1) coordinates on the atlas texture,
 	 * which should already be the case for u,v values in vanilla baked quads and in
-	 * {@link QuadView} after calling {@link MutableQuadView#spriteBake(Sprite, int)}.
+	 * {@link QuadView} after calling {@link MutableQuadView#spriteBake(TextureAtlasSprite, int)}.
 	 *
 	 * <p>Coordinates must be in the sprite interior for reliable results. Generally will
 	 * be easier to use {@link #find(QuadView, int)} unless you know the vertex
 	 * centroid will somehow not be in the quad interior. This method will be slightly
 	 * faster if you already have the centroid or another appropriate value.
 	 */
-	Sprite find(float u, float v);
+	TextureAtlasSprite find(float u, float v);
 
 	/**
 	 * @deprecated Use {@link FabricSpriteAtlasTexture#spriteFinder()} instead.
 	 */
 	@Deprecated
-	static SpriteFinder get(SpriteAtlasTexture atlas) {
+	static SpriteFinder get(TextureAtlas atlas) {
 		return atlas.spriteFinder();
 	}
 
@@ -87,7 +87,7 @@ public interface SpriteFinder {
 	 * @deprecated Use {@link #find(QuadView)} instead.
 	 */
 	@Deprecated
-	default Sprite find(QuadView quad, int textureIndex) {
+	default TextureAtlasSprite find(QuadView quad, int textureIndex) {
 		return find(quad);
 	}
 }

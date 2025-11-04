@@ -25,54 +25,54 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.particle.BillboardParticle;
-import net.minecraft.client.particle.BlockDustParticle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.TerrainParticle;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.api.client.particle.v1.ParticleRenderEvents;
 
 // Implements ParticleRenderEvents.ALLOW_BLOCK_DUST_TINT
-@Mixin(BlockDustParticle.class)
-abstract class BlockDustParticleMixin extends BillboardParticle {
+@Mixin(TerrainParticle.class)
+abstract class BlockDustParticleMixin extends SingleQuadParticle {
 	@Shadow
 	@Final
-	private BlockPos blockPos;
+	private BlockPos pos;
 
 	private BlockDustParticleMixin() {
 		super(null, 0, 0, 0, null);
 	}
 
 	@ModifyVariable(
-			method = "<init>(Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;)V",
+			method = "<init>(Lnet/minecraft/client/multiplayer/ClientLevel;DDDDDDLnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;)V",
 			at = @At("LOAD"),
 			argsOnly = true,
 			slice = @Slice(
-					from = @At(value = "FIELD", target = "Lnet/minecraft/client/particle/BlockDustParticle;blue:F", ordinal = 0),
-					to = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z")
+					from = @At(value = "FIELD", target = "Lnet/minecraft/client/particle/TerrainParticle;blue:F", ordinal = 0),
+					to = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;isOf(Lnet/minecraft/world/level/block/Block;)Z")
 			),
 			allow = 1
 	)
-	private static BlockState removeUntintableParticles(BlockState state, @Local(argsOnly = true) ClientWorld world, @Local(argsOnly = true) BlockPos blockPos) {
+	private static BlockState removeUntintableParticles(BlockState state, @Local(argsOnly = true) ClientLevel world, @Local(argsOnly = true) BlockPos blockPos) {
 		if (!ParticleRenderEvents.ALLOW_BLOCK_DUST_TINT.invoker().allowBlockDustTint(state, world, blockPos)) {
 			// As of 1.20.1, vanilla hardcodes grass block particles to not get tinted.
-			return Blocks.GRASS_BLOCK.getDefaultState();
+			return Blocks.GRASS_BLOCK.defaultBlockState();
 		}
 
 		return state;
 	}
 
-	@Redirect(method = "create", at = @At(value = "NEW", target = "(Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/block/BlockState;)Lnet/minecraft/client/particle/BlockDustParticle;"))
-	private static BlockDustParticle constructBlockDustParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state, BlockStateParticleEffect parameters, ClientWorld world1, double x1, double y1, double z1, double velocityX1, double velocityY1, double velocityZ1) {
+	@Redirect(method = "createTerrainParticle", at = @At(value = "NEW", target = "(Lnet/minecraft/client/multiplayer/ClientLevel;DDDDDDLnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/particle/TerrainParticle;"))
+	private static TerrainParticle constructBlockDustParticle(ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state, BlockParticleOption parameters, ClientLevel world1, double x1, double y1, double z1, double velocityX1, double velocityY1, double velocityZ1) {
 		BlockPos blockPos = parameters.getBlockPos();
 
 		if (blockPos != null) {
-			return new BlockDustParticle(world, x, y, z, velocityX, velocityY, velocityZ, state, blockPos);
+			return new TerrainParticle(world, x, y, z, velocityX, velocityY, velocityZ, state, blockPos);
 		} else {
-			return new BlockDustParticle(world, x, y, z, velocityX, velocityY, velocityZ, state);
+			return new TerrainParticle(world, x, y, z, velocityX, velocityY, velocityZ, state);
 		}
 	}
 }

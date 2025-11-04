@@ -22,11 +22,11 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.component.ComponentType;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourcePackSource;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.repository.PackSource;
 
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.item.v1.EnchantmentSource;
@@ -40,19 +40,19 @@ public class EnchantmentUtil {
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public static Enchantment modify(RegistryKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source) {
-		Enchantment.Builder builder = Enchantment.builder(originalEnchantment.definition());
+	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source) {
+		Enchantment.Builder builder = Enchantment.enchantment(originalEnchantment.definition());
 		EnchantmentBuilderAccessor accessor = (EnchantmentBuilderAccessor) builder;
 		BuilderExtensions builderExtensions = (BuilderExtensions) builder;
 
-		builder.exclusiveSet(originalEnchantment.exclusiveSet());
+		builder.exclusiveWith(originalEnchantment.exclusiveSet());
 		accessor.getEffectMap().addAll(originalEnchantment.effects());
 
 		originalEnchantment.effects().stream()
 				.forEach(component -> {
 					if (component.value() instanceof List<?> valueList) {
 						// component type cast is checked by the value
-						accessor.invokeGetEffectsList((ComponentType<List<Object>>) component.type())
+						accessor.invokeGetEffectsList((DataComponentType<List<Object>>) component.type())
 								.addAll(valueList);
 					}
 				});
@@ -63,7 +63,7 @@ public class EnchantmentUtil {
 		EnchantmentEvents.MODIFY.invoker().modify(key, builder, source);
 
 		if (builderExtensions.fabric$didModify()) {
-			LOGGER.debug("Enchantment {} was modified", key.getValue());
+			LOGGER.debug("Enchantment {} was modified", key.identifier());
 
 			return new Enchantment(
 					originalEnchantment.description(),
@@ -78,9 +78,9 @@ public class EnchantmentUtil {
 
 	public static EnchantmentSource determineSource(Resource resource) {
 		if (resource != null) {
-			ResourcePackSource packSource = ((FabricResource) resource).getFabricPackSource();
+			PackSource packSource = ((FabricResource) resource).getFabricPackSource();
 
-			if (packSource == ResourcePackSource.BUILTIN) {
+			if (packSource == PackSource.BUILT_IN) {
 				return EnchantmentSource.VANILLA;
 			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE || packSource instanceof BuiltinModResourcePackSource) {
 				return EnchantmentSource.MOD;

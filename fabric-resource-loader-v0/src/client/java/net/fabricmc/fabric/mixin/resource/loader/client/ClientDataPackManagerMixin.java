@@ -26,25 +26,25 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.client.resource.ClientDataPackManager;
-import net.minecraft.registry.VersionedIdentifier;
-import net.minecraft.resource.ResourcePackManager;
+import net.minecraft.client.multiplayer.KnownPacksManager;
+import net.minecraft.server.packs.repository.KnownPack;
+import net.minecraft.server.packs.repository.PackRepository;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
-@Mixin(ClientDataPackManager.class)
+@Mixin(KnownPacksManager.class)
 public class ClientDataPackManagerMixin {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("ClientDataPackManagerMixin");
 
-	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/VanillaDataPackProvider;createClientManager()Lnet/minecraft/resource/ResourcePackManager;"))
-	public ResourcePackManager createClientManager() {
+	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/ServerPacksSource;createVanillaTrustedRepository()Lnet/minecraft/server/packs/repository/PackRepository;"))
+	public PackRepository createClientManager() {
 		return ModResourcePackUtil.createClientManager();
 	}
 
-	@ModifyReturnValue(method = "getCommonKnownPacks", at = @At("RETURN"))
-	List<VersionedIdentifier> getCommonKnownPacksReturn(List<VersionedIdentifier> original) {
+	@ModifyReturnValue(method = "trySelectingPacks", at = @At("RETURN"))
+	List<KnownPack> getCommonKnownPacksReturn(List<KnownPack> original) {
 		if (original.size() > ModResourcePackCreator.MAX_KNOWN_PACKS) {
 			LOGGER.warn("Too many knownPacks: Found {}; max {}", original.size(), ModResourcePackCreator.MAX_KNOWN_PACKS);
 			return original.subList(0, ModResourcePackCreator.MAX_KNOWN_PACKS);

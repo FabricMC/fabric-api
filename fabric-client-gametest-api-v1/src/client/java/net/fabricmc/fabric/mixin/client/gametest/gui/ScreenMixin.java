@@ -20,11 +20,11 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 
 @Mixin(Screen.class)
 public class ScreenMixin {
-	@ModifyReturnValue(method = "allowRotatingPanorama", at = @At("RETURN"))
+	@ModifyReturnValue(method = "panoramaShouldSpin", at = @At("RETURN"))
 	private boolean disableRotatingPanoramaForClientGameTests(boolean original) {
 		return false;
 	}

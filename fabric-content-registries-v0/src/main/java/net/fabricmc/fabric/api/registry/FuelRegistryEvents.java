@@ -18,9 +18,9 @@ package net.fabricmc.fabric.api.registry;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.item.FuelRegistry;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.world.level.block.entity.FuelValues;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.flag.FeatureFlagSet;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -57,16 +57,16 @@ public interface FuelRegistryEvents {
 		int baseSmeltTime();
 
 		/**
-		 * Get the {@link RegistryWrapper.WrapperLookup} for all registries.
+		 * Get the {@link HolderLookup.Provider} for all registries.
 		 * @return the registry lookup
 		 */
-		RegistryWrapper.WrapperLookup registries();
+		HolderLookup.Provider registries();
 
 		/**
 		 * Get the currently enabled feature set.
-		 * @return the {@link FeatureSet} instance
+		 * @return the {@link FeatureFlagSet} instance
 		 */
-		FeatureSet enabledFeatures();
+		FeatureFlagSet enabledFeatures();
 	}
 
 	/**
@@ -77,10 +77,10 @@ public interface FuelRegistryEvents {
 		/**
 		 * Called when the fuel registry is being built after vanilla fuels have been registered and before exclusions have been applied.
 		 *
-		 * @param builder the builder being used to construct a {@link FuelRegistry} instance
+		 * @param builder the builder being used to construct a {@link FuelValues} instance
 		 * @param context the context for the event
 		 */
-		void build(FuelRegistry.Builder builder, Context context);
+		void build(FuelValues.Builder builder, Context context);
 	}
 
 	/**
@@ -91,9 +91,9 @@ public interface FuelRegistryEvents {
 		/**
 		 * Called when the fuel registry is being built after vanilla exclusions have been applied.
 		 *
-		 * @param builder the builder being used to construct a {@link FuelRegistry} instance
+		 * @param builder the builder being used to construct a {@link FuelValues} instance
 		 * @param context the context for the event
 		 */
-		void buildExclusions(FuelRegistry.Builder builder, Context context);
+		void buildExclusions(FuelValues.Builder builder, Context context);
 	}
 }

@@ -16,7 +16,19 @@
 
 package net.fabricmc.fabric.test.gamerule;
 
+// TODO(Ravel): ambiguous static import, members with name argThat have different new names
+//
+// TODO(Ravel): ambiguous static import, members with name argThat have different new names
+//
+// TODO(Ravel): ambiguous static import, members with name argThat have different new names
+//
 import static org.mockito.Mockito.argThat;
+// TODO(Ravel): ambiguous static import, members with name eq have different new names
+//
+// TODO(Ravel): ambiguous static import, members with name eq have different new names
+//
+// TODO(Ravel): ambiguous static import, members with name eq have different new names
+//
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -31,55 +43,55 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.Bootstrap;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.registry.Registries;
-import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.server.dedicated.MinecraftDedicatedServer;
-import net.minecraft.server.dedicated.management.ManagementLogger;
-import net.minecraft.server.dedicated.management.dispatch.GameRuleRpcDispatcher;
-import net.minecraft.server.dedicated.management.handler.GameRuleManagementHandler;
-import net.minecraft.server.dedicated.management.handler.GameRuleManagementHandlerImpl;
-import net.minecraft.server.dedicated.management.network.ManagementConnectionId;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.SaveProperties;
-import net.minecraft.world.rule.GameRule;
-import net.minecraft.world.rule.GameRules;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.jsonrpc.JsonRpcLogger;
+import net.minecraft.server.jsonrpc.methods.GameRulesService;
+import net.minecraft.server.jsonrpc.internalapi.MinecraftGameRuleService;
+import net.minecraft.server.jsonrpc.internalapi.MinecraftGameRuleServiceImpl;
+import net.minecraft.server.jsonrpc.methods.ClientInfo;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.storage.WorldData;
+import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRules;
 
 public class GameRuleManagementHandlerImplTest {
 	@BeforeAll
 	static void bootstrap() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 		new GameRulesTestMod().onInitialize();
 	}
 
-	private static final ManagementConnectionId CONNECTION_ID = new ManagementConnectionId(-1);
-	private static final ManagementLogger MANAGEMENT_LOGGER = new ManagementLogger();
-	private final GameRules gameRules = new GameRules(FeatureSet.empty());
+	private static final ClientInfo CONNECTION_ID = new ClientInfo(-1);
+	private static final JsonRpcLogger MANAGEMENT_LOGGER = new JsonRpcLogger();
+	private final GameRules gameRules = new GameRules(FeatureFlagSet.of());
 
 	@Test
 	void testUpdateDouble() {
-		MinecraftDedicatedServer server = mockServer();
-		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
+		DedicatedServer server = mockServer();
+		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.RuleEntry<Double> result = handler.updateRule(new GameRuleRpcDispatcher.RuleEntry<>(GameRulesTestMod.ONE_TO_TEN_DOUBLE, 5.5D), CONNECTION_ID);
+		GameRulesService.GameRuleUpdate<Double> result = handler.updateGameRule(new GameRulesService.GameRuleUpdate<>(GameRulesTestMod.ONE_TO_TEN_DOUBLE, 5.5D), CONNECTION_ID);
 
 		assertEquals("""
 				{"type":"fabric:double","value":5.5,"key":"minecraft:one_to_ten_double"}
 				""", result);
 
-		verify(server).onGameRuleUpdated(
+		verify(server).onGameRuleChanged(
 				eq(GameRulesTestMod.ONE_TO_TEN_DOUBLE),
-				argThat(rule -> handler.getValue(GameRulesTestMod.ONE_TO_TEN_DOUBLE) == 5.5D));
+				argThat(rule -> handler.getRuleValue(GameRulesTestMod.ONE_TO_TEN_DOUBLE) == 5.5D));
 	}
 
 	@Test
 	void testFabricId() {
-		MinecraftDedicatedServer server = mockServer();
-		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
+		DedicatedServer server = mockServer();
+		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.RuleEntry<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.RuleEntry<>(GameRulesTestMod.RED_BOOLEAN, false), CONNECTION_ID);
+		GameRulesService.GameRuleUpdate<Boolean> result = handler.updateGameRule(new GameRulesService.GameRuleUpdate<>(GameRulesTestMod.RED_BOOLEAN, false), CONNECTION_ID);
 
 		assertEquals("""
 				{"type":"boolean","value":false,"key":"fabric:red_boolean"}
@@ -88,73 +100,73 @@ public class GameRuleManagementHandlerImplTest {
 
 	@Test
 	void testUpdateEnum() {
-		MinecraftDedicatedServer server = mockServer();
-		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
+		DedicatedServer server = mockServer();
+		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.RuleEntry<Direction> result = handler.updateRule(new GameRuleRpcDispatcher.RuleEntry<>(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE, Direction.EAST), CONNECTION_ID);
+		GameRulesService.GameRuleUpdate<Direction> result = handler.updateGameRule(new GameRulesService.GameRuleUpdate<>(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE, Direction.EAST), CONNECTION_ID);
 
 		assertEquals("""
 				{"type":"fabric:enum","value":"EAST","key":"minecraft:cardinal_direction"}
 				""", result);
 
-		verify(server).onGameRuleUpdated(
+		verify(server).onGameRuleChanged(
 				eq(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE),
-				argThat(rule -> handler.getValue(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE) == Direction.EAST)
+				argThat(rule -> handler.getRuleValue(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE) == Direction.EAST)
 		);
 	}
 
 	@Test
 	void testUpdateVanillaBoolean() {
-		MinecraftDedicatedServer server = mockServer();
-		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
+		DedicatedServer server = mockServer();
+		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.RuleEntry<Boolean> result = handler.updateRule(new GameRuleRpcDispatcher.RuleEntry<>(GameRules.FIRE_DAMAGE, false), CONNECTION_ID);
+		GameRulesService.GameRuleUpdate<Boolean> result = handler.updateGameRule(new GameRulesService.GameRuleUpdate<>(GameRules.FIRE_DAMAGE, false), CONNECTION_ID);
 
 		assertEquals("""
 				{"type":"boolean","value":false,"key":"minecraft:fire_damage"}
 				""", result);
 
-		verify(server).onGameRuleUpdated(
+		verify(server).onGameRuleChanged(
 				eq(GameRules.FIRE_DAMAGE),
-				argThat(rule -> !handler.getValue(GameRules.FIRE_DAMAGE)));
+				argThat(rule -> !handler.getRuleValue(GameRules.FIRE_DAMAGE)));
 	}
 
 	@Test
 	void testUpdateVanillaInt() {
-		MinecraftDedicatedServer server = mockServer();
-		GameRuleManagementHandler handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
+		DedicatedServer server = mockServer();
+		MinecraftGameRuleService handler = new GameRuleManagementHandlerTestImpl(server, MANAGEMENT_LOGGER);
 
-		GameRuleRpcDispatcher.RuleEntry<Integer> result = handler.updateRule(new GameRuleRpcDispatcher.RuleEntry<>(GameRules.RANDOM_TICK_SPEED, 123), CONNECTION_ID);
+		GameRulesService.GameRuleUpdate<Integer> result = handler.updateGameRule(new GameRulesService.GameRuleUpdate<>(GameRules.RANDOM_TICK_SPEED, 123), CONNECTION_ID);
 
 		assertEquals("""
 				{"type":"integer","value":123,"key":"minecraft:random_tick_speed"}
 				""", result);
 
-		verify(server).onGameRuleUpdated(
+		verify(server).onGameRuleChanged(
 				eq(GameRules.RANDOM_TICK_SPEED),
-				argThat(rule -> handler.getValue(GameRules.RANDOM_TICK_SPEED) == 123));
+				argThat(rule -> handler.getRuleValue(GameRules.RANDOM_TICK_SPEED) == 123));
 	}
 
-	private MinecraftDedicatedServer mockServer() {
-		MinecraftDedicatedServer server = mock(MinecraftDedicatedServer.class);
-		SaveProperties saveProperties = mock(SaveProperties.class);
-		when(server.getSaveProperties()).thenReturn(saveProperties);
+	private DedicatedServer mockServer() {
+		DedicatedServer server = mock(DedicatedServer.class);
+		WorldData saveProperties = mock(WorldData.class);
+		when(server.getWorldData()).thenReturn(saveProperties);
 		when(saveProperties.getGameRules()).thenReturn(this.gameRules);
 		return server;
 	}
 
-	private static <T> void assertEquals(@Language("JSON") String expected, GameRuleRpcDispatcher.RuleEntry<T> rule) {
-		JsonElement jsonElement = GameRuleRpcDispatcher.RuleEntry.TYPED_CODEC.encodeStart(JsonOps.INSTANCE, rule).getOrThrow();
+	private static <T> void assertEquals(@Language("JSON") String expected, GameRulesService.GameRuleUpdate<T> rule) {
+		JsonElement jsonElement = GameRulesService.GameRuleUpdate.TYPED_CODEC.encodeStart(JsonOps.INSTANCE, rule).getOrThrow();
 		Assertions.assertEquals(expected.trim(), jsonElement.toString());
 	}
 
-	private static final class GameRuleManagementHandlerTestImpl extends GameRuleManagementHandlerImpl {
-		private GameRuleManagementHandlerTestImpl(MinecraftDedicatedServer server, ManagementLogger logger) {
+	private static final class GameRuleManagementHandlerTestImpl extends MinecraftGameRuleServiceImpl {
+		private GameRuleManagementHandlerTestImpl(DedicatedServer server, JsonRpcLogger logger) {
 			super(server, logger);
 		}
 
-		public Stream<GameRule<?>> getRules() {
-			return Registries.GAME_RULE.stream().filter(rule -> rule.getRequiredFeatures().isSubsetOf(FeatureSet.empty()));
+		public Stream<GameRule<?>> getAvailableGameRules() {
+			return BuiltInRegistries.GAME_RULE.stream().filter(rule -> rule.requiredFeatures().isSubsetOf(FeatureFlagSet.of()));
 		}
 	}
 }

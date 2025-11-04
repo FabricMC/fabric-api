@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.transfer.v1.storage.base;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;

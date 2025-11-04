@@ -18,11 +18,11 @@ package net.fabricmc.fabric.impl.resource.loader;
 
 import java.util.List;
 
-import net.minecraft.registry.VersionedIdentifier;
+import net.minecraft.server.packs.repository.KnownPack;
 
 public interface FabricOriginalKnownPacksGetter {
 	/**
 	 * @return the data packs known at server start
 	 */
-	List<VersionedIdentifier> fabric_getOriginalKnownPacks();
+	List<KnownPack> fabric_getOriginalKnownPacks();
 }

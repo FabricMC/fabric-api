@@ -19,9 +19,9 @@ package net.fabricmc.fabric.test.event.interaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
-import net.minecraft.util.ActionResult;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.InteractionResult;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
@@ -32,25 +32,25 @@ public class AttackBlockTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, side) -> {
-			LOGGER.info("AttackBlockCallback: before chest/lava hook (client-side = %s)".formatted(world.isClient()));
-			return ActionResult.PASS;
+			LOGGER.info("AttackBlockCallback: before chest/lava hook (client-side = %s)".formatted(world.isClientSide()));
+			return InteractionResult.PASS;
 		});
 		// If a chest is attacked and the player holds a lava bucket, delete it!
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, side) -> {
-			if (!player.isSpectator() && world.canEntityModifyAt(player, pos)) {
-				if (world.getBlockState(pos).isOf(Blocks.CHEST)) {
-					if (player.getStackInHand(hand).isOf(Items.LAVA_BUCKET)) {
-						world.setBlockState(pos, Blocks.AIR.getDefaultState());
-						return ActionResult.SUCCESS;
+			if (!player.isSpectator() && world.mayInteract(player, pos)) {
+				if (world.getBlockState(pos).is(Blocks.CHEST)) {
+					if (player.getItemInHand(hand).is(Items.LAVA_BUCKET)) {
+						world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+						return InteractionResult.SUCCESS;
 					}
 				}
 			}
 
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		});
 		AttackBlockCallback.EVENT.register((player, world, hand, pos, side) -> {
-			LOGGER.info("AttackBlockCallback: after chest/lava hook (client-side = %s)".formatted(world.isClient()));
-			return ActionResult.PASS;
+			LOGGER.info("AttackBlockCallback: after chest/lava hook (client-side = %s)".formatted(world.isClientSide()));
+			return InteractionResult.PASS;
 		});
 	}
 }

@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.item.HoneycombItem;
+import net.minecraft.world.item.HoneycombItem;
 
 @Mixin(HoneycombItem.class)
 public class HoneycombItemMixin {

@@ -22,27 +22,27 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.Unit;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 abstract class PlayerEntityMixin {
-	@Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
-	private void onTrySleep(BlockPos pos, CallbackInfoReturnable<Either<PlayerEntity.SleepFailureReason, Unit>> info) {
-		PlayerEntity.SleepFailureReason failureReason = EntitySleepEvents.ALLOW_SLEEPING.invoker().allowSleep((PlayerEntity) (Object) this, pos);
+	@Inject(method = "startSleepInBed", at = @At("HEAD"), cancellable = true)
+	private void onTrySleep(BlockPos pos, CallbackInfoReturnable<Either<Player.BedSleepingProblem, Unit>> info) {
+		Player.BedSleepingProblem failureReason = EntitySleepEvents.ALLOW_SLEEPING.invoker().allowSleep((Player) (Object) this, pos);
 
 		if (failureReason != null) {
 			info.setReturnValue(Either.left(failureReason));
 		}
 	}
 
-	@Inject(method = "canResetTimeBySleeping", at = @At("RETURN"), cancellable = true)
+	@Inject(method = "isSleepingLongEnough", at = @At("RETURN"), cancellable = true)
 	private void onIsSleepingLongEnough(CallbackInfoReturnable<Boolean> info) {
 		if (info.getReturnValueZ()) {
-			info.setReturnValue(EntitySleepEvents.ALLOW_RESETTING_TIME.invoker().allowResettingTime((PlayerEntity) (Object) this));
+			info.setReturnValue(EntitySleepEvents.ALLOW_RESETTING_TIME.invoker().allowResettingTime((Player) (Object) this));
 		}
 	}
 }

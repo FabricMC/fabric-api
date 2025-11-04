@@ -19,23 +19,23 @@ package net.fabricmc.fabric.test.renderer;
 import com.mojang.serialization.Codec;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.api.blockview.v2.RenderDataBlockEntity;
 
 public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEntity {
-	private static final Codec<Block> BLOCK_CODEC = Registries.BLOCK.getCodec();
+	private static final Codec<Block> BLOCK_CODEC = BuiltInRegistries.BLOCK.byNameCodec();
 
 	@Nullable
 	private Block block = null;
@@ -45,8 +45,8 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	}
 
 	@Override
-	public void readData(ReadView data) {
-		super.readData(data);
+	public void loadAdditional(ValueInput data) {
+		super.loadAdditional(data);
 
 		block = data.read("block", BLOCK_CODEC).orElse(null);
 
@@ -54,30 +54,30 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 			block = null;
 		}
 
-		if (this.getWorld() != null && this.getWorld().isClient()) {
+		if (this.getLevel() != null && this.getLevel().isClientSide()) {
 			// This call forces a chunk remesh.
-			world.updateListeners(pos, null, null, 0);
+			level.sendBlockUpdated(worldPosition, null, null, 0);
 		}
 	}
 
 	@Override
-	public void writeData(WriteView data) {
-		super.writeData(data);
+	public void saveAdditional(ValueOutput data) {
+		super.saveAdditional(data);
 
 		if (block != null) {
-			data.put("block", BLOCK_CODEC, block);
+			data.store("block", BLOCK_CODEC, block);
 		} else {
 			// Always need something in the tag, otherwise S2C syncing will never apply the packet.
-			data.put("block", BLOCK_CODEC, Blocks.AIR);
+			data.store("block", BLOCK_CODEC, Blocks.AIR);
 		}
 	}
 
 	@Override
-	public void markDirty() {
-		super.markDirty();
+	public void setChanged() {
+		super.setChanged();
 
-		if (this.hasWorld() && !this.getWorld().isClient()) {
-			((ServerWorld) world).getChunkManager().markForUpdate(getPos());
+		if (this.hasLevel() && !this.getLevel().isClientSide()) {
+			((ServerLevel) level).getChunkSource().blockChanged(getBlockPos());
 		}
 	}
 
@@ -92,7 +92,7 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 		}
 
 		this.block = block;
-		this.markDirty();
+		this.setChanged();
 	}
 
 	@Nullable
@@ -102,12 +102,12 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	}
 
 	@Override
-	public BlockEntityUpdateS2CPacket toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup wrapperLookup) {
-		return this.createComponentlessNbt(wrapperLookup);
+	public CompoundTag getUpdateTag(HolderLookup.Provider wrapperLookup) {
+		return this.saveCustomOnly(wrapperLookup);
 	}
 }

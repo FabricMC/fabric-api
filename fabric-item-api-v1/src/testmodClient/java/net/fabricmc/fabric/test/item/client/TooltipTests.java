@@ -18,8 +18,8 @@ package net.fabricmc.fabric.test.item.client;
 
 import java.util.Optional;
 
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -38,7 +38,7 @@ public class TooltipTests implements ClientModInitializer {
 				modName = modContainer.get().getMetadata().getName();
 			}
 
-			lines.add(Text.literal(modName).formatted(Formatting.BLUE, Formatting.ITALIC));
+			lines.add(Component.literal(modName).withStyle(ChatFormatting.BLUE, ChatFormatting.ITALIC));
 		});
 	}
 }

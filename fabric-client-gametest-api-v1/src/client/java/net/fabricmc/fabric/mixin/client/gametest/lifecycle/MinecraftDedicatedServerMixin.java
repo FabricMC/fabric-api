@@ -25,24 +25,24 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.server.dedicated.MinecraftDedicatedServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 
 import net.fabricmc.fabric.impl.client.gametest.util.DedicatedServerImplUtil;
 
-@Mixin(MinecraftDedicatedServer.class)
+@Mixin(DedicatedServer.class)
 public abstract class MinecraftDedicatedServerMixin {
-	@Inject(method = "setupServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/MinecraftDedicatedServer;loadWorld()V"))
+	@Inject(method = "initServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;loadWorld()V"))
 	private void captureServerInstance(CallbackInfoReturnable<Boolean> cir) {
 		// Capture the server instance once the server is ready to be connected to
-		CompletableFuture<MinecraftDedicatedServer> serverFuture = DedicatedServerImplUtil.serverFuture;
+		CompletableFuture<DedicatedServer> serverFuture = DedicatedServerImplUtil.serverFuture;
 
 		if (serverFuture != null) {
-			serverFuture.complete((MinecraftDedicatedServer) (Object) this);
+			serverFuture.complete((DedicatedServer) (Object) this);
 		}
 	}
 
 	// Don't call shutdownExecutors as we are running the dedi server within the client process.
-	@WrapOperation(method = "shutdown", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;shutdownExecutors()V"))
+	@WrapOperation(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;shutdownExecutors()V"))
 	private void dontStopExecutors(Operation<Void> original) {
 		// Never needed, as this is a client mixin.
 	}

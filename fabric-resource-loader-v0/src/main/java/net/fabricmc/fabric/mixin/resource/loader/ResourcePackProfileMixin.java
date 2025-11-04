@@ -26,33 +26,36 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourcePackInfo;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourcePackSource;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
 import net.fabricmc.fabric.impl.resource.loader.ResourcePackSourceTracker;
 
 /**
  * Implements resource pack source tracking (for {@link net.fabricmc.fabric.impl.resource.loader.FabricResource}).
- * {@link ResourcePack} doesn't hold a reference to its {@link ResourcePackSource}
+ * {@link PackResources} doesn't hold a reference to its {@link PackSource}
  * so we store the source in a global tracker when the resource packs are created.
  *
  * @see ResourcePackSourceTracker
  */
-@Mixin(ResourcePackProfile.class)
+@Mixin(Pack.class)
 abstract class ResourcePackProfileMixin implements FabricResourcePackProfile {
 	@Unique
 	private static final Predicate<Set<String>> DEFAULT_PARENT_PREDICATE = parents -> true;
 	@Unique
 	private Predicate<Set<String>> parentsPredicate = DEFAULT_PARENT_PREDICATE;
 
-	@Shadow
-	public abstract ResourcePackInfo getInfo();
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
+	public abstract PackLocationInfo getInfo();
 
-	@Inject(method = "createResourcePack", at = @At("RETURN"))
-	private void onCreateResourcePack(CallbackInfoReturnable<ResourcePack> info) {
+	@Inject(method = "open", at = @At("RETURN"))
+	private void onCreateResourcePack(CallbackInfoReturnable<PackResources> info) {
 		ResourcePackSourceTracker.setSource(info.getReturnValue(), getInfo().source());
 	}
 

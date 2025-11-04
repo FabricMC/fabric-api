@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
-import net.minecraft.inventory.SidedInventory;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -30,10 +30,10 @@ import net.fabricmc.fabric.impl.transfer.DebugMessages;
  */
 class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 	private final InventorySlotWrapper slotWrapper;
-	private final SidedInventory sidedInventory;
+	private final WorldlyContainer sidedInventory;
 	private final Direction direction;
 
-	SidedInventorySlotWrapper(InventorySlotWrapper slotWrapper, SidedInventory sidedInventory, Direction direction) {
+	SidedInventorySlotWrapper(InventorySlotWrapper slotWrapper, WorldlyContainer sidedInventory, Direction direction) {
 		this.slotWrapper = slotWrapper;
 		this.sidedInventory = sidedInventory;
 		this.direction = direction;
@@ -41,7 +41,7 @@ class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 
 	@Override
 	public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-		if (!sidedInventory.canInsert(slotWrapper.slot, ((ItemVariantImpl) resource).getCachedStack(), direction)) {
+		if (!sidedInventory.canPlaceItemThroughFace(slotWrapper.slot, ((ItemVariantImpl) resource).getCachedStack(), direction)) {
 			return 0;
 		} else {
 			return slotWrapper.insert(resource, maxAmount, transaction);
@@ -50,7 +50,7 @@ class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 
 	@Override
 	public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-		if (!sidedInventory.canExtract(slotWrapper.slot, ((ItemVariantImpl) resource).getCachedStack(), direction)) {
+		if (!sidedInventory.canTakeItemThroughFace(slotWrapper.slot, ((ItemVariantImpl) resource).getCachedStack(), direction)) {
 			return 0;
 		} else {
 			return slotWrapper.extract(resource, maxAmount, transaction);

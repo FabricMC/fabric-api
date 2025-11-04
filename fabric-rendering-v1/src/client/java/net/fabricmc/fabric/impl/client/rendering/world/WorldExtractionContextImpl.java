@@ -20,39 +20,39 @@ import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.Frustum;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.state.WorldRenderState;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.multiplayer.ClientLevel;
 
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
 
 public class WorldExtractionContextImpl implements WorldExtractionContext {
 	private GameRenderer gameRenderer;
-	private WorldRenderer worldRenderer;
-	private WorldRenderState worldRenderState;
-	private ClientWorld world;
+	private LevelRenderer worldRenderer;
+	private LevelRenderState worldRenderState;
+	private ClientLevel world;
 	private Camera camera;
 	@Nullable
 	private Frustum frustum;
-	private RenderTickCounter tickCounter;
+	private DeltaTracker tickCounter;
 	private Matrix4f viewMatrix;
 	private Matrix4f cullProjectionMatrix;
 	private boolean blockOutlines;
 
 	public void prepare(
-			GameRenderer gameRenderer,
-			WorldRenderer worldRenderer,
-			WorldRenderState worldRenderState,
-			ClientWorld world,
-			RenderTickCounter tickCounter,
-			boolean blockOutlines,
-			Camera camera,
-			Matrix4f viewMatrix,
-			Matrix4f cullProjectionMatrix
+            GameRenderer gameRenderer,
+            LevelRenderer worldRenderer,
+            LevelRenderState worldRenderState,
+            ClientLevel world,
+            DeltaTracker tickCounter,
+            boolean blockOutlines,
+            Camera camera,
+            Matrix4f viewMatrix,
+            Matrix4f cullProjectionMatrix
 	) {
 		this.gameRenderer = gameRenderer;
 		this.worldRenderer = worldRenderer;
@@ -78,17 +78,17 @@ public class WorldExtractionContextImpl implements WorldExtractionContext {
 	}
 
 	@Override
-	public WorldRenderer worldRenderer() {
+	public LevelRenderer worldRenderer() {
 		return worldRenderer;
 	}
 
 	@Override
-	public WorldRenderState worldState() {
+	public LevelRenderState worldState() {
 		return worldRenderState;
 	}
 
 	@Override
-	public ClientWorld world() {
+	public ClientLevel world() {
 		return world;
 	}
 
@@ -104,7 +104,7 @@ public class WorldExtractionContextImpl implements WorldExtractionContext {
 	}
 
 	@Override
-	public RenderTickCounter tickCounter() {
+	public DeltaTracker tickCounter() {
 		return this.tickCounter;
 	}
 

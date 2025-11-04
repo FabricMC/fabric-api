@@ -16,21 +16,21 @@
 
 package net.fabricmc.fabric.test.networking.keybindreciever;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
-public class KeybindPayload implements CustomPayload {
+public class KeybindPayload implements CustomPacketPayload {
 	public static final KeybindPayload INSTANCE = new KeybindPayload();
-	public static final CustomPayload.Id<KeybindPayload> ID = new CustomPayload.Id<>(NetworkingTestmods.id("keybind_press_test"));
-	public static final PacketCodec<RegistryByteBuf, KeybindPayload> CODEC = PacketCodec.unit(INSTANCE);
+	public static final CustomPacketPayload.Type<KeybindPayload> ID = new CustomPacketPayload.Type<>(NetworkingTestmods.id("keybind_press_test"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, KeybindPayload> CODEC = StreamCodec.unit(INSTANCE);
 
 	private KeybindPayload() { }
 
 	@Override
-	public Id<? extends CustomPayload> getId() {
+	public Type<? extends CustomPacketPayload> type() {
 		return ID;
 	}
 }

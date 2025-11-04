@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.base.event;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 

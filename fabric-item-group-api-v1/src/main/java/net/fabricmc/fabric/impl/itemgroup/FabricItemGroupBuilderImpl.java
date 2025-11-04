@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.itemgroup;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.text.Text;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.network.chat.Component;
 
-public final class FabricItemGroupBuilderImpl extends ItemGroup.Builder {
+public final class FabricItemGroupBuilderImpl extends CreativeModeTab.Builder {
 	private boolean hasDisplayName = false;
 
 	public FabricItemGroupBuilderImpl() {
@@ -28,13 +28,13 @@ public final class FabricItemGroupBuilderImpl extends ItemGroup.Builder {
 	}
 
 	@Override
-	public ItemGroup.Builder displayName(Text displayName) {
+	public CreativeModeTab.Builder title(Component displayName) {
 		hasDisplayName = true;
-		return super.displayName(displayName);
+		return super.title(displayName);
 	}
 
 	@Override
-	public ItemGroup build() {
+	public CreativeModeTab build() {
 		if (!hasDisplayName) {
 			throw new IllegalStateException("No display name set for ItemGroup");
 		}

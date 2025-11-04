@@ -19,13 +19,13 @@ package net.fabricmc.fabric.mixin.client.gametest;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.world.ClientChunkManager;
+import net.minecraft.client.multiplayer.ClientChunkCache;
 
-@Mixin(ClientChunkManager.ClientChunkMap.class)
+@Mixin(ClientChunkCache.Storage.class)
 public interface ClientChunkManagerClientChunkMapAccessor {
-	@Accessor
-	int getCenterChunkX();
+	@Accessor("viewCenterX")
+    int getCenterChunkX();
 
-	@Accessor
-	int getCenterChunkZ();
+	@Accessor("viewCenterZ")
+    int getCenterChunkZ();
 }

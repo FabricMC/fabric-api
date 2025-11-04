@@ -21,12 +21,12 @@ import java.util.Set;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.Connection;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.SupportedIngredientsClientConnection;
 
-@Mixin(ClientConnection.class)
+@Mixin(Connection.class)
 public abstract class ClientConnectionMixin implements SupportedIngredientsClientConnection {
 	@Unique
 	private Set<Identifier> fabric_supportedCustomIngredients = Set.of();

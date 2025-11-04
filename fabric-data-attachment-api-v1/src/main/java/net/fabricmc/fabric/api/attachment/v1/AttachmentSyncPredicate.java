@@ -20,17 +20,17 @@ import java.util.function.BiPredicate;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 /**
  * A predicate that determines, for a specific attachment type, whether the data should be synchronized with a
- * player's client, given the player's {@link ServerPlayerEntity} and the {@linkplain AttachmentTarget} the data is linked to.
+ * player's client, given the player's {@link ServerPlayer} and the {@linkplain AttachmentTarget} the data is linked to.
  *
  * <p>The class extends {@link BiPredicate} to allow for custom predicates, outside the ones provided by methods.</p>
  */
 @ApiStatus.NonExtendable
 @FunctionalInterface
-public interface AttachmentSyncPredicate extends BiPredicate<AttachmentTarget, ServerPlayerEntity> {
+public interface AttachmentSyncPredicate extends BiPredicate<AttachmentTarget, ServerPlayer> {
 	/**
 	 * @return a predicate that syncs an attachment with all clients
 	 */

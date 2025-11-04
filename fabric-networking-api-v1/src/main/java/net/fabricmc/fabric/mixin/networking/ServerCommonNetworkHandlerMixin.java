@@ -23,25 +23,25 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.network.OffThreadException;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.c2s.common.CommonPongC2SPacket;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.server.RunningOnDifferentThreadException;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.common.ServerboundPongPacket;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerCommonNetworkHandler;
+import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 
-@Mixin(ServerCommonNetworkHandler.class)
+@Mixin(ServerCommonPacketListenerImpl.class)
 public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
 	@Shadow
 	@Final
 	protected MinecraftServer server;
 
-	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-	private void handleCustomPayloadReceivedAsync(CustomPayloadC2SPacket packet, CallbackInfo ci) {
-		final CustomPayload payload = packet.payload();
+	@Inject(method = "handleCustomPayload", at = @At("HEAD"), cancellable = true)
+	private void handleCustomPayloadReceivedAsync(ServerboundCustomPayloadPacket packet, CallbackInfo ci) {
+		final CustomPacketPayload payload = packet.payload();
 
 		try {
 			boolean handled;
@@ -56,16 +56,16 @@ public abstract class ServerCommonNetworkHandlerMixin implements NetworkHandlerE
 			if (handled) {
 				ci.cancel();
 			}
-		} catch (OffThreadException e) {
-			this.server.getPacketApplyBatcher().add((ServerCommonNetworkHandler) (Object) this, packet);
+		} catch (RunningOnDifferentThreadException e) {
+			this.server.packetProcessor().scheduleIfPossible((ServerCommonPacketListenerImpl) (Object) this, packet);
 			ci.cancel();
 		}
 	}
 
-	@Inject(method = "onPong", at = @At("HEAD"))
-	private void onPlayPong(CommonPongC2SPacket packet, CallbackInfo ci) {
+	@Inject(method = "handlePong", at = @At("HEAD"))
+	private void onPlayPong(ServerboundPongPacket packet, CallbackInfo ci) {
 		if (getAddon() instanceof ServerConfigurationNetworkAddon addon) {
-			addon.onPong(packet.getParameter());
+			addon.onPong(packet.getId());
 		}
 	}
 }

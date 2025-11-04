@@ -19,52 +19,52 @@ package net.fabricmc.fabric.impl.gamerule.widget;
 import java.util.List;
 import java.util.Locale;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.world.rule.GameRule;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
-public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen.NamedRuleWidget {
-	private final ButtonWidget buttonWidget;
+public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen.GameRuleEntry {
+	private final Button buttonWidget;
 	private final String rootTranslationKey;
 
-	public EnumRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<OrderedText> description, final String ruleName, GameRule<E> enumRule, String translationKey) {
+	public EnumRuleWidget(EditGameRulesScreen gameRuleScreen, Component name, List<FormattedCharSequence> description, final String ruleName, GameRule<E> enumRule, String translationKey) {
 		gameRuleScreen.super(description, name);
 		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
 
 		// Overwrite line wrapping to account for button larger than vanilla's by 44 pixels.
-		this.name = MinecraftClient.getInstance().textRenderer.wrapLines(name, 175 - 44);
+		this.label = Minecraft.getInstance().font.split(name, 175 - 44);
 
 		// Base translation key needs to be set before the button widget is created.
 		this.rootTranslationKey = translationKey;
-		this.buttonWidget = ButtonWidget.builder(this.getValueText(accessor.getGameRules().getValue(enumRule)), (buttonWidget) -> {
-			accessor.getGameRules().setValue(enumRule,
+		this.buttonWidget = Button.builder(this.getValueText(accessor.getGameRules().get(enumRule)), (buttonWidget) -> {
+			accessor.getGameRules().set(enumRule,
 					((RuleTypeExtensions) (Object) enumRule).fabric_enumCycle(
-							accessor.getGameRules().getValue(enumRule)
+							accessor.getGameRules().get(enumRule)
 					),
 					null);
-			buttonWidget.setMessage(this.getValueText(accessor.getGameRules().getValue(enumRule)));
-		}).dimensions(10, 5, 42, 20).build();
+			buttonWidget.setMessage(this.getValueText(accessor.getGameRules().get(enumRule)));
+		}).bounds(10, 5, 42, 20).build();
 
 		this.children.add(this.buttonWidget);
 	}
 
-	public Text getValueText(E value) {
+	public Component getValueText(E value) {
 		final String key = this.rootTranslationKey + "." + value.name().toLowerCase(Locale.ROOT);
-		return Text.translatableWithFallback(key, value.toString());
+		return Component.translatableWithFallback(key, value.toString());
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		this.drawName(context, this.getContentY(), this.getContentX());
+	public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		this.renderLabel(context, this.getContentY(), this.getContentX());
 
-		this.buttonWidget.setX(this.getContentRightEnd() - 44);
+		this.buttonWidget.setX(this.getContentRight() - 44);
 		this.buttonWidget.setY(this.getContentY());
 		this.buttonWidget.render(context, mouseX, mouseY, tickDelta);
 	}

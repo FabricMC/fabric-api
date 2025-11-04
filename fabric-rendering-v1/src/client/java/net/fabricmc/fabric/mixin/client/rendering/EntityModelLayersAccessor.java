@@ -21,13 +21,13 @@ import java.util.Set;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelLayers;
 
-@Mixin(EntityModelLayers.class)
+@Mixin(ModelLayers.class)
 public interface EntityModelLayersAccessor {
-	@Accessor("LAYERS")
-	static Set<EntityModelLayer> getLayers() {
+	@Accessor("ALL_MODELS")
+	static Set<ModelLayerLocation> getLayers() {
 		throw new AssertionError("This should not occur!");
 	}
 }

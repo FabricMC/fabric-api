@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.aocalc;
 
 import static net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoVertexClampFunction.CLAMP_FUNC;
 
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 
@@ -151,6 +151,6 @@ enum AoFace {
 	abstract float computeDepth(QuadViewImpl q, int vertexIndex);
 
 	static AoFace get(Direction direction) {
-		return VALUES[direction.getIndex()];
+		return VALUES[direction.get3DDataValue()];
 	}
 }

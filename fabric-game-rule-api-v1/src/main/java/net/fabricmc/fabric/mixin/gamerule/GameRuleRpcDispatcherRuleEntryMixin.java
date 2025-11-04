@@ -31,16 +31,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.server.dedicated.management.RpcException;
-import net.minecraft.server.dedicated.management.dispatch.GameRuleRpcDispatcher;
-import net.minecraft.util.StringIdentifiable;
-import net.minecraft.world.rule.GameRule;
+import net.minecraft.server.jsonrpc.methods.InvalidParameterJsonRpcException;
+import net.minecraft.server.jsonrpc.methods.GameRulesService;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricTypedRule;
 
-@Mixin(GameRuleRpcDispatcher.RuleEntry.class)
+@Mixin(GameRulesService.GameRuleUpdate.class)
 public abstract class GameRuleRpcDispatcherRuleEntryMixin implements FabricTypedRule {
 	@Nullable
 	@Unique
@@ -67,9 +67,9 @@ public abstract class GameRuleRpcDispatcherRuleEntryMixin implements FabricTyped
 		this.setFabricType(type);
 	}
 
-	@ModifyReturnValue(method = "typedCodec", at = @At("RETURN"))
-	private static <T, R extends GameRuleRpcDispatcher.RuleEntry<T>> MapCodec<R> fabricTypeCodec(MapCodec<? extends GameRuleRpcDispatcher.RuleEntry<T>> original, GameRule<T> gameRule) {
-		MapCodec<? extends GameRuleRpcDispatcher.RuleEntry<?>> fabricTypedCodec = fabric_createTypedCodec(gameRule);
+	@ModifyReturnValue(method = "getValueAndTypeCodec", at = @At("RETURN"))
+	private static <T, R extends GameRulesService.GameRuleUpdate<T>> MapCodec<R> fabricTypeCodec(MapCodec<? extends GameRulesService.GameRuleUpdate<T>> original, GameRule<T> gameRule) {
+		MapCodec<? extends GameRulesService.GameRuleUpdate<?>> fabricTypedCodec = fabric_createTypedCodec(gameRule);
 		//noinspection unchecked
 		return (MapCodec<R>) Codec.mapEither(fabricTypedCodec, original).xmap(
 				either -> either.map(Function.identity(), Function.identity()),
@@ -77,22 +77,22 @@ public abstract class GameRuleRpcDispatcherRuleEntryMixin implements FabricTyped
 	}
 
 	@Unique
-	private static <T> GameRuleRpcDispatcher.RuleEntry<T> fabric_checkType(GameRule<T> gameRule, FabricGameRuleType type, T object) {
+	private static <T> GameRulesService.GameRuleUpdate<T> fabric_checkType(GameRule<T> gameRule, FabricGameRuleType type, T object) {
 		FabricGameRuleType gameRuleType = ((RuleTypeExtensions) (Object) gameRule).fabric_getType();
 
 		if (gameRuleType != type) {
-			throw new RpcException("Stated type \"" + type + "\" mismatches with actual type \"" + gameRuleType + "\" of gamerule \"" + gameRule.toShortString() + "\"");
+			throw new InvalidParameterJsonRpcException("Stated type \"" + type + "\" mismatches with actual type \"" + gameRuleType + "\" of gamerule \"" + gameRule.id() + "\"");
 		} else {
-			return new GameRuleRpcDispatcher.RuleEntry<>(gameRule, object);
+			return new GameRulesService.GameRuleUpdate<>(gameRule, object);
 		}
 	}
 
 	@Unique
-	private static <T> MapCodec<? extends GameRuleRpcDispatcher.RuleEntry<T>> fabric_createTypedCodec(GameRule<T> rule) {
+	private static <T> MapCodec<? extends GameRulesService.GameRuleUpdate<T>> fabric_createTypedCodec(GameRule<T> rule) {
 		return RecordCodecBuilder.mapCodec((instance) ->
 				instance.group(
-						StringIdentifiable.createCodec(FabricGameRuleType::values).fieldOf("type").forGetter((arg) -> ((RuleTypeExtensions) (Object) arg.gameRule()).fabric_getType()),
-						rule.getCodec().fieldOf("value").forGetter(GameRuleRpcDispatcher.RuleEntry::value)
+						StringRepresentable.fromEnum(FabricGameRuleType::values).fieldOf("type").forGetter((arg) -> ((RuleTypeExtensions) (Object) arg.gameRule()).fabric_getType()),
+						rule.valueCodec().fieldOf("value").forGetter(GameRulesService.GameRuleUpdate::value)
 				).apply(instance, (type, object) -> fabric_checkType(rule, type, object)));
 	}
 }

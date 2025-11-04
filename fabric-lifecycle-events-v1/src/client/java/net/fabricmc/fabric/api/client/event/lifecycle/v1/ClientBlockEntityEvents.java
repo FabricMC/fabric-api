@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.client.multiplayer.ClientLevel;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -51,11 +51,11 @@ public final class ClientBlockEntityEvents {
 
 	@FunctionalInterface
 	public interface Load {
-		void onLoad(BlockEntity blockEntity, ClientWorld world);
+		void onLoad(BlockEntity blockEntity, ClientLevel world);
 	}
 
 	@FunctionalInterface
 	public interface Unload {
-		void onUnload(BlockEntity blockEntity, ClientWorld world);
+		void onUnload(BlockEntity blockEntity, ClientLevel world);
 	}
 }

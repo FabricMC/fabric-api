@@ -23,18 +23,18 @@ import java.util.stream.Stream;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.recipe.input.RecipeInput;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.world.World;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 
 /**
  * This class provides access to synchronized recipes on the client.
  *
  * <p>You can access SynchronizedClientRecipes by calling getSynchronizedRecipes
- * method on {@link net.minecraft.recipe.RecipeManager}
+ * method on {@link net.minecraft.world.item.crafting.RecipeAccess}
  *
  * <p>See {@link RecipeSynchronization}.
  */
@@ -48,12 +48,12 @@ public interface SynchronizedRecipes {
 	 *
 	 * @return the stream of matching recipes
 	 */
-	<I extends RecipeInput, T extends Recipe<I>> Stream<RecipeEntry<T>> getAllMatches(RecipeType<T> type, I input, World world);
+	<I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level world);
 
 	/**
 	 * @return the collection of recipe entries of given type
 	 */
-	<I extends RecipeInput, T extends Recipe<I>> Collection<RecipeEntry<T>> getAllOfType(RecipeType<T> type);
+	<I extends RecipeInput, T extends Recipe<I>> Collection<RecipeHolder<T>> getAllOfType(RecipeType<T> type);
 
 	/**
 	 * Finds a first recipe entry (or @{code recipe}, if it matches and isn't null) of the given {@code type} that matches the
@@ -61,8 +61,8 @@ public interface SynchronizedRecipes {
 	 *
 	 * @return the optional containing matching recipe entry or empty
 	 */
-	default <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeEntry<T>> getFirstMatch(RecipeType<T> type, I input, World world, @Nullable RegistryKey<Recipe<?>> recipe) {
-		RecipeEntry<T> recipeEntry = recipe != null ? this.get(type, recipe) : null;
+	default <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level world, @Nullable ResourceKey<Recipe<?>> recipe) {
+		RecipeHolder<T> recipeEntry = recipe != null ? this.get(type, recipe) : null;
 		return this.getFirstMatch(type, input, world, recipeEntry);
 	}
 
@@ -72,7 +72,7 @@ public interface SynchronizedRecipes {
 	 *
 	 * @return the optional containing matching recipe entry or empty
 	 */
-	default <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeEntry<T>> getFirstMatch(RecipeType<T> type, I input, World world, @Nullable RecipeEntry<T> recipe) {
+	default <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level world, @Nullable RecipeHolder<T> recipe) {
 		return recipe != null && recipe.value().matches(input, world) ? Optional.of(recipe) : this.getFirstMatch(type, input, world);
 	}
 
@@ -82,26 +82,26 @@ public interface SynchronizedRecipes {
 	 *
 	 * @return the optional containing matching recipe entry or empty
 	 */
-	<I extends RecipeInput, T extends Recipe<I>> Optional<RecipeEntry<T>> getFirstMatch(RecipeType<T> type, I input, World world);
+	<I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level world);
 
 	/**
 	 * @return recipe with matching {@code key} or null if not present
 	 */
 	@Nullable
-	RecipeEntry<?> get(RegistryKey<Recipe<?>> key);
+	RecipeHolder<?> get(ResourceKey<Recipe<?>> key);
 
 	/**
 	 * @return recipe with matching {@code key} of type {@code type} or null if not present
 	 */
 	@Nullable
-	default <T extends Recipe<?>> RecipeEntry<T> get(RecipeType<T> type, RegistryKey<Recipe<?>> key) {
-		RecipeEntry<?> recipeEntry = this.get(key);
+	default <T extends Recipe<?>> RecipeHolder<T> get(RecipeType<T> type, ResourceKey<Recipe<?>> key) {
+		RecipeHolder<?> recipeEntry = this.get(key);
 		//noinspection unchecked
-		return recipeEntry != null && recipeEntry.value().getType().equals(type) ? (RecipeEntry<T>) recipeEntry : null;
+		return recipeEntry != null && recipeEntry.value().getType().equals(type) ? (RecipeHolder<T>) recipeEntry : null;
 	}
 
 	/**
 	 * @return collection of all synchronized recipe types
 	 */
-	Collection<RecipeEntry<?>> recipes();
+	Collection<RecipeHolder<?>> recipes();
 }

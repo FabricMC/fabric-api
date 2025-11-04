@@ -16,36 +16,36 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1.wrapper;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.BlockStateModel;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 
 /**
- * A simple implementation of {@link BlockStateModel.UnbakedGrouped} that delegates all method calls to the
+ * A simple implementation of {@link BlockStateModel.UnbakedRoot} that delegates all method calls to the
  * {@link #wrapped} field. Implementations must set the {@link #wrapped} field somehow.
  */
-public abstract class WrapperUnbakedGroupedBlockStateModel implements BlockStateModel.UnbakedGrouped {
-	protected BlockStateModel.UnbakedGrouped wrapped;
+public abstract class WrapperUnbakedGroupedBlockStateModel implements BlockStateModel.UnbakedRoot {
+	protected BlockStateModel.UnbakedRoot wrapped;
 
 	protected WrapperUnbakedGroupedBlockStateModel() {
 	}
 
-	protected WrapperUnbakedGroupedBlockStateModel(BlockStateModel.UnbakedGrouped wrapped) {
+	protected WrapperUnbakedGroupedBlockStateModel(BlockStateModel.UnbakedRoot wrapped) {
 		this.wrapped = wrapped;
 	}
 
 	@Override
-	public BlockStateModel bake(BlockState state, Baker baker) {
+	public BlockStateModel bake(BlockState state, ModelBaker baker) {
 		return wrapped.bake(state, baker);
 	}
 
 	@Override
-	public Object getEqualityGroup(BlockState state) {
-		return wrapped.getEqualityGroup(state);
+	public Object visualEqualityGroup(BlockState state) {
+		return wrapped.visualEqualityGroup(state);
 	}
 
 	@Override
-	public void resolve(Resolver resolver) {
-		wrapped.resolve(resolver);
+	public void resolveDependencies(Resolver resolver) {
+		wrapped.resolveDependencies(resolver);
 	}
 }

@@ -21,18 +21,18 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.State;
-import net.minecraft.state.property.Property;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateHolder;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import net.fabricmc.fabric.impl.content.registry.OxidizableBlocksRegistryImpl;
 
-@Mixin(AbstractBlock.AbstractBlockState.class)
-public abstract class AbstractBlockAbstractBlockStateMixin extends State<Block, BlockState> implements OxidizableBlocksRegistryImpl.RandomTickCacheRefresher {
+@Mixin(BlockBehaviour.BlockStateBase.class)
+public abstract class AbstractBlockAbstractBlockStateMixin extends StateHolder<Block, BlockState> implements OxidizableBlocksRegistryImpl.RandomTickCacheRefresher {
 	@Shadow
-	private boolean ticksRandomly;
+	private boolean isRandomlyTicking;
 
 	private AbstractBlockAbstractBlockStateMixin(Block owner, Reference2ObjectArrayMap<Property<?>, Comparable<?>> propertyMap, MapCodec<BlockState> codec) {
 		super(owner, propertyMap, codec);
@@ -40,10 +40,13 @@ public abstract class AbstractBlockAbstractBlockStateMixin extends State<Block, 
 
 	@Override
 	public void fabric_api$refreshRandomTickCache() {
-		this.ticksRandomly = ((AbstractBlockAccessor) this.owner).callHasRandomTicks(this.asBlockState());
+		this.isRandomlyTicking = ((AbstractBlockAccessor) this.owner).callHasRandomTicks(this.asBlockState());
 	}
 
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	protected BlockState asBlockState() {
 		return null;
 	}

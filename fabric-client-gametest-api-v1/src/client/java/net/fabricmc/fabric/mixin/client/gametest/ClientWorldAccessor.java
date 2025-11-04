@@ -21,10 +21,10 @@ import java.util.Deque;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 
-@Mixin(ClientWorld.class)
+@Mixin(ClientLevel.class)
 public interface ClientWorldAccessor {
-	@Accessor
-	Deque<Runnable> getChunkUpdaters();
+	@Accessor("lightUpdateQueue")
+    Deque<Runnable> getChunkUpdaters();
 }

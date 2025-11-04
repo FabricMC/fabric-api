@@ -16,18 +16,18 @@
 
 package net.fabricmc.fabric.impl.resource.loader;
 
-import net.minecraft.resource.ResourcePackSource;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 
-public record BuiltinModResourcePackSource(String modId) implements ResourcePackSource {
+public record BuiltinModResourcePackSource(String modId) implements PackSource {
 	@Override
-	public boolean canBeEnabledLater() {
+	public boolean shouldAddAutomatically() {
 		return true;
 	}
 
 	@Override
-	public Text decorate(Text packName) {
-		return Text.translatable("pack.nameAndSource", packName, Text.translatable("pack.source.builtinMod", modId)).formatted(Formatting.GRAY);
+	public Component decorate(Component packName) {
+		return Component.translatable("pack.nameAndSource", packName, Component.translatable("pack.source.builtinMod", modId)).withStyle(ChatFormatting.GRAY);
 	}
 }

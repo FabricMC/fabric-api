@@ -21,7 +21,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector2i;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.texture.NativeImage;
+import com.mojang.blaze3d.platform.NativeImage;
 
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotComparisonAlgorithms;
 

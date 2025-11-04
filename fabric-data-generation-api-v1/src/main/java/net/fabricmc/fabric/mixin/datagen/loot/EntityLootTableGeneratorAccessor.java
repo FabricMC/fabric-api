@@ -19,11 +19,11 @@ package net.fabricmc.fabric.mixin.datagen.loot;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.data.loottable.EntityLootTableGenerator;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.data.loot.EntityLootSubProvider;
+import net.minecraft.core.HolderLookup;
 
-@Mixin(EntityLootTableGenerator.class)
+@Mixin(EntityLootSubProvider.class)
 public interface EntityLootTableGeneratorAccessor {
 	@Accessor()
-	RegistryWrapper.WrapperLookup getRegistries();
+	HolderLookup.Provider getRegistries();
 }

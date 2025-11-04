@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.impl.renderer;
 
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 
 /**
  * Handles most texture-baking use cases for model loaders and model libraries
- * via {@link #bakeSprite(MutableQuadView, Sprite, int)}.
+ * via {@link #bakeSprite(MutableQuadView, TextureAtlasSprite, int)}.
  */
 public final class QuadSpriteBaker {
 	private QuadSpriteBaker() { }
@@ -34,10 +34,10 @@ public final class QuadSpriteBaker {
 	 * Bakes textures in the provided vertex data, handling UV locking,
 	 * rotation, interpolation, etc. Textures must not be already baked.
 	 */
-	public static void bakeSprite(MutableQuadView quad, Sprite sprite, int bakeFlags) {
+	public static void bakeSprite(MutableQuadView quad, TextureAtlasSprite sprite, int bakeFlags) {
 		if (quad.nominalFace() != null && (MutableQuadView.BAKE_LOCK_UV & bakeFlags) != 0) {
 			// Assigns normalized UV coordinates based on vertex positions
-			applyModifier(quad, UVLOCKERS[quad.nominalFace().getIndex()]);
+			applyModifier(quad, UVLOCKERS[quad.nominalFace().get3DDataValue()]);
 		} else if ((MutableQuadView.BAKE_NORMALIZED & bakeFlags) == 0) { // flag is NOT set, UVs are assumed to not be normalized yet as is the default, normalize through dividing by 16
 			// Scales from 0-16 to 0-1
 			applyModifier(quad, (q, i) -> q.uv(i, q.u(i) * NORMALIZER, q.v(i) * NORMALIZER));
@@ -68,11 +68,11 @@ public final class QuadSpriteBaker {
 	 * Faster than sprite method. Sprite computes span and normalizes inputs each call,
 	 * so we'd have to denormalize before we called, only to have the sprite renormalize immediately.
 	 */
-	private static void interpolate(MutableQuadView q, Sprite sprite) {
-		final float uMin = sprite.getMinU();
-		final float uSpan = sprite.getMaxU() - uMin;
-		final float vMin = sprite.getMinV();
-		final float vSpan = sprite.getMaxV() - vMin;
+	private static void interpolate(MutableQuadView q, TextureAtlasSprite sprite) {
+		final float uMin = sprite.getU0();
+		final float uSpan = sprite.getU1() - uMin;
+		final float vMin = sprite.getV0();
+		final float vSpan = sprite.getV1() - vMin;
 
 		for (int i = 0; i < 4; i++) {
 			q.uv(i, uMin + q.u(i) * uSpan, vMin + q.v(i) * vSpan);
@@ -100,11 +100,11 @@ public final class QuadSpriteBaker {
 	private static final VertexModifier[] UVLOCKERS = new VertexModifier[6];
 
 	static {
-		UVLOCKERS[Direction.DOWN.getIndex()] = (q, i) -> q.uv(i, q.x(i), 1 - q.z(i));
-		UVLOCKERS[Direction.UP.getIndex()] = (q, i) -> q.uv(i, q.x(i), q.z(i));
-		UVLOCKERS[Direction.NORTH.getIndex()] = (q, i) -> q.uv(i, 1 - q.x(i), 1 - q.y(i));
-		UVLOCKERS[Direction.SOUTH.getIndex()] = (q, i) -> q.uv(i, q.x(i), 1 - q.y(i));
-		UVLOCKERS[Direction.WEST.getIndex()] = (q, i) -> q.uv(i, q.z(i), 1 - q.y(i));
-		UVLOCKERS[Direction.EAST.getIndex()] = (q, i) -> q.uv(i, 1 - q.z(i), 1 - q.y(i));
+		UVLOCKERS[Direction.DOWN.get3DDataValue()] = (q, i) -> q.uv(i, q.x(i), 1 - q.z(i));
+		UVLOCKERS[Direction.UP.get3DDataValue()] = (q, i) -> q.uv(i, q.x(i), q.z(i));
+		UVLOCKERS[Direction.NORTH.get3DDataValue()] = (q, i) -> q.uv(i, 1 - q.x(i), 1 - q.y(i));
+		UVLOCKERS[Direction.SOUTH.get3DDataValue()] = (q, i) -> q.uv(i, q.x(i), 1 - q.y(i));
+		UVLOCKERS[Direction.WEST.get3DDataValue()] = (q, i) -> q.uv(i, q.z(i), 1 - q.y(i));
+		UVLOCKERS[Direction.EAST.get3DDataValue()] = (q, i) -> q.uv(i, 1 - q.z(i), 1 - q.y(i));
 	}
 }

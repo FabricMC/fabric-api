@@ -22,11 +22,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.client.gui.render.GuiRenderer;
-import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
-import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
+import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
+import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
 
 @Mixin(GuiRenderer.class)
 public interface GuiRendererAccessor {
-	@Accessor
-	Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> getSpecialElementRenderers();
+	@Accessor("pictureInPictureRenderers")
+    Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRenderer<?>> getSpecialElementRenderers();
 }

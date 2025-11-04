@@ -21,16 +21,16 @@ import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectExtension;
 
 @Mixin(Entity.class)
 abstract class EntityMixin {
-	@ModifyExpressionValue(method = "spawnSprintingParticles", at = @At(value = "NEW", target = "(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)Lnet/minecraft/particle/BlockStateParticleEffect;"))
-	private BlockStateParticleEffect modifyBlockStateParticleEffect(BlockStateParticleEffect original, @Local(ordinal = 0) BlockPos blockPos) {
+	@ModifyExpressionValue(method = "spawnSprintParticle", at = @At(value = "NEW", target = "(Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/core/particles/BlockParticleOption;"))
+	private BlockParticleOption modifyBlockStateParticleEffect(BlockParticleOption original, @Local(ordinal = 0) BlockPos blockPos) {
 		((BlockStateParticleEffectExtension) original).fabric_setBlockPos(blockPos);
 		return original;
 	}

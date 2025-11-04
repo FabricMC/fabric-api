@@ -18,10 +18,10 @@ package net.fabricmc.fabric.mixin.renderer.client.sprite;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
+import net.minecraft.client.resources.model.SpriteGetter;
 
 import net.fabricmc.fabric.api.renderer.v1.sprite.FabricErrorCollectingSpriteGetter;
 
-@Mixin(ErrorCollectingSpriteGetter.class)
+@Mixin(SpriteGetter.class)
 interface ErrorCollectingSpriteGetterMixin extends FabricErrorCollectingSpriteGetter {
 }

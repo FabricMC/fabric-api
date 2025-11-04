@@ -24,14 +24,14 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Language;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.locale.Language;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 public final class ServerLanguageUtil {
-	private static final String ASSETS_PREFIX = ResourceType.CLIENT_RESOURCES.getDirectory() + '/';
+	private static final String ASSETS_PREFIX = PackType.CLIENT_RESOURCES.getDirectory() + '/';
 
 	private ServerLanguageUtil() {
 	}
@@ -42,10 +42,10 @@ public final class ServerLanguageUtil {
 		for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
 			if (mod.getMetadata().getType().equals("builtin")) continue;
 
-			final Map<ResourceType, Set<String>> map = ModNioResourcePack.readNamespaces(mod.getRootPaths(), mod.getMetadata().getId());
+			final Map<PackType, Set<String>> map = ModNioResourcePack.readNamespaces(mod.getRootPaths(), mod.getMetadata().getId());
 
-			for (String ns : map.get(ResourceType.CLIENT_RESOURCES)) {
-				mod.findPath(ASSETS_PREFIX + ns + "/lang/" + Language.DEFAULT_LANGUAGE + ".json")
+			for (String ns : map.get(PackType.CLIENT_RESOURCES)) {
+				mod.findPath(ASSETS_PREFIX + ns + "/lang/" + Language.DEFAULT + ".json")
 						.filter(Files::isRegularFile)
 						.ifPresent(paths::add);
 			}

@@ -27,18 +27,18 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.datafixer.schema.Schema2832;
+import net.minecraft.util.datafix.schemas.V2832;
 
 import net.fabricmc.fabric.impl.dimension.TaggedChoiceExtension;
 
-@Mixin(Schema2832.class)
+@Mixin(V2832.class)
 public class Schema2832Mixin {
 	/**
 	 * Make the DSL.taggedChoiceLazy to ignore mod custom generator types and not cause deserialization failure.
 	 */
 	@Redirect(
 			method = {
-					"method_38837", "method_38838"
+                    "method_38837", "method_38838"
 			},
 			at = @At(
 					value = "INVOKE",

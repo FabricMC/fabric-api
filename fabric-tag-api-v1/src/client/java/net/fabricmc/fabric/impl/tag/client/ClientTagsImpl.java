@@ -23,22 +23,22 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Holder;
+import net.minecraft.tags.TagKey;
 
 public class ClientTagsImpl {
 	private static final Map<TagKey<?>, ClientTagsLoader.LoadedTag> LOCAL_TAG_HIERARCHY = new ConcurrentHashMap<>();
 
-	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
+	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> registryEntry) {
 		return isInWithLocalFallback(tagKey, registryEntry, new HashSet<>());
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry, Set<TagKey<T>> checked) {
+	private static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> registryEntry, Set<TagKey<T>> checked) {
 		if (checked.contains(tagKey)) {
 			return false;
 		}
@@ -50,12 +50,12 @@ public class ClientTagsImpl {
 
 		if (maybeRegistry.isPresent()) {
 			// Check the synced tag exists and use that
-			if (maybeRegistry.get().getOptional(tagKey).isPresent()) {
-				return registryEntry.isIn(tagKey);
+			if (maybeRegistry.get().get(tagKey).isPresent()) {
+				return registryEntry.is(tagKey);
 			}
 		}
 
-		if (registryEntry.getKey().isEmpty()) {
+		if (registryEntry.unwrapKey().isEmpty()) {
 			// No key?
 			return false;
 		}
@@ -63,7 +63,7 @@ public class ClientTagsImpl {
 		// Recursively search the entries contained with the tag
 		ClientTagsLoader.LoadedTag wt = ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey);
 
-		if (wt.immediateChildIds().contains(registryEntry.getKey().get().getValue())) {
+		if (wt.immediateChildIds().contains(registryEntry.unwrapKey().get().identifier())) {
 			return true;
 		}
 
@@ -83,30 +83,30 @@ public class ClientTagsImpl {
 		Objects.requireNonNull(tagKey);
 
 		// Check if the tag represents a dynamic registry
-		if (MinecraftClient.getInstance() != null) {
-			if (MinecraftClient.getInstance().world != null) {
-				if (MinecraftClient.getInstance().world.getRegistryManager() != null) {
-					Optional<? extends Registry<T>> maybeRegistry = MinecraftClient.getInstance().world
-							.getRegistryManager().getOptional(tagKey.registryRef());
+		if (Minecraft.getInstance() != null) {
+			if (Minecraft.getInstance().level != null) {
+				if (Minecraft.getInstance().level.registryAccess() != null) {
+					Optional<? extends Registry<T>> maybeRegistry = Minecraft.getInstance().level
+							.registryAccess().lookup(tagKey.registry());
 					if (maybeRegistry.isPresent()) return maybeRegistry;
 				}
 			}
 		}
 
-		return (Optional<? extends Registry<T>>) Registries.REGISTRIES.getOptionalValue(tagKey.registryRef().getValue());
+		return (Optional<? extends Registry<T>>) BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().identifier());
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> Optional<RegistryEntry<T>> getRegistryEntry(TagKey<T> tagKey, T entry) {
+	public static <T> Optional<Holder<T>> getRegistryEntry(TagKey<T> tagKey, T entry) {
 		Optional<? extends Registry<?>> maybeRegistry = getRegistry(tagKey);
 
-		if (maybeRegistry.isEmpty() || !tagKey.isOf(maybeRegistry.get().getKey())) {
+		if (maybeRegistry.isEmpty() || !tagKey.isFor(maybeRegistry.get().key())) {
 			return Optional.empty();
 		}
 
 		Registry<T> registry = (Registry<T>) maybeRegistry.get();
 
-		Optional<RegistryKey<T>> maybeKey = registry.getKey(entry);
+		Optional<ResourceKey<T>> maybeKey = registry.getResourceKey(entry);
 
 		return maybeKey.map(registry::getOrThrow);
 	}

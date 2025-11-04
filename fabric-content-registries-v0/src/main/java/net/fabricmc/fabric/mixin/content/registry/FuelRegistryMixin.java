@@ -22,11 +22,11 @@ import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.item.FuelRegistry;
-import net.minecraft.item.Item;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.world.level.block.entity.FuelValues;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.flag.FeatureFlagSet;
 
 import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryEventsContextImpl;
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.content.registry.FuelRegistryEventsContextImpl;
 /**
  * Implements the invocation of {@link FabricFuelRegistryBuilder} callbacks.
  */
-@Mixin(FuelRegistry.class)
+@Mixin(FuelValues.class)
 public abstract class FuelRegistryMixin {
 	/**
 	 * Handles invoking both pre- and post-exclusion events.
@@ -42,14 +42,14 @@ public abstract class FuelRegistryMixin {
 	 * <p>Vanilla currently uses a single exclusion for non-flammable wood; if more builder calls for exclusions are added, this mixin method must be split accordingly.
 	 */
 	@WrapOperation(
-			method = "createDefault(Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;Lnet/minecraft/resource/featuretoggle/FeatureSet;I)Lnet/minecraft/item/FuelRegistry;",
+			method = "vanillaBurnTimes(Lnet/minecraft/core/HolderLookup$Provider;Lnet/minecraft/world/flag/FeatureFlagSet;I)Lnet/minecraft/world/level/block/entity/FuelValues;",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/item/FuelRegistry$Builder;remove(Lnet/minecraft/registry/tag/TagKey;)Lnet/minecraft/item/FuelRegistry$Builder;"
+					target = "Lnet/minecraft/world/level/block/entity/FuelValues$Builder;remove(Lnet/minecraft/tags/TagKey;)Lnet/minecraft/world/level/block/entity/FuelValues$Builder;"
 			),
 			allow = 1
 	)
-	private static FuelRegistry.Builder build(FuelRegistry.Builder builder, TagKey<Item> tag, Operation<FuelRegistry.Builder> operation, @Local(argsOnly = true) RegistryWrapper.WrapperLookup registries, @Local(argsOnly = true) FeatureSet features, @Local(argsOnly = true) int baseSmeltTime) {
+	private static FuelValues.Builder build(FuelValues.Builder builder, TagKey<Item> tag, Operation<FuelValues.Builder> operation, @Local(argsOnly = true) HolderLookup.Provider registries, @Local(argsOnly = true) FeatureFlagSet features, @Local(argsOnly = true) int baseSmeltTime) {
 		final var context = new FuelRegistryEventsContextImpl(registries, features, baseSmeltTime);
 
 		FuelRegistryEvents.BUILD.invoker().build(builder, context);

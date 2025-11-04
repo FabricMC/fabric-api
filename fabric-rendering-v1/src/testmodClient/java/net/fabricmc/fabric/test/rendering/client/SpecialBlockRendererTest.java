@@ -22,18 +22,18 @@ import com.mojang.serialization.MapCodec;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.model.AllayEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemDisplayContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.model.AllayModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.RotationAxis;
+import com.mojang.math.Axis;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialBlockRendererRegistry;
@@ -42,43 +42,43 @@ import net.fabricmc.fabric.api.client.rendering.v1.SpecialBlockRendererRegistry;
  * Tests {@link SpecialBlockRendererRegistry} by rendering an allay model above TNT blocks in a minecart.
  */
 public class SpecialBlockRendererTest implements ClientModInitializer {
-	private static final Identifier ALLAY_TEXTURE = Identifier.ofVanilla("textures/entity/allay/allay.png");
+	private static final Identifier ALLAY_TEXTURE = Identifier.withDefaultNamespace("textures/entity/allay/allay.png");
 
 	@Override
 	public void onInitializeClient() {
 		SpecialBlockRendererRegistry.register(Blocks.TNT, new SpecialModelRenderer.Unbaked() {
 			@Override
-			public SpecialModelRenderer<?> bake(SpecialModelRenderer.BakeContext ctx) {
-				AllayEntityModel allayModel = new AllayEntityModel(ctx.entityModelSet().getModelPart(EntityModelLayers.ALLAY));
+			public SpecialModelRenderer<?> bake(SpecialModelRenderer.BakingContext ctx) {
+				AllayModel allayModel = new AllayModel(ctx.entityModelSet().bakeLayer(ModelLayers.ALLAY));
 
 				return new SpecialModelRenderer<>() {
 					@Override
-					public void render(@Nullable Object data, ItemDisplayContext displayContext, MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue, int light, int overlay, boolean glint, int outlineColor) {
-						matrices.push();
+					public void submit(@Nullable Object data, ItemDisplayContext displayContext, PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, int light, int overlay, boolean glint, int outlineColor) {
+						matrices.pushPose();
 						matrices.translate(0.5f, 0.0f, 0.5f);
 						matrices.translate(0, 1.46875f, 0);
 						matrices.scale(1, -1, 1);
-						matrices.multiply(RotationAxis.POSITIVE_Y.rotation((float) (Util.getMeasuringTimeMs() * 0.001)));
+						matrices.mulPose(Axis.YP.rotation((float) (Util.getMillis() * 0.001)));
 						matrices.translate(0, -1.46875f, 0);
-						orderedRenderCommandQueue.getBatchingQueue(0)
-								.submitCustom(matrices, RenderLayers.solid(), (matricesEntry, vertexConsumer) -> allayModel.render(matrices, vertexConsumer, light, overlay));
-						matrices.pop();
+						orderedRenderCommandQueue.order(0)
+								.submitCustomGeometry(matrices, RenderTypes.solidMovingBlock(), (matricesEntry, vertexConsumer) -> allayModel.renderToBuffer(matrices, vertexConsumer, light, overlay));
+						matrices.popPose();
 					}
 
 					@Override
-					public void collectVertices(Set<Vector3f> set) {
+					public void getExtents(Set<Vector3f> set) {
 					}
 
 					@Override
 					@Nullable
-					public Object getData(ItemStack stack) {
+					public Object extractArgument(ItemStack stack) {
 						return null;
 					}
 				};
 			}
 
 			@Override
-			public MapCodec<? extends SpecialModelRenderer.Unbaked> getCodec() {
+			public MapCodec<? extends SpecialModelRenderer.Unbaked> type() {
 				return null;
 			}
 		});

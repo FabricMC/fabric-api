@@ -19,10 +19,10 @@ package net.fabricmc.fabric.mixin.client.gametest.lifecycle;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.Options;
 
-@Mixin(GameOptions.class)
+@Mixin(Options.class)
 public interface GameOptionsAccessor {
-	@Invoker
-	void invokeAccept(GameOptions.Visitor visitor);
+	@Invoker("processOptions")
+    void invokeAccept(Options.FieldAccess visitor);
 }

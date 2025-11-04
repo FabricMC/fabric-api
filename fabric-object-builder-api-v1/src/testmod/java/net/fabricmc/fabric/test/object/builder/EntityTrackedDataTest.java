@@ -18,19 +18,19 @@ package net.fabricmc.fabric.test.object.builder;
 
 import java.util.Optional;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.entity.data.TrackedDataHandler;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.item.Item;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.GlobalPos;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.GlobalPos;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
@@ -40,18 +40,18 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class EntityTrackedDataTest implements ModInitializer {
 	private static final Identifier GLOBAL_POS_ID = ObjectBuilderTestConstants.id("global_pos");
-	static TrackedDataHandler<GlobalPos> GLOBAL_POS = TrackedDataHandler.create(GlobalPos.PACKET_CODEC);
+	static EntityDataSerializer<GlobalPos> GLOBAL_POS = EntityDataSerializer.forValueType(GlobalPos.STREAM_CODEC);
 
 	private static final Identifier ITEM_ID = ObjectBuilderTestConstants.id("item");
-	static TrackedDataHandler<Item> ITEM = TrackedDataHandler.create(PacketCodecs.registryValue(RegistryKeys.ITEM));
+	static EntityDataSerializer<Item> ITEM = EntityDataSerializer.forValueType(ByteBufCodecs.registry(Registries.ITEM));
 
 	private static final Identifier OPTIONAL_DYE_COLOR_ID = ObjectBuilderTestConstants.id("optional_dye_color");
-	static TrackedDataHandler<Optional<DyeColor>> OPTIONAL_DYE_COLOR = TrackedDataHandler.create(DyeColor.PACKET_CODEC.collect(PacketCodecs::optional));
+	static EntityDataSerializer<Optional<DyeColor>> OPTIONAL_DYE_COLOR = EntityDataSerializer.forValueType(DyeColor.STREAM_CODEC.apply(ByteBufCodecs::optional));
 
-	private static final RegistryKey<EntityType<?>> TRACK_STACK_KEY = RegistryKey.of(RegistryKeys.ENTITY_TYPE, ObjectBuilderTestConstants.id("track_stack"));
-	public static EntityType<TrackStackEntity> TRACK_STACK_ENTITY = FabricEntityType.Builder.createMob(TrackStackEntity::new, SpawnGroup.MISC, builder -> builder.defaultAttributes(MobEntity::createMobAttributes))
-			.dimensions(0.4f, 2.8f)
-			.maxTrackingRange(10)
+	private static final ResourceKey<EntityType<?>> TRACK_STACK_KEY = ResourceKey.create(Registries.ENTITY_TYPE, ObjectBuilderTestConstants.id("track_stack"));
+	public static EntityType<TrackStackEntity> TRACK_STACK_ENTITY = FabricEntityType.Builder.createMob(TrackStackEntity::new, MobCategory.MISC, builder -> builder.defaultAttributes(Mob::createMobAttributes))
+			.sized(0.4f, 2.8f)
+			.clientTrackingRange(10)
 			.build(TRACK_STACK_KEY);
 
 	@Override
@@ -67,6 +67,6 @@ public class EntityTrackedDataTest implements ModInitializer {
 			FabricTrackedDataRegistry.register(GLOBAL_POS_ID, GLOBAL_POS);
 		}
 
-		Registry.register(Registries.ENTITY_TYPE, TRACK_STACK_KEY, TRACK_STACK_ENTITY);
+		Registry.register(BuiltInRegistries.ENTITY_TYPE, TRACK_STACK_KEY, TRACK_STACK_ENTITY);
 	}
 }

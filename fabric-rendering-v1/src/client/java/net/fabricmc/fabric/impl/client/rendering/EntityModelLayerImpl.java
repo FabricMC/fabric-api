@@ -19,14 +19,14 @@ package net.fabricmc.fabric.impl.client.rendering;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.model.EquipmentModelData;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
 
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 
 public final class EntityModelLayerImpl {
-	public static final Map<EntityModelLayer, EntityModelLayerRegistry.TexturedModelDataProvider> PROVIDERS = new HashMap<>();
-	public static final Map<EquipmentModelData<EntityModelLayer>, EntityModelLayerRegistry.TexturedEquipmentModelDataProvider> EQUIPMENT_PROVIDERS = new HashMap<>();
+	public static final Map<ModelLayerLocation, EntityModelLayerRegistry.TexturedModelDataProvider> PROVIDERS = new HashMap<>();
+	public static final Map<ArmorModelSet<ModelLayerLocation>, EntityModelLayerRegistry.TexturedEquipmentModelDataProvider> EQUIPMENT_PROVIDERS = new HashMap<>();
 
 	private EntityModelLayerImpl() {
 	}

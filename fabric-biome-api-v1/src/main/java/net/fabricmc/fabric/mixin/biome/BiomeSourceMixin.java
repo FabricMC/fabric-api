@@ -24,19 +24,19 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
 
 @Mixin(BiomeSource.class)
 public class BiomeSourceMixin {
-	@Redirect(method = "getBiomes", at = @At(value = "INVOKE", target = "Ljava/util/function/Supplier;get()Ljava/lang/Object;"))
-	private Object getBiomes(Supplier<Set<RegistryEntry<Biome>>> instance) {
+	@Redirect(method = "possibleBiomes", at = @At(value = "INVOKE", target = "Ljava/util/function/Supplier;get()Ljava/lang/Object;"))
+	private Object getBiomes(Supplier<Set<Holder<Biome>>> instance) {
 		return modifyBiomeSet(instance.get());
 	}
 
 	@Unique
-	protected Set<RegistryEntry<Biome>> modifyBiomeSet(Set<RegistryEntry<Biome>> biomes) {
+	protected Set<Holder<Biome>> modifyBiomeSet(Set<Holder<Biome>> biomes) {
 		return biomes;
 	}
 }

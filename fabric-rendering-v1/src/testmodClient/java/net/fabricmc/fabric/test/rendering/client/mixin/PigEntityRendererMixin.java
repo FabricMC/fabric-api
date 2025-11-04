@@ -22,15 +22,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.block.MovingBlockRenderState;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.PigEntityRenderer;
-import net.minecraft.client.render.entity.state.PigEntityRenderState;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.PigRenderer;
+import net.minecraft.client.renderer.entity.state.PigRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.entity.animal.Pig;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
@@ -38,28 +38,28 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 /**
  * Tests {@link RenderStateDataKey} and {@link FabricRenderState}. Pigs will render the block they're standing on at their location.
  */
-@Mixin(PigEntityRenderer.class)
+@Mixin(PigRenderer.class)
 public class PigEntityRendererMixin {
 	@Unique
 	private static final RenderStateDataKey<MovingBlockRenderState> MOVING_BLOCK = RenderStateDataKey.create(() -> "Moving block");
 
-	@Inject(method = "updateRenderState(Lnet/minecraft/entity/passive/PigEntity;Lnet/minecraft/client/render/entity/state/PigEntityRenderState;F)V", at = @At("TAIL"))
-	private void updateRenderStateData(PigEntity entity, PigEntityRenderState state, float tickProgress, CallbackInfo ci) {
-		BlockState blockState = entity.getSteppingBlockState();
+	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/animal/Pig;Lnet/minecraft/client/renderer/entity/state/PigRenderState;F)V", at = @At("TAIL"))
+	private void updateRenderStateData(Pig entity, PigRenderState state, float tickProgress, CallbackInfo ci) {
+		BlockState blockState = entity.getBlockStateOn();
 
-		if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
+		if (blockState.getRenderShape() != RenderShape.INVISIBLE) {
 			MovingBlockRenderState movingBlockRenderState = new MovingBlockRenderState();
-			movingBlockRenderState.fallingBlockPos = entity.getSteppingPos();
-			movingBlockRenderState.entityBlockPos = entity.getBlockPos();
-			movingBlockRenderState.blockState = entity.getSteppingBlockState();
-			movingBlockRenderState.biome = entity.getEntityWorld().getBiome(entity.getBlockPos());
-			movingBlockRenderState.world = entity.getEntityWorld();
+			movingBlockRenderState.randomSeedPos = entity.getOnPos();
+			movingBlockRenderState.blockPos = entity.blockPosition();
+			movingBlockRenderState.blockState = entity.getBlockStateOn();
+			movingBlockRenderState.biome = entity.level().getBiome(entity.blockPosition());
+			movingBlockRenderState.level = entity.level();
 			state.setData(MOVING_BLOCK, movingBlockRenderState);
 		}
 	}
 
-	@Inject(method = "render(Lnet/minecraft/client/render/entity/state/PigEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/MobEntityRenderer;render(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V"))
-	private void renderUsingRenderStateData(PigEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraRenderState, CallbackInfo ci) {
+	@Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/PigRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/MobRenderer;render(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V"))
+	private void renderUsingRenderStateData(PigRenderState state, PoseStack matrices, SubmitNodeCollector queue, CameraRenderState cameraRenderState, CallbackInfo ci) {
 		MovingBlockRenderState movingBlockRenderState = state.getData(MOVING_BLOCK);
 
 		if (movingBlockRenderState != null) {

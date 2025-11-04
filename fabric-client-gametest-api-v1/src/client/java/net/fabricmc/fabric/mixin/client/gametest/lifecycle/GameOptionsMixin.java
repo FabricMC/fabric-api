@@ -21,14 +21,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.Options;
 
 import net.fabricmc.fabric.impl.client.gametest.context.ClientGameTestContextImpl;
 
-@Mixin(GameOptions.class)
+@Mixin(Options.class)
 public class GameOptionsMixin {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onCreateGameOptions(CallbackInfo ci) {
-		ClientGameTestContextImpl.initGameOptions((GameOptions) (Object) this);
+		ClientGameTestContextImpl.initGameOptions((Options) (Object) this);
 	}
 }

@@ -19,20 +19,20 @@ package net.fabricmc.fabric.impl.client.rendering;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 
 public final class BlockEntityRendererRegistryImpl {
-	private static final HashMap<BlockEntityType<?>, BlockEntityRendererFactory<?, ?>> MAP = new HashMap<>();
-	private static BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?, ?>> handler = (type, function) -> MAP.put(type, function);
+	private static final HashMap<BlockEntityType<?>, BlockEntityRendererProvider<?, ?>> MAP = new HashMap<>();
+	private static BiConsumer<BlockEntityType<?>, BlockEntityRendererProvider<?, ?>> handler = (type, function) -> MAP.put(type, function);
 
-	public static <E extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<? super E, ? super S> blockEntityRendererFactory) {
+	public static <E extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererProvider<? super E, ? super S> blockEntityRendererFactory) {
 		handler.accept(blockEntityType, blockEntityRendererFactory);
 	}
 
-	public static void setup(BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?, ?>> vanillaHandler) {
+	public static void setup(BiConsumer<BlockEntityType<?>, BlockEntityRendererProvider<?, ?>> vanillaHandler) {
 		MAP.forEach(vanillaHandler);
 		handler = vanillaHandler;
 	}

@@ -19,28 +19,28 @@ package net.fabricmc.fabric.impl.event.interaction;
 import io.netty.channel.ChannelFutureListener;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.server.network.ConnectedClientData;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.level.ServerPlayer;
 
 import net.fabricmc.fabric.impl.networking.UntrackedNetworkHandler;
 
-public final class FakePlayerNetworkHandler extends ServerPlayNetworkHandler implements UntrackedNetworkHandler {
-	private static final ClientConnection FAKE_CONNECTION = new FakeClientConnection();
+public final class FakePlayerNetworkHandler extends ServerGamePacketListenerImpl implements UntrackedNetworkHandler {
+	private static final Connection FAKE_CONNECTION = new FakeClientConnection();
 
-	public FakePlayerNetworkHandler(ServerPlayerEntity player) {
-		super(player.getEntityWorld().getServer(), FAKE_CONNECTION, player, ConnectedClientData.createDefault(player.getGameProfile(), false));
+	public FakePlayerNetworkHandler(ServerPlayer player) {
+		super(player.level().getServer(), FAKE_CONNECTION, player, CommonListenerCookie.createInitial(player.getGameProfile(), false));
 	}
 
 	@Override
 	public void send(Packet<?> packet, @Nullable ChannelFutureListener callbacks) { }
 
-	private static final class FakeClientConnection extends ClientConnection {
+	private static final class FakeClientConnection extends Connection {
 		private FakeClientConnection() {
-			super(NetworkSide.CLIENTBOUND);
+			super(PacketFlow.CLIENTBOUND);
 		}
 	}
 }

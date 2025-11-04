@@ -36,7 +36,7 @@ public final class ClientLifecycleTests implements ClientModInitializer {
 			}
 
 			startCalled = true;
-			client.submitAndJoin(() -> { // This should fail if the client thread was not bound yet.
+			client.executeBlocking(() -> { // This should fail if the client thread was not bound yet.
 				System.out.println("Started the client");
 			});
 		});
@@ -51,7 +51,7 @@ public final class ClientLifecycleTests implements ClientModInitializer {
 		});
 
 		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, world) -> {
-			LOGGER.info("Client world changed to {}", world.getRegistryKey().getValue());
+			LOGGER.info("Client world changed to {}", world.dimension().identifier());
 		});
 	}
 }

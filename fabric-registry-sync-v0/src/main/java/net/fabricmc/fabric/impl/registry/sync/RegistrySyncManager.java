@@ -35,18 +35,18 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.packet.Packet;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.screen.ScreenTexts;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerConfigEntry;
-import net.minecraft.server.network.ServerConfigurationNetworkHandler;
-import net.minecraft.server.network.ServerPlayerConfigurationTask;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.players.NameAndId;
+import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
+import net.minecraft.server.network.ConfigurationTask;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
@@ -65,8 +65,8 @@ public final class RegistrySyncManager {
 
 	private RegistrySyncManager() { }
 
-	public static void configureClient(ServerConfigurationNetworkHandler handler, MinecraftServer server) {
-		if (!DEBUG && server.isHost(new PlayerConfigEntry(handler.getDebugProfile()))) {
+	public static void configureClient(ServerConfigurationPacketListenerImpl handler, MinecraftServer server) {
+		if (!DEBUG && server.isSingleplayerOwner(new NameAndId(handler.getOwner()))) {
 			// Dont send in singleplayer
 			return;
 		}
@@ -85,7 +85,7 @@ public final class RegistrySyncManager {
 			}
 
 			// Disconnect incompatible clients
-			Text message = getIncompatibleClientText(ServerNetworkingImpl.getAddon(handler).getClientBrand(), map);
+			Component message = getIncompatibleClientText(ServerNetworkingImpl.getAddon(handler).getClientBrand(), map);
 			handler.disconnect(message);
 			return;
 		}
@@ -93,7 +93,7 @@ public final class RegistrySyncManager {
 		handler.addTask(new SyncConfigurationTask(handler, map));
 	}
 
-	private static Text getIncompatibleClientText(@Nullable String brand, Map<Identifier, Object2IntMap<Identifier>> map) {
+	private static Component getIncompatibleClientText(@Nullable String brand, Map<Identifier, Object2IntMap<Identifier>> map) {
 		String brandText = switch (brand) {
 		case "fabric" -> "Fabric API";
 		case null, default -> "Fabric Loader and Fabric API";
@@ -110,43 +110,43 @@ public final class RegistrySyncManager {
 				.sorted()
 				.toList();
 
-		MutableText text = Text.literal("The following registry entry namespaces may be related:\n\n");
+		MutableComponent text = Component.literal("The following registry entry namespaces may be related:\n\n");
 
 		for (int i = 0; i < Math.min(namespaces.size(), toDisplay); i++) {
-			text = text.append(Text.literal(namespaces.get(i)).formatted(Formatting.YELLOW));
-			text = text.append(ScreenTexts.LINE_BREAK);
+			text = text.append(Component.literal(namespaces.get(i)).withStyle(ChatFormatting.YELLOW));
+			text = text.append(CommonComponents.NEW_LINE);
 		}
 
 		if (namespaces.size() > toDisplay) {
-			text = text.append(Text.literal("And %d more...".formatted(namespaces.size() - toDisplay)));
+			text = text.append(Component.literal("And %d more...".formatted(namespaces.size() - toDisplay)));
 		}
 
-		return Text.literal("This server requires ").append(Text.literal(brandText).formatted(Formatting.GREEN)).append(" installed on your client!")
-				.append(ScreenTexts.LINE_BREAK).append(text)
-				.append(ScreenTexts.LINE_BREAK).append(ScreenTexts.LINE_BREAK).append(Text.literal("Contact the server's administrator for more information!").formatted(Formatting.GOLD));
+		return Component.literal("This server requires ").append(Component.literal(brandText).withStyle(ChatFormatting.GREEN)).append(" installed on your client!")
+				.append(CommonComponents.NEW_LINE).append(text)
+				.append(CommonComponents.NEW_LINE).append(CommonComponents.NEW_LINE).append(Component.literal("Contact the server's administrator for more information!").withStyle(ChatFormatting.GOLD));
 	}
 
 	private static boolean areAllRegistriesOptional(Map<Identifier, Object2IntMap<Identifier>> map) {
 		return map.keySet().stream()
-				.map(Registries.REGISTRIES::get)
+				.map(BuiltInRegistries.REGISTRY::getValue)
 				.filter(Objects::nonNull)
 				.map(RegistryAttributeHolder::get)
 				.allMatch(attributes -> attributes.hasAttribute(RegistryAttribute.OPTIONAL));
 	}
 
 	public record SyncConfigurationTask(
-			ServerConfigurationNetworkHandler handler,
-			Map<Identifier, Object2IntMap<Identifier>> map
-	) implements ServerPlayerConfigurationTask {
-		public static final Key KEY = new Key("fabric:registry/sync");
+            ServerConfigurationPacketListenerImpl handler,
+            Map<Identifier, Object2IntMap<Identifier>> map
+	) implements ConfigurationTask {
+		public static final Type KEY = new Type("fabric:registry/sync");
 
 		@Override
-		public void sendPacket(Consumer<Packet<?>> sender) {
+		public void start(Consumer<Packet<?>> sender) {
 			sender.accept(ServerConfigurationNetworking.createS2CPacket(new RegistrySyncPayload(map)));
 		}
 
 		@Override
-		public Key getKey() {
+		public Type type() {
 			return KEY;
 		}
 	}
@@ -160,8 +160,8 @@ public final class RegistrySyncManager {
 	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap() {
 		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();
 
-		for (Identifier registryId : Registries.REGISTRIES.getIds()) {
-			Registry registry = Registries.REGISTRIES.get(registryId);
+		for (Identifier registryId : BuiltInRegistries.REGISTRY.keySet()) {
+			Registry registry = BuiltInRegistries.REGISTRY.getValue(registryId);
 
 			if (DEBUG_WRITE_REGISTRY_DATA) {
 				File location = new File(".fabric" + File.separatorChar + "debug" + File.separatorChar + "registry");
@@ -183,11 +183,11 @@ public final class RegistrySyncManager {
 						for (Object o : registry) {
 							String classType = (o == null) ? "null" : o.getClass().getName();
 							//noinspection unchecked
-							Identifier id = registry.getId(o);
+							Identifier id = registry.getKey(o);
 							if (id == null) continue;
 
 							//noinspection unchecked
-							int rawId = registry.getRawId(o);
+							int rawId = registry.getId(o);
 							String stringId = id.toString();
 							builder.append("\"").append(rawId).append("\",\"").append(stringId).append("\",\"").append(classType).append("\"\n");
 						}
@@ -199,7 +199,7 @@ public final class RegistrySyncManager {
 				}
 			}
 
-			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry.getKey());
+			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry.key());
 
 			if (!attributeHolder.hasAttribute(RegistryAttribute.SYNCED)) {
 				LOGGER.debug("Not syncing registry: {}", registryId);
@@ -225,19 +225,19 @@ public final class RegistrySyncManager {
 
 				for (Object o : registry) {
 					//noinspection unchecked
-					Identifier id = registry.getId(o);
+					Identifier id = registry.getKey(o);
 					if (id == null) continue;
 
 					//noinspection unchecked
-					int rawId = registry.getRawId(o);
+					int rawId = registry.getId(o);
 
 					if (DEBUG) {
-						if (registry.get(id) != o) {
-							LOGGER.error("[fabric-registry-sync] Inconsistency detected in " + registryId + ": object " + o + " -> string ID " + id + " -> object " + registry.get(id) + "!");
+						if (registry.getValue(id) != o) {
+							LOGGER.error("[fabric-registry-sync] Inconsistency detected in " + registryId + ": object " + o + " -> string ID " + id + " -> object " + registry.getValue(id) + "!");
 						}
 
-						if (registry.get(rawId) != o) {
-							LOGGER.error("[fabric-registry-sync] Inconsistency detected in " + registryId + ": object " + o + " -> integer ID " + rawId + " -> object " + registry.get(rawId) + "!");
+						if (registry.byId(rawId) != o) {
+							LOGGER.error("[fabric-registry-sync] Inconsistency detected in " + registryId + ": object " + o + " -> integer ID " + rawId + " -> object " + registry.byId(rawId) + "!");
 						}
 
 						if (!rawIdsFound.add(rawId)) {

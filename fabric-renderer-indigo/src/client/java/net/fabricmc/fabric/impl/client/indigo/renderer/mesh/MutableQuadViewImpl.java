@@ -32,11 +32,11 @@ import java.util.Objects;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
@@ -175,7 +175,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl renderLayer(@Nullable BlockRenderLayer renderLayer) {
+	public MutableQuadViewImpl renderLayer(@Nullable ChunkSectionLayer renderLayer) {
 		data[baseIndex + HEADER_BITS] = EncodingFormat.renderLayer(data[baseIndex + HEADER_BITS], renderLayer);
 		return this;
 	}
@@ -200,7 +200,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl glint(ItemRenderState.@Nullable Glint glint) {
+	public MutableQuadViewImpl glint(ItemStackRenderState.@Nullable FoilType glint) {
 		data[baseIndex + HEADER_BITS] = EncodingFormat.glint(data[baseIndex + HEADER_BITS], glint);
 		return this;
 	}
@@ -265,8 +265,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl fromBakedQuad(BakedQuad quad) {
-		fromVanilla(quad.vertexData(), 0);
-		nominalFace(quad.face());
+		fromVanilla(quad.vertices(), 0);
+		nominalFace(quad.direction());
 		diffuseShade(quad.shade());
 		tintIndex(quad.tintIndex());
 
@@ -274,7 +274,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 		if (lightEmission > 0) {
 			for (int i = 0; i < 4; i++) {
-				lightmap(i, LightmapTextureManager.applyEmission(lightmap(i), lightEmission));
+				lightmap(i, LightTexture.lightCoordsWithEmission(lightmap(i), lightEmission));
 			}
 		}
 

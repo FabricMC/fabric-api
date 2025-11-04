@@ -19,17 +19,17 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.MapRenderState;
-import net.minecraft.client.render.block.MovingBlockRenderState;
-import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.render.state.OutlineRenderState;
-import net.minecraft.client.render.state.SkyRenderState;
-import net.minecraft.client.render.state.WeatherRenderState;
-import net.minecraft.client.render.state.WorldBorderRenderState;
-import net.minecraft.client.render.state.WorldRenderState;
+import net.minecraft.client.renderer.state.MapRenderState;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+import net.minecraft.client.renderer.state.SkyRenderState;
+import net.minecraft.client.renderer.state.WeatherRenderState;
+import net.minecraft.client.renderer.state.WorldBorderRenderState;
+import net.minecraft.client.renderer.state.LevelRenderState;
 
 /**
  * Fabric-provided extensions for render states, allowing for the addition of extra render data.
@@ -38,12 +38,12 @@ import net.minecraft.client.render.state.WorldRenderState;
  * <ul>
  *     <li>{@link EntityRenderState},
  *     <li>{@link BlockEntityRenderState}
- *     <li>{@link ItemRenderState} and {@link ItemRenderState.LayerRenderState}
- *     <li>{@link MapRenderState} and {@link MapRenderState.Decoration}
+ *     <li>{@link ItemStackRenderState} and {@link ItemStackRenderState.LayerRenderState}
+ *     <li>{@link MapRenderState} and {@link MapRenderState.MapDecorationRenderState}
  *     <li>{@link MovingBlockRenderState}
- *     <li>{@link WorldRenderState}
+ *     <li>{@link LevelRenderState}
  *     <li>{@link CameraRenderState}
- *     <li>{@link OutlineRenderState}
+ *     <li>{@link BlockOutlineRenderState}
  *     <li>{@link WeatherRenderState}
  *     <li>{@link WorldBorderRenderState}
  *     <li>{@link SkyRenderState}

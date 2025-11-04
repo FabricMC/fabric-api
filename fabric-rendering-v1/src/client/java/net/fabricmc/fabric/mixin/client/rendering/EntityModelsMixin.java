@@ -25,24 +25,24 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.model.EntityModels;
-import net.minecraft.client.render.entity.model.EquipmentModelData;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.LayerDefinitions;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
 
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.impl.client.rendering.EntityModelLayerImpl;
 
-@Mixin(EntityModels.class)
+@Mixin(LayerDefinitions.class)
 abstract class EntityModelsMixin {
-	@Inject(method = "getModels", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;"))
-	private static void registerExtraModelData(CallbackInfoReturnable<Map<EntityModelLayer, TexturedModelData>> info, @Local ImmutableMap.Builder<EntityModelLayer, TexturedModelData> builder) {
-		for (Map.Entry<EntityModelLayer, EntityModelLayerRegistry.TexturedModelDataProvider> entry : EntityModelLayerImpl.PROVIDERS.entrySet()) {
+	@Inject(method = "createRoots", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;"))
+	private static void registerExtraModelData(CallbackInfoReturnable<Map<ModelLayerLocation, LayerDefinition>> info, @Local ImmutableMap.Builder<ModelLayerLocation, LayerDefinition> builder) {
+		for (Map.Entry<ModelLayerLocation, EntityModelLayerRegistry.TexturedModelDataProvider> entry : EntityModelLayerImpl.PROVIDERS.entrySet()) {
 			builder.put(entry.getKey(), entry.getValue().createModelData());
 		}
 
-		for (Map.Entry<EquipmentModelData<EntityModelLayer>, EntityModelLayerRegistry.TexturedEquipmentModelDataProvider> entry : EntityModelLayerImpl.EQUIPMENT_PROVIDERS.entrySet()) {
-			entry.getKey().addTo(entry.getValue().createEquipmentModelData(), builder);
+		for (Map.Entry<ArmorModelSet<ModelLayerLocation>, EntityModelLayerRegistry.TexturedEquipmentModelDataProvider> entry : EntityModelLayerImpl.EQUIPMENT_PROVIDERS.entrySet()) {
+			entry.getKey().putFrom(entry.getValue().createEquipmentModelData(), builder);
 		}
 	}
 }

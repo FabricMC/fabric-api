@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Holder;
 
 import net.fabricmc.fabric.api.util.TriState;
 
@@ -51,9 +51,9 @@ public interface FabricItemStack {
 	 * @param enchantment the enchantment to check
 	 * @param context the context in which the enchantment is being checked
 	 * @return whether the enchantment is allowed to apply to the stack
-	 * @see FabricItem#canBeEnchantedWith(ItemStack, RegistryEntry, EnchantingContext)
+	 * @see FabricItem#canBeEnchantedWith(ItemStack, Holder, EnchantingContext)
 	 */
-	default boolean canBeEnchantedWith(RegistryEntry<Enchantment> enchantment, EnchantingContext context) {
+	default boolean canBeEnchantedWith(Holder<Enchantment> enchantment, EnchantingContext context) {
 		TriState result = EnchantmentEvents.ALLOW_ENCHANTING.invoker().allowEnchanting(
 				enchantment,
 				(ItemStack) this,

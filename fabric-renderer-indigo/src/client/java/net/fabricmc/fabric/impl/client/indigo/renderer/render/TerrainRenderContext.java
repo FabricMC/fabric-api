@@ -19,22 +19,22 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkSectionPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ReportedException;
+import net.minecraft.CrashReport;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
@@ -44,12 +44,12 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 public class TerrainRenderContext extends AbstractTerrainRenderContext {
 	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
 
-	private MatrixStack matrixStack;
-	private Random random;
-	private Function<BlockRenderLayer, BufferBuilder> bufferFunc;
+	private PoseStack matrixStack;
+	private RandomSource random;
+	private Function<ChunkSectionLayer, BufferBuilder> bufferFunc;
 
 	public TerrainRenderContext() {
-		overlay = OverlayTexture.DEFAULT_UV;
+		overlay = OverlayTexture.NO_OVERLAY;
 	}
 
 	@Override
@@ -58,11 +58,11 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 	}
 
 	@Override
-	protected VertexConsumer getVertexConsumer(BlockRenderLayer layer) {
+	protected VertexConsumer getVertexConsumer(ChunkSectionLayer layer) {
 		return bufferFunc.apply(layer);
 	}
 
-	public void prepare(BlockRenderView blockView, BlockPos sectionOrigin, MatrixStack matrixStack, Random random, Function<BlockRenderLayer, BufferBuilder> bufferFunc) {
+	public void prepare(BlockAndTintGetter blockView, BlockPos sectionOrigin, PoseStack matrixStack, RandomSource random, Function<ChunkSectionLayer, BufferBuilder> bufferFunc) {
 		blockInfo.prepareForWorld(blockView, true);
 		((LightDataCache) lightDataProvider).prepare(sectionOrigin);
 
@@ -82,25 +82,25 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 
 	/** Called from section builder hook. */
 	public void bufferModel(BlockStateModel model, BlockState blockState, BlockPos blockPos) {
-		matrixStack.push();
+		matrixStack.pushPose();
 
 		try {
-			matrixStack.translate(ChunkSectionPos.getLocalCoord(blockPos.getX()), ChunkSectionPos.getLocalCoord(blockPos.getY()), ChunkSectionPos.getLocalCoord(blockPos.getZ()));
-			Vec3d offset = blockState.getModelOffset(blockPos);
+			matrixStack.translate(SectionPos.sectionRelative(blockPos.getX()), SectionPos.sectionRelative(blockPos.getY()), SectionPos.sectionRelative(blockPos.getZ()));
+			Vec3 offset = blockState.getOffset(blockPos);
 			matrixStack.translate(offset.x, offset.y, offset.z);
-			matrices = matrixStack.peek();
+			matrices = matrixStack.last();
 
-			random.setSeed(blockState.getRenderingSeed(blockPos));
+			random.setSeed(blockState.getSeed(blockPos));
 
 			prepare(blockPos, blockState);
 			model.emitQuads(getEmitter(), blockInfo.blockView, blockPos, blockState, random, blockInfo::shouldCullSide);
 		} catch (Throwable throwable) {
-			CrashReport crashReport = CrashReport.create(throwable, "Tessellating block in world - Indigo Renderer");
-			CrashReportSection crashReportSection = crashReport.addElement("Block being tessellated");
-			CrashReportSection.addBlockInfo(crashReportSection, blockInfo.blockView, blockPos, blockState);
-			throw new CrashException(crashReport);
+			CrashReport crashReport = CrashReport.forThrowable(throwable, "Tessellating block in world - Indigo Renderer");
+			CrashReportCategory crashReportSection = crashReport.addCategory("Block being tessellated");
+			CrashReportCategory.populateBlockDetails(crashReportSection, blockInfo.blockView, blockPos, blockState);
+			throw new ReportedException(crashReport);
 		} finally {
-			matrixStack.pop();
+			matrixStack.popPose();
 		}
 	}
 
@@ -119,17 +119,17 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 			this.blockInfo = blockInfo;
 		}
 
-		private final WorldRenderer.BrightnessGetter lightGetter = (world, pos) -> {
+		private final LevelRenderer.BrightnessGetter lightGetter = (world, pos) -> {
 			int cacheIndex = cacheIndex(pos);
 
 			if (cacheIndex == -1) {
-				return WorldRenderer.BrightnessGetter.DEFAULT.packedBrightness(world, pos);
+				return LevelRenderer.BrightnessGetter.DEFAULT.packedBrightness(world, pos);
 			}
 
 			int result = lightCache[cacheIndex];
 
 			if (result == Integer.MAX_VALUE) {
-				result = WorldRenderer.BrightnessGetter.DEFAULT.packedBrightness(world, pos);
+				result = LevelRenderer.BrightnessGetter.DEFAULT.packedBrightness(world, pos);
 				lightCache[cacheIndex] = result;
 			}
 
@@ -145,7 +145,7 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 
 		@Override
 		public int light(BlockPos pos, BlockState state) {
-			return WorldRenderer.getLightmapCoordinates(lightGetter, blockInfo.blockView, state, pos);
+			return LevelRenderer.getLightColor(lightGetter, blockInfo.blockView, state, pos);
 		}
 
 		@Override

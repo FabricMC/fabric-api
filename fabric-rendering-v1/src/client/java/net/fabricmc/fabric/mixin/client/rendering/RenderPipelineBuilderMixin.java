@@ -34,8 +34,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.gl.Defines;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.ShaderDefines;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
 import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineImpl;
@@ -76,7 +76,7 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 	private RenderPipeline.Snippet copyUsePipelineDrawModeForGuiToSnippet(
 			Optional<Identifier> vertexShader,
 			Optional<Identifier> fragmentShader,
-			Optional<Defines> shaderDefines,
+			Optional<ShaderDefines> shaderDefines,
 			Optional<List<String>> samplers,
 			Optional<List<RenderPipeline.UniformDescription>> uniforms,
 			Optional<BlendFunction> blendFunction,
@@ -88,7 +88,7 @@ class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
 			Optional<Boolean> writeDepth,
 			Optional<LogicOp> colorLogic,
 			Optional<VertexFormat> vertexFormat,
-			Optional<VertexFormat.DrawMode> vertexFormatMode,
+			Optional<VertexFormat.Mode> vertexFormatMode,
 			Operation<RenderPipeline.Snippet> original
 	) {
 		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(vertexShader, fragmentShader, shaderDefines, samplers, uniforms, blendFunction, depthTestFunction, polygonMode, cull, writeColor, writeAlpha, writeDepth, colorLogic, vertexFormat, vertexFormatMode), usePipelineDrawModeForGui);

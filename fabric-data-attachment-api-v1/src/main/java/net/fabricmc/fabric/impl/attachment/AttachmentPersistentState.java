@@ -25,48 +25,48 @@ import com.mojang.serialization.Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.storage.NbtReadView;
-import net.minecraft.storage.NbtWriteView;
-import net.minecraft.storage.ReadView;
-import net.minecraft.util.ErrorReporter;
-import net.minecraft.world.PersistentState;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.saveddata.SavedData;
 
 /**
  * Backing storage for server-side world attachments.
  * Thanks to custom {@link #isDirty()} logic, the file is only written if something needs to be persisted.
  */
-public class AttachmentPersistentState extends PersistentState {
+public class AttachmentPersistentState extends SavedData {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentPersistentState.class);
 	public static final String ID = "fabric_attachments";
 	private final AttachmentTargetImpl worldTarget;
 	private final boolean wasSerialized;
 
-	public AttachmentPersistentState(ServerWorld world) {
+	public AttachmentPersistentState(ServerLevel world) {
 		this.worldTarget = (AttachmentTargetImpl) world;
 		this.wasSerialized = worldTarget.fabric_hasPersistentAttachments();
 	}
 
 	// TODO 1.21.5 look at making this more idiomatic
-	public static Codec<AttachmentPersistentState> codec(ServerWorld world) {
-		final ErrorReporter.Context reporterContext = () -> "AttachmentPersistentState @ " + world.getRegistryKey().getValue();
+	public static Codec<AttachmentPersistentState> codec(ServerLevel world) {
+		final ProblemReporter.PathElement reporterContext = () -> "AttachmentPersistentState @ " + world.dimension().identifier();
 
 		return Codec.of(new Encoder<>() {
 			@Override
 			public <T> DataResult<T> encode(AttachmentPersistentState input, DynamicOps<T> ops, T prefix) {
-				try (ErrorReporter.Logging reporter = new ErrorReporter.Logging(reporterContext, LOGGER)) {
-					NbtWriteView writeView = NbtWriteView.create(reporter);
+				try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(reporterContext, LOGGER)) {
+					TagValueOutput writeView = TagValueOutput.createWithoutContext(reporter);
 					((AttachmentTargetImpl) world).fabric_writeAttachmentsToNbt(writeView);
-					return DataResult.success(NbtOps.INSTANCE.convertTo(ops, writeView.getNbt()));
+					return DataResult.success(NbtOps.INSTANCE.convertTo(ops, writeView.buildResult()));
 				}
 			}
 		}, new Decoder<>() {
 			@Override
 			public <T> DataResult<Pair<AttachmentPersistentState, T>> decode(DynamicOps<T> ops, T input) {
-				try (ErrorReporter.Logging reporter = new ErrorReporter.Logging(reporterContext, LOGGER)) {
-					ReadView readView = NbtReadView.create(reporter, world.getRegistryManager(), (NbtCompound) ops.convertTo(NbtOps.INSTANCE, input));
+				try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(reporterContext, LOGGER)) {
+					ValueInput readView = TagValueInput.create(reporter, world.registryAccess(), (CompoundTag) ops.convertTo(NbtOps.INSTANCE, input));
 					((AttachmentTargetImpl) world).fabric_readAttachmentsFromNbt(readView);
 					return DataResult.success(Pair.of(new AttachmentPersistentState(world), ops.empty()));
 				}

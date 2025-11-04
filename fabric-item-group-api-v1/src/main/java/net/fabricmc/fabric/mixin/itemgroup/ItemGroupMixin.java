@@ -28,11 +28,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
@@ -40,39 +40,39 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupImpl;
 import net.fabricmc.fabric.impl.itemgroup.ItemGroupEventsImpl;
 
-@Mixin(ItemGroup.class)
+@Mixin(CreativeModeTab.class)
 abstract class ItemGroupMixin implements FabricItemGroupImpl {
 	@Shadow
-	private Collection<ItemStack> displayStacks;
+	private Collection<ItemStack> displayItems;
 
 	@Shadow
-	private Set<ItemStack> searchTabStacks;
+	private Set<ItemStack> displayItemsSearchTab;
 
 	@Unique
 	private int page = -1;
 
 	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "updateEntries", at = @At("TAIL"))
-	public void getStacks(ItemGroup.DisplayContext context, CallbackInfo ci) {
-		final ItemGroup self = (ItemGroup) (Object) this;
-		final RegistryKey<ItemGroup> registryKey = Registries.ITEM_GROUP.getKey(self).orElseThrow(() -> new IllegalStateException("Unregistered item group : " + self));
+	@Inject(method = "buildContents", at = @At("TAIL"))
+	public void getStacks(CreativeModeTab.ItemDisplayParameters context, CallbackInfo ci) {
+		final CreativeModeTab self = (CreativeModeTab) (Object) this;
+		final ResourceKey<CreativeModeTab> registryKey = BuiltInRegistries.CREATIVE_MODE_TAB.getResourceKey(self).orElseThrow(() -> new IllegalStateException("Unregistered item group : " + self));
 
 		// Do not modify special item groups (except Operator Blocks) at all.
 		// Special item groups include Saved Hotbars, Search, and Survival Inventory.
 		// Note, search gets modified as part of the parent item group.
-		if (self.isSpecial() && registryKey != ItemGroups.OPERATOR) return;
+		if (self.isAlignedRight() && registryKey != CreativeModeTabs.OP_BLOCKS) return;
 
 		// Sanity check for the injection point. It should be after these fields are set.
-		Objects.requireNonNull(displayStacks, "displayStacks");
-		Objects.requireNonNull(searchTabStacks, "searchTabStacks");
+		Objects.requireNonNull(displayItems, "displayStacks");
+		Objects.requireNonNull(displayItemsSearchTab, "searchTabStacks");
 
 		// Convert the entries to lists
-		var mutableDisplayStacks = new LinkedList<>(displayStacks);
-		var mutableSearchTabStacks = new LinkedList<>(searchTabStacks);
+		var mutableDisplayStacks = new LinkedList<>(displayItems);
+		var mutableSearchTabStacks = new LinkedList<>(displayItemsSearchTab);
 		var entries = new FabricItemGroupEntries(context, mutableDisplayStacks, mutableSearchTabStacks);
 
 		// Now trigger the events
-		if (registryKey != ItemGroups.OPERATOR || context.hasPermissions()) {
+		if (registryKey != CreativeModeTabs.OP_BLOCKS || context.hasPermissions()) {
 			final Event<ItemGroupEvents.ModifyEntries> modifyEntriesEvent = ItemGroupEventsImpl.getModifyEntriesEvent(registryKey);
 
 			if (modifyEntriesEvent != null) {
@@ -83,11 +83,11 @@ abstract class ItemGroupMixin implements FabricItemGroupImpl {
 		}
 
 		// Convert the stacks back to sets after the events had a chance to modify them
-		displayStacks.clear();
-		displayStacks.addAll(mutableDisplayStacks);
+		displayItems.clear();
+		displayItems.addAll(mutableDisplayStacks);
 
-		searchTabStacks.clear();
-		searchTabStacks.addAll(mutableSearchTabStacks);
+		displayItemsSearchTab.clear();
+		displayItemsSearchTab.addAll(mutableSearchTabStacks);
 	}
 
 	@Override

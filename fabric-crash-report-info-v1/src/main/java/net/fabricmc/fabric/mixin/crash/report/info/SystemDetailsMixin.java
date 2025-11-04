@@ -27,14 +27,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.util.SystemDetails;
+import net.minecraft.SystemReport;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
-@Mixin(SystemDetails.class)
+@Mixin(SystemReport.class)
 public abstract class SystemDetailsMixin {
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	public abstract void addSection(String string, Supplier<String> supplier);
 
 	@Inject(at = @At("RETURN"), method = "<init>")

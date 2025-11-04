@@ -22,18 +22,18 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.client.render.item.model.BasicItemModel;
-import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.model.BakedGeometry;
+import net.minecraft.client.renderer.item.BlockModelWrapper;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.resources.model.QuadCollection;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
 import net.fabricmc.fabric.impl.renderer.BasicItemModelExtension;
 
-@Mixin(BasicItemModel.Unbaked.class)
+@Mixin(BlockModelWrapper.Unbaked.class)
 abstract class BasicItemModelUnbakedMixin {
-	@ModifyExpressionValue(method = "bake", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BakedSimpleModel.bakeGeometry(Lnet/minecraft/client/render/model/ModelTextures;Lnet/minecraft/client/render/model/Baker;Lnet/minecraft/client/render/model/ModelBakeSettings;)Lnet/minecraft/client/render/model/BakedGeometry;"))
-	private BakedGeometry captureMesh(BakedGeometry geometry, @Share("mesh") LocalRef<Mesh> meshRef) {
+	@ModifyExpressionValue(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/BlockModelWrapper$Unbaked;net/minecraft/client/render/model/BakedSimpleModel.bakeGeometry(Lnet/minecraft/client/renderer/block/model/TextureSlots;Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/client/resources/model/ModelState;)Lnet/minecraft/client/resources/model/QuadCollection;"))
+	private QuadCollection captureMesh(QuadCollection geometry, @Share("mesh") LocalRef<Mesh> meshRef) {
 		if (geometry instanceof MeshBakedGeometry meshBakedGeometry) {
 			meshRef.set(meshBakedGeometry.getMesh());
 		}
@@ -41,12 +41,12 @@ abstract class BasicItemModelUnbakedMixin {
 		return geometry;
 	}
 
-	@ModifyExpressionValue(method = "bake", at = @At(value = "NEW", target = "net/minecraft/client/render/item/model/BasicItemModel"))
-	private BasicItemModel injectMesh(BasicItemModel model, ItemModel.BakeContext context, @Share("mesh") LocalRef<Mesh> meshRef) {
+	@ModifyExpressionValue(method = "bake", at = @At(value = "NEW", target = "net/minecraft/client/renderer/item/BlockModelWrapper"))
+	private BlockModelWrapper injectMesh(BlockModelWrapper model, ItemModel.BakingContext context, @Share("mesh") LocalRef<Mesh> meshRef) {
 		Mesh mesh = meshRef.get();
 
 		if (mesh != null) {
-			((BasicItemModelExtension) model).fabric_setMesh(mesh, context.blockModelBaker().getSpriteGetter());
+			((BasicItemModelExtension) model).fabric_setMesh(mesh, context.blockModelBaker().sprites());
 		}
 
 		return model;

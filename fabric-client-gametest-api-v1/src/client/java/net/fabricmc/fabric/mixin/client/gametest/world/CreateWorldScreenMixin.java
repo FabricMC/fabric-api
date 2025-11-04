@@ -25,23 +25,23 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.registry.CombinedDynamicRegistries;
-import net.minecraft.registry.ServerDynamicRegistryType;
-import net.minecraft.world.level.LevelProperties;
+import net.minecraft.core.LayeredRegistryAccess;
+import net.minecraft.server.RegistryLayer;
+import net.minecraft.world.level.storage.PrimaryLevelData;
 
 import net.fabricmc.fabric.impl.client.gametest.util.ClientGameTestImpl;
 import net.fabricmc.fabric.impl.client.gametest.util.DedicatedServerImplUtil;
 
 @Mixin(CreateWorldScreen.class)
 public class CreateWorldScreenMixin {
-	@Inject(method = "createLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServerLoader;tryLoad(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;Lcom/mojang/serialization/Lifecycle;Ljava/lang/Runnable;Z)V"), cancellable = true)
-	private void createLevelDataForServers(CallbackInfo ci, @Local CombinedDynamicRegistries<ServerDynamicRegistryType> dynamicRegistries, @Local LevelProperties levelProperties) {
+	@Inject(method = "onCreate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/worldselection/WorldOpenFlows;confirmWorldCreation(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/gui/screens/worldselection/CreateWorldScreen;Lcom/mojang/serialization/Lifecycle;Ljava/lang/Runnable;Z)V"), cancellable = true)
+	private void createLevelDataForServers(CallbackInfo ci, @Local LayeredRegistryAccess<RegistryLayer> dynamicRegistries, @Local PrimaryLevelData levelProperties) {
 		if (DedicatedServerImplUtil.saveLevelDataTo != null) {
-			NbtCompound levelDatInner = levelProperties.cloneWorldNbt(dynamicRegistries.getCombinedRegistryManager(), null);
-			NbtCompound levelDat = new NbtCompound();
+			CompoundTag levelDatInner = levelProperties.createTag(dynamicRegistries.compositeAccess(), null);
+			CompoundTag levelDat = new CompoundTag();
 			levelDat.put("Data", levelDatInner);
 
 			try {

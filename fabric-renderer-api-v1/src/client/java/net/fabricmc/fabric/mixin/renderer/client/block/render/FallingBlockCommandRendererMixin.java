@@ -26,17 +26,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.OutlineVertexConsumerProvider;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.block.MovingBlockRenderState;
-import net.minecraft.client.render.command.BatchingRenderCommandQueue;
-import net.minecraft.client.render.command.FallingBlockCommandRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.OutlineBufferSource;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
+import net.minecraft.client.renderer.SubmitNodeCollection;
+import net.minecraft.client.renderer.feature.BlockFeatureRenderer;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
@@ -45,44 +45,44 @@ import net.fabricmc.fabric.impl.renderer.DelegatingBlockVertexConsumerProviderIm
 import net.fabricmc.fabric.impl.renderer.ExtendedBlockCommand;
 import net.fabricmc.fabric.impl.renderer.ExtendedBlockStateModelCommand;
 
-@Mixin(FallingBlockCommandRenderer.class)
+@Mixin(BlockFeatureRenderer.class)
 abstract class FallingBlockCommandRendererMixin {
 	@Shadow
 	@Final
-	private MatrixStack matrices;
+	private PoseStack poseStack;
 
 	// Support multi-render layer models (MovingBlockCommand).
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "java/util/Iterator.hasNext()Z", ordinal = 0))
-	private void beforeRenderMovingBlocks(BatchingRenderCommandQueue queue, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, OutlineVertexConsumerProvider outlineVertexConsumers, CallbackInfo ci, @Local Iterator<OrderedRenderCommandQueueImpl.MovingBlockCommand> iterator) {
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/BlockFeatureRenderer;java/util/Iterator.hasNext()Z", ordinal = 0))
+	private void beforeRenderMovingBlocks(SubmitNodeCollection queue, MultiBufferSource.BufferSource vertexConsumers, BlockRenderDispatcher blockRenderManager, OutlineBufferSource outlineVertexConsumers, CallbackInfo ci, @Local Iterator<SubmitNodeStorage.MovingBlockSubmit> iterator) {
 		while (iterator.hasNext()) {
-			OrderedRenderCommandQueueImpl.MovingBlockCommand command = iterator.next();
+			SubmitNodeStorage.MovingBlockSubmit command = iterator.next();
 			MovingBlockRenderState renderState = command.movingBlockRenderState();
 			BlockState blockState = renderState.blockState;
-			BlockStateModel model = blockRenderManager.getModel(blockState);
-			long seed = blockState.getRenderingSeed(renderState.fallingBlockPos);
-			matrices.push();
-			matrices.multiplyPositionMatrix(command.matricesEntry());
-			blockRenderManager.getModelRenderer().render(renderState, model, blockState, renderState.entityBlockPos, matrices, RenderLayerHelper.movingDelegate(vertexConsumers), false, seed, OverlayTexture.DEFAULT_UV);
-			matrices.pop();
+			BlockStateModel model = blockRenderManager.getBlockModel(blockState);
+			long seed = blockState.getSeed(renderState.randomSeedPos);
+			poseStack.pushPose();
+			poseStack.mulPose(command.pose());
+			blockRenderManager.getModelRenderer().render(renderState, model, blockState, renderState.blockPos, poseStack, RenderLayerHelper.movingDelegate(vertexConsumers), false, seed, OverlayTexture.NO_OVERLAY);
+			poseStack.popPose();
 		}
 	}
 
 	// Support ExtendedBlockCommand and ExtendedBlockStateModelCommand.
 	@Inject(method = "render", at = @At("RETURN"))
-	private void onReturnRender(BatchingRenderCommandQueue queue, VertexConsumerProvider.Immediate vertexConsumers, BlockRenderManager blockRenderManager, OutlineVertexConsumerProvider outlineVertexConsumers, CallbackInfo ci) {
+	private void onReturnRender(SubmitNodeCollection queue, MultiBufferSource.BufferSource vertexConsumers, BlockRenderDispatcher blockRenderManager, OutlineBufferSource outlineVertexConsumers, CallbackInfo ci) {
 		DelegatingBlockVertexConsumerProviderImpl blockVertexConsumerProvider = new DelegatingBlockVertexConsumerProviderImpl();
 
 		for (ExtendedBlockCommand command : ((BatchingRenderCommandQueueExtension) queue).fabric_getExtendedBlockCommands()) {
-			matrices.push();
-			matrices.peek().copy(command.matricesEntry());
-			blockRenderManager.renderBlockAsEntity(command.state(), matrices, vertexConsumers, command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos());
+			poseStack.pushPose();
+			poseStack.last().set(command.matricesEntry());
+			blockRenderManager.renderBlockAsEntity(command.state(), poseStack, vertexConsumers, command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos());
 
 			if (command.outlineColor() != 0) {
 				outlineVertexConsumers.setColor(command.outlineColor());
-				blockRenderManager.renderBlockAsEntity(command.state(), matrices, outlineVertexConsumers, command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos());
+				blockRenderManager.renderBlockAsEntity(command.state(), poseStack, outlineVertexConsumers, command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos());
 			}
 
-			matrices.pop();
+			poseStack.popPose();
 		}
 
 		for (ExtendedBlockStateModelCommand command : ((BatchingRenderCommandQueueExtension) queue).fabric_getExtendedBlockStateModelCommands()) {

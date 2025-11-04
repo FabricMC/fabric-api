@@ -19,18 +19,24 @@ package net.fabricmc.fabric.mixin.attachment;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.world.World;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
-@Mixin(World.class)
+@Mixin(Level.class)
 abstract class WorldMixin implements AttachmentTargetImpl {
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	public abstract boolean isClient();
 
-	@Shadow
-	public abstract DynamicRegistryManager getRegistryManager();
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
+	public abstract RegistryAccess getRegistryManager();
 
 	@Override
 	public boolean fabric_shouldTryToSync() {
@@ -38,7 +44,7 @@ abstract class WorldMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
+	public RegistryAccess fabric_getDynamicRegistryManager() {
 		return getRegistryManager();
 	}
 }

@@ -21,24 +21,24 @@ import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 
 public sealed interface AttachmentTargetInfo<T> {
 	int MAX_SIZE_IN_BYTES = Byte.BYTES + Long.BYTES;
-	PacketCodec<ByteBuf, AttachmentTargetInfo<?>> PACKET_CODEC = PacketCodecs.BYTE.dispatch(
+	StreamCodec<ByteBuf, AttachmentTargetInfo<?>> PACKET_CODEC = ByteBufCodecs.BYTE.dispatch(
 			AttachmentTargetInfo::getId, Type::packetCodecFromId
 	);
 
@@ -49,29 +49,29 @@ public sealed interface AttachmentTargetInfo<T> {
 	}
 
 	@Nullable
-	AttachmentTarget getTarget(World world);
+	AttachmentTarget getTarget(Level world);
 
-	void appendDebugInformation(MutableText text);
+	void appendDebugInformation(MutableComponent text);
 
-	record Type<T>(byte id, PacketCodec<ByteBuf, ? extends AttachmentTargetInfo<T>> packetCodec) {
+	record Type<T>(byte id, StreamCodec<ByteBuf, ? extends AttachmentTargetInfo<T>> packetCodec) {
 		static Byte2ObjectMap<Type<?>> TYPES = new Byte2ObjectArrayMap<>();
 		static Type<BlockEntity> BLOCK_ENTITY = new Type<>((byte) 0, BlockEntityTarget.PACKET_CODEC);
 		static Type<Entity> ENTITY = new Type<>((byte) 1, EntityTarget.PACKET_CODEC);
-		static Type<Chunk> CHUNK = new Type<>((byte) 2, ChunkTarget.PACKET_CODEC);
-		static Type<World> WORLD = new Type<>((byte) 3, WorldTarget.PACKET_CODEC);
+		static Type<ChunkAccess> CHUNK = new Type<>((byte) 2, ChunkTarget.PACKET_CODEC);
+		static Type<Level> WORLD = new Type<>((byte) 3, WorldTarget.PACKET_CODEC);
 
 		public Type {
 			TYPES.put(id, this);
 		}
 
-		static PacketCodec<ByteBuf, ? extends AttachmentTargetInfo<?>> packetCodecFromId(byte id) {
+		static StreamCodec<ByteBuf, ? extends AttachmentTargetInfo<?>> packetCodecFromId(byte id) {
 			return TYPES.get(id).packetCodec;
 		}
 	}
 
 	record BlockEntityTarget(BlockPos pos) implements AttachmentTargetInfo<BlockEntity> {
-		static final PacketCodec<ByteBuf, BlockEntityTarget> PACKET_CODEC = PacketCodec.tuple(
-				BlockPos.PACKET_CODEC, BlockEntityTarget::pos,
+		static final StreamCodec<ByteBuf, BlockEntityTarget> PACKET_CODEC = StreamCodec.composite(
+				BlockPos.STREAM_CODEC, BlockEntityTarget::pos,
 				BlockEntityTarget::new
 		);
 
@@ -81,30 +81,30 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public AttachmentTarget getTarget(World world) {
+		public AttachmentTarget getTarget(Level world) {
 			return world.getBlockEntity(pos);
 		}
 
 		@Override
-		public void appendDebugInformation(MutableText text) {
+		public void appendDebugInformation(MutableComponent text) {
 			text
-					.append(Text.translatable(
+					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.target-type",
-							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.block-entity").formatted(Formatting.YELLOW)
+							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.block-entity").withStyle(ChatFormatting.YELLOW)
 					))
-					.append(ScreenTexts.LINE_BREAK);
+					.append(CommonComponents.NEW_LINE);
 			text
-					.append(Text.translatable(
+					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.block-entity-position",
-							Text.literal(pos.toShortString()).formatted(Formatting.YELLOW)
+							Component.literal(pos.toShortString()).withStyle(ChatFormatting.YELLOW)
 					))
-					.append(ScreenTexts.LINE_BREAK);
+					.append(CommonComponents.NEW_LINE);
 		}
 	}
 
 	record EntityTarget(int networkId) implements AttachmentTargetInfo<Entity> {
-		static final PacketCodec<ByteBuf, EntityTarget> PACKET_CODEC = PacketCodec.tuple(
-				PacketCodecs.VAR_INT, EntityTarget::networkId,
+		static final StreamCodec<ByteBuf, EntityTarget> PACKET_CODEC = StreamCodec.composite(
+				ByteBufCodecs.VAR_INT, EntityTarget::networkId,
 				EntityTarget::new
 		);
 
@@ -114,84 +114,84 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public AttachmentTarget getTarget(World world) {
-			return world.getEntityById(networkId);
+		public AttachmentTarget getTarget(Level world) {
+			return world.getEntity(networkId);
 		}
 
 		@Override
-		public void appendDebugInformation(MutableText text) {
+		public void appendDebugInformation(MutableComponent text) {
 			text
-					.append(Text.translatable(
+					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.target-type",
-							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.entity").formatted(Formatting.YELLOW)
+							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.entity").withStyle(ChatFormatting.YELLOW)
 					))
-					.append(ScreenTexts.LINE_BREAK);
+					.append(CommonComponents.NEW_LINE);
 			text
-					.append(Text.translatable(
+					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.entity-network-id",
-							Text.literal(String.valueOf(networkId)).formatted(Formatting.YELLOW)
+							Component.literal(String.valueOf(networkId)).withStyle(ChatFormatting.YELLOW)
 					))
-					.append(ScreenTexts.LINE_BREAK);
+					.append(CommonComponents.NEW_LINE);
 		}
 	}
 
-	record ChunkTarget(ChunkPos pos) implements AttachmentTargetInfo<Chunk> {
-		static final PacketCodec<ByteBuf, ChunkTarget> PACKET_CODEC = PacketCodecs.VAR_LONG
-				.xmap(ChunkPos::new, ChunkPos::toLong)
-				.xmap(ChunkTarget::new, ChunkTarget::pos);
+	record ChunkTarget(ChunkPos pos) implements AttachmentTargetInfo<ChunkAccess> {
+		static final StreamCodec<ByteBuf, ChunkTarget> PACKET_CODEC = ByteBufCodecs.VAR_LONG
+				.map(ChunkPos::new, ChunkPos::toLong)
+				.map(ChunkTarget::new, ChunkTarget::pos);
 
 		@Override
-		public Type<Chunk> getType() {
+		public Type<ChunkAccess> getType() {
 			return Type.CHUNK;
 		}
 
 		@Override
-		public AttachmentTarget getTarget(World world) {
+		public AttachmentTarget getTarget(Level world) {
 			return world.getChunk(pos.x, pos.z);
 		}
 
 		@Override
-		public void appendDebugInformation(MutableText text) {
+		public void appendDebugInformation(MutableComponent text) {
 			text
-					.append(Text.translatable(
+					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.target-type",
-							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.chunk").formatted(Formatting.YELLOW)
+							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.chunk").withStyle(ChatFormatting.YELLOW)
 					))
-					.append(ScreenTexts.LINE_BREAK);
+					.append(CommonComponents.NEW_LINE);
 			text
-					.append(Text.translatable(
+					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.chunk-position",
-							Text.literal(pos.x + ", " + pos.z).formatted(Formatting.YELLOW)
+							Component.literal(pos.x + ", " + pos.z).withStyle(ChatFormatting.YELLOW)
 					))
-					.append(ScreenTexts.LINE_BREAK);
+					.append(CommonComponents.NEW_LINE);
 		}
 	}
 
-	final class WorldTarget implements AttachmentTargetInfo<World> {
+	final class WorldTarget implements AttachmentTargetInfo<Level> {
 		public static final WorldTarget INSTANCE = new WorldTarget();
-		static final PacketCodec<ByteBuf, WorldTarget> PACKET_CODEC = PacketCodec.unit(INSTANCE);
+		static final StreamCodec<ByteBuf, WorldTarget> PACKET_CODEC = StreamCodec.unit(INSTANCE);
 
 		private WorldTarget() {
 		}
 
 		@Override
-		public Type<World> getType() {
+		public Type<Level> getType() {
 			return Type.WORLD;
 		}
 
 		@Override
-		public AttachmentTarget getTarget(World world) {
+		public AttachmentTarget getTarget(Level world) {
 			return world;
 		}
 
 		@Override
-		public void appendDebugInformation(MutableText text) {
+		public void appendDebugInformation(MutableComponent text) {
 			text
-					.append(Text.translatable(
+					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.target-type",
-							Text.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.world").formatted(Formatting.YELLOW)
+							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.world").withStyle(ChatFormatting.YELLOW)
 					))
-					.append(ScreenTexts.LINE_BREAK);
+					.append(CommonComponents.NEW_LINE);
 		}
 	}
 }

@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public interface FabricRegistryByteBuf {
 	void fabric_setSendableConfigurationChannels(Set<Identifier> globalChannels);

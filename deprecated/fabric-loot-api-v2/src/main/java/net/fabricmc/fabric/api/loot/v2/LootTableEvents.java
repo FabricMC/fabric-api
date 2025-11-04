@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.loot.v2;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -63,7 +63,7 @@ public final class LootTableEvents {
 	 * They have the loot table source {@link LootTableSource#REPLACED}.
 	 *
 	 * <h2>Example: adding diamonds to the cobblestone loot table</h2>
-	 * We'll add a new diamond {@linkplain net.minecraft.loot.LootPool loot pool} to the cobblestone loot table
+	 * We'll add a new diamond {@linkplain net.minecraft.world.level.storage.loot.LootPool loot pool} to the cobblestone loot table
 	 * that will be dropped alongside the original cobblestone loot pool.
 	 *
 	 * <p>If you want only one of the items to drop, you can use
@@ -121,7 +121,7 @@ public final class LootTableEvents {
 		 * @return the new loot table, or null if it wasn't replaced
 		 */
 		@Nullable
-		LootTable replaceLootTable(RegistryKey<LootTable> key, LootTable original, LootTableSource source);
+        LootTable replaceLootTable(ResourceKey<LootTable> key, LootTable original, LootTableSource source);
 	}
 
 	@Deprecated
@@ -133,7 +133,7 @@ public final class LootTableEvents {
 		 * @param tableBuilder    a builder of the loot table being loaded
 		 * @param source          the source of the loot table
 		 */
-		void modifyLootTable(RegistryKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source);
+		void modifyLootTable(ResourceKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source);
 	}
 
 	@Deprecated

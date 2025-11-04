@@ -18,13 +18,13 @@ package net.fabricmc.fabric.impl.client.rendering.world;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.SectionRenderState;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.state.WorldRenderState;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.LevelRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.world.AbstractWorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
@@ -32,22 +32,22 @@ import net.fabricmc.fabric.api.client.rendering.v1.world.WorldTerrainRenderConte
 
 public final class WorldRenderContextImpl implements AbstractWorldRenderContext, WorldTerrainRenderContext, WorldRenderContext {
 	private GameRenderer gameRenderer;
-	private WorldRenderer worldRenderer;
-	private WorldRenderState worldRenderState;
+	private LevelRenderer worldRenderer;
+	private LevelRenderState worldRenderState;
 
-	private SectionRenderState sectionRenderState;
-	private OrderedRenderCommandQueue commandQueue;
+	private ChunkSectionsToRender sectionRenderState;
+	private SubmitNodeCollector commandQueue;
 	@Nullable
-	private MatrixStack matrixStack;
-	private VertexConsumerProvider consumers;
+	private PoseStack matrixStack;
+	private MultiBufferSource consumers;
 
 	public void prepare(
-			GameRenderer gameRenderer,
-			WorldRenderer worldRenderer,
-			WorldRenderState worldRenderState,
-			SectionRenderState sectionRenderState,
-			OrderedRenderCommandQueue commandQueue,
-			VertexConsumerProvider consumers
+            GameRenderer gameRenderer,
+            LevelRenderer worldRenderer,
+            LevelRenderState worldRenderState,
+            ChunkSectionsToRender sectionRenderState,
+            SubmitNodeCollector commandQueue,
+            MultiBufferSource consumers
 	) {
 		this.gameRenderer = gameRenderer;
 		this.worldRenderer = worldRenderer;
@@ -60,7 +60,7 @@ public final class WorldRenderContextImpl implements AbstractWorldRenderContext,
 		matrixStack = null;
 	}
 
-	public void setMatrixStack(@Nullable MatrixStack matrixStack) {
+	public void setMatrixStack(@Nullable PoseStack matrixStack) {
 		this.matrixStack = matrixStack;
 	}
 
@@ -70,33 +70,33 @@ public final class WorldRenderContextImpl implements AbstractWorldRenderContext,
 	}
 
 	@Override
-	public WorldRenderer worldRenderer() {
+	public LevelRenderer worldRenderer() {
 		return worldRenderer;
 	}
 
 	@Override
-	public WorldRenderState worldState() {
+	public LevelRenderState worldState() {
 		return worldRenderState;
 	}
 
 	@Override
-	public SectionRenderState sectionState() {
+	public ChunkSectionsToRender sectionState() {
 		return sectionRenderState;
 	}
 
 	@Override
-	public OrderedRenderCommandQueue commandQueue() {
+	public SubmitNodeCollector commandQueue() {
 		return commandQueue;
 	}
 
 	@Override
 	@Nullable
-	public MatrixStack matrices() {
+	public PoseStack matrices() {
 		return matrixStack;
 	}
 
 	@Override
-	public VertexConsumerProvider consumers() {
+	public MultiBufferSource consumers() {
 		return consumers;
 	}
 }

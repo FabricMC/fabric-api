@@ -21,17 +21,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.minecraft.block.WoodType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.GuiRenderer;
-import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
-import net.minecraft.client.gui.render.state.special.SignGuiElementRenderState;
-import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
+import net.minecraft.client.gui.render.state.pip.GuiSignRenderState;
+import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.render.block.entity.SignBlockEntityRenderer;
-import net.minecraft.util.DyeColor;
+import net.minecraft.client.renderer.blockentity.SignRenderer;
+import net.minecraft.world.item.DyeColor;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -55,12 +55,12 @@ public class SpecialGuiElementRendererTest implements ClientModInitializer, Fabr
 		//noinspection deprecation
 		HudRenderCallback.EVENT.register((context, tickCounter) -> {
 			// render it twice to test that special GUI elements can be added multiple times in the same frame
-			context.state.addSpecialElement(new BannerGuiElementRenderState(DyeColor.BLUE, 20, 0, 40, 20, new ScreenRect(20, 0, 40, 20)));
-			context.state.addSpecialElement(new BannerGuiElementRenderState(DyeColor.RED, 40, 0, 60, 20, new ScreenRect(40, 0, 60, 20)));
+			context.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 20, 0, 40, 20, new ScreenRectangle(20, 0, 40, 20)));
+			context.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.RED, 40, 0, 60, 20, new ScreenRectangle(40, 0, 60, 20)));
 
 			// also render some vanilla special GUI elements to check that they still work and can be rendered multiple times
-			context.state.addSpecialElement(createSignState(60, WoodType.BIRCH));
-			context.state.addSpecialElement(createSignState(80, WoodType.DARK_OAK));
+			context.guiRenderState.submitPicturesInPictureState(createSignState(60, WoodType.BIRCH));
+			context.guiRenderState.submitPicturesInPictureState(createSignState(80, WoodType.DARK_OAK));
 		});
 
 		// Test that InventoryScreen.drawEntity works with the same type of entity more than once
@@ -69,25 +69,25 @@ public class SpecialGuiElementRendererTest implements ClientModInitializer, Fabr
 				ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, tickDelta) -> {
 					// no need to modify anything about this player, since they're in different locations they will be
 					// looking towards the mouse at different angles
-					InventoryScreen.drawEntity(context, 26, 8, 75, 78, 30, 0.0625F, mouseX, mouseY, client.player);
+					InventoryScreen.renderEntityInInventoryFollowsMouse(context, 26, 8, 75, 78, 30, 0.0625F, mouseX, mouseY, client.player);
 				});
 			}
 		});
 	}
 
-	private static SignGuiElementRenderState createSignState(int x, WoodType woodType) {
-		Model.SinglePartModel signModel = SignBlockEntityRenderer.createSignModel(MinecraftClient.getInstance().getLoadedEntityModels(), woodType, true);
-		return new SignGuiElementRenderState(signModel, woodType, x, 0, x + 20, 20, 10f, new ScreenRect(x, 0, x + 20, 20));
+	private static GuiSignRenderState createSignState(int x, WoodType woodType) {
+		Model.Simple signModel = SignRenderer.createSignModel(Minecraft.getInstance().getEntityModels(), woodType, true);
+		return new GuiSignRenderState(signModel, woodType, x, 0, x + 20, 20, 10f, new ScreenRectangle(x, 0, x + 20, 20));
 	}
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		context.runOnClient(client -> {
 			GuiRenderer guiRenderer = ((GameRendererAccessor) client.gameRenderer).getGuiRenderer();
-			Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> specialElementRenderers = ((GuiRendererAccessor) guiRenderer).getSpecialElementRenderers();
-			Set<Class<? extends SpecialGuiElementRenderState>> missingRenderFactories = new HashSet<>(specialElementRenderers.keySet());
+			Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRenderer<?>> specialElementRenderers = ((GuiRendererAccessor) guiRenderer).getSpecialElementRenderers();
+			Set<Class<? extends PictureInPictureRenderState>> missingRenderFactories = new HashSet<>(specialElementRenderers.keySet());
 
-			for (Class<? extends SpecialGuiElementRenderState> registeredFactoryStateClass : SpecialGuiElementRegistryImpl.getRegisteredFactoryStateClasses()) {
+			for (Class<? extends PictureInPictureRenderState> registeredFactoryStateClass : SpecialGuiElementRegistryImpl.getRegisteredFactoryStateClasses()) {
 				missingRenderFactories.remove(registeredFactoryStateClass);
 			}
 

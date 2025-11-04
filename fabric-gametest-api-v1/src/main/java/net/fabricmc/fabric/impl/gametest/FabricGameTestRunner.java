@@ -24,12 +24,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.resource.ResourceFinder;
-import net.minecraft.resource.ResourcePackManager;
+import net.minecraft.resources.FileToIdConverter;
+import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.test.TestFailureLogger;
-import net.minecraft.test.TestServer;
-import net.minecraft.world.level.storage.LevelStorage;
+import net.minecraft.gametest.framework.GlobalTestReporter;
+import net.minecraft.gametest.framework.GameTestServer;
+import net.minecraft.world.level.storage.LevelStorageSource;
 
 public final class FabricGameTestRunner {
 	public static final boolean ENABLED = System.getProperty(GameTestSystemProperties.ENABLED) != null;
@@ -37,17 +37,17 @@ public final class FabricGameTestRunner {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricGameTestRunner.class);
 	private static final String GAMETEST_STRUCTURE_PATH = "gametest/structure";
 
-	public static final ResourceFinder GAMETEST_STRUCTURE_FINDER = new ResourceFinder(GAMETEST_STRUCTURE_PATH, ".snbt");
+	public static final FileToIdConverter GAMETEST_STRUCTURE_FINDER = new FileToIdConverter(GAMETEST_STRUCTURE_PATH, ".snbt");
 
 	private FabricGameTestRunner() {
 	}
 
-	public static void runHeadlessServer(LevelStorage.Session session, ResourcePackManager resourcePackManager) {
+	public static void runHeadlessServer(LevelStorageSource.LevelStorageAccess session, PackRepository resourcePackManager) {
 		String reportPath = System.getProperty(GameTestSystemProperties.REPORT_FILE);
 
 		if (reportPath != null) {
 			try {
-				TestFailureLogger.setCompletionListener(new SavingXmlReportingTestCompletionListener(new File(reportPath)));
+				GlobalTestReporter.replaceWith(new SavingXmlReportingTestCompletionListener(new File(reportPath)));
 			} catch (ParserConfigurationException e) {
 				throw new RuntimeException(e);
 			}
@@ -57,6 +57,6 @@ public final class FabricGameTestRunner {
 
 		Optional<String> filter = Optional.ofNullable(System.getProperty(GameTestSystemProperties.FILTER));
 		boolean verify = Boolean.getBoolean(GameTestSystemProperties.VERIFY);
-		MinecraftServer.startServer((thread) -> TestServer.create(thread, session, resourcePackManager, filter, verify));
+		MinecraftServer.spin((thread) -> GameTestServer.create(thread, session, resourcePackManager, filter, verify));
 	}
 }

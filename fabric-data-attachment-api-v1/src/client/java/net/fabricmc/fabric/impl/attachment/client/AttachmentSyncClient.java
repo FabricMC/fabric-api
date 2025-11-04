@@ -41,7 +41,7 @@ public class AttachmentSyncClient implements ClientModInitializer {
 				(payload, context) -> {
 					for (AttachmentChange attachmentChange : payload.attachments()) {
 						try {
-							attachmentChange.tryApply(context.client().world);
+							attachmentChange.tryApply(context.client().level);
 						} catch (AttachmentSyncException e) {
 							AttachmentEntrypoint.LOGGER.error("Error accepting attachment changes", e);
 							context.responseSender().disconnect(e.getText());

@@ -22,21 +22,21 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.client.sound.SoundLoader;
-import net.minecraft.client.sound.SoundSystem;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.SoundBufferLibrary;
+import net.minecraft.client.sounds.SoundEngine;
+import net.minecraft.resources.Identifier;
 
-@Mixin(SoundSystem.class)
+@Mixin(SoundEngine.class)
 public class SoundSystemMixin {
 	@Redirect(
-			method = "play(Lnet/minecraft/client/sound/SoundInstance;)Lnet/minecraft/client/sound/SoundSystem$PlayResult;",
+			method = "play(Lnet/minecraft/client/resources/sounds/SoundInstance;)Lnet/minecraft/client/sounds/SoundEngine$PlayResult;",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/sound/SoundLoader;loadStreamed(Lnet/minecraft/util/Identifier;Z)Ljava/util/concurrent/CompletableFuture;"
+					target = "Lnet/minecraft/client/sounds/SoundBufferLibrary;getStream(Lnet/minecraft/resources/Identifier;Z)Ljava/util/concurrent/CompletableFuture;"
 			)
 	)
-	private CompletableFuture<?> getStream(SoundLoader loader, Identifier id, boolean looping, SoundInstance sound) {
+	private CompletableFuture<?> getStream(SoundBufferLibrary loader, Identifier id, boolean looping, SoundInstance sound) {
 		return sound.getAudioStream(loader, id, looping);
 	}
 }

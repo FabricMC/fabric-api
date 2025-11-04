@@ -20,14 +20,14 @@ import java.nio.file.Path;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.data.DataOutput;
+import net.minecraft.data.PackOutput;
 
 import net.fabricmc.loader.api.ModContainer;
 
 /**
- * Extends {@link DataOutput} to keep track of the {@link ModContainer} that it originated from.
+ * Extends {@link PackOutput} to keep track of the {@link ModContainer} that it originated from.
  */
-public final class FabricDataOutput extends DataOutput {
+public final class FabricDataOutput extends PackOutput {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
 

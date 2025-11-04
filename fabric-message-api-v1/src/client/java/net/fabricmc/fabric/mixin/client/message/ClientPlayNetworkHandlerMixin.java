@@ -23,17 +23,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 
 /**
- * Mixin to {@link ClientPlayNetworkHandler} to listen for sending messages and commands.
+ * Mixin to {@link ClientPacketListener} to listen for sending messages and commands.
  * Priority set to 800 to inject before {@code fabric-command-api} so that this api will be called first.
  */
-@Mixin(value = ClientPlayNetworkHandler.class, priority = 800)
+@Mixin(value = ClientPacketListener.class, priority = 800)
 public abstract class ClientPlayNetworkHandlerMixin {
-	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "sendChat", at = @At("HEAD"), cancellable = true)
 	private void fabric_allowSendChatMessage(String _content, CallbackInfo ci, @Local(argsOnly = true) LocalRef<String> content) {
 		if (ClientSendMessageEvents.ALLOW_CHAT.invoker().allowSendChatMessage(content.get())) {
 			content.set(ClientSendMessageEvents.MODIFY_CHAT.invoker().modifySendChatMessage(content.get()));
@@ -44,7 +44,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		}
 	}
 
-	@Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "sendCommand", at = @At("HEAD"), cancellable = true)
 	private void fabric_allowSendCommandMessage(String _command, CallbackInfo ci, @Local(argsOnly = true) LocalRef<String> command) {
 		if (ClientSendMessageEvents.ALLOW_COMMAND.invoker().allowSendCommandMessage(command.get())) {
 			command.set(ClientSendMessageEvents.MODIFY_COMMAND.invoker().modifySendCommandMessage(command.get()));

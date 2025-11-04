@@ -23,21 +23,21 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.block.TranslucentBlock;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.color.world.BiomeColors;
-import net.minecraft.client.render.block.FluidRenderer;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.util.Atlases;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.HalfTransparentBlock;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.biome.Biomes;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -82,18 +82,18 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 
 	@Override
 	public boolean isBlockTransparent(Block block) {
-		return transparencyForOverlay.getOrDefault(block, block instanceof TranslucentBlock || block instanceof LeavesBlock);
+		return transparencyForOverlay.getOrDefault(block, block instanceof HalfTransparentBlock || block instanceof LeavesBlock);
 	}
 
-	public void onFluidRendererReload(FluidRenderer renderer, Sprite[] waterSprites, Sprite[] lavaSprites, Sprite waterOverlay) {
+	public void onFluidRendererReload(LiquidBlockRenderer renderer, TextureAtlasSprite[] waterSprites, TextureAtlasSprite[] lavaSprites, TextureAtlasSprite waterOverlay) {
 		FluidRenderingImpl.setVanillaRenderer(renderer);
 
 		WaterRenderHandler.INSTANCE.updateSprites(waterSprites, waterOverlay);
 		LavaRenderHandler.INSTANCE.updateSprites(lavaSprites);
 
-		SpriteAtlasTexture texture = MinecraftClient.getInstance()
+		TextureAtlas texture = Minecraft.getInstance()
 				.getAtlasManager()
-				.getAtlasTexture(Atlases.BLOCKS);
+				.getAtlasOrThrow(AtlasIds.BLOCKS);
 
 		for (FluidRenderHandler handler : handlers.values()) {
 			handler.reloadTextures(texture);
@@ -104,27 +104,27 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		public static final WaterRenderHandler INSTANCE = new WaterRenderHandler();
 
 		/**
-		 * The water color of {@link BiomeKeys#OCEAN}.
+		 * The water color of {@link Biomes#OCEAN}.
 		 */
 		private static final int DEFAULT_WATER_COLOR = 0x3f76e4;
 
-		private final Sprite[] sprites = new Sprite[3];
+		private final TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];
 
 		@Override
-		public Sprite[] getFluidSprites(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
+		public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
 			return sprites;
 		}
 
 		@Override
-		public int getFluidColor(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
+		public int getFluidColor(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
 			if (view != null && pos != null) {
-				return BiomeColors.getWaterColor(view, pos);
+				return BiomeColors.getAverageWaterColor(view, pos);
 			} else {
 				return DEFAULT_WATER_COLOR;
 			}
 		}
 
-		public void updateSprites(Sprite[] waterSprites, Sprite waterOverlay) {
+		public void updateSprites(TextureAtlasSprite[] waterSprites, TextureAtlasSprite waterOverlay) {
 			sprites[0] = waterSprites[0];
 			sprites[1] = waterSprites[1];
 			sprites[2] = waterOverlay;
@@ -134,14 +134,14 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	private static class LavaRenderHandler implements FluidRenderHandler {
 		public static final LavaRenderHandler INSTANCE = new LavaRenderHandler();
 
-		private Sprite[] sprites;
+		private TextureAtlasSprite[] sprites;
 
 		@Override
-		public Sprite[] getFluidSprites(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
+		public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
 			return sprites;
 		}
 
-		public void updateSprites(Sprite[] lavaSprites) {
+		public void updateSprites(TextureAtlasSprite[] lavaSprites) {
 			sprites = lavaSprites;
 		}
 	}

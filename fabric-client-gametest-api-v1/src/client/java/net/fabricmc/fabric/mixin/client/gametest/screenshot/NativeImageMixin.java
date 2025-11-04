@@ -22,14 +22,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.client.texture.NativeImage;
+import com.mojang.blaze3d.platform.NativeImage;
 
 import net.fabricmc.fabric.impl.client.gametest.screenshot.NativeImageHooks;
 
 @Mixin(NativeImage.class)
 public abstract class NativeImageMixin implements NativeImageHooks {
 	@Shadow
-	private long pointer;
+	private long pixels;
 	@Shadow
 	@Final
 	private NativeImage.Format format;
@@ -40,7 +40,10 @@ public abstract class NativeImageMixin implements NativeImageHooks {
 	public abstract int getWidth();
 	@Shadow
 	public abstract int getHeight();
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	public abstract int[] copyPixelsAbgr();
 
 	@Override
@@ -51,26 +54,26 @@ public abstract class NativeImageMixin implements NativeImageHooks {
 		switch (this.format) {
 		case RGBA -> {
 			for (int i = 0; i < result.length; i++) {
-				int red = MemoryUtil.memGetByte(pointer + i * 4) & 0xff;
-				int green = MemoryUtil.memGetByte(pointer + i * 4 + 1) & 0xff;
-				int blue = MemoryUtil.memGetByte(pointer + i * 4 + 2) & 0xff;
+				int red = MemoryUtil.memGetByte(pixels + i * 4) & 0xff;
+				int green = MemoryUtil.memGetByte(pixels + i * 4 + 1) & 0xff;
+				int blue = MemoryUtil.memGetByte(pixels + i * 4 + 2) & 0xff;
 				result[i] = toGrayscale(red, green, blue);
 			}
 		}
 		case RGB -> {
 			for (int i = 0; i < result.length; i++) {
-				int red = MemoryUtil.memGetByte(pointer + i * 3) & 0xff;
-				int green = MemoryUtil.memGetByte(pointer + i * 3 + 1) & 0xff;
-				int blue = MemoryUtil.memGetByte(pointer + i * 3 + 2) & 0xff;
+				int red = MemoryUtil.memGetByte(pixels + i * 3) & 0xff;
+				int green = MemoryUtil.memGetByte(pixels + i * 3 + 1) & 0xff;
+				int blue = MemoryUtil.memGetByte(pixels + i * 3 + 2) & 0xff;
 				result[i] = toGrayscale(red, green, blue);
 			}
 		}
 		case LUMINANCE_ALPHA -> {
 			for (int i = 0; i < result.length; i++) {
-				result[i] = MemoryUtil.memGetByte(pointer + i * 2);
+				result[i] = MemoryUtil.memGetByte(pixels + i * 2);
 			}
 		}
-		case LUMINANCE -> MemoryUtil.memByteBuffer(pointer, getWidth() * getHeight()).get(result);
+		case LUMINANCE -> MemoryUtil.memByteBuffer(pixels, getWidth() * getHeight()).get(result);
 		}
 
 		return result;
@@ -98,9 +101,9 @@ public abstract class NativeImageMixin implements NativeImageHooks {
 			int[] result = new int[getWidth() * getHeight()];
 
 			for (int i = 0; i < result.length; i++) {
-				int red = MemoryUtil.memGetByte(pointer + i * 3) & 0xff;
-				int green = MemoryUtil.memGetByte(pointer + i * 3 + 1) & 0xff;
-				int blue = MemoryUtil.memGetByte(pointer + i * 3 + 2) & 0xff;
+				int red = MemoryUtil.memGetByte(pixels + i * 3) & 0xff;
+				int green = MemoryUtil.memGetByte(pixels + i * 3 + 1) & 0xff;
+				int blue = MemoryUtil.memGetByte(pixels + i * 3 + 2) & 0xff;
 				result[i] = (red << 16) | (green << 8) | blue;
 			}
 
@@ -110,7 +113,7 @@ public abstract class NativeImageMixin implements NativeImageHooks {
 			int[] result = new int[getWidth() * getHeight()];
 
 			for (int i = 0; i < result.length; i++) {
-				int luminance = MemoryUtil.memGetByte(pointer + i * 2) & 0xff;
+				int luminance = MemoryUtil.memGetByte(pixels + i * 2) & 0xff;
 				result[i] = (luminance << 16) | (luminance << 8) | luminance;
 			}
 
@@ -120,7 +123,7 @@ public abstract class NativeImageMixin implements NativeImageHooks {
 			int[] result = new int[getWidth() * getHeight()];
 
 			for (int i = 0; i < result.length; i++) {
-				int luminance = MemoryUtil.memGetByte(pointer + i) & 0xff;
+				int luminance = MemoryUtil.memGetByte(pixels + i) & 0xff;
 				result[i] = (luminance << 16) | (luminance << 8) | luminance;
 			}
 
@@ -136,10 +139,10 @@ public abstract class NativeImageMixin implements NativeImageHooks {
 		}
 
 		int size = getWidth() * getHeight();
-		int alphaOffset = format.getAlphaOffset() / 8;
+		int alphaOffset = format.alphaOffset() / 8;
 
 		for (int i = 0; i < size; i++) {
-			int alpha = MemoryUtil.memGetByte(pointer + i * format.getChannelCount() + alphaOffset) & 0xff;
+			int alpha = MemoryUtil.memGetByte(pixels + i * format.components() + alphaOffset) & 0xff;
 
 			if (alpha != 255) {
 				return false;

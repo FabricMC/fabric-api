@@ -22,7 +22,7 @@ import java.util.function.Function;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.world.rule.GameRule;
+import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

@@ -19,10 +19,10 @@ package net.fabricmc.fabric.test.event.interaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.entity.projectile.FireballEntity;
-import net.minecraft.item.Items;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -33,28 +33,28 @@ public class UseItemTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		UseItemCallback.EVENT.register((player, world, hand) -> {
-			LOGGER.info("UseItemCallback: before hook (client-side = %s)".formatted(world.isClient()));
-			return ActionResult.PASS;
+			LOGGER.info("UseItemCallback: before hook (client-side = %s)".formatted(world.isClientSide()));
+			return InteractionResult.PASS;
 		});
 
 		// If a player is holding a blaze rod and right-clicks spawn a fireball!
 		UseItemCallback.EVENT.register((player, world, hand) -> {
 			if (!player.isSpectator()) {
-				if (player.getStackInHand(hand).isOf(Items.BLAZE_ROD)) {
-					if (!world.isClient()) {
-						player.getEntityWorld().spawnEntity(new FireballEntity(player.getEntityWorld(), player, new Vec3d(0, 0, 0), 0));
+				if (player.getItemInHand(hand).is(Items.BLAZE_ROD)) {
+					if (!world.isClientSide()) {
+						player.level().addFreshEntity(new LargeFireball(player.level(), player, new Vec3(0, 0, 0), 0));
 					}
 
-					return ActionResult.SUCCESS;
+					return InteractionResult.SUCCESS;
 				}
 			}
 
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		});
 
 		UseItemCallback.EVENT.register((player, world, hand) -> {
-			LOGGER.info("UseItemCallback: after hook (client-side = %s)".formatted(world.isClient()));
-			return ActionResult.PASS;
+			LOGGER.info("UseItemCallback: after hook (client-side = %s)".formatted(world.isClientSide()));
+			return InteractionResult.PASS;
 		});
 	}
 }

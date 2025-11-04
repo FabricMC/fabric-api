@@ -23,11 +23,11 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SidedInventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
@@ -35,10 +35,10 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.impl.transfer.item.InventoryStorageImpl;
 
 /**
- * An implementation of {@code Storage<ItemVariant>} for vanilla's {@link Inventory}, {@link SidedInventory} and {@link PlayerInventory}.
+ * An implementation of {@code Storage<ItemVariant>} for vanilla's {@link Container}, {@link WorldlyContainer} and {@link Inventory}.
  *
  * <p>{@code Inventory} is often nicer to implement than {@code Storage<ItemVariant>}, but harder to use for item transfer.
- * This wrapper allows one to have the best of both worlds, for example by storing a subclass of {@link SimpleInventory} in a block entity class,
+ * This wrapper allows one to have the best of both worlds, for example by storing a subclass of {@link SimpleContainer} in a block entity class,
  * while exposing it as a {@code Storage<ItemVariant>} to {@linkplain ItemStorage#SIDED the item transfer API}.
  *
  * <p>In particular, note that {@link #getSlots} can be combined with {@link CombinedStorage} to retrieve a wrapper around a specific range of slots.
@@ -49,15 +49,15 @@ import net.fabricmc.fabric.impl.transfer.item.InventoryStorageImpl;
 @ApiStatus.NonExtendable
 public interface InventoryStorage extends SlottedStorage<ItemVariant> {
 	/**
-	 * Return a wrapper around an {@link Inventory}.
+	 * Return a wrapper around an {@link Container}.
 	 *
-	 * <p>If the inventory is a {@link SidedInventory} and the direction is nonnull, the wrapper wraps the sided inventory from the given direction.
-	 * The returned wrapper contains only the slots with the indices returned by {@link SidedInventory#getAvailableSlots} at query time.
+	 * <p>If the inventory is a {@link WorldlyContainer} and the direction is nonnull, the wrapper wraps the sided inventory from the given direction.
+	 * The returned wrapper contains only the slots with the indices returned by {@link WorldlyContainer#getAvailableSlots} at query time.
 	 *
 	 * @param inventory The inventory to wrap.
 	 * @param direction The direction to use if the access is sided, or {@code null} if the access is not sided.
 	 */
-	static InventoryStorage of(Inventory inventory, @Nullable Direction direction) {
+	static InventoryStorage of(Container inventory, @Nullable Direction direction) {
 		Objects.requireNonNull(inventory, "Null inventory is not supported.");
 		return InventoryStorageImpl.of(inventory, direction);
 	}

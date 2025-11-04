@@ -19,16 +19,16 @@ package net.fabricmc.fabric.mixin.client.indigo.renderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 @Mixin(ItemRenderer.class)
 public interface ItemRendererAccessor {
-	@Invoker("getSpecialItemGlintConsumer")
-	static VertexConsumer fabric_getDynamicDisplayGlintConsumer(VertexConsumerProvider provider, RenderLayer layer, MatrixStack.Entry entry) {
+	@Invoker("getSpecialFoilBuffer")
+	static VertexConsumer fabric_getDynamicDisplayGlintConsumer(MultiBufferSource provider, RenderType layer, PoseStack.Pose entry) {
 		throw new AssertionError();
 	}
 }

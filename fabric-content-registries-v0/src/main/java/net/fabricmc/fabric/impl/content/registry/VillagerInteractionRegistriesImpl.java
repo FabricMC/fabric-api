@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.item.Item;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.impl.content.registry.util.ImmutableCollectionUtils;
 import net.fabricmc.fabric.mixin.content.registry.FarmerWorkTaskAccessor;
@@ -43,6 +43,6 @@ public final class VillagerInteractionRegistriesImpl {
 	}
 
 	public static Map<Item, Integer> getFoodRegistry() {
-		return ImmutableCollectionUtils.getAsMutableMap(() -> VillagerEntity.ITEM_FOOD_VALUES, VillagerEntityAccessor::fabric_setItemFoodValues);
+		return ImmutableCollectionUtils.getAsMutableMap(() -> Villager.FOOD_POINTS, VillagerEntityAccessor::fabric_setItemFoodValues);
 	}
 }

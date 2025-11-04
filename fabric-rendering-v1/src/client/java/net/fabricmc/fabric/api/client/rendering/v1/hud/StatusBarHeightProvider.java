@@ -20,7 +20,7 @@ import java.util.function.ToIntFunction;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Define the vertical space occupied by HUD elements, known as status bars, which are positioned on the left and right
@@ -29,16 +29,16 @@ import net.minecraft.entity.player.PlayerEntity;
  * @see HudStatusBarHeightRegistry
  */
 @FunctionalInterface
-public interface StatusBarHeightProvider extends ToIntFunction<PlayerEntity> {
+public interface StatusBarHeightProvider extends ToIntFunction<Player> {
 	/**
-	 * @param player the {@link PlayerEntity} from {@link InGameHud#getCameraPlayer()}
+	 * @param player the {@link Player} from {@link InGameHud#getCameraPlayer()}
 	 * @return the vertical space occupied by the status bar
 	 */
-	int getStatusBarHeight(PlayerEntity player);
+	int getStatusBarHeight(Player player);
 
 	@ApiStatus.NonExtendable
 	@Override
-	default int applyAsInt(PlayerEntity player) {
+	default int applyAsInt(Player player) {
 		return this.getStatusBarHeight(player);
 	}
 }

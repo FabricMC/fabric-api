@@ -23,18 +23,18 @@ import java.util.stream.Stream;
 import com.mojang.serialization.MapCodec;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.BlockModelPart;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.render.model.SimpleModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 import net.fabricmc.fabric.api.block.v1.FabricBlockState;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
@@ -52,14 +52,14 @@ public class PillarBlockStateModel implements BlockStateModel {
 	}
 
 	// alone, bottom, middle, top
-	private final Sprite[] sprites;
+	private final TextureAtlasSprite[] sprites;
 
-	public PillarBlockStateModel(Sprite[] sprites) {
+	public PillarBlockStateModel(TextureAtlasSprite[] sprites) {
 		this.sprites = sprites;
 	}
 
 	@Override
-	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		for (Direction side : Direction.values()) {
 			ConnectedTexture texture = getConnectedTexture(blockView, pos, state, side);
 			emitter.square(side, 0, 0, 1, 1, 0);
@@ -69,7 +69,7 @@ public class PillarBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+	public Object createGeometryKey(BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random) {
 		record Key(ConnectedTexture north, ConnectedTexture south, ConnectedTexture west, ConnectedTexture east) {
 		}
 
@@ -81,10 +81,10 @@ public class PillarBlockStateModel implements BlockStateModel {
 		);
 	}
 
-	private static ConnectedTexture getConnectedTexture(BlockRenderView blockView, BlockPos pos, BlockState state, Direction side) {
+	private static ConnectedTexture getConnectedTexture(BlockAndTintGetter blockView, BlockPos pos, BlockState state, Direction side) {
 		if (side.getAxis().isHorizontal()) {
-			boolean connectAbove = canConnect(blockView, state, pos, pos.up(), side);
-			boolean connectBelow = canConnect(blockView, state, pos, pos.down(), side);
+			boolean connectAbove = canConnect(blockView, state, pos, pos.above(), side);
+			boolean connectBelow = canConnect(blockView, state, pos, pos.below(), side);
 
 			if (connectAbove && connectBelow) {
 				return ConnectedTexture.MIDDLE;
@@ -98,18 +98,18 @@ public class PillarBlockStateModel implements BlockStateModel {
 		return ConnectedTexture.ALONE;
 	}
 
-	private static boolean canConnect(BlockRenderView blockView, BlockState originState, BlockPos originPos, BlockPos otherPos, Direction side) {
+	private static boolean canConnect(BlockAndTintGetter blockView, BlockState originState, BlockPos originPos, BlockPos otherPos, Direction side) {
 		BlockState otherState = blockView.getBlockState(otherPos);
 		// In this testmod we can't rely on injected interfaces - in normal mods the (FabricBlockState) cast will be unnecessary
 		BlockState originAppearance = ((FabricBlockState) originState).getAppearance(blockView, originPos, side, otherState, otherPos);
 
-		if (!originAppearance.isOf(Registration.PILLAR_BLOCK)) {
+		if (!originAppearance.is(Registration.PILLAR_BLOCK)) {
 			return false;
 		}
 
 		BlockState otherAppearance = ((FabricBlockState) otherState).getAppearance(blockView, otherPos, side, originState, originPos);
 
-		if (!otherAppearance.isOf(Registration.PILLAR_BLOCK)) {
+		if (!otherAppearance.is(Registration.PILLAR_BLOCK)) {
 			return false;
 		}
 
@@ -117,17 +117,17 @@ public class PillarBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public void addParts(Random random, List<BlockModelPart> parts) {
+	public void collectParts(RandomSource random, List<BlockModelPart> parts) {
 	}
 
 	@Override
-	public Sprite particleSprite() {
+	public TextureAtlasSprite particleIcon() {
 		return sprites[0];
 	}
 
-	public record Unbaked() implements CustomUnbakedBlockStateModel, SimpleModel {
-		private static final List<SpriteIdentifier> SPRITES = Stream.of("alone", "bottom", "middle", "top")
-				.map(suffix -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, RendererTest.id("block/pillar_" + suffix)))
+	public record Unbaked() implements CustomUnbakedBlockStateModel, ModelDebugName {
+		private static final List<Material> SPRITES = Stream.of("alone", "bottom", "middle", "top")
+				.map(suffix -> new Material(TextureAtlas.LOCATION_BLOCKS, RendererTest.id("block/pillar_" + suffix)))
 				.toList();
 		public static final Unbaked INSTANCE = new Unbaked();
 		public static final MapCodec<Unbaked> CODEC = MapCodec.unit(INSTANCE);
@@ -138,22 +138,22 @@ public class PillarBlockStateModel implements BlockStateModel {
 		}
 
 		@Override
-		public void resolve(Resolver resolver) {
+		public void resolveDependencies(Resolver resolver) {
 		}
 
 		@Override
-		public BlockStateModel bake(Baker baker) {
-			Sprite[] sprites = new Sprite[SPRITES.size()];
+		public BlockStateModel bake(ModelBaker baker) {
+			TextureAtlasSprite[] sprites = new TextureAtlasSprite[SPRITES.size()];
 
 			for (int i = 0; i < sprites.length; ++i) {
-				sprites[i] = baker.getSpriteGetter().get(SPRITES.get(i), this);
+				sprites[i] = baker.sprites().get(SPRITES.get(i), this);
 			}
 
 			return new PillarBlockStateModel(sprites);
 		}
 
 		@Override
-		public String name() {
+		public String debugName() {
 			return getClass().getName();
 		}
 	}

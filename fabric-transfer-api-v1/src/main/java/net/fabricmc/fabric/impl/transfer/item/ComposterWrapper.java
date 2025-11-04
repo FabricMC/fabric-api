@@ -16,22 +16,22 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
-import static net.minecraft.util.math.Direction.UP;
+import static net.minecraft.core.Direction.UP;
 
 import java.util.Map;
 
 import com.google.common.collect.MapMaker;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ComposterBlock;
-import net.minecraft.item.Items;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldEvents;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.ComposterBlock;
+import net.minecraft.world.item.Items;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.LevelEvent;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -48,13 +48,13 @@ import net.fabricmc.fabric.impl.transfer.DebugMessages;
  */
 public class ComposterWrapper extends SnapshotParticipant<Float> {
 	// Record is used for convenient constructor, hashcode and equals implementations.
-	private record WorldLocation(World world, BlockPos pos) {
+	private record WorldLocation(Level world, BlockPos pos) {
 		private BlockState getBlockState() {
 			return world.getBlockState(pos);
 		}
 
 		private void setBlockState(BlockState state) {
-			world.setBlockState(pos, state);
+			world.setBlockAndUpdate(pos, state);
 		}
 
 		@Override
@@ -68,9 +68,9 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 	private static final Map<WorldLocation, ComposterWrapper> COMPOSTERS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
 
 	@Nullable
-	public static Storage<ItemVariant> get(World world, BlockPos pos, @Nullable Direction direction) {
+	public static Storage<ItemVariant> get(Level world, BlockPos pos, @Nullable Direction direction) {
 		if (direction != null && direction.getAxis().isVertical()) {
-			WorldLocation location = new WorldLocation(world, pos.toImmutable());
+			WorldLocation location = new WorldLocation(world, pos.immutable());
 			ComposterWrapper composterWrapper = COMPOSTERS.computeIfAbsent(location, ComposterWrapper::new);
 			return direction == UP ? composterWrapper.upStorage : composterWrapper.downStorage;
 		} else {
@@ -107,26 +107,26 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 		// Apply pending action
 		if (increaseProbability == EXTRACT_BONEMEAL) {
 			// Mimic ComposterBlock#emptyComposter logic.
-			location.setBlockState(location.getBlockState().with(ComposterBlock.LEVEL, 0));
+			location.setBlockState(location.getBlockState().setValue(ComposterBlock.LEVEL, 0));
 			// Play the sound
-			location.world.playSound(null, location.pos, SoundEvents.BLOCK_COMPOSTER_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+			location.world.playSound(null, location.pos, SoundEvents.COMPOSTER_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 		} else if (increaseProbability > 0) {
 			BlockState state = location.getBlockState();
 			// Always increment on first insert (like vanilla).
-			boolean increaseSuccessful = state.get(ComposterBlock.LEVEL) == 0 || location.world.getRandom().nextDouble() < increaseProbability;
+			boolean increaseSuccessful = state.getValue(ComposterBlock.LEVEL) == 0 || location.world.getRandom().nextDouble() < increaseProbability;
 
 			if (increaseSuccessful) {
 				// Mimic ComposterBlock#addToComposter logic.
-				int newLevel = state.get(ComposterBlock.LEVEL) + 1;
-				BlockState newState = state.with(ComposterBlock.LEVEL, newLevel);
+				int newLevel = state.getValue(ComposterBlock.LEVEL) + 1;
+				BlockState newState = state.setValue(ComposterBlock.LEVEL, newLevel);
 				location.setBlockState(newState);
 
 				if (newLevel == 7) {
-					location.world.scheduleBlockTick(location.pos, state.getBlock(), 20);
+					location.world.scheduleTick(location.pos, state.getBlock(), 20);
 				}
 			}
 
-			location.world.syncWorldEvent(WorldEvents.COMPOSTER_USED, location.pos, increaseSuccessful ? 1 : 0);
+			location.world.levelEvent(LevelEvent.COMPOSTER_FILL, location.pos, increaseSuccessful ? 1 : 0);
 		}
 
 		// Reset after successful commit.
@@ -143,9 +143,9 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 			// Check that no action is scheduled.
 			if (increaseProbability != DO_NOTHING) return 0;
 			// Check that the composter can accept items.
-			if (location.getBlockState().get(ComposterBlock.LEVEL) >= 7) return 0;
+			if (location.getBlockState().getValue(ComposterBlock.LEVEL) >= 7) return 0;
 			// Check that the item is compostable.
-			float insertedIncreaseProbability = ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.getFloat(resource.getItem());
+			float insertedIncreaseProbability = ComposterBlock.COMPOSTABLES.getFloat(resource.getItem());
 			if (insertedIncreaseProbability <= 0) return 0;
 
 			// Schedule insertion.
@@ -165,7 +165,7 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 
 		private boolean hasBoneMeal() {
 			// We only have bone meal if the level is 8 and no action was scheduled.
-			return increaseProbability == DO_NOTHING && location.getBlockState().get(ComposterBlock.LEVEL) == 8;
+			return increaseProbability == DO_NOTHING && location.getBlockState().getValue(ComposterBlock.LEVEL) == 8;
 		}
 
 		@Override

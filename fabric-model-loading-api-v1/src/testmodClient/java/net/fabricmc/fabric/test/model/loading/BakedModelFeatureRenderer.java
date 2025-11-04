@@ -21,36 +21,36 @@ import java.util.function.Supplier;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
 
-public class BakedModelFeatureRenderer<S extends LivingEntityRenderState, M extends EntityModel<S>> extends FeatureRenderer<S, M> {
+public class BakedModelFeatureRenderer<S extends LivingEntityRenderState, M extends EntityModel<S>> extends RenderLayer<S, M> {
 	private final Supplier<BlockStateModel> modelSupplier;
 
-	public BakedModelFeatureRenderer(FeatureRendererContext<S, M> context, Supplier<BlockStateModel> modelSupplier) {
+	public BakedModelFeatureRenderer(RenderLayerParent<S, M> context, Supplier<BlockStateModel> modelSupplier) {
 		super(context);
 		this.modelSupplier = modelSupplier;
 	}
 
 	@Override
-	public void render(MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, S state, float limbAngle, float limbDistance) {
+	public void submit(PoseStack matrices, SubmitNodeCollector commandQueue, int light, S state, float limbAngle, float limbDistance) {
 		BlockStateModel model = modelSupplier.get();
-		matrices.push();
-		matrices.multiply(new Quaternionf(new AxisAngle4f(state.age * 0.07F - state.bodyYaw * MathHelper.RADIANS_PER_DEGREE, 0, 1, 0)));
+		matrices.pushPose();
+		matrices.mulPose(new Quaternionf(new AxisAngle4f(state.ageInTicks * 0.07F - state.bodyRot * Mth.DEG_TO_RAD, 0, 1, 0)));
 		matrices.scale(-0.75F, -0.75F, 0.75F);
-		float aboveHead = (float) (Math.sin(state.age * 0.08F)) * 0.5F + 0.5F;
+		float aboveHead = (float) (Math.sin(state.ageInTicks * 0.08F)) * 0.5F + 0.5F;
 		matrices.translate(-0.5F, 0.75F + aboveHead, -0.5F);
 		// FIXME 1.21.9
 		// FabricBlockModelRenderer.render(matrices.peek(), RenderLayerHelper.entityDelegate(vertexConsumers), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, Blocks.AIR.getDefaultState());
-		commandQueue.getBatchingQueue(0).submitBlockStateModel(matrices, TexturedRenderLayers.getEntityCutout(), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV, 0);
-		matrices.pop();
+		commandQueue.order(0).submitBlockModel(matrices, Sheets.cutoutBlockSheet(), model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY, 0);
+		matrices.popPose();
 	}
 }

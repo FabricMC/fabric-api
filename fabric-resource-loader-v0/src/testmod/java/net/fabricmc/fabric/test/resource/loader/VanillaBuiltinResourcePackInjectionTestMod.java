@@ -16,28 +16,28 @@
 
 package net.fabricmc.fabric.test.resource.loader;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 
 public class VanillaBuiltinResourcePackInjectionTestMod implements ModInitializer {
 	public static final String MODID = "fabric-resource-loader-v0-testmod";
-	public static final RegistryKey<Block> KEY = RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(MODID, "testblock"));
+	public static final ResourceKey<Block> KEY = ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MODID, "testblock"));
 
-	public static final Block TEST_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.STONE).registryKey(KEY));
+	public static final Block TEST_BLOCK = new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).setId(KEY));
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.BLOCK, KEY, TEST_BLOCK);
-		Registry.register(Registries.ITEM, KEY.getValue(), new BlockItem(TEST_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, KEY.getValue()))));
+		Registry.register(BuiltInRegistries.BLOCK, KEY, TEST_BLOCK);
+		Registry.register(BuiltInRegistries.ITEM, KEY.identifier(), new BlockItem(TEST_BLOCK, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, KEY.identifier()))));
 	}
 }

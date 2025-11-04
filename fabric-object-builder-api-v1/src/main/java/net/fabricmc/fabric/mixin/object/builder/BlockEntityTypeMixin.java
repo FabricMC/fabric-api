@@ -28,9 +28,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
 
@@ -39,18 +39,18 @@ public class BlockEntityTypeMixin<T extends BlockEntity> implements FabricBlockE
 	@Mutable
 	@Shadow
 	@Final
-	private Set<Block> blocks;
+	private Set<Block> validBlocks;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void mutableBlocks(BlockEntityType.BlockEntityFactory<? extends T> factory, Set<Block> blocks, CallbackInfo ci) {
-		if (!(this.blocks instanceof HashSet)) {
-			this.blocks = new HashSet<>(this.blocks);
+	private void mutableBlocks(BlockEntityType.BlockEntitySupplier<? extends T> factory, Set<Block> blocks, CallbackInfo ci) {
+		if (!(this.validBlocks instanceof HashSet)) {
+			this.validBlocks = new HashSet<>(this.validBlocks);
 		}
 	}
 
 	@Override
 	public void addSupportedBlock(Block block) {
 		Objects.requireNonNull(block, "block");
-		blocks.add(block);
+		validBlocks.add(block);
 	}
 }

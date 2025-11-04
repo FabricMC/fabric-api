@@ -16,20 +16,20 @@
 
 package net.fabricmc.fabric.test.screenhandler;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -45,31 +45,31 @@ import net.fabricmc.fabric.test.screenhandler.screen.PositionedBagScreenHandler;
 public class ScreenHandlerTest implements ModInitializer {
 	public static final String ID = "fabric-screen-handler-api-v1-testmod";
 
-	public static final RegistryKey<Item> BAG_KEY = RegistryKey.of(RegistryKeys.ITEM, id("bag"));
-	public static final Item BAG = new BagItem(new Item.Settings().maxCount(1).registryKey(BAG_KEY));
-	public static final RegistryKey<Item> POSITIONED_BAG_KEY = RegistryKey.of(RegistryKeys.ITEM, id("positioned_bag"));
-	public static final Item POSITIONED_BAG = new PositionedBagItem(new Item.Settings().maxCount(1).registryKey(POSITIONED_BAG_KEY));
-	public static final RegistryKey<Block> BOX_KEY = RegistryKey.of(RegistryKeys.BLOCK, id("box"));
-	public static final Block BOX = new BoxBlock(AbstractBlock.Settings.copy(Blocks.OAK_WOOD).registryKey(BOX_KEY));
-	public static final Item BOX_ITEM = new BlockItem(BOX, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, BOX_KEY.getValue())));
+	public static final ResourceKey<Item> BAG_KEY = ResourceKey.create(Registries.ITEM, id("bag"));
+	public static final Item BAG = new BagItem(new Item.Properties().stacksTo(1).setId(BAG_KEY));
+	public static final ResourceKey<Item> POSITIONED_BAG_KEY = ResourceKey.create(Registries.ITEM, id("positioned_bag"));
+	public static final Item POSITIONED_BAG = new PositionedBagItem(new Item.Properties().stacksTo(1).setId(POSITIONED_BAG_KEY));
+	public static final ResourceKey<Block> BOX_KEY = ResourceKey.create(Registries.BLOCK, id("box"));
+	public static final Block BOX = new BoxBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WOOD).setId(BOX_KEY));
+	public static final Item BOX_ITEM = new BlockItem(BOX, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, BOX_KEY.identifier())));
 	public static final BlockEntityType<BoxBlockEntity> BOX_ENTITY = FabricBlockEntityTypeBuilder.create(BoxBlockEntity::new, BOX).build();
-	public static final ScreenHandlerType<BagScreenHandler> BAG_SCREEN_HANDLER = new ScreenHandlerType<>(BagScreenHandler::new, FeatureFlags.VANILLA_FEATURES);
-	public static final ScreenHandlerType<PositionedBagScreenHandler> POSITIONED_BAG_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(PositionedBagScreenHandler::new, PositionedBagScreenHandler.BagData.PACKET_CODEC);
-	public static final ScreenHandlerType<BoxScreenHandler> BOX_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(BoxScreenHandler::new, BlockPos.PACKET_CODEC.cast());
+	public static final MenuType<BagScreenHandler> BAG_SCREEN_HANDLER = new MenuType<>(BagScreenHandler::new, FeatureFlags.VANILLA_SET);
+	public static final MenuType<PositionedBagScreenHandler> POSITIONED_BAG_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(PositionedBagScreenHandler::new, PositionedBagScreenHandler.BagData.PACKET_CODEC);
+	public static final MenuType<BoxScreenHandler> BOX_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(BoxScreenHandler::new, BlockPos.STREAM_CODEC.cast());
 
 	public static Identifier id(String path) {
-		return Identifier.of(ID, path);
+		return Identifier.fromNamespaceAndPath(ID, path);
 	}
 
 	@Override
 	public void onInitialize() {
-		Registry.register(Registries.ITEM, BAG_KEY, BAG);
-		Registry.register(Registries.ITEM, POSITIONED_BAG_KEY, POSITIONED_BAG);
-		Registry.register(Registries.BLOCK, BOX_KEY, BOX);
-		Registry.register(Registries.ITEM, BOX_KEY.getValue(), BOX_ITEM);
-		Registry.register(Registries.BLOCK_ENTITY_TYPE, id("box"), BOX_ENTITY);
-		Registry.register(Registries.SCREEN_HANDLER, id("bag"), BAG_SCREEN_HANDLER);
-		Registry.register(Registries.SCREEN_HANDLER, id("positioned_bag"), POSITIONED_BAG_SCREEN_HANDLER);
-		Registry.register(Registries.SCREEN_HANDLER, id("box"), BOX_SCREEN_HANDLER);
+		Registry.register(BuiltInRegistries.ITEM, BAG_KEY, BAG);
+		Registry.register(BuiltInRegistries.ITEM, POSITIONED_BAG_KEY, POSITIONED_BAG);
+		Registry.register(BuiltInRegistries.BLOCK, BOX_KEY, BOX);
+		Registry.register(BuiltInRegistries.ITEM, BOX_KEY.identifier(), BOX_ITEM);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, id("box"), BOX_ENTITY);
+		Registry.register(BuiltInRegistries.MENU, id("bag"), BAG_SCREEN_HANDLER);
+		Registry.register(BuiltInRegistries.MENU, id("positioned_bag"), POSITIONED_BAG_SCREEN_HANDLER);
+		Registry.register(BuiltInRegistries.MENU, id("box"), BOX_SCREEN_HANDLER);
 	}
 }

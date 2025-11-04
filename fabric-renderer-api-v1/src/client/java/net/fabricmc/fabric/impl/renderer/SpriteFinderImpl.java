@@ -22,8 +22,8 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
@@ -41,17 +41,17 @@ public class SpriteFinderImpl implements SpriteFinder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SpriteFinderImpl.class);
 
 	private final Node root;
-	private final Sprite missingSprite;
+	private final TextureAtlasSprite missingSprite;
 	private int badSpriteCount = 0;
 
-	public SpriteFinderImpl(Map<Identifier, Sprite> sprites, Sprite missingSprite) {
+	public SpriteFinderImpl(Map<Identifier, TextureAtlasSprite> sprites, TextureAtlasSprite missingSprite) {
 		root = new Node(0.5f, 0.5f, 0.25f);
 		this.missingSprite = missingSprite;
 		sprites.values().forEach(root::add);
 	}
 
 	@Override
-	public Sprite find(QuadView quad) {
+	public TextureAtlasSprite find(QuadView quad) {
 		float u = 0;
 		float v = 0;
 
@@ -64,7 +64,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 	}
 
 	@Override
-	public Sprite find(float u, float v) {
+	public TextureAtlasSprite find(float u, float v) {
 		return root.find(u, v);
 	}
 
@@ -90,22 +90,22 @@ public class SpriteFinderImpl implements SpriteFinder {
 
 		static final float EPS = 0.00001f;
 
-		void add(Sprite sprite) {
-			if (sprite.getMinU() < 0 - EPS || sprite.getMaxU() > 1 + EPS || sprite.getMinV() < 0 - EPS || sprite.getMaxV() > 1 + EPS) {
+		void add(TextureAtlasSprite sprite) {
+			if (sprite.getU0() < 0 - EPS || sprite.getU1() > 1 + EPS || sprite.getV0() < 0 - EPS || sprite.getV1() > 1 + EPS) {
 				// Sprite has broken bounds. This SHOULD NOT happen, but in the past some mods have broken this.
 				// Prefer failing with a log warning rather than risking a stack overflow.
 				if (badSpriteCount++ < 5) {
 					String errorMessage = "SpriteFinderImpl: Skipping sprite {} with broken bounds [{}, {}]x[{}, {}]. Sprite bounds should be between 0 and 1.";
-					LOGGER.error(errorMessage, sprite.getContents().getId(), sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
+					LOGGER.error(errorMessage, sprite.contents().name(), sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1());
 				}
 
 				return;
 			}
 
-			final boolean lowU = sprite.getMinU() < midU - EPS;
-			final boolean highU = sprite.getMaxU() > midU + EPS;
-			final boolean lowV = sprite.getMinV() < midV - EPS;
-			final boolean highV = sprite.getMaxV() > midV + EPS;
+			final boolean lowU = sprite.getU0() < midU - EPS;
+			final boolean highU = sprite.getU1() > midU + EPS;
+			final boolean lowV = sprite.getV0() < midV - EPS;
+			final boolean highV = sprite.getV1() > midV + EPS;
 
 			if (lowU && lowV) {
 				lowLow = addInner(sprite, lowLow, -1, -1);
@@ -124,7 +124,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 			}
 		}
 
-		private Object addInner(Sprite sprite, @Nullable Object quadrant, int uStep, int vStep) {
+		private Object addInner(TextureAtlasSprite sprite, @Nullable Object quadrant, int uStep, int vStep) {
 			if (quadrant == null) {
 				return sprite;
 			} else if (quadrant instanceof Node node) {
@@ -133,7 +133,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 			} else {
 				Node n = new Node(midU + cellRadius * uStep, midV + cellRadius * vStep, cellRadius * 0.5f);
 
-				if (quadrant instanceof Sprite prevSprite) {
+				if (quadrant instanceof TextureAtlasSprite prevSprite) {
 					n.add(prevSprite);
 				}
 
@@ -142,7 +142,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 			}
 		}
 
-		private Sprite find(float u, float v) {
+		private TextureAtlasSprite find(float u, float v) {
 			if (u < midU) {
 				return v < midV ? findInner(lowLow, u, v) : findInner(lowHigh, u, v);
 			} else {
@@ -150,10 +150,10 @@ public class SpriteFinderImpl implements SpriteFinder {
 			}
 		}
 
-		private Sprite findInner(@Nullable Object quadrant, float u, float v) {
+		private TextureAtlasSprite findInner(@Nullable Object quadrant, float u, float v) {
 			if (quadrant instanceof Node node) {
 				return node.find(u, v);
-			} else if (quadrant instanceof Sprite sprite) {
+			} else if (quadrant instanceof TextureAtlasSprite sprite) {
 				return sprite;
 			} else {
 				return missingSprite;

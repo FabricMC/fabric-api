@@ -16,19 +16,19 @@
 
 package net.fabricmc.fabric.impl.renderer;
 
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 
-public record MissingSpriteFinderImpl(Sprite missingSprite) implements SpriteFinder {
+public record MissingSpriteFinderImpl(TextureAtlasSprite missingSprite) implements SpriteFinder {
 	@Override
-	public Sprite find(QuadView quad) {
+	public TextureAtlasSprite find(QuadView quad) {
 		return missingSprite;
 	}
 
 	@Override
-	public Sprite find(float u, float v) {
+	public TextureAtlasSprite find(float u, float v) {
 		return missingSprite;
 	}
 }

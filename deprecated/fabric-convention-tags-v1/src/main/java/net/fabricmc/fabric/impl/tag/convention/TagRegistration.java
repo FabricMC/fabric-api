@@ -16,39 +16,39 @@
 
 package net.fabricmc.fabric.impl.tag.convention;
 
-import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EntityType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.biome.Biome;
 
 @Deprecated
 public class TagRegistration<T> {
-	public static final TagRegistration<Item> ITEM_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ITEM);
-	public static final TagRegistration<Block> BLOCK_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BLOCK);
-	public static final TagRegistration<Biome> BIOME_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.BIOME);
-	public static final TagRegistration<Fluid> FLUID_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.FLUID);
-	public static final TagRegistration<EntityType<?>> ENTITY_TYPE_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ENTITY_TYPE);
-	public static final TagRegistration<Enchantment> ENCHANTMENT_TAG_REGISTRATION = new TagRegistration<>(RegistryKeys.ENCHANTMENT);
-	private final RegistryKey<Registry<T>> registryKey;
+	public static final TagRegistration<Item> ITEM_TAG_REGISTRATION = new TagRegistration<>(Registries.ITEM);
+	public static final TagRegistration<Block> BLOCK_TAG_REGISTRATION = new TagRegistration<>(Registries.BLOCK);
+	public static final TagRegistration<Biome> BIOME_TAG_REGISTRATION = new TagRegistration<>(Registries.BIOME);
+	public static final TagRegistration<Fluid> FLUID_TAG_REGISTRATION = new TagRegistration<>(Registries.FLUID);
+	public static final TagRegistration<EntityType<?>> ENTITY_TYPE_TAG_REGISTRATION = new TagRegistration<>(Registries.ENTITY_TYPE);
+	public static final TagRegistration<Enchantment> ENCHANTMENT_TAG_REGISTRATION = new TagRegistration<>(Registries.ENCHANTMENT);
+	private final ResourceKey<Registry<T>> registryKey;
 
-	private TagRegistration(RegistryKey<Registry<T>> registry) {
+	private TagRegistration(ResourceKey<Registry<T>> registry) {
 		registryKey = registry;
 	}
 
 	@Deprecated
 	public TagKey<T> registerFabric(String tagId) {
-		return TagKey.of(registryKey, Identifier.of("fabric", tagId));
+		return TagKey.create(registryKey, Identifier.fromNamespaceAndPath("fabric", tagId));
 	}
 
 	@Deprecated
 	public TagKey<T> registerC(String tagId) {
-		return TagKey.of(registryKey, Identifier.of("c", tagId));
+		return TagKey.create(registryKey, Identifier.fromNamespaceAndPath("c", tagId));
 	}
 }

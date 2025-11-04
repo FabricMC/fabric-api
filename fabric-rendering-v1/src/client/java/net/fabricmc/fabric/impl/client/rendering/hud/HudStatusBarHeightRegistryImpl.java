@@ -36,16 +36,16 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -75,28 +75,28 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	/**
 	 * Height provider for the vanilla health bar.
 	 */
-	static final StatusBarHeightProvider HEALTH_BAR = (PlayerEntity player) -> {
-		InGameHud hud = MinecraftClient.getInstance().inGameHud;
-		int playerHealth = MathHelper.ceil(player.getHealth());
+	static final StatusBarHeightProvider HEALTH_BAR = (Player player) -> {
+		Gui hud = Minecraft.getInstance().gui;
+		int playerHealth = Mth.ceil(player.getHealth());
 		int displayHealth = ((InGameHudAccessor) hud).fabric$getRenderHealthValue();
-		float maxHealth = Math.max((float) player.getAttributeValue(EntityAttributes.MAX_HEALTH),
+		float maxHealth = Math.max((float) player.getAttributeValue(Attributes.MAX_HEALTH),
 				Math.max(displayHealth, playerHealth));
-		int absorptionAmount = MathHelper.ceil(player.getAbsorptionAmount());
-		int healthRows = MathHelper.ceil((maxHealth + absorptionAmount) / 2.0F / 10.0F);
+		int absorptionAmount = Mth.ceil(player.getAbsorptionAmount());
+		int healthRows = Mth.ceil((maxHealth + absorptionAmount) / 2.0F / 10.0F);
 		int rowShift = Math.max(10 - (healthRows - 2), 3);
 		return 10 + (healthRows - 1) * rowShift;
 	};
 	/**
 	 * Height provider for the vanilla armor bar.
 	 */
-	static final StatusBarHeightProvider ARMOR_BAR = (PlayerEntity player) -> {
-		return player.getArmor() > 0 ? 10 : 0;
+	static final StatusBarHeightProvider ARMOR_BAR = (Player player) -> {
+		return player.getArmorValue() > 0 ? 10 : 0;
 	};
 	/**
 	 * Height provider for the vanilla mount health.
 	 */
-	static final StatusBarHeightProvider MOUNT_HEALTH = (PlayerEntity player) -> {
-		InGameHud hud = MinecraftClient.getInstance().inGameHud;
+	static final StatusBarHeightProvider MOUNT_HEALTH = (Player player) -> {
+		Gui hud = Minecraft.getInstance().gui;
 		LivingEntity livingEntity = ((InGameHudAccessor) hud).fabric$callGetRiddenEntity();
 		int vehicleMaxHearts = ((InGameHudAccessor) hud).fabric$callGetHeartCount(livingEntity);
 		return ((InGameHudAccessor) hud).fabric$callGetHeartRows(vehicleMaxHearts) * 10;
@@ -104,18 +104,18 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	/**
 	 * Height provider for the vanilla food bar.
 	 */
-	static final StatusBarHeightProvider FOOD_BAR = (PlayerEntity player) -> {
-		InGameHud hud = MinecraftClient.getInstance().inGameHud;
+	static final StatusBarHeightProvider FOOD_BAR = (Player player) -> {
+		Gui hud = Minecraft.getInstance().gui;
 		LivingEntity livingEntity = ((InGameHudAccessor) hud).fabric$callGetRiddenEntity();
 		return ((InGameHudAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0 ? 10 : 0;
 	};
 	/**
 	 * Height provider for the vanilla air bar.
 	 */
-	static final StatusBarHeightProvider AIR_BAR = (PlayerEntity player) -> {
-		int maxAirSupply = player.getMaxAir();
-		int airSupply = Math.clamp(player.getAir(), 0, maxAirSupply);
-		boolean isInWater = player.isSubmergedIn(FluidTags.WATER);
+	static final StatusBarHeightProvider AIR_BAR = (Player player) -> {
+		int maxAirSupply = player.getMaxAirSupply();
+		int airSupply = Math.clamp(player.getAirSupply(), 0, maxAirSupply);
+		boolean isInWater = player.isEyeInFluid(FluidTags.WATER);
 		return isInWater || airSupply < maxAirSupply ? 10 : 0;
 	};
 	/**
@@ -185,7 +185,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 
 	@Override
 	public void onInitializeClient() {
-		ClientLifecycleEvents.CLIENT_STARTED.register((MinecraftClient minecraft) -> {
+		ClientLifecycleEvents.CLIENT_STARTED.register((Minecraft minecraft) -> {
 			HudStatusBarHeightRegistryImpl.init();
 		});
 	}
@@ -215,7 +215,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 			throw new IllegalArgumentException("Unknown status bar: " + id);
 		}
 
-		PlayerEntity player = ((InGameHudAccessor) MinecraftClient.getInstance().inGameHud).fabric$callGetCameraPlayer();
+		Player player = ((InGameHudAccessor) Minecraft.getInstance().gui).fabric$callGetCameraPlayer();
 
 		if (player == null) {
 			throw new IllegalStateException("Trying to get status bar height for " + id + " without a camera player");
@@ -317,8 +317,8 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		return reduceToIntFunctions(heightProviderLookup.get(id), heightProvider, Integer::sum);
 	}
 
-	private static ResolvedHeightProvider reduceToIntFunctions(ToIntFunction<PlayerEntity> first, ToIntFunction<PlayerEntity> second, IntBinaryOperator operator) {
-		return (PlayerEntity player) -> operator.applyAsInt(first.applyAsInt(player), second.applyAsInt(player));
+	private static ResolvedHeightProvider reduceToIntFunctions(ToIntFunction<Player> first, ToIntFunction<Player> second, IntBinaryOperator operator) {
+		return (Player player) -> operator.applyAsInt(first.applyAsInt(player), second.applyAsInt(player));
 	}
 
 	private static void applyVanillaHeightProviders(Map<Identifier, ResolvedHeightProvider> resolvedHeightProviders, ResolvedHeightProvider maxHeightProvider) {
@@ -344,10 +344,10 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 
 		// offset text above hotbar depending on height values
 		replaceVanillaElement(VanillaHudElements.HELD_ITEM_TOOLTIP,
-				(PlayerEntity player) -> HELD_ITEM_TOOLTIP_HEIGHT - Math.max(HELD_ITEM_TOOLTIP_HEIGHT,
+				(Player player) -> HELD_ITEM_TOOLTIP_HEIGHT - Math.max(HELD_ITEM_TOOLTIP_HEIGHT,
 						maxHeightProvider.getResolvedHeight(player)));
 		replaceVanillaElement(VanillaHudElements.OVERLAY_MESSAGE,
-				(PlayerEntity player) -> OVERLAY_MESSAGE_HEIGHT - Math.max(OVERLAY_MESSAGE_HEIGHT,
+				(Player player) -> OVERLAY_MESSAGE_HEIGHT - Math.max(OVERLAY_MESSAGE_HEIGHT,
 						maxHeightProvider.getResolvedHeight(player) + TEXT_HEIGHT_DELTA));
 	}
 
@@ -367,19 +367,19 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 
 	private static void replaceVanillaElement(Identifier id, ResolvedHeightProvider heightProvider) {
 		HudElementRegistry.replaceElement(id, (HudElement layer) -> {
-			return (DrawContext context, RenderTickCounter tickCounter) -> {
-				PlayerEntity player = ((InGameHudAccessor) MinecraftClient.getInstance().inGameHud).fabric$callGetCameraPlayer();
+			return (GuiGraphics context, DeltaTracker tickCounter) -> {
+				Player player = ((InGameHudAccessor) Minecraft.getInstance().gui).fabric$callGetCameraPlayer();
 				int height = player != null ? heightProvider.getResolvedHeight(player) : 0;
 
 				if (height != 0) {
-					context.getMatrices().pushMatrix();
-					context.getMatrices().translate(0.0F, height);
+					context.pose().pushMatrix();
+					context.pose().translate(0.0F, height);
 				}
 
 				layer.render(context, tickCounter);
 
 				if (height != 0) {
-					context.getMatrices().popMatrix();
+					context.pose().popMatrix();
 				}
 			};
 		});
@@ -393,18 +393,18 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	 * implementation.
 	 */
 	@FunctionalInterface
-	public interface ResolvedHeightProvider extends ToIntFunction<PlayerEntity> {
-		ResolvedHeightProvider ZERO = (PlayerEntity player) -> 0;
+	public interface ResolvedHeightProvider extends ToIntFunction<Player> {
+		ResolvedHeightProvider ZERO = (Player player) -> 0;
 
 		/**
-		 * @param player the {@link PlayerEntity} from {@link InGameHud#getCameraPlayer()}
+		 * @param player the {@link Player} from {@link Gui#getCameraPlayer()}
 		 * @return the vertical space occupied by all status bars "below" this one
 		 */
-		int getResolvedHeight(PlayerEntity player);
+		int getResolvedHeight(Player player);
 
 		@ApiStatus.NonExtendable
 		@Override
-		default int applyAsInt(PlayerEntity player) {
+		default int applyAsInt(Player player) {
 			return this.getResolvedHeight(player);
 		}
 	}

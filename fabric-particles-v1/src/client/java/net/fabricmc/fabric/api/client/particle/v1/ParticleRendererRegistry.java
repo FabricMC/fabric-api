@@ -21,29 +21,29 @@ import java.util.function.Function;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.particle.ParticleRenderer;
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.ParticleGroup;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.client.particle.ParticleRendererRegistryImpl;
 
 /**
- * A registry for custom {@link ParticleRenderer}s.
+ * A registry for custom {@link ParticleGroup}s.
  */
 public final class ParticleRendererRegistry {
 	/**
-	 * Registers a {@link ParticleRenderer} factory for the given {@link ParticleTextureSheet}.
+	 * Registers a {@link ParticleGroup} factory for the given {@link ParticleRenderType}.
 	 *
 	 * @param textureSheet the texture sheet
 	 * @param function the factory function
 	 */
-	public static void register(ParticleTextureSheet textureSheet, Function<ParticleManager, ParticleRenderer<?>> function) {
+	public static void register(ParticleRenderType textureSheet, Function<ParticleEngine, ParticleGroup<?>> function) {
 		ParticleRendererRegistryImpl.INSTANCE.register(textureSheet, function);
 	}
 
 	/**
-	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
+	 * Registers a rendering order between two {@link ParticleRenderType}s.
 	 *
 	 * <p>The first texture sheet will be rendered before the second texture sheet.
 	 *
@@ -53,12 +53,12 @@ public final class ParticleRendererRegistry {
 	 * @param first  the texture sheet to render first
 	 * @param second the texture sheet to render second
 	 */
-	public static void registerOrdering(ParticleTextureSheet first, Identifier second) {
+	public static void registerOrdering(ParticleRenderType first, Identifier second) {
 		registerOrdering(getId(first), second);
 	}
 
 	/**
-	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
+	 * Registers a rendering order between two {@link ParticleRenderType}s.
 	 *
 	 * <p>The first texture sheet will be rendered before the second texture sheet.
 	 *
@@ -68,12 +68,12 @@ public final class ParticleRendererRegistry {
 	 * @param first  the texture sheet to render first
 	 * @param second the texture sheet to render second
 	 */
-	public static void registerOrdering(ParticleTextureSheet first, ParticleTextureSheet second) {
+	public static void registerOrdering(ParticleRenderType first, ParticleRenderType second) {
 		registerOrdering(getId(first), getId(second));
 	}
 
 	/**
-	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
+	 * Registers a rendering order between two {@link ParticleRenderType}s.
 	 *
 	 * <p>The first texture sheet will be rendered before the second texture sheet.
 	 *
@@ -83,12 +83,12 @@ public final class ParticleRendererRegistry {
 	 * @param first  the texture sheet to render first
 	 * @param second the texture sheet to render second
 	 */
-	public static void registerOrdering(Identifier first, ParticleTextureSheet second) {
+	public static void registerOrdering(Identifier first, ParticleRenderType second) {
 		registerOrdering(first, getId(second));
 	}
 
 	/**
-	 * Registers a rendering order between two {@link ParticleTextureSheet}s.
+	 * Registers a rendering order between two {@link ParticleRenderType}s.
 	 *
 	 * <p>The first texture sheet will be rendered before the second texture sheet.
 	 *
@@ -103,30 +103,30 @@ public final class ParticleRendererRegistry {
 	}
 
 	/**
-	 * Gets the {@link ParticleTextureSheet} registered with the given identifier.
+	 * Gets the {@link ParticleRenderType} registered with the given identifier.
 	 *
 	 * @param id the identifier of the texture sheet
 	 * @return the texture sheet, or null if none is registered with the given identifier
 	 */
-	public static @Nullable ParticleTextureSheet getParticleTextureSheet(Identifier id) {
+	public static @Nullable ParticleRenderType getParticleTextureSheet(Identifier id) {
 		return ParticleRendererRegistryImpl.INSTANCE.getParticleTextureSheet(id);
 	}
 
 	/**
-	 * Gets the identifier for the given {@link ParticleTextureSheet}.
+	 * Gets the identifier for the given {@link ParticleRenderType}.
 	 *
 	 * @param textureSheet the texture sheet
 	 * @return the identifier
 	 */
-	public static Identifier getId(ParticleTextureSheet textureSheet) {
-		if (textureSheet == ParticleTextureSheet.SINGLE_QUADS
-				|| textureSheet == ParticleTextureSheet.NO_RENDER
-				|| textureSheet == ParticleTextureSheet.ELDER_GUARDIANS
-				|| textureSheet == ParticleTextureSheet.ITEM_PICKUP) {
-			return Identifier.ofVanilla(textureSheet.name().toLowerCase(Locale.ROOT));
+	public static Identifier getId(ParticleRenderType textureSheet) {
+		if (textureSheet == ParticleRenderType.SINGLE_QUADS
+				|| textureSheet == ParticleRenderType.NO_RENDER
+				|| textureSheet == ParticleRenderType.ELDER_GUARDIANS
+				|| textureSheet == ParticleRenderType.ITEM_PICKUP) {
+			return Identifier.withDefaultNamespace(textureSheet.name().toLowerCase(Locale.ROOT));
 		}
 
-		return Identifier.of(textureSheet.name());
+		return Identifier.parse(textureSheet.name());
 	}
 
 	private ParticleRendererRegistry() {

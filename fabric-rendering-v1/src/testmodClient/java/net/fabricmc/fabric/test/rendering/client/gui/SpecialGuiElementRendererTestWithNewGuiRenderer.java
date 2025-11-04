@@ -19,16 +19,16 @@ package net.fabricmc.fabric.test.rendering.client.gui;
 import java.util.Collections;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.systems.ProjectionType;
+import com.mojang.blaze3d.ProjectionType;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.gui.render.state.GuiRenderState;
-import net.minecraft.client.render.fog.FogRenderer;
-import net.minecraft.util.DyeColor;
+import net.minecraft.client.renderer.fog.FogRenderer;
+import net.minecraft.world.item.DyeColor;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -45,23 +45,23 @@ public class SpecialGuiElementRendererTestWithNewGuiRenderer implements ClientMo
 		// TODO: Migrate to new HUD API once available
 		//noinspection deprecation
 		HudRenderCallback.EVENT.register((context, tickCounter) -> {
-			MinecraftClient client = MinecraftClient.getInstance();
+			Minecraft client = Minecraft.getInstance();
 			GuiRenderState newGuiRenderState = new GuiRenderState();
 
-			int mouseX = (int) client.mouse.getScaledX(client.getWindow());
-			int mouseY = (int) client.mouse.getScaledY(client.getWindow());
+			int mouseX = (int) client.mouseHandler.getScaledXPos(client.getWindow());
+			int mouseY = (int) client.mouseHandler.getScaledYPos(client.getWindow());
 
-			DrawContext newContext = new DrawContext(client, newGuiRenderState, mouseX, mouseY);
+			GuiGraphics newContext = new GuiGraphics(client, newGuiRenderState, mouseX, mouseY);
 
-			newContext.state.addSpecialElement(new BannerGuiElementRenderState(DyeColor.BLUE, 60, 0, 80, 20, new ScreenRect(60, 0, 40, 20)));
+			newContext.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 60, 0, 80, 20, new ScreenRectangle(60, 0, 40, 20)));
 
 			GpuBufferSlice orgProjectionMatrixBuffer = RenderSystem.getProjectionMatrixBuffer();
 			ProjectionType orgProjectionType = RenderSystem.getProjectionType();
 			GpuBufferSlice orgShaderFog = RenderSystem.getShaderFog();
 
-			GuiRenderer guiRenderer = new GuiRenderer(newGuiRenderState, client.getBufferBuilders().getEntityVertexConsumers(), client.gameRenderer.getEntityRenderCommandQueue(), client.gameRenderer.getEntityRenderDispatcher(), Collections.emptyList());
+			GuiRenderer guiRenderer = new GuiRenderer(newGuiRenderState, client.renderBuffers().bufferSource(), client.gameRenderer.getSubmitNodeStorage(), client.gameRenderer.getFeatureRenderDispatcher(), Collections.emptyList());
 			FogRenderer fogRenderer = new FogRenderer();
-			guiRenderer.render(fogRenderer.getFogBuffer(FogRenderer.FogType.NONE));
+			guiRenderer.render(fogRenderer.getBuffer(FogRenderer.FogMode.NONE));
 			fogRenderer.close();
 			guiRenderer.close();
 

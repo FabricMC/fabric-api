@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.recipe.Ingredient;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AllIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.AnyIngredient;
@@ -104,7 +104,7 @@ public final class DefaultCustomIngredients {
 	/**
 	 * Creates an ingredient that wraps another ingredient to also check for matching components.
 	 *
-	 * <p>Use {@link ComponentChanges#builder()} to add or remove components.
+	 * <p>Use {@link DataComponentPatch#builder()} to add or remove components.
 	 * Added components are checked to match on the target stack, either as the default or
 	 * the item stack-specific override.
 	 * Removed components are checked to not exist in the target stack.
@@ -121,7 +121,7 @@ public final class DefaultCustomIngredients {
 	 *
 	 * @throws IllegalArgumentException if there are no components to check
 	 */
-	public static Ingredient components(Ingredient base, ComponentChanges components) {
+	public static Ingredient components(Ingredient base, DataComponentPatch components) {
 		Objects.requireNonNull(base, "Base ingredient cannot be null");
 		Objects.requireNonNull(components, "Component changes cannot be null");
 
@@ -129,10 +129,10 @@ public final class DefaultCustomIngredients {
 	}
 
 	/**
-	 * @see #components(Ingredient, ComponentChanges)
+	 * @see #components(Ingredient, DataComponentPatch)
 	 */
-	public static Ingredient components(Ingredient base, UnaryOperator<ComponentChanges.Builder> operator) {
-		return components(base, operator.apply(ComponentChanges.builder()).build());
+	public static Ingredient components(Ingredient base, UnaryOperator<DataComponentPatch.Builder> operator) {
+		return components(base, operator.apply(DataComponentPatch.builder()).build());
 	}
 
 	/**
@@ -145,18 +145,18 @@ public final class DefaultCustomIngredients {
 	 * with 1 damage. To only match the default value, use the other methods and explicitly specify
 	 * the default value.
 	 *
-	 * @see #components(Ingredient, ComponentChanges)
+	 * @see #components(Ingredient, DataComponentPatch)
 	 * @throws IllegalArgumentException if {@code stack} has no changed components
 	 */
 	public static Ingredient components(ItemStack stack) {
 		Objects.requireNonNull(stack, "Stack cannot be null");
 
-		return components(Ingredient.ofItems(stack.getItem()), stack.getComponentChanges());
+		return components(Ingredient.of(stack.getItem()), stack.getComponentsPatch());
 	}
 
 	/**
 	 * Creates an ingredient that wraps another ingredient to also check for stack's {@linkplain
-	 * net.minecraft.component.DataComponentTypes#CUSTOM_DATA custom data}.
+	 * net.minecraft.core.component.DataComponents#CUSTOM_DATA custom data}.
 	 * This check is non-strict; the ingredient custom data must be a subset of the stack custom data.
 	 * This is useful for mods that still rely on NBT-based custom data instead of custom components,
 	 * such as those requiring vanilla compatibility or interacting with another data packs.
@@ -170,7 +170,7 @@ public final class DefaultCustomIngredients {
 	 * components(base, builder -> builder.remove(DataComponentTypes.CUSTOM_DATA));
 	 * }</pre>
 	 *
-	 * <p>See {@link NbtHelper#matches} for how matching works.
+	 * <p>See {@link NbtUtils#matches} for how matching works.
 	 *
 	 * <p>The JSON format is as follows:
 	 * <pre>{@code
@@ -183,7 +183,7 @@ public final class DefaultCustomIngredients {
 	 *
 	 * @throws IllegalArgumentException if {@code nbt} is {@code null} or empty
 	 */
-	public static Ingredient customData(Ingredient base, NbtCompound nbt) {
+	public static Ingredient customData(Ingredient base, CompoundTag nbt) {
 		return new CustomDataIngredient(base, nbt).toVanilla();
 	}
 

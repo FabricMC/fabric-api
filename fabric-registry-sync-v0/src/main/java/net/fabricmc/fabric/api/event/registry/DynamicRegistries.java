@@ -21,9 +21,9 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Unmodifiable;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryLoader;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.RegistryDataLoader;
 
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
  * Contains methods for registering and accessing dynamic {@linkplain Registry registries}.
  *
  * <h2>Basic usage</h2>
- * Custom dynamic registries can be registered with {@link #register(RegistryKey, Codec)}. These registries will not be
+ * Custom dynamic registries can be registered with {@link #register(ResourceKey, Codec)}. These registries will not be
  * <a href="#sync">synced to the client</a>.
  *
  * <p>The list of all dynamic registries, whether from vanilla or mods, can be accessed using
@@ -44,10 +44,10 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
  * <h2 id="sync">Synchronization</h2>
  * Dynamic registries are not synchronized to the client by default.
  * To register a <em>synced dynamic registry</em>, you can replace the {@link #register} call
- * with a call to {@link #registerSynced(RegistryKey, Codec, SyncOption...)}.
+ * with a call to {@link #registerSynced(ResourceKey, Codec, SyncOption...)}.
  *
  * <p>If you want to use a different codec for syncing, e.g. to skip unnecessary data,
- * you can use the overload with two codecs: {@link #registerSynced(RegistryKey, Codec, Codec, SyncOption...)}.
+ * you can use the overload with two codecs: {@link #registerSynced(ResourceKey, Codec, Codec, SyncOption...)}.
  *
  * <p>Synced dynamic registries can also be prevented from syncing if they have no entries.
  * This is useful for compatibility with clients that might not have your dynamic registry.
@@ -85,7 +85,7 @@ public final class DynamicRegistries {
 	 *
 	 * @return an unmodifiable list of all dynamic registries
 	 */
-	public static @Unmodifiable List<RegistryLoader.Entry<?>> getDynamicRegistries() {
+	public static @Unmodifiable List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
 		return DynamicRegistriesImpl.getDynamicRegistries();
 	}
 
@@ -99,7 +99,7 @@ public final class DynamicRegistries {
 	 * @param codec the codec used to load registry entries from data packs
 	 * @param <T>   the entry type of the registry
 	 */
-	public static <T> void register(RegistryKey<? extends Registry<T>> key, Codec<T> codec) {
+	public static <T> void register(ResourceKey<? extends Registry<T>> key, Codec<T> codec) {
 		DynamicRegistriesImpl.register(key, codec);
 	}
 
@@ -114,14 +114,14 @@ public final class DynamicRegistries {
 	 *
 	 * <p>If the object contained in the registry is complex and contains a lot of data
 	 * that is not relevant on the client, another codec for networking can be specified with
-	 * {@link #registerSynced(RegistryKey, Codec, Codec, SyncOption...)}.
+	 * {@link #registerSynced(ResourceKey, Codec, Codec, SyncOption...)}.
 	 *
 	 * @param key     the unique key of the registry
 	 * @param codec   the codec used to load registry entries from data packs and the network
 	 * @param options options to configure syncing
 	 * @param <T>   the entry type of the registry
 	 */
-	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> codec, SyncOption... options) {
+	public static <T> void registerSynced(ResourceKey<? extends Registry<T>> key, Codec<T> codec, SyncOption... options) {
 		registerSynced(key, codec, codec, options);
 	}
 
@@ -144,7 +144,7 @@ public final class DynamicRegistries {
 	 * @param options      options to configure syncing
 	 * @param <T>          the entry type of the registry
 	 */
-	public static <T> void registerSynced(RegistryKey<? extends Registry<T>> key, Codec<T> serverCodec, Codec<T> clientCodec, SyncOption... options) {
+	public static <T> void registerSynced(ResourceKey<? extends Registry<T>> key, Codec<T> serverCodec, Codec<T> clientCodec, SyncOption... options) {
 		DynamicRegistriesImpl.register(key, serverCodec);
 		DynamicRegistriesImpl.addSyncedRegistry(key, clientCodec, options);
 	}

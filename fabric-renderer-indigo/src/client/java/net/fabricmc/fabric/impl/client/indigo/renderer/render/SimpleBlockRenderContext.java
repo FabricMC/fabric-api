@@ -18,17 +18,17 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.BlockRenderLayers;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.LightTexture;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
@@ -37,24 +37,24 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 public class SimpleBlockRenderContext extends AbstractRenderContext {
 	public static final ThreadLocal<SimpleBlockRenderContext> POOL = ThreadLocal.withInitial(SimpleBlockRenderContext::new);
 
-	private final Random random = Random.createLocal();
+	private final RandomSource random = RandomSource.createNewThreadLocalInstance();
 
 	private BlockVertexConsumerProvider vertexConsumers;
-	private BlockRenderLayer defaultRenderLayer;
+	private ChunkSectionLayer defaultRenderLayer;
 	private float red;
 	private float green;
 	private float blue;
 	private int light;
 
 	@Nullable
-	private BlockRenderLayer lastRenderLayer;
+	private ChunkSectionLayer lastRenderLayer;
 	@Nullable
 	private VertexConsumer lastVertexConsumer;
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final BlockRenderLayer quadRenderLayer = quad.renderLayer();
-		final BlockRenderLayer renderLayer = quadRenderLayer == null ? defaultRenderLayer : quadRenderLayer;
+		final ChunkSectionLayer quadRenderLayer = quad.renderLayer();
+		final ChunkSectionLayer renderLayer = quadRenderLayer == null ? defaultRenderLayer : quadRenderLayer;
 		final VertexConsumer vertexConsumer;
 
 		if (renderLayer == lastRenderLayer) {
@@ -76,7 +76,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 			final float blue = this.blue;
 
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, net.minecraft.util.math.ColorHelper.scaleRgb(quad.color(i), red, green, blue));
+				quad.color(i, net.minecraft.util.ARGB.scaleRGB(quad.color(i), red, green, blue));
 			}
 		}
 	}
@@ -84,7 +84,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 	private void shadeQuad(MutableQuadViewImpl quad, boolean emissive) {
 		if (emissive) {
 			for (int i = 0; i < 4; i++) {
-				quad.lightmap(i, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+				quad.lightmap(i, LightTexture.FULL_BRIGHT);
 			}
 		} else {
 			final int light = this.light;
@@ -95,15 +95,15 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	public void bufferModel(MatrixStack.Entry entry, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
+	public void bufferModel(PoseStack.Pose entry, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
 		matrices = entry;
 		this.overlay = overlay;
 
 		this.vertexConsumers = vertexConsumers;
-		this.defaultRenderLayer = BlockRenderLayers.getBlockLayer(state);
-		this.red = MathHelper.clamp(red, 0, 1);
-		this.green = MathHelper.clamp(green, 0, 1);
-		this.blue = MathHelper.clamp(blue, 0, 1);
+		this.defaultRenderLayer = ItemBlockRenderTypes.getChunkRenderType(state);
+		this.red = Mth.clamp(red, 0, 1);
+		this.green = Mth.clamp(green, 0, 1);
+		this.blue = Mth.clamp(blue, 0, 1);
 		this.light = light;
 
 		random.setSeed(42L);

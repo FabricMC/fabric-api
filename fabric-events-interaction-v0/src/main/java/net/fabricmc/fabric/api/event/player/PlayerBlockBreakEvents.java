@@ -18,11 +18,11 @@ package net.fabricmc.fabric.api.event.player;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -96,7 +96,7 @@ public final class PlayerBlockBreakEvents {
 		 * @param blockEntity the block entity <strong>before</strong> the block is broken, can be {@code null}
 		 * @return {@code false} to cancel block breaking action, or {@code true} to pass to next listener
 		 */
-		boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
+		boolean beforeBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
 	}
 
 	@FunctionalInterface
@@ -110,7 +110,7 @@ public final class PlayerBlockBreakEvents {
 		 * @param state the block state <strong>before</strong> the block was broken
 		 * @param blockEntity the block entity of the broken block, can be {@code null}
 		 */
-		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
+		void afterBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
 	}
 
 	@FunctionalInterface
@@ -124,6 +124,6 @@ public final class PlayerBlockBreakEvents {
 		 * @param state the block state of the block that was going to be broken
 		 * @param blockEntity the block entity of the block that was going to be broken, can be {@code null}
 		 */
-		void onBlockBreakCanceled(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
+		void onBlockBreakCanceled(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
 	}
 }

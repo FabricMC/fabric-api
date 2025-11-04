@@ -20,15 +20,15 @@ import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.carver.ConfiguredCarver;
-import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 /**
  * Provides an API to modify Biomes after they have been loaded and before they are used in the World.
@@ -44,8 +44,8 @@ public final class BiomeModifications {
 	 *
 	 * @see BiomeSelectors
 	 */
-	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureRegistryKey) {
-		create(placedFeatureRegistryKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
+	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Decoration step, ResourceKey<PlacedFeature> placedFeatureRegistryKey) {
+		create(placedFeatureRegistryKey.identifier()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
 			context.getGenerationSettings().addFeature(step, placedFeatureRegistryKey);
 		});
 	}
@@ -55,8 +55,8 @@ public final class BiomeModifications {
 	 *
 	 * @see BiomeSelectors
 	 */
-	public static void addCarver(Predicate<BiomeSelectionContext> biomeSelector, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
-		create(configuredCarverKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
+	public static void addCarver(Predicate<BiomeSelectionContext> biomeSelector, ResourceKey<ConfiguredWorldCarver<?>> configuredCarverKey) {
+		create(configuredCarverKey.identifier()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
 			context.getGenerationSettings().addCarver(configuredCarverKey);
 		});
 	}
@@ -65,21 +65,21 @@ public final class BiomeModifications {
 	 * Convenience method to add an entity spawn to one or more biomes.
 	 *
 	 * @see BiomeSelectors
-	 * @see net.minecraft.world.biome.SpawnSettings.Builder#spawn(SpawnGroup, int, SpawnSettings.SpawnEntry)
+	 * @see net.minecraft.world.level.biome.MobSpawnSettings.Builder#spawn(MobCategory, int, MobSpawnSettings.SpawnerData)
 	 */
 	public static void addSpawn(Predicate<BiomeSelectionContext> biomeSelector,
-								SpawnGroup spawnGroup, EntityType<?> entityType,
-								int weight, int minGroupSize, int maxGroupSize) {
+                                MobCategory spawnGroup, EntityType<?> entityType,
+                                int weight, int minGroupSize, int maxGroupSize) {
 		// See constructor of SpawnSettings.SpawnEntry for context
-		Preconditions.checkArgument(entityType.getSpawnGroup() != SpawnGroup.MISC,
+		Preconditions.checkArgument(entityType.getCategory() != MobCategory.MISC,
 				"Cannot add spawns for entities with spawnGroup=MISC since they'd be replaced by pigs.");
 
 		// We need the entity type to be registered, or we cannot deduce an ID otherwise
-		Identifier id = Registries.ENTITY_TYPE.getId(entityType);
-		Preconditions.checkState(Registries.ENTITY_TYPE.getKey(entityType).isPresent(), "Unregistered entity type: %s", entityType);
+		Identifier id = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
+		Preconditions.checkState(BuiltInRegistries.ENTITY_TYPE.getResourceKey(entityType).isPresent(), "Unregistered entity type: %s", entityType);
 
 		create(id).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getSpawnSettings().addSpawn(spawnGroup, new SpawnSettings.SpawnEntry(entityType, minGroupSize, maxGroupSize), weight);
+			context.getSpawnSettings().addSpawn(spawnGroup, new MobSpawnSettings.SpawnerData(entityType, minGroupSize, maxGroupSize), weight);
 		});
 	}
 

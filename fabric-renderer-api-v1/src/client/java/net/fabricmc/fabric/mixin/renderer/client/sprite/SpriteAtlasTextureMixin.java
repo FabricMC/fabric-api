@@ -27,32 +27,32 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.texture.SpriteLoader;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.SpriteLoader;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.api.renderer.v1.sprite.FabricSpriteAtlasTexture;
 import net.fabricmc.fabric.impl.renderer.SpriteFinderImpl;
 import net.fabricmc.fabric.impl.renderer.StitchResultExtension;
 
-@Mixin(SpriteAtlasTexture.class)
+@Mixin(TextureAtlas.class)
 abstract class SpriteAtlasTextureMixin implements FabricSpriteAtlasTexture {
 	@Shadow
 	@Final
-	private Map<Identifier, Sprite> sprites;
+	private Map<Identifier, TextureAtlasSprite> texturesByName;
 	@Shadow
 	@Final
 	@Nullable
-	private Sprite missingSprite;
+	private TextureAtlasSprite missingSprite;
 
 	@Unique
 	@Nullable
 	private volatile SpriteFinder spriteFinder;
 
 	@Inject(at = @At("RETURN"), method = "upload")
-	private void uploadHook(SpriteLoader.StitchResult stitchResult, CallbackInfo ci) {
+	private void uploadHook(SpriteLoader.Preparations stitchResult, CallbackInfo ci) {
 		// Clear this atlas' old finder. If the finder was already initialized in the stitch result, reuse it for this
 		// atlas.
 		spriteFinder = ((StitchResultExtension) (Object) stitchResult).fabric_spriteFinderNullable();
@@ -71,7 +71,7 @@ abstract class SpriteAtlasTextureMixin implements FabricSpriteAtlasTexture {
 						throw new IllegalStateException("Tried to create sprite finder, but atlas is not initialized");
 					}
 
-					spriteFinder = result = new SpriteFinderImpl(sprites, missingSprite);
+					spriteFinder = result = new SpriteFinderImpl(texturesByName, missingSprite);
 				}
 			}
 		}

@@ -26,25 +26,25 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.ComponentType;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SidedInventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.Codecs;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.Container;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -57,13 +57,13 @@ import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
  * Tests for the item transfer APIs.
  */
 class ItemTests extends AbstractTransferApiTest {
-	public static ComponentType<Integer> ENERGY;
+	public static DataComponentType<Integer> ENERGY;
 
 	@BeforeAll
 	static void beforeAll() {
 		bootstrap();
-		ENERGY = Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(TransferTestInitializer.MOD_ID, "energy"),
-								ComponentType.<Integer>builder().codec(Codecs.NON_NEGATIVE_INT).packetCodec(PacketCodecs.VAR_INT).build());
+		ENERGY = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TransferTestInitializer.MOD_ID, "energy"),
+								DataComponentType.<Integer>builder().persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
 	}
 
 	@Test
@@ -71,16 +71,16 @@ class ItemTests extends AbstractTransferApiTest {
 		// Ensure that Inventory wrappers will try to mutate the backing stack as much as possible.
 		// In many cases, MC code captures a reference to the ItemStack so we want to edit that stack directly
 		// and not a copy whenever we can. Obviously this can't be perfect, but we try to cover as many cases as possible.
-		SimpleInventory inv = new SimpleInventory(new ItemStack(Items.DIAMOND, 2));
+		SimpleContainer inv = new SimpleContainer(new ItemStack(Items.DIAMOND, 2));
 		InventoryStorage invWrapper = InventoryStorage.of(inv, null);
-		ItemStack stack = inv.getStack(0);
+		ItemStack stack = inv.getItem(0);
 
 		// Simulate should correctly reset the stack.
 		try (Transaction tx = Transaction.openOuter()) {
 			invWrapper.extract(ItemVariant.of(Items.DIAMOND), 2, tx);
 		}
 
-		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
+		if (stack != inv.getItem(0)) throw new AssertionError("Stack should have stayed the same.");
 
 		// Commit should try to edit the original stack when it is feasible to do so.
 		try (Transaction tx = Transaction.openOuter()) {
@@ -88,11 +88,11 @@ class ItemTests extends AbstractTransferApiTest {
 			tx.commit();
 		}
 
-		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
+		if (stack != inv.getItem(0)) throw new AssertionError("Stack should have stayed the same.");
 
 		// Also edit the stack when the item matches, even when the components and the count change.
 		ItemVariant oldVariant = ItemVariant.of(Items.DIAMOND);
-		ComponentChanges components = ComponentChanges.builder().add(ENERGY, 42).build();
+		DataComponentPatch components = DataComponentPatch.builder().set(ENERGY, 42).build();
 		ItemVariant newVariant = ItemVariant.of(Items.DIAMOND, components);
 
 		try (Transaction tx = Transaction.openOuter()) {
@@ -101,7 +101,7 @@ class ItemTests extends AbstractTransferApiTest {
 			tx.commit();
 		}
 
-		if (stack != inv.getStack(0)) throw new AssertionError("Stack should have stayed the same.");
+		if (stack != inv.getItem(0)) throw new AssertionError("Stack should have stayed the same.");
 		if (!stackEquals(stack, newVariant, 5)) throw new AssertionError("Failed to update stack components or count.");
 	}
 
@@ -127,8 +127,8 @@ class ItemTests extends AbstractTransferApiTest {
 				if (downWrapper.insert(emptyBucket, 1, transaction) != 0) throw new AssertionError("Bucket should not have been inserted.");
 				// Insert bucket unsided - should go in slot 1 (isValid returns false for slot 0).
 				if (unsidedWrapper.insert(emptyBucket, 1, transaction) != 1) throw new AssertionError("Failed to insert bucket.");
-				if (!testInventory.getStack(0).isEmpty()) throw new AssertionError("Slot 0 should have been empty.");
-				if (!stackEquals(testInventory.getStack(1), Items.BUCKET, 1)) throw new AssertionError("Slot 1 should have been a bucket.");
+				if (!testInventory.getItem(0).isEmpty()) throw new AssertionError("Slot 0 should have been empty.");
+				if (!stackEquals(testInventory.getItem(1), Items.BUCKET, 1)) throw new AssertionError("Slot 1 should have been a bucket.");
 				// The bucket should be extractable from any side but the top.
 				if (!emptyBucket.equals(StorageUtil.findExtractableResource(unsidedWrapper, transaction))) throw new AssertionError("Bucket should be extractable from unsided wrapper.");
 				if (!emptyBucket.equals(StorageUtil.findExtractableResource(downWrapper, transaction))) throw new AssertionError("Bucket should be extractable from down wrapper.");
@@ -142,14 +142,14 @@ class ItemTests extends AbstractTransferApiTest {
 		}
 
 		// Check commit.
-		if (!testInventory.getStack(0).isEmpty()) throw new AssertionError("Slot 0 should have been empty.");
-		if (!testInventory.getStack(1).isOf(Items.BUCKET) || testInventory.getStack(1).getCount() != 1) throw new AssertionError("Slot 1 should have been a bucket.");
+		if (!testInventory.getItem(0).isEmpty()) throw new AssertionError("Slot 0 should have been empty.");
+		if (!testInventory.getItem(1).is(Items.BUCKET) || testInventory.getItem(1).getCount() != 1) throw new AssertionError("Slot 1 should have been a bucket.");
 
 		checkComparatorOutput(testInventory);
 
 		// Check that we return sensible results if amount stored > capacity
 		ItemStack oversizedStack = new ItemStack(Items.DIAMOND_PICKAXE, 2);
-		SimpleInventory simpleInventory = new SimpleInventory(oversizedStack);
+		SimpleContainer simpleInventory = new SimpleContainer(oversizedStack);
 		InventoryStorage wrapper = InventoryStorage.of(simpleInventory, null);
 
 		try (Transaction transaction = Transaction.openOuter()) {
@@ -161,14 +161,14 @@ class ItemTests extends AbstractTransferApiTest {
 	@Test
 	void testPacketCodec() {
 		ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
-		stack.set(DataComponentTypes.CUSTOM_NAME, Text.literal("Custom name"));
+		stack.set(DataComponents.CUSTOM_NAME, Component.literal("Custom name"));
 
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		RegistryByteBuf rbuf = new RegistryByteBuf(buf, staticDrm());
+		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+		RegistryFriendlyByteBuf rbuf = new RegistryFriendlyByteBuf(buf, staticDrm());
 		ItemVariant.PACKET_CODEC.encode(rbuf, ItemVariant.of(stack));
 
 		ItemVariant decoded = ItemVariant.PACKET_CODEC.decode(rbuf);
-		Assertions.assertTrue(ItemStack.areEqual(stack, decoded.toStack()));
+		Assertions.assertTrue(ItemStack.matches(stack, decoded.toStack()));
 	}
 
 	private static boolean stackEquals(ItemStack stack, Item item, int count) {
@@ -179,7 +179,7 @@ class ItemTests extends AbstractTransferApiTest {
 		return variant.matches(stack) && stack.getCount() == count;
 	}
 
-	private static class TestSidedInventory extends SimpleInventory implements SidedInventory {
+	private static class TestSidedInventory extends SimpleContainer implements WorldlyContainer {
 		private static final int[] SLOTS = IntStream.range(0, 3).toArray();
 
 		TestSidedInventory() {
@@ -187,28 +187,28 @@ class ItemTests extends AbstractTransferApiTest {
 		}
 
 		@Override
-		public int[] getAvailableSlots(Direction side) {
+		public int[] getSlotsForFace(Direction side) {
 			return SLOTS;
 		}
 
 		@Override
-		public boolean isValid(int slot, ItemStack stack) {
-			return slot != 0 || !stack.isOf(Items.BUCKET); // can't have buckets in slot 0.
+		public boolean canPlaceItem(int slot, ItemStack stack) {
+			return slot != 0 || !stack.is(Items.BUCKET); // can't have buckets in slot 0.
 		}
 
 		@Override
-		public boolean canInsert(int slot, ItemStack stack, @Nullable Direction dir) {
+		public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction dir) {
 			return dir != Direction.DOWN;
 		}
 
 		@Override
-		public boolean canExtract(int slot, ItemStack stack, Direction dir) {
+		public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction dir) {
 			return dir != Direction.UP;
 		}
 	}
 
 	/**
-	 * Test insertion when {@link Inventory#getMaxCountPerStack()} is the bottleneck.
+	 * Test insertion when {@link Container#getMaxCountPerStack()} is the bottleneck.
 	 */
 	@Test
 	public void testLimitedStackCountInventory() {
@@ -245,7 +245,7 @@ class ItemTests extends AbstractTransferApiTest {
 		}
 	}
 
-	private static class LimitedStackCountInventory extends SimpleInventory {
+	private static class LimitedStackCountInventory extends SimpleContainer {
 		LimitedStackCountInventory(int size) {
 			super(size);
 		}
@@ -255,15 +255,15 @@ class ItemTests extends AbstractTransferApiTest {
 		}
 
 		@Override
-		public int getMaxCountPerStack() {
+		public int getMaxStackSize() {
 			return 3;
 		}
 	}
 
-	private static void checkComparatorOutput(Inventory inventory) {
+	private static void checkComparatorOutput(Container inventory) {
 		Storage<ItemVariant> storage = InventoryStorage.of(inventory, null);
 
-		int vanillaOutput = ScreenHandler.calculateComparatorOutput(inventory);
+		int vanillaOutput = AbstractContainerMenu.getRedstoneSignalFromContainer(inventory);
 		int transferApiOutput = StorageUtil.calculateComparatorOutput(storage);
 
 		if (vanillaOutput != transferApiOutput) {
@@ -281,12 +281,12 @@ class ItemTests extends AbstractTransferApiTest {
 	 */
 	@Test
 	public void testSimpleInventoryUpdates() {
-		var simpleInventory = new SimpleInventory(2) {
+		var simpleInventory = new SimpleContainer(2) {
 			boolean throwOnMarkDirty = true;
 			boolean markDirtyCalled = false;
 
 			@Override
-			public void markDirty() {
+			public void setChanged() {
 				if (throwOnMarkDirty) {
 					throw new AssertionError("Unexpected markDirty call!");
 				}

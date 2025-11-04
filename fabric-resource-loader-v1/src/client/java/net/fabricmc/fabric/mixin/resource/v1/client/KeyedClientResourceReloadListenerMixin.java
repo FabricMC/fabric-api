@@ -21,28 +21,28 @@ import java.util.Locale;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.client.font.FontManager;
-import net.minecraft.client.gl.ShaderLoader;
-import net.minecraft.client.particle.ParticleSpriteManager;
-import net.minecraft.client.render.CloudRenderer;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.block.entity.BlockEntityRenderManager;
-import net.minecraft.client.render.entity.EntityRenderManager;
-import net.minecraft.client.render.entity.equipment.EquipmentModelLoader;
-import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.client.resource.DryFoliageColormapResourceSupplier;
-import net.minecraft.client.resource.FoliageColormapResourceSupplier;
-import net.minecraft.client.resource.GrassColormapResourceSupplier;
-import net.minecraft.client.resource.PeriodicNotificationManager;
-import net.minecraft.client.resource.SplashTextResourceSupplier;
-import net.minecraft.client.resource.VideoWarningManager;
-import net.minecraft.client.resource.language.LanguageManager;
-import net.minecraft.client.resource.waypoint.WaypointStyleAssetManager;
-import net.minecraft.client.sound.SoundManager;
-import net.minecraft.client.texture.AtlasManager;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.font.FontManager;
+import net.minecraft.client.renderer.ShaderManager;
+import net.minecraft.client.particle.ParticleResources;
+import net.minecraft.client.renderer.CloudRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.resources.model.EquipmentAssetManager;
+import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.client.resources.DryFoliageColorReloadListener;
+import net.minecraft.client.resources.FoliageColorReloadListener;
+import net.minecraft.client.resources.GrassColorReloadListener;
+import net.minecraft.client.PeriodicNotificationManager;
+import net.minecraft.client.resources.SplashManager;
+import net.minecraft.client.renderer.GpuWarnlistManager;
+import net.minecraft.client.resources.language.LanguageManager;
+import net.minecraft.client.resources.WaypointStyleManager;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.resources.model.AtlasManager;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 import net.fabricmc.fabric.impl.resource.v1.FabricResourceReloader;
@@ -50,25 +50,25 @@ import net.fabricmc.fabric.impl.resource.v1.FabricResourceReloader;
 @Mixin({
 		/* public */
 		AtlasManager.class,
-		BakedModelManager.class,
-		BlockEntityRenderManager.class,
-		BlockRenderManager.class,
+		ModelManager.class,
+		BlockEntityRenderDispatcher.class,
+		BlockRenderDispatcher.class,
 		CloudRenderer.class,
-		EquipmentModelLoader.class,
-		EntityRenderManager.class,
-		DryFoliageColormapResourceSupplier.class,
-		FoliageColormapResourceSupplier.class,
+		EquipmentAssetManager.class,
+		EntityRenderDispatcher.class,
+		DryFoliageColorReloadListener.class,
+		FoliageColorReloadListener.class,
 		FontManager.class,
-		GrassColormapResourceSupplier.class,
+		GrassColorReloadListener.class,
 		LanguageManager.class,
-		ParticleSpriteManager.class,
-		ShaderLoader.class,
-		SplashTextResourceSupplier.class,
+		ParticleResources.class,
+		ShaderManager.class,
+		SplashManager.class,
 		SoundManager.class,
 		TextureManager.class,
-		WaypointStyleAssetManager.class,
+		WaypointStyleManager.class,
 		/* private */
-		WorldRenderer.class, VideoWarningManager.class, PeriodicNotificationManager.class
+		LevelRenderer.class, GpuWarnlistManager.class, PeriodicNotificationManager.class
 })
 public abstract class KeyedClientResourceReloadListenerMixin implements FabricResourceReloader {
 	@Unique
@@ -81,42 +81,42 @@ public abstract class KeyedClientResourceReloadListenerMixin implements FabricRe
 
 			if (self instanceof AtlasManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.ATLAS;
-			} else if (self instanceof BakedModelManager) {
+			} else if (self instanceof ModelManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.MODELS;
-			} else if (self instanceof BlockEntityRenderManager) {
+			} else if (self instanceof BlockEntityRenderDispatcher) {
 				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_ENTITY_RENDERERS;
-			} else if (self instanceof BlockRenderManager) {
+			} else if (self instanceof BlockRenderDispatcher) {
 				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_RENDER_MANAGER;
 			} else if (self instanceof CloudRenderer) {
 				this.fabric$id = ResourceReloaderKeys.Client.CLOUD_CELLS;
-			} else if (self instanceof DryFoliageColormapResourceSupplier) {
+			} else if (self instanceof DryFoliageColorReloadListener) {
 				this.fabric$id = ResourceReloaderKeys.Client.DRY_FOLIAGE_COLORMAP;
-			} else if (self instanceof EquipmentModelLoader) {
+			} else if (self instanceof EquipmentAssetManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.EQUIPMENT_MODELS;
-			} else if (self instanceof EntityRenderManager) {
+			} else if (self instanceof EntityRenderDispatcher) {
 				this.fabric$id = ResourceReloaderKeys.Client.ENTITY_RENDERERS;
 			} else if (self instanceof FontManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.FONTS;
-			} else if (self instanceof FoliageColormapResourceSupplier) {
+			} else if (self instanceof FoliageColorReloadListener) {
 				this.fabric$id = ResourceReloaderKeys.Client.FOLIAGE_COLORMAP;
-			} else if (self instanceof GrassColormapResourceSupplier) {
+			} else if (self instanceof GrassColorReloadListener) {
 				this.fabric$id = ResourceReloaderKeys.Client.GRASS_COLORMAP;
 			} else if (self instanceof LanguageManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.LANGUAGES;
-			} else if (self instanceof ParticleSpriteManager) {
+			} else if (self instanceof ParticleResources) {
 				this.fabric$id = ResourceReloaderKeys.Client.PARTICLES;
-			} else if (self instanceof ShaderLoader) {
+			} else if (self instanceof ShaderManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.SHADERS;
-			} else if (self instanceof SplashTextResourceSupplier) {
+			} else if (self instanceof SplashManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.SPLASH_TEXTS;
 			} else if (self instanceof SoundManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.SOUNDS;
 			} else if (self instanceof TextureManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.TEXTURES;
-			} else if (self instanceof WaypointStyleAssetManager) {
+			} else if (self instanceof WaypointStyleManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.WAYPOINT_STYLE_ASSETS;
 			} else {
-				this.fabric$id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
+				this.fabric$id = Identifier.withDefaultNamespace("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
 		}
 

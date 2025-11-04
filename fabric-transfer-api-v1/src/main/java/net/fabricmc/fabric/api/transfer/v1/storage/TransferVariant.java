@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.Objects;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.ComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentMap;
 
 /**
  * An immutable association of an immutable object instance (for example {@code Item} or {@code Fluid}) and data components.
@@ -44,14 +44,14 @@ public interface TransferVariant<O> {
 	O getObject();
 
 	/**
-	 * @return The {@link ComponentChanges} of this variant.
+	 * @return The {@link DataComponentPatch} of this variant.
 	 */
-	ComponentChanges getComponents();
+	DataComponentPatch getComponents();
 
 	/**
-	 * @return The {@link ComponentMap} of this variant.
+	 * @return The {@link DataComponentMap} of this variant.
 	 */
-	ComponentMap getComponentMap();
+	DataComponentMap getComponentMap();
 
 	/**
 	 * Return true if this variant has a component changes.
@@ -65,7 +65,7 @@ public interface TransferVariant<O> {
 	 *
 	 * <p>Note: True is returned if both tags are {@code null}.
 	 */
-	default boolean componentsMatch(ComponentChanges other) {
+	default boolean componentsMatch(DataComponentPatch other) {
 		return Objects.equals(getComponents(), other);
 	}
 
@@ -81,7 +81,7 @@ public interface TransferVariant<O> {
 	 * @param changes the changes to apply
 	 * @return the new variant with the changes applied
 	 */
-	default TransferVariant<O> withComponentChanges(ComponentChanges changes) {
+	default TransferVariant<O> withComponentChanges(DataComponentPatch changes) {
 		throw new UnsupportedOperationException("withComponentChanges is not supported by this TransferVariant");
 	}
 }

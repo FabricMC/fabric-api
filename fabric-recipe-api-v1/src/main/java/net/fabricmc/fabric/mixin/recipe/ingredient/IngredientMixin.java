@@ -30,11 +30,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.item.Item;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.world.item.Item;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.HolderSet;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -52,17 +52,17 @@ public class IngredientMixin implements FabricIngredient {
 
 	@Shadow
 	@Final
-	private RegistryEntryList<Item> entries;
+	private HolderSet<Item> values;
 
 	@ModifyExpressionValue(
 			method = "<clinit>",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/network/codec/PacketCodec;xmap(Ljava/util/function/Function;Ljava/util/function/Function;)Lnet/minecraft/network/codec/PacketCodec;",
+					target = "Lnet/minecraft/network/codec/StreamCodec;map(Ljava/util/function/Function;Ljava/util/function/Function;)Lnet/minecraft/network/codec/StreamCodec;",
 					ordinal = 0
 			)
 	)
-	private static PacketCodec<RegistryByteBuf, Ingredient> useCustomIngredientPacketCodec(PacketCodec<RegistryByteBuf, Ingredient> original) {
+	private static StreamCodec<RegistryFriendlyByteBuf, Ingredient> useCustomIngredientPacketCodec(StreamCodec<RegistryFriendlyByteBuf, Ingredient> original) {
 		return new CustomIngredientPacketCodec(original);
 	}
 
@@ -70,11 +70,11 @@ public class IngredientMixin implements FabricIngredient {
 			method = "<clinit>",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/network/codec/PacketCodec;xmap(Ljava/util/function/Function;Ljava/util/function/Function;)Lnet/minecraft/network/codec/PacketCodec;",
+					target = "Lnet/minecraft/network/codec/StreamCodec;map(Ljava/util/function/Function;Ljava/util/function/Function;)Lnet/minecraft/network/codec/StreamCodec;",
 					ordinal = 1
 			)
 	)
-	private static PacketCodec<RegistryByteBuf, Optional<Ingredient>> useOptionalCustomIngredientPacketCodec(PacketCodec<RegistryByteBuf, Optional<Ingredient>> original) {
+	private static StreamCodec<RegistryFriendlyByteBuf, Optional<Ingredient>> useOptionalCustomIngredientPacketCodec(StreamCodec<RegistryFriendlyByteBuf, Optional<Ingredient>> original) {
 		return new OptionalCustomIngredientPacketCodec(original);
 	}
 
@@ -97,10 +97,10 @@ public class IngredientMixin implements FabricIngredient {
 	// Targets the lambdas in the codecs which extract the entries from an ingredient.
 	// For custom ingredients, these lambdas will only be invoked when the client does not support this ingredient.
 	// In this case, use CustomIngredientImpl#getCustomMatchingItems, which as close as we can get.
-	@Inject(method = { "method_61673", "method_61677", "method_61680" }, at = @At("HEAD"), cancellable = true)
-	private static void onGetEntries(Ingredient ingredient, CallbackInfoReturnable<RegistryEntryList<Item>> cir) {
+	@Inject(method = {"method_61673", "method_61677", "method_61680"}, at = @At("HEAD"), cancellable = true)
+	private static void onGetEntries(Ingredient ingredient, CallbackInfoReturnable<HolderSet<Item>> cir) {
 		if (ingredient instanceof CustomIngredientImpl customIngredient) {
-			cir.setReturnValue(RegistryEntryList.of(customIngredient.getCustomMatchingItems()));
+			cir.setReturnValue(HolderSet.direct(customIngredient.getCustomMatchingItems()));
 		}
 	}
 
@@ -115,6 +115,6 @@ public class IngredientMixin implements FabricIngredient {
 
 	@Override
 	public int hashCode() {
-		return entries.hashCode();
+		return values.hashCode();
 	}
 }

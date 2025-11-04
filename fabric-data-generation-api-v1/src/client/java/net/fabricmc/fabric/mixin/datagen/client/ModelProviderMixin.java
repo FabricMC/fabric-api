@@ -28,11 +28,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.data.BlockStateModelGenerator;
-import net.minecraft.client.data.ItemModelGenerator;
-import net.minecraft.client.data.ModelProvider;
-import net.minecraft.data.DataOutput;
-import net.minecraft.data.DataWriter;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.CachedOutput;
 
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -45,14 +45,14 @@ public class ModelProviderMixin {
 	private FabricDataOutput fabricDataOutput;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void init(DataOutput output, CallbackInfo ci) {
+	public void init(PackOutput output, CallbackInfo ci) {
 		if (output instanceof FabricDataOutput fabricDataOutput) {
 			this.fabricDataOutput = fabricDataOutput;
 		}
 	}
 
-	@WrapOperation(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/BlockStateModelGenerator;register()V"))
-	private void registerBlockStateModels(BlockStateModelGenerator instance, Operation<Void> original) {
+	@WrapOperation(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/models/BlockModelGenerators;run()V"))
+	private void registerBlockStateModels(BlockModelGenerators instance, Operation<Void> original) {
 		if (((Object) this) instanceof FabricModelProvider fabricModelProvider) {
 			fabricModelProvider.generateBlockStateModels(instance);
 		} else {
@@ -61,8 +61,8 @@ public class ModelProviderMixin {
 		}
 	}
 
-	@WrapOperation(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/ItemModelGenerator;register()V"))
-	private void registerItemModels(ItemModelGenerator instance, Operation<Void> original) {
+	@WrapOperation(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/models/ItemModelGenerators;run()V"))
+	private void registerItemModels(ItemModelGenerators instance, Operation<Void> original) {
 		if (((Object) this) instanceof FabricModelProvider fabricModelProvider) {
 			fabricModelProvider.generateItemModels(instance);
 		} else {
@@ -71,12 +71,12 @@ public class ModelProviderMixin {
 		}
 	}
 
-	@Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/BlockStateModelGenerator;register()V"))
-	private void setFabricDataOutput(DataWriter writer, CallbackInfoReturnable<CompletableFuture<?>> cir,
-							@Local ModelProvider.BlockStateSuppliers blockStateSuppliers,
-							@Local ModelProvider.ItemAssets itemAssets) {
+	@Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/models/BlockModelGenerators;run()V"))
+	private void setFabricDataOutput(CachedOutput writer, CallbackInfoReturnable<CompletableFuture<?>> cir,
+                                     @Local ModelProvider.BlockStateGeneratorCollector blockStateSuppliers,
+                                     @Local ModelProvider.ItemInfoCollector itemAssets) {
 		((FabricModelProviderDefinitions) blockStateSuppliers).setFabricDataOutput(fabricDataOutput);
 		((FabricModelProviderDefinitions) itemAssets).setFabricDataOutput(fabricDataOutput);
-		((FabricItemAssetDefinitions) itemAssets).fabric_setProcessedBlocks(blockStateSuppliers.blockStateSuppliers.keySet());
+		((FabricItemAssetDefinitions) itemAssets).fabric_setProcessedBlocks(blockStateSuppliers.generators.keySet());
 	}
 }

@@ -44,11 +44,11 @@ public final class ServerLifecycleTests implements ModInitializer {
 		});
 
 		ServerWorldEvents.LOAD.register((server, world) -> {
-			LOGGER.info("Loaded world " + world.getRegistryKey().getValue().toString());
+			LOGGER.info("Loaded world " + world.dimension().identifier().toString());
 		});
 
 		ServerWorldEvents.UNLOAD.register((server, world) -> {
-			LOGGER.info("Unloaded world " + world.getRegistryKey().getValue().toString());
+			LOGGER.info("Unloaded world " + world.dimension().identifier().toString());
 		});
 
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {

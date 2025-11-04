@@ -19,9 +19,9 @@ package net.fabricmc.fabric.mixin.attachment;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 
-@Mixin(CustomPayloadC2SPacket.class)
+@Mixin(ServerboundCustomPayloadPacket.class)
 public interface CustomPayloadC2SPacketAccessor {
 	@Accessor("MAX_PAYLOAD_SIZE")
 	static int getMaxPayloadSize() {

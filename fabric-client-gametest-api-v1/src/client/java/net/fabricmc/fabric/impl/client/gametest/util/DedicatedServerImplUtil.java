@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.server.Main;
-import net.minecraft.server.dedicated.MinecraftDedicatedServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -44,7 +44,7 @@ public final class DedicatedServerImplUtil {
 		properties.setProperty("online-mode", "false");
 
 		// disable sync-chunk-writes on unix systems, it slows world saving down a LOT and doesn't really help anything
-		properties.setProperty("sync-chunk-writes", String.valueOf(Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS));
+		properties.setProperty("sync-chunk-writes", String.valueOf(Util.getPlatform() == Util.OS.WINDOWS));
 
 		// allow non-opped players to place blocks at spawn
 		properties.setProperty("spawn-protection", "0");
@@ -57,18 +57,18 @@ public final class DedicatedServerImplUtil {
 	@Nullable
 	public static Path saveLevelDataTo = null;
 	@Nullable
-	public static CompletableFuture<MinecraftDedicatedServer> serverFuture = null;
+	public static CompletableFuture<DedicatedServer> serverFuture = null;
 
 	private DedicatedServerImplUtil() {
 	}
 
-	public static MinecraftDedicatedServer start(ClientGameTestContext context, Properties serverProperties) {
+	public static DedicatedServer start(ClientGameTestContext context, Properties serverProperties) {
 		setupServer(serverProperties);
 		serverFuture = new CompletableFuture<>();
 
 		new Thread(() -> Main.main(new String[0])).start();
 
-		MinecraftDedicatedServer server;
+		DedicatedServer server;
 
 		try {
 			server = serverFuture.get(10, TimeUnit.SECONDS);

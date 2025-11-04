@@ -21,12 +21,12 @@ import java.util.Set;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.network.Connection;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import net.fabricmc.fabric.impl.recipe.sync.SyncedSerializerAwareClientConnection;
 
-@Mixin(ClientConnection.class)
+@Mixin(Connection.class)
 public abstract class ClientConnectionMixin implements SyncedSerializerAwareClientConnection {
 	@Unique
 	private Set<RecipeSerializer<?>> syncedRecipeSerializers = Set.of();

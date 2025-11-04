@@ -20,14 +20,14 @@ import java.util.EnumSet;
 
 import com.mojang.serialization.Lifecycle;
 
-import net.minecraft.registry.DefaultedRegistry;
-import net.minecraft.registry.MutableRegistry;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleDefaultedRegistry;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.registry.entry.RegistryEntryInfo;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.DefaultedMappedRegistry;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.mixin.registry.sync.RegistriesAccessor;
 
@@ -52,53 +52,53 @@ import net.fabricmc.fabric.mixin.registry.sync.RegistriesAccessor;
  * @param <T> The type stored in the Registry
  * @param <R> The registry type
  */
-public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
+public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
 	/**
 	 * Create a new {@link FabricRegistryBuilder}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
-	 * @param registry The base registry type such as {@link net.minecraft.registry.SimpleRegistry} or {@link net.minecraft.registry.DefaultedRegistry}
+	 * @param registry The base registry type such as {@link net.minecraft.core.MappedRegistry} or {@link net.minecraft.core.DefaultedRegistry}
 	 * @param <T> The type stored in the Registry
 	 * @param <R> The registry type
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T, R extends MutableRegistry<T>> FabricRegistryBuilder<T, R> from(R registry) {
+	public static <T, R extends WritableRegistry<T>> FabricRegistryBuilder<T, R> from(R registry) {
 		return new FabricRegistryBuilder<>(registry);
 	}
 
 	/**
-	 * Create a new {@link FabricRegistryBuilder} using a {@link SimpleRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
+	 * Create a new {@link FabricRegistryBuilder} using a {@link MappedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
-	 * @param registryKey The registry {@link RegistryKey}
+	 * @param registryKey The registry {@link ResourceKey}
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(RegistryKey<Registry<T>> registryKey) {
-		return from(new SimpleRegistry<>(registryKey, Lifecycle.stable(), false));
+	public static <T> FabricRegistryBuilder<T, MappedRegistry<T>> createSimple(ResourceKey<Registry<T>> registryKey) {
+		return from(new MappedRegistry<>(registryKey, Lifecycle.stable(), false));
 	}
 
 	/**
 	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
-	 * @param registryKey The registry {@link RegistryKey}
+	 * @param registryKey The registry {@link ResourceKey}
 	 * @param defaultId The default registry id
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T> FabricRegistryBuilder<T, SimpleDefaultedRegistry<T>> createDefaulted(RegistryKey<Registry<T>> registryKey, Identifier defaultId) {
-		return from(new SimpleDefaultedRegistry<T>(defaultId.toString(), registryKey, Lifecycle.stable(), false));
+	public static <T> FabricRegistryBuilder<T, DefaultedMappedRegistry<T>> createDefaulted(ResourceKey<Registry<T>> registryKey, Identifier defaultId) {
+		return from(new DefaultedMappedRegistry<T>(defaultId.toString(), registryKey, Lifecycle.stable(), false));
 	}
 
 	/**
-	 * Create a new {@link FabricRegistryBuilder} using a {@link SimpleRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
+	 * Create a new {@link FabricRegistryBuilder} using a {@link MappedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
 	 * @param registryId The registry {@link Identifier} used as the registry id
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
-	 * @deprecated Please migrate to {@link FabricRegistryBuilder#createSimple(RegistryKey)}
+	 * @deprecated Please migrate to {@link FabricRegistryBuilder#createSimple(ResourceKey)}
 	 */
 	@Deprecated
-	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(Class<T> type, Identifier registryId) {
-		return createSimple(RegistryKey.ofRegistry(registryId));
+	public static <T> FabricRegistryBuilder<T, MappedRegistry<T>> createSimple(Class<T> type, Identifier registryId) {
+		return createSimple(ResourceKey.createRegistryKey(registryId));
 	}
 
 	/**
@@ -108,11 +108,11 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	 * @param defaultId The default registry id
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
-	 * @deprecated Please migrate to {@link FabricRegistryBuilder#createDefaulted(RegistryKey, Identifier)}
+	 * @deprecated Please migrate to {@link FabricRegistryBuilder#createDefaulted(ResourceKey, Identifier)}
 	 */
 	@Deprecated
-	public static <T> FabricRegistryBuilder<T, SimpleDefaultedRegistry<T>> createDefaulted(Class<T> type, Identifier registryId, Identifier defaultId) {
-		return createDefaulted(RegistryKey.ofRegistry(registryId), defaultId);
+	public static <T> FabricRegistryBuilder<T, DefaultedMappedRegistry<T>> createDefaulted(Class<T> type, Identifier registryId, Identifier defaultId) {
+		return createDefaulted(ResourceKey.createRegistryKey(registryId), defaultId);
 	}
 
 	private final R registry;
@@ -139,14 +139,14 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	 * @return the registry instance with the attributes applied
 	 */
 	public R buildAndRegister() {
-		final RegistryKey<?> key = registry.getKey();
+		final ResourceKey<?> key = registry.key();
 
 		for (RegistryAttribute attribute : attributes) {
 			RegistryAttributeHolder.get(key).addAttribute(attribute);
 		}
 
 		//noinspection unchecked
-		RegistriesAccessor.getROOT().add((RegistryKey<MutableRegistry<?>>) key, registry, RegistryEntryInfo.DEFAULT);
+		RegistriesAccessor.getROOT().register((ResourceKey<WritableRegistry<?>>) key, registry, RegistrationInfo.BUILT_IN);
 
 		return registry;
 	}

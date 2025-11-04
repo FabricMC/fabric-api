@@ -18,29 +18,29 @@ package net.fabricmc.fabric.api.renderer.v1.render;
 
 import java.util.function.Predicate;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.EmptyBlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.EmptyBlockAndTintGetter;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /**
- * Note: This interface is automatically implemented on {@link BlockRenderManager} via Mixin and interface injection.
+ * Note: This interface is automatically implemented on {@link BlockRenderDispatcher} via Mixin and interface injection.
  */
 public interface FabricBlockRenderManager {
 	/**
 	 * Alternative for
-	 * {@link BlockRenderManager#renderBlockAsEntity(BlockState, MatrixStack, VertexConsumerProvider, int, int)} that
-	 * additionally accepts the {@link BlockRenderView} and {@link BlockPos} to pass to
-	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockRenderView, BlockPos, BlockState, Random, Predicate)} when
+	 * {@link BlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int)} that
+	 * additionally accepts the {@link BlockAndTintGetter} and {@link BlockPos} to pass to
+	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
 	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
 	 * on multiple render layers and to provide the model with additional context.</b>
 	 *
@@ -52,13 +52,13 @@ public interface FabricBlockRenderManager {
 	 * @param vertexConsumers The vertex consumers.
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
-	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockRenderView}).</b>
+	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
 	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ORIGIN} if the world is empty.
 	 *            </b>
 	 *
-	 * @see FabricRenderCommandQueue#submitBlock(MatrixStack, BlockState, int, int, int, BlockRenderView, BlockPos)
+	 * @see FabricRenderCommandQueue#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
 	 */
-	default void renderBlockAsEntity(BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BlockRenderView blockView, BlockPos pos) {
-		Renderer.get().renderBlockAsEntity((BlockRenderManager) this, state, matrices, vertexConsumers, light, overlay, blockView, pos);
+	default void renderBlockAsEntity(BlockState state, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos) {
+		Renderer.get().renderBlockAsEntity((BlockRenderDispatcher) this, state, matrices, vertexConsumers, light, overlay, blockView, pos);
 	}
 }

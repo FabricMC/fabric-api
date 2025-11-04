@@ -21,16 +21,16 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.impl.content.registry.VillagerInteractionRegistriesImpl;
 
-@Mixin(VillagerEntity.class)
+@Mixin(Villager.class)
 public class VillagerEntityMixin {
-	@WrapOperation(method = "canGather", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isIn(Lnet/minecraft/registry/tag/TagKey;)Z"))
+	@WrapOperation(method = "wantsToPickUp", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/tags/TagKey;)Z"))
 	private boolean useGatherableItemsSet(ItemStack stack, TagKey<Item> tag, Operation<Boolean> original) {
 		return VillagerInteractionRegistriesImpl.getCollectableRegistry().contains(stack.getItem()) || original.call(stack, tag);
 	}

@@ -21,10 +21,10 @@ import java.util.Map;
 import com.google.common.collect.MapMaker;
 import com.google.common.primitives.Ints;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.CauldronFluidContent;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -47,7 +47,7 @@ import net.fabricmc.fabric.impl.transfer.DebugMessages;
  */
 public class CauldronStorage extends SnapshotParticipant<BlockState> implements SingleSlotStorage<FluidVariant> {
 	// Record is used for convenient constructor, hashcode and equals implementations.
-	private record WorldLocation(World world, BlockPos pos) {
+	private record WorldLocation(Level world, BlockPos pos) {
 		@Override
 		public String toString() {
 			return DebugMessages.forGlobalPos(world, pos);
@@ -57,8 +57,8 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 	// Weak values to make sure wrappers are cleaned up after use, thread-safe.
 	private static final Map<WorldLocation, CauldronStorage> CAULDRONS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
 
-	public static CauldronStorage get(World world, BlockPos pos) {
-		WorldLocation location = new WorldLocation(world, pos.toImmutable());
+	public static CauldronStorage get(Level world, BlockPos pos) {
+		WorldLocation location = new WorldLocation(world, pos.immutable());
 		return CAULDRONS.computeIfAbsent(location, CauldronStorage::new);
 	}
 
@@ -89,14 +89,14 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 	// Called by insert and extract to update the block state.
 	private void updateLevel(CauldronFluidContent newContent, int level, TransactionContext transaction) {
 		updateSnapshots(transaction);
-		BlockState newState = newContent.block.getDefaultState();
+		BlockState newState = newContent.block.defaultBlockState();
 
 		if (newContent.levelProperty != null) {
-			newState = newState.with(newContent.levelProperty, level);
+			newState = newState.setValue(newContent.levelProperty, level);
 		}
 
 		// Set block state without updates.
-		location.world.setBlockState(location.pos, newState, 0);
+		location.world.setBlock(location.pos, newState, 0);
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 				if (levelsExtracted == currentLevel) {
 					// Fully extract -> back to empty cauldron
 					updateSnapshots(transaction);
-					location.world.setBlockState(location.pos, Blocks.CAULDRON.getDefaultState(), 0);
+					location.world.setBlock(location.pos, Blocks.CAULDRON.defaultBlockState(), 0);
 				} else {
 					// Otherwise just decrease levels
 					updateLevel(currentContent, currentLevel - levelsExtracted, transaction);
@@ -194,7 +194,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 
 	@Override
 	public void readSnapshot(BlockState savedState) {
-		location.world.setBlockState(location.pos, savedState, 0);
+		location.world.setBlock(location.pos, savedState, 0);
 	}
 
 	@Override
@@ -204,9 +204,9 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 
 		if (originalState != state) {
 			// Revert change
-			location.world.setBlockState(location.pos, originalState, 0);
+			location.world.setBlock(location.pos, originalState, 0);
 			// Then do the actual change with normal block updates
-			location.world.setBlockState(location.pos, state);
+			location.world.setBlockAndUpdate(location.pos, state);
 		}
 	}
 

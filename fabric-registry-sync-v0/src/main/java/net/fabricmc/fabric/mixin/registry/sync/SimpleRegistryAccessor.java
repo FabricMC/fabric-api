@@ -19,9 +19,9 @@ package net.fabricmc.fabric.mixin.registry.sync;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.core.MappedRegistry;
 
-@Mixin(SimpleRegistry.class)
+@Mixin(MappedRegistry.class)
 public interface SimpleRegistryAccessor {
 	@Accessor
 	boolean isFrozen();

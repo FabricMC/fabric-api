@@ -19,21 +19,21 @@ package net.fabricmc.fabric.impl.client.rendering;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
-import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
+import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 
-public final class SpecialGuiElementRendererPool<T extends SpecialGuiElementRenderState> implements AutoCloseable {
+public final class SpecialGuiElementRendererPool<T extends PictureInPictureRenderState> implements AutoCloseable {
 	private int index = 0;
-	private final List<SpecialGuiElementRenderer<T>> renderers = new ArrayList<>();
+	private final List<PictureInPictureRenderer<T>> renderers = new ArrayList<>();
 
 	public void newFrame() {
 		index = 0;
 	}
 
-	public SpecialGuiElementRenderer<T> substitute(SpecialGuiElementRenderer<T> original, T elementState, MinecraftClient client, VertexConsumerProvider.Immediate immediate, OrderedRenderCommandQueue orderedRenderCommandQueue) {
+	public PictureInPictureRenderer<T> substitute(PictureInPictureRenderer<T> original, T elementState, Minecraft client, MultiBufferSource.BufferSource immediate, SubmitNodeCollector orderedRenderCommandQueue) {
 		int index = this.index++;
 
 		if (index == 0) {
@@ -41,7 +41,7 @@ public final class SpecialGuiElementRendererPool<T extends SpecialGuiElementRend
 		} else if (index <= renderers.size()) {
 			return renderers.get(index - 1);
 		} else {
-			SpecialGuiElementRenderer<T> newRenderer = SpecialGuiElementRegistryImpl.createNewRenderer(elementState, client, immediate, orderedRenderCommandQueue);
+			PictureInPictureRenderer<T> newRenderer = SpecialGuiElementRegistryImpl.createNewRenderer(elementState, client, immediate, orderedRenderCommandQueue);
 
 			if (newRenderer == null) {
 				// This renderer has been registered in an unofficial way (using mixins rather than through FAPI).
@@ -70,7 +70,7 @@ public final class SpecialGuiElementRendererPool<T extends SpecialGuiElementRend
 
 	@Override
 	public void close() {
-		renderers.forEach(SpecialGuiElementRenderer::close);
+		renderers.forEach(PictureInPictureRenderer::close);
 
 		index = 0;
 		renderers.clear();

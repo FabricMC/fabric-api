@@ -18,25 +18,25 @@ package net.fabricmc.fabric.test.object.builder;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.test.TestContext;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.village.TradeOffers;
-import net.minecraft.village.VillagerType;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.VillagerType;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class EmptyTypeAwareBuyForOneEmeraldTradeOfferGameTest {
 	@GameTest
-	public void testEmptyTypeAwareTradeOffer(TestContext context) {
-		VillagerEntity villager = new VillagerEntity(EntityType.VILLAGER, context.getWorld(), VillagerType.PLAINS);
+	public void testEmptyTypeAwareTradeOffer(GameTestHelper context) {
+		Villager villager = new Villager(EntityType.VILLAGER, context.getLevel(), VillagerType.PLAINS);
 
 		// Create a type-aware trade offer with no villager types specified
-		TradeOffers.Factory typeAwareFactory = new TradeOffers.TypeAwareBuyForOneEmeraldFactory(1, 12, 5, ImmutableMap.of());
+		VillagerTrades.ItemListing typeAwareFactory = new VillagerTrades.EmeraldsForVillagerTypeItem(1, 12, 5, ImmutableMap.of());
 		// Create an offer with that factory to ensure it doesn't crash when a villager type is missing from the map
-		typeAwareFactory.create(context.getWorld(), villager, Random.create());
+		typeAwareFactory.getOffer(context.getLevel(), villager, RandomSource.create());
 
-		context.complete();
+		context.succeed();
 	}
 }

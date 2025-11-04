@@ -27,6 +27,6 @@ public class ClientPlayerBlockBreakTests implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientPlayerBlockBreakEvents.AFTER.register(((world, player, pos, state) -> LOGGER.info("Block broken at {}, {}, {} (client-side = {})", pos.getX(), pos.getY(), pos.getZ(), world.isClient())));
+		ClientPlayerBlockBreakEvents.AFTER.register(((world, player, pos, state) -> LOGGER.info("Block broken at {}, {}, {} (client-side = {})", pos.getX(), pos.getY(), pos.getZ(), world.isClientSide())));
 	}
 }

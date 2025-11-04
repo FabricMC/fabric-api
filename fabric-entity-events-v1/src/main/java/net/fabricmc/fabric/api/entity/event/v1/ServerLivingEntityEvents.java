@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.conversion.EntityConversionContext;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ConversionParams;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Mob;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -169,7 +169,7 @@ public final class ServerLivingEntityEvents {
 		 * @param converted the new instance for the converted entity
 		 * @param conversionContext the context used for the conversion
 		 */
-		void onConversion(MobEntity previous, MobEntity converted, EntityConversionContext conversionContext);
+		void onConversion(Mob previous, Mob converted, ConversionParams conversionContext);
 	}
 
 	private ServerLivingEntityEvents() {

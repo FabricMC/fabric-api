@@ -29,34 +29,37 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactories;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.RegistrationHelperImpl;
 
-@Mixin(EntityRendererFactories.class)
+@Mixin(EntityRenderers.class)
 public abstract class EntityRendererFactoriesMixin {
 	@Shadow()
 	@Final
-	private static Map<EntityType<?>, EntityRendererFactory<?>> RENDERER_FACTORIES;
+	private static Map<EntityType<?>, EntityRendererProvider<?>> PROVIDERS;
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	// TODO(Ravel): wildcard and regex target are not supported
+// TODO(Ravel): wildcard and regex target are not supported
+// TODO(Ravel): wildcard and regex target are not supported
+    @SuppressWarnings({"unchecked", "rawtypes"})
 	@Inject(method = "<clinit>*", at = @At(value = "RETURN"))
 	private static void onRegisterRenderers(CallbackInfo info) {
-		EntityRendererRegistryImpl.setup(((t, factory) -> RENDERER_FACTORIES.put(t, factory)));
+		EntityRendererRegistryImpl.setup(((t, factory) -> PROVIDERS.put(t, factory)));
 	}
 
 	// synthetic lambda in reloadEntityRenderers
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	@Redirect(method = "method_32174", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRendererFactory;create(Lnet/minecraft/client/render/entity/EntityRendererFactory$Context;)Lnet/minecraft/client/render/entity/EntityRenderer;"))
-	private static EntityRenderer<?, ?> createEntityRenderer(EntityRendererFactory<?> entityRendererFactory, EntityRendererFactory.Context context, ImmutableMap.Builder builder, EntityRendererFactory.Context context2, EntityType<?> entityType) {
+	@Redirect(method = "method_32174", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRendererProvider;create(Lnet/minecraft/client/renderer/entity/EntityRendererProvider$Context;)Lnet/minecraft/client/renderer/entity/EntityRenderer;"))
+	private static EntityRenderer<?, ?> createEntityRenderer(EntityRendererProvider<?> entityRendererFactory, EntityRendererProvider.Context context, ImmutableMap.Builder builder, EntityRendererProvider.Context context2, EntityType<?> entityType) {
 		EntityRenderer<?, ?> entityRenderer = entityRendererFactory.create(context);
 
 		if (entityRenderer instanceof LivingEntityRenderer) { // Must be living for features
@@ -68,9 +71,9 @@ public abstract class EntityRendererFactoriesMixin {
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	@WrapOperation(method = "reloadPlayerRenderers", at = @At(value = "NEW", target = "(Lnet/minecraft/client/render/entity/EntityRendererFactory$Context;Z)Lnet/minecraft/client/render/entity/PlayerEntityRenderer;"))
-	private static PlayerEntityRenderer createPlayerEntityRenderer(EntityRendererFactory.Context context, boolean slim, Operation<PlayerEntityRenderer> original) {
-		PlayerEntityRenderer entityRenderer = original.call(context, slim);
+	@WrapOperation(method = "createAvatarRenderers", at = @At(value = "NEW", target = "(Lnet/minecraft/client/renderer/entity/EntityRendererProvider$Context;Z)Lnet/minecraft/client/renderer/entity/player/AvatarRenderer;"))
+	private static AvatarRenderer createPlayerEntityRenderer(EntityRendererProvider.Context context, boolean slim, Operation<AvatarRenderer> original) {
+		AvatarRenderer entityRenderer = original.call(context, slim);
 
 		LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entityRenderer;
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers(EntityType.PLAYER, (LivingEntityRenderer) entityRenderer, new RegistrationHelperImpl(accessor::callAddFeature), context);

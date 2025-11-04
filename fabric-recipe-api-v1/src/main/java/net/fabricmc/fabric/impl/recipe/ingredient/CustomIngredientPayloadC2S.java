@@ -19,22 +19,22 @@ package net.fabricmc.fabric.impl.recipe.ingredient;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
-public record CustomIngredientPayloadC2S(int protocolVersion, Set<Identifier> registeredSerializers) implements CustomPayload {
-	public static final PacketCodec<PacketByteBuf, CustomIngredientPayloadC2S> CODEC = PacketCodec.tuple(
-			PacketCodecs.VAR_INT, CustomIngredientPayloadC2S::protocolVersion,
-			PacketCodecs.collection(HashSet::new, Identifier.PACKET_CODEC), CustomIngredientPayloadC2S::registeredSerializers,
+public record CustomIngredientPayloadC2S(int protocolVersion, Set<Identifier> registeredSerializers) implements CustomPacketPayload {
+	public static final StreamCodec<FriendlyByteBuf, CustomIngredientPayloadC2S> CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, CustomIngredientPayloadC2S::protocolVersion,
+			ByteBufCodecs.collection(HashSet::new, Identifier.STREAM_CODEC), CustomIngredientPayloadC2S::registeredSerializers,
 			CustomIngredientPayloadC2S::new
 	);
-	public static final CustomPayload.Id<CustomIngredientPayloadC2S> ID = new Id<>(CustomIngredientSync.PACKET_ID);
+	public static final CustomPacketPayload.Type<CustomIngredientPayloadC2S> ID = new Type<>(CustomIngredientSync.PACKET_ID);
 
 	@Override
-	public Id<? extends CustomPayload> getId() {
+	public Type<? extends CustomPacketPayload> type() {
 		return ID;
 	}
 }

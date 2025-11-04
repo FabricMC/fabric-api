@@ -21,29 +21,29 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.feature.SnowGolemPumpkinFeatureRenderer;
-import net.minecraft.client.render.entity.state.SnowGolemEntityRenderState;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EmptyBlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.layers.SnowGolemHeadLayer;
+import net.minecraft.client.renderer.entity.state.SnowGolemRenderState;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.EmptyBlockAndTintGetter;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 
-@Mixin(SnowGolemPumpkinFeatureRenderer.class)
+@Mixin(SnowGolemHeadLayer.class)
 abstract class SnowGolemPumpkinFeatureRendererMixin {
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "net/minecraft/client/render/command/OrderedRenderCommandQueue.submitBlockStateModel(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/RenderLayer;Lnet/minecraft/client/render/model/BlockStateModel;FFFIII)V"))
-	private void renderProxy(OrderedRenderCommandQueue commandQueue, MatrixStack matrices, RenderLayer renderLayer, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local SnowGolemEntityRenderState renderState, @Local BlockState blockState) {
+	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/SnowGolemHeadLayer;net/minecraft/client/render/command/OrderedRenderCommandQueue.submitBlockStateModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/block/model/BlockStateModel;FFFIII)V"))
+	private void renderProxy(SubmitNodeCollector commandQueue, PoseStack matrices, RenderType renderLayer, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local SnowGolemRenderState renderState, @Local BlockState blockState) {
 		// If true, the render layer is an outline render layer, and we want all geometry to use this render layer.
-		if (renderState.hasOutline() && renderState.invisible) {
+		if (renderState.appearsGlowing() && renderState.isInvisible) {
 			// Fix tinted quads being rendered completely black and provide the BlockState as context.
-			commandQueue.submitBlockStateModel(matrices, blockLayer -> renderLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, blockState);
+			commandQueue.submitBlockStateModel(matrices, blockLayer -> renderLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, blockState);
 		} else {
 			// Support multi-render layer models, fix tinted quads being rendered completely black, and provide the BlockState as context.
-			commandQueue.submitBlockStateModel(matrices, RenderLayerHelper::getEntityBlockLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, blockState);
+			commandQueue.submitBlockStateModel(matrices, RenderLayerHelper::getEntityBlockLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, blockState);
 		}
 	}
 }

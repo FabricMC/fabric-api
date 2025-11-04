@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
-import net.minecraft.item.Item;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 

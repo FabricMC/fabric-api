@@ -18,11 +18,11 @@ package net.fabricmc.fabric.api.event.player;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -75,7 +75,7 @@ public final class PlayerPickItemEvents {
 		 * @return a pick item stack to give to the player, or {@code null} if the default pick item stack should be given
 		 */
 		@Nullable
-		ItemStack onPickItemFromBlock(ServerPlayerEntity player, BlockPos pos, BlockState state, boolean requestIncludeData);
+        ItemStack onPickItemFromBlock(ServerPlayer player, BlockPos pos, BlockState state, boolean requestIncludeData);
 	}
 
 	@FunctionalInterface
@@ -89,6 +89,6 @@ public final class PlayerPickItemEvents {
 		 * @return a pick item stack to give to the player, or {@code null} if the default pick item stack should be given
 		 */
 		@Nullable
-		ItemStack onPickItemFromEntity(ServerPlayerEntity player, Entity entity, boolean requestIncludeData);
+        ItemStack onPickItemFromEntity(ServerPlayer player, Entity entity, boolean requestIncludeData);
 	}
 }

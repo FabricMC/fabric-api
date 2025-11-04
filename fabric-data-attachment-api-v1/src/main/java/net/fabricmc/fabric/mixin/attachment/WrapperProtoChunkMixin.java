@@ -24,23 +24,23 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.world.chunk.WorldChunk;
-import net.minecraft.world.chunk.WrapperProtoChunk;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.ImposterProtoChunk;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
-@Mixin(WrapperProtoChunk.class)
+@Mixin(ImposterProtoChunk.class)
 abstract class WrapperProtoChunkMixin extends AttachmentTargetsMixin {
 	@Shadow
 	@Final
-	private WorldChunk wrapped;
+	private LevelChunk wrapped;
 
 	@Override
 	@Nullable
@@ -60,12 +60,12 @@ abstract class WrapperProtoChunkMixin extends AttachmentTargetsMixin {
 	}
 
 	@Override
-	public void fabric_writeAttachmentsToNbt(WriteView view) {
+	public void fabric_writeAttachmentsToNbt(ValueOutput view) {
 		((AttachmentTargetImpl) this.wrapped).fabric_writeAttachmentsToNbt(view);
 	}
 
 	@Override
-	public void fabric_readAttachmentsFromNbt(ReadView view) {
+	public void fabric_readAttachmentsFromNbt(ValueInput view) {
 		((AttachmentTargetImpl) this.wrapped).fabric_readAttachmentsFromNbt(view);
 	}
 
@@ -85,7 +85,7 @@ abstract class WrapperProtoChunkMixin extends AttachmentTargetsMixin {
 	}
 
 	@Override
-	public void fabric_computeInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
+	public void fabric_computeInitialSyncChanges(ServerPlayer player, Consumer<AttachmentChange> changeOutput) {
 		((AttachmentTargetImpl) wrapped).fabric_computeInitialSyncChanges(player, changeOutput);
 	}
 
@@ -105,7 +105,7 @@ abstract class WrapperProtoChunkMixin extends AttachmentTargetsMixin {
 	}
 
 	@Override
-	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
+	public RegistryAccess fabric_getDynamicRegistryManager() {
 		return ((AttachmentTargetImpl) wrapped).fabric_getDynamicRegistryManager();
 	}
 }

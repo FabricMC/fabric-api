@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.flag.FeatureFlagSet;
 
 import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 
-public record FuelRegistryEventsContextImpl(RegistryWrapper.WrapperLookup registries, FeatureSet enabledFeatures, int baseSmeltTime) implements FuelRegistryEvents.Context {
+public record FuelRegistryEventsContextImpl(HolderLookup.Provider registries, FeatureFlagSet enabledFeatures, int baseSmeltTime) implements FuelRegistryEvents.Context {
 }

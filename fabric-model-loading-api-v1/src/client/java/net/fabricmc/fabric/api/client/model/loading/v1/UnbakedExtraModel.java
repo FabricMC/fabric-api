@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.client.model.loading.v1;
 
-import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.ResolvableModel;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ResolvableModel;
 
 /**
  * An unbaked extra model.
@@ -37,5 +37,5 @@ public interface UnbakedExtraModel<T> extends ResolvableModel {
 	 * @param baker The current model baker.
 	 * @return The fully-baked model.
 	 */
-	T bake(Baker baker);
+	T bake(ModelBaker baker);
 }

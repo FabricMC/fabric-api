@@ -28,30 +28,30 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.command.BatchingRenderCommandQueue;
-import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
-import net.minecraft.client.render.command.RenderCommandQueue;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemDisplayContext;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollection;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 import net.fabricmc.fabric.impl.renderer.BatchingRenderCommandQueueExtension;
 import net.fabricmc.fabric.impl.renderer.ExtendedBlockCommand;
 import net.fabricmc.fabric.impl.renderer.ExtendedBlockStateModelCommand;
 
-@Mixin(BatchingRenderCommandQueue.class)
-abstract class BatchingRenderCommandQueueMixin implements RenderCommandQueue, BatchingRenderCommandQueueExtension {
+@Mixin(SubmitNodeCollection.class)
+abstract class BatchingRenderCommandQueueMixin implements OrderedSubmitNodeCollector, BatchingRenderCommandQueueExtension {
 	@Shadow
 	@Final
-	private OrderedRenderCommandQueueImpl orderedQueueImpl;
+	private SubmitNodeStorage submitNodeStorage;
 	@Shadow
-	private boolean hasCommands;
+	private boolean wasUsed;
 
 	@Unique
 	private final List<ExtendedBlockCommand> extendedBlockCommands = new ArrayList<>();
@@ -59,16 +59,16 @@ abstract class BatchingRenderCommandQueueMixin implements RenderCommandQueue, Ba
 	private final List<ExtendedBlockStateModelCommand> extendedBlockStateModelCommands = new ArrayList<>();
 
 	@Override
-	public void submitBlock(MatrixStack matrices, BlockState state, int light, int overlay, int outlineColor, BlockRenderView blockView, BlockPos pos) {
-		hasCommands = true;
-		extendedBlockCommands.add(new ExtendedBlockCommand(matrices.peek().copy(), state, light, overlay, outlineColor, blockView, pos));
-		MinecraftClient.getInstance().getBakedModelManager().getBlockEntityModelsSupplier().get().render(state.getBlock(), ItemDisplayContext.NONE, matrices, orderedQueueImpl, light, overlay, outlineColor);
+	public void submitBlock(PoseStack matrices, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter blockView, BlockPos pos) {
+		wasUsed = true;
+		extendedBlockCommands.add(new ExtendedBlockCommand(matrices.last().copy(), state, light, overlay, outlineColor, blockView, pos));
+		Minecraft.getInstance().getModelManager().specialBlockModelRenderer().get().renderByBlock(state.getBlock(), ItemDisplayContext.NONE, matrices, submitNodeStorage, light, overlay, outlineColor);
 	}
 
 	@Override
-	public void submitBlockStateModel(MatrixStack matrices, Function<BlockRenderLayer, RenderLayer> renderLayerFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockRenderView blockView, BlockPos pos, BlockState state) {
-		hasCommands = true;
-		extendedBlockStateModelCommands.add(new ExtendedBlockStateModelCommand(matrices.peek().copy(), renderLayerFunction, model, r, g, b, light, overlay, outlineColor, blockView, pos, state));
+	public void submitBlockStateModel(PoseStack matrices, Function<ChunkSectionLayer, RenderType> renderLayerFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
+		wasUsed = true;
+		extendedBlockStateModelCommands.add(new ExtendedBlockStateModelCommand(matrices.last().copy(), renderLayerFunction, model, r, g, b, light, overlay, outlineColor, blockView, pos, state));
 	}
 
 	@Override

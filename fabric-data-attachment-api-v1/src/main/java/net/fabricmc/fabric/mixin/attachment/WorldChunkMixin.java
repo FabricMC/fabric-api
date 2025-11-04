@@ -26,15 +26,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ProtoChunk;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ProtoChunk;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -43,22 +43,22 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 
-@Mixin(WorldChunk.class)
+@Mixin(LevelChunk.class)
 abstract class WorldChunkMixin extends AttachmentTargetsMixin implements AttachmentTargetImpl {
 	@Shadow
 	@Final
-	World world;
+    Level level;
 
 	@Shadow
 	public abstract Map<BlockPos, BlockEntity> getBlockEntities();
 
-	@Inject(method = "<init>(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/ProtoChunk;Lnet/minecraft/world/chunk/WorldChunk$EntityLoader;)V", at = @At("TAIL"))
-	private void transferProtoChunkAttachment(ServerWorld world, ProtoChunk protoChunk, WorldChunk.EntityLoader entityLoader, CallbackInfo ci) {
+	@Inject(method = "<init>(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ProtoChunk;Lnet/minecraft/world/level/chunk/LevelChunk$PostLoadProcessor;)V", at = @At("TAIL"))
+	private void transferProtoChunkAttachment(ServerLevel world, ProtoChunk protoChunk, LevelChunk.PostLoadProcessor entityLoader, CallbackInfo ci) {
 		AttachmentTargetImpl.transfer(protoChunk, this, false);
 	}
 
 	@Override
-	public void fabric_computeInitialSyncChanges(ServerPlayerEntity player, Consumer<AttachmentChange> changeOutput) {
+	public void fabric_computeInitialSyncChanges(ServerPlayer player, Consumer<AttachmentChange> changeOutput) {
 		super.fabric_computeInitialSyncChanges(player, changeOutput);
 
 		for (BlockEntity be : this.getBlockEntities().values()) {
@@ -68,9 +68,9 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
-		if (this.world instanceof ServerWorld serverWorld) {
+		if (this.level instanceof ServerLevel serverWorld) {
 			// can't shadow from Chunk because this already extends a supermixin
-			PlayerLookup.tracking(serverWorld, ((Chunk) (Object) this).getPos())
+			PlayerLookup.tracking(serverWorld, ((ChunkAccess) (Object) this).getPos())
 					.forEach(player -> {
 						if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
 							AttachmentSync.trySync(change, player);
@@ -81,11 +81,11 @@ abstract class WorldChunkMixin extends AttachmentTargetsMixin implements Attachm
 
 	@Override
 	public boolean fabric_shouldTryToSync() {
-		return !this.world.isClient();
+		return !this.level.isClientSide();
 	}
 
 	@Override
-	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
-		return world.getRegistryManager();
+	public RegistryAccess fabric_getDynamicRegistryManager() {
+		return level.registryAccess();
 	}
 }

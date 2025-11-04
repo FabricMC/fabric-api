@@ -18,24 +18,24 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.tags.TagKey;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalEnchantmentTags;
 
 public final class EnchantmentTagGenerator extends FabricTagProvider<Enchantment> {
-	public EnchantmentTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-		super(output, RegistryKeys.ENCHANTMENT, registriesFuture);
+	public EnchantmentTagGenerator(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		super(output, Registries.ENCHANTMENT, registriesFuture);
 	}
 
 	@Override
-	protected void configure(RegistryWrapper.WrapperLookup registries) {
+	protected void addTags(HolderLookup.Provider registries) {
 		builder(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS)
 				.add(Enchantments.FORTUNE);
 		builder(ConventionalEnchantmentTags.INCREASE_ENTITY_DROPS)
@@ -64,8 +64,8 @@ public final class EnchantmentTagGenerator extends FabricTagProvider<Enchantment
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
 		builder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENTS)
-				.addOptionalTag(TagKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("c", "entity_movement_enhancement")));
+				.addOptionalTag(TagKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath("c", "entity_movement_enhancement")));
 		builder(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENTS)
-				.addOptionalTag(TagKey.of(RegistryKeys.ENCHANTMENT, Identifier.of("c", "entity_defense_enhancement")));
+				.addOptionalTag(TagKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath("c", "entity_defense_enhancement")));
 	}
 }

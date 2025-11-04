@@ -20,16 +20,16 @@ import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.InventoryProvider;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SidedInventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.WorldlyContainerHolder;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.Container;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.Items;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
@@ -58,12 +58,12 @@ public final class ItemStorage {
 	 * that is if the return value of {@link Storage#supportsInsertion} or {@link Storage#supportsExtraction} changes,
 	 * the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
 	 *
-	 * <p>Block entities directly implementing {@link Inventory} or {@link SidedInventory} are automatically handled by a fallback provider,
+	 * <p>Block entities directly implementing {@link Container} or {@link WorldlyContainer} are automatically handled by a fallback provider,
 	 * and don't need to do anything.
-	 * Blocks that implement {@link InventoryProvider} and whose returned inventory is constant (it's the same for two subsequent calls)
+	 * Blocks that implement {@link WorldlyContainerHolder} and whose returned inventory is constant (it's the same for two subsequent calls)
 	 * are also handled automatically and don't need to do anything.
-	 * The fallback provider assumes that the {@link Inventory} "owns" its contents. If that's not the case,
-	 * for example because it redirects all function calls to another inventory, then implementing {@link Inventory} should be avoided.
+	 * The fallback provider assumes that the {@link Container} "owns" its contents. If that's not the case,
+	 * for example because it redirects all function calls to another inventory, then implementing {@link Container} should be avoided.
 	 *
 	 * <p>Hoppers and droppers will interact with storages exposed through this lookup, thus implementing one of the vanilla APIs is not necessary.
 	 *
@@ -71,7 +71,7 @@ public final class ItemStorage {
 	 * <ul>
 	 *     <li>Directly implementing {@code Inventory} or {@code SidedInventory} on a block entity - it will be wrapped automatically.</li>
 	 *     <li>Storing an inventory inside a block entity field, and converting it manually with {@link InventoryStorage#of}.
-	 *     {@link SimpleInventory} can be used for easy implementation.</li>
+	 *     {@link SimpleContainer} can be used for easy implementation.</li>
 	 *     <li>{@link SingleStackStorage} can also be used for more flexibility. Multiple of them can be combined with {@link CombinedStorage}.</li>
 	 *     <li>Directly providing a custom implementation of {@code Storage<ItemVariant>} is also possible.</li>
 	 * </ul>
@@ -83,7 +83,7 @@ public final class ItemStorage {
 	 * On the client thread (i.e. with a client world), contents of queried Storages are unreliable and should not be modified.
 	 */
 	public static final BlockApiLookup<Storage<ItemVariant>, @Nullable Direction> SIDED =
-			BlockApiLookup.get(Identifier.of("fabric", "sided_item_storage"), Storage.asClass(), Direction.class);
+			BlockApiLookup.get(Identifier.fromNamespaceAndPath("fabric", "sided_item_storage"), Storage.asClass(), Direction.class);
 
 	/**
 	 * Item access to item variant storages.
@@ -93,7 +93,7 @@ public final class ItemStorage {
 	 * Returned APIs should behave the same regardless of the logical side.
 	 */
 	public static final ItemApiLookup<Storage<ItemVariant>, ContainerItemContext> ITEM =
-			ItemApiLookup.get(Identifier.of("fabric", "item_storage"), Storage.asClass(), ContainerItemContext.class);
+			ItemApiLookup.get(Identifier.fromNamespaceAndPath("fabric", "item_storage"), Storage.asClass(), ContainerItemContext.class);
 
 	private ItemStorage() {
 	}
@@ -113,11 +113,11 @@ public final class ItemStorage {
 
 		// Register Inventory fallback.
 		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
-			Inventory inventoryToWrap = null;
+			Container inventoryToWrap = null;
 
-			if (state.getBlock() instanceof InventoryProvider provider) {
-				SidedInventory first = provider.getInventory(state, world, pos);
-				SidedInventory second = provider.getInventory(state, world, pos);
+			if (state.getBlock() instanceof WorldlyContainerHolder provider) {
+				WorldlyContainer first = provider.getContainer(state, world, pos);
+				WorldlyContainer second = provider.getContainer(state, world, pos);
 
 				// Hopefully we can trust the sided inventory not to change.
 				if (first == second && first != null) {
@@ -125,9 +125,9 @@ public final class ItemStorage {
 				}
 			}
 
-			if (blockEntity instanceof Inventory inventory) {
+			if (blockEntity instanceof Container inventory) {
 				if (blockEntity instanceof ChestBlockEntity && state.getBlock() instanceof ChestBlock chestBlock) {
-					inventoryToWrap = ChestBlock.getInventory(chestBlock, state, world, pos, true);
+					inventoryToWrap = ChestBlock.getContainer(chestBlock, state, world, pos, true);
 
 					// For double chests, we need to retrieve a wrapper for each part separately.
 					if (inventoryToWrap instanceof DoubleInventoryAccessor accessor) {

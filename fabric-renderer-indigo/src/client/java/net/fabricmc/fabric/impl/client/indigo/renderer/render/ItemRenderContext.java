@@ -21,18 +21,18 @@ import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemDisplayContext;
-import net.minecraft.util.math.MatrixUtil;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.item.ItemDisplayContext;
+import com.mojang.math.MatrixUtil;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -46,23 +46,23 @@ import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
  * Used during item buffering to support geometry added through {@link FabricLayerRenderState#emitter()}.
  */
 public class ItemRenderContext extends AbstractRenderContext {
-	private static final int GLINT_COUNT = ItemRenderState.Glint.values().length;
+	private static final int GLINT_COUNT = ItemStackRenderState.FoilType.values().length;
 
 	private ItemDisplayContext displayContext;
-	private VertexConsumerProvider vertexConsumers;
+	private MultiBufferSource vertexConsumers;
 	private int light;
 	private int[] tints;
 
-	private RenderLayer defaultLayer;
-	private ItemRenderState.Glint defaultGlint;
+	private RenderType defaultLayer;
+	private ItemStackRenderState.FoilType defaultGlint;
 	private boolean ignoreQuadGlint;
 
-	private MatrixStack.Entry specialGlintEntry;
+	private PoseStack.Pose specialGlintEntry;
 	private final VertexConsumer[] vertexConsumerCache = new VertexConsumer[3 * GLINT_COUNT];
 
-	public void renderItem(ItemDisplayContext displayContext, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light, int overlay, int[] tints, List<BakedQuad> vanillaQuads, MeshView mesh, RenderLayer layer, ItemRenderState.Glint glint, boolean ignoreQuadGlint) {
+	public void renderItem(ItemDisplayContext displayContext, PoseStack matrixStack, MultiBufferSource vertexConsumers, int light, int overlay, int[] tints, List<BakedQuad> vanillaQuads, MeshView mesh, RenderType layer, ItemStackRenderState.FoilType glint, boolean ignoreQuadGlint) {
 		this.displayContext = displayContext;
-		matrices = matrixStack.peek();
+		matrices = matrixStack.last();
 		this.vertexConsumers = vertexConsumers;
 		this.light = light;
 		this.overlay = overlay;
@@ -114,7 +114,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 			final int tint = tints[tintIndex];
 
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, net.minecraft.util.math.ColorHelper.mix(quad.color(i), tint));
+				quad.color(i, net.minecraft.util.ARGB.multiply(quad.color(i), tint));
 			}
 		}
 	}
@@ -122,7 +122,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private void shadeQuad(MutableQuadViewImpl quad, boolean emissive) {
 		if (emissive) {
 			for (int i = 0; i < 4; i++) {
-				quad.lightmap(i, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+				quad.lightmap(i, LightTexture.FULL_BRIGHT);
 			}
 		} else {
 			final int light = this.light;
@@ -133,9 +133,9 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	private VertexConsumer getVertexConsumer(@Nullable BlockRenderLayer quadRenderLayer, ItemRenderState.@Nullable Glint quadGlint) {
-		RenderLayer layer;
-		ItemRenderState.Glint glint;
+	private VertexConsumer getVertexConsumer(@Nullable ChunkSectionLayer quadRenderLayer, ItemStackRenderState.@Nullable FoilType quadGlint) {
+		RenderType layer;
+		ItemStackRenderState.FoilType glint;
 
 		if (quadRenderLayer == null) {
 			layer = defaultLayer;
@@ -151,9 +151,9 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 		int cacheIndex;
 
-		if (layer == TexturedRenderLayers.getItemEntityTranslucentCull()) {
+		if (layer == Sheets.translucentItemSheet()) {
 			cacheIndex = 0;
-		} else if (layer == TexturedRenderLayers.getEntityCutout()) {
+		} else if (layer == Sheets.cutoutBlockSheet()) {
 			cacheIndex = GLINT_COUNT;
 		} else {
 			cacheIndex = 2 * GLINT_COUNT;
@@ -170,21 +170,21 @@ public class ItemRenderContext extends AbstractRenderContext {
 		return vertexConsumer;
 	}
 
-	private VertexConsumer createVertexConsumer(RenderLayer layer, ItemRenderState.Glint glint) {
-		if (glint == ItemRenderState.Glint.SPECIAL) {
+	private VertexConsumer createVertexConsumer(RenderType layer, ItemStackRenderState.FoilType glint) {
+		if (glint == ItemStackRenderState.FoilType.SPECIAL) {
 			if (specialGlintEntry == null) {
 				specialGlintEntry = matrices.copy();
 
 				if (displayContext == ItemDisplayContext.GUI) {
-					MatrixUtil.scale(specialGlintEntry.getPositionMatrix(), 0.5F);
-				} else if (displayContext.isFirstPerson()) {
-					MatrixUtil.scale(specialGlintEntry.getPositionMatrix(), 0.75F);
+					MatrixUtil.mulComponentWise(specialGlintEntry.pose(), 0.5F);
+				} else if (displayContext.firstPerson()) {
+					MatrixUtil.mulComponentWise(specialGlintEntry.pose(), 0.75F);
 				}
 			}
 
 			return ItemRendererAccessor.fabric_getDynamicDisplayGlintConsumer(vertexConsumers, layer, specialGlintEntry);
 		}
 
-		return ItemRenderer.getItemGlintConsumer(vertexConsumers, layer, true, glint != ItemRenderState.Glint.NONE);
+		return ItemRenderer.getFoilBuffer(vertexConsumers, layer, true, glint != ItemStackRenderState.FoilType.NONE);
 	}
 }

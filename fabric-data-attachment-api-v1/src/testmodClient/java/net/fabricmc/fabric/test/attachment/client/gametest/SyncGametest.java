@@ -23,20 +23,20 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.item.Items;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -49,8 +49,8 @@ import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 public class SyncGametest implements FabricClientGameTest {
 	public static final Logger LOGGER = LoggerFactory.getLogger("data-attachment-persistence-gametest");
 
-	private static ServerPlayerEntity getSinglePlayer(MinecraftServer server) {
-		return server.getPlayerManager().getPlayerList().getFirst();
+	private static ServerPlayer getSinglePlayer(MinecraftServer server) {
+		return server.getPlayerList().getPlayers().getFirst();
 	}
 
 	private static void setSyncedWithAll(AttachmentTarget target) {
@@ -92,31 +92,31 @@ public class SyncGametest implements FabricClientGameTest {
 
 			context.runOnClient(client -> {
 				// set client render distance before the server sets it
-				client.options.getViewDistance().setValue(5);
+				client.options.renderDistance().set(5);
 			});
 
 			LOGGER.info("Setting up synced attachments before join");
 			// setup before player joins
 			serverContext.runOnServer(server -> {
-				ServerWorld world = server.getOverworld();
-				BlockPos top = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, BlockPos.ORIGIN);
+				ServerLevel world = server.overworld();
+				BlockPos top = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.ZERO);
 				state.furnacePos = top;
 
-				world.setBlockState(top, Blocks.FURNACE.getDefaultState());
+				world.setBlockAndUpdate(top, Blocks.FURNACE.defaultBlockState());
 				setSyncedWithAll(world.getBlockEntity(top, BlockEntityType.FURNACE).orElseThrow());
 
-				var villager = new VillagerEntity(EntityType.VILLAGER, world);
-				villager.setAiDisabled(true);
+				var villager = new Villager(EntityType.VILLAGER, world);
+				villager.setNoAi(true);
 				villager.setInvulnerable(true);
-				state.villagerId = villager.getUuid();
-				world.spawnEntity(villager);
+				state.villagerId = villager.getUUID();
+				world.addFreshEntity(villager);
 				setSyncedWithAll(villager);
 				set(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
 
-				WorldChunk originChunk = world.getChunk(0, 0);
+				LevelChunk originChunk = world.getChunk(0, 0);
 				setSyncedWithAll(originChunk);
 
-				ServerWorld nether = server.getWorld(World.NETHER);
+				ServerLevel nether = server.getLevel(Level.NETHER);
 				setSyncedWithAll(Objects.requireNonNull(nether));
 			});
 
@@ -127,13 +127,13 @@ public class SyncGametest implements FabricClientGameTest {
 
 				LOGGER.info("Setting up rest of synced attachments");
 				serverContext.runOnServer(server -> {
-					ServerPlayerEntity player = getSinglePlayer(server);
+					ServerPlayer player = getSinglePlayer(server);
 					setSyncedWithAll(player);
 					set(player, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 					set(player, AttachmentTestMod.SYNCED_CREATIVE_ONLY);
 
 					// check registry objects are synced correctly
-					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.APPLE.getDefaultStack());
+					player.setAttached(AttachmentTestMod.SYNCED_ITEM, Items.APPLE.getDefaultInstance());
 
 					// check that the client changes the render distance as requested
 					player.setAttached(AttachmentTestMod.SYNCED_RENDER_DISTANCE, 8);
@@ -144,7 +144,7 @@ public class SyncGametest implements FabricClientGameTest {
 
 				LOGGER.info("Testing synced attachments (1/2)");
 				context.runOnClient(client -> {
-					ClientWorld world = Objects.requireNonNull(client.world);
+					ClientLevel world = Objects.requireNonNull(client.level);
 					Entity villager = world.getEntity(state.villagerId);
 
 					assertHasSyncedWithAll(world.getBlockEntity(state.furnacePos));
@@ -159,12 +159,12 @@ public class SyncGametest implements FabricClientGameTest {
 					assertHasNotSynced(client.player, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 					assertHasNotSynced(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
 
-					if (client.options.getViewDistance().getValue() != 8) {
+					if (client.options.renderDistance().get() != 8) {
 						throw new AssertionError("Client did not set render distance to server requested synced attachment.");
 					}
 
 					// reset view distance
-					client.options.getViewDistance().setValue(12);
+					client.options.renderDistance().set(12);
 				});
 
 				LOGGER.info("Setting up second phase");
@@ -178,7 +178,7 @@ public class SyncGametest implements FabricClientGameTest {
 
 				LOGGER.info("Testing synced attachments (2/2)");
 				context.runOnClient(client -> {
-					assertHasSyncedWithAll(client.world);
+					assertHasSyncedWithAll(client.level);
 					// asserts the removal wasn't synced
 					assertPresence(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY, true);
 				});

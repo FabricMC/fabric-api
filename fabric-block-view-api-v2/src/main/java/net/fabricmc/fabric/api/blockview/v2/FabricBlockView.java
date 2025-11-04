@@ -19,26 +19,26 @@ package net.fabricmc.fabric.api.blockview.v2;
 import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.WorldView;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Holder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.biome.Biome;
 
 /**
- * General-purpose Fabric-provided extensions for {@link BlockView} subclasses.
+ * General-purpose Fabric-provided extensions for {@link BlockGetter} subclasses.
  *
  * <p>These extensions were designed primarily for use by methods invoked during chunk building, but
  * they can also be used in other contexts.
  *
- * <p>Note: This interface is automatically implemented on all {@link BlockView} instances via Mixin and interface injection.
+ * <p>Note: This interface is automatically implemented on all {@link BlockGetter} instances via Mixin and interface injection.
  */
 public interface FabricBlockView {
 	/**
 	 * Retrieves block entity render data for a given block position.
 	 *
-	 * <p>This method must be used instead of {@link BlockView#getBlockEntity(BlockPos)} in cases
+	 * <p>This method must be used instead of {@link BlockGetter#getBlockEntity(BlockPos)} in cases
 	 * where the user knows that the current context may be multithreaded, such as chunk building, to
 	 * ensure thread safety and data consistency. Using a {@link BlockEntity} directly may not be
 	 * thread-safe since it may lead to non-atomic modification of the internal state of the
@@ -66,7 +66,7 @@ public interface FabricBlockView {
 	 */
 	@Nullable
 	default Object getBlockEntityRenderData(BlockPos pos) {
-		BlockEntity blockEntity = ((BlockView) this).getBlockEntity(pos);
+		BlockEntity blockEntity = ((BlockGetter) this).getBlockEntity(pos);
 		return blockEntity == null ? null : blockEntity.getRenderData();
 	}
 
@@ -84,11 +84,11 @@ public interface FabricBlockView {
 	/**
 	 * Retrieves the biome at the given position if biome retrieval is supported. If
 	 * {@link #hasBiomes()} returns {@code true}, this method will always return a non-null
-	 * {@link RegistryEntry} whose {@link RegistryEntry#value() value} is non-null. If
+	 * {@link Holder} whose {@link Holder#value() value} is non-null. If
 	 * {@link #hasBiomes()} returns {@code false}, this method will always return {@code null}.
 	 *
-	 * <p>Prefer using {@link WorldView#getBiome(BlockPos)} instead of this method if this instance
-	 * is known to implement {@link WorldView}.
+	 * <p>Prefer using {@link LevelReader#getBiome(BlockPos)} instead of this method if this instance
+	 * is known to implement {@link LevelReader}.
 	 *
 	 * @implNote Implementations which do not return null are encouraged to use the plains biome as
 	 * the default value, for example when the biome at the given position is unknown.
@@ -98,7 +98,7 @@ public interface FabricBlockView {
 	 * @see #hasBiomes()
 	 */
 	@UnknownNullability
-	default RegistryEntry<Biome> getBiomeFabric(BlockPos pos) {
+	default Holder<Biome> getBiomeFabric(BlockPos pos) {
 		return null;
 	}
 }

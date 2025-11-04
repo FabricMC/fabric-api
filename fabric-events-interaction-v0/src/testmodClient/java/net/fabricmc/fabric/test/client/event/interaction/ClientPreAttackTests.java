@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.client.event.interaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Items;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
@@ -30,7 +30,7 @@ public class ClientPreAttackTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientPreAttackCallback.EVENT.register((client, player, clickCount) -> {
-			if (!player.isSpectator() && player.getMainHandStack().getItem() == Items.TORCH) {
+			if (!player.isSpectator() && player.getMainHandItem().getItem() == Items.TORCH) {
 				LOGGER.info("Attacking using torch intercepted. Attack key clicks: {}", clickCount != 0);
 				return true;
 			}

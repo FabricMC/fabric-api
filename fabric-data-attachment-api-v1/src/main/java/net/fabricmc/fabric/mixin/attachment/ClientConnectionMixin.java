@@ -22,12 +22,12 @@ import java.util.Set;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.Connection;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.attachment.sync.SupportedAttachmentsClientConnection;
 
-@Mixin(ClientConnection.class)
+@Mixin(Connection.class)
 public class ClientConnectionMixin implements SupportedAttachmentsClientConnection {
 	@Unique
 	private Set<Identifier> supportedAttachments = new HashSet<>();

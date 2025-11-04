@@ -16,18 +16,18 @@
 
 package net.fabricmc.fabric.api.registry;
 
-import net.minecraft.item.Item;
-import net.minecraft.potion.Potion;
-import net.minecraft.recipe.BrewingRecipeRegistry;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.Holder;
+import net.minecraft.world.flag.FeatureFlagSet;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * An extension of {@link BrewingRecipeRegistry.Builder} to support ingredients.
+ * An extension of {@link PotionBrewing.Builder} to support ingredients.
  */
 public interface FabricBrewingRecipeRegistryBuilder {
 	/**
@@ -43,15 +43,15 @@ public interface FabricBrewingRecipeRegistryBuilder {
 		throw new AssertionError("Must be implemented via interface injection");
 	}
 
-	default void registerPotionRecipe(RegistryEntry<Potion> input, Ingredient ingredient, RegistryEntry<Potion> output) {
+	default void registerPotionRecipe(Holder<Potion> input, Ingredient ingredient, Holder<Potion> output) {
 		throw new AssertionError("Must be implemented via interface injection");
 	}
 
-	default void registerRecipes(Ingredient ingredient, RegistryEntry<Potion> potion) {
+	default void registerRecipes(Ingredient ingredient, Holder<Potion> potion) {
 		throw new AssertionError("Must be implemented via interface injection");
 	}
 
-	default FeatureSet getEnabledFeatures() {
+	default FeatureFlagSet getEnabledFeatures() {
 		throw new AssertionError("Must be implemented via interface injection");
 	}
 
@@ -63,8 +63,8 @@ public interface FabricBrewingRecipeRegistryBuilder {
 		/**
 		 * Called when the brewing recipe registry is being built.
 		 *
-		 * @param builder the {@link BrewingRecipeRegistry} instance
+		 * @param builder the {@link PotionBrewing} instance
 		 */
-		void build(BrewingRecipeRegistry.Builder builder);
+		void build(PotionBrewing.Builder builder);
 	}
 }

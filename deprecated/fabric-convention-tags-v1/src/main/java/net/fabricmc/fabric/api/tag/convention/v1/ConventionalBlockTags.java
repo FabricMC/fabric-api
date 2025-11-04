@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 
@@ -63,7 +63,7 @@ public final class ConventionalBlockTags {
 	/**
 	 * Blocks should be included in this tag if their movement can cause serious issues such as world corruption
 	 * upon being moved, such as chunk loaders or pipes,
-	 * for mods that move blocks but do not respect {@link AbstractBlock.AbstractBlockState#getPistonBehavior}.
+	 * for mods that move blocks but do not respect {@link BlockBehaviour.BlockStateBase#getPistonBehavior}.
 	 */
 	public static final TagKey<Block> MOVEMENT_RESTRICTED = register("movement_restricted");
 

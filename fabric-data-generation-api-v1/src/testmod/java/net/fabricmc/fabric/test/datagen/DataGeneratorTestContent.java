@@ -19,24 +19,24 @@ package net.fabricmc.fabric.test.datagen;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
@@ -57,61 +57,61 @@ public class DataGeneratorTestContent implements ModInitializer {
 	public static EntityType<?> SIMPLE_ENTITY_TYPE;
 	public static EntityType<?> ENTITY_TYPE_WITHOUT_LOOT_TABLE;
 
-	public static final RegistryKey<ItemGroup> SIMPLE_ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(MOD_ID, "simple"));
+	public static final ResourceKey<CreativeModeTab> SIMPLE_ITEM_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath(MOD_ID, "simple"));
 
-	public static final RegistryKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_REGISTRY_KEY =
-			RegistryKey.ofRegistry(Identifier.of("fabric", "test_datagen_dynamic"));
-	public static final RegistryKey<TestDatagenObject> TEST_DYNAMIC_REGISTRY_ITEM_KEY = RegistryKey.of(
+	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_REGISTRY_KEY =
+			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_datagen_dynamic"));
+	public static final ResourceKey<TestDatagenObject> TEST_DYNAMIC_REGISTRY_ITEM_KEY = ResourceKey.create(
 			TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
-			Identifier.of(MOD_ID, "tiny_potato")
+			Identifier.fromNamespaceAndPath(MOD_ID, "tiny_potato")
 	);
-	public static final RegistryKey<TestDatagenObject> TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY = RegistryKey.of(
+	public static final ResourceKey<TestDatagenObject> TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY = ResourceKey.create(
 			TEST_DATAGEN_DYNAMIC_REGISTRY_KEY,
-			Identifier.of(MOD_ID, "tinier_potato")
+			Identifier.fromNamespaceAndPath(MOD_ID, "tinier_potato")
 	);
 	// Empty registry
-	public static final RegistryKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =
-			RegistryKey.ofRegistry(Identifier.of("fabric", "test_datagen_dynamic_empty"));
+	public static final ResourceKey<Registry<TestDatagenObject>> TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY =
+			ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("fabric", "test_datagen_dynamic_empty"));
 
 	@Override
 	public void onInitialize() {
-		SIMPLE_BLOCK = createBlock("simple_block", true, AbstractBlock.Settings.create());
-		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false, AbstractBlock.Settings.create());
-		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, AbstractBlock.Settings.create());
-		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, AbstractBlock.Settings.create().lootTable(Blocks.STONE.getLootTableKey()));
-		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, AbstractBlock.Settings.create().dropsNothing());
+		SIMPLE_BLOCK = createBlock("simple_block", true, BlockBehaviour.Properties.of());
+		BLOCK_WITHOUT_ITEM = createBlock("block_without_item", false, BlockBehaviour.Properties.of());
+		BLOCK_WITHOUT_LOOT_TABLE = createBlock("block_without_loot_table", false, BlockBehaviour.Properties.of());
+		BLOCK_WITH_VANILLA_LOOT_TABLE = createBlock("block_with_vanilla_loot_table", false, BlockBehaviour.Properties.of().overrideLootTable(Blocks.STONE.getLootTable()));
+		BLOCK_THAT_DROPS_NOTHING = createBlock("block_that_drops_nothing", false, BlockBehaviour.Properties.of().noLootTable());
 
-		SIMPLE_ENTITY_TYPE = createEntityType("simple_entity", EntityType.Builder.create(SpawnGroup.MISC));
-		ENTITY_TYPE_WITHOUT_LOOT_TABLE = createEntityType("entity_without_loot_table", EntityType.Builder.create(SpawnGroup.MISC));
+		SIMPLE_ENTITY_TYPE = createEntityType("simple_entity", EntityType.Builder.createNothing(MobCategory.MISC));
+		ENTITY_TYPE_WITHOUT_LOOT_TABLE = createEntityType("entity_without_loot_table", EntityType.Builder.createNothing(MobCategory.MISC));
 
-		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.add(SIMPLE_BLOCK));
+		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.accept(SIMPLE_BLOCK));
 
-		Registry.register(Registries.ITEM_GROUP, SIMPLE_ITEM_GROUP, FabricItemGroup.builder()
+		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, SIMPLE_ITEM_GROUP, FabricItemGroup.builder()
 				.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
-				.displayName(Text.translatable("fabric-data-gen-api-v1-testmod.simple_item_group"))
+				.title(Component.translatable("fabric-data-gen-api-v1-testmod.simple_item_group"))
 				.build());
 
-		TEST_SOUND = Registry.register(Registries.SOUND_EVENT, Identifier.of(MOD_ID, "test_sound"), SoundEvent.of(Identifier.of(MOD_ID, "test_sound")));
+		TEST_SOUND = Registry.register(BuiltInRegistries.SOUND_EVENT, Identifier.fromNamespaceAndPath(MOD_ID, "test_sound"), SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(MOD_ID, "test_sound")));
 
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, TestDatagenObject.CODEC);
 		DynamicRegistries.register(TEST_DATAGEN_DYNAMIC_EMPTY_REGISTRY_KEY, TestDatagenObject.CODEC);
 	}
 
-	private static Block createBlock(String name, boolean hasItem, AbstractBlock.Settings settings) {
-		Identifier identifier = Identifier.of(MOD_ID, name);
-		Block block = Registry.register(Registries.BLOCK, identifier, new Block(settings.registryKey(RegistryKey.of(RegistryKeys.BLOCK, identifier))));
+	private static Block createBlock(String name, boolean hasItem, BlockBehaviour.Properties settings) {
+		Identifier identifier = Identifier.fromNamespaceAndPath(MOD_ID, name);
+		Block block = Registry.register(BuiltInRegistries.BLOCK, identifier, new Block(settings.setId(ResourceKey.create(Registries.BLOCK, identifier))));
 
 		if (hasItem) {
-			Registry.register(Registries.ITEM, identifier, new BlockItem(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, identifier))));
+			Registry.register(BuiltInRegistries.ITEM, identifier, new BlockItem(block, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, identifier))));
 		}
 
 		return block;
 	}
 
 	private static <E extends Entity> EntityType<E> createEntityType(String name, EntityType.Builder<E> builder) {
-		RegistryKey<EntityType<?>> key = RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(MOD_ID, name));
+		ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, name));
 
-		return Registry.register(Registries.ENTITY_TYPE, key, builder.build(key));
+		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
 	}
 
 	public record TestDatagenObject(String value) {

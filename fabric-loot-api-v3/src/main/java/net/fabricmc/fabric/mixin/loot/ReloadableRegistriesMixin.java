@@ -34,19 +34,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.loot.LootDataType;
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.CombinedDynamicRegistries;
-import net.minecraft.registry.MutableRegistry;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryOps;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.ReloadableRegistries;
-import net.minecraft.registry.ServerDynamicRegistryType;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.storage.loot.LootDataType;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.core.LayeredRegistryAccess;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.server.ReloadableServerRegistries;
+import net.minecraft.server.RegistryLayer;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
@@ -57,23 +57,23 @@ import net.fabricmc.fabric.impl.loot.LootUtil;
 /**
  * Implements the events from {@link LootTableEvents}.
  */
-@Mixin(ReloadableRegistries.class)
+@Mixin(ReloadableServerRegistries.class)
 abstract class ReloadableRegistriesMixin {
 	/**
 	 * Due to possible cross-thread handling, this uses WeakHashMap instead of ThreadLocal.
 	 */
 	@Unique
-	private static final WeakHashMap<RegistryOps<JsonElement>, RegistryWrapper.WrapperLookup> WRAPPERS = new WeakHashMap<>();
+	private static final WeakHashMap<RegistryOps<JsonElement>, HolderLookup.Provider> WRAPPERS = new WeakHashMap<>();
 
-	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;getOps(Lcom/mojang/serialization/DynamicOps;)Lnet/minecraft/registry/RegistryOps;"))
-	private static RegistryOps<JsonElement> storeOps(RegistryWrapper.WrapperLookup registries, DynamicOps<JsonElement> ops, Operation<RegistryOps<JsonElement>> original) {
+	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/HolderLookup$Provider;createSerializationContext(Lcom/mojang/serialization/DynamicOps;)Lnet/minecraft/resources/RegistryOps;"))
+	private static RegistryOps<JsonElement> storeOps(HolderLookup.Provider registries, DynamicOps<JsonElement> ops, Operation<RegistryOps<JsonElement>> original) {
 		RegistryOps<JsonElement> created = original.call(registries, ops);
 		WRAPPERS.put(created, registries);
 		return created;
 	}
 
 	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;thenApplyAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
-	private static CompletableFuture<CombinedDynamicRegistries<ServerDynamicRegistryType>> removeOps(CompletableFuture<List<MutableRegistry<?>>> future, Function<? super List<MutableRegistry<?>>, ? extends CombinedDynamicRegistries<ServerDynamicRegistryType>> fn, Executor executor, Operation<CompletableFuture<CombinedDynamicRegistries<ServerDynamicRegistryType>>> original, @Local RegistryOps<JsonElement> ops) {
+	private static CompletableFuture<LayeredRegistryAccess<RegistryLayer>> removeOps(CompletableFuture<List<WritableRegistry<?>>> future, Function<? super List<WritableRegistry<?>>, ? extends LayeredRegistryAccess<RegistryLayer>> fn, Executor executor, Operation<CompletableFuture<LayeredRegistryAccess<RegistryLayer>>> original, @Local RegistryOps<JsonElement> ops) {
 		return original.call(future.thenApply(v -> {
 			WRAPPERS.remove(ops);
 			return v;
@@ -81,7 +81,7 @@ abstract class ReloadableRegistriesMixin {
 	}
 
 	@Inject(method = "method_61240", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
-	private static <T> void modifyLootTable(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<MutableRegistry<?>> cir, @Local Map<Identifier, T> map) {
+	private static <T> void modifyLootTable(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir, @Local Map<Identifier, T> map) {
 		map.replaceAll((identifier, t) -> modifyLootTable(t, identifier, registryOps));
 	}
 
@@ -89,9 +89,9 @@ abstract class ReloadableRegistriesMixin {
 	private static <T> T modifyLootTable(T value, Identifier id, RegistryOps<JsonElement> ops) {
 		if (!(value instanceof LootTable table)) return value;
 
-		RegistryKey<LootTable> key = RegistryKey.of(RegistryKeys.LOOT_TABLE, id);
+		ResourceKey<LootTable> key = ResourceKey.create(Registries.LOOT_TABLE, id);
 		// Populated above.
-		RegistryWrapper.WrapperLookup registries = WRAPPERS.get(ops);
+		HolderLookup.Provider registries = WRAPPERS.get(ops);
 		// Populated inside JsonDataLoaderMixin
 		LootTableSource source = LootUtil.SOURCES.get().getOrDefault(id, LootTableSource.DATA_PACK);
 		// Invoke the REPLACE event for the current loot table.
@@ -113,13 +113,13 @@ abstract class ReloadableRegistriesMixin {
 
 	@SuppressWarnings("unchecked")
 	@Inject(method = "method_61240", at = @At("RETURN"))
-	private static <T> void onLootTablesLoaded(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<MutableRegistry<?>> cir) {
-		if (lootDataType != LootDataType.LOOT_TABLES) return;
+	private static <T> void onLootTablesLoaded(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir) {
+		if (lootDataType != LootDataType.TABLE) return;
 
 		Registry<LootTable> lootTableRegistry = (Registry<LootTable>) cir.getReturnValue();
 
 		LootTableEvents.ALL_LOADED.invoker().onLootTablesLoaded(resourceManager, lootTableRegistry);
 		LootUtil.SOURCES.remove();
-		lootTableRegistry.streamEntries().forEach(reference -> ((FabricLootTable) reference.value()).fabric$setRegistryEntry(reference));
+		lootTableRegistry.listElements().forEach(reference -> ((FabricLootTable) reference.value()).fabric$setRegistryEntry(reference));
 	}
 }

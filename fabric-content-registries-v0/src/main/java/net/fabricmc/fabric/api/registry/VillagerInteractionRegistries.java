@@ -21,10 +21,10 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.village.VillagerProfession;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.npc.VillagerProfession;
 
 import net.fabricmc.fabric.impl.content.registry.VillagerInteractionRegistriesImpl;
 import net.fabricmc.fabric.mixin.content.registry.GiveGiftsToHeroTaskAccessor;
@@ -44,10 +44,10 @@ public final class VillagerInteractionRegistries {
 	 * by any profession villagers.
 	 *
 	 * @param item the item to register
-	 * @deprecated Add items to the {@linkplain net.minecraft.registry.tag.ItemTags#VILLAGER_PICKS_UP {@code minecraft:villager_picks_up} item tag} instead.
+	 * @deprecated Add items to the {@linkplain net.minecraft.tags.ItemTags#VILLAGER_PICKS_UP {@code minecraft:villager_picks_up} item tag} instead.
 	 */
 	@Deprecated
-	public static void registerCollectable(ItemConvertible item) {
+	public static void registerCollectable(ItemLike item) {
 		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
 		VillagerInteractionRegistriesImpl.getCollectableRegistry().add(item.asItem());
 	}
@@ -56,7 +56,7 @@ public final class VillagerInteractionRegistries {
 	 * Registers an item to be used in a composter by farmer villagers.
 	 * @param item the item to register
 	 */
-	public static void registerCompostable(ItemConvertible item) {
+	public static void registerCompostable(ItemLike item) {
 		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
 		VillagerInteractionRegistriesImpl.getCompostableRegistry().add(item.asItem());
 	}
@@ -66,7 +66,7 @@ public final class VillagerInteractionRegistries {
 	 * @param item      the item to register
 	 * @param foodValue the amount of breeding power the item has (1 = normal food item, 4 = bread)
 	 */
-	public static void registerFood(ItemConvertible item, int foodValue) {
+	public static void registerFood(ItemLike item, int foodValue) {
 		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
 		Integer oldValue = VillagerInteractionRegistriesImpl.getFoodRegistry().put(item.asItem(), foodValue);
 
@@ -80,13 +80,13 @@ public final class VillagerInteractionRegistries {
 	 * @param profession the profession to modify
 	 * @param lootTable  the loot table to associate with the profession
 	 */
-	public static void registerGiftLootTable(RegistryKey<VillagerProfession> profession, RegistryKey<LootTable> lootTable) {
+	public static void registerGiftLootTable(ResourceKey<VillagerProfession> profession, ResourceKey<LootTable> lootTable) {
 		Objects.requireNonNull(profession, "Profession cannot be null!");
 		Objects.requireNonNull(lootTable, "Loot table identifier cannot be null!");
-		RegistryKey<LootTable> oldValue = GiveGiftsToHeroTaskAccessor.fabric_getGifts().put(profession, lootTable);
+		ResourceKey<LootTable> oldValue = GiveGiftsToHeroTaskAccessor.fabric_getGifts().put(profession, lootTable);
 
 		if (oldValue != null) {
-			LOGGER.info("Overriding previous gift loot table of {} profession, was: {}, now: {}", profession.getValue(), oldValue, lootTable);
+			LOGGER.info("Overriding previous gift loot table of {} profession, was: {}, now: {}", profession.identifier(), oldValue, lootTable);
 		}
 	}
 }

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.networking;
 
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.protocol.Packet;
 
 public interface PacketCallbackListener {
 	/**

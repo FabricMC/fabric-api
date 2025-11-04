@@ -21,16 +21,16 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.client.Keyboard;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.KeyboardHandler;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 
-@Mixin(Keyboard.class)
+@Mixin(KeyboardHandler.class)
 abstract class KeyboardMixin {
-	@WrapOperation(method = "onKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;keyPressed(Lnet/minecraft/client/input/KeyInput;)Z"))
-	private boolean invokeKeyPressedEvents(Screen screen, KeyInput ctx, Operation<Boolean> operation) {
+	@WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;keyPressed(Lnet/minecraft/client/input/KeyEvent;)Z"))
+	private boolean invokeKeyPressedEvents(Screen screen, KeyEvent ctx, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,
 		// regardless of whether the screen changes within the handler or event invocations.
 
@@ -52,8 +52,8 @@ abstract class KeyboardMixin {
 		return result;
 	}
 
-	@WrapOperation(method = "onKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;keyReleased(Lnet/minecraft/client/input/KeyInput;)Z"))
-	private boolean invokeKeyReleasedEvents(Screen screen, KeyInput ctx, Operation<Boolean> operation) {
+	@WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;keyReleased(Lnet/minecraft/client/input/KeyEvent;)Z"))
+	private boolean invokeKeyReleasedEvents(Screen screen, KeyEvent ctx, Operation<Boolean> operation) {
 		// The screen passed to events is the same as the screen the handler method is called on,
 		// regardless of whether the screen changes within the handler or event invocations.
 

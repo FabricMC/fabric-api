@@ -25,57 +25,57 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.item.Item;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.Potions;
-import net.minecraft.recipe.BrewingRecipeRegistry;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.Holder;
+import net.minecraft.world.flag.FeatureFlagSet;
 
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 
-@Mixin(BrewingRecipeRegistry.Builder.class)
+@Mixin(PotionBrewing.Builder.class)
 public abstract class BrewingRecipeRegistryBuilderMixin implements FabricBrewingRecipeRegistryBuilder {
 	@Shadow
 	@Final
-	private FeatureSet enabledFeatures;
+	private FeatureFlagSet enabledFeatures;
 
 	@Shadow
-	private static void assertPotion(Item potionType) {
+	private static void expectPotion(Item potionType) {
 	}
 
 	@Shadow
 	@Final
-	private List<BrewingRecipeRegistry.Recipe<Item>> itemRecipes;
+	private List<PotionBrewing.Mix<Item>> containerMixes;
 
 	@Shadow
 	@Final
-	private List<BrewingRecipeRegistry.Recipe<Potion>> potionRecipes;
+	private List<PotionBrewing.Mix<Potion>> potionMixes;
 
 	@Inject(method = "build", at = @At("HEAD"))
-	private void build(CallbackInfoReturnable<BrewingRecipeRegistry> cir) {
-		FabricBrewingRecipeRegistryBuilder.BUILD.invoker().build((BrewingRecipeRegistry.Builder) (Object) this);
+	private void build(CallbackInfoReturnable<PotionBrewing> cir) {
+		FabricBrewingRecipeRegistryBuilder.BUILD.invoker().build((PotionBrewing.Builder) (Object) this);
 	}
 
 	@Override
 	public void registerItemRecipe(Item input, Ingredient ingredient, Item output) {
 		if (input.isEnabled(this.enabledFeatures) && output.isEnabled(this.enabledFeatures)) {
-			assertPotion(input);
-			assertPotion(output);
-			this.itemRecipes.add(new BrewingRecipeRegistry.Recipe<>(input.getRegistryEntry(), ingredient, output.getRegistryEntry()));
+			expectPotion(input);
+			expectPotion(output);
+			this.containerMixes.add(new PotionBrewing.Mix<>(input.builtInRegistryHolder(), ingredient, output.builtInRegistryHolder()));
 		}
 	}
 
 	@Override
-	public void registerPotionRecipe(RegistryEntry<Potion> input, Ingredient ingredient, RegistryEntry<Potion> output) {
+	public void registerPotionRecipe(Holder<Potion> input, Ingredient ingredient, Holder<Potion> output) {
 		if (input.value().isEnabled(this.enabledFeatures) && output.value().isEnabled(this.enabledFeatures)) {
-			this.potionRecipes.add(new BrewingRecipeRegistry.Recipe<>(input, ingredient, output));
+			this.potionMixes.add(new PotionBrewing.Mix<>(input, ingredient, output));
 		}
 	}
 
 	@Override
-	public void registerRecipes(Ingredient ingredient, RegistryEntry<Potion> potion) {
+	public void registerRecipes(Ingredient ingredient, Holder<Potion> potion) {
 		if (potion.value().isEnabled(this.enabledFeatures)) {
 			this.registerPotionRecipe(Potions.WATER, ingredient, Potions.MUNDANE);
 			this.registerPotionRecipe(Potions.AWKWARD, ingredient, potion);
@@ -83,7 +83,7 @@ public abstract class BrewingRecipeRegistryBuilderMixin implements FabricBrewing
 	}
 
 	@Override
-	public FeatureSet getEnabledFeatures() {
+	public FeatureFlagSet getEnabledFeatures() {
 		return this.enabledFeatures;
 	}
 }

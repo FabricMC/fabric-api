@@ -20,18 +20,18 @@ import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.Holder;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 public class ItemVariantImpl implements ItemVariant {
-	public static ItemVariant of(Item item, ComponentChanges components) {
+	public static ItemVariant of(Item item, DataComponentPatch components) {
 		Objects.requireNonNull(item, "Item may not be null.");
 		Objects.requireNonNull(components, "Components may not be null.");
 
@@ -43,19 +43,19 @@ public class ItemVariantImpl implements ItemVariant {
 		}
 	}
 
-	public static ItemVariant of(RegistryEntry<Item> item, ComponentChanges components) {
+	public static ItemVariant of(Holder<Item> item, DataComponentPatch components) {
 		return of(item.value(), components);
 	}
 
 	private final Item item;
-	private final ComponentChanges components;
+	private final DataComponentPatch components;
 	private final int hashCode;
 	/**
 	 * Lazily computed, equivalent to calling toStack(1). <b>MAKE SURE IT IS NEVER MODIFIED!</b>
 	 */
 	private volatile @Nullable ItemStack cachedStack = null;
 
-	public ItemVariantImpl(Item item, ComponentChanges components) {
+	public ItemVariantImpl(Item item, DataComponentPatch components) {
 		this.item = item;
 		this.components = components;
 		hashCode = Objects.hash(item, components);
@@ -68,17 +68,17 @@ public class ItemVariantImpl implements ItemVariant {
 
 	@Nullable
 	@Override
-	public ComponentChanges getComponents() {
+	public DataComponentPatch getComponents() {
 		return components;
 	}
 
 	@Override
-	public ComponentMap getComponentMap() {
+	public DataComponentMap getComponentMap() {
 		return getCachedStack().getComponents();
 	}
 
 	@Override
-	public ItemVariant withComponentChanges(ComponentChanges changes) {
+	public ItemVariant withComponentChanges(DataComponentPatch changes) {
 		return of(item, TransferApiImpl.mergeChanges(getComponents(), changes));
 	}
 

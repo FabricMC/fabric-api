@@ -16,30 +16,30 @@
 
 package net.fabricmc.fabric.test.object.builder;
 
-import static net.minecraft.command.argument.EntityArgumentType.entity;
-import static net.minecraft.command.argument.EntityArgumentType.getEntity;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.arguments.EntityArgument.entity;
+import static net.minecraft.commands.arguments.EntityArgument.getEntity;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 import java.util.Optional;
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.WanderingTraderEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.village.TradeOffer;
-import net.minecraft.village.TradeOffers;
-import net.minecraft.village.TradedItem;
-import net.minecraft.village.VillagerProfession;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.entity.npc.VillagerProfession;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -53,41 +53,41 @@ public class VillagerTypeTest1 implements ModInitializer {
 	public void onInitialize() {
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, (factories, rebalanced) -> {
 			Item scrap = rebalanced ? Items.NETHER_BRICK : Items.NETHERITE_SCRAP;
-			factories.add(new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.GOLD_INGOT, 3), Optional.of(new TradedItem(scrap, 4)), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
+			factories.add(new SimpleTradeFactory(new MerchantOffer(new ItemCost(Items.GOLD_INGOT, 3), Optional.of(new ItemCost(scrap, 4)), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
 		});
 		// Toolsmith is not rebalanced yet
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.TOOLSMITH, 1, (factories, rebalanced) -> {
 			Item scrap = rebalanced ? Items.NETHER_BRICK : Items.NETHERITE_SCRAP;
-			factories.add(new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.GOLD_INGOT, 3), Optional.of(new TradedItem(scrap, 4)), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
+			factories.add(new SimpleTradeFactory(new MerchantOffer(new ItemCost(Items.GOLD_INGOT, 3), Optional.of(new ItemCost(scrap, 4)), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
 		});
 
 		TradeOfferHelper.registerWanderingTraderOffers(builder -> {
 			builder.pool(
 					FOOD_POOL_ID,
 					5,
-					Registries.ITEM.stream().filter(item -> item.getDefaultStack().contains(DataComponentTypes.FOOD)).map(
-							item -> new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.NETHERITE_INGOT), new ItemStack(item), 3, 4, 0.15F))
+					BuiltInRegistries.ITEM.stream().filter(item -> item.getDefaultInstance().has(DataComponents.FOOD)).map(
+							item -> new SimpleTradeFactory(new MerchantOffer(new ItemCost(Items.NETHERITE_INGOT), new ItemStack(item), 3, 4, 0.15F))
 					).toList()
 			);
 			builder.addAll(
 					THING_POOL_ID,
-					new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.NETHERITE_INGOT), new ItemStack(Items.MOJANG_BANNER_PATTERN), 1, 4, 0.15F))
+					new SimpleTradeFactory(new MerchantOffer(new ItemCost(Items.NETHERITE_INGOT), new ItemStack(Items.MOJANG_BANNER_PATTERN), 1, 4, 0.15F))
 			);
 			builder.addOffersToPool(
 					TradeOfferHelper.WanderingTraderOffersBuilder.BUY_ITEMS_POOL,
-					new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.BLAZE_POWDER, 1), new ItemStack(Items.EMERALD, 4), 3, 4, 0.15F)),
-					new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.NETHER_WART, 5), new ItemStack(Items.EMERALD, 1), 3, 4, 0.15F)),
-					new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.GOLDEN_CARROT, 4), new ItemStack(Items.EMERALD, 1), 3, 4, 0.15F))
+					new SimpleTradeFactory(new MerchantOffer(new ItemCost(Items.BLAZE_POWDER, 1), new ItemStack(Items.EMERALD, 4), 3, 4, 0.15F)),
+					new SimpleTradeFactory(new MerchantOffer(new ItemCost(Items.NETHER_WART, 5), new ItemStack(Items.EMERALD, 1), 3, 4, 0.15F)),
+					new SimpleTradeFactory(new MerchantOffer(new ItemCost(Items.GOLDEN_CARROT, 4), new ItemStack(Items.EMERALD, 1), 3, 4, 0.15F))
 			);
 			builder.addOffersToPool(
 					TradeOfferHelper.WanderingTraderOffersBuilder.SELL_SPECIAL_ITEMS_POOL,
-					new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.EMERALD, 6), new ItemStack(Items.BRUSH, 1), 1, 4, 0.15F)),
-					new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.DIAMOND, 16), new ItemStack(Items.ELYTRA, 1), 1, 4, 0.15F)),
-					new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.EMERALD, 3), new ItemStack(Items.LEAD, 2), 3, 4, 0.15F))
+					new SimpleTradeFactory(new MerchantOffer(new ItemCost(Items.EMERALD, 6), new ItemStack(Items.BRUSH, 1), 1, 4, 0.15F)),
+					new SimpleTradeFactory(new MerchantOffer(new ItemCost(Items.DIAMOND, 16), new ItemStack(Items.ELYTRA, 1), 1, 4, 0.15F)),
+					new SimpleTradeFactory(new MerchantOffer(new ItemCost(Items.EMERALD, 3), new ItemStack(Items.LEAD, 2), 3, 4, 0.15F))
 			);
 			builder.addOffersToPool(
 					FOOD_POOL_ID,
-					new SimpleTradeFactory(new TradeOffer(new TradedItem(Items.NETHERITE_INGOT), new ItemStack(Items.EGG), 3, 4, 0.15F))
+					new SimpleTradeFactory(new MerchantOffer(new ItemCost(Items.NETHERITE_INGOT), new ItemStack(Items.EGG), 3, 4, 0.15F))
 			);
 		});
 
@@ -96,16 +96,16 @@ public class VillagerTypeTest1 implements ModInitializer {
 					.then(argument("entity", entity()).executes(context -> {
 						final Entity entity = getEntity(context, "entity");
 
-						if (!(entity instanceof WanderingTraderEntity)) {
-							throw new SimpleCommandExceptionType(Text.literal("Entity is not a wandering trader")).create();
+						if (!(entity instanceof WanderingTrader)) {
+							throw new SimpleCommandExceptionType(Component.literal("Entity is not a wandering trader")).create();
 						}
 
-						WanderingTraderEntity trader = (WanderingTraderEntity) entity;
+						WanderingTrader trader = (WanderingTrader) entity;
 						trader.getOffers().clear();
 
-						for (Pair<TradeOffers.Factory[], Integer> value : TradeOffers.WANDERING_TRADER_TRADES) {
-							for (TradeOffers.Factory factory : value.getKey()) {
-								final TradeOffer result = factory.create(context.getSource().getWorld(), trader, Random.create());
+						for (Pair<VillagerTrades.ItemListing[], Integer> value : VillagerTrades.WANDERING_TRADER_TRADES) {
+							for (VillagerTrades.ItemListing factory : value.getKey()) {
+								final MerchantOffer result = factory.getOffer(context.getSource().getLevel(), trader, RandomSource.create());
 
 								if (result == null) {
 									continue;

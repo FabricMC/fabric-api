@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.biome.v1;
 
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 
 import net.fabricmc.fabric.impl.biome.TheEndBiomeData;
 
@@ -41,8 +41,8 @@ public final class TheEndBiomes {
 	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 *               Vanilla biomes have a weight of 1.0
 	 */
-	public static void addMainIslandBiome(RegistryKey<Biome> biome, double weight) {
-		TheEndBiomeData.addEndBiomeReplacement(BiomeKeys.THE_END, biome, weight);
+	public static void addMainIslandBiome(ResourceKey<Biome> biome, double weight) {
+		TheEndBiomeData.addEndBiomeReplacement(Biomes.THE_END, biome, weight);
 	}
 
 	/**
@@ -54,8 +54,8 @@ public final class TheEndBiomes {
 	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 *               The vanilla biome has a weight of 1.0.
 	 */
-	public static void addHighlandsBiome(RegistryKey<Biome> biome, double weight) {
-		TheEndBiomeData.addEndBiomeReplacement(BiomeKeys.END_HIGHLANDS, biome, weight);
+	public static void addHighlandsBiome(ResourceKey<Biome> biome, double weight) {
+		TheEndBiomeData.addEndBiomeReplacement(Biomes.END_HIGHLANDS, biome, weight);
 	}
 
 	/**
@@ -67,8 +67,8 @@ public final class TheEndBiomes {
 	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 *               The vanilla biome has a weight of 1.0.
 	 */
-	public static void addSmallIslandsBiome(RegistryKey<Biome> biome, double weight) {
-		TheEndBiomeData.addEndBiomeReplacement(BiomeKeys.SMALL_END_ISLANDS, biome, weight);
+	public static void addSmallIslandsBiome(ResourceKey<Biome> biome, double weight) {
+		TheEndBiomeData.addEndBiomeReplacement(Biomes.SMALL_END_ISLANDS, biome, weight);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public final class TheEndBiomes {
 	 *                  heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 *                  The vanilla biome has a weight of 1.0.
 	 */
-	public static void addMidlandsBiome(RegistryKey<Biome> highlands, RegistryKey<Biome> midlands, double weight) {
+	public static void addMidlandsBiome(ResourceKey<Biome> highlands, ResourceKey<Biome> midlands, double weight) {
 		TheEndBiomeData.addEndMidlandsReplacement(highlands, midlands, weight);
 	}
 
@@ -97,7 +97,7 @@ public final class TheEndBiomes {
 	 *                  heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 *                  The vanilla biome has a weight of 1.0.
 	 */
-	public static void addBarrensBiome(RegistryKey<Biome> highlands, RegistryKey<Biome> barrens, double weight) {
+	public static void addBarrensBiome(ResourceKey<Biome> highlands, ResourceKey<Biome> barrens, double weight) {
 		TheEndBiomeData.addEndBarrensReplacement(highlands, barrens, weight);
 	}
 }

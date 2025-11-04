@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 

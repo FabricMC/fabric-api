@@ -28,16 +28,16 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.BlockModelPart;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.dynamic.Codecs;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.CompositeBlockStateModel;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -68,17 +68,17 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	}
 
 	@Override
-	public void addParts(Random random, List<BlockModelPart> parts) {
+	public void collectParts(RandomSource random, List<BlockModelPart> parts) {
 		long seed = random.nextLong();
 
 		for (BlockStateModel model : models) {
 			random.setSeed(seed);
-			model.addParts(random, parts);
+			model.collectParts(random, parts);
 		}
 	}
 
 	@Override
-	public void emitQuads(QuadEmitter emitter, BlockRenderView blockView, BlockPos pos, BlockState state, Random random, Predicate<@Nullable Direction> cullTest) {
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		long seed = random.nextLong();
 
 		for (BlockStateModel model : models) {
@@ -89,7 +89,7 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 
 	@Override
 	@Nullable
-	public Object createGeometryKey(BlockRenderView blockView, BlockPos pos, BlockState state, Random random) {
+	public Object createGeometryKey(BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random) {
 		int count = models.length;
 		long seed = random.nextLong();
 
@@ -118,18 +118,18 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	}
 
 	@Override
-	public Sprite particleSprite() {
-		return models[0].particleSprite();
+	public TextureAtlasSprite particleIcon() {
+		return models[0].particleIcon();
 	}
 
 	@Override
-	public Sprite particleSprite(BlockRenderView blockView, BlockPos pos, BlockState state) {
+	public TextureAtlasSprite particleSprite(BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
 		return models[0].particleSprite(blockView, pos, state);
 	}
 
 	public record Unbaked(@Unmodifiable List<BlockStateModel.Unbaked> models) implements CompositeBlockStateModel.Unbaked {
 		public static final MapCodec<Unbaked> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				Codecs.nonEmptyList(BlockStateModel.Unbaked.CODEC.listOf()).fieldOf("models").forGetter(Unbaked::models)
+				ExtraCodecs.nonEmptyList(BlockStateModel.Unbaked.CODEC.listOf()).fieldOf("models").forGetter(Unbaked::models)
 		).apply(instance, Unbaked::new));
 
 		public static Unbaked of(List<BlockStateModel.Unbaked> models) {
@@ -147,7 +147,7 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 		}
 
 		@Override
-		public BlockStateModel bake(Baker baker) {
+		public BlockStateModel bake(ModelBaker baker) {
 			BlockStateModel[] bakedModels = new BlockStateModel[models.size()];
 
 			for (int i = 0; i < models.size(); i++) {
@@ -158,8 +158,8 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 		}
 
 		@Override
-		public void resolve(Resolver resolver) {
-			models.forEach(model -> model.resolve(resolver));
+		public void resolveDependencies(Resolver resolver) {
+			models.forEach(model -> model.resolveDependencies(resolver));
 		}
 	}
 }

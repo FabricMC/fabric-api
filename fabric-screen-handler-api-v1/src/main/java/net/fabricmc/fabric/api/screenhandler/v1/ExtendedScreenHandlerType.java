@@ -18,20 +18,20 @@ package net.fabricmc.fabric.api.screenhandler.v1;
 
 import java.util.Objects;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 
 /**
- * A {@link ScreenHandlerType} for an extended screen handler that
+ * A {@link MenuType} for an extended screen handler that
  * synchronizes additional data to the client when it is opened.
  *
  * <p>Extended screen handlers can be opened using
- * {@link net.minecraft.entity.player.PlayerEntity#openHandledScreen(NamedScreenHandlerFactory)
+ * {@link net.minecraft.world.entity.player.Player#openHandledScreen(MenuProvider)
  * PlayerEntity.openHandledScreen} with an
  * {@link ExtendedScreenHandlerFactory}.
  *
@@ -72,28 +72,28 @@ import net.minecraft.screen.ScreenHandlerType;
  * @param <T> the type of screen handler created by this type
  * @param <D> the type of the data
  */
-public class ExtendedScreenHandlerType<T extends ScreenHandler, D> extends ScreenHandlerType<T> {
+public class ExtendedScreenHandlerType<T extends AbstractContainerMenu, D> extends MenuType<T> {
 	private final ExtendedFactory<T, D> factory;
-	private final PacketCodec<? super RegistryByteBuf, D> packetCodec;
+	private final StreamCodec<? super RegistryFriendlyByteBuf, D> packetCodec;
 
 	/**
 	 * Constructs an extended screen handler type.
 	 *
-	 * @param factory the screen handler factory used for {@link #create(int, PlayerInventory, Object)}
+	 * @param factory the screen handler factory used for {@link #create(int, Inventory, Object)}
 	 */
-	public ExtendedScreenHandlerType(ExtendedFactory<T, D> factory, PacketCodec<? super RegistryByteBuf, D> packetCodec) {
-		super(null, FeatureFlags.VANILLA_FEATURES);
+	public ExtendedScreenHandlerType(ExtendedFactory<T, D> factory, StreamCodec<? super RegistryFriendlyByteBuf, D> packetCodec) {
+		super(null, FeatureFlags.VANILLA_SET);
 		this.factory = Objects.requireNonNull(factory, "screen handler factory cannot be null");
 		this.packetCodec = Objects.requireNonNull(packetCodec, "packet codec cannot be null");
 	}
 
 	/**
-	 * @throws UnsupportedOperationException always; use {@link #create(int, PlayerInventory, Object)}
-	 * @deprecated Use {@link #create(int, PlayerInventory, Object)} instead.
+	 * @throws UnsupportedOperationException always; use {@link #create(int, Inventory, Object)}
+	 * @deprecated Use {@link #create(int, Inventory, Object)} instead.
 	 */
 	@Deprecated
 	@Override
-	public final T create(int syncId, PlayerInventory inventory) {
+	public final T create(int syncId, Inventory inventory) {
 		throw new UnsupportedOperationException("Use ExtendedScreenHandlerType.create(int, PlayerInventory, PacketByteBuf)!");
 	}
 
@@ -105,14 +105,14 @@ public class ExtendedScreenHandlerType<T extends ScreenHandler, D> extends Scree
 	 * @param data      the synced opening data
 	 * @return the created screen handler
 	 */
-	public T create(int syncId, PlayerInventory inventory, D data) {
+	public T create(int syncId, Inventory inventory, D data) {
 		return factory.create(syncId, inventory, data);
 	}
 
 	/**
 	 * @return the packet codec for serializing the data of this screen handler
 	 */
-	public PacketCodec<? super RegistryByteBuf, D> getPacketCodec() {
+	public StreamCodec<? super RegistryFriendlyByteBuf, D> getPacketCodec() {
 		return packetCodec;
 	}
 
@@ -124,10 +124,10 @@ public class ExtendedScreenHandlerType<T extends ScreenHandler, D> extends Scree
 	 *
 	 * @param <T> the type of screen handlers created
 	 * @param <D> the type of the data
-	 * @see #create(int, PlayerInventory, Object)
+	 * @see #create(int, Inventory, Object)
 	 */
 	@FunctionalInterface
-	public interface ExtendedFactory<T extends ScreenHandler, D> {
+	public interface ExtendedFactory<T extends AbstractContainerMenu, D> {
 		/**
 		 * Creates a new screen handler with additional screen opening data.
 		 *
@@ -136,6 +136,6 @@ public class ExtendedScreenHandlerType<T extends ScreenHandler, D> extends Scree
 		 * @param data      the synced data
 		 * @return the created screen handler
 		 */
-		T create(int syncId, PlayerInventory inventory, D data);
+		T create(int syncId, Inventory inventory, D data);
 	}
 }

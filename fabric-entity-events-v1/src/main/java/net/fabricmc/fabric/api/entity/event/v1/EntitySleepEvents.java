@@ -18,13 +18,13 @@ package net.fabricmc.fabric.api.entity.event.v1;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -43,20 +43,20 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * and {@link #MODIFY_WAKE_UP_POSITION}</li>
  * </ol>
  *
- * <p>Sleep events are useful for making custom bed blocks that do not extend {@link net.minecraft.block.BedBlock}.
+ * <p>Sleep events are useful for making custom bed blocks that do not extend {@link net.minecraft.world.level.block.BedBlock}.
  * Custom beds generally only need a custom {@link #ALLOW_BED} checker and a {@link #MODIFY_SLEEPING_DIRECTION} callback,
  * but the other events might be useful as well.
  */
 public final class EntitySleepEvents {
 	/**
 	 * An event that checks whether a player can start to sleep in a bed-like block.
-	 * This event only applies to sleeping using {@link PlayerEntity#trySleep(BlockPos)}.
+	 * This event only applies to sleeping using {@link Player#trySleep(BlockPos)}.
 	 *
 	 * <p><b>Note:</b> Please use the more detailed event {@link #ALLOW_NEARBY_MONSTERS}
 	 * if it matches your use case! This helps with mod compatibility.
 	 *
-	 * <p>If this event returns a {@link net.minecraft.entity.player.PlayerEntity.SleepFailureReason}, it is used
-	 * as the return value of {@link PlayerEntity#trySleep(BlockPos)} and sleeping fails. A {@code null} return value
+	 * <p>If this event returns a {@link net.minecraft.world.entity.player.Player.BedSleepingProblem}, it is used
+	 * as the return value of {@link Player#trySleep(BlockPos)} and sleeping fails. A {@code null} return value
 	 * means that the player will start sleeping.
 	 *
 	 * <p>When this event is called, all vanilla sleeping checks have already succeeded, i.e. this event
@@ -65,7 +65,7 @@ public final class EntitySleepEvents {
 	 */
 	public static final Event<AllowSleeping> ALLOW_SLEEPING = EventFactory.createArrayBacked(AllowSleeping.class, callbacks -> (player, sleepingPos) -> {
 		for (AllowSleeping callback : callbacks) {
-			PlayerEntity.SleepFailureReason reason = callback.allowSleep(player, sleepingPos);
+			Player.BedSleepingProblem reason = callback.allowSleep(player, sleepingPos);
 
 			if (reason != null) {
 				return reason;
@@ -107,14 +107,14 @@ public final class EntitySleepEvents {
 	 */
 	public static final Event<AllowBed> ALLOW_BED = EventFactory.createArrayBacked(AllowBed.class, callbacks -> (entity, sleepingPos, state, vanillaResult) -> {
 		for (AllowBed callback : callbacks) {
-			ActionResult result = callback.allowBed(entity, sleepingPos, state, vanillaResult);
+			InteractionResult result = callback.allowBed(entity, sleepingPos, state, vanillaResult);
 
-			if (result != ActionResult.PASS) {
+			if (result != InteractionResult.PASS) {
 				return result;
 			}
 		}
 
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	});
 
 	/**
@@ -124,14 +124,14 @@ public final class EntitySleepEvents {
 	 */
 	public static final Event<AllowNearbyMonsters> ALLOW_NEARBY_MONSTERS = EventFactory.createArrayBacked(AllowNearbyMonsters.class, callbacks -> (player, sleepingPos, vanillaResult) -> {
 		for (AllowNearbyMonsters callback : callbacks) {
-			ActionResult result = callback.allowNearbyMonsters(player, sleepingPos, vanillaResult);
+			InteractionResult result = callback.allowNearbyMonsters(player, sleepingPos, vanillaResult);
 
-			if (result != ActionResult.PASS) {
+			if (result != InteractionResult.PASS) {
 				return result;
 			}
 		}
 
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	});
 
 	/**
@@ -154,7 +154,7 @@ public final class EntitySleepEvents {
 	 * An event that can be used to provide the entity's sleep direction if missing.
 	 *
 	 * <p>This is useful for custom bed blocks that need to determine the sleeping direction themselves.
-	 * If the block is not a {@link net.minecraft.block.BedBlock}, you need to provide the sleeping direction manually
+	 * If the block is not a {@link net.minecraft.world.level.block.BedBlock}, you need to provide the sleeping direction manually
 	 * with this event.
 	 */
 	public static final Event<ModifySleepingDirection> MODIFY_SLEEPING_DIRECTION = EventFactory.createArrayBacked(ModifySleepingDirection.class, callbacks -> (entity, sleepingPos, sleepingDirection) -> {
@@ -183,7 +183,7 @@ public final class EntitySleepEvents {
 	/**
 	 * An event that sets the occupation state of a bed.
 	 *
-	 * <p>Note that this is <b>not</b> needed for blocks using {@link net.minecraft.block.BedBlock},
+	 * <p>Note that this is <b>not</b> needed for blocks using {@link net.minecraft.world.level.block.BedBlock},
 	 * which are handled automatically.
 	 */
 	public static final Event<SetBedOccupationState> SET_BED_OCCUPATION_STATE = EventFactory.createArrayBacked(SetBedOccupationState.class, callbacks -> (entity, sleepingPos, bedState, occupied) -> {
@@ -200,7 +200,7 @@ public final class EntitySleepEvents {
 	 * An event that can be used to provide the entity's wake-up position if missing.
 	 *
 	 * <p>This is useful for custom bed blocks that need to determine the wake-up position themselves.
-	 * If the block is not a {@link net.minecraft.block.BedBlock}, you need to provide the wake-up position manually
+	 * If the block is not a {@link net.minecraft.world.level.block.BedBlock}, you need to provide the wake-up position manually
 	 * with this event.
 	 */
 	public static final Event<ModifyWakeUpPosition> MODIFY_WAKE_UP_POSITION = EventFactory.createArrayBacked(ModifyWakeUpPosition.class, callbacks -> (entity, sleepingPos, bedState, wakeUpPos) -> {
@@ -219,9 +219,9 @@ public final class EntitySleepEvents {
 		 * @param player      the sleeping player
 		 * @param sleepingPos the future {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the entity
 		 * @return {@code null} if the player can sleep, or a failure reason if they cannot
-		 * @see PlayerEntity#trySleep(BlockPos)
+		 * @see Player#trySleep(BlockPos)
 		 */
-		PlayerEntity.@Nullable SleepFailureReason allowSleep(PlayerEntity player, BlockPos sleepingPos);
+		Player.@Nullable BedSleepingProblem allowSleep(Player player, BlockPos sleepingPos);
 	}
 
 	@FunctionalInterface
@@ -251,16 +251,16 @@ public final class EntitySleepEvents {
 		/**
 		 * Checks whether a block is a valid bed for the entity.
 		 *
-		 * <p>Non-{@linkplain ActionResult#PASS passing} return values cancel further callbacks.
+		 * <p>Non-{@linkplain InteractionResult#PASS passing} return values cancel further callbacks.
 		 *
 		 * @param entity        the sleeping entity
 		 * @param sleepingPos   the position of the block
 		 * @param state         the block state to check
 		 * @param vanillaResult {@code true} if vanilla allows the block, {@code false} otherwise
-		 * @return {@link ActionResult#SUCCESS} if the bed is valid, {@link ActionResult#FAIL} if it's not,
-		 *         {@link ActionResult#PASS} to fall back to other callbacks
+		 * @return {@link InteractionResult#SUCCESS} if the bed is valid, {@link InteractionResult#FAIL} if it's not,
+		 *         {@link InteractionResult#PASS} to fall back to other callbacks
 		 */
-		ActionResult allowBed(LivingEntity entity, BlockPos sleepingPos, BlockState state, boolean vanillaResult);
+		InteractionResult allowBed(LivingEntity entity, BlockPos sleepingPos, BlockState state, boolean vanillaResult);
 	}
 
 	@FunctionalInterface
@@ -268,15 +268,15 @@ public final class EntitySleepEvents {
 		/**
 		 * Checks whether the current time of day is valid for sleeping.
 		 *
-		 * <p>Non-{@linkplain ActionResult#PASS passing} return values cancel further callbacks.
+		 * <p>Non-{@linkplain InteractionResult#PASS passing} return values cancel further callbacks.
 		 *
 		 * @param player        the sleeping player
 		 * @param sleepingPos   the (possibly still unset) {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the player
 		 * @param vanillaResult {@code true} if vanilla allows the time, {@code false} otherwise
-		 * @return {@link ActionResult#SUCCESS} if the time is valid, {@link ActionResult#FAIL} if it's not,
-		 *         {@link ActionResult#PASS} to fall back to other callbacks
+		 * @return {@link InteractionResult#SUCCESS} if the time is valid, {@link InteractionResult#FAIL} if it's not,
+		 *         {@link InteractionResult#PASS} to fall back to other callbacks
 		 */
-		ActionResult allowSleepTime(PlayerEntity player, BlockPos sleepingPos, boolean vanillaResult);
+		InteractionResult allowSleepTime(Player player, BlockPos sleepingPos, boolean vanillaResult);
 	}
 
 	@FunctionalInterface
@@ -284,15 +284,15 @@ public final class EntitySleepEvents {
 		/**
 		 * Checks whether a player can sleep when monsters are nearby.
 		 *
-		 * <p>Non-{@linkplain ActionResult#PASS passing} return values cancel further callbacks.
+		 * <p>Non-{@linkplain InteractionResult#PASS passing} return values cancel further callbacks.
 		 *
 		 * @param player        the sleeping player
 		 * @param sleepingPos   the (possibly still unset) {@linkplain LivingEntity#getSleepingPosition() sleeping position} of the player
 		 * @param vanillaResult {@code true} if vanilla's monster check succeeded (there were no monsters), {@code false} otherwise
-		 * @return {@link ActionResult#SUCCESS} to allow sleeping, {@link ActionResult#FAIL} to prevent sleeping,
-		 *         {@link ActionResult#PASS} to fall back to other callbacks
+		 * @return {@link InteractionResult#SUCCESS} to allow sleeping, {@link InteractionResult#FAIL} to prevent sleeping,
+		 *         {@link InteractionResult#PASS} to fall back to other callbacks
 		 */
-		ActionResult allowNearbyMonsters(PlayerEntity player, BlockPos sleepingPos, boolean vanillaResult);
+		InteractionResult allowNearbyMonsters(Player player, BlockPos sleepingPos, boolean vanillaResult);
 	}
 
 	@FunctionalInterface
@@ -303,7 +303,7 @@ public final class EntitySleepEvents {
 		 * @param player        the sleeping player
 		 * @return {@code true} if allowed, {@code false} otherwise
 		 */
-		boolean allowResettingTime(PlayerEntity player);
+		boolean allowResettingTime(Player player);
 	}
 
 	@FunctionalInterface
@@ -318,7 +318,7 @@ public final class EntitySleepEvents {
 		 * @return the new sleeping direction
 		 */
 		@Nullable
-		Direction modifySleepDirection(LivingEntity entity, BlockPos sleepingPos, @Nullable Direction sleepingDirection);
+        Direction modifySleepDirection(LivingEntity entity, BlockPos sleepingPos, @Nullable Direction sleepingDirection);
 	}
 
 	@FunctionalInterface
@@ -330,7 +330,7 @@ public final class EntitySleepEvents {
 		 * @param sleepingPos the sleeping position
 		 * @return {@code true} if allowed, {@code false} otherwise
 		 */
-		boolean allowSettingSpawn(PlayerEntity player, BlockPos sleepingPos);
+		boolean allowSettingSpawn(Player player, BlockPos sleepingPos);
 	}
 
 	@FunctionalInterface
@@ -359,7 +359,7 @@ public final class EntitySleepEvents {
 		 * @return the new wake-up position
 		 */
 		@Nullable
-		Vec3d modifyWakeUpPosition(LivingEntity entity, BlockPos sleepingPos, BlockState bedState, @Nullable Vec3d wakeUpPos);
+        Vec3 modifyWakeUpPosition(LivingEntity entity, BlockPos sleepingPos, BlockState bedState, @Nullable Vec3 wakeUpPos);
 	}
 
 	private EntitySleepEvents() {

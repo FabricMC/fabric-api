@@ -18,13 +18,13 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.render.model.ResolvableModel;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.resources.model.ResolvableModel;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 
@@ -55,7 +55,7 @@ public final class ModelModifier {
 	/**
 	 * Recommended phase to use when overriding models, e.g. replacing a model with another model.
 	 */
-	public static final Identifier OVERRIDE_PHASE = Identifier.of("fabric", "override");
+	public static final Identifier OVERRIDE_PHASE = Identifier.fromNamespaceAndPath("fabric", "override");
 	/**
 	 * Recommended phase to use for transformations that need to happen before wrapping, but after model overrides.
 	 */
@@ -63,12 +63,12 @@ public final class ModelModifier {
 	/**
 	 * Recommended phase to use when wrapping models.
 	 */
-	public static final Identifier WRAP_PHASE = Identifier.of("fabric", "wrap");
+	public static final Identifier WRAP_PHASE = Identifier.fromNamespaceAndPath("fabric", "wrap");
 	/**
 	 * Recommended phase to use when wrapping models with transformations that want to happen last,
 	 * e.g. for connected textures or other similar visual effects that should be the final processing step.
 	 */
-	public static final Identifier WRAP_LAST_PHASE = Identifier.of("fabric", "wrap_last");
+	public static final Identifier WRAP_LAST_PHASE = Identifier.fromNamespaceAndPath("fabric", "wrap_last");
 
 	@FunctionalInterface
 	public interface OnLoad {
@@ -106,7 +106,7 @@ public final class ModelModifier {
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
 		 * @see ModelLoadingPlugin.Context#modifyBlockModelOnLoad
 		 */
-		BlockStateModel.UnbakedGrouped modifyModelOnLoad(BlockStateModel.UnbakedGrouped model, Context context);
+		BlockStateModel.UnbakedRoot modifyModelOnLoad(BlockStateModel.UnbakedRoot model, Context context);
 
 		/**
 		 * The context for an on load block model modification event.
@@ -130,7 +130,7 @@ public final class ModelModifier {
 		 * @return the model that should be used in this scenario. If no changes are needed, just return {@code model} as-is.
 		 * @see ModelLoadingPlugin.Context#modifyBlockModelBeforeBake
 		 */
-		BlockStateModel.UnbakedGrouped modifyModelBeforeBake(BlockStateModel.UnbakedGrouped model, Context context);
+		BlockStateModel.UnbakedRoot modifyModelBeforeBake(BlockStateModel.UnbakedRoot model, Context context);
 
 		/**
 		 * The context for a before bake block model modification event.
@@ -144,12 +144,12 @@ public final class ModelModifier {
 
 			/**
 			 * The baker being used to bake this model. It can be used to
-			 * {@linkplain Baker#getModel get resolved models} and {@linkplain Baker#getSpriteGetter get sprites}. Note
+			 * {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#getSpriteGetter get sprites}. Note
 			 * that retrieving a model which was not previously
 			 * {@linkplain ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
 			 * model.
 			 */
-			Baker baker();
+			ModelBaker baker();
 		}
 	}
 
@@ -178,16 +178,16 @@ public final class ModelModifier {
 			/**
 			 * The unbaked model that is being baked.
 			 */
-			BlockStateModel.UnbakedGrouped sourceModel();
+			BlockStateModel.UnbakedRoot sourceModel();
 
 			/**
 			 * The baker being used to bake this model. It can be used to
-			 * {@linkplain Baker#getModel get resolved models} and {@linkplain Baker#getSpriteGetter get sprites}. Note
+			 * {@linkplain ModelBaker#getModel get resolved models} and {@linkplain ModelBaker#getSpriteGetter get sprites}. Note
 			 * that retrieving a model which was not previously
 			 * {@linkplain ResolvableModel.Resolver#markDependency discovered} will log a warning and return the missing
 			 * model.
 			 */
-			Baker baker();
+			ModelBaker baker();
 		}
 	}
 
@@ -216,7 +216,7 @@ public final class ModelModifier {
 			/**
 			 * The vanilla context being used to bake this model.
 			 */
-			ItemModel.BakeContext bakeContext();
+			ItemModel.BakingContext bakeContext();
 		}
 	}
 
@@ -250,7 +250,7 @@ public final class ModelModifier {
 			/**
 			 * The vanilla context being used to bake this model.
 			 */
-			ItemModel.BakeContext bakeContext();
+			ItemModel.BakingContext bakeContext();
 		}
 	}
 

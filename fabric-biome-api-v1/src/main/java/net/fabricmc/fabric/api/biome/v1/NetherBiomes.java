@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.biome.v1;
 
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Climate;
 
 import net.fabricmc.fabric.impl.biome.NetherBiomeData;
 
@@ -34,16 +34,16 @@ public final class NetherBiomes {
 	 *
 	 * @param biome           The biome to add. Must not be null.
 	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
-	 * @see MultiNoiseUtil.NoiseValuePoint
+	 * @see Climate.TargetPoint
 	 */
-	public static void addNetherBiome(RegistryKey<Biome> biome, MultiNoiseUtil.NoiseValuePoint mixedNoisePoint) {
-		NetherBiomeData.addNetherBiome(biome, MultiNoiseUtil.createNoiseHypercube(
-				mixedNoisePoint.temperatureNoise(),
-				mixedNoisePoint.humidityNoise(),
-				mixedNoisePoint.continentalnessNoise(),
-				mixedNoisePoint.erosionNoise(),
+	public static void addNetherBiome(ResourceKey<Biome> biome, Climate.TargetPoint mixedNoisePoint) {
+		NetherBiomeData.addNetherBiome(biome, Climate.parameters(
+				mixedNoisePoint.temperature(),
+				mixedNoisePoint.humidity(),
+				mixedNoisePoint.continentalness(),
+				mixedNoisePoint.erosion(),
 				mixedNoisePoint.depth(),
-				mixedNoisePoint.weirdnessNoise(),
+				mixedNoisePoint.weirdness(),
 				0
 		));
 	}
@@ -53,9 +53,9 @@ public final class NetherBiomes {
 	 *
 	 * @param biome           The biome to add. Must not be null.
 	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
-	 * @see MultiNoiseUtil.NoiseHypercube
+	 * @see Climate.ParameterPoint
 	 */
-	public static void addNetherBiome(RegistryKey<Biome> biome, MultiNoiseUtil.NoiseHypercube mixedNoisePoint) {
+	public static void addNetherBiome(ResourceKey<Biome> biome, Climate.ParameterPoint mixedNoisePoint) {
 		NetherBiomeData.addNetherBiome(biome, mixedNoisePoint);
 	}
 
@@ -63,7 +63,7 @@ public final class NetherBiomes {
 	 * Returns true if the given biome can generate in the nether, considering the Vanilla nether biomes,
 	 * and any biomes added to the Nether by mods.
 	 */
-	public static boolean canGenerateInNether(RegistryKey<Biome> biome) {
+	public static boolean canGenerateInNether(ResourceKey<Biome> biome) {
 		return NetherBiomeData.canGenerateInNether(biome);
 	}
 }

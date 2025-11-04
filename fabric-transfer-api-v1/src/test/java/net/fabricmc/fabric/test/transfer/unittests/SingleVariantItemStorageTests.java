@@ -26,25 +26,25 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.ComponentType;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.storage.NbtReadView;
-import net.minecraft.storage.NbtWriteView;
-import net.minecraft.text.Text;
-import net.minecraft.util.ErrorReporter;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -60,7 +60,7 @@ import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
 
 public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 	private static FluidVariant LAVA;
-	public static ComponentType<FluidData> FLUID;
+	public static DataComponentType<FluidData> FLUID;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -68,13 +68,13 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 
 		LAVA = FluidVariant.of(Fluids.LAVA);
 		FLUID = Registry.register(
-				Registries.DATA_COMPONENT_TYPE, Identifier.of(TransferTestInitializer.MOD_ID, "fluid"),
-				ComponentType.<FluidData>builder().codec(FluidData.CODEC).packetCodec(FluidData.PACKET_CODEC).build());
+				BuiltInRegistries.DATA_COMPONENT_TYPE, Identifier.fromNamespaceAndPath(TransferTestInitializer.MOD_ID, "fluid"),
+				DataComponentType.<FluidData>builder().persistent(FluidData.CODEC).networkSynchronized(FluidData.PACKET_CODEC).build());
 	}
 
 	@Test
 	public void testWaterTank() {
-		SimpleInventory inv = new SimpleInventory(new ItemStack(Items.DIAMOND, 2), ItemStack.EMPTY);
+		SimpleContainer inv = new SimpleContainer(new ItemStack(Items.DIAMOND, 2), ItemStack.EMPTY);
 		ContainerItemContext ctx = new InventoryContainerItemContext(inv);
 
 		Storage<FluidVariant> storage = createTankStorage(ctx);
@@ -83,26 +83,26 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 			// Insertion should succeed and transfer an item into the second slot.
 			assertEquals(BUCKET, storage.insert(LAVA, BUCKET, tx));
 			// Insertion should create a new stack.
-			assertEquals(1, inv.getStack(0).getCount());
-			assertEquals(ComponentChanges.EMPTY, inv.getStack(0).getComponentChanges());
-			assertEquals(1, inv.getStack(1).getCount());
-			assertEquals(LAVA, getFluid(inv.getStack(1)));
-			assertEquals(BUCKET, getAmount(inv.getStack(1)));
+			assertEquals(1, inv.getItem(0).getCount());
+			assertEquals(DataComponentPatch.EMPTY, inv.getItem(0).getComponentsPatch());
+			assertEquals(1, inv.getItem(1).getCount());
+			assertEquals(LAVA, getFluid(inv.getItem(1)));
+			assertEquals(BUCKET, getAmount(inv.getItem(1)));
 
 			// Second insertion should just insert in place as the count is now 1.
 			assertEquals(BUCKET, storage.insert(LAVA, BUCKET, tx));
 
 			for (int slot = 0; slot < 2; ++slot) {
-				assertEquals(LAVA, getFluid(inv.getStack(slot)));
-				assertEquals(BUCKET, getAmount(inv.getStack(slot)));
+				assertEquals(LAVA, getFluid(inv.getItem(slot)));
+				assertEquals(BUCKET, getAmount(inv.getItem(slot)));
 			}
 
 			tx.commit();
 		}
 
 		// Make sure other components are kept.
-		Text customName = Text.literal("Lava-containing diamond!");
-		inv.getStack(0).set(DataComponentTypes.CUSTOM_NAME, customName);
+		Component customName = Component.literal("Lava-containing diamond!");
+		inv.getItem(0).set(DataComponents.CUSTOM_NAME, customName);
 
 		try (Transaction tx = Transaction.openOuter()) {
 			// Test extract along the way.
@@ -112,9 +112,9 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		}
 
 		// Check custom name.
-		assertEquals(customName, inv.getStack(0).getName());
-		assertEquals(FluidVariant.blank(), getFluid(inv.getStack(0)));
-		assertEquals(0L, getAmount(inv.getStack(0)));
+		assertEquals(customName, inv.getItem(0).getHoverName());
+		assertEquals(FluidVariant.blank(), getFluid(inv.getItem(0)));
+		assertEquals(0L, getAmount(inv.getItem(0)));
 	}
 
 	@Test
@@ -131,9 +131,9 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 			tx.commit();
 		}
 
-		NbtWriteView writeView = NbtWriteView.create(null);
+		TagValueOutput writeView = TagValueOutput.createWithoutContext(null);
 		storage.writeData(writeView);
-		assertEquals("{amount:1L,variant:{item:\"minecraft:diamond\"}}", writeView.getNbt().toString());
+		assertEquals("{amount:1L,variant:{item:\"minecraft:diamond\"}}", writeView.buildResult().toString());
 	}
 
 	@Test
@@ -147,14 +147,14 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 
 		try (Transaction tx = Transaction.openOuter()) {
 			ItemStack stack = new ItemStack(Items.DIAMOND);
-			stack.set(DataComponentTypes.CUSTOM_NAME, Text.literal("test name"));
+			stack.set(DataComponents.CUSTOM_NAME, Component.literal("test name"));
 			storage.insert(ItemVariant.of(stack), 1, tx);
 			tx.commit();
 		}
 
-		NbtWriteView writeView = NbtWriteView.create(null);
+		TagValueOutput writeView = TagValueOutput.createWithoutContext(null);
 		storage.writeData(writeView);
-		assertEquals("{amount:1L,variant:{components:{\"minecraft:custom_name\":\"test name\"},item:\"minecraft:diamond\"}}", writeView.getNbt().toString());
+		assertEquals("{amount:1L,variant:{components:{\"minecraft:custom_name\":\"test name\"},item:\"minecraft:diamond\"}}", writeView.buildResult().toString());
 	}
 
 	@Test
@@ -166,14 +166,14 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 			}
 		};
 
-		NbtCompound variantNbt = new NbtCompound();
+		CompoundTag variantNbt = new CompoundTag();
 		variantNbt.putString("item", "minecraft:diamond");
-		variantNbt.put("components", new NbtCompound());
-		NbtCompound nbt = new NbtCompound();
+		variantNbt.put("components", new CompoundTag());
+		CompoundTag nbt = new CompoundTag();
 		nbt.putLong("amount", 1);
 		nbt.put("variant", variantNbt);
 
-		storage.readData(NbtReadView.create(ErrorReporter.EMPTY, staticDrm(), nbt));
+		storage.readData(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), nbt));
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(1L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
@@ -191,13 +191,13 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		};
 
 		// Test that invalid NBT defaults to empty.
-		NbtCompound variantNbt = new NbtCompound();
+		CompoundTag variantNbt = new CompoundTag();
 		variantNbt.putString("id", "minecraft:diamond");
-		NbtCompound nbt = new NbtCompound();
+		CompoundTag nbt = new CompoundTag();
 		nbt.putLong("amount", 1);
 		nbt.put("variant", variantNbt);
 
-		storage.readData(NbtReadView.create(ErrorReporter.EMPTY, staticDrm(), nbt));
+		storage.readData(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), nbt));
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(0L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
@@ -230,9 +230,9 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 				FluidVariant.CODEC.fieldOf("variant").forGetter(FluidData::variant),
 				Codec.LONG.fieldOf("amount").forGetter(FluidData::amount)
 		).apply(instance, FluidData::new));
-		public static PacketCodec<RegistryByteBuf, FluidData> PACKET_CODEC = PacketCodec.tuple(
+		public static StreamCodec<RegistryFriendlyByteBuf, FluidData> PACKET_CODEC = StreamCodec.composite(
 				FluidVariant.PACKET_CODEC, FluidData::variant,
-				PacketCodecs.VAR_LONG, FluidData::amount,
+				ByteBufCodecs.VAR_LONG, FluidData::amount,
 				FluidData::new
 		);
 
@@ -274,7 +274,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 	private static class InventoryContainerItemContext implements ContainerItemContext {
 		private final InventoryStorage storage;
 
-		private InventoryContainerItemContext(Inventory inventory) {
+		private InventoryContainerItemContext(Container inventory) {
 			this.storage = InventoryStorage.of(inventory, null);
 		}
 

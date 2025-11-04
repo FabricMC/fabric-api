@@ -29,30 +29,30 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.particle.ParticleRenderer;
-import net.minecraft.client.particle.ParticleTextureSheet;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.ParticleGroup;
+import net.minecraft.client.particle.ParticleRenderType;
 
 import net.fabricmc.fabric.impl.client.particle.ParticleRendererRegistryImpl;
 
-@Mixin(ParticleManager.class)
+@Mixin(ParticleEngine.class)
 public abstract class ParticleManagerMixin {
 	@Shadow
 	@Final
 	@Mutable
-	private static List<ParticleTextureSheet> PARTICLE_TEXTURE_SHEETS;
+	private static List<ParticleRenderType> RENDER_ORDER;
 
 	@Inject(method = "<clinit>", at = @At("RETURN"))
 	private static void classInit(CallbackInfo ci) {
-		PARTICLE_TEXTURE_SHEETS = new ArrayList<>(PARTICLE_TEXTURE_SHEETS); // Make it mutable
+		RENDER_ORDER = new ArrayList<>(RENDER_ORDER); // Make it mutable
 	}
 
-	@Inject(method = "createParticleRenderer", at = @At(value = "NEW", target = "(Lnet/minecraft/client/particle/ParticleManager;Lnet/minecraft/client/particle/ParticleTextureSheet;)Lnet/minecraft/client/particle/BillboardParticleRenderer;"), cancellable = true)
-	private void createParticleRenderer(ParticleTextureSheet textureSheet, CallbackInfoReturnable<ParticleRenderer<?>> cir) {
-		Function<ParticleManager, ParticleRenderer<?>> factory = ParticleRendererRegistryImpl.INSTANCE.getFactory(textureSheet);
+	@Inject(method = "createParticleGroup", at = @At(value = "NEW", target = "(Lnet/minecraft/client/particle/ParticleEngine;Lnet/minecraft/client/particle/ParticleRenderType;)Lnet/minecraft/client/particle/QuadParticleGroup;"), cancellable = true)
+	private void createParticleRenderer(ParticleRenderType textureSheet, CallbackInfoReturnable<ParticleGroup<?>> cir) {
+		Function<ParticleEngine, ParticleGroup<?>> factory = ParticleRendererRegistryImpl.INSTANCE.getFactory(textureSheet);
 
 		if (factory != null) {
-			cir.setReturnValue(factory.apply((ParticleManager) (Object) this));
+			cir.setReturnValue(factory.apply((ParticleEngine) (Object) this));
 		}
 	}
 }

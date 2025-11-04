@@ -18,51 +18,51 @@ package net.fabricmc.fabric.test.screenhandler.client;
 
 import java.util.Optional;
 
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.test.screenhandler.screen.PositionedScreenHandler;
 
-public class PositionedScreen extends HandledScreen<ScreenHandler> {
-	private static final Identifier TEXTURE = Identifier.ofVanilla("textures/gui/container/dispenser.png");
+public class PositionedScreen extends AbstractContainerScreen<AbstractContainerMenu> {
+	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/dispenser.png");
 
-	public PositionedScreen(ScreenHandler handler, PlayerInventory inventory, Text title) {
+	public PositionedScreen(AbstractContainerMenu handler, Inventory inventory, Component title) {
 		super(handler, inventory, getPositionText(handler).orElse(title));
 	}
 
-	private static Optional<Text> getPositionText(ScreenHandler handler) {
+	private static Optional<Component> getPositionText(AbstractContainerMenu handler) {
 		if (handler instanceof PositionedScreenHandler) {
 			BlockPos pos = ((PositionedScreenHandler) handler).getPos();
-			return pos != null ? Optional.of(Text.literal("(" + pos.toShortString() + ")")) : Optional.empty();
+			return pos != null ? Optional.of(Component.literal("(" + pos.toShortString() + ")")) : Optional.empty();
 		} else {
 			return Optional.empty();
 		}
 	}
 
 	@Override
-	public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
 		renderBackground(drawContext, mouseX, mouseY, delta);
 		super.render(drawContext, mouseX, mouseY, delta);
-		drawMouseoverTooltip(drawContext, mouseX, mouseY);
+		renderTooltip(drawContext, mouseX, mouseY);
 	}
 
 	@Override
 	protected void init() {
 		super.init();
 		// Center the title
-		titleX = (backgroundWidth - textRenderer.getWidth(title)) / 2;
+		titleLabelX = (imageWidth - font.width(title)) / 2;
 	}
 
 	@Override
-	protected void drawBackground(DrawContext drawContext, float delta, int mouseX, int mouseY) {
-		int x = (width - backgroundWidth) / 2;
-		int y = (height - backgroundHeight) / 2;
-		drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight, backgroundWidth, backgroundHeight);
+	protected void renderBg(GuiGraphics drawContext, float delta, int mouseX, int mouseY) {
+		int x = (width - imageWidth) / 2;
+		int y = (height - imageHeight) / 2;
+		drawContext.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
 	}
 }

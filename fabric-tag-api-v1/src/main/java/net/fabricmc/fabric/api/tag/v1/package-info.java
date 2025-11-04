@@ -15,7 +15,7 @@
  */
 
 /**
- * The Fabric Tag API for working with {@linkplain net.minecraft.registry.tag.TagKey tags}.
+ * The Fabric Tag API for working with {@linkplain net.minecraft.tags.TagKey tags}.
  *
  * <h1>Aliasing tags</h1>
  * <dfn>Tag alias groups</dfn> are lists of tags that refer to the same set of registry entries.
@@ -24,7 +24,7 @@
  *
  * <p>Tag alias groups can be defined in data packs in the {@code data/<mod namespace>/fabric/tag_alias/<registry>}
  * directory. {@code <registry>} is the path of the registry's ID, prefixed with {@code <registry's namespace>/} if it's
- * not {@value net.minecraft.util.Identifier#DEFAULT_NAMESPACE}. For example, an alias group for block tags would be placed
+ * not {@value net.minecraft.resources.Identifier#DEFAULT_NAMESPACE}. For example, an alias group for block tags would be placed
  * in {@code data/<mod namespace>/fabric/tag_alias/block/}.
  *
  * <p>The JSON format of tag alias groups is an object with a {@code tags} list. The list contains plain tag IDs with

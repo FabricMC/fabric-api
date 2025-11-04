@@ -16,20 +16,20 @@
 
 package net.fabricmc.fabric.test.lookup.entity;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.test.lookup.api.Inspectable;
 
-public class InspectablePigEntity extends PigEntity implements Inspectable {
-	public InspectablePigEntity(EntityType<? extends PigEntity> entityType, World world) {
+public class InspectablePigEntity extends Pig implements Inspectable {
+	public InspectablePigEntity(EntityType<? extends Pig> entityType, Level world) {
 		super(entityType, world);
 	}
 
 	@Override
-	public Text inspect() {
-		return Text.literal("InspectablePigEntity");
+	public Component inspect() {
+		return Component.literal("InspectablePigEntity");
 	}
 }

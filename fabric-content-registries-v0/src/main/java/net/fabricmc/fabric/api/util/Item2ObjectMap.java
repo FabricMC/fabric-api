@@ -18,23 +18,23 @@ package net.fabricmc.fabric.api.util;
 
 import org.jspecify.annotations.NullMarked;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.tags.TagKey;
 
 @NullMarked
 public interface Item2ObjectMap<V> {
-	V get(ItemConvertible item);
+	V get(ItemLike item);
 
-	void add(ItemConvertible item, V value);
+	void add(ItemLike item, V value);
 
 	void add(TagKey<Item> tag, V value);
 
-	void remove(ItemConvertible item);
+	void remove(ItemLike item);
 
 	void remove(TagKey<Item> tag);
 
-	void clear(ItemConvertible item);
+	void clear(ItemLike item);
 
 	void clear(TagKey<Item> tag);
 }

@@ -23,20 +23,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.network.ClientConfigurationNetworkHandler;
-import net.minecraft.network.packet.s2c.config.SelectKnownPacksS2CPacket;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl;
+import net.minecraft.network.protocol.configuration.ClientboundSelectKnownPacks;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.impl.recipe.sync.RecipeSyncImpl;
 import net.fabricmc.fabric.impl.recipe.sync.SupportedRecipeSerializersPayloadC2S;
 
-@Mixin(ClientConfigurationNetworkHandler.class)
+@Mixin(ClientConfigurationPacketListenerImpl.class)
 public class ClientConfigurationNetworkHandlerMixin {
-	@Inject(method = "onSelectKnownPacks", at = @At("TAIL"))
-	private void sendSupportedRecipeSerializers(SelectKnownPacksS2CPacket packet, CallbackInfo ci) {
+	@Inject(method = "handleSelectKnownPacks", at = @At("TAIL"))
+	private void sendSupportedRecipeSerializers(ClientboundSelectKnownPacks packet, CallbackInfo ci) {
 		if (!ClientConfigurationNetworking.canSend(SupportedRecipeSerializersPayloadC2S.ID)) {
 			return;
 		}
@@ -44,7 +44,7 @@ public class ClientConfigurationNetworkHandlerMixin {
 		var ids = new HashSet<Identifier>();
 
 		for (RecipeSerializer<?> serializer : RecipeSyncImpl.getSyncedSerializers()) {
-			ids.add(Registries.RECIPE_SERIALIZER.getId(serializer));
+			ids.add(BuiltInRegistries.RECIPE_SERIALIZER.getKey(serializer));
 		}
 
 		// No need to send empty requests, it's the default state anyway.

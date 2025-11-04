@@ -18,49 +18,49 @@ package net.fabricmc.fabric.test.object.builder.client;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.model.ChickenEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.state.ChickenEntityRenderState;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.texture.MissingSprite;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EntityAttachmentType;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.model.ChickenModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.state.ChickenRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.entity.EntityAttachment;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.test.object.builder.TrackStackEntity;
 
-public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity, TrackStackEntityRenderer.RenderState, ChickenEntityModel> {
-	public TrackStackEntityRenderer(EntityRendererFactory.Context context) {
-		super(context, new ChickenEntityModel(context.getPart(EntityModelLayers.CHICKEN)), 0.3f);
+public class TrackStackEntityRenderer extends MobRenderer<TrackStackEntity, TrackStackEntityRenderer.RenderState, ChickenModel> {
+	public TrackStackEntityRenderer(EntityRendererProvider.Context context) {
+		super(context, new ChickenModel(context.bakeLayer(ModelLayers.CHICKEN)), 0.3f);
 	}
 
 	@Override
-	public void render(RenderState renderState, MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue, CameraRenderState cameraState) {
-		super.render(renderState, matrices, orderedRenderCommandQueue, cameraState);
-		Iterable<Text> labelLines = renderState.labelLines;
+	public void submit(RenderState renderState, PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, CameraRenderState cameraState) {
+		super.submit(renderState, matrices, orderedRenderCommandQueue, cameraState);
+		Iterable<Component> labelLines = renderState.labelLines;
 
 		if (labelLines == null) {
 			return;
 		}
 
-		matrices.push();
+		matrices.pushPose();
 		matrices.translate(0, -2, 0);
 
-		for (Text line : labelLines) {
-			orderedRenderCommandQueue.getBatchingQueue(0).submitLabel(matrices, renderState.nameLabelPos, 0, line, !renderState.sneaking, renderState.light, renderState.squaredDistanceToCamera, cameraState);
+		for (Component line : labelLines) {
+			orderedRenderCommandQueue.order(0).submitNameTag(matrices, renderState.nameTagAttachment, 0, line, !renderState.isDiscrete, renderState.lightCoords, renderState.distanceToCameraSq, cameraState);
 			matrices.translate(0, 0.25875f, 0);
 		}
 
-		matrices.pop();
+		matrices.popPose();
 	}
 
 	@Override
-	public Identifier getTexture(RenderState renderState) {
-		return MissingSprite.getMissingSpriteId();
+	public Identifier getTextureLocation(RenderState renderState) {
+		return MissingTextureAtlasSprite.getLocation();
 	}
 
 	@Override
@@ -69,17 +69,17 @@ public class TrackStackEntityRenderer extends MobEntityRenderer<TrackStackEntity
 	}
 
 	@Override
-	public void updateRenderState(TrackStackEntity entity, RenderState renderState, float tickProgress) {
-		super.updateRenderState(entity, renderState, tickProgress);
+	public void extractRenderState(TrackStackEntity entity, RenderState renderState, float tickProgress) {
+		super.extractRenderState(entity, renderState, tickProgress);
 		renderState.labelLines = entity.getLabelLines();
 
-		if (renderState.nameLabelPos == null) {
-			renderState.nameLabelPos = entity.getAttachments().getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getLerpedYaw(tickProgress));
+		if (renderState.nameTagAttachment == null) {
+			renderState.nameTagAttachment = entity.getAttachments().getNullable(EntityAttachment.NAME_TAG, 0, entity.getYRot(tickProgress));
 		}
 	}
 
-	public static class RenderState extends ChickenEntityRenderState {
+	public static class RenderState extends ChickenRenderState {
 		@Nullable
-		public Iterable<Text> labelLines;
+		public Iterable<Component> labelLines;
 	}
 }

@@ -26,24 +26,24 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToMessageEncoder;
 
-import net.minecraft.network.encoding.VarInts;
-import net.minecraft.network.handler.EncoderHandler;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.VarInt;
+import net.minecraft.network.PacketEncoder;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.EncoderHandlerAccessor;
 
 public class FabricPacketSplitter extends MessageToMessageEncoder<Packet<?>> {
-	public static final int SAFE_S2C_SPLIT_SIZE = CustomPayloadS2CPacket.MAX_PAYLOAD_SIZE;
-	public static final int SAFE_C2S_SPLIT_SIZE = CustomPayloadC2SPacket.MAX_PAYLOAD_SIZE;
-	private final EncoderHandler<?> encoder;
+	public static final int SAFE_S2C_SPLIT_SIZE = ClientboundCustomPayloadPacket.MAX_PAYLOAD_SIZE;
+	public static final int SAFE_C2S_SPLIT_SIZE = ServerboundCustomPayloadPacket.MAX_PAYLOAD_SIZE;
+	private final PacketEncoder<?> encoder;
 	private final PayloadTypeRegistryImpl<?> payloadTypeRegistry;
 
-	public FabricPacketSplitter(EncoderHandler<?> encoderHandler, PayloadTypeRegistryImpl<?> payloadTypeRegistry) {
+	public FabricPacketSplitter(PacketEncoder<?> encoderHandler, PayloadTypeRegistryImpl<?> payloadTypeRegistry) {
 		this.encoder = encoderHandler;
 		this.payloadTypeRegistry = payloadTypeRegistry;
 	}
@@ -55,13 +55,13 @@ public class FabricPacketSplitter extends MessageToMessageEncoder<Packet<?>> {
 			list.add(packet);
 		}
 
-		if (packet.transitionsNetworkState()) {
+		if (packet.isTerminal()) {
 			channelHandlerContext.pipeline().remove(channelHandlerContext.name());
 		}
 	}
 
-	public static void genericPacketSplitter(Identifier packetId, ChannelHandlerContext channelHandlerContext, EncoderHandler<?> encoder, Packet<?> packet,
-											Function<CustomPayload, Packet<?>> packetConstructor, Consumer<Packet<?>> consumer, int maxChunkSize, int maxPacketSize) throws Exception {
+	public static void genericPacketSplitter(Identifier packetId, ChannelHandlerContext channelHandlerContext, PacketEncoder<?> encoder, Packet<?> packet,
+                                             Function<CustomPacketPayload, Packet<?>> packetConstructor, Consumer<Packet<?>> consumer, int maxChunkSize, int maxPacketSize) throws Exception {
 		ByteBuf buf = Unpooled.buffer();
 		((EncoderHandlerAccessor) encoder).fabric_encode(channelHandlerContext, packet, buf);
 
@@ -76,7 +76,7 @@ public class FabricPacketSplitter extends MessageToMessageEncoder<Packet<?>> {
 
 		// First packet split with added packet size
 		ByteBuf firstSplit = Unpooled.buffer(maxChunkSize);
-		VarInts.write(firstSplit, buf.readableBytes());
+		VarInt.write(firstSplit, buf.readableBytes());
 		// First slice needs to be slightly smaller to accommodate the header (by the already written data amount)
 		firstSplit.writeBytes(buf.readSlice(maxChunkSize - firstSplit.readableBytes()));
 

@@ -16,19 +16,19 @@
 
 package net.fabricmc.fabric.api.renderer.v1.sprite;
 
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.texture.SpriteLoader;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.SpriteLoader;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 
 /**
- * Note: This interface is automatically implemented on {@link SpriteAtlasTexture} via Mixin and interface injection.
+ * Note: This interface is automatically implemented on {@link TextureAtlas} via Mixin and interface injection.
  */
 public interface FabricSpriteAtlasTexture {
 	/**
 	 * Retrieves the sprite finder for this atlas. The returned instance is only valid until the next call to
-	 * {@link SpriteAtlasTexture#upload(SpriteLoader.StitchResult)}, and thus should not be persisted across resource
+	 * {@link TextureAtlas#upload(SpriteLoader.Preparations)}, and thus should not be persisted across resource
 	 * reloads.
 	 *
 	 * <p><b>This method should not be used during a resource reload</b> as this atlas will only be populated with new

@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.client.particle.v1;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -31,8 +31,8 @@ public final class ParticleRenderEvents {
 	}
 
 	/**
-	 * An event that checks if a {@linkplain net.minecraft.client.particle.BlockDustParticle block dust particle}
-	 * can be tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColorProvider color provider}.
+	 * An event that checks if a {@linkplain net.minecraft.client.particle.TerrainParticle block dust particle}
+	 * can be tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor color provider}.
 	 *
 	 * <p>The default return value of this event is {@code true}. If any callback returns {@code false} for a given call,
 	 * further iteration will be canceled and the event invoker will return {@code false}.
@@ -50,14 +50,14 @@ public final class ParticleRenderEvents {
 	@FunctionalInterface
 	public interface AllowBlockDustTint {
 		/**
-		 * Checks whether a {@linkplain net.minecraft.client.particle.BlockDustParticle block dust particle} can be
-		 * tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColorProvider color provider}.
+		 * Checks whether a {@linkplain net.minecraft.client.particle.TerrainParticle block dust particle} can be
+		 * tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor color provider}.
 		 *
 		 * @param state the block state that the particle represents
 		 * @param world the world the particle is created in
 		 * @param pos   the position of the particle
 		 * @return {@code true} if color provider tinting should be allowed, {@code false} otherwise
 		 */
-		boolean allowBlockDustTint(BlockState state, ClientWorld world, BlockPos pos);
+		boolean allowBlockDustTint(BlockState state, ClientLevel world, BlockPos pos);
 	}
 }

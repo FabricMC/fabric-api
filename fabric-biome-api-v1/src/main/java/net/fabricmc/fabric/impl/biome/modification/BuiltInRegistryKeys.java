@@ -16,27 +16,27 @@
 
 package net.fabricmc.fabric.impl.biome.modification;
 
-import net.minecraft.registry.BuiltinRegistries;
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.biome.Biome;
 
 /**
  * Utility class for accessing the worldgen data that vanilla uses to generate its vanilla datapack.
  */
 public final class BuiltInRegistryKeys {
-	private static final RegistryWrapper.WrapperLookup vanillaRegistries = BuiltinRegistries.createWrapperLookup();
+	private static final HolderLookup.Provider vanillaRegistries = VanillaRegistries.createLookup();
 
 	private BuiltInRegistryKeys() {
 	}
 
-	public static boolean isBuiltinBiome(RegistryKey<Biome> key) {
-		return biomeRegistryWrapper().getOptional(key).isPresent();
+	public static boolean isBuiltinBiome(ResourceKey<Biome> key) {
+		return biomeRegistryWrapper().get(key).isPresent();
 	}
 
-	public static RegistryEntryLookup<Biome> biomeRegistryWrapper() {
-		return vanillaRegistries.getOrThrow(RegistryKeys.BIOME);
+	public static HolderGetter<Biome> biomeRegistryWrapper() {
+		return vanillaRegistries.lookupOrThrow(Registries.BIOME);
 	}
 }

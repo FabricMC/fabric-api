@@ -18,15 +18,15 @@ package net.fabricmc.fabric.api.client.rendering.v1.world;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.state.OutlineRenderState;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+import net.minecraft.world.phys.HitResult;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Mods should use these events to introduce custom rendering during {@link WorldRenderer#render}
+ * Mods should use these events to introduce custom rendering during {@link LevelRenderer#render}
  * without adding complicated and conflict-prone injections there.  Using these events also enables 3rd-party renderers
  * that make large-scale rendering changes to maintain compatibility by calling any broken event invokers directly.
  *
@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * All events without the "Extraction" suffix are "drawing" events. All "drawing" events support OpenGL calls.
  *
  * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
- * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.world.ClientWorld}.
+ * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.multiplayer.ClientLevel}.
  */
 public final class WorldRenderEvents {
 	private WorldRenderEvents() { }
@@ -53,7 +53,7 @@ public final class WorldRenderEvents {
 	 * or other game objects that do not register a block-type hit.
 	 *
 	 * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
-	 * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.world.ClientWorld}.
+	 * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.multiplayer.ClientLevel}.
 	 *
 	 * <p>Setting the outline render state to null by any event subscriber
 	 * will cancel the default block outline render and suppress the {@link #BEFORE_BLOCK_OUTLINE} event.
@@ -78,7 +78,7 @@ public final class WorldRenderEvents {
 	 * Use this to extract general custom data needed for rendering.
 	 *
 	 * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
-	 * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.world.ClientWorld}.
+	 * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.multiplayer.ClientLevel}.
 	 */
 	public static final Event<EndExtraction> END_EXTRACTION = EventFactory.createArrayBacked(EndExtraction.class, callbacks -> context -> {
 		for (final EndExtraction callback : callbacks) {
@@ -97,8 +97,8 @@ public final class WorldRenderEvents {
 	});
 
 	/**
-	 * Called after the {@link net.minecraft.client.render.BlockRenderLayer#SOLID SOLID}, {@link net.minecraft.client.render.BlockRenderLayer#CUTOUT CUTOUT},
-	 * and {@link net.minecraft.client.render.BlockRenderLayer#CUTOUT_MIPPED CUTOUT_MIPPED} terrain layers are drawn to the framebuffer,
+	 * Called after the {@link net.minecraft.client.renderer.chunk.ChunkSectionLayer#SOLID SOLID}, {@link net.minecraft.client.renderer.chunk.ChunkSectionLayer#CUTOUT CUTOUT},
+	 * and {@link net.minecraft.client.renderer.chunk.ChunkSectionLayer#CUTOUT_MIPPED CUTOUT_MIPPED} terrain layers are drawn to the framebuffer,
 	 * before entity and block entities are submitted and drawn to the framebuffer.
 	 *
 	 * <p>Use to render non-translucent terrain to the framebuffer.
@@ -238,7 +238,7 @@ public final class WorldRenderEvents {
 
 	@FunctionalInterface
 	public interface BeforeBlockOutline {
-		boolean beforeBlockOutline(WorldRenderContext context, OutlineRenderState outlineRenderState);
+		boolean beforeBlockOutline(WorldRenderContext context, BlockOutlineRenderState outlineRenderState);
 	}
 
 	@FunctionalInterface

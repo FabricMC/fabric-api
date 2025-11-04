@@ -27,16 +27,16 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.test.FunctionTestInstance;
-import net.minecraft.test.TestContext;
-import net.minecraft.test.TestData;
-import net.minecraft.test.TestEnvironmentDefinition;
-import net.minecraft.test.TestInstance;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Holder;
+import net.minecraft.gametest.framework.FunctionGameTestInstance;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.gametest.framework.TestData;
+import net.minecraft.gametest.framework.TestEnvironmentDefinition;
+import net.minecraft.gametest.framework.GameTestInstance;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.gametest.v1.CustomTestMethodInvoker;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
@@ -101,7 +101,7 @@ final class TestAnnotationLocator {
 	private void validateMethod(Method method) {
 		List<String> issues = new ArrayList<>();
 
-		if (method.getParameterCount() != 1 || method.getParameterTypes()[0] != TestContext.class) {
+		if (method.getParameterCount() != 1 || method.getParameterTypes()[0] != GameTestHelper.class) {
 			issues.add("must have a single parameter of type TestContext");
 		}
 
@@ -128,10 +128,10 @@ final class TestAnnotationLocator {
 	public record TestMethod(Method method, GameTest gameTest, EntrypointContainer<Object> entrypoint) {
 		Identifier identifier() {
 			String name = camelToSnake(entrypoint.getEntrypoint().getClass().getSimpleName() + "_" + method.getName());
-			return Identifier.of(entrypoint.getProvider().getMetadata().getId(), name);
+			return Identifier.fromNamespaceAndPath(entrypoint.getProvider().getMetadata().getId(), name);
 		}
 
-		Consumer<TestContext> testFunction() {
+		Consumer<GameTestHelper> testFunction() {
 			return context -> {
 				Object instance = entrypoint.getEntrypoint();
 
@@ -155,12 +155,12 @@ final class TestAnnotationLocator {
 			};
 		}
 
-		TestData<RegistryEntry<TestEnvironmentDefinition>> testData(Registry<TestEnvironmentDefinition> testEnvironmentDefinitionRegistry) {
-			RegistryEntry<TestEnvironmentDefinition> testEnvironment = testEnvironmentDefinitionRegistry.getOrThrow(RegistryKey.of(RegistryKeys.TEST_ENVIRONMENT, Identifier.of(gameTest.environment())));
+		TestData<Holder<TestEnvironmentDefinition>> testData(Registry<TestEnvironmentDefinition> testEnvironmentDefinitionRegistry) {
+			Holder<TestEnvironmentDefinition> testEnvironment = testEnvironmentDefinitionRegistry.getOrThrow(ResourceKey.create(Registries.TEST_ENVIRONMENT, Identifier.parse(gameTest.environment())));
 
 			return new TestData<>(
 					testEnvironment,
-					Identifier.of(gameTest.structure()),
+					Identifier.parse(gameTest.structure()),
 					gameTest.maxTicks(),
 					gameTest.setupTicks(),
 					gameTest.required(),
@@ -172,9 +172,9 @@ final class TestAnnotationLocator {
 			);
 		}
 
-		TestInstance testInstance(Registry<TestEnvironmentDefinition> testEnvironmentDefinitionRegistry) {
-			return new FunctionTestInstance(
-					RegistryKey.of(RegistryKeys.TEST_FUNCTION, identifier()),
+		GameTestInstance testInstance(Registry<TestEnvironmentDefinition> testEnvironmentDefinitionRegistry) {
+			return new FunctionGameTestInstance(
+					ResourceKey.create(Registries.TEST_FUNCTION, identifier()),
 					testData(testEnvironmentDefinitionRegistry)
 			);
 		}

@@ -25,18 +25,18 @@ import java.util.Set;
 import io.netty.buffer.Unpooled;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -50,25 +50,25 @@ import net.fabricmc.fabric.mixin.attachment.VarIntsAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
 
 public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, byte[] data) {
-	public static final PacketCodec<PacketByteBuf, AttachmentChange> PACKET_CODEC = PacketCodec.tuple(
+	public static final StreamCodec<FriendlyByteBuf, AttachmentChange> PACKET_CODEC = StreamCodec.composite(
 			AttachmentTargetInfo.PACKET_CODEC, AttachmentChange::targetInfo,
-			Identifier.PACKET_CODEC.xmap(
+			Identifier.STREAM_CODEC.map(
 					id -> Objects.requireNonNull(AttachmentRegistryImpl.get(id)),
 					AttachmentType::identifier
 			), AttachmentChange::type,
-			PacketCodecs.BYTE_ARRAY, AttachmentChange::data,
+			ByteBufCodecs.BYTE_ARRAY, AttachmentChange::data,
 			AttachmentChange::new
 	);
 	private static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + AttachmentSync.MAX_IDENTIFIER_SIZE;
 	private static final int MAX_DATA_SIZE_IN_BYTES = CustomPayloadC2SPacketAccessor.getMaxPayloadSize() - MAX_PADDING_SIZE_IN_BYTES;
 
 	@SuppressWarnings("unchecked")
-	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, DynamicRegistryManager dynamicRegistryManager) {
-		PacketCodec<? super RegistryByteBuf, Object> codec = (PacketCodec<? super RegistryByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
+	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, RegistryAccess dynamicRegistryManager) {
+		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
 		Objects.requireNonNull(codec, "attachment packet codec cannot be null");
 		Objects.requireNonNull(dynamicRegistryManager, "dynamic registry manager cannot be null");
 
-		RegistryByteBuf buf = new RegistryByteBuf(PacketByteBufs.create(), dynamicRegistryManager);
+		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(PacketByteBufs.create(), dynamicRegistryManager);
 
 		if (value != null) {
 			buf.writeBoolean(true);
@@ -90,8 +90,8 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		return new AttachmentChange(targetInfo, type, encoded);
 	}
 
-	public static void partitionAndSendPackets(List<AttachmentChange> changes, ServerPlayerEntity player) {
-		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonNetworkHandlerAccessor) player.networkHandler).getConnection())
+	public static void partitionAndSendPackets(List<AttachmentChange> changes, ServerPlayer player) {
+		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonNetworkHandlerAccessor) player.connection).getConnection())
 				.fabric_getSupportedAttachments();
 		// sort by size to better partition packets
 		changes.sort(Comparator.comparingInt(c -> c.data().length));
@@ -123,12 +123,12 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public Object decodeValue(DynamicRegistryManager dynamicRegistryManager) {
-		PacketCodec<? super RegistryByteBuf, Object> codec = (PacketCodec<? super RegistryByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
+	public Object decodeValue(RegistryAccess dynamicRegistryManager) {
+		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
 		Objects.requireNonNull(codec, "codec was null");
 		Objects.requireNonNull(dynamicRegistryManager, "dynamic registry manager cannot be null");
 
-		RegistryByteBuf buf = new RegistryByteBuf(Unpooled.copiedBuffer(data), dynamicRegistryManager);
+		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.copiedBuffer(data), dynamicRegistryManager);
 
 		if (!buf.readBoolean()) {
 			return null;
@@ -137,29 +137,29 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		return codec.decode(buf);
 	}
 
-	public void tryApply(World world) throws AttachmentSyncException {
+	public void tryApply(Level world) throws AttachmentSyncException {
 		AttachmentTarget target = targetInfo.getTarget(world);
-		Object value = decodeValue(world.getRegistryManager());
+		Object value = decodeValue(world.registryAccess());
 
 		if (target == null) {
-			final MutableText errorMessageText = Text.empty();
+			final MutableComponent errorMessageText = Component.empty();
 			errorMessageText
-					.append(Text.translatable("fabric-data-attachment-api-v1.unknown-target.title").formatted(Formatting.RED))
-					.append(ScreenTexts.LINE_BREAK);
-			errorMessageText.append(ScreenTexts.LINE_BREAK);
+					.append(Component.translatable("fabric-data-attachment-api-v1.unknown-target.title").withStyle(ChatFormatting.RED))
+					.append(CommonComponents.NEW_LINE);
+			errorMessageText.append(CommonComponents.NEW_LINE);
 
 			errorMessageText
-					.append(Text.translatable(
+					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.attachment-identifier",
-							Text.literal(String.valueOf(type.identifier())).formatted(Formatting.YELLOW))
+							Component.literal(String.valueOf(type.identifier())).withStyle(ChatFormatting.YELLOW))
 					)
-					.append(ScreenTexts.LINE_BREAK);
+					.append(CommonComponents.NEW_LINE);
 			errorMessageText
-					.append(Text.translatable(
+					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.world",
-							Text.literal(String.valueOf(world.getRegistryKey().getValue())).formatted(Formatting.YELLOW)
+							Component.literal(String.valueOf(world.dimension().identifier())).withStyle(ChatFormatting.YELLOW)
 					))
-					.append(ScreenTexts.LINE_BREAK);
+					.append(CommonComponents.NEW_LINE);
 			targetInfo.appendDebugInformation(errorMessageText);
 
 			throw new AttachmentSyncException(errorMessageText);

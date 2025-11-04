@@ -18,38 +18,38 @@ package net.fabricmc.fabric.impl.renderer;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.gui.hud.debug.DebugHudEntries;
-import net.minecraft.client.gui.hud.debug.DebugHudEntry;
-import net.minecraft.client.gui.hud.debug.DebugHudEntryCategory;
-import net.minecraft.client.gui.hud.debug.DebugHudLines;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.client.gui.components.debug.DebugScreenEntries;
+import net.minecraft.client.gui.components.debug.DebugScreenEntry;
+import net.minecraft.client.gui.components.debug.DebugEntryCategory;
+import net.minecraft.client.gui.components.debug.DebugScreenDisplayer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 
 public class DebugHudClient implements ClientModInitializer {
-	public static Identifier ACTIVE_RENDERER = DebugHudEntries.register(Identifier.of("fabric", "active_renderer"), new ActiveRendererDebugHudEntry());
+	public static Identifier ACTIVE_RENDERER = DebugScreenEntries.register(Identifier.fromNamespaceAndPath("fabric", "active_renderer"), new ActiveRendererDebugHudEntry());
 
 	@Override
 	public void onInitializeClient() {
 	}
 
-	private static class ActiveRendererDebugHudEntry implements DebugHudEntry {
+	private static class ActiveRendererDebugHudEntry implements DebugScreenEntry {
 		@Override
-		public void render(DebugHudLines lines, @Nullable World world, @Nullable WorldChunk clientChunk, @Nullable WorldChunk chunk) {
+		public void display(DebugScreenDisplayer lines, @Nullable Level world, @Nullable LevelChunk clientChunk, @Nullable LevelChunk chunk) {
 			lines.addLine("[Fabric] Active renderer: " + Renderer.get().getClass().getSimpleName());
 		}
 
 		@Override
-		public boolean canShow(boolean reducedDebugInfo) {
+		public boolean isAllowed(boolean reducedDebugInfo) {
 			return true;
 		}
 
 		@Override
-		public DebugHudEntryCategory getCategory() {
-			return DebugHudEntryCategory.TEXT;
+		public DebugEntryCategory category() {
+			return DebugEntryCategory.SCREEN_TEXT;
 		}
 	}
 }

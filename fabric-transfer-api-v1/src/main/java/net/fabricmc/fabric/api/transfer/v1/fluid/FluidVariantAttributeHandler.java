@@ -20,16 +20,16 @@ import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.fluid.FlowableFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.BucketItem;
-import net.minecraft.registry.Registries;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
  * Defines the common attributes of {@linkplain FluidVariant fluid variants} of a given Fluid.
@@ -39,12 +39,12 @@ public interface FluidVariantAttributeHandler {
 	/**
 	 * Return the name that should be used for the passed fluid variant.
 	 */
-	default Text getName(FluidVariant fluidVariant) {
-		Block fluidBlock = fluidVariant.getFluid().getDefaultState().getBlockState().getBlock();
+	default Component getName(FluidVariant fluidVariant) {
+		Block fluidBlock = fluidVariant.getFluid().defaultFluidState().createLegacyBlock().getBlock();
 
 		if (!fluidVariant.isBlank() && fluidBlock == Blocks.AIR) {
 			// Some non-placeable fluids use air as their fluid block, in that case infer translation key from the fluid id.
-			return Text.translatable(Util.createTranslationKey("block", Registries.FLUID.getId(fluidVariant.getFluid())));
+			return Component.translatable(Util.makeDescriptionId("block", BuiltInRegistries.FLUID.getKey(fluidVariant.getFluid())));
 		} else {
 			return fluidBlock.getName();
 		}
@@ -72,7 +72,7 @@ public interface FluidVariantAttributeHandler {
 	 * Return an integer in [0, 15]: the light level emitted by this fluid, or 0 if it doesn't naturally emit light.
 	 */
 	default int getLuminance(FluidVariant variant) {
-		return variant.getFluid().getDefaultState().getBlockState().getLuminance();
+		return variant.getFluid().defaultFluidState().createLegacyBlock().getLightEmission();
 	}
 
 	/**
@@ -87,14 +87,14 @@ public interface FluidVariantAttributeHandler {
 	 * Return a positive integer, representing the viscosity of this fluid.
 	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
 	 *
-	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowableFluid#getMaxFlowDistance} for flowable fluids.
+	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowingFluid#getMaxFlowDistance} for flowable fluids.
 	 * The reference values are {@value FluidConstants#WATER_VISCOSITY} for water,
 	 * {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),
 	 * and {@value FluidConstants#LAVA_VISCOSITY} for lava in other dimensions.
 	 *
 	 * @param world World if available, otherwise null.
 	 */
-	default int getViscosity(FluidVariant variant, @Nullable World world) {
+	default int getViscosity(FluidVariant variant, @Nullable Level world) {
 		return FluidConstants.WATER_VISCOSITY;
 	}
 

@@ -22,11 +22,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.util.Unit;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -47,22 +47,22 @@ class FluidVariantTests extends AbstractTransferApiTest {
 
 	@Test
 	public void testWithComponentChanges() {
-		FluidVariant variant = FluidVariant.of(Fluids.WATER, ComponentChanges.builder()
-				.add(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplayComponent.DEFAULT)
+		FluidVariant variant = FluidVariant.of(Fluids.WATER, DataComponentPatch.builder()
+				.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT)
 				.build());
 
-		FluidVariant newVariant = variant.withComponentChanges(ComponentChanges.builder()
-				.remove(DataComponentTypes.TOOLTIP_DISPLAY)
-				.add(DataComponentTypes.GLIDER, Unit.INSTANCE)
+		FluidVariant newVariant = variant.withComponentChanges(DataComponentPatch.builder()
+				.remove(DataComponents.TOOLTIP_DISPLAY)
+				.set(DataComponents.GLIDER, Unit.INSTANCE)
 				.build());
 
 		Assertions.assertFalse(
-				newVariant.getComponentMap().contains(DataComponentTypes.TOOLTIP_DISPLAY),
+				newVariant.getComponentMap().has(DataComponents.TOOLTIP_DISPLAY),
 				"New variant's HIDE_TOOLTIP component was removed, but is still present"
 		);
 
 		Assertions.assertTrue(
-				newVariant.getComponentMap().contains(DataComponentTypes.GLIDER),
+				newVariant.getComponentMap().has(DataComponents.GLIDER),
 				"New variant's GLIDER component was added, but is not present"
 		);
 	}

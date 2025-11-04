@@ -18,9 +18,9 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.Objects;
 
-import net.minecraft.client.model.TexturedModelData;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
-import net.minecraft.client.render.entity.model.EquipmentModelData;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.entity.ArmorModelSet;
 
 import net.fabricmc.fabric.impl.client.rendering.EntityModelLayerImpl;
 import net.fabricmc.fabric.mixin.client.rendering.EntityModelLayersAccessor;
@@ -30,12 +30,12 @@ import net.fabricmc.fabric.mixin.client.rendering.EntityModelLayersAccessor;
  */
 public final class EntityModelLayerRegistry {
 	/**
-	 * Registers an entity model layer and registers a provider for a {@linkplain TexturedModelData}.
+	 * Registers an entity model layer and registers a provider for a {@linkplain LayerDefinition}.
 	 *
 	 * @param modelLayer the entity model layer
 	 * @param provider the provider for the textured model data
 	 */
-	public static void registerModelLayer(EntityModelLayer modelLayer, TexturedModelDataProvider provider) {
+	public static void registerModelLayer(ModelLayerLocation modelLayer, TexturedModelDataProvider provider) {
 		Objects.requireNonNull(modelLayer, "EntityModelLayer cannot be null");
 		Objects.requireNonNull(provider, "TexturedModelDataProvider cannot be null");
 
@@ -47,11 +47,11 @@ public final class EntityModelLayerRegistry {
 	}
 
 	/**
-	 * Registers entity equipment model layers and registers a provider for a {@link EquipmentModelData} of type {@link TexturedModelData}.
-	 * @param equipmentModelData the equipment model data of type {@link EntityModelLayer}
+	 * Registers entity equipment model layers and registers a provider for a {@link ArmorModelSet} of type {@link LayerDefinition}.
+	 * @param equipmentModelData the equipment model data of type {@link ModelLayerLocation}
 	 * @param provider the provider for the textured equipment model data
 	 */
-	public static void registerEquipmentModelLayers(EquipmentModelData<EntityModelLayer> equipmentModelData, TexturedEquipmentModelDataProvider provider) {
+	public static void registerEquipmentModelLayers(ArmorModelSet<ModelLayerLocation> equipmentModelData, TexturedEquipmentModelDataProvider provider) {
 		Objects.requireNonNull(equipmentModelData, "EquipmentModelData cannot be null");
 		Objects.requireNonNull(provider, "TexturedEquipmentModelDataProvider cannot be null");
 
@@ -68,20 +68,20 @@ public final class EntityModelLayerRegistry {
 	@FunctionalInterface
 	public interface TexturedModelDataProvider {
 		/**
-		 * Creates the textured model data for use in a {@link EntityModelLayer}.
+		 * Creates the textured model data for use in a {@link ModelLayerLocation}.
 		 *
 		 * @return the textured model data for the entity model layer.
 		 */
-		TexturedModelData createModelData();
+		LayerDefinition createModelData();
 	}
 
 	@FunctionalInterface
 	public interface TexturedEquipmentModelDataProvider {
 		/**
-		 * Creates the textured model data for use in a {@link EquipmentModelData} of type {@link TexturedModelData}.
+		 * Creates the textured model data for use in a {@link ArmorModelSet} of type {@link LayerDefinition}.
 		 *
 		 * @return the textured model data for the entity model layer.
 		 */
-		EquipmentModelData<TexturedModelData> createEquipmentModelData();
+		ArmorModelSet<LayerDefinition> createEquipmentModelData();
 	}
 }

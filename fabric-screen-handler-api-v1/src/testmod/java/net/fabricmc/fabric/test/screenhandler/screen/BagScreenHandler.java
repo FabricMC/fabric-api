@@ -16,43 +16,43 @@
 
 package net.fabricmc.fabric.test.screenhandler.screen;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.Generic3x3ContainerScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.DispenserMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.ClickType;
 
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
 import net.fabricmc.fabric.test.screenhandler.item.BagItem;
 
-public class BagScreenHandler extends Generic3x3ContainerScreenHandler {
-	private final ScreenHandlerType<?> type;
+public class BagScreenHandler extends DispenserMenu {
+	private final MenuType<?> type;
 
-	public BagScreenHandler(int syncId, PlayerInventory playerInventory) {
-		this(syncId, playerInventory, new SimpleInventory(9));
+	public BagScreenHandler(int syncId, Inventory playerInventory) {
+		this(syncId, playerInventory, new SimpleContainer(9));
 	}
 
-	public BagScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {
+	public BagScreenHandler(int syncId, Inventory playerInventory, Container inventory) {
 		this(ScreenHandlerTest.BAG_SCREEN_HANDLER, syncId, playerInventory, inventory);
 	}
 
-	protected BagScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, Inventory inventory) {
+	protected BagScreenHandler(MenuType<?> type, int syncId, Inventory playerInventory, Container inventory) {
 		super(syncId, playerInventory, inventory);
 		this.type = type;
 	}
 
 	@Override
-	public ScreenHandlerType<?> getType() {
+	public MenuType<?> getType() {
 		return type;
 	}
 
 	@Override
-	public void onSlotClick(int slotId, int clickData, SlotActionType actionType, PlayerEntity playerEntity) {
+	public void clicked(int slotId, int clickData, ClickType actionType, Player playerEntity) {
 		if (slotId >= 0) { // slotId < 0 are used for networking internals
-			ItemStack stack = getSlot(slotId).getStack();
+			ItemStack stack = getSlot(slotId).getItem();
 
 			if (stack.getItem() instanceof BagItem) {
 				// Prevent moving bags around
@@ -60,6 +60,6 @@ public class BagScreenHandler extends Generic3x3ContainerScreenHandler {
 			}
 		}
 
-		super.onSlotClick(slotId, clickData, actionType, playerEntity);
+		super.clicked(slotId, clickData, actionType, playerEntity);
 	}
 }

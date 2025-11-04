@@ -34,13 +34,13 @@ import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.Bootstrap;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.resource.PackVersion;
-import net.minecraft.resource.ResourcePackInfo;
-import net.minecraft.resource.ResourcePackPosition;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.server.packs.metadata.pack.PackFormat;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackSelectionConfig;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.PackType;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
@@ -51,29 +51,29 @@ public class ModResourcePackUtilTests {
 
 	@BeforeAll
 	static void beforeAll() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 	}
 
 	@Test
 	void testRefreshAutoEnabledPacks() {
 		// Vanilla uses tree map, and we test the behavior
-		Map<String, ResourcePackProfile> profiles = new TreeMap<>();
-		Map<String, ResourcePackProfile> modAProfiles = new TreeMap<>();
-		Map<String, ResourcePackProfile> modBProfiles = new TreeMap<>();
-		Map<String, ResourcePackProfile> allProfiles = new TreeMap<>();
-		ResourcePackProfile vanilla = mockProfile(profiles, "vanilla", null);
-		ResourcePackProfile fabric = mockProfile(profiles, ModResourcePackCreator.FABRIC, null);
-		ResourcePackProfile modA = mockProfile(modAProfiles, "mod_a", ModResourcePackCreator.BASE_PARENT);
-		ResourcePackProfile modAProg = mockProfile(modAProfiles, "mod_a_programmer_art", ModResourcePackCreator.PROGRAMMER_ART_PARENT);
-		ResourcePackProfile modAHigh = mockProfile(modAProfiles, "mod_a_high_contrast", ModResourcePackCreator.HIGH_CONTRAST_PARENT);
-		ResourcePackProfile modB = mockProfile(modBProfiles, "mod_b", ModResourcePackCreator.BASE_PARENT);
-		ResourcePackProfile modBProg = mockProfile(modBProfiles, "mod_b_programmer_art", ModResourcePackCreator.PROGRAMMER_ART_PARENT);
-		ResourcePackProfile modBHigh = mockProfile(modBProfiles, "mod_b_high_contrast", ModResourcePackCreator.HIGH_CONTRAST_PARENT);
-		ResourcePackProfile programmerArt = mockProfile(profiles, "programmer_art", null);
-		ResourcePackProfile highContrast = mockProfile(profiles, "high_contrast", null);
-		ResourcePackProfile userPackA = mockProfile(profiles, "user_pack_a", null);
-		ResourcePackProfile userPackB = mockProfile(profiles, "user_pack_b", null);
+		Map<String, Pack> profiles = new TreeMap<>();
+		Map<String, Pack> modAProfiles = new TreeMap<>();
+		Map<String, Pack> modBProfiles = new TreeMap<>();
+		Map<String, Pack> allProfiles = new TreeMap<>();
+		Pack vanilla = mockProfile(profiles, "vanilla", null);
+		Pack fabric = mockProfile(profiles, ModResourcePackCreator.FABRIC, null);
+		Pack modA = mockProfile(modAProfiles, "mod_a", ModResourcePackCreator.BASE_PARENT);
+		Pack modAProg = mockProfile(modAProfiles, "mod_a_programmer_art", ModResourcePackCreator.PROGRAMMER_ART_PARENT);
+		Pack modAHigh = mockProfile(modAProfiles, "mod_a_high_contrast", ModResourcePackCreator.HIGH_CONTRAST_PARENT);
+		Pack modB = mockProfile(modBProfiles, "mod_b", ModResourcePackCreator.BASE_PARENT);
+		Pack modBProg = mockProfile(modBProfiles, "mod_b_programmer_art", ModResourcePackCreator.PROGRAMMER_ART_PARENT);
+		Pack modBHigh = mockProfile(modBProfiles, "mod_b_high_contrast", ModResourcePackCreator.HIGH_CONTRAST_PARENT);
+		Pack programmerArt = mockProfile(profiles, "programmer_art", null);
+		Pack highContrast = mockProfile(profiles, "high_contrast", null);
+		Pack userPackA = mockProfile(profiles, "user_pack_a", null);
+		Pack userPackB = mockProfile(profiles, "user_pack_b", null);
 		modAProfiles.putAll(profiles);
 		modBProfiles.putAll(profiles);
 		allProfiles.putAll(modAProfiles);
@@ -207,9 +207,9 @@ public class ModResourcePackUtilTests {
 		);
 	}
 
-	private ResourcePackProfile mockProfile(Map<String, ResourcePackProfile> profiles, String id, @Nullable Predicate<Set<String>> parents) {
-		ResourcePackProfile profile = new ResourcePackProfile(
-				new ResourcePackInfo(
+	private Pack mockProfile(Map<String, Pack> profiles, String id, @Nullable Predicate<Set<String>> parents) {
+		Pack profile = new Pack(
+				new PackLocationInfo(
 						id,
 						null,
 						null,
@@ -217,7 +217,7 @@ public class ModResourcePackUtilTests {
 				),
 				null,
 				null,
-				new ResourcePackPosition(
+				new PackSelectionConfig(
 						false,
 						null,
 						false)
@@ -229,13 +229,13 @@ public class ModResourcePackUtilTests {
 		return profile;
 	}
 
-	private void testRefreshAutoEnabledPacks(Map<String, ResourcePackProfile> profiles, List<ResourcePackProfile> before, List<ResourcePackProfile> after, String reason) {
-		List<ResourcePackProfile> processed = new ArrayList<>(before);
+	private void testRefreshAutoEnabledPacks(Map<String, Pack> profiles, List<Pack> before, List<Pack> after, String reason) {
+		List<Pack> processed = new ArrayList<>(before);
 		ModResourcePackUtil.refreshAutoEnabledPacks(processed, profiles);
 		assertEquals(
-				after.stream().map(ResourcePackProfile::getId).toList(),
-				processed.stream().map(ResourcePackProfile::getId).toList(),
-				() -> "Testing %s; input %s".formatted(reason, before.stream().map(ResourcePackProfile::getId).toList())
+				after.stream().map(Pack::getId).toList(),
+				processed.stream().map(Pack::getId).toList(),
+				() -> "Testing %s; input %s".formatted(reason, before.stream().map(Pack::getId).toList())
 		);
 	}
 
@@ -248,7 +248,7 @@ public class ModResourcePackUtilTests {
 	}
 
 	private void testMetadataSerialization(String description) throws JsonParseException {
-		String metadata = ModResourcePackUtil.serializeMetadata(new PackVersion(1, 0), description, ResourceType.CLIENT_RESOURCES);
+		String metadata = ModResourcePackUtil.serializeMetadata(new PackFormat(1, 0), description, PackType.CLIENT_RESOURCES);
 		JsonObject json = assertDoesNotThrow(() -> GSON.fromJson(metadata, JsonObject.class), () -> "Failed to serialize " + description);
 
 		String parsedDescription = json.get("pack").getAsJsonObject().get("description").getAsString();

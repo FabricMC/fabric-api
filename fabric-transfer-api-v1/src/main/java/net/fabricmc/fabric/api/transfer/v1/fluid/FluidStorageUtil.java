@@ -18,16 +18,16 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import java.util.Objects;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Hand;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.ReportedException;
+import net.minecraft.CrashReport;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -55,28 +55,28 @@ public final class FluidStorageUtil {
 	 * @param hand The hand that the player used.
 	 * @return True if some fluid was moved.
 	 */
-	public static boolean interactWithFluidStorage(Storage<FluidVariant> storage, PlayerEntity player, Hand hand) {
+	public static boolean interactWithFluidStorage(Storage<FluidVariant> storage, Player player, InteractionHand hand) {
 		// Check if hand is a fluid container.
 		Storage<FluidVariant> handStorage = ContainerItemContext.forPlayerInteraction(player, hand).find(FluidStorage.ITEM);
 		if (handStorage == null) return false;
 
 		// Try to fill hand first, otherwise try to empty it.
-		Item handItem = player.getStackInHand(hand).getItem();
+		Item handItem = player.getItemInHand(hand).getItem();
 
 		try {
 			return moveWithSound(storage, handStorage, player, true, handItem) || moveWithSound(handStorage, storage, player, false, handItem);
 		} catch (Exception e) {
-			CrashReport report = CrashReport.create(e, "Interacting with fluid storage");
-			report.addElement("Interaction details")
-					.add("Player", () -> DebugMessages.forPlayer(player))
-					.add("Hand", hand)
-					.add("Hand item", handItem::toString)
-					.add("Fluid storage", () -> Objects.toString(storage, null));
-			throw new CrashException(report);
+			CrashReport report = CrashReport.forThrowable(e, "Interacting with fluid storage");
+			report.addCategory("Interaction details")
+					.setDetail("Player", () -> DebugMessages.forPlayer(player))
+					.setDetail("Hand", hand)
+					.setDetail("Hand item", handItem::toString)
+					.setDetail("Fluid storage", () -> Objects.toString(storage, null));
+			throw new ReportedException(report);
 		}
 	}
 
-	private static boolean moveWithSound(Storage<FluidVariant> from, Storage<FluidVariant> to, PlayerEntity player, boolean fill, Item handItem) {
+	private static boolean moveWithSound(Storage<FluidVariant> from, Storage<FluidVariant> to, Player player, boolean fill, Item handItem) {
 		for (StorageView<FluidVariant> view : from) {
 			if (view.isResourceBlank()) continue;
 			FluidVariant resource = view.getResource();
@@ -101,11 +101,11 @@ public final class FluidStorageUtil {
 					// Temporary workaround to use the correct sound for water bottles.
 					// TODO: Look into providing a proper item-aware fluid sound API.
 					if (resource.isOf(Fluids.WATER)) {
-						if (fill && handItem == Items.GLASS_BOTTLE) sound = SoundEvents.ITEM_BOTTLE_FILL;
-						if (!fill && handItem == Items.POTION) sound = SoundEvents.ITEM_BOTTLE_EMPTY;
+						if (fill && handItem == Items.GLASS_BOTTLE) sound = SoundEvents.BOTTLE_FILL;
+						if (!fill && handItem == Items.POTION) sound = SoundEvents.BOTTLE_EMPTY;
 					}
 
-					player.getEntityWorld().playSound(player, player.getX(), player.getEyeY(), player.getZ(), sound, SoundCategory.PLAYERS, 1, 1);
+					player.level().playSound(player, player.getX(), player.getEyeY(), player.getZ(), sound, SoundSource.PLAYERS, 1, 1);
 
 					return true;
 				}

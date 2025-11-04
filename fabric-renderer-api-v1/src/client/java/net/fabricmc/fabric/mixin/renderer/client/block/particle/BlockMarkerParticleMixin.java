@@ -20,17 +20,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.particle.BlockMarkerParticle;
-import net.minecraft.client.render.block.BlockModels;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.particle.BlockMarker;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 
-@Mixin(BlockMarkerParticle.class)
+@Mixin(BlockMarker.class)
 abstract class BlockMarkerParticleMixin {
-	@Redirect(method = "<init>(Lnet/minecraft/client/world/ClientWorld;DDDLnet/minecraft/block/BlockState;)V", at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/BlockModels.getModelParticleSprite(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/texture/Sprite;"))
-	private static Sprite getModelParticleSpriteProxy(BlockModels models, BlockState state, ClientWorld world, double x, double y, double z, BlockState state1) {
-		return models.getModelParticleSprite(state, world, BlockPos.ofFloored(x, y, z));
+	@Redirect(method = "<init>(Lnet/minecraft/client/multiplayer/ClientLevel;DDDLnet/minecraft/world/level/block/state/BlockState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/particle/BlockMarker;net/minecraft/client/render/block/BlockModels.getModelParticleSprite(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;"))
+	private static TextureAtlasSprite getModelParticleSpriteProxy(BlockModelShaper models, BlockState state, ClientLevel world, double x, double y, double z, BlockState state1) {
+		return models.getModelParticleSprite(state, world, BlockPos.containing(x, y, z));
 	}
 }

@@ -22,11 +22,11 @@ import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.core.Holder;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider;
@@ -37,8 +37,8 @@ import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
  *
  * <p>Use in conjunction with {@link FabricSoundsProvider} to generate sound definitions.
  *
- * @see net.minecraft.client.sound.SoundManager
- * @see net.minecraft.client.sound.WeightedSoundSet
+ * @see net.minecraft.client.sounds.SoundManager
+ * @see net.minecraft.client.sounds.WeighedSoundEvents
  */
 @ApiStatus.NonExtendable
 public interface SoundTypeBuilder {
@@ -51,7 +51,7 @@ public interface SoundTypeBuilder {
 	 */
 	static SoundTypeBuilder of(SoundEvent event) {
 		Objects.requireNonNull(event, "Sound event cannot be null.");
-		return of().subtitle(Util.createTranslationKey("subtitles", event.id()));
+		return of().subtitle(Util.makeDescriptionId("subtitles", event.location()));
 	}
 
 	/**
@@ -66,9 +66,9 @@ public interface SoundTypeBuilder {
 	/**
 	 * Sets the sound category the sound event must play on.
 	 *
-	 * <p>The default category is {@link SoundCategory#NEUTRAL}. GUI elements should use {@link SoundCategory#MASTER}.
+	 * <p>The default category is {@link SoundSource#NEUTRAL}. GUI elements should use {@link SoundSource#MASTER}.
 	 */
-	SoundTypeBuilder category(SoundCategory category);
+	SoundTypeBuilder category(SoundSource category);
 
 	/**
 	 * Sets an optional translation key string to use for the sound's subtitle.
@@ -106,9 +106,9 @@ public interface SoundTypeBuilder {
 	/**
 	 * Represents the type of weighted sound entry.
 	 *
-	 * @see net.minecraft.client.sound.Sound.RegistrationType
+	 * @see net.minecraft.client.resources.sounds.Sound.Type
 	 */
-	enum RegistrationType implements StringIdentifiable {
+	enum RegistrationType implements StringRepresentable {
 		/**
 		 * Direct references to sound files by path and filename excluding {@code *.ogg} extension.
 		 */
@@ -118,7 +118,7 @@ public interface SoundTypeBuilder {
 		 */
 		SOUND_EVENT("event");
 
-		public static final Codec<RegistrationType> CODEC = StringIdentifiable.createCodec(RegistrationType::values);
+		public static final Codec<RegistrationType> CODEC = StringRepresentable.fromEnum(RegistrationType::values);
 
 		private final String name;
 
@@ -127,7 +127,7 @@ public interface SoundTypeBuilder {
 		}
 
 		@Override
-		public String asString() {
+		public String getSerializedName() {
 			return name;
 		}
 	}
@@ -189,7 +189,7 @@ public interface SoundTypeBuilder {
 		 *
 		 * @param event the sound event
 		 */
-		static EntryBuilder ofEvent(RegistryEntry<SoundEvent> event) {
+		static EntryBuilder ofEvent(Holder<SoundEvent> event) {
 			return SoundTypeBuilderImpl.EntryBuilderImpl.ofEvent(event);
 		}
 
@@ -200,8 +200,8 @@ public interface SoundTypeBuilder {
 		 *
 		 * <p>The default volume is {@value EntryBuilder#DEFAULT_VOLUME}.
 		 *
-		 * @see net.minecraft.client.sound.SoundSystem#MIN_VOLUME
-		 * @see net.minecraft.client.sound.SoundSystem#MAX_VOLUME
+		 * @see net.minecraft.client.sounds.SoundEngine#MIN_VOLUME
+		 * @see net.minecraft.client.sounds.SoundEngine#MAX_VOLUME
 		 */
 		EntryBuilder volume(float volume);
 
@@ -212,8 +212,8 @@ public interface SoundTypeBuilder {
 		 *
 		 * <p>The default pitch is {@link EntryBuilder#DEFAULT_PITCH} ({@code 1F}).
 		 *
-		 * @see net.minecraft.client.sound.SoundSystem#MIN_PITCH
-		 * @see net.minecraft.client.sound.SoundSystem#MAX_PITCH
+		 * @see net.minecraft.client.sounds.SoundEngine#MIN_PITCH
+		 * @see net.minecraft.client.sounds.SoundEngine#MAX_PITCH
 		 */
 		EntryBuilder pitch(float pitch);
 

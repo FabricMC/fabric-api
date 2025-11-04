@@ -20,10 +20,10 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import net.minecraft.resource.ResourceReloader;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 /**
- * A variant of {@link net.minecraft.resource.SinglePreparationResourceReloader}
+ * A variant of {@link net.minecraft.server.packs.resources.SimplePreparableReloadListener}
  * which passes the shared state store instead of the resource manager in its methods.
  *
  * <p>In essence, there are two stages:
@@ -36,15 +36,15 @@ import net.minecraft.resource.ResourceReloader;
  * the apply stage is guaranteed to run on the game thread.
  *
  * <p>For a fully synchronous alternative, consider using
- * {@link net.minecraft.resource.SynchronousResourceReloader}.
+ * {@link net.minecraft.server.packs.resources.ResourceManagerReloadListener}.
  *
  * @param <T> the data object
  */
-public abstract class SimpleResourceReloader<T> implements ResourceReloader {
-	public final CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer reloadSynchronizer, Executor applyExecutor) {
+public abstract class SimpleResourceReloader<T> implements PreparableReloadListener {
+	public final CompletableFuture<Void> reload(SharedState store, Executor prepareExecutor, PreparationBarrier reloadSynchronizer, Executor applyExecutor) {
 		CompletableFuture<T> prepareStep = CompletableFuture.supplyAsync(() -> this.prepare(store), prepareExecutor);
 		Objects.requireNonNull(reloadSynchronizer);
-		return prepareStep.thenCompose(reloadSynchronizer::whenPrepared)
+		return prepareStep.thenCompose(reloadSynchronizer::wait)
 				.thenAcceptAsync((prepared) -> this.apply(prepared, store), applyExecutor);
 	}
 
@@ -55,7 +55,7 @@ public abstract class SimpleResourceReloader<T> implements ResourceReloader {
 	 * @param store the data store used for sharing state between resource reloaders
 	 * @return the prepared data
 	 */
-	protected abstract T prepare(Store store);
+	protected abstract T prepare(SharedState store);
 
 	/**
 	 * Synchronously applies prepared data to the game state.
@@ -63,5 +63,5 @@ public abstract class SimpleResourceReloader<T> implements ResourceReloader {
 	 * @param prepared the prepared data
 	 * @param store the data store used for sharing state between resource reloaders
 	 */
-	protected abstract void apply(T prepared, Store store);
+	protected abstract void apply(T prepared, SharedState store);
 }

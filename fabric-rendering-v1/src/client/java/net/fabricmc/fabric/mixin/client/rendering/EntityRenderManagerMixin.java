@@ -22,16 +22,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.render.entity.EntityRenderManager;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
-@Mixin(EntityRenderManager.class)
+@Mixin(EntityRenderDispatcher.class)
 class EntityRenderManagerMixin {
-	@Inject(method = "reload", at = @At("TAIL"))
-	private void createArmorRenderers(ResourceManager manager, CallbackInfo ci, @Local EntityRendererFactory.Context context) {
+	@Inject(method = "onResourceManagerReload", at = @At("TAIL"))
+	private void createArmorRenderers(ResourceManager manager, CallbackInfo ci, @Local EntityRendererProvider.Context context) {
 		ArmorRendererRegistryImpl.createArmorRenderers(context);
 	}
 }

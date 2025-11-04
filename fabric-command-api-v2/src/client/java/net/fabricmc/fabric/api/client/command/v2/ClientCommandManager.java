@@ -22,9 +22,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 
@@ -42,7 +42,7 @@ import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
  * For example, you can move heavy code to another thread.
  *
  * <p>This class also has alternatives to the server-side helper methods in
- * {@link net.minecraft.server.command.CommandManager}:
+ * {@link net.minecraft.commands.Commands}:
  * {@link #literal(String)} and {@link #argument(String, ArgumentType)}.
  *
  * <p>The precedence rules of client-sided and server-sided commands with the same name
@@ -88,19 +88,19 @@ public final class ClientCommandManager {
 	 * {@code minecraft:commands} packet has been received yet
 	 */
 	public static void refreshCommandCompletions() {
-		ClientPlayNetworkHandler networkHandler = MinecraftClient.getInstance().getNetworkHandler();
+		ClientPacketListener networkHandler = Minecraft.getInstance().getConnection();
 
 		if (networkHandler == null) {
 			throw new IllegalStateException("Not connected to a server (dedicated or integrated)!");
 		}
 
-		CommandTreeS2CPacket lastReceivedCommandsPacket = ((ClientCommandInternals.LastReceivedCommandsPacketAccessor) networkHandler).fabric_api$getLastReceivedCommandsPacket();
+		ClientboundCommandsPacket lastReceivedCommandsPacket = ((ClientCommandInternals.LastReceivedCommandsPacketAccessor) networkHandler).fabric_api$getLastReceivedCommandsPacket();
 
 		if (lastReceivedCommandsPacket == null) {
 			throw new IllegalStateException("Not yet received a 'minecraft:commands' packet!");
 		}
 
-		networkHandler.onCommandTree(lastReceivedCommandsPacket);
+		networkHandler.handleCommands(lastReceivedCommandsPacket);
 	}
 
 	/**

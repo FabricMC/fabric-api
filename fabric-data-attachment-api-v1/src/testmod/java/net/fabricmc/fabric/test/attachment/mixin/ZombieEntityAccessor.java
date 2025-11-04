@@ -19,12 +19,12 @@ package net.fabricmc.fabric.test.attachment.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.server.level.ServerLevel;
 
-@Mixin(ZombieEntity.class)
+@Mixin(Zombie.class)
 public interface ZombieEntityAccessor {
-	@Invoker("convertTo")
-	void invokeConvertTo(ServerWorld serverWorld, EntityType<? extends ZombieEntity> entityType);
+	@Invoker("convertToZombieType")
+	void invokeConvertTo(ServerLevel serverWorld, EntityType<? extends Zombie> entityType);
 }

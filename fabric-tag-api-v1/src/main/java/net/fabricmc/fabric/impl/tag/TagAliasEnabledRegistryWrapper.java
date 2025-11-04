@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.tag;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.tags.TagKey;
 
 /**
  * Implemented on {@code RegistryWrapper.Impl} instances used during data loading

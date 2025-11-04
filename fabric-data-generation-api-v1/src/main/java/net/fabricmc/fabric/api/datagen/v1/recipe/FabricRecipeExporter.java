@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.datagen.v1.recipe;
 
-import net.minecraft.data.recipe.RecipeExporter;
-import net.minecraft.util.Identifier;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.Identifier;
 
 /**
- * Injected to all {@link RecipeExporter} instances.
+ * Injected to all {@link RecipeOutput} instances.
  */
 public interface FabricRecipeExporter {
 	/**

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
-import net.minecraft.registry.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -40,183 +40,183 @@ public class FabricRegistryInit implements ModInitializer {
 		});
 
 		// Synced in PlaySoundS2CPacket.
-		RegistryAttributeHolder.get(Registries.SOUND_EVENT)
+		RegistryAttributeHolder.get(BuiltInRegistries.SOUND_EVENT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced with RegistryTagContainer from RegistryTagManager.
-		RegistryAttributeHolder.get(Registries.FLUID)
+		RegistryAttributeHolder.get(BuiltInRegistries.FLUID)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// StatusEffectInstance serialises with raw id.
-		RegistryAttributeHolder.get(Registries.STATUS_EFFECT)
+		RegistryAttributeHolder.get(BuiltInRegistries.MOB_EFFECT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in ChunkDeltaUpdateS2CPacket among other places, a pallet is used when saving.
-		RegistryAttributeHolder.get(Registries.BLOCK)
+		RegistryAttributeHolder.get(BuiltInRegistries.BLOCK)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in EntitySpawnS2CPacket and RegistryTagManager
-		RegistryAttributeHolder.get(Registries.ENTITY_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.ENTITY_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in RegistryTagManager
-		RegistryAttributeHolder.get(Registries.ITEM)
+		RegistryAttributeHolder.get(BuiltInRegistries.ITEM)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via PacketCodecs.registry
-		RegistryAttributeHolder.get(Registries.POTION)
+		RegistryAttributeHolder.get(BuiltInRegistries.POTION)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Doesnt seem to be accessed apart from registering?
-		RegistryAttributeHolder.get(Registries.CARVER);
+		RegistryAttributeHolder.get(BuiltInRegistries.CARVER);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.FEATURE);
+		RegistryAttributeHolder.get(BuiltInRegistries.FEATURE);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.BLOCK_STATE_PROVIDER_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.BLOCKSTATE_PROVIDER_TYPE);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.FOLIAGE_PLACER_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.FOLIAGE_PLACER_TYPE);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.TRUNK_PLACER_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.TRUNK_PLACER_TYPE);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.TREE_DECORATOR_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.TREE_DECORATOR_TYPE);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.FEATURE_SIZE_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.FEATURE_SIZE_TYPE);
 
 		// Synced in ParticleS2CPacket
-		RegistryAttributeHolder.get(Registries.PARTICLE_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.PARTICLE_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.BIOME_SOURCE);
+		RegistryAttributeHolder.get(BuiltInRegistries.BIOME_SOURCE);
 
 		// Synced. Vanilla uses raw ids in BlockEntityUpdateS2CPacket, and mods use the Vanilla syncing since 1.18
-		RegistryAttributeHolder.get(Registries.BLOCK_ENTITY_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.BLOCK_ENTITY_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via PacketCodecs.registry
-		RegistryAttributeHolder.get(Registries.CUSTOM_STAT)
+		RegistryAttributeHolder.get(BuiltInRegistries.CUSTOM_STAT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.CHUNK_STATUS);
+		RegistryAttributeHolder.get(BuiltInRegistries.CHUNK_STATUS);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.STRUCTURE_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.STRUCTURE_TYPE);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.STRUCTURE_PIECE);
+		RegistryAttributeHolder.get(BuiltInRegistries.STRUCTURE_PIECE);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.RULE_TEST);
+		RegistryAttributeHolder.get(BuiltInRegistries.RULE_TEST);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.POS_RULE_TEST);
+		RegistryAttributeHolder.get(BuiltInRegistries.POS_RULE_TEST);
 
-		RegistryAttributeHolder.get(Registries.STRUCTURE_PROCESSOR);
+		RegistryAttributeHolder.get(BuiltInRegistries.STRUCTURE_PROCESSOR);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.STRUCTURE_POOL_ELEMENT);
+		RegistryAttributeHolder.get(BuiltInRegistries.STRUCTURE_POOL_ELEMENT);
 
 		//  Uses the raw ID when syncing the command tree to the client
-		RegistryAttributeHolder.get(Registries.COMMAND_ARGUMENT_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.COMMAND_ARGUMENT_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in OpenScreenS2CPacket
-		RegistryAttributeHolder.get(Registries.SCREEN_HANDLER)
+		RegistryAttributeHolder.get(BuiltInRegistries.MENU)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Does not seem to be serialised, only queried by id. Not synced
-		RegistryAttributeHolder.get(Registries.RECIPE_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.RECIPE_TYPE);
 
 		// Synced by rawID in 24w03a+
-		RegistryAttributeHolder.get(Registries.ATTRIBUTE)
+		RegistryAttributeHolder.get(BuiltInRegistries.ATTRIBUTE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in StatisticsS2CPacket
-		RegistryAttributeHolder.get(Registries.STAT_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.STAT_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced by rawID in TrackedDataHandlerRegistry.VILLAGER_DATA
-		RegistryAttributeHolder.get(Registries.VILLAGER_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.VILLAGER_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced by rawID in TrackedDataHandlerRegistry.VILLAGER_DATA
-		RegistryAttributeHolder.get(Registries.VILLAGER_PROFESSION)
+		RegistryAttributeHolder.get(BuiltInRegistries.VILLAGER_PROFESSION)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.POINT_OF_INTEREST_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.POINT_OF_INTEREST_TYPE);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registries.MEMORY_MODULE_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.MEMORY_MODULE_TYPE);
 
 		// Doesnt seem to be serialised or synced.
-		RegistryAttributeHolder.get(Registries.SENSOR_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.SENSOR_TYPE);
 
 		// Doesnt seem to be serialised or synced.
-		RegistryAttributeHolder.get(Registries.ACTIVITY);
+		RegistryAttributeHolder.get(BuiltInRegistries.ACTIVITY);
 
 		// Doesnt seem to be serialised or synced.
-		RegistryAttributeHolder.get(Registries.LOOT_POOL_ENTRY_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.LOOT_POOL_ENTRY_TYPE);
 
 		// Doesnt seem to be serialised or synced.
-		RegistryAttributeHolder.get(Registries.LOOT_FUNCTION_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.LOOT_FUNCTION_TYPE);
 
 		// Doesnt seem to be serialised or synced.
-		RegistryAttributeHolder.get(Registries.LOOT_CONDITION_TYPE);
+		RegistryAttributeHolder.get(BuiltInRegistries.LOOT_CONDITION_TYPE);
 
 		// Synced in TagManager::toPacket/fromPacket -> TagGroup::serialize/deserialize
-		RegistryAttributeHolder.get(Registries.GAME_EVENT)
+		RegistryAttributeHolder.get(BuiltInRegistries.GAME_EVENT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced by rawID in its serialization code.
-		RegistryAttributeHolder.get(Registries.NUMBER_FORMAT_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.NUMBER_FORMAT_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced by rawID.
-		RegistryAttributeHolder.get(Registries.POSITION_SOURCE_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.POSITION_SOURCE_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced by rawID.
-		RegistryAttributeHolder.get(Registries.DATA_COMPONENT_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.DATA_COMPONENT_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced by rawID.
-		RegistryAttributeHolder.get(Registries.DATA_COMPONENT_PREDICATE_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.DATA_COMPONENT_PREDICATE_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced by rawID.
-		RegistryAttributeHolder.get(Registries.MAP_DECORATION_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.MAP_DECORATION_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via PacketCodecs.registry
-		RegistryAttributeHolder.get(Registries.CONSUME_EFFECT_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.CONSUME_EFFECT_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via PacketCodecs.registryValue
-		RegistryAttributeHolder.get(Registries.RECIPE_DISPLAY)
+		RegistryAttributeHolder.get(BuiltInRegistries.RECIPE_DISPLAY)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via PacketCodecs.registryValue
-		RegistryAttributeHolder.get(Registries.SLOT_DISPLAY)
+		RegistryAttributeHolder.get(BuiltInRegistries.SLOT_DISPLAY)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via PacketCodecs.registryValue
-		RegistryAttributeHolder.get(Registries.RECIPE_BOOK_CATEGORY)
+		RegistryAttributeHolder.get(BuiltInRegistries.RECIPE_BOOK_CATEGORY)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via PacketCodecs.registryValue
-		RegistryAttributeHolder.get(Registries.POINT_OF_INTEREST_TYPE)
+		RegistryAttributeHolder.get(BuiltInRegistries.POINT_OF_INTEREST_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced via PacketCodecs.registryValue
-		RegistryAttributeHolder.get(Registries.DEBUG_SUBSCRIPTION)
+		RegistryAttributeHolder.get(BuiltInRegistries.DEBUG_SUBSCRIPTION)
 				.addAttribute(RegistryAttribute.SYNCED);
 	}
 }

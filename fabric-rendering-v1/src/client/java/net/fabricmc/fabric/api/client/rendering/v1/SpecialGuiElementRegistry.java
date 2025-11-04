@@ -20,23 +20,23 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 
 import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRegistryImpl;
 
 /**
- * Allows registering {@linkplain SpecialGuiElementRenderer special gui element renderers},
- * used to render custom gui elements beyond the methods available in {@link net.minecraft.client.gui.DrawContext DrawContext}.
+ * Allows registering {@linkplain PictureInPictureRenderer special gui element renderers},
+ * used to render custom gui elements beyond the methods available in {@link net.minecraft.client.gui.GuiGraphics DrawContext}.
  *
- * <p>To render a custom gui element, first implement and register a {@link SpecialGuiElementRenderer}.
- * When you want to render, add an instance of the corresponding render state to {@link net.minecraft.client.gui.DrawContext#state DrawContext#state} using {@link net.minecraft.client.gui.render.state.GuiRenderState#addSpecialElement(net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState) GuiRenderState#addSpecialElement(SpecialGuiElementRenderState)}.
+ * <p>To render a custom gui element, first implement and register a {@link PictureInPictureRenderer}.
+ * When you want to render, add an instance of the corresponding render state to {@link net.minecraft.client.gui.GuiGraphics#state DrawContext#state} using {@link net.minecraft.client.gui.render.state.GuiRenderState#addSpecialElement(net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState) GuiRenderState#addSpecialElement(SpecialGuiElementRenderState)}.
  */
 public final class SpecialGuiElementRegistry {
 	/**
-	 * Registers a new {@link Factory} used to create a new {@link SpecialGuiElementRenderer} instance.
+	 * Registers a new {@link Factory} used to create a new {@link PictureInPictureRenderer} instance.
 	 */
 	public static void register(Factory factory) {
 		Objects.requireNonNull(factory, "factory");
@@ -44,28 +44,28 @@ public final class SpecialGuiElementRegistry {
 	}
 
 	/**
-	 * A factory to create a new {@link SpecialGuiElementRenderer} instance.
+	 * A factory to create a new {@link PictureInPictureRenderer} instance.
 	 */
 	@FunctionalInterface
 	public interface Factory {
-		SpecialGuiElementRenderer<?> createSpecialRenderer(Context ctx);
+		PictureInPictureRenderer<?> createSpecialRenderer(Context ctx);
 	}
 
 	@ApiStatus.NonExtendable
 	public interface Context {
 		/**
-		 * @return the {@link VertexConsumerProvider.Immediate}.
+		 * @return the {@link MultiBufferSource.BufferSource}.
 		 */
-		VertexConsumerProvider.Immediate vertexConsumers();
+		MultiBufferSource.BufferSource vertexConsumers();
 
 		/**
-		 * @return the {@link MinecraftClient} instance.
+		 * @return the {@link Minecraft} instance.
 		 */
-		MinecraftClient client();
+		Minecraft client();
 
 		/**
-		 * @return the {@link OrderedRenderCommandQueue} instance.
+		 * @return the {@link SubmitNodeCollector} instance.
 		 */
-		OrderedRenderCommandQueue orderedRenderCommandQueue();
+		SubmitNodeCollector orderedRenderCommandQueue();
 	}
 }

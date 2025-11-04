@@ -24,16 +24,16 @@ import java.util.function.BiConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -50,8 +50,8 @@ public final class Networking implements ModInitializer {
 	// syncId: varInt
 	// title: text
 	// customData: buf
-	public static final Identifier OPEN_ID = Identifier.of("fabric-screen-handler-api-v1", "open_screen");
-	public static final Map<Identifier, PacketCodec<? super RegistryByteBuf, ?>> CODEC_BY_ID = new HashMap<>();
+	public static final Identifier OPEN_ID = Identifier.fromNamespaceAndPath("fabric-screen-handler-api-v1", "open_screen");
+	public static final Map<Identifier, StreamCodec<? super RegistryFriendlyByteBuf, ?>> CODEC_BY_ID = new HashMap<>();
 
 	/**
 	 * Opens an extended screen handler by sending a custom packet to the client.
@@ -62,19 +62,19 @@ public final class Networking implements ModInitializer {
 	 * @param syncId  the synchronization ID
 	 */
 	@SuppressWarnings("unchecked")
-	public static <D> void sendOpenPacket(ServerPlayerEntity player, ExtendedScreenHandlerFactory<D> factory, ScreenHandler handler, int syncId) {
+	public static <D> void sendOpenPacket(ServerPlayer player, ExtendedScreenHandlerFactory<D> factory, AbstractContainerMenu handler, int syncId) {
 		Objects.requireNonNull(player, "player is null");
 		Objects.requireNonNull(factory, "factory is null");
 		Objects.requireNonNull(handler, "handler is null");
 
-		Identifier typeId = Registries.SCREEN_HANDLER.getId(handler.getType());
+		Identifier typeId = BuiltInRegistries.MENU.getKey(handler.getType());
 
 		if (typeId == null) {
 			LOGGER.warn("Trying to open unregistered screen handler {}", handler);
 			return;
 		}
 
-		PacketCodec<RegistryByteBuf, D> codec = (PacketCodec<RegistryByteBuf, D>) Objects.requireNonNull(CODEC_BY_ID.get(typeId), () -> "Codec for " + typeId + " is not registered!");
+		StreamCodec<RegistryFriendlyByteBuf, D> codec = (StreamCodec<RegistryFriendlyByteBuf, D>) Objects.requireNonNull(CODEC_BY_ID.get(typeId), () -> "Codec for " + typeId + " is not registered!");
 		D data = factory.getScreenOpeningData(player);
 
 		ServerPlayNetworking.send(player, new OpenScreenPayload<>(typeId, syncId, factory.getDisplayName(), codec, data));
@@ -84,7 +84,7 @@ public final class Networking implements ModInitializer {
 	public void onInitialize() {
 		PayloadTypeRegistry.playS2C().register(OpenScreenPayload.ID, OpenScreenPayload.CODEC);
 
-		forEachEntry(Registries.SCREEN_HANDLER, (type, id) -> {
+		forEachEntry(BuiltInRegistries.MENU, (type, id) -> {
 			if (type instanceof ExtendedScreenHandlerType<?, ?> extended) {
 				CODEC_BY_ID.put(id, extended.getPacketCodec());
 			}
@@ -94,7 +94,7 @@ public final class Networking implements ModInitializer {
 	// Calls the consumer for each registry entry that has been registered or will be registered.
 	private static <T> void forEachEntry(Registry<T> registry, BiConsumer<T, Identifier> consumer) {
 		for (T type : registry) {
-			consumer.accept(type, registry.getId(type));
+			consumer.accept(type, registry.getKey(type));
 		}
 
 		RegistryEntryAddedCallback.event(registry).register((rawId, id, type) -> {
@@ -102,27 +102,27 @@ public final class Networking implements ModInitializer {
 		});
 	}
 
-	public record OpenScreenPayload<D>(Identifier identifier, int syncId, Text title, PacketCodec<RegistryByteBuf, D> innerCodec, D data) implements CustomPayload {
-		public static final PacketCodec<RegistryByteBuf, OpenScreenPayload<?>> CODEC = CustomPayload.codecOf(OpenScreenPayload::write, OpenScreenPayload::fromBuf);
-		public static final CustomPayload.Id<OpenScreenPayload<?>> ID = new Id<>(OPEN_ID);
+	public record OpenScreenPayload<D>(Identifier identifier, int syncId, Component title, StreamCodec<RegistryFriendlyByteBuf, D> innerCodec, D data) implements CustomPacketPayload {
+		public static final StreamCodec<RegistryFriendlyByteBuf, OpenScreenPayload<?>> CODEC = CustomPacketPayload.codec(OpenScreenPayload::write, OpenScreenPayload::fromBuf);
+		public static final CustomPacketPayload.Type<OpenScreenPayload<?>> ID = new Type<>(OPEN_ID);
 
 		@SuppressWarnings("unchecked")
-		private static <D> OpenScreenPayload<D> fromBuf(RegistryByteBuf buf) {
+		private static <D> OpenScreenPayload<D> fromBuf(RegistryFriendlyByteBuf buf) {
 			Identifier id = buf.readIdentifier();
-			PacketCodec<RegistryByteBuf, D> codec = (PacketCodec<RegistryByteBuf, D>) CODEC_BY_ID.get(id);
+			StreamCodec<RegistryFriendlyByteBuf, D> codec = (StreamCodec<RegistryFriendlyByteBuf, D>) CODEC_BY_ID.get(id);
 
-			return new OpenScreenPayload<>(id, buf.readByte(), TextCodecs.REGISTRY_PACKET_CODEC.decode(buf), codec, codec == null ? null : codec.decode(buf));
+			return new OpenScreenPayload<>(id, buf.readByte(), ComponentSerialization.STREAM_CODEC.decode(buf), codec, codec == null ? null : codec.decode(buf));
 		}
 
-		private void write(RegistryByteBuf buf) {
+		private void write(RegistryFriendlyByteBuf buf) {
 			buf.writeIdentifier(this.identifier);
 			buf.writeByte(this.syncId);
-			TextCodecs.REGISTRY_PACKET_CODEC.encode(buf, this.title);
+			ComponentSerialization.STREAM_CODEC.encode(buf, this.title);
 			this.innerCodec.encode(buf, this.data);
 		}
 
 		@Override
-		public Id<? extends CustomPayload> getId() {
+		public Type<? extends CustomPacketPayload> type() {
 			return ID;
 		}
 	}

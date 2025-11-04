@@ -20,10 +20,10 @@ import java.util.Objects;
 
 import com.mojang.brigadier.Command;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -45,7 +45,7 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 			Objects.requireNonNull(context.client());
 			Objects.requireNonNull(context.player());
 
-			context.client().inGameHud.setOverlayMessage(payload.message(), true);
+			context.client().gui.setOverlayMessage(payload.message(), true);
 		}));
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
@@ -57,12 +57,12 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 		))));
 	}
 
-	private record UnknownPayload(String data) implements CustomPayload {
-		private static final CustomPayload.Id<UnknownPayload> ID = new Id<>(NetworkingTestmods.id("unknown_test_channel_c2s"));
-		private static final PacketCodec<PacketByteBuf, UnknownPayload> CODEC = PacketCodecs.STRING.xmap(UnknownPayload::new, UnknownPayload::data).cast();
+	private record UnknownPayload(String data) implements CustomPacketPayload {
+		private static final CustomPacketPayload.Type<UnknownPayload> ID = new Type<>(NetworkingTestmods.id("unknown_test_channel_c2s"));
+		private static final StreamCodec<FriendlyByteBuf, UnknownPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(UnknownPayload::new, UnknownPayload::data).cast();
 
 		@Override
-		public Id<? extends CustomPayload> getId() {
+		public Type<? extends CustomPacketPayload> type() {
 			return ID;
 		}
 	}

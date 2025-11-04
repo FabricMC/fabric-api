@@ -21,13 +21,13 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.LightTexture;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.api.util.TriState;
@@ -45,7 +45,7 @@ import net.fabricmc.fabric.api.util.TriState;
  */
 public interface QuadView {
 	/** Count of integers in a conventional (un-modded) block or item vertex. */
-	int VANILLA_VERTEX_STRIDE = VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.getVertexSize() / 4;
+	int VANILLA_VERTEX_STRIDE = DefaultVertexFormat.BLOCK.getVertexSize() / 4;
 
 	/** Count of integers in a conventional (un-modded) block or item quad. */
 	int VANILLA_QUAD_STRIDE = VANILLA_VERTEX_STRIDE * 4;
@@ -152,19 +152,19 @@ public interface QuadView {
 	 * @see MutableQuadView#nominalFace(Direction)
 	 */
 	@Nullable
-	Direction nominalFace();
+    Direction nominalFace();
 
 	/**
 	 * @see MutableQuadView#cullFace(Direction)
 	 */
 	@Nullable
-	Direction cullFace();
+    Direction cullFace();
 
 	/**
-	 * @see MutableQuadView#renderLayer(BlockRenderLayer)
+	 * @see MutableQuadView#renderLayer(ChunkSectionLayer)
 	 */
 	@Nullable
-	BlockRenderLayer renderLayer();
+    ChunkSectionLayer renderLayer();
 
 	/**
 	 * @see MutableQuadView#emissive(boolean)
@@ -184,9 +184,9 @@ public interface QuadView {
 	TriState ambientOcclusion();
 
 	/**
-	 * @see MutableQuadView#glint(ItemRenderState.Glint)
+	 * @see MutableQuadView#glint(ItemStackRenderState.FoilType)
 	 */
-	ItemRenderState.@Nullable Glint glint();
+	ItemStackRenderState.@Nullable FoilType glint();
 
 	/**
 	 * @see MutableQuadView#shadeMode(ShadeMode)
@@ -220,7 +220,7 @@ public interface QuadView {
 	 * @param sprite The sprite is not serialized so it must be provided by the caller. Retrieve it using
 	 * {@link SpriteFinder#find(QuadView)} if it is not already known.
 	 */
-	default BakedQuad toBakedQuad(Sprite sprite) {
+	default BakedQuad toBakedQuad(TextureAtlasSprite sprite) {
 		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
 		toVanilla(vertexData, 0);
 
@@ -237,8 +237,8 @@ public interface QuadView {
 					break;
 				}
 
-				int blockLight = LightmapTextureManager.getBlockLightCoordinates(lightmap);
-				int skyLight = LightmapTextureManager.getSkyLightCoordinates(lightmap);
+				int blockLight = LightTexture.block(lightmap);
+				int skyLight = LightTexture.sky(lightmap);
 				lightEmission = Math.min(lightEmission, Math.min(blockLight, skyLight));
 			}
 		}

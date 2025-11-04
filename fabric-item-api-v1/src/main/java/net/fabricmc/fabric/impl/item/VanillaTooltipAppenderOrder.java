@@ -33,18 +33,18 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.spongepowered.asm.service.MixinService;
 
-import net.minecraft.component.ComponentType;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class VanillaTooltipAppenderOrder {
-	private static final List<ComponentType<?>> VANILLA_ORDER = scrapeVanillaOrder();
+	private static final List<DataComponentType<?>> VANILLA_ORDER = scrapeVanillaOrder();
 
 	private VanillaTooltipAppenderOrder() {
 	}
@@ -54,7 +54,7 @@ public final class VanillaTooltipAppenderOrder {
 	}
 
 	// Find the order in which vanilla tooltip appenders are run by inspecting the bytecode of ItemStack.appendTooltip.
-	private static List<ComponentType<?>> scrapeVanillaOrder() {
+	private static List<DataComponentType<?>> scrapeVanillaOrder() {
 		try {
 			ClassNode itemStackNode = MixinService.getService().getBytecodeProvider().getClassNode(Type.getInternalName(ItemStack.class));
 
@@ -74,9 +74,9 @@ public final class VanillaTooltipAppenderOrder {
 			String methodDesc = Type.getMethodDescriptor(
 					Type.VOID_TYPE,
 					Type.getType(Item.TooltipContext.class),
-					Type.getType(TooltipDisplayComponent.class),
-					Type.getType(PlayerEntity.class),
-					Type.getType(TooltipType.class),
+					Type.getType(TooltipDisplay.class),
+					Type.getType(Player.class),
+					Type.getType(TooltipFlag.class),
 					Type.getType(Consumer.class)
 			);
 
@@ -94,8 +94,8 @@ public final class VanillaTooltipAppenderOrder {
 			String appendAttributeModifiersTooltipDesc = Type.getMethodDescriptor(
 					Type.VOID_TYPE,
 					Type.getType(Consumer.class),
-					Type.getType(TooltipDisplayComponent.class),
-					Type.getType(PlayerEntity.class)
+					Type.getType(TooltipDisplay.class),
+					Type.getType(Player.class)
 			);
 
 			MethodNode appendTooltipMethod = itemStackNode.methods.stream()
@@ -104,10 +104,10 @@ public final class VanillaTooltipAppenderOrder {
 					.orElseThrow(() -> new IllegalStateException("No appendTooltip method in ItemStack"));
 
 			// Search for data component accesses within this method
-			List<ComponentType<?>> componentTypes = new ArrayList<>();
+			List<DataComponentType<?>> componentTypes = new ArrayList<>();
 			Set<String> alreadyAddedComponents = new HashSet<>();
-			String owner = Type.getInternalName(DataComponentTypes.class);
-			String desc = Type.getDescriptor(ComponentType.class);
+			String owner = Type.getInternalName(DataComponents.class);
+			String desc = Type.getDescriptor(DataComponentType.class);
 
 			for (AbstractInsnNode insn : appendTooltipMethod.instructions) {
 				if (insn instanceof FieldInsnNode fieldInsn
@@ -118,7 +118,7 @@ public final class VanillaTooltipAppenderOrder {
 					String fieldName = fieldInsn.name;
 
 					if (alreadyAddedComponents.add(fieldName)) {
-						componentTypes.add((ComponentType<?>) DataComponentTypes.class.getField(fieldName).get(null));
+						componentTypes.add((DataComponentType<?>) DataComponents.class.getField(fieldName).get(null));
 					}
 				} else if (insn instanceof MethodInsnNode methodInsn
 						&& methodInsn.name.equals(appendAttributeModifiersTooltipName)
@@ -126,7 +126,7 @@ public final class VanillaTooltipAppenderOrder {
 						&& methodInsn.owner.equals(Type.getInternalName(ItemStack.class))
 				) {
 					// Special case: attribute modifiers are extracted into a separate method
-					componentTypes.add(DataComponentTypes.ATTRIBUTE_MODIFIERS);
+					componentTypes.add(DataComponents.ATTRIBUTE_MODIFIERS);
 				}
 			}
 
@@ -140,7 +140,7 @@ public final class VanillaTooltipAppenderOrder {
 		}
 	}
 
-	public static List<ComponentType<?>> getVanillaOrder() {
+	public static List<DataComponentType<?>> getVanillaOrder() {
 		return VANILLA_ORDER;
 	}
 }

@@ -19,7 +19,7 @@ package net.fabricmc.fabric.mixin.biome;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 
 import net.fabricmc.fabric.impl.biome.BiomeSourceAccess;
 

@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.api.resource;
 
-import net.minecraft.resource.SynchronousResourceReloader;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 /**
  * A simplified version of the "resource reload listener" interface, hiding the
  * peculiarities of the API and ensuring all data is loaded on the main thread.
  *
- * @deprecated Use {@link SynchronousResourceReloader} directly.
+ * @deprecated Use {@link ResourceManagerReloadListener} directly.
  */
 @Deprecated
-public interface SimpleSynchronousResourceReloadListener extends IdentifiableResourceReloadListener, SynchronousResourceReloader {
+public interface SimpleSynchronousResourceReloadListener extends IdentifiableResourceReloadListener, ResourceManagerReloadListener {
 }

@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.client.render.fluid.v1;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.block.FluidRenderer;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingImpl;
 
@@ -45,14 +45,14 @@ public final class FluidRendering {
 	 * @param fluidState the fluid state
 	 * @param defaultRenderer the renderer to use whenever the handler requests default geometry
 	 */
-	public static void render(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, DefaultRenderer defaultRenderer) {
+	public static void render(FluidRenderHandler handler, BlockAndTintGetter world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, DefaultRenderer defaultRenderer) {
 		FluidRenderingImpl.render(handler, world, pos, vertexConsumer, blockState, fluidState, defaultRenderer);
 	}
 
 	public interface DefaultRenderer {
 		/**
 		 * Render the default geometry when it is requested by {@link FluidRenderHandler#renderFluid}. The default
-		 * implementation invokes the vanilla renderer. Calling {@link FluidRenderer#render} directly is not supported
+		 * implementation invokes the vanilla renderer. Calling {@link LiquidBlockRenderer#render} directly is not supported
 		 * but using {@code DefaultRenderer.super.render} is supported. Note that the parameter values passed to this
 		 * call are provided by the render handler, meaning they are not necessarily the same as those provided to the
 		 * initial rendering call. As per the documentation of {@link FluidRenderHandler#renderFluid}, a new handler
@@ -65,7 +65,7 @@ public final class FluidRendering {
 		 * @param blockState the block state
 		 * @param fluidState the fluid state
 		 */
-		default void render(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+		default void render(FluidRenderHandler handler, BlockAndTintGetter world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
 			FluidRenderingImpl.renderVanillaDefault(handler, world, pos, vertexConsumer, blockState, fluidState);
 		}
 	}

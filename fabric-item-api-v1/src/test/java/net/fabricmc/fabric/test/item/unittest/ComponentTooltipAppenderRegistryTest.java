@@ -24,15 +24,15 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.Bootstrap;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
 
 import net.fabricmc.fabric.impl.item.DefaultItemComponentImpl;
@@ -41,8 +41,8 @@ import net.fabricmc.fabric.test.item.ComponentTooltipAppenderTest;
 public class ComponentTooltipAppenderRegistryTest {
 	@BeforeAll
 	static void beforeAll() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 
 		new ComponentTooltipAppenderTest().onInitialize();
 		DefaultItemComponentImpl.modifyItemComponents();
@@ -51,7 +51,7 @@ public class ComponentTooltipAppenderRegistryTest {
 	@Test
 	void getSwordTooltips() {
 		ItemStack stack = new ItemStack(Items.GOLDEN_SWORD);
-		stack.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
+		stack.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
 
 		assertEquals("""
 				Golden Sword
@@ -80,7 +80,7 @@ public class ComponentTooltipAppenderRegistryTest {
 	@Test
 	void getEggTooltips() {
 		ItemStack stack = new ItemStack(Items.PIG_SPAWN_EGG);
-		stack.set(DataComponentTypes.LORE, new LoreComponent(List.of(Text.literal("Hello"))));
+		stack.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("Hello"))));
 
 		assertEquals("""
 				Pig Spawn Egg
@@ -90,7 +90,7 @@ public class ComponentTooltipAppenderRegistryTest {
 	}
 
 	private static String getTooltip(ItemStack stack) {
-		List<Text> tooltips = stack.getTooltip(Item.TooltipContext.DEFAULT, null, TooltipType.BASIC);
-		return tooltips.stream().map(Text::getString).collect(Collectors.joining("\n"));
+		List<Component> tooltips = stack.getTooltipLines(Item.TooltipContext.EMPTY, null, TooltipFlag.NORMAL);
+		return tooltips.stream().map(Component::getString).collect(Collectors.joining("\n"));
 	}
 }

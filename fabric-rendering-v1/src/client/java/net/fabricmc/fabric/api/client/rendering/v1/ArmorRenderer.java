@@ -20,20 +20,20 @@ import com.mojang.datafixers.util.Pair;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.model.Model;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.command.ModelCommandRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.command.RenderCommandQueue;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
@@ -41,8 +41,8 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
  * Armor renderers render worn armor items with custom code.
  * They may be used to render armor with special models or effects.
  *
- * <p>The renderers are registered with {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer#register(Factory, ItemConvertible...)}
- * or {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer#register(ArmorRenderer, ItemConvertible...)}.
+ * <p>The renderers are registered with {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer#register(Factory, ItemLike...)}
+ * or {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer#register(ArmorRenderer, ItemLike...)}.
  */
 @FunctionalInterface
 public interface ArmorRenderer {
@@ -53,7 +53,7 @@ public interface ArmorRenderer {
 	 * @throws IllegalArgumentException if an item already has a registered armor renderer
 	 * @throws NullPointerException if either an item or the factory is null
 	 */
-	static void register(ArmorRenderer.Factory factory, ItemConvertible... items) {
+	static void register(ArmorRenderer.Factory factory, ItemLike... items) {
 		ArmorRendererRegistryImpl.register(factory, items);
 	}
 
@@ -64,7 +64,7 @@ public interface ArmorRenderer {
 	 * @throws IllegalArgumentException if an item already has a registered armor renderer
 	 * @throws NullPointerException if either an item or the renderer is null
 	 */
-	static void register(ArmorRenderer renderer, ItemConvertible... items) {
+	static void register(ArmorRenderer renderer, ItemLike... items) {
 		ArmorRendererRegistryImpl.register(renderer, items);
 	}
 
@@ -77,7 +77,7 @@ public interface ArmorRenderer {
 	 * @param delegateModelState    the model state of the delegate model
 	 * @param setDelegateAngles     {@code true} if the {@link Model#setAngles(Object)} method should be called for the
 	 *                                             delegate model after it is called for the source model
-	 * @param queue                 the {@link RenderCommandQueue}
+	 * @param queue                 the {@link OrderedSubmitNodeCollector}
 	 * @param matrices              the matrix stack
 	 * @param renderLayer           the render layer
 	 * @param light                 packed lightmap coordinates
@@ -89,7 +89,7 @@ public interface ArmorRenderer {
 	 * @param <S>                   state type of the source model
 	 * @param <D>                   state type of the delegate model
 	 */
-	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, RenderCommandQueue queue, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int tintedColor, @Nullable Sprite sprite, int outlineColor, ModelCommandRenderer.@Nullable CrumblingOverlayCommand crumblingOverlay) {
+	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, OrderedSubmitNodeCollector queue, PoseStack matrices, RenderType renderLayer, int light, int overlay, int tintedColor, @Nullable TextureAtlasSprite sprite, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
 		queue.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, tintedColor, sprite, outlineColor, crumblingOverlay);
 	}
 
@@ -102,7 +102,7 @@ public interface ArmorRenderer {
 	 * @param delegateModelState    the model state of the delegate model
 	 * @param setDelegateAngles     {@code true} if the {@link Model#setAngles(Object)} method should be called for the
 	 *                                             delegate model after it is called for the source model
-	 * @param queue                 the {@link RenderCommandQueue}
+	 * @param queue                 the {@link OrderedSubmitNodeCollector}
 	 * @param matrices              the matrix stack
 	 * @param renderLayer           the render layer
 	 * @param light                 packed lightmap coordinates
@@ -112,7 +112,7 @@ public interface ArmorRenderer {
 	 * @param <S>                   state type of the source model
 	 * @param <D>                   state type of the delegate model
 	 */
-	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, RenderCommandQueue queue, MatrixStack matrices, RenderLayer renderLayer, int light, int overlay, int outlineColor, ModelCommandRenderer.@Nullable CrumblingOverlayCommand crumblingOverlay) {
+	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, OrderedSubmitNodeCollector queue, PoseStack matrices, RenderType renderLayer, int light, int overlay, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
 		queue.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, outlineColor, crumblingOverlay);
 	}
 
@@ -120,14 +120,14 @@ public interface ArmorRenderer {
 	 * Renders an armor part.
 	 *
 	 * @param matrices                  the matrix stack
-	 * @param orderedRenderCommandQueue the {@link OrderedRenderCommandQueue} instance
+	 * @param orderedRenderCommandQueue the {@link SubmitNodeCollector} instance
 	 * @param stack                     the item stack of the armor item
 	 * @param bipedEntityRenderState    the render state of the entity
 	 * @param slot                      the equipment slot in which the armor stack is worn
 	 * @param light                     packed lightmap coordinates
-	 * @param contextModel              the model provided by {@link FeatureRenderer#getContextModel()}
+	 * @param contextModel              the model provided by {@link RenderLayer#getContextModel()}
 	 */
-	void render(MatrixStack matrices, OrderedRenderCommandQueue orderedRenderCommandQueue, ItemStack stack, BipedEntityRenderState bipedEntityRenderState, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel);
+	void render(PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, ItemStack stack, HumanoidRenderState bipedEntityRenderState, EquipmentSlot slot, int light, HumanoidModel<HumanoidRenderState> contextModel);
 
 	/**
 	 * Checks whether an item stack equipped on the head should also be
@@ -137,9 +137,9 @@ public interface ArmorRenderer {
 	 * <p>This method only applies to items registered with this renderer.
 	 *
 	 * <p>Note that the item will never be rendered by vanilla code if it has an armor model defined
-	 * by the {@link net.minecraft.component.DataComponentTypes#EQUIPPABLE minecraft:equippable} component.
+	 * by the {@link net.minecraft.core.component.DataComponents#EQUIPPABLE minecraft:equippable} component.
 	 * This method cannot be used to overwrite that check to re-enable also rendering the item model.
-	 * See {@link net.minecraft.client.render.entity.feature.ArmorFeatureRenderer#hasModel(ItemStack, EquipmentSlot)}.
+	 * See {@link net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer#hasModel(ItemStack, EquipmentSlot)}.
 	 *
 	 * @param entity the equipping entity
 	 * @param stack  the item stack equipped on the head
@@ -154,6 +154,6 @@ public interface ArmorRenderer {
 	 */
 	@FunctionalInterface
 	interface Factory {
-		ArmorRenderer createArmorRenderer(EntityRendererFactory.Context context);
+		ArmorRenderer createArmorRenderer(EntityRendererProvider.Context context);
 	}
 }

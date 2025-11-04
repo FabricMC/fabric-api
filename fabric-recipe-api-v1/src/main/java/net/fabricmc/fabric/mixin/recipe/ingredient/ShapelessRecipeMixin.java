@@ -28,12 +28,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.ShapelessRecipe;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.ShapelessMatch;
 
@@ -46,7 +46,7 @@ public class ShapelessRecipeMixin {
 	private boolean fabric_requiresTesting = false;
 
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void cacheRequiresTesting(String group, CraftingRecipeCategory category, ItemStack result, List<Ingredient> ingredients, CallbackInfo ci) {
+	private void cacheRequiresTesting(String group, CraftingBookCategory category, ItemStack result, List<Ingredient> ingredients, CallbackInfo ci) {
 		for (Ingredient ingredient : ingredients) {
 			if (ingredient.requiresTesting()) {
 				fabric_requiresTesting = true;
@@ -55,13 +55,13 @@ public class ShapelessRecipeMixin {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "matches(Lnet/minecraft/recipe/input/CraftingRecipeInput;Lnet/minecraft/world/World;)Z", cancellable = true)
-	public void customIngredientMatch(CraftingRecipeInput recipeInput, World world, CallbackInfoReturnable<Boolean> cir) {
+	@Inject(at = @At("HEAD"), method = "matches(Lnet/minecraft/world/item/crafting/CraftingInput;Lnet/minecraft/world/level/Level;)Z", cancellable = true)
+	public void customIngredientMatch(CraftingInput recipeInput, Level world, CallbackInfoReturnable<Boolean> cir) {
 		if (fabric_requiresTesting) {
-			List<ItemStack> nonEmptyStacks = new ArrayList<>(recipeInput.getStackCount());
+			List<ItemStack> nonEmptyStacks = new ArrayList<>(recipeInput.ingredientCount());
 
 			for (int i = 0; i < recipeInput.size(); ++i) {
-				ItemStack stack = recipeInput.getStackInSlot(i);
+				ItemStack stack = recipeInput.getItem(i);
 
 				if (!stack.isEmpty()) {
 					nonEmptyStacks.add(stack);

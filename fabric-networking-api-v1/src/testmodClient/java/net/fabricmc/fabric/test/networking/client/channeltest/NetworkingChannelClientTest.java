@@ -21,10 +21,10 @@ import java.util.Set;
 
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.KeyMapping;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -34,14 +34,14 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 public final class NetworkingChannelClientTest implements ClientModInitializer {
-	public static final KeyBinding OPEN = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-networking-api-v1-testmod.open", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_MENU, KeyBinding.Category.MISC));
+	public static final KeyMapping OPEN = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.fabric-networking-api-v1-testmod.open", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_MENU, KeyMapping.Category.MISC));
 	static final Set<Identifier> SUPPORTED_C2S_CHANNELS = new HashSet<>();
 
 	@Override
 	public void onInitializeClient() {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player != null) {
-				if (OPEN.wasPressed()) {
+				if (OPEN.consumeClick()) {
 					client.setScreen(new ChannelScreen(this));
 				}
 			}
@@ -50,16 +50,16 @@ public final class NetworkingChannelClientTest implements ClientModInitializer {
 		C2SPlayChannelEvents.REGISTER.register((handler, sender, client, channels) -> {
 			SUPPORTED_C2S_CHANNELS.addAll(channels);
 
-			if (MinecraftClient.getInstance().currentScreen instanceof ChannelScreen) {
-				((ChannelScreen) MinecraftClient.getInstance().currentScreen).refresh();
+			if (Minecraft.getInstance().screen instanceof ChannelScreen) {
+				((ChannelScreen) Minecraft.getInstance().screen).refresh();
 			}
 		});
 
 		C2SPlayChannelEvents.UNREGISTER.register((handler, sender, client, channels) -> {
 			SUPPORTED_C2S_CHANNELS.removeAll(channels);
 
-			if (MinecraftClient.getInstance().currentScreen instanceof ChannelScreen) {
-				((ChannelScreen) MinecraftClient.getInstance().currentScreen).refresh();
+			if (Minecraft.getInstance().screen instanceof ChannelScreen) {
+				((ChannelScreen) Minecraft.getInstance().screen).refresh();
 			}
 		});
 

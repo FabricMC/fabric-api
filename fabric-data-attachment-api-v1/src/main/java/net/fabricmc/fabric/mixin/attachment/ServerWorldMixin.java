@@ -23,15 +23,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Holder;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.MutableWorldProperties;
-import net.minecraft.world.PersistentStateType;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.WritableLevelData;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -42,13 +42,13 @@ import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
-@Mixin(ServerWorld.class)
-abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
+@Mixin(ServerLevel.class)
+abstract class ServerWorldMixin extends Level implements AttachmentTargetImpl {
 	@Shadow
 	@Final
 	private MinecraftServer server;
 
-	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DynamicRegistryManager registryManager, RegistryEntry<DimensionType> dimensionEntry, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
+	protected ServerWorldMixin(WritableLevelData properties, ResourceKey<Level> registryRef, RegistryAccess registryManager, Holder<DimensionType> dimensionEntry, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
 		super(
 				properties,
 				registryRef,
@@ -64,19 +64,19 @@ abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
 	@Inject(at = @At("TAIL"), method = "<init>")
 	private void createAttachmentsPersistentState(CallbackInfo ci) {
 		// Force persistent state creation
-		ServerWorld world = (ServerWorld) (Object) this;
-		var type = new PersistentStateType<>(
+		ServerLevel world = (ServerLevel) (Object) this;
+		var type = new SavedDataType<>(
 				AttachmentPersistentState.ID,
 				() -> new AttachmentPersistentState(world),
 				AttachmentPersistentState.codec(world),
 				null // Object builder API 12.1.0 and later makes this a no-op
 		);
-		world.getPersistentStateManager().getOrCreate(type);
+		world.getDataStorage().computeIfAbsent(type);
 	}
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
-		if ((Object) this instanceof ServerWorld serverWorld) {
+		if ((Object) this instanceof ServerLevel serverWorld) {
 			PlayerLookup.world(serverWorld)
 					.forEach(player -> {
 						if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
@@ -92,7 +92,7 @@ abstract class ServerWorldMixin extends World implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
-		return getRegistryManager();
+	public RegistryAccess fabric_getDynamicRegistryManager() {
+		return registryAccess();
 	}
 }

@@ -18,11 +18,11 @@ package net.fabricmc.fabric.api.resource.v1;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.resource.ResourceReloader;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.resource.v1.ResourceLoaderImpl;
 
@@ -34,17 +34,17 @@ public interface ResourceLoader {
 	/**
 	 * The resource reloader store key for the registry lookup.
 	 *
-	 * @apiNote The registry lookup is only available in {@linkplain ResourceType#SERVER_DATA server data} resource reloaders.
+	 * @apiNote The registry lookup is only available in {@linkplain PackType#SERVER_DATA server data} resource reloaders.
 	 */
-	ResourceReloader.Key<RegistryWrapper.WrapperLookup> RELOADER_REGISTRY_LOOKUP_KEY = new ResourceReloader.Key<>();
+	PreparableReloadListener.StateKey<HolderLookup.Provider> RELOADER_REGISTRY_LOOKUP_KEY = new PreparableReloadListener.StateKey<>();
 	/**
 	 * The resource reloader store key for the currently enabled feature set.
 	 *
-	 * @apiNote The feature set is only available in {@linkplain ResourceType#SERVER_DATA server data} resource reloaders.
+	 * @apiNote The feature set is only available in {@linkplain PackType#SERVER_DATA server data} resource reloaders.
 	 */
-	ResourceReloader.Key<FeatureSet> RELOADER_FEATURE_SET_KEY = new ResourceReloader.Key<>();
+	PreparableReloadListener.StateKey<FeatureFlagSet> RELOADER_FEATURE_SET_KEY = new PreparableReloadListener.StateKey<>();
 
-	static ResourceLoader get(ResourceType type) {
+	static ResourceLoader get(PackType type) {
 		return ResourceLoaderImpl.get(type);
 	}
 
@@ -55,7 +55,7 @@ public interface ResourceLoader {
 	 * @param reloader the resource reloader
 	 * @see #addReloaderOrdering(Identifier, Identifier)
 	 */
-	void registerReloader(Identifier id, ResourceReloader reloader);
+	void registerReloader(Identifier id, PreparableReloadListener reloader);
 
 	/**
 	 * Requests that resource reloaders registered as the first identifier is applied before the other referenced resource reloader.
@@ -68,7 +68,7 @@ public interface ResourceLoader {
 	 * @param firstReloader  the identifier of the resource reloader that should run before the other
 	 * @param secondReloader the identifier of the resource reloader that should run after the other
 	 * @see net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys identifiers of Vanilla resource reloaders
-	 * @see #registerReloader(Identifier, ResourceReloader) register a new resource reloader
+	 * @see #registerReloader(Identifier, PreparableReloadListener) register a new resource reloader
 	 */
 	void addReloaderOrdering(Identifier firstReloader, Identifier secondReloader);
 }

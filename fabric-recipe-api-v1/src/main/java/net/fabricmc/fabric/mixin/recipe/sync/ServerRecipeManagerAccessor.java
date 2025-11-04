@@ -19,11 +19,11 @@ package net.fabricmc.fabric.mixin.recipe.sync;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.recipe.PreparedRecipes;
-import net.minecraft.recipe.ServerRecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
+import net.minecraft.world.item.crafting.RecipeManager;
 
-@Mixin(ServerRecipeManager.class)
+@Mixin(RecipeManager.class)
 public interface ServerRecipeManagerAccessor {
-	@Accessor
-	PreparedRecipes getPreparedRecipes();
+	@Accessor("recipes")
+    RecipeMap getPreparedRecipes();
 }

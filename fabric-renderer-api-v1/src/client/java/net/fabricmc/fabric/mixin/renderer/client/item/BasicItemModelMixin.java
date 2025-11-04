@@ -27,17 +27,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.item.model.BasicItemModel;
-import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
-import net.minecraft.util.Atlases;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.item.BlockModelWrapper;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.data.AtlasIds;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.impl.renderer.BasicItemModelExtension;
 
-@Mixin(BasicItemModel.class)
+@Mixin(BlockModelWrapper.class)
 abstract class BasicItemModelMixin implements ItemModel, BasicItemModelExtension {
 	@Shadow
 	@Final
@@ -49,27 +49,27 @@ abstract class BasicItemModelMixin implements ItemModel, BasicItemModelExtension
 	private Mesh mesh;
 
 	@Inject(method = "update", at = @At("RETURN"))
-	private void onReturnUpdate(CallbackInfo ci, @Local ItemRenderState.LayerRenderState layer) {
+	private void onReturnUpdate(CallbackInfo ci, @Local ItemStackRenderState.LayerRenderState layer) {
 		if (mesh != null) {
 			mesh.outputTo(layer.emitter());
 		}
 	}
 
 	@Override
-	public void fabric_setMesh(Mesh mesh, ErrorCollectingSpriteGetter spriteGetter) {
+	public void fabric_setMesh(Mesh mesh, SpriteGetter spriteGetter) {
 		this.mesh = mesh;
 
 		if (!animated) {
-			SpriteFinder spriteFinder = spriteGetter.spriteFinder(Atlases.BLOCKS);
+			SpriteFinder spriteFinder = spriteGetter.spriteFinder(AtlasIds.BLOCKS);
 
 			mesh.forEach(quad -> {
 				if (animated) {
 					return;
 				}
 
-				ItemRenderState.Glint glint = quad.glint();
+				ItemStackRenderState.FoilType glint = quad.glint();
 
-				if ((glint != null && glint != ItemRenderState.Glint.NONE) || spriteFinder.find(quad).getContents().isAnimated()) {
+				if ((glint != null && glint != ItemStackRenderState.FoilType.NONE) || spriteFinder.find(quad).contents().isAnimated()) {
 					animated = true;
 				}
 			});

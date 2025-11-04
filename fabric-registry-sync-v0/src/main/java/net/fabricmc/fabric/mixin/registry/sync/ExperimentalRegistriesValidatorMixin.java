@@ -22,15 +22,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.registry.ExperimentalRegistriesValidator;
-import net.minecraft.registry.RegistryLoader;
+import net.minecraft.data.registries.RegistryPatchGenerator;
+import net.minecraft.resources.RegistryDataLoader;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
-@Mixin(ExperimentalRegistriesValidator.class)
+@Mixin(RegistryPatchGenerator.class)
 class ExperimentalRegistriesValidatorMixin {
-	@Redirect(at = @At(value = "FIELD", target = "Lnet/minecraft/registry/RegistryLoader;DYNAMIC_REGISTRIES:Ljava/util/List;"), method = "method_54839")
-	private static List<RegistryLoader.Entry<?>> getDynamicRegistries() {
+	@Redirect(at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;WORLDGEN_REGISTRIES:Ljava/util/List;"), method = "method_54839")
+	private static List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
 		// Register cloners for all dynamic registries.
 		return DynamicRegistries.getDynamicRegistries();
 	}

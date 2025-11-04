@@ -24,16 +24,16 @@ import com.mojang.logging.LogUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -54,7 +54,7 @@ public class RegistrySyncTest implements ModInitializer {
 	// Store a list of Registries used with PacketCodecs.registry, and then check that they are marked as synced when the server starts.
 	// We check them later as they may be used before the registry attributes are assigned.
 	private static boolean hasCheckedEarlyRegistries = false;
-	private static final List<RegistryKey<? extends Registry<?>>> sycnedRegistriesToCheck = new ArrayList<>();
+	private static final List<ResourceKey<? extends Registry<?>>> sycnedRegistriesToCheck = new ArrayList<>();
 
 	@Override
 	public void onInitialize() {
@@ -64,21 +64,21 @@ public class RegistrySyncTest implements ModInitializer {
 			registerBlocks("registry_sync2", 50, 0);
 			registerBlocks("registry_sync", 2, 5);
 
-			Validate.isTrue(RegistryAttributeHolder.get(Registries.BLOCK).hasAttribute(RegistryAttribute.MODDED), "Modded block was registered but registry not marked as modded");
+			Validate.isTrue(RegistryAttributeHolder.get(BuiltInRegistries.BLOCK).hasAttribute(RegistryAttribute.MODDED), "Modded block was registered but registry not marked as modded");
 
 			if (REGISTER_ITEMS) {
-				Validate.isTrue(RegistryAttributeHolder.get(Registries.ITEM).hasAttribute(RegistryAttribute.MODDED), "Modded item was registered but registry not marked as modded");
+				Validate.isTrue(RegistryAttributeHolder.get(BuiltInRegistries.ITEM).hasAttribute(RegistryAttribute.MODDED), "Modded item was registered but registry not marked as modded");
 			}
 		}
 
-		RegistryKey<Registry<String>> fabricRegistryKey = RegistryKey.ofRegistry(Identifier.of("registry_sync", "fabric_registry"));
-		SimpleRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(fabricRegistryKey)
+		ResourceKey<Registry<String>> fabricRegistryKey = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("registry_sync", "fabric_registry"));
+		MappedRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(fabricRegistryKey)
 				.attribute(RegistryAttribute.SYNCED)
 				.buildAndRegister();
 
-		Registry.register(fabricRegistry, Identifier.of("registry_sync", "test"), "test");
+		Registry.register(fabricRegistry, Identifier.fromNamespaceAndPath("registry_sync", "test"), "test");
 
-		Validate.isTrue(Registries.REGISTRIES.getIds().contains(Identifier.of("registry_sync", "fabric_registry")));
+		Validate.isTrue(BuiltInRegistries.REGISTRY.keySet().contains(Identifier.fromNamespaceAndPath("registry_sync", "fabric_registry")));
 
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.MODDED));
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
@@ -87,7 +87,7 @@ public class RegistrySyncTest implements ModInitializer {
 
 		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
 			setupCalled.set(true);
-			registryManager.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) -> {
+			registryManager.registerEntryAdded(Registries.BIOME, (rawId, id, object) -> {
 				LOGGER.info("Biome added: {}", id);
 			});
 		});
@@ -102,11 +102,11 @@ public class RegistrySyncTest implements ModInitializer {
 		});
 
 		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
-		RegistryAttributeHolder.get(Registries.STATUS_EFFECT).addAttribute(RegistryAttribute.MODDED);
+		RegistryAttributeHolder.get(BuiltInRegistries.MOB_EFFECT).addAttribute(RegistryAttribute.MODDED);
 	}
 
-	public static void checkSyncedRegistry(RegistryKey<? extends Registry<?>> registry) {
-		if (!Registries.REGISTRIES.containsId(registry.getValue())) {
+	public static void checkSyncedRegistry(ResourceKey<? extends Registry<?>> registry) {
+		if (!BuiltInRegistries.REGISTRY.containsKey(registry.identifier())) {
 			// Skip dynamic registries, as there are always synced.
 			return;
 		}
@@ -116,25 +116,25 @@ public class RegistrySyncTest implements ModInitializer {
 			return;
 		}
 
-		if (registry.getValue().equals(Identifier.of("recipe_serializer"))) {
+		if (registry.identifier().equals(Identifier.parse("recipe_serializer"))) {
 			// Recipe serializers are not synced, as there is an unused codec left over.
 			return;
 		}
 
 		if (!RegistryAttributeHolder.get(registry).hasAttribute(RegistryAttribute.SYNCED)) {
-			throw new IllegalStateException("Registry " + registry.getValue() + " is not marked as SYNCED!");
+			throw new IllegalStateException("Registry " + registry.identifier() + " is not marked as SYNCED!");
 		}
 	}
 
 	private static void registerBlocks(String namespace, int amount, int startingId) {
 		for (int i = 0; i < amount; i++) {
-			Identifier id = Identifier.of(namespace, "block_" + (i + startingId));
-			Block block = new Block(AbstractBlock.Settings.create().registryKey(RegistryKey.of(RegistryKeys.BLOCK, id)));
-			Registry.register(Registries.BLOCK, id, block);
+			Identifier id = Identifier.fromNamespaceAndPath(namespace, "block_" + (i + startingId));
+			Block block = new Block(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id)));
+			Registry.register(BuiltInRegistries.BLOCK, id, block);
 
 			if (REGISTER_ITEMS) {
-				BlockItem blockItem = new BlockItem(block, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, id)));
-				Registry.register(Registries.ITEM, id, blockItem);
+				BlockItem blockItem = new BlockItem(block, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, id)));
+				Registry.register(BuiltInRegistries.ITEM, id, blockItem);
 			}
 		}
 	}

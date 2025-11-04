@@ -25,40 +25,43 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.world.BiomeColorCache;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.biome.ColorResolver;
+import net.minecraft.client.color.block.BlockTintCache;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.ColorResolver;
 
 import net.fabricmc.fabric.impl.client.rendering.ColorResolverRegistryImpl;
 
-@Mixin(ClientWorld.class)
+@Mixin(ClientLevel.class)
 public abstract class ClientWorldMixin {
 	// Do not use the vanilla map because it is an Object2ObjectArrayMap. Array maps have O(n) retrievals compared to
 	// hash maps' O(1) retrievals. If many custom ColorResolvers are registered, this may have a non-negligible
 	// performance impact.
 	@Unique
-	private final Reference2ReferenceMap<ColorResolver, BiomeColorCache> customColorCache = ColorResolverRegistryImpl.createCustomCacheMap(resolver -> new BiomeColorCache(pos -> calculateColor(pos, resolver)));
+	private final Reference2ReferenceMap<ColorResolver, BlockTintCache> customColorCache = ColorResolverRegistryImpl.createCustomCacheMap(resolver -> new BlockTintCache(pos -> calculateColor(pos, resolver)));
 
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	public abstract int calculateColor(BlockPos pos, ColorResolver colorResolver);
 
-	@Inject(method = "resetChunkColor(Lnet/minecraft/util/math/ChunkPos;)V", at = @At("RETURN"))
+	@Inject(method = "onChunkLoaded(Lnet/minecraft/world/level/ChunkPos;)V", at = @At("RETURN"))
 	private void onResetChunkColor(ChunkPos chunkPos, CallbackInfo ci) {
-		for (BiomeColorCache cache : customColorCache.values()) {
-			cache.reset(chunkPos.x, chunkPos.z);
+		for (BlockTintCache cache : customColorCache.values()) {
+			cache.invalidateForChunk(chunkPos.x, chunkPos.z);
 		}
 	}
 
-	@Inject(method = "reloadColor()V", at = @At("RETURN"))
+	@Inject(method = "clearTintCaches()V", at = @At("RETURN"))
 	private void onReloadColor(CallbackInfo ci) {
-		for (BiomeColorCache cache : customColorCache.values()) {
-			cache.reset();
+		for (BlockTintCache cache : customColorCache.values()) {
+			cache.invalidateAll();
 		}
 	}
 
-	@ModifyExpressionValue(method = "getColor(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/biome/ColorResolver;)I", at = @At(value = "INVOKE", target = "it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap.get(Ljava/lang/Object;)Ljava/lang/Object;"))
+	@ModifyExpressionValue(method = "getBlockTint(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/ColorResolver;)I", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;it/unimi/dsi/fastutil/objects/Object2ObjectArrayMap.get(Ljava/lang/Object;)Ljava/lang/Object;"))
 	private Object modifyNullCache(/* BiomeColorCache */ Object cache, BlockPos pos, ColorResolver resolver) {
 		if (cache == null) {
 			cache = customColorCache.get(resolver);

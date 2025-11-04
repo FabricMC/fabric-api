@@ -22,23 +22,23 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.client.render.model.ErrorCollectingSpriteGetter;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteLoader;
-import net.minecraft.util.Atlases;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.SpriteLoader;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.impl.renderer.MissingSpriteFinderImpl;
 
-@Mixin(targets = "net/minecraft/client/render/model/BakedModelManager$1")
-abstract class BakedModelManager1Mixin implements ErrorCollectingSpriteGetter {
+@Mixin(targets = "net.minecraft.client.resources.model.ModelManager$1")
+abstract class BakedModelManager1Mixin implements SpriteGetter {
 	@Shadow
 	@Final
-	private Sprite missingSprite;
+	private TextureAtlasSprite blockMissing;
 	@Shadow
 	@Final
-	SpriteLoader.StitchResult field_61871;
+	SpriteLoader.Preparations val$blockAtlas;
 
 	@Unique
 	@Nullable
@@ -46,8 +46,8 @@ abstract class BakedModelManager1Mixin implements ErrorCollectingSpriteGetter {
 
 	@Override
 	public SpriteFinder spriteFinder(Identifier atlasId) {
-		if (atlasId.equals(Atlases.BLOCKS)) {
-			return field_61871.spriteFinder();
+		if (atlasId.equals(AtlasIds.BLOCKS)) {
+			return val$blockAtlas.spriteFinder();
 		}
 
 		MissingSpriteFinderImpl result = missingSpriteFinder;
@@ -57,7 +57,7 @@ abstract class BakedModelManager1Mixin implements ErrorCollectingSpriteGetter {
 				result = missingSpriteFinder;
 
 				if (result == null) {
-					missingSpriteFinder = result = new MissingSpriteFinderImpl(missingSprite);
+					missingSpriteFinder = result = new MissingSpriteFinderImpl(blockMissing);
 				}
 			}
 		}

@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.test.networking.play;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.string;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,18 +28,18 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.PacketCallbacks;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketSendListener;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.game.ClientboundBundlePacket;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
@@ -56,17 +56,17 @@ import net.fabricmc.loader.api.FabricLoader;
 public final class NetworkingPlayPacketTest implements ModInitializer {
 	private static boolean spamUnknownPackets = false;
 
-	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
-		ServerPlayNetworking.getSender(player).sendPacket(new OverlayPacket(Text.literal(stuff)), PacketCallbacks.always(() -> {
+	public static void sendToTestChannel(ServerPlayer player, String stuff) {
+		ServerPlayNetworking.getSender(player).sendPacket(new OverlayPacket(Component.literal(stuff)), PacketSendListener.thenRun(() -> {
 			NetworkingTestmods.LOGGER.info("Sent custom payload packet");
 		}));
 	}
 
-	private static void sendToUnknownChannel(ServerPlayerEntity player) {
+	private static void sendToUnknownChannel(ServerPlayer player) {
 		ServerPlayNetworking.getSender(player).sendPacket(new UnknownPayload("Hello"));
 	}
 
-	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
+	public static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
 		NetworkingTestmods.LOGGER.info("Registering test command");
 
 		dispatcher.register(literal("networktestcommand")
@@ -81,19 +81,19 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				}))
 				.then(literal("spamUnknown").executes(ctx -> {
 					spamUnknownPackets = true;
-					ctx.getSource().sendMessage(Text.literal("Spamming unknown packets state:" + spamUnknownPackets));
+					ctx.getSource().sendSystemMessage(Component.literal("Spamming unknown packets state:" + spamUnknownPackets));
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("simple").executes(ctx -> {
-					ServerPlayNetworking.send(ctx.getSource().getPlayer(), new OverlayPacket(Text.literal("simple")));
+					ServerPlayNetworking.send(ctx.getSource().getPlayer(), new OverlayPacket(Component.literal("simple")));
 					return Command.SINGLE_SUCCESS;
 				}))
 				.then(literal("bundled").executes(ctx -> {
-					BundleS2CPacket packet = new BundleS2CPacket(List.of(
-							ServerPlayNetworking.createS2CPacket(new OverlayPacket(Text.literal("bundled #1"))),
-							new BundleS2CPacket(List.of(
-									ServerPlayNetworking.createS2CPacket(new OverlayPacket(Text.literal("bundled #2"))),
-									ServerPlayNetworking.createS2CPacket(new OverlayPacket(Text.literal("bundled #3")))
+					ClientboundBundlePacket packet = new ClientboundBundlePacket(List.of(
+							ServerPlayNetworking.createS2CPacket(new OverlayPacket(Component.literal("bundled #1"))),
+							new ClientboundBundlePacket(List.of(
+									ServerPlayNetworking.createS2CPacket(new OverlayPacket(Component.literal("bundled #2"))),
+									ServerPlayNetworking.createS2CPacket(new OverlayPacket(Component.literal("bundled #3")))
 							))
 					));
 					ServerPlayNetworking.getSender(ctx.getSource().getPlayer()).sendPacket(packet);
@@ -120,7 +120,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 			NetworkingPlayPacketTest.registerCommand(dispatcher);
 		});
 
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sender.sendPacket(new OverlayPacket(Text.literal("Fabric API"))));
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sender.sendPacket(new OverlayPacket(Component.literal("Fabric API"))));
 
 		ServerTickEvents.START_SERVER_TICK.register(server -> {
 			if (!spamUnknownPackets) {
@@ -128,7 +128,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 			}
 
 			// Send many unknown packets, used to debug https://github.com/FabricMC/fabric/issues/3505
-			for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 				for (int i = 0; i < 50; i++) {
 					sendToUnknownChannel(player);
 				}
@@ -136,15 +136,15 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		});
 	}
 
-	public record OverlayPacket(Text message) implements CustomPayload {
-		public static final CustomPayload.Id<OverlayPacket> ID = new Id<>(NetworkingTestmods.id("test_channel"));
-		public static final PacketCodec<RegistryByteBuf, OverlayPacket> CODEC = CustomPayload.codecOf(OverlayPacket::write, OverlayPacket::new);
+	public record OverlayPacket(Component message) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<OverlayPacket> ID = new Type<>(NetworkingTestmods.id("test_channel"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, OverlayPacket> CODEC = CustomPacketPayload.codec(OverlayPacket::write, OverlayPacket::new);
 
-		public OverlayPacket(RegistryByteBuf buf) {
-			this(TextCodecs.REGISTRY_PACKET_CODEC.decode(buf));
+		public OverlayPacket(RegistryFriendlyByteBuf buf) {
+			this(ComponentSerialization.STREAM_CODEC.decode(buf));
 		}
 
-		public void write(RegistryByteBuf buf) {
+		public void write(RegistryFriendlyByteBuf buf) {
 			// Test that we can get the configuration channels that the client accepts
 			FabricRegistryByteBuf fabricRegistryByteBuf = (FabricRegistryByteBuf) buf;
 			Collection<Identifier> channels = fabricRegistryByteBuf.fabric_getSendableConfigurationChannels();
@@ -154,21 +154,21 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				throw new IllegalStateException("Expected common payload channel to be sent");
 			}
 
-			TextCodecs.REGISTRY_PACKET_CODEC.encode(buf, this.message);
+			ComponentSerialization.STREAM_CODEC.encode(buf, this.message);
 		}
 
 		@Override
-		public Id<? extends CustomPayload> getId() {
+		public Type<? extends CustomPacketPayload> type() {
 			return ID;
 		}
 	}
 
-	private record UnknownPayload(String data) implements CustomPayload {
-		private static final CustomPayload.Id<UnknownPayload> ID = new Id<>(NetworkingTestmods.id("unknown_test_channel_s2c"));
-		private static final PacketCodec<PacketByteBuf, UnknownPayload> CODEC = PacketCodecs.STRING.xmap(UnknownPayload::new, UnknownPayload::data).cast();
+	private record UnknownPayload(String data) implements CustomPacketPayload {
+		private static final CustomPacketPayload.Type<UnknownPayload> ID = new Type<>(NetworkingTestmods.id("unknown_test_channel_s2c"));
+		private static final StreamCodec<FriendlyByteBuf, UnknownPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(UnknownPayload::new, UnknownPayload::data).cast();
 
 		@Override
-		public Id<? extends CustomPayload> getId() {
+		public Type<? extends CustomPacketPayload> type() {
 			return ID;
 		}
 	}

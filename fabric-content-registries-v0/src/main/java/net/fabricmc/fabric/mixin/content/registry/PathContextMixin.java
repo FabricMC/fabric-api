@@ -23,28 +23,31 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.ai.pathing.PathContext;
-import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.CollisionView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathfindingContext;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.CollisionGetter;
 
 import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 
-@Mixin(PathContext.class)
+@Mixin(PathfindingContext.class)
 public abstract class PathContextMixin {
 	@Shadow
 	public abstract BlockState getBlockState(BlockPos blockPos);
 
-	@Shadow
-	public abstract CollisionView getWorld();
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
+	public abstract CollisionGetter getWorld();
 
 	/**
 	 * Overrides the node type for the specified position, if the position is found as neighbor block in a path.
 	 */
-	@Inject(method = "getNodeType", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/BlockPos$Mutable;set(III)Lnet/minecraft/util/math/BlockPos$Mutable;"), cancellable = true)
-	private void onGetNodeType(int x, int y, int z, CallbackInfoReturnable<PathNodeType> cir, @Local BlockPos pos) {
-		final PathNodeType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(getBlockState(pos), getWorld(), pos, true);
+	@Inject(method = "getPathTypeFromState", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/core/BlockPos$MutableBlockPos;set(III)Lnet/minecraft/core/BlockPos$MutableBlockPos;"), cancellable = true)
+	private void onGetNodeType(int x, int y, int z, CallbackInfoReturnable<PathType> cir, @Local BlockPos pos) {
+		final PathType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(getBlockState(pos), getWorld(), pos, true);
 
 		if (neighborNodeType != null) {
 			cir.setReturnValue(neighborNodeType);

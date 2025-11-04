@@ -22,45 +22,45 @@ import java.util.stream.Stream;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.recipe.PreparedRecipes;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.recipe.input.RecipeInput;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.world.World;
+import net.minecraft.world.item.crafting.RecipeMap;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
 
-public record SynchronizedRecipesImpl(PreparedRecipes preparedRecipes) implements SynchronizedRecipes {
-	public static final SynchronizedRecipesImpl EMPTY = new SynchronizedRecipesImpl(PreparedRecipes.EMPTY);
+public record SynchronizedRecipesImpl(RecipeMap preparedRecipes) implements SynchronizedRecipes {
+	public static final SynchronizedRecipesImpl EMPTY = new SynchronizedRecipesImpl(RecipeMap.EMPTY);
 
-	public static SynchronizedRecipesImpl of(Iterable<RecipeEntry<?>> recipes) {
-		return new SynchronizedRecipesImpl(PreparedRecipes.of(recipes));
+	public static SynchronizedRecipesImpl of(Iterable<RecipeHolder<?>> recipes) {
+		return new SynchronizedRecipesImpl(RecipeMap.create(recipes));
 	}
 
 	@Override
-	public <I extends RecipeInput, T extends Recipe<I>> Stream<RecipeEntry<T>> getAllMatches(RecipeType<T> type, I input, World world) {
-		return this.preparedRecipes.find(type, input, world);
+	public <I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level world) {
+		return this.preparedRecipes.getRecipesFor(type, input, world);
 	}
 
 	@Override
-	public <I extends RecipeInput, T extends Recipe<I>> Collection<RecipeEntry<T>> getAllOfType(RecipeType<T> type) {
-		return this.preparedRecipes.getAll(type);
+	public <I extends RecipeInput, T extends Recipe<I>> Collection<RecipeHolder<T>> getAllOfType(RecipeType<T> type) {
+		return this.preparedRecipes.byType(type);
 	}
 
 	@Override
-	public <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeEntry<T>> getFirstMatch(RecipeType<T> type, I input, World world) {
-		return this.preparedRecipes.find(type, input, world).findFirst();
+	public <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level world) {
+		return this.preparedRecipes.getRecipesFor(type, input, world).findFirst();
 	}
 
 	@Override
-	public @Nullable RecipeEntry<?> get(RegistryKey<Recipe<?>> key) {
-		return this.preparedRecipes.get(key);
+	public @Nullable RecipeHolder<?> get(ResourceKey<Recipe<?>> key) {
+		return this.preparedRecipes.byKey(key);
 	}
 
 	@Override
-	public Collection<RecipeEntry<?>> recipes() {
-		return this.preparedRecipes.recipes();
+	public Collection<RecipeHolder<?>> recipes() {
+		return this.preparedRecipes.values();
 	}
 }

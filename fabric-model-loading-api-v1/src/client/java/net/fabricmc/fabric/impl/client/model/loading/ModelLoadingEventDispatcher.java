@@ -30,14 +30,14 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.render.model.BlockStatesLoader;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.resources.model.BlockStateModelLoader;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
@@ -85,12 +85,12 @@ public class ModelLoadingEventDispatcher {
 		return pluginContext.modifyModelOnLoad().invoker().modifyModelOnLoad(model, onLoadModifierContext);
 	}
 
-	public BlockStatesLoader.LoadedModels modifyBlockModelsOnLoad(BlockStatesLoader.LoadedModels models) {
-		Map<BlockState, BlockStateModel.UnbakedGrouped> map = models.models();
+	public BlockStateModelLoader.LoadedModels modifyBlockModelsOnLoad(BlockStateModelLoader.LoadedModels models) {
+		Map<BlockState, BlockStateModel.UnbakedRoot> map = models.models();
 
 		if (!(map instanceof HashMap)) {
 			map = new HashMap<>(map);
-			models = new BlockStatesLoader.LoadedModels(map);
+			models = new BlockStateModelLoader.LoadedModels(map);
 		}
 
 		putResolvedBlockStates(map);
@@ -99,18 +99,18 @@ public class ModelLoadingEventDispatcher {
 		return models;
 	}
 
-	private void putResolvedBlockStates(Map<BlockState, BlockStateModel.UnbakedGrouped> map) {
+	private void putResolvedBlockStates(Map<BlockState, BlockStateModel.UnbakedRoot> map) {
 		pluginContext.blockStateResolvers.forEach((block, resolver) -> {
 			resolveBlockStates(resolver, block, map::put);
 		});
 	}
 
-	private void resolveBlockStates(BlockStateResolver resolver, Block block, BiConsumer<BlockState, BlockStateModel.UnbakedGrouped> output) {
+	private void resolveBlockStates(BlockStateResolver resolver, Block block, BiConsumer<BlockState, BlockStateModel.UnbakedRoot> output) {
 		BlockStateResolverContext context = blockStateResolverContext;
 		context.prepare(block);
 
-		Reference2ReferenceMap<BlockState, BlockStateModel.UnbakedGrouped> resolvedModels = context.models;
-		ImmutableList<BlockState> allStates = block.getStateManager().getStates();
+		Reference2ReferenceMap<BlockState, BlockStateModel.UnbakedRoot> resolvedModels = context.models;
+		ImmutableList<BlockState> allStates = block.getStateDefinition().getPossibleStates();
 		boolean thrown = false;
 
 		try {
@@ -127,7 +127,7 @@ public class ModelLoadingEventDispatcher {
 				resolvedModels.forEach(output);
 			} else {
 				for (BlockState state : allStates) {
-					BlockStateModel.@Nullable UnbakedGrouped model = resolvedModels.get(state);
+					BlockStateModel.@Nullable UnbakedRoot model = resolvedModels.get(state);
 
 					if (model == null) {
 						LOGGER.error("Block state resolver did not provide a model for state {} in block {}. Using missing model.", state, block);
@@ -141,12 +141,12 @@ public class ModelLoadingEventDispatcher {
 		resolvedModels.clear();
 	}
 
-	private BlockStateModel.UnbakedGrouped modifyBlockModelOnLoad(BlockState state, BlockStateModel.UnbakedGrouped model) {
+	private BlockStateModel.UnbakedRoot modifyBlockModelOnLoad(BlockState state, BlockStateModel.UnbakedRoot model) {
 		onLoadBlockModifierContext.prepare(state);
 		return pluginContext.modifyBlockModelOnLoad().invoker().modifyModelOnLoad(model, onLoadBlockModifierContext);
 	}
 
-	public BlockStateModel modifyBlockModel(BlockStateModel.UnbakedGrouped unbakedModel, BlockState state, Baker baker, Operation<BlockStateModel> bakeOperation) {
+	public BlockStateModel modifyBlockModel(BlockStateModel.UnbakedRoot unbakedModel, BlockState state, ModelBaker baker, Operation<BlockStateModel> bakeOperation) {
 		BakeBlockModifierContext modifierContext = new BakeBlockModifierContext(state, baker);
 		unbakedModel = pluginContext.modifyBlockModelBeforeBake().invoker().modifyModelBeforeBake(unbakedModel, modifierContext);
 		BlockStateModel model = bakeOperation.call(unbakedModel, state, baker);
@@ -154,7 +154,7 @@ public class ModelLoadingEventDispatcher {
 		return pluginContext.modifyBlockModelAfterBake().invoker().modifyModelAfterBake(model, modifierContext);
 	}
 
-	public ItemModel modifyItemModel(ItemModel.Unbaked unbakedModel, Identifier itemId, ItemModel.BakeContext bakeContext, Operation<ItemModel> bakeOperation) {
+	public ItemModel modifyItemModel(ItemModel.Unbaked unbakedModel, Identifier itemId, ItemModel.BakingContext bakeContext, Operation<ItemModel> bakeOperation) {
 		BakeItemModifierContext modifierContext = new BakeItemModifierContext(itemId, bakeContext);
 		unbakedModel = pluginContext.modifyItemModelBeforeBake().invoker().modifyModelBeforeBake(unbakedModel, modifierContext);
 		ItemModel model = bakeOperation.call(unbakedModel, bakeContext);
@@ -164,7 +164,7 @@ public class ModelLoadingEventDispatcher {
 
 	private static class BlockStateResolverContext implements BlockStateResolver.Context {
 		private Block block;
-		private final Reference2ReferenceMap<BlockState, BlockStateModel.UnbakedGrouped> models = new Reference2ReferenceOpenHashMap<>();
+		private final Reference2ReferenceMap<BlockState, BlockStateModel.UnbakedRoot> models = new Reference2ReferenceOpenHashMap<>();
 
 		private void prepare(Block block) {
 			this.block = block;
@@ -177,11 +177,11 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		@Override
-		public void setModel(BlockState state, BlockStateModel.UnbakedGrouped model) {
+		public void setModel(BlockState state, BlockStateModel.UnbakedRoot model) {
 			Objects.requireNonNull(state, "state cannot be null");
 			Objects.requireNonNull(model, "model cannot be null");
 
-			if (!state.isOf(block)) {
+			if (!state.is(block)) {
 				throw new IllegalArgumentException("Attempted to set model for state " + state + " on block " + block);
 			}
 
@@ -219,15 +219,15 @@ public class ModelLoadingEventDispatcher {
 
 	private static class BakeBlockModifierContext implements ModelModifier.BeforeBakeBlock.Context, ModelModifier.AfterBakeBlock.Context {
 		private final BlockState state;
-		private final Baker baker;
-		private BlockStateModel.UnbakedGrouped sourceModel;
+		private final ModelBaker baker;
+		private BlockStateModel.UnbakedRoot sourceModel;
 
-		private BakeBlockModifierContext(BlockState state, Baker baker) {
+		private BakeBlockModifierContext(BlockState state, ModelBaker baker) {
 			this.state = state;
 			this.baker = baker;
 		}
 
-		private void prepareAfterBake(BlockStateModel.UnbakedGrouped sourceModel) {
+		private void prepareAfterBake(BlockStateModel.UnbakedRoot sourceModel) {
 			this.sourceModel = sourceModel;
 		}
 
@@ -237,22 +237,22 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		@Override
-		public Baker baker() {
+		public ModelBaker baker() {
 			return baker;
 		}
 
 		@Override
-		public BlockStateModel.UnbakedGrouped sourceModel() {
+		public BlockStateModel.UnbakedRoot sourceModel() {
 			return sourceModel;
 		}
 	}
 
 	private static class BakeItemModifierContext implements ModelModifier.BeforeBakeItem.Context, ModelModifier.AfterBakeItem.Context {
 		private final Identifier itemId;
-		private final ItemModel.BakeContext bakeContext;
+		private final ItemModel.BakingContext bakeContext;
 		private ItemModel.Unbaked sourceModel;
 
-		private BakeItemModifierContext(Identifier itemId, ItemModel.BakeContext bakeContext) {
+		private BakeItemModifierContext(Identifier itemId, ItemModel.BakingContext bakeContext) {
 			this.itemId = itemId;
 			this.bakeContext = bakeContext;
 		}
@@ -267,7 +267,7 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		@Override
-		public ItemModel.BakeContext bakeContext() {
+		public ItemModel.BakingContext bakeContext() {
 			return bakeContext;
 		}
 

@@ -33,11 +33,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.server.command.DatapackCommand;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.commands.DataPackCommand;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
 
@@ -45,24 +45,24 @@ import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
  * Disables enabling/disabling internal data packs.
  * Listing them is still allowed, but they do not appear in suggestions.
  */
-@Mixin(DatapackCommand.class)
+@Mixin(DataPackCommand.class)
 public class DatapackCommandMixin {
 	@Unique
 	private static final DynamicCommandExceptionType INTERNAL_PACK_EXCEPTION = new DynamicCommandExceptionType(
-			packName -> Text.stringifiedTranslatable("commands.datapack.fabric.internal", packName));
+			packName -> Component.translatableEscape("commands.datapack.fabric.internal", packName));
 
-	@Redirect(method = "method_13136", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;getEnabledIds()Ljava/util/Collection;"))
-	private static Collection<String> filterEnabledPackSuggestions(ResourcePackManager dataPackManager) {
-		return dataPackManager.getEnabledProfiles().stream().filter(profile -> !((FabricResourcePackProfile) profile).fabric_isHidden()).map(ResourcePackProfile::getId).toList();
+	@Redirect(method = "method_13136", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/PackRepository;getSelectedIds()Ljava/util/Collection;"))
+	private static Collection<String> filterEnabledPackSuggestions(PackRepository dataPackManager) {
+		return dataPackManager.getSelectedPacks().stream().filter(profile -> !((FabricResourcePackProfile) profile).fabric_isHidden()).map(Pack::getId).toList();
 	}
 
 	@WrapOperation(method = "method_13120", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
-	private static Stream<ResourcePackProfile> filterDisabledPackSuggestions(Stream<ResourcePackProfile> instance, Predicate<? super ResourcePackProfile> predicate, Operation<Stream<ResourcePackProfile>> original) {
+	private static Stream<Pack> filterDisabledPackSuggestions(Stream<Pack> instance, Predicate<? super Pack> predicate, Operation<Stream<Pack>> original) {
 		return original.call(instance, predicate).filter(profile -> !((FabricResourcePackProfile) profile).fabric_isHidden());
 	}
 
-	@Inject(method = "getPackContainer", at = @At(value = "INVOKE", target = "Ljava/util/Collection;contains(Ljava/lang/Object;)Z", shift = At.Shift.BEFORE))
-	private static void errorOnInternalPack(CommandContext<ServerCommandSource> context, String name, boolean enable, CallbackInfoReturnable<ResourcePackProfile> cir, @Local ResourcePackProfile profile) throws CommandSyntaxException {
+	@Inject(method = "getPack", at = @At(value = "INVOKE", target = "Ljava/util/Collection;contains(Ljava/lang/Object;)Z", shift = At.Shift.BEFORE))
+	private static void errorOnInternalPack(CommandContext<CommandSourceStack> context, String name, boolean enable, CallbackInfoReturnable<Pack> cir, @Local Pack profile) throws CommandSyntaxException {
 		if (((FabricResourcePackProfile) profile).fabric_isHidden()) throw INTERNAL_PACK_EXCEPTION.create(profile.getId());
 	}
 }

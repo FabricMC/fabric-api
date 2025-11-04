@@ -23,41 +23,41 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.packet.s2c.common.SynchronizeTagsS2CPacket;
-import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
-import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.network.protocol.common.ClientboundUpdateTagsPacket;
+import net.minecraft.network.protocol.game.ClientboundLoginPacket;
+import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
 
-@Mixin(ClientPlayNetworkHandler.class)
+@Mixin(ClientPacketListener.class)
 abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
-	private ClientWorld world;
+	private ClientLevel level;
 
 	@Shadow
 	@Final
-	private DynamicRegistryManager.Immutable combinedDynamicRegistries;
+	private RegistryAccess.Frozen registryAccess;
 
-	@Inject(method = "onPlayerRespawn", at = @At(value = "NEW", target = "net/minecraft/client/world/ClientWorld"))
-	private void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
+	@Inject(method = "handleRespawn", at = @At(value = "NEW", target = "net/minecraft/client/multiplayer/ClientLevel"))
+	private void onPlayerRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
 		// If a world already exists, we need to unload all (block)entities in the world.
-		if (this.world != null) {
-			for (Entity entity : this.world.getEntities()) {
-				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.world);
+		if (this.level != null) {
+			for (Entity entity : this.level.entitiesForRendering()) {
+				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);
 			}
 
-			for (WorldChunk chunk : ((LoadedChunksCache) this.world).fabric_getLoadedChunks()) {
+			for (LevelChunk chunk : ((LoadedChunksCache) this.level).fabric_getLoadedChunks()) {
 				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
-					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
+					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.level);
 				}
 			}
 		}
@@ -69,41 +69,41 @@ abstract class ClientPlayNetworkHandlerMixin {
 	 * Velocity by default will send a Game Join packet when the player changes servers, which will create a new client world.
 	 * Also anyone can send another GameJoinPacket at any time, so we need to watch out.
 	 */
-	@Inject(method = "onGameJoin", at = @At(value = "NEW", target = "net/minecraft/client/world/ClientWorld"))
-	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
+	@Inject(method = "handleLogin", at = @At(value = "NEW", target = "net/minecraft/client/multiplayer/ClientLevel"))
+	private void onGameJoin(ClientboundLoginPacket packet, CallbackInfo ci) {
 		// If a world already exists, we need to unload all (block)entities in the world.
-		if (this.world != null) {
-			for (Entity entity : world.getEntities()) {
-				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.world);
+		if (this.level != null) {
+			for (Entity entity : level.entitiesForRendering()) {
+				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);
 			}
 
-			for (WorldChunk chunk : ((LoadedChunksCache) this.world).fabric_getLoadedChunks()) {
+			for (LevelChunk chunk : ((LoadedChunksCache) this.level).fabric_getLoadedChunks()) {
 				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
-					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
+					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.level);
 				}
 			}
 		}
 	}
 
 	// Called when the client disconnects from a server or enters reconfiguration.
-	@Inject(method = "clearWorld", at = @At("HEAD"))
+	@Inject(method = "clearLevel", at = @At("HEAD"))
 	private void onClearWorld(CallbackInfo ci) {
 		// If a world already exists, we need to unload all (block)entities in the world.
-		if (this.world != null) {
-			for (Entity entity : this.world.getEntities()) {
-				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.world);
+		if (this.level != null) {
+			for (Entity entity : this.level.entitiesForRendering()) {
+				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);
 			}
 
-			for (WorldChunk chunk : ((LoadedChunksCache) this.world).fabric_getLoadedChunks()) {
+			for (LevelChunk chunk : ((LoadedChunksCache) this.level).fabric_getLoadedChunks()) {
 				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
-					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
+					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.level);
 				}
 			}
 		}
 	}
 
-	@Inject(method = "onSynchronizeTags", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/FuelRegistry;createDefault(Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;Lnet/minecraft/resource/featuretoggle/FeatureSet;)Lnet/minecraft/item/FuelRegistry;"))
-	private void invokeTagsLoaded(SynchronizeTagsS2CPacket packet, CallbackInfo ci) {
-		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(combinedDynamicRegistries, true);
+	@Inject(method = "handleUpdateTags", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/FuelValues;vanillaBurnTimes(Lnet/minecraft/core/HolderLookup$Provider;Lnet/minecraft/world/flag/FeatureFlagSet;)Lnet/minecraft/world/level/block/entity/FuelValues;"))
+	private void invokeTagsLoaded(ClientboundUpdateTagsPacket packet, CallbackInfo ci) {
+		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(registryAccess, true);
 	}
 }

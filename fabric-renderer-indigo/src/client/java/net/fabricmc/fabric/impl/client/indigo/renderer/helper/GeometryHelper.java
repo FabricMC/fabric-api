@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
 
-import static net.minecraft.util.math.MathHelper.approximatelyEquals;
+import static net.minecraft.util.Mth.equal;
 
 import org.joml.Vector3fc;
 
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.CubeFace;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Direction.Axis;
-import net.minecraft.util.math.Direction.AxisDirection;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.FaceInfo;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction.AxisDirection;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 
@@ -84,7 +84,7 @@ public final class GeometryHelper {
 	public static boolean isQuadParallelToFace(Direction face, QuadView quad) {
 		int i = face.getAxis().ordinal();
 		final float val = quad.posByIndex(0, i);
-		return approximatelyEquals(val, quad.posByIndex(1, i)) && approximatelyEquals(val, quad.posByIndex(2, i)) && approximatelyEquals(val, quad.posByIndex(3, i));
+		return equal(val, quad.posByIndex(1, i)) && equal(val, quad.posByIndex(2, i)) && equal(val, quad.posByIndex(3, i));
 	}
 
 	/**
@@ -96,7 +96,7 @@ public final class GeometryHelper {
 	 */
 	public static boolean isParallelQuadOnFace(Direction lightFace, QuadView quad) {
 		final float x = quad.posByIndex(0, lightFace.getAxis().ordinal());
-		return lightFace.getDirection() == AxisDirection.POSITIVE ? x >= EPS_MAX : x <= EPS_MIN;
+		return lightFace.getAxisDirection() == AxisDirection.POSITIVE ? x >= EPS_MAX : x <= EPS_MIN;
 	}
 
 	/**
@@ -224,7 +224,7 @@ public final class GeometryHelper {
 
 	/**
 	 * Returns the index of the vertex which is in the first cubic corner for the given quad's light face, according to
-	 * the directions specified in {@link CubeFace}. Assumes that the given quad is
+	 * the directions specified in {@link FaceInfo}. Assumes that the given quad is
 	 * {@linkplain #isQuadCubic(Direction, QuadView) cubic}. Used to make smooth lighting for cubic quads work correctly
 	 * regardless of vertex order.
 	 *

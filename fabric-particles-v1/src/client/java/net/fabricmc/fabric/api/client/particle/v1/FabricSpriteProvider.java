@@ -18,11 +18,11 @@ package net.fabricmc.fabric.api.client.particle.v1;
 
 import java.util.List;
 
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.particle.ParticleType;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.particles.ParticleType;
 
 /**
  * FabricSpriteProvider. It does the same thing as vanilla's SpriteProvider,
@@ -33,18 +33,18 @@ import net.minecraft.particle.ParticleType;
  * interface containing the sprites set loaded for their particle from the
  * active resource packs.
  *
- * @see ParticleFactoryRegistry#register(ParticleType, ParticleFactory)
+ * @see ParticleFactoryRegistry#register(ParticleType, ParticleProvider)
  * @see ParticleFactoryRegistry.PendingParticleFactory
  */
-public interface FabricSpriteProvider extends SpriteProvider {
+public interface FabricSpriteProvider extends SpriteSet {
 	/**
 	 * Returns the entire particles texture atlas.
 	 */
-	SpriteAtlasTexture getAtlas();
+	TextureAtlas getAtlas();
 
 	/**
 	 * Gets the list of all sprites available for this particle to use.
 	 * This is defined in your resource pack.
 	 */
-	List<Sprite> getSprites();
+	List<TextureAtlasSprite> getSprites();
 }

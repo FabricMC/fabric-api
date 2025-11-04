@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.event.interaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -31,8 +31,8 @@ public class PlayerBreakBlockTests implements ModInitializer {
 	public void onInitialize() {
 		PlayerBlockBreakEvents.BEFORE.register(((world, player, pos, state, entity) -> state.getBlock() != Blocks.BEDROCK));
 
-		PlayerBlockBreakEvents.CANCELED.register(((world, player, pos, state, entity) -> LOGGER.info("Block break event canceled at {}, {}, {} (client-side = {})", pos.getX(), pos.getY(), pos.getZ(), world.isClient())));
+		PlayerBlockBreakEvents.CANCELED.register(((world, player, pos, state, entity) -> LOGGER.info("Block break event canceled at {}, {}, {} (client-side = {})", pos.getX(), pos.getY(), pos.getZ(), world.isClientSide())));
 
-		PlayerBlockBreakEvents.AFTER.register(((world, player, pos, state, entity) -> LOGGER.info("Block broken at {}, {}, {} (client-side = {})", pos.getX(), pos.getY(), pos.getZ(), world.isClient())));
+		PlayerBlockBreakEvents.AFTER.register(((world, player, pos, state, entity) -> LOGGER.info("Block broken at {}, {}, {} (client-side = {})", pos.getX(), pos.getY(), pos.getZ(), world.isClientSide())));
 	}
 }

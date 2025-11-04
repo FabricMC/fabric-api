@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.test.resource.reloader.v1;
 
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SynchronousResourceReloader;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
-public class DummyResourceReloader implements SynchronousResourceReloader {
+public class DummyResourceReloader implements ResourceManagerReloadListener {
 	@Override
-	public void reload(ResourceManager manager) {
+	public void onResourceManagerReload(ResourceManager manager) {
 		// Do nothing.
 	}
 }

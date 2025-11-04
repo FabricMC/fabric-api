@@ -18,15 +18,15 @@ package net.fabricmc.fabric.api.client.model.loading.v1;
 
 import java.util.function.BiFunction;
 
-import net.minecraft.client.render.model.BakedSimpleModel;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.render.model.GeometryBakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelRotation;
-import net.minecraft.client.render.model.ModelTextures;
-import net.minecraft.client.render.model.SimpleBlockStateModel;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.resources.model.ResolvedModel;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.renderer.block.model.SingleVariant;
+import net.minecraft.resources.Identifier;
 
 /**
  * A {@link UnbakedExtraModel} that loads a single model.
@@ -35,13 +35,13 @@ import net.minecraft.util.Identifier;
  */
 public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 	private final Identifier model;
-	private final BiFunction<BakedSimpleModel, Baker, T> bake;
+	private final BiFunction<ResolvedModel, ModelBaker, T> bake;
 
 	/**
 	 * @param model The location of the model to load.
 	 * @param bake  A function to bake the model.
 	 */
-	public SimpleUnbakedExtraModel(Identifier model, BiFunction<BakedSimpleModel, Baker, T> bake) {
+	public SimpleUnbakedExtraModel(Identifier model, BiFunction<ResolvedModel, ModelBaker, T> bake) {
 		this.model = model;
 		this.bake = bake;
 	}
@@ -63,7 +63,7 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 	 * @return The unbaked extra model.
 	 */
 	public static SimpleUnbakedExtraModel<BlockStateModel> blockStateModel(Identifier model) {
-		return blockStateModel(model, ModelRotation.IDENTITY);
+		return blockStateModel(model, BlockModelRotation.IDENTITY);
 	}
 
 	/**
@@ -73,24 +73,24 @@ public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 	 * @param settings The settings to bake the geometry with.
 	 * @return The unbaked extra model.
 	 */
-	public static SimpleUnbakedExtraModel<BlockStateModel> blockStateModel(Identifier model, ModelBakeSettings settings) {
+	public static SimpleUnbakedExtraModel<BlockStateModel> blockStateModel(Identifier model, ModelState settings) {
 		return new SimpleUnbakedExtraModel<>(model, (baked, baker) -> {
-			ModelTextures textures = baked.getTextures();
-			return new SimpleBlockStateModel(new GeometryBakedModel(
-					baked.bakeGeometry(textures, baker, settings),
-					baked.getAmbientOcclusion(),
-					baked.getParticleTexture(textures, baker)
+			TextureSlots textures = baked.getTopTextureSlots();
+			return new SingleVariant(new SimpleModelWrapper(
+					baked.bakeTopGeometry(textures, baker, settings),
+					baked.getTopAmbientOcclusion(),
+					baked.resolveParticleSprite(textures, baker)
 			));
 		});
 	}
 
 	@Override
-	public void resolve(Resolver resolver) {
+	public void resolveDependencies(Resolver resolver) {
 		resolver.markDependency(model);
 	}
 
 	@Override
-	public T bake(Baker baker) {
+	public T bake(ModelBaker baker) {
 		return bake.apply(baker.getModel(model), baker);
 	}
 }

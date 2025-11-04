@@ -23,9 +23,9 @@ import io.netty.channel.ChannelHandlerContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.network.handler.DecoderHandler;
+import net.minecraft.network.PacketDecoder;
 
-@Mixin(DecoderHandler.class)
+@Mixin(PacketDecoder.class)
 public interface DecoderHandlerAccessor {
 	@Invoker("decode")
 	void fabric_decode(ChannelHandlerContext var1, ByteBuf var2, List<Object> var3) throws Exception;

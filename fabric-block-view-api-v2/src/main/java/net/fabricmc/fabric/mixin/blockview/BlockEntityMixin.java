@@ -18,7 +18,7 @@ package net.fabricmc.fabric.mixin.blockview;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.fabricmc.fabric.api.blockview.v2.RenderDataBlockEntity;
 

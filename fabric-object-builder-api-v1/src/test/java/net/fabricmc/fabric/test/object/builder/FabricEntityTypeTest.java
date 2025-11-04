@@ -23,68 +23,68 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.Bootstrap;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.entity.SpawnLocationTypes;
-import net.minecraft.entity.SpawnRestriction;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.DefaultAttributeRegistry;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.Heightmap;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityType;
 
 public class FabricEntityTypeTest {
 	@BeforeAll
 	static void beforeAll() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 	}
 
 	@Test
 	void buildEntityType() {
-		EntityType<Entity> type = EntityType.Builder.create(SpawnGroup.MISC)
+		EntityType<Entity> type = EntityType.Builder.createNothing(MobCategory.MISC)
 				.alwaysUpdateVelocity(true)
-				.build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of("test", "test")));
+				.build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath("test", "test")));
 
 		assertNotNull(type);
-		assertTrue(type.alwaysUpdateVelocity());
+		assertTrue(type.trackDeltas());
 	}
 
 	@Test
 	void buildLivingEntityType() {
-		EntityType<LivingEntity> type = FabricEntityType.Builder.createLiving((t, w) -> null, SpawnGroup.MISC, living -> living
+		EntityType<LivingEntity> type = FabricEntityType.Builder.createLiving((t, w) -> null, MobCategory.MISC, living -> living
 						.defaultAttributes(FabricEntityTypeTest::createAttributes)
-		).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of("test", "test2")));
+		).build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath("test", "test2")));
 
 		assertNotNull(type);
-		assertNotNull(DefaultAttributeRegistry.get(type));
+		assertNotNull(DefaultAttributes.getSupplier(type));
 	}
 
 	@Test
 	void buildMobEntityType() {
-		EntityType<MobEntity> type = FabricEntityType.Builder.createMob((t, w) -> null, SpawnGroup.MISC, mob -> mob
-				.spawnRestriction(SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, PigEntity::canMobSpawn)
+		EntityType<Mob> type = FabricEntityType.Builder.createMob((t, w) -> null, MobCategory.MISC, mob -> mob
+				.spawnRestriction(SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Pig::checkMobSpawnRules)
 				.defaultAttributes(FabricEntityTypeTest::createAttributes)
-		).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of("test", "test3")));
+		).build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath("test", "test3")));
 
 		assertNotNull(type);
-		assertEquals(SpawnLocationTypes.ON_GROUND, SpawnRestriction.getLocation(type));
-		assertNotNull(DefaultAttributeRegistry.get(type));
+		assertEquals(SpawnPlacementTypes.ON_GROUND, SpawnPlacements.getPlacementType(type));
+		assertNotNull(DefaultAttributes.getSupplier(type));
 	}
 
-	private static DefaultAttributeContainer.Builder createAttributes() {
-		return MobEntity.createMobAttributes()
-				.add(EntityAttributes.MAX_HEALTH, 10.0)
-				.add(EntityAttributes.MOVEMENT_SPEED, 0.25);
+	private static AttributeSupplier.Builder createAttributes() {
+		return Mob.createMobAttributes()
+				.add(Attributes.MAX_HEALTH, 10.0)
+				.add(Attributes.MOVEMENT_SPEED, 0.25);
 	}
 }

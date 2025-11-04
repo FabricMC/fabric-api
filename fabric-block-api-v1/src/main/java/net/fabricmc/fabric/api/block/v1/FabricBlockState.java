@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.block.v1;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 /**
  * General-purpose Fabric-provided extensions for {@link BlockState}, matching the functionality provided in {@link FabricBlock}.
@@ -40,7 +40,7 @@ public interface FabricBlockState {
 	 * @return the appearance of the block on the given side; the original {@code state} can be returned if there is no better option
 	 * @see FabricBlock#getAppearance
 	 */
-	default BlockState getAppearance(BlockRenderView renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+	default BlockState getAppearance(BlockAndTintGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		BlockState self = (BlockState) this;
 		return self.getBlock().getAppearance(self, renderView, pos, side, sourceState, sourcePos);
 	}

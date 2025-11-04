@@ -22,10 +22,10 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.village.TradeOffers;
-import net.minecraft.village.VillagerProfession;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.VillagerProfession;
 
 import net.fabricmc.fabric.impl.object.builder.TradeOfferInternals;
 
@@ -37,7 +37,7 @@ public final class TradeOfferHelper {
 	 * Registers trade offer factories for use by villagers.
 	 * This adds the same trade offers to current and rebalanced trades.
 	 * To add separate offers for the rebalanced trade experiment, use
-	 * {@link #registerVillagerOffers(RegistryKey, int, VillagerOffersAdder)}.
+	 * {@link #registerVillagerOffers(ResourceKey, int, VillagerOffersAdder)}.
 	 *
 	 * <p>Below is an example, of registering a trade offer factory to be added a blacksmith with a profession level of 3:
 	 * <blockquote><pre>
@@ -50,7 +50,7 @@ public final class TradeOfferHelper {
 	 * @param level the profession level the villager must be to offer the trades
 	 * @param factories a consumer to provide the factories
 	 */
-	public static void registerVillagerOffers(RegistryKey<VillagerProfession> profession, int level, Consumer<List<TradeOffers.Factory>> factories) {
+	public static void registerVillagerOffers(ResourceKey<VillagerProfession> profession, int level, Consumer<List<VillagerTrades.ItemListing>> factories) {
 		TradeOfferInternals.registerVillagerOffers(profession, level, (trades, rebalanced) -> factories.accept(trades));
 	}
 
@@ -75,7 +75,7 @@ public final class TradeOfferHelper {
 	 * @param factories a consumer to provide the factories
 	 */
 	@ApiStatus.Experimental
-	public static void registerVillagerOffers(RegistryKey<VillagerProfession> profession, int level, VillagerOffersAdder factories) {
+	public static void registerVillagerOffers(ResourceKey<VillagerProfession> profession, int level, VillagerOffersAdder factories) {
 		TradeOfferInternals.registerVillagerOffers(profession, level, factories);
 	}
 
@@ -93,7 +93,7 @@ public final class TradeOfferHelper {
 
 	@FunctionalInterface
 	public interface VillagerOffersAdder {
-		void onRegister(List<TradeOffers.Factory> factories, boolean rebalanced);
+		void onRegister(List<VillagerTrades.ItemListing> factories, boolean rebalanced);
 	}
 
 	/**
@@ -110,21 +110,21 @@ public final class TradeOfferHelper {
 		 * <p>In vanilla, this pool contains offers to buy water buckets, baked potatoes, etc.
 		 * for emeralds.
 		 */
-		Identifier BUY_ITEMS_POOL = Identifier.ofVanilla("buy_items");
+		Identifier BUY_ITEMS_POOL = Identifier.withDefaultNamespace("buy_items");
 		/**
 		 * The pool ID for the "sell special items" pool.
 		 * Two trade offers are picked from this pool.
 		 *
 		 * <p>In vanilla, this pool contains offers to sell logs, enchanted iron pickaxes, etc.
 		 */
-		Identifier SELL_SPECIAL_ITEMS_POOL = Identifier.ofVanilla("sell_special_items");
+		Identifier SELL_SPECIAL_ITEMS_POOL = Identifier.withDefaultNamespace("sell_special_items");
 		/**
 		 * The pool ID for the "sell common items" pool.
 		 * Five trade offers are picked from this pool.
 		 *
 		 * <p>In vanilla, this pool contains offers to sell flowers, saplings, etc.
 		 */
-		Identifier SELL_COMMON_ITEMS_POOL = Identifier.ofVanilla("sell_common_items");
+		Identifier SELL_COMMON_ITEMS_POOL = Identifier.withDefaultNamespace("sell_common_items");
 
 		/**
 		 * Adds a new pool to the offer list. Exactly {@code count} offers are picked from
@@ -135,7 +135,7 @@ public final class TradeOfferHelper {
 		 * @return this builder, for chaining
 		 * @throws IllegalArgumentException if {@code count} is not positive or if {@code factories} is empty
 		 */
-		WanderingTraderOffersBuilder pool(Identifier id, int count, TradeOffers.Factory... factories);
+		WanderingTraderOffersBuilder pool(Identifier id, int count, VillagerTrades.ItemListing... factories);
 
 		/**
 		 * Adds a new pool to the offer list. Exactly {@code count} offers are picked from
@@ -146,8 +146,8 @@ public final class TradeOfferHelper {
 		 * @return this builder, for chaining
 		 * @throws IllegalArgumentException if {@code count} is not positive or if {@code factories} is empty
 		 */
-		default WanderingTraderOffersBuilder pool(Identifier id, int count, Collection<? extends TradeOffers.Factory> factories) {
-			return pool(id, count, factories.toArray(TradeOffers.Factory[]::new));
+		default WanderingTraderOffersBuilder pool(Identifier id, int count, Collection<? extends VillagerTrades.ItemListing> factories) {
+			return pool(id, count, factories.toArray(VillagerTrades.ItemListing[]::new));
 		}
 
 		/**
@@ -158,7 +158,7 @@ public final class TradeOfferHelper {
 		 * @return this builder, for chaining
 		 * @throws IllegalArgumentException if {@code factories} is empty
 		 */
-		default WanderingTraderOffersBuilder addAll(Identifier id, Collection<? extends TradeOffers.Factory> factories) {
+		default WanderingTraderOffersBuilder addAll(Identifier id, Collection<? extends VillagerTrades.ItemListing> factories) {
 			return pool(id, factories.size(), factories);
 		}
 
@@ -170,7 +170,7 @@ public final class TradeOfferHelper {
 		 * @return this builder, for chaining
 		 * @throws IllegalArgumentException if {@code factories} is empty
 		 */
-		default WanderingTraderOffersBuilder addAll(Identifier id, TradeOffers.Factory... factories) {
+		default WanderingTraderOffersBuilder addAll(Identifier id, VillagerTrades.ItemListing... factories) {
 			return pool(id, factories.length, factories);
 		}
 
@@ -183,7 +183,7 @@ public final class TradeOfferHelper {
 		 * @return this builder, for chaining
 		 * @throws IndexOutOfBoundsException if {@code pool} is out of bounds
 		 */
-		WanderingTraderOffersBuilder addOffersToPool(Identifier pool, TradeOffers.Factory... factories);
+		WanderingTraderOffersBuilder addOffersToPool(Identifier pool, VillagerTrades.ItemListing... factories);
 
 		/**
 		 * Adds trade offers to an existing pool identified by an ID.
@@ -194,8 +194,8 @@ public final class TradeOfferHelper {
 		 * @return this builder, for chaining
 		 * @throws IndexOutOfBoundsException if {@code pool} is out of bounds
 		 */
-		default WanderingTraderOffersBuilder addOffersToPool(Identifier pool, Collection<TradeOffers.Factory> factories) {
-			return addOffersToPool(pool, factories.toArray(TradeOffers.Factory[]::new));
+		default WanderingTraderOffersBuilder addOffersToPool(Identifier pool, Collection<VillagerTrades.ItemListing> factories) {
+			return addOffersToPool(pool, factories.toArray(VillagerTrades.ItemListing[]::new));
 		}
 	}
 }

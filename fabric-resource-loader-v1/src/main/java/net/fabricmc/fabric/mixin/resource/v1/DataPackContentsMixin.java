@@ -26,16 +26,16 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import net.minecraft.resource.ResourceReloader;
-import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.server.DataPackContents;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.server.ReloadableServerResources;
 
 import net.fabricmc.fabric.api.resource.v1.DataResourceStore;
 import net.fabricmc.fabric.impl.resource.v1.DataResourceStoreImpl;
 import net.fabricmc.fabric.impl.resource.v1.FabricDataResourceStoreHolder;
 import net.fabricmc.fabric.impl.resource.v1.SetupMarkerResourceReloader;
 
-@Mixin(DataPackContents.class)
+@Mixin(ReloadableServerResources.class)
 public class DataPackContentsMixin implements FabricDataResourceStoreHolder {
 	@Unique
 	private final DataResourceStore.Mutable dataResourceStore = new DataResourceStoreImpl();
@@ -44,13 +44,13 @@ public class DataPackContentsMixin implements FabricDataResourceStoreHolder {
 			method = "method_58296",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/resource/SimpleResourceReload;start(Lnet/minecraft/resource/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/resource/ResourceReload;"
+					target = "Lnet/minecraft/server/packs/resources/SimpleReloadInstance;create(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/server/packs/resources/ReloadInstance;"
 			)
 	)
-	private static List<ResourceReloader> onSetupDataReloaders(
-			List<ResourceReloader> reloaders,
-			@Local(argsOnly = true) FeatureSet featureSet,
-			@Local DataPackContents dataPackContents
+	private static List<PreparableReloadListener> onSetupDataReloaders(
+			List<PreparableReloadListener> reloaders,
+			@Local(argsOnly = true) FeatureFlagSet featureSet,
+			@Local ReloadableServerResources dataPackContents
 	) {
 		var list = new ArrayList<>(reloaders);
 		list.addFirst(

@@ -32,133 +32,145 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferBuilderStorage;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.Frustum;
-import net.minecraft.client.render.OutlineVertexConsumerProvider;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.SectionRenderState;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.WorldBorderRendering;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
-import net.minecraft.client.render.state.WorldBorderRenderState;
-import net.minecraft.client.render.state.WorldRenderState;
-import net.minecraft.client.util.ObjectAllocator;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.border.WorldBorder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.OutlineBufferSource;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.WorldBorderRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.state.WorldBorderRenderState;
+import net.minecraft.client.renderer.state.LevelRenderState;
+import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.border.WorldBorder;
 
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.fabricmc.fabric.impl.client.rendering.world.WorldExtractionContextImpl;
 import net.fabricmc.fabric.impl.client.rendering.world.WorldRenderContextImpl;
 
-@Mixin(WorldRenderer.class)
+@Mixin(LevelRenderer.class)
 public abstract class WorldRendererMixin {
 	@Shadow
 	@Final
-	private MinecraftClient client;
+	private Minecraft minecraft;
 	@Shadow
 	@Final
-	private BufferBuilderStorage bufferBuilders;
+	private RenderBuffers renderBuffers;
 	@Shadow
 	@Final
-	private WorldRenderState worldRenderState;
+	private LevelRenderState levelRenderState;
 	@Shadow
 	@Nullable
-	private ClientWorld world;
+	private ClientLevel level;
 	@Shadow
 	@Final
-	private OrderedRenderCommandQueueImpl entityRenderCommandQueue;
+	private SubmitNodeStorage submitNodeStorage;
 
 	@Unique
 	private final WorldRenderContextImpl renderContext = new WorldRenderContextImpl();
 	@Unique
 	private final WorldExtractionContextImpl extractionContext = new WorldExtractionContextImpl();
 
-	@Inject(method = "render", at = @At("HEAD"))
-	private void beforeRender(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f viewMatrix, Matrix4f projectionMatrix, Matrix4f cullProjectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo ci) {
-		extractionContext.prepare(client.gameRenderer, (WorldRenderer) (Object) this, worldRenderState, world, tickCounter, renderBlockOutline, camera, viewMatrix, cullProjectionMatrix);
+	@Inject(method = "renderLevel", at = @At("HEAD"))
+	private void beforeRender(GraphicsResourceAllocator allocator, DeltaTracker tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f viewMatrix, Matrix4f projectionMatrix, Matrix4f cullProjectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo ci) {
+		extractionContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, level, tickCounter, renderBlockOutline, camera, viewMatrix, cullProjectionMatrix);
 	}
 
-	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;setupFrustum(Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/client/render/Frustum;"))
+	@ModifyExpressionValue(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;prepareCullFrustum(Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/client/renderer/culling/Frustum;"))
 	private Frustum onSetupFrustum(Frustum frustum) {
 		extractionContext.setFrustum(frustum);
 		return frustum;
 	}
 
-	@Inject(method = "fillEntityOutlineRenderStates", at = @At("RETURN"))
-	private void afterBlockOutlineExtraction(Camera camera, WorldRenderState renderStates, CallbackInfo ci) {
-		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.invoker().afterBlockOutlineExtraction(extractionContext, client.crosshairTarget);
+	@Inject(method = "extractBlockOutline", at = @At("RETURN"))
+	private void afterBlockOutlineExtraction(Camera camera, LevelRenderState renderStates, CallbackInfo ci) {
+		WorldRenderEvents.AFTER_BLOCK_OUTLINE_EXTRACTION.invoker().afterBlockOutlineExtraction(extractionContext, minecraft.hitResult);
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldBorderRendering;updateRenderState(Lnet/minecraft/world/border/WorldBorder;FLnet/minecraft/util/math/Vec3d;DLnet/minecraft/client/render/state/WorldBorderRenderState;)V"))
-	private void onWorldBorderExtraction(WorldBorderRendering instance, WorldBorder worldBorder, float tickProgress, Vec3d vec3d, double viewDistanceBlocks, WorldBorderRenderState worldBorderRenderState, Operation<Void> original) {
+	@WrapOperation(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/WorldBorderRenderer;extract(Lnet/minecraft/world/level/border/WorldBorder;FLnet/minecraft/world/phys/Vec3;DLnet/minecraft/client/renderer/state/WorldBorderRenderState;)V"))
+	private void onWorldBorderExtraction(WorldBorderRenderer instance, WorldBorder worldBorder, float tickProgress, Vec3 vec3d, double viewDistanceBlocks, WorldBorderRenderState worldBorderRenderState, Operation<Void> original) {
 		original.call(instance, worldBorder, tickProgress, vec3d, viewDistanceBlocks, worldBorderRenderState);
 		WorldRenderEvents.END_EXTRACTION.invoker().endExtraction(extractionContext);
 	}
 
-	@ModifyExpressionValue(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderBlockLayers(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/render/SectionRenderState;"))
-	private SectionRenderState onRenderBlockLayers(SectionRenderState sectionRenderState) {
-		renderContext.prepare(client.gameRenderer, (WorldRenderer) (Object) this, worldRenderState, sectionRenderState, entityRenderCommandQueue, bufferBuilders.getEntityVertexConsumers());
+	@ModifyExpressionValue(method = "method_62214", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;prepareChunkRenders(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;"))
+	private ChunkSectionsToRender onRenderBlockLayers(ChunkSectionsToRender sectionRenderState) {
+		renderContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, sectionRenderState, submitNodeStorage, renderBuffers.bufferSource());
 		return sectionRenderState;
 	}
 
 	@Inject(method = "method_62214",
-			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderBlockLayers(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/render/SectionRenderState;")),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/SectionRenderState;renderSection(Lnet/minecraft/client/render/BlockRenderLayerGroup;Lnet/minecraft/client/gl/GpuSampler;)V", ordinal = 0)
+			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;prepareChunkRenders(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;")),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;renderGroup(Lnet/minecraft/client/renderer/chunk/ChunkSectionLayerGroup;Lcom/mojang/blaze3d/textures/GpuSampler;)V", ordinal = 0)
 	)
 	private void beforeTerrainRender(CallbackInfo ci) {
 		WorldRenderEvents.START_MAIN.invoker().startMain(renderContext);
 	}
 
 	@ModifyExpressionValue(method = "method_62214", at = @At(value = "NEW", target = "Lnet/minecraft/client/util/math/MatrixStack;"))
-	private MatrixStack onCreateMatrixStack(MatrixStack matrixStack) {
+	private PoseStack onCreateMatrixStack(PoseStack matrixStack) {
 		renderContext.setMatrixStack(matrixStack);
 		return matrixStack;
 	}
 
-	@Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", args = "ldc=submitEntities"))
+	// TODO(Ravel): @At.args is not supported
+// TODO(Ravel): @At.args is not supported
+// TODO(Ravel): @At.args is not supported
+    @Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities"))
 	private void beforeEntitySubmission(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_ENTITIES.invoker().beforeEntities(renderContext);
 	}
 
-	@WrapOperation(method = "method_62214",
-			slice = @Slice(from = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", args = "ldc=submitEntities")),
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/OutlineVertexConsumerProvider;draw()V")
+	// TODO(Ravel): @At.args is not supported
+// TODO(Ravel): @At.args is not supported
+// TODO(Ravel): @At.args is not supported
+    @WrapOperation(method = "method_62214",
+			slice = @Slice(from = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities")),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V")
 	)
-	private void afterEntityRender(OutlineVertexConsumerProvider instance, Operation<Void> original) {
+	private void afterEntityRender(OutlineBufferSource instance, Operation<Void> original) {
 		original.call(instance);
 		WorldRenderEvents.AFTER_ENTITIES.invoker().afterEntities(renderContext);
 	}
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/render/Frustum;DDDF)V"))
+	@Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/debug/DebugRenderer;emitGizmos(Lnet/minecraft/client/renderer/culling/Frustum;DDDF)V"))
 	private void beforeDebugRender(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.invoker().beforeDebugRender(renderContext);
 	}
 
-	@Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiler/Profiler;push(Ljava/lang/String;)V", args = "ldc=translucent"))
+	// TODO(Ravel): @At.args is not supported
+// TODO(Ravel): @At.args is not supported
+// TODO(Ravel): @At.args is not supported
+    @Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V", args = "ldc=translucent"))
 	private void beforeTranslucentRender(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_TRANSLUCENT.invoker().beforeTranslucent(renderContext);
 	}
 
-	@Inject(method = "renderTargetBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/state/CameraRenderState;pos:Lnet/minecraft/util/math/Vec3d;"), cancellable = true)
-	private void beforeDrawBlockOutline(VertexConsumerProvider.Immediate consumers, MatrixStack matrices, boolean bl, WorldRenderState worldRenderState, CallbackInfo ci) {
-		if (!WorldRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(renderContext, renderContext.worldState().outlineRenderState)) {
-			consumers.drawCurrentLayer();
+	@Inject(method = "renderBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/CameraRenderState;pos:Lnet/minecraft/world/phys/Vec3;"), cancellable = true)
+	private void beforeDrawBlockOutline(MultiBufferSource.BufferSource consumers, PoseStack matrices, boolean bl, LevelRenderState worldRenderState, CallbackInfo ci) {
+		if (!WorldRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(renderContext, renderContext.worldState().blockOutlineRenderState)) {
+			consumers.endLastBatch();
 			ci.cancel();
 		}
 	}
 
-	@Inject(method = "method_62214", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;draw()V"))
+	// TODO(Ravel): Unknown injection point INVOKE:LAST
+// TODO(Ravel): Unknown injection point INVOKE:LAST
+// TODO(Ravel): Unknown injection point INVOKE:LAST
+    @Inject(method = "method_62214", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;draw()V"))
 	private void endMainRender(CallbackInfo ci) {
 		WorldRenderEvents.END_MAIN.invoker().endMain(renderContext);
 	}
 
-	@Inject(method = "reload()V", at = @At("HEAD"))
+	@Inject(method = "allChanged()V", at = @At("HEAD"))
 	private void onReload(CallbackInfo ci) {
 		InvalidateRenderStateCallback.EVENT.invoker().onInvalidate();
 	}

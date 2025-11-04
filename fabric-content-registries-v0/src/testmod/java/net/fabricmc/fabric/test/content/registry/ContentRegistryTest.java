@@ -19,38 +19,38 @@ package net.fabricmc.fabric.test.content.registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.Oxidizable;
-import net.minecraft.block.OxidizableBlock;
-import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.PotionItem;
-import net.minecraft.potion.Potions;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.village.VillagerProfession;
-import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.WeatheringCopper;
+import net.minecraft.world.level.block.WeatheringCopperFullBlock;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Holder;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
@@ -78,11 +78,11 @@ public final class ContentRegistryTest implements ModInitializer {
 	private static final TagKey<Item> SMELTING_FUELS_EXCLUDED_BY_TAG = itemTag("smelting_fuels_excluded_by_tag");
 
 	public static final Identifier TEST_EVENT_ID = id("test_event");
-	public static final RegistryKey<Block> TEST_EVENT_BLOCK_KEY = RegistryKey.of(RegistryKeys.BLOCK, TEST_EVENT_ID);
-	public static final RegistryEntry.Reference<GameEvent> TEST_EVENT = Registry.registerReference(Registries.GAME_EVENT, TEST_EVENT_ID, new GameEvent(GameEvent.DEFAULT_RANGE));
+	public static final ResourceKey<Block> TEST_EVENT_BLOCK_KEY = ResourceKey.create(Registries.BLOCK, TEST_EVENT_ID);
+	public static final Holder.Reference<GameEvent> TEST_EVENT = Registry.registerForHolder(BuiltInRegistries.GAME_EVENT, TEST_EVENT_ID, new GameEvent(GameEvent.DEFAULT_NOTIFICATION_RADIUS));
 
-	public static final RegistryKey<Block> TEST_OXIDIZING_BLOCK_KEY = RegistryKey.of(RegistryKeys.BLOCK, id("test_oxidizing"));
-	public static final RegistryKey<Block> EXPOSED_TEST_OXIDIZING_BLOCK_KEY = RegistryKey.of(RegistryKeys.BLOCK, id("exposed_test_oxidizing"));
+	public static final ResourceKey<Block> TEST_OXIDIZING_BLOCK_KEY = ResourceKey.create(Registries.BLOCK, id("test_oxidizing"));
+	public static final ResourceKey<Block> EXPOSED_TEST_OXIDIZING_BLOCK_KEY = ResourceKey.create(Registries.BLOCK, id("exposed_test_oxidizing"));
 
 	@Override
 	public void onInitialize() {
@@ -111,7 +111,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		CompostingChanceRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
-		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.getDefaultState());
+		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.defaultBlockState());
 
 		FuelRegistryEvents.BUILD.register((builder, context) -> {
 			builder.add(SMELTING_FUEL_INCLUDED_BY_ITEM, context.baseSmeltTime() / 4);
@@ -122,12 +122,12 @@ public final class ContentRegistryTest implements ModInitializer {
 			builder.remove(SMELTING_FUELS_EXCLUDED_BY_TAG);
 		});
 
-		LandPathNodeTypesRegistry.register(Blocks.DEAD_BUSH, PathNodeType.DAMAGE_OTHER, PathNodeType.DANGER_OTHER);
+		LandPathNodeTypesRegistry.register(Blocks.DEAD_BUSH, PathType.DAMAGE_OTHER, PathType.DANGER_OTHER);
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
 		StrippableBlockRegistry.register(Blocks.HAY_BLOCK, Blocks.TNT);
 		StrippableBlockRegistry.registerCopyState(Blocks.OAK_STAIRS, Blocks.SPRUCE_STAIRS);
 
-		TillableBlockRegistry.register(Blocks.GREEN_WOOL, context -> true, HoeItem.createTillAction(Blocks.LIME_WOOL.getDefaultState()));
+		TillableBlockRegistry.register(Blocks.GREEN_WOOL, context -> true, HoeItem.changeIntoState(Blocks.LIME_WOOL.defaultBlockState()));
 
 		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.COPPER_ORE, Blocks.IRON_ORE);
 		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.IRON_ORE, Blocks.GOLD_ORE);
@@ -152,12 +152,12 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("OxidizableBlocksRegistry null test passed!");
 		}
 
-		Block testOxidizingBlock = Registry.register(Registries.BLOCK, TEST_OXIDIZING_BLOCK_KEY, new OxidizableBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.COPPER_BLOCK).registryKey(TEST_OXIDIZING_BLOCK_KEY)));
-		Block exposedTestOxidizingBlock = Registry.register(Registries.BLOCK, EXPOSED_TEST_OXIDIZING_BLOCK_KEY, new OxidizableBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.EXPOSED_COPPER).registryKey(EXPOSED_TEST_OXIDIZING_BLOCK_KEY)));
+		Block testOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.UNAFFECTED, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK).setId(TEST_OXIDIZING_BLOCK_KEY)));
+		Block exposedTestOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, EXPOSED_TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.EXPOSED, BlockBehaviour.Properties.ofFullCopy(Blocks.EXPOSED_COPPER).setId(EXPOSED_TEST_OXIDIZING_BLOCK_KEY)));
 
 		OxidizableBlocksRegistry.registerOxidizableBlockPair(testOxidizingBlock, exposedTestOxidizingBlock);
 
-		if (!testOxidizingBlock.getStateManager().getDefaultState().hasRandomTicks()) {
+		if (!testOxidizingBlock.getStateDefinition().any().isRandomlyTicking()) {
 			throw new AssertionError("OxidizableBlocksRegistry didn't refresh random ticks cache for state!");
 		}
 
@@ -166,14 +166,14 @@ public final class ContentRegistryTest implements ModInitializer {
 		VillagerInteractionRegistries.registerFood(Items.APPLE, 4);
 		VillagerInteractionRegistries.registerCompostable(Items.APPLE);
 
-		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, RegistryKey.of(RegistryKeys.LOOT_TABLE, Identifier.ofVanilla("fake_loot_table")));
+		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, ResourceKey.create(Registries.LOOT_TABLE, Identifier.withDefaultNamespace("fake_loot_table")));
 
-		Registry.register(Registries.BLOCK, TEST_EVENT_BLOCK_KEY, new TestEventBlock(AbstractBlock.Settings.copy(Blocks.STONE).registryKey(TEST_EVENT_BLOCK_KEY)));
-		SculkSensorFrequencyRegistry.register(TEST_EVENT.registryKey(), 2);
+		Registry.register(BuiltInRegistries.BLOCK, TEST_EVENT_BLOCK_KEY, new TestEventBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).setId(TEST_EVENT_BLOCK_KEY)));
+		SculkSensorFrequencyRegistry.register(TEST_EVENT.key(), 2);
 
 		// assert that SculkSensorFrequencyRegistry throws when registering a frequency outside the allowed range
 		try {
-			SculkSensorFrequencyRegistry.register(GameEvent.SHRIEK.registryKey(), 18);
+			SculkSensorFrequencyRegistry.register(GameEvent.SHRIEK.key(), 18);
 
 			throw new AssertionError("SculkSensorFrequencyRegistry didn't throw when frequency was outside allowed range!");
 		} catch (IllegalArgumentException e) {
@@ -181,56 +181,56 @@ public final class ContentRegistryTest implements ModInitializer {
 			LOGGER.info("SculkSensorFrequencyRegistry test passed!");
 		}
 
-		RegistryKey<Item> dirtyPotionKey = RegistryKey.of(RegistryKeys.ITEM, id("dirty_potion"));
-		var dirtyPotion = new DirtyPotionItem(new Item.Settings().maxCount(1).registryKey(dirtyPotionKey));
-		Registry.register(Registries.ITEM, dirtyPotionKey, dirtyPotion);
+		ResourceKey<Item> dirtyPotionKey = ResourceKey.create(Registries.ITEM, id("dirty_potion"));
+		var dirtyPotion = new DirtyPotionItem(new Item.Properties().stacksTo(1).setId(dirtyPotionKey));
+		Registry.register(BuiltInRegistries.ITEM, dirtyPotionKey, dirtyPotion);
 		/* Mods should use BrewingRecipeRegistry.registerPotionType(Item), which is access widened by fabric-transitive-access-wideners-v1
 		 * This testmod uses an accessor due to Loom limitations that prevent TAWs from applying across Gradle subproject boundaries */
 		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> {
-			builder.registerPotionType(dirtyPotion);
-			builder.registerItemRecipe(Items.POTION, Ingredient.ofTag(Registries.ITEM.getOrThrow(ItemTags.DIRT)), dirtyPotion);
-			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.ofTag(Registries.ITEM.getOrThrow(ItemTags.SMALL_FLOWERS)), Potions.HEALING);
+			builder.addContainer(dirtyPotion);
+			builder.registerItemRecipe(Items.POTION, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.DIRT)), dirtyPotion);
+			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.SMALL_FLOWERS)), Potions.HEALING);
 
 			if (builder.getEnabledFeatures().contains(FeatureFlags.REDSTONE_EXPERIMENTS)) {
-				builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.ofItems(Items.BUNDLE), Potions.LUCK);
+				builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.of(Items.BUNDLE), Potions.LUCK);
 			}
 		});
 	}
 
 	public static class TestEventBlock extends Block {
-		public TestEventBlock(Settings settings) {
+		public TestEventBlock(Properties settings) {
 			super(settings);
 		}
 
 		@Override
-		public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+		public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
 			// Emit the test event
-			world.emitGameEvent(player, TEST_EVENT, pos);
-			return ActionResult.SUCCESS;
+			world.gameEvent(player, TEST_EVENT, pos);
+			return InteractionResult.SUCCESS;
 		}
 	}
 
 	public static class DirtyPotionItem extends PotionItem {
-		public DirtyPotionItem(Settings settings) {
+		public DirtyPotionItem(Properties settings) {
 			super(settings);
 		}
 
 		@Override
-		public Text getName(ItemStack stack) {
-			return Text.literal("Dirty ").append(Items.POTION.getName(stack));
+		public Component getName(ItemStack stack) {
+			return Component.literal("Dirty ").append(Items.POTION.getName(stack));
 		}
 	}
 
 	private static Identifier id(String path) {
-		return Identifier.of(MOD_ID, path);
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 
 	private static Item registerItem(String path) {
-		RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, id(path));
-		return Registry.register(Registries.ITEM, key, new Item(new Item.Settings().registryKey(key)));
+		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, id(path));
+		return Registry.register(BuiltInRegistries.ITEM, key, new Item(new Item.Properties().setId(key)));
 	}
 
 	private static TagKey<Item> itemTag(String path) {
-		return TagKey.of(RegistryKeys.ITEM, id(path));
+		return TagKey.create(Registries.ITEM, id(path));
 	}
 }

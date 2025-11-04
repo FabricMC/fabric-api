@@ -18,21 +18,21 @@ package net.fabricmc.fabric.api.gamerule.v1;
 
 import java.util.Optional;
 
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.rule.GameRule;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
 
 /**
  * Utility class for creating custom game rule categories with full control over the name.
  *
- * @see net.minecraft.world.rule.GameRuleCategory
+ * @see net.minecraft.world.level.gamerules.GameRuleCategory
  */
 @SuppressWarnings("ClassCanBeRecord")
 public final class CustomGameRuleCategory {
 	private final Identifier id;
-	private final Text name;
+	private final Component name;
 
 	/**
 	 * Creates a custom game rule category.
@@ -40,7 +40,7 @@ public final class CustomGameRuleCategory {
 	 * @param id   the id of this category
 	 * @param name the name of this category
 	 */
-	public CustomGameRuleCategory(Identifier id, Text name) {
+	public CustomGameRuleCategory(Identifier id, Component name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -49,7 +49,7 @@ public final class CustomGameRuleCategory {
 		return this.id;
 	}
 
-	public Text getName() {
+	public Component getName() {
 		return this.name;
 	}
 

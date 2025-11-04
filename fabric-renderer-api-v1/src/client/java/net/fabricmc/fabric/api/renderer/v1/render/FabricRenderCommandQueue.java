@@ -19,31 +19,31 @@ package net.fabricmc.fabric.api.renderer.v1.render;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.BlockRenderLayers;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.command.RenderCommandQueue;
-import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.EmptyBlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.EmptyBlockAndTintGetter;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /**
- * Note: This interface is automatically implemented on {@link RenderCommandQueue} via Mixin and interface injection.
+ * Note: This interface is automatically implemented on {@link OrderedSubmitNodeCollector} via Mixin and interface injection.
  */
 public interface FabricRenderCommandQueue {
 	/**
 	 * Alternative for
-	 * {@link RenderCommandQueue#submitBlock(MatrixStack, BlockState, int, int, int)} that additionally accepts the
-	 * {@link BlockRenderView} and {@link BlockPos} to pass to
-	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockRenderView, BlockPos, BlockState, Random, Predicate)} when
+	 * {@link OrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int)} that additionally accepts the
+	 * {@link BlockAndTintGetter} and {@link BlockPos} to pass to
+	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
 	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly render models that have geometry
 	 * on multiple render layers and to provide the model with additional context.</b>
 	 *
@@ -55,23 +55,23 @@ public interface FabricRenderCommandQueue {
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
 	 * @param outlineColor The outline color.
-	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockRenderView}).</b>
+	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
 	 *                  <b>Must not be mutated after calling this method.</b>
 	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ORIGIN} if the world is empty.
 	 *            </b> <b>Must not be mutated after calling this method.</b>
 	 *
-	 * @see FabricBlockRenderManager#renderBlockAsEntity(BlockState, MatrixStack, VertexConsumerProvider, int, int, BlockRenderView, BlockPos)
+	 * @see FabricBlockRenderManager#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
 	 */
-	default void submitBlock(MatrixStack matrices, BlockState state, int light, int overlay, int outlineColor, BlockRenderView blockView, BlockPos pos) {
-		((RenderCommandQueue) this).submitBlock(matrices, state, light, overlay, outlineColor);
+	default void submitBlock(PoseStack matrices, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter blockView, BlockPos pos) {
+		((OrderedSubmitNodeCollector) this).submitBlock(matrices, state, light, overlay, outlineColor);
 	}
 
 	/**
 	 * Alternative for
-	 * {@link RenderCommandQueue#submitBlockStateModel(MatrixStack, RenderLayer, BlockStateModel, float, float, float, int, int, int)}
-	 * that accepts a {@code Function<BlockRenderLayer, RenderLayer>} instead of a {@link RenderLayer}. Also accepts the
-	 * {@link BlockRenderView}, {@link BlockPos}, and {@link BlockState} to pass to
-	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockRenderView, BlockPos, BlockState, Random, Predicate)} when
+	 * {@link OrderedSubmitNodeCollector#submitBlockStateModel(PoseStack, RenderType, BlockStateModel, float, float, float, int, int, int)}
+	 * that accepts a {@code Function<BlockRenderLayer, RenderLayer>} instead of a {@link RenderType}. Also accepts the
+	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
+	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
 	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly render models that have geometry
 	 * on multiple render layers and to provide the model with additional context.</b>
 	 *
@@ -79,7 +79,7 @@ public interface FabricRenderCommandQueue {
 	 * entity renderers.
 	 *
 	 * @param matrices The matrices.
-	 * @param renderLayerFunction The function to use to convert {@link BlockRenderLayer}s to {@link RenderLayer}s.
+	 * @param renderLayerFunction The function to use to convert {@link ChunkSectionLayer}s to {@link RenderType}s.
 	 *                            <b>Must not be mutated after calling this method.</b>
 	 * @param model The model to render.
 	 * @param r The red component of the tint color.
@@ -88,15 +88,15 @@ public interface FabricRenderCommandQueue {
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
 	 * @param outlineColor The outline color.
-	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockRenderView}).</b>
+	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
 	 *                  <b>Must not be mutated after calling this method.</b>
 	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ORIGIN} if the world is empty.
 	 *            </b> <b>Must not be mutated after calling this method.</b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 *
-	 * @see FabricBlockModelRenderer#render(MatrixStack.Entry, BlockVertexConsumerProvider, BlockStateModel, float, float, float, int, int, BlockRenderView, BlockPos, BlockState)
+	 * @see FabricBlockModelRenderer#render(PoseStack.Pose, BlockVertexConsumerProvider, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
-	default void submitBlockStateModel(MatrixStack matrices, Function<BlockRenderLayer, RenderLayer> renderLayerFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockRenderView blockView, BlockPos pos, BlockState state) {
-		((RenderCommandQueue) this).submitBlockStateModel(matrices, renderLayerFunction.apply(BlockRenderLayers.getBlockLayer(state)), model, r, g, b, light, overlay, outlineColor);
+	default void submitBlockStateModel(PoseStack matrices, Function<ChunkSectionLayer, RenderType> renderLayerFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
+		((OrderedSubmitNodeCollector) this).submitBlockModel(matrices, renderLayerFunction.apply(ItemBlockRenderTypes.getChunkRenderType(state)), model, r, g, b, light, overlay, outlineColor);
 	}
 }

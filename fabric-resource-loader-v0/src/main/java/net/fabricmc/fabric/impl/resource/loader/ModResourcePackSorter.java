@@ -52,7 +52,7 @@ public class ModResourcePackSorter {
 	public void addPack(ModResourcePack pack) {
 		Objects.requireNonNull(pack, "Can't register a null pack");
 
-		String modId = pack.getId();
+		String modId = pack.packId();
 		Objects.requireNonNull(modId, "Can't register a pack without a mod id");
 
 		synchronized (lock) {

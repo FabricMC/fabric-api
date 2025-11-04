@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 

@@ -27,25 +27,25 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.storage.NbtReadView;
-import net.minecraft.storage.NbtWriteView;
-import net.minecraft.storage.ReadView;
-import net.minecraft.util.ErrorReporter;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.HeightLimitView;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.PalettesFactory;
-import net.minecraft.world.chunk.ProtoChunk;
-import net.minecraft.world.chunk.SerializedChunk;
-import net.minecraft.world.poi.PointOfInterestStorage;
-import net.minecraft.world.storage.StorageKey;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.PalettedContainerFactory;
+import net.minecraft.world.level.chunk.ProtoChunk;
+import net.minecraft.world.level.chunk.storage.SerializableChunkData;
+import net.minecraft.world.entity.ai.village.poi.PoiManager;
+import net.minecraft.world.level.chunk.storage.RegionStorageInfo;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
-@Mixin(SerializedChunk.class)
+@Mixin(SerializableChunkData.class)
 abstract class SerializedChunkMixin {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("SerializedChunkMixin");
@@ -53,47 +53,47 @@ abstract class SerializedChunkMixin {
 	// Adding a mutable record field like this is likely a bad idea, but I cannot see a better way.
 	@Unique
 	@Nullable
-	private NbtCompound attachmentNbtData;
+	private CompoundTag attachmentNbtData;
 
-	@Inject(method = "fromNbt", at = @At("RETURN"))
-	private static void storeAttachmentNbtData(HeightLimitView heightLimitView, PalettesFactory arg, NbtCompound nbt, CallbackInfoReturnable<SerializedChunk> cir, @Share("attachmentDataNbt") LocalRef<NbtCompound> attachmentDataNbt) {
-		final SerializedChunk serializer = cir.getReturnValue();
+	@Inject(method = "parse", at = @At("RETURN"))
+	private static void storeAttachmentNbtData(LevelHeightAccessor heightLimitView, PalettedContainerFactory arg, CompoundTag nbt, CallbackInfoReturnable<SerializableChunkData> cir, @Share("attachmentDataNbt") LocalRef<CompoundTag> attachmentDataNbt) {
+		final SerializableChunkData serializer = cir.getReturnValue();
 
 		if (serializer == null) {
 			return;
 		}
 
 		//noinspection SimplifyOptionalCallChains
-		NbtCompound attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
+		CompoundTag attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
 
 		if (attachmentNbtData != null) {
 			((SerializedChunkMixin) (Object) serializer).attachmentNbtData = attachmentNbtData;
 		}
 	}
 
-	@Inject(method = "convert", at = @At("RETURN"))
-	private void setAttachmentDataInChunk(ServerWorld serverWorld, PointOfInterestStorage pointOfInterestStorage, StorageKey storageKey, ChunkPos chunkPos, CallbackInfoReturnable<ProtoChunk> cir) {
+	@Inject(method = "read", at = @At("RETURN"))
+	private void setAttachmentDataInChunk(ServerLevel serverWorld, PoiManager pointOfInterestStorage, RegionStorageInfo storageKey, ChunkPos chunkPos, CallbackInfoReturnable<ProtoChunk> cir) {
 		ProtoChunk chunk = cir.getReturnValue();
 
 		if (chunk != null && attachmentNbtData != null) {
-			var nbt = new NbtCompound();
+			var nbt = new CompoundTag();
 			nbt.put(AttachmentTarget.NBT_ATTACHMENT_KEY, attachmentNbtData);
 
-			try (ErrorReporter.Logging reporter = new ErrorReporter.Logging(LOGGER)) {
-				ReadView readView = NbtReadView.create(reporter, serverWorld.getRegistryManager(), nbt);
+			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
+				ValueInput readView = TagValueInput.create(reporter, serverWorld.registryAccess(), nbt);
 				((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(readView);
 			}
 		}
 	}
 
-	@Inject(method = "fromChunk", at = @At("RETURN"))
-	private static void storeAttachmentNbtData(ServerWorld world, Chunk chunk, CallbackInfoReturnable<SerializedChunk> cir) {
-		try (ErrorReporter.Logging reporter = new ErrorReporter.Logging(LOGGER)) {
-			NbtWriteView writeView = NbtWriteView.create(reporter, world.getRegistryManager());
+	@Inject(method = "copyOf", at = @At("RETURN"))
+	private static void storeAttachmentNbtData(ServerLevel world, ChunkAccess chunk, CallbackInfoReturnable<SerializableChunkData> cir) {
+		try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
+			TagValueOutput writeView = TagValueOutput.createWithContext(reporter, world.registryAccess());
 			((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(writeView);
 
 			//noinspection SimplifyOptionalCallChains
-			NbtCompound attachmentNbtData = writeView.getNbt().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
+			CompoundTag attachmentNbtData = writeView.buildResult().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
 
 			if (attachmentNbtData != null) {
 				((SerializedChunkMixin) (Object) cir.getReturnValue()).attachmentNbtData = attachmentNbtData;
@@ -101,8 +101,8 @@ abstract class SerializedChunkMixin {
 		}
 	}
 
-	@Inject(method = "serialize", at = @At("RETURN"))
-	private void writeChunkAttachments(CallbackInfoReturnable<NbtCompound> cir) {
+	@Inject(method = "write", at = @At("RETURN"))
+	private void writeChunkAttachments(CallbackInfoReturnable<CompoundTag> cir) {
 		if (attachmentNbtData != null) {
 			cir.getReturnValue().put(AttachmentTarget.NBT_ATTACHMENT_KEY, attachmentNbtData);
 		}

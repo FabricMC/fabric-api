@@ -20,38 +20,38 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistryView;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 
 public final class DynamicRegistryViewImpl implements DynamicRegistryView {
-	private final Map<RegistryKey<? extends Registry<?>>, Registry<?>> registries;
+	private final Map<ResourceKey<? extends Registry<?>>, Registry<?>> registries;
 
-	public DynamicRegistryViewImpl(Map<RegistryKey<? extends Registry<?>>, Registry<?>> registries) {
+	public DynamicRegistryViewImpl(Map<ResourceKey<? extends Registry<?>>, Registry<?>> registries) {
 		this.registries = registries;
 	}
 
 	@Override
-	public DynamicRegistryManager asDynamicRegistryManager() {
-		return new DynamicRegistryManager.Immutable() {
+	public RegistryAccess asDynamicRegistryManager() {
+		return new RegistryAccess.Frozen() {
 			@SuppressWarnings("unchecked")
-			public <T> Optional<Registry<T>> getOptional(RegistryKey<? extends Registry<? extends T>> key) {
+			public <T> Optional<Registry<T>> lookup(ResourceKey<? extends Registry<? extends T>> key) {
 				return Optional.ofNullable((Registry<T>) DynamicRegistryViewImpl.this.registries.get(key));
 			}
 
-			public Stream<Entry<?>> streamAllRegistries() {
+			public Stream<RegistryEntry<?>> registries() {
 				return DynamicRegistryViewImpl.this.stream()
 						.map(this::entry);
 			}
 
-			private <T> Entry<T> entry(Registry<T> registry) {
-				return new Entry<>(registry.getKey(), registry);
+			private <T> RegistryEntry<T> entry(Registry<T> registry) {
+				return new RegistryEntry<>(registry.key(), registry);
 			}
 
-			public Immutable toImmutable() {
+			public Frozen freeze() {
 				return this;
 			}
 		};
@@ -64,13 +64,13 @@ public final class DynamicRegistryViewImpl implements DynamicRegistryView {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> Optional<Registry<T>> getOptional(RegistryKey<? extends Registry<? extends T>> registryRef) {
+	public <T> Optional<Registry<T>> getOptional(ResourceKey<? extends Registry<? extends T>> registryRef) {
 		return Optional.ofNullable((Registry<T>) this.registries.get(registryRef));
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void registerEntryAdded(RegistryKey<? extends Registry<? extends T>> registryRef, RegistryEntryAddedCallback<T> callback) {
+	public <T> void registerEntryAdded(ResourceKey<? extends Registry<? extends T>> registryRef, RegistryEntryAddedCallback<T> callback) {
 		Registry<T> registry = (Registry<T>) this.registries.get(registryRef);
 
 		if (registry != null) {

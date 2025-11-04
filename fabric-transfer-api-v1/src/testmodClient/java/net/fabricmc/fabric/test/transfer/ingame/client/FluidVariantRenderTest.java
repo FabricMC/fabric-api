@@ -18,16 +18,16 @@ package net.fabricmc.fabric.test.transfer.ingame.client;
 
 import java.util.List;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.tooltip.HoveredTooltipPositioner;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
@@ -43,34 +43,34 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		FluidVariantAttributes.enableColoredVanillaFluidNames();
 
-		HudElementRegistry.addLast(Identifier.of("fabric-transfer-api-v1-testmod", "fluid_variant"), (drawContext, tickDelta) -> {
-			PlayerEntity player = MinecraftClient.getInstance().player;
+		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("fabric-transfer-api-v1-testmod", "fluid_variant"), (drawContext, tickDelta) -> {
+			Player player = Minecraft.getInstance().player;
 			if (player == null) return;
 
-			if (MinecraftClient.getInstance().debugHudEntryList.isF3Enabled()) return;
+			if (Minecraft.getInstance().debugEntries.isOverlayVisible()) return;
 
 			int renderY = 0;
 			List<FluidVariant> variants = List.of(FluidVariant.of(Fluids.WATER), FluidVariant.of(Fluids.LAVA));
 
 			for (FluidVariant variant : variants) {
-				Sprite[] sprites = FluidVariantRendering.getSprites(variant);
-				int color = FluidVariantRendering.getColor(variant, player.getEntityWorld(), player.getBlockPos());
+				TextureAtlasSprite[] sprites = FluidVariantRendering.getSprites(variant);
+				int color = FluidVariantRendering.getColor(variant, player.level(), player.blockPosition());
 
 				if (sprites != null) {
-					drawContext.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, sprites[0], 0, renderY, 16, 16, color);
+					drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, sprites[0], 0, renderY, 16, 16, color);
 					renderY += 16;
-					drawContext.drawSpriteStretched(RenderPipelines.GUI_TEXTURED, sprites[1], 0, renderY, 16, 16, color);
+					drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, sprites[1], 0, renderY, 16, 16, color);
 					renderY += 16;
 				}
 
-				List<Text> tooltip = FluidVariantRendering.getTooltip(variant);
-				TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+				List<Component> tooltip = FluidVariantRendering.getTooltip(variant);
+				Font textRenderer = Minecraft.getInstance().font;
 
 				renderY += 2;
 
-				for (Text line : tooltip) {
+				for (Component line : tooltip) {
 					renderY += 10;
-					drawContext.drawTooltipImmediately(textRenderer, List.of(TooltipComponent.of(line.asOrderedText())), -8, renderY, HoveredTooltipPositioner.INSTANCE, null);
+					drawContext.renderTooltip(textRenderer, List.of(ClientTooltipComponent.create(line.getVisualOrderText())), -8, renderY, DefaultTooltipPositioner.INSTANCE, null);
 				}
 			}
 		});

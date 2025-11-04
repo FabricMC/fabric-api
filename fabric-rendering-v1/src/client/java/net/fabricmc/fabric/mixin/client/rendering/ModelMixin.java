@@ -29,21 +29,24 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.model.Model;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricModel;
 
 @Mixin(Model.class)
 abstract class ModelMixin<S> implements FabricModel<S> {
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	public abstract ModelPart getRootPart();
 	@Unique
 	private final Map<String, ModelPart> childPartMap = new Object2ObjectOpenHashMap<>();
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void fillChildPartMap(ModelPart root, Function<Identifier, RenderLayer> layerFactory, CallbackInfo ci) {
+	private void fillChildPartMap(ModelPart root, Function<Identifier, RenderType> layerFactory, CallbackInfo ci) {
 		((ModelPartAccessor) (Object) root).fabric$callForEachChild(childPartMap::putIfAbsent);
 	}
 
@@ -55,8 +58,8 @@ abstract class ModelMixin<S> implements FabricModel<S> {
 
 	@Override
 	public void copyTransforms(Model<?> model) {
-		copyTransforms(model.getRootPart(), getRootPart());
-		((ModelPartAccessor) (Object) model.getRootPart()).fabric$callForEachChild((name, part) -> {
+		copyTransforms(model.root(), getRootPart());
+		((ModelPartAccessor) (Object) model.root()).fabric$callForEachChild((name, part) -> {
 			ModelPart childPart = getChildPart(name);
 
 			if (childPart != null) {
@@ -67,12 +70,12 @@ abstract class ModelMixin<S> implements FabricModel<S> {
 
 	@Unique
 	private static void copyTransforms(ModelPart from, ModelPart to) {
-		to.originX = from.originX;
-		to.originY = from.originY;
-		to.originZ = from.originZ;
-		to.pitch = from.pitch;
-		to.yaw = from.yaw;
-		to.roll = from.roll;
+		to.x = from.x;
+		to.y = from.y;
+		to.z = from.z;
+		to.xRot = from.xRot;
+		to.yRot = from.yRot;
+		to.zRot = from.zRot;
 		to.xScale = from.xScale;
 		to.yScale = from.yScale;
 		to.zScale = from.zScale;

@@ -27,26 +27,29 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
-import net.minecraft.client.render.item.model.special.SpecialModelTypes;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.special.SpecialModelRenderers;
 
 import net.fabricmc.fabric.impl.client.rendering.SpecialBlockRendererRegistryImpl;
 
-@Mixin(SpecialModelTypes.class)
+@Mixin(SpecialModelRenderers.class)
 abstract class SpecialModelTypesMixin {
 	@Shadow
 	@Final
 	@Mutable
-	private static Map<Block, SpecialModelRenderer.Unbaked> BLOCK_TO_MODEL_TYPE;
+	private static Map<Block, SpecialModelRenderer.Unbaked> STATIC_BLOCK_MAPPING;
 
-	@Inject(at = @At("RETURN"), method = "<clinit>*")
+	// TODO(Ravel): wildcard and regex target are not supported
+// TODO(Ravel): wildcard and regex target are not supported
+// TODO(Ravel): wildcard and regex target are not supported
+    @Inject(at = @At("RETURN"), method = "<clinit>*")
 	private static void onReturnClinit(CallbackInfo ci) {
 		// The map is normally an ImmutableMap.
-		if (!(BLOCK_TO_MODEL_TYPE instanceof HashMap)) {
-			BLOCK_TO_MODEL_TYPE = new HashMap<>(BLOCK_TO_MODEL_TYPE);
+		if (!(STATIC_BLOCK_MAPPING instanceof HashMap)) {
+			STATIC_BLOCK_MAPPING = new HashMap<>(STATIC_BLOCK_MAPPING);
 		}
 
-		SpecialBlockRendererRegistryImpl.setup(BLOCK_TO_MODEL_TYPE::put);
+		SpecialBlockRendererRegistryImpl.setup(STATIC_BLOCK_MAPPING::put);
 	}
 }

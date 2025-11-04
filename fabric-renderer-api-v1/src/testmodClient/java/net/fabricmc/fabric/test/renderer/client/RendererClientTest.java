@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
@@ -36,6 +36,6 @@ public final class RendererClientTest implements ClientModInitializer {
 
 		// We don't specify a material for the frame mesh,
 		// so it will use the default material, i.e. the one from RenderLayers.
-		BlockRenderLayerMap.putBlock(Registration.FRAME_BLOCK, BlockRenderLayer.CUTOUT);
+		BlockRenderLayerMap.putBlock(Registration.FRAME_BLOCK, ChunkSectionLayer.CUTOUT);
 	}
 }

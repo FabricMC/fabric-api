@@ -19,10 +19,10 @@ package net.fabricmc.fabric.mixin.event.interaction.client;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.KeyMapping;
 
-@Mixin(KeyBinding.class)
+@Mixin(KeyMapping.class)
 public interface KeyBindingAccessor {
-	@Accessor("timesPressed")
+	@Accessor("clickCount")
 	int fabric_getTimesPressed();
 }

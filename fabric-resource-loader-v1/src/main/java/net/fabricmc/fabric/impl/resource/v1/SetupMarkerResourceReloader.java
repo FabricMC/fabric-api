@@ -16,31 +16,31 @@
 
 package net.fabricmc.fabric.impl.resource.v1;
 
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SynchronousResourceReloader;
-import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.server.DataPackContents;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.server.ReloadableServerResources;
 
 import net.fabricmc.fabric.api.resource.v1.DataResourceLoader;
 
 // Used to inject into the ResourceReloader store.
-public record SetupMarkerResourceReloader(DataPackContents dataPackContents, FeatureSet featureSet) implements SynchronousResourceReloader {
+public record SetupMarkerResourceReloader(ReloadableServerResources dataPackContents, FeatureFlagSet featureSet) implements ResourceManagerReloadListener {
 	@Override
-	public void prepareSharedState(Store store) {
-		RegistryWrapper.WrapperLookup registries = this.dataPackContents.getReloadableRegistries().createRegistryLookup();
-		store.put(DataResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY, registries);
-		store.put(DataResourceLoader.RELOADER_FEATURE_SET_KEY, this.featureSet);
-		store.put(DataResourceLoader.ADVANCEMENT_LOADER_KEY, this.dataPackContents.getServerAdvancementLoader());
-		store.put(DataResourceLoader.RECIPE_MANAGER_KEY, this.dataPackContents.getRecipeManager());
-		store.put(
+	public void prepareSharedState(SharedState store) {
+		HolderLookup.Provider registries = this.dataPackContents.fullRegistries().lookup();
+		store.set(DataResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY, registries);
+		store.set(DataResourceLoader.RELOADER_FEATURE_SET_KEY, this.featureSet);
+		store.set(DataResourceLoader.ADVANCEMENT_LOADER_KEY, this.dataPackContents.getAdvancements());
+		store.set(DataResourceLoader.RECIPE_MANAGER_KEY, this.dataPackContents.getRecipeManager());
+		store.set(
 				DataResourceLoader.DATA_RESOURCE_STORE_KEY,
 				((FabricDataResourceStoreHolder) this.dataPackContents).fabric$getDataResourceStore()
 		);
 	}
 
 	@Override
-	public void reload(ResourceManager manager) {
+	public void onResourceManagerReload(ResourceManager manager) {
 		// Do nothing.
 	}
 }

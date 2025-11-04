@@ -22,12 +22,12 @@ import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.client.render.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelBakery;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.impl.client.model.loading.BakedModelsHooks;
 
-@Mixin(ModelBaker.BakedModels.class)
+@Mixin(ModelBakery.BakingResult.class)
 abstract class ModelBakerBakedModelsMixin implements BakedModelsHooks {
 	@Unique
 	@Nullable

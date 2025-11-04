@@ -16,26 +16,26 @@
 
 package net.fabricmc.fabric.test.particle.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.particle.BillboardParticle;
-import net.minecraft.client.particle.BillboardParticleSubmittable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.particle.ParticleRenderer;
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.Frustum;
-import net.minecraft.client.render.Submittable;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.ParticleGroup;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.state.ParticleGroupRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -46,31 +46,31 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 
 public class ParticleRendererRegistryTests implements ClientModInitializer {
-	private static final Identifier PARTICLE_ID = Identifier.of("fabric-particles-v1-testmod", "test");
+	private static final Identifier PARTICLE_ID = Identifier.fromNamespaceAndPath("fabric-particles-v1-testmod", "test");
 	private static final SimpleParticleType TEST_PARTICLE_TYPE = FabricParticleTypes.simple();
-	private static final ParticleTextureSheet TEST_PARTICLE_TEXTURE_SHEET = new ParticleTextureSheet(PARTICLE_ID.toString());
+	private static final ParticleRenderType TEST_PARTICLE_TEXTURE_SHEET = new ParticleRenderType(PARTICLE_ID.toString());
 
 	@Override
 	public void onInitializeClient() {
-		Registry.register(Registries.PARTICLE_TYPE, PARTICLE_ID, TEST_PARTICLE_TYPE);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, PARTICLE_ID, TEST_PARTICLE_TYPE);
 		ParticleFactoryRegistry.getInstance().register(TEST_PARTICLE_TYPE, TestParticleFactory::new);
 
 		ParticleRendererRegistry.register(TEST_PARTICLE_TEXTURE_SHEET, TestParticleRenderer::new);
-		ParticleRendererRegistry.registerOrdering(TEST_PARTICLE_TEXTURE_SHEET, ParticleTextureSheet.ITEM_PICKUP);
+		ParticleRendererRegistry.registerOrdering(TEST_PARTICLE_TEXTURE_SHEET, ParticleRenderType.ITEM_PICKUP);
 
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
 				dispatcher.register(ClientCommandManager.literal("custom_particles").executes(context -> {
-					ClientWorld world = MinecraftClient.getInstance().world;
-					Random random = world.getRandom();
-					ClientPlayerEntity player = context.getSource().getPlayer();
+					ClientLevel world = Minecraft.getInstance().level;
+					RandomSource random = world.getRandom();
+					LocalPlayer player = context.getSource().getPlayer();
 
 					for (int i = 0; i < 35; i++) {
-						world.addParticleClient(
+						world.addParticle(
 								TEST_PARTICLE_TYPE,
 								player.getX(), player.getY(), player.getZ(),
-								MathHelper.nextBetween(random, -1.0F, 1.0F),
+								Mth.randomBetween(random, -1.0F, 1.0F),
 								0.5F,
-								MathHelper.nextBetween(random, -1.0F, 1.0F)
+								Mth.randomBetween(random, -1.0F, 1.0F)
 						);
 					}
 
@@ -78,48 +78,48 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 				})));
 	}
 
-	private record TestParticleFactory(FabricSpriteProvider spriteProvider) implements ParticleFactory<SimpleParticleType> {
+	private record TestParticleFactory(FabricSpriteProvider spriteProvider) implements ParticleProvider<SimpleParticleType> {
 		@Override
-		public Particle createParticle(SimpleParticleType parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Random random) {
-			return new TestParticle(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.getSprite(random));
+		public Particle createParticle(SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random) {
+			return new TestParticle(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.get(random));
 		}
 	}
 
-	private static class TestParticle extends BillboardParticle {
-		TestParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, Sprite sprite) {
+	private static class TestParticle extends SingleQuadParticle {
+		TestParticle(ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, TextureAtlasSprite sprite) {
 			super(world, x, y, z, velocityX, velocityY, velocityZ, sprite);
 		}
 
 		@Override
-		protected RenderType getRenderType() {
-			return RenderType.PARTICLE_ATLAS_OPAQUE;
+		protected Layer getLayer() {
+			return Layer.OPAQUE;
 		}
 
 		@Override
-		public ParticleTextureSheet textureSheet() {
+		public ParticleRenderType getGroup() {
 			return TEST_PARTICLE_TEXTURE_SHEET;
 		}
 
 		private boolean intersectPoint(Frustum frustum) {
-			return frustum.intersectPoint(x, y, z);
+			return frustum.pointInFrustum(x, y, z);
 		}
 	}
 
-	private static class TestParticleRenderer extends ParticleRenderer<TestParticle> {
-		final BillboardParticleSubmittable submittable = new BillboardParticleSubmittable();
+	private static class TestParticleRenderer extends ParticleGroup<TestParticle> {
+		final QuadParticleRenderState submittable = new QuadParticleRenderState();
 
-		TestParticleRenderer(ParticleManager particleManager) {
+		TestParticleRenderer(ParticleEngine particleManager) {
 			super(particleManager);
 		}
 
 		@Override
-		public Submittable render(Frustum frustum, Camera camera, float tickProgress) {
+		public ParticleGroupRenderState extractRenderState(Frustum frustum, Camera camera, float tickProgress) {
 			for (TestParticle particle : this.particles) {
 				if (!particle.intersectPoint(frustum)) {
 					continue;
 				}
 
-				particle.render(this.submittable, camera, tickProgress);
+				particle.extract(this.submittable, camera, tickProgress);
 			}
 
 			return submittable;

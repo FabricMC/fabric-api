@@ -32,16 +32,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkPhase;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.handler.DecoderHandler;
-import net.minecraft.network.handler.EncoderHandler;
-import net.minecraft.network.handler.NetworkStateTransitions;
-import net.minecraft.network.listener.PacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.state.NetworkState;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.Connection;
+import net.minecraft.network.ConnectionProtocol;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.PacketDecoder;
+import net.minecraft.network.PacketEncoder;
+import net.minecraft.network.UnconfiguredPipelineHandler;
+import net.minecraft.network.PacketListener;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.ProtocolInfo;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
@@ -51,28 +51,28 @@ import net.fabricmc.fabric.impl.networking.VanillaPacketTypes;
 import net.fabricmc.fabric.impl.networking.splitter.FabricPacketMerger;
 import net.fabricmc.fabric.impl.networking.splitter.FabricPacketSplitter;
 
-@Mixin(ClientConnection.class)
+@Mixin(Connection.class)
 abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	@Shadow
 	private PacketListener packetListener;
 
 	@Unique
-	private Map<NetworkPhase, Collection<Identifier>> playChannels;
+	private Map<ConnectionProtocol, Collection<Identifier>> playChannels;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void initAddedFields(NetworkSide side, CallbackInfo ci) {
+	private void initAddedFields(PacketFlow side, CallbackInfo ci) {
 		this.playChannels = new ConcurrentHashMap<>();
 	}
 
-	@Inject(method = "sendImmediately", at = @At(value = "FIELD", target = "Lnet/minecraft/network/ClientConnection;packetsSentCounter:I"))
+	@Inject(method = "sendPacket", at = @At(value = "FIELD", target = "Lnet/minecraft/network/Connection;sentPackets:I"))
 	private void checkPacket(Packet<?> packet, ChannelFutureListener callback, boolean flush, CallbackInfo ci) {
 		if (this.packetListener instanceof PacketCallbackListener) {
 			((PacketCallbackListener) this.packetListener).sent(packet);
 		}
 	}
 
-	@Inject(method = "setPacketListener", at = @At("HEAD"))
-	private void unwatchAddon(NetworkState<?> state, PacketListener listener, CallbackInfo ci) {
+	@Inject(method = "validateListener", at = @At("HEAD"))
+	private void unwatchAddon(ProtocolInfo<?> state, PacketListener listener, CallbackInfo ci) {
 		if (this.packetListener instanceof NetworkHandlerExtensions oldListener) {
 			oldListener.getAddon().endSession();
 		}
@@ -85,43 +85,43 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		}
 	}
 
-	@Inject(method = "handleDisconnection", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/listener/PacketListener;onDisconnected(Lnet/minecraft/network/DisconnectionInfo;)V"))
+	@Inject(method = "handleDisconnection", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketListener;onDisconnect(Lnet/minecraft/network/DisconnectionDetails;)V"))
 	private void disconnectAddon(CallbackInfo ci) {
 		if (packetListener instanceof NetworkHandlerExtensions extension) {
 			extension.getAddon().handleDisconnect();
 		}
 	}
 
-	@ModifyArg(method = "transitionInbound", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
-	private Object injectFabricPacketSlitterHandlerInbound(Object transitioner, @Local(argsOnly = true) NetworkState<?> state) {
+	@ModifyArg(method = "setupInboundProtocol", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
+	private Object injectFabricPacketSlitterHandlerInbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> state) {
 		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(state);
 
 		if (payloadTypeRegistry == null) {
 			return transitioner;
 		}
 
-		return ((NetworkStateTransitions.DecoderTransitioner) transitioner).andThen((context) -> {
-			FabricPacketMerger merger = new FabricPacketMerger(context.pipeline().get(DecoderHandler.class), payloadTypeRegistry, VanillaPacketTypes.get(state));
+		return ((UnconfiguredPipelineHandler.InboundConfigurationTask) transitioner).andThen((context) -> {
+			FabricPacketMerger merger = new FabricPacketMerger(context.pipeline().get(PacketDecoder.class), payloadTypeRegistry, VanillaPacketTypes.get(state));
 			context.pipeline().addAfter("decoder", "fabric:merger", merger);
 		});
 	}
 
-	@ModifyArg(method = "transitionOutbound", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
-	private Object injectFabricPacketSlitterHandlerOutbound(Object transitioner, @Local(argsOnly = true) NetworkState<?> state) {
+	@ModifyArg(method = "setupOutboundProtocol", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
+	private Object injectFabricPacketSlitterHandlerOutbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> state) {
 		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(state);
 
 		if (payloadTypeRegistry == null) {
 			return transitioner;
 		}
 
-		return ((NetworkStateTransitions.EncoderTransitioner) transitioner).andThen((context) -> {
-			FabricPacketSplitter splitter = new FabricPacketSplitter(context.pipeline().get(EncoderHandler.class), payloadTypeRegistry);
+		return ((UnconfiguredPipelineHandler.OutboundConfigurationTask) transitioner).andThen((context) -> {
+			FabricPacketSplitter splitter = new FabricPacketSplitter(context.pipeline().get(PacketEncoder.class), payloadTypeRegistry);
 			context.pipeline().addAfter("encoder", "fabric:splitter", splitter);
 		});
 	}
 
 	@Override
-	public Collection<Identifier> fabric_getPendingChannelsNames(NetworkPhase state) {
+	public Collection<Identifier> fabric_getPendingChannelsNames(ConnectionProtocol state) {
 		return this.playChannels.computeIfAbsent(state, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
 	}
 }

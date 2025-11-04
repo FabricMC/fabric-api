@@ -18,12 +18,12 @@ package net.fabricmc.fabric.impl.resource.loader;
 
 import java.util.WeakHashMap;
 
-import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourcePackSource;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.repository.PackSource;
 
 /**
  * Tracks the sources of resource packs in a global weak hash map.
- * {@link ResourcePack} doesn't hold a reference to its {@link ResourcePackSource}
+ * {@link PackResources} doesn't hold a reference to its {@link PackSource}
  * so we store the source in the map when the resource packs are created.
  * See {@link net.fabricmc.fabric.mixin.resource.loader.ResourcePackProfileMixin ResourcePackProfileMixin}.
  *
@@ -31,16 +31,16 @@ import net.minecraft.resource.ResourcePackSource;
  */
 public final class ResourcePackSourceTracker {
 	// Use a weak hash map so that if resource packs would be deleted, this won't keep them alive.
-	private static final WeakHashMap<ResourcePack, ResourcePackSource> SOURCES = new WeakHashMap<>();
+	private static final WeakHashMap<PackResources, PackSource> SOURCES = new WeakHashMap<>();
 
 	/**
 	 * Gets the source of a pack.
 	 *
 	 * @param pack the resource pack
-	 * @return the source, or {@link ResourcePackSource#NONE} if not tracked
+	 * @return the source, or {@link PackSource#NONE} if not tracked
 	 */
-	public static ResourcePackSource getSource(ResourcePack pack) {
-		return SOURCES.getOrDefault(pack, ResourcePackSource.NONE);
+	public static PackSource getSource(PackResources pack) {
+		return SOURCES.getOrDefault(pack, PackSource.DEFAULT);
 	}
 
 	/**
@@ -49,7 +49,7 @@ public final class ResourcePackSourceTracker {
 	 * @param pack the resource pack
 	 * @param source the source
 	 */
-	public static void setSource(ResourcePack pack, ResourcePackSource source) {
+	public static void setSource(PackResources pack, PackSource source) {
 		SOURCES.put(pack, source);
 	}
 }

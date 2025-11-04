@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.test.lookup.api;
 
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 /**
  * An object that may provide an arbitrary text for display.
  */
 public interface Inspectable {
-	Text inspect();
+	Component inspect();
 }

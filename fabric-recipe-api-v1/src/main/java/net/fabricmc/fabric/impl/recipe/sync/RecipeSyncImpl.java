@@ -23,11 +23,11 @@ import java.util.Set;
 
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.Event;
@@ -43,7 +43,7 @@ public class RecipeSyncImpl implements ModInitializer {
 	private static final int RECIPE_PAYLOAD_MAX_SIZE = 64 * 1024 * 1024;
 	private static final Set<RecipeSerializer<?>> SYNCED_SERIALIZERS = new ReferenceOpenHashSet<>();
 
-	public static final Identifier RECIPE_SYNC_EVENT_PHASE = Identifier.of("fabric", "recipe_sync");
+	public static final Identifier RECIPE_SYNC_EVENT_PHASE = Identifier.fromNamespaceAndPath("fabric", "recipe_sync");
 
 	@Override
 	public void onInitialize() {
@@ -60,26 +60,26 @@ public class RecipeSyncImpl implements ModInitializer {
 		var set = new ReferenceOpenHashSet<RecipeSerializer<?>>();
 
 		for (Identifier identifier : payload.synchronizedSerializers()) {
-			Registries.RECIPE_SERIALIZER.getOptionalValue(identifier).ifPresent(set::add);
+			BuiltInRegistries.RECIPE_SERIALIZER.getOptional(identifier).ifPresent(set::add);
 		}
 
 		((SyncedSerializerAwareClientConnection) ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection())
 				.fabric_setSyncedRecipeSerializers(set);
 	}
 
-	private static void sendRecipes(ServerPlayerEntity player, boolean exist) {
+	private static void sendRecipes(ServerPlayer player, boolean exist) {
 		if (!ServerPlayNetworking.canSend(player, RecipeSyncPayloadS2C.ID)) {
 			return;
 		}
 
-		Set<RecipeSerializer<?>> serializers = ((SyncedSerializerAwareClientConnection) ((ServerCommonNetworkHandlerAccessor) player.networkHandler).getConnection()).fabric_getSyncedRecipeSerializers();
+		Set<RecipeSerializer<?>> serializers = ((SyncedSerializerAwareClientConnection) ((ServerCommonNetworkHandlerAccessor) player.connection).getConnection()).fabric_getSyncedRecipeSerializers();
 
-		SyncedSerializerAwarePreparedRecipe accessor = (SyncedSerializerAwarePreparedRecipe) ((ServerRecipeManagerAccessor) player.getEntityWorld().getRecipeManager()).getPreparedRecipes();
+		SyncedSerializerAwarePreparedRecipe accessor = (SyncedSerializerAwarePreparedRecipe) ((ServerRecipeManagerAccessor) player.level().recipeAccess()).getPreparedRecipes();
 
 		var list = new ArrayList<RecipeSyncPayloadS2C.Entry>();
 
 		for (RecipeSerializer<?> serializer : serializers) {
-			List<RecipeEntry<?>> recipes = accessor.fabric_getRecipesBySyncedSerializer(serializer);
+			List<RecipeHolder<?>> recipes = accessor.fabric_getRecipesBySyncedSerializer(serializer);
 
 			if (recipes != null && !recipes.isEmpty()) {
 				list.add(new RecipeSyncPayloadS2C.Entry(serializer, recipes));

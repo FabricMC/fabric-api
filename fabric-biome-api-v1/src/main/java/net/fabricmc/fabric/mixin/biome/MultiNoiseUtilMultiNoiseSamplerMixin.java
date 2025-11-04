@@ -20,20 +20,20 @@ import com.google.common.base.Preconditions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.util.math.noise.PerlinNoiseSampler;
-import net.minecraft.util.math.random.CheckedRandom;
-import net.minecraft.util.math.random.ChunkRandom;
-import net.minecraft.world.biome.source.util.MultiNoiseUtil;
+import net.minecraft.world.level.levelgen.synth.ImprovedNoise;
+import net.minecraft.world.level.levelgen.LegacyRandomSource;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.biome.Climate;
 
 import net.fabricmc.fabric.impl.biome.MultiNoiseSamplerHooks;
 
-@Mixin(MultiNoiseUtil.MultiNoiseSampler.class)
+@Mixin(Climate.Sampler.class)
 public class MultiNoiseUtilMultiNoiseSamplerMixin implements MultiNoiseSamplerHooks {
 	@Unique
 	private Long seed = null;
 
 	@Unique
-	private PerlinNoiseSampler endBiomesSampler = null;
+	private ImprovedNoise endBiomesSampler = null;
 
 	@Override
 	public void fabric_setSeed(long seed) {
@@ -46,10 +46,10 @@ public class MultiNoiseUtilMultiNoiseSamplerMixin implements MultiNoiseSamplerHo
 	}
 
 	@Override
-	public PerlinNoiseSampler fabric_getEndBiomesSampler() {
+	public ImprovedNoise fabric_getEndBiomesSampler() {
 		if (endBiomesSampler == null) {
 			Preconditions.checkState(seed != null, "MultiNoiseSampler doesn't have a seed set, created using different method?");
-			endBiomesSampler = new PerlinNoiseSampler(new ChunkRandom(new CheckedRandom(seed)));
+			endBiomesSampler = new ImprovedNoise(new WorldgenRandom(new LegacyRandomSource(seed)));
 		}
 
 		return endBiomesSampler;

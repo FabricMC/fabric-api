@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.renderer;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 
-public record ExtendedBlockCommand(MatrixStack.Entry matricesEntry, BlockState state, int lightCoords, int overlayCoords, int outlineColor, BlockRenderView blockView, BlockPos pos) {
+public record ExtendedBlockCommand(PoseStack.Pose matricesEntry, BlockState state, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter blockView, BlockPos pos) {
 }

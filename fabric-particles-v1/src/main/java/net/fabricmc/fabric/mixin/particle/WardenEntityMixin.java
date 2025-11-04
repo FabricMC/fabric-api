@@ -20,24 +20,24 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.WardenEntity;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.world.World;
-import net.minecraft.world.event.Vibrations;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 
 import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectExtension;
 
-@Mixin(WardenEntity.class)
-abstract class WardenEntityMixin extends HostileEntity implements Vibrations {
-	private WardenEntityMixin(EntityType<? extends HostileEntity> entityType, World world) {
+@Mixin(Warden.class)
+abstract class WardenEntityMixin extends Monster implements VibrationSystem {
+	private WardenEntityMixin(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	@ModifyExpressionValue(method = "addDigParticles", at = @At(value = "NEW", target = "(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)Lnet/minecraft/particle/BlockStateParticleEffect;"))
-	private BlockStateParticleEffect modifyBlockStateParticleEffect(BlockStateParticleEffect original) {
-		((BlockStateParticleEffectExtension) original).fabric_setBlockPos(getSteppingPos());
+	@ModifyExpressionValue(method = "clientDiggingParticles", at = @At(value = "NEW", target = "(Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/core/particles/BlockParticleOption;"))
+	private BlockParticleOption modifyBlockStateParticleEffect(BlockParticleOption original) {
+		((BlockStateParticleEffectExtension) original).fabric_setBlockPos(getOnPos());
 		return original;
 	}
 }

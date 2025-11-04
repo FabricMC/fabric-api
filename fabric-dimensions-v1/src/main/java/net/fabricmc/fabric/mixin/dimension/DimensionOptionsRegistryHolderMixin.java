@@ -23,14 +23,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.dimension.DimensionOptionsRegistryHolder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.WorldDimensions;
 
 import net.fabricmc.fabric.impl.dimension.FailSoftMapCodec;
 
-@Mixin(DimensionOptionsRegistryHolder.class)
+@Mixin(WorldDimensions.class)
 public class DimensionOptionsRegistryHolderMixin {
 	/**
 	 * Fix the issue that cannot load world after uninstalling a dimension mod/datapack.
@@ -40,8 +40,8 @@ public class DimensionOptionsRegistryHolderMixin {
 	@Redirect(method = "method_45516", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;group(Lcom/mojang/datafixers/kinds/App;)Lcom/mojang/datafixers/Products$P1;"))
 	private static Products.P1 useFailSoftMap(RecordCodecBuilder.Instance instance, App app) {
 		return instance.group(
-				new FailSoftMapCodec<>(RegistryKey.createCodec(RegistryKeys.DIMENSION), DimensionOptions.CODEC)
-						.fieldOf("dimensions").forGetter(DimensionOptionsRegistryHolder::dimensions)
+				new FailSoftMapCodec<>(ResourceKey.codec(Registries.LEVEL_STEM), LevelStem.CODEC)
+						.fieldOf("dimensions").forGetter(WorldDimensions::dimensions)
 		);
 	}
 }

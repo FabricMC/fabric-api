@@ -19,8 +19,8 @@ package net.fabricmc.fabric.api.client.gametest.v1.context;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 
 /**
  * Context for a client gametest containing various helpful functions while a client world is open.
@@ -46,7 +46,7 @@ public interface TestClientWorldContext {
 
 	/**
 	Waits for all chunks that will be downloaded from the server to be downloaded. After this, methods such as
-	 * {@link ClientWorld#getChunk(int, int)} and {@link ClientWorld#getBlockState(BlockPos)} will return the expected
+	 * {@link ClientLevel#getChunk(int, int)} and {@link ClientLevel#getBlockState(BlockPos)} will return the expected
 	 * value. However, the chunks may not yet be rendered and may not appear in screenshots, if you need this, use
 	 * {@link #waitForChunksRender(int)} instead. Fails if the chunks haven't been downloaded after {@code timeout}
 	 * ticks.

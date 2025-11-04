@@ -22,9 +22,9 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.loottable.LootTableGenerator;
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.data.loot.LootTableSubProvider;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootTableGenerator;
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootTableGenerator;
@@ -39,14 +39,14 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  * <p>Use {@link SimpleFabricLootTableProvider} for a simple abstract class that you can implement to handle standard loot table functions.
  */
 @ApiStatus.NonExtendable
-public interface FabricLootTableProvider extends LootTableGenerator, DataProvider {
+public interface FabricLootTableProvider extends LootTableSubProvider, DataProvider {
 	/**
 	 * Return a new exporter that applies the specified conditions to any loot table it receives.
 	 *
 	 * <p>For block and entity loot tables, use {@link FabricBlockLootTableGenerator#withConditions} or
 	 * {@link FabricEntityLootTableGenerator#withConditions} instead, respectively.
 	 */
-	default BiConsumer<RegistryKey<LootTable>, LootTable.Builder> withConditions(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> exporter, ResourceCondition... conditions) {
+	default BiConsumer<ResourceKey<LootTable>, LootTable.Builder> withConditions(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> exporter, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return (id, table) -> {
 			FabricDataGenHelper.addConditions(table, conditions);

@@ -36,42 +36,45 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.resource.FileResourcePackProvider;
-import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourcePackProvider;
-import net.minecraft.resource.ResourcePackSource;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.server.packs.repository.FolderRepositorySource;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.RepositorySource;
+import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.server.packs.PackType;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
-@Mixin(ResourcePackManager.class)
+@Mixin(PackRepository.class)
 public abstract class ResourcePackManagerMixin {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("ResourcePackManagerMixin");
 
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	@Final
 	@Mutable
-	public Set<ResourcePackProvider> providers;
+	public Set<RepositorySource> providers;
 
 	@Shadow
-	private Map<String, ResourcePackProfile> profiles;
+	private Map<String, Pack> available;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void construct(ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
+	public void construct(RepositorySource[] resourcePackProviders, CallbackInfo info) {
 		// Use a LinkedHashSet to preserve ordering
 		providers = new LinkedHashSet<>(providers);
 
 		// Search resource pack providers to find any server-related pack provider.
 		boolean shouldAddServerProvider = false;
 
-		for (ResourcePackProvider provider : this.providers) {
-			if (provider instanceof FileResourcePackProvider
-					&& (((FileResourcePackProvider) provider).source == ResourcePackSource.WORLD
-					|| ((FileResourcePackProvider) provider).source == ResourcePackSource.SERVER)) {
+		for (RepositorySource provider : this.providers) {
+			if (provider instanceof FolderRepositorySource
+					&& (((FolderRepositorySource) provider).packSource == PackSource.WORLD
+					|| ((FolderRepositorySource) provider).packSource == PackSource.SERVER)) {
 				shouldAddServerProvider = true;
 				break;
 			}
@@ -79,28 +82,28 @@ public abstract class ResourcePackManagerMixin {
 
 		// On server, add the mod resource pack provider.
 		if (shouldAddServerProvider) {
-			providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
+			providers.add(new ModResourcePackCreator(PackType.SERVER_DATA));
 		}
 	}
 
-	@Inject(method = "buildEnabledProfiles", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;copyOf(Ljava/util/Collection;)Lcom/google/common/collect/ImmutableList;", shift = At.Shift.BEFORE))
-	private void handleAutoEnableDisable(Collection<String> enabledNames, CallbackInfoReturnable<List<ResourcePackProfile>> cir, @Local List<ResourcePackProfile> enabledAfterFirstRun) {
-		ModResourcePackUtil.refreshAutoEnabledPacks(enabledAfterFirstRun, this.profiles);
+	@Inject(method = "rebuildSelected", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;copyOf(Ljava/util/Collection;)Lcom/google/common/collect/ImmutableList;", shift = At.Shift.BEFORE))
+	private void handleAutoEnableDisable(Collection<String> enabledNames, CallbackInfoReturnable<List<Pack>> cir, @Local List<Pack> enabledAfterFirstRun) {
+		ModResourcePackUtil.refreshAutoEnabledPacks(enabledAfterFirstRun, this.available);
 	}
 
-	@Inject(method = "enable", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER))
-	private void handleAutoEnable(String profile, CallbackInfoReturnable<Boolean> cir, @Local List<ResourcePackProfile> newlyEnabled) {
+	@Inject(method = "addPack", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.AFTER))
+	private void handleAutoEnable(String profile, CallbackInfoReturnable<Boolean> cir, @Local List<Pack> newlyEnabled) {
 		if (ModResourcePackCreator.POST_CHANGE_HANDLE_REQUIRED.contains(profile)) {
-			ModResourcePackUtil.refreshAutoEnabledPacks(newlyEnabled, this.profiles);
+			ModResourcePackUtil.refreshAutoEnabledPacks(newlyEnabled, this.available);
 		}
 	}
 
-	@Inject(method = "disable", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z"))
-	private void handleAutoDisable(String profile, CallbackInfoReturnable<Boolean> cir, @Local List<ResourcePackProfile> enabled) {
+	@Inject(method = "removePack", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z"))
+	private void handleAutoDisable(String profile, CallbackInfoReturnable<Boolean> cir, @Local List<Pack> enabled) {
 		if (ModResourcePackCreator.POST_CHANGE_HANDLE_REQUIRED.contains(profile)) {
-			Set<String> currentlyEnabled = enabled.stream().map(ResourcePackProfile::getId).collect(Collectors.toSet());
+			Set<String> currentlyEnabled = enabled.stream().map(Pack::getId).collect(Collectors.toSet());
 			enabled.removeIf(p -> !((FabricResourcePackProfile) p).fabric_parentsEnabled(currentlyEnabled));
-			LOGGER.debug("[Fabric] Internal pack auto-removed upon disabling {}, result: {}", profile, enabled.stream().map(ResourcePackProfile::getId).toList());
+			LOGGER.debug("[Fabric] Internal pack auto-removed upon disabling {}, result: {}", profile, enabled.stream().map(Pack::getId).toList());
 		}
 	}
 }

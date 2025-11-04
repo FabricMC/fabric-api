@@ -32,10 +32,10 @@ import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.particle.ParticleRenderer;
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.ParticleGroup;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
@@ -44,19 +44,19 @@ import net.fabricmc.fabric.mixin.client.particle.ParticleManagerAccessor;
 public final class ParticleRendererRegistryImpl {
 	public static final ParticleRendererRegistryImpl INSTANCE = new ParticleRendererRegistryImpl(ParticleManagerAccessor.getParticleTextureSheets());
 
-	private final List<ParticleTextureSheet> textureSheets;
+	private final List<ParticleRenderType> textureSheets;
 	private final Map<Identifier, ParticleTextureNode> nodes = new HashMap<>();
-	private final IdentityHashMap<ParticleTextureSheet, Function<ParticleManager, ParticleRenderer<?>>> factories = new IdentityHashMap<>();
+	private final IdentityHashMap<ParticleRenderType, Function<ParticleEngine, ParticleGroup<?>>> factories = new IdentityHashMap<>();
 
 	@VisibleForTesting
-	public ParticleRendererRegistryImpl(List<ParticleTextureSheet> textureSheets) {
+	public ParticleRendererRegistryImpl(List<ParticleRenderType> textureSheets) {
 		var copyOfTextureSheets = new ArrayList<>(textureSheets);
 		this.textureSheets = textureSheets;
 
 		Identifier last = null;
 
 		// Populate the nodes with vanilla texture sheets, to allow sorting with custom sheets later.
-		for (ParticleTextureSheet sheet : this.textureSheets) {
+		for (ParticleRenderType sheet : this.textureSheets) {
 			Identifier id = getId(sheet);
 
 			nodes.put(id, new ParticleTextureNode(sheet));
@@ -74,7 +74,7 @@ public final class ParticleRendererRegistryImpl {
 		assertIdentical(textureSheets, copyOfTextureSheets);
 	}
 
-	public void register(ParticleTextureSheet textureSheet, Function<ParticleManager, ParticleRenderer<?>> function) {
+	public void register(ParticleRenderType textureSheet, Function<ParticleEngine, ParticleGroup<?>> function) {
 		final Identifier id = getId(textureSheet);
 
 		if (nodes.containsKey(id)) {
@@ -112,14 +112,14 @@ public final class ParticleRendererRegistryImpl {
 		sort();
 	}
 
-	public @Nullable ParticleTextureSheet getParticleTextureSheet(Identifier id) {
+	public @Nullable ParticleRenderType getParticleTextureSheet(Identifier id) {
 		Objects.requireNonNull(id);
 		ParticleTextureNode entry = nodes.get(id);
 		return entry != null ? entry.textureSheet : null;
 	}
 
 	@Nullable
-	public Function<ParticleManager, ParticleRenderer<?>> getFactory(ParticleTextureSheet textureSheet) {
+	public Function<ParticleEngine, ParticleGroup<?>> getFactory(ParticleRenderType textureSheet) {
 		return factories.get(textureSheet);
 	}
 
@@ -127,7 +127,7 @@ public final class ParticleRendererRegistryImpl {
 		List<ParticleTextureNode> entries = new ArrayList<>(nodes.values());
 		NodeSorting.sort(entries, "particle texture sheets", Comparator.comparing(a -> a.id));
 
-		Reference2IntMap<ParticleTextureSheet> sheets = new Reference2IntLinkedOpenHashMap<>();
+		Reference2IntMap<ParticleRenderType> sheets = new Reference2IntLinkedOpenHashMap<>();
 
 		for (int i = 0; i < entries.size(); i++) {
 			sheets.put(entries.get(i).textureSheet, i);
@@ -150,14 +150,14 @@ public final class ParticleRendererRegistryImpl {
 
 	private static class ParticleTextureNode extends SortableNode<ParticleTextureNode> {
 		final Identifier id;
-		final ParticleTextureSheet textureSheet;
+		final ParticleRenderType textureSheet;
 
-		private ParticleTextureNode(Identifier id, ParticleTextureSheet textureSheet) {
+		private ParticleTextureNode(Identifier id, ParticleRenderType textureSheet) {
 			this.id = id;
 			this.textureSheet = textureSheet;
 		}
 
-		private ParticleTextureNode(ParticleTextureSheet textureSheet) {
+		private ParticleTextureNode(ParticleRenderType textureSheet) {
 			this.id = getId(textureSheet);
 			this.textureSheet = textureSheet;
 		}

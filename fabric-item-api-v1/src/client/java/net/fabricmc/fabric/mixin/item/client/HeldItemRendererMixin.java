@@ -23,45 +23,45 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.item.HeldItemRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemInHandRenderer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
 
 import net.fabricmc.fabric.api.item.v1.FabricItem;
 
 /**
  * Allow canceling the held item update animation if {@link FabricItem#allowComponentsUpdateAnimation} returns false.
  */
-@Mixin(HeldItemRenderer.class)
+@Mixin(ItemInHandRenderer.class)
 public class HeldItemRendererMixin {
 	@Shadow
-	private ItemStack mainHand;
+	private ItemStack mainHandItem;
 
 	@Shadow
-	private ItemStack offHand;
+	private ItemStack offHandItem;
 
 	@Shadow
 	@Final
-	private MinecraftClient client;
+	private Minecraft minecraft;
 
-	@Inject(method = "updateHeldItems", at = @At("HEAD"))
+	@Inject(method = "tick", at = @At("HEAD"))
 	private void modifyProgressAnimation(CallbackInfo ci) {
 		// Modify main hand
-		ItemStack newMainStack = client.player.getMainHandStack();
+		ItemStack newMainStack = minecraft.player.getMainHandItem();
 
-		if (mainHand.getItem() == newMainStack.getItem()) {
-			if (!mainHand.getItem().allowComponentsUpdateAnimation(client.player, Hand.MAIN_HAND, mainHand, newMainStack)) {
-				mainHand = newMainStack;
+		if (mainHandItem.getItem() == newMainStack.getItem()) {
+			if (!mainHandItem.getItem().allowComponentsUpdateAnimation(minecraft.player, InteractionHand.MAIN_HAND, mainHandItem, newMainStack)) {
+				mainHandItem = newMainStack;
 			}
 		}
 
 		// Modify off hand
-		ItemStack newOffStack = client.player.getOffHandStack();
+		ItemStack newOffStack = minecraft.player.getOffhandItem();
 
-		if (offHand.getItem() == newOffStack.getItem()) {
-			if (!offHand.getItem().allowComponentsUpdateAnimation(client.player, Hand.OFF_HAND, offHand, newOffStack)) {
-				offHand = newOffStack;
+		if (offHandItem.getItem() == newOffStack.getItem()) {
+			if (!offHandItem.getItem().allowComponentsUpdateAnimation(minecraft.player, InteractionHand.OFF_HAND, offHandItem, newOffStack)) {
+				offHandItem = newOffStack;
 			}
 		}
 	}

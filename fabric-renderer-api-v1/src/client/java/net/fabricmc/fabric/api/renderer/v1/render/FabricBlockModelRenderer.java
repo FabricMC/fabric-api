@@ -20,40 +20,40 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.block.BlockModelRenderer;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.EmptyBlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.EmptyBlockAndTintGetter;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /**
- * Note: This interface is automatically implemented on {@link BlockModelRenderer} via Mixin and interface injection.
+ * Note: This interface is automatically implemented on {@link ModelBlockRenderer} via Mixin and interface injection.
  */
 public interface FabricBlockModelRenderer {
 	/**
 	 * Alternative for
-	 * {@link BlockModelRenderer#render(BlockRenderView, List, BlockState, BlockPos, MatrixStack, VertexConsumer, boolean, int)}
+	 * {@link ModelBlockRenderer#render(BlockAndTintGetter, List, BlockState, BlockPos, PoseStack, VertexConsumer, boolean, int)}
 	 * and
-	 * {@link BlockRenderManager#renderBlock(BlockState, BlockPos, BlockRenderView, MatrixStack, VertexConsumer, boolean, List)}
+	 * {@link BlockRenderDispatcher#renderBlock(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)}
 	 * that accepts a {@link BlockStateModel} instead of a {@code List<BlockModelPart>} and a
 	 * {@link BlockVertexConsumerProvider} instead of a {@link VertexConsumer}. Also accepts the random seed. <b>Prefer
 	 * using this method over the vanilla alternative to correctly retrieve geometry from models that implement
-	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockRenderView, BlockPos, BlockState, Random, Predicate)} and to
+	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} and to
 	 * correctly buffer models that have geometry on multiple render layers.</b>
 	 *
 	 * <p>This method allows buffering a block model in a terrain-like context, which usually includes stages like
 	 * culling, dynamic tinting, shading, and flat/smooth lighting.
 	 *
 	 * @param blockView The world in which to render the model. <b>Should not be empty (i.e. not
-	 *                  {@link EmptyBlockRenderView}).</b>
+	 *                  {@link EmptyBlockAndTintGetter}).</b>
 	 * @param model The model to render.
 	 * @param state The block state.
 	 * @param pos The position of the block in the world.
@@ -63,16 +63,16 @@ public interface FabricBlockModelRenderer {
 	 * @param seed The random seed. Usually retrieved by the caller from {@link BlockState#getRenderingSeed(BlockPos)}.
 	 * @param overlay The overlay value to pass to output {@link VertexConsumer}s.
 	 */
-	default void render(BlockRenderView blockView, BlockStateModel model, BlockState state, BlockPos pos, MatrixStack matrices, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
-		Renderer.get().render((BlockModelRenderer) this, blockView, model, state, pos, matrices, vertexConsumers, cull, seed, overlay);
+	default void render(BlockAndTintGetter blockView, BlockStateModel model, BlockState state, BlockPos pos, PoseStack matrices, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
+		Renderer.get().render((ModelBlockRenderer) this, blockView, model, state, pos, matrices, vertexConsumers, cull, seed, overlay);
 	}
 
 	/**
 	 * Alternative for
-	 * {@link BlockModelRenderer#render(MatrixStack.Entry, VertexConsumer, BlockStateModel, float, float, float, int, int)}
+	 * {@link ModelBlockRenderer#render(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
 	 * that accepts a {@link BlockVertexConsumerProvider} instead of a {@link VertexConsumer}. Also accepts the
-	 * {@link BlockRenderView}, {@link BlockPos}, and {@link BlockState} to pass to
-	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockRenderView, BlockPos, BlockState, Random, Predicate)} when
+	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
+	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
 	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
 	 * on multiple render layers and to provide the model with additional context.</b>
 	 *
@@ -87,14 +87,14 @@ public interface FabricBlockModelRenderer {
 	 * @param blue The blue component of the tint color.
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
-	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockRenderView}).</b>
+	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
 	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ORIGIN} if the world is empty.
 	 *            </b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 *
-	 * @see FabricRenderCommandQueue#submitBlockStateModel(MatrixStack, Function, BlockStateModel, float, float, float, int, int, int, BlockRenderView, BlockPos, BlockState)
+	 * @see FabricRenderCommandQueue#submitBlockStateModel(PoseStack, Function, BlockStateModel, float, float, float, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
-	static void render(MatrixStack.Entry matrices, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockRenderView blockView, BlockPos pos, BlockState state) {
+	static void render(PoseStack.Pose matrices, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
 		Renderer.get().render(matrices, vertexConsumers, model, red, green, blue, light, overlay, blockView, pos, state);
 	}
 }

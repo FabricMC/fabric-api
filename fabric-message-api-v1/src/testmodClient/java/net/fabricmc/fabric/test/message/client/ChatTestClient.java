@@ -20,7 +20,7 @@ import com.mojang.brigadier.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -103,7 +103,7 @@ public class ChatTestClient implements ClientModInitializer {
 		ClientReceiveMessageEvents.MODIFY_GAME.register((message, overlay) -> {
 			if (message.getString().contains("modify receive")) {
 				LOGGER.info("Modifying received game message: " + message.getString());
-				return Text.of("modified receiving game message");
+				return Component.nullToEmpty("modified receiving game message");
 			}
 
 			return message;

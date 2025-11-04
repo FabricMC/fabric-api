@@ -20,24 +20,24 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.BreezeEntity;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.breeze.Breeze;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectExtension;
 
-@Mixin(BreezeEntity.class)
-abstract class BreezeEntityMixin extends HostileEntity {
-	private BreezeEntityMixin(EntityType<? extends HostileEntity> entityType, World world) {
+@Mixin(Breeze.class)
+abstract class BreezeEntityMixin extends Monster {
+	private BreezeEntityMixin(EntityType<? extends Monster> entityType, Level world) {
 		super(entityType, world);
 	}
 
-	@ModifyExpressionValue(method = { "addLongJumpingParticles", "addBlockParticles" }, at = @At(value = "NEW", target = "(Lnet/minecraft/particle/ParticleType;Lnet/minecraft/block/BlockState;)Lnet/minecraft/particle/BlockStateParticleEffect;"))
-	private BlockStateParticleEffect modifyBlockStateParticleEffect(BlockStateParticleEffect original) {
-		BlockPos blockPos = !getBlockStateAtPos().isAir() ? getBlockPos() : getSteppingPos();
+	@ModifyExpressionValue(method = {"emitJumpTrailParticles", "emitGroundParticles"}, at = @At(value = "NEW", target = "(Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/core/particles/BlockParticleOption;"))
+	private BlockParticleOption modifyBlockStateParticleEffect(BlockParticleOption original) {
+		BlockPos blockPos = !getInBlockState().isAir() ? blockPosition() : getOnPos();
 		((BlockStateParticleEffectExtension) original).fabric_setBlockPos(blockPos);
 		return original;
 	}

@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 
@@ -31,7 +31,10 @@ public class EnchantmentBuilderMixin implements EnchantmentUtil.BuilderExtension
 	@Unique
 	private boolean didModify = false;
 
-	// Target all methods in the builder, but only mark as modified if the return value is the builder itself.
+	// TODO(Ravel): wildcard and regex target are not supported
+// TODO(Ravel): wildcard and regex target are not supported
+// TODO(Ravel): wildcard and regex target are not supported
+// Target all methods in the builder, but only mark as modified if the return value is the builder itself.
 	@Inject(method = "*", at = @At(value = "RETURN"))
 	private void markModified(CallbackInfoReturnable<?> cir) {
 		if (cir.getReturnValue() == this) {

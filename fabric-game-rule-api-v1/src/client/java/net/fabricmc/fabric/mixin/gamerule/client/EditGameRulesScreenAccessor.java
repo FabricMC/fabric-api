@@ -20,17 +20,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
-import net.minecraft.world.rule.GameRules;
+import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
+import net.minecraft.world.level.gamerules.GameRules;
 
 @Mixin(EditGameRulesScreen.class)
 public interface EditGameRulesScreenAccessor {
-	@Invoker("markValid")
-	void callMarkValid(EditGameRulesScreen.AbstractRuleWidget ruleWidget);
+	@Invoker("clearInvalid")
+	void callMarkValid(EditGameRulesScreen.RuleEntry ruleWidget);
 
 	@Invoker("markInvalid")
-	void callMarkInvalid(EditGameRulesScreen.AbstractRuleWidget ruleWidget);
+	void callMarkInvalid(EditGameRulesScreen.RuleEntry ruleWidget);
 
 	@Accessor("gameRules")
-	GameRules getGameRules();
+    GameRules getGameRules();
 }

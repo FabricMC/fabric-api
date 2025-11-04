@@ -24,40 +24,40 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.render.OutlineVertexConsumerProvider;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.command.BatchingRenderCommandQueue;
-import net.minecraft.client.render.command.ItemCommandRenderer;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.OutlineBufferSource;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollection;
+import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessBatchingRenderCommandQueue;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.ItemRenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemCommand;
 
-@Mixin(ItemCommandRenderer.class)
+@Mixin(ItemFeatureRenderer.class)
 abstract class ItemCommandRendererMixin {
 	@Shadow
 	@Final
-	private MatrixStack matrices;
+	private PoseStack poseStack;
 
 	@Unique
 	private final ItemRenderContext itemRenderContext = new ItemRenderContext();
 
 	@Inject(method = "render", at = @At("RETURN"))
-	private void onReturnRender(BatchingRenderCommandQueue queue, VertexConsumerProvider.Immediate vertexConsumers, OutlineVertexConsumerProvider outlineVertexConsumers, CallbackInfo ci) {
+	private void onReturnRender(SubmitNodeCollection queue, MultiBufferSource.BufferSource vertexConsumers, OutlineBufferSource outlineVertexConsumers, CallbackInfo ci) {
 		for (MeshItemCommand itemCommand : ((AccessBatchingRenderCommandQueue) queue).fabric_getMeshItemCommands()) {
-			matrices.push();
-			matrices.peek().copy(itemCommand.positionMatrix());
+			poseStack.pushPose();
+			poseStack.last().set(itemCommand.positionMatrix());
 
-			itemRenderContext.renderItem(itemCommand.displayContext(), matrices, vertexConsumers, itemCommand.lightCoords(), itemCommand.overlayCoords(), itemCommand.tintLayers(), itemCommand.quads(), itemCommand.mesh(), itemCommand.renderLayer(), itemCommand.glintType(), false);
+			itemRenderContext.renderItem(itemCommand.displayContext(), poseStack, vertexConsumers, itemCommand.lightCoords(), itemCommand.overlayCoords(), itemCommand.tintLayers(), itemCommand.quads(), itemCommand.mesh(), itemCommand.renderLayer(), itemCommand.glintType(), false);
 
 			if (itemCommand.outlineColor() != 0) {
 				outlineVertexConsumers.setColor(itemCommand.outlineColor());
-				itemRenderContext.renderItem(itemCommand.displayContext(), matrices, outlineVertexConsumers, itemCommand.lightCoords(), itemCommand.overlayCoords(), itemCommand.tintLayers(), itemCommand.quads(), itemCommand.mesh(), itemCommand.renderLayer(), ItemRenderState.Glint.NONE, true);
+				itemRenderContext.renderItem(itemCommand.displayContext(), poseStack, outlineVertexConsumers, itemCommand.lightCoords(), itemCommand.overlayCoords(), itemCommand.tintLayers(), itemCommand.quads(), itemCommand.mesh(), itemCommand.renderLayer(), ItemStackRenderState.FoilType.NONE, true);
 			}
 
-			matrices.pop();
+			poseStack.popPose();
 		}
 	}
 }

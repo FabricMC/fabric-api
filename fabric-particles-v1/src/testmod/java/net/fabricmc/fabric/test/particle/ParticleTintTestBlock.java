@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.test.particle;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 public class ParticleTintTestBlock extends Block {
 	public final int color;
 
-	public ParticleTintTestBlock(Settings settings, int color) {
+	public ParticleTintTestBlock(Properties settings, int color) {
 		super(settings);
 		this.color = color;
 	}

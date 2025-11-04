@@ -31,10 +31,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.config.SelectKnownPacksS2CPacket;
-import net.minecraft.registry.VersionedIdentifier;
-import net.minecraft.server.network.SynchronizeRegistriesTask;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.configuration.ClientboundSelectKnownPacks;
+import net.minecraft.server.packs.repository.KnownPack;
+import net.minecraft.server.network.config.SynchronizeRegistriesTask;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
@@ -44,29 +44,32 @@ public abstract class SynchronizeRegistriesTaskMixin {
 	private static final Logger LOGGER = LoggerFactory.getLogger("SynchronizeRegistriesTaskMixin");
 	@Shadow
 	@Final
-	private List<VersionedIdentifier> knownPacks;
+	private List<KnownPack> requestedPacks;
 
-	@Shadow
-	protected abstract void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<VersionedIdentifier> commonKnownPacks);
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
+	protected abstract void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<KnownPack> commonKnownPacks);
 
-	@Inject(method = "onSelectKnownPacks", at = @At("HEAD"), cancellable = true)
-	public void onSelectKnownPacks(List<VersionedIdentifier> clientKnownPacks, Consumer<Packet<?>> sender, CallbackInfo ci) {
-		if (new HashSet<>(this.knownPacks).containsAll(clientKnownPacks)) {
+	@Inject(method = "handleResponse", at = @At("HEAD"), cancellable = true)
+	public void onSelectKnownPacks(List<KnownPack> clientKnownPacks, Consumer<Packet<?>> sender, CallbackInfo ci) {
+		if (new HashSet<>(this.requestedPacks).containsAll(clientKnownPacks)) {
 			this.syncRegistryAndTags(sender, Set.copyOf(clientKnownPacks));
 			ci.cancel();
 		}
 	}
 
-	@Inject(method = "syncRegistryAndTags", at = @At("HEAD"))
-	public void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<VersionedIdentifier> commonKnownPacks, CallbackInfo ci) {
+	@Inject(method = "sendRegistries", at = @At("HEAD"))
+	public void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<KnownPack> commonKnownPacks, CallbackInfo ci) {
 		LOGGER.debug("Synchronizing registries with common known packs: {}", commonKnownPacks);
 	}
 
-	@Inject(method = "sendPacket", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "start", at = @At("HEAD"), cancellable = true)
 	private void sendPacket(Consumer<Packet<?>> sender, CallbackInfo ci) {
-		if (this.knownPacks.size() > ModResourcePackCreator.MAX_KNOWN_PACKS) {
-			LOGGER.warn("Too many knownPacks: Found {}; max {}", this.knownPacks.size(), ModResourcePackCreator.MAX_KNOWN_PACKS);
-			sender.accept(new SelectKnownPacksS2CPacket(this.knownPacks.subList(0, ModResourcePackCreator.MAX_KNOWN_PACKS)));
+		if (this.requestedPacks.size() > ModResourcePackCreator.MAX_KNOWN_PACKS) {
+			LOGGER.warn("Too many knownPacks: Found {}; max {}", this.requestedPacks.size(), ModResourcePackCreator.MAX_KNOWN_PACKS);
+			sender.accept(new ClientboundSelectKnownPacks(this.requestedPacks.subList(0, ModResourcePackCreator.MAX_KNOWN_PACKS)));
 			ci.cancel();
 		}
 	}

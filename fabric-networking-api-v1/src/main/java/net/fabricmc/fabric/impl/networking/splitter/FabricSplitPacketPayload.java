@@ -18,13 +18,13 @@ package net.fabricmc.fabric.impl.networking.splitter;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
-public record FabricSplitPacketPayload(ByteBuf byteBuf) implements CustomPayload {
-	public static final Id<FabricSplitPacketPayload> ID = new Id<>(Identifier.of("fabric", "split"));
-	public static final PacketCodec<ByteBuf, FabricSplitPacketPayload> CODEC = PacketCodec.ofStatic(FabricSplitPacketPayload::write, FabricSplitPacketPayload::read);
+public record FabricSplitPacketPayload(ByteBuf byteBuf) implements CustomPacketPayload {
+	public static final Type<FabricSplitPacketPayload> ID = new Type<>(Identifier.fromNamespaceAndPath("fabric", "split"));
+	public static final StreamCodec<ByteBuf, FabricSplitPacketPayload> CODEC = StreamCodec.of(FabricSplitPacketPayload::write, FabricSplitPacketPayload::read);
 
 	private static FabricSplitPacketPayload read(ByteBuf buf) {
 		return new FabricSplitPacketPayload(buf.readBytes(buf.readableBytes()));
@@ -35,7 +35,7 @@ public record FabricSplitPacketPayload(ByteBuf byteBuf) implements CustomPayload
 	}
 
 	@Override
-	public Id<? extends CustomPayload> getId() {
+	public Type<? extends CustomPacketPayload> type() {
 		return ID;
 	}
 }

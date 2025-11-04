@@ -27,9 +27,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.network.packet.Packet;
-import net.minecraft.registry.VersionedIdentifier;
-import net.minecraft.server.network.SynchronizeRegistriesTask;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.packs.repository.KnownPack;
+import net.minecraft.server.network.config.SynchronizeRegistriesTask;
 
 import net.fabricmc.fabric.test.resource.loader.BuiltinResourcePackTestMod;
 
@@ -37,14 +37,14 @@ import net.fabricmc.fabric.test.resource.loader.BuiltinResourcePackTestMod;
 public class SynchronizeRegistriesTaskMixin {
 	@Shadow
 	@Final
-	private List<VersionedIdentifier> knownPacks;
+	private List<KnownPack> requestedPacks;
 
-	@Inject(method = "syncRegistryAndTags", at = @At("HEAD"))
-	public void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<VersionedIdentifier> commonKnownPacks, CallbackInfo ci) {
+	@Inject(method = "sendRegistries", at = @At("HEAD"))
+	public void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<KnownPack> commonKnownPacks, CallbackInfo ci) {
 		BuiltinResourcePackTestMod.LOGGER.info("Synchronizing registries with common known packs: {}", commonKnownPacks);
 
-		if (!commonKnownPacks.containsAll(this.knownPacks)) {
-			BuiltinResourcePackTestMod.LOGGER.error("(Ignore when not local client) Not all server mod data packs known to client. Missing: {}", this.knownPacks.stream().filter(knownPack -> !commonKnownPacks.contains(knownPack)).toList());
+		if (!commonKnownPacks.containsAll(this.requestedPacks)) {
+			BuiltinResourcePackTestMod.LOGGER.error("(Ignore when not local client) Not all server mod data packs known to client. Missing: {}", this.requestedPacks.stream().filter(knownPack -> !commonKnownPacks.contains(knownPack)).toList());
 		}
 	}
 }

@@ -20,24 +20,24 @@ import java.util.Set;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
-public class CustomIngredientPacketCodec implements PacketCodec<RegistryByteBuf, Ingredient> {
+public class CustomIngredientPacketCodec implements StreamCodec<RegistryFriendlyByteBuf, Ingredient> {
 	static final int PACKET_MARKER = -1;
-	private final PacketCodec<RegistryByteBuf, Ingredient> fallback;
+	private final StreamCodec<RegistryFriendlyByteBuf, Ingredient> fallback;
 
-	public CustomIngredientPacketCodec(PacketCodec<RegistryByteBuf, Ingredient> fallback) {
+	public CustomIngredientPacketCodec(StreamCodec<RegistryFriendlyByteBuf, Ingredient> fallback) {
 		this.fallback = fallback;
 	}
 
 	@Override
-	public Ingredient decode(RegistryByteBuf buf) {
+	public Ingredient decode(RegistryFriendlyByteBuf buf) {
 		int index = buf.readerIndex();
 
 		if (buf.readVarInt() != PACKET_MARKER) {
@@ -58,7 +58,7 @@ public class CustomIngredientPacketCodec implements PacketCodec<RegistryByteBuf,
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void encode(RegistryByteBuf buf, Ingredient value) {
+	public void encode(RegistryFriendlyByteBuf buf, Ingredient value) {
 		CustomIngredient customIngredient = value.getCustomIngredient();
 
 		if (shouldEncodeFallback(customIngredient)) {
@@ -70,7 +70,7 @@ public class CustomIngredientPacketCodec implements PacketCodec<RegistryByteBuf,
 		// The client supports this custom ingredient, so we send it as a custom ingredient.
 		buf.writeVarInt(PACKET_MARKER);
 		buf.writeIdentifier(customIngredient.getSerializer().getIdentifier());
-		PacketCodec<RegistryByteBuf, CustomIngredient> packetCodec = (PacketCodec<RegistryByteBuf, CustomIngredient>) customIngredient.getSerializer().getPacketCodec();
+		StreamCodec<RegistryFriendlyByteBuf, CustomIngredient> packetCodec = (StreamCodec<RegistryFriendlyByteBuf, CustomIngredient>) customIngredient.getSerializer().getPacketCodec();
 		packetCodec.encode(buf, customIngredient);
 	}
 

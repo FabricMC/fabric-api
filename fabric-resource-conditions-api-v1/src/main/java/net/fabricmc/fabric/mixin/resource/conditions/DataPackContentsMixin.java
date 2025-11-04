@@ -25,24 +25,24 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.command.permission.PermissionPredicate;
-import net.minecraft.registry.CombinedDynamicRegistries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.ServerDynamicRegistryType;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.featuretoggle.FeatureSet;
-import net.minecraft.server.DataPackContents;
-import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.permissions.PermissionSet;
+import net.minecraft.core.LayeredRegistryAccess;
+import net.minecraft.core.Registry;
+import net.minecraft.server.RegistryLayer;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.server.ReloadableServerResources;
+import net.minecraft.commands.Commands;
 
 import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
-@Mixin(DataPackContents.class)
+@Mixin(ReloadableServerResources.class)
 public class DataPackContentsMixin {
 	@Inject(
-			method = "reload",
+			method = "loadResources",
 			at = @At("HEAD")
 	)
-	private static void hookReload(ResourceManager resourceManager, CombinedDynamicRegistries<ServerDynamicRegistryType> dynamicRegistries, List<Registry.PendingTagLoad<?>> pendingTagLoads, FeatureSet enabledFeatures, CommandManager.RegistrationEnvironment environment, PermissionPredicate permissionPredicate, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<DataPackContents>> cir) {
+	private static void hookReload(ResourceManager resourceManager, LayeredRegistryAccess<RegistryLayer> dynamicRegistries, List<Registry.PendingTags<?>> pendingTagLoads, FeatureFlagSet enabledFeatures, Commands.CommandSelection environment, PermissionSet permissionPredicate, Executor prepareExecutor, Executor applyExecutor, CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
 		ResourceConditionsImpl.currentFeatures = enabledFeatures;
 	}
 }

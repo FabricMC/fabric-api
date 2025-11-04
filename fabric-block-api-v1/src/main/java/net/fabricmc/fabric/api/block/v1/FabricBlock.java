@@ -18,12 +18,12 @@ package net.fabricmc.fabric.api.block.v1;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
 
 /**
  * General-purpose Fabric-provided extensions for {@link Block} subclasses.
@@ -46,7 +46,7 @@ public interface FabricBlock {
 	 * identified by the optional {@code sourcePos} and {@code sourceState} parameters.
 	 *
 	 * <p>When a block changes appearance, it should trigger a chunk remesh for itself and the adjacent blocks,
-	 * for example by calling {@link World#updateListeners}.
+	 * for example by calling {@link Level#updateListeners}.
 	 *
 	 * <p>Note: Overriding this method for a block does <strong>not</strong> change how it renders.
 	 * It's up to modded models to check for the appearance of nearby blocks and adjust accordingly.
@@ -98,7 +98,7 @@ public interface FabricBlock {
 	 * @param sourcePos   (optional) position of the block that is querying the appearance, or null if unknown
 	 * @return the appearance of the block on the given side; the original {@code state} can be returned if there is no better option
 	 */
-	default BlockState getAppearance(BlockState state, BlockRenderView renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+	default BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		return state;
 	}
 }

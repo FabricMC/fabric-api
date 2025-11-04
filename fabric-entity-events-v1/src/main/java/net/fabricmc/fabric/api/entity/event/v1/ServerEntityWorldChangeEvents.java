@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -26,14 +26,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Events related to an entity being moved to another world.
  *
- * @apiNote For a {@link ServerPlayerEntity}, please use {@link ServerEntityWorldChangeEvents#AFTER_PLAYER_CHANGE_WORLD}.
+ * @apiNote For a {@link ServerPlayer}, please use {@link ServerEntityWorldChangeEvents#AFTER_PLAYER_CHANGE_WORLD}.
  */
 public final class ServerEntityWorldChangeEvents {
 	/**
 	 * An event which is called after an entity has been moved to a different world.
 	 *
 	 * <p>All entities are copied to the destination and the old entity removed.
-	 * This event does not apply to the {@link ServerPlayerEntity} since players are physically moved to the new world instead of being copied over.
+	 * This event does not apply to the {@link ServerPlayer} since players are physically moved to the new world instead of being copied over.
 	 *
 	 * <p>A mod may use this event for reference cleanup if it is tracking an entity's current world.
 	 *
@@ -52,7 +52,7 @@ public final class ServerEntityWorldChangeEvents {
 	 * This is because the player is usually physically moved to the new world instead of being recreated at the destination.
 	 *
 	 * <p>However, there is one exception to this. When the player respawns in a different world, the player is recreated at the destination. When that happens,
-	 * this event passes in the new {@link ServerPlayerEntity}. If you need the old {@link ServerPlayerEntity}, see {@link ServerPlayerEvents#AFTER_RESPAWN}
+	 * this event passes in the new {@link ServerPlayer}. If you need the old {@link ServerPlayer}, see {@link ServerPlayerEvents#AFTER_RESPAWN}
 	 *
 	 * @see ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD
 	 */
@@ -67,7 +67,7 @@ public final class ServerEntityWorldChangeEvents {
 		/**
 		 * Called after an entity has been recreated at the destination when being moved to a different world.
 		 *
-		 * <p>Note this event is not called if the entity is a {@link ServerPlayerEntity}.
+		 * <p>Note this event is not called if the entity is a {@link ServerPlayer}.
 		 * {@link AfterPlayerChange} should be used to track when a player has changed worlds.
 		 *
 		 * @param originalEntity the original entity
@@ -75,7 +75,7 @@ public final class ServerEntityWorldChangeEvents {
 		 * @param origin the world the original entity is in
 		 * @param destination the destination world the new entity is in
 		 */
-		void afterChangeWorld(Entity originalEntity, Entity newEntity, ServerWorld origin, ServerWorld destination);
+		void afterChangeWorld(Entity originalEntity, Entity newEntity, ServerLevel origin, ServerLevel destination);
 	}
 
 	@FunctionalInterface
@@ -87,7 +87,7 @@ public final class ServerEntityWorldChangeEvents {
 		 * @param origin the original world the player was in
 		 * @param destination the new world the player was moved to
 		 */
-		void afterChangeWorld(ServerPlayerEntity player, ServerWorld origin, ServerWorld destination);
+		void afterChangeWorld(ServerPlayer player, ServerLevel origin, ServerLevel destination);
 	}
 
 	private ServerEntityWorldChangeEvents() {

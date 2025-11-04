@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.command.v2;
 
 import com.mojang.brigadier.CommandDispatcher;
 
-import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.commands.CommandBuildContext;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -43,5 +43,5 @@ public interface ClientCommandRegistrationCallback {
 	 * @param dispatcher the command dispatcher to register commands to
 	 * @param registryAccess object exposing access to the game's registries
 	 */
-	void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess);
+	void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess);
 }

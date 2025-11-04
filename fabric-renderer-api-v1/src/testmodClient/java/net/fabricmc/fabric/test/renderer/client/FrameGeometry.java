@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.test.renderer.client;
 
-import net.minecraft.client.render.model.BakedGeometry;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.Geometry;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelTextures;
-import net.minecraft.client.render.model.SimpleModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.Atlases;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.UnbakedGeometry;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
@@ -33,14 +33,14 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelBakeSettingsHelper;
 
-public record FrameGeometry(boolean emissive) implements Geometry {
+public record FrameGeometry(boolean emissive) implements UnbakedGeometry {
 	@Override
-	public BakedGeometry bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, SimpleModel model) {
+	public QuadCollection bake(TextureSlots textures, ModelBaker baker, ModelState settings, ModelDebugName model) {
 		MutableMesh builder = Renderer.get().mutableMesh();
 		QuadEmitter emitter = builder.emitter();
-		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.getSpriteGetter().spriteFinder(Atlases.BLOCKS)));
+		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.sprites().spriteFinder(AtlasIds.BLOCKS)));
 
-		Sprite sprite = baker.getSpriteGetter().get(textures.get("frame"), model);
+		TextureAtlasSprite sprite = baker.sprites().get(textures.getMaterial("frame"), model);
 
 		for (Direction direction : Direction.values()) {
 			// Draw outer frame

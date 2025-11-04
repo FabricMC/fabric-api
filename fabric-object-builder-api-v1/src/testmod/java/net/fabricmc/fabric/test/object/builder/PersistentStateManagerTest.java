@@ -21,9 +21,9 @@ import java.util.Objects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.PersistentStateType;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -45,17 +45,17 @@ public class PersistentStateManagerTest implements ModInitializer {
 		});
 	}
 
-	private static class TestState extends PersistentState {
+	private static class TestState extends SavedData {
 		/**
 		 * We are testing that null can be passed as the dataFixType.
 		 */
 		private static final Codec<TestState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("value").forGetter(TestState::getValue)
 		).apply(instance, TestState::new));
-		private static final PersistentStateType<TestState> TYPE = new PersistentStateType<>(ObjectBuilderTestConstants.id("test_state").toString().replace(":", "_"), TestState::new, CODEC, null);
+		private static final SavedDataType<TestState> TYPE = new SavedDataType<>(ObjectBuilderTestConstants.id("test_state").toString().replace(":", "_"), TestState::new, CODEC, null);
 
-		public static TestState getOrCreate(ServerWorld world) {
-			return world.getPersistentStateManager().getOrCreate(TestState.TYPE);
+		public static TestState getOrCreate(ServerLevel world) {
+			return world.getDataStorage().computeIfAbsent(TestState.TYPE);
 		}
 
 		private String value = "";
@@ -73,7 +73,7 @@ public class PersistentStateManagerTest implements ModInitializer {
 
 		public void setValue(String value) {
 			this.value = value;
-			markDirty();
+			setDirty();
 		}
 	}
 }

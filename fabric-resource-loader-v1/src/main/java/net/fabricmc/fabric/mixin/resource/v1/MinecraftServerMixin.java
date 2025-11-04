@@ -27,12 +27,12 @@ import net.fabricmc.fabric.impl.resource.v1.FabricDataResourceStoreHolder;
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin implements DataResourceStore {
 	@Shadow
-	private MinecraftServer.ResourceManagerHolder resourceManagerHolder;
+	private MinecraftServer.ReloadableResources resources;
 
 	@SuppressWarnings("AddedMixinMembersNamePattern")
 	@Override
 	public <T> T getOrThrow(Key<T> key) {
-		return ((FabricDataResourceStoreHolder) this.resourceManagerHolder.dataPackContents())
+		return ((FabricDataResourceStoreHolder) this.resources.managers())
 				.fabric$getDataResourceStore()
 				.getOrThrow(key);
 	}

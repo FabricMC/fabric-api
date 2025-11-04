@@ -23,25 +23,25 @@ import java.nio.file.Files;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import net.minecraft.test.XmlReportingTestCompletionListener;
+import net.minecraft.gametest.framework.JUnitLikeTestReporter;
 
 /**
- * An extension of {@link XmlReportingTestCompletionListener} which creates the destination directory before saving
+ * An extension of {@link JUnitLikeTestReporter} which creates the destination directory before saving
  * the report.
  */
-final class SavingXmlReportingTestCompletionListener extends XmlReportingTestCompletionListener {
+final class SavingXmlReportingTestCompletionListener extends JUnitLikeTestReporter {
 	SavingXmlReportingTestCompletionListener(File file) throws ParserConfigurationException {
 		super(file);
 	}
 
 	@Override
-	public void saveReport(File file) throws TransformerException {
+	public void save(File file) throws TransformerException {
 		try {
 			Files.createDirectories(file.toPath().getParent());
 		} catch (IOException e) {
 			throw new TransformerException("Failed to create parent directory", e);
 		}
 
-		super.saveReport(file);
+		super.save(file);
 	}
 }

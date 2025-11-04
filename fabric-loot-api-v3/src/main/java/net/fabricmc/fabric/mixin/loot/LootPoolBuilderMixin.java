@@ -24,10 +24,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.loot.function.LootFunction;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 
 import net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder;
 
@@ -39,15 +39,15 @@ import net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder;
 abstract class LootPoolBuilderMixin implements FabricLootPoolBuilder {
 	@Shadow
 	@Final
-	private ImmutableList.Builder<LootPoolEntry> entries;
+	private ImmutableList.Builder<LootPoolEntryContainer> entries;
 
 	@Shadow
 	@Final
-	private ImmutableList.Builder<LootCondition> conditions;
+	private ImmutableList.Builder<LootItemCondition> conditions;
 
 	@Shadow
 	@Final
-	private ImmutableList.Builder<LootFunction> functions;
+	private ImmutableList.Builder<LootItemFunction> functions;
 
 	@Unique
 	private LootPool.Builder self() {
@@ -56,37 +56,37 @@ abstract class LootPoolBuilderMixin implements FabricLootPoolBuilder {
 	}
 
 	@Override
-	public LootPool.Builder with(LootPoolEntry entry) {
+	public LootPool.Builder with(LootPoolEntryContainer entry) {
 		this.entries.add(entry);
 		return self();
 	}
 
 	@Override
-	public LootPool.Builder with(Collection<? extends LootPoolEntry> entries) {
+	public LootPool.Builder with(Collection<? extends LootPoolEntryContainer> entries) {
 		this.entries.addAll(entries);
 		return self();
 	}
 
 	@Override
-	public LootPool.Builder conditionally(LootCondition condition) {
+	public LootPool.Builder conditionally(LootItemCondition condition) {
 		this.conditions.add(condition);
 		return self();
 	}
 
 	@Override
-	public LootPool.Builder conditionally(Collection<? extends LootCondition> conditions) {
+	public LootPool.Builder conditionally(Collection<? extends LootItemCondition> conditions) {
 		this.conditions.addAll(conditions);
 		return self();
 	}
 
 	@Override
-	public LootPool.Builder apply(LootFunction function) {
+	public LootPool.Builder apply(LootItemFunction function) {
 		this.functions.add(function);
 		return self();
 	}
 
 	@Override
-	public LootPool.Builder apply(Collection<? extends LootFunction> functions) {
+	public LootPool.Builder apply(Collection<? extends LootItemFunction> functions) {
 		this.functions.addAll(functions);
 		return self();
 	}

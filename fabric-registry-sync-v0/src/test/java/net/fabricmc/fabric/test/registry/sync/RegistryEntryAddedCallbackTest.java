@@ -32,28 +32,28 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import net.minecraft.Bootstrap;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 
 public class RegistryEntryAddedCallbackTest {
 	@Mock
-	private Consumer<RegistryEntry.Reference<String>> mockConsumer;
+	private Consumer<Holder.Reference<String>> mockConsumer;
 
 	@Captor
-	private ArgumentCaptor<RegistryEntry.Reference<String>> captor;
+	private ArgumentCaptor<Holder.Reference<String>> captor;
 
 	@BeforeAll
 	static void beforeAll() {
-		SharedConstants.createGameVersion();
-		Bootstrap.initialize();
+		SharedConstants.tryDetectVersion();
+		Bootstrap.bootStrap();
 	}
 
 	@BeforeEach
@@ -63,8 +63,8 @@ public class RegistryEntryAddedCallbackTest {
 
 	@Test
 	void testEntryAddedCallback() {
-		RegistryKey<Registry<String>> testRegistryKey = RegistryKey.ofRegistry(id(UUID.randomUUID().toString()));
-		SimpleRegistry<String> testRegistry = FabricRegistryBuilder.createSimple(testRegistryKey)
+		ResourceKey<Registry<String>> testRegistryKey = ResourceKey.createRegistryKey(id(UUID.randomUUID().toString()));
+		MappedRegistry<String> testRegistry = FabricRegistryBuilder.createSimple(testRegistryKey)
 				.buildAndRegister();
 
 		Registry.register(testRegistry, id("before"), "before");
@@ -83,7 +83,7 @@ public class RegistryEntryAddedCallbackTest {
 
 		List<String> values = captor.getAllValues()
 				.stream()
-				.map(RegistryEntry.Reference::value)
+				.map(Holder.Reference::value)
 				.toList();
 
 		assertEquals(3, values.size());
@@ -93,6 +93,6 @@ public class RegistryEntryAddedCallbackTest {
 	}
 
 	private static Identifier id(String path) {
-		return Identifier.of("registry_sync_test_entry_added_test", path);
+		return Identifier.fromNamespaceAndPath("registry_sync_test_entry_added_test", path);
 	}
 }

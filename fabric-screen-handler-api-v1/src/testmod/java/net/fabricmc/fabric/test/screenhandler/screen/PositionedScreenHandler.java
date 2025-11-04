@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.screenhandler.screen;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 public interface PositionedScreenHandler {
 	BlockPos getPos();

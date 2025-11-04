@@ -19,16 +19,16 @@ package net.fabricmc.fabric.mixin.blockview;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.WorldView;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.Holder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.biome.Biome;
 
-@Mixin(WorldView.class)
-public interface WorldViewMixin extends BlockRenderView {
+@Mixin(LevelReader.class)
+public interface WorldViewMixin extends BlockAndTintGetter {
 	@Shadow
-	RegistryEntry<Biome> getBiome(BlockPos pos);
+	Holder<Biome> getBiome(BlockPos pos);
 
 	@Override
 	default boolean hasBiomes() {
@@ -36,7 +36,7 @@ public interface WorldViewMixin extends BlockRenderView {
 	}
 
 	@Override
-	default RegistryEntry<Biome> getBiomeFabric(BlockPos pos) {
+	default Holder<Biome> getBiomeFabric(BlockPos pos) {
 		return getBiome(pos);
 	}
 }

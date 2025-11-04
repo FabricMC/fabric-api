@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.rendering;
 
-import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
+import net.minecraft.client.renderer.SubmitNodeStorage;
 
 public interface GuiRendererExtensions {
-	void fabric_onReady(OrderedRenderCommandQueueImpl orderedRenderCommandQueue);
+	void fabric_onReady(SubmitNodeStorage orderedRenderCommandQueue);
 }

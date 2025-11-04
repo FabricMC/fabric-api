@@ -16,20 +16,20 @@
 
 package net.fabricmc.fabric.mixin.itemgroup;
 
-import static net.minecraft.item.ItemGroups.BUILDING_BLOCKS;
-import static net.minecraft.item.ItemGroups.COLORED_BLOCKS;
-import static net.minecraft.item.ItemGroups.COMBAT;
-import static net.minecraft.item.ItemGroups.FOOD_AND_DRINK;
-import static net.minecraft.item.ItemGroups.FUNCTIONAL;
-import static net.minecraft.item.ItemGroups.HOTBAR;
-import static net.minecraft.item.ItemGroups.INGREDIENTS;
-import static net.minecraft.item.ItemGroups.INVENTORY;
-import static net.minecraft.item.ItemGroups.NATURAL;
-import static net.minecraft.item.ItemGroups.OPERATOR;
-import static net.minecraft.item.ItemGroups.REDSTONE;
-import static net.minecraft.item.ItemGroups.SEARCH;
-import static net.minecraft.item.ItemGroups.SPAWN_EGGS;
-import static net.minecraft.item.ItemGroups.TOOLS;
+import static net.minecraft.world.item.CreativeModeTabs.BUILDING_BLOCKS;
+import static net.minecraft.world.item.CreativeModeTabs.COLORED_BLOCKS;
+import static net.minecraft.world.item.CreativeModeTabs.COMBAT;
+import static net.minecraft.world.item.CreativeModeTabs.FOOD_AND_DRINKS;
+import static net.minecraft.world.item.CreativeModeTabs.FUNCTIONAL_BLOCKS;
+import static net.minecraft.world.item.CreativeModeTabs.HOTBAR;
+import static net.minecraft.world.item.CreativeModeTabs.INGREDIENTS;
+import static net.minecraft.world.item.CreativeModeTabs.INVENTORY;
+import static net.minecraft.world.item.CreativeModeTabs.NATURAL_BLOCKS;
+import static net.minecraft.world.item.CreativeModeTabs.OP_BLOCKS;
+import static net.minecraft.world.item.CreativeModeTabs.REDSTONE_BLOCKS;
+import static net.minecraft.world.item.CreativeModeTabs.SEARCH;
+import static net.minecraft.world.item.CreativeModeTabs.SPAWN_EGGS;
+import static net.minecraft.world.item.CreativeModeTabs.TOOLS_AND_UTILITIES;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -41,21 +41,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupImpl;
 
-@Mixin(ItemGroups.class)
+@Mixin(CreativeModeTabs.class)
 public class ItemGroupsMixin {
 	@Unique
 	private static final int TABS_PER_PAGE = FabricItemGroupImpl.TABS_PER_PAGE;
 
-	@Inject(method = "collect", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "validate", at = @At("HEAD"), cancellable = true)
 	private static void deferDuplicateCheck(CallbackInfo ci) {
 		/*
 		 * Defer the duplication checks to when fabric performs them (see mixin below).
@@ -64,13 +64,13 @@ public class ItemGroupsMixin {
 		ci.cancel();
 	}
 
-	@Inject(method = "updateEntries", at = @At("TAIL"))
+	@Inject(method = "buildAllTabContents", at = @At("TAIL"))
 	private static void paginateGroups(CallbackInfo ci) {
-		final List<RegistryKey<ItemGroup>> vanillaGroups = List.of(BUILDING_BLOCKS, COLORED_BLOCKS, NATURAL, FUNCTIONAL, REDSTONE, HOTBAR, SEARCH, TOOLS, COMBAT, FOOD_AND_DRINK, INGREDIENTS, SPAWN_EGGS, OPERATOR, INVENTORY);
+		final List<ResourceKey<CreativeModeTab>> vanillaGroups = List.of(BUILDING_BLOCKS, COLORED_BLOCKS, NATURAL_BLOCKS, FUNCTIONAL_BLOCKS, REDSTONE_BLOCKS, HOTBAR, SEARCH, TOOLS_AND_UTILITIES, COMBAT, FOOD_AND_DRINKS, INGREDIENTS, SPAWN_EGGS, OP_BLOCKS, INVENTORY);
 
 		int count = 0;
 
-		Comparator<RegistryEntry.Reference<ItemGroup>> entryComparator = (e1, e2) -> {
+		Comparator<Holder.Reference<CreativeModeTab>> entryComparator = (e1, e2) -> {
 			// Non-displayable groups should come last for proper pagination
 			int displayCompare = Boolean.compare(e1.value().shouldDisplay(), e2.value().shouldDisplay());
 
@@ -78,18 +78,18 @@ public class ItemGroupsMixin {
 				return -displayCompare;
 			} else {
 				// Ensure a deterministic order
-				return compareNamespaceFirst(e1.registryKey().getValue(), e2.registryKey().getValue());
+				return compareNamespaceFirst(e1.key().identifier(), e2.key().identifier());
 			}
 		};
-		final List<RegistryEntry.Reference<ItemGroup>> sortedItemGroups = Registries.ITEM_GROUP.streamEntries()
+		final List<Holder.Reference<CreativeModeTab>> sortedItemGroups = BuiltInRegistries.CREATIVE_MODE_TAB.listElements()
 				.sorted(entryComparator)
 				.toList();
 
-		for (RegistryEntry.Reference<ItemGroup> reference : sortedItemGroups) {
-			final ItemGroup itemGroup = reference.value();
+		for (Holder.Reference<CreativeModeTab> reference : sortedItemGroups) {
+			final CreativeModeTab itemGroup = reference.value();
 			final FabricItemGroupImpl fabricItemGroup = (FabricItemGroupImpl) itemGroup;
 
-			if (vanillaGroups.contains(reference.registryKey())) {
+			if (vanillaGroups.contains(reference.key())) {
 				// Vanilla group goes on the first page.
 				fabricItemGroup.fabric_setPage(0);
 				continue;
@@ -98,22 +98,22 @@ public class ItemGroupsMixin {
 			final ItemGroupAccessor itemGroupAccessor = (ItemGroupAccessor) itemGroup;
 			fabricItemGroup.fabric_setPage((count / TABS_PER_PAGE) + 1);
 			int pageIndex = count % TABS_PER_PAGE;
-			ItemGroup.Row row = pageIndex < (TABS_PER_PAGE / 2) ? ItemGroup.Row.TOP : ItemGroup.Row.BOTTOM;
+			CreativeModeTab.Row row = pageIndex < (TABS_PER_PAGE / 2) ? CreativeModeTab.Row.TOP : CreativeModeTab.Row.BOTTOM;
 			itemGroupAccessor.setRow(row);
-			itemGroupAccessor.setColumn(row == ItemGroup.Row.TOP ? pageIndex % TABS_PER_PAGE : (pageIndex - TABS_PER_PAGE / 2) % (TABS_PER_PAGE));
+			itemGroupAccessor.setColumn(row == CreativeModeTab.Row.TOP ? pageIndex % TABS_PER_PAGE : (pageIndex - TABS_PER_PAGE / 2) % (TABS_PER_PAGE));
 
 			count++;
 		}
 
 		// Overlapping group detection logic, with support for pages.
-		record ItemGroupPosition(ItemGroup.Row row, int column, int page) { }
+		record ItemGroupPosition(CreativeModeTab.Row row, int column, int page) { }
 		var map = new HashMap<ItemGroupPosition, String>();
 
-		for (RegistryKey<ItemGroup> registryKey : Registries.ITEM_GROUP.getKeys()) {
-			final ItemGroup itemGroup = Registries.ITEM_GROUP.getValueOrThrow(registryKey);
+		for (ResourceKey<CreativeModeTab> registryKey : BuiltInRegistries.CREATIVE_MODE_TAB.registryKeySet()) {
+			final CreativeModeTab itemGroup = BuiltInRegistries.CREATIVE_MODE_TAB.getValueOrThrow(registryKey);
 			final FabricItemGroupImpl fabricItemGroup = (FabricItemGroupImpl) itemGroup;
 			final String displayName = itemGroup.getDisplayName().getString();
-			final var position = new ItemGroupPosition(itemGroup.getRow(), itemGroup.getColumn(), fabricItemGroup.fabric_getPage());
+			final var position = new ItemGroupPosition(itemGroup.row(), itemGroup.column(), fabricItemGroup.fabric_getPage());
 			final String existingName = map.put(position, displayName);
 
 			if (existingName != null) {

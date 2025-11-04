@@ -18,14 +18,14 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.block.FluidRenderer;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingImpl;
 
@@ -50,7 +50,7 @@ public interface FluidRenderHandler {
 	 * it contains a third sprite, that sprite is used as overlay behind glass
 	 * and leaves.
 	 */
-	Sprite[] getFluidSprites(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state);
+	TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state);
 
 	/**
 	 * Get the tint color for a fluid being rendered at a given position.
@@ -63,7 +63,7 @@ public interface FluidRenderHandler {
 	 * @param state The current state of the fluid.
 	 * @return The tint color of the fluid.
 	 */
-	default int getFluidColor(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
+	default int getFluidColor(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
 		return -1;
 	}
 
@@ -72,7 +72,7 @@ public interface FluidRenderHandler {
 	 * fluid renderer. Call {@code FluidRenderHandler.super.renderFluid} if
 	 * you want to render over the default fluid renderer. This is the
 	 * intended way to render default geometry; calling
-	 * {@link FluidRenderer#render} is not supported. When rendering default
+	 * {@link LiquidBlockRenderer#render} is not supported. When rendering default
 	 * geometry, the current handler will be used instead of looking up
 	 * a new one for the passed fluid state.
 	 *
@@ -82,7 +82,7 @@ public interface FluidRenderHandler {
 	 * @param blockState The block state being rendered.
 	 * @param fluidState The fluid state being rendered.
 	 */
-	default void renderFluid(BlockPos pos, BlockRenderView world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	default void renderFluid(BlockPos pos, BlockAndTintGetter world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
 		FluidRenderingImpl.renderDefault(this, world, pos, vertexConsumer, blockState, fluidState);
 	}
 
@@ -97,6 +97,6 @@ public interface FluidRenderHandler {
 	 *
 	 * @param textureAtlas The blocks texture atlas, provided for convenience.
 	 */
-	default void reloadTextures(SpriteAtlasTexture textureAtlas) {
+	default void reloadTextures(TextureAtlas textureAtlas) {
 	}
 }

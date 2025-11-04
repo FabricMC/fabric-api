@@ -21,9 +21,9 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.client.render.entity.BipedEntityRenderer;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 
@@ -31,9 +31,9 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 // Vanilla only stores the items with armor models in the entity's render state,
 // but we want to store any item with an armor renderer. Otherwise, armor renderers would
 // only be called for items with an existing vanilla armor model.
-@Mixin(BipedEntityRenderer.class)
+@Mixin(HumanoidMobRenderer.class)
 abstract class BipedEntityRendererMixin {
-	@WrapOperation(method = "getEquippedStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/feature/ArmorFeatureRenderer;hasModel(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EquipmentSlot;)Z"))
+	@WrapOperation(method = "getEquipmentIfRenderable", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;shouldRender(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/EquipmentSlot;)Z"))
 	private static boolean permitArmorWithCustomRenderers(ItemStack stack, EquipmentSlot slot, Operation<Boolean> original) {
 		return original.call(stack, slot) || ArmorRendererRegistryImpl.get(stack.getItem()) != null;
 	}

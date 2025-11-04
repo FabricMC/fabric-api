@@ -18,19 +18,19 @@ package net.fabricmc.fabric.api.event.registry;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistryAttributeImpl;
 
 @ApiStatus.NonExtendable
 public interface RegistryAttributeHolder {
-	static RegistryAttributeHolder get(RegistryKey<?> registryKey) {
+	static RegistryAttributeHolder get(ResourceKey<?> registryKey) {
 		return RegistryAttributeImpl.getHolder(registryKey);
 	}
 
 	static RegistryAttributeHolder get(Registry<?> registry) {
-		return get(registry.getKey());
+		return get(registry.key());
 	}
 
 	RegistryAttributeHolder addAttribute(RegistryAttribute attribute);

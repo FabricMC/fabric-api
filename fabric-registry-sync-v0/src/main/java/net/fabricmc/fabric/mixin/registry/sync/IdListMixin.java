@@ -27,41 +27,41 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.util.collection.IdList;
+import net.minecraft.core.IdMapper;
 
 import net.fabricmc.fabric.impl.registry.sync.RemovableIdList;
 
-@Mixin(IdList.class)
+@Mixin(IdMapper.class)
 public class IdListMixin<T> implements RemovableIdList<T> {
 	@Shadow
 	private int nextId;
 	@Final
 	@Shadow
-	private Reference2IntMap<T> idMap;
+	private Reference2IntMap<T> tToId;
 	@Final
 	@Shadow
-	private List<T> list;
+	private List<T> idToT;
 
 	@Override
 	public void fabric_clear() {
 		nextId = 0;
-		idMap.clear();
-		list.clear();
+		tToId.clear();
+		idToT.clear();
 	}
 
 	@Unique
 	private void fabric_removeInner(T o) {
-		int value = idMap.removeInt(o);
-		list.set(value, null);
+		int value = tToId.removeInt(o);
+		idToT.set(value, null);
 
-		while (nextId > 1 && list.get(nextId - 1) == null) {
+		while (nextId > 1 && idToT.get(nextId - 1) == null) {
 			nextId--;
 		}
 	}
 
 	@Override
 	public void fabric_remove(T o) {
-		if (idMap.containsKey(o)) {
+		if (tToId.containsKey(o)) {
 			fabric_removeInner(o);
 		}
 	}
@@ -70,8 +70,8 @@ public class IdListMixin<T> implements RemovableIdList<T> {
 	public void fabric_removeId(int i) {
 		List<T> removals = new ArrayList<>();
 
-		for (T o : idMap.keySet()) {
-			int j = idMap.getInt(o);
+		for (T o : tToId.keySet()) {
+			int j = tToId.getInt(o);
 
 			if (i == j) {
 				removals.add(o);
@@ -89,12 +89,12 @@ public class IdListMixin<T> implements RemovableIdList<T> {
 	@Override
 	public void fabric_remapIds(Int2IntMap map) {
 		// remap idMap
-		idMap.replaceAll((a, b) -> map.get((int) b));
+		tToId.replaceAll((a, b) -> map.get((int) b));
 
 		// remap list
 		nextId = 0;
-		List<T> oldList = new ArrayList<>(list);
-		list.clear();
+		List<T> oldList = new ArrayList<>(idToT);
+		idToT.clear();
 
 		for (int k = 0; k < oldList.size(); k++) {
 			T o = oldList.get(k);
@@ -102,11 +102,11 @@ public class IdListMixin<T> implements RemovableIdList<T> {
 			if (o != null) {
 				int i = map.getOrDefault(k, k);
 
-				while (list.size() <= i) {
-					list.add(null);
+				while (idToT.size() <= i) {
+					idToT.add(null);
 				}
 
-				list.set(i, o);
+				idToT.set(i, o);
 
 				if (nextId <= i) {
 					nextId = i + 1;

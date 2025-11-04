@@ -21,17 +21,17 @@ import java.util.Locale;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.recipe.ServerRecipeManager;
-import net.minecraft.server.ServerAdvancementLoader;
-import net.minecraft.server.function.FunctionLoader;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.server.ServerFunctionLibrary;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 import net.fabricmc.fabric.impl.resource.v1.FabricResourceReloader;
 
 @Mixin({
 		/* public */
-		ServerRecipeManager.class, ServerAdvancementLoader.class, FunctionLoader.class
+		RecipeManager.class, ServerAdvancementManager.class, ServerFunctionLibrary.class
 		/* private */
 })
 public abstract class KeyedResourceReloaderMixin implements FabricResourceReloader {
@@ -44,14 +44,14 @@ public abstract class KeyedResourceReloaderMixin implements FabricResourceReload
 		if (this.id == null) {
 			Object self = this;
 
-			if (self instanceof ServerRecipeManager) {
+			if (self instanceof RecipeManager) {
 				this.id = ResourceReloaderKeys.Server.RECIPES;
-			} else if (self instanceof ServerAdvancementLoader) {
+			} else if (self instanceof ServerAdvancementManager) {
 				this.id = ResourceReloaderKeys.Server.ADVANCEMENTS;
-			} else if (self instanceof FunctionLoader) {
+			} else if (self instanceof ServerFunctionLibrary) {
 				this.id = ResourceReloaderKeys.Server.FUNCTIONS;
 			} else {
-				this.id = Identifier.ofVanilla("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
+				this.id = Identifier.withDefaultNamespace("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
 		}
 

@@ -22,16 +22,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jetbrains.annotations.VisibleForTesting;
 
-import net.minecraft.registry.RegistryKey;
+import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class RegistryAttributeImpl implements RegistryAttributeHolder {
-	private static final Map<RegistryKey<?>, RegistryAttributeHolder> HOLDER_MAP = new ConcurrentHashMap<>();
+	private static final Map<ResourceKey<?>, RegistryAttributeHolder> HOLDER_MAP = new ConcurrentHashMap<>();
 
-	public static RegistryAttributeHolder getHolder(RegistryKey<?> registryKey) {
+	public static RegistryAttributeHolder getHolder(ResourceKey<?> registryKey) {
 		return HOLDER_MAP.computeIfAbsent(registryKey, key -> new RegistryAttributeImpl());
 	}
 

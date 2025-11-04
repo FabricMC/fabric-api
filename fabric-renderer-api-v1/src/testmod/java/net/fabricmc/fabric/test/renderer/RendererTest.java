@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.renderer;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 
@@ -49,6 +49,6 @@ public final class RendererTest implements ModInitializer {
 	}
 
 	public static Identifier id(String path) {
-		return Identifier.of("fabric-renderer-api-v1-testmod", path);
+		return Identifier.fromNamespaceAndPath("fabric-renderer-api-v1-testmod", path);
 	}
 }

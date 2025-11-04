@@ -20,16 +20,16 @@ import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.fluid.FlowableFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
@@ -81,7 +81,7 @@ public final class FluidVariantAttributes {
 	/**
 	 * Return the name that should be used for the passed fluid variant.
 	 */
-	public static Text getName(FluidVariant variant) {
+	public static Component getName(FluidVariant variant) {
 		return getHandlerOrDefault(variant.getFluid()).getName(variant);
 	}
 
@@ -91,8 +91,8 @@ public final class FluidVariantAttributes {
 	 */
 	public static SoundEvent getFillSound(FluidVariant variant) {
 		return getHandlerOrDefault(variant.getFluid()).getFillSound(variant)
-				.or(() -> variant.getFluid().getBucketFillSound())
-				.orElse(SoundEvents.ITEM_BUCKET_FILL);
+				.or(() -> variant.getFluid().getPickupSound())
+				.orElse(SoundEvents.BUCKET_FILL);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public final class FluidVariantAttributes {
 	 * or the default (water) emptying sound otherwise.
 	 */
 	public static SoundEvent getEmptySound(FluidVariant variant) {
-		return getHandlerOrDefault(variant.getFluid()).getEmptySound(variant).orElse(SoundEvents.ITEM_BUCKET_EMPTY);
+		return getHandlerOrDefault(variant.getFluid()).getEmptySound(variant).orElse(SoundEvents.BUCKET_EMPTY);
 	}
 
 	/**
@@ -136,14 +136,14 @@ public final class FluidVariantAttributes {
 	 * Return a positive integer, representing the viscosity of this fluid variant.
 	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
 	 *
-	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowableFluid#getMaxFlowDistance} for flowable fluids.
+	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowingFluid#getMaxFlowDistance} for flowable fluids.
 	 * The reference values are {@value FluidConstants#WATER_VISCOSITY} for water,
 	 * {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),
 	 * and {@value FluidConstants#LAVA_VISCOSITY} for lava in other dimensions.
 	 *
 	 * @param world World if available, otherwise null.
 	 */
-	public static int getViscosity(FluidVariant variant, @Nullable World world) {
+	public static int getViscosity(FluidVariant variant, @Nullable Level world) {
 		int viscosity = getHandlerOrDefault(variant.getFluid()).getViscosity(variant, world);
 
 		if (viscosity <= 0) {
@@ -165,9 +165,9 @@ public final class FluidVariantAttributes {
 	static {
 		register(Fluids.WATER, new FluidVariantAttributeHandler() {
 			@Override
-			public Text getName(FluidVariant fluidVariant) {
+			public Component getName(FluidVariant fluidVariant) {
 				if (coloredVanillaFluidNames) {
-					return Blocks.WATER.getName().setStyle(Style.EMPTY.withColor(Formatting.BLUE));
+					return Blocks.WATER.getName().setStyle(Style.EMPTY.withColor(ChatFormatting.BLUE));
 				} else {
 					return FluidVariantAttributeHandler.super.getName(fluidVariant);
 				}
@@ -175,14 +175,14 @@ public final class FluidVariantAttributes {
 
 			@Override
 			public Optional<SoundEvent> getEmptySound(FluidVariant variant) {
-				return Optional.of(SoundEvents.ITEM_BUCKET_EMPTY);
+				return Optional.of(SoundEvents.BUCKET_EMPTY);
 			}
 		});
 		register(Fluids.LAVA, new FluidVariantAttributeHandler() {
 			@Override
-			public Text getName(FluidVariant fluidVariant) {
+			public Component getName(FluidVariant fluidVariant) {
 				if (coloredVanillaFluidNames) {
-					return Blocks.LAVA.getName().setStyle(Style.EMPTY.withColor(Formatting.RED));
+					return Blocks.LAVA.getName().setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
 				} else {
 					return FluidVariantAttributeHandler.super.getName(fluidVariant);
 				}
@@ -190,12 +190,12 @@ public final class FluidVariantAttributes {
 
 			@Override
 			public Optional<SoundEvent> getFillSound(FluidVariant variant) {
-				return Optional.of(SoundEvents.ITEM_BUCKET_FILL_LAVA);
+				return Optional.of(SoundEvents.BUCKET_FILL_LAVA);
 			}
 
 			@Override
 			public Optional<SoundEvent> getEmptySound(FluidVariant variant) {
-				return Optional.of(SoundEvents.ITEM_BUCKET_EMPTY_LAVA);
+				return Optional.of(SoundEvents.BUCKET_EMPTY_LAVA);
 			}
 
 			@Override
@@ -204,8 +204,8 @@ public final class FluidVariantAttributes {
 			}
 
 			@Override
-			public int getViscosity(FluidVariant variant, @Nullable World world) {
-				if (world != null && world.getEnvironmentAttributes().getAttributeValue(EnvironmentAttributes.FAST_LAVA_GAMEPLAY)) {
+			public int getViscosity(FluidVariant variant, @Nullable Level world) {
+				if (world != null && world.environmentAttributes().getDimensionValue(EnvironmentAttributes.FAST_LAVA)) {
 					return FluidConstants.LAVA_VISCOSITY_NETHER;
 				} else {
 					return FluidConstants.LAVA_VISCOSITY;

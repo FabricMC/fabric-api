@@ -24,12 +24,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -41,32 +41,44 @@ import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin(BlockEntity.class)
 abstract class BlockEntityMixin implements AttachmentTargetImpl {
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	@Final
 	protected BlockPos pos;
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	@Nullable
-	protected World world;
+	protected Level world;
 
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	public abstract void markDirty();
 
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	public abstract boolean hasWorld();
 
 	@Inject(
-			method = "read",
+			method = "loadWithComponents",
 			at = @At("RETURN")
 	)
-	private void readBlockEntityAttachments(ReadView view, CallbackInfo ci) {
+	private void readBlockEntityAttachments(ValueInput view, CallbackInfo ci) {
 		this.fabric_readAttachmentsFromNbt(view);
 	}
 
 	@Inject(
-			method = "writeDataWithoutId",
+			method = "saveWithoutMetadata",
 			at = @At(value = "TAIL")
 	)
-	private void writeBlockEntityAttachments(WriteView view, CallbackInfo ci) {
+	private void writeBlockEntityAttachments(ValueOutput view, CallbackInfo ci) {
 		this.fabric_writeAttachmentsToNbt(view);
 	}
 
@@ -93,11 +105,11 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	@Override
 	public boolean fabric_shouldTryToSync() {
 		// Persistent attachments are read at a time with no world
-		return !this.hasWorld() || !this.world.isClient();
+		return !this.hasWorld() || !this.world.isClientSide();
 	}
 
 	@Override
-	public DynamicRegistryManager fabric_getDynamicRegistryManager() {
-		return this.world.getRegistryManager();
+	public RegistryAccess fabric_getDynamicRegistryManager() {
+		return this.world.registryAccess();
 	}
 }

@@ -16,18 +16,18 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.state.OutlineRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -45,16 +45,16 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	private static final RenderStateDataKey<Boolean> DIAMOND_BLOCK_OUTLINE = RenderStateDataKey.create(() -> "fabric api test mod block outline diamond block");
 
 	private static void extractBlockOutline(WorldExtractionContext context, HitResult hitResult) {
-		if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() != HitResult.Type.MISS && context.world().getBlockState(blockHitResult.getBlockPos()).isOf(Blocks.DIAMOND_BLOCK)) {
-			context.worldState().outlineRenderState.setData(DIAMOND_BLOCK_OUTLINE, true);
+		if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getType() != HitResult.Type.MISS && context.world().getBlockState(blockHitResult.getBlockPos()).is(Blocks.DIAMOND_BLOCK)) {
+			context.worldState().blockOutlineRenderState.setData(DIAMOND_BLOCK_OUTLINE, true);
 		}
 	}
 
-	private static boolean beforeBlockOutline(WorldRenderContext context, OutlineRenderState outlineRenderState) {
+	private static boolean beforeBlockOutline(WorldRenderContext context, BlockOutlineRenderState outlineRenderState) {
 		if (Boolean.TRUE.equals(outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE))) {
-			MatrixStack matrixStack = new MatrixStack();
-			matrixStack.push();
-			Vec3d cameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getCameraPos();
+			PoseStack matrixStack = new PoseStack();
+			matrixStack.pushPose();
+			Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().position();
 			BlockPos pos = outlineRenderState.pos();
 			double x = pos.getX() - cameraPos.x;
 			double y = pos.getY() - cameraPos.y;
@@ -62,12 +62,12 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 			matrixStack.translate(x + 0.25, y + 0.25 + 1, z + 0.25);
 			matrixStack.scale(0.5f, 0.5f, 0.5f);
 
-			MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(
-					Blocks.DIAMOND_BLOCK.getDefaultState(),
-					matrixStack, context.consumers(), 15728880, OverlayTexture.DEFAULT_UV
+			Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
+					Blocks.DIAMOND_BLOCK.defaultBlockState(),
+					matrixStack, context.consumers(), 15728880, OverlayTexture.NO_OVERLAY
 			);
 
-			matrixStack.pop();
+			matrixStack.popPose();
 		}
 
 		return true;
@@ -77,16 +77,16 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 	 * Renders a translucent filled box at (0, 100, 0).
 	 */
 	private static void renderBeforeTranslucent(WorldRenderContext context) {
-		Vec3d camera = context.worldState().cameraRenderState.pos;
+		Vec3 camera = context.worldState().cameraRenderState.pos;
 
-		context.matrices().push();
+		context.matrices().pushPose();
 		context.matrices().translate(-camera.x, -camera.y, -camera.z);
 
-		Box box = new Box(BlockPos.ORIGIN.up(100));
-		int color = ColorHelper.fromFloats(0.5f, 0, 1, 0);
-		TestRenderUtils.drawFilledBox(context.matrices(), context.consumers().getBuffer(RenderLayers.debugFilledBox()), box, color);
+		AABB box = new AABB(BlockPos.ZERO.above(100));
+		int color = ARGB.colorFromFloat(0.5f, 0, 1, 0);
+		TestRenderUtils.drawFilledBox(context.matrices(), context.consumers().getBuffer(RenderTypes.debugFilledBox()), box, color);
 
-		context.matrices().pop();
+		context.matrices().popPose();
 	}
 
 	@Override

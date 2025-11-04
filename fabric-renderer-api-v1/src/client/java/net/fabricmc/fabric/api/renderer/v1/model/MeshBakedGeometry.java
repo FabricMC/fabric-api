@@ -18,25 +18,25 @@ package net.fabricmc.fabric.api.renderer.v1.model;
 
 import java.util.List;
 
-import net.minecraft.client.render.model.BakedGeometry;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.Geometry;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelTextures;
-import net.minecraft.client.render.model.SimpleModel;
+import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.UnbakedGeometry;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.resources.model.ModelDebugName;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 
 /**
- * A special {@link BakedGeometry} which hides a {@link Mesh} instead of using {@link BakedQuad}s. Useful for custom
- * implementations of {@link Geometry#bake(ModelTextures, Baker, ModelBakeSettings, SimpleModel)} that want to return a
+ * A special {@link QuadCollection} which hides a {@link Mesh} instead of using {@link BakedQuad}s. Useful for custom
+ * implementations of {@link UnbakedGeometry#bake(TextureSlots, ModelBaker, ModelState, ModelDebugName)} that want to return a
  * mesh. Instances of this class always return empty lists from inherited methods.
  *
- * <p>Any code that interacts with {@link BakedGeometry} should first check {@code instanceof MeshBakedGeometry} and use
+ * <p>Any code that interacts with {@link QuadCollection} should first check {@code instanceof MeshBakedGeometry} and use
  * {@link #getMesh()} if {@code true} or the vanilla methods otherwise.
  */
-public final class MeshBakedGeometry extends BakedGeometry {
+public final class MeshBakedGeometry extends QuadCollection {
 	private final Mesh mesh;
 
 	public MeshBakedGeometry(Mesh mesh) {

@@ -19,8 +19,8 @@ package net.fabricmc.fabric.api.resource;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SynchronousResourceReloader;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 /**
  * A simplified version of the "resource reload listener" interface, hiding the
@@ -36,7 +36,7 @@ import net.minecraft.resource.SynchronousResourceReloader;
  * the apply stage is guaranteed to run on the game thread.
  *
  * <p>For a fully synchronous alternative, consider using
- * {@link SynchronousResourceReloader} in conjunction with
+ * {@link ResourceManagerReloadListener} in conjunction with
  * {@link IdentifiableResourceReloadListener}.
  *
  * @param <T> The data object.
@@ -45,9 +45,9 @@ import net.minecraft.resource.SynchronousResourceReloader;
 @Deprecated
 public interface SimpleResourceReloadListener<T> extends IdentifiableResourceReloadListener {
 	@Override
-	default CompletableFuture<Void> reload(Store store, Executor loadExecutor, Synchronizer helper, Executor applyExecutor) {
-		return load(store.getResourceManager(), loadExecutor).thenCompose(helper::whenPrepared).thenCompose(
-				(o) -> apply(o, store.getResourceManager(), applyExecutor)
+	default CompletableFuture<Void> reload(SharedState store, Executor loadExecutor, PreparationBarrier helper, Executor applyExecutor) {
+		return load(store.resourceManager(), loadExecutor).thenCompose(helper::wait).thenCompose(
+				(o) -> apply(o, store.resourceManager(), applyExecutor)
 		);
 	}
 

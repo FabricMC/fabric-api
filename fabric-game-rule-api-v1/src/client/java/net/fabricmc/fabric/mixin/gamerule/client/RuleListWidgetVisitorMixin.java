@@ -25,10 +25,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.world.rule.GameRule;
-import net.minecraft.world.rule.GameRuleVisitor;
+import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRuleTypeVisitor;
 
 import net.fabricmc.fabric.api.gamerule.v1.FabricGameRuleVisitor;
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
@@ -36,32 +36,35 @@ import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 import net.fabricmc.fabric.impl.gamerule.widget.DoubleRuleWidget;
 import net.fabricmc.fabric.impl.gamerule.widget.EnumRuleWidget;
 
-@Mixin(targets = "net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleListWidget$1")
-public abstract class RuleListWidgetVisitorMixin implements GameRuleVisitor, FabricGameRuleVisitor {
+@Mixin(targets = "net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen$RuleList$1")
+public abstract class RuleListWidgetVisitorMixin implements GameRuleTypeVisitor, FabricGameRuleVisitor {
 	@Final
 	@Shadow
-	private EditGameRulesScreen field_24314;
-	@Shadow
-	protected abstract <T> void createRuleWidget(GameRule<T> key, EditGameRulesScreen.RuleWidgetFactory<T> widgetFactory);
+	private EditGameRulesScreen val$this$0;
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
+	protected abstract <T> void createRuleWidget(GameRule<T> key, EditGameRulesScreen.EntryFactory<T> widgetFactory);
 
 	@Override
 	public void visitDouble(GameRule<Double> doubleRule) {
 		this.createRuleWidget(doubleRule, (name, description, ruleName, rule) -> {
-			return new DoubleRuleWidget(this.field_24314, name, description, ruleName, rule);
+			return new DoubleRuleWidget(this.val$this$0, name, description, ruleName, rule);
 		});
 	}
 
 	@Override
 	public <E extends Enum<E>> void visitEnum(GameRule<E> enumRule) {
 		this.createRuleWidget(enumRule, (name, description, ruleName, rule) -> {
-			return new EnumRuleWidget<>(this.field_24314, name, description, ruleName, rule, enumRule.getTranslationKey());
+			return new EnumRuleWidget<>(this.val$this$0, name, description, ruleName, rule, enumRule.getDescriptionId());
 		});
 	}
 
 	/**
 	 * @reason We need to display an enum rule's default value as translated.
 	 */
-	@WrapOperation(method = "createRuleWidget(Lnet/minecraft/world/rule/GameRule;Lnet/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleWidgetFactory;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/rule/GameRule;getValueName(Ljava/lang/Object;)Ljava/lang/String;"))
+	@WrapOperation(method = "addEntry(Lnet/minecraft/world/level/gamerules/GameRule;Lnet/minecraft/client/gui/screens/worldselection/EditGameRulesScreen$EntryFactory;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/gamerules/GameRule;serialize(Ljava/lang/Object;)Ljava/lang/String;"))
 	private <T> String displayProperEnumName(GameRule<T> instance, T value, Operation<String> original) {
 		String valueName = original.call(instance, value);
 
@@ -69,10 +72,10 @@ public abstract class RuleListWidgetVisitorMixin implements GameRuleVisitor, Fab
 			return valueName;
 		}
 
-		String translationKey = instance.getTranslationKey() + "." + valueName.toLowerCase(Locale.ROOT);
+		String translationKey = instance.getDescriptionId() + "." + valueName.toLowerCase(Locale.ROOT);
 
-		if (I18n.hasTranslation(translationKey)) {
-			return I18n.translate(translationKey);
+		if (I18n.exists(translationKey)) {
+			return I18n.get(translationKey);
 		}
 
 		return valueName;

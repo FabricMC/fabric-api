@@ -23,30 +23,30 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Slice;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.protocol.game.ClientboundRespawnPacket;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
-@Mixin(ClientPlayNetworkHandler.class)
+@Mixin(ClientPacketListener.class)
 abstract class ClientPlayNetworkHandlerMixin {
 	@WrapOperation(
-			method = "onPlayerRespawn",
+			method = "handleRespawn",
 			at = @At(
 					value = "FIELD",
-					target = "Lnet/minecraft/client/MinecraftClient;player:Lnet/minecraft/client/network/ClientPlayerEntity;"
+					target = "Lnet/minecraft/client/Minecraft;player:Lnet/minecraft/client/player/LocalPlayer;"
 			),
 			slice = @Slice(
-					from = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;startWorldLoading(Lnet/minecraft/client/network/ClientPlayerEntity;Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/gui/screen/DownloadingTerrainScreen$WorldEntryReason;)V")
+					from = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientPacketListener;startWorldLoading(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/gui/screen/DownloadingTerrainScreen$WorldEntryReason;)V")
 			)
 	)
-	private void copyAttachmentsOnClientRespawn(MinecraftClient client, ClientPlayerEntity newPlayer, Operation<Void> init, PlayerRespawnS2CPacket packet, @Local(ordinal = 0) ClientPlayerEntity oldPlayer) {
+	private void copyAttachmentsOnClientRespawn(Minecraft client, LocalPlayer newPlayer, Operation<Void> init, ClientboundRespawnPacket packet, @Local(ordinal = 0) LocalPlayer oldPlayer) {
 		/*
 		 * The KEEP_ATTRIBUTES flag is not set on a death respawn, and set in all other cases
 		 */
-		AttachmentTargetImpl.transfer(oldPlayer, newPlayer, !packet.hasFlag(PlayerRespawnS2CPacket.KEEP_ATTRIBUTES));
+		AttachmentTargetImpl.transfer(oldPlayer, newPlayer, !packet.shouldKeep(ClientboundRespawnPacket.KEEP_ATTRIBUTE_MODIFIERS));
 		init.call(client, newPlayer);
 	}
 }

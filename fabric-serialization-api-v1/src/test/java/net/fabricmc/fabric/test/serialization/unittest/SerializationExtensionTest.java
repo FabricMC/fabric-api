@@ -26,14 +26,14 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.storage.NbtReadView;
-import net.minecraft.storage.NbtWriteView;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.ErrorReporter;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.util.ProblemReporter;
 
 import net.fabricmc.fabric.test.serialization.DelegateReadView;
 import net.fabricmc.fabric.test.serialization.DelegateWriteView;
@@ -46,31 +46,31 @@ public class SerializationExtensionTest {
 
 	@Test
 	void testFallbackWriteImplementation() {
-		NbtWriteView directWrite = NbtWriteView.create(ErrorReporter.EMPTY);
-		NbtWriteView defaultedWrite = NbtWriteView.create(ErrorReporter.EMPTY);
+		TagValueOutput directWrite = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+		TagValueOutput defaultedWrite = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
 
 		writeExampleData(new DelegateWriteView(defaultedWrite));
 		writeExampleData(directWrite);
 
-		assertEquals(directWrite.getNbt(), defaultedWrite.getNbt(), () -> "Written NBT data is not equal!\n"
+		assertEquals(directWrite.buildResult(), defaultedWrite.buildResult(), () -> "Written NBT data is not equal!\n"
 				+ "Direct write:\n"
-				+ NbtHelper.toFormattedString(directWrite.getNbt(), true)
+				+ NbtUtils.prettyPrint(directWrite.buildResult(), true)
 				+ "\nDefaulted write:\n"
-				+ NbtHelper.toFormattedString(defaultedWrite.getNbt(), true));
+				+ NbtUtils.prettyPrint(defaultedWrite.buildResult(), true));
 	}
 
 	@Test
 	void testFallbackReadImplementation() {
-		NbtWriteView directWrite = NbtWriteView.create(ErrorReporter.EMPTY);
+		TagValueOutput directWrite = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
 		writeExampleData(directWrite);
 
-		ReadView directRead = NbtReadView.create(ErrorReporter.EMPTY, RegistryWrapper.WrapperLookup.of(Stream.empty()), directWrite.getNbt());
-		ReadView defaultedRead = new DelegateReadView(directRead);
-		readExampleData(directWrite.getNbt(), directRead, "Direct read");
-		readExampleData(directWrite.getNbt(), defaultedRead, "Defaulted read");
+		ValueInput directRead = TagValueInput.create(ProblemReporter.DISCARDING, HolderLookup.Provider.create(Stream.empty()), directWrite.buildResult());
+		ValueInput defaultedRead = new DelegateReadView(directRead);
+		readExampleData(directWrite.buildResult(), directRead, "Direct read");
+		readExampleData(directWrite.buildResult(), defaultedRead, "Defaulted read");
 	}
 
-	private void writeExampleData(WriteView view) {
+	private void writeExampleData(ValueOutput view) {
 		view.putByteArray(BYTES_KEY, BYTES_DATA);
 		view.putLongArray(LONG_KEY, LONG_DATA);
 
@@ -79,13 +79,13 @@ public class SerializationExtensionTest {
 		}
 	}
 
-	private void readExampleData(NbtCompound compound, ReadView view, String type) {
+	private void readExampleData(CompoundTag compound, ValueInput view, String type) {
 		assertArrayEquals(view.getOptionalByteArray(BYTES_KEY).orElse(new byte[0]), BYTES_DATA, () -> "Read NBT data doesn't match key " + BYTES_KEY + " for type " + type + "!");
 		assertArrayEquals(view.getOptionalLongArray(LONG_KEY).orElse(new long[0]), LONG_DATA, () -> "Read NBT data doesn't match key " + LONG_KEY + " for type " + type + "!");
 
 		assertFalse(view.contains("non_existing"), () -> "Read NBT data wrongly returns contains check for non existing entry for type " + type + "!");
 		assertTrue(view.contains("key_3"), () -> "Read NBT data wrongly returns contains check for existing entry for type " + type + "!");
 
-		assertEquals(Set.copyOf(view.keys()), compound.getKeys(), () -> "Read NBT data returns wrong keys for type " + type + "!");
+		assertEquals(Set.copyOf(view.keys()), compound.keySet(), () -> "Read NBT data returns wrong keys for type " + type + "!");
 	}
 }

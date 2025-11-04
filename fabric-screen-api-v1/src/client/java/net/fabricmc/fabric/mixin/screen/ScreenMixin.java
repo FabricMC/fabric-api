@@ -26,13 +26,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.components.AbstractWidget;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
@@ -46,13 +46,13 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 abstract class ScreenMixin implements ScreenExtensions {
 	@Shadow
 	@Final
-	private List<Selectable> selectables;
+	private List<NarratableEntry> narratables;
 	@Shadow
 	@Final
-	private List<Element> children;
+	private List<GuiEventListener> children;
 	@Shadow
 	@Final
-	private List<Drawable> drawables;
+	private List<Renderable> renderables;
 
 	@Unique
 	private ButtonList fabricButtons;
@@ -109,8 +109,8 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Unique
 	private Event<ScreenMouseEvents.AfterMouseScroll> afterMouseScrollEvent;
 
-	@Inject(method = "renderWithTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderBackground(Lnet/minecraft/client/gui/DrawContext;IIF)V", shift = At.Shift.AFTER))
-	public final void renderWithTooltip(DrawContext context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+	@Inject(method = "renderWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", shift = At.Shift.AFTER))
+	public final void renderWithTooltip(GuiGraphics context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
 		ScreenEvents.afterBackground(((Screen) (Object) this)).invoker().afterBackground((Screen) (Object) this, context, mouseX, mouseY, deltaTicks);
 	}
 
@@ -167,19 +167,19 @@ abstract class ScreenMixin implements ScreenExtensions {
 		this.beforeMouseScrollEvent = ScreenEventFactory.createBeforeMouseScrollEvent();
 		this.afterMouseScrollEvent = ScreenEventFactory.createAfterMouseScrollEvent();
 
-		ScreenEvents.BEFORE_INIT.invoker().beforeInit(MinecraftClient.getInstance(), (Screen) (Object) this, width, height);
+		ScreenEvents.BEFORE_INIT.invoker().beforeInit(Minecraft.getInstance(), (Screen) (Object) this, width, height);
 	}
 
 	@Unique
 	private void afterInit(int width, int height) {
-		ScreenEvents.AFTER_INIT.invoker().afterInit(MinecraftClient.getInstance(), (Screen) (Object) this, width, height);
+		ScreenEvents.AFTER_INIT.invoker().afterInit(Minecraft.getInstance(), (Screen) (Object) this, width, height);
 	}
 
 	@Override
-	public List<ClickableWidget> fabric_getButtons() {
+	public List<AbstractWidget> fabric_getButtons() {
 		// Lazy init to make the list access safe after Screen#init
 		if (this.fabricButtons == null) {
-			this.fabricButtons = new ButtonList(this.drawables, this.selectables, this.children);
+			this.fabricButtons = new ButtonList(this.renderables, this.narratables, this.children);
 		}
 
 		return this.fabricButtons;

@@ -22,13 +22,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import net.minecraft.server.dedicated.DedicatedServerWatchdog;
+import net.minecraft.server.dedicated.ServerWatchdog;
 
 import net.fabricmc.fabric.impl.crash.report.info.ThreadPrinting;
 
-@Mixin(DedicatedServerWatchdog.class)
+@Mixin(ServerWatchdog.class)
 public class DedicatedServerWatchdogMixin {
-	@ModifyArg(method = "createCrashReport(Ljava/lang/String;J)Lnet/minecraft/util/crash/CrashReport;",
+	@ModifyArg(method = "createWatchdogCrashReport(Ljava/lang/String;J)Lnet/minecraft/CrashReport;",
 			at = @At(value = "INVOKE",
 					target = "Ljava/lang/StringBuilder;append(Ljava/lang/Object;)Ljava/lang/StringBuilder;",
 					ordinal = 0)

@@ -27,35 +27,35 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;
-import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ResourcePackProfile;
+import net.minecraft.client.gui.screens.packs.PackSelectionModel;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.Pack;
 
 import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
 
-@Mixin(ResourcePackOrganizer.class)
+@Mixin(PackSelectionModel.class)
 public class ResourcePackOrganizerMixin {
 	@Shadow
 	@Final
-	List<ResourcePackProfile> enabledPacks;
+	List<Pack> selected;
 
 	@Shadow
 	@Final
-	List<ResourcePackProfile> disabledPacks;
+	List<Pack> unselected;
 
 	/**
 	 * Do not list hidden packs in either enabledPacks or disabledPacks.
 	 * They are managed entirely by ResourcePackManager on save, and are invisible to client.
 	 */
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void removeHiddenPacksInit(Consumer<ResourcePackOrganizer.AbstractPack> updateCallback, Function iconIdSupplier, ResourcePackManager resourcePackManager, Consumer applier, CallbackInfo ci) {
-		this.enabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
-		this.disabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
+	private void removeHiddenPacksInit(Consumer<PackSelectionModel.EntryBase> updateCallback, Function iconIdSupplier, PackRepository resourcePackManager, Consumer applier, CallbackInfo ci) {
+		this.selected.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
+		this.unselected.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
 	}
 
-	@Inject(method = "refresh", at = @At("TAIL"))
+	@Inject(method = "findNewPacks", at = @At("TAIL"))
 	private void removeHiddenPacksRefresh(CallbackInfo ci) {
-		this.enabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
-		this.disabledPacks.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
+		this.selected.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
+		this.unselected.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
 	}
 }

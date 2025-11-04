@@ -16,65 +16,65 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.attribute.BedRule;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 
 public class TestBedBlock extends Block {
-	private static final VoxelShape SHAPE = createCuboidShape(0, 0, 0, 16, 8, 16);
-	public static final BooleanProperty OCCUPIED = Properties.OCCUPIED;
+	private static final VoxelShape SHAPE = box(0, 0, 0, 16, 8, 16);
+	public static final BooleanProperty OCCUPIED = BlockStateProperties.OCCUPIED;
 
-	public TestBedBlock(Settings settings) {
+	public TestBedBlock(Properties settings) {
 		super(settings);
-		setDefaultState(getDefaultState().with(OCCUPIED, false));
+		registerDefaultState(defaultBlockState().setValue(OCCUPIED, false));
 	}
 
 	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		return SHAPE;
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if (state.get(OCCUPIED)) {
-			player.sendMessage(Text.translatable("block.minecraft.bed.occupied"), true);
-			return ActionResult.CONSUME;
+	public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+		if (state.getValue(OCCUPIED)) {
+			player.displayClientMessage(Component.translatable("block.minecraft.bed.occupied"), true);
+			return InteractionResult.CONSUME;
 		}
 
-		BedRule bedRule = world.getEnvironmentAttributes().getAttributeValue(EnvironmentAttributes.BED_RULE_GAMEPLAY, pos);
+		BedRule bedRule = world.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, pos);
 
 		if (bedRule.canSleep().test(world)) {
-			if (!world.isClient()) {
-				player.trySleep(pos).ifLeft(sleepFailureReason -> {
-					Text message = sleepFailureReason.message();
+			if (!world.isClientSide()) {
+				player.startSleepInBed(pos).ifLeft(sleepFailureReason -> {
+					Component message = sleepFailureReason.message();
 
 					if (message != null) {
-						player.sendMessage(message, true);
+						player.displayClientMessage(message, true);
 					}
 				});
 			}
 
-			return ActionResult.CONSUME;
+			return InteractionResult.CONSUME;
 		}
 
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
 	@Override
-	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(OCCUPIED);
 	}
 }

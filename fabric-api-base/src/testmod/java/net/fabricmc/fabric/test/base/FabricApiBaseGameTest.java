@@ -18,15 +18,15 @@ package net.fabricmc.fabric.test.base;
 
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
-import net.minecraft.test.TestContext;
+import net.minecraft.gametest.framework.GameTestHelper;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class FabricApiBaseGameTest {
 	@GameTest
-	public void auditMixins(TestContext context) {
+	public void auditMixins(GameTestHelper context) {
 		MixinEnvironment.getCurrentEnvironment().audit();
 
-		context.complete();
+		context.succeed();
 	}
 }

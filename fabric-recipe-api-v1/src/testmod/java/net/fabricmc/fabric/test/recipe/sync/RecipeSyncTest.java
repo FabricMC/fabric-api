@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.recipe.sync;
 
-import net.minecraft.registry.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -26,6 +26,6 @@ public class RecipeSyncTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Shouldn't be done in normal mod! Purely for testing
-		RegistryEntryAddedCallback.allEntries(Registries.RECIPE_SERIALIZER, ref -> RecipeSynchronization.synchronizeRecipeSerializer(ref.value()));
+		RegistryEntryAddedCallback.allEntries(BuiltInRegistries.RECIPE_SERIALIZER, ref -> RecipeSynchronization.synchronizeRecipeSerializer(ref.value()));
 	}
 }

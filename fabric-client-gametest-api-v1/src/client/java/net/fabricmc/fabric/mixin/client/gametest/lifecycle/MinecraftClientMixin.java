@@ -24,12 +24,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Overlay;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Overlay;
 
 import net.fabricmc.fabric.impl.client.gametest.FabricClientGameTestRunner;
 
-@Mixin(MinecraftClient.class)
+@Mixin(Minecraft.class)
 public class MinecraftClientMixin {
 	@Unique
 	private boolean startedClientGametests = false;

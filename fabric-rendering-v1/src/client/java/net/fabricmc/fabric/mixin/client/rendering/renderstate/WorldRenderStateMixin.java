@@ -21,13 +21,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.render.state.WorldRenderState;
+import net.minecraft.client.renderer.state.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 
-@Mixin(WorldRenderState.class)
+@Mixin(LevelRenderState.class)
 public class WorldRenderStateMixin {
-	@Inject(method = "clear", at = @At("TAIL"))
+	@Inject(method = "reset", at = @At("TAIL"))
 	private void clearExtraRenderData(CallbackInfo ci) {
 		((FabricRenderState) this).clearExtraData();
 	}

@@ -21,12 +21,12 @@ import java.util.List;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsage;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.InteractionHand;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -90,11 +90,11 @@ public interface ContainerItemContext {
 	 *
 	 * <p>In creative mode, {@link #forCreativeInteraction} is used with the hand stack.
 	 * Otherwise, {@link #ofPlayerHand} is used.
-	 * This matches the behavior of {@link ItemUsage#exchangeStack}.
+	 * This matches the behavior of {@link ItemUtils#exchangeStack}.
 	 */
-	static ContainerItemContext forPlayerInteraction(PlayerEntity player, Hand hand) {
-		if (player.isInCreativeMode()) {
-			return forCreativeInteraction(player, player.getStackInHand(hand));
+	static ContainerItemContext forPlayerInteraction(Player player, InteractionHand hand) {
+		if (player.hasInfiniteMaterials()) {
+			return forCreativeInteraction(player, player.getItemInHand(hand));
 		} else {
 			return ofPlayerHand(player, hand);
 		}
@@ -105,30 +105,30 @@ public interface ContainerItemContext {
 	 *
 	 * <p>The stack will never be modified, and any updated stack will only be added to the player's inventory
 	 * if the player's inventory doesn't already contain it.
-	 * This matches the creative behavior of {@link ItemUsage#exchangeStack}.
+	 * This matches the creative behavior of {@link ItemUtils#exchangeStack}.
 	 */
-	static ContainerItemContext forCreativeInteraction(PlayerEntity player, ItemStack interactingStack) {
+	static ContainerItemContext forCreativeInteraction(Player player, ItemStack interactingStack) {
 		return new CreativeInteractionContainerItemContext(ItemVariant.of(interactingStack), interactingStack.getCount(), player);
 	}
 
 	/**
 	 * Return a context for the passed player's hand.
 	 */
-	static ContainerItemContext ofPlayerHand(PlayerEntity player, Hand hand) {
+	static ContainerItemContext ofPlayerHand(Player player, InteractionHand hand) {
 		return new PlayerContainerItemContext(player, hand);
 	}
 
 	/**
 	 * Return a context for the passed player's cursor slot. This is recommended for screen handler click interactions.
 	 */
-	static ContainerItemContext ofPlayerCursor(PlayerEntity player, ScreenHandler screenHandler) {
+	static ContainerItemContext ofPlayerCursor(Player player, AbstractContainerMenu screenHandler) {
 		return ofPlayerSlot(player, PlayerInventoryStorage.getCursorStorage(screenHandler));
 	}
 
 	/**
 	 * Return a context for a slot, with the passed player as fallback.
 	 */
-	static ContainerItemContext ofPlayerSlot(PlayerEntity player, SingleSlotStorage<ItemVariant> slot) {
+	static ContainerItemContext ofPlayerSlot(Player player, SingleSlotStorage<ItemVariant> slot) {
 		return new PlayerContainerItemContext(player, slot);
 	}
 
@@ -247,7 +247,7 @@ public interface ContainerItemContext {
 	SingleSlotStorage<ItemVariant> getMainSlot();
 
 	/**
-	 * Try to insert items into this context, without prioritizing a specific slot, similar to {@link PlayerInventory#offerOrDrop}.
+	 * Try to insert items into this context, without prioritizing a specific slot, similar to {@link Inventory#offerOrDrop}.
 	 * This should be used for insertion after insertion into the main slot failed.
 	 * {@link #insert} can be used to insert into the main slot first, then send any overflow through this function.
 	 *

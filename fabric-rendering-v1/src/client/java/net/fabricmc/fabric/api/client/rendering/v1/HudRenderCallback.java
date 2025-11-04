@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.DeltaTracker;
 
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.event.Event;
@@ -37,8 +37,8 @@ public interface HudRenderCallback {
 	/**
 	 * Called after rendering the whole hud, which is displayed in game, in a world.
 	 *
-	 * @param drawContext the {@link DrawContext} instance
-	 * @param tickCounter the {@link RenderTickCounter} instance
+	 * @param drawContext the {@link GuiGraphics} instance
+	 * @param tickCounter the {@link DeltaTracker} instance
 	 */
-	void onHudRender(DrawContext drawContext, RenderTickCounter tickCounter);
+	void onHudRender(GuiGraphics drawContext, DeltaTracker tickCounter);
 }

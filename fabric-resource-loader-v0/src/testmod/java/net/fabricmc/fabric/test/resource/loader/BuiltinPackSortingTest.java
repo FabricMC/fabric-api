@@ -16,41 +16,41 @@
 
 package net.fabricmc.fabric.test.resource.loader;
 
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.ServerRecipeManager;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class BuiltinPackSortingTest {
 	private static final String MOD_ID = "fabric-resource-loader-v0-testmod";
 
-	private static RegistryKey<Recipe<?>> recipe(String path) {
-		return RegistryKey.of(RegistryKeys.RECIPE, Identifier.of(MOD_ID, path));
+	private static ResourceKey<Recipe<?>> recipe(String path) {
+		return ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(MOD_ID, path));
 	}
 
 	@GameTest
-	public void builtinPackSorting(TestContext context) {
-		ServerRecipeManager manager = context.getWorld().getRecipeManager();
+	public void builtinPackSorting(GameTestHelper context) {
+		RecipeManager manager = context.getLevel().recipeAccess();
 
-		if (manager.get(recipe("disabled_by_b")).isPresent()) {
-			throw context.createError(Text.literal("disabled_by_b recipe should not have been loaded."));
+		if (manager.byKey(recipe("disabled_by_b")).isPresent()) {
+			throw context.assertionException(Component.literal("disabled_by_b recipe should not have been loaded."));
 		}
 
-		if (manager.get(recipe("disabled_by_c")).isPresent()) {
-			throw context.createError(Text.literal("disabled_by_c recipe should not have been loaded."));
+		if (manager.byKey(recipe("disabled_by_c")).isPresent()) {
+			throw context.assertionException(Component.literal("disabled_by_c recipe should not have been loaded."));
 		}
 
-		if (manager.get(recipe("enabled_by_c")).isEmpty()) {
-			throw context.createError(Text.literal("enabled_by_c recipe should have been loaded."));
+		if (manager.byKey(recipe("enabled_by_c")).isEmpty()) {
+			throw context.assertionException(Component.literal("enabled_by_c recipe should have been loaded."));
 		}
 
-		long loadedRecipes = manager.values().stream().filter(r -> r.id().getValue().getNamespace().equals(MOD_ID)).count();
-		context.assertTrue(loadedRecipes == 1, Text.literal("Unexpected loaded recipe count: " + loadedRecipes));
-		context.complete();
+		long loadedRecipes = manager.getRecipes().stream().filter(r -> r.id().identifier().getNamespace().equals(MOD_ID)).count();
+		context.assertTrue(loadedRecipes == 1, Component.literal("Unexpected loaded recipe count: " + loadedRecipes));
+		context.succeed();
 	}
 }

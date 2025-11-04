@@ -23,14 +23,14 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.data.ModelProvider;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.core.Holder;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.impl.datagen.client.FabricModelProviderDefinitions;
 
-@Mixin(ModelProvider.BlockStateSuppliers.class)
+@Mixin(ModelProvider.BlockStateGeneratorCollector.class)
 public class ModelProviderBlockStateSuppliersMixin implements FabricModelProviderDefinitions {
 	@Unique
 	private FabricDataOutput fabricDataOutput;
@@ -42,12 +42,12 @@ public class ModelProviderBlockStateSuppliersMixin implements FabricModelProvide
 
 	// Target the first .filter() call, to filter out blocks that are not from the mod we are processing.
 	@ModifyArg(method = "validate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
-	private Predicate<RegistryEntry.Reference<Block>> filterBlocksForProcessingMod(Predicate<RegistryEntry.Reference<Block>> original) {
+	private Predicate<Holder.Reference<Block>> filterBlocksForProcessingMod(Predicate<Holder.Reference<Block>> original) {
 		if (fabricDataOutput != null) {
 			return original
 					.and(block -> fabricDataOutput.isStrictValidationEnabled())
 					// Skip over blocks that are not from the mod we are processing.
-					.and(block -> block.registryKey().getValue().getNamespace().equals(fabricDataOutput.getModId()));
+					.and(block -> block.key().identifier().getNamespace().equals(fabricDataOutput.getModId()));
 		}
 
 		return original;

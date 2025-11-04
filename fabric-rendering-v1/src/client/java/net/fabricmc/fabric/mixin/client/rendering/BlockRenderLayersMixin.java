@@ -25,24 +25,27 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.BlockRenderLayers;
-import net.minecraft.fluid.Fluid;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.world.level.material.Fluid;
 
 import net.fabricmc.fabric.impl.client.rendering.BlockRenderLayerMapImpl;
 
-@Mixin(BlockRenderLayers.class)
+@Mixin(ItemBlockRenderTypes.class)
 abstract class BlockRenderLayersMixin {
 	@Shadow
 	@Final
-	private static Map<Block, BlockRenderLayer> BLOCKS;
+	private static Map<Block, ChunkSectionLayer> TYPE_BY_BLOCK;
 	@Shadow
 	@Final
-	private static Map<Fluid, BlockRenderLayer> FLUIDS;
+	private static Map<Fluid, ChunkSectionLayer> LAYER_BY_FLUID;
 
-	@Inject(method = "<clinit>*", at = @At("RETURN"))
+	// TODO(Ravel): wildcard and regex target are not supported
+// TODO(Ravel): wildcard and regex target are not supported
+// TODO(Ravel): wildcard and regex target are not supported
+    @Inject(method = "<clinit>*", at = @At("RETURN"))
 	private static void onInitialize(CallbackInfo ci) {
-		BlockRenderLayerMapImpl.setup(BLOCKS::put, FLUIDS::put);
+		BlockRenderLayerMapImpl.setup(TYPE_BY_BLOCK::put, LAYER_BY_FLUID::put);
 	}
 }

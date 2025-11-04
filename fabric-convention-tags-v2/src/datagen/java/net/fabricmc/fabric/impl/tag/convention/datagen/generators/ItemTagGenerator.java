@@ -18,15 +18,15 @@ package net.fabricmc.fabric.impl.tag.convention.datagen.generators;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.data.tag.ProvidedTagBuilder;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.Items;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.data.tags.TagAppender;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -35,12 +35,12 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 
 public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
-	public ItemTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture, FabricTagProvider.BlockTagProvider blockTags) {
+	public ItemTagGenerator(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, FabricTagProvider.BlockTagProvider blockTags) {
 		super(output, registriesFuture, blockTags);
 	}
 
 	@Override
-	protected void configure(RegistryWrapper.WrapperLookup arg) {
+	protected void addTags(HolderLookup.Provider arg) {
 		generateToolTags();
 		generateBucketTags();
 		generateOreAndRelatedTags();
@@ -811,7 +811,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 	private void generateVillagerJobSites() {
 		BlockTagGenerator.VILLAGER_JOB_SITE_BLOCKS.stream()
-				.map(ItemConvertible::asItem)
+				.map(ItemLike::asItem)
 				.distinct() // cauldron blocks have the same item
 				.forEach(valueLookupBuilder(ConventionalItemTags.VILLAGER_JOB_SITES)::add);
 	}
@@ -932,9 +932,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 		valueLookupBuilder(ConventionalItemTags.ROPES); // Generate tag so others can see it exists through JSON.
 
-		ProvidedTagBuilder<Item, Item> chains = valueLookupBuilder(ConventionalItemTags.CHAINS)
+		TagAppender<Item, Item> chains = valueLookupBuilder(ConventionalItemTags.CHAINS)
 				.add(Items.IRON_CHAIN);
-		Items.COPPER_CHAINS.forEach(chains::add);
+		Items.COPPER_CHAIN.forEach(chains::add);
 
 		valueLookupBuilder(ConventionalItemTags.ENDER_PEARLS)
 				.add(Items.ENDER_PEARL);
@@ -1086,38 +1086,38 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
 		// TODO: Remove backwards compat tag entries in 1.22
 
-		valueLookupBuilder(ConventionalItemTags.WOODEN_BARRELS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_barrels")));
-		valueLookupBuilder(ConventionalItemTags.WOODEN_CHESTS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "wooden_chests")));
-		valueLookupBuilder(ConventionalItemTags.BLACK_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "black_dyes")));
-		valueLookupBuilder(ConventionalItemTags.BLUE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "blue_dyes")));
-		valueLookupBuilder(ConventionalItemTags.BROWN_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "brown_dyes")));
-		valueLookupBuilder(ConventionalItemTags.GREEN_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "green_dyes")));
-		valueLookupBuilder(ConventionalItemTags.RED_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "red_dyes")));
-		valueLookupBuilder(ConventionalItemTags.WHITE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "white_dyes")));
-		valueLookupBuilder(ConventionalItemTags.YELLOW_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "yellow_dyes")));
-		valueLookupBuilder(ConventionalItemTags.LIGHT_BLUE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "light_blue_dyes")));
-		valueLookupBuilder(ConventionalItemTags.LIGHT_GRAY_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "light_gray_dyes")));
-		valueLookupBuilder(ConventionalItemTags.LIME_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "lime_dyes")));
-		valueLookupBuilder(ConventionalItemTags.MAGENTA_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "magenta_dyes")));
-		valueLookupBuilder(ConventionalItemTags.ORANGE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "orange_dyes")));
-		valueLookupBuilder(ConventionalItemTags.PINK_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "pink_dyes")));
-		valueLookupBuilder(ConventionalItemTags.CYAN_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "cyan_dyes")));
-		valueLookupBuilder(ConventionalItemTags.GRAY_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "gray_dyes")));
-		valueLookupBuilder(ConventionalItemTags.PURPLE_DYES).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "purple_dyes")));
-		valueLookupBuilder(ConventionalItemTags.IRON_RAW_MATERIALS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "raw_iron_ores")));
-		valueLookupBuilder(ConventionalItemTags.COPPER_RAW_MATERIALS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "raw_copper_ores")));
-		valueLookupBuilder(ConventionalItemTags.GOLD_RAW_MATERIALS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "raw_gold_ores")));
-		valueLookupBuilder(ConventionalItemTags.GLOWSTONE_DUSTS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "glowstone_dusts")));
-		valueLookupBuilder(ConventionalItemTags.REDSTONE_DUSTS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "redstone_dusts")));
-		valueLookupBuilder(ConventionalItemTags.DIAMOND_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "diamonds")));
-		valueLookupBuilder(ConventionalItemTags.LAPIS_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "lapis")));
-		valueLookupBuilder(ConventionalItemTags.EMERALD_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "emeralds")));
-		valueLookupBuilder(ConventionalItemTags.QUARTZ_GEMS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "quartz")));
-		valueLookupBuilder(ConventionalItemTags.SHEAR_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "shears")));
-		valueLookupBuilder(ConventionalItemTags.SPEAR_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "spears")));
-		valueLookupBuilder(ConventionalItemTags.BOW_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "bows")));
-		valueLookupBuilder(ConventionalItemTags.SHIELD_TOOLS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "shields")));
-		valueLookupBuilder(ConventionalItemTags.STRINGS).addOptionalTag(TagKey.of(RegistryKeys.ITEM, Identifier.of(TagUtil.C_TAG_NAMESPACE, "string")));
+		valueLookupBuilder(ConventionalItemTags.WOODEN_BARRELS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "wooden_barrels")));
+		valueLookupBuilder(ConventionalItemTags.WOODEN_CHESTS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "wooden_chests")));
+		valueLookupBuilder(ConventionalItemTags.BLACK_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "black_dyes")));
+		valueLookupBuilder(ConventionalItemTags.BLUE_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "blue_dyes")));
+		valueLookupBuilder(ConventionalItemTags.BROWN_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "brown_dyes")));
+		valueLookupBuilder(ConventionalItemTags.GREEN_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "green_dyes")));
+		valueLookupBuilder(ConventionalItemTags.RED_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "red_dyes")));
+		valueLookupBuilder(ConventionalItemTags.WHITE_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "white_dyes")));
+		valueLookupBuilder(ConventionalItemTags.YELLOW_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "yellow_dyes")));
+		valueLookupBuilder(ConventionalItemTags.LIGHT_BLUE_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "light_blue_dyes")));
+		valueLookupBuilder(ConventionalItemTags.LIGHT_GRAY_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "light_gray_dyes")));
+		valueLookupBuilder(ConventionalItemTags.LIME_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "lime_dyes")));
+		valueLookupBuilder(ConventionalItemTags.MAGENTA_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "magenta_dyes")));
+		valueLookupBuilder(ConventionalItemTags.ORANGE_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "orange_dyes")));
+		valueLookupBuilder(ConventionalItemTags.PINK_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "pink_dyes")));
+		valueLookupBuilder(ConventionalItemTags.CYAN_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "cyan_dyes")));
+		valueLookupBuilder(ConventionalItemTags.GRAY_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "gray_dyes")));
+		valueLookupBuilder(ConventionalItemTags.PURPLE_DYES).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "purple_dyes")));
+		valueLookupBuilder(ConventionalItemTags.IRON_RAW_MATERIALS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "raw_iron_ores")));
+		valueLookupBuilder(ConventionalItemTags.COPPER_RAW_MATERIALS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "raw_copper_ores")));
+		valueLookupBuilder(ConventionalItemTags.GOLD_RAW_MATERIALS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "raw_gold_ores")));
+		valueLookupBuilder(ConventionalItemTags.GLOWSTONE_DUSTS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "glowstone_dusts")));
+		valueLookupBuilder(ConventionalItemTags.REDSTONE_DUSTS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "redstone_dusts")));
+		valueLookupBuilder(ConventionalItemTags.DIAMOND_GEMS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "diamonds")));
+		valueLookupBuilder(ConventionalItemTags.LAPIS_GEMS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "lapis")));
+		valueLookupBuilder(ConventionalItemTags.EMERALD_GEMS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "emeralds")));
+		valueLookupBuilder(ConventionalItemTags.QUARTZ_GEMS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "quartz")));
+		valueLookupBuilder(ConventionalItemTags.SHEAR_TOOLS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "shears")));
+		valueLookupBuilder(ConventionalItemTags.SPEAR_TOOLS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "spears")));
+		valueLookupBuilder(ConventionalItemTags.BOW_TOOLS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "bows")));
+		valueLookupBuilder(ConventionalItemTags.SHIELD_TOOLS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "shields")));
+		valueLookupBuilder(ConventionalItemTags.STRINGS).addOptionalTag(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "string")));
 		valueLookupBuilder(ConventionalItemTags.CONCRETE_POWDERS).addOptionalTag(ConventionalItemTags.CONCRETE_POWDER);
 	}
 }

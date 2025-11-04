@@ -20,25 +20,25 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.storage.WriteView;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * A delegating WriteView, used to force usage of fallback implementation of FabricWriteView.
  */
-public record DelegateWriteView(WriteView view) implements WriteView {
+public record DelegateWriteView(ValueOutput view) implements ValueOutput {
 	@Override
-	public <T> void put(String key, Codec<T> codec, T value) {
-		view.put(key, codec, value);
+	public <T> void store(String key, Codec<T> codec, T value) {
+		view.store(key, codec, value);
 	}
 
 	@Override
-	public <T> void putNullable(String key, Codec<T> codec, @Nullable T value) {
-		view.putNullable(key, codec, value);
+	public <T> void storeNullable(String key, Codec<T> codec, @Nullable T value) {
+		view.storeNullable(key, codec, value);
 	}
 
 	@Override
-	public <T> void put(MapCodec<T> codec, T value) {
-		view.put(codec, value);
+	public <T> void store(MapCodec<T> codec, T value) {
+		view.store(codec, value);
 	}
 
 	@Override
@@ -87,23 +87,23 @@ public record DelegateWriteView(WriteView view) implements WriteView {
 	}
 
 	@Override
-	public WriteView get(String key) {
-		return new DelegateWriteView(view.get(key));
+	public ValueOutput child(String key) {
+		return new DelegateWriteView(view.child(key));
 	}
 
 	@Override
-	public ListView getList(String key) {
-		return view.getList(key);
+	public ValueOutputList childrenList(String key) {
+		return view.childrenList(key);
 	}
 
 	@Override
-	public <T> ListAppender<T> getListAppender(String key, Codec<T> codec) {
-		return view.getListAppender(key, codec);
+	public <T> TypedOutputList<T> list(String key, Codec<T> codec) {
+		return view.list(key, codec);
 	}
 
 	@Override
-	public void remove(String key) {
-		view.remove(key);
+	public void discard(String key) {
+		view.discard(key);
 	}
 
 	@Override

@@ -18,21 +18,21 @@ package net.fabricmc.fabric.impl.datagen.loot;
 
 import java.util.Collections;
 
-import net.minecraft.block.Block;
-import net.minecraft.data.loottable.BlockLootTableGenerator;
-import net.minecraft.loot.LootTable;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.flag.FeatureFlags;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.fabricmc.fabric.mixin.datagen.loot.BlockLootTableGeneratorAccessor;
 
-public class ConditionBlockLootTableGenerator extends BlockLootTableGenerator {
-	private final BlockLootTableGenerator parent;
+public class ConditionBlockLootTableGenerator extends BlockLootSubProvider {
+	private final BlockLootSubProvider parent;
 	private final ResourceCondition[] conditions;
 
-	public ConditionBlockLootTableGenerator(BlockLootTableGenerator parent, ResourceCondition[] conditions) {
-		super(Collections.emptySet(), FeatureFlags.FEATURE_MANAGER.getFeatureSet(), ((BlockLootTableGeneratorAccessor) parent).getRegistries());
+	public ConditionBlockLootTableGenerator(BlockLootSubProvider parent, ResourceCondition[] conditions) {
+		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), ((BlockLootTableGeneratorAccessor) parent).getRegistries());
 
 		this.parent = parent;
 		this.conditions = conditions;
@@ -44,8 +44,8 @@ public class ConditionBlockLootTableGenerator extends BlockLootTableGenerator {
 	}
 
 	@Override
-	public void addDrop(Block block, LootTable.Builder lootTable) {
+	public void add(Block block, LootTable.Builder lootTable) {
 		FabricDataGenHelper.addConditions(lootTable, conditions);
-		this.parent.addDrop(block, lootTable);
+		this.parent.add(block, lootTable);
 	}
 }

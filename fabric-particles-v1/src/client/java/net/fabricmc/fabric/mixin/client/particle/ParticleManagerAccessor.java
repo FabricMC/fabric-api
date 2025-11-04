@@ -21,13 +21,13 @@ import java.util.List;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.particle.ParticleTextureSheet;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.ParticleRenderType;
 
-@Mixin(ParticleManager.class)
+@Mixin(ParticleEngine.class)
 public interface ParticleManagerAccessor {
-	@Accessor("PARTICLE_TEXTURE_SHEETS")
-	static List<ParticleTextureSheet> getParticleTextureSheets() {
+	@Accessor("RENDER_ORDER")
+	static List<ParticleRenderType> getParticleTextureSheets() {
 		throw new IllegalStateException();
 	}
 }

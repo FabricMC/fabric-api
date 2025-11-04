@@ -19,12 +19,12 @@ package net.fabricmc.fabric.mixin.client.gametest.screenshot;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.DeltaTracker;
 
-@Mixin(RenderTickCounter.Constant.class)
+@Mixin(DeltaTracker.DefaultValue.class)
 public interface RenderTickCounterConstantAccessor {
 	@Invoker("<init>")
-	static RenderTickCounter.Constant create(float constant) {
+	static DeltaTracker.DefaultValue create(float constant) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 }

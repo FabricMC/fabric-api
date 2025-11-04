@@ -20,13 +20,13 @@ import java.util.Collection;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LeveledCauldronBlock;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.state.property.IntProperty;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
@@ -69,9 +69,9 @@ public final class CauldronFluidContent {
 	 * Property storing the level of the cauldron. If it's null, only one level is possible.
 	 */
 	@Nullable
-	public final IntProperty levelProperty;
+	public final IntegerProperty levelProperty;
 
-	private CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel, int maxLevel, @Nullable IntProperty levelProperty) {
+	private CauldronFluidContent(Block block, Fluid fluid, long amountPerLevel, int maxLevel, @Nullable IntegerProperty levelProperty) {
 		this.block = block;
 		this.fluid = fluid;
 		this.amountPerLevel = amountPerLevel;
@@ -108,7 +108,7 @@ public final class CauldronFluidContent {
 	 * @param amountPerLevel How much fluid is contained in one level of the cauldron, in {@linkplain FluidConstants droplets}.
 	 * @param levelProperty The property used by the cauldron to store its levels. {@code null} if the cauldron only has one level.
 	 */
-	public static synchronized CauldronFluidContent registerCauldron(Block block, Fluid fluid, long amountPerLevel, @Nullable IntProperty levelProperty) {
+	public static synchronized CauldronFluidContent registerCauldron(Block block, Fluid fluid, long amountPerLevel, @Nullable IntegerProperty levelProperty) {
 		CauldronFluidContent existingBlockData = BLOCK_TO_CAULDRON.get(block);
 
 		if (existingBlockData != null) {
@@ -124,7 +124,7 @@ public final class CauldronFluidContent {
 		if (levelProperty == null) {
 			data = new CauldronFluidContent(block, fluid, amountPerLevel, 1, null);
 		} else {
-			Collection<Integer> levels = levelProperty.getValues();
+			Collection<Integer> levels = levelProperty.getPossibleValues();
 
 			if (levels.size() == 0) {
 				throw new RuntimeException("Cauldron should have at least one possible level.");
@@ -162,14 +162,14 @@ public final class CauldronFluidContent {
 		} else if (levelProperty == null) {
 			return 1;
 		} else {
-			return state.get(levelProperty);
+			return state.getValue(levelProperty);
 		}
 	}
 
 	static {
 		// Vanilla registrations
 		CauldronFluidContent.registerCauldron(Blocks.CAULDRON, Fluids.EMPTY, FluidConstants.BUCKET, null);
-		CauldronFluidContent.registerCauldron(Blocks.WATER_CAULDRON, Fluids.WATER, FluidConstants.BOTTLE, LeveledCauldronBlock.LEVEL);
+		CauldronFluidContent.registerCauldron(Blocks.WATER_CAULDRON, Fluids.WATER, FluidConstants.BOTTLE, LayeredCauldronBlock.LEVEL);
 		CauldronFluidContent.registerCauldron(Blocks.LAVA_CAULDRON, Fluids.LAVA, FluidConstants.BUCKET, null);
 	}
 }

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.resource.conditions;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
@@ -44,6 +44,6 @@ public class DefaultResourceConditionTypes {
 	public static final ResourceConditionType<RegistryContainsResourceCondition> REGISTRY_CONTAINS = createResourceConditionType("registry_contains", RegistryContainsResourceCondition.CODEC);
 
 	private static <T extends ResourceCondition> ResourceConditionType<T> createResourceConditionType(String name, MapCodec<T> codec) {
-		return ResourceConditionType.create(Identifier.of("fabric", name), codec);
+		return ResourceConditionType.create(Identifier.fromNamespaceAndPath("fabric", name), codec);
 	}
 }

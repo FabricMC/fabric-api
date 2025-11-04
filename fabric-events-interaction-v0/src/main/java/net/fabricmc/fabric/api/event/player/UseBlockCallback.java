@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.event.player;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -38,16 +38,16 @@ public interface UseBlockCallback {
 	Event<UseBlockCallback> EVENT = EventFactory.createArrayBacked(UseBlockCallback.class,
 			(listeners) -> (player, world, hand, hitResult) -> {
 				for (UseBlockCallback event : listeners) {
-					ActionResult result = event.interact(player, world, hand, hitResult);
+					InteractionResult result = event.interact(player, world, hand, hitResult);
 
-					if (result != ActionResult.PASS) {
+					if (result != InteractionResult.PASS) {
 						return result;
 					}
 				}
 
-				return ActionResult.PASS;
+				return InteractionResult.PASS;
 			}
 	);
 
-	ActionResult interact(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult);
+	InteractionResult interact(Player player, Level world, InteractionHand hand, BlockHitResult hitResult);
 }

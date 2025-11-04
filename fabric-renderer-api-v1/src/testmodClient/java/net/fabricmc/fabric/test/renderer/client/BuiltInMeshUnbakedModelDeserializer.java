@@ -19,13 +19,13 @@ package net.fabricmc.fabric.test.renderer.client;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 
-import net.minecraft.client.render.model.Geometry;
-import net.minecraft.client.render.model.ModelTextures;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.JsonUnbakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
+import net.minecraft.client.resources.model.UnbakedGeometry;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.GsonHelper;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
@@ -33,33 +33,33 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 public class BuiltInMeshUnbakedModelDeserializer implements UnbakedModelDeserializer {
 	@Override
 	public UnbakedModel deserialize(JsonObject jsonObject, JsonDeserializationContext context) {
-		Geometry geometry = null;
+		UnbakedGeometry geometry = null;
 
 		if (jsonObject.has("mesh")) {
-			String meshId = JsonHelper.getString(jsonObject, "mesh");
+			String meshId = GsonHelper.getAsString(jsonObject, "mesh");
 			geometry = geometryFromMeshId(meshId);
 		}
 
 		UnbakedModel.GuiLight guiLight = null;
 
 		if (jsonObject.has("gui_light")) {
-			guiLight = UnbakedModel.GuiLight.byName(JsonHelper.getString(jsonObject, "gui_light"));
+			guiLight = UnbakedModel.GuiLight.getByName(GsonHelper.getAsString(jsonObject, "gui_light"));
 		}
 
-		ModelTransformation transformation = null;
+		ItemTransforms transformation = null;
 
 		if (jsonObject.has("display")) {
-			JsonObject displayObj = JsonHelper.getObject(jsonObject, "display");
-			transformation = context.deserialize(displayObj, ModelTransformation.class);
+			JsonObject displayObj = GsonHelper.getAsJsonObject(jsonObject, "display");
+			transformation = context.deserialize(displayObj, ItemTransforms.class);
 		}
 
-		ModelTextures.Textures textures = texturesFromJson(jsonObject);
+		TextureSlots.Data textures = texturesFromJson(jsonObject);
 		String parentIdStr = parentFromJson(jsonObject);
-		Identifier parentId = parentIdStr.isEmpty() ? null : Identifier.of(parentIdStr);
-		return new JsonUnbakedModel(geometry, guiLight, true, transformation, textures, parentId);
+		Identifier parentId = parentIdStr.isEmpty() ? null : Identifier.parse(parentIdStr);
+		return new BlockModel(geometry, guiLight, true, transformation, textures, parentId);
 	}
 
-	private static Geometry geometryFromMeshId(String meshId) {
+	private static UnbakedGeometry geometryFromMeshId(String meshId) {
 		return switch (meshId) {
 		case "emissive_frame" -> new FrameGeometry(true);
 		case "frame" -> new FrameGeometry(false);
@@ -70,16 +70,16 @@ public class BuiltInMeshUnbakedModelDeserializer implements UnbakedModelDeserial
 		};
 	}
 
-	private static ModelTextures.Textures texturesFromJson(JsonObject object) {
+	private static TextureSlots.Data texturesFromJson(JsonObject object) {
 		if (object.has("textures")) {
-			JsonObject jsonObject = JsonHelper.getObject(object, "textures");
-			return ModelTextures.fromJson(jsonObject);
+			JsonObject jsonObject = GsonHelper.getAsJsonObject(object, "textures");
+			return TextureSlots.parseTextureMap(jsonObject);
 		} else {
-			return ModelTextures.Textures.EMPTY;
+			return TextureSlots.Data.EMPTY;
 		}
 	}
 
 	private static String parentFromJson(JsonObject json) {
-		return JsonHelper.getString(json, "parent", "");
+		return GsonHelper.getAsString(json, "parent", "");
 	}
 }

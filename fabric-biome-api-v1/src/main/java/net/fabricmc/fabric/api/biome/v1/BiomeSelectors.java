@@ -22,14 +22,14 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.collection.Weighted;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.dimension.LevelStem;
 
 import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
@@ -53,7 +53,7 @@ public final class BiomeSelectors {
 	public static Predicate<BiomeSelectionContext> vanilla() {
 		return context -> {
 			// In addition to the namespace, we also check that it exists in the vanilla registries
-			return context.getBiomeKey().getValue().getNamespace().equals("minecraft")
+			return context.getBiomeKey().identifier().getNamespace().equals("minecraft")
 					&& BuiltInRegistryKeys.isBuiltinBiome(context.getBiomeKey());
 		};
 	}
@@ -63,7 +63,7 @@ public final class BiomeSelectors {
 	 * assuming Vanilla's default biome source is used.
 	 */
 	public static Predicate<BiomeSelectionContext> foundInOverworld() {
-		return context -> context.canGenerateIn(DimensionOptions.OVERWORLD);
+		return context -> context.canGenerateIn(LevelStem.OVERWORLD);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public final class BiomeSelectors {
 	 * <p>This selector will also match modded biomes that have been added to the nether using {@link NetherBiomes}.
 	 */
 	public static Predicate<BiomeSelectionContext> foundInTheNether() {
-		return context -> context.canGenerateIn(DimensionOptions.NETHER);
+		return context -> context.canGenerateIn(LevelStem.NETHER);
 	}
 
 	/**
@@ -81,13 +81,13 @@ public final class BiomeSelectors {
 	 * assuming Vanilla's default End biome source is used.
 	 */
 	public static Predicate<BiomeSelectionContext> foundInTheEnd() {
-		return context -> context.canGenerateIn(DimensionOptions.END);
+		return context -> context.canGenerateIn(LevelStem.END);
 	}
 
 	/**
 	 * Returns a biome selector that will match all biomes in the given tag.
 	 *
-	 * @see net.minecraft.registry.tag.BiomeTags
+	 * @see net.minecraft.tags.BiomeTags
 	 */
 	public static Predicate<BiomeSelectionContext> tag(TagKey<Biome> tag) {
 		return context -> context.hasTag(tag);
@@ -97,7 +97,7 @@ public final class BiomeSelectors {
 	 * @see #excludeByKey(Collection)
 	 */
 	@SafeVarargs
-	public static Predicate<BiomeSelectionContext> excludeByKey(RegistryKey<Biome>... keys) {
+	public static Predicate<BiomeSelectionContext> excludeByKey(ResourceKey<Biome>... keys) {
 		return excludeByKey(ImmutableSet.copyOf(keys));
 	}
 
@@ -107,7 +107,7 @@ public final class BiomeSelectors {
 	 * <p>This is useful for allowing a list of biomes to be defined in the config file, where
 	 * a certain feature should not spawn.
 	 */
-	public static Predicate<BiomeSelectionContext> excludeByKey(Collection<RegistryKey<Biome>> keys) {
+	public static Predicate<BiomeSelectionContext> excludeByKey(Collection<ResourceKey<Biome>> keys) {
 		return context -> !keys.contains(context.getBiomeKey());
 	}
 
@@ -115,7 +115,7 @@ public final class BiomeSelectors {
 	 * @see #includeByKey(Collection)
 	 */
 	@SafeVarargs
-	public static Predicate<BiomeSelectionContext> includeByKey(RegistryKey<Biome>... keys) {
+	public static Predicate<BiomeSelectionContext> includeByKey(ResourceKey<Biome>... keys) {
 		return includeByKey(ImmutableSet.copyOf(keys));
 	}
 
@@ -125,14 +125,14 @@ public final class BiomeSelectors {
 	 * <p>This is useful for allowing a list of biomes to be defined in the config file, where
 	 * a certain feature should spawn exclusively.
 	 */
-	public static Predicate<BiomeSelectionContext> includeByKey(Collection<RegistryKey<Biome>> keys) {
+	public static Predicate<BiomeSelectionContext> includeByKey(Collection<ResourceKey<Biome>> keys) {
 		return context -> keys.contains(context.getBiomeKey());
 	}
 
 	/**
 	 * Returns a biome selector that will match biomes in which one of the given entity types can spawn.
 	 *
-	 * <p>Matches spawns in all {@link SpawnGroup spawn groups}.
+	 * <p>Matches spawns in all {@link MobCategory spawn groups}.
 	 */
 	public static Predicate<BiomeSelectionContext> spawnsOneOf(EntityType<?>... entityTypes) {
 		return spawnsOneOf(ImmutableSet.copyOf(entityTypes));
@@ -141,14 +141,14 @@ public final class BiomeSelectors {
 	/**
 	 * Returns a biome selector that will match biomes in which one of the given entity types can spawn.
 	 *
-	 * <p>Matches spawns in all {@link SpawnGroup spawn groups}.
+	 * <p>Matches spawns in all {@link MobCategory spawn groups}.
 	 */
 	public static Predicate<BiomeSelectionContext> spawnsOneOf(Set<EntityType<?>> entityTypes) {
 		return context -> {
-			SpawnSettings spawnSettings = context.getBiome().getSpawnSettings();
+			MobSpawnSettings spawnSettings = context.getBiome().getMobSettings();
 
-			for (SpawnGroup spawnGroup : SpawnGroup.values()) {
-				for (Weighted<SpawnSettings.SpawnEntry> spawnEntry : spawnSettings.getSpawnEntries(spawnGroup).getEntries()) {
+			for (MobCategory spawnGroup : MobCategory.values()) {
+				for (Weighted<MobSpawnSettings.SpawnerData> spawnEntry : spawnSettings.getMobs(spawnGroup).unwrap()) {
 					if (entityTypes.contains(spawnEntry.value().type())) {
 						return true;
 					}

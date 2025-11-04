@@ -22,27 +22,30 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.SpriteMapper;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.MaterialMapper;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.object.builder.client.SignTypeTextureHelper;
 
-@Mixin(TexturedRenderLayers.class)
+@Mixin(Sheets.class)
 abstract class TexturedRenderLayersMixin {
-	@Inject(method = "<clinit>*", at = @At("RETURN"))
+	// TODO(Ravel): wildcard and regex target are not supported
+// TODO(Ravel): wildcard and regex target are not supported
+// TODO(Ravel): wildcard and regex target are not supported
+    @Inject(method = "<clinit>*", at = @At("RETURN"))
 	private static void onReturnClinit(CallbackInfo ci) {
 		SignTypeTextureHelper.shouldAddTextures = true;
 	}
 
-	@Redirect(method = "createSignTextureId", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/SpriteMapper;mapVanilla(Ljava/lang/String;)Lnet/minecraft/client/util/SpriteIdentifier;"))
-	private static SpriteIdentifier redirectSignVanillaId(SpriteMapper instance, String name) {
-		return instance.map(Identifier.of(name));
+	@Redirect(method = "createSignMaterial", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MaterialMapper;defaultNamespaceApply(Ljava/lang/String;)Lnet/minecraft/client/resources/model/Material;"))
+	private static Material redirectSignVanillaId(MaterialMapper instance, String name) {
+		return instance.apply(Identifier.parse(name));
 	}
 
-	@Redirect(method = "createHangingSignTextureId", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/SpriteMapper;mapVanilla(Ljava/lang/String;)Lnet/minecraft/client/util/SpriteIdentifier;"))
-	private static SpriteIdentifier redirectHangingVanillaId(SpriteMapper instance, String name) {
-		return instance.map(Identifier.of(name));
+	@Redirect(method = "createHangingSignMaterial", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/MaterialMapper;defaultNamespaceApply(Ljava/lang/String;)Lnet/minecraft/client/resources/model/Material;"))
+	private static Material redirectHangingVanillaId(MaterialMapper instance, String name) {
+		return instance.apply(Identifier.parse(name));
 	}
 }

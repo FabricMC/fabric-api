@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.message.v1;
 
-import net.minecraft.network.message.MessageType;
-import net.minecraft.network.message.SignedMessage;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -147,10 +147,10 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied; use {@code message.getContent()} to get the text
 		 * @param sender  the player that sent the message
-		 * @param params the {@link MessageType.Parameters}
+		 * @param params the {@link ChatType.Bound}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowChatMessage(SignedMessage message, ServerPlayerEntity sender, MessageType.Parameters params);
+		boolean allowChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound params);
 	}
 
 	@FunctionalInterface
@@ -166,7 +166,7 @@ public final class ServerMessageEvents {
 		 * @param overlay {@code true} when the message is an overlay
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowGameMessage(MinecraftServer server, Text message, boolean overlay);
+		boolean allowGameMessage(MinecraftServer server, Component message, boolean overlay);
 	}
 
 	@FunctionalInterface
@@ -183,10 +183,10 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.getContent()} to get the text
 		 * @param source  the command source that sent the message
-		 * @param params the {@link MessageType.Parameters}
+		 * @param params the {@link ChatType.Bound}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowCommandMessage(SignedMessage message, ServerCommandSource source, MessageType.Parameters params);
+		boolean allowCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound params);
 	}
 
 	@FunctionalInterface
@@ -202,9 +202,9 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied; use {@code message.getContent()} to get the text
 		 * @param sender  the player that sent the message
-		 * @param params the {@link MessageType.Parameters}
+		 * @param params the {@link ChatType.Bound}
 		 */
-		void onChatMessage(SignedMessage message, ServerPlayerEntity sender, MessageType.Parameters params);
+		void onChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound params);
 	}
 
 	@FunctionalInterface
@@ -218,7 +218,7 @@ public final class ServerMessageEvents {
 		 * @param message the broadcast message
 		 * @param overlay {@code true} when the message is an overlay
 		 */
-		void onGameMessage(MinecraftServer server, Text message, boolean overlay);
+		void onGameMessage(MinecraftServer server, Component message, boolean overlay);
 	}
 
 	@FunctionalInterface
@@ -234,8 +234,8 @@ public final class ServerMessageEvents {
 		 *
 		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.getContent()} to get the text
 		 * @param source  the command source that sent the message
-		 * @param params the {@link MessageType.Parameters}
+		 * @param params the {@link ChatType.Bound}
 		 */
-		void onCommandMessage(SignedMessage message, ServerCommandSource source, MessageType.Parameters params);
+		void onCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound params);
 	}
 }

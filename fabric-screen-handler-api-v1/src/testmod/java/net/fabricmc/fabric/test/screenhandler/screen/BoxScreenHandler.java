@@ -16,25 +16,25 @@
 
 package net.fabricmc.fabric.test.screenhandler.screen;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.screen.Generic3x3ContainerScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.DispenserMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
 
-public class BoxScreenHandler extends Generic3x3ContainerScreenHandler implements PositionedScreenHandler {
+public class BoxScreenHandler extends DispenserMenu implements PositionedScreenHandler {
 	private final BlockPos pos;
 
-	public BoxScreenHandler(int syncId, PlayerInventory playerInventory, BlockPos pos) {
+	public BoxScreenHandler(int syncId, Inventory playerInventory, BlockPos pos) {
 		super(syncId, playerInventory);
 		this.pos = pos;
 	}
 
-	public BoxScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {
+	public BoxScreenHandler(int syncId, Inventory playerInventory, Container inventory) {
 		super(syncId, playerInventory, inventory);
-		this.pos = BlockPos.ORIGIN;
+		this.pos = BlockPos.ZERO;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class BoxScreenHandler extends Generic3x3ContainerScreenHandler implement
 	}
 
 	@Override
-	public ScreenHandlerType<?> getType() {
+	public MenuType<?> getType() {
 		return ScreenHandlerTest.BOX_SCREEN_HANDLER;
 	}
 }

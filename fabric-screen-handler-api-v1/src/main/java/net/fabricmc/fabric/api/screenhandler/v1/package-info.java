@@ -17,7 +17,7 @@
 /**
  * The Fabric screen handler API for creating screen handlers and screen handler types.
  *
- * <p>Screen handlers types are used to synchronize {@linkplain net.minecraft.screen.ScreenHandler screen handlers}
+ * <p>Screen handlers types are used to synchronize {@linkplain net.minecraft.world.inventory.AbstractContainerMenu screen handlers}
  * between the server and the client. Their main job is to create screen handler instances on the client.
  * Screen handlers manage the items and integer properties that are
  * needed to show on screens, such as the items in a chest or the progress of a furnace.
@@ -26,7 +26,7 @@
  * "Simple" screen handlers are the type of screen handlers used in vanilla.
  * They can automatically synchronize items and integer properties between the server and the client,
  * but they don't support having custom data sent in the opening packet.
- * You can create simple screen handlers using vanilla's {@link net.minecraft.screen.ScreenHandlerType}.
+ * You can create simple screen handlers using vanilla's {@link net.minecraft.world.inventory.MenuType}.
  *
  * <p>This module adds <i>extended screen handlers</i> that can synchronize their own custom data
  * when they are opened, which can be useful for defining additional properties of a screen on the server.
@@ -36,13 +36,13 @@
  *
  * <h2>Opening screen handlers</h2>
  * Screen handlers can be opened using
- * {@link net.minecraft.entity.player.PlayerEntity#openHandledScreen(net.minecraft.screen.NamedScreenHandlerFactory)}.
+ * {@link net.minecraft.world.entity.player.Player#openHandledScreen(net.minecraft.world.MenuProvider)}.
  * Note that calling it on the logical client does nothing. To open an extended screen handler, the factory passed in
  * should be an {@link net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory}, or a
- * {@link net.minecraft.screen.SimpleNamedScreenHandlerFactory} that wraps such factory.
+ * {@link net.minecraft.world.SimpleMenuProvider} that wraps such factory.
  *
  * <h2>Overwriting screen handlers</h2>
- * You might have noticed that calling {@link net.minecraft.entity.player.PlayerEntity#openHandledScreen(net.minecraft.screen.NamedScreenHandlerFactory) openHandledScreen} while on another screen will move
+ * You might have noticed that calling {@link net.minecraft.world.entity.player.Player#openHandledScreen(net.minecraft.world.MenuProvider) openHandledScreen} while on another screen will move
  * the cursor to the center of the screen. This is because the current screen gets closed before
  * opening the screen, resetting the cursor position. Since this behavior can be problematic,
  * this API provides a way to disable this. By overriding {@link

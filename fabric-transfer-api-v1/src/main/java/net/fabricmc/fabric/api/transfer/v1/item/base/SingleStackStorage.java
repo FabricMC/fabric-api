@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item.base;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
@@ -74,7 +74,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 	 * @return The maximum capacity of this storage for the passed item variant.
 	 */
 	protected int getCapacity(ItemVariant itemVariant) {
-		return itemVariant.getItem().getMaxCount();
+		return itemVariant.getItem().getDefaultMaxStackSize();
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 				if (currentStack.isEmpty()) {
 					currentStack = insertedVariant.toStack(insertedAmount);
 				} else {
-					currentStack.increment(insertedAmount);
+					currentStack.grow(insertedAmount);
 				}
 
 				setStack(currentStack);
@@ -137,7 +137,7 @@ public abstract class SingleStackStorage extends SnapshotParticipant<ItemStack> 
 			if (extracted > 0) {
 				this.updateSnapshots(transaction);
 				currentStack = getStack();
-				currentStack.decrement(extracted);
+				currentStack.shrink(extracted);
 				setStack(currentStack);
 
 				return extracted;

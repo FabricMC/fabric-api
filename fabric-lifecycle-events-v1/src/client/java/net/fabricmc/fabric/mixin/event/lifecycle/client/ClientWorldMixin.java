@@ -21,19 +21,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
-@Mixin(ClientWorld.class)
+@Mixin(ClientLevel.class)
 public abstract class ClientWorldMixin {
 	@Inject(method = "tickEntities", at = @At("TAIL"))
 	public void tickWorldAfterBlockEntities(CallbackInfo ci) {
-		ClientTickEvents.END_WORLD_TICK.invoker().onEndTick((ClientWorld) (Object) this);
+		ClientTickEvents.END_WORLD_TICK.invoker().onEndTick((ClientLevel) (Object) this);
 	}
 
 	@Inject(method = "tickEntities", at = @At("HEAD"))
 	private void startWorldTick(CallbackInfo ci) {
-		ClientTickEvents.START_WORLD_TICK.invoker().onStartTick((ClientWorld) (Object) this);
+		ClientTickEvents.START_WORLD_TICK.invoker().onStartTick((ClientLevel) (Object) this);
 	}
 }

@@ -25,21 +25,21 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.core.Registry;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.tags.TagKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
@@ -48,32 +48,32 @@ public final class TagAliasTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TagAliasTest.class);
 
 	// Test 1: Alias two non-empty tags
-	public static final TagKey<Item> GEMS = tagKey(RegistryKeys.ITEM, "gems");
-	public static final TagKey<Item> EXPENSIVE_ROCKS = tagKey(RegistryKeys.ITEM, "expensive_rocks");
+	public static final TagKey<Item> GEMS = tagKey(Registries.ITEM, "gems");
+	public static final TagKey<Item> EXPENSIVE_ROCKS = tagKey(Registries.ITEM, "expensive_rocks");
 
 	// Test 2: Alias a non-empty tag and an empty tag
-	public static final TagKey<Item> REDSTONE_DUSTS = tagKey(RegistryKeys.ITEM, "redstone_dusts");
-	public static final TagKey<Item> REDSTONE_POWDERS = tagKey(RegistryKeys.ITEM, "redstone_powders");
+	public static final TagKey<Item> REDSTONE_DUSTS = tagKey(Registries.ITEM, "redstone_dusts");
+	public static final TagKey<Item> REDSTONE_POWDERS = tagKey(Registries.ITEM, "redstone_powders");
 
 	// Test 3: Alias a non-empty tag and a missing tag
-	public static final TagKey<Item> BEETROOTS = tagKey(RegistryKeys.ITEM, "beetroots");
-	public static final TagKey<Item> MISSING_BEETROOTS = tagKey(RegistryKeys.ITEM, "missing_beetroots");
+	public static final TagKey<Item> BEETROOTS = tagKey(Registries.ITEM, "beetroots");
+	public static final TagKey<Item> MISSING_BEETROOTS = tagKey(Registries.ITEM, "missing_beetroots");
 
 	// Test 4: Given tags A, B, C, make alias groups A+B and B+C. They should get merged.
-	public static final TagKey<Block> BRICK_BLOCKS = tagKey(RegistryKeys.BLOCK, "brick_blocks");
-	public static final TagKey<Block> MORE_BRICK_BLOCKS = tagKey(RegistryKeys.BLOCK, "more_brick_blocks");
-	public static final TagKey<Block> BRICKS = tagKey(RegistryKeys.BLOCK, "bricks");
+	public static final TagKey<Block> BRICK_BLOCKS = tagKey(Registries.BLOCK, "brick_blocks");
+	public static final TagKey<Block> MORE_BRICK_BLOCKS = tagKey(Registries.BLOCK, "more_brick_blocks");
+	public static final TagKey<Block> BRICKS = tagKey(Registries.BLOCK, "bricks");
 
 	// Test 5: Merge tags from a world generation dynamic registry
-	public static final TagKey<Biome> CLASSIC_BIOMES = tagKey(RegistryKeys.BIOME, "classic");
-	public static final TagKey<Biome> TRADITIONAL_BIOMES = tagKey(RegistryKeys.BIOME, "traditional");
+	public static final TagKey<Biome> CLASSIC_BIOMES = tagKey(Registries.BIOME, "classic");
+	public static final TagKey<Biome> TRADITIONAL_BIOMES = tagKey(Registries.BIOME, "traditional");
 
 	// Test 6: Merge tags from a reloadable registry
-	public static final TagKey<LootTable> NETHER_BRICKS_1 = tagKey(RegistryKeys.LOOT_TABLE, "nether_bricks_1");
-	public static final TagKey<LootTable> NETHER_BRICKS_2 = tagKey(RegistryKeys.LOOT_TABLE, "nether_bricks_2");
+	public static final TagKey<LootTable> NETHER_BRICKS_1 = tagKey(Registries.LOOT_TABLE, "nether_bricks_1");
+	public static final TagKey<LootTable> NETHER_BRICKS_2 = tagKey(Registries.LOOT_TABLE, "nether_bricks_2");
 
-	private static <T> TagKey<T> tagKey(RegistryKey<? extends Registry<T>> registryRef, String name) {
-		return TagKey.of(registryRef, Identifier.of("fabric-tag-api-v1-testmod", name));
+	private static <T> TagKey<T> tagKey(ResourceKey<? extends Registry<T>> registryRef, String name) {
+		return TagKey.create(registryRef, Identifier.fromNamespaceAndPath("fabric-tag-api-v1-testmod", name));
 	}
 
 	@Override
@@ -90,48 +90,48 @@ public final class TagAliasTest implements ModInitializer {
 			assertTagContent(registries, List.of(BRICK_BLOCKS, MORE_BRICK_BLOCKS, BRICKS), TagAliasTest::getBlockKey,
 					Blocks.BRICKS, Blocks.STONE_BRICKS, Blocks.NETHER_BRICKS, Blocks.RED_NETHER_BRICKS);
 			assertTagContent(registries, List.of(CLASSIC_BIOMES, TRADITIONAL_BIOMES),
-					BiomeKeys.PLAINS, BiomeKeys.DESERT);
+					Biomes.PLAINS, Biomes.DESERT);
 
 			// The loot table registry isn't synced to the client.
 			if (!client) {
 				assertTagContent(registries, List.of(NETHER_BRICKS_1, NETHER_BRICKS_2),
-						Blocks.NETHER_BRICKS.getLootTableKey().orElseThrow(),
-						Blocks.RED_NETHER_BRICKS.getLootTableKey().orElseThrow());
+						Blocks.NETHER_BRICKS.getLootTable().orElseThrow(),
+						Blocks.RED_NETHER_BRICKS.getLootTable().orElseThrow());
 			}
 
 			LOGGER.info("Tag alias tests completed successfully!");
 		});
 	}
 
-	private static RegistryKey<Block> getBlockKey(Block block) {
-		return block.getRegistryEntry().registryKey();
+	private static ResourceKey<Block> getBlockKey(Block block) {
+		return block.builtInRegistryHolder().key();
 	}
 
-	private static RegistryKey<Item> getItemKey(Item item) {
-		return item.getRegistryEntry().registryKey();
+	private static ResourceKey<Item> getItemKey(Item item) {
+		return item.builtInRegistryHolder().key();
 	}
 
 	@SafeVarargs
-	private static <T> void assertTagContent(RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, Function<T, RegistryKey<T>> keyExtractor, T... expected) {
-		Set<RegistryKey<T>> keys = Arrays.stream(expected)
+	private static <T> void assertTagContent(HolderLookup.Provider registries, List<TagKey<T>> tags, Function<T, ResourceKey<T>> keyExtractor, T... expected) {
+		Set<ResourceKey<T>> keys = Arrays.stream(expected)
 				.map(keyExtractor)
 				.collect(Collectors.toSet());
 		assertTagContent(registries, tags, keys);
 	}
 
 	@SafeVarargs
-	private static <T> void assertTagContent(RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, RegistryKey<T>... expected) {
+	private static <T> void assertTagContent(HolderLookup.Provider registries, List<TagKey<T>> tags, ResourceKey<T>... expected) {
 		assertTagContent(registries, tags, Set.of(expected));
 	}
 
-	private static <T> void assertTagContent(RegistryWrapper.WrapperLookup registries, List<TagKey<T>> tags, Set<RegistryKey<T>> expected) {
-		RegistryEntryLookup<T> lookup = registries.getOrThrow(tags.getFirst().registryRef());
+	private static <T> void assertTagContent(HolderLookup.Provider registries, List<TagKey<T>> tags, Set<ResourceKey<T>> expected) {
+		HolderGetter<T> lookup = registries.lookupOrThrow(tags.getFirst().registry());
 
 		for (TagKey<T> tag : tags) {
-			RegistryEntryList.Named<T> tagEntryList = lookup.getOrThrow(tag);
-			Set<RegistryKey<T>> actual = tagEntryList.entries
+			HolderSet.Named<T> tagEntryList = lookup.getOrThrow(tag);
+			Set<ResourceKey<T>> actual = tagEntryList.contents
 					.stream()
-					.map(entry -> entry.getKey().orElseThrow())
+					.map(entry -> entry.unwrapKey().orElseThrow())
 					.collect(Collectors.toSet());
 
 			if (!actual.equals(expected)) {
@@ -140,8 +140,8 @@ public final class TagAliasTest implements ModInitializer {
 			}
 		}
 
-		LOGGER.info("Tags {} / {} were successfully aliased together", tags.getFirst().registryRef().getValue(), tags.stream()
-				.map(TagKey::id)
+		LOGGER.info("Tags {} / {} were successfully aliased together", tags.getFirst().registry().identifier(), tags.stream()
+				.map(TagKey::location)
 				.map(Identifier::toString)
 				.collect(Collectors.joining(", ")));
 	}

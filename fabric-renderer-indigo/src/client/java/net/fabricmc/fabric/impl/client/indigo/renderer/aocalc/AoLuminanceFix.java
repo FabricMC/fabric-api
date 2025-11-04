@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.aocalc;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 
@@ -28,15 +28,15 @@ import net.fabricmc.fabric.impl.client.indigo.Indigo;
  */
 @FunctionalInterface
 public interface AoLuminanceFix {
-	float apply(BlockView view, BlockPos pos, BlockState state);
+	float apply(BlockGetter view, BlockPos pos, BlockState state);
 
 	AoLuminanceFix INSTANCE = Indigo.FIX_LUMINOUS_AO_SHADE ? AoLuminanceFix::fixed : AoLuminanceFix::vanilla;
 
-	static float vanilla(BlockView view, BlockPos pos, BlockState state) {
-		return state.getAmbientOcclusionLightLevel(view, pos);
+	static float vanilla(BlockGetter view, BlockPos pos, BlockState state) {
+		return state.getShadeBrightness(view, pos);
 	}
 
-	static float fixed(BlockView view, BlockPos pos, BlockState state) {
-		return state.getLuminance() == 0 ? state.getAmbientOcclusionLightLevel(view, pos) : 1f;
+	static float fixed(BlockGetter view, BlockPos pos, BlockState state) {
+		return state.getLightEmission() == 0 ? state.getShadeBrightness(view, pos) : 1f;
 	}
 }

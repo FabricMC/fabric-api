@@ -23,13 +23,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.GuiRenderer;
-import net.minecraft.client.render.BufferBuilderStorage;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
-import net.minecraft.client.render.item.HeldItemRenderer;
+import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 
 import net.fabricmc.fabric.impl.client.rendering.GuiRendererExtensions;
 
@@ -41,11 +41,11 @@ public class GameRendererMixin {
 
 	@Shadow
 	@Final
-	private OrderedRenderCommandQueueImpl orderedRenderCommandQueue;
+	private SubmitNodeStorage submitNodeStorage;
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
-	private void guiRendererReady(MinecraftClient client, HeldItemRenderer firstPersonHeldItemRenderer, BufferBuilderStorage buffers, BlockRenderManager blockRenderManager, CallbackInfo ci) {
+	private void guiRendererReady(Minecraft client, ItemInHandRenderer firstPersonHeldItemRenderer, RenderBuffers buffers, BlockRenderDispatcher blockRenderManager, CallbackInfo ci) {
 		GuiRendererExtensions guiRenderer = (GuiRendererExtensions) this.guiRenderer;
-		guiRenderer.fabric_onReady(this.orderedRenderCommandQueue);
+		guiRenderer.fabric_onReady(this.submitNodeStorage);
 	}
 }

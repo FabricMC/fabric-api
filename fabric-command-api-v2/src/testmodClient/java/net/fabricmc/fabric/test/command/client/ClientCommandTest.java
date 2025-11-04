@@ -25,11 +25,11 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientCommandSource;
-import net.minecraft.command.argument.ItemStackArgument;
-import net.minecraft.command.argument.ItemStackArgumentType;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientSuggestionProvider;
+import net.minecraft.commands.arguments.item.ItemInput;
+import net.minecraft.commands.arguments.item.ItemArgument;
+import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -39,8 +39,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public final class ClientCommandTest implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientCommandTest.class);
-	private static final DynamicCommandExceptionType IS_NULL = new DynamicCommandExceptionType(x -> Text.literal("The " + x + " is null"));
-	private static final SimpleCommandExceptionType UNEXECUTABLE_EXECUTED = new SimpleCommandExceptionType(Text.literal("Executed an unexecutable command!"));
+	private static final DynamicCommandExceptionType IS_NULL = new DynamicCommandExceptionType(x -> Component.literal("The " + x + " is null"));
+	private static final SimpleCommandExceptionType UNEXECUTABLE_EXECUTED = new SimpleCommandExceptionType(Component.literal("Executed an unexecutable command!"));
 
 	private boolean commandFlag = false;
 	private boolean wasTested = false;
@@ -49,7 +49,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			dispatcher.register(ClientCommandManager.literal("test_client_command").executes(context -> {
-				context.getSource().sendFeedback(Text.literal("This is a client command!"));
+				context.getSource().sendFeedback(Component.literal("This is a client command!"));
 
 				if (context.getSource().getClient() == null) {
 					throw IS_NULL.create("client");
@@ -72,7 +72,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 						double number = DoubleArgumentType.getDouble(context, "number");
 
 						// Test error formatting
-						context.getSource().sendError(Text.literal("Your number is " + number));
+						context.getSource().sendError(Component.literal("Your number is " + number));
 
 						return 0;
 					})
@@ -85,9 +85,9 @@ public final class ClientCommandTest implements ClientModInitializer {
 
 			// Command with argument using CommandRegistryAccess
 			dispatcher.register(ClientCommandManager.literal("test_client_command_with_registry_using_arg").then(
-					ClientCommandManager.argument("item", ItemStackArgumentType.itemStack(registryAccess)).executes(context -> {
-						final ItemStackArgument item = ItemStackArgumentType.getItemStackArgument(context, "item");
-						context.getSource().sendFeedback(item.createStack(1, false).toHoverableText());
+					ClientCommandManager.argument("item", ItemArgument.item(registryAccess)).executes(context -> {
+						final ItemInput item = ItemArgument.getItem(context, "item");
+						context.getSource().sendFeedback(item.createItemStack(1, false).getDisplayName());
 
 						return 0;
 					})
@@ -98,7 +98,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 			// The user should check whether the command is suggested iff the condition evaluates to true
 			// Initially, the command should not be suggested, as the command flag is initially false
 			dispatcher.register(ClientCommandManager.literal(commandWithCondition).requires(source -> commandFlag).executes(context -> {
-				context.getSource().sendFeedback(Text.literal("Expected: true, is: " + commandFlag));
+				context.getSource().sendFeedback(Component.literal("Expected: true, is: " + commandFlag));
 				return Command.SINGLE_SUCCESS;
 			}));
 			// After this command is first executed, the above command should now be suggested
@@ -106,12 +106,12 @@ public final class ClientCommandTest implements ClientModInitializer {
 			dispatcher.register(ClientCommandManager.literal("test_client_command_that_toggles_condition").executes(context -> {
 				commandFlag = !commandFlag;
 				ClientCommandManager.refreshCommandCompletions();
-				context.getSource().sendFeedback(Text.literal("Toggled command flag to " + commandFlag));
+				context.getSource().sendFeedback(Component.literal("Toggled command flag to " + commandFlag));
 
 				if (commandFlag) {
-					context.getSource().sendFeedback(Text.literal("The command " + commandWithCondition + " should now be suggested"));
+					context.getSource().sendFeedback(Component.literal("The command " + commandWithCondition + " should now be suggested"));
 				} else {
-					context.getSource().sendFeedback(Text.literal("The command " + commandWithCondition + " should now not be suggested"));
+					context.getSource().sendFeedback(Component.literal("The command " + commandWithCondition + " should now not be suggested"));
 				}
 
 				return Command.SINGLE_SUCCESS;
@@ -152,8 +152,8 @@ public final class ClientCommandTest implements ClientModInitializer {
 				return;
 			}
 
-			MinecraftClient client = MinecraftClient.getInstance();
-			ClientCommandSource commandSource = client.getNetworkHandler().getCommandSource();
+			Minecraft client = Minecraft.getInstance();
+			ClientSuggestionProvider commandSource = client.getConnection().getSuggestionsProvider();
 
 			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandManager.getActiveDispatcher().getRoot();
 			CommandNode<FabricClientCommandSource> hiddenClientCommand = rootNode.getChild("hidden_client_command");

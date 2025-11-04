@@ -16,36 +16,36 @@
 
 package net.fabricmc.fabric.test.recipe.client.sync;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.ServerRecipeManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.recipe.v1.sync.ClientRecipeSynchronizedEvent;
 import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
 
 public class RecipeSyncClientTest implements ClientModInitializer {
-	private static void compareWithLocalServer(MinecraftClient client, SynchronizedRecipes synchronizedRecipes) {
-		if (client.getServer() == null) {
+	private static void compareWithLocalServer(Minecraft client, SynchronizedRecipes synchronizedRecipes) {
+		if (client.getSingleplayerServer() == null) {
 			return;
 		}
 
-		ServerRecipeManager recipeManager = client.getServer().getRecipeManager();
+		RecipeManager recipeManager = client.getSingleplayerServer().getRecipeManager();
 
-		for (RecipeEntry<?> recipeEntry : synchronizedRecipes.recipes()) {
-			RecipeEntry<?> serverRecipeEntry = recipeManager.get(recipeEntry.id()).orElseThrow(() -> new IllegalStateException("Server is missing client recipe '" + recipeEntry.id().getValue() + "'!"));
+		for (RecipeHolder<?> recipeEntry : synchronizedRecipes.recipes()) {
+			RecipeHolder<?> serverRecipeEntry = recipeManager.byKey(recipeEntry.id()).orElseThrow(() -> new IllegalStateException("Server is missing client recipe '" + recipeEntry.id().identifier() + "'!"));
 
 			if (serverRecipeEntry.value().getSerializer() != recipeEntry.value().getSerializer()) {
-				throw new IllegalStateException("Client and server have mismatched serializer for recipe '" + recipeEntry.id().getValue() + "'!");
+				throw new IllegalStateException("Client and server have mismatched serializer for recipe '" + recipeEntry.id().identifier() + "'!");
 			}
 
 			if (serverRecipeEntry.value().getType() != recipeEntry.value().getType()) {
-				throw new IllegalStateException("Client and server have mismatched type for recipe '" + recipeEntry.id().getValue() + "'!");
+				throw new IllegalStateException("Client and server have mismatched type for recipe '" + recipeEntry.id().identifier() + "'!");
 			}
 
 			// This should be valid case when we include other mods, just invalid for vanilla sync.
 			if (serverRecipeEntry.value().getClass() != recipeEntry.value().getClass()) {
-				throw new IllegalStateException("Client and server have mismatched class for recipe '" + recipeEntry.id().getValue() + "'!");
+				throw new IllegalStateException("Client and server have mismatched class for recipe '" + recipeEntry.id().identifier() + "'!");
 			}
 		}
 	}

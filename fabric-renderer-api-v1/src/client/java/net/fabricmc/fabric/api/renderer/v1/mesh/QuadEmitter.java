@@ -22,11 +22,11 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.util.TriState;
 
@@ -80,7 +80,7 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	@Override
-	default QuadEmitter spriteBake(Sprite sprite, int bakeFlags) {
+	default QuadEmitter spriteBake(TextureAtlasSprite sprite, int bakeFlags) {
 		MutableQuadView.super.spriteBake(sprite, bakeFlags);
 		return this;
 	}
@@ -124,7 +124,7 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter cullFace(@Nullable Direction face);
 
 	@Override
-	QuadEmitter renderLayer(@Nullable BlockRenderLayer renderLayer);
+	QuadEmitter renderLayer(@Nullable ChunkSectionLayer renderLayer);
 
 	@Override
 	QuadEmitter emissive(boolean emissive);
@@ -136,7 +136,7 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter ambientOcclusion(TriState ao);
 
 	@Override
-	QuadEmitter glint(ItemRenderState.@Nullable Glint glint);
+	QuadEmitter glint(ItemStackRenderState.@Nullable FoilType glint);
 
 	@Override
 	QuadEmitter shadeMode(ShadeMode mode);

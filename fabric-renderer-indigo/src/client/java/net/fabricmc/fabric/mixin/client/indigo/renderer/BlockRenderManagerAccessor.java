@@ -22,13 +22,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.block.entity.LoadedBlockEntityModels;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.SpecialBlockModelRenderer;
 
-@Mixin(BlockRenderManager.class)
+@Mixin(BlockRenderDispatcher.class)
 public interface BlockRenderManagerAccessor {
-	@Accessor("blockEntityModelsGetter")
-	Supplier<LoadedBlockEntityModels> getBlockEntityModelsGetter();
+	@Accessor("specialBlockModelRenderer")
+	Supplier<SpecialBlockModelRenderer> getBlockEntityModelsGetter();
 
 	@Accessor("blockColors")
 	BlockColors getBlockColors();

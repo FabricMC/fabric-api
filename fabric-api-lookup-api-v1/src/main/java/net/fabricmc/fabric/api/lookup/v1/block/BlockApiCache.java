@@ -21,16 +21,16 @@ import java.util.Objects;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.impl.lookup.block.BlockApiCacheImpl;
 import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
 
 /**
- * A {@link BlockApiLookup} bound to a {@link ServerWorld} and a position, providing much faster API access.
+ * A {@link BlockApiLookup} bound to a {@link ServerLevel} and a position, providing much faster API access.
  * Refer to {@link BlockApiLookup} for example code.
  *
  * <p>This object caches the block entity at the target position, and the last used API provider, removing those queries.
@@ -72,7 +72,7 @@ public interface BlockApiCache<A, C> {
 	 * unless the block entity has been loaded or unloaded since the last query, the result will be cached.
 	 */
 	@Nullable
-	BlockEntity getBlockEntity();
+    BlockEntity getBlockEntity();
 
 	/**
 	 * Return the lookup this cache is bound to.
@@ -82,7 +82,7 @@ public interface BlockApiCache<A, C> {
 	/**
 	 * Return the world this cache is bound to.
 	 */
-	ServerWorld getWorld();
+	ServerLevel getWorld();
 
 	/**
 	 * Return the position this cache is bound to.
@@ -90,9 +90,9 @@ public interface BlockApiCache<A, C> {
 	BlockPos getPos();
 
 	/**
-	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same API as the passed lookup.
+	 * Create a new instance bound to the passed {@link ServerLevel} and position, and querying the same API as the passed lookup.
 	 */
-	static <A, C> BlockApiCache<A, C> create(BlockApiLookup<A, C> lookup, ServerWorld world, BlockPos pos) {
+	static <A, C> BlockApiCache<A, C> create(BlockApiLookup<A, C> lookup, ServerLevel world, BlockPos pos) {
 		Objects.requireNonNull(pos, "BlockPos may not be null.");
 		Objects.requireNonNull(world, "ServerWorld may not be null.");
 

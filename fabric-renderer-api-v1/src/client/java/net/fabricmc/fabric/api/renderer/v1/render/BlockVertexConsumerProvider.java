@@ -16,17 +16,17 @@
 
 package net.fabricmc.fabric.api.renderer.v1.render;
 
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
 
 /**
- * Like {@link VertexConsumerProvider}, but takes {@link BlockRenderLayer} instead of {@link RenderLayer}. Primarily
+ * Like {@link MultiBufferSource}, but takes {@link ChunkSectionLayer} instead of {@link RenderType}. Primarily
  * used to correctly render block models which have geometry on more than one layer.
  *
  * @see FabricBlockModelRenderer
  */
 public interface BlockVertexConsumerProvider {
-	VertexConsumer getBuffer(BlockRenderLayer layer);
+	VertexConsumer getBuffer(ChunkSectionLayer layer);
 }

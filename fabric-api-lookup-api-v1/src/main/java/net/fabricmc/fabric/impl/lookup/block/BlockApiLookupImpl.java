@@ -24,14 +24,14 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
@@ -62,7 +62,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 
 	@Nullable
 	@Override
-	public A find(World world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context) {
+	public A find(Level world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context) {
 		Objects.requireNonNull(world, "World may not be null.");
 		Objects.requireNonNull(pos, "BlockPos may not be null.");
 		// Providers have the final say whether a null context is allowed.
@@ -78,7 +78,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 			}
 		} else {
 			if (state == null) {
-				state = blockEntity.getCachedState();
+				state = blockEntity.getBlockState();
 			}
 		}
 
@@ -112,7 +112,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		for (BlockEntityType<?> blockEntityType : blockEntityTypes) {
 			Block supportBlock = ((BlockEntityTypeAccessor) blockEntityType).getBlocks().iterator().next();
 			Objects.requireNonNull(supportBlock, "Could not get a support block for block entity type.");
-			BlockEntity blockEntity = blockEntityType.instantiate(BlockPos.ORIGIN, supportBlock.getDefaultState());
+			BlockEntity blockEntity = blockEntityType.create(BlockPos.ZERO, supportBlock.defaultBlockState());
 			Objects.requireNonNull(blockEntity, "Instantiated block entity may not be null.");
 
 			if (!apiClass.isAssignableFrom(blockEntity.getClass())) {
@@ -140,7 +140,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 			Objects.requireNonNull(block, "Encountered null block while registering a block API provider mapping.");
 
 			if (providerMap.putIfAbsent(block, provider) != null) {
-				LOGGER.warn("Encountered duplicate API provider registration for block: " + Registries.BLOCK.getId(block));
+				LOGGER.warn("Encountered duplicate API provider registration for block: " + BuiltInRegistries.BLOCK.getKey(block));
 			}
 		}
 	}

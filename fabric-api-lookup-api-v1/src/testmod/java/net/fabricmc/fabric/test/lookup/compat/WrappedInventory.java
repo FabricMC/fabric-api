@@ -18,23 +18,23 @@ package net.fabricmc.fabric.test.lookup.compat;
 
 import java.util.function.Predicate;
 
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.test.lookup.api.ItemExtractable;
 import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
 
 final class WrappedInventory implements ItemInsertable, ItemExtractable {
-	private final Inventory inv;
+	private final Container inv;
 
-	WrappedInventory(Inventory inv) {
+	WrappedInventory(Container inv) {
 		this.inv = inv;
 	}
 
 	@Override
 	public ItemStack tryExtract(int maxCount, Predicate<ItemStack> filter, boolean simulate) {
-		for (int i = 0; i < inv.size(); ++i) {
-			ItemStack stack = inv.getStack(i);
+		for (int i = 0; i < inv.getContainerSize(); ++i) {
+			ItemStack stack = inv.getItem(i);
 
 			if (!stack.isEmpty() && filter.test(stack)) {
 				ItemStack returned;
@@ -56,24 +56,24 @@ final class WrappedInventory implements ItemInsertable, ItemExtractable {
 	public ItemStack tryInsert(ItemStack input, boolean simulate) {
 		input = input.copy();
 
-		for (int i = 0; i < inv.size(); ++i) {
-			if (inv.isValid(i, input)) {
-				ItemStack stack = inv.getStack(i);
+		for (int i = 0; i < inv.getContainerSize(); ++i) {
+			if (inv.canPlaceItem(i, input)) {
+				ItemStack stack = inv.getItem(i);
 
-				if (stack.isEmpty() || ItemStack.areItemsAndComponentsEqual(stack, input)) {
-					int remainingSpace = Math.min(inv.getMaxCountPerStack(), stack.getItem().getMaxCount()) - stack.getCount();
+				if (stack.isEmpty() || ItemStack.isSameItemSameComponents(stack, input)) {
+					int remainingSpace = Math.min(inv.getMaxStackSize(), stack.getItem().getDefaultMaxStackSize()) - stack.getCount();
 					int inserted = Math.min(remainingSpace, input.getCount());
 
 					if (!simulate) {
 						if (stack.isEmpty()) {
-							inv.setStack(i, input.copy());
-							inv.getStack(i).setBobbingAnimationTime(inserted);
+							inv.setItem(i, input.copy());
+							inv.getItem(i).setPopTime(inserted);
 						} else {
-							stack.increment(inserted);
+							stack.grow(inserted);
 						}
 					}
 
-					input.decrement(inserted);
+					input.shrink(inserted);
 				}
 			}
 		}

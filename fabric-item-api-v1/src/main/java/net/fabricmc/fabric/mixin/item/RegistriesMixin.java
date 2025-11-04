@@ -21,13 +21,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.registry.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.fabricmc.fabric.impl.item.DefaultItemComponentImpl;
 
-@Mixin(Registries.class)
+@Mixin(BuiltInRegistries.class)
 public abstract class RegistriesMixin {
-	@Inject(method = "freezeRegistries", at = @At("HEAD"))
+	@Inject(method = "freeze", at = @At("HEAD"))
 	private static void modifyDefaultItemComponents(CallbackInfo ci) {
 		DefaultItemComponentImpl.modifyItemComponents();
 	}

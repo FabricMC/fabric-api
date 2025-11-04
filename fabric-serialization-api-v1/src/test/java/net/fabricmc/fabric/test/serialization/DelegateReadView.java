@@ -21,13 +21,13 @@ import java.util.Optional;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.storage.ReadView;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.storage.ValueInput;
 
 /**
  * A delegating ReadView, used to force usage of fallback implementation of FabricReadView.
  */
-public record DelegateReadView(ReadView view) implements ReadView {
+public record DelegateReadView(ValueInput view) implements ValueInput {
 	@Override
 	public <T> Optional<T> read(String key, Codec<T> codec) {
 		return view.read(key, codec);
@@ -39,97 +39,97 @@ public record DelegateReadView(ReadView view) implements ReadView {
 	}
 
 	@Override
-	public Optional<ReadView> getOptionalReadView(String key) {
-		return view.getOptionalReadView(key).map(DelegateReadView::new);
+	public Optional<ValueInput> child(String key) {
+		return view.child(key).map(DelegateReadView::new);
 	}
 
 	@Override
-	public ReadView getReadView(String key) {
-		return new DelegateReadView(view.getReadView(key));
+	public ValueInput childOrEmpty(String key) {
+		return new DelegateReadView(view.childOrEmpty(key));
 	}
 
 	@Override
-	public Optional<ListReadView> getOptionalListReadView(String key) {
-		return view.getOptionalListReadView(key);
+	public Optional<ValueInputList> childrenList(String key) {
+		return view.childrenList(key);
 	}
 
 	@Override
-	public ListReadView getListReadView(String key) {
-		return view.getListReadView(key);
+	public ValueInputList childrenListOrEmpty(String key) {
+		return view.childrenListOrEmpty(key);
 	}
 
 	@Override
-	public <T> Optional<TypedListReadView<T>> getOptionalTypedListView(String key, Codec<T> typeCodec) {
-		return view.getOptionalTypedListView(key, typeCodec);
+	public <T> Optional<TypedInputList<T>> list(String key, Codec<T> typeCodec) {
+		return view.list(key, typeCodec);
 	}
 
 	@Override
-	public <T> TypedListReadView<T> getTypedListView(String key, Codec<T> typeCodec) {
-		return view.getTypedListView(key, typeCodec);
+	public <T> TypedInputList<T> listOrEmpty(String key, Codec<T> typeCodec) {
+		return view.listOrEmpty(key, typeCodec);
 	}
 
 	@Override
-	public boolean getBoolean(String key, boolean fallback) {
-		return view.getBoolean(key, fallback);
+	public boolean getBooleanOr(String key, boolean fallback) {
+		return view.getBooleanOr(key, fallback);
 	}
 
 	@Override
-	public byte getByte(String key, byte fallback) {
-		return view.getByte(key, fallback);
+	public byte getByteOr(String key, byte fallback) {
+		return view.getByteOr(key, fallback);
 	}
 
 	@Override
-	public int getShort(String key, short fallback) {
-		return view.getShort(key, fallback);
+	public int getShortOr(String key, short fallback) {
+		return view.getShortOr(key, fallback);
 	}
 
 	@Override
-	public Optional<Integer> getOptionalInt(String key) {
-		return view.getOptionalInt(key);
+	public Optional<Integer> getInt(String key) {
+		return view.getInt(key);
 	}
 
 	@Override
-	public int getInt(String key, int fallback) {
-		return view.getInt(key, fallback);
+	public int getIntOr(String key, int fallback) {
+		return view.getIntOr(key, fallback);
 	}
 
 	@Override
-	public long getLong(String key, long fallback) {
-		return view.getLong(key, fallback);
+	public long getLongOr(String key, long fallback) {
+		return view.getLongOr(key, fallback);
 	}
 
 	@Override
-	public Optional<Long> getOptionalLong(String key) {
-		return view.getOptionalLong(key);
+	public Optional<Long> getLong(String key) {
+		return view.getLong(key);
 	}
 
 	@Override
-	public float getFloat(String key, float fallback) {
-		return view.getFloat(key, fallback);
+	public float getFloatOr(String key, float fallback) {
+		return view.getFloatOr(key, fallback);
 	}
 
 	@Override
-	public double getDouble(String key, double fallback) {
-		return view.getDouble(key, fallback);
+	public double getDoubleOr(String key, double fallback) {
+		return view.getDoubleOr(key, fallback);
 	}
 
 	@Override
-	public Optional<String> getOptionalString(String key) {
-		return view.getOptionalString(key);
+	public Optional<String> getString(String key) {
+		return view.getString(key);
 	}
 
 	@Override
-	public String getString(String key, String fallback) {
-		return view.getString(key, fallback);
+	public String getStringOr(String key, String fallback) {
+		return view.getStringOr(key, fallback);
 	}
 
 	@Override
-	public Optional<int[]> getOptionalIntArray(String key) {
-		return view.getOptionalIntArray(key);
+	public Optional<int[]> getIntArray(String key) {
+		return view.getIntArray(key);
 	}
 
 	@Override
-	public RegistryWrapper.WrapperLookup getRegistries() {
-		return view.getRegistries();
+	public HolderLookup.Provider lookup() {
+		return view.lookup();
 	}
 }

@@ -16,29 +16,29 @@
 
 package net.fabricmc.fabric.test.screenhandler.item;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ContainerComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.NonNullList;
 
 final class BagInventory implements ImplementedInventory {
 	private final ItemStack stack;
-	private final DefaultedList<ItemStack> items = DefaultedList.ofSize(9, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
 
 	BagInventory(ItemStack stack) {
 		this.stack = stack;
-		ContainerComponent container = stack.get(DataComponentTypes.CONTAINER);
+		ItemContainerContents container = stack.get(DataComponents.CONTAINER);
 
-		if (container != null) container.copyTo(items);
+		if (container != null) container.copyInto(items);
 	}
 
 	@Override
-	public DefaultedList<ItemStack> getItems() {
+	public NonNullList<ItemStack> getItems() {
 		return items;
 	}
 
 	@Override
-	public void markDirty() {
-		stack.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(items));
+	public void setChanged() {
+		stack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(items));
 	}
 }

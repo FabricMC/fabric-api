@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Allows an item to run custom logic when {@link ItemStack#damage(int, LivingEntity, EquipmentSlot)} is called.

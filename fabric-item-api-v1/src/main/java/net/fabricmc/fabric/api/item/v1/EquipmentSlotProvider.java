@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * A provider for the preferred equipment slot of an item.
@@ -31,7 +31,7 @@ import net.minecraft.item.ItemStack;
  * <p>Equipment slot providers can be set with {@link FabricItem.Settings#equipmentSlot(EquipmentSlotProvider)}.
  *
  * <p>If the equipment slot is not entity-dependent, you can set {@link
- * net.minecraft.component.type.EquippableComponent} on the item
+ * net.minecraft.world.item.equipment.Equippable} on the item
  * instead of using this provider.
  */
 @FunctionalInterface

@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
-import net.minecraft.server.world.ChunkHolder;
-import net.minecraft.server.world.ChunkLevelType;
-import net.minecraft.server.world.ServerChunkManager;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.FullChunkStatus;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -71,14 +71,14 @@ public final class ServerChunkEvents {
 	});
 
 	/**
-	 * Called when a chunk's actual ticking behavior is about to align with its updated {@link ChunkLevelType}.
+	 * Called when a chunk's actual ticking behavior is about to align with its updated {@link FullChunkStatus}.
 	 *
 	 * <p>When this event is being called:
 	 * <ul>
-	 * <li>The chunk's {@link WorldChunk#getLevelType()} has already changed.</li>
+	 * <li>The chunk's {@link LevelChunk#getLevelType()} has already changed.</li>
 	 * <li>Entities within the chunk are not guaranteed to be accessible.</li>
 	 * <li>The chunk's corresponding level type future in {@link ChunkHolder} is not guaranteed to be done.</li>
-	 * <li>When transitioning from {@link ChunkLevelType#INACCESSIBLE} to {@link ChunkLevelType#FULL}, calling {@link ServerChunkManager#getChunkFutureSyncOnMainThread(int, int, ChunkStatus, boolean)} to fetch the current chunk at {@link ChunkStatus#FULL} status results in undefined behavior.</li>
+	 * <li>When transitioning from {@link FullChunkStatus#INACCESSIBLE} to {@link FullChunkStatus#FULL}, calling {@link ServerChunkCache#getChunkFutureSyncOnMainThread(int, int, ChunkStatus, boolean)} to fetch the current chunk at {@link ChunkStatus#FULL} status results in undefined behavior.</li>
 	 * </ul>
 	 */
 	public static final Event<LevelTypeChange> CHUNK_LEVEL_TYPE_CHANGE = EventFactory.createArrayBacked(LevelTypeChange.class, (world, chunk, oldLevelType, newLevelType) -> { }, callbacks -> (serverWorld, chunk, oldLevelType, newLevelType) -> {
@@ -89,21 +89,21 @@ public final class ServerChunkEvents {
 
 	@FunctionalInterface
 	public interface Load {
-		void onChunkLoad(ServerWorld world, WorldChunk chunk);
+		void onChunkLoad(ServerLevel world, LevelChunk chunk);
 	}
 
 	@FunctionalInterface
 	public interface Generate {
-		void onChunkGenerate(ServerWorld world, WorldChunk chunk);
+		void onChunkGenerate(ServerLevel world, LevelChunk chunk);
 	}
 
 	@FunctionalInterface
 	public interface Unload {
-		void onChunkUnload(ServerWorld world, WorldChunk chunk);
+		void onChunkUnload(ServerLevel world, LevelChunk chunk);
 	}
 
 	@FunctionalInterface
 	public interface LevelTypeChange {
-		void onChunkLevelTypeChange(ServerWorld world, WorldChunk chunk, ChunkLevelType oldLevelType, ChunkLevelType newLevelType);
+		void onChunkLevelTypeChange(ServerLevel world, LevelChunk chunk, FullChunkStatus oldLevelType, FullChunkStatus newLevelType);
 	}
 }

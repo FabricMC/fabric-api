@@ -42,19 +42,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.resource.DataConfiguration;
-import net.minecraft.resource.DataPackSettings;
-import net.minecraft.resource.PackVersion;
-import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.resource.VanillaDataPackProvider;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
-import net.minecraft.resource.metadata.PackResourceMetadata;
-import net.minecraft.text.Text;
-import net.minecraft.util.dynamic.Range;
-import net.minecraft.util.path.SymlinkFinder;
+import net.minecraft.world.level.WorldDataConfiguration;
+import net.minecraft.world.level.DataPackConfig;
+import net.minecraft.server.packs.metadata.pack.PackFormat;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.ServerPacksSource;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.InclusiveRange;
+import net.minecraft.world.level.validation.DirectoryValidator;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -80,7 +80,7 @@ public final class ModResourcePackUtil {
 	 * @param type    the type of resource
 	 * @param subPath the resource pack sub path directory in mods, may be {@code null}
 	 */
-	public static List<ModResourcePack> getModResourcePacks(FabricLoader fabricLoader, ResourceType type, @Nullable String subPath) {
+	public static List<ModResourcePack> getModResourcePacks(FabricLoader fabricLoader, PackType type, @Nullable String subPath) {
 		ModResourcePackSorter sorter = new ModResourcePackSorter();
 
 		Collection<ModContainer> containers = fabricLoader.getAllMods();
@@ -142,18 +142,18 @@ public final class ModResourcePackUtil {
 		modIds.stream().filter(allIds::contains).forEach(modId -> sorter.addLoadOrdering(modId, currentId, order));
 	}
 
-	public static void refreshAutoEnabledPacks(List<ResourcePackProfile> enabledProfiles, Map<String, ResourcePackProfile> allProfiles) {
-		LOGGER.debug("[Fabric] Starting internal pack sorting with: {}", enabledProfiles.stream().map(ResourcePackProfile::getId).toList());
+	public static void refreshAutoEnabledPacks(List<Pack> enabledProfiles, Map<String, Pack> allProfiles) {
+		LOGGER.debug("[Fabric] Starting internal pack sorting with: {}", enabledProfiles.stream().map(Pack::getId).toList());
 		enabledProfiles.removeIf(profile -> ((FabricResourcePackProfile) profile).fabric_isHidden());
-		LOGGER.debug("[Fabric] Removed all internal packs, result: {}", enabledProfiles.stream().map(ResourcePackProfile::getId).toList());
-		ListIterator<ResourcePackProfile> it = enabledProfiles.listIterator();
+		LOGGER.debug("[Fabric] Removed all internal packs, result: {}", enabledProfiles.stream().map(Pack::getId).toList());
+		ListIterator<Pack> it = enabledProfiles.listIterator();
 		Set<String> seen = new LinkedHashSet<>();
 
 		while (it.hasNext()) {
-			ResourcePackProfile profile = it.next();
+			Pack profile = it.next();
 			seen.add(profile.getId());
 
-			for (ResourcePackProfile p : allProfiles.values()) {
+			for (Pack p : allProfiles.values()) {
 				FabricResourcePackProfile fp = (FabricResourcePackProfile) p;
 
 				if (fp.fabric_isHidden() && fp.fabric_parentsEnabled(seen) && seen.add(p.getId())) {
@@ -163,7 +163,7 @@ public final class ModResourcePackUtil {
 			}
 		}
 
-		LOGGER.debug("[Fabric] Final sorting result: {}", enabledProfiles.stream().map(ResourcePackProfile::getId).toList());
+		LOGGER.debug("[Fabric] Final sorting result: {}", enabledProfiles.stream().map(Pack::getId).toList());
 	}
 
 	public static boolean containsDefault(String filename, boolean modBundled) {
@@ -182,11 +182,11 @@ public final class ModResourcePackUtil {
 		return null;
 	}
 
-	public static InputStream openDefault(ModContainer container, ResourceType type, String filename) throws IOException {
+	public static InputStream openDefault(ModContainer container, PackType type, String filename) throws IOException {
 		switch (filename) {
 		case "pack.mcmeta":
 			String description = Objects.requireNonNullElse(container.getMetadata().getId(), "");
-			String metadata = serializeMetadata(SharedConstants.getGameVersion().packVersion(type), description, type);
+			String metadata = serializeMetadata(SharedConstants.getCurrentVersion().packVersion(type), description, type);
 			return IOUtils.toInputStream(metadata, Charsets.UTF_8);
 		case "pack.png":
 			Optional<Path> path = container.getMetadata().getIconPath(512).flatMap(container::findPath);
@@ -201,30 +201,30 @@ public final class ModResourcePackUtil {
 		}
 	}
 
-	public static PackResourceMetadata getMetadataPack(PackVersion packVersion, Text description) {
-		return new PackResourceMetadata(description, new Range<>(packVersion));
+	public static PackMetadataSection getMetadataPack(PackFormat packVersion, Component description) {
+		return new PackMetadataSection(description, new InclusiveRange<>(packVersion));
 	}
 
-	public static JsonObject getMetadataPackJson(PackVersion packVersion, Text description, ResourceType resourceType) {
-		return PackResourceMetadata.createCodec(resourceType)
+	public static JsonObject getMetadataPackJson(PackFormat packVersion, Component description, PackType resourceType) {
+		return PackMetadataSection.codecForPackType(resourceType)
 				.encodeStart(JsonOps.INSTANCE, getMetadataPack(packVersion, description))
 				.getOrThrow()
 				.getAsJsonObject();
 	}
 
-	public static String serializeMetadata(PackVersion packVersion, String description, ResourceType resourceType) {
+	public static String serializeMetadata(PackFormat packVersion, String description, PackType resourceType) {
 		// This seems to be still manually deserialized
-		JsonObject pack = getMetadataPackJson(packVersion, Text.literal(description), resourceType);
+		JsonObject pack = getMetadataPackJson(packVersion, Component.literal(description), resourceType);
 		JsonObject metadata = new JsonObject();
 		metadata.add("pack", pack);
 		return GSON.toJson(metadata);
 	}
 
-	public static Text getName(ModMetadata info) {
+	public static Component getName(ModMetadata info) {
 		if (info.getId() != null) {
-			return Text.literal(info.getId());
+			return Component.literal(info.getId());
 		} else {
-			return Text.translatable("pack.name.fabricMod", info.getId());
+			return Component.translatable("pack.name.fabricMod", info.getId());
 		}
 	}
 
@@ -233,23 +233,23 @@ public final class ModResourcePackUtil {
 	 * {@code DataPackSettings.SAFE_MODE} used in vanilla.
 	 * @return the default data pack settings
 	 */
-	public static DataConfiguration createDefaultDataConfiguration() {
-		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(ResourceType.SERVER_DATA);
-		List<ResourcePackProfile> moddedResourcePacks = new ArrayList<>();
-		modResourcePackCreator.register(moddedResourcePacks::add);
+	public static WorldDataConfiguration createDefaultDataConfiguration() {
+		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(PackType.SERVER_DATA);
+		List<Pack> moddedResourcePacks = new ArrayList<>();
+		modResourcePackCreator.loadPacks(moddedResourcePacks::add);
 
-		List<String> enabled = new ArrayList<>(DataPackSettings.SAFE_MODE.getEnabled());
-		List<String> disabled = new ArrayList<>(DataPackSettings.SAFE_MODE.getDisabled());
+		List<String> enabled = new ArrayList<>(DataPackConfig.DEFAULT.getEnabled());
+		List<String> disabled = new ArrayList<>(DataPackConfig.DEFAULT.getDisabled());
 
 		// This ensures that any built-in registered data packs by mods which needs to be enabled by default are
 		// as the data pack screen automatically put any data pack as disabled except the Default data pack.
-		for (ResourcePackProfile profile : moddedResourcePacks) {
-			if (profile.getSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
+		for (Pack profile : moddedResourcePacks) {
+			if (profile.getPackSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
 				enabled.add(profile.getId());
 				continue;
 			}
 
-			try (ResourcePack pack = profile.createResourcePack()) {
+			try (PackResources pack = profile.open()) {
 				if (pack instanceof ModNioResourcePack && ((ModNioResourcePack) pack).getActivationType().isEnabledByDefault()) {
 					enabled.add(profile.getId());
 				} else {
@@ -258,9 +258,9 @@ public final class ModResourcePackUtil {
 			}
 		}
 
-		return new DataConfiguration(
-				new DataPackSettings(enabled, disabled),
-				FeatureFlags.DEFAULT_ENABLED_FEATURES
+		return new WorldDataConfiguration(
+				new DataPackConfig(enabled, disabled),
+				FeatureFlags.DEFAULT_FLAGS
 		);
 	}
 
@@ -269,11 +269,11 @@ public final class ModResourcePackUtil {
 	 * which means the Vanilla pack has higher precedence than modded, breaking our tests.
 	 * To fix this, we move all modded pack profiles to the end of the list.
 	 */
-	public static DataPackSettings createTestServerSettings(List<String> enabled, List<String> disabled) {
+	public static DataPackConfig createTestServerSettings(List<String> enabled, List<String> disabled) {
 		// Collect modded profiles
 		Set<String> moddedProfiles = new HashSet<>();
-		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(ResourceType.SERVER_DATA);
-		modResourcePackCreator.register(profile -> moddedProfiles.add(profile.getId()));
+		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(PackType.SERVER_DATA);
+		modResourcePackCreator.loadPacks(profile -> moddedProfiles.add(profile.getId()));
 
 		// Remove them from the enabled list
 		List<String> moveToTheEnd = new ArrayList<>();
@@ -290,15 +290,15 @@ public final class ModResourcePackUtil {
 		// Add back at the end
 		enabled.addAll(moveToTheEnd);
 
-		return new DataPackSettings(enabled, disabled);
+		return new DataPackConfig(enabled, disabled);
 	}
 
 	/**
 	 * Creates the ResourcePackManager used by the ClientDataPackManager and replaces
 	 * {@code VanillaDataPackProvider.createClientManager} used by vanilla.
 	 */
-	public static ResourcePackManager createClientManager() {
-		return new ResourcePackManager(new VanillaDataPackProvider(new SymlinkFinder((path) -> true)), new ModResourcePackCreator(ResourceType.SERVER_DATA, true));
+	public static PackRepository createClientManager() {
+		return new PackRepository(new ServerPacksSource(new DirectoryValidator((path) -> true)), new ModResourcePackCreator(PackType.SERVER_DATA, true));
 	}
 
 	public enum Order {

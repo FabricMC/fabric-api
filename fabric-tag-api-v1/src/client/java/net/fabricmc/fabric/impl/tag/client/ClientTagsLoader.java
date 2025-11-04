@@ -32,13 +32,13 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagEntry;
-import net.minecraft.registry.tag.TagFile;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagEntry;
+import net.minecraft.tags.TagFile;
+import net.minecraft.tags.TagKey;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StrictJsonParser;
 
 import net.fabricmc.loader.api.FabricLoader;
@@ -48,11 +48,11 @@ public class ClientTagsLoader {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-tags-api-v1");
 	/**
 	 * Load a given tag from the available mods into a set of {@code Identifier}s.
-	 * Parsing based on {@link net.minecraft.registry.tag.TagGroupLoader#loadTags(net.minecraft.resource.ResourceManager)}
+	 * Parsing based on {@link net.minecraft.tags.TagLoader#loadTags(net.minecraft.server.packs.resources.ResourceManager)}
 	 */
 	public static LoadedTag loadTag(TagKey<?> tagKey) {
 		var tags = new HashSet<TagEntry>();
-		HashSet<Path> tagFiles = getTagFiles(tagKey.registryRef(), tagKey.id());
+		HashSet<Path> tagFiles = getTagFiles(tagKey.registry(), tagKey.location());
 
 		for (Path tagPath : tagFiles) {
 			try (BufferedReader tagReader = Files.newBufferedReader(tagPath)) {
@@ -77,10 +77,10 @@ public class ClientTagsLoader {
 		HashSet<TagKey<?>> immediateChildTags = new HashSet<>();
 
 		for (TagEntry tagEntry : tags) {
-			tagEntry.resolve(new TagEntry.ValueGetter<>() {
+			tagEntry.build(new TagEntry.Lookup<>() {
 				@Nullable
 				@Override
-				public Identifier direct(Identifier id, boolean required) {
+				public Identifier element(Identifier id, boolean required) {
 					immediateChildIds.add(id);
 					return id;
 				}
@@ -88,7 +88,7 @@ public class ClientTagsLoader {
 				@Nullable
 				@Override
 				public Collection<Identifier> tag(Identifier id) {
-					TagKey<?> tag = TagKey.of(tagKey.registryRef(), id);
+					TagKey<?> tag = TagKey.create(tagKey.registry(), id);
 					immediateChildTags.add(tag);
 					return ClientTagsImpl.getOrCreatePartiallySyncedTag(tag).completeIds;
 				}
@@ -110,8 +110,8 @@ public class ClientTagsLoader {
 	 * @param identifier  the Identifier of the tag
 	 * @return the paths to all tag json files within the available mods
 	 */
-	private static HashSet<Path> getTagFiles(RegistryKey<? extends Registry<?>> registryKey, Identifier identifier) {
-		return getTagFiles(RegistryKeys.getTagPath(registryKey), identifier);
+	private static HashSet<Path> getTagFiles(ResourceKey<? extends Registry<?>> registryKey, Identifier identifier) {
+		return getTagFiles(Registries.tagsDirPath(registryKey), identifier);
 	}
 
 	/**

@@ -20,12 +20,12 @@ import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 /**
  * A simple fluid render handler that uses and loads sprites given by their
@@ -42,33 +42,33 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	/**
 	 * The vanilla still water texture identifier.
 	 */
-	public static final Identifier WATER_STILL = Identifier.ofVanilla("block/water_still");
+	public static final Identifier WATER_STILL = Identifier.withDefaultNamespace("block/water_still");
 
 	/**
 	 * The vanilla flowing water texture identifier.
 	 */
-	public static final Identifier WATER_FLOWING = Identifier.ofVanilla("block/water_flow");
+	public static final Identifier WATER_FLOWING = Identifier.withDefaultNamespace("block/water_flow");
 
 	/**
 	 * The vanilla water overlay texture identifier.
 	 */
-	public static final Identifier WATER_OVERLAY = Identifier.ofVanilla("block/water_overlay");
+	public static final Identifier WATER_OVERLAY = Identifier.withDefaultNamespace("block/water_overlay");
 
 	/**
 	 * The vanilla still lava texture identifier.
 	 */
-	public static final Identifier LAVA_STILL = Identifier.ofVanilla("block/lava_still");
+	public static final Identifier LAVA_STILL = Identifier.withDefaultNamespace("block/lava_still");
 
 	/**
 	 * The vanilla flowing lava texture identifier.
 	 */
-	public static final Identifier LAVA_FLOWING = Identifier.ofVanilla("block/lava_flow");
+	public static final Identifier LAVA_FLOWING = Identifier.withDefaultNamespace("block/lava_flow");
 
 	protected final Identifier stillTexture;
 	protected final Identifier flowingTexture;
 	protected final Identifier overlayTexture;
 
-	protected final Sprite[] sprites;
+	protected final TextureAtlasSprite[] sprites;
 
 	protected final int tint;
 
@@ -87,7 +87,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 		this.stillTexture = Objects.requireNonNull(stillTexture, "stillTexture");
 		this.flowingTexture = Objects.requireNonNull(flowingTexture, "flowingTexture");
 		this.overlayTexture = overlayTexture;
-		this.sprites = new Sprite[overlayTexture == null ? 2 : 3];
+		this.sprites = new TextureAtlasSprite[overlayTexture == null ? 2 : 3];
 		this.tint = tint;
 	}
 
@@ -143,7 +143,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Sprite[] getFluidSprites(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
+	public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
 		return sprites;
 	}
 
@@ -151,7 +151,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void reloadTextures(SpriteAtlasTexture textureAtlas) {
+	public void reloadTextures(TextureAtlas textureAtlas) {
 		sprites[0] = textureAtlas.getSprite(stillTexture);
 		sprites[1] = textureAtlas.getSprite(flowingTexture);
 
@@ -164,7 +164,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getFluidColor(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
+	public int getFluidColor(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
 		return tint;
 	}
 }

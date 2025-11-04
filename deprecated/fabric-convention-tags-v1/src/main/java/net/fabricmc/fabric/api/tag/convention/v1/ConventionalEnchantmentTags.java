@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.tag.convention.v1;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.impl.tag.convention.TagRegistration;
 
@@ -31,12 +31,12 @@ public final class ConventionalEnchantmentTags {
 
 	/**
 	 * A tag containing enchantments that increase the amount or
-	 * quality of drops from blocks, such as {@link net.minecraft.enchantment.Enchantments#FORTUNE}.
+	 * quality of drops from blocks, such as {@link net.minecraft.world.item.enchantment.Enchantments#FORTUNE}.
 	 */
 	public static final TagKey<Enchantment> INCREASES_BLOCK_DROPS = register("fortune");
 	/**
 	 * A tag containing enchantments that increase the amount or
-	 * quality of drops from entities, such as {@link net.minecraft.enchantment.Enchantments#LOOTING}.
+	 * quality of drops from entities, such as {@link net.minecraft.world.item.enchantment.Enchantments#LOOTING}.
 	 */
 	public static final TagKey<Enchantment> INCREASES_ENTITY_DROPS = register("looting");
 	/**

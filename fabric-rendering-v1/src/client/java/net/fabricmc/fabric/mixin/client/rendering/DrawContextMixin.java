@@ -22,22 +22,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.client.rendering.v1.DrawItemStackOverlayCallback;
 
-@Mixin(DrawContext.class)
+@Mixin(GuiGraphics.class)
 abstract class DrawContextMixin {
 	@Inject(
-			method = "drawStackOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			method = "renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V",
 			at = @At("RETURN")
 	)
-	public void drawStackOverlay(TextRenderer textRenderer, ItemStack stack, int x, int y, @Nullable String stackCountText, CallbackInfo callback) {
+	public void drawStackOverlay(Font textRenderer, ItemStack stack, int x, int y, @Nullable String stackCountText, CallbackInfo callback) {
 		if (!stack.isEmpty()) {
 			DrawItemStackOverlayCallback.EVENT.invoker()
-					.onDrawItemStackOverlay((DrawContext) (Object) this, textRenderer, stack, x, y);
+					.onDrawItemStackOverlay((GuiGraphics) (Object) this, textRenderer, stack, x, y);
 		}
 	}
 }

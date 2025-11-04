@@ -16,22 +16,22 @@
 
 package net.fabricmc.fabric.impl.datagen.loot;
 
-import net.minecraft.data.loottable.EntityLootTableGenerator;
-import net.minecraft.entity.EntityType;
-import net.minecraft.loot.LootTable;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.data.loot.EntityLootSubProvider;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.flag.FeatureFlags;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.fabricmc.fabric.mixin.datagen.loot.EntityLootTableGeneratorAccessor;
 
-public class ConditionEntityLootTableGenerator extends EntityLootTableGenerator {
-	private final EntityLootTableGenerator parent;
+public class ConditionEntityLootTableGenerator extends EntityLootSubProvider {
+	private final EntityLootSubProvider parent;
 	private final ResourceCondition[] conditions;
 
-	public ConditionEntityLootTableGenerator(EntityLootTableGenerator parent, ResourceCondition[] conditions) {
-		super(FeatureFlags.FEATURE_MANAGER.getFeatureSet(), ((EntityLootTableGeneratorAccessor) parent).getRegistries());
+	public ConditionEntityLootTableGenerator(EntityLootSubProvider parent, ResourceCondition[] conditions) {
+		super(FeatureFlags.REGISTRY.allFlags(), ((EntityLootTableGeneratorAccessor) parent).getRegistries());
 
 		this.parent = parent;
 		this.conditions = conditions;
@@ -43,8 +43,8 @@ public class ConditionEntityLootTableGenerator extends EntityLootTableGenerator 
 	}
 
 	@Override
-	public void register(EntityType<?> entityType, RegistryKey<LootTable> tableKey, LootTable.Builder lootTable) {
+	public void add(EntityType<?> entityType, ResourceKey<LootTable> tableKey, LootTable.Builder lootTable) {
 		FabricDataGenHelper.addConditions(lootTable, this.conditions);
-		this.parent.register(entityType, tableKey, lootTable);
+		this.parent.add(entityType, tableKey, lootTable);
 	}
 }

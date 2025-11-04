@@ -18,24 +18,24 @@ package net.fabricmc.fabric.impl.client.rendering.fluid;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 
 public class FluidRenderHandlerInfo {
-	public final Sprite[] sprites = new Sprite[2];
+	public final TextureAtlasSprite[] sprites = new TextureAtlasSprite[2];
 	@Nullable
 	public FluidRenderHandler handler;
 	public boolean hasOverlay;
-	public Sprite overlaySprite;
+	public TextureAtlasSprite overlaySprite;
 
-	public void setup(FluidRenderHandler handler, BlockRenderView world, BlockPos pos, FluidState fluidState) {
+	public void setup(FluidRenderHandler handler, BlockAndTintGetter world, BlockPos pos, FluidState fluidState) {
 		this.handler = handler;
 
-		Sprite[] sprites = handler.getFluidSprites(world, pos, fluidState);
+		TextureAtlasSprite[] sprites = handler.getFluidSprites(world, pos, fluidState);
 
 		this.sprites[0] = sprites[0];
 		this.sprites[1] = sprites[1];

@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.test.lookup;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.test.lookup.api.ItemApis;
@@ -38,17 +38,17 @@ public class ChuteBlockEntity extends BlockEntity {
 		super(FabricApiLookupTest.CHUTE_BLOCK_ENTITY_TYPE, pos, state);
 	}
 
-	public static void serverTick(World world, BlockPos pos, BlockState blockState, ChuteBlockEntity blockEntity) {
-		if (!blockEntity.hasWorld()) {
+	public static void serverTick(Level world, BlockPos pos, BlockState blockState, ChuteBlockEntity blockEntity) {
+		if (!blockEntity.hasLevel()) {
 			return;
 		}
 
 		if (blockEntity.cachedInsertable == null) {
-			blockEntity.cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, (ServerWorld) world, pos.offset(Direction.DOWN));
+			blockEntity.cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, (ServerLevel) world, pos.relative(Direction.DOWN));
 		}
 
 		if (blockEntity.cachedExtractable == null) {
-			blockEntity.cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, (ServerWorld) world, pos.offset(Direction.UP));
+			blockEntity.cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, (ServerLevel) world, pos.relative(Direction.UP));
 		}
 
 		if (blockEntity.moveDelay == 0) {

@@ -23,35 +23,35 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.flag.FeatureFlagSet;
 
 /**
- * This class allows the entries of {@linkplain ItemGroup item groups} to be modified by the events in {@link ItemGroupEvents}.
+ * This class allows the entries of {@linkplain CreativeModeTab item groups} to be modified by the events in {@link ItemGroupEvents}.
  */
-public class FabricItemGroupEntries implements ItemGroup.Entries {
-	private final ItemGroup.DisplayContext context;
+public class FabricItemGroupEntries implements CreativeModeTab.Output {
+	private final CreativeModeTab.ItemDisplayParameters context;
 	private final List<ItemStack> displayStacks;
 	private final List<ItemStack> searchTabStacks;
 
 	@ApiStatus.Internal
-	public FabricItemGroupEntries(ItemGroup.DisplayContext context, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks) {
+	public FabricItemGroupEntries(CreativeModeTab.ItemDisplayParameters context, List<ItemStack> displayStacks, List<ItemStack> searchTabStacks) {
 		this.context = context;
 		this.displayStacks = displayStacks;
 		this.searchTabStacks = searchTabStacks;
 	}
 
-	public ItemGroup.DisplayContext getContext() {
+	public CreativeModeTab.ItemDisplayParameters getContext() {
 		return context;
 	}
 
 	/**
 	 * @return the currently enabled feature set
 	 */
-	public FeatureSet getEnabledFeatures() {
+	public FeatureFlagSet getEnabledFeatures() {
 		return context.enabledFeatures();
 	}
 
@@ -85,7 +85,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 *                   for searches, or both.
 	 */
 	@Override
-	public void add(ItemStack stack, ItemGroup.StackVisibility visibility) {
+	public void accept(ItemStack stack, CreativeModeTab.TabVisibility visibility) {
 		if (isEnabled(stack)) {
 			checkStack(stack);
 
@@ -101,11 +101,11 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	/**
-	 * See {@link #prepend(ItemStack, ItemGroup.StackVisibility)}. Will use {@link ItemGroup.StackVisibility#PARENT_AND_SEARCH_TABS}
+	 * See {@link #prepend(ItemStack, CreativeModeTab.TabVisibility)}. Will use {@link CreativeModeTab.TabVisibility#PARENT_AND_SEARCH_TABS}
 	 * for visibility.
 	 */
 	public void prepend(ItemStack stack) {
-		prepend(stack, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
+		prepend(stack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 * @param visibility Determines whether the stack will be shown in the tab itself, returned
 	 *                   for searches, or both.
 	 */
-	public void prepend(ItemStack stack, ItemGroup.StackVisibility visibility) {
+	public void prepend(ItemStack stack, CreativeModeTab.TabVisibility visibility) {
 		if (isEnabled(stack)) {
 			checkStack(stack);
 
@@ -132,22 +132,22 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	/**
 	 * See {@link #prepend(ItemStack)}. Automatically creates an {@link ItemStack} from the given item.
 	 */
-	public void prepend(ItemConvertible item) {
-		prepend(item, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
+	public void prepend(ItemLike item) {
+		prepend(item, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	/**
-	 * See {@link #prepend(ItemStack, net.minecraft.item.ItemGroup.StackVisibility)}.
+	 * See {@link #prepend(ItemStack, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
 	 * Automatically creates an {@link ItemStack} from the given item.
 	 */
-	public void prepend(ItemConvertible item, ItemGroup.StackVisibility visibility) {
+	public void prepend(ItemLike item, CreativeModeTab.TabVisibility visibility) {
 		prepend(new ItemStack(item), visibility);
 	}
 
 	/**
-	 * See {@link #addAfter(ItemConvertible, Collection)}.
+	 * See {@link #addAfter(ItemLike, Collection)}.
 	 */
-	public void addAfter(ItemConvertible afterLast, ItemStack... newStack) {
+	public void addAfter(ItemLike afterLast, ItemStack... newStack) {
 		addAfter(afterLast, Arrays.asList(newStack));
 	}
 
@@ -159,31 +159,31 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	/**
-	 * See {@link #addAfter(ItemConvertible, Collection)}.
+	 * See {@link #addAfter(ItemLike, Collection)}.
 	 */
-	public void addAfter(ItemConvertible afterLast, ItemConvertible... newItem) {
+	public void addAfter(ItemLike afterLast, ItemLike... newItem) {
 		addAfter(afterLast, Arrays.stream(newItem).map(ItemStack::new).toList());
 	}
 
 	/**
 	 * See {@link #addAfter(ItemStack, Collection)}.
 	 */
-	public void addAfter(ItemStack afterLast, ItemConvertible... newItem) {
+	public void addAfter(ItemStack afterLast, ItemLike... newItem) {
 		addAfter(afterLast, Arrays.stream(newItem).map(ItemStack::new).toList());
 	}
 
 	/**
-	 * See {@link #addAfter(ItemConvertible, Collection, net.minecraft.item.ItemGroup.StackVisibility)}.
+	 * See {@link #addAfter(ItemLike, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
 	 */
-	public void addAfter(ItemConvertible afterLast, Collection<ItemStack> newStacks) {
-		addAfter(afterLast, newStacks, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
+	public void addAfter(ItemLike afterLast, Collection<ItemStack> newStacks) {
+		addAfter(afterLast, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	/**
-	 * See {@link #addAfter(ItemStack, Collection, net.minecraft.item.ItemGroup.StackVisibility)}.
+	 * See {@link #addAfter(ItemStack, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
 	 */
 	public void addAfter(ItemStack afterLast, Collection<ItemStack> newStacks) {
-		addAfter(afterLast, newStacks, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
+		addAfter(afterLast, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	/**
@@ -194,7 +194,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 * @param visibility Determines whether the stack will be shown in the tab itself, returned
 	 *                   for searches, or both.
 	 */
-	public void addAfter(ItemConvertible afterLast, Collection<ItemStack> newStacks, ItemGroup.StackVisibility visibility) {
+	public void addAfter(ItemLike afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -219,7 +219,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 * @param visibility Determines whether the stack will be shown in the tab itself, returned
 	 *                   for searches, or both.
 	 */
-	public void addAfter(ItemStack afterLast, Collection<ItemStack> newStacks, ItemGroup.StackVisibility visibility) {
+	public void addAfter(ItemStack afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -244,7 +244,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 * @param visibility Determines whether the stack will be shown in the tab itself, returned
 	 *                   for searches, or both.
 	 */
-	public void addAfter(Predicate<ItemStack> afterLast, Collection<ItemStack> newStacks, ItemGroup.StackVisibility visibility) {
+	public void addAfter(Predicate<ItemStack> afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -262,9 +262,9 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	/**
-	 * See {@link #addBefore(ItemConvertible, Collection)}.
+	 * See {@link #addBefore(ItemLike, Collection)}.
 	 */
-	public void addBefore(ItemConvertible beforeFirst, ItemStack... newStack) {
+	public void addBefore(ItemLike beforeFirst, ItemStack... newStack) {
 		addBefore(beforeFirst, Arrays.asList(newStack));
 	}
 
@@ -276,31 +276,31 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	/**
-	 * See {@link #addBefore(ItemConvertible, Collection)}.
+	 * See {@link #addBefore(ItemLike, Collection)}.
 	 */
-	public void addBefore(ItemConvertible beforeFirst, ItemConvertible... newItem) {
+	public void addBefore(ItemLike beforeFirst, ItemLike... newItem) {
 		addBefore(beforeFirst, Arrays.stream(newItem).map(ItemStack::new).toList());
 	}
 
 	/**
 	 * See {@link #addBefore(ItemStack, Collection)}.
 	 */
-	public void addBefore(ItemStack beforeFirst, ItemConvertible... newItem) {
+	public void addBefore(ItemStack beforeFirst, ItemLike... newItem) {
 		addBefore(beforeFirst, Arrays.stream(newItem).map(ItemStack::new).toList());
 	}
 
 	/**
-	 * See {@link #addBefore(ItemConvertible, Collection, net.minecraft.item.ItemGroup.StackVisibility)}.
+	 * See {@link #addBefore(ItemLike, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
 	 */
-	public void addBefore(ItemConvertible beforeFirst, Collection<ItemStack> newStacks) {
-		addBefore(beforeFirst, newStacks, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
+	public void addBefore(ItemLike beforeFirst, Collection<ItemStack> newStacks) {
+		addBefore(beforeFirst, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	/**
-	 * See {@link #addBefore(ItemStack, Collection, net.minecraft.item.ItemGroup.StackVisibility)}.
+	 * See {@link #addBefore(ItemStack, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
 	 */
 	public void addBefore(ItemStack beforeFirst, Collection<ItemStack> newStacks) {
-		addBefore(beforeFirst, newStacks, ItemGroup.StackVisibility.PARENT_AND_SEARCH_TABS);
+		addBefore(beforeFirst, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	/**
@@ -311,7 +311,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 * @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	 *                    for searches, or both.
 	 */
-	public void addBefore(ItemConvertible beforeFirst, Collection<ItemStack> newStacks, ItemGroup.StackVisibility visibility) {
+	public void addBefore(ItemLike beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -336,7 +336,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 * @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	 *                    for searches, or both.
 	 */
-	public void addBefore(ItemStack beforeFirst, Collection<ItemStack> newStacks, ItemGroup.StackVisibility visibility) {
+	public void addBefore(ItemStack beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -361,7 +361,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	 * @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	 *                    for searches, or both.
 	 */
-	public void addBefore(Predicate<ItemStack> beforeFirst, Collection<ItemStack> newStacks, ItemGroup.StackVisibility visibility) {
+	public void addBefore(Predicate<ItemStack> beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -379,7 +379,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	/**
-	 * @return True if the item of a given stack is enabled in the current {@link FeatureSet}.
+	 * @return True if the item of a given stack is enabled in the current {@link FeatureFlagSet}.
 	 * @see Item#isEnabled
 	 */
 	private boolean isEnabled(ItemStack stack) {
@@ -396,7 +396,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 	}
 
 	/**
-	 * Adds the {@link ItemStack} before the first match, if no matches the {@link ItemStack} is appended to the end of the {@link ItemGroup}.
+	 * Adds the {@link ItemStack} before the first match, if no matches the {@link ItemStack} is appended to the end of the {@link CreativeModeTab}.
 	 */
 	private static void addBefore(Predicate<ItemStack> predicate, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
 		checkStacks(newStacks);
@@ -431,7 +431,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 		checkStacks(newStacks);
 
 		for (int i = 0; i < addTo.size(); i++) {
-			if (ItemStack.areItemsAndComponentsEqual(anchor, addTo.get(i))) {
+			if (ItemStack.isSameItemSameComponents(anchor, addTo.get(i))) {
 				addTo.subList(i, i).addAll(newStacks);
 				return;
 			}
@@ -446,7 +446,7 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 
 		// Iterate in reverse to add after the last match
 		for (int i = addTo.size() - 1; i >= 0; i--) {
-			if (ItemStack.areItemsAndComponentsEqual(anchor, addTo.get(i))) {
+			if (ItemStack.isSameItemSameComponents(anchor, addTo.get(i))) {
 				addTo.subList(i + 1, i + 1).addAll(newStacks);
 				return;
 			}
@@ -456,13 +456,13 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 		addTo.addAll(newStacks);
 	}
 
-	private static void addBefore(ItemConvertible anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+	private static void addBefore(ItemLike anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
 		checkStacks(newStacks);
 
 		Item anchorItem = anchor.asItem();
 
 		for (int i = 0; i < addTo.size(); i++) {
-			if (addTo.get(i).isOf(anchorItem)) {
+			if (addTo.get(i).is(anchorItem)) {
 				addTo.subList(i, i).addAll(newStacks);
 				return;
 			}
@@ -472,14 +472,14 @@ public class FabricItemGroupEntries implements ItemGroup.Entries {
 		addTo.addAll(newStacks);
 	}
 
-	private static void addAfter(ItemConvertible anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+	private static void addAfter(ItemLike anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
 		checkStacks(newStacks);
 
 		Item anchorItem = anchor.asItem();
 
 		// Iterate in reverse to add after the last match
 		for (int i = addTo.size() - 1; i >= 0; i--) {
-			if (addTo.get(i).isOf(anchorItem)) {
+			if (addTo.get(i).is(anchorItem)) {
 				addTo.subList(i + 1, i + 1).addAll(newStacks);
 				return;
 			}

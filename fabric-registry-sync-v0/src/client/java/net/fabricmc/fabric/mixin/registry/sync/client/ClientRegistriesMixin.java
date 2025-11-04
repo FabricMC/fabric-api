@@ -27,25 +27,28 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 
-import net.minecraft.client.network.ClientRegistries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryLoader;
-import net.minecraft.registry.SerializableRegistries;
-import net.minecraft.resource.ResourceFactory;
+import net.minecraft.client.multiplayer.RegistryDataCollector;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.RegistryDataLoader;
+import net.minecraft.core.RegistrySynchronization;
+import net.minecraft.server.packs.resources.ResourceProvider;
 
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
-@Mixin(ClientRegistries.class)
+@Mixin(RegistryDataCollector.class)
 public class ClientRegistriesMixin {
-	/**
+	// TODO(Ravel): target method createRegistryManager is ambiguous
+// TODO(Ravel): target method createRegistryManager is ambiguous
+// TODO(Ravel): target method createRegistryManager is ambiguous
+/**
 	 * Keep the pre-24w04a behavior of removing empty registries, even if the client knows that registry.
 	 */
-	@WrapOperation(method = "createRegistryManager", at = @At(value = "FIELD", target = "Lnet/minecraft/registry/RegistryLoader;SYNCED_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
-	private List<RegistryLoader.Entry<?>> skipEmptyRegistries(Operation<List<RegistryLoader.Entry<?>>> operation, ResourceFactory resourceFactory, @Coerce ClientRegistriesDynamicRegistriesAccessor storage, boolean bl) {
-		Map<RegistryKey<? extends Registry<?>>, List<SerializableRegistries.SerializedRegistryEntry>> dynamicRegistries = storage.getDynamicRegistries();
+	@WrapOperation(method = "createRegistryManager", at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;SYNCHRONIZED_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
+	private List<RegistryDataLoader.RegistryData<?>> skipEmptyRegistries(Operation<List<RegistryDataLoader.RegistryData<?>>> operation, ResourceProvider resourceFactory, @Coerce ClientRegistriesDynamicRegistriesAccessor storage, boolean bl) {
+		Map<ResourceKey<? extends Registry<?>>, List<RegistrySynchronization.PackedRegistryEntry>> dynamicRegistries = storage.getDynamicRegistries();
 
-		List<RegistryLoader.Entry<?>> result = new ArrayList<>(operation.call());
+		List<RegistryDataLoader.RegistryData<?>> result = new ArrayList<>(operation.call());
 		result.removeIf(entry -> DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(entry.key()) && !dynamicRegistries.containsKey(entry.key()));
 		return result;
 	}

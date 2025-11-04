@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerPlayer;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -55,7 +55,7 @@ public final class EntityTrackingEvents {
 		 * @param trackedEntity the entity that will be tracked
 		 * @param player the player that will track the entity
 		 */
-		void onStartTracking(Entity trackedEntity, ServerPlayerEntity player);
+		void onStartTracking(Entity trackedEntity, ServerPlayer player);
 	}
 
 	@FunctionalInterface
@@ -66,7 +66,7 @@ public final class EntityTrackingEvents {
 		 * @param trackedEntity the entity that is about to stop being tracked
 		 * @param player the player that is about to stop tracking the entity
 		 */
-		void onStopTracking(Entity trackedEntity, ServerPlayerEntity player);
+		void onStopTracking(Entity trackedEntity, ServerPlayer player);
 	}
 
 	private EntityTrackingEvents() {

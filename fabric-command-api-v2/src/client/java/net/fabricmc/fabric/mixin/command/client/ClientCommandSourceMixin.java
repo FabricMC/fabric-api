@@ -20,44 +20,44 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientCommandSource;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientSuggestionProvider;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
-@Mixin(ClientCommandSource.class)
+@Mixin(ClientSuggestionProvider.class)
 abstract class ClientCommandSourceMixin implements FabricClientCommandSource {
 	@Shadow
 	@Final
-	private MinecraftClient client;
+	private Minecraft minecraft;
 
 	@Override
-	public void sendFeedback(Text message) {
-		this.client.inGameHud.getChatHud().addMessage(message);
-		this.client.getNarratorManager().narrate(message);
+	public void sendFeedback(Component message) {
+		this.minecraft.gui.getChat().addMessage(message);
+		this.minecraft.getNarrator().saySystemChatQueued(message);
 	}
 
 	@Override
-	public void sendError(Text message) {
-		sendFeedback(Text.empty().append(message).formatted(Formatting.RED));
+	public void sendError(Component message) {
+		sendFeedback(Component.empty().append(message).withStyle(ChatFormatting.RED));
 	}
 
 	@Override
-	public MinecraftClient getClient() {
-		return client;
+	public Minecraft getClient() {
+		return minecraft;
 	}
 
 	@Override
-	public ClientPlayerEntity getPlayer() {
-		return client.player;
+	public LocalPlayer getPlayer() {
+		return minecraft.player;
 	}
 
 	@Override
-	public ClientWorld getWorld() {
-		return client.world;
+	public ClientLevel getWorld() {
+		return minecraft.level;
 	}
 }

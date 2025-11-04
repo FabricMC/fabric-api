@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.renderer.v1.sprite;
 
-import net.minecraft.client.texture.SpriteLoader;
+import net.minecraft.client.renderer.texture.SpriteLoader;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 
 /**
- * Note: This interface is automatically implemented on {@link SpriteLoader.StitchResult} via Mixin and interface injection.
+ * Note: This interface is automatically implemented on {@link SpriteLoader.Preparations} via Mixin and interface injection.
  */
 public interface FabricStitchResult {
 	/**

@@ -43,20 +43,20 @@ public final class TransformCopyingModel<S, D> extends Model<Pair<S, D>> {
 	}
 
 	private TransformCopyingModel(Model<? super S> source, Model<? super D> delegate, boolean setDelegateAngles) {
-		super(delegate.getRootPart(), delegate::getLayer);
+		super(delegate.root(), delegate::renderType);
 		this.source = source;
 		this.delegate = delegate;
 		this.setDelegateAngles = setDelegateAngles;
 	}
 
 	@Override
-	public void setAngles(Pair<S, D> state) {
-		resetTransforms();
-		source.setAngles(state.getFirst());
+	public void setupAnim(Pair<S, D> state) {
+		resetPose();
+		source.setupAnim(state.getFirst());
 		delegate.copyTransforms(source);
 
 		if (setDelegateAngles) {
-			delegate.setAngles(state.getSecond());
+			delegate.setupAnim(state.getSecond());
 		}
 	}
 }

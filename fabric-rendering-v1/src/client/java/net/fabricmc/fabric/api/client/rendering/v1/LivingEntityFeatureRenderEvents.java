@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Events related to living entity {@link FeatureRenderer}s.
+ * Events related to living entity {@link RenderLayer}s.
  * To register a renderer, see {@link LivingEntityFeatureRendererRegistrationCallback} instead.
  */
 public final class LivingEntityFeatureRenderEvents {
@@ -45,7 +45,7 @@ public final class LivingEntityFeatureRenderEvents {
 		/**
 		 * @return false to prevent rendering the cape
 		 */
-		boolean allowCapeRender(PlayerEntityRenderState state);
+		boolean allowCapeRender(AvatarRenderState state);
 	}
 
 	private LivingEntityFeatureRenderEvents() {

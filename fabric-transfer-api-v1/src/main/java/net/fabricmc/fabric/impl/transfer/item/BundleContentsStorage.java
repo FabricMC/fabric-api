@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.apache.commons.lang3.math.Fraction;
 
-import net.minecraft.component.ComponentChanges;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.BundleContentsComponent;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.BundleContents;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -49,7 +49,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		this.originalItem = ctx.getItemVariant().getItem();
 	}
 
-	private boolean updateStack(ComponentChanges changes, TransactionContext transaction) {
+	private boolean updateStack(DataComponentPatch changes, TransactionContext transaction) {
 		ItemVariant newVariant = ctx.getItemVariant().withComponentChanges(changes);
 		return ctx.exchange(newVariant, 1, transaction) > 0;
 	}
@@ -64,16 +64,16 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 
 		ItemStack stack = resource.toStack((int) maxAmount);
 
-		if (!BundleContentsComponent.canBeBundled(stack)) return 0;
+		if (!BundleContents.canItemBeInBundle(stack)) return 0;
 
-		var builder = new BundleContentsComponent.Builder(bundleContents());
+		var builder = new BundleContents.Mutable(bundleContents());
 
-		int inserted = builder.add(stack);
+		int inserted = builder.tryInsert(stack);
 
 		if (inserted == 0) return 0;
 
-		ComponentChanges changes = ComponentChanges.builder()
-				.add(DataComponentTypes.BUNDLE_CONTENTS, builder.build())
+		DataComponentPatch changes = DataComponentPatch.builder()
+				.set(DataComponents.BUNDLE_CONTENTS, builder.toImmutable())
 				.build();
 
 		if (!updateStack(changes, transaction)) return 0;
@@ -122,8 +122,8 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		}
 	}
 
-	BundleContentsComponent bundleContents() {
-		return ctx.getItemVariant().getComponentMap().getOrDefault(DataComponentTypes.BUNDLE_CONTENTS, BundleContentsComponent.DEFAULT);
+	BundleContents bundleContents() {
+		return ctx.getItemVariant().getComponentMap().getOrDefault(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY);
 	}
 
 	private class BundleSlotWrapper implements StorageView<ItemVariant> {
@@ -136,7 +136,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		private ItemStack getStack() {
 			if (bundleContents().size() <= index) return ItemStack.EMPTY;
 
-			return ((List<ItemStack>) bundleContents().iterate()).get(index);
+			return ((List<ItemStack>) bundleContents().items()).get(index);
 		}
 
 		@Override
@@ -147,15 +147,15 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 			if (bundleContents().size() <= index) return 0;
 			if (!resource.matches(getStack())) return 0;
 
-			var stacksCopy = new ArrayList<>((Collection<ItemStack>) bundleContents().iterateCopy());
+			var stacksCopy = new ArrayList<>((Collection<ItemStack>) bundleContents().itemsCopy());
 
 			int extracted = (int) Math.min(stacksCopy.get(index).getCount(), maxAmount);
 
-			stacksCopy.get(index).decrement(extracted);
+			stacksCopy.get(index).shrink(extracted);
 			if (stacksCopy.get(index).isEmpty()) stacksCopy.remove(index);
 
-			ComponentChanges changes = ComponentChanges.builder()
-					.add(DataComponentTypes.BUNDLE_CONTENTS, new BundleContentsComponent(stacksCopy))
+			DataComponentPatch changes = DataComponentPatch.builder()
+					.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(stacksCopy))
 					.build();
 
 			if (!updateStack(changes, transaction)) return 0;
@@ -180,7 +180,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 
 		@Override
 		public long getCapacity() {
-			Fraction remainingSpace = Fraction.ONE.subtract(bundleContents().getOccupancy());
+			Fraction remainingSpace = Fraction.ONE.subtract(bundleContents().weight());
 			int extraAllowed = Math.max(
 					remainingSpace.divideBy(BundleContentsComponentAccessor.getOccupancy(getStack())).intValue(),
 					0

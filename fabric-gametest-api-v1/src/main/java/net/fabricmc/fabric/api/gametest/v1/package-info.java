@@ -39,9 +39,9 @@
  * in the test mod's data pack and reference that structure. It will then be loaded before the test.
  *
  * <p>Test methods are instance methods (i.e. not static) and take exactly one argument - {@link
- * net.minecraft.test.TestContext}. This provides access to the world and additionally provides
+ * net.minecraft.gametest.framework.GameTestHelper}. This provides access to the world and additionally provides
  * dozens of assertions, utility methods, and more.
- * Test methods should end with {@link net.minecraft.test.TestContext#complete()}.
+ * Test methods should end with {@link net.minecraft.gametest.framework.GameTestHelper#complete()}.
  *
  * <p>Example of a test method:
  * <pre>{@code

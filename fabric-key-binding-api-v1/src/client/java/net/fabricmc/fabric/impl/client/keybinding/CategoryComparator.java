@@ -18,14 +18,14 @@ package net.fabricmc.fabric.impl.client.keybinding;
 
 import java.util.Comparator;
 
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.resources.Identifier;
 
-public class CategoryComparator implements Comparator<KeyBinding.Category> {
+public class CategoryComparator implements Comparator<KeyMapping.Category> {
 	public static final CategoryComparator INSTANCE = new CategoryComparator();
 
 	@Override
-	public int compare(KeyBinding.Category o1, KeyBinding.Category o2) {
+	public int compare(KeyMapping.Category o1, KeyMapping.Category o2) {
 		boolean o1Vanilla = o1.id().getNamespace().equals(Identifier.DEFAULT_NAMESPACE);
 		boolean o2Vanilla = o2.id().getNamespace().equals(Identifier.DEFAULT_NAMESPACE);
 

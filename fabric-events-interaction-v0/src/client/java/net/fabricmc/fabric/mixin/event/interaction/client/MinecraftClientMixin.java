@@ -27,65 +27,74 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.Options;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.event.client.player.ClientPreAttackCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
-@Mixin(MinecraftClient.class)
+@Mixin(Minecraft.class)
 public abstract class MinecraftClientMixin {
 	@Unique
 	private boolean attackCancelled;
 
 	@Shadow
-	private ClientPlayerEntity player;
+	private LocalPlayer player;
 
-	@Shadow
-	public abstract ClientPlayNetworkHandler getNetworkHandler();
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
+	public abstract ClientPacketListener getNetworkHandler();
 
 	@Shadow
 	@Final
-	public GameOptions options;
+	public Options options;
 
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	@Nullable
-	public ClientPlayerInteractionManager interactionManager;
+	public MultiPlayerGameMode interactionManager;
 
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	@Nullable
-	public ClientWorld world;
+	public ClientLevel world;
 
 	@Inject(
 			at = @At(
 					value = "INVOKE",
-					target = "net/minecraft/client/network/ClientPlayerInteractionManager.interactEntityAtLocation(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/entity/Entity;Lnet/minecraft/util/hit/EntityHitResult;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResult;"
+					target = "Lnet/minecraft/client/Minecraft;net/minecraft/client/network/ClientPlayerInteractionManager.interactEntityAtLocation(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/EntityHitResult;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"
 			),
-			method = "doItemUse",
+			method = "startUseItem",
 			cancellable = true
 	)
-	private void injectUseEntityCallback(CallbackInfo ci, @Local Hand hand, @Local EntityHitResult hitResult, @Local Entity entity) {
-		ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), hand, entity, hitResult);
+	private void injectUseEntityCallback(CallbackInfo ci, @Local InteractionHand hand, @Local EntityHitResult hitResult, @Local Entity entity) {
+		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, player.level(), hand, entity, hitResult);
 
-		if (result != ActionResult.PASS) {
-			if (result.isAccepted()) {
-				Vec3d hitVec = hitResult.getPos().subtract(entity.getX(), entity.getY(), entity.getZ());
-				getNetworkHandler().sendPacket(PlayerInteractEntityC2SPacket.interactAt(entity, player.isSneaking(), hand, hitVec));
+		if (result != InteractionResult.PASS) {
+			if (result.consumesAction()) {
+				Vec3 hitVec = hitResult.getLocation().subtract(entity.getX(), entity.getY(), entity.getZ());
+				getNetworkHandler().send(ServerboundInteractPacket.createInteractionPacket(entity, player.isShiftKeyDown(), hand, hitVec));
 			}
 
-			if (result instanceof ActionResult.Success success) {
-				if (success.swingSource() == ActionResult.SwingSource.CLIENT) {
-					player.swingHand(hand);
+			if (result instanceof InteractionResult.Success success) {
+				if (success.swingSource() == InteractionResult.SwingSource.CLIENT) {
+					player.swing(hand);
 				}
 			}
 
@@ -94,37 +103,37 @@ public abstract class MinecraftClientMixin {
 	}
 
 	@Inject(
-			method = "handleInputEvents",
+			method = "handleKeybinds",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z",
+					target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z",
 					ordinal = 0
 			)
 	)
 	private void injectHandleInputEventsForPreAttackCallback(CallbackInfo ci) {
-		int attackKeyPressCount = ((KeyBindingAccessor) options.attackKey).fabric_getTimesPressed();
+		int attackKeyPressCount = ((KeyBindingAccessor) options.keyAttack).fabric_getTimesPressed();
 
-		if (options.attackKey.isPressed() || attackKeyPressCount != 0) {
+		if (options.keyAttack.isDown() || attackKeyPressCount != 0) {
 			attackCancelled = ClientPreAttackCallback.EVENT.invoker().onClientPlayerPreAttack(
-					(MinecraftClient) (Object) this, player, attackKeyPressCount
+					(Minecraft) (Object) this, player, attackKeyPressCount
 			);
 		} else {
 			attackCancelled = false;
 		}
 	}
 
-	@Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
 	private void injectDoAttackForCancelling(CallbackInfoReturnable<Boolean> cir) {
 		if (attackCancelled) {
 			cir.setReturnValue(false);
 		}
 	}
 
-	@Inject(method = "handleBlockBreaking", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "continueAttack", at = @At("HEAD"), cancellable = true)
 	private void injectHandleBlockBreakingForCancelling(boolean breaking, CallbackInfo ci) {
 		if (attackCancelled) {
 			if (interactionManager != null) {
-				interactionManager.cancelBlockBreaking();
+				interactionManager.stopDestroyBlock();
 			}
 
 			ci.cancel();

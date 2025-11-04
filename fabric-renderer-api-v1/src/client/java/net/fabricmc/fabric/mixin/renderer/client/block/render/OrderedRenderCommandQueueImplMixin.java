@@ -20,25 +20,25 @@ import java.util.function.Function;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
-import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 
-@Mixin(OrderedRenderCommandQueueImpl.class)
-abstract class OrderedRenderCommandQueueImplMixin implements OrderedRenderCommandQueue {
+@Mixin(SubmitNodeStorage.class)
+abstract class OrderedRenderCommandQueueImplMixin implements SubmitNodeCollector {
 	@Override
-	public void submitBlock(MatrixStack matrices, BlockState state, int light, int overlay, int outlineColor, BlockRenderView blockView, BlockPos pos) {
-		getBatchingQueue(0).submitBlock(matrices, state, light, overlay, outlineColor, blockView, pos);
+	public void submitBlock(PoseStack matrices, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter blockView, BlockPos pos) {
+		order(0).submitBlock(matrices, state, light, overlay, outlineColor, blockView, pos);
 	}
 
 	@Override
-	public void submitBlockStateModel(MatrixStack matrices, Function<BlockRenderLayer, RenderLayer> renderLayerFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockRenderView blockView, BlockPos pos, BlockState state) {
-		getBatchingQueue(0).submitBlockStateModel(matrices, renderLayerFunction, model, r, g, b, light, overlay, outlineColor, blockView, pos, state);
+	public void submitBlockStateModel(PoseStack matrices, Function<ChunkSectionLayer, RenderType> renderLayerFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
+		order(0).submitBlockStateModel(matrices, renderLayerFunction, model, r, g, b, light, overlay, outlineColor, blockView, pos, state);
 	}
 }

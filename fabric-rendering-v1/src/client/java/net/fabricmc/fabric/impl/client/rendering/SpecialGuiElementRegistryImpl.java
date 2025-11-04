@@ -25,29 +25,29 @@ import java.util.Map;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.render.BannerResultGuiElementRenderer;
-import net.minecraft.client.gui.render.BookModelGuiElementRenderer;
-import net.minecraft.client.gui.render.EntityGuiElementRenderer;
-import net.minecraft.client.gui.render.PlayerSkinGuiElementRenderer;
-import net.minecraft.client.gui.render.ProfilerChartGuiElementRenderer;
-import net.minecraft.client.gui.render.SignGuiElementRenderer;
-import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
-import net.minecraft.client.gui.render.state.special.BannerResultGuiElementRenderState;
-import net.minecraft.client.gui.render.state.special.BookModelGuiElementRenderState;
-import net.minecraft.client.gui.render.state.special.EntityGuiElementRenderState;
-import net.minecraft.client.gui.render.state.special.PlayerSkinGuiElementRenderState;
-import net.minecraft.client.gui.render.state.special.ProfilerChartGuiElementRenderState;
-import net.minecraft.client.gui.render.state.special.SignGuiElementRenderState;
-import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.render.pip.GuiBannerResultRenderer;
+import net.minecraft.client.gui.render.pip.GuiBookModelRenderer;
+import net.minecraft.client.gui.render.pip.GuiEntityRenderer;
+import net.minecraft.client.gui.render.pip.GuiSkinRenderer;
+import net.minecraft.client.gui.render.pip.GuiProfilerChartRenderer;
+import net.minecraft.client.gui.render.pip.GuiSignRenderer;
+import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
+import net.minecraft.client.gui.render.state.pip.GuiBannerResultRenderState;
+import net.minecraft.client.gui.render.state.pip.GuiBookModelRenderState;
+import net.minecraft.client.gui.render.state.pip.GuiEntityRenderState;
+import net.minecraft.client.gui.render.state.pip.GuiSkinRenderState;
+import net.minecraft.client.gui.render.state.pip.GuiProfilerChartRenderState;
+import net.minecraft.client.gui.render.state.pip.GuiSignRenderState;
+import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
 
 public final class SpecialGuiElementRegistryImpl {
 	private static final List<SpecialGuiElementRegistry.Factory> FACTORIES = new ArrayList<>();
-	private static final Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRegistry.Factory> REGISTERED_FACTORIES = new HashMap<>();
+	private static final Map<Class<? extends PictureInPictureRenderState>, SpecialGuiElementRegistry.Factory> REGISTERED_FACTORIES = new HashMap<>();
 	private static boolean frozen;
 
 	private SpecialGuiElementRegistryImpl() {
@@ -62,7 +62,7 @@ public final class SpecialGuiElementRegistryImpl {
 	}
 
 	// Called after the vanilla special renderers are created.
-	public static void onReady(MinecraftClient client, VertexConsumerProvider.Immediate immediate, OrderedRenderCommandQueue orderedRenderCommandQueue, Map<Class<? extends SpecialGuiElementRenderState>, SpecialGuiElementRenderer<?>> specialElementRenderers) {
+	public static void onReady(Minecraft client, MultiBufferSource.BufferSource immediate, SubmitNodeCollector orderedRenderCommandQueue, Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRenderer<?>> specialElementRenderers) {
 		frozen = true;
 
 		registerVanillaFactories();
@@ -70,33 +70,33 @@ public final class SpecialGuiElementRegistryImpl {
 		ContextImpl context = new ContextImpl(client, immediate, orderedRenderCommandQueue);
 
 		for (SpecialGuiElementRegistry.Factory factory : FACTORIES) {
-			SpecialGuiElementRenderer<?> elementRenderer = factory.createSpecialRenderer(context);
-			specialElementRenderers.put(elementRenderer.getElementClass(), elementRenderer);
-			REGISTERED_FACTORIES.put(elementRenderer.getElementClass(), factory);
+			PictureInPictureRenderer<?> elementRenderer = factory.createSpecialRenderer(context);
+			specialElementRenderers.put(elementRenderer.getRenderStateClass(), elementRenderer);
+			REGISTERED_FACTORIES.put(elementRenderer.getRenderStateClass(), factory);
 		}
 	}
 
 	// null for render states registered outside FAPI
 	@Nullable
-	public static <S extends SpecialGuiElementRenderState> SpecialGuiElementRenderer<S> createNewRenderer(S state, MinecraftClient client, VertexConsumerProvider.Immediate immediate, OrderedRenderCommandQueue orderedRenderCommandQueue) {
+	public static <S extends PictureInPictureRenderState> PictureInPictureRenderer<S> createNewRenderer(S state, Minecraft client, MultiBufferSource.BufferSource immediate, SubmitNodeCollector orderedRenderCommandQueue) {
 		SpecialGuiElementRegistry.Factory factory = REGISTERED_FACTORIES.get(state.getClass());
-		return factory == null ? null : (SpecialGuiElementRenderer<S>) factory.createSpecialRenderer(new ContextImpl(client, immediate, orderedRenderCommandQueue));
+		return factory == null ? null : (PictureInPictureRenderer<S>) factory.createSpecialRenderer(new ContextImpl(client, immediate, orderedRenderCommandQueue));
 	}
 
 	private static void registerVanillaFactories() {
 		// Vanilla creates its special element renderers in the GameRenderer constructor
-		REGISTERED_FACTORIES.put(EntityGuiElementRenderState.class, context -> new EntityGuiElementRenderer(context.vertexConsumers(), context.client().getEntityRenderDispatcher()));
-		REGISTERED_FACTORIES.put(PlayerSkinGuiElementRenderState.class, context -> new PlayerSkinGuiElementRenderer(context.vertexConsumers()));
-		REGISTERED_FACTORIES.put(BookModelGuiElementRenderState.class, context -> new BookModelGuiElementRenderer(context.vertexConsumers()));
-		REGISTERED_FACTORIES.put(BannerResultGuiElementRenderState.class, context -> new BannerResultGuiElementRenderer(context.vertexConsumers(), context.client().getAtlasManager()));
-		REGISTERED_FACTORIES.put(SignGuiElementRenderState.class, context -> new SignGuiElementRenderer(context.vertexConsumers(), context.client().getAtlasManager()));
-		REGISTERED_FACTORIES.put(ProfilerChartGuiElementRenderState.class, context -> new ProfilerChartGuiElementRenderer(context.vertexConsumers()));
+		REGISTERED_FACTORIES.put(GuiEntityRenderState.class, context -> new GuiEntityRenderer(context.vertexConsumers(), context.client().getEntityRenderDispatcher()));
+		REGISTERED_FACTORIES.put(GuiSkinRenderState.class, context -> new GuiSkinRenderer(context.vertexConsumers()));
+		REGISTERED_FACTORIES.put(GuiBookModelRenderState.class, context -> new GuiBookModelRenderer(context.vertexConsumers()));
+		REGISTERED_FACTORIES.put(GuiBannerResultRenderState.class, context -> new GuiBannerResultRenderer(context.vertexConsumers(), context.client().getAtlasManager()));
+		REGISTERED_FACTORIES.put(GuiSignRenderState.class, context -> new GuiSignRenderer(context.vertexConsumers(), context.client().getAtlasManager()));
+		REGISTERED_FACTORIES.put(GuiProfilerChartRenderState.class, context -> new GuiProfilerChartRenderer(context.vertexConsumers()));
 	}
 
 	@VisibleForTesting
-	public static Collection<Class<? extends SpecialGuiElementRenderState>> getRegisteredFactoryStateClasses() {
+	public static Collection<Class<? extends PictureInPictureRenderState>> getRegisteredFactoryStateClasses() {
 		return REGISTERED_FACTORIES.keySet();
 	}
 
-	record ContextImpl(MinecraftClient client, VertexConsumerProvider.Immediate vertexConsumers, OrderedRenderCommandQueue orderedRenderCommandQueue) implements SpecialGuiElementRegistry.Context { }
+	record ContextImpl(Minecraft client, MultiBufferSource.BufferSource vertexConsumers, SubmitNodeCollector orderedRenderCommandQueue) implements SpecialGuiElementRegistry.Context { }
 }

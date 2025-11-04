@@ -24,12 +24,12 @@ import java.util.function.Supplier;
 import com.mojang.serialization.Codec;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.StringRepresentable;
 
 /**
  * Represents a boolean value which can be true, false or refer to a default value.
  */
-public enum TriState implements StringIdentifiable {
+public enum TriState implements StringRepresentable {
 	/**
 	 * Represents the boolean value of {@code false}.
 	 */
@@ -43,7 +43,7 @@ public enum TriState implements StringIdentifiable {
 	 */
 	TRUE("true");
 
-	public static final Codec<TriState> CODEC = StringIdentifiable.createCodec(TriState::values);
+	public static final Codec<TriState> CODEC = StringRepresentable.fromEnum(TriState::values);
 
 	private final String name;
 
@@ -165,7 +165,7 @@ public enum TriState implements StringIdentifiable {
 	 * @return lowercase name of the value.
 	 */
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return this.name;
 	}
 

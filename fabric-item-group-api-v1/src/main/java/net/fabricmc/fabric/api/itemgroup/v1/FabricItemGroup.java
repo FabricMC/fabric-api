@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.itemgroup.v1;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 
 import net.fabricmc.fabric.impl.itemgroup.FabricItemGroupBuilderImpl;
 
@@ -30,12 +30,12 @@ public final class FabricItemGroup {
 	}
 
 	/**
-	 * Creates a new builder for {@link ItemGroup}. Item groups are used to group items in the creative
+	 * Creates a new builder for {@link CreativeModeTab}. Item groups are used to group items in the creative
 	 * inventory.
 	 *
-	 * <p>You must register the newly created {@link ItemGroup} to the {@link Registries#ITEM_GROUP} registry.
+	 * <p>You must register the newly created {@link CreativeModeTab} to the {@link BuiltInRegistries#ITEM_GROUP} registry.
 	 *
-	 * <p>You must also set a display name by calling {@link ItemGroup.Builder#displayName(Text)}
+	 * <p>You must also set a display name by calling {@link CreativeModeTab.Builder#displayName(Component)}
 	 *
 	 * <p>Example:
 	 *
@@ -55,9 +55,9 @@ public final class FabricItemGroup {
 	 * }
 	 * }</pre>
 	 *
-	 * @return a new {@link ItemGroup.Builder} instance
+	 * @return a new {@link CreativeModeTab.Builder} instance
 	 */
-	public static ItemGroup.Builder builder() {
+	public static CreativeModeTab.Builder builder() {
 		return new FabricItemGroupBuilderImpl();
 	}
 }

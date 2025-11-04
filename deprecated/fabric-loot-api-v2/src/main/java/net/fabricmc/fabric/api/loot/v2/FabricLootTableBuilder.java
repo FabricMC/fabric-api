@@ -21,9 +21,9 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.function.LootFunction;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 
 /**
  * Convenience extensions to {@link LootTable.Builder}
@@ -53,10 +53,10 @@ public interface FabricLootTableBuilder {
 	 *
 	 * @param function the applied function
 	 * @return this builder
-	 * @deprecated use {@link net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder#apply(LootFunction)} instead.
+	 * @deprecated use {@link net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder#apply(LootItemFunction)} instead.
 	 */
 	@Deprecated
-	default LootTable.Builder apply(LootFunction function) {
+	default LootTable.Builder apply(LootItemFunction function) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -80,7 +80,7 @@ public interface FabricLootTableBuilder {
 	 * @deprecated use {@link net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder#apply(Collection)} instead.
 	 */
 	@Deprecated
-	default LootTable.Builder apply(Collection<? extends LootFunction> functions) {
+	default LootTable.Builder apply(Collection<? extends LootItemFunction> functions) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 

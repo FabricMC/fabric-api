@@ -32,7 +32,7 @@ public class FabricApiAutoTestServer implements DedicatedServerModInitializer {
 
 				if (ticks == 50) {
 					MixinEnvironment.getCurrentEnvironment().audit();
-					server.stop(false);
+					server.halt(false);
 				}
 			});
 		}

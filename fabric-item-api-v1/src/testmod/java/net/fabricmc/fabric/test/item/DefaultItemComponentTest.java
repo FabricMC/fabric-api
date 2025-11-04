@@ -20,13 +20,13 @@ import java.util.List;
 
 import it.unimi.dsi.fastutil.ints.IntList;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.FireworkExplosionComponent;
-import net.minecraft.component.type.FireworksComponent;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.Fireworks;
+import net.minecraft.world.item.Items;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.Event;
@@ -35,42 +35,42 @@ import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 public class DefaultItemComponentTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		Identifier latePhase = Identifier.of("fabric-item-api-v1-testmod", "late");
+		Identifier latePhase = Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "late");
 		DefaultItemComponentEvents.MODIFY.addPhaseOrdering(Event.DEFAULT_PHASE, latePhase);
 
 		DefaultItemComponentEvents.MODIFY.register(context -> {
 			context.modify(Items.GOLD_INGOT, builder -> {
-				builder.add(DataComponentTypes.ITEM_NAME, Text.literal("Fool's Gold").formatted(Formatting.GOLD));
+				builder.set(DataComponents.ITEM_NAME, Component.literal("Fool's Gold").withStyle(ChatFormatting.GOLD));
 			});
 			context.modify(Items.GOLD_NUGGET, builder -> {
-				builder.add(DataComponentTypes.FIREWORKS, new FireworksComponent(1, List.of(
-					new FireworkExplosionComponent(FireworkExplosionComponent.Type.STAR, IntList.of(0x32a852), IntList.of(0x32a852), true, true)
+				builder.set(DataComponents.FIREWORKS, new Fireworks(1, List.of(
+					new FireworkExplosion(FireworkExplosion.Shape.STAR, IntList.of(0x32a852), IntList.of(0x32a852), true, true)
 				)));
 			});
 			context.modify(Items.BEEF, builder -> {
 				// Remove the food component from beef
-				builder.add(DataComponentTypes.FOOD, null);
+				builder.set(DataComponents.FOOD, null);
 			});
 			// add a word to the start of diamond pickaxe name
 			context.modify(Items.DIAMOND_PICKAXE, builder -> {
-				Text baseName = builder.getOrCreate(
-						DataComponentTypes.ITEM_NAME,
+				Component baseName = builder.getOrCreate(
+						DataComponents.ITEM_NAME,
 						Items.DIAMOND_PICKAXE::getName
 				);
-				builder.add(DataComponentTypes.ITEM_NAME, prependModifiedLiteral(baseName));
+				builder.set(DataComponents.ITEM_NAME, prependModifiedLiteral(baseName));
 			});
 		});
 
 		// Make all fireworks glint
 		DefaultItemComponentEvents.MODIFY.register(latePhase, context -> {
-			context.modify(item -> item.getComponents().contains(DataComponentTypes.FIREWORKS), (builder, item) -> {
-				builder.add(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+			context.modify(item -> item.components().has(DataComponents.FIREWORKS), (builder, item) -> {
+				builder.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
 			});
 		});
 	}
 
-	public static Text prependModifiedLiteral(Text name) {
-		return Text.literal("Modified ")
+	public static Component prependModifiedLiteral(Component name) {
+		return Component.literal("Modified ")
 				.append(name);
 	}
 }

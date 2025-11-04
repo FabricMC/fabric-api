@@ -32,14 +32,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.network.Connection;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ConnectedClientData;
-import net.minecraft.server.network.ServerCommonNetworkHandler;
-import net.minecraft.server.network.ServerConfigurationNetworkHandler;
-import net.minecraft.server.network.ServerPlayerConfigurationTask;
+import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.network.ServerCommonPacketListenerImpl;
+import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
+import net.minecraft.server.network.ConfigurationTask;
 
 import net.fabricmc.fabric.api.networking.v1.FabricServerConfigurationNetworkHandler;
 import net.fabricmc.fabric.impl.networking.FabricRegistryByteBuf;
@@ -47,23 +47,32 @@ import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
-@Mixin(value = ServerConfigurationNetworkHandler.class, priority = 900)
-public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommonNetworkHandler implements NetworkHandlerExtensions, FabricServerConfigurationNetworkHandler {
+@Mixin(value = ServerConfigurationPacketListenerImpl.class, priority = 900)
+public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommonPacketListenerImpl implements NetworkHandlerExtensions, FabricServerConfigurationNetworkHandler {
 	@Shadow
 	@Nullable
-	private ServerPlayerConfigurationTask currentTask;
+	private ConfigurationTask currentTask;
 
-	@Shadow
-	protected abstract void onTaskFinished(ServerPlayerConfigurationTask.Key key);
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
+	protected abstract void onTaskFinished(ConfigurationTask.Type key);
 
 	@Shadow
 	@Final
-	private Queue<ServerPlayerConfigurationTask> tasks;
+	private Queue<ConfigurationTask> configurationTasks;
 
-	@Shadow
-	public abstract boolean isConnectionOpen();
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
+	public abstract boolean isAcceptingMessages();
 
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	public abstract void sendConfigurations();
 
 	@Unique
@@ -75,23 +84,23 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	@Unique
 	private boolean earlyTaskExecution;
 
-	public ServerConfigurationNetworkHandlerMixin(MinecraftServer server, ClientConnection connection, ConnectedClientData arg) {
+	public ServerConfigurationNetworkHandlerMixin(MinecraftServer server, Connection connection, CommonListenerCookie arg) {
 		super(server, connection, arg);
 	}
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddon(CallbackInfo ci) {
-		this.addon = new ServerConfigurationNetworkAddon((ServerConfigurationNetworkHandler) (Object) this, this.server);
+		this.addon = new ServerConfigurationNetworkAddon((ServerConfigurationPacketListenerImpl) (Object) this, this.server);
 		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
 		this.addon.lateInit();
 	}
 
-	@Inject(method = "sendConfigurations", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "startConfiguration", at = @At("HEAD"), cancellable = true)
 	private void onClientReady(CallbackInfo ci) {
 		// Send the initial channel registration packet
 		if (this.addon.startConfiguration()) {
 			if (currentTask != null) {
-				throw new IllegalStateException("A task is already running: " + currentTask.getKey().id());
+				throw new IllegalStateException("A task is already running: " + currentTask.type().id());
 			}
 
 			ci.cancel();
@@ -116,8 +125,8 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 		}
 
 		// All early tasks should have been completed
-		if (currentTask != null || !tasks.isEmpty()) {
-			throw new IllegalStateException("All early tasks should have been completed, current: " + currentTask + ", queued: " + tasks.size());
+		if (currentTask != null || !configurationTasks.isEmpty()) {
+			throw new IllegalStateException("All early tasks should have been completed, current: " + currentTask + ", queued: " + configurationTasks.size());
 		}
 
 		// Run the vanilla tasks.
@@ -131,18 +140,18 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 		}
 
 		if (this.currentTask != null) {
-			throw new IllegalStateException("Task " + this.currentTask.getKey().id() + " has not finished yet");
+			throw new IllegalStateException("Task " + this.currentTask.type().id() + " has not finished yet");
 		}
 
-		if (!this.isConnectionOpen()) {
+		if (!this.isAcceptingMessages()) {
 			return false;
 		}
 
-		final ServerPlayerConfigurationTask task = this.tasks.poll();
+		final ConfigurationTask task = this.configurationTasks.poll();
 
 		if (task != null) {
 			this.currentTask = task;
-			task.sendPacket(this::sendPacket);
+			task.start(this::send);
 			return true;
 		}
 
@@ -155,18 +164,18 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	}
 
 	@Override
-	public void addTask(ServerPlayerConfigurationTask task) {
-		tasks.add(task);
+	public void addTask(ConfigurationTask task) {
+		configurationTasks.add(task);
 	}
 
 	@Override
-	public void completeTask(ServerPlayerConfigurationTask.Key key) {
+	public void completeTask(ConfigurationTask.Type key) {
 		if (!earlyTaskExecution) {
 			onTaskFinished(key);
 			return;
 		}
 
-		final ServerPlayerConfigurationTask.Key currentKey = this.currentTask != null ? this.currentTask.getKey() : null;
+		final ConfigurationTask.Type currentKey = this.currentTask != null ? this.currentTask.type() : null;
 
 		if (!key.equals(currentKey)) {
 			throw new IllegalStateException("Unexpected request for task finish, current task: " + currentKey + ", requested: " + key);
@@ -176,8 +185,8 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 		sendConfigurations();
 	}
 
-	@WrapOperation(method = "onReady", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/RegistryByteBuf;makeFactory(Lnet/minecraft/registry/DynamicRegistryManager;)Ljava/util/function/Function;"))
-	private Function<ByteBuf, RegistryByteBuf> bindChannelInfo(DynamicRegistryManager registryManager, Operation<Function<ByteBuf, RegistryByteBuf>> original) {
+	@WrapOperation(method = "handleConfigurationFinished", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/RegistryFriendlyByteBuf;decorator(Lnet/minecraft/core/RegistryAccess;)Ljava/util/function/Function;"))
+	private Function<ByteBuf, RegistryFriendlyByteBuf> bindChannelInfo(RegistryAccess registryManager, Operation<Function<ByteBuf, RegistryFriendlyByteBuf>> original) {
 		return original.call(registryManager).andThen(registryByteBuf -> {
 			FabricRegistryByteBuf fabricRegistryByteBuf = (FabricRegistryByteBuf) registryByteBuf;
 			fabricRegistryByteBuf.fabric_setSendableConfigurationChannels(Set.copyOf(addon.getSendableChannels()));

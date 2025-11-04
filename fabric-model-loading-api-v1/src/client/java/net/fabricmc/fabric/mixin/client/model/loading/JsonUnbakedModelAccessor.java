@@ -20,9 +20,9 @@ import com.google.gson.Gson;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.render.model.json.JsonUnbakedModel;
+import net.minecraft.client.renderer.block.model.BlockModel;
 
-@Mixin(JsonUnbakedModel.class)
+@Mixin(BlockModel.class)
 public interface JsonUnbakedModelAccessor {
 	@Accessor("GSON")
 	static Gson fabric_getGson() {

@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -56,8 +56,8 @@ public class NetworkingCommonTest implements ModInitializer {
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> ServerConfigurationNetworking.send(handler, new CommonPayload("configuration")));
 
 		// Store the player uuid once received from the client
-		ServerPlayNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedPlay.add(context.player().getUuidAsString()));
-		ServerConfigurationNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedConfig.add(context.networkHandler().getDebugProfile().id().toString()));
+		ServerPlayNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedPlay.add(context.player().getStringUUID()));
+		ServerConfigurationNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedConfig.add(context.networkHandler().getOwner().id().toString()));
 
 		AtomicLong runOnTick = new AtomicLong(-1);
 		AtomicReference<String> uuid = new AtomicReference<>();
@@ -71,14 +71,14 @@ public class NetworkingCommonTest implements ModInitializer {
 
 			firstLoad = false;
 
-			if (entity instanceof ServerPlayerEntity player) {
-				uuid.set(player.getUuidAsString());
-				runOnTick.set(player.getEntityWorld().getServer().getWorld(World.OVERWORLD).getTime() + 50);
+			if (entity instanceof ServerPlayer player) {
+				uuid.set(player.getStringUUID());
+				runOnTick.set(player.level().getServer().getLevel(Level.OVERWORLD).getGameTime() + 50);
 			}
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
-			if (server.getWorld(World.OVERWORLD).getTime() != runOnTick.get()) {
+			if (server.getLevel(Level.OVERWORLD).getGameTime() != runOnTick.get()) {
 				return;
 			}
 
@@ -96,12 +96,12 @@ public class NetworkingCommonTest implements ModInitializer {
 
 	// A payload registered on both sides, for play and configuration
 	// This tests that the server can send a packet to the client, and then receive a response from the client
-	public record CommonPayload(String data) implements CustomPayload {
-		public static final CustomPayload.Id<CommonPayload> ID = new Id<>(NetworkingTestmods.id("common_payload"));
-		public static final PacketCodec<PacketByteBuf, CommonPayload> CODEC = PacketCodecs.STRING.xmap(CommonPayload::new, CommonPayload::data).cast();
+	public record CommonPayload(String data) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<CommonPayload> ID = new Type<>(NetworkingTestmods.id("common_payload"));
+		public static final StreamCodec<FriendlyByteBuf, CommonPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(CommonPayload::new, CommonPayload::data).cast();
 
 		@Override
-		public Id<? extends CustomPayload> getId() {
+		public Type<? extends CustomPacketPayload> type() {
 			return ID;
 		}
 	}

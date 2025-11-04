@@ -16,25 +16,25 @@
 
 package net.fabricmc.fabric.impl.networking.payload;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 
 public class PayloadHelper {
-	public static void write(PacketByteBuf byteBuf, PacketByteBuf data) {
+	public static void write(FriendlyByteBuf byteBuf, FriendlyByteBuf data) {
 		byteBuf.writeBytes(data.copy());
 	}
 
-	public static PacketByteBuf read(PacketByteBuf byteBuf, int maxSize) {
+	public static FriendlyByteBuf read(FriendlyByteBuf byteBuf, int maxSize) {
 		assertSize(byteBuf, maxSize);
 
-		PacketByteBuf newBuf = PacketByteBufs.create();
+		FriendlyByteBuf newBuf = PacketByteBufs.create();
 		newBuf.writeBytes(byteBuf.copy());
 		byteBuf.skipBytes(byteBuf.readableBytes());
 		return newBuf;
 	}
 
-	private static void assertSize(PacketByteBuf buf, int maxSize) {
+	private static void assertSize(FriendlyByteBuf buf, int maxSize) {
 		int size = buf.readableBytes();
 
 		if (size < 0 || size > maxSize) {

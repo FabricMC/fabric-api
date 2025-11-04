@@ -64,32 +64,32 @@
  *         <th>Reason</th>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.option.GameOptions#tutorialStep Tutorial step}</td>
- *         <td>{@link net.minecraft.client.tutorial.TutorialStep#NONE NONE}</td>
- *         <td>{@link net.minecraft.client.tutorial.TutorialStep#MOVEMENT MOVEMENT}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#tutorialStep Tutorial step}</td>
+ *         <td>{@link net.minecraft.client.tutorial.TutorialSteps#NONE NONE}</td>
+ *         <td>{@link net.minecraft.client.tutorial.TutorialSteps#MOVEMENT MOVEMENT}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.option.GameOptions#getCloudRenderMode() Cloud render mode}</td>
- *         <td>{@link net.minecraft.client.option.CloudRenderMode#OFF OFF}</td>
- *         <td>{@link net.minecraft.client.option.CloudRenderMode#FANCY FANCY}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#getCloudRenderMode() Cloud render mode}</td>
+ *         <td>{@link net.minecraft.client.CloudStatus#OFF OFF}</td>
+ *         <td>{@link net.minecraft.client.CloudStatus#FANCY FANCY}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.option.GameOptions#onboardAccessibility Onboard accessibility}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#onboardAccessibility Onboard accessibility}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Would cause the game test runner to have to click through the onboard accessibility prompt</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.option.GameOptions#getViewDistance() View distance}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#getViewDistance() View distance}</td>
  *         <td>{@code 5}</td>
  *         <td>{@code 10}</td>
  *         <td>Speeds up loading of chunks, especially for functions such as
  *         {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext#waitForChunksRender() TestClientWorldContext.waitForChunksRender()}</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.option.GameOptions#getSoundVolumeOption(net.minecraft.sound.SoundCategory) Music volume}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#getSoundVolumeOption(net.minecraft.sounds.SoundSource) Music volume}</td>
  *         <td>{@code 0.0}</td>
  *         <td>{@code 1.0}</td>
  *         <td>The game music is annoying while running gametests</td>
@@ -109,19 +109,19 @@
  *         <th>Reason</th>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.gui.screen.world.WorldCreator#setWorldType(net.minecraft.client.gui.screen.world.WorldCreator.WorldType) World type}</td>
- *         <td>{@link net.minecraft.world.gen.WorldPresets#FLAT FLAT}</td>
- *         <td>{@link net.minecraft.world.gen.WorldPresets#DEFAULT DEFAULT}</td>
+ *         <td>{@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setWorldType(net.minecraft.client.gui.screens.worldselection.WorldCreationUiState.WorldTypeEntry) World type}</td>
+ *         <td>{@link net.minecraft.world.level.levelgen.presets.WorldPresets#FLAT FLAT}</td>
+ *         <td>{@link net.minecraft.world.level.levelgen.presets.WorldPresets#DEFAULT DEFAULT}</td>
  *         <td>Creates cleaner test cases</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.gui.screen.world.WorldCreator#setSeed(String) Seed}</td>
+ *         <td>{@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setSeed(String) Seed}</td>
  *         <td>{@code 1}</td>
  *         <td>Random value</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.gui.screen.world.WorldCreator#setGenerateStructures(boolean) Generate structures}</td>
+ *         <td>{@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setGenerateStructures(boolean) Generate structures}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests and creates cleaner tests</td>

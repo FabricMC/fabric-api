@@ -19,228 +19,228 @@ package net.fabricmc.fabric.test.content.registry;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ComposterBlock;
-import net.minecraft.block.HopperBlock;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.block.entity.HopperBlockEntity;
-import net.minecraft.block.enums.BlockHalf;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.PotionContentsComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potions;
-import net.minecraft.test.TestContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.GameMode;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ComposterBlock;
+import net.minecraft.world.level.block.HopperBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import net.minecraft.world.level.block.entity.HopperBlockEntity;
+import net.minecraft.world.level.block.state.properties.Half;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.GameType;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class ContentRegistryGameTest {
 	@GameTest
-	public void testCompostingChanceRegistry(TestContext context) {
+	public void testCompostingChanceRegistry(GameTestHelper context) {
 		BlockPos pos = new BlockPos(0, 1, 0);
-		context.setBlockState(pos, Blocks.COMPOSTER);
+		context.setBlock(pos, Blocks.COMPOSTER);
 		ItemStack obsidian = new ItemStack(Items.OBSIDIAN, 64);
-		PlayerEntity player = context.createMockPlayer(GameMode.SURVIVAL);
-		player.setStackInHand(Hand.MAIN_HAND, obsidian);
+		Player player = context.makeMockPlayer(GameType.SURVIVAL);
+		player.setItemInHand(InteractionHand.MAIN_HAND, obsidian);
 		// If on level 0, composting always increases composter level
 		context.useBlock(pos, player);
-		context.expectBlockProperty(pos, ComposterBlock.LEVEL, 1);
-		context.assertEquals(obsidian.getCount(), 63, Text.literal("obsidian stack count"));
-		context.complete();
+		context.assertBlockProperty(pos, ComposterBlock.LEVEL, 1);
+		context.assertValueEqual(obsidian.getCount(), 63, Component.literal("obsidian stack count"));
+		context.succeed();
 	}
 
 	@GameTest
-	public void testFlattenableBlockRegistry(TestContext context) {
+	public void testFlattenableBlockRegistry(GameTestHelper context) {
 		BlockPos pos = new BlockPos(0, 1, 0);
-		context.setBlockState(pos, Blocks.RED_WOOL);
+		context.setBlock(pos, Blocks.RED_WOOL);
 		ItemStack shovel = new ItemStack(Items.NETHERITE_SHOVEL);
-		PlayerEntity player = context.createMockPlayer(GameMode.SURVIVAL);
-		player.setStackInHand(Hand.MAIN_HAND, shovel);
+		Player player = context.makeMockPlayer(GameType.SURVIVAL);
+		player.setItemInHand(InteractionHand.MAIN_HAND, shovel);
 		context.useBlock(pos, player);
-		context.expectBlock(Blocks.YELLOW_WOOL, pos);
-		context.assertEquals(shovel.getDamage(), 1, Text.literal("shovel damage"));
-		context.complete();
+		context.assertBlockPresent(Blocks.YELLOW_WOOL, pos);
+		context.assertValueEqual(shovel.getDamageValue(), 1, Component.literal("shovel damage"));
+		context.succeed();
 	}
 
-	private void smelt(TestContext context, ItemStack fuelStack, BiConsumer<AbstractFurnaceBlockEntity, HopperBlockEntity> callback) {
+	private void smelt(GameTestHelper context, ItemStack fuelStack, BiConsumer<AbstractFurnaceBlockEntity, HopperBlockEntity> callback) {
 		// Create a furnace to simulate smelting in
 		// A blast furnace will smelt twice as fast, so it is used here
 		var furnacePos = new BlockPos(0, 1, 0);
-		BlockState furnaceState = Blocks.BLAST_FURNACE.getDefaultState();
+		BlockState furnaceState = Blocks.BLAST_FURNACE.defaultBlockState();
 
-		context.setBlockState(furnacePos, furnaceState);
+		context.setBlock(furnacePos, furnaceState);
 		AbstractFurnaceBlockEntity furnace = context.getBlockEntity(furnacePos, AbstractFurnaceBlockEntity.class);
 
 		// Create a hopper that attempts to insert fuel into the furnace
 		BlockPos hopperPos = furnacePos.east();
-		BlockState hopperState = Blocks.HOPPER.getDefaultState()
-				.with(HopperBlock.FACING, context.getRotation().rotate(Direction.WEST));
+		BlockState hopperState = Blocks.HOPPER.defaultBlockState()
+				.setValue(HopperBlock.FACING, context.getTestRotation().rotate(Direction.WEST));
 
-		context.setBlockState(hopperPos, hopperState);
+		context.setBlock(hopperPos, hopperState);
 		HopperBlockEntity hopper = context.getBlockEntity(hopperPos, HopperBlockEntity.class);
 
 		// Insert the fuel into the hopper, which transfers it into the furnace
-		hopper.setStack(0, fuelStack.copy());
+		hopper.setItem(0, fuelStack.copy());
 
 		// Insert the item that should be smelted into the furnace
 		// Smelting a single item takes 200 fuel time
-		furnace.setStack(0, new ItemStack(Items.RAW_IRON, 1));
+		furnace.setItem(0, new ItemStack(Items.RAW_IRON, 1));
 
-		context.waitAndRun(105, () -> callback.accept(furnace, hopper));
+		context.runAfterDelay(105, () -> callback.accept(furnace, hopper));
 	}
 
-	private void smeltCompleted(TestContext context, ItemStack fuelStack) {
+	private void smeltCompleted(GameTestHelper context, ItemStack fuelStack) {
 		smelt(context, fuelStack, (furnace, hopper) -> {
-			context.assertTrue(hopper.isEmpty(), Text.literal("fuel hopper should have been emptied"));
+			context.assertTrue(hopper.isEmpty(), Component.literal("fuel hopper should have been emptied"));
 
-			context.assertTrue(furnace.getStack(0).isEmpty(), Text.literal("furnace input slot should have been emptied"));
-			context.assertTrue(furnace.getStack(0).isEmpty(), Text.literal("furnace fuel slot should have been emptied"));
-			context.assertTrue(ItemStack.areEqual(furnace.getStack(2), new ItemStack(Items.IRON_INGOT, 1)), Text.literal("one iron ingot should have been smelted and placed into the furnace output slot"));
+			context.assertTrue(furnace.getItem(0).isEmpty(), Component.literal("furnace input slot should have been emptied"));
+			context.assertTrue(furnace.getItem(0).isEmpty(), Component.literal("furnace fuel slot should have been emptied"));
+			context.assertTrue(ItemStack.matches(furnace.getItem(2), new ItemStack(Items.IRON_INGOT, 1)), Component.literal("one iron ingot should have been smelted and placed into the furnace output slot"));
 
-			context.complete();
+			context.succeed();
 		});
 	}
 
-	private void smeltFailed(TestContext context, ItemStack fuelStack) {
+	private void smeltFailed(GameTestHelper context, ItemStack fuelStack) {
 		smelt(context, fuelStack, (furnace, hopper) -> {
-			context.assertTrue(ItemStack.areEqual(hopper.getStack(0), fuelStack), Text.literal("fuel hopper should not have been emptied"));
+			context.assertTrue(ItemStack.matches(hopper.getItem(0), fuelStack), Component.literal("fuel hopper should not have been emptied"));
 
-			context.assertTrue(ItemStack.areEqual(furnace.getStack(0), new ItemStack(Items.RAW_IRON, 1)), Text.literal("furnace input slot should not have been emptied"));
-			context.assertTrue(furnace.getStack(1).isEmpty(), Text.literal("furnace fuel slot should not have been filled"));
-			context.assertTrue(furnace.getStack(2).isEmpty(), Text.literal("furnace output slot should not have been filled"));
+			context.assertTrue(ItemStack.matches(furnace.getItem(0), new ItemStack(Items.RAW_IRON, 1)), Component.literal("furnace input slot should not have been emptied"));
+			context.assertTrue(furnace.getItem(1).isEmpty(), Component.literal("furnace fuel slot should not have been filled"));
+			context.assertTrue(furnace.getItem(2).isEmpty(), Component.literal("furnace output slot should not have been filled"));
 
-			context.complete();
+			context.succeed();
 		});
 	}
 
 	@GameTest(maxTicks = 110)
-	public void testSmeltingFuelIncludedByItem(TestContext context) {
+	public void testSmeltingFuelIncludedByItem(GameTestHelper context) {
 		// Item with 50 fuel time x4 = 200 fuel time
 		smeltCompleted(context, new ItemStack(ContentRegistryTest.SMELTING_FUEL_INCLUDED_BY_ITEM, 4));
 	}
 
 	@GameTest(maxTicks = 110)
-	public void testSmeltingFuelIncludedByTag(TestContext context) {
+	public void testSmeltingFuelIncludedByTag(GameTestHelper context) {
 		// Item in tag with 100 fuel time x2 = 200 fuel time
 		smeltCompleted(context, new ItemStack(ContentRegistryTest.SMELTING_FUEL_INCLUDED_BY_TAG, 2));
 	}
 
 	@GameTest(maxTicks = 110)
-	public void testSmeltingFuelExcludedByTag(TestContext context) {
+	public void testSmeltingFuelExcludedByTag(GameTestHelper context) {
 		// Item is in both the smelting fuels tag and the excluded smithing fuels tag
 		smeltFailed(context, new ItemStack(ContentRegistryTest.SMELTING_FUEL_EXCLUDED_BY_TAG));
 	}
 
 	@GameTest(maxTicks = 110)
-	public void testSmeltingFuelExcludedByVanillaTag(TestContext context) {
+	public void testSmeltingFuelExcludedByVanillaTag(GameTestHelper context) {
 		// Item is in both the smelting fuel tag and vanilla's excluded non-flammable wood tag
 		smeltFailed(context, new ItemStack(ContentRegistryTest.SMELTING_FUEL_EXCLUDED_BY_VANILLA_TAG));
 	}
 
 	@GameTest
-	public void testStrippableBlockRegistry(TestContext context) {
+	public void testStrippableBlockRegistry(GameTestHelper context) {
 		BlockPos pos = new BlockPos(0, 1, 0);
-		context.setBlockState(pos, Blocks.QUARTZ_PILLAR);
+		context.setBlock(pos, Blocks.QUARTZ_PILLAR);
 		ItemStack axe = new ItemStack(Items.NETHERITE_AXE);
-		PlayerEntity player = context.createMockPlayer(GameMode.SURVIVAL);
-		player.setStackInHand(Hand.MAIN_HAND, axe);
+		Player player = context.makeMockPlayer(GameType.SURVIVAL);
+		player.setItemInHand(InteractionHand.MAIN_HAND, axe);
 		context.useBlock(pos, player);
-		context.expectBlock(Blocks.HAY_BLOCK, pos);
-		context.assertEquals(axe.getDamage(), 1, Text.literal("axe damage"));
+		context.assertBlockPresent(Blocks.HAY_BLOCK, pos);
+		context.assertValueEqual(axe.getDamageValue(), 1, Component.literal("axe damage"));
 		context.useBlock(pos, player);
-		context.expectBlock(Blocks.TNT, pos);
-		BlockState oakStairState = Blocks.OAK_STAIRS.getDefaultState().with(StairsBlock.WATERLOGGED, true).with(StairsBlock.HALF, BlockHalf.TOP);
-		context.setBlockState(pos, oakStairState);
+		context.assertBlockPresent(Blocks.TNT, pos);
+		BlockState oakStairState = Blocks.OAK_STAIRS.defaultBlockState().setValue(StairBlock.WATERLOGGED, true).setValue(StairBlock.HALF, Half.TOP);
+		context.setBlock(pos, oakStairState);
 		context.useBlock(pos, player);
-		context.expectBlockState(pos, Blocks.SPRUCE_STAIRS.getStateWithProperties(oakStairState));
-		context.complete();
+		context.assertBlockState(pos, Blocks.SPRUCE_STAIRS.withPropertiesOf(oakStairState));
+		context.succeed();
 	}
 
 	@GameTest
-	public void testTillableBlockRegistry(TestContext context) {
+	public void testTillableBlockRegistry(GameTestHelper context) {
 		BlockPos pos = new BlockPos(0, 1, 0);
-		context.setBlockState(pos, Blocks.GREEN_WOOL);
+		context.setBlock(pos, Blocks.GREEN_WOOL);
 		ItemStack hoe = new ItemStack(Items.NETHERITE_HOE);
-		PlayerEntity player = context.createMockPlayer(GameMode.SURVIVAL);
-		player.setStackInHand(Hand.MAIN_HAND, hoe);
+		Player player = context.makeMockPlayer(GameType.SURVIVAL);
+		player.setItemInHand(InteractionHand.MAIN_HAND, hoe);
 		context.useBlock(pos, player);
-		context.expectBlock(Blocks.LIME_WOOL, pos);
-		context.assertEquals(hoe.getDamage(), 1, Text.literal("hoe damage"));
-		context.complete();
+		context.assertBlockPresent(Blocks.LIME_WOOL, pos);
+		context.assertValueEqual(hoe.getDamageValue(), 1, Component.literal("hoe damage"));
+		context.succeed();
 	}
 
 	@GameTest
-	public void testOxidizableBlocksRegistry(TestContext context) {
+	public void testOxidizableBlocksRegistry(GameTestHelper context) {
 		// Test de-oxidation. (the registry does not make the blocks oxidize.)
-		PlayerEntity player = context.createMockPlayer(GameMode.SURVIVAL);
+		Player player = context.makeMockPlayer(GameType.SURVIVAL);
 		BlockPos pos = new BlockPos(0, 1, 0);
-		context.setBlockState(pos, Blocks.DIAMOND_ORE);
+		context.setBlock(pos, Blocks.DIAMOND_ORE);
 		ItemStack axe = new ItemStack(Items.NETHERITE_AXE);
-		player.setStackInHand(Hand.MAIN_HAND, axe);
+		player.setItemInHand(InteractionHand.MAIN_HAND, axe);
 		context.useBlock(pos, player);
-		context.expectBlock(Blocks.GOLD_ORE, pos);
-		context.assertEquals(axe.getDamage(), 1, Text.literal("axe damage"));
+		context.assertBlockPresent(Blocks.GOLD_ORE, pos);
+		context.assertValueEqual(axe.getDamageValue(), 1, Component.literal("axe damage"));
 		context.useBlock(pos, player);
-		context.expectBlock(Blocks.IRON_ORE, pos);
+		context.assertBlockPresent(Blocks.IRON_ORE, pos);
 		context.useBlock(pos, player);
-		context.expectBlock(Blocks.COPPER_ORE, pos);
-		context.complete();
+		context.assertBlockPresent(Blocks.COPPER_ORE, pos);
+		context.succeed();
 	}
 
 	@GameTest
-	public void testWaxableBlocksRegistry(TestContext context) {
-		PlayerEntity player = context.createMockPlayer(GameMode.SURVIVAL);
+	public void testWaxableBlocksRegistry(GameTestHelper context) {
+		Player player = context.makeMockPlayer(GameType.SURVIVAL);
 		BlockPos pos = new BlockPos(0, 1, 0);
-		context.setBlockState(pos, Blocks.DIAMOND_ORE);
+		context.setBlock(pos, Blocks.DIAMOND_ORE);
 		ItemStack honeycomb = new ItemStack(Items.HONEYCOMB, 64);
-		player.setStackInHand(Hand.MAIN_HAND, honeycomb);
+		player.setItemInHand(InteractionHand.MAIN_HAND, honeycomb);
 		context.useBlock(pos, player);
-		context.expectBlock(Blocks.DEEPSLATE_DIAMOND_ORE, pos);
-		context.assertEquals(honeycomb.getCount(), 63, Text.literal("honeycomb count"));
+		context.assertBlockPresent(Blocks.DEEPSLATE_DIAMOND_ORE, pos);
+		context.assertValueEqual(honeycomb.getCount(), 63, Component.literal("honeycomb count"));
 		ItemStack axe = new ItemStack(Items.NETHERITE_AXE);
-		player.setStackInHand(Hand.MAIN_HAND, axe);
+		player.setItemInHand(InteractionHand.MAIN_HAND, axe);
 		context.useBlock(pos, player);
-		context.expectBlock(Blocks.DIAMOND_ORE, pos);
-		context.assertEquals(axe.getDamage(), 1, Text.literal("axe damage"));
-		context.complete();
+		context.assertBlockPresent(Blocks.DIAMOND_ORE, pos);
+		context.assertValueEqual(axe.getDamageValue(), 1, Component.literal("axe damage"));
+		context.succeed();
 	}
 
-	private void brew(TestContext context, ItemStack input, ItemStack bottle, Consumer<BrewingStandBlockEntity> callback) {
+	private void brew(GameTestHelper context, ItemStack input, ItemStack bottle, Consumer<BrewingStandBlockEntity> callback) {
 		BlockPos pos = new BlockPos(0, 1, 0);
-		context.setBlockState(pos, Blocks.BREWING_STAND);
+		context.setBlock(pos, Blocks.BREWING_STAND);
 		BrewingStandBlockEntity brewingStand = context.getBlockEntity(pos, BrewingStandBlockEntity.class);
 
-		brewingStand.setStack(0, bottle);
-		brewingStand.setStack(3, input);
-		brewingStand.setStack(4, new ItemStack(Items.BLAZE_POWDER, 64));
-		context.waitAndRun(401, () -> callback.accept(brewingStand));
+		brewingStand.setItem(0, bottle);
+		brewingStand.setItem(3, input);
+		brewingStand.setItem(4, new ItemStack(Items.BLAZE_POWDER, 64));
+		context.runAfterDelay(401, () -> callback.accept(brewingStand));
 	}
 
 	@GameTest(maxTicks = 410)
-	public void testBrewingFlower(TestContext context) {
-		brew(context, new ItemStack(Items.DANDELION), PotionContentsComponent.createStack(Items.POTION, Potions.AWKWARD), brewingStand -> {
-			ItemStack bottle = brewingStand.getStack(0);
-			PotionContentsComponent potion = bottle.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT);
-			context.assertEquals(potion.potion().orElseThrow(), Potions.HEALING, Text.literal("brewed potion"));
-			context.complete();
+	public void testBrewingFlower(GameTestHelper context) {
+		brew(context, new ItemStack(Items.DANDELION), PotionContents.createItemStack(Items.POTION, Potions.AWKWARD), brewingStand -> {
+			ItemStack bottle = brewingStand.getItem(0);
+			PotionContents potion = bottle.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+			context.assertValueEqual(potion.potion().orElseThrow(), Potions.HEALING, Component.literal("brewed potion"));
+			context.succeed();
 		});
 	}
 
 	@GameTest(maxTicks = 410)
-	public void testBrewingDirt(TestContext context) {
-		brew(context, new ItemStack(Items.DIRT), PotionContentsComponent.createStack(Items.POTION, Potions.AWKWARD), brewingStand -> {
-			ItemStack bottle = brewingStand.getStack(0);
-			context.assertTrue(bottle.getItem() instanceof ContentRegistryTest.DirtyPotionItem, Text.literal("potion became dirty"));
-			context.complete();
+	public void testBrewingDirt(GameTestHelper context) {
+		brew(context, new ItemStack(Items.DIRT), PotionContents.createItemStack(Items.POTION, Potions.AWKWARD), brewingStand -> {
+			ItemStack bottle = brewingStand.getItem(0);
+			context.assertTrue(bottle.getItem() instanceof ContentRegistryTest.DirtyPotionItem, Component.literal("potion became dirty"));
+			context.succeed();
 		});
 	}
 }

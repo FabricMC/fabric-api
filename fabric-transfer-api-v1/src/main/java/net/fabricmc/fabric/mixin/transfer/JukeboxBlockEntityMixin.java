@@ -23,17 +23,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.entity.JukeboxBlockEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
 
 @Mixin(JukeboxBlockEntity.class)
 public abstract class JukeboxBlockEntityMixin implements SpecialLogicInventory {
 	@Shadow
-	private ItemStack recordStack;
+	private ItemStack item;
 
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	public abstract void setStack(ItemStack stack);
 
 	@Unique
@@ -44,10 +47,10 @@ public abstract class JukeboxBlockEntityMixin implements SpecialLogicInventory {
 		fabric_suppressSpecialLogic = suppress;
 	}
 
-	@Inject(method = "setStack", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "setTheItem", at = @At("HEAD"), cancellable = true)
 	private void setStackBypass(ItemStack stack, CallbackInfo ci) {
 		if (fabric_suppressSpecialLogic) {
-			recordStack = stack;
+			item = stack;
 			ci.cancel();
 		}
 	}

@@ -19,10 +19,10 @@ package net.fabricmc.fabric.api.tag.client.v1;
 import java.util.Objects;
 import java.util.Set;
 
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.Holder;
+import net.minecraft.tags.TagKey;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.tag.client.ClientTagsImpl;
 
@@ -75,7 +75,7 @@ public final class ClientTags {
 
 	/**
 	 * Checks if an entry is in a tag, for use with entries from a dynamic registry,
-	 * such as {@link net.minecraft.world.biome.Biome}s.
+	 * such as {@link net.minecraft.world.level.biome.Biome}s.
 	 *
 	 * <p>If the synced tag does exist, it is queried. If it does not exist,
 	 * the tag populated from the available mods is checked, recursively checking the
@@ -85,7 +85,7 @@ public final class ClientTags {
 	 * @param registryEntry the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, RegistryEntry<T> registryEntry) {
+	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> registryEntry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(registryEntry);
 		return ClientTagsImpl.isInWithLocalFallback(tagKey, registryEntry);
@@ -98,14 +98,14 @@ public final class ClientTags {
 	 * @param registryKey the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	public static <T> boolean isInLocal(TagKey<T> tagKey, RegistryKey<T> registryKey) {
+	public static <T> boolean isInLocal(TagKey<T> tagKey, ResourceKey<T> registryKey) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(registryKey);
 
-		if (tagKey.registryRef().getValue().equals(registryKey.getRegistry())) {
+		if (tagKey.registry().identifier().equals(registryKey.registry())) {
 			// Check local tags
 			Set<Identifier> ids = getOrCreateLocalTag(tagKey);
-			return ids.contains(registryKey.getValue());
+			return ids.contains(registryKey.identifier());
 		}
 
 		return false;

@@ -19,14 +19,14 @@ package net.fabricmc.fabric.mixin.gamerule;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.server.command.GameRuleCommand;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.world.rule.GameRule;
+import net.minecraft.server.commands.GameRuleCommand;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.level.gamerules.GameRule;
 
 @Mixin(GameRuleCommand.class)
 public interface GameRuleCommandAccessor {
-	@Invoker
-	static <T> int invokeExecuteQuery(ServerCommandSource serverCommandSource, GameRule<T> ruleKey) {
+	@Invoker("queryRule")
+	static <T> int invokeExecuteQuery(CommandSourceStack serverCommandSource, GameRule<T> ruleKey) {
 		throw new AssertionError("This shouldn't happen!");
 	}
 }

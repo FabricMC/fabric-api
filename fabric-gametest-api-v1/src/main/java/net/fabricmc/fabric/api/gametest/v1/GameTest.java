@@ -22,21 +22,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.minecraft.util.BlockRotation;
+import net.minecraft.world.level.block.Rotation;
 
 /**
  * {@link GameTest} is an annotation that can be used to mark a method as a game test.
  *
- * <p>{@link GameTest} methods must be {@code public} not {@code static}, return {@code void } and take exactly one argument of type {@link net.minecraft.test.TestContext}.
+ * <p>{@link GameTest} methods must be {@code public} not {@code static}, return {@code void } and take exactly one argument of type {@link net.minecraft.gametest.framework.GameTestHelper}.
  *
- * <p>The values in this class directly correspond to the values in {@link net.minecraft.test.TestData}.
+ * <p>The values in this class directly correspond to the values in {@link net.minecraft.gametest.framework.TestData}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented
 public @interface GameTest {
 	/**
-	 * A namespaced ID of an entry within the {@link net.minecraft.registry.RegistryKeys#TEST_ENVIRONMENT} registry.
+	 * A namespaced ID of an entry within the {@link net.minecraft.core.registries.Registries#TEST_ENVIRONMENT} registry.
 	 */
 	String environment() default "minecraft:default";
 
@@ -65,7 +65,7 @@ public @interface GameTest {
 	/**
 	 * The rotation of the structure when placed.
 	 */
-	BlockRotation rotation() default BlockRotation.NONE;
+	Rotation rotation() default Rotation.NONE;
 
 	/**
 	 * When set the test must be run manually.

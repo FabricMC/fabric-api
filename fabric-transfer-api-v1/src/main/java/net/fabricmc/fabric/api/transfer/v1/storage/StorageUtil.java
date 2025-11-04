@@ -22,11 +22,11 @@ import java.util.function.Predicate;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.inventory.Inventory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.ReportedException;
+import net.minecraft.CrashReport;
+import net.minecraft.util.Mth;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
@@ -112,14 +112,14 @@ public final class StorageUtil {
 
 			iterationTransaction.commit();
 		} catch (Exception e) {
-			CrashReport report = CrashReport.create(e, "Moving resources between storages");
-			report.addElement("Move details")
-					.add("Input storage", from::toString)
-					.add("Output storage", to::toString)
-					.add("Filter", filter::toString)
-					.add("Max amount", maxAmount)
-					.add("Transaction", transaction);
-			throw new CrashException(report);
+			CrashReport report = CrashReport.forThrowable(e, "Moving resources between storages");
+			report.addCategory("Move details")
+					.setDetail("Input storage", from::toString)
+					.setDetail("Output storage", to::toString)
+					.setDetail("Filter", filter::toString)
+					.setDetail("Max amount", maxAmount)
+					.setDetail("Transaction", transaction);
+			throw new ReportedException(report);
 		}
 
 		return totalMoved;
@@ -195,12 +195,12 @@ public final class StorageUtil {
 				if (amount > 0) return new ResourceAmount<>(resource, amount);
 			}
 		} catch (Exception e) {
-			CrashReport report = CrashReport.create(e, "Extracting resources from storage");
-			report.addElement("Extraction details")
-					.add("Storage", storage::toString)
-					.add("Max amount", maxAmount)
-					.add("Transaction", transaction);
-			throw new CrashException(report);
+			CrashReport report = CrashReport.forThrowable(e, "Extracting resources from storage");
+			report.addCategory("Extraction details")
+					.setDetail("Storage", storage::toString)
+					.setDetail("Max amount", maxAmount)
+					.setDetail("Transaction", transaction);
+			throw new ReportedException(report);
 		}
 
 		return null;
@@ -230,13 +230,13 @@ public final class StorageUtil {
 				if (amount == maxAmount) return amount;
 			}
 		} catch (Exception e) {
-			CrashReport report = CrashReport.create(e, "Inserting resources into slots");
-			report.addElement("Slotted insertion details")
-					.add("Slots", () -> Objects.toString(slots, null))
-					.add("Resource", () -> Objects.toString(resource, null))
-					.add("Max amount", maxAmount)
-					.add("Transaction", transaction);
-			throw new CrashException(report);
+			CrashReport report = CrashReport.forThrowable(e, "Inserting resources into slots");
+			report.addCategory("Slotted insertion details")
+					.setDetail("Slots", () -> Objects.toString(slots, null))
+					.setDetail("Resource", () -> Objects.toString(resource, null))
+					.setDetail("Max amount", maxAmount)
+					.setDetail("Transaction", transaction);
+			throw new ReportedException(report);
 		}
 
 		return amount;
@@ -263,13 +263,13 @@ public final class StorageUtil {
 				return 0;
 			}
 		} catch (Exception e) {
-			CrashReport report = CrashReport.create(e, "Inserting resources into a storage");
-			report.addElement("Insertion details")
-					.add("Storage", () -> Objects.toString(storage, null))
-					.add("Resource", () -> Objects.toString(resource, null))
-					.add("Max amount", maxAmount)
-					.add("Transaction", transaction);
-			throw new CrashException(report);
+			CrashReport report = CrashReport.forThrowable(e, "Inserting resources into a storage");
+			report.addCategory("Insertion details")
+					.setDetail("Storage", () -> Objects.toString(storage, null))
+					.setDetail("Resource", () -> Objects.toString(resource, null))
+					.setDetail("Max amount", maxAmount)
+					.setDetail("Transaction", transaction);
+			throw new ReportedException(report);
 		}
 	}
 
@@ -384,7 +384,7 @@ public final class StorageUtil {
 	}
 
 	/**
-	 * Compute the comparator output for a storage, similar to {@link ScreenHandler#calculateComparatorOutput(Inventory)}.
+	 * Compute the comparator output for a storage, similar to {@link AbstractContainerMenu#calculateComparatorOutput(Container)}.
 	 *
 	 * @param storage The storage for which the comparator level should be computed.
 	 * @param <T> The type of the stored resources.
@@ -406,6 +406,6 @@ public final class StorageUtil {
 			}
 		}
 
-		return MathHelper.floor(fillPercentage / viewCount * 14) + (hasNonEmptyView ? 1 : 0);
+		return Mth.floor(fillPercentage / viewCount * 14) + (hasNonEmptyView ? 1 : 0);
 	}
 }

@@ -24,9 +24,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.data.DataCache;
+import net.minecraft.data.HashCache;
 
-@Mixin(DataCache.class)
+@Mixin(HashCache.class)
 public abstract class DataCacheMixin {
 	// Lambda in write()V
 	@Redirect(method = "method_46571", at = @At(value = "INVOKE", target = "Ljava/time/ZonedDateTime;now()Ljava/time/ZonedDateTime;"))

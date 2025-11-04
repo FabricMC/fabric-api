@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.resource.v1;
 
-import net.minecraft.resource.ResourceType;
+import net.minecraft.server.packs.PackType;
 
 public interface FabricLifecycledResourceManager {
-	ResourceType fabric$getResourceType();
+	PackType fabric$getResourceType();
 }

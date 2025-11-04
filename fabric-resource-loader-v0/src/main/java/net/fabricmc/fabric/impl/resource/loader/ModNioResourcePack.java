@@ -42,23 +42,23 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.registry.VersionedIdentifier;
-import net.minecraft.resource.AbstractFileResourcePack;
-import net.minecraft.resource.InputSupplier;
-import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourcePackInfo;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.resource.metadata.ResourceMetadataSerializer;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.path.PathUtil;
+import net.minecraft.server.packs.repository.KnownPack;
+import net.minecraft.server.packs.AbstractPackResources;
+import net.minecraft.server.packs.resources.IoSupplier;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.FileUtil;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
-public class ModNioResourcePack implements ResourcePack, ModResourcePack {
+public class ModNioResourcePack implements PackResources, ModResourcePack {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModNioResourcePack.class);
 	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_.]+");
 	private static final FileSystem DEFAULT_FS = FileSystems.getDefault();
@@ -66,18 +66,18 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	private final String id;
 	private final ModContainer mod;
 	private final List<Path> basePaths;
-	private final ResourceType type;
+	private final PackType type;
 	private final ResourcePackActivationType activationType;
-	private final Map<ResourceType, Set<String>> namespaces;
-	private final ResourcePackInfo metadata;
+	private final Map<PackType, Set<String>> namespaces;
+	private final PackLocationInfo metadata;
 	/**
 	 * Whether the pack is bundled and loaded by default, as opposed to registered built-in packs.
-	 * @see ModResourcePackUtil#appendModResourcePacks(List, ResourceType, String)
+	 * @see ModResourcePackUtil#appendModResourcePacks(List, PackType, String)
 	 */
 	private final boolean modBundled;
 
 	@Nullable
-	public static ModNioResourcePack create(String id, ModContainer mod, String subPath, ResourceType type, ResourcePackActivationType activationType, boolean modBundled) {
+	public static ModNioResourcePack create(String id, ModContainer mod, String subPath, PackType type, ResourcePackActivationType activationType, boolean modBundled) {
 		List<Path> rootPaths = mod.getRootPaths();
 		List<Path> paths;
 
@@ -101,21 +101,21 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		if (paths.isEmpty()) return null;
 
 		String packId = subPath != null && modBundled ? id + "_" + subPath : id;
-		Text displayName = subPath == null
-				? Text.translatable("pack.name.fabricMod", mod.getMetadata().getName())
-				: Text.translatable("pack.name.fabricMod.subPack", mod.getMetadata().getName(), Text.translatable("resourcePack." + subPath + ".name"));
-		ResourcePackInfo metadata = new ResourcePackInfo(
+		Component displayName = subPath == null
+				? Component.translatable("pack.name.fabricMod", mod.getMetadata().getName())
+				: Component.translatable("pack.name.fabricMod.subPack", mod.getMetadata().getName(), Component.translatable("resourcePack." + subPath + ".name"));
+		PackLocationInfo metadata = new PackLocationInfo(
 				packId,
 				displayName,
 				ModResourcePackCreator.RESOURCE_PACK_SOURCE,
-				Optional.of(new VersionedIdentifier(ModResourcePackCreator.FABRIC, packId, mod.getMetadata().getVersion().getFriendlyString()))
+				Optional.of(new KnownPack(ModResourcePackCreator.FABRIC, packId, mod.getMetadata().getVersion().getFriendlyString()))
 		);
 		ModNioResourcePack ret = new ModNioResourcePack(packId, mod, paths, type, activationType, modBundled, metadata);
 
 		return ret.getNamespaces(type).isEmpty() ? null : ret;
 	}
 
-	private ModNioResourcePack(String id, ModContainer mod, List<Path> paths, ResourceType type, ResourcePackActivationType activationType, boolean modBundled, ResourcePackInfo metadata) {
+	private ModNioResourcePack(String id, ModContainer mod, List<Path> paths, PackType type, ResourcePackActivationType activationType, boolean modBundled, PackLocationInfo metadata) {
 		this.id = id;
 		this.mod = mod;
 		this.basePaths = paths;
@@ -134,10 +134,10 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		).toList(), type, activationType, modBundled, metadata);
 	}
 
-	static Map<ResourceType, Set<String>> readNamespaces(List<Path> paths, String modId) {
-		Map<ResourceType, Set<String>> ret = new EnumMap<>(ResourceType.class);
+	static Map<PackType, Set<String>> readNamespaces(List<Path> paths, String modId) {
+		Map<PackType, Set<String>> ret = new EnumMap<>(PackType.class);
 
-		for (ResourceType type : ResourceType.values()) {
+		for (PackType type : PackType.values()) {
 			Set<String> namespaces = null;
 
 			for (Path path : paths) {
@@ -188,19 +188,19 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		return null;
 	}
 
-	private static final String resPrefix = ResourceType.CLIENT_RESOURCES.getDirectory() + "/";
-	private static final String dataPrefix = ResourceType.SERVER_DATA.getDirectory() + "/";
+	private static final String resPrefix = PackType.CLIENT_RESOURCES.getDirectory() + "/";
+	private static final String dataPrefix = PackType.SERVER_DATA.getDirectory() + "/";
 
 	private boolean hasAbsentNs(String filename) {
 		int prefixLen;
-		ResourceType type;
+		PackType type;
 
 		if (filename.startsWith(resPrefix)) {
 			prefixLen = resPrefix.length();
-			type = ResourceType.CLIENT_RESOURCES;
+			type = PackType.CLIENT_RESOURCES;
 		} else if (filename.startsWith(dataPrefix)) {
 			prefixLen = dataPrefix.length();
-			type = ResourceType.SERVER_DATA;
+			type = PackType.SERVER_DATA;
 		} else {
 			return false;
 		}
@@ -211,7 +211,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		return !namespaces.get(type).contains(filename.substring(prefixLen, nsEnd));
 	}
 
-	private InputSupplier<InputStream> openFile(String filename) {
+	private IoSupplier<InputStream> openFile(String filename) {
 		Path path = getPath(filename);
 
 		if (path != null && Files.isRegularFile(path)) {
@@ -227,21 +227,21 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 
 	@Nullable
 	@Override
-	public InputSupplier<InputStream> openRoot(String... pathSegments) {
-		PathUtil.validatePath(pathSegments);
+	public IoSupplier<InputStream> getRootResource(String... pathSegments) {
+		FileUtil.validatePath(pathSegments);
 
 		return this.openFile(String.join("/", pathSegments));
 	}
 
 	@Override
 	@Nullable
-	public InputSupplier<InputStream> open(ResourceType type, Identifier id) {
+	public IoSupplier<InputStream> getResource(PackType type, Identifier id) {
 		final Path path = getPath(getFilename(type, id));
-		return path == null ? null : InputSupplier.create(path);
+		return path == null ? null : IoSupplier.create(path);
 	}
 
 	@Override
-	public void findResources(ResourceType type, String namespace, String path, ResultConsumer visitor) {
+	public void listResources(PackType type, String namespace, String path, ResourceOutput visitor) {
 		if (!namespaces.getOrDefault(type, Collections.emptySet()).contains(namespace)) {
 			return;
 		}
@@ -257,12 +257,12 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 					@Override
 					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 						String filename = nsPath.relativize(file).toString().replace(separator, "/");
-						Identifier identifier = Identifier.tryParse(namespace, filename);
+						Identifier identifier = Identifier.tryBuild(namespace, filename);
 
 						if (identifier == null) {
 							LOGGER.error("Invalid path in mod resource-pack {}: {}:{}, ignoring", id, namespace, filename);
 						} else {
-							visitor.accept(identifier, InputSupplier.create(file));
+							visitor.accept(identifier, IoSupplier.create(file));
 						}
 
 						return FileVisitResult.CONTINUE;
@@ -275,19 +275,19 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	}
 
 	@Override
-	public Set<String> getNamespaces(ResourceType type) {
+	public Set<String> getNamespaces(PackType type) {
 		return namespaces.getOrDefault(type, Collections.emptySet());
 	}
 
 	@Override
-	public <T> T parseMetadata(ResourceMetadataSerializer<T> metaReader) throws IOException {
+	public <T> T getMetadataSection(MetadataSectionType<T> metaReader) throws IOException {
 		try (InputStream is = Objects.requireNonNull(openFile("pack.mcmeta")).get()) {
-			return AbstractFileResourcePack.parseMetadata(metaReader, is, this.metadata);
+			return AbstractPackResources.getMetadataFromStream(metaReader, is, this.metadata);
 		}
 	}
 
 	@Override
-	public ResourcePackInfo getInfo() {
+	public PackLocationInfo location() {
 		return metadata;
 	}
 
@@ -305,7 +305,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 	}
 
 	@Override
-	public String getId() {
+	public String packId() {
 		return id;
 	}
 
@@ -314,7 +314,7 @@ public class ModNioResourcePack implements ResourcePack, ModResourcePack {
 		return path.getFileSystem() == DEFAULT_FS ? path.toFile().exists() : Files.exists(path);
 	}
 
-	private static String getFilename(ResourceType type, Identifier id) {
+	private static String getFilename(PackType type, Identifier id) {
 		return String.format(Locale.ROOT, "%s/%s/%s", type.getDirectory(), id.getNamespace(), id.getPath());
 	}
 }

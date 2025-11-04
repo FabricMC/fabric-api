@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.event.client.player;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -57,6 +57,6 @@ public final class ClientPlayerBlockBreakEvents {
 		 * @param pos    the position where the block was broken
 		 * @param state  the block state <strong>before</strong> the block was broken
 		 */
-		void afterBlockBreak(ClientWorld world, ClientPlayerEntity player, BlockPos pos, BlockState state);
+		void afterBlockBreak(ClientLevel world, LocalPlayer player, BlockPos pos, BlockState state);
 	}
 }

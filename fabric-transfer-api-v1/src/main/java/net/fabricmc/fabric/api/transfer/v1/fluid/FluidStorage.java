@@ -18,17 +18,17 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.PotionContentsComponent;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
@@ -65,7 +65,7 @@ public final class FluidStorage {
 	 * On the client thread (i.e. with a client world), contents of queried Storages are unreliable and should not be modified.
 	 */
 	public static final BlockApiLookup<Storage<FluidVariant>, @Nullable Direction> SIDED =
-			BlockApiLookup.get(Identifier.of("fabric", "sided_fluid_storage"), Storage.asClass(), Direction.class);
+			BlockApiLookup.get(Identifier.fromNamespaceAndPath("fabric", "sided_fluid_storage"), Storage.asClass(), Direction.class);
 
 	/**
 	 * Item access to fluid variant storages.
@@ -83,7 +83,7 @@ public final class FluidStorage {
 	 * Returned APIs should behave the same regardless of the logical side.
 	 */
 	public static final ItemApiLookup<Storage<FluidVariant>, ContainerItemContext> ITEM =
-			ItemApiLookup.get(Identifier.of("fabric", "fluid_storage"), Storage.asClass(), ContainerItemContext.class);
+			ItemApiLookup.get(Identifier.fromNamespaceAndPath("fabric", "fluid_storage"), Storage.asClass(), ContainerItemContext.class);
 
 	/**
 	 * Get or create and register a {@link CombinedItemApiProvider} event for the passed item.
@@ -151,7 +151,7 @@ public final class FluidStorage {
 				Fluid bucketFluid = ((BucketItemAccessor) bucketItem).fabric_getFluid();
 
 				// Make sure the mapping is bidirectional.
-				if (bucketFluid != null && bucketFluid.getBucketItem() == bucketItem) {
+				if (bucketFluid != null && bucketFluid.getBucket() == bucketItem) {
 					return new FullItemFluidStorage(context, Items.BUCKET, FluidVariant.of(bucketFluid), FluidConstants.BUCKET);
 				}
 			}
@@ -162,8 +162,8 @@ public final class FluidStorage {
 		combinedItemApiProvider(Items.GLASS_BOTTLE).register(context -> {
 			return new EmptyItemFluidStorage(context, emptyBottle -> {
 				ItemStack newStack = emptyBottle.toStack();
-				newStack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(Potions.WATER));
-				return ItemVariant.of(Items.POTION, newStack.getComponentChanges());
+				newStack.set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.WATER));
+				return ItemVariant.of(Items.POTION, newStack.getComponentsPatch());
 			}, Fluids.WATER, FluidConstants.BOTTLE);
 		});
 		// Register water potion storage

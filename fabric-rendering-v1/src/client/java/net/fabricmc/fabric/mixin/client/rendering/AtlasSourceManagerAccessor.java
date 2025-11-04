@@ -20,15 +20,15 @@ import com.mojang.serialization.MapCodec;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.texture.atlas.AtlasSource;
-import net.minecraft.client.texture.atlas.AtlasSourceManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.client.renderer.texture.atlas.SpriteSource;
+import net.minecraft.client.renderer.texture.atlas.SpriteSources;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ExtraCodecs;
 
-@Mixin(AtlasSourceManager.class)
+@Mixin(SpriteSources.class)
 public interface AtlasSourceManagerAccessor {
 	@Accessor("ID_MAPPER")
-	static Codecs.IdMapper<Identifier, MapCodec<? extends AtlasSource>> getAtlasSourceCodecs() {
+	static ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends SpriteSource>> getAtlasSourceCodecs() {
 		throw new AssertionError();
 	}
 }

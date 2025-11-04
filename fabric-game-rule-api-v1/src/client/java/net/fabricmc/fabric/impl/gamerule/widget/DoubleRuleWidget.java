@@ -20,41 +20,41 @@ import java.util.List;
 
 import com.mojang.serialization.DataResult;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.world.rule.GameRule;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
-public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget {
-	private final TextFieldWidget textFieldWidget;
+public final class DoubleRuleWidget extends EditGameRulesScreen.GameRuleEntry {
+	private final EditBox textFieldWidget;
 
-	public DoubleRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<OrderedText> description, final String ruleName, final GameRule<Double> doubleRule) {
+	public DoubleRuleWidget(EditGameRulesScreen gameRuleScreen, Component name, List<FormattedCharSequence> description, final String ruleName, final GameRule<Double> doubleRule) {
 		gameRuleScreen.super(description, name);
 		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
 
-		this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 10, 5, 42, 20,
+		this.textFieldWidget = new EditBox(Minecraft.getInstance().font, 10, 5, 42, 20,
 				name.copy()
-				.append(ScreenTexts.LINE_BREAK)
+				.append(CommonComponents.NEW_LINE)
 				.append(ruleName)
-				.append(ScreenTexts.LINE_BREAK)
+				.append(CommonComponents.NEW_LINE)
 		);
 
-		this.textFieldWidget.setText(accessor.getGameRules().getRuleValueName(doubleRule));
-		this.textFieldWidget.setChangedListener(value -> {
+		this.textFieldWidget.setValue(accessor.getGameRules().getAsString(doubleRule));
+		this.textFieldWidget.setResponder(value -> {
 			DataResult<Double> dataResult = doubleRule.deserialize(value);
 
 			if (dataResult.isSuccess()) {
-				this.textFieldWidget.setEditableColor(0xFFE0E0E0);
+				this.textFieldWidget.setTextColor(0xFFE0E0E0);
 				accessor.callMarkValid(this);
-				accessor.getGameRules().setValue(doubleRule, dataResult.getOrThrow(), null);
+				accessor.getGameRules().set(doubleRule, dataResult.getOrThrow(), null);
 			} else {
-				this.textFieldWidget.setEditableColor(0xFFFF0000);
+				this.textFieldWidget.setTextColor(0xFFFF0000);
 				accessor.callMarkInvalid(this);
 			}
 		});
@@ -63,10 +63,10 @@ public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget 
 	}
 
 	@Override
-	public void render(DrawContext drawContext, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		this.drawName(drawContext, this.getContentY(), this.getContentX());
+	public void renderContent(GuiGraphics drawContext, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		this.renderLabel(drawContext, this.getContentY(), this.getContentX());
 
-		this.textFieldWidget.setX(this.getContentRightEnd() - 44);
+		this.textFieldWidget.setX(this.getContentRight() - 44);
 		this.textFieldWidget.setY(this.getContentY());
 		this.textFieldWidget.render(drawContext, mouseX, mouseY, tickDelta);
 	}

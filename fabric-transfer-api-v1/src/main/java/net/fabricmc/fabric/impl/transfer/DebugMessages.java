@@ -18,33 +18,33 @@ package net.fabricmc.fabric.impl.transfer;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public final class DebugMessages {
-	public static String forGlobalPos(@Nullable World world, BlockPos pos) {
-		String dimension = world != null ? world.getDimensionEntry().getIdAsString() : "<no dimension>";
+	public static String forGlobalPos(@Nullable Level world, BlockPos pos) {
+		String dimension = world != null ? world.dimensionTypeRegistration().getRegisteredName() : "<no dimension>";
 		return dimension + "@" + pos.toShortString();
 	}
 
-	public static String forPlayer(PlayerEntity player) {
-		return player.getDisplayName() + "/" + player.getUuidAsString();
+	public static String forPlayer(Player player) {
+		return player.getDisplayName() + "/" + player.getStringUUID();
 	}
 
-	public static String forInventory(@Nullable Inventory inventory) {
+	public static String forInventory(@Nullable Container inventory) {
 		if (inventory == null) {
 			return "~~NULL~~"; // like in crash reports
-		} else if (inventory instanceof PlayerInventory playerInventory) {
+		} else if (inventory instanceof Inventory playerInventory) {
 			return forPlayer(playerInventory.player);
 		} else {
 			String result = inventory.toString();
 
 			if (inventory instanceof BlockEntity blockEntity) {
-				result += " (%s, %s)".formatted(blockEntity.getCachedState(), forGlobalPos(blockEntity.getWorld(), blockEntity.getPos()));
+				result += " (%s, %s)".formatted(blockEntity.getBlockState(), forGlobalPos(blockEntity.getLevel(), blockEntity.getBlockPos()));
 			}
 
 			return result;

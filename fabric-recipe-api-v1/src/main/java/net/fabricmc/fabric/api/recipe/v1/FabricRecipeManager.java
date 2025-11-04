@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.api.recipe.v1;
 
-import net.minecraft.recipe.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeAccess;
 
 import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
 import net.fabricmc.fabric.impl.recipe.sync.SynchronizedRecipesImpl;
 
 /**
- * General-purpose Fabric-provided extensions for {@link RecipeManager} class.
+ * General-purpose Fabric-provided extensions for {@link RecipeAccess} class.
  */
 public interface FabricRecipeManager {
 	default SynchronizedRecipes getSynchronizedRecipes() {

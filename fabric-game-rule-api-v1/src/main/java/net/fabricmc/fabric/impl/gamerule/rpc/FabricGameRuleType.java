@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.impl.gamerule.rpc;
 
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.StringRepresentable;
 
 /**
  * Extensions to {@link net.minecraft.server.dedicated.management.dispatch.GameRuleType}.
  */
-public enum FabricGameRuleType implements StringIdentifiable {
+public enum FabricGameRuleType implements StringRepresentable {
 	DOUBLE("fabric:double"),
 	ENUM("fabric:enum");
 
@@ -32,7 +32,7 @@ public enum FabricGameRuleType implements StringIdentifiable {
 	}
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return this.name;
 	}
 }

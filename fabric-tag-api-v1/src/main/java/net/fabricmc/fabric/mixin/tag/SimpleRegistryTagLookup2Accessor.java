@@ -22,15 +22,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.core.HolderSet;
+import net.minecraft.tags.TagKey;
 
-@Mixin(targets = "net.minecraft.registry.SimpleRegistry$TagLookup$2")
+@Mixin(targets = "net.minecraft.core.MappedRegistry$TagSet$2")
 public interface SimpleRegistryTagLookup2Accessor<T> {
-	@Accessor("field_53694")
-	Map<TagKey<T>, RegistryEntryList.Named<T>> fabric_getTagMap();
+	@Accessor("val$tags")
+	Map<TagKey<T>, HolderSet.Named<T>> fabric_getTagMap();
 
-	@Accessor("field_53694")
+	@Accessor("val$tags")
 	@Mutable
-	void fabric_setTagMap(Map<TagKey<T>, RegistryEntryList.Named<T>> tagMap);
+	void fabric_setTagMap(Map<TagKey<T>, HolderSet.Named<T>> tagMap);
 }

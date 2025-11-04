@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 
 public interface LightDataProvider {
 	int light(BlockPos pos, BlockState state);

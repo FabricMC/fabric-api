@@ -19,21 +19,21 @@ package net.fabricmc.fabric.impl.client.rendering;
 import java.util.Objects;
 import java.util.function.Function;
 
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 
 public final class RegistrationHelperImpl implements LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper {
-	private final Function<FeatureRenderer<?, ?>, Boolean> delegate;
+	private final Function<RenderLayer<?, ?>, Boolean> delegate;
 
-	public RegistrationHelperImpl(Function<FeatureRenderer<?, ?>, Boolean> delegate) {
+	public RegistrationHelperImpl(Function<RenderLayer<?, ?>, Boolean> delegate) {
 		this.delegate = delegate;
 	}
 
 	@Override
-	public <T extends EntityRenderState> void register(FeatureRenderer<T, ? extends EntityModel<T>> featureRenderer) {
+	public <T extends EntityRenderState> void register(RenderLayer<T, ? extends EntityModel<T>> featureRenderer) {
 		Objects.requireNonNull(featureRenderer, "Feature renderer cannot be null");
 		this.delegate.apply(featureRenderer);
 	}

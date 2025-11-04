@@ -33,33 +33,33 @@ import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.util.collection.Pool;
-import net.minecraft.util.collection.Weighted;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.util.random.WeightedList;
+import net.minecraft.util.random.Weighted;
 import net.minecraft.world.attribute.EnvironmentAttribute;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
-import net.minecraft.world.attribute.EnvironmentAttributeModifier;
+import net.minecraft.world.attribute.modifier.AttributeModifier;
 import net.minecraft.world.attribute.EnvironmentAttributes;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeEffects;
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.carver.ConfiguredCarver;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 
 public class BiomeModificationContextImpl implements BiomeModificationContext {
-	private final DynamicRegistryManager registries;
+	private final RegistryAccess registries;
 	private final Biome biome;
 	private final WeatherContext weather;
 	private final AttributesContext attributes;
@@ -67,7 +67,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private final GenerationSettingsContextImpl generationSettings;
 	private final SpawnSettingsContextImpl spawnSettings;
 
-	public BiomeModificationContextImpl(DynamicRegistryManager registries, Biome biome) {
+	public BiomeModificationContextImpl(RegistryAccess registries, Biome biome) {
 		this.registries = registries;
 		this.biome = biome;
 		this.weather = new WeatherContextImpl();
@@ -117,54 +117,54 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	private class WeatherContextImpl implements WeatherContext {
 		@Override
 		public void setPrecipitation(boolean hasPrecipitation) {
-			biome.weather = new Biome.Weather(hasPrecipitation, biome.weather.temperature(), biome.weather.temperatureModifier(), biome.weather.downfall());
+			biome.climateSettings = new Biome.ClimateSettings(hasPrecipitation, biome.climateSettings.temperature(), biome.climateSettings.temperatureModifier(), biome.climateSettings.downfall());
 		}
 
 		@Override
 		public void setTemperature(float temperature) {
-			biome.weather = new Biome.Weather(biome.weather.hasPrecipitation(), temperature, biome.weather.temperatureModifier(), biome.weather.downfall());
+			biome.climateSettings = new Biome.ClimateSettings(biome.climateSettings.hasPrecipitation(), temperature, biome.climateSettings.temperatureModifier(), biome.climateSettings.downfall());
 		}
 
 		@Override
 		public void setTemperatureModifier(Biome.TemperatureModifier temperatureModifier) {
-			biome.weather = new Biome.Weather(biome.weather.hasPrecipitation(), biome.weather.temperature(), Objects.requireNonNull(temperatureModifier), biome.weather.downfall());
+			biome.climateSettings = new Biome.ClimateSettings(biome.climateSettings.hasPrecipitation(), biome.climateSettings.temperature(), Objects.requireNonNull(temperatureModifier), biome.climateSettings.downfall());
 		}
 
 		@Override
 		public void setDownfall(float downfall) {
-			biome.weather = new Biome.Weather(biome.weather.hasPrecipitation(), biome.weather.temperature(), biome.weather.temperatureModifier(), downfall);
+			biome.climateSettings = new Biome.ClimateSettings(biome.climateSettings.hasPrecipitation(), biome.climateSettings.temperature(), biome.climateSettings.temperatureModifier(), downfall);
 		}
 	}
 
 	private class AttributesContextImpl implements AttributesContext {
 		@Override
 		public void addAll(EnvironmentAttributeMap map) {
-			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().addAll(biome.getEnvironmentAttributes());
-			attributes.addAll(map);
-			biome.environmentAttributes = attributes.build();
+			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().putAll(biome.getAttributes());
+			attributes.putAll(map);
+			biome.attributes = attributes.build();
 		}
 
 		@Override
 		public <T> void set(EnvironmentAttribute<T> key, T value) {
-			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().addAll(biome.getEnvironmentAttributes());
-			attributes.with(key, value);
-			biome.environmentAttributes = attributes.build();
+			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().putAll(biome.getAttributes());
+			attributes.set(key, value);
+			biome.attributes = attributes.build();
 		}
 
 		@Override
-		public <T, M> void setModifier(EnvironmentAttribute<T> key, EnvironmentAttributeModifier<T, M> modifier, M value) {
-			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().addAll(biome.getEnvironmentAttributes());
-			attributes.with(key, modifier, value);
-			biome.environmentAttributes = attributes.build();
+		public <T, M> void setModifier(EnvironmentAttribute<T> key, AttributeModifier<T, M> modifier, M value) {
+			EnvironmentAttributeMap.Builder attributes = EnvironmentAttributeMap.builder().putAll(biome.getAttributes());
+			attributes.modify(key, modifier, value);
+			biome.attributes = attributes.build();
 		}
 	}
 
 	private class EffectsContextImpl implements EffectsContext {
-		private final BiomeEffects effects = biome.getEffects();
+		private final BiomeSpecialEffects effects = biome.getSpecialEffects();
 
 		@Override
 		public void setFogColor(int color) {
-			attributes.set(EnvironmentAttributes.FOG_COLOR_VISUAL, color);
+			attributes.set(EnvironmentAttributes.FOG_COLOR, color);
 		}
 
 		@Override
@@ -174,39 +174,39 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public void setWaterFogColor(int color) {
-			attributes.set(EnvironmentAttributes.WATER_FOG_COLOR_VISUAL, color);
+			attributes.set(EnvironmentAttributes.WATER_FOG_COLOR, color);
 		}
 
 		@Override
 		public void setSkyColor(int color) {
-			attributes.set(EnvironmentAttributes.SKY_COLOR_VISUAL, color);
+			attributes.set(EnvironmentAttributes.SKY_COLOR, color);
 		}
 
 		@Override
 		public void setFoliageColor(Optional<Integer> color) {
-			effects.foliageColor = Objects.requireNonNull(color);
+			effects.foliageColorOverride = Objects.requireNonNull(color);
 		}
 
 		@Override
 		public void setGrassColor(Optional<Integer> color) {
-			effects.grassColor = Objects.requireNonNull(color);
+			effects.grassColorOverride = Objects.requireNonNull(color);
 		}
 
 		@Override
-		public void setGrassColorModifier(BiomeEffects.GrassColorModifier colorModifier) {
+		public void setGrassColorModifier(BiomeSpecialEffects.GrassColorModifier colorModifier) {
 			effects.grassColorModifier = Objects.requireNonNull(colorModifier);
 		}
 
 		@Override
 		public void setMusicVolume(float volume) {
-			attributes.set(EnvironmentAttributes.MUSIC_VOLUME_AUDIO, volume);
+			attributes.set(EnvironmentAttributes.MUSIC_VOLUME, volume);
 		}
 	}
 
 	private class GenerationSettingsContextImpl implements GenerationSettingsContext {
-		private final Registry<ConfiguredCarver<?>> carvers = registries.getOrThrow(RegistryKeys.CONFIGURED_CARVER);
-		private final Registry<PlacedFeature> features = registries.getOrThrow(RegistryKeys.PLACED_FEATURE);
-		private final GenerationSettings generationSettings = biome.getGenerationSettings();
+		private final Registry<ConfiguredWorldCarver<?>> carvers = registries.lookupOrThrow(Registries.CONFIGURED_CARVER);
+		private final Registry<PlacedFeature> features = registries.lookupOrThrow(Registries.PLACED_FEATURE);
+		private final BiomeGenerationSettings generationSettings = biome.getGenerationSettings();
 
 		boolean rebuildFeatures;
 
@@ -238,36 +238,36 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		private void freezeFeatures() {
 			generationSettings.features = ImmutableList.copyOf(generationSettings.features);
 			// Replace the supplier to force a rebuild next time its called.
-			generationSettings.allowedFeatures = Suppliers.memoize(() -> {
-				return generationSettings.features.stream().flatMap(RegistryEntryList::stream).map(RegistryEntry::value).collect(Collectors.toSet());
+			generationSettings.featureSet = Suppliers.memoize(() -> {
+				return generationSettings.features.stream().flatMap(HolderSet::stream).map(Holder::value).collect(Collectors.toSet());
 			});
 		}
 
 		private void rebuildFlowerFeatures() {
 			// Replace the supplier to force a rebuild next time its called.
 			generationSettings.flowerFeatures = Suppliers.memoize(() -> {
-				return generationSettings.features.stream().flatMap(RegistryEntryList::stream).map(RegistryEntry::value).flatMap(PlacedFeature::getDecoratedFeatures).filter((configuredFeature) -> {
+				return generationSettings.features.stream().flatMap(HolderSet::stream).map(Holder::value).flatMap(PlacedFeature::getFeatures).filter((configuredFeature) -> {
 					return configuredFeature.feature() == Feature.FLOWER;
 				}).collect(ImmutableList.toImmutableList());
 			});
 		}
 
 		@Override
-		public boolean removeFeature(GenerationStep.Feature step, RegistryKey<PlacedFeature> placedFeatureKey) {
+		public boolean removeFeature(GenerationStep.Decoration step, ResourceKey<PlacedFeature> placedFeatureKey) {
 			PlacedFeature placedFeature = getEntry(features, placedFeatureKey).value();
 
 			int stepIndex = step.ordinal();
-			List<RegistryEntryList<PlacedFeature>> featureSteps = generationSettings.features;
+			List<HolderSet<PlacedFeature>> featureSteps = generationSettings.features;
 
 			if (stepIndex >= featureSteps.size()) {
 				return false; // The step was not populated with any features yet
 			}
 
-			RegistryEntryList<PlacedFeature> featuresInStep = featureSteps.get(stepIndex);
-			List<RegistryEntry<PlacedFeature>> features = new ArrayList<>(featuresInStep.stream().toList());
+			HolderSet<PlacedFeature> featuresInStep = featureSteps.get(stepIndex);
+			List<Holder<PlacedFeature>> features = new ArrayList<>(featuresInStep.stream().toList());
 
 			if (features.removeIf(feature -> feature.value() == placedFeature)) {
-				featureSteps.set(stepIndex, RegistryEntryList.of(features));
+				featureSteps.set(stepIndex, HolderSet.direct(features));
 				rebuildFeatures = true;
 
 				return true;
@@ -277,16 +277,16 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void addFeature(GenerationStep.Feature step, RegistryKey<PlacedFeature> entry) {
-			List<RegistryEntryList<PlacedFeature>> featureSteps = generationSettings.features;
+		public void addFeature(GenerationStep.Decoration step, ResourceKey<PlacedFeature> entry) {
+			List<HolderSet<PlacedFeature>> featureSteps = generationSettings.features;
 			int index = step.ordinal();
 
 			// Add new empty lists for the generation steps that have no features yet
 			while (index >= featureSteps.size()) {
-				featureSteps.add(RegistryEntryList.of(Collections.emptyList()));
+				featureSteps.add(HolderSet.direct(Collections.emptyList()));
 			}
 
-			RegistryEntry.Reference<PlacedFeature> feature = getEntry(features, entry);
+			Holder.Reference<PlacedFeature> feature = getEntry(features, entry);
 
 			// Don't add the feature if it's already present
 			if (featureSteps.get(index).contains(feature)) {
@@ -300,30 +300,30 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void addCarver(RegistryKey<ConfiguredCarver<?>> entry) {
+		public void addCarver(ResourceKey<ConfiguredWorldCarver<?>> entry) {
 			// We do not need to delay evaluation of this since the registries are already fully built
 			generationSettings.carvers = plus(generationSettings.carvers, getEntry(carvers, entry));
 		}
 
 		@Override
-		public boolean removeCarver(RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
-			ConfiguredCarver<?> carver = getEntry(carvers, configuredCarverKey).value();
-			List<RegistryEntry<ConfiguredCarver<?>>> genCarvers = new ArrayList<>(generationSettings.carvers.stream().toList());
+		public boolean removeCarver(ResourceKey<ConfiguredWorldCarver<?>> configuredCarverKey) {
+			ConfiguredWorldCarver<?> carver = getEntry(carvers, configuredCarverKey).value();
+			List<Holder<ConfiguredWorldCarver<?>>> genCarvers = new ArrayList<>(generationSettings.carvers.stream().toList());
 
 			if (genCarvers.removeIf(entry -> entry.value() == carver)) {
-				generationSettings.carvers = RegistryEntryList.of(genCarvers);
+				generationSettings.carvers = HolderSet.direct(genCarvers);
 				return true;
 			}
 
 			return false;
 		}
 
-		private <T> RegistryEntryList<T> plus(@Nullable RegistryEntryList<T> values, RegistryEntry<T> entry) {
-			if (values == null) return RegistryEntryList.of(entry);
+		private <T> HolderSet<T> plus(@Nullable HolderSet<T> values, Holder<T> entry) {
+			if (values == null) return HolderSet.direct(entry);
 
-			List<RegistryEntry<T>> list = new ArrayList<>(values.stream().toList());
+			List<Holder<T>> list = new ArrayList<>(values.stream().toList());
 			list.add(entry);
-			return RegistryEntryList.of(list);
+			return HolderSet.direct(list);
 		}
 	}
 
@@ -332,8 +332,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	 * Gives more helpful error messages if an entry is missing by checking if the modder
 	 * forgot to data-gen the JSONs corresponding to their built-in objects.
 	 */
-	private static <T> RegistryEntry.Reference<T> getEntry(Registry<T> registry, RegistryKey<T> key) {
-		RegistryEntry.Reference<T> entry = registry.getOptional(key).orElse(null);
+	private static <T> Holder.Reference<T> getEntry(Registry<T> registry, ResourceKey<T> key) {
+		Holder.Reference<T> entry = registry.get(key).orElse(null);
 
 		if (entry == null) {
 			// The key doesn't exist in the data packs
@@ -344,8 +344,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	}
 
 	private class SpawnSettingsContextImpl implements SpawnSettingsContext {
-		private final SpawnSettings spawnSettings = biome.getSpawnSettings();
-		private final EnumMap<SpawnGroup, List<Weighted<SpawnSettings.SpawnEntry>>> fabricSpawners = new EnumMap<>(SpawnGroup.class);
+		private final MobSpawnSettings spawnSettings = biome.getMobSettings();
+		private final EnumMap<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> fabricSpawners = new EnumMap<>(MobCategory.class);
 
 		SpawnSettingsContextImpl() {
 			unfreezeSpawners();
@@ -355,11 +355,11 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		private void unfreezeSpawners() {
 			fabricSpawners.clear();
 
-			for (SpawnGroup spawnGroup : SpawnGroup.values()) {
-				Pool<SpawnSettings.SpawnEntry> entries = spawnSettings.spawners.get(spawnGroup);
+			for (MobCategory spawnGroup : MobCategory.values()) {
+				WeightedList<MobSpawnSettings.SpawnerData> entries = spawnSettings.spawners.get(spawnGroup);
 
 				if (entries != null) {
-					fabricSpawners.put(spawnGroup, new ArrayList<>(entries.getEntries()));
+					fabricSpawners.put(spawnGroup, new ArrayList<>(entries.unwrap()));
 				} else {
 					fabricSpawners.put(spawnGroup, new ArrayList<>());
 				}
@@ -367,7 +367,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		private void unfreezeSpawnCost() {
-			spawnSettings.spawnCosts = new HashMap<>(spawnSettings.spawnCosts);
+			spawnSettings.mobSpawnCosts = new HashMap<>(spawnSettings.mobSpawnCosts);
 		}
 
 		public void freeze() {
@@ -376,13 +376,13 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		private void freezeSpawners() {
-			Map<SpawnGroup, Pool<SpawnSettings.SpawnEntry>> spawners = new HashMap<>(spawnSettings.spawners);
+			Map<MobCategory, WeightedList<MobSpawnSettings.SpawnerData>> spawners = new HashMap<>(spawnSettings.spawners);
 
-			for (Map.Entry<SpawnGroup, List<Weighted<SpawnSettings.SpawnEntry>>> entry : fabricSpawners.entrySet()) {
+			for (Map.Entry<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> entry : fabricSpawners.entrySet()) {
 				if (entry.getValue().isEmpty()) {
-					spawners.put(entry.getKey(), Pool.empty());
+					spawners.put(entry.getKey(), WeightedList.of());
 				} else {
-					spawners.put(entry.getKey(), Pool.of(entry.getValue()));
+					spawners.put(entry.getKey(), WeightedList.of(entry.getValue()));
 				}
 			}
 
@@ -390,23 +390,23 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		private void freezeSpawnCosts() {
-			spawnSettings.spawnCosts = ImmutableMap.copyOf(spawnSettings.spawnCosts);
+			spawnSettings.mobSpawnCosts = ImmutableMap.copyOf(spawnSettings.mobSpawnCosts);
 		}
 
 		@Override
 		public void setCreatureSpawnProbability(float probability) {
-			spawnSettings.creatureSpawnProbability = probability;
+			spawnSettings.creatureGenerationProbability = probability;
 		}
 
 		@Override
-		public @UnmodifiableView List<Weighted<SpawnSettings.SpawnEntry>> getSpawnEntries(SpawnGroup spawnGroup) {
+		public @UnmodifiableView List<Weighted<MobSpawnSettings.SpawnerData>> getSpawnEntries(MobCategory spawnGroup) {
 			Objects.requireNonNull(spawnGroup);
 
 			return Collections.unmodifiableList(fabricSpawners.get(spawnGroup));
 		}
 
 		@Override
-		public void addSpawn(SpawnGroup spawnGroup, SpawnSettings.SpawnEntry spawnEntry, int weight) {
+		public void addSpawn(MobCategory spawnGroup, MobSpawnSettings.SpawnerData spawnEntry, int weight) {
 			Objects.requireNonNull(spawnGroup);
 			Objects.requireNonNull(spawnEntry);
 
@@ -414,10 +414,10 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public boolean removeSpawns(BiPredicate<SpawnGroup, SpawnSettings.SpawnEntry> predicate) {
+		public boolean removeSpawns(BiPredicate<MobCategory, MobSpawnSettings.SpawnerData> predicate) {
 			boolean anyRemoved = false;
 
-			for (SpawnGroup group : SpawnGroup.values()) {
+			for (MobCategory group : MobCategory.values()) {
 				if (fabricSpawners.get(group).removeIf(entry -> predicate.test(group, entry.value()))) {
 					anyRemoved = true;
 				}
@@ -429,12 +429,12 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		@Override
 		public void setSpawnCost(EntityType<?> entityType, double mass, double gravityLimit) {
 			Objects.requireNonNull(entityType);
-			spawnSettings.spawnCosts.put(entityType, new SpawnSettings.SpawnDensity(gravityLimit, mass));
+			spawnSettings.mobSpawnCosts.put(entityType, new MobSpawnSettings.MobSpawnCost(gravityLimit, mass));
 		}
 
 		@Override
 		public void clearSpawnCost(EntityType<?> entityType) {
-			spawnSettings.spawnCosts.remove(entityType);
+			spawnSettings.mobSpawnCosts.remove(entityType);
 		}
 	}
 }

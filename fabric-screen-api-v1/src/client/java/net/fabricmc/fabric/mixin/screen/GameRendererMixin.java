@@ -21,16 +21,16 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
 @Mixin(GameRenderer.class)
 abstract class GameRendererMixin {
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V"))
-	private void onRenderScreen(Screen currentScreen, DrawContext drawContext, int mouseX, int mouseY, float tickDelta, Operation<Void> operation) {
+	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphics;IIF)V"))
+	private void onRenderScreen(Screen currentScreen, GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta, Operation<Void> operation) {
 		ScreenEvents.beforeRender(currentScreen).invoker().beforeRender(currentScreen, drawContext, mouseX, mouseY, tickDelta);
 		operation.call(currentScreen, drawContext, mouseX, mouseY, tickDelta);
 		ScreenEvents.afterRender(currentScreen).invoker().afterRender(currentScreen, drawContext, mouseX, mouseY, tickDelta);

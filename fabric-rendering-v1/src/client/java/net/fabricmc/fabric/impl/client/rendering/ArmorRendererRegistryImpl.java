@@ -21,10 +21,10 @@ import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.registry.Registries;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 
@@ -32,23 +32,23 @@ public class ArmorRendererRegistryImpl {
 	private static final HashMap<Item, ArmorRenderer.Factory> FACTORIES = new HashMap<>();
 	private static final HashMap<Item, ArmorRenderer> RENDERERS = new HashMap<>();
 
-	public static void register(ArmorRenderer.Factory factory, ItemConvertible... items) {
+	public static void register(ArmorRenderer.Factory factory, ItemLike... items) {
 		Objects.requireNonNull(factory, "renderer factory is null");
 
 		if (items.length == 0) {
 			throw new IllegalArgumentException("Armor renderer registered for no item");
 		}
 
-		for (ItemConvertible item : items) {
+		for (ItemLike item : items) {
 			Objects.requireNonNull(item.asItem(), "armor item is null");
 
 			if (FACTORIES.putIfAbsent(item.asItem(), factory) != null) {
-				throw new IllegalArgumentException("Custom armor renderer already exists for " + Registries.ITEM.getId(item.asItem()));
+				throw new IllegalArgumentException("Custom armor renderer already exists for " + BuiltInRegistries.ITEM.getKey(item.asItem()));
 			}
 		}
 	}
 
-	public static void register(ArmorRenderer renderer, ItemConvertible... items) {
+	public static void register(ArmorRenderer renderer, ItemLike... items) {
 		Objects.requireNonNull(renderer, "renderer is null");
 		register(context -> renderer, items);
 	}
@@ -58,7 +58,7 @@ public class ArmorRendererRegistryImpl {
 		return RENDERERS.get(item);
 	}
 
-	public static void createArmorRenderers(EntityRendererFactory.Context context) {
+	public static void createArmorRenderers(EntityRendererProvider.Context context) {
 		RENDERERS.clear();
 		FACTORIES.forEach((item, factory) -> RENDERERS.put(item, factory.createArmorRenderer(context)));
 	}

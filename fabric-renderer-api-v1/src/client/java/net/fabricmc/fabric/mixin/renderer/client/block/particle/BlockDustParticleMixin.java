@@ -20,17 +20,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.particle.BlockDustParticle;
-import net.minecraft.client.render.block.BlockModels;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.particle.TerrainParticle;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 
-@Mixin(BlockDustParticle.class)
+@Mixin(TerrainParticle.class)
 abstract class BlockDustParticleMixin {
-	@Redirect(method = "<init>(Lnet/minecraft/client/world/ClientWorld;DDDDDDLnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;)V", at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/BlockModels.getModelParticleSprite(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/texture/Sprite;"))
-	private static Sprite getModelParticleSpriteProxy(BlockModels models, BlockState state, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state1, BlockPos blockPos) {
+	@Redirect(method = "<init>(Lnet/minecraft/client/multiplayer/ClientLevel;DDDDDDLnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/particle/TerrainParticle;net/minecraft/client/render/block/BlockModels.getModelParticleSprite(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;"))
+	private static TextureAtlasSprite getModelParticleSpriteProxy(BlockModelShaper models, BlockState state, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state1, BlockPos blockPos) {
 		return models.getModelParticleSprite(state, world, blockPos);
 	}
 }

@@ -23,17 +23,17 @@ import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.client.render.MapRenderState;
-import net.minecraft.client.render.block.MovingBlockRenderState;
-import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.render.state.OutlineRenderState;
-import net.minecraft.client.render.state.SkyRenderState;
-import net.minecraft.client.render.state.WeatherRenderState;
-import net.minecraft.client.render.state.WorldBorderRenderState;
-import net.minecraft.client.render.state.WorldRenderState;
+import net.minecraft.client.renderer.state.MapRenderState;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.BlockOutlineRenderState;
+import net.minecraft.client.renderer.state.SkyRenderState;
+import net.minecraft.client.renderer.state.WeatherRenderState;
+import net.minecraft.client.renderer.state.WorldBorderRenderState;
+import net.minecraft.client.renderer.state.LevelRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
@@ -41,14 +41,14 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 @Mixin({
 		EntityRenderState.class,
 		BlockEntityRenderState.class,
-		ItemRenderState.class,
-		ItemRenderState.LayerRenderState.class,
+		ItemStackRenderState.class,
+		ItemStackRenderState.LayerRenderState.class,
 		MapRenderState.class,
-		MapRenderState.Decoration.class,
+		MapRenderState.MapDecorationRenderState.class,
 		MovingBlockRenderState.class,
-		WorldRenderState.class,
+		LevelRenderState.class,
 		CameraRenderState.class,
-		OutlineRenderState.class,
+		BlockOutlineRenderState.class,
 		WeatherRenderState.class,
 		WorldBorderRenderState.class,
 		SkyRenderState.class

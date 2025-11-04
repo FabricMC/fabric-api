@@ -22,13 +22,13 @@ import java.util.Set;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.network.listener.ClientCommonPacketListener;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.protocol.common.ClientCommonPacketListener;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
@@ -44,14 +44,14 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
  *
  * <h2>Packet object-based API</h2>
  *
- * <p>This class provides a registration method, utilizing packet objects, {@link #registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)}.
+ * <p>This class provides a registration method, utilizing packet objects, {@link #registerGlobalReceiver(CustomPacketPayload.Type, PlayPayloadHandler)}.
  * This handler executes the callback in the server thread, ensuring thread safety.
  *
  * <p>This payload object-based API involves three classes:
  *
  * <ul>
- *     <li>A class implementing {@link CustomPayload} that is "sent" over the network</li>
- *     <li>{@link CustomPayload.Type} instance, which represents the packet's type (and its codec)</li>
+ *     <li>A class implementing {@link CustomPacketPayload} that is "sent" over the network</li>
+ *     <li>{@link CustomPacketPayload.TypeAndCodec} instance, which represents the packet's type (and its codec)</li>
  *     <li>{@link PlayPayloadHandler}, which handles the packet (usually implemented as a functional interface)</li>
  * </ul>
  *
@@ -74,7 +74,7 @@ public final class ServerPlayNetworking {
 	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#playC2S() registered} yet
 	 * @see ServerPlayNetworking#unregisterGlobalReceiver(Identifier)
 	 */
-	public static <T extends CustomPayload> boolean registerGlobalReceiver(CustomPayload.Id<T> type, PlayPayloadHandler<T> handler) {
+	public static <T extends CustomPacketPayload> boolean registerGlobalReceiver(CustomPacketPayload.Type<T> type, PlayPayloadHandler<T> handler) {
 		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(type.id(), handler);
 	}
 
@@ -86,9 +86,9 @@ public final class ServerPlayNetworking {
 	 *
 	 * @param id the payload id
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)}
-	 * @see ServerPlayNetworking#registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)
-	 * @see ServerPlayNetworking#unregisterReceiver(ServerPlayNetworkHandler, Identifier)
+	 * or it was not registered using {@link #registerGlobalReceiver(CustomPacketPayload.Type, PlayPayloadHandler)}
+	 * @see ServerPlayNetworking#registerGlobalReceiver(CustomPacketPayload.Type, PlayPayloadHandler)
+	 * @see ServerPlayNetworking#unregisterReceiver(ServerGamePacketListenerImpl, Identifier)
 	 */
 	public static ServerPlayNetworking.@Nullable PlayPayloadHandler<?> unregisterGlobalReceiver(Identifier id) {
 		return ServerNetworkingImpl.PLAY.unregisterGlobalReceiver(id);
@@ -106,14 +106,14 @@ public final class ServerPlayNetworking {
 
 	/**
 	 * Registers a handler for a payload type.
-	 * This method differs from {@link ServerPlayNetworking#registerGlobalReceiver(CustomPayload.Id, PlayPayloadHandler)} since
-	 * the channel handler will only be applied to the player represented by the {@link ServerPlayNetworkHandler}.
+	 * This method differs from {@link ServerPlayNetworking#registerGlobalReceiver(CustomPacketPayload.Type, PlayPayloadHandler)} since
+	 * the channel handler will only be applied to the player represented by the {@link ServerGamePacketListenerImpl}.
 	 *
 	 * <p>For example, if you only register a receiver using this method when a {@linkplain ServerLoginNetworking#registerGlobalReceiver(Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
 	 * login response has been received, you should use {@link ServerPlayConnectionEvents#INIT} to register the channel handler.
 	 *
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.
+	 * Use {@link #unregisterReceiver(ServerGamePacketListenerImpl, Identifier)} to unregister the existing handler.
 	 *
 	 * @param networkHandler the network handler
 	 * @param type the packet type
@@ -122,7 +122,7 @@ public final class ServerPlayNetworking {
 	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#playC2S() registered} yet
 	 * @see ServerPlayConnectionEvents#INIT
 	 */
-	public static <T extends CustomPayload> boolean registerReceiver(ServerPlayNetworkHandler networkHandler, CustomPayload.Id<T> type, PlayPayloadHandler<T> handler) {
+	public static <T extends CustomPacketPayload> boolean registerReceiver(ServerGamePacketListenerImpl networkHandler, CustomPacketPayload.Type<T> type, PlayPayloadHandler<T> handler) {
 		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(type.id(), handler);
 	}
 
@@ -133,9 +133,9 @@ public final class ServerPlayNetworking {
 	 *
 	 * @param id the id of the payload
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
-	 * or it was not registered using {@link #registerReceiver(ServerPlayNetworkHandler, CustomPayload.Id, PlayPayloadHandler)}
+	 * or it was not registered using {@link #registerReceiver(ServerGamePacketListenerImpl, CustomPacketPayload.Type, PlayPayloadHandler)}
 	 */
-	public static ServerPlayNetworking.@Nullable PlayPayloadHandler<?> unregisterReceiver(ServerPlayNetworkHandler networkHandler, Identifier id) {
+	public static ServerPlayNetworking.@Nullable PlayPayloadHandler<?> unregisterReceiver(ServerGamePacketListenerImpl networkHandler, Identifier id) {
 		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(id);
 	}
 
@@ -145,10 +145,10 @@ public final class ServerPlayNetworking {
 	 * @param player the player
 	 * @return All the channel names that the server can receive packets on
 	 */
-	public static Set<Identifier> getReceived(ServerPlayerEntity player) {
+	public static Set<Identifier> getReceived(ServerPlayer player) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return getReceived(player.networkHandler);
+		return getReceived(player.connection);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public final class ServerPlayNetworking {
 	 * @param handler the network handler
 	 * @return All the channel names that the server can receive packets on
 	 */
-	public static Set<Identifier> getReceived(ServerPlayNetworkHandler handler) {
+	public static Set<Identifier> getReceived(ServerGamePacketListenerImpl handler) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler).getReceivableChannels();
@@ -169,10 +169,10 @@ public final class ServerPlayNetworking {
 	 * @param player the player
 	 * @return All the channel names the connected client declared the ability to receive a packets on
 	 */
-	public static Set<Identifier> getSendable(ServerPlayerEntity player) {
+	public static Set<Identifier> getSendable(ServerPlayer player) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return getSendable(player.networkHandler);
+		return getSendable(player.connection);
 	}
 
 	/**
@@ -181,7 +181,7 @@ public final class ServerPlayNetworking {
 	 * @param handler the network handler
 	 * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
 	 */
-	public static Set<Identifier> getSendable(ServerPlayNetworkHandler handler) {
+	public static Set<Identifier> getSendable(ServerGamePacketListenerImpl handler) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler).getSendableChannels();
@@ -194,10 +194,10 @@ public final class ServerPlayNetworking {
 	 * @param channelName the channel name
 	 * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
 	 */
-	public static boolean canSend(ServerPlayerEntity player, Identifier channelName) {
+	public static boolean canSend(ServerPlayer player, Identifier channelName) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return canSend(player.networkHandler, channelName);
+		return canSend(player.connection, channelName);
 	}
 
 	/**
@@ -207,10 +207,10 @@ public final class ServerPlayNetworking {
 	 * @param type the packet type
 	 * @return {@code true} if the connected client has declared the ability to receive a specific type of packet
 	 */
-	public static boolean canSend(ServerPlayerEntity player, CustomPayload.Id<?> type) {
+	public static boolean canSend(ServerPlayer player, CustomPacketPayload.Type<?> type) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return canSend(player.networkHandler, type.id());
+		return canSend(player.connection, type.id());
 	}
 
 	/**
@@ -220,7 +220,7 @@ public final class ServerPlayNetworking {
 	 * @param channelName the channel name
 	 * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
 	 */
-	public static boolean canSend(ServerPlayNetworkHandler handler, Identifier channelName) {
+	public static boolean canSend(ServerGamePacketListenerImpl handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
@@ -234,7 +234,7 @@ public final class ServerPlayNetworking {
 	 * @param type the packet type
 	 * @return {@code true} if the connected client has declared the ability to receive a specific type of packet
 	 */
-	public static boolean canSend(ServerPlayNetworkHandler handler, CustomPayload.Id<?> type) {
+	public static boolean canSend(ServerGamePacketListenerImpl handler, CustomPacketPayload.Type<?> type) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 		Objects.requireNonNull(type, "Packet type cannot be null");
 
@@ -247,7 +247,7 @@ public final class ServerPlayNetworking {
 	 * @param packet the packet
 	 * @return a new packet
 	 */
-	public static <T extends CustomPayload> Packet<ClientCommonPacketListener> createS2CPacket(T packet) {
+	public static <T extends CustomPacketPayload> Packet<ClientCommonPacketListener> createS2CPacket(T packet) {
 		return ServerNetworkingImpl.createS2CPacket(packet);
 	}
 
@@ -257,10 +257,10 @@ public final class ServerPlayNetworking {
 	 * @param player the player
 	 * @return the packet sender
 	 */
-	public static PacketSender getSender(ServerPlayerEntity player) {
+	public static PacketSender getSender(ServerPlayer player) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return getSender(player.networkHandler);
+		return getSender(player.connection);
 	}
 
 	/**
@@ -269,7 +269,7 @@ public final class ServerPlayNetworking {
 	 * @param handler the network handler, representing the connection to the player/client
 	 * @return the packet sender
 	 */
-	public static PacketSender getSender(ServerPlayNetworkHandler handler) {
+	public static PacketSender getSender(ServerGamePacketListenerImpl handler) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler);
@@ -283,12 +283,12 @@ public final class ServerPlayNetworking {
 	 * @param player the player to send the packet to
 	 * @param payload the payload to send
 	 */
-	public static void send(ServerPlayerEntity player, CustomPayload payload) {
+	public static void send(ServerPlayer player, CustomPacketPayload payload) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 		Objects.requireNonNull(payload, "Payload cannot be null");
-		Objects.requireNonNull(payload.getId(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
+		Objects.requireNonNull(payload.type(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
 
-		player.networkHandler.sendPacket(createS2CPacket(payload));
+		player.connection.send(createS2CPacket(payload));
 	}
 
 	/**
@@ -296,10 +296,10 @@ public final class ServerPlayNetworking {
 	 *
 	 * @param player the player
 	 */
-	public static void reconfigure(ServerPlayerEntity player) {
+	public static void reconfigure(ServerPlayer player) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		reconfigure(player.networkHandler);
+		reconfigure(player.connection);
 	}
 
 	/**
@@ -307,7 +307,7 @@ public final class ServerPlayNetworking {
 	 *
 	 * @param handler the network handler
 	 */
-	public static void reconfigure(ServerPlayNetworkHandler handler) {
+	public static void reconfigure(ServerGamePacketListenerImpl handler) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
 		ServerNetworkingImpl.getAddon(handler).reconfigure();
@@ -317,11 +317,11 @@ public final class ServerPlayNetworking {
 	}
 
 	/**
-	 * A thread-safe packet handler utilizing {@link CustomPayload}.
+	 * A thread-safe packet handler utilizing {@link CustomPacketPayload}.
 	 * @param <T> the type of the packet
 	 */
 	@FunctionalInterface
-	public interface PlayPayloadHandler<T extends CustomPayload> {
+	public interface PlayPayloadHandler<T extends CustomPacketPayload> {
 		/**
 		 * Handles the incoming packet. This is called on the server thread, and can safely
 		 * manipulate the world.
@@ -334,11 +334,11 @@ public final class ServerPlayNetworking {
 		 * });
 		 * }</pre>
 		 *
-		 * <p>The network handler can be accessed via {@link ServerPlayerEntity#networkHandler}.
+		 * <p>The network handler can be accessed via {@link ServerPlayer#networkHandler}.
 		 *
 		 * @param payload the packet payload
 		 * @param context the play networking context
-		 * @see CustomPayload
+		 * @see CustomPacketPayload
 		 */
 		void receive(T payload, Context context);
 	}
@@ -353,7 +353,7 @@ public final class ServerPlayNetworking {
 		/**
 		 * @return The player that received the packet
 		 */
-		ServerPlayerEntity player();
+		ServerPlayer player();
 
 		/**
 		 * @return The packet sender

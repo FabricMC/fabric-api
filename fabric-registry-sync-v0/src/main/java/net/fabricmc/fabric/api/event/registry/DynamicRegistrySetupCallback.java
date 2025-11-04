@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * </pre>
  *
  * @see DynamicRegistryView
- * @see net.minecraft.registry.ServerDynamicRegistryType
+ * @see net.minecraft.server.RegistryLayer
  */
 @FunctionalInterface
 public interface DynamicRegistrySetupCallback {

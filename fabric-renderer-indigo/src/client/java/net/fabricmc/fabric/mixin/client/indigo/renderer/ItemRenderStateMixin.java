@@ -29,21 +29,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.QuadToPosPipe;
 
-@Mixin(ItemRenderState.class)
+@Mixin(ItemStackRenderState.class)
 abstract class ItemRenderStateMixin {
-	@Inject(method = "load(Ljava/util/function/Consumer;)V", at = @At(value = "NEW", target = "net/minecraft/client/util/math/MatrixStack$Entry"))
+	@Inject(method = "visitExtents(Ljava/util/function/Consumer;)V", at = @At(value = "NEW", target = "com/mojang/blaze3d/vertex/PoseStack$Pose"))
 	private void afterInitVecLoad(Consumer<Vector3fc> posConsumer, CallbackInfo ci, @Local Vector3f vec, @Share("pipe") LocalRef<QuadToPosPipe> pipeRef) {
 		pipeRef.set(new QuadToPosPipe(posConsumer, vec));
 	}
 
-	@Inject(method = "load(Ljava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "net/minecraft/client/util/math/MatrixStack$Entry.loadIdentity()V", shift = At.Shift.BEFORE))
-	private void afterLayerLoad(Consumer<Vector3fc> posConsumer, CallbackInfo ci, @Local(ordinal = 0) Vector3f vec, @Local ItemRenderState.LayerRenderState layer, @Local Matrix4f matrix, @Share("pipe") LocalRef<QuadToPosPipe> pipeRef) {
+	@Inject(method = "visitExtents(Ljava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;net/minecraft/client/util/math/MatrixStack$Entry.loadIdentity()V", shift = At.Shift.BEFORE))
+	private void afterLayerLoad(Consumer<Vector3fc> posConsumer, CallbackInfo ci, @Local(ordinal = 0) Vector3f vec, @Local ItemStackRenderState.LayerRenderState layer, @Local Matrix4f matrix, @Share("pipe") LocalRef<QuadToPosPipe> pipeRef) {
 		MutableMeshImpl mutableMesh = ((AccessLayerRenderState) layer).fabric_getMutableMesh();
 
 		if (mutableMesh.size() > 0) {

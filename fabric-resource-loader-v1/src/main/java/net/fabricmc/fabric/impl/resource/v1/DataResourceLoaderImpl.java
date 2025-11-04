@@ -24,20 +24,20 @@ import java.util.function.Function;
 
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.resource.ResourceReloader;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.resource.v1.DataResourceLoader;
 
 public final class DataResourceLoaderImpl extends ResourceLoaderImpl implements DataResourceLoader {
 	public static final DataResourceLoaderImpl INSTANCE = new DataResourceLoaderImpl();
-	private final Map<Identifier, Function<RegistryWrapper.WrapperLookup, ResourceReloader>> addedReloaderFactories
+	private final Map<Identifier, Function<HolderLookup.Provider, PreparableReloadListener>> addedReloaderFactories
 			= new LinkedHashMap<>();
 
 	private DataResourceLoaderImpl() {
-		super(ResourceType.SERVER_DATA);
+		super(PackType.SERVER_DATA);
 	}
 
 	@Override
@@ -46,12 +46,12 @@ public final class DataResourceLoaderImpl extends ResourceLoaderImpl implements 
 	}
 
 	@Override
-	public void registerReloader(Identifier id, Function<RegistryWrapper.WrapperLookup, ResourceReloader> factory) {
+	public void registerReloader(Identifier id, Function<HolderLookup.Provider, PreparableReloadListener> factory) {
 		Objects.requireNonNull(id, "The reloader identifier should not be null.");
 		Objects.requireNonNull(factory, "The reloader factory should not be null.");
 		this.checkUniqueResourceReloader(id);
 
-		for (Map.Entry<Identifier, Function<RegistryWrapper.WrapperLookup, ResourceReloader>> entry
+		for (Map.Entry<Identifier, Function<HolderLookup.Provider, PreparableReloadListener>> entry
 				: this.addedReloaderFactories.entrySet()
 		) {
 			if (entry.getValue() == factory) {
@@ -66,20 +66,20 @@ public final class DataResourceLoaderImpl extends ResourceLoaderImpl implements 
 	}
 
 	@Override
-	protected Set<Map.Entry<Identifier, ResourceReloader>> collectReloadersToAdd(
+	protected Set<Map.Entry<Identifier, PreparableReloadListener>> collectReloadersToAdd(
 			@Nullable SetupMarkerResourceReloader setupMarker
 	) {
 		if (setupMarker == null) {
 			throw new IllegalStateException("The setup marker should not be null for data resource loading.");
 		}
 
-		RegistryWrapper.WrapperLookup registries = setupMarker.dataPackContents().getReloadableRegistries().createRegistryLookup();
-		Set<Map.Entry<Identifier, ResourceReloader>> reloadersToAdd = super.collectReloadersToAdd(setupMarker);
+		HolderLookup.Provider registries = setupMarker.dataPackContents().fullRegistries().lookup();
+		Set<Map.Entry<Identifier, PreparableReloadListener>> reloadersToAdd = super.collectReloadersToAdd(setupMarker);
 
-		for (Map.Entry<Identifier, Function<RegistryWrapper.WrapperLookup, ResourceReloader>> entry
+		for (Map.Entry<Identifier, Function<HolderLookup.Provider, PreparableReloadListener>> entry
 				: this.addedReloaderFactories.entrySet()
 		) {
-			ResourceReloader reloader = entry.getValue().apply(registries);
+			PreparableReloadListener reloader = entry.getValue().apply(registries);
 			reloadersToAdd.add(Map.entry(entry.getKey(), reloader));
 		}
 

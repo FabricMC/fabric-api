@@ -22,12 +22,12 @@ import java.util.Map;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SerializableRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.RegistrySynchronization;
 
-@Mixin(targets = "net/minecraft/client/network/ClientRegistries$DynamicRegistries")
+@Mixin(targets = "net.minecraft.client.multiplayer.RegistryDataCollector$ContentsCollector")
 public interface ClientRegistriesDynamicRegistriesAccessor {
-	@Accessor
-	Map<RegistryKey<? extends Registry<?>>, List<SerializableRegistries.SerializedRegistryEntry>> getDynamicRegistries();
+	@Accessor("elements")
+    Map<ResourceKey<? extends Registry<?>>, List<RegistrySynchronization.PackedRegistryEntry>> getDynamicRegistries();
 }

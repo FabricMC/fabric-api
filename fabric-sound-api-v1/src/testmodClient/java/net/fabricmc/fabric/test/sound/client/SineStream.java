@@ -22,7 +22,7 @@ import javax.sound.sampled.AudioFormat;
 
 import org.lwjgl.BufferUtils;
 
-import net.minecraft.client.sound.AudioStream;
+import net.minecraft.client.sounds.AudioStream;
 
 /**
  * An audio stream which plays a sine wave.

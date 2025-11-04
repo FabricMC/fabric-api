@@ -22,20 +22,20 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
 
-@Mixin(ClientPlayerInteractionManager.class)
+@Mixin(MultiPlayerGameMode.class)
 public class ClientPlayerInteractionManagerMixin {
 	@Shadow
 	@Final
-	private MinecraftClient client;
+	private Minecraft minecraft;
 	@Shadow
-	private BlockPos currentBreakingPos;
+	private BlockPos destroyBlockPos;
 	@Shadow
-	private ItemStack selectedStack;
+	private ItemStack destroyingItem;
 
 	/**
 	 * Allows a FabricItem to continue block breaking progress even if the count or nbt changed.
@@ -45,19 +45,19 @@ public class ClientPlayerInteractionManagerMixin {
 	@Redirect(
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/item/ItemStack;areItemsAndComponentsEqual(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"
+					target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameComponents(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"
 			),
-			method = "isCurrentlyBreaking"
+			method = "sameDestroyTarget"
 	)
 	private boolean fabricItemContinueBlockBreakingInject(ItemStack stack, ItemStack otherStack) {
-		boolean stackUnchanged = ItemStack.areItemsAndComponentsEqual(stack, this.selectedStack);
+		boolean stackUnchanged = ItemStack.isSameItemSameComponents(stack, this.destroyingItem);
 
 		if (!stackUnchanged) {
 			// The stack changed and vanilla is about to cancel block breaking progress. Check if the item wants to continue block breaking instead.
-			ItemStack oldStack = this.selectedStack;
-			ItemStack newStack = this.client.player.getMainHandStack();
+			ItemStack oldStack = this.destroyingItem;
+			ItemStack newStack = this.minecraft.player.getMainHandItem();
 
-			if (oldStack.isOf(newStack.getItem()) && oldStack.getItem().allowContinuingBlockBreaking(this.client.player, oldStack, newStack)) {
+			if (oldStack.is(newStack.getItem()) && oldStack.getItem().allowContinuingBlockBreaking(this.minecraft.player, oldStack, newStack)) {
 				stackUnchanged = true;
 			}
 		}

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.transfer.item;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 

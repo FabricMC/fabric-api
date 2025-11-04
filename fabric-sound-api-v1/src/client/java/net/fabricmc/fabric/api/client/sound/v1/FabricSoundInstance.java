@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.client.sound.v1;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.client.sound.AudioStream;
-import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.client.sound.SoundLoader;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.sounds.AudioStream;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.SoundBufferLibrary;
+import net.minecraft.resources.Identifier;
 
 /**
  * General purpose Fabric-provided extensions to {@link SoundInstance}.
@@ -33,9 +33,9 @@ public interface FabricSoundInstance {
 	 * An empty sound, which may be used as a placeholder in your {@code sounds.json} file for sounds with custom audio
 	 * streams.
 	 *
-	 * @see #getAudioStream(SoundLoader, Identifier, boolean)
+	 * @see #getAudioStream(SoundBufferLibrary, Identifier, boolean)
 	 */
-	Identifier EMPTY_SOUND = Identifier.of("fabric-sound-api-v1", "empty");
+	Identifier EMPTY_SOUND = Identifier.fromNamespaceAndPath("fabric-sound-api-v1", "empty");
 
 	/**
 	 * Loads the audio stream for this sound.
@@ -86,7 +86,7 @@ public interface FabricSoundInstance {
 	 *                        {@linkplain SoundInstance#getRepeatDelay() no delay}.
 	 * @return the loaded audio stream
 	 */
-	default CompletableFuture<AudioStream> getAudioStream(SoundLoader loader, Identifier id, boolean repeatInstantly) {
-		return loader.loadStreamed(id, repeatInstantly);
+	default CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary loader, Identifier id, boolean repeatInstantly) {
+		return loader.getStream(id, repeatInstantly);
 	}
 }

@@ -18,24 +18,24 @@ package net.fabricmc.fabric.test.screenhandler.screen;
 
 import java.util.Optional;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
 
 public class PositionedBagScreenHandler extends BagScreenHandler implements PositionedScreenHandler {
 	private final BlockPos pos;
 
-	public PositionedBagScreenHandler(int syncId, PlayerInventory playerInventory, BagData data) {
-		this(syncId, playerInventory, new SimpleInventory(9), data.pos().orElse(null));
+	public PositionedBagScreenHandler(int syncId, Inventory playerInventory, BagData data) {
+		this(syncId, playerInventory, new SimpleContainer(9), data.pos().orElse(null));
 	}
 
-	public PositionedBagScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, BlockPos pos) {
+	public PositionedBagScreenHandler(int syncId, Inventory playerInventory, Container inventory, BlockPos pos) {
 		super(ScreenHandlerTest.POSITIONED_BAG_SCREEN_HANDLER, syncId, playerInventory, inventory);
 		this.pos = pos;
 	}
@@ -46,6 +46,6 @@ public class PositionedBagScreenHandler extends BagScreenHandler implements Posi
 	}
 
 	public record BagData(Optional<BlockPos> pos) {
-		public static final PacketCodec<RegistryByteBuf, BagData> PACKET_CODEC = BlockPos.PACKET_CODEC.collect(PacketCodecs::optional).xmap(BagData::new, BagData::pos).cast();
+		public static final StreamCodec<RegistryFriendlyByteBuf, BagData> PACKET_CODEC = BlockPos.STREAM_CODEC.apply(ByteBufCodecs::optional).map(BagData::new, BagData::pos).cast();
 	}
 }

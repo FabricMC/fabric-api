@@ -16,54 +16,54 @@
 
 package net.fabricmc.fabric.test.screenhandler.block;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.LootableContainerBlockEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.BlockPos;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
 import net.fabricmc.fabric.test.screenhandler.screen.BoxScreenHandler;
 
-public class BoxBlockEntity extends LootableContainerBlockEntity implements ExtendedScreenHandlerFactory<BlockPos> {
-	private DefaultedList<ItemStack> items = DefaultedList.ofSize(size(), ItemStack.EMPTY);
+public class BoxBlockEntity extends RandomizableContainerBlockEntity implements ExtendedScreenHandlerFactory<BlockPos> {
+	private NonNullList<ItemStack> items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 
 	public BoxBlockEntity(BlockPos blockPos, BlockState blockState) {
 		super(ScreenHandlerTest.BOX_ENTITY, blockPos, blockState);
 	}
 
 	@Override
-	protected DefaultedList<ItemStack> getHeldStacks() {
+	protected NonNullList<ItemStack> getItems() {
 		return items;
 	}
 
 	@Override
-	protected void setHeldStacks(DefaultedList<ItemStack> list) {
+	protected void setItems(NonNullList<ItemStack> list) {
 		this.items = list;
 	}
 
 	@Override
-	protected Text getContainerName() {
-		return Text.translatable(getCachedState().getBlock().getTranslationKey());
+	protected Component getDefaultName() {
+		return Component.translatable(getBlockState().getBlock().getDescriptionId());
 	}
 
 	@Override
-	protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
+	protected AbstractContainerMenu createMenu(int syncId, Inventory playerInventory) {
 		return new BoxScreenHandler(syncId, playerInventory, this);
 	}
 
 	@Override
-	public int size() {
+	public int getContainerSize() {
 		return 3 * 3;
 	}
 
 	@Override
-	public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
-		return pos;
+	public BlockPos getScreenOpeningData(ServerPlayer player) {
+		return worldPosition;
 	}
 }

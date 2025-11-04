@@ -32,33 +32,36 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.data.DataOutput;
-import net.minecraft.data.DataWriter;
-import net.minecraft.data.tag.TagProvider;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.tag.TagBuilder;
-import net.minecraft.util.Identifier;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagBuilder;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 import net.fabricmc.fabric.impl.datagen.TagAliasGenerator;
 
-@Mixin(TagProvider.class)
+@Mixin(TagsProvider.class)
 public class TagProviderMixin<T> {
-	@Shadow
+	// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+// TODO(Ravel): only private and package-private shadow is supported
+    @Shadow
 	@Final
-	protected RegistryKey<? extends Registry<T>> registryRef;
+	protected ResourceKey<? extends Registry<T>> registryRef;
 
 	@Unique
-	private DataOutput.PathResolver tagAliasPathResolver;
+	private PackOutput.PathProvider tagAliasPathResolver;
 
-	@Inject(method = "<init>(Lnet/minecraft/data/DataOutput;Lnet/minecraft/registry/RegistryKey;Ljava/util/concurrent/CompletableFuture;Ljava/util/concurrent/CompletableFuture;)V", at = @At("RETURN"))
-	private void initPathResolver(DataOutput output, RegistryKey<? extends Registry<T>> registryRef, CompletableFuture<?> registriesFuture, CompletableFuture<?> parentTagLookupFuture, CallbackInfo info) {
-		tagAliasPathResolver = output.getResolver(DataOutput.OutputType.DATA_PACK, TagAliasGenerator.getDirectory(registryRef));
+	@Inject(method = "<init>(Lnet/minecraft/data/PackOutput;Lnet/minecraft/resources/ResourceKey;Ljava/util/concurrent/CompletableFuture;Ljava/util/concurrent/CompletableFuture;)V", at = @At("RETURN"))
+	private void initPathResolver(PackOutput output, ResourceKey<? extends Registry<T>> registryRef, CompletableFuture<?> registriesFuture, CompletableFuture<?> parentTagLookupFuture, CallbackInfo info) {
+		tagAliasPathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, TagAliasGenerator.getDirectory(registryRef));
 	}
 
-	@ModifyArg(method = "method_27046", at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/tag/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
+	@ModifyArg(method = "method_27046", at = @At(value = "INVOKE", target = "Lnet/minecraft/tags/TagFile;<init>(Ljava/util/List;Z)V"), index = 1)
 	private boolean addReplaced(boolean replaced, @Local TagBuilder tagBuilder) {
 		if (tagBuilder instanceof FabricTagBuilder fabricTagBuilder) {
 			return fabricTagBuilder.fabric_isReplaced();
@@ -69,7 +72,7 @@ public class TagProviderMixin<T> {
 
 	@SuppressWarnings("unchecked")
 	@WrapOperation(method = "method_49659", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"))
-	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] futures, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true) DataWriter writer) {
+	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] futures, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true) CachedOutput writer) {
 		if ((Object) this instanceof FabricTagProvider<?>) {
 			// Note: no pattern matching instanceof so that we can cast directly to FabricTagProvider<T> instead of a wildcard
 			Map<Identifier, FabricTagProvider<T>.AliasGroupBuilder> builders = ((FabricTagProvider<T>) (Object) this).getAliasGroupBuilders();

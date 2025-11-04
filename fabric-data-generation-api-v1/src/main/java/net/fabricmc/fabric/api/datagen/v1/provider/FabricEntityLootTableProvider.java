@@ -24,17 +24,17 @@ import java.util.function.BiConsumer;
 
 import com.google.common.collect.Sets;
 
-import net.minecraft.data.DataWriter;
-import net.minecraft.data.loottable.EntityLootTableGenerator;
-import net.minecraft.data.loottable.vanilla.VanillaEntityLootTableGenerator;
-import net.minecraft.entity.EntityType;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.resource.featuretoggle.FeatureFlags;
-import net.minecraft.util.Identifier;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.loot.EntityLootSubProvider;
+import net.minecraft.data.loot.packs.VanillaEntityLoot;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -47,13 +47,13 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
  * <p>Register an instance of this class with {@link FabricDataGenerator.Pack#addProvider} in a
  * {@link DataGeneratorEntrypoint}.
  */
-public abstract class FabricEntityLootTableProvider extends EntityLootTableGenerator implements FabricLootTableProvider {
+public abstract class FabricEntityLootTableProvider extends EntityLootSubProvider implements FabricLootTableProvider {
 	private final FabricDataOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
-	private final CompletableFuture<RegistryWrapper.WrapperLookup> registryLookupFuture;
+	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 
-	protected FabricEntityLootTableProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
-		super(FeatureFlags.FEATURE_MANAGER.getFeatureSet(), registryLookup.join());
+	protected FabricEntityLootTableProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+		super(FeatureFlags.REGISTRY.allFlags(), registryLookup.join());
 
 		this.output = output;
 		this.registryLookupFuture = registryLookup;
@@ -62,9 +62,9 @@ public abstract class FabricEntityLootTableProvider extends EntityLootTableGener
 	/**
 	 * Implement this method to add entity drops.
 	 *
-	 * <p>Use the {@link EntityLootTableGenerator#register} methods to generate entity drops.
+	 * <p>Use the {@link EntityLootSubProvider#register} methods to generate entity drops.
 	 *
-	 * <p>See {@link VanillaEntityLootTableGenerator#generate()} for examples of vanilla entity loot tables.
+	 * <p>See {@link VanillaEntityLoot#generate()} for examples of vanilla entity loot tables.
 	 */
 	@Override
 	public abstract void generate();
@@ -73,16 +73,16 @@ public abstract class FabricEntityLootTableProvider extends EntityLootTableGener
 	 * Disable strict validation for the given entity type.
 	 */
 	public void excludeFromStrictValidation(EntityType<?> entityType) {
-		this.excludedFromStrictValidation.add(Registries.ENTITY_TYPE.getId(entityType));
+		this.excludedFromStrictValidation.add(BuiltInRegistries.ENTITY_TYPE.getKey(entityType));
 	}
 
 	@Override
-	public void accept(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> biConsumer) {
+	public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
 		this.generate();
 
-		for (Map<RegistryKey<LootTable>, LootTable.Builder> tables : this.lootTables.values()) {
+		for (Map<ResourceKey<LootTable>, LootTable.Builder> tables : this.map.values()) {
 			// Register each of this particular entity type's loot tables
-			for (Map.Entry<RegistryKey<LootTable>, LootTable.Builder> entry : tables.entrySet()) {
+			for (Map.Entry<ResourceKey<LootTable>, LootTable.Builder> entry : tables.entrySet()) {
 				biConsumer.accept(entry.getKey(), entry.getValue());
 			}
 		}
@@ -91,19 +91,19 @@ public abstract class FabricEntityLootTableProvider extends EntityLootTableGener
 			Set<Identifier> missing = Sets.newHashSet();
 
 			// Find any entity types from this mod that are missing their main loot table
-			for (Identifier entityTypeId : Registries.ENTITY_TYPE.getIds()) {
+			for (Identifier entityTypeId : BuiltInRegistries.ENTITY_TYPE.keySet()) {
 				if (!entityTypeId.getNamespace().equals(this.output.getModId())) {
 					continue;
 				}
 
-				EntityType<?> entityType = Registries.ENTITY_TYPE.get(entityTypeId);
+				EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.getValue(entityTypeId);
 
-				entityType.getLootTableKey().ifPresent(mainLootTableKey -> {
-					if (!mainLootTableKey.getValue().getNamespace().equals(this.output.getModId())) {
+				entityType.getDefaultLootTable().ifPresent(mainLootTableKey -> {
+					if (!mainLootTableKey.identifier().getNamespace().equals(this.output.getModId())) {
 						return;
 					}
 
-					Map<RegistryKey<LootTable>, LootTable.Builder> tables = this.lootTables.get(entityType);
+					Map<ResourceKey<LootTable>, LootTable.Builder> tables = this.map.get(entityType);
 
 					if (tables == null || !tables.containsKey(mainLootTableKey)) {
 						missing.add(entityTypeId);
@@ -120,8 +120,8 @@ public abstract class FabricEntityLootTableProvider extends EntityLootTableGener
 	}
 
 	@Override
-	public CompletableFuture<?> run(DataWriter writer) {
-		return FabricLootTableProviderImpl.run(writer, this, LootContextTypes.ENTITY, this.output, this.registryLookupFuture);
+	public CompletableFuture<?> run(CachedOutput writer) {
+		return FabricLootTableProviderImpl.run(writer, this, LootContextParamSets.ENTITY, this.output, this.registryLookupFuture);
 	}
 
 	@Override

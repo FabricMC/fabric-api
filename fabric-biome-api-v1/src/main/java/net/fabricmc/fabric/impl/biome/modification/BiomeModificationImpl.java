@@ -32,15 +32,15 @@ import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.registry.entry.RegistryEntryInfo;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.util.PlacedFeatureIndexer;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.FeatureSorter;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
@@ -105,7 +105,7 @@ public class BiomeModificationImpl {
 		return modifiers;
 	}
 
-	public void finalizeWorldGen(DynamicRegistryManager impl) {
+	public void finalizeWorldGen(RegistryAccess impl) {
 		Stopwatch sw = Stopwatch.createStarted();
 
 		// Now that we apply biome modifications inside the MinecraftServer constructor, we should only ever do
@@ -114,13 +114,13 @@ public class BiomeModificationImpl {
 		BiomeModificationMarker modificationTracker = (BiomeModificationMarker) impl;
 		modificationTracker.fabric_markModified();
 
-		Registry<Biome> biomes = impl.getOrThrow(RegistryKeys.BIOME);
+		Registry<Biome> biomes = impl.lookupOrThrow(Registries.BIOME);
 
 		// Build a list of all biome keys in ascending order of their raw-id to get a consistent result in case
 		// someone does something stupid.
-		List<RegistryKey<Biome>> keys = biomes.getEntrySet().stream()
+		List<ResourceKey<Biome>> keys = biomes.entrySet().stream()
 				.map(Map.Entry::getKey)
-				.sorted(Comparator.comparingInt(key -> biomes.getRawId(biomes.getValueOrThrow(key))))
+				.sorted(Comparator.comparingInt(key -> biomes.getId(biomes.getValueOrThrow(key))))
 				.toList();
 
 		List<ModifierRecord> sortedModifiers = getSortedModifiers();
@@ -129,7 +129,7 @@ public class BiomeModificationImpl {
 		int biomesProcessed = 0;
 		int modifiersApplied = 0;
 
-		for (RegistryKey<Biome> key : keys) {
+		for (ResourceKey<Biome> key : keys) {
 			Biome biome = biomes.getValueOrThrow(key);
 
 			biomesProcessed++;
@@ -141,7 +141,7 @@ public class BiomeModificationImpl {
 
 			for (ModifierRecord modifier : sortedModifiers) {
 				if (modifier.selector.test(context)) {
-					LOGGER.trace("Applying modifier {} to {}", modifier, key.getValue());
+					LOGGER.trace("Applying modifier {} to {}", modifier, key.identifier());
 
 					// Create the copy only if at least one modifier applies, since it's pretty costly
 					if (modificationContext == null) {
@@ -159,21 +159,21 @@ public class BiomeModificationImpl {
 				modificationContext.freeze();
 
 				if (modificationContext.shouldRebuildFeatures()) {
-					impl.getOrThrow(RegistryKeys.DIMENSION).stream().forEach(dimensionOptions -> {
-						dimensionOptions.chunkGenerator().indexedFeaturesListSupplier = Suppliers.memoize(
-							() -> PlacedFeatureIndexer.collectIndexedFeatures(
-									List.copyOf(dimensionOptions.chunkGenerator().getBiomeSource().getBiomes()),
-									biomeEntry -> dimensionOptions.chunkGenerator().getGenerationSettings(biomeEntry).getFeatures(),
+					impl.lookupOrThrow(Registries.LEVEL_STEM).stream().forEach(dimensionOptions -> {
+						dimensionOptions.generator().featuresPerStep = Suppliers.memoize(
+							() -> FeatureSorter.buildFeaturesPerStep(
+									List.copyOf(dimensionOptions.generator().getBiomeSource().possibleBiomes()),
+									biomeEntry -> dimensionOptions.generator().getBiomeGenerationSettings(biomeEntry).features(),
 									true
 							)
 						);
 					});
 				}
 
-				if (biomes instanceof SimpleRegistry<Biome> registry) {
-					RegistryEntryInfo info = registry.keyToEntryInfo.get(key);
-					RegistryEntryInfo newInfo = new RegistryEntryInfo(Optional.empty(), info.lifecycle());
-					registry.keyToEntryInfo.put(key, newInfo);
+				if (biomes instanceof MappedRegistry<Biome> registry) {
+					RegistrationInfo info = registry.registrationInfos.get(key);
+					RegistrationInfo newInfo = new RegistrationInfo(Optional.empty(), info.lifecycle());
+					registry.registrationInfos.put(key, newInfo);
 				}
 			}
 		}

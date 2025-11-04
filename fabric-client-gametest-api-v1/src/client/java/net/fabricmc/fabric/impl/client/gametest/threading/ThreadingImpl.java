@@ -26,7 +26,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 
@@ -144,7 +144,7 @@ public final class ThreadingImpl {
 				testFailureException = e;
 			} finally {
 				if (clientCanAcceptTasks) {
-					runOnClient(() -> MinecraftClient.getInstance().scheduleStop());
+					runOnClient(() -> Minecraft.getInstance().stop());
 				}
 
 				if (testFailureException != null) {

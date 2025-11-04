@@ -34,7 +34,7 @@
  * The Resource Loader adds manually registered mod resource packs. Those resource packs are located inside the
  * {@code resources/resourcepacks/} directory. For example, a built-in data pack with the ID {@code example:test} should be placed
  * under {@code resources/resourcepacks/test/data/}. The packs are then registered with
- * {@link net.fabricmc.fabric.api.resource.ResourceManagerHelper#registerBuiltinResourcePack(net.minecraft.util.Identifier, net.fabricmc.loader.api.ModContainer, net.fabricmc.fabric.api.resource.ResourcePackActivationType)}.
+ * {@link net.fabricmc.fabric.api.resource.ResourceManagerHelper#registerBuiltinResourcePack(net.minecraft.resources.Identifier, net.fabricmc.loader.api.ModContainer, net.fabricmc.fabric.api.resource.ResourcePackActivationType)}.
  * Users can manually enable or disable the packs, unless it is specified to be always enabled.
  *
  * <h4>Programmer Art and High Contrast Support</h4>

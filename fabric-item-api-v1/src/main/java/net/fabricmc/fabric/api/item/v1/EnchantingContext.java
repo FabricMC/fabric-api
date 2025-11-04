@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * An enum that describes the contexts in which the game checks whether an enchantment can be applied to an item.

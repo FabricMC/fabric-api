@@ -24,11 +24,11 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 
 /**
  * A registry to associate block states with specific path node types.
@@ -45,18 +45,18 @@ public final class LandPathNodeTypesRegistry {
 	}
 
 	/**
-	 * Registers a {@link PathNodeType} for the specified block, overriding the default block behavior.
+	 * Registers a {@link PathType} for the specified block, overriding the default block behavior.
 	 *
 	 * @param block              Block to register.
-	 * @param nodeType           {@link PathNodeType} to associate with the block if it is a direct target
+	 * @param nodeType           {@link PathType} to associate with the block if it is a direct target
 	 *                           in an entity path.
 	 *                           (Pass {@code null} to not specify a node type and use the default behavior)
-	 * @param nodeTypeIfNeighbor {@link PathNodeType} to associate with the block, if it is in a direct neighbor
+	 * @param nodeTypeIfNeighbor {@link PathType} to associate with the block, if it is in a direct neighbor
 	 *                           position to an entity path that is directly next to a block
 	 *                           that the entity will pass through or above.
 	 *                           (Pass {@code null} to not specify a node type and use the default behavior)
 	 */
-	public static void register(Block block, @Nullable PathNodeType nodeType, @Nullable PathNodeType nodeTypeIfNeighbor) {
+	public static void register(Block block, @Nullable PathType nodeType, @Nullable PathType nodeTypeIfNeighbor) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 
 		// Registers a provider that always returns the specified node type.
@@ -107,21 +107,21 @@ public final class LandPathNodeTypesRegistry {
 	}
 
 	/**
-	 * Gets the {@link PathNodeType} from the provider registered for the specified block state at the specified position.
+	 * Gets the {@link PathType} from the provider registered for the specified block state at the specified position.
 	 *
-	 * <p>If no valid {@link PathNodeType} provider is registered for the block, it returns {@code null}.
+	 * <p>If no valid {@link PathType} provider is registered for the block, it returns {@code null}.
 	 * You cannot use this method to retrieve vanilla block node types.
 	 *
 	 * @param state    Current block state.
 	 * @param world    Current world.
 	 * @param pos      Current position.
 	 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
-	 * @return the custom {@link PathNodeType} from the provider registered for the specified block,
+	 * @return the custom {@link PathType} from the provider registered for the specified block,
 	 * passing the block state, the world, and the position to the provider, or {@code null} if no valid
 	 * provider is registered for the block.
 	 */
 	@Nullable
-	public static PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean neighbor) {
+	public static PathType getPathNodeType(BlockState state, BlockGetter world, BlockPos pos, boolean neighbor) {
 		Objects.requireNonNull(state, "BlockState cannot be null!");
 		Objects.requireNonNull(world, "BlockView cannot be null!");
 		Objects.requireNonNull(pos, "BlockPos cannot be null!");
@@ -154,7 +154,7 @@ public final class LandPathNodeTypesRegistry {
 	 * so make sure not to fail if another type of object is returned.
 	 *
 	 * <p>Note 2: This method is intended to be used in any cases in which you need to get
-	 * the raw provider for the block, if you need the {@link PathNodeType} for the block state instead,
+	 * the raw provider for the block, if you need the {@link PathType} for the block state instead,
 	 * you can simply use {@link #getPathNodeType}.
 	 *
 	 * @param block Current block.
@@ -175,45 +175,45 @@ public final class LandPathNodeTypesRegistry {
 	}
 
 	/**
-	 * A functional interface that provides the {@link PathNodeType}, given the block state.
+	 * A functional interface that provides the {@link PathType}, given the block state.
 	 */
 	@FunctionalInterface
 	public non-sealed interface StaticPathNodeTypeProvider extends PathNodeTypeProvider {
 		/**
-		 * Gets the {@link PathNodeType} for the specified block state.
+		 * Gets the {@link PathType} for the specified block state.
 		 *
 		 * <p>You can specify what to return if the block state is a direct target of an entity path,
 		 * or a neighbor block of the entity path.
 		 *
-		 * <p>For example, for a cactus-like block you should use {@link PathNodeType#DAMAGE_OTHER} if the block
+		 * <p>For example, for a cactus-like block you should use {@link PathType#DAMAGE_OTHER} if the block
 		 * is a direct target in the entity path ({@code neighbor == false}) to specify that an entity should not pass
-		 * through or above the block because it will cause damage, and you should use {@link PathNodeType#DANGER_OTHER}
+		 * through or above the block because it will cause damage, and you should use {@link PathType#DANGER_OTHER}
 		 * if the block is a neighbor block in the entity path ({@code neighbor == true}) to specify that the entity
 		 * should not get close to the block because it is dangerous.
 		 *
 		 * @param state    Current block state.
 		 * @param neighbor Specifies that the block is in a direct neighbor position to an entity path
 		 *                 that is directly next to a block that the entity will pass through or above.
-		 * @return the custom {@link PathNodeType} registered for the specified block state.
+		 * @return the custom {@link PathType} registered for the specified block state.
 		 */
 		@Nullable
-		PathNodeType getPathNodeType(BlockState state, boolean neighbor);
+        PathType getPathNodeType(BlockState state, boolean neighbor);
 	}
 
 	/**
-	 * A functional interface that provides the {@link PathNodeType}, given the block state world and position.
+	 * A functional interface that provides the {@link PathType}, given the block state world and position.
 	 */
 	@FunctionalInterface
 	public non-sealed interface DynamicPathNodeTypeProvider extends PathNodeTypeProvider {
 		/**
-		 * Gets the {@link PathNodeType} for the specified block state at the specified position.
+		 * Gets the {@link PathType} for the specified block state at the specified position.
 		 *
 		 * <p>You can specify what to return if the block state is a direct target of an entity path,
 		 * or a neighbor block of the entity path.
 		 *
-		 * <p>For example, for a cactus-like block you should specify {@link PathNodeType#DAMAGE_OTHER} if the block
+		 * <p>For example, for a cactus-like block you should specify {@link PathType#DAMAGE_OTHER} if the block
 		 * is a direct target ({@code neighbor == false}) to specify that an entity should not pass through or above
-		 * the block because it will cause damage, and {@link PathNodeType#DANGER_OTHER} if the cactus will be found
+		 * the block because it will cause damage, and {@link PathType#DANGER_OTHER} if the cactus will be found
 		 * as a neighbor block in the entity path ({@code neighbor == true}) to specify that the entity should not get
 		 * close to the block because is dangerous.
 		 *
@@ -222,9 +222,9 @@ public final class LandPathNodeTypesRegistry {
 		 * @param pos      Current position.
 		 * @param neighbor Specifies that the block is in a direct neighbor position to an entity path
 		 *                 (directly next to a block that the entity will pass through or above).
-		 * @return the custom {@link PathNodeType} registered for the specified block state at the specified position.
+		 * @return the custom {@link PathType} registered for the specified block state at the specified position.
 		 */
 		@Nullable
-		PathNodeType getPathNodeType(BlockState state, BlockView world, BlockPos pos, boolean neighbor);
+        PathType getPathNodeType(BlockState state, BlockGetter world, BlockPos pos, boolean neighbor);
 	}
 }

@@ -36,20 +36,20 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.model.BakedSimpleModel;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.BlockStateModel;
-import net.minecraft.client.render.model.ModelBaker;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.thread.AsyncHelper;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.resources.model.ResolvedModel;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.thread.ParallelMapTransform;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.impl.client.model.loading.BakedModelsHooks;
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingEventDispatcher;
 
-@Mixin(ModelBaker.class)
+@Mixin(ModelBakery.class)
 abstract class ModelBakerMixin {
 	@Shadow
 	@Final
@@ -57,7 +57,7 @@ abstract class ModelBakerMixin {
 
 	@Shadow
 	@Final
-	Map<Identifier, BakedSimpleModel> simpleModels;
+	Map<Identifier, ResolvedModel> resolvedModels;
 
 	@Unique
 	@Nullable
@@ -68,8 +68,8 @@ abstract class ModelBakerMixin {
 		fabric_eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
 	}
 
-	@ModifyArg(method = "bake", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/thread/AsyncHelper;mapValues(Ljava/util/Map;Ljava/util/function/BiFunction;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0), index = 1)
-	private BiFunction<BlockState, BlockStateModel.UnbakedGrouped, BlockStateModel> hookBlockModelBake(BiFunction<BlockState, BlockStateModel.UnbakedGrouped, BlockStateModel> bifunction) {
+	@ModifyArg(method = "bakeModels", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/thread/ParallelMapTransform;schedule(Ljava/util/Map;Ljava/util/function/BiFunction;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0), index = 1)
+	private BiFunction<BlockState, BlockStateModel.UnbakedRoot, BlockStateModel> hookBlockModelBake(BiFunction<BlockState, BlockStateModel.UnbakedRoot, BlockStateModel> bifunction) {
 		if (fabric_eventDispatcher == null) {
 			return bifunction;
 		}
@@ -82,11 +82,11 @@ abstract class ModelBakerMixin {
 		};
 	}
 
-	@ModifyReturnValue(method = "bake", at = @At("RETURN"))
-	private CompletableFuture<ModelBaker.BakedModels> withExtraModels(CompletableFuture<ModelBaker.BakedModels> models, @Local Executor executor, @Local ModelBaker.BakerImpl baker) {
+	@ModifyReturnValue(method = "bakeModels", at = @At("RETURN"))
+	private CompletableFuture<ModelBakery.BakingResult> withExtraModels(CompletableFuture<ModelBakery.BakingResult> models, @Local Executor executor, @Local ModelBakery.ModelBakerImpl baker) {
 		if (fabric_eventDispatcher == null) return models;
 
-		CompletableFuture<Map<ExtraModelKey<?>, Object>> extraModels = AsyncHelper.mapValues(fabric_eventDispatcher.getExtraModels(), (key, model) -> {
+		CompletableFuture<Map<ExtraModelKey<?>, Object>> extraModels = ParallelMapTransform.schedule(fabric_eventDispatcher.getExtraModels(), (key, model) -> {
 			try {
 				return model.bake(baker);
 			} catch (Exception e) {
@@ -100,8 +100,8 @@ abstract class ModelBakerMixin {
 		});
 	}
 
-	@WrapOperation(method = "method_68018", at = @At(value = "INVOKE", target = "net/minecraft/client/render/model/BlockStateModel$UnbakedGrouped.bake(Lnet/minecraft/block/BlockState;Lnet/minecraft/client/render/model/Baker;)Lnet/minecraft/client/render/model/BlockStateModel;"))
-	private static BlockStateModel wrapBlockModelBake(BlockStateModel.UnbakedGrouped unbakedModel, BlockState state, Baker baker, Operation<BlockStateModel> operation) {
+	@WrapOperation(method = "method_68018", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelBakery;net/minecraft/client/render/model/BlockStateModel$UnbakedGrouped.bake(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/resources/model/ModelBaker;)Lnet/minecraft/client/renderer/block/model/BlockStateModel;"))
+	private static BlockStateModel wrapBlockModelBake(BlockStateModel.UnbakedRoot unbakedModel, BlockState state, ModelBaker baker, Operation<BlockStateModel> operation) {
 		ModelLoadingEventDispatcher eventDispatcher = ModelLoadingEventDispatcher.CURRENT.get();
 
 		if (eventDispatcher == null) {
@@ -111,8 +111,8 @@ abstract class ModelBakerMixin {
 		return eventDispatcher.modifyBlockModel(unbakedModel, state, baker, operation);
 	}
 
-	@WrapOperation(method = "method_68019", at = @At(value = "INVOKE", target = "net/minecraft/client/render/item/model/ItemModel$Unbaked.bake(Lnet/minecraft/client/render/item/model/ItemModel$BakeContext;)Lnet/minecraft/client/render/item/model/ItemModel;"))
-	private ItemModel wrapItemModelBake(ItemModel.Unbaked unbakedModel, ItemModel.BakeContext bakeContext, Operation<ItemModel> operation, @Local Identifier itemId) {
+	@WrapOperation(method = "method_68019", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelBakery;net/minecraft/client/render/item/model/ItemModel$Unbaked.bake(Lnet/minecraft/client/renderer/item/ItemModel$BakingContext;)Lnet/minecraft/client/renderer/item/ItemModel;"))
+	private ItemModel wrapItemModelBake(ItemModel.Unbaked unbakedModel, ItemModel.BakingContext bakeContext, Operation<ItemModel> operation, @Local Identifier itemId) {
 		if (fabric_eventDispatcher == null) {
 			return operation.call(unbakedModel, bakeContext);
 		}
