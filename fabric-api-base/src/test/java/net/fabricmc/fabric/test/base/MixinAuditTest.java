@@ -31,8 +31,8 @@ import net.minecraft.server.Bootstrap;
 public class MixinAuditTest {
 	@BeforeAll
 	static void beforeAll() {
-		SharedConstants.tryDetectVersion();
-		Bootstrap.bootStrap();
+//		SharedConstants.tryDetectVersion();
+//		Bootstrap.bootStrap();
 	}
 
 	@Test

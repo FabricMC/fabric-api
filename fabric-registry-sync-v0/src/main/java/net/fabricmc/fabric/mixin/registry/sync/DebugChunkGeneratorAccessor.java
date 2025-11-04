@@ -27,19 +27,19 @@ import net.minecraft.world.level.levelgen.DebugLevelSource;
 
 @Mixin(DebugLevelSource.class)
 public interface DebugChunkGeneratorAccessor {
-	@Accessor
+	@Accessor("ALL_BLOCKS")
 	@Mutable
 	static void setALL_BLOCKS(List<BlockState> blockStates) {
 		throw new UnsupportedOperationException();
 	}
 
-	@Accessor
+	@Accessor("GRID_WIDTH")
 	@Mutable
 	static void setGRID_WIDTH(int length) {
 		throw new UnsupportedOperationException();
 	}
 
-	@Accessor
+	@Accessor("GRID_HEIGHT")
 	@Mutable
 	static void setGRID_HEIGHT(int length) {
 		throw new UnsupportedOperationException();
