@@ -470,7 +470,7 @@ public abstract class SimpleRegistryMixin<T> implements WritableRegistry<T>, Rem
 					"getValue(Lnet/minecraft/resources/ResourceKey;)Ljava/lang/Object;",
 					"get(Lnet/minecraft/resources/ResourceKey;)Ljava/util/Optional;",
 					"getOrCreateHolderOrThrow",
-					"containsKey",
+					"containsKey(Lnet/minecraft/resources/ResourceKey;)Z",
 					"registrationInfo"
 			},
 			at = @At("HEAD"),

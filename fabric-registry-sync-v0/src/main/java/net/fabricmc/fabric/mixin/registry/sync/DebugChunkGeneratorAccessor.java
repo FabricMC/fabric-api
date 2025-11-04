@@ -29,19 +29,19 @@ import net.minecraft.world.level.levelgen.DebugLevelSource;
 public interface DebugChunkGeneratorAccessor {
 	@Accessor
 	@Mutable
-	static void setBLOCK_STATES(List<BlockState> blockStates) {
+	static void setALL_BLOCKS(List<BlockState> blockStates) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Accessor
 	@Mutable
-	static void setX_SIDE_LENGTH(int length) {
+	static void setGRID_WIDTH(int length) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Accessor
 	@Mutable
-	static void setZ_SIDE_LENGTH(int length) {
+	static void setGRID_HEIGHT(int length) {
 		throw new UnsupportedOperationException();
 	}
 }
