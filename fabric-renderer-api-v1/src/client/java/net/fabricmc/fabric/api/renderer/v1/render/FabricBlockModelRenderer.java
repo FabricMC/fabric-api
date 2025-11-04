@@ -61,7 +61,7 @@ public interface FabricBlockModelRenderer {
 	 * @param matrices The matrix stack.
 	 * @param vertexConsumers The vertex consumers.
 	 * @param cull Whether to try to cull faces hidden by other blocks.
-	 * @param seed The random seed. Usually retrieved by the caller from {@link BlockState#getRenderingSeed(BlockPos)}.
+	 * @param seed The random seed. Usually retrieved by the caller from {@link BlockState#getSeed(BlockPos)}.
 	 * @param overlay The overlay value to pass to output {@link VertexConsumer}s.
 	 */
 	default void render(BlockAndTintGetter blockView, BlockStateModel model, BlockState state, BlockPos pos, PoseStack matrices, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
@@ -89,7 +89,7 @@ public interface FabricBlockModelRenderer {
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
 	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
-	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ORIGIN} if the world is empty.
+	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ZERO} if the world is empty.
 	 *            </b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 *
