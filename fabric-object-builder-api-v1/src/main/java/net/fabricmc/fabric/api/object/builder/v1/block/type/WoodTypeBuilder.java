@@ -66,7 +66,7 @@ public final class WoodTypeBuilder {
 	/**
 	 * Sets this wood type's fence gate close sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_FENCE_GATE_CLOSE}.
+	 * <p>Defaults to {@link SoundEvents#FENCE_GATE_CLOSE}.
 	 *
 	 * @return this builder for chaining
 	 */
@@ -78,7 +78,7 @@ public final class WoodTypeBuilder {
 	/**
 	 * Sets this wood type's fence gate open sound.
 	 *
-	 * <p>Defaults to {@link SoundEvents#BLOCK_FENCE_GATE_OPEN}.
+	 * <p>Defaults to {@link SoundEvents#FENCE_GATE_OPEN}.
 	 *
 	 * @return this builder for chaining
 	 */

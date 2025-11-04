@@ -29,7 +29,7 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
  * <p>Operations relative to a vanilla element will inherit that element's render condition.
  *
  * <p>The render condition for all vanilla layers except {@link VanillaHudElements#SLEEP} is
- * {@link net.minecraft.client.Options#hudHidden}.
+ * {@link net.minecraft.client.Options#hideGui}.
  *
  * <p>Only {@link #addFirst(Identifier, HudElement)} and {@link #addLast(Identifier, HudElement)} will not inherit any
  * render condition.

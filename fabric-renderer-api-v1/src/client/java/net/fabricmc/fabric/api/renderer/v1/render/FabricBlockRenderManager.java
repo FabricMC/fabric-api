@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 public interface FabricBlockRenderManager {
 	/**
 	 * Alternative for
-	 * {@link BlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int)} that
+	 * {@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)} that
 	 * additionally accepts the {@link BlockAndTintGetter} and {@link BlockPos} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
 	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
@@ -54,7 +54,7 @@ public interface FabricBlockRenderManager {
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
 	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
-	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ORIGIN} if the world is empty.
+	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ZERO} if the world is empty.
 	 *            </b>
 	 *
 	 * @see FabricRenderCommandQueue#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
