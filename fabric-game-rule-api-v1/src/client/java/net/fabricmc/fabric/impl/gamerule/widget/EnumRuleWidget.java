@@ -44,9 +44,13 @@ public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen
 		// Base translation key needs to be set before the button widget is created.
 		this.rootTranslationKey = translationKey;
 		this.buttonWidget = ButtonWidget.builder(this.getValueText(accessor.getGameRules().getValue(enumRule)), (buttonWidget) -> {
-			((RuleTypeExtensions) (Object) enumRule).fabric_enumCycle(accessor.getGameRules().getValue(enumRule));
+			accessor.getGameRules().setValue(enumRule,
+					((RuleTypeExtensions) (Object) enumRule).fabric_enumCycle(
+							accessor.getGameRules().getValue(enumRule)
+					),
+					null);
 			buttonWidget.setMessage(this.getValueText(accessor.getGameRules().getValue(enumRule)));
-		}).position(10, 5).size(88, 20).build();
+		}).dimensions(10, 5, 42, 20).build();
 
 		this.children.add(this.buttonWidget);
 	}
@@ -57,11 +61,11 @@ public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen
 	}
 
 	@Override
-	public void render(DrawContext drawContext, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		this.drawName(drawContext, this.getContentY(), this.getContentX());
+	public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		this.drawName(context, this.getContentY(), this.getContentX());
 
-		this.buttonWidget.setX(this.getContentRightEnd() - 89);
+		this.buttonWidget.setX(this.getContentRightEnd() - 44);
 		this.buttonWidget.setY(this.getContentY());
-		this.buttonWidget.render(drawContext, mouseX, mouseY, tickDelta);
+		this.buttonWidget.render(context, mouseX, mouseY, tickDelta);
 	}
 }
