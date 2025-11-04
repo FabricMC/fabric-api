@@ -1,141 +1,141 @@
 # Registering custom advancement criteria
-transitive-accessible method net/minecraft/advancement/criterion/Criteria register (Ljava/lang/String;Lnet/minecraft/advancement/criterion/Criterion;)Lnet/minecraft/advancement/criterion/Criterion;
+transitive-accessible	method	net/minecraft/advancements/CriteriaTriggers	register	(Ljava/lang/String;Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;
 
 # Creating custom screen handler types
-transitive-accessible class net/minecraft/screen/ScreenHandlerType$Factory
-transitive-accessible method net/minecraft/screen/ScreenHandlerType <init> (Lnet/minecraft/screen/ScreenHandlerType$Factory;Lnet/minecraft/resource/featuretoggle/FeatureSet;)V
+transitive-accessible	class	net/minecraft/world/inventory/MenuType$MenuSupplier
+transitive-accessible	method	net/minecraft/world/inventory/MenuType	<init>	(Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
 
 # Registering custom screen handler type -> screen mappings
-transitive-accessible class net/minecraft/client/gui/screen/ingame/HandledScreens$Provider
-transitive-accessible method net/minecraft/client/gui/screen/ingame/HandledScreens register (Lnet/minecraft/screen/ScreenHandlerType;Lnet/minecraft/client/gui/screen/ingame/HandledScreens$Provider;)V
+transitive-accessible	class	net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor
+transitive-accessible	method	net/minecraft/client/gui/screens/MenuScreens	register	(Lnet/minecraft/world/inventory/MenuType;Lnet/minecraft/client/gui/screens/MenuScreens$ScreenConstructor;)V
 
 # Data contained in loot tables and pools
-transitive-accessible field net/minecraft/loot/LootPool entries Ljava/util/List;
-transitive-accessible field net/minecraft/loot/LootPool conditions Ljava/util/List;
-transitive-accessible field net/minecraft/loot/LootPool functions Ljava/util/List;
-transitive-accessible field net/minecraft/loot/LootPool rolls Lnet/minecraft/loot/provider/number/LootNumberProvider;
-transitive-accessible field net/minecraft/loot/LootPool bonusRolls Lnet/minecraft/loot/provider/number/LootNumberProvider;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	entries	Ljava/util/List;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	conditions	Ljava/util/List;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	functions	Ljava/util/List;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	rolls	Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
+transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	bonusRolls	Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
 
 # Villager trade factories
-transitive-accessible class net/minecraft/village/TradeOffers$TypedWrapperFactory
-transitive-accessible class net/minecraft/village/TradeOffers$EnchantBookFactory
-transitive-accessible class net/minecraft/village/TradeOffers$BuyItemFactory
-transitive-accessible class net/minecraft/village/TradeOffers$SellItemFactory
-transitive-accessible class net/minecraft/village/TradeOffers$SellSuspiciousStewFactory
-transitive-accessible class net/minecraft/village/TradeOffers$ProcessItemFactory
-transitive-accessible class net/minecraft/village/TradeOffers$SellEnchantedToolFactory
-transitive-accessible class net/minecraft/village/TradeOffers$TypeAwareBuyForOneEmeraldFactory
-transitive-accessible class net/minecraft/village/TradeOffers$SellPotionHoldingItemFactory
-transitive-accessible class net/minecraft/village/TradeOffers$SellMapFactory
-transitive-accessible class net/minecraft/village/TradeOffers$SellDyedArmorFactory
+transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$TypeSpecificTrade
+transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$EnchantBookForEmeralds
+transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$EmeraldForItems
+transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$ItemsForEmeralds
+transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$SuspiciousStewForEmerald
+transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$ItemsAndEmeraldsToItems
+transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$EnchantedItemForEmeralds
+transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$EmeraldsForVillagerTypeItem
+transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$TippedArrowForItemsAndEmeralds
+transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$TreasureMapForEmeralds
+transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$DyedArmorForEmeralds
 
 # Registering custom entity spawn restrictions
-transitive-accessible method net/minecraft/entity/SpawnRestriction register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/entity/SpawnLocation;Lnet/minecraft/world/Heightmap$Type;Lnet/minecraft/entity/SpawnRestriction$SpawnPredicate;)V
+transitive-accessible	method	net/minecraft/world/entity/SpawnPlacements	register	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/SpawnPlacementType;Lnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/entity/SpawnPlacements$SpawnPredicate;)V
 
 # Item usage context constructors
-transitive-accessible method net/minecraft/item/ItemUsageContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
-transitive-accessible method net/minecraft/item/ItemPlacementContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
+transitive-accessible	method	net/minecraft/world/item/context/UseOnContext	<init>	(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/phys/BlockHitResult;)V
+transitive-accessible	method	net/minecraft/world/item/context/BlockPlaceContext	<init>	(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/phys/BlockHitResult;)V
 
 # Registering custom scoreboard criteria
-transitive-accessible method net/minecraft/scoreboard/ScoreboardCriterion create (Ljava/lang/String;ZLnet/minecraft/scoreboard/ScoreboardCriterion$RenderType;)Lnet/minecraft/scoreboard/ScoreboardCriterion;
-transitive-accessible method net/minecraft/scoreboard/ScoreboardCriterion create (Ljava/lang/String;)Lnet/minecraft/scoreboard/ScoreboardCriterion;
+transitive-accessible	method	net/minecraft/world/scores/criteria/ObjectiveCriteria	registerCustom	(Ljava/lang/String;ZLnet/minecraft/world/scores/criteria/ObjectiveCriteria$RenderType;)Lnet/minecraft/world/scores/criteria/ObjectiveCriteria;
+transitive-accessible	method	net/minecraft/world/scores/criteria/ObjectiveCriteria	registerCustom	(Ljava/lang/String;)Lnet/minecraft/world/scores/criteria/ObjectiveCriteria;
 
 # Model part subclasses
-transitive-accessible class net/minecraft/client/model/ModelPart$Vertex
-transitive-accessible class net/minecraft/client/model/ModelPart$Quad
+transitive-accessible	class	net/minecraft/client/model/geom/ModelPart$Vertex
+transitive-accessible	class	net/minecraft/client/model/geom/ModelPart$Polygon
 
 # Rendering custom gui elements
-transitive-accessible field net/minecraft/client/gui/DrawContext state Lnet/minecraft/client/gui/render/state/GuiRenderState;
-transitive-accessible field net/minecraft/client/gui/DrawContext scissorStack Lnet/minecraft/client/gui/DrawContext$ScissorStack;
-transitive-accessible class net/minecraft/client/gui/DrawContext$ScissorStack
+transitive-accessible	field	net/minecraft/client/gui/GuiGraphics	guiRenderState	Lnet/minecraft/client/gui/render/state/GuiRenderState;
+transitive-accessible	field	net/minecraft/client/gui/GuiGraphics	scissorStack	Lnet/minecraft/client/gui/GuiGraphics$ScissorStack;
+transitive-accessible	class	net/minecraft/client/gui/GuiGraphics$ScissorStack
 
 # Registering custom block entity renderers
-transitive-accessible method net/minecraft/client/render/block/entity/BlockEntityRendererFactories register (Lnet/minecraft/block/entity/BlockEntityType;Lnet/minecraft/client/render/block/entity/BlockEntityRendererFactory;)V
+transitive-accessible	method	net/minecraft/client/renderer/blockentity/BlockEntityRenderers	register	(Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/client/renderer/blockentity/BlockEntityRendererProvider;)V
 
 # Registering custom entity renderers
-transitive-accessible method net/minecraft/client/render/entity/EntityRendererFactories register (Lnet/minecraft/entity/EntityType;Lnet/minecraft/client/render/entity/EntityRendererFactory;)V
+transitive-accessible	method	net/minecraft/client/renderer/entity/EntityRenderers	register	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/client/renderer/entity/EntityRendererProvider;)V
 
 # Adding custom item model types
-transitive-accessible field net/minecraft/client/render/item/model/ItemModelTypes ID_MAPPER Lnet/minecraft/util/dynamic/Codecs$IdMapper;
-transitive-accessible field net/minecraft/client/render/item/tint/TintSourceTypes ID_MAPPER Lnet/minecraft/util/dynamic/Codecs$IdMapper;
-transitive-accessible field net/minecraft/client/render/item/property/bool/BooleanProperties ID_MAPPER Lnet/minecraft/util/dynamic/Codecs$IdMapper;
-transitive-accessible field net/minecraft/client/render/item/property/numeric/NumericProperties ID_MAPPER Lnet/minecraft/util/dynamic/Codecs$IdMapper;
-transitive-accessible field net/minecraft/client/render/item/property/select/SelectProperties ID_MAPPER Lnet/minecraft/util/dynamic/Codecs$IdMapper;
-transitive-accessible field net/minecraft/client/render/item/model/special/SpecialModelTypes ID_MAPPER Lnet/minecraft/util/dynamic/Codecs$IdMapper;
+transitive-accessible	field	net/minecraft/client/renderer/item/ItemModels	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
+transitive-accessible	field	net/minecraft/client/color/item/ItemTintSources	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
+transitive-accessible	field	net/minecraft/client/renderer/item/properties/conditional/ConditionalItemModelProperties	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
+transitive-accessible	field	net/minecraft/client/renderer/item/properties/numeric/RangeSelectItemModelProperties	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
+transitive-accessible	field	net/minecraft/client/renderer/item/properties/select/SelectItemModelProperties	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
+transitive-accessible	field	net/minecraft/client/renderer/special/SpecialModelRenderers	ID_MAPPER	Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
 
 # Creating custom sensor types
-transitive-accessible method net/minecraft/entity/ai/brain/sensor/SensorType <init> (Ljava/util/function/Supplier;)V
+transitive-accessible	method	net/minecraft/world/entity/ai/sensing/SensorType	<init>	(Ljava/util/function/Supplier;)V
 
 # Creating custom activities
-transitive-accessible method net/minecraft/entity/ai/brain/Activity <init> (Ljava/lang/String;)V
+transitive-accessible	method	net/minecraft/world/entity/schedule/Activity	<init>	(Ljava/lang/String;)V
 
 # Living entity methods
-transitive-accessible method net/minecraft/entity/LivingEntity damageArmor (Lnet/minecraft/entity/damage/DamageSource;F)V
-transitive-accessible method net/minecraft/entity/LivingEntity damageHelmet (Lnet/minecraft/entity/damage/DamageSource;F)V
+transitive-accessible	method	net/minecraft/world/entity/LivingEntity	hurtArmor	(Lnet/minecraft/world/damagesource/DamageSource;F)V
+transitive-accessible	method	net/minecraft/world/entity/LivingEntity	hurtHelmet	(Lnet/minecraft/world/damagesource/DamageSource;F)V
 
 # Entity constructors
-transitive-accessible method net/minecraft/entity/projectile/ProjectileEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V
-transitive-accessible method net/minecraft/entity/projectile/FishingBobberEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;II)V
+transitive-accessible	method	net/minecraft/world/entity/projectile/Projectile	<init>	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V
+transitive-accessible	method	net/minecraft/world/entity/projectile/FishingHook	<init>	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;II)V
 
 # Miscellaneous other methods
-transitive-accessible method net/minecraft/server/world/ServerWorld sendToPlayerIfNearby (Lnet/minecraft/server/network/ServerPlayerEntity;ZDDDLnet/minecraft/network/packet/Packet;)Z
-transitive-accessible method net/minecraft/text/TextColor getHexCode ()Ljava/lang/String;
-transitive-accessible method net/minecraft/text/TranslatableTextContent getArg (I)Lnet/minecraft/text/StringVisitable;
+transitive-accessible	method	net/minecraft/server/level/ServerLevel	sendParticles	(Lnet/minecraft/server/level/ServerPlayer;ZDDDLnet/minecraft/network/protocol/Packet;)Z
+transitive-accessible	method	net/minecraft/network/chat/TextColor	formatValue	()Ljava/lang/String;
+transitive-accessible	method	net/minecraft/network/chat/contents/TranslatableContents	getArgument	(I)Lnet/minecraft/network/chat/FormattedText;
 
 # Villagers
-transitive-accessible field net/minecraft/village/VillagerType BIOME_TO_TYPE Ljava/util/Map;
+transitive-accessible	field	net/minecraft/world/entity/npc/VillagerType	BY_BIOME	Ljava/util/Map;
 
 # Access stack list in SimpleInventory
-transitive-accessible field net/minecraft/inventory/SimpleInventory heldStacks Lnet/minecraft/util/collection/DefaultedList;
+transitive-accessible	field	net/minecraft/world/SimpleContainer	items	Lnet/minecraft/core/NonNullList;
 
 # Creating custom sound events
-transitive-accessible method net/minecraft/sound/SoundEvent of (Lnet/minecraft/util/Identifier;F)Lnet/minecraft/sound/SoundEvent;
-transitive-accessible method net/minecraft/sound/SoundEvent of (Lnet/minecraft/util/Identifier;)Lnet/minecraft/sound/SoundEvent;
+transitive-accessible	method	net/minecraft/sounds/SoundEvent	createFixedRangeEvent	(Lnet/minecraft/resources/Identifier;F)Lnet/minecraft/sounds/SoundEvent;
+transitive-accessible	method	net/minecraft/sounds/SoundEvent	createVariableRangeEvent	(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/sounds/SoundEvent;
 
 # Creating BlockStateProviderTypes
-transitive-accessible method net/minecraft/world/gen/stateprovider/BlockStateProviderType <init> (Lcom/mojang/serialization/MapCodec;)V
+transitive-accessible	method	net/minecraft/world/level/levelgen/feature/stateproviders/BlockStateProviderType	<init>	(Lcom/mojang/serialization/MapCodec;)V
 
 # Creating custom biomes
-transitive-accessible method net/minecraft/world/biome/OverworldBiomeCreator getSkyColor (F)I
+transitive-accessible	method	net/minecraft/data/worldgen/biome/OverworldBiomes	calculateSkyColor	(F)I
 
 # Creating custom template pools
-transitive-accessible field net/minecraft/structure/processor/StructureProcessorLists EMPTY Lnet/minecraft/registry/RegistryKey;
+transitive-accessible	field	net/minecraft/data/worldgen/ProcessorLists	EMPTY	Lnet/minecraft/resources/ResourceKey;
 
 # Creating custom trees
-transitive-accessible method net/minecraft/world/gen/foliage/FoliagePlacerType <init> (Lcom/mojang/serialization/MapCodec;)V
-transitive-accessible method net/minecraft/world/gen/treedecorator/TreeDecoratorType <init> (Lcom/mojang/serialization/MapCodec;)V
-transitive-accessible method net/minecraft/world/gen/trunk/TrunkPlacerType <init> (Lcom/mojang/serialization/MapCodec;)V
-transitive-accessible method net/minecraft/world/gen/root/RootPlacerType <init> (Lcom/mojang/serialization/MapCodec;)V
+transitive-accessible	method	net/minecraft/world/level/levelgen/feature/foliageplacers/FoliagePlacerType	<init>	(Lcom/mojang/serialization/MapCodec;)V
+transitive-accessible	method	net/minecraft/world/level/levelgen/feature/treedecorators/TreeDecoratorType	<init>	(Lcom/mojang/serialization/MapCodec;)V
+transitive-accessible	method	net/minecraft/world/level/levelgen/feature/trunkplacers/TrunkPlacerType	<init>	(Lcom/mojang/serialization/MapCodec;)V
+transitive-accessible	method	net/minecraft/world/level/levelgen/feature/rootplacers/RootPlacerType	<init>	(Lcom/mojang/serialization/MapCodec;)V
 
 # Working with custom damage sources
-transitive-accessible field net/minecraft/entity/damage/DamageSources registry Lnet/minecraft/registry/Registry;
-transitive-accessible method net/minecraft/entity/damage/DamageSources create (Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/entity/damage/DamageSource;
-transitive-accessible method net/minecraft/entity/damage/DamageSources create (Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/entity/Entity;)Lnet/minecraft/entity/damage/DamageSource;
-transitive-accessible method net/minecraft/entity/damage/DamageSources create (Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/Entity;)Lnet/minecraft/entity/damage/DamageSource;
+transitive-accessible	field	net/minecraft/world/damagesource/DamageSources	damageTypes	Lnet/minecraft/core/Registry;
+transitive-accessible	method	net/minecraft/world/damagesource/DamageSources	source	(Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/world/damagesource/DamageSource;
+transitive-accessible	method	net/minecraft/world/damagesource/DamageSources	source	(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/world/damagesource/DamageSource;
+transitive-accessible	method	net/minecraft/world/damagesource/DamageSources	source	(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/world/damagesource/DamageSource;
 
 # The attack cooldown
-transitive-accessible field net/minecraft/client/MinecraftClient attackCooldown I
+transitive-accessible	field	net/minecraft/client/Minecraft	missTime	I
 
 # Creating certain types of blocks
-transitive-accessible method net/minecraft/block/Blocks createLogSettings (Lnet/minecraft/block/MapColor;Lnet/minecraft/block/MapColor;Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/AbstractBlock$Settings;
-transitive-accessible method net/minecraft/block/Blocks createNetherStemSettings (Lnet/minecraft/block/MapColor;)Lnet/minecraft/block/AbstractBlock$Settings;
-transitive-accessible method net/minecraft/block/Blocks createLeavesSettings (Lnet/minecraft/sound/BlockSoundGroup;)Lnet/minecraft/block/AbstractBlock$Settings;
-transitive-accessible method net/minecraft/block/Blocks createButtonSettings ()Lnet/minecraft/block/AbstractBlock$Settings;
-transitive-accessible method net/minecraft/block/Blocks createFlowerPotSettings ()Lnet/minecraft/block/AbstractBlock$Settings;
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	logProperties	(Lnet/minecraft/world/level/material/MapColor;Lnet/minecraft/world/level/material/MapColor;Lnet/minecraft/world/level/block/SoundType;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	netherStemProperties	(Lnet/minecraft/world/level/material/MapColor;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	leavesProperties	(Lnet/minecraft/world/level/block/SoundType;)Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	buttonProperties	()Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	flowerPotProperties	()Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;
 
 # Methods used in block creation
-transitive-accessible method net/minecraft/block/Blocks always (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Z
-transitive-accessible method net/minecraft/block/Blocks always (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/EntityType;)Ljava/lang/Boolean;
-transitive-accessible method net/minecraft/block/Blocks canSpawnOnLeaves (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/EntityType;)Ljava/lang/Boolean;
-transitive-accessible method net/minecraft/block/Blocks createLightLevelFromLitBlockState (I)Ljava/util/function/ToIntFunction;
-transitive-accessible method net/minecraft/block/Blocks never (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Z
-transitive-accessible method net/minecraft/block/Blocks never (Lnet/minecraft/block/BlockState;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/EntityType;)Ljava/lang/Boolean;
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	always	(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	always	(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/EntityType;)Ljava/lang/Boolean;
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	ocelotOrParrot	(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/EntityType;)Ljava/lang/Boolean;
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	litBlockEmission	(I)Ljava/util/function/ToIntFunction;
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	never	(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	never	(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/EntityType;)Ljava/lang/Boolean;
 
 # Methods used in block registration
-transitive-accessible method net/minecraft/block/Blocks register (Lnet/minecraft/registry/RegistryKey;Ljava/util/function/Function;Lnet/minecraft/block/AbstractBlock$Settings;)Lnet/minecraft/block/Block;
-transitive-accessible method net/minecraft/block/Blocks register (Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/block/AbstractBlock$Settings;)Lnet/minecraft/block/Block;
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	register	(Lnet/minecraft/resources/ResourceKey;Ljava/util/function/Function;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)Lnet/minecraft/world/level/block/Block;
+transitive-accessible	method	net/minecraft/world/level/block/Blocks	register	(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)Lnet/minecraft/world/level/block/Block;
 
 # Debug HUD Entries
-transitive-accessible method net/minecraft/client/gui/hud/debug/DebugHudEntries register (Lnet/minecraft/util/Identifier;Lnet/minecraft/client/gui/hud/debug/DebugHudEntry;)Lnet/minecraft/util/Identifier;
+transitive-accessible	method	net/minecraft/client/gui/components/debug/DebugScreenEntries	register	(Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/gui/components/debug/DebugScreenEntry;)Lnet/minecraft/resources/Identifier;
 
 ### Generated access wideners below

@@ -100,14 +100,14 @@ tasks.register('generateAccessWidener') {
 		accessWidener += "\n"
 		accessWidener += file("template.accesswidener").text + "\n"
 
-		visitMethods(classes["net/minecraft/data/recipe/RecipeGenerator"]) { name, desc, owner ->
+		visitMethods(classes["net/minecraft/data/recipes/RecipeProvider"]) { name, desc, owner ->
 			if (it.name == "generate")
 				return
 
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
-		visitMethods(classes["net/minecraft/client/data/BlockStateModelGenerator"]) { name, desc, owner ->
+		visitMethods(classes["net/minecraft/client/data/models/BlockModelGenerators"]) { name, desc, owner ->
 			if (desc == "()V")
 				// Skip over methods that dont take any arguments, as they are specific to minecraft.
 				return
@@ -115,11 +115,11 @@ tasks.register('generateAccessWidener') {
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
-		visitMethods(classes["net/minecraft/data/loottable/BlockLootTableGenerator"]) { name, desc, owner ->
+		visitMethods(classes["net/minecraft/data/loot/BlockLootSubProvider"]) { name, desc, owner ->
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 
-		visitMethods(classes["net/minecraft/client/data/ItemModelGenerator"]) { name, desc, owner ->
+		visitMethods(classes["net/minecraft/client/data/models/ItemModelGenerators"]) { name, desc, owner ->
 			accessWidener += "transitive-accessible\tmethod\t${owner}\t${name}\t${desc}\n"
 		}
 

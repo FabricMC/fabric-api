@@ -59,7 +59,7 @@ tasks.register('generateAccessWidener') {
 
 def generateBlockConstructors(List<String> lines, FileSystem fs) {
 	lines.add("# Constructors of non-abstract block classes")
-	Files.list(fs.getPath("net/minecraft/block"))
+	Files.list(fs.getPath("net/minecraft/world/level/block/"))
 			.filter { Files.isRegularFile(it) && it.toString().endsWith(".class") }
 			.map { loadClass(it) }
 			.sorted(Comparator.comparing { it.name })
@@ -112,7 +112,7 @@ def generateItemConstructors(List<String> lines, FileSystem fs) {
 def generateRenderPipelinesFields(List<String> lines, FileSystem fs) {
 	lines.add("# private fields of RenderPipelines")
 
-	def node = loadClass(fs.getPath("net/minecraft/client/gl/RenderPipelines.class"))
+	def node = loadClass(fs.getPath("net/minecraft/client/renderer/RenderPipelines.class"))
 
 	for (def field : node.fields) {
 		// All private fields of RenderPipelines of type RenderPipeline.Snippet
@@ -177,17 +177,17 @@ def generateTrackedDataFields(String className, List<String> lines, FileSystem f
 def generateCreatorEntityTrackedDataMethods(List<String> lines, FileSystem fs) {
 	lines.add("# Private tracked data related methods of DisplayEntity (plus its subclasses) and InteractionEntity")
 
-	generateTrackedDataFields("net/minecraft/entity/decoration/DisplayEntity", lines, fs, "getTransformation")
-	generateTrackedDataFields("net/minecraft/entity/decoration/DisplayEntity\$ItemDisplayEntity", lines, fs)
-	generateTrackedDataFields("net/minecraft/entity/decoration/DisplayEntity\$BlockDisplayEntity", lines, fs)
-	generateTrackedDataFields("net/minecraft/entity/decoration/DisplayEntity\$TextDisplayEntity", lines, fs)
-	generateTrackedDataFields("net/minecraft/entity/decoration/InteractionEntity", lines, fs, "shouldRespond")
+	generateTrackedDataFields("net/minecraft/world/entity/Display", lines, fs, "getTransformation")
+	generateTrackedDataFields("net/minecraft/world/entity/Display\$ItemDisplay", lines, fs)
+	generateTrackedDataFields("net/minecraft/world/entity/Display\$BlockDisplay", lines, fs)
+	generateTrackedDataFields("net/minecraft/world/entity/Display\$TextDisplay", lines, fs)
+	generateTrackedDataFields("net/minecraft/world/entity/Interaction", lines, fs, "shouldRespond")
 }
 
 def generateEnchantmentMethods(List<String> lines, FileSystem fs) {
 	lines.add("# Private methods of Enchantment and EnchantmentHelper")
 
-	for (def node : [ loadClass(fs.getPath("net/minecraft/enchantment/EnchantmentHelper.class")), loadClass(fs.getPath("net/minecraft/enchantment/Enchantment.class")) ]) {
+	for (def node : [ loadClass(fs.getPath("net/minecraft/world/item/enchantment/EnchantmentHelper.class")), loadClass(fs.getPath("net/minecraft/enchantment/Enchantment.class")) ]) {
 		for (def method : node.methods) {
 			// All private inner methods of EnchantmentHelper
 			if ((method.access & Opcodes.ACC_PRIVATE) != 0 && !method.name.startsWith("method_")) {
@@ -195,8 +195,8 @@ def generateEnchantmentMethods(List<String> lines, FileSystem fs) {
 			}
 		}
 	}
-	lines.add('transitive-accessible class net/minecraft/enchantment/EnchantmentHelper$Consumer')
-	lines.add('transitive-accessible class net/minecraft/enchantment/EnchantmentHelper$ContextAwareConsumer')
+	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentVisitor')
+	lines.add('transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentInSlotVisitor')
 }
 
 ClassNode loadClass(Path path) {

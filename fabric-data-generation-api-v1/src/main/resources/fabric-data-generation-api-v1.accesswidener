@@ -36,6 +36,9 @@ transitive-accessible	class	net/minecraft/client/data/models/BlockModelGenerator
 accessible	class	net/minecraft/client/data/models/ModelProvider$ItemInfoCollector
 accessible	class	net/minecraft/client/data/models/ModelProvider$BlockStateGeneratorCollector
 accessible	field	net/minecraft/client/data/models/ModelProvider$BlockStateGeneratorCollector	generators	Ljava/util/Map;
+
+### Generated access wideners below
+
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	buildRecipes	()V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	generateForEnabledBlockFamilies	(Lnet/minecraft/world/flag/FeatureFlagSet;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	oneToOneConversionRecipe	(Lnet/minecraft/world/level/ItemLike;Lnet/minecraft/world/level/ItemLike;Ljava/lang/String;)V
