@@ -37,11 +37,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.FabricModel;
 
 @Mixin(Model.class)
 abstract class ModelMixin<S> implements FabricModel<S> {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract ModelPart getRootPart();
+	public abstract ModelPart root();
+
 	@Unique
 	private final Map<String, ModelPart> childPartMap = new Object2ObjectOpenHashMap<>();
 
@@ -58,7 +56,7 @@ abstract class ModelMixin<S> implements FabricModel<S> {
 
 	@Override
 	public void copyTransforms(Model<?> model) {
-		copyTransforms(model.root(), getRootPart());
+		copyTransforms(model.root(), root());
 		((ModelPartAccessor) (Object) model.root()).fabric$callForEachChild((name, part) -> {
 			ModelPart childPart = getChildPart(name);
 

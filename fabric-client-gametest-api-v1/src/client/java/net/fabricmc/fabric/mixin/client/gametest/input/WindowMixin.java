@@ -70,11 +70,8 @@ public abstract class WindowMixin implements WindowHooks {
 	@Shadow
 	private Optional<VideoMode> preferredFullscreenVideoMode;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	protected abstract void updateWindowRegion();
+	protected abstract void setMode();
 
 	@Unique
 	private int defaultWidth;
@@ -210,7 +207,7 @@ public abstract class WindowMixin implements WindowHooks {
 		this.width = this.windowedWidth = this.framebufferWidth = width;
 		this.height = this.windowedHeight = this.framebufferHeight = height;
 
-		updateWindowRegion();
+		setMode();
 		this.eventHandler.resizeDisplay();
 	}
 }

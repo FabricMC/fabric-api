@@ -37,11 +37,8 @@ import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 
 @Mixin(GameRule.class)
 public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTypeExtensions {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract Class<T> getValueClass();
+	public abstract Class<T> valueClass();
 
 	@Unique
 	@Nullable
@@ -116,7 +113,7 @@ public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTy
 		}
 
 		try {
-			Class<E> classType = (Class<E>) this.getValueClass();
+			Class<E> classType = (Class<E>) this.valueClass();
 			final E deserialized = Enum.valueOf(classType, value);
 
 			if (!this.enumSupportedValues.contains(deserialized)) {
@@ -125,7 +122,7 @@ public abstract class GameRuleMixin<T> implements RuleCategoryExtensions, RuleTy
 
 			return DataResult.success((T) deserialized);
 		} catch (IllegalArgumentException e) {
-			return DataResult.error(() -> "Failed to parse rule of value " + value + " for rule of type " + this.getValueClass());
+			return DataResult.error(() -> "Failed to parse rule of value " + value + " for rule of type " + this.valueClass());
 		}
 	}
 }

@@ -36,18 +36,15 @@ public abstract class PathContextMixin {
 	@Shadow
 	public abstract BlockState getBlockState(BlockPos blockPos);
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract CollisionGetter getWorld();
+	public abstract CollisionGetter level();
 
 	/**
 	 * Overrides the node type for the specified position, if the position is found as neighbor block in a path.
 	 */
 	@Inject(method = "getPathTypeFromState", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/core/BlockPos$MutableBlockPos;set(III)Lnet/minecraft/core/BlockPos$MutableBlockPos;"), cancellable = true)
 	private void onGetNodeType(int x, int y, int z, CallbackInfoReturnable<PathType> cir, @Local BlockPos pos) {
-		final PathType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(getBlockState(pos), getWorld(), pos, true);
+		final PathType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(getBlockState(pos), level(), pos, true);
 
 		if (neighborNodeType != null) {
 			cir.setReturnValue(neighborNodeType);

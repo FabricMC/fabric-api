@@ -40,9 +40,6 @@ abstract class SpecialModelTypesMixin {
 	@Mutable
 	private static Map<Block, SpecialModelRenderer.Unbaked> STATIC_BLOCK_MAPPING;
 
-	// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
 	@Inject(at = @At("RETURN"), method = "<clinit>*")
 	private static void onReturnClinit(CallbackInfo ci) {
 		// The map is normally an ImmutableMap.

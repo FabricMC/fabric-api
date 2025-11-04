@@ -59,20 +59,14 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension, TagAli
 	@Shadow
 	MappedRegistry.TagSet<T> allTags;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	protected abstract HolderSet.Named<T> createNamedEntryList(TagKey<T> tag);
+	protected abstract HolderSet.Named<T> createTag(TagKey<T> tag);
 
 	@Shadow
 	abstract void refreshTagsInHolders();
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract ResourceKey<? extends Registry<T>> getKey();
+	public abstract ResourceKey<? extends Registry<T>> key();
 
 	@Override
 	public void fabric_loadTagAliases(Map<TagKey<?>, Set<TagKey<?>>> aliasGroups) {
@@ -106,7 +100,7 @@ abstract class SimpleRegistryMixin<T> implements SimpleRegistryExtension, TagAli
 						((SimpleRegistryTagLookup2Accessor<T>) allTags).fabric_setTagMap(tagMap);
 					}
 
-					tagMap.put((TagKey<T>) tag, createNamedEntryList((TagKey<T>) tag));
+					tagMap.put((TagKey<T>) tag, createTag((TagKey<T>) tag));
 				}
 			}
 

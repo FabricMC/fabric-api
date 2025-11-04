@@ -53,27 +53,18 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	@Nullable
 	private ConfigurationTask currentTask;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	protected abstract void onTaskFinished(ConfigurationTask.Type key);
+	protected abstract void finishCurrentTask(ConfigurationTask.Type key);
 
 	@Shadow
 	@Final
 	private Queue<ConfigurationTask> configurationTasks;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
 	public abstract boolean isAcceptingMessages();
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract void sendConfigurations();
+	public abstract void startConfiguration();
 
 	@Unique
 	private ServerConfigurationNetworkAddon addon;
@@ -171,7 +162,7 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 	@Override
 	public void completeTask(ConfigurationTask.Type key) {
 		if (!earlyTaskExecution) {
-			onTaskFinished(key);
+			finishCurrentTask(key);
 			return;
 		}
 
@@ -182,7 +173,7 @@ public abstract class ServerConfigurationNetworkHandlerMixin extends ServerCommo
 		}
 
 		this.currentTask = null;
-		sendConfigurations();
+		startConfiguration();
 	}
 
 	@WrapOperation(method = "handleConfigurationFinished", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/RegistryFriendlyByteBuf;decorator(Lnet/minecraft/core/RegistryAccess;)Ljava/util/function/Function;"))

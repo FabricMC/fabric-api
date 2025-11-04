@@ -37,9 +37,6 @@ public abstract class BlockEntityRendererFactoriesMixin {
 	@Final
 	private static Map<BlockEntityType<?>, BlockEntityRendererProvider<?, ?>> PROVIDERS;
 
-	// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
 	@Inject(at = @At("RETURN"), method = "<clinit>*")
 	private static void init(CallbackInfo ci) {
 		BlockEntityRendererRegistryImpl.setup(((t, factory) -> PROVIDERS.put(t, factory)));

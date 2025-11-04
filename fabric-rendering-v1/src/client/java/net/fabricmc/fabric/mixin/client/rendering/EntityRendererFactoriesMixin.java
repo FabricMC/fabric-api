@@ -47,9 +47,6 @@ public abstract class EntityRendererFactoriesMixin {
 	@Final
 	private static Map<EntityType<?>, EntityRendererProvider<?>> PROVIDERS;
 
-	// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Inject(method = "<clinit>*", at = @At(value = "RETURN"))
 	private static void onRegisterRenderers(CallbackInfo info) {

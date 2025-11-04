@@ -49,11 +49,8 @@ public abstract class CreativeInventoryScreenMixin extends AbstractContainerScre
 		super(screenHandler, playerInventory, text);
 	}
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	protected abstract void setSelectedTab(CreativeModeTab itemGroup_1);
+	protected abstract void selectTab(CreativeModeTab itemGroup_1);
 
 	@Shadow
 	private static CreativeModeTab selectedTab;
@@ -69,7 +66,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractContainerScre
 					.stream()
 					.filter(this::isGroupVisible)
 					.min((a, b) -> Boolean.compare(a.isAlignedRight(), b.isAlignedRight()))
-					.ifPresent(this::setSelectedTab);
+					.ifPresent(this::selectTab);
 		}
 	}
 
@@ -208,7 +205,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractContainerScre
 			}
 		}
 
-		setSelectedTab(itemGroup);
+		selectTab(itemGroup);
 		return true;
 	}
 }

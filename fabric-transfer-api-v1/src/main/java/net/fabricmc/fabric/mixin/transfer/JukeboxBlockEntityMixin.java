@@ -33,11 +33,8 @@ public abstract class JukeboxBlockEntityMixin implements SpecialLogicInventory {
 	@Shadow
 	private ItemStack item;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract void setStack(ItemStack stack);
+	public abstract void setTheItem(ItemStack stack);
 
 	@Unique
 	private boolean fabric_suppressSpecialLogic = false;
@@ -59,6 +56,6 @@ public abstract class JukeboxBlockEntityMixin implements SpecialLogicInventory {
 	public void fabric_onFinalCommit(int slot, ItemStack oldStack, ItemStack newStack) {
 		// Call setStack again without suppressing vanilla logic,
 		// where now the record will actually getting played/stopped.
-		setStack(newStack);
+		setTheItem(newStack);
 	}
 }

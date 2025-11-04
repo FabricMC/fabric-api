@@ -45,10 +45,7 @@ public abstract class ServerPlayNetworkHandlerInteractEntityHandlerMixin impleme
 	@Final
 	Entity val$target;
 
-	// TODO(Ravel): target method interactAt with the signature not found
-// TODO(Ravel): target method interactAt with the signature not found
-// TODO(Ravel): target method interactAt with the signature not found
-	@Inject(method = "interactAt(Lnet/minecraft/util/Hand;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "HEAD"), cancellable = true)
+	@Inject(method = "onInteraction(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/Vec3;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(InteractionHand hand, Vec3 hitPosition, CallbackInfo info) {
 		Player player = this$0.player;
 		Level world = player.level();
@@ -61,10 +58,7 @@ public abstract class ServerPlayNetworkHandlerInteractEntityHandlerMixin impleme
 		}
 	}
 
-	// TODO(Ravel): target method interact with the signature not found
-// TODO(Ravel): target method interact with the signature not found
-// TODO(Ravel): target method interact with the signature not found
-	@Inject(method = "interact(Lnet/minecraft/util/Hand;)V", at = @At(value = "HEAD"), cancellable = true)
+	@Inject(method = "onInteraction(Lnet/minecraft/world/InteractionHand;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(InteractionHand hand, CallbackInfo info) {
 		Player player = this$0.player;
 		Level world = player.level();

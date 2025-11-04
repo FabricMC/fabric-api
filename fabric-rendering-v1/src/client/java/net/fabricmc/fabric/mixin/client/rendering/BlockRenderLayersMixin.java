@@ -41,9 +41,6 @@ abstract class BlockRenderLayersMixin {
 	@Final
 	private static Map<Fluid, ChunkSectionLayer> LAYER_BY_FLUID;
 
-	// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
 	@Inject(method = "<clinit>*", at = @At("RETURN"))
 	private static void onInitialize(CallbackInfo ci) {
 		BlockRenderLayerMapImpl.setup(TYPE_BY_BLOCK::put, LAYER_BY_FLUID::put);

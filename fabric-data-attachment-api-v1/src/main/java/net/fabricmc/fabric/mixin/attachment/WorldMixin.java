@@ -26,25 +26,19 @@ import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 
 @Mixin(Level.class)
 abstract class WorldMixin implements AttachmentTargetImpl {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract boolean isClient();
+	public abstract RegistryAccess registryAccess();
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract RegistryAccess getRegistryManager();
+	public abstract boolean isClientSide();
 
 	@Override
 	public boolean fabric_shouldTryToSync() {
-		return !this.isClient();
+		return !this.isClientSide();
 	}
 
 	@Override
 	public RegistryAccess fabric_getDynamicRegistryManager() {
-		return getRegistryManager();
+		return registryAccess();
 	}
 }

@@ -41,30 +41,19 @@ import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin(BlockEntity.class)
 abstract class BlockEntityMixin implements AttachmentTargetImpl {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
+	@Shadow
+	public abstract void setChanged();
+
 	@Shadow
 	@Final
-	protected BlockPos pos;
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
+	protected BlockPos worldPosition;
+
+	@Shadow
+	public abstract boolean hasLevel();
+
 	@Shadow
 	@Nullable
-	protected Level world;
-
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-	@Shadow
-	public abstract void markDirty();
-
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-	@Shadow
-	public abstract boolean hasWorld();
+	protected Level level;
 
 	@Inject(
 			method = "loadWithComponents",
@@ -84,12 +73,12 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_markChanged(AttachmentType<?> type) {
-		this.markDirty();
+		this.setChanged();
 	}
 
 	@Override
 	public AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
-		return new AttachmentTargetInfo.BlockEntityTarget(this.pos);
+		return new AttachmentTargetInfo.BlockEntityTarget(this.worldPosition);
 	}
 
 	@Override
@@ -105,11 +94,11 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	@Override
 	public boolean fabric_shouldTryToSync() {
 		// Persistent attachments are read at a time with no world
-		return !this.hasWorld() || !this.world.isClientSide();
+		return !this.hasLevel() || !this.level.isClientSide();
 	}
 
 	@Override
 	public RegistryAccess fabric_getDynamicRegistryManager() {
-		return this.world.registryAccess();
+		return this.level.registryAccess();
 	}
 }

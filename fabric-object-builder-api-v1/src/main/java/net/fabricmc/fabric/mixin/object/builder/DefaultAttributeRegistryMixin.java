@@ -39,9 +39,6 @@ public abstract class DefaultAttributeRegistryMixin {
 	@Mutable
 	private static Map<EntityType<? extends LivingEntity>, AttributeSupplier> SUPPLIERS;
 
-	// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
 	@Inject(method = "<clinit>*", at = @At("TAIL"))
 	private static void injectAttributes(CallbackInfo ci) {
 		SUPPLIERS = new IdentityHashMap<>(SUPPLIERS);

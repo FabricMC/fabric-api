@@ -48,15 +48,12 @@ abstract class ResourcePackProfileMixin implements FabricResourcePackProfile {
 	@Unique
 	private Predicate<Set<String>> parentsPredicate = DEFAULT_PARENT_PREDICATE;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract PackLocationInfo getInfo();
+	public abstract PackLocationInfo location();
 
 	@Inject(method = "open", at = @At("RETURN"))
 	private void onCreateResourcePack(CallbackInfoReturnable<PackResources> info) {
-		ResourcePackSourceTracker.setSource(info.getReturnValue(), getInfo().source());
+		ResourcePackSourceTracker.setSource(info.getReturnValue(), location().source());
 	}
 
 	@Override

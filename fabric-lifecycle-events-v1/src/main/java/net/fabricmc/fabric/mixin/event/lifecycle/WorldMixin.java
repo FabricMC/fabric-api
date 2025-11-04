@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.world.level.Level;
@@ -30,12 +29,6 @@ import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
 
 @Mixin(Level.class)
 public abstract class WorldMixin implements LoadedChunksCache {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-	@Shadow
-	public abstract boolean isClient();
-
 	@Unique
 	private final Set<LevelChunk> loadedChunks = new HashSet<>();
 

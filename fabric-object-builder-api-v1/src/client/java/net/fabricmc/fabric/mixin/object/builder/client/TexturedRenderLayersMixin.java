@@ -31,9 +31,6 @@ import net.fabricmc.fabric.impl.object.builder.client.SignTypeTextureHelper;
 
 @Mixin(Sheets.class)
 abstract class TexturedRenderLayersMixin {
-	// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
 	@Inject(method = "<clinit>*", at = @At("RETURN"))
 	private static void onReturnClinit(CallbackInfo ci) {
 		SignTypeTextureHelper.shouldAddTextures = true;

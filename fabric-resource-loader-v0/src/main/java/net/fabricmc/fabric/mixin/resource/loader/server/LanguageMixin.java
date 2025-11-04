@@ -70,16 +70,13 @@ class LanguageMixin {
 	private static void loadFromPath(Path path, BiConsumer<String, String> entryConsumer) {
 		try (InputStream stream = Files.newInputStream(path)) {
 			LOGGER.debug("Loading translations from {}", path);
-			load(stream, entryConsumer);
+			loadFromJson(stream, entryConsumer);
 		} catch (JsonParseException | IOException e) {
 			LOGGER.error("Couldn't read strings from {}", path, e);
 		}
 	}
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public static void load(InputStream inputStream, BiConsumer<String, String> entryConsumer) {
+	public static void loadFromJson(InputStream inputStream, BiConsumer<String, String> entryConsumer) {
 	}
 }

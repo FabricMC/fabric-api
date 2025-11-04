@@ -60,6 +60,9 @@ public abstract class ClientPlayerInteractionManagerMixin {
 	@Final
 	private ClientPacketListener connection;
 
+	@Shadow
+	protected abstract void startPrediction(ClientLevel clientLevel, PredictiveAction predictiveAction);
+
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getAbilities()Lnet/minecraft/world/entity/player/Abilities;", ordinal = 0), method = "startDestroyBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
 		fabric_fireAttackBlockCallback(pos, direction, info);
@@ -82,7 +85,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
 			// We also need to let the server process the action if it's accepted.
 			if (result.consumesAction()) {
-				sendSequencedPacket(minecraft.level, id -> new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, pos, direction, id));
+				startPrediction(minecraft.level, id -> new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, pos, direction, id));
 			}
 		}
 	}
@@ -104,7 +107,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 		if (result != InteractionResult.PASS) {
 			if (result.consumesAction()) {
 				// send interaction packet to the server with a new sequentially assigned id
-				sendSequencedPacket((ClientLevel) player.level(), id -> new ServerboundUseItemOnPacket(hand, blockHitResult, id));
+				startPrediction((ClientLevel) player.level(), id -> new ServerboundUseItemOnPacket(hand, blockHitResult, id));
 			}
 
 			info.setReturnValue(result);
@@ -120,7 +123,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 		if (result != InteractionResult.PASS) {
 			if (result == InteractionResult.SUCCESS) {
 				// send interaction packet to the server with a new sequentially assigned id
-				sendSequencedPacket((ClientLevel) player.level(), id -> new ServerboundUseItemPacket(hand, id, player.getYRot(), player.getXRot()));
+				startPrediction((ClientLevel) player.level(), id -> new ServerboundUseItemPacket(hand, id, player.getYRot(), player.getXRot()));
 			}
 
 			info.setReturnValue(result);
@@ -139,10 +142,4 @@ public abstract class ClientPlayerInteractionManagerMixin {
 			info.cancel();
 		}
 	}
-
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-	@Shadow
-	protected abstract void sendSequencedPacket(ClientLevel clientWorld, PredictiveAction supplier);
 }

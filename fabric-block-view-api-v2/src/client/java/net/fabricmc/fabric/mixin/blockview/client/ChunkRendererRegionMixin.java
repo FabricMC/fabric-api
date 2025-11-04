@@ -34,13 +34,9 @@ import net.fabricmc.fabric.impl.blockview.client.RenderDataMapConsumer;
 
 @Mixin(RenderSectionRegion.class)
 public abstract class ChunkRendererRegionMixin implements BlockAndTintGetter, RenderDataMapConsumer {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
 	@Final
-	protected Level world;
-
+	private Level level;
 	@Unique
 	@Nullable
 	private Long2ObjectMap<Object> fabric_renderDataMap;
@@ -65,6 +61,6 @@ public abstract class ChunkRendererRegionMixin implements BlockAndTintGetter, Re
 
 	@Override
 	public Holder<Biome> getBiomeFabric(BlockPos pos) {
-		return world.getBiome(pos);
+		return level.getBiome(pos);
 	}
 }

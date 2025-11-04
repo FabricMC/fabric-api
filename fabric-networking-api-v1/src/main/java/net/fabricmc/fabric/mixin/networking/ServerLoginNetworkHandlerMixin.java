@@ -38,11 +38,8 @@ import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
 abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtensions, PacketCallbackListener {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	protected abstract void tickVerify(GameProfile profile);
+	protected abstract void verifyLoginAndFinishConnectionSetup(GameProfile gameProfile);
 
 	@Unique
 	private ServerLoginNetworkAddon addon;
@@ -58,7 +55,7 @@ abstract class ServerLoginNetworkHandlerMixin implements NetworkHandlerExtension
 	private void handlePlayerJoin(ServerLoginPacketListenerImpl instance, GameProfile profile) {
 		// Do not accept the player, thereby moving into play stage until all login futures being waited on are completed
 		if (this.addon.queryTick()) {
-			this.tickVerify(profile);
+			this.verifyLoginAndFinishConnectionSetup(profile);
 		}
 	}
 

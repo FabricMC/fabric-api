@@ -29,14 +29,11 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract RegistryAccess.Frozen getRegistryManager();
+	public abstract RegistryAccess.Frozen registryAccess();
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
 	private void finalizeWorldGen(CallbackInfo ci) {
-		BiomeModificationImpl.INSTANCE.finalizeWorldGen(getRegistryManager());
+		BiomeModificationImpl.INSTANCE.finalizeWorldGen(registryAccess());
 	}
 }

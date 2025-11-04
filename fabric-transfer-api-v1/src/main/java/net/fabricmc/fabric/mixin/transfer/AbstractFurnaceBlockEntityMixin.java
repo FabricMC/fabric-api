@@ -39,11 +39,8 @@ import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
  */
 @Mixin(AbstractFurnaceBlockEntity.class)
 public abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlockEntity implements SpecialLogicInventory {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	protected NonNullList<ItemStack> inventory;
+	protected NonNullList<ItemStack> items;
 	@Shadow
 	int cookingTimer;
 	@Shadow
@@ -59,7 +56,7 @@ public abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlock
 	@Inject(at = @At("HEAD"), method = "setItem", cancellable = true)
 	public void setStackSuppressUpdate(int slot, ItemStack stack, CallbackInfo ci) {
 		if (fabric_suppressSpecialLogic) {
-			inventory.set(slot, stack);
+			items.set(slot, stack);
 			ci.cancel();
 		}
 	}

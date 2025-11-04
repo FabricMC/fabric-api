@@ -32,38 +32,29 @@ import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 @Mixin(ChunkAccess.class)
 abstract class ChunkMixin implements AttachmentTargetImpl {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-	@Shadow
-	@Final
-	protected ChunkPos pos;
-
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-	@Shadow
-	public abstract ChunkStatus getStatus();
-
 	@Shadow
 	public abstract ChunkPos getPos();
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract void markNeedsSaving();
+	public abstract void markUnsaved();
+
+	@Shadow
+	public abstract ChunkStatus getPersistedStatus();
+
+	@Shadow
+	@Final
+	protected ChunkPos chunkPos;
 
 	@Override
 	public AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
-		return new AttachmentTargetInfo.ChunkTarget(this.pos);
+		return new AttachmentTargetInfo.ChunkTarget(this.chunkPos);
 	}
 
 	@Override
 	public void fabric_markChanged(AttachmentType<?> type) {
-		markNeedsSaving();
+		markUnsaved();
 
-		if (type.isPersistent() && this.getStatus().equals(ChunkStatus.EMPTY)) {
+		if (type.isPersistent() && this.getPersistedStatus().equals(ChunkStatus.EMPTY)) {
 			AttachmentEntrypoint.LOGGER.warn(
 					"Attaching persistent attachment {} to chunk {} with chunk status EMPTY. Attachment might be discarded.",
 					type.identifier(),

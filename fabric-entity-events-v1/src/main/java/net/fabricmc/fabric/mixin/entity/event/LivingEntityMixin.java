@@ -54,17 +54,11 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract boolean isDead();
+	public abstract boolean isDeadOrDying();
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract Optional<BlockPos> getSleepingPosition();
+	public abstract Optional<BlockPos> getSleepingPos();
 
 	@WrapOperation(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;killedEntity(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/damagesource/DamageSource;)Z"))
 	private boolean onEntityKilledOther(Entity entity, ServerLevel serverWorld, @Nullable LivingEntity attacker, DamageSource damageSource, Operation<Boolean> original) {
@@ -80,7 +74,7 @@ abstract class LivingEntityMixin {
 
 	@Redirect(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isDeadOrDying()Z", ordinal = 1))
 	boolean beforeEntityKilled(LivingEntity livingEntity, ServerLevel world, DamageSource source, float amount) {
-		return isDead() && ServerLivingEntityEvents.ALLOW_DEATH.invoker().allowDeath(livingEntity, source, amount);
+		return isDeadOrDying() && ServerLivingEntityEvents.ALLOW_DEATH.invoker().allowDeath(livingEntity, source, amount);
 	}
 
 	@Inject(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;net/minecraft/entity/LivingEntity.isSleeping()Z"), cancellable = true)
@@ -92,7 +86,7 @@ abstract class LivingEntityMixin {
 
 	@Inject(method = "hurtServer", at = @At("TAIL"))
 	private void afterDamage(ServerLevel world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 1) float dealt, @Local(ordinal = 0) boolean blocked) {
-		if (!isDead()) {
+		if (!isDeadOrDying()) {
 			ServerLivingEntityEvents.AFTER_DAMAGE.invoker().afterDamage((LivingEntity) (Object) this, source, dealt, amount, blocked);
 		}
 	}
@@ -104,7 +98,7 @@ abstract class LivingEntityMixin {
 
 	@Inject(method = "stopSleeping", at = @At("HEAD"))
 	private void onWakeUp(CallbackInfo info) {
-		BlockPos sleepingPos = getSleepingPosition().orElse(null);
+		BlockPos sleepingPos = getSleepingPos().orElse(null);
 
 		// If actually asleep - this method is often called with data loading, syncing etc. "just to be sure"
 		if (sleepingPos != null) {

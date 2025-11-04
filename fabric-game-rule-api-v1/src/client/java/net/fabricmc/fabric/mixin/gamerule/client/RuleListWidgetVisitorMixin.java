@@ -41,22 +41,19 @@ public abstract class RuleListWidgetVisitorMixin implements GameRuleTypeVisitor,
 	@Final
 	@Shadow
 	private EditGameRulesScreen val$this$0;
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	protected abstract <T> void createRuleWidget(GameRule<T> key, EditGameRulesScreen.EntryFactory<T> widgetFactory);
+	protected abstract <T> void addEntry(GameRule<T> key, EditGameRulesScreen.EntryFactory<T> widgetFactory);
 
 	@Override
 	public void visitDouble(GameRule<Double> doubleRule) {
-		this.createRuleWidget(doubleRule, (name, description, ruleName, rule) -> {
+		this.addEntry(doubleRule, (name, description, ruleName, rule) -> {
 			return new DoubleRuleWidget(this.val$this$0, name, description, ruleName, rule);
 		});
 	}
 
 	@Override
 	public <E extends Enum<E>> void visitEnum(GameRule<E> enumRule) {
-		this.createRuleWidget(enumRule, (name, description, ruleName, rule) -> {
+		this.addEntry(enumRule, (name, description, ruleName, rule) -> {
 			return new EnumRuleWidget<>(this.val$this$0, name, description, ruleName, rule, enumRule.getDescriptionId());
 		});
 	}

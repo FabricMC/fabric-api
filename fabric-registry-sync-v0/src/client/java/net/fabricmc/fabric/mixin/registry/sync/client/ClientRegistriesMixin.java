@@ -38,13 +38,10 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
 @Mixin(RegistryDataCollector.class)
 public class ClientRegistriesMixin {
-	// TODO(Ravel): target method createRegistryManager is ambiguous
-// TODO(Ravel): target method createRegistryManager is ambiguous
-// TODO(Ravel): target method createRegistryManager is ambiguous
-/**
+	/**
 	 * Keep the pre-24w04a behavior of removing empty registries, even if the client knows that registry.
 	 */
-	@WrapOperation(method = "createRegistryManager", at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;SYNCHRONIZED_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
+	@WrapOperation(method = "loadNewElementsAndTags", at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;SYNCHRONIZED_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
 	private List<RegistryDataLoader.RegistryData<?>> skipEmptyRegistries(Operation<List<RegistryDataLoader.RegistryData<?>>> operation, ResourceProvider resourceFactory, @Coerce ClientRegistriesDynamicRegistriesAccessor storage, boolean bl) {
 		Map<ResourceKey<? extends Registry<?>>, List<RegistrySynchronization.PackedRegistryEntry>> dynamicRegistries = storage.getDynamicRegistries();
 

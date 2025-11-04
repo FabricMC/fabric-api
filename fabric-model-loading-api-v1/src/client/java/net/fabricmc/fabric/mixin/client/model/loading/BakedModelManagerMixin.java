@@ -131,10 +131,7 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 		extraModels = ((BakedModelsHooks) (Object) bakedModels).fabric_getExtraModels();
 	}
 
-	// TODO(Ravel): target method method_65750 with the signature not found
-// TODO(Ravel): target method method_65750 with the signature not found
-// TODO(Ravel): target method method_65750 with the signature not found
-// We want to redirect the JsonUnbakedModel.deserialize call, but its return type is JsonUnbakedModel, so we can't
+	// We want to redirect the JsonUnbakedModel.deserialize call, but its return type is JsonUnbakedModel, so we can't
 	// do that directly.
 	// Instead, cancel the original call and then modify the null value when it's being used to construct the Pair.
 	@Redirect(method = "method_65750(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelManager;net/minecraft/client/render/model/json/JsonUnbakedModel.deserialize(Ljava/io/Reader;)Lnet/minecraft/client/renderer/block/model/BlockModel;"))
@@ -142,10 +139,7 @@ abstract class BakedModelManagerMixin implements FabricBakedModelManager {
 		return null;
 	}
 
-	// TODO(Ravel): target method method_65750 with the signature not found
-// TODO(Ravel): target method method_65750 with the signature not found
-// TODO(Ravel): target method method_65750 with the signature not found
-// Here we replace the null model with one produced by our own deserializer.
+	// Here we replace the null model with one produced by our own deserializer.
 	// The Pair's type is actually Pair<Identifier, JsonUnbakedModel>, but since generics don't really exist, vanilla
 	// code doesn't explicitly cast the model to JsonUnbakedModel, and the enclosing method returns UnbakedModels per
 	// its return type, it's safe to return an UnbakedModel here.

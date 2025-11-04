@@ -121,17 +121,11 @@ public abstract class WorldRendererMixin {
 		return matrixStack;
 	}
 
-	// TODO(Ravel): @At.args is not supported
-// TODO(Ravel): @At.args is not supported
-// TODO(Ravel): @At.args is not supported
 	@Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities"))
 	private void beforeEntitySubmission(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_ENTITIES.invoker().beforeEntities(renderContext);
 	}
 
-	// TODO(Ravel): @At.args is not supported
-// TODO(Ravel): @At.args is not supported
-// TODO(Ravel): @At.args is not supported
 	@WrapOperation(method = "method_62214",
 			slice = @Slice(from = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities")),
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V")
@@ -146,9 +140,6 @@ public abstract class WorldRendererMixin {
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.invoker().beforeDebugRender(renderContext);
 	}
 
-	// TODO(Ravel): @At.args is not supported
-// TODO(Ravel): @At.args is not supported
-// TODO(Ravel): @At.args is not supported
 	@Inject(method = "method_62214", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V", args = "ldc=translucent"))
 	private void beforeTranslucentRender(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_TRANSLUCENT.invoker().beforeTranslucent(renderContext);
@@ -162,9 +153,6 @@ public abstract class WorldRendererMixin {
 		}
 	}
 
-	// TODO(Ravel): Unknown injection point INVOKE:LAST
-// TODO(Ravel): Unknown injection point INVOKE:LAST
-// TODO(Ravel): Unknown injection point INVOKE:LAST
 	@Inject(method = "method_62214", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;draw()V"))
 	private void endMainRender(CallbackInfo ci) {
 		WorldRenderEvents.END_MAIN.invoker().endMain(renderContext);

@@ -43,11 +43,8 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	@Shadow
 	private int id;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract Level getEntityWorld();
+	public abstract Level level();
 
 	@Inject(
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;readAdditionalSaveData(Lnet/minecraft/world/level/storage/ValueInput;)V"),
@@ -72,7 +69,7 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
-		if (!this.getEntityWorld().isClientSide()) {
+		if (!this.level().isClientSide()) {
 			AttachmentSyncPredicate predicate = ((AttachmentTypeImpl<?>) type).syncPredicate();
 
 			if ((Object) this instanceof ServerPlayer self && predicate.test(this, self)) {
@@ -91,11 +88,11 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public boolean fabric_shouldTryToSync() {
-		return !this.getEntityWorld().isClientSide();
+		return !this.level().isClientSide();
 	}
 
 	@Override
 	public RegistryAccess fabric_getDynamicRegistryManager() {
-		return this.getEntityWorld().registryAccess();
+		return this.level().registryAccess();
 	}
 }

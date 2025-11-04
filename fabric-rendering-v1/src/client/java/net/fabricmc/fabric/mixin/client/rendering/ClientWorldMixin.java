@@ -39,13 +39,10 @@ public abstract class ClientWorldMixin {
 	// hash maps' O(1) retrievals. If many custom ColorResolvers are registered, this may have a non-negligible
 	// performance impact.
 	@Unique
-	private final Reference2ReferenceMap<ColorResolver, BlockTintCache> customColorCache = ColorResolverRegistryImpl.createCustomCacheMap(resolver -> new BlockTintCache(pos -> calculateColor(pos, resolver)));
+	private final Reference2ReferenceMap<ColorResolver, BlockTintCache> customColorCache = ColorResolverRegistryImpl.createCustomCacheMap(resolver -> new BlockTintCache(pos -> calculateBlockTint(pos, resolver)));
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract int calculateColor(BlockPos pos, ColorResolver colorResolver);
+	public abstract int calculateBlockTint(BlockPos pos, ColorResolver colorResolver);
 
 	@Inject(method = "onChunkLoaded(Lnet/minecraft/world/level/ChunkPos;)V", at = @At("RETURN"))
 	private void onResetChunkColor(ChunkPos chunkPos, CallbackInfo ci) {

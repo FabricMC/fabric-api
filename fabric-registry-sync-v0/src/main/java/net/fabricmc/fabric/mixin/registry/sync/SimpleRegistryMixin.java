@@ -90,21 +90,12 @@ public abstract class SimpleRegistryMixin<T> implements WritableRegistry<T>, Rem
 	@Final
 	private Map<ResourceKey<T>, Holder.Reference<T>> byKey;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
 	public abstract Optional<ResourceKey<T>> getResourceKey(T entry);
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
 	public abstract @Nullable T getValue(@Nullable Identifier id);
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
 	public abstract ResourceKey<? extends Registry<T>> key();
 
@@ -125,9 +116,6 @@ public abstract class SimpleRegistryMixin<T> implements WritableRegistry<T>, Rem
 	// invariant: the sets of keys and values are disjoint (every alias points to a 'deepest' non-alias ID)
 	private Map<Identifier, Identifier> aliases = new HashMap<>();
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
 	public abstract boolean containsKey(Identifier id);
 
@@ -138,11 +126,8 @@ public abstract class SimpleRegistryMixin<T> implements WritableRegistry<T>, Rem
 	@Final
 	private ResourceKey<? extends Registry<T>> key;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	protected abstract void assertNotFrozen();
+	protected abstract void validateWrite();
 
 	@Override
 	public Event<RegistryEntryAddedCallback<T>> fabric_getAddObjectEvent() {
@@ -452,7 +437,7 @@ public abstract class SimpleRegistryMixin<T> implements WritableRegistry<T>, Rem
 			);
 		}
 
-		assertNotFrozen();
+		validateWrite();
 
 		// recompute alias map to preserve invariant, i.e. make sure all keys point to a non-alias ID
 		Identifier deepest = aliases.getOrDefault(newId, newId);

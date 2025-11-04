@@ -99,9 +99,6 @@ public class FluidRendererMixin {
 		return info.handler != null ? info.handler.getFluidColor(world, pos, fluidState) : original;
 	}
 
-	// TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
-// TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
-// TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
 	@Definition(id = "getFrameU", method = "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;getU(F)F")
 	@Definition(id = "sprite2", local = @Local(type = TextureAtlasSprite.class))
 	@Expression("@(sprite2).getFrameU(0.0)")
@@ -131,9 +128,6 @@ public class FluidRendererMixin {
 		}
 	}
 
-	// TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
-// TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
-// TODO(Ravel): remapper for com.llamalad7.mixinextras.expression.Expression is not implemented
 	@Definition(id = "sprite2", local = @Local(type = TextureAtlasSprite.class))
 	@Definition(id = "waterOverlaySprite", field = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;waterOverlay:Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;")
 	@Expression("sprite2 != this.waterOverlaySprite")

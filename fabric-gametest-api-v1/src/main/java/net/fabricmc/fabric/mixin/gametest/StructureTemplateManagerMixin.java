@@ -51,11 +51,8 @@ public abstract class StructureTemplateManagerMixin {
 	@Shadow
 	private ResourceManager resourceManager;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract StructureTemplate createTemplate(CompoundTag nbt);
+	public abstract StructureTemplate readStructure(CompoundTag compoundTag);
 
 	@Unique
 	private Optional<StructureTemplate> fabric_loadSnbtFromResource(Identifier id) {
@@ -66,7 +63,7 @@ public abstract class StructureTemplateManagerMixin {
 			try {
 				String snbt = IOUtils.toString(resource.get().openAsReader());
 				CompoundTag nbt = NbtUtils.snbtToStructure(snbt);
-				return Optional.of(this.createTemplate(nbt));
+				return Optional.of(this.readStructure(nbt));
 			} catch (IOException | CommandSyntaxException e) {
 				throw new RuntimeException("Failed to load GameTest structure " + id, e);
 			}

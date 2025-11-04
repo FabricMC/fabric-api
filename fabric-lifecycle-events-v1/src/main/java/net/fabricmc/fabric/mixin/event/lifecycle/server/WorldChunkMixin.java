@@ -44,11 +44,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
  */
 @Mixin(LevelChunk.class)
 abstract class WorldChunkMixin {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract Level getWorld();
+	public abstract Level getLevel();
 
 	@ModifyExpressionValue(
 			method = "setBlockEntity",
@@ -57,8 +54,8 @@ abstract class WorldChunkMixin {
 	private <V> V onLoadBlockEntity(V removedBlockEntity, BlockEntity blockEntity) {
 		// Only fire the load event if the block entity has actually changed
 		if (blockEntity != null && blockEntity != removedBlockEntity) {
-			if (this.getWorld() instanceof ServerLevel) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerLevel) this.getWorld());
+			if (this.getLevel() instanceof ServerLevel) {
+				ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerLevel) this.getLevel());
 			}
 		}
 
@@ -67,8 +64,8 @@ abstract class WorldChunkMixin {
 
 	@Inject(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;setRemoved()V", shift = At.Shift.AFTER))
 	private void onRemoveBlockEntity(BlockEntity blockEntity, CallbackInfo info, @Local(ordinal = 1) BlockEntity removedBlockEntity) {
-		if (this.getWorld() instanceof ServerLevel) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ServerLevel) this.getWorld());
+		if (this.getLevel() instanceof ServerLevel) {
+			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ServerLevel) this.getLevel());
 		}
 	}
 
@@ -78,8 +75,8 @@ abstract class WorldChunkMixin {
 	private <K, V> Object onRemoveBlockEntity(Map<K, V> map, K key) {
 		@Nullable final V removed = map.remove(key);
 
-		if (removed != null && this.getWorld() instanceof ServerLevel) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ServerLevel) this.getWorld());
+		if (removed != null && this.getLevel() instanceof ServerLevel) {
+			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ServerLevel) this.getLevel());
 		}
 
 		return removed;
@@ -87,8 +84,8 @@ abstract class WorldChunkMixin {
 
 	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;setRemoved()V"))
 	private void onRemoveBlockEntity(BlockPos pos, CallbackInfo ci, @Local @Nullable BlockEntity removed) {
-		if (removed != null && this.getWorld() instanceof ServerLevel) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ServerLevel) this.getWorld());
+		if (removed != null && this.getLevel() instanceof ServerLevel) {
+			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ServerLevel) this.getLevel());
 		}
 	}
 }

@@ -39,11 +39,8 @@ abstract class MinecraftClientMixin {
 	@Unique
 	private static final boolean DEBUG_SCREEN = FabricLoader.getInstance().isDevelopmentEnvironment() || Boolean.getBoolean("fabric.debugScreen");
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public Screen currentScreen;
+	public Screen screen;
 
 	@Shadow
 	private Thread gameThread;
@@ -61,12 +58,12 @@ abstract class MinecraftClientMixin {
 
 	@Inject(method = "setScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;removed()V", shift = At.Shift.AFTER))
 	private void onScreenRemove(@Nullable Screen screen, CallbackInfo ci) {
-		ScreenEvents.remove(this.currentScreen).invoker().onRemove(this.currentScreen);
+		ScreenEvents.remove(this.screen).invoker().onRemove(this.screen);
 	}
 
 	@Inject(method = "destroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;removed()V", shift = At.Shift.AFTER))
 	private void onScreenRemoveBecauseStopping(CallbackInfo ci) {
-		ScreenEvents.remove(this.currentScreen).invoker().onRemove(this.currentScreen);
+		ScreenEvents.remove(this.screen).invoker().onRemove(this.screen);
 	}
 
 	// These two injections should be caught by the try-catch block if anything fails in an event and then rethrown in the crash report
@@ -74,7 +71,7 @@ abstract class MinecraftClientMixin {
 	private void beforeScreenTick(CallbackInfo ci) {
 		// Store the screen in a variable in case someone tries to change the screen during this before tick event.
 		// If someone changes the screen, the after tick event will likely have class cast exceptions or an NPE.
-		this.tickingScreen = this.currentScreen;
+		this.tickingScreen = this.screen;
 		ScreenEvents.beforeTick(this.tickingScreen).invoker().beforeTick(this.tickingScreen);
 	}
 
@@ -91,7 +88,7 @@ abstract class MinecraftClientMixin {
 	private void beforeLoadingScreenTick(CallbackInfo ci) {
 		// Store the screen in a variable in case someone tries to change the screen during this before tick event.
 		// If someone changes the screen, the after tick event will likely have class cast exceptions or throw a NPE.
-		this.tickingScreen = this.currentScreen;
+		this.tickingScreen = this.screen;
 		ScreenEvents.beforeTick(this.tickingScreen).invoker().beforeTick(this.tickingScreen);
 	}
 

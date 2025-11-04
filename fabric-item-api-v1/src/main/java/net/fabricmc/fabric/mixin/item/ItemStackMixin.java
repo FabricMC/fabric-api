@@ -60,11 +60,8 @@ public abstract class ItemStackMixin implements FabricItemStack {
 	@Shadow
 	public abstract Item getItem();
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract void decrement(int amount);
+	public abstract void shrink(int i);
 
 	@WrapOperation(method = "hurtAndBreak(ILnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/EquipmentSlot;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;hurtAndBreak(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/server/level/ServerPlayer;Ljava/util/function/Consumer;)V"))
 	private void hookDamage(ItemStack instance, int amount, ServerLevel serverWorld, ServerPlayer serverPlayerEntity, Consumer<Item> consumer, Operation<Void> original, @Local(argsOnly = true) LivingEntity entity, @Local(argsOnly = true) EquipmentSlot slot) {
@@ -83,7 +80,7 @@ public abstract class ItemStackMixin implements FabricItemStack {
 			MutableBoolean mut = new MutableBoolean(false);
 			amount = handler.damage((ItemStack) (Object) this, amount, entity, slot, () -> {
 				mut.setTrue();
-				this.decrement(1);
+				this.shrink(1);
 				consumer.accept(this.getItem());
 			});
 

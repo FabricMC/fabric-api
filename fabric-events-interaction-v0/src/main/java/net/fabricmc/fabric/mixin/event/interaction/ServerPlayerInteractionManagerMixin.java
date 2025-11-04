@@ -49,26 +49,24 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 
 @Mixin(ServerPlayerGameMode.class)
 public class ServerPlayerInteractionManagerMixin {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-	@Shadow
-	protected ServerLevel world;
 	@Final
 	@Shadow
 	protected ServerPlayer player;
 
+	@Shadow
+	protected ServerLevel level;
+
 	@Inject(at = @At("HEAD"), method = "handleBlockBreakAction", cancellable = true)
 	public void startBlockBreak(BlockPos pos, ServerboundPlayerActionPacket.Action playerAction, Direction direction, int worldHeight, int i, CallbackInfo info) {
 		if (playerAction != ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK) return;
-		InteractionResult result = AttackBlockCallback.EVENT.invoker().interact(player, world, InteractionHand.MAIN_HAND, pos, direction);
+		InteractionResult result = AttackBlockCallback.EVENT.invoker().interact(player, level, InteractionHand.MAIN_HAND, pos, direction);
 
 		if (result != InteractionResult.PASS) {
 			// The client might have broken the block on its side, so make sure to let it know.
-			this.player.connection.send(new ClientboundBlockUpdatePacket(world, pos));
+			this.player.connection.send(new ClientboundBlockUpdatePacket(level, pos));
 
-			if (world.getBlockState(pos).hasBlockEntity()) {
-				BlockEntity blockEntity = world.getBlockEntity(pos);
+			if (level.getBlockState(pos).hasBlockEntity()) {
+				BlockEntity blockEntity = level.getBlockEntity(pos);
 
 				if (blockEntity != null) {
 					Packet<ClientGamePacketListener> updatePacket = blockEntity.getUpdatePacket();
@@ -107,10 +105,10 @@ public class ServerPlayerInteractionManagerMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)Lnet/minecraft/world/level/block/state/BlockState;"), method = "destroyBlock", cancellable = true)
 	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity entity, @Local BlockState state) {
-		boolean result = PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(this.world, this.player, pos, state, entity);
+		boolean result = PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(this.level, this.player, pos, state, entity);
 
 		if (!result) {
-			PlayerBlockBreakEvents.CANCELED.invoker().onBlockBreakCanceled(this.world, this.player, pos, state, entity);
+			PlayerBlockBreakEvents.CANCELED.invoker().onBlockBreakCanceled(this.level, this.player, pos, state, entity);
 
 			cir.setReturnValue(false);
 		}
@@ -118,6 +116,6 @@ public class ServerPlayerInteractionManagerMixin {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;destroy(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"), method = "destroyBlock")
 	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, @Local BlockEntity entity, @Local BlockState state) {
-		PlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(this.world, this.player, pos, state, entity);
+		PlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(this.level, this.player, pos, state, entity);
 	}
 }

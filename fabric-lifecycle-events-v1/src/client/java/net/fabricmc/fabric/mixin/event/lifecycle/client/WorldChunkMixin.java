@@ -41,11 +41,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 
 @Mixin(LevelChunk.class)
 abstract class WorldChunkMixin {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract Level getWorld();
+	public abstract Level getLevel();
 
 	@ModifyExpressionValue(
 			method = "setBlockEntity",
@@ -54,10 +51,10 @@ abstract class WorldChunkMixin {
 	private <V> V onLoadBlockEntity(V removedBlockEntity, BlockEntity blockEntity) {
 		// Only fire the load event if the block entity has actually changed
 		if (blockEntity != null && blockEntity != removedBlockEntity) {
-			if (this.getWorld() instanceof ServerLevel) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerLevel) this.getWorld());
-			} else if (this.getWorld() instanceof ClientLevel) {
-				ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ClientLevel) this.getWorld());
+			if (this.getLevel() instanceof ServerLevel) {
+				ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerLevel) this.getLevel());
+			} else if (this.getLevel() instanceof ClientLevel) {
+				ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ClientLevel) this.getLevel());
 			}
 		}
 
@@ -67,10 +64,10 @@ abstract class WorldChunkMixin {
 	@Inject(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;setRemoved()V", shift = At.Shift.AFTER))
 	private void onRemoveBlockEntity(BlockEntity blockEntity, CallbackInfo info, @Local(ordinal = 1) BlockEntity removedBlockEntity) {
 		if (removedBlockEntity != null) {
-			if (this.getWorld() instanceof ServerLevel) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ServerLevel) this.getWorld());
-			} else if (this.getWorld() instanceof ClientLevel) {
-				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ClientLevel) this.getWorld());
+			if (this.getLevel() instanceof ServerLevel) {
+				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ServerLevel) this.getLevel());
+			} else if (this.getLevel() instanceof ClientLevel) {
+				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ClientLevel) this.getLevel());
 			}
 		}
 	}
@@ -82,10 +79,10 @@ abstract class WorldChunkMixin {
 		@Nullable final V removed = map.remove(key);
 
 		if (removed != null) {
-			if (this.getWorld() instanceof ServerLevel) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ServerLevel) this.getWorld());
-			} else if (this.getWorld() instanceof ClientLevel) {
-				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ClientLevel) this.getWorld());
+			if (this.getLevel() instanceof ServerLevel) {
+				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ServerLevel) this.getLevel());
+			} else if (this.getLevel() instanceof ClientLevel) {
+				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ClientLevel) this.getLevel());
 			}
 		}
 
@@ -95,10 +92,10 @@ abstract class WorldChunkMixin {
 	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;setRemoved()V"))
 	private void onRemoveBlockEntity(BlockPos pos, CallbackInfo ci, @Local @Nullable BlockEntity removed) {
 		if (removed != null) {
-			if (this.getWorld() instanceof ServerLevel) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ServerLevel) this.getWorld());
-			} else if (this.getWorld() instanceof ClientLevel) {
-				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ClientLevel) this.getWorld());
+			if (this.getLevel() instanceof ServerLevel) {
+				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ServerLevel) this.getLevel());
+			} else if (this.getLevel() instanceof ClientLevel) {
+				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ClientLevel) this.getLevel());
 			}
 		}
 	}

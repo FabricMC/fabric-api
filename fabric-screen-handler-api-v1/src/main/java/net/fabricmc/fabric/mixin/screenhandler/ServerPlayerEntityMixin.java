@@ -52,16 +52,13 @@ public abstract class ServerPlayerEntityMixin extends Player {
 		super(world, gameProfile);
 	}
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract void closeContainer();
+	public abstract void doCloseContainer();
 
 	@Redirect(method = "openMenu(Lnet/minecraft/world/MenuProvider;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;closeHandledScreen()V"))
 	private void fabric_closeHandledScreenIfAllowed(ServerPlayer player, MenuProvider factory) {
 		if (factory.shouldCloseCurrentScreen()) {
-			this.closeContainer();
+			this.doCloseContainer();
 		} else {
 			// Called by closeHandledScreen in vanilla
 			this.doCloseContainer();

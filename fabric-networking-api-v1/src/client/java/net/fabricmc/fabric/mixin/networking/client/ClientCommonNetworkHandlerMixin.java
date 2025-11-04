@@ -35,12 +35,9 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 
 @Mixin(ClientCommonPacketListenerImpl.class)
 public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerExtensions {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
 	@Final
-	protected Minecraft client;
+	protected Minecraft minecraft;
 
 	@Inject(method = "handleCustomPayload(Lnet/minecraft/network/protocol/common/ClientboundCustomPayloadPacket;)V", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(ClientboundCustomPayloadPacket packet, CallbackInfo ci) {
@@ -61,7 +58,7 @@ public abstract class ClientCommonNetworkHandlerMixin implements NetworkHandlerE
 				ci.cancel();
 			}
 		} catch (RunningOnDifferentThreadException e) {
-			this.client.packetProcessor().scheduleIfPossible((ClientCommonPacketListenerImpl) (Object) this, packet);
+			this.minecraft.packetProcessor().scheduleIfPossible((ClientCommonPacketListenerImpl) (Object) this, packet);
 			ci.cancel();
 		}
 	}

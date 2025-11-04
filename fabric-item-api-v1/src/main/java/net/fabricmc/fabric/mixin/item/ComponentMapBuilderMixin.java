@@ -39,11 +39,8 @@ abstract class ComponentMapBuilderMixin implements FabricComponentMapBuilder {
 	@Final
 	private Reference2ObjectMap<DataComponentType<?>, Object> map;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract <T> DataComponentMap.Builder add(DataComponentType<T> type, @Nullable T value);
+	public abstract <T> DataComponentMap.Builder set(DataComponentType<T> dataComponentType, @Nullable T object);
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -51,7 +48,7 @@ abstract class ComponentMapBuilderMixin implements FabricComponentMapBuilder {
 		if (!this.map.containsKey(type)) {
 			T defaultValue = fallback.get();
 			Objects.requireNonNull(defaultValue, "Cannot insert null values to component map builder");
-			this.add(type, defaultValue);
+			this.set(type, defaultValue);
 		}
 
 		return (T) this.map.get(type);
@@ -61,7 +58,7 @@ abstract class ComponentMapBuilderMixin implements FabricComponentMapBuilder {
 	public <T> List<T> getOrEmpty(DataComponentType<List<T>> type) {
 		// creating a new array list guarantees that the list in the map is mutable
 		List<T> existing = new ArrayList<>(this.getOrCreate(type, Collections::emptyList));
-		this.add(type, existing);
+		this.set(type, existing);
 		return existing;
 	}
 

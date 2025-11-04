@@ -57,10 +57,7 @@ public abstract class EditGameRulesScreenRuleListWidgetMixin extends AbstractSel
 		});
 	}
 
-	// TODO(Ravel): target method method_27638 with the signature not found
-// TODO(Ravel): target method method_27638 with the signature not found
-// TODO(Ravel): target method method_27638 with the signature not found
-// Synthetic method
+	// Synthetic method
 	@Inject(method = "method_27638(Ljava/util/Map$Entry;)V", at = @At("HEAD"), cancellable = true)
 	private void ignoreKeysWithCustomCategories(Map.Entry<GameRule<?>, EditGameRulesScreen.RuleEntry> entry, CallbackInfo ci) {
 		final GameRule<?> rule = entry.getKey();

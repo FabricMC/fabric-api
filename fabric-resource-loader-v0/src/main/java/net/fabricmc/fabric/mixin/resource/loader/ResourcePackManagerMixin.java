@@ -52,13 +52,10 @@ public abstract class ResourcePackManagerMixin {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("ResourcePackManagerMixin");
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
 	@Final
 	@Mutable
-	public Set<RepositorySource> providers;
+	public Set<RepositorySource> sources;
 
 	@Shadow
 	private Map<String, Pack> available;
@@ -66,12 +63,12 @@ public abstract class ResourcePackManagerMixin {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void construct(RepositorySource[] resourcePackProviders, CallbackInfo info) {
 		// Use a LinkedHashSet to preserve ordering
-		providers = new LinkedHashSet<>(providers);
+		sources = new LinkedHashSet<>(sources);
 
 		// Search resource pack providers to find any server-related pack provider.
 		boolean shouldAddServerProvider = false;
 
-		for (RepositorySource provider : this.providers) {
+		for (RepositorySource provider : this.sources) {
 			if (provider instanceof FolderRepositorySource
 					&& (((FolderRepositorySource) provider).packSource == PackSource.WORLD
 					|| ((FolderRepositorySource) provider).packSource == PackSource.SERVER)) {
@@ -82,7 +79,7 @@ public abstract class ResourcePackManagerMixin {
 
 		// On server, add the mod resource pack provider.
 		if (shouldAddServerProvider) {
-			providers.add(new ModResourcePackCreator(PackType.SERVER_DATA));
+			sources.add(new ModResourcePackCreator(PackType.SERVER_DATA));
 		}
 	}
 

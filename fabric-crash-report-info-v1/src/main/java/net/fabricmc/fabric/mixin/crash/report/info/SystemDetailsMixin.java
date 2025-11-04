@@ -34,15 +34,12 @@ import net.fabricmc.loader.api.ModContainer;
 
 @Mixin(SystemReport.class)
 public abstract class SystemDetailsMixin {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract void addSection(String string, Supplier<String> supplier);
+	public abstract void setDetail(String string, Supplier<String> supplier);
 
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void fillSystemDetails(CallbackInfo info) {
-		addSection("Fabric Mods", () -> {
+		setDetail("Fabric Mods", () -> {
 			ArrayList<ModContainer> topLevelMods = new ArrayList<>();
 
 			for (ModContainer container : FabricLoader.getInstance().getAllMods()) {

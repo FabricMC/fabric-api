@@ -51,34 +51,25 @@ public abstract class MinecraftClientMixin {
 	@Shadow
 	private LocalPlayer player;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract ClientPacketListener getNetworkHandler();
+	public abstract ClientPacketListener getConnection();
 
 	@Shadow
 	@Final
 	public Options options;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
 	@Nullable
-	public MultiPlayerGameMode interactionManager;
+	public MultiPlayerGameMode gameMode;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
 	@Nullable
-	public ClientLevel world;
+	public ClientLevel level;
 
 	@Inject(
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/Minecraft;net/minecraft/client/network/ClientPlayerInteractionManager.interactEntityAtLocation(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/EntityHitResult;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"
+					target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;interact(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"
 			),
 			method = "startUseItem",
 			cancellable = true
@@ -89,7 +80,7 @@ public abstract class MinecraftClientMixin {
 		if (result != InteractionResult.PASS) {
 			if (result.consumesAction()) {
 				Vec3 hitVec = hitResult.getLocation().subtract(entity.getX(), entity.getY(), entity.getZ());
-				getNetworkHandler().send(ServerboundInteractPacket.createInteractionPacket(entity, player.isShiftKeyDown(), hand, hitVec));
+				getConnection().send(ServerboundInteractPacket.createInteractionPacket(entity, player.isShiftKeyDown(), hand, hitVec));
 			}
 
 			if (result instanceof InteractionResult.Success success) {
@@ -132,8 +123,8 @@ public abstract class MinecraftClientMixin {
 	@Inject(method = "continueAttack", at = @At("HEAD"), cancellable = true)
 	private void injectHandleBlockBreakingForCancelling(boolean breaking, CallbackInfo ci) {
 		if (attackCancelled) {
-			if (interactionManager != null) {
-				interactionManager.stopDestroyBlock();
+			if (gameMode != null) {
+				gameMode.stopDestroyBlock();
 			}
 
 			ci.cancel();

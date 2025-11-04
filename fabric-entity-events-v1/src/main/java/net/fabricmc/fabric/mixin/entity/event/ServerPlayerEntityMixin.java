@@ -52,11 +52,8 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 @Mixin(ServerPlayer.class)
 abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	public abstract ServerLevel getEntityWorld();
+	public abstract ServerLevel level();
 
 	/**
 	 * Minecraft by default does not call Entity#onKilledOther for a ServerPlayerEntity being killed.
@@ -69,8 +66,8 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 
 		// If the damage source that killed the player was an entity, then fire the event.
 		if (attacker != null) {
-			attacker.killedEntity(this.getEntityWorld(), (ServerPlayer) (Object) this, source);
-			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getEntityWorld(), attacker, (ServerPlayer) (Object) this, source);
+			attacker.killedEntity(this.level(), (ServerPlayer) (Object) this, source);
+			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.level(), attacker, (ServerPlayer) (Object) this, source);
 		}
 	}
 
@@ -84,7 +81,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	 */
 	@Inject(method = "triggerDimensionChangeTriggers(Lnet/minecraft/server/level/ServerLevel;)V", at = @At("TAIL"))
 	private void afterWorldChanged(ServerLevel origin, CallbackInfo ci) {
-		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.invoker().afterChangeWorld((ServerPlayer) (Object) this, origin, this.getEntityWorld());
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.invoker().afterChangeWorld((ServerPlayer) (Object) this, origin, this.level());
 	}
 
 	@Inject(method = "restoreFrom", at = @At("TAIL"))

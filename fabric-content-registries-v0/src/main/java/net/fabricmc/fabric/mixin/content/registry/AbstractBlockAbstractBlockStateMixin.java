@@ -32,6 +32,9 @@ import net.fabricmc.fabric.impl.content.registry.OxidizableBlocksRegistryImpl;
 @Mixin(BlockBehaviour.BlockStateBase.class)
 public abstract class AbstractBlockAbstractBlockStateMixin extends StateHolder<Block, BlockState> implements OxidizableBlocksRegistryImpl.RandomTickCacheRefresher {
 	@Shadow
+	protected abstract BlockState asState();
+
+	@Shadow
 	private boolean isRandomlyTicking;
 
 	private AbstractBlockAbstractBlockStateMixin(Block owner, Reference2ObjectArrayMap<Property<?>, Comparable<?>> propertyMap, MapCodec<BlockState> codec) {
@@ -40,14 +43,6 @@ public abstract class AbstractBlockAbstractBlockStateMixin extends StateHolder<B
 
 	@Override
 	public void fabric_api$refreshRandomTickCache() {
-		this.isRandomlyTicking = ((AbstractBlockAccessor) this.owner).callHasRandomTicks(this.asBlockState());
-	}
-
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-	@Shadow
-	protected BlockState asBlockState() {
-		return null;
+		this.isRandomlyTicking = ((AbstractBlockAccessor) this.owner).callHasRandomTicks(this.asState());
 	}
 }

@@ -39,11 +39,9 @@ public abstract class NativeImageMixin implements NativeImageHooks {
 	public abstract int getWidth();
 	@Shadow
 	public abstract int getHeight();
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
+
 	@Shadow
-	public abstract int[] copyPixelsAbgr();
+	public abstract int[] getPixelsABGR();
 
 	@Override
 	public byte[] fabric_copyPixelsLuminance() {
@@ -84,7 +82,7 @@ public abstract class NativeImageMixin implements NativeImageHooks {
 
 		return switch (this.format) {
 		case RGBA -> {
-			int[] result = this.copyPixelsAbgr();
+			int[] result = this.getPixelsABGR();
 
 			for (int i = 0; i < result.length; i++) {
 				int color = result[i];

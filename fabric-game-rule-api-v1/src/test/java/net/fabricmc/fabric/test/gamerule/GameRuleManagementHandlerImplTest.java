@@ -16,12 +16,6 @@
 
 package net.fabricmc.fabric.test.gamerule;
 
-// TODO(Ravel): ambiguous static import, members with name argThat have different new names
-//
-// TODO(Ravel): ambiguous static import, members with name argThat have different new names
-//
-// TODO(Ravel): ambiguous static import, members with name argThat have different new names
-//
 import static org.mockito.Mockito.argThat;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;

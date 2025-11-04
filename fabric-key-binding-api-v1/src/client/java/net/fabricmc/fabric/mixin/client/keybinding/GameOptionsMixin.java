@@ -31,16 +31,13 @@ import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 
 @Mixin(Options.class)
 public class GameOptionsMixin {
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Mutable
 	@Final
 	@Shadow
-	public KeyMapping[] allKeys;
+	public KeyMapping[] keyHotbarSlots;
 
 	@Inject(at = @At("HEAD"), method = "load()V")
 	public void loadHook(CallbackInfo info) {
-		allKeys = KeyBindingRegistryImpl.process(allKeys);
+		keyHotbarSlots = KeyBindingRegistryImpl.process(keyHotbarSlots);
 	}
 }

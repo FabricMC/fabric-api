@@ -46,16 +46,13 @@ public abstract class SynchronizeRegistriesTaskMixin {
 	@Final
 	private List<KnownPack> requestedPacks;
 
-	// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
-// TODO(Ravel): only private and package-private shadow is supported
 	@Shadow
-	protected abstract void syncRegistryAndTags(Consumer<Packet<?>> sender, Set<KnownPack> commonKnownPacks);
+	protected abstract void sendRegistries(Consumer<Packet<?>> sender, Set<KnownPack> commonKnownPacks);
 
 	@Inject(method = "handleResponse", at = @At("HEAD"), cancellable = true)
 	public void onSelectKnownPacks(List<KnownPack> clientKnownPacks, Consumer<Packet<?>> sender, CallbackInfo ci) {
 		if (new HashSet<>(this.requestedPacks).containsAll(clientKnownPacks)) {
-			this.syncRegistryAndTags(sender, Set.copyOf(clientKnownPacks));
+			this.sendRegistries(sender, Set.copyOf(clientKnownPacks));
 			ci.cancel();
 		}
 	}
