@@ -47,7 +47,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
 		throw new AssertionError();
 	}
 
-	@WrapOperation(method = "handlePickItemFromBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getPickStack(Lnet/minecraft/world/level/LevelReader;Lnet/minecraft/core/BlockPos;Z)Lnet/minecraft/world/item/ItemStack;"))
+	@WrapOperation(method = "handlePickItemFromBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getCloneItemStack(Lnet/minecraft/world/level/LevelReader;Lnet/minecraft/core/BlockPos;Z)Lnet/minecraft/world/item/ItemStack;"))
 	public ItemStack onPickItemFromBlock(BlockState state, LevelReader world, BlockPos pos, boolean includeData, Operation<ItemStack> operation, @Local(argsOnly = true) ServerboundPickItemFromBlockPacket packet) {
 		ItemStack stack = PlayerPickItemEvents.BLOCK.invoker().onPickItemFromBlock(player, pos, state, packet.includeData());
 

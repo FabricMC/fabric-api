@@ -47,7 +47,7 @@ abstract class ItemRenderStateLayerRenderStateMixin implements FabricLayerRender
 		mutableMesh.clear();
 	}
 
-	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState$LayerRenderState;net/minecraft/client/render/command/OrderedRenderCommandQueue.submitItem(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemDisplayContext;III[ILjava/util/List;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/item/ItemStackRenderState$FoilType;)V"))
+	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitItem(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemDisplayContext;III[ILjava/util/List;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/item/ItemStackRenderState$FoilType;)V"))
 	private void submitItemProxy(SubmitNodeCollector commandQueue, PoseStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColor, int[] tints, List<BakedQuad> quads, RenderType layer, ItemStackRenderState.FoilType glint) {
 		if (mutableMesh.size() > 0 && commandQueue instanceof AccessRenderCommandQueue access) {
 			// We don't have to copy the mesh here because vanilla doesn't copy the tint array or quad list either.

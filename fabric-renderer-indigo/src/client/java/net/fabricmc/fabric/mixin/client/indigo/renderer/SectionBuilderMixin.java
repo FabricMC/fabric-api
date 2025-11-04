@@ -101,7 +101,7 @@ abstract class SectionBuilderMixin {
 	 * renderer should not be present, or the mod should probably instead be relying on the renderer API
 	 * which was specifically created to provide for enhanced terrain rendering.
 	 */
-	@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/SectionCompiler;net/minecraft/block/BlockState.getRenderType()Lnet/minecraft/world/level/block/RenderShape;"))
+	@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getRenderShape()Lnet/minecraft/world/level/block/RenderShape;"))
 	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack allocatorStorage, @Local(ordinal = 2) BlockPos blockPos) {
 		RenderShape blockRenderType = blockState.getRenderShape();
 
