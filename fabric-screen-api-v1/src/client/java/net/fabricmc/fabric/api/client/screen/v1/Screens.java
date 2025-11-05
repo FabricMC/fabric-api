@@ -50,7 +50,7 @@ public final class Screens {
 	 * Gets a screen's text renderer.
 	 *
 	 * @return the screen's text renderer.
-	 * @deprecated Use {@link Screen#getTextRenderer()} directly
+	 * @deprecated Use {@link Screen#getFont()} directly
 	 */
 	@Deprecated
 	public static Font getTextRenderer(Screen screen) {
