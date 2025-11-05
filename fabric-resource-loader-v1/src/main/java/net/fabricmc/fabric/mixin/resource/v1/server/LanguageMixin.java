@@ -35,13 +35,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.locale.Language;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.resource.v1.ServerLanguageUtil;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
-@Environment(EnvType.SERVER)
 @Mixin(Language.class)
 class LanguageMixin {
 	@Shadow
