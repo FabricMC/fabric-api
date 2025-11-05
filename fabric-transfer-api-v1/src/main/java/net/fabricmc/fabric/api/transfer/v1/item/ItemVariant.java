@@ -112,7 +112,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 * @param changes the changes to apply
 	 * @return the new variant with the changes applied
 	 *
-	 * @see ItemStack#applyComponents(DataComponentPatch) 
+	 * @see ItemStack#applyComponents(DataComponentPatch)
 	 */
 	@Override
 	ItemVariant withComponentChanges(DataComponentPatch changes);
