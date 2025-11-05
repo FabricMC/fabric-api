@@ -25,10 +25,6 @@ import java.util.function.BiConsumer;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonParseException;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,6 +35,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.locale.Language;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.resource.v1.ServerLanguageUtil;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
