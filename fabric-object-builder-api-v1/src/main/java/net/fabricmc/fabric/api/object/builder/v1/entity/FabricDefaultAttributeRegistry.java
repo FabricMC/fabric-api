@@ -69,7 +69,7 @@ public final class FabricDefaultAttributeRegistry {
 	 * </p>
 	 *
 	 * <p>If a registration overrides another, a debug log message will be emitted. Existing registrations
-	 * can be checked at {@link net.minecraft.world.entity.ai.attributes.DefaultAttributes#hasDefinitionFor(EntityType)}.</p>
+	 * can be checked at {@link net.minecraft.world.entity.ai.attributes.DefaultAttributes#hasSupplier(EntityType)}.</p>
 	 *
 	 * <p>For convenience, this can also be done on the {@link FabricEntityType.Builder} to simplify the building process.
 	 *

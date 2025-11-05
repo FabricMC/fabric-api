@@ -71,7 +71,7 @@ public interface PreparableModelLoadingPlugin<T> {
 		 * {@link CompletableFuture#supplyAsync(Supplier, Executor)} to compute the data.
 		 * The completable future should be scheduled to run using the passed executor.
 		 *
-		 * @param resourceReloaderStore The {@link PreparableReloadListener.SharedState} instance. Use {@link PreparableReloadListener.SharedState#getResourceManager()} to retrieve resources.
+		 * @param resourceReloaderStore The {@link PreparableReloadListener.SharedState} instance. Use {@link PreparableReloadListener.SharedState#resourceManager()} to retrieve resources.
 		 * @param executor The executor that <b>must</b> be used to schedule any completable future.
 		 */
 		CompletableFuture<T> load(PreparableReloadListener.SharedState resourceReloaderStore, Executor executor);
