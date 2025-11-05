@@ -65,7 +65,7 @@ public final class ModelHelper {
 	/**
 	 * Converts a mesh into an array of lists of vanilla baked quads.
 	 * Useful for creating vanilla baked models when required for compatibility.
-	 * The array indexes correspond to {@link Direction#getId()} with the
+	 * The array indexes correspond to {@link Direction#getName()} with the
 	 * addition of {@link #NULL_FACE_ID}.
 	 *
 	 * <p>Retrieves sprites from the block texture atlas via {@link SpriteFinder}.

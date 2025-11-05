@@ -23,7 +23,6 @@ import java.util.function.UnaryOperator;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 

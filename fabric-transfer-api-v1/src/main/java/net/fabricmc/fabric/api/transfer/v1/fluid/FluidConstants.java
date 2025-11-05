@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.material.FlowingFluid;
 
 /**
