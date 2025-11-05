@@ -531,8 +531,8 @@ subprojects {
 		if (project.name != "fabric-gametest-api-v1") {
 			testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
 			testmodClientImplementation project(":fabric-gametest-api-v1").sourceSets.client.output
-			testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
-			testmodClientImplementation project(":fabric-resource-loader-v0").sourceSets.client.output
+			testmodImplementation project(path: ':fabric-resource-loader-v1', configuration: 'namedElements')
+			testmodClientImplementation project(":fabric-resource-loader-v1").sourceSets.client.output
 		}
 
 		// Make all testmods run with registry-sync-v0 as it is required to register new objects.

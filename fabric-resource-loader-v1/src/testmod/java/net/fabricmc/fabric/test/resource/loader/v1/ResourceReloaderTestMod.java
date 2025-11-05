@@ -36,8 +36,6 @@ import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ResourceReloaderTestMod implements ModInitializer {
-	public static final String NAMESPACE = "fabric-resource-loader-v1-testmod";
-
 	private static boolean clientResources = false;
 	private static boolean serverResources = false;
 
@@ -46,7 +44,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 		this.setupClientReloadListeners();
 		this.setupServerReloadListeners();
 
-		ServerTickEvents.START_WORLD_TICK.register(world -> {
+		ServerTickEvents.START_WORLD_TICK.register(level -> {
 			if (!clientResources && FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 				throw new AssertionError("Client reload listener was not called.");
 			}
@@ -55,13 +53,13 @@ public class ResourceReloaderTestMod implements ModInitializer {
 				throw new AssertionError("Server reload listener was not called.");
 			}
 
-			world.getServer().getOrThrow(RegistryReloader.STORE_KEY);
+			level.getServer().getOrThrow(RegistryReloader.STORE_KEY);
 		});
 	}
 
 	private void setupClientReloadListeners() {
-		Identifier clientFirstId = Identifier.fromNamespaceAndPath(NAMESPACE, "client_first");
-		Identifier clientSecondId = Identifier.fromNamespaceAndPath(NAMESPACE, "client_second");
+		Identifier clientFirstId = Constants.id("client_first");
+		Identifier clientSecondId = Constants.id("client_second");
 
 		ResourceLoader resourceLoader = ResourceLoader.get(PackType.CLIENT_RESOURCES);
 		resourceLoader.registerReloader(clientSecondId, (ResourceManagerReloadListener) manager -> {
@@ -74,8 +72,8 @@ public class ResourceReloaderTestMod implements ModInitializer {
 	}
 
 	private void setupServerReloadListeners() {
-		Identifier serverFirstId = Identifier.fromNamespaceAndPath(NAMESPACE, "server_first");
-		Identifier serverSecondId = Identifier.fromNamespaceAndPath(NAMESPACE, "server_second");
+		Identifier serverFirstId = Constants.id("server_first");
+		Identifier serverSecondId = Constants.id("server_second");
 
 		DataResourceLoader resourceLoader = DataResourceLoader.get();
 		resourceLoader.registerReloader(serverSecondId, (ResourceManagerReloadListener) manager -> {
@@ -90,7 +88,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 	}
 
 	private static class RegistryReloader implements PreparableReloadListener {
-		private static final Identifier ID = Identifier.fromNamespaceAndPath(NAMESPACE, "registry_reloader");
+		private static final Identifier ID = Constants.id("registry_reloader");
 		private static final DataResourceStore.Key<String> STORE_KEY = new DataResourceStore.Key<>();
 
 		@Override
@@ -106,7 +104,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 	}
 
 	private record StatefulRegistryReloader(HolderLookup.Provider registries) implements PreparableReloadListener {
-		private static final Identifier ID = Identifier.fromNamespaceAndPath(NAMESPACE, "stateful_registry_reloader");
+		private static final Identifier ID = Constants.id("stateful_registry_reloader");
 
 		@Override
 		public CompletableFuture<Void> reload(SharedState store, Executor prepareExecutor, PreparationBarrier reloadSynchronizer, Executor applyExecutor) {

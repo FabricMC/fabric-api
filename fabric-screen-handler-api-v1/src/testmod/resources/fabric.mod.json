@@ -6,7 +6,7 @@
   "environment": "*",
   "license": "Apache-2.0",
   "depends": {
-    "fabric-resource-loader-v0": "*",
+    "fabric-resource-loader-v1": "*",
     "fabric-screen-handler-api-v1": "*"
   },
   "entrypoints": {

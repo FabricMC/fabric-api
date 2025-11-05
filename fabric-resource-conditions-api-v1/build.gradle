@@ -6,5 +6,5 @@ loom {
 
 testDependencies(project, [
 	':fabric-lifecycle-events-v1',
-	':fabric-resource-loader-v0'
+	':fabric-resource-loader-v1'
 ])

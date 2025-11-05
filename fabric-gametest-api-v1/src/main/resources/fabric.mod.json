@@ -22,7 +22,7 @@
   },
   "depends": {
     "fabricloader": ">=0.17.3",
-    "fabric-resource-loader-v0": "*"
+    "fabric-resource-loader-v1": "*"
   },
   "description": "Allows registration of custom game tests.",
   "mixins": [

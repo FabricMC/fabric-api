@@ -1,6 +1,6 @@
 files:
-  - source: fabric-resource-loader-v0/src/main/resources/assets/fabric-resource-loader-v0/lang/en_us.json
-    translation: /fabric-resource-loader-v0/src/main/resources/assets/fabric-resource-loader-v0/lang/%locale_with_underscore%.json
+  - source: fabric-resource-loader-v1/src/main/resources/assets/fabric-resource-loader-v1/lang/en_us.json
+    translation: /fabric-resource-loader-v1/src/main/resources/assets/fabric-resource-loader-v1/lang/%locale_with_underscore%.json
   - source: fabric-item-group-api-v1/src/main/resources/assets/fabric/lang/en_us.json
     translation: /fabric-item-group-api-v1/src/main/resources/assets/fabric/lang/%locale_with_underscore%.json
   - source: fabric-registry-sync-v0/src/main/resources/assets/fabric-registry-sync-v0/lang/en_us.json

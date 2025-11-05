@@ -16,10 +16,12 @@
 
 package net.fabricmc.fabric.impl.resource.v1;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -28,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.mojang.logging.LogUtils;
@@ -35,20 +38,31 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.CompositePackResources;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
+import net.fabricmc.fabric.impl.resource.v1.pack.BuiltinModResourcePackSource;
+import net.fabricmc.fabric.impl.resource.v1.pack.ModNioPackResources;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 
 public sealed class ResourceLoaderImpl implements ResourceLoader permits DataResourceLoaderImpl {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final Map<PackType, ResourceLoaderImpl> IMPL_MAP = new EnumMap<>(PackType.class);
+	private static final Set<BuiltinPackResourcesEntry> BUILTIN_PACK_RESOURCES = new HashSet<>();
 
 	private static final boolean DEBUG_RELOADERS_IDENTITY = TriState.fromSystemProperty("fabric.resource_loader.debug.reloaders_identity")
 			.orElse(FabricLoader.getInstance().isDevelopmentEnvironment());
@@ -277,5 +291,90 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 	}
 
 	private record ReloaderOrder(Identifier first, Identifier second) {
+	}
+
+	/**
+	 * Registers a built-in resource pack. Internal implementation.
+	 *
+	 * @param id             the identifier of the resource pack
+	 * @param subPath        the sub path in the mod resources
+	 * @param container      the mod container
+	 * @param displayName    the display name of the resource pack
+	 * @param activationType the activation type of the resource pack
+	 * @return {@code true} if successfully registered the resource pack, or {@code false} otherwise
+	 * @see ResourceLoader#registerBuiltinPack(Identifier, ModContainer, Component, PackActivationType)
+	 * @see ResourceLoader#registerBuiltinPack(Identifier, ModContainer, PackActivationType)
+	 */
+	public static boolean registerBuiltinPack(Identifier id, String subPath, ModContainer container, Component displayName, PackActivationType activationType) {
+		// Assuming the mod has multiple paths, we simply "hope" that the  file separator is *not* different across them
+		List<Path> paths = container.getRootPaths();
+		String separator = paths.getFirst().getFileSystem().getSeparator();
+		subPath = subPath.replace("/", separator);
+		ModNioPackResources resourcePack = ModNioPackResources.create(id.toString(), container, subPath, PackType.CLIENT_RESOURCES, activationType, false);
+		ModNioPackResources dataPack = ModNioPackResources.create(id.toString(), container, subPath, PackType.SERVER_DATA, activationType, false);
+		if (resourcePack == null && dataPack == null) return false;
+
+		if (resourcePack != null) {
+			BUILTIN_PACK_RESOURCES.add(new BuiltinPackResourcesEntry(displayName, resourcePack));
+		}
+
+		if (dataPack != null) {
+			BUILTIN_PACK_RESOURCES.add(new BuiltinPackResourcesEntry(displayName, dataPack));
+		}
+
+		return true;
+	}
+
+	public static boolean registerBuiltinPack(Identifier id, String subPath, ModContainer container, PackActivationType activationType) {
+		return registerBuiltinPack(id, subPath, container, Component.literal(id.getNamespace() + '/' + id.getPath()), activationType);
+	}
+
+	public static void registerBuiltinResourcePacks(PackType type, Consumer<Pack> consumer) {
+		// Loop through each registered built-in resource packs and add them if valid.
+		for (BuiltinPackResourcesEntry entry : BUILTIN_PACK_RESOURCES) {
+			ModNioPackResources pack = entry.packResources();
+
+			// Add the built-in pack only if namespaces for the specified resource type are present.
+			if (!pack.getNamespaces(type).isEmpty()) {
+				// Make the resource pack profile for built-in pack, should never be always enabled.
+				PackLocationInfo info = new PackLocationInfo(
+						pack.packId(),
+						entry.displayName(),
+						new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()),
+						pack.knownPackInfo()
+				);
+				PackSelectionConfig selectionInfo = new PackSelectionConfig(
+						pack.getActivationType() == PackActivationType.ALWAYS_ENABLED,
+						Pack.Position.TOP,
+						false
+				);
+
+				Pack profile = Pack.readMetaAndCreate(info, new Pack.ResourcesSupplier() {
+					@Override
+					public PackResources openPrimary(PackLocationInfo location) {
+						return pack;
+					}
+
+					@Override
+					public PackResources openFull(PackLocationInfo location, Pack.Metadata metadata) {
+						if (metadata.overlays().isEmpty()) {
+							return pack;
+						}
+
+						List<PackResources> overlays = new ArrayList<>(metadata.overlays().size());
+
+						for (String overlay : metadata.overlays()) {
+							overlays.add(pack.createOverlay(overlay));
+						}
+
+						return new CompositePackResources(pack, overlays);
+					}
+				}, type, selectionInfo);
+				consumer.accept(profile);
+			}
+		}
+	}
+
+	private record BuiltinPackResourcesEntry(Component displayName, ModNioPackResources packResources) {
 	}
 }
