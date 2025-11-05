@@ -26,7 +26,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
-import net.fabricmc.fabric.mixin.object.builder.DefaultAttributeRegistryAccessor;
+import net.fabricmc.fabric.mixin.object.builder.DefaultAttributesAccessor;
 
 /**
  * Allows registering custom default attributes for living entities.
@@ -78,7 +78,7 @@ public final class FabricDefaultAttributeRegistry {
 	 * @see	FabricEntityType.Builder.Living#defaultAttributes(Supplier)
 	 */
 	public static void register(EntityType<? extends LivingEntity> type, AttributeSupplier container) {
-		if (DefaultAttributeRegistryAccessor.getRegistry().put(type, container) != null) {
+		if (DefaultAttributesAccessor.getRegistry().put(type, container) != null) {
 			LOGGER.debug("Overriding existing registration for entity type {}", BuiltInRegistries.ENTITY_TYPE.getKey(type));
 		}
 	}

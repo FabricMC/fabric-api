@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "BlockEntityTypeAccessor",
-    "ServerWorldMixin"
+    "ServerLevelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

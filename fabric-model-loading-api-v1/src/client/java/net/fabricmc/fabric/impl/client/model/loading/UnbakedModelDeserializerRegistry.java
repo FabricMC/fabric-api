@@ -28,7 +28,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
-import net.fabricmc.fabric.mixin.client.model.loading.JsonUnbakedModelAccessor;
+import net.fabricmc.fabric.mixin.client.model.loading.BlockModelAccessor;
 
 public class UnbakedModelDeserializerRegistry {
 	private static final Map<Identifier, UnbakedModelDeserializer> DESERIALIZERS = new HashMap<>();
@@ -49,6 +49,6 @@ public class UnbakedModelDeserializerRegistry {
 	}
 
 	public static UnbakedModel deserialize(Reader reader) throws JsonParseException {
-		return GsonHelper.fromJson(JsonUnbakedModelAccessor.fabric_getGson(), reader, UnbakedModel.class);
+		return GsonHelper.fromJson(BlockModelAccessor.fabric_getGson(), reader, UnbakedModel.class);
 	}
 }

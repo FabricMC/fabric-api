@@ -4,8 +4,8 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "GameRendererMixin",
-    "HandledScreenMixin",
-    "MinecraftClientMixin",
+    "AbstractContainerScreenMixin",
+    "MinecraftMixin",
     "ScreenMixin"
   ],
   "injectors": {
@@ -15,8 +15,8 @@
     "requireAnnotations": true
   },
   "mixins": [
-    "KeyboardMixin",
-    "MouseMixin",
+    "KeyboardHandlerMixin",
+    "MouseHandlerMixin",
     "ScreenAccessor"
   ]
 }

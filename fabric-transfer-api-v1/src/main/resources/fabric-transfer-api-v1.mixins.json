@@ -6,20 +6,20 @@
     "AbstractFurnaceBlockEntityMixin",
     "BucketItemAccessor",
     "BucketItemMixin",
-    "BundleContentsComponentAccessor",
-    "ChiseledBookshelfBlockEntityMixin",
-    "ContainerComponentAccessor",
+    "BundleContentsAccessor",
+    "ChiseledBookShelfBlockEntityMixin",
+    "ItemContainerContentsAccessor",
     "CrafterBlockMixin",
-    "DoubleInventoryAccessor",
+    "CompoundContainerAccessor",
     "DropperBlockMixin",
     "FluidMixin",
     "HopperBlockEntityMixin",
     "ItemMixin",
     "JukeboxBlockEntityMixin",
-    "ListInventoryMixin",
-    "LockableContainerBlockEntityMixin",
+    "ListBackedContainerMixin",
+    "BaseContainerBlockEntityMixin",
     "ShelfBlockEntityMixin",
-    "SimpleInventoryMixin"
+    "SimpleContainerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

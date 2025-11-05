@@ -28,8 +28,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
-import net.fabricmc.fabric.mixin.recipe.ingredient.EncoderHandlerMixin;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
+import net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin;
 
 /**
  * To reasonably support server-side only custom ingredients, we only send custom ingredients to clients that support them.
@@ -38,7 +38,7 @@ import net.fabricmc.fabric.mixin.recipe.ingredient.EncoderHandlerMixin;
  *
  * <ul>
  *     <li>Each client sends a packet with the set of custom ingredients it supports.</li>
- *     <li>We store that set inside the {@link PacketEncoder} using {@link EncoderHandlerMixin}.</li>
+ *     <li>We store that set inside the {@link PacketEncoder} using {@link PacketEncoderMixin}.</li>
  *     <li>When serializing a custom ingredient, we get access to the current {@link PacketEncoder},
  *     and based on that we decide whether to send the custom ingredient, or a vanilla ingredient with the matching stacks.</li>
  * </ul>
@@ -88,7 +88,7 @@ public class CustomIngredientSync implements ModInitializer {
 
 		ServerConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadC2S.ID, (payload, context) -> {
 			Set<Identifier> supportedCustomIngredients = decodeResponsePayload(payload);
-			((SupportedIngredientsClientConnection) ((ServerCommonNetworkHandlerAccessor) context.networkHandler()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
+			((SupportedIngredientsClientConnection) ((ServerCommonPacketListenerImplAccessor) context.networkHandler()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
 			context.networkHandler().completeTask(IngredientSyncTask.KEY);
 		});
 	}

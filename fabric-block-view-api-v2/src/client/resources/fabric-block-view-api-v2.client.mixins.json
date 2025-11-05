@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.blockview.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ChunkRendererRegionMixin",
-    "ChunkRendererRegionBuilderMixin",
+    "RenderSectionRegionMixin",
+    "RenderRegionCacheMixin",
     "MovingBlockRenderStateMixin"
   ],
   "injectors": {

@@ -3,10 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.client.particle",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "BlockDustParticleMixin",
-    "ParticleManagerAccessor",
-    "ParticleManagerMixin",
-    "ParticleSpriteManagerMixin"
+    "TerrainParticleMixin",
+    "ParticleEngineAccessor",
+    "ParticleEngineMixin",
+    "ParticleResourcesMixin"
   ],
   "injectors": {
     "defaultRequire": 1

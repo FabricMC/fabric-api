@@ -5,10 +5,10 @@
   "mixins": [
     "EntityMixin",
     "LivingEntityMixin",
-    "MobEntityMixin",
-    "PlayerEntityMixin",
-    "PlayerManagerMixin",
-    "ServerPlayerEntityMixin",
+    "MobMixin",
+    "PlayerMixin",
+    "PlayerListMixin",
+    "ServerPlayerMixin",
     "elytra.LivingEntityMixin"
   ],
   "injectors": {

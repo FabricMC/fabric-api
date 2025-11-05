@@ -29,7 +29,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginPacketListenerImplAccessor;
 
 /**
  * Offers access to login stage server-side networking functionalities.
@@ -123,7 +123,7 @@ public final class ServerLoginNetworking {
 	public static MinecraftServer getServer(ServerLoginPacketListenerImpl handler) {
 		Objects.requireNonNull(handler, "Network handler cannot be null");
 
-		return ((ServerLoginNetworkHandlerAccessor) handler).getServer();
+		return ((ServerLoginPacketListenerImplAccessor) handler).getServer();
 	}
 
 	/**

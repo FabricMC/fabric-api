@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.tag",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "DataPackContentsMixin",
-    "SimpleRegistryMixin",
+    "ReloadableServerResourcesMixin",
+    "MappedRegistryMixin",
     "SimpleRegistry2Mixin",
     "SimpleRegistry3Mixin",
     "SimpleRegistryTagLookup2Accessor"

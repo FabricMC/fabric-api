@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
 
 public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ServerConfigurationNetworking.ConfigurationPacketHandler<?>> {
 	private final ServerConfigurationPacketListenerImpl handler;
@@ -52,7 +52,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	private boolean isReconfiguring = false;
 
 	public ServerConfigurationNetworkAddon(ServerConfigurationPacketListenerImpl handler, MinecraftServer server) {
-		super(ServerNetworkingImpl.CONFIGURATION, ((ServerCommonNetworkHandlerAccessor) handler).getConnection(), "ServerConfigurationNetworkAddon for " + handler.getOwner().name());
+		super(ServerNetworkingImpl.CONFIGURATION, ((ServerCommonPacketListenerImplAccessor) handler).getConnection(), "ServerConfigurationNetworkAddon for " + handler.getOwner().name());
 		this.handler = handler;
 		this.server = server;
 		this.context = new ContextImpl(server, handler, this);
@@ -214,7 +214,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	public ChannelInfoHolder getChannelInfoHolder() {
-		return (ChannelInfoHolder) ((ServerCommonNetworkHandlerAccessor) handler).getConnection();
+		return (ChannelInfoHolder) ((ServerCommonPacketListenerImplAccessor) handler).getConnection();
 	}
 
 	private record ContextImpl(MinecraftServer server, ServerConfigurationPacketListenerImpl networkHandler, PacketSender responseSender) implements ServerConfigurationNetworking.Context {

@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.item.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ClientPlayerInteractionManagerMixin",
-    "HeldItemRendererMixin",
+    "MultiPlayerGameModeMixin",
+    "ItemInHandRendererMixin",
     "ItemStackMixin"
   ],
   "injectors": {

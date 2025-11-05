@@ -82,7 +82,7 @@ public final class DynamicRegistryClientTest implements ClientModInitializer {
 			//	throw new AssertionError("Did not match up synced nested entry to the other synced value");
 			//}
 
-			// See ClientRegistriesDynamicRegistriesMixin
+			// See ClientRegistriesDynamicBuiltInRegistriesMixin
 			if (handler.registryAccess().lookup(TEST_EMPTY_SYNCED_DYNAMIC_REGISTRY_KEY).isPresent()) {
 				throw new AssertionError("Received empty registry that should have been skipped");
 			}

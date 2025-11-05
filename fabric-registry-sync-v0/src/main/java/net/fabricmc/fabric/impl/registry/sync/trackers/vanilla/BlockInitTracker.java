@@ -22,7 +22,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.mixin.registry.sync.DebugChunkGeneratorAccessor;
+import net.fabricmc.fabric.mixin.registry.sync.DebugLevelSourceAccessor;
 
 public final class BlockInitTracker {
 	public static void postFreeze() {
@@ -33,8 +33,8 @@ public final class BlockInitTracker {
 		final int xLength = Mth.ceil(Mth.sqrt(blockStateList.size()));
 		final int zLength = Mth.ceil(blockStateList.size() / (float) xLength);
 
-		DebugChunkGeneratorAccessor.setALL_BLOCKS(blockStateList);
-		DebugChunkGeneratorAccessor.setGRID_WIDTH(xLength);
-		DebugChunkGeneratorAccessor.setGRID_HEIGHT(zLength);
+		DebugLevelSourceAccessor.setALL_BLOCKS(blockStateList);
+		DebugLevelSourceAccessor.setGRID_WIDTH(xLength);
+		DebugLevelSourceAccessor.setGRID_HEIGHT(zLength);
 	}
 }

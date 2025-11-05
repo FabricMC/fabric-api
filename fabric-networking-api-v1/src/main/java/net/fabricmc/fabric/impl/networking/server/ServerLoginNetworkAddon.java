@@ -49,7 +49,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginPacketListenerImplAccessor;
 
 public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLoginNetworking.LoginQueryResponseHandler> implements LoginPacketSender {
 	private final Connection connection;
@@ -62,9 +62,9 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 
 	public ServerLoginNetworkAddon(ServerLoginPacketListenerImpl handler) {
 		super(ServerNetworkingImpl.LOGIN, "ServerLoginNetworkAddon for " + handler.getUserName());
-		this.connection = ((ServerLoginNetworkHandlerAccessor) handler).getConnection();
+		this.connection = ((ServerLoginPacketListenerImplAccessor) handler).getConnection();
 		this.handler = handler;
-		this.server = ((ServerLoginNetworkHandlerAccessor) handler).getServer();
+		this.server = ((ServerLoginPacketListenerImplAccessor) handler).getServer();
 		this.queryIdFactory = QueryIdFactory.create();
 	}
 

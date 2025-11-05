@@ -74,10 +74,10 @@ import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotCompari
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotOptionsImpl;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.fabricmc.fabric.impl.client.gametest.world.TestWorldBuilderImpl;
-import net.fabricmc.fabric.mixin.client.gametest.gui.CyclingButtonWidgetAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.gui.CycleButtonAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.gui.ScreenAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.lifecycle.GameOptionsAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.screenshot.RenderTickCounterConstantAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.lifecycle.OptionsAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.screenshot.DeltaTrackerDefaultValueAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class ClientGameTestContextImpl implements ClientGameTestContext {
@@ -108,7 +108,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		// Disable chunk fade
 		options.chunkSectionFadeInTime().set(0D);
 
-		((GameOptionsAccessor) options).invokeAccept(new Options.FieldAccess() {
+		((OptionsAccessor) options).invokeAccept(new Options.FieldAccess() {
 			@Override
 			public int process(String key, int current) {
 				DEFAULT_GAME_OPTIONS.put(key, current);
@@ -284,7 +284,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		}
 
 		if (widget instanceof CycleButton<?> buttonWidget) {
-			CyclingButtonWidgetAccessor accessor = (CyclingButtonWidgetAccessor) buttonWidget;
+			CycleButtonAccessor accessor = (CycleButtonAccessor) buttonWidget;
 
 			if (text.equals(accessor.getOptionText().getString())) {
 				buttonWidget.onPress(clickEvent);
@@ -395,7 +395,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 		try {
 			CompletableFuture<T> future = computeOnClient(client -> {
-				client.gameRenderer.render(RenderTickCounterConstantAccessor.create(options.tickDelta), true);
+				client.gameRenderer.render(DeltaTrackerDefaultValueAccessor.create(options.tickDelta), true);
 				CompletableFuture<T> resultFuture = new CompletableFuture<>();
 
 				Screenshot.takeScreenshot(client.getMainRenderTarget(), screenshot -> {
@@ -483,7 +483,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		ThreadingImpl.checkOnGametestThread("restoreDefaultGameOptions");
 
 		runOnClient(client -> {
-			((GameOptionsAccessor) Minecraft.getInstance().options).invokeAccept(new Options.FieldAccess() {
+			((OptionsAccessor) Minecraft.getInstance().options).invokeAccept(new Options.FieldAccess() {
 				@Override
 				public int process(String key, int current) {
 					return (Integer) DEFAULT_GAME_OPTIONS.get(key);

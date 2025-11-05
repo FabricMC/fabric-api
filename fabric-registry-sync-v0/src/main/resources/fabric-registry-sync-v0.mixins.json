@@ -5,20 +5,20 @@
   "mixins": [
     "BlocksMixin",
     "BootstrapMixin",
-    "SerializedChunkMixin",
-    "DebugChunkGeneratorAccessor",
-    "ExperimentalRegistriesValidatorMixin",
-    "IdListMixin",
+    "SerializableChunkDataMixin",
+    "DebugLevelSourceAccessor",
+    "RegistryPatchGeneratorMixin",
+    "IdMapperMixin",
     "MainMixin",
-    "RegistriesAccessor",
+    "BuiltInRegistriesAccessor",
+    "BuiltInRegistriesMixin",
     "RegistriesMixin",
-    "RegistryKeysMixin",
-    "RegistryLoaderMixin",
+    "RegistryDataLoaderMixin",
     "RegistryMixin",
-    "SaveLoadingMixin",
-    "SerializableRegistriesMixin",
-    "SimpleRegistryAccessor",
-    "SimpleRegistryMixin"
+    "WorldLoaderMixin",
+    "RegistrySynchronizationMixin",
+    "MappedRegistryAccessor",
+    "MappedRegistryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

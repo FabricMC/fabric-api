@@ -4,17 +4,17 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "net.fabricmc.fabric.impl.client.indigo.IndigoMixinConfigPlugin",
   "client": [
-    "BatchingRenderCommandQueueMixin",
-    "BlockModelRendererMixin",
-    "BlockRenderManagerAccessor",
-    "BlockRenderManagerMixin",
-    "ChunkRendererRegionMixin",
-    "ItemCommandRendererMixin",
+    "SubmitNodeCollectionMixin",
+    "ModelBlockRendererMixin",
+    "BlockRenderDispatcherAccessor",
+    "BlockRenderDispatcherMixin",
+    "RenderSectionRegionMixin",
+    "ItemFeatureRendererMixin",
     "ItemRendererAccessor",
-    "ItemRenderStateLayerRenderStateMixin",
-    "ItemRenderStateMixin",
-    "OrderedRenderCommandQueueImplMixin",
-    "SectionBuilderMixin"
+    "ItemStackRenderStateLayerRenderStateMixin",
+    "ItemStackRenderStateMixin",
+    "SubmitNodeStorageMixin",
+    "SectionCompilerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

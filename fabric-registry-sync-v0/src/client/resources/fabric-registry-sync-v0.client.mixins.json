@@ -4,10 +4,10 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BlockColorsMixin",
-    "ClientRegistriesMixin",
+    "RegistryDataCollectorMixin",
     "ClientRegistriesDynamicRegistriesAccessor",
-    "MinecraftClientMixin",
-    "ParticleSpriteManagerMixin"
+    "MinecraftMixin",
+    "ParticleResourcesMixin"
   ],
   "injectors": {
     "defaultRequire": 1

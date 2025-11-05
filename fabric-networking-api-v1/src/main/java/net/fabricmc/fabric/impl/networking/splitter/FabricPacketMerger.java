@@ -35,7 +35,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.impl.networking.GenericPayloadAccessor;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.fabricmc.fabric.impl.networking.VanillaPacketTypes;
-import net.fabricmc.fabric.mixin.networking.accessor.DecoderHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.PacketDecoderAccessor;
 
 public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 	private final PacketDecoder<?> decoderHandler;
@@ -111,14 +111,14 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 	}
 
 	private static class Merger {
-		private final DecoderHandlerAccessor decoderHandler;
+		private final PacketDecoderAccessor decoderHandler;
 		private final Identifier packetId;
 		private final int finalSize;
 
 		private final ByteBuf byteBuf;
 
 		Merger(PacketDecoder<?> decoderHandler, Identifier identifier, int finalSize) {
-			this.decoderHandler = (DecoderHandlerAccessor) decoderHandler;
+			this.decoderHandler = (PacketDecoderAccessor) decoderHandler;
 			this.packetId = identifier;
 			this.byteBuf = Unpooled.buffer(finalSize);
 			this.finalSize = finalSize;

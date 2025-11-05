@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
-import net.fabricmc.fabric.test.attachment.mixin.ZombieEntityAccessor;
+import net.fabricmc.fabric.test.attachment.mixin.ZombieAccessor;
 
 public class AttachmentCopyTests {
 	// using a lambda type because serialization shouldn't play a role in this
@@ -83,7 +83,7 @@ public class AttachmentCopyTests {
 		mob.setAttached(DUMMY, () -> 42);
 		mob.setAttached(COPY_ON_DEATH, () -> 42);
 
-		ZombieEntityAccessor zombieEntityAccessor = (ZombieEntityAccessor) mob;
+		ZombieAccessor zombieEntityAccessor = (ZombieAccessor) mob;
 		zombieEntityAccessor.invokeConvertTo(context.getLevel(), EntityType.DROWNED);
 		List<Drowned> drowned = context.getEntities(EntityType.DROWNED);
 

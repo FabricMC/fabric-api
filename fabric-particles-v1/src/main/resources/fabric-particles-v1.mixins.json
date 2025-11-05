@@ -3,14 +3,14 @@
   "package": "net.fabricmc.fabric.mixin.particle",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "BlockStateParticleEffectMixin",
-    "BreezeEntityMixin",
+    "BlockParticleOptionMixin",
+    "BreezeMixin",
     "BrushItemMixin",
     "EntityMixin",
     "LivingEntityMixin",
-    "ParticleUtilMixin",
-    "ServerPlayerEntityMixin",
-    "WardenEntityMixin"
+    "ParticleUtilsMixin",
+    "ServerPlayerMixin",
+    "WardenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

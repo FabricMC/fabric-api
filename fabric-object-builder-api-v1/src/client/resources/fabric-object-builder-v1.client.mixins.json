@@ -3,9 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.object.builder.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "EntityModelLayersMixin",
+    "ModelLayersMixin",
     "HangingSignEditScreenMixin",
-    "TexturedRenderLayersMixin",
+    "SheetsMixin",
     "WoodTypeMixin"
   ],
   "injectors": {

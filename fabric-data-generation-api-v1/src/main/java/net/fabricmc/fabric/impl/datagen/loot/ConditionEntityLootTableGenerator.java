@@ -24,14 +24,14 @@ import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
-import net.fabricmc.fabric.mixin.datagen.loot.EntityLootTableGeneratorAccessor;
+import net.fabricmc.fabric.mixin.datagen.loot.EntityLootSubProviderAccessor;
 
 public class ConditionEntityLootTableGenerator extends EntityLootSubProvider {
 	private final EntityLootSubProvider parent;
 	private final ResourceCondition[] conditions;
 
 	public ConditionEntityLootTableGenerator(EntityLootSubProvider parent, ResourceCondition[] conditions) {
-		super(FeatureFlags.REGISTRY.allFlags(), ((EntityLootTableGeneratorAccessor) parent).getRegistries());
+		super(FeatureFlags.REGISTRY.allFlags(), ((EntityLootSubProviderAccessor) parent).getRegistries());
 
 		this.parent = parent;
 		this.conditions = conditions;

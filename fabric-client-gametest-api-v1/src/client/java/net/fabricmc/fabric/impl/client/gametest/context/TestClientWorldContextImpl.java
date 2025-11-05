@@ -26,9 +26,9 @@ import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
-import net.fabricmc.fabric.mixin.client.gametest.ClientChunkManagerAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.ClientChunkManagerClientChunkMapAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.ClientWorldAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.ClientChunkCacheAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.ClientChunkCacheStorageAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.ClientLevelAccessor;
 
 public class TestClientWorldContextImpl implements TestClientWorldContext {
 	private final ClientGameTestContext context;
@@ -54,8 +54,8 @@ public class TestClientWorldContextImpl implements TestClientWorldContext {
 	private static boolean areChunksLoaded(Minecraft client) {
 		int viewDistance = client.options.getEffectiveRenderDistance();
 		ClientLevel world = Objects.requireNonNull(client.level);
-		ClientChunkCache.Storage chunks = ((ClientChunkManagerAccessor) world.getChunkSource()).getChunks();
-		ClientChunkManagerClientChunkMapAccessor chunksAccessor = (ClientChunkManagerClientChunkMapAccessor) (Object) chunks;
+		ClientChunkCache.Storage chunks = ((ClientChunkCacheAccessor) world.getChunkSource()).getChunks();
+		ClientChunkCacheStorageAccessor chunksAccessor = (ClientChunkCacheStorageAccessor) (Object) chunks;
 		int centerChunkX = chunksAccessor.getCenterChunkX();
 		int centerChunkZ = chunksAccessor.getCenterChunkZ();
 
@@ -72,6 +72,6 @@ public class TestClientWorldContextImpl implements TestClientWorldContext {
 
 	private static boolean areChunksRendered(Minecraft client) {
 		ClientLevel world = Objects.requireNonNull(client.level);
-		return ((ClientWorldAccessor) world).getChunkUpdaters().isEmpty() && client.levelRenderer.hasRenderedAllSections();
+		return ((ClientLevelAccessor) world).getChunkUpdaters().isEmpty() && client.levelRenderer.hasRenderedAllSections();
 	}
 }

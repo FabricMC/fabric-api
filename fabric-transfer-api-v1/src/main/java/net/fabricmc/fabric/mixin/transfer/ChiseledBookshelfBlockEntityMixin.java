@@ -37,7 +37,7 @@ import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
  * and allows setting empty stacks via {@link Container#setStack} in a transfer API context (needed for extractions).
  */
 @Mixin(ChiseledBookShelfBlockEntity.class)
-public class ChiseledBookshelfBlockEntityMixin implements SpecialLogicInventory {
+public class ChiseledBookShelfBlockEntityMixin implements SpecialLogicInventory {
 	@Shadow
 	private NonNullList<ItemStack> items;
 	@Shadow

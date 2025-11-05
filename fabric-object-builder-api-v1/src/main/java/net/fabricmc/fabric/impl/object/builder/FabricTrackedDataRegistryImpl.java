@@ -33,7 +33,7 @@ import net.minecraft.util.CrudeIncrementalIntIdentityHashBiMap;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
-import net.fabricmc.fabric.mixin.object.builder.TrackedDataHandlerRegistryAccessor;
+import net.fabricmc.fabric.mixin.object.builder.EntityDataSerializersAccessor;
 
 public final class FabricTrackedDataRegistryImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricTrackedDataRegistryImpl.class);
@@ -58,7 +58,7 @@ public final class FabricTrackedDataRegistryImpl {
 			throw new IllegalStateException("Already stored vanilla handlers!");
 		}
 
-		CrudeIncrementalIntIdentityHashBiMap<EntityDataSerializer<?>> dataHandlers = TrackedDataHandlerRegistryAccessor.fabric_getDataHandlers();
+		CrudeIncrementalIntIdentityHashBiMap<EntityDataSerializer<?>> dataHandlers = EntityDataSerializersAccessor.fabric_getDataHandlers();
 
 		for (EntityDataSerializer<?> handler : dataHandlers) {
 			VANILLA_HANDLERS.add(handler);
@@ -68,7 +68,7 @@ public final class FabricTrackedDataRegistryImpl {
 	}
 
 	private static void storeExternalHandlers() {
-		CrudeIncrementalIntIdentityHashBiMap<EntityDataSerializer<?>> dataHandlers = TrackedDataHandlerRegistryAccessor.fabric_getDataHandlers();
+		CrudeIncrementalIntIdentityHashBiMap<EntityDataSerializer<?>> dataHandlers = EntityDataSerializersAccessor.fabric_getDataHandlers();
 
 		for (EntityDataSerializer<?> handler : dataHandlers) {
 			if (VANILLA_HANDLERS.contains(handler)) continue;
@@ -92,7 +92,7 @@ public final class FabricTrackedDataRegistryImpl {
 	 * </ul>
 	*/
 	private static void reorderHandlers() {
-		CrudeIncrementalIntIdentityHashBiMap<EntityDataSerializer<?>> dataHandlers = TrackedDataHandlerRegistryAccessor.fabric_getDataHandlers();
+		CrudeIncrementalIntIdentityHashBiMap<EntityDataSerializer<?>> dataHandlers = EntityDataSerializersAccessor.fabric_getDataHandlers();
 		LOGGER.debug("Reordering tracked data handlers containing {} entries", dataHandlers.size());
 
 		// Reset the map so that handlers can be added back in a new order

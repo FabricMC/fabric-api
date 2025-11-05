@@ -4,11 +4,11 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "CreateWorldScreenMixin",
-    "GameOptionsMixin",
-    "ResourcePackOrganizerMixin",
-    "VanillaResourcePackProviderMixin",
+    "OptionsMixin",
+    "PackSelectionModelMixin",
+    "BuiltInPackSourceMixin",
     "GameOptionsWriteVisitorMixin",
-    "ClientDataPackManagerMixin"
+    "KnownPacksManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

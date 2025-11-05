@@ -5,7 +5,7 @@
   "client": [
     "GameRendererAccessor",
     "GuiRendererAccessor",
-    "PigEntityRendererMixin"
+    "PigRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

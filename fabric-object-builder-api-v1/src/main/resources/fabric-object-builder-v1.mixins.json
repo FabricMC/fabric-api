@@ -4,15 +4,15 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "BlockEntityTypeMixin",
-    "DefaultAttributeRegistryAccessor",
-    "DefaultAttributeRegistryMixin",
+    "DefaultAttributesAccessor",
+    "DefaultAttributesMixin",
     "DetectorRailBlockMixin",
     "EntityTypeBuilderMixin",
     "EntityTypeMixin",
-    "PersistentStateManagerMixin",
-    "TrackedDataHandlerRegistryAccessor",
-    "TrackedDataHandlerRegistryMixin",
-    "TradeOffersTypeAwareBuyForOneEmeraldFactoryMixin"
+    "DimensionDataStorageMixin",
+    "EntityDataSerializersAccessor",
+    "EntityDataSerializersMixin",
+    "VillagerTradesEmeraldsForVillagerTypeItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

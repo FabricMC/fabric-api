@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.mixin.transfer.BundleContentsComponentAccessor;
+import net.fabricmc.fabric.mixin.transfer.BundleContentsAccessor;
 
 public class BundleContentsStorage implements Storage<ItemVariant> {
 	private final ContainerItemContext ctx;
@@ -182,7 +182,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		public long getCapacity() {
 			Fraction remainingSpace = Fraction.ONE.subtract(bundleContents().weight());
 			int extraAllowed = Math.max(
-					remainingSpace.divideBy(BundleContentsComponentAccessor.getOccupancy(getStack())).intValue(),
+					remainingSpace.divideBy(BundleContentsAccessor.getOccupancy(getStack())).intValue(),
 					0
 			);
 			return getAmount() + extraAllowed;

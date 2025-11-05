@@ -15,8 +15,7 @@ testDependencies(project, [
 		':fabric-resource-loader-v0'
 ])
 
-// TODO
-//validateMixinNames {
+validateMixinNames {
 	// Loom needs to handle inner mixins better
-//	exclude "**/ParticleManagerAccessor\$SimpleSpriteProviderAccessor.class"
-//}
+	exclude "**/ParticleManagerAccessor\$SimpleSpriteProviderAccessor.class"
+}

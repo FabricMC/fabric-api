@@ -3,16 +3,16 @@
   "package": "net.fabricmc.fabric.mixin.recipe",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "RecipeAccessMixin",
     "RecipeManagerMixin",
-    "ServerRecipeManagerMixin",
-    "ingredient.ClientConnectionMixin",
-    "ingredient.EncoderHandlerMixin",
+    "ingredient.ConnectionMixin",
+    "ingredient.PacketEncoderMixin",
     "ingredient.IngredientMixin",
     "ingredient.ShapelessRecipeMixin",
-    "sync.ClientConnectionMixin",
-    "sync.PreparedRecipesMixin",
-    "sync.ServerCommonNetworkHandlerAccessor",
-    "sync.ServerRecipeManagerAccessor"
+    "sync.ConnectionMixin",
+    "sync.RecipeMapMixin",
+    "sync.ServerCommonPacketListenerImplAccessor",
+    "sync.RecipeManagerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

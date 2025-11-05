@@ -4,8 +4,8 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "BlockEntityMixin",
-    "BlockViewMixin",
-    "WorldViewMixin"
+    "BlockGetterMixin",
+    "LevelReaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -31,7 +31,7 @@ import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.minecraft.util.thread.BlockableEventLoop;
 
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
 
 /**
  * Offers access to configuration stage server-side networking functionalities.
@@ -230,7 +230,7 @@ public final class ServerConfigurationNetworking {
 	public static MinecraftServer getServer(ServerConfigurationPacketListenerImpl handler) {
 		Objects.requireNonNull(handler, "Network handler cannot be null");
 
-		return ((ServerCommonNetworkHandlerAccessor) handler).getServer();
+		return ((ServerCommonPacketListenerImplAccessor) handler).getServer();
 	}
 
 	/**

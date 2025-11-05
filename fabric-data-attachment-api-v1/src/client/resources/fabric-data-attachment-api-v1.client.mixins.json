@@ -9,6 +9,6 @@
     "requireAnnotations": true
   },
   "client": [
-    "ClientPlayNetworkHandlerMixin"
+    "ClientPacketListenerMixin"
   ]
 }

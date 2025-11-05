@@ -6,7 +6,7 @@
     "BlockMixin",
     "BlockStateMixin",
     "ChunkSectionBlockStateCounterMixin",
-    "ChunkSectionMixin",
+    "LevelChunkSectionMixin",
     "LivingEntityMixin"
   ],
   "injectors": {

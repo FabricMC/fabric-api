@@ -23,7 +23,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.mixin.client.rendering.AtlasSourceManagerAccessor;
+import net.fabricmc.fabric.mixin.client.rendering.SpriteSourcesAccessor;
 
 public final class AtlasSourceRegistryImpl {
 	private AtlasSourceRegistryImpl() {
@@ -32,6 +32,6 @@ public final class AtlasSourceRegistryImpl {
 	public static void register(Identifier id, MapCodec<? extends SpriteSource> codec) {
 		Objects.requireNonNull(id, "id must not be null!");
 		Objects.requireNonNull(codec, "codec must not be null!");
-		AtlasSourceManagerAccessor.getAtlasSourceCodecs().put(id, codec);
+		SpriteSourcesAccessor.getAtlasSourceCodecs().put(id, codec);
 	}
 }

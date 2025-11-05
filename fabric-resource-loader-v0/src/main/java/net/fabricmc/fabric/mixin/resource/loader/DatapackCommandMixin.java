@@ -46,7 +46,7 @@ import net.fabricmc.fabric.impl.resource.loader.FabricResourcePackProfile;
  * Listing them is still allowed, but they do not appear in suggestions.
  */
 @Mixin(DataPackCommand.class)
-public class DatapackCommandMixin {
+public class DataPackCommandMixin {
 	@Unique
 	private static final DynamicCommandExceptionType INTERNAL_PACK_EXCEPTION = new DynamicCommandExceptionType(
 			packName -> Component.translatableEscape("commands.datapack.fabric.internal", packName));

@@ -25,7 +25,7 @@ import net.minecraft.server.packs.repository.PackSource;
  * Tracks the sources of resource packs in a global weak hash map.
  * {@link PackResources} doesn't hold a reference to its {@link PackSource}
  * so we store the source in the map when the resource packs are created.
- * See {@link net.fabricmc.fabric.mixin.resource.loader.ResourcePackProfileMixin ResourcePackProfileMixin}.
+ * See {@link net.fabricmc.fabric.mixin.resource.loader.PackMixin PackMixin}.
  *
  * <p>The sources are later read for use in {@link FabricResource} and {@link FabricResourceImpl}.
  */

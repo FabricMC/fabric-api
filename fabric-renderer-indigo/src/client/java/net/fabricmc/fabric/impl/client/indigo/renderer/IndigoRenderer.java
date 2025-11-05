@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRende
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.SimpleBlockRenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainLikeRenderContext;
-import net.fabricmc.fabric.mixin.client.indigo.renderer.BlockRenderManagerAccessor;
+import net.fabricmc.fabric.mixin.client.indigo.renderer.BlockRenderDispatcherAccessor;
 
 /**
  * The Fabric default renderer implementation. Supports all features defined in the API.
@@ -71,12 +71,12 @@ public class IndigoRenderer implements Renderer {
 
 		if (blockRenderType != RenderShape.INVISIBLE) {
 			BlockStateModel model = renderManager.getBlockModel(state);
-			int tint = ((BlockRenderManagerAccessor) renderManager).getBlockColors().getColor(state, null, null, 0);
+			int tint = ((BlockRenderDispatcherAccessor) renderManager).getBlockColors().getColor(state, null, null, 0);
 			float red = (tint >> 16 & 255) / 255.0F;
 			float green = (tint >> 8 & 255) / 255.0F;
 			float blue = (tint & 255) / 255.0F;
 			FabricBlockModelRenderer.render(matrices.last(), RenderLayerHelper.entityDelegate(vertexConsumers), model, red, green, blue, light, overlay, blockView, pos, state);
-			((BlockRenderManagerAccessor) renderManager).getBlockEntityModelsGetter().get().renderByBlock(state.getBlock(), ItemDisplayContext.NONE, matrices, Minecraft.getInstance().gameRenderer.getSubmitNodeStorage(), light, overlay, 0);
+			((BlockRenderDispatcherAccessor) renderManager).getBlockEntityModelsGetter().get().renderByBlock(state.getBlock(), ItemDisplayContext.NONE, matrices, Minecraft.getInstance().gameRenderer.getSubmitNodeStorage(), light, overlay, 0);
 		}
 	}
 

@@ -39,10 +39,10 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
-import net.fabricmc.fabric.mixin.client.particle.ParticleManagerAccessor;
+import net.fabricmc.fabric.mixin.client.particle.ParticleEngineAccessor;
 
 public final class ParticleRendererRegistryImpl {
-	public static final ParticleRendererRegistryImpl INSTANCE = new ParticleRendererRegistryImpl(ParticleManagerAccessor.getParticleTextureSheets());
+	public static final ParticleRendererRegistryImpl INSTANCE = new ParticleRendererRegistryImpl(ParticleEngineAccessor.getParticleTextureSheets());
 
 	private final List<ParticleRenderType> textureSheets;
 	private final Map<Identifier, ParticleTextureNode> nodes = new HashMap<>();

@@ -3,9 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.itemgroup",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ItemGroupAccessor",
-    "ItemGroupMixin",
-    "ItemGroupsMixin"
+    "CreativeModeTabAccessor",
+    "CreativeModeTabMixin",
+    "CreativeModeTabsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -4,22 +4,22 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
-    "AnvilScreenHandlerMixin",
+    "AnvilMenuMixin",
     "BrewingStandBlockEntityMixin",
-    "ComponentMapBuilderMixin",
+    "DataComponentMapBuilderMixin",
     "CraftingRecipeMixin",
     "EnchantCommandMixin",
     "EnchantmentBuilderAccessor",
     "EnchantmentBuilderMixin",
     "EnchantmentHelperMixin",
-    "EnchantRandomlyLootFunctionMixin",
+    "EnchantRandomlyFunctionMixin",
     "ItemAccessor",
     "ItemMixin",
-    "ItemSettingsMixin",
+    "ItemPropertiesMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "RegistriesMixin",
-    "RegistryLoaderMixin"
+    "BuiltInRegistriesMixin",
+    "RegistryDataLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

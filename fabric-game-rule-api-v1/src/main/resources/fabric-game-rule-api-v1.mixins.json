@@ -6,7 +6,7 @@
     "GameRuleCommandAccessor",
     "GameRuleCommandVisitorMixin",
     "GameRuleMixin",
-    "GameRuleRpcDispatcherRuleEntryMixin",
+    "GameRulesServiceGameRuleUpdateMixin",
     "MinecraftServerMixin"
   ],
   "injectors": {

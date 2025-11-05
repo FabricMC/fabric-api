@@ -4,21 +4,21 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "DataCacheCachedDataMixin",
-    "DataCacheMixin",
+    "HashCacheMixin",
     "DataProviderMixin",
-    "ProvidedTagBuilderMixin",
-    "ProvidedTagBuilderMixin$ProvidedTagBuilder1Mixin",
-    "ProvidedTagBuilderMixin$ProvidedTagBuilder2Mixin",
+    "TagAppenderMixin",
+    "TagAppenderMixin$ProvidedTagBuilder1Mixin",
+    "TagAppenderMixin$ProvidedTagBuilder2Mixin",
     "TagBuilderMixin",
-    "TagProviderMixin",
-    "loot.BlockLootTableGeneratorAccessor",
-    "loot.BlockLootTableGeneratorMixin",
-    "loot.EntityLootTableGeneratorAccessor",
-    "loot.EntityLootTableGeneratorMixin",
+    "TagsProviderMixin",
+    "loot.BlockLootSubProviderAccessor",
+    "loot.BlockLootSubProviderMixin",
+    "loot.EntityLootSubProviderAccessor",
+    "loot.EntityLootSubProviderMixin",
     "recipe.AllCraftingRecipeJsonBuildersMixin",
-    "recipe.ComplexRecipeJsonBuilderMixin",
-    "recipe.SmithingTransformRecipeJsonBuilderMixin",
-    "recipe.SmithingTrimRecipeJsonBuilderMixin"
+    "recipe.SpecialRecipeBuilderMixin",
+    "recipe.SmithingTransformRecipeBuilderMixin",
+    "recipe.SmithingTrimRecipeBuilderMixin"
   ],
   "server": [
     "server.MainMixin"

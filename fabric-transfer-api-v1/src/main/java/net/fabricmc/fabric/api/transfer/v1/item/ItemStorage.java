@@ -43,7 +43,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fabricmc.fabric.impl.transfer.item.BundleContentsStorage;
 import net.fabricmc.fabric.impl.transfer.item.ComposterWrapper;
 import net.fabricmc.fabric.impl.transfer.item.ContainerComponentStorage;
-import net.fabricmc.fabric.mixin.transfer.DoubleInventoryAccessor;
+import net.fabricmc.fabric.mixin.transfer.CompoundContainerAccessor;
 
 /**
  * Access to {@link Storage Storage&lt;ItemVariant&gt;} instances.
@@ -130,7 +130,7 @@ public final class ItemStorage {
 					inventoryToWrap = ChestBlock.getContainer(chestBlock, state, world, pos, true);
 
 					// For double chests, we need to retrieve a wrapper for each part separately.
-					if (inventoryToWrap instanceof DoubleInventoryAccessor accessor) {
+					if (inventoryToWrap instanceof CompoundContainerAccessor accessor) {
 						SlottedStorage<ItemVariant> first = InventoryStorage.of(accessor.fabric_getFirst(), direction);
 						SlottedStorage<ItemVariant> second = InventoryStorage.of(accessor.fabric_getSecond(), direction);
 

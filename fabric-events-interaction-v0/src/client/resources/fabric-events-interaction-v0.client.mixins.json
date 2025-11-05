@@ -3,9 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.event.interaction.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ClientPlayerInteractionManagerMixin",
-    "KeyBindingAccessor",
-    "MinecraftClientMixin"
+    "MultiPlayerGameModeMixin",
+    "KeyMappingAccessor",
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1

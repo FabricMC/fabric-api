@@ -3,9 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.datagen.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "MinecraftClientMixin",
-    "ModelProviderBlockStateSuppliersMixin",
-    "ModelProviderItemAssetsMixin",
+    "MinecraftMixin",
+    "ModelProviderBlockStateGeneratorCollectorMixin",
+    "ModelProviderItemInfoCollectorMixin",
     "ModelProviderMixin"
   ],
   "injectors": {

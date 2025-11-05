@@ -3,11 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.resource.v1",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "DataPackContentsMixin",
+    "ReloadableServerResourcesMixin",
     "KeyedResourceReloaderMixin",
-    "LifecycledResourceManagerImplMixin",
+    "MultiPackResourceManagerMixin",
     "MinecraftServerMixin",
-    "SimpleResourceReloadMixin"
+    "SimpleReloadInstanceMixin"
   ],
   "injectors": {
     "defaultRequire": 1

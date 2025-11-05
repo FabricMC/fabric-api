@@ -25,8 +25,8 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.impl.content.registry.util.ImmutableCollectionUtils;
-import net.fabricmc.fabric.mixin.content.registry.FarmerWorkTaskAccessor;
-import net.fabricmc.fabric.mixin.content.registry.VillagerEntityAccessor;
+import net.fabricmc.fabric.mixin.content.registry.VillagerAccessor;
+import net.fabricmc.fabric.mixin.content.registry.WorkAtComposterAccessor;
 
 public final class VillagerInteractionRegistriesImpl {
 	private static final Set<Item> GATHERABLE_ITEMS = new HashSet<>();
@@ -39,10 +39,10 @@ public final class VillagerInteractionRegistriesImpl {
 	}
 
 	public static List<Item> getCompostableRegistry() {
-		return ImmutableCollectionUtils.getAsMutableList(FarmerWorkTaskAccessor::fabric_getCompostable, FarmerWorkTaskAccessor::fabric_setCompostables);
+		return ImmutableCollectionUtils.getAsMutableList(WorkAtComposterAccessor::fabric_getCompostable, WorkAtComposterAccessor::fabric_setCompostables);
 	}
 
 	public static Map<Item, Integer> getFoodRegistry() {
-		return ImmutableCollectionUtils.getAsMutableMap(() -> Villager.FOOD_POINTS, VillagerEntityAccessor::fabric_setItemFoodValues);
+		return ImmutableCollectionUtils.getAsMutableMap(() -> Villager.FOOD_POINTS, VillagerAccessor::fabric_setItemFoodValues);
 	}
 }

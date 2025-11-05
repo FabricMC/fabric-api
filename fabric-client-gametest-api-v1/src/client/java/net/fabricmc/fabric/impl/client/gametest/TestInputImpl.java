@@ -37,9 +37,9 @@ import net.fabricmc.fabric.api.client.gametest.v1.TestInput;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.fabricmc.fabric.impl.client.gametest.util.WindowHooks;
-import net.fabricmc.fabric.mixin.client.gametest.input.KeyBindingAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.input.KeyboardAccessor;
-import net.fabricmc.fabric.mixin.client.gametest.input.MouseAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.input.KeyMappingAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.input.KeyboardHandlerAccessor;
+import net.fabricmc.fabric.mixin.client.gametest.input.MouseHandlerAccessor;
 
 public final class TestInputImpl implements TestInput {
 	private static final Set<InputConstants.Key> KEYS_DOWN = new HashSet<>();
@@ -186,9 +186,9 @@ public final class TestInputImpl implements TestInput {
 
 	private static void pressOrReleaseKey(Minecraft client, InputConstants.Key key, int action) {
 		switch (key.getType()) {
-		case KEYSYM -> ((KeyboardAccessor) client.keyboardHandler).invokeOnKey(client.getWindow().handle(), action, new KeyEvent(key.getValue(), 0, 0));
-		case SCANCODE -> ((KeyboardAccessor) client.keyboardHandler).invokeOnKey(client.getWindow().handle(), action, new KeyEvent(GLFW.GLFW_KEY_UNKNOWN, key.getValue(), 0));
-		case MOUSE -> ((MouseAccessor) client.mouseHandler).invokeOnMouseButton(client.getWindow().handle(), new MouseButtonInfo(key.getValue(), 0), action);
+		case KEYSYM -> ((KeyboardHandlerAccessor) client.keyboardHandler).invokeOnKey(client.getWindow().handle(), action, new KeyEvent(key.getValue(), 0, 0));
+		case SCANCODE -> ((KeyboardHandlerAccessor) client.keyboardHandler).invokeOnKey(client.getWindow().handle(), action, new KeyEvent(GLFW.GLFW_KEY_UNKNOWN, key.getValue(), 0));
+		case MOUSE -> ((MouseHandlerAccessor) client.mouseHandler).invokeOnMouseButton(client.getWindow().handle(), new MouseButtonInfo(key.getValue(), 0), action);
 		}
 	}
 
@@ -283,7 +283,7 @@ public final class TestInputImpl implements TestInput {
 	public void typeChar(int codePoint) {
 		ThreadingImpl.checkOnGametestThread("typeChar");
 
-		context.runOnClient(client -> ((KeyboardAccessor) client.keyboardHandler).invokeOnChar(client.getWindow().handle(), new CharacterEvent(codePoint, 0)));
+		context.runOnClient(client -> ((KeyboardHandlerAccessor) client.keyboardHandler).invokeOnChar(client.getWindow().handle(), new CharacterEvent(codePoint, 0)));
 	}
 
 	@Override
@@ -292,7 +292,7 @@ public final class TestInputImpl implements TestInput {
 
 		context.runOnClient(client -> {
 			chars.chars().forEach(codePoint -> {
-				((KeyboardAccessor) client.keyboardHandler).invokeOnChar(client.getWindow().handle(), new CharacterEvent(codePoint, 0));
+				((KeyboardHandlerAccessor) client.keyboardHandler).invokeOnChar(client.getWindow().handle(), new CharacterEvent(codePoint, 0));
 			});
 		});
 	}
@@ -308,14 +308,14 @@ public final class TestInputImpl implements TestInput {
 	public void scroll(double xAmount, double yAmount) {
 		ThreadingImpl.checkOnGametestThread("scroll");
 
-		context.runOnClient(client -> ((MouseAccessor) client.mouseHandler).invokeOnMouseScroll(client.getWindow().handle(), xAmount, yAmount));
+		context.runOnClient(client -> ((MouseHandlerAccessor) client.mouseHandler).invokeOnMouseScroll(client.getWindow().handle(), xAmount, yAmount));
 	}
 
 	@Override
 	public void setCursorPos(double x, double y) {
 		ThreadingImpl.checkOnGametestThread("setCursorPos");
 
-		context.runOnClient(client -> ((MouseAccessor) client.mouseHandler).invokeOnCursorPos(client.getWindow().handle(), x, y));
+		context.runOnClient(client -> ((MouseHandlerAccessor) client.mouseHandler).invokeOnCursorPos(client.getWindow().handle(), x, y));
 	}
 
 	@Override
@@ -325,7 +325,7 @@ public final class TestInputImpl implements TestInput {
 		context.runOnClient(client -> {
 			double newX = client.mouseHandler.xpos() + deltaX;
 			double newY = client.mouseHandler.ypos() + deltaY;
-			((MouseAccessor) client.mouseHandler).invokeOnCursorPos(client.getWindow().handle(), newX, newY);
+			((MouseHandlerAccessor) client.mouseHandler).invokeOnCursorPos(client.getWindow().handle(), newX, newY);
 		});
 	}
 
@@ -339,7 +339,7 @@ public final class TestInputImpl implements TestInput {
 	}
 
 	private static InputConstants.Key getBoundKey(KeyMapping keyBinding, String action) {
-		InputConstants.Key boundKey = ((KeyBindingAccessor) keyBinding).getBoundKey();
+		InputConstants.Key boundKey = ((KeyMappingAccessor) keyBinding).getBoundKey();
 
 		if (boundKey == InputConstants.UNKNOWN) {
 			throw new AssertionError("Cannot %s binding '%s' because it isn't bound to a key".formatted(action, keyBinding.getName()));

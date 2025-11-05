@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.command.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ClientCommandSourceMixin",
-    "ClientPlayNetworkHandlerMixin"
+    "ClientSuggestionProviderMixin",
+    "ClientPacketListenerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

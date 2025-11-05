@@ -3,13 +3,13 @@
   "package": "net.fabricmc.fabric.mixin.event.lifecycle.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ClientChunkManagerMixin",
-    "ClientPlayNetworkHandlerMixin",
-    "ClientConfigurationNetworkHandlerMixin",
+    "ClientChunkCacheMixin",
+    "ClientPacketListenerMixin",
+    "ClientConfigurationPacketListenerImplMixin",
     "ClientWorldClientEntityHandlerMixin",
-    "ClientWorldMixin",
-    "MinecraftClientMixin",
-    "WorldChunkMixin"
+    "ClientLevelMixin",
+    "MinecraftMixin",
+    "LevelChunkMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

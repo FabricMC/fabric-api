@@ -3,11 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.client.model.loading",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "BakedModelManagerMixin",
-    "JsonUnbakedModelAccessor",
-    "JsonUnbakedModelMixin",
-    "ModelBakerBakedModelsMixin",
-    "ModelBakerMixin",
+    "ModelManagerMixin",
+    "BlockModelAccessor",
+    "BlockModelMixin",
+    "ModelBakeryBakingResultMixin",
+    "ModelBakeryMixin",
     "BlockStateModelUnbakedMixin"
   ],
   "injectors": {

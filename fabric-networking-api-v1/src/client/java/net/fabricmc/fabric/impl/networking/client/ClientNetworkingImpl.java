@@ -47,7 +47,7 @@ import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ConnectScreenAccessor;
-import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
+import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftAccessor;
 
 public final class ClientNetworkingImpl {
 	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>(PacketFlow.CLIENTBOUND, ConnectionProtocol.LOGIN, null);
@@ -81,7 +81,7 @@ public final class ClientNetworkingImpl {
 	 */
 	@Nullable
 	public static Connection getLoginConnection() {
-		final Connection connection = ((MinecraftClientAccessor) Minecraft.getInstance()).getConnection();
+		final Connection connection = ((MinecraftAccessor) Minecraft.getInstance()).getConnection();
 
 		// Check if we are connecting to an integrated server. This will set the field on MinecraftClient
 		if (connection != null) {

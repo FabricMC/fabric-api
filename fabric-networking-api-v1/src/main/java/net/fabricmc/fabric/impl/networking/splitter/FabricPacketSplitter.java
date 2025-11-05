@@ -35,7 +35,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
-import net.fabricmc.fabric.mixin.networking.accessor.EncoderHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.PacketEncoderAccessor;
 
 public class FabricPacketSplitter extends MessageToMessageEncoder<Packet<?>> {
 	public static final int SAFE_S2C_SPLIT_SIZE = ClientboundCustomPayloadPacket.MAX_PAYLOAD_SIZE;
@@ -63,7 +63,7 @@ public class FabricPacketSplitter extends MessageToMessageEncoder<Packet<?>> {
 	public static void genericPacketSplitter(Identifier packetId, ChannelHandlerContext channelHandlerContext, PacketEncoder<?> encoder, Packet<?> packet,
 											Function<CustomPacketPayload, Packet<?>> packetConstructor, Consumer<Packet<?>> consumer, int maxChunkSize, int maxPacketSize) throws Exception {
 		ByteBuf buf = Unpooled.buffer();
-		((EncoderHandlerAccessor) encoder).fabric_encode(channelHandlerContext, packet, buf);
+		((PacketEncoderAccessor) encoder).fabric_encode(channelHandlerContext, packet, buf);
 
 		if (buf.readableBytes() < maxChunkSize) {
 			consumer.accept(new PassthroughPacket(buf));

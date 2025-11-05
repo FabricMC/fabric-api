@@ -34,8 +34,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
-import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonNetworkHandlerAccessor;
-import net.fabricmc.fabric.mixin.networking.client.accessor.ClientConfigurationNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.client.accessor.ClientCommonPacketListenerImplAccessor;
+import net.fabricmc.fabric.mixin.networking.client.accessor.ClientConfigurationPacketListenerImplAccessor;
 
 public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAddon<ClientConfigurationNetworking.ConfigurationPayloadHandler<?>, ClientConfigurationPacketListenerImpl> {
 	private final ContextImpl context;
@@ -43,7 +43,7 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 	private boolean hasStarted;
 
 	public ClientConfigurationNetworkAddon(ClientConfigurationPacketListenerImpl handler, Minecraft client) {
-		super(ClientNetworkingImpl.CONFIGURATION, ((ClientCommonNetworkHandlerAccessor) handler).getConnection(), "ClientPlayNetworkAddon for " + ((ClientConfigurationNetworkHandlerAccessor) handler).getProfile().name(), handler, client);
+		super(ClientNetworkingImpl.CONFIGURATION, ((ClientCommonPacketListenerImplAccessor) handler).getConnection(), "ClientPlayNetworkAddon for " + ((ClientConfigurationPacketListenerImplAccessor) handler).getProfile().name(), handler, client);
 		this.context = new ContextImpl(client, handler, this);
 
 		// Must register pending channels via lateinit
@@ -131,7 +131,7 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 	}
 
 	public ChannelInfoHolder getChannelInfoHolder() {
-		return (ChannelInfoHolder) ((ClientCommonNetworkHandlerAccessor) handler).getConnection();
+		return (ChannelInfoHolder) ((ClientCommonPacketListenerImplAccessor) handler).getConnection();
 	}
 
 	private record ContextImpl(Minecraft client, ClientConfigurationPacketListenerImpl networkHandler, PacketSender responseSender) implements ClientConfigurationNetworking.Context {

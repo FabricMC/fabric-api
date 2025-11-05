@@ -4,13 +4,13 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "BiomeSourceMixin",
-    "ChunkNoiseSamplerMixin",
+    "NoiseChunkMixin",
     "MultiNoiseBiomeSourceMixin",
-    "MultiNoiseUtilMultiNoiseSamplerMixin",
+    "ClimateSamplerMixin",
     "NetherBiomePresetMixin",
-    "NoiseConfigMixin",
+    "RandomStateMixin",
     "TheEndBiomeSourceMixin",
-    "modification.DynamicRegistryManagerImmutableImplMixin",
+    "modification.RegistryAccessImmutableRegistryAccessMixin",
     "modification.MinecraftServerMixin"
   ],
   "injectors": {

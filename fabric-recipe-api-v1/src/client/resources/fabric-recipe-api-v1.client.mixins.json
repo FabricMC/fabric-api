@@ -3,9 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.recipe.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "sync.ClientConfigurationNetworkHandlerMixin",
-    "sync.ClientPlayNetworkHandlerMixin",
-    "sync.ClientRecipeManagerMixin",
+    "sync.ClientConfigurationPacketListenerImplMixin",
+    "sync.ClientPacketListenerMixin",
+    "sync.ClientRecipeContainerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

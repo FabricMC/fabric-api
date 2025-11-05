@@ -3,10 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.serialization",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "NbtReadViewMixin",
-    "NbtWriteViewMixin",
-    "ReadViewMixin",
-    "WriteViewMixin"
+    "TagValueInputMixin",
+    "TagValueOutputMixin",
+    "ValueInputMixin",
+    "ValueOutputMixin"
   ],
   "injectors": {
     "defaultRequire": 1

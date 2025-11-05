@@ -6,17 +6,17 @@
     "AttachmentTargetsMixin",
     "BannerBlockEntityMixin",
     "BlockEntityMixin",
-    "ChunkDataSenderMixin",
-    "ChunkMixin",
-    "ClientConnectionMixin",
-    "CustomPayloadC2SPacketAccessor",
+    "PlayerChunkSenderMixin",
+    "ChunkAccessMixin",
+    "ConnectionMixin",
+    "ServerboundCustomPayloadPacketAccessor",
     "EntityMixin",
-    "SerializedChunkMixin",
-    "ServerWorldMixin",
-    "VarIntsAccessor",
-    "WorldChunkMixin",
-    "WorldMixin",
-    "WrapperProtoChunkMixin"
+    "SerializableChunkDataMixin",
+    "ServerLevelMixin",
+    "VarIntAccessor",
+    "LevelChunkMixin",
+    "LevelMixin",
+    "ImposterProtoChunkMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.test.registry.sync.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "PacketCodecsMixin"
+    "ByteBufCodecsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

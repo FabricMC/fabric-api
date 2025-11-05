@@ -23,7 +23,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
 
 import net.fabricmc.fabric.impl.client.rendering.EntityModelLayerImpl;
-import net.fabricmc.fabric.mixin.client.rendering.EntityModelLayersAccessor;
+import net.fabricmc.fabric.mixin.client.rendering.ModelLayersAccessor;
 
 /**
  * A helpers for registering entity model layers and providers for the layer's textured model data.
@@ -43,7 +43,7 @@ public final class EntityModelLayerRegistry {
 			throw new IllegalArgumentException(String.format("Cannot replace registration for entity model layer \"%s\"", modelLayer));
 		}
 
-		EntityModelLayersAccessor.getLayers().add(modelLayer);
+		ModelLayersAccessor.getLayers().add(modelLayer);
 	}
 
 	/**
@@ -59,7 +59,7 @@ public final class EntityModelLayerRegistry {
 			throw new IllegalArgumentException(String.format("Cannot replace registration for entity equipment model layer \"%s\"", equipmentModelData));
 		}
 
-		equipmentModelData.map(EntityModelLayersAccessor.getLayers()::add);
+		equipmentModelData.map(ModelLayersAccessor.getLayers()::add);
 	}
 
 	private EntityModelLayerRegistry() {

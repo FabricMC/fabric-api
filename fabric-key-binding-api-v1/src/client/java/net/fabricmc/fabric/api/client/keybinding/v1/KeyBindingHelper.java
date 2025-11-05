@@ -23,7 +23,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
-import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
+import net.fabricmc.fabric.mixin.client.keybinding.KeyMappingAccessor;
 
 /**
  * Helper for registering {@link KeyMapping}s.
@@ -59,6 +59,6 @@ public final class KeyBindingHelper {
 	 * @return configured KeyCode
 	 */
 	public static InputConstants.Key getBoundKeyOf(KeyMapping keyBinding) {
-		return ((KeyBindingAccessor) keyBinding).fabric_getBoundKey();
+		return ((KeyMappingAccessor) keyBinding).fabric_getBoundKey();
 	}
 }

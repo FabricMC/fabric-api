@@ -23,7 +23,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.mixin.command.ArgumentTypesAccessor;
+import net.fabricmc.fabric.mixin.command.ArgumentTypeInfosAccessor;
 
 public final class ArgumentTypeRegistry {
 	/**
@@ -37,7 +37,7 @@ public final class ArgumentTypeRegistry {
 	 */
 	public static <A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>> void registerArgumentType(
 			Identifier id, Class<? extends A> clazz, ArgumentTypeInfo<A, T> serializer) {
-		ArgumentTypesAccessor.fabric_getClassMap().put(clazz, serializer);
+		ArgumentTypeInfosAccessor.fabric_getClassMap().put(clazz, serializer);
 		Registry.register(BuiltInRegistries.COMMAND_ARGUMENT_TYPE, id, serializer);
 	}
 

@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
-import net.fabricmc.fabric.mixin.networking.client.accessor.ClientLoginNetworkHandlerAccessor;
+import net.fabricmc.fabric.mixin.networking.client.accessor.ClientHandshakePacketListenerImplAccessor;
 
 public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginQueryRequestHandler> {
 	private final ClientHandshakePacketListenerImpl handler;
@@ -80,7 +80,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 			CompletableFuture<@Nullable FriendlyByteBuf> future = handler.receive(this.client, this.handler, buf, callbacks::add);
 			future.thenAccept(result -> {
 				ServerboundCustomQueryAnswerPacket packet = new ServerboundCustomQueryAnswerPacket(queryId, result == null ? null : new PacketByteBufLoginQueryResponse(result));
-				((ClientLoginNetworkHandlerAccessor) this.handler).getConnection().send(packet, operation -> {
+				((ClientHandshakePacketListenerImplAccessor) this.handler).getConnection().send(packet, operation -> {
 					for (ChannelFutureListener callback : callbacks) {
 						callback.operationComplete(operation);
 					}

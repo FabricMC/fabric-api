@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedSlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.mixin.transfer.ContainerComponentAccessor;
+import net.fabricmc.fabric.mixin.transfer.ItemContainerContentsAccessor;
 
 public class ContainerComponentStorage extends CombinedSlottedStorage<ItemVariant, SingleSlotStorage<ItemVariant>> {
 	final ContainerItemContext ctx;
@@ -57,8 +57,8 @@ public class ContainerComponentStorage extends CombinedSlottedStorage<ItemVarian
 		return ctx.getItemVariant().getComponentMap().getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
 	}
 
-	ContainerComponentAccessor containerAccessor() {
-		return (ContainerComponentAccessor) (Object) container();
+	ItemContainerContentsAccessor containerAccessor() {
+		return (ItemContainerContentsAccessor) (Object) container();
 	}
 
 	private boolean isStillValid() {

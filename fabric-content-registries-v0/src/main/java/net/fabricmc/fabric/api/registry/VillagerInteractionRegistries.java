@@ -27,7 +27,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.impl.content.registry.VillagerInteractionRegistriesImpl;
-import net.fabricmc.fabric.mixin.content.registry.GiveGiftsToHeroTaskAccessor;
+import net.fabricmc.fabric.mixin.content.registry.GiveGiftToHeroAccessor;
 
 /**
  * Registries for modifying villager interactions that
@@ -83,7 +83,7 @@ public final class VillagerInteractionRegistries {
 	public static void registerGiftLootTable(ResourceKey<VillagerProfession> profession, ResourceKey<LootTable> lootTable) {
 		Objects.requireNonNull(profession, "Profession cannot be null!");
 		Objects.requireNonNull(lootTable, "Loot table identifier cannot be null!");
-		ResourceKey<LootTable> oldValue = GiveGiftsToHeroTaskAccessor.fabric_getGifts().put(profession, lootTable);
+		ResourceKey<LootTable> oldValue = GiveGiftToHeroAccessor.fabric_getGifts().put(profession, lootTable);
 
 		if (oldValue != null) {
 			LOGGER.info("Overriding previous gift loot table of {} profession, was: {}, now: {}", profession.identifier(), oldValue, lootTable);

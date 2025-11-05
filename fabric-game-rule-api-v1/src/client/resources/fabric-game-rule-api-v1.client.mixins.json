@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "EditGameRulesScreenAccessor",
-    "EditGameRulesScreenRuleListWidgetMixin",
+    "EditGameRulesScreenRuleListMixin",
     "RuleListWidgetVisitorMixin"
   ],
   "injectors": {
