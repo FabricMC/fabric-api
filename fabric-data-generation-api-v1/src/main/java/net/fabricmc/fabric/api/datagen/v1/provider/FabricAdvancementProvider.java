@@ -63,7 +63,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	/**
 	 * Implement this method to register advancements to generate use the consumer callback to register advancements.
 	 *
-	 * <p>Use {@link Advancement.Builder#build(Consumer, String)} to help build advancements.
+	 * <p>Use {@link Advancement.Builder#save(Consumer, String)} to help build advancements.
 	 */
 	public abstract void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer);
 

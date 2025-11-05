@@ -50,7 +50,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
  * for whatever reason, keeping a reference to the target is absolutely necessary, be sure to implement custom copying logic.
  * For {@link Entity} targets, use {@link ServerPlayerEvents#COPY_FROM}, {@link ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD},
  * and {@link ServerLivingEntityEvents#MOB_CONVERSION}. For {@link ChunkAccess} targets, mixin into
- * {@link LevelChunk#WorldChunk(ServerLevel, ProtoChunk, LevelChunk.PostLoadProcessor)}.
+ * {@link LevelChunk#LevelChunk(ServerLevel, ProtoChunk, LevelChunk.PostLoadProcessor)}.
  * </p>
  *
  * @param <A> type of the attached data. It is encouraged for this to be an immutable type.

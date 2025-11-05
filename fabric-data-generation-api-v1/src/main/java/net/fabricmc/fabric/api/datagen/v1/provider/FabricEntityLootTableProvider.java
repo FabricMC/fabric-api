@@ -62,7 +62,7 @@ public abstract class FabricEntityLootTableProvider extends EntityLootSubProvide
 	/**
 	 * Implement this method to add entity drops.
 	 *
-	 * <p>Use the {@link EntityLootSubProvider#register} methods to generate entity drops.
+	 * <p>Use the {@link EntityLootSubProvider#add} methods to generate entity drops.
 	 *
 	 * <p>See {@link VanillaEntityLoot#generate()} for examples of vanilla entity loot tables.
 	 */

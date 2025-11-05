@@ -74,7 +74,7 @@ public interface UnbakedModelDeserializer {
 
 	/**
 	 * Deserializes an {@link UnbakedModel} from a {@link Reader}, respecting custom deserializers. Prefer using this
-	 * method to {@link BlockModel#deserialize(Reader)}.
+	 * method to {@link BlockModel#fromStream(Reader)}.
 	 */
 	static UnbakedModel deserialize(Reader reader) throws JsonParseException {
 		return UnbakedModelDeserializerRegistry.deserialize(reader);

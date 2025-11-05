@@ -94,24 +94,24 @@ public interface BiomeModificationContext {
 
 	interface AttributesContext {
 		/**
-		 * @see Biome.BiomeBuilder#addEnvironmentAttributes(EnvironmentAttributeMap)
+		 * @see Biome.BiomeBuilder#putAttributes(EnvironmentAttributeMap)
 		 */
 		void addAll(EnvironmentAttributeMap map);
 
 		/**
-		 * @see Biome.BiomeBuilder#addEnvironmentAttributes(EnvironmentAttributeMap.Builder)
+		 * @see Biome.BiomeBuilder#putAttributes(EnvironmentAttributeMap.Builder)
 		 */
 		default void addAll(EnvironmentAttributeMap.Builder map) {
 			this.addAll(map.build());
 		}
 
 		/**
-		 * @see Biome.BiomeBuilder#setEnvironmentAttribute(EnvironmentAttribute, Object)
+		 * @see Biome.BiomeBuilder#setAttribute(EnvironmentAttribute, Object)
 		 */
 		<T> void set(EnvironmentAttribute<T> key, T value);
 
 		/**
-		 * @see Biome.BiomeBuilder#setEnvironmentAttributeModifier(EnvironmentAttribute, AttributeModifier, Object)
+		 * @see Biome.BiomeBuilder#modifyAttribute(EnvironmentAttribute, AttributeModifier, Object)
 		 */
 		<T, M> void setModifier(EnvironmentAttribute<T> key, AttributeModifier<T, M> modifier, M value);
 	}
@@ -120,13 +120,13 @@ public interface BiomeModificationContext {
 		/**
 		 * @deprecated Set the fog color using environment attributes instead
 		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#FOG_COLOR_VISUAL
+		 * @see EnvironmentAttributes#FOG_COLOR
 		 */
 		@Deprecated
 		void setFogColor(int color);
 
 		/**
-		 * @see BiomeSpecialEffects#getWaterColor()
+		 * @see BiomeSpecialEffects#waterColor()
 		 * @see BiomeSpecialEffects.Builder#waterColor(int)
 		 */
 		void setWaterColor(int color);
@@ -134,7 +134,7 @@ public interface BiomeModificationContext {
 		/**
 		 * @deprecated Set the water fog color using environment attributes instead
 		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#WATER_FOG_COLOR_VISUAL
+		 * @see EnvironmentAttributes#WATER_FOG_COLOR
 		 */
 		@Deprecated
 		void setWaterFogColor(int color);
@@ -142,73 +142,73 @@ public interface BiomeModificationContext {
 		/**
 		 * @deprecated Set the sky color using environment attributes instead
 		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#SKY_COLOR_VISUAL
+		 * @see EnvironmentAttributes#SKY_COLOR
 		 */
 		@Deprecated
 		void setSkyColor(int color);
 
 		/**
-		 * @see BiomeSpecialEffects#getFoliageColor()
-		 * @see BiomeSpecialEffects.Builder#foliageColor(int)
+		 * @see BiomeSpecialEffects#foliageColorOverride()
+		 * @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
 		 */
 		void setFoliageColor(Optional<Integer> color);
 
 		/**
-		 * @see BiomeSpecialEffects#getFoliageColor()
-		 * @see BiomeSpecialEffects.Builder#foliageColor(int)
+		 * @see BiomeSpecialEffects#foliageColorOverride()
+		 * @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
 		 */
 		default void setFoliageColor(int color) {
 			setFoliageColor(Optional.of(color));
 		}
 
 		/**
-		 * @see BiomeSpecialEffects#getFoliageColor()
-		 * @see BiomeSpecialEffects.Builder#foliageColor(int)
+		 * @see BiomeSpecialEffects#foliageColorOverride()
+		 * @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
 		 */
 		default void setFoliageColor(OptionalInt color) {
 			color.ifPresentOrElse(this::setFoliageColor, this::clearFoliageColor);
 		}
 
 		/**
-		 * @see BiomeSpecialEffects#getFoliageColor()
-		 * @see BiomeSpecialEffects.Builder#foliageColor(int)
+		 * @see BiomeSpecialEffects#foliageColorOverride()
+		 * @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
 		 */
 		default void clearFoliageColor() {
 			setFoliageColor(Optional.empty());
 		}
 
 		/**
-		 * @see BiomeSpecialEffects#getGrassColor()
-		 * @see BiomeSpecialEffects.Builder#grassColor(int)
+		 * @see BiomeSpecialEffects#grassColorOverride()
+		 * @see BiomeSpecialEffects.Builder#grassColorOverride(int)
 		 */
 		void setGrassColor(Optional<Integer> color);
 
 		/**
-		 * @see BiomeSpecialEffects#getGrassColor()
-		 * @see BiomeSpecialEffects.Builder#grassColor(int)
+		 * @see BiomeSpecialEffects#grassColorOverride()
+		 * @see BiomeSpecialEffects.Builder#grassColorOverride(int)
 		 */
 		default void setGrassColor(int color) {
 			setGrassColor(Optional.of(color));
 		}
 
 		/**
-		 * @see BiomeSpecialEffects#getGrassColor()
-		 * @see BiomeSpecialEffects.Builder#grassColor(int)
+		 * @see BiomeSpecialEffects#grassColorOverride()
+		 * @see BiomeSpecialEffects.Builder#grassColorOverride(int)
 		 */
 		default void setGrassColor(OptionalInt color) {
 			color.ifPresentOrElse(this::setGrassColor, this::clearGrassColor);
 		}
 
 		/**
-		 * @see BiomeSpecialEffects#getGrassColor()
-		 * @see BiomeSpecialEffects.Builder#grassColor(int)
+		 * @see BiomeSpecialEffects#grassColorOverride()
+		 * @see BiomeSpecialEffects.Builder#grassColorOverride(int)
 		 */
 		default void clearGrassColor() {
 			setGrassColor(Optional.empty());
 		}
 
 		/**
-		 * @see BiomeSpecialEffects#getGrassColorModifier()
+		 * @see BiomeSpecialEffects#grassColorModifier()
 		 * @see BiomeSpecialEffects.Builder#grassColorModifier(BiomeSpecialEffects.GrassColorModifier)
 		 */
 		void setGrassColorModifier(BiomeSpecialEffects.GrassColorModifier colorModifier);
@@ -216,7 +216,7 @@ public interface BiomeModificationContext {
 		/**
 		 * @deprecated Set the music volume using environment attributes instead
 		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#MUSIC_VOLUME_AUDIO
+		 * @see EnvironmentAttributes#MUSIC_VOLUME
 		 */
 		@Deprecated
 		void setMusicVolume(float volume);
@@ -275,15 +275,15 @@ public interface BiomeModificationContext {
 		 *
 		 * <p>Associated JSON property: <code>spawners</code>.
 		 *
-		 * @see MobSpawnSettings#getSpawnEntries(MobCategory)
+		 * @see MobSpawnSettings#getMobs(MobCategory)
 		 */
 		@UnmodifiableView List<Weighted<MobSpawnSettings.SpawnerData>> getSpawnEntries(MobCategory spawnGroup);
 
 		/**
 		 * Associated JSON property: <code>spawners</code>.
 		 *
-		 * @see MobSpawnSettings#getSpawnEntries(MobCategory)
-		 * @see MobSpawnSettings.Builder#spawn(MobCategory, int, MobSpawnSettings.SpawnerData)
+		 * @see MobSpawnSettings#getMobs(MobCategory)
+		 * @see MobSpawnSettings.Builder#addSpawn(MobCategory, int, MobSpawnSettings.SpawnerData)
 		 */
 		void addSpawn(MobCategory spawnGroup, MobSpawnSettings.SpawnerData spawnEntry, int weight);
 
@@ -326,8 +326,8 @@ public interface BiomeModificationContext {
 		/**
 		 * Associated JSON property: <code>spawn_costs</code>.
 		 *
-		 * @see MobSpawnSettings#getSpawnDensity(EntityType)
-		 * @see MobSpawnSettings.Builder#spawnCost(EntityType, double, double)
+		 * @see MobSpawnSettings#getMobSpawnCost(EntityType)
+		 * @see MobSpawnSettings.Builder#addMobCharge(EntityType, double, double)
 		 */
 		void setSpawnCost(EntityType<?> entityType, double mass, double gravityLimit);
 
