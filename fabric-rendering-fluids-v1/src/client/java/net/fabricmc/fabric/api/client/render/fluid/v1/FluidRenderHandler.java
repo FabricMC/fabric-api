@@ -72,7 +72,7 @@ public interface FluidRenderHandler {
 	 * fluid renderer. Call {@code FluidRenderHandler.super.renderFluid} if
 	 * you want to render over the default fluid renderer. This is the
 	 * intended way to render default geometry; calling
-	 * {@link LiquidBlockRenderer#render} is not supported. When rendering default
+	 * {@link LiquidBlockRenderer#tesselate} is not supported. When rendering default
 	 * geometry, the current handler will be used instead of looking up
 	 * a new one for the passed fluid state.
 	 *

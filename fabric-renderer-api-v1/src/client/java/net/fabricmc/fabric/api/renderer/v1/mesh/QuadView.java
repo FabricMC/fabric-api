@@ -144,7 +144,7 @@ public interface QuadView {
 	 * Gets the light face of this quad as implied by its {@linkplain #faceNormal() face normal}. It is equal to the
 	 * axis-aligned direction closest to the face normal, and is never {@code null}.
 	 *
-	 * <p>This method is equivalent to {@link BakedQuad#face()}.
+	 * <p>This method is equivalent to {@link BakedQuad#direction()}.
 	 */
 	Direction lightFace();
 
@@ -208,7 +208,7 @@ public interface QuadView {
 	/**
 	 * Outputs this quad's vertex data into the given array, starting at the given index. The array must have at least
 	 * {@link #VANILLA_QUAD_STRIDE} elements available starting at the given index. The format of the data is the same
-	 * as {@link BakedQuad#vertexData()}. Lightmap values and normals will be populated even though vanilla does not use
+	 * as {@link BakedQuad#vertices()}. Lightmap values and normals will be populated even though vanilla does not use
 	 * them.
 	 */
 	void toVanilla(int[] target, int startIndex);
