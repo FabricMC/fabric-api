@@ -41,7 +41,7 @@
  * <p>Test methods are instance methods (i.e. not static) and take exactly one argument - {@link
  * net.minecraft.gametest.framework.GameTestHelper}. This provides access to the world and additionally provides
  * dozens of assertions, utility methods, and more.
- * Test methods should end with {@link net.minecraft.gametest.framework.GameTestHelper#complete()}.
+ * Test methods should end with {@link net.minecraft.gametest.framework.GameTestHelper#succeed()}.
  *
  * <p>Example of a test method:
  * <pre>{@code

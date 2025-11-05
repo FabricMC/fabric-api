@@ -94,7 +94,7 @@ public interface TestInput {
 
 	/**
 	 * Starts holding down left control, or left super on macOS. Suitable for triggering
-	 * {@link Minecraft#isCtrlPressed()}. The key will be held until it is released. Does nothing if the key is already
+	 * {@link Minecraft#hasControlDown()}. The key will be held until it is released. Does nothing if the key is already
 	 * being held.
 	 *
 	 * @see #releaseControl()
@@ -102,7 +102,7 @@ public interface TestInput {
 	void holdControl();
 
 	/**
-	 * Starts holding down left shift. Suitable for triggering {@link Minecraft#isShiftPressed()}. The key will be held until
+	 * Starts holding down left shift. Suitable for triggering {@link Minecraft#hasShiftDown()}. The key will be held until
 	 * it is released. Does nothing if the key is already being held.
 	 *
 	 * @see #releaseShift()
@@ -110,7 +110,7 @@ public interface TestInput {
 	void holdShift();
 
 	/**
-	 * Starts holding down left alt. Suitable for triggering {@link Minecraft#isAltPressed()}. The key will be held until it
+	 * Starts holding down left alt. Suitable for triggering {@link Minecraft#hasAltDown()}. The key will be held until it
 	 * is released. Does nothing if the key is already being held.
 	 *
 	 * @see #releaseAlt()
@@ -170,7 +170,7 @@ public interface TestInput {
 	void releaseMouse(int button);
 
 	/**
-	 * Releases left control, or left super on macOS. Suitable for un-triggering {@link Minecraft#isCtrlPressed()}. Does
+	 * Releases left control, or left super on macOS. Suitable for un-triggering {@link Minecraft#hasControlDown()}. Does
 	 * nothing if the key is not being held.
 	 *
 	 * @see #holdControl()
@@ -178,7 +178,7 @@ public interface TestInput {
 	void releaseControl();
 
 	/**
-	 * Releases left shift. Suitable for un-triggering {@link Minecraft#isShiftPressed()}. Does nothing if the key is not
+	 * Releases left shift. Suitable for un-triggering {@link Minecraft#hasShiftDown()}. Does nothing if the key is not
 	 * being held.
 	 *
 	 * @see #holdShift()
@@ -186,7 +186,7 @@ public interface TestInput {
 	void releaseShift();
 
 	/**
-	 * Releases left alt. Suitable for un-triggering {@link Minecraft#isAltPressed()}. Does nothing if the key is not being
+	 * Releases left alt. Suitable for un-triggering {@link Minecraft#hasAltDown()}. Does nothing if the key is not being
 	 * held.
 	 *
 	 * @see #holdAlt()
