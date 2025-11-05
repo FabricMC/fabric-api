@@ -28,7 +28,7 @@ public final class RenderLayerHelper {
 	}
 
 	/**
-	 * Same logic as {@link net.minecraft.client.renderer.ItemBlockRenderTypes#getMovingBlockLayer}, but accepts a {@link ChunkSectionLayer} instead of a
+	 * Same logic as {@link net.minecraft.client.renderer.ItemBlockRenderTypes#getMovingBlockRenderType}, but accepts a {@link ChunkSectionLayer} instead of a
 	 * {@link BlockState}.
 	 */
 	public static RenderType getMovingBlockLayer(ChunkSectionLayer layer) {
@@ -41,7 +41,7 @@ public final class RenderLayerHelper {
 	}
 
 	/**
-	 * Same logic as {@link net.minecraft.client.renderer.ItemBlockRenderTypes#getEntityBlockLayer}, but accepts a {@link ChunkSectionLayer} instead of a
+	 * Same logic as {@link net.minecraft.client.renderer.ItemBlockRenderTypes#getRenderType}, but accepts a {@link ChunkSectionLayer} instead of a
 	 * {@link BlockState}.
 	 */
 	public static RenderType getEntityBlockLayer(ChunkSectionLayer layer) {

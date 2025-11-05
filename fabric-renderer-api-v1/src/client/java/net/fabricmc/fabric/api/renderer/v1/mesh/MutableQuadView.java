@@ -258,7 +258,7 @@ public interface MutableQuadView extends QuadView {
 	 * Sets the cull face. This quad will not be rendered if its cull face is non-null and the block is occluded by
 	 * another block in the direction of the cull face.
 	 *
-	 * <p>The cull face is different from {@link BakedQuad#face()}, which is equivalent to {@link #lightFace()}. The
+	 * <p>The cull face is different from {@link BakedQuad#direction()}, which is equivalent to {@link #lightFace()}. The
 	 * light face is computed based on geometry and must be non-null.
 	 *
 	 * <p>When called, sets {@link #nominalFace(Direction)} to the same value.
@@ -274,7 +274,7 @@ public interface MutableQuadView extends QuadView {
 	 *
 	 * <p>If set to {@code null}, {@link RenderTypes#getBlockLayer(BlockState)} will be used to retrieve the render
 	 * layer in block contexts and
-	 * {@linkplain ItemStackRenderState.LayerRenderState#setRenderLayer(RenderType) the render layer of the state layer}
+	 * {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(RenderType)}  the render layer of the state layer}
 	 * will be used in item contexts. Set to another value to override this behavior.
 	 *
 	 * <p>In block contexts, a non-null value will be used directly. In item contexts, a non-null value will be
@@ -312,9 +312,9 @@ public interface MutableQuadView extends QuadView {
 	 * Controls whether vertex colors should be modified for ambient occlusion.
 	 *
 	 * <p>If set to {@link TriState#DEFAULT}, ambient occlusion will be used if the block state has
-	 * {@linkplain BlockState#getLuminance() a luminance} of 0. Set to {@link TriState#TRUE} or {@link TriState#FALSE}
+	 * {@linkplain BlockState#getLightEmission()}  a luminance} of 0. Set to {@link TriState#TRUE} or {@link TriState#FALSE}
 	 * to override this behavior. {@link TriState#TRUE} will not have an effect if
-	 * {@linkplain Minecraft#isAmbientOcclusionEnabled() ambient occlusion is disabled globally}.
+	 * {@linkplain Minecraft#useAmbientOcclusion()}  ambient occlusion is disabled globally}.
 	 *
 	 * <p>The default value is {@link TriState#DEFAULT}.
 	 *
@@ -326,7 +326,7 @@ public interface MutableQuadView extends QuadView {
 	 * Controls how glint should be applied.
 	 *
 	 * <p>If set to {@code null}, glint will be applied in item contexts based on
-	 * {@linkplain ItemStackRenderState.LayerRenderState#setGlint(ItemStackRenderState.FoilType) the glint type of the layer}. Set
+	 * {@linkplain ItemStackRenderState.LayerRenderState#setFoilType(ItemStackRenderState.FoilType)}  the glint type of the layer}. Set
 	 * to another value to override this behavior.
 	 *
 	 * <p>The default value is {@code null}.
@@ -373,7 +373,7 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Sets this quad's vertex data for all vertices using data in given array, starting at the given index. The array
 	 * must have at least {@link #VANILLA_QUAD_STRIDE} elements starting at the given index. The format of the data must
-	 * be the same as {@link BakedQuad#vertexData()}. This quad's lightmap values and normals will be set even though
+	 * be the same as {@link BakedQuad#vertices()}. This quad's lightmap values and normals will be set even though
 	 * vanilla does not decode them from packed vertex data.
 	 *
 	 * <p>Prefer using {@link #fromBakedQuad(BakedQuad)} instead if you have a {@link BakedQuad}.

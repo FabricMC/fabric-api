@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
 /**
  * A {@code Storage<ItemVariant>} implementation for a {@link Inventory}.
  * This is a specialized version of {@link InventoryStorage},
- * with an additional transactional wrapper for {@link Inventory#offerOrDrop}.
+ * with an additional transactional wrapper for {@link Inventory#placeItemBackInInventory}.
  *
  * <p>Note that this is a wrapper around all the slots of the player inventory.
  * However, {@link #insert} is overridden to behave like {@link #offer}.
@@ -59,7 +59,7 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 
 	/**
 	 * Return a wrapper around the cursor slot of a screen handler,
-	 * i.e. the stack that can be manipulated with {@link AbstractContainerMenu#getCursorStack()} and {@link AbstractContainerMenu#setCursorStack}.
+	 * i.e. the stack that can be manipulated with {@link AbstractContainerMenu#getCarried()} and {@link AbstractContainerMenu#setCarried}.
 	 */
 	static SingleSlotStorage<ItemVariant> getCursorStorage(AbstractContainerMenu screenHandler) {
 		return CursorSlotWrapper.get(screenHandler);
@@ -75,7 +75,7 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	long insert(ItemVariant resource, long maxAmount, TransactionContext transaction);
 
 	/**
-	 * Add items to the inventory if possible, and drop any leftover items in the world, similar to {@link Inventory#offerOrDrop}.
+	 * Add items to the inventory if possible, and drop any leftover items in the world, similar to {@link Inventory#placeItemBackInInventory}.
 	 *
 	 * <p>Note: This function has full transaction support, and will not actually drop the items until the outermost transaction is committed.
 	 *
@@ -89,7 +89,7 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	}
 
 	/**
-	 * Try to add items to the inventory if possible, stacking like {@link Inventory#offer}.
+	 * Try to add items to the inventory if possible, stacking like {@link Inventory#placeItemBackInInventory}.
 	 * Unlike {@link #offerOrDrop}, this function will not drop excess items.
 	 *
 	 * <p>The exact behavior is:
@@ -116,7 +116,7 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	 * @param throwRandomly If true, the variant will be thrown in a random direction from the entity regardless of which direction the entity is facing.
 	 * @param retainOwnership If true, set the {@code Thrower} NBT data to the player's UUID.
 	 * @param transaction The transaction this operation is part of.
-	 * @see Player#dropItem(ItemStack, boolean, boolean)
+	 * @see Player#drop(ItemStack, boolean, boolean)
 	 */
 	void drop(ItemVariant variant, long amount, boolean throwRandomly, boolean retainOwnership, TransactionContext transaction);
 
@@ -129,7 +129,7 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	 * @param amount How many of the variant to drop.
 	 * @param retainOwnership If true, set the {@code Thrower} NBT data to the player's UUID.
 	 * @param transaction The transaction this operation is part of.
-	 * @see Player#dropItem(ItemStack, boolean, boolean)
+	 * @see Player#drop(ItemStack, boolean, boolean)
 	 */
 	default void drop(ItemVariant variant, long amount, boolean retainOwnership, TransactionContext transaction) {
 		drop(variant, amount, false, retainOwnership, transaction);
@@ -143,7 +143,7 @@ public interface PlayerInventoryStorage extends InventoryStorage {
 	 * @param variant The variant to drop.
 	 * @param amount How many of the variant to drop.
 	 * @param transaction The transaction this operation is part of.
-	 * @see Player#dropItem(ItemStack, boolean, boolean)
+	 * @see Player#drop(ItemStack, boolean, boolean)
 	 */
 	default void drop(ItemVariant variant, long amount, TransactionContext transaction) {
 		drop(variant, amount, false, transaction);

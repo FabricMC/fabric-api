@@ -54,7 +54,7 @@ public final class TagUtil {
 	 * @param registryManager the registry manager instance of the client or server. If the tag refers to entries
 	 *                        within a dynamic registry, such as {@link net.minecraft.world.level.biome.Biome}s,
 	 *                        this must be passed to correctly evaluate the tag. Otherwise, the registry is found by
-	 *                        looking in {@link BuiltInRegistries#REGISTRIES}.
+	 *                        looking in {@link BuiltInRegistries#REGISTRY}.
 	 * @return if the entry is in the provided tag.
 	 */
 	@SuppressWarnings("unchecked")

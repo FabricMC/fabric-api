@@ -75,10 +75,10 @@ public final class ServerChunkEvents {
 	 *
 	 * <p>When this event is being called:
 	 * <ul>
-	 * <li>The chunk's {@link LevelChunk#getLevelType()} has already changed.</li>
+	 * <li>The chunk's {@link LevelChunk#getFullStatus()} has already changed.</li>
 	 * <li>Entities within the chunk are not guaranteed to be accessible.</li>
 	 * <li>The chunk's corresponding level type future in {@link ChunkHolder} is not guaranteed to be done.</li>
-	 * <li>When transitioning from {@link FullChunkStatus#INACCESSIBLE} to {@link FullChunkStatus#FULL}, calling {@link ServerChunkCache#getChunkFutureSyncOnMainThread(int, int, ChunkStatus, boolean)} to fetch the current chunk at {@link ChunkStatus#FULL} status results in undefined behavior.</li>
+	 * <li>When transitioning from {@link FullChunkStatus#INACCESSIBLE} to {@link FullChunkStatus#FULL}, calling {@link ServerChunkCache#getChunkFuture(int, int, ChunkStatus, boolean)} to fetch the current chunk at {@link ChunkStatus#FULL} status results in undefined behavior.</li>
 	 * </ul>
 	 */
 	public static final Event<LevelTypeChange> CHUNK_LEVEL_TYPE_CHANGE = EventFactory.createArrayBacked(LevelTypeChange.class, (world, chunk, oldLevelType, newLevelType) -> { }, callbacks -> (serverWorld, chunk, oldLevelType, newLevelType) -> {

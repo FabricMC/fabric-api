@@ -33,11 +33,11 @@ public final class FabricTrackedDataRegistry {
 
 	/**
 	 * Registers a {@link EntityDataSerializer} using the given ID. Use this instead of
-	 * {@link EntityDataSerializers#register(EntityDataSerializer)} as the vanilla method exclusively uses integer
+	 * {@link EntityDataSerializers#registerSerializer(EntityDataSerializer)} as the vanilla method exclusively uses integer
 	 * IDs, which can result in desyncs and errors with custom handlers. This method is guaranteed to work reliably.
 	 *
 	 * <p>Handlers registered with this method will have an associated integer ID as well, which can be used with
-	 * {@link EntityDataSerializers#get(int)} and {@link EntityDataSerializers#getId(EntityDataSerializer)}.
+	 * {@link EntityDataSerializers#getSerializer(int)} and {@link EntityDataSerializers#getSerializedId(EntityDataSerializer)}.
 	 * However, the integer ID of a given custom handler registered through this method may change on registry sync.
 	 * The integer IDs of vanilla handlers are guaranteed to remain constant.
 	 */

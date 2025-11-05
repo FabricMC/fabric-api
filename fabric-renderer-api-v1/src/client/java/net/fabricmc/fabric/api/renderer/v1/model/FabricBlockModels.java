@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public interface FabricBlockModels {
 	/**
-	 * Alternative for {@link BlockModelShaper#getModelParticleSprite(BlockState)} that additionally accepts a
+	 * Alternative for {@link BlockModelShaper#getParticleIcon(BlockState)} that additionally accepts a
 	 * {@link BlockAndTintGetter} and {@link BlockPos} to invoke
 	 * {@link FabricBlockStateModel#particleSprite(BlockAndTintGetter, BlockPos, BlockState)}. <b>Prefer using this method
 	 * over the vanilla alternative when applicable to correctly retrieve context-aware particle sprites.</b> If world

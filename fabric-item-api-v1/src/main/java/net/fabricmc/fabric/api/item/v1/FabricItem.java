@@ -90,9 +90,9 @@ public interface FabricItem {
 	 * }</pre>
 	 *
 	 *
-	 * <p>This is a stack-aware version of {@link Item#getRecipeRemainder()}.
+	 * <p>This is a stack-aware version of {@link Item#getCraftingRemainder()}.
 	 *
-	 * <p>Note that simple item remainders can also be set via {@link Item.Properties#recipeRemainder(Item)}.
+	 * <p>Note that simple item remainders can also be set via {@link Item.Properties#craftRemainder(Item)}.
 	 *
 	 * <p>If you want to get a remainder for a stack,
 	 * is recommended to use the stack version of this method: {@link FabricItemStack#getRecipeRemainder()}.
@@ -177,7 +177,7 @@ public interface FabricItem {
 
 		/**
 		 * Sets the custom damage handler of the item.
-		 * Note that this is only called on an ItemStack if {@link ItemStack#isDamageable()} returns true.
+		 * Note that this is only called on an ItemStack if {@link ItemStack#isDamageableItem()} returns true.
 		 *
 		 * @see CustomDamageHandler
 		 */

@@ -82,8 +82,8 @@ public interface FabricSoundInstance {
 	 * @param loader          The default sound loader, capable of loading {@code .ogg} files.
 	 * @param id              The resolved sound ID, equal to {@link SoundInstance#getSound()}'s location.
 	 * @param repeatInstantly Whether this sound should loop. This is true when the sound
-	 *                        {@linkplain SoundInstance#isRepeatable() is repeatable} and has
-	 *                        {@linkplain SoundInstance#getRepeatDelay() no delay}.
+	 *                        {@linkplain SoundInstance#isLooping()}  is repeatable} and has
+	 *                        {@linkplain SoundInstance#getDelay()}  no delay}.
 	 * @return the loaded audio stream
 	 */
 	default CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary loader, Identifier id, boolean repeatInstantly) {

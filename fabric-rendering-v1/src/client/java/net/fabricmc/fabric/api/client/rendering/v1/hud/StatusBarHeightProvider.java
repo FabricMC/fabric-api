@@ -31,7 +31,7 @@ import net.minecraft.world.entity.player.Player;
 @FunctionalInterface
 public interface StatusBarHeightProvider extends ToIntFunction<Player> {
 	/**
-	 * @param player the {@link Player} from {@link InGameHud#getCameraPlayer()}
+	 * @param player the {@link Player} from {@link net.minecraft.client.gui.Gui#getCameraPlayer()}
 	 * @return the vertical space occupied by the status bar
 	 */
 	int getStatusBarHeight(Player player);

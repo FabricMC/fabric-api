@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.Set;
 
-import net.minecraft.core.BlockPos;
-
 import org.jetbrains.annotations.UnmodifiableView;
 
 import net.minecraft.client.renderer.BiomeColors;

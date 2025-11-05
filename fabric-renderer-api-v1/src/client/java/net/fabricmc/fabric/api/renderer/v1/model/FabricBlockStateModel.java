@@ -46,12 +46,12 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 public interface FabricBlockStateModel {
 	/**
 	 * Produces this model's geometry. <b>This method must be called instead of
-	 * {@link BlockStateModel#addParts(RandomSource, List)} or {@link BlockStateModel#getParts(RandomSource)}; the vanilla methods
+	 * {@link BlockStateModel#collectParts(RandomSource, List)} or {@link BlockStateModel#collectParts(RandomSource)}; the vanilla methods
 	 * should be considered deprecated as they may not produce accurate results.</b> However, it is acceptable for a
 	 * custom model to only implement the vanilla methods as the default implementation of this method will delegate to
 	 * one of the vanilla methods.
 	 *
-	 * <p>Like {@link BlockStateModel#addParts(RandomSource, List)}, this method may be called outside of chunk rebuilds. For
+	 * <p>Like {@link BlockStateModel#collectParts(RandomSource, List)}, this method may be called outside of chunk rebuilds. For
 	 * example, some entities and block entities render blocks. In some such cases, the provided position may be the
 	 * <em>nearest</em> position and not actual position. In others, the provided world may be
 	 * {@linkplain EmptyBlockAndTintGetter#INSTANCE empty}.
@@ -60,7 +60,7 @@ public interface FabricBlockStateModel {
 	 * {@linkplain RandomSource#setSeed(long) reseed} the random using a predetermined value before invoking each subtask, so
 	 * that one subtask's operations do not affect the next subtask. For example, if a model collects geometry from
 	 * multiple submodels, each submodel is considered a subtask and thus the random should be reseeded before
-	 * collecting geometry from each submodel. See {@link MultiPartModel#addParts(RandomSource, List)} for an
+	 * collecting geometry from each submodel. See {@link MultiPartModel#collectParts(RandomSource, List)} for an
 	 * example implementation of this.
 	 *
 	 * <p>Implementations should rely on pre-baked meshes as much as possible and keep dynamic transformations to a
@@ -122,7 +122,7 @@ public interface FabricBlockStateModel {
 	}
 
 	/**
-	 * Extension of {@link BlockStateModel#particleSprite()} that accepts world state. This method will be invoked most
+	 * Extension of {@link BlockStateModel#particleIcon()} that accepts world state. This method will be invoked most
 	 * of the time, but the vanilla method may still be invoked when no world context is available.
 	 *
 	 * <p><b>If your model delegates to other {@link BlockStateModel}s, ensure that it also delegates invocations of

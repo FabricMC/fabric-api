@@ -53,7 +53,7 @@ public final class FluidRendering {
 	public interface DefaultRenderer {
 		/**
 		 * Render the default geometry when it is requested by {@link FluidRenderHandler#renderFluid}. The default
-		 * implementation invokes the vanilla renderer. Calling {@link LiquidBlockRenderer#render} directly is not supported
+		 * implementation invokes the vanilla renderer. Calling {@link LiquidBlockRenderer#tesselate} directly is not supported
 		 * but using {@code DefaultRenderer.super.render} is supported. Note that the parameter values passed to this
 		 * call are provided by the render handler, meaning they are not necessarily the same as those provided to the
 		 * initial rendering call. As per the documentation of {@link FluidRenderHandler#renderFluid}, a new handler

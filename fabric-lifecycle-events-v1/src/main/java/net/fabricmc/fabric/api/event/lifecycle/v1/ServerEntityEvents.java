@@ -55,7 +55,7 @@ public final class ServerEntityEvents {
 	 * Called during {@link LivingEntity#tick()} if the Entity's equipment has been changed or mutated.
 	 *
 	 * <p>This event is also called when the entity joins the world.
-	 * A change in equipment is determined by {@link ItemStack#areEqual(ItemStack, ItemStack)}.
+	 * A change in equipment is determined by {@link ItemStack#matches(ItemStack, ItemStack)}.
 	 */
 	public static final Event<EquipmentChange> EQUIPMENT_CHANGE = EventFactory.createArrayBacked(ServerEntityEvents.EquipmentChange.class, callbacks -> (livingEntity, equipmentSlot, previous, next) -> {
 		for (EquipmentChange callback : callbacks) {

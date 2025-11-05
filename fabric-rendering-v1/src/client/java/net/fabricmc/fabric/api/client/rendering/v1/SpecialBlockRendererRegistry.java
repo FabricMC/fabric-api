@@ -25,8 +25,8 @@ import net.fabricmc.fabric.impl.client.rendering.SpecialBlockRendererRegistryImp
 
 /**
  * Allows registering special renderers for certain blocks, such that they are used when
- * {@link SpecialBlockModelRenderer#render} is invoked. The most common use of this method is through
- * {@link BlockRenderDispatcher#renderBlockAsEntity}, which is used for rendering blocks in minecarts, blocks held by
+ * {@link SpecialBlockModelRenderer#renderByBlock} is invoked. The most common use of this method is through
+ * {@link BlockRenderDispatcher#renderSingleBlock}, which is used for rendering blocks in minecarts, blocks held by
  * endermen, and other cases.
  */
 public final class SpecialBlockRendererRegistry {
@@ -34,7 +34,7 @@ public final class SpecialBlockRendererRegistry {
 	}
 
 	/**
-	 * Assign the given unbaked renderer to the given block. {@link SpecialModelRenderer.Unbaked#getCodec()} will not be
+	 * Assign the given unbaked renderer to the given block. {@link SpecialModelRenderer.Unbaked#type()} will not be
 	 * used and can return {@code null}.
 	 */
 	public static void register(Block block, SpecialModelRenderer.Unbaked unbakedRenderer) {

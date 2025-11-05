@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Mods should use these events to introduce custom rendering during {@link LevelRenderer#render}
+ * Mods should use these events to introduce custom rendering during {@link LevelRenderer#renderLevel}
  * without adding complicated and conflict-prone injections there.  Using these events also enables 3rd-party renderers
  * that make large-scale rendering changes to maintain compatibility by calling any broken event invokers directly.
  *
@@ -98,7 +98,7 @@ public final class WorldRenderEvents {
 
 	/**
 	 * Called after the {@link net.minecraft.client.renderer.chunk.ChunkSectionLayer#SOLID SOLID}, {@link net.minecraft.client.renderer.chunk.ChunkSectionLayer#CUTOUT CUTOUT},
-	 * and {@link net.minecraft.client.renderer.chunk.ChunkSectionLayer#CUTOUT_MIPPED CUTOUT_MIPPED} terrain layers are drawn to the framebuffer,
+	 * and {@link net.minecraft.client.renderer.chunk.ChunkSectionLayer#CUTOUT CUTOUT_MIPPED} terrain layers are drawn to the framebuffer,
 	 * before entity and block entities are submitted and drawn to the framebuffer.
 	 *
 	 * <p>Use to render non-translucent terrain to the framebuffer.

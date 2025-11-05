@@ -200,8 +200,8 @@ public interface SoundTypeBuilder {
 		 *
 		 * <p>The default volume is {@value EntryBuilder#DEFAULT_VOLUME}.
 		 *
-		 * @see net.minecraft.client.sounds.SoundEngine#MIN_VOLUME
-		 * @see net.minecraft.client.sounds.SoundEngine#MAX_VOLUME
+		 * @see net.minecraft.client.sounds.SoundEngine#VOLUME_MIN
+		 * @see net.minecraft.client.sounds.SoundEngine#VOLUME_MAX
 		 */
 		EntryBuilder volume(float volume);
 
@@ -212,8 +212,8 @@ public interface SoundTypeBuilder {
 		 *
 		 * <p>The default pitch is {@link EntryBuilder#DEFAULT_PITCH} ({@code 1F}).
 		 *
-		 * @see net.minecraft.client.sounds.SoundEngine#MIN_PITCH
-		 * @see net.minecraft.client.sounds.SoundEngine#MAX_PITCH
+		 * @see net.minecraft.client.sounds.SoundEngine#PITCH_MIN
+		 * @see net.minecraft.client.sounds.SoundEngine#PITCH_MAX
 		 */
 		EntryBuilder pitch(float pitch);
 

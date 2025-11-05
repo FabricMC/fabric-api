@@ -52,7 +52,7 @@ public interface InventoryStorage extends SlottedStorage<ItemVariant> {
 	 * Return a wrapper around an {@link Container}.
 	 *
 	 * <p>If the inventory is a {@link WorldlyContainer} and the direction is nonnull, the wrapper wraps the sided inventory from the given direction.
-	 * The returned wrapper contains only the slots with the indices returned by {@link WorldlyContainer#getAvailableSlots} at query time.
+	 * The returned wrapper contains only the slots with the indices returned by {@link WorldlyContainer#getSlotsForFace} at query time.
 	 *
 	 * @param inventory The inventory to wrap.
 	 * @param direction The direction to use if the access is sided, or {@code null} if the access is not sided.

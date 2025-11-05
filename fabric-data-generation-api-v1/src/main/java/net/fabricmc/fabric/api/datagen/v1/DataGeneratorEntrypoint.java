@@ -51,7 +51,7 @@ public interface DataGeneratorEntrypoint {
 
 	/**
 	 * Builds a registry containing dynamic registry entries to be generated.
-	 * Users should call {@link RegistrySetBuilder#addRegistry(ResourceKey, RegistrySetBuilder.RegistryBootstrap)}
+	 * Users should call {@link RegistrySetBuilder#add(ResourceKey, RegistrySetBuilder.RegistryBootstrap)}
 	 * to register a bootstrap function, which adds registry entries to be generated.
 	 *
 	 * <p>This is invoked asynchronously.

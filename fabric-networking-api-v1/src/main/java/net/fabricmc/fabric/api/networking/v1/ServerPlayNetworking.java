@@ -334,7 +334,7 @@ public final class ServerPlayNetworking {
 		 * });
 		 * }</pre>
 		 *
-		 * <p>The network handler can be accessed via {@link ServerPlayer#networkHandler}.
+		 * <p>The network handler can be accessed via {@link ServerPlayer#connection}.
 		 *
 		 * @param payload the packet payload
 		 * @param context the play networking context

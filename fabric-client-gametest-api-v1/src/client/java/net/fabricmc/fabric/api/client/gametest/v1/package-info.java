@@ -70,7 +70,7 @@
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.Options#getCloudRenderMode() Cloud render mode}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#cloudStatus()}  Cloud render mode}</td>
  *         <td>{@link net.minecraft.client.CloudStatus#OFF OFF}</td>
  *         <td>{@link net.minecraft.client.CloudStatus#FANCY FANCY}</td>
  *         <td>Consistency of tests</td>
@@ -82,14 +82,14 @@
  *         <td>Would cause the game test runner to have to click through the onboard accessibility prompt</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.Options#getViewDistance() View distance}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#renderDistance()}  View distance}</td>
  *         <td>{@code 5}</td>
  *         <td>{@code 10}</td>
  *         <td>Speeds up loading of chunks, especially for functions such as
  *         {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext#waitForChunksRender() TestClientWorldContext.waitForChunksRender()}</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.Options#getSoundVolumeOption(net.minecraft.sounds.SoundSource) Music volume}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource)}  Music volume}</td>
  *         <td>{@code 0.0}</td>
  *         <td>{@code 1.0}</td>
  *         <td>The game music is annoying while running gametests</td>
@@ -111,7 +111,7 @@
  *     <tr>
  *         <td>{@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setWorldType(net.minecraft.client.gui.screens.worldselection.WorldCreationUiState.WorldTypeEntry) World type}</td>
  *         <td>{@link net.minecraft.world.level.levelgen.presets.WorldPresets#FLAT FLAT}</td>
- *         <td>{@link net.minecraft.world.level.levelgen.presets.WorldPresets#DEFAULT DEFAULT}</td>
+ *         <td>{@link net.minecraft.world.level.levelgen.presets.WorldPresets#NORMAL DEFAULT}</td>
  *         <td>Creates cleaner test cases</td>
  *     </tr>
  *     <tr>
@@ -127,19 +127,19 @@
  *         <td>Consistency of tests and creates cleaner tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.GameRules#DO_DAYLIGHT_CYCLE Do daylight cycle}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_TIME Do daylight cycle}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.GameRules#DO_WEATHER_CYCLE Do weather cycle}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_WEATHER Do weather cycle}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.world.GameRules#DO_MOB_SPAWNING Do mob spawning}</td>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#SPAWN_MOBS Do mob spawning}</td>
  *         <td>{@code false}</td>
  *         <td>{@code true}</td>
  *         <td>Consistency of tests</td>

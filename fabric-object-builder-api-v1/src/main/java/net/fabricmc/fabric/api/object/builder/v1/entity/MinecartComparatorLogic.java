@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public interface MinecartComparatorLogic<T extends AbstractMinecart> {
 	/**
 	 * Compute the comparator output of a detector rail when a minecart is resting
-	 * on top of it. Called from {@link net.minecraft.world.level.block.DetectorRailBlock#getComparatorOutput}.
+	 * on top of it. Called from {@link net.minecraft.world.level.block.DetectorRailBlock#getAnalogOutputSignal}.
 	 * @param minecart The minecart on the rail
 	 * @param state Block state of the rail
 	 * @param pos Position of the rail

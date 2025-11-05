@@ -219,7 +219,7 @@ public final class EntitySleepEvents {
 		 * @param player      the sleeping player
 		 * @param sleepingPos the future {@linkplain LivingEntity#getSleepingPos() sleeping position} of the entity
 		 * @return {@code null} if the player can sleep, or a failure reason if they cannot
-		 * @see Player#startSleepInBed(BlockPos) 
+		 * @see Player#startSleepInBed(BlockPos)
 		 */
 		Player.@Nullable BedSleepingProblem allowSleep(Player player, BlockPos sleepingPos);
 	}

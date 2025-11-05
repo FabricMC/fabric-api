@@ -58,7 +58,7 @@ public interface FabricRenderCommandQueue {
 	 * @param outlineColor The outline color.
 	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
 	 *                  <b>Must not be mutated after calling this method.</b>
-	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ORIGIN} if the world is empty.
+	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ZERO} if the world is empty.
 	 *            </b> <b>Must not be mutated after calling this method.</b>
 	 *
 	 * @see FabricBlockRenderManager#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
@@ -69,7 +69,7 @@ public interface FabricRenderCommandQueue {
 
 	/**
 	 * Alternative for
-	 * {@link OrderedSubmitNodeCollector#submitBlockStateModel(PoseStack, RenderType, BlockStateModel, float, float, float, int, int, int)}
+	 * {@link OrderedSubmitNodeCollector#submitBlockModel(PoseStack, RenderType, BlockStateModel, float, float, float, int, int, int)}
 	 * that accepts a {@code Function<BlockRenderLayer, RenderLayer>} instead of a {@link RenderType}. Also accepts the
 	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
@@ -91,7 +91,7 @@ public interface FabricRenderCommandQueue {
 	 * @param outlineColor The outline color.
 	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
 	 *                  <b>Must not be mutated after calling this method.</b>
-	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ORIGIN} if the world is empty.
+	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ZERO} if the world is empty.
 	 *            </b> <b>Must not be mutated after calling this method.</b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 *

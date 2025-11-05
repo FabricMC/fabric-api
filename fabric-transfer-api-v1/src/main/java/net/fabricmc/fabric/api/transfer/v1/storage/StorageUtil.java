@@ -384,7 +384,7 @@ public final class StorageUtil {
 	}
 
 	/**
-	 * Compute the comparator output for a storage, similar to {@link AbstractContainerMenu#calculateComparatorOutput(Container)}.
+	 * Compute the comparator output for a storage, similar to {@link AbstractContainerMenu#getRedstoneSignalFromContainer(Container)}.
 	 *
 	 * @param storage The storage for which the comparator level should be computed.
 	 * @param <T> The type of the stored resources.

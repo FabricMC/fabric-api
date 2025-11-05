@@ -31,7 +31,7 @@ import net.minecraft.world.inventory.MenuType;
  * synchronizes additional data to the client when it is opened.
  *
  * <p>Extended screen handlers can be opened using
- * {@link net.minecraft.world.entity.player.Player#openMenu(MenuProvider)} 
+ * {@link net.minecraft.world.entity.player.Player#openMenu(MenuProvider)
  * PlayerEntity.openHandledScreen} with an
  * {@link ExtendedScreenHandlerFactory}.
  *

@@ -23,7 +23,7 @@ import net.minecraft.nbt.Tag;
  *
  * <p>For the current list of types, check with {@link Tag}.
  *
- * @see net.minecraft.nbt.TagTypes#byId(int)
+ * @see net.minecraft.nbt.TagTypes#getType(int)
  * @deprecated Use the constants in {@link Tag} instead.
  */
 @Deprecated

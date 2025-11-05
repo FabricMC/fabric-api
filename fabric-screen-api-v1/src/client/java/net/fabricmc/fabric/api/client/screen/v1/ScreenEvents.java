@@ -44,8 +44,8 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 
 public final class ScreenEvents {
 	/**
-	 * An event that is called before {@link Screen#init(Minecraft, int, int) a screen is initialized} to its default state.
-	 * It should be noted some methods in {@link Screens} such as a screen's {@link Screen#getTextRenderer text renderer} may not be initialized yet, and as such their use is discouraged.
+	 * An event that is called before {@link Screen#init(int, int) a screen is initialized} to its default state.
+	 * It should be noted some methods in {@link Screens} such as a screen's {@link Screen#getFont() text renderer} may not be initialized yet, and as such their use is discouraged.
 	 *
 	 * <!--<p>Typically this event is used to register screen events such as listening to when child elements are added to the screen. ------ Uncomment when child add/remove event is added for elements-->
 	 * You can still use {@link ScreenEvents#AFTER_INIT} to register events such as keyboard and mouse events.
@@ -76,7 +76,7 @@ public final class ScreenEvents {
 	});
 
 	/**
-	 * An event that is called after {@link Screen#init(Minecraft, int, int) a screen is initialized} to its default state.
+	 * An event that is called after {@link Screen#init(int, int) a screen is initialized} to its default state.
 	 *
 	 * <p>Typically this event is used to modify a screen after the screen has been initialized.
 	 * Modifications such as changing sizes of buttons, removing buttons and adding/removing child elements to the screen can be done safely using this event.

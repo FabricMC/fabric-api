@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.culling.Frustum;
 @ApiStatus.NonExtendable
 public interface WorldExtractionContext extends AbstractWorldRenderContext {
 	/**
-	 * Convenient access to {@link LevelRenderer#world}.
+	 * Convenient access to {@link LevelRenderer#level}.
 	 *
 	 * @return the world renderer's client world instance
 	 */

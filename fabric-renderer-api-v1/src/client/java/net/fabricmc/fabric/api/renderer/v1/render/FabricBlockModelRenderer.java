@@ -41,9 +41,9 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 public interface FabricBlockModelRenderer {
 	/**
 	 * Alternative for
-	 * {@link ModelBlockRenderer#render(BlockAndTintGetter, List, BlockState, BlockPos, PoseStack, VertexConsumer, boolean, int)}
+	 * {@link ModelBlockRenderer#tesselateBlock(BlockAndTintGetter, List, BlockState, BlockPos, PoseStack, VertexConsumer, boolean, int)}
 	 * and
-	 * {@link BlockRenderDispatcher#renderBlock(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)}
+	 * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)}
 	 * that accepts a {@link BlockStateModel} instead of a {@code List<BlockModelPart>} and a
 	 * {@link BlockVertexConsumerProvider} instead of a {@link VertexConsumer}. Also accepts the random seed. <b>Prefer
 	 * using this method over the vanilla alternative to correctly retrieve geometry from models that implement
@@ -70,7 +70,7 @@ public interface FabricBlockModelRenderer {
 
 	/**
 	 * Alternative for
-	 * {@link ModelBlockRenderer#render(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
+	 * {@link ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
 	 * that accepts a {@link BlockVertexConsumerProvider} instead of a {@link VertexConsumer}. Also accepts the
 	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when

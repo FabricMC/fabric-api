@@ -43,7 +43,7 @@ public final class GameRuleEvents {
 		 * Called when a GameRule's value is updated in the server.
 		 * @param value the updated value
 		 * @param server the server
-		 * @see MinecraftServer#onGameRuleUpdated(GameRule, Object)
+		 * @see MinecraftServer#onGameRuleChanged(GameRule, Object)
 		 */
 		void onGameRuleUpdated(
 				T value,

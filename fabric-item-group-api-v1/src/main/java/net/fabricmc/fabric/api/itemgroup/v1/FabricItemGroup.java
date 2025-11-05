@@ -33,9 +33,9 @@ public final class FabricItemGroup {
 	 * Creates a new builder for {@link CreativeModeTab}. Item groups are used to group items in the creative
 	 * inventory.
 	 *
-	 * <p>You must register the newly created {@link CreativeModeTab} to the {@link BuiltInRegistries#ITEM_GROUP} registry.
+	 * <p>You must register the newly created {@link CreativeModeTab} to the {@link BuiltInRegistries#CREATIVE_MODE_TAB} registry.
 	 *
-	 * <p>You must also set a display name by calling {@link CreativeModeTab.Builder#displayName(Component)}
+	 * <p>You must also set a display name by calling {@link CreativeModeTab.Builder#title(Component)}
 	 *
 	 * <p>Example:
 	 *

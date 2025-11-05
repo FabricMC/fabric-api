@@ -44,9 +44,9 @@ public final class TillableBlockRegistry {
 	 * a block. If the predicate returns {@code true}, an action is executed. Default instances of these can be created
 	 * with these {@link HoeItem} methods:
 	 * <ul>
-	 * <li>usage predicate for farmland-like behavior: {@link HoeItem#canTillFarmland(UseOnContext)}</li>
-	 * <li>simple action: {@link HoeItem#createTillAction(BlockState)} (BlockState)}</li>
-	 * <li>simple action that also drops an item: {@link HoeItem#createTillAndDropAction(BlockState, ItemLike)}</li>
+	 * <li>usage predicate for farmland-like behavior: {@link HoeItem#onlyIfAirAbove(UseOnContext)}</li>
+	 * <li>simple action: {@link HoeItem#changeIntoState(BlockState)} (BlockState)}</li>
+	 * <li>simple action that also drops an item: {@link HoeItem#changeIntoStateAndDropItem(BlockState, ItemLike)}</li>
 	 * </ul>
 	 *
 	 * @param input          the input block that can be tilled

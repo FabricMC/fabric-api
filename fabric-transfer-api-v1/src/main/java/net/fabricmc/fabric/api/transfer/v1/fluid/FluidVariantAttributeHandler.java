@@ -53,7 +53,7 @@ public interface FluidVariantAttributeHandler {
 	/**
 	 * Return the sound corresponding to this fluid being filled, or none if no sound is available.
 	 *
-	 * <p>If a non-empty sound event is returned, {@link Fluid#getBucketFillSound} will return that sound.
+	 * <p>If a non-empty sound event is returned, {@link Fluid#getPickupSound} will return that sound.
 	 */
 	default Optional<SoundEvent> getFillSound(FluidVariant variant) {
 		return Optional.empty();
@@ -62,7 +62,7 @@ public interface FluidVariantAttributeHandler {
 	/**
 	 * Return the sound corresponding to this fluid being emptied, or none if no sound is available.
 	 *
-	 * <p>If a non-empty sound event is returned, {@link BucketItem#playEmptyingSound} will play that sound.
+	 * <p>If a non-empty sound event is returned, {@link BucketItem#playEmptySound} will play that sound.
 	 */
 	default Optional<SoundEvent> getEmptySound(FluidVariant variant) {
 		return Optional.empty();
@@ -87,7 +87,7 @@ public interface FluidVariantAttributeHandler {
 	 * Return a positive integer, representing the viscosity of this fluid.
 	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
 	 *
-	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowingFluid#getMaxFlowDistance} for flowable fluids.
+	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowingFluid#getSlopeFindDistance} for flowable fluids.
 	 * The reference values are {@value FluidConstants#WATER_VISCOSITY} for water,
 	 * {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),
 	 * and {@value FluidConstants#LAVA_VISCOSITY} for lava in other dimensions.
