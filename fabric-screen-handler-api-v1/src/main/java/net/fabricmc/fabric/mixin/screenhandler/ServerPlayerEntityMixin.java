@@ -53,14 +53,14 @@ public abstract class ServerPlayerEntityMixin extends Player {
 	}
 
 	@Shadow
-	public abstract void doCloseContainer();
+	public abstract void closeContainer();
 
 	@Redirect(method = "openMenu(Lnet/minecraft/world/MenuProvider;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;closeContainer()V"))
 	private void fabric_closeHandledScreenIfAllowed(ServerPlayer player, MenuProvider factory) {
 		if (factory.shouldCloseCurrentScreen()) {
-			this.doCloseContainer();
+			this.closeContainer();
 		} else {
-			// Called by closeHandledScreen in vanilla
+			// Called by closeContainer in vanilla
 			this.doCloseContainer();
 		}
 	}

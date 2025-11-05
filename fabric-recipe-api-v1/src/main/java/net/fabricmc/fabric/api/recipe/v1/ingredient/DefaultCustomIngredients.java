@@ -32,6 +32,8 @@ import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentsIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.CustomDataIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.DifferenceIngredient;
 
+import net.minecraft.world.level.ItemLike;
+
 /**
  * Factory methods for the custom ingredients directly provided by Fabric API.
  */
@@ -151,7 +153,7 @@ public final class DefaultCustomIngredients {
 	public static Ingredient components(ItemStack stack) {
 		Objects.requireNonNull(stack, "Stack cannot be null");
 
-		return components(Ingredient.of(stack.getItem()), stack.getComponentsPatch());
+		return components(Ingredient.of(new ItemLike[]{stack.getItem()}), stack.getComponentsPatch());
 	}
 
 	/**

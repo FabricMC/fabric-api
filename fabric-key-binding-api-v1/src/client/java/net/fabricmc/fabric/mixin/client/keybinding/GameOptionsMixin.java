@@ -32,12 +32,12 @@ import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 @Mixin(Options.class)
 public class GameOptionsMixin {
 	@Mutable
-	@Final
 	@Shadow
-	public KeyMapping[] keyHotbarSlots;
+	@Final
+	public KeyMapping[] keyMappings;
 
 	@Inject(at = @At("HEAD"), method = "load()V")
 	public void loadHook(CallbackInfo info) {
-		keyHotbarSlots = KeyBindingRegistryImpl.process(keyHotbarSlots);
+		keyMappings = KeyBindingRegistryImpl.process(keyMappings);
 	}
 }
