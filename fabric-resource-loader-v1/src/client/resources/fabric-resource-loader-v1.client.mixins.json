@@ -10,8 +10,8 @@
     "KeyedClientResourceReloadListenerMixin",
     "KnownPacksManagerMixin",
     "OptionsMixin",
-    "PackEntryMixin",
-    "PackSelectionModelMixin"
+    "PackSelectionModelMixin",
+    "TransferableSelectionListPackEntryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

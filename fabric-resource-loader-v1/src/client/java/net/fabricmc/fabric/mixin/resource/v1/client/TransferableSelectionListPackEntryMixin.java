@@ -37,7 +37,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.fabricmc.fabric.impl.resource.v1.client.PackTooltipComponent;
 
 @Mixin(TransferableSelectionList.PackEntry.class)
-public class PackEntryMixin {
+public class TransferableSelectionListPackEntryMixin {
 	@Shadow
 	@Final
 	private static int MAX_DESCRIPTION_WIDTH_PIXELS;
