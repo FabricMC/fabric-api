@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.Resource;
 
-import net.fabricmc.fabric.impl.resource.v1.FabricResource;
+import net.fabricmc.fabric.api.resource.v1.FabricResource;
 import net.fabricmc.fabric.impl.resource.v1.PackSourceTracker;
 
 /**

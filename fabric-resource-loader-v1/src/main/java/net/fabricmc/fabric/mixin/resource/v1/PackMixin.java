@@ -19,6 +19,8 @@ package net.fabricmc.fabric.mixin.resource.v1;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import net.fabricmc.fabric.api.resource.v1.FabricResource;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,7 +36,7 @@ import net.fabricmc.fabric.impl.resource.v1.PackSourceTracker;
 import net.fabricmc.fabric.impl.resource.v1.pack.FabricPack;
 
 /**
- * Implements resource pack source tracking (for {@link net.fabricmc.fabric.impl.resource.v1.FabricResource}).
+ * Implements resource pack source tracking (for {@link FabricResource}).
  * {@link PackResources} doesn't hold a reference to its {@link net.minecraft.server.packs.repository.PackSource}
  * so we store the source in a global tracker when the resource packs are created.
  *
