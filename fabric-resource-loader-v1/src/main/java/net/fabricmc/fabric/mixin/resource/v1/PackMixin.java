@@ -19,8 +19,6 @@ package net.fabricmc.fabric.mixin.resource.v1;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import net.fabricmc.fabric.api.resource.v1.FabricResource;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -32,6 +30,7 @@ import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.repository.Pack;
 
+import net.fabricmc.fabric.api.resource.v1.FabricResource;
 import net.fabricmc.fabric.impl.resource.v1.PackSourceTracker;
 import net.fabricmc.fabric.impl.resource.v1.pack.FabricPack;
 
