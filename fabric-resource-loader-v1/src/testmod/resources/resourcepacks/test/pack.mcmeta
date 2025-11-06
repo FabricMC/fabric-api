@@ -1,8 +1,9 @@
 {
   "pack": {
-    "pack_format": 11,
     "description": {
-        "text": "Fabric Resource Loader Test Builtin Pack."
-    }
+      "text": "Fabric Resource Loader Test Builtin Pack."
+    },
+    "min_format": 71,
+    "max_format": 2048
   }
 }

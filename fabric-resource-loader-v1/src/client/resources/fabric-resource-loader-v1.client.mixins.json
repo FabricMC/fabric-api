@@ -4,11 +4,13 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BuiltInPackSourceMixin",
+    "ClientTooltipComponentMixin",
     "CreateWorldScreenMixin",
     "GameOptionsWriteVisitorMixin",
     "KeyedClientResourceReloadListenerMixin",
     "KnownPacksManagerMixin",
     "OptionsMixin",
+    "PackEntryMixin",
     "PackSelectionModelMixin"
   ],
   "injectors": {
