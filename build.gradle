@@ -2,7 +2,7 @@ plugins {
 	id "java-library"
 	id "eclipse"
 	id "maven-publish"
-	id "fabric-loom" version "1.13.3" apply false
+	id "net.fabricmc.fabric-loom-no-remap-experimental" version "1.14.local" apply false
 	id "com.diffplug.spotless" version "7.2.1"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
 	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
@@ -142,7 +142,7 @@ allprojects {
 
 	apply plugin: "java-library"
 	apply plugin: "checkstyle"
-	apply plugin: "fabric-loom"
+	apply plugin: "net.fabricmc.fabric-loom-no-remap-experimental"
 	apply plugin: "com.diffplug.spotless"
 
 	tasks.withType(JavaCompile).configureEach {
@@ -221,8 +221,7 @@ allprojects {
 
 	dependencies {
 		minecraft "com.mojang:minecraft:$rootProject.minecraft_version"
-		mappings loom.officialMojangMappings()
-		modApi "net.fabricmc:fabric-loader:${project.loader_version}"
+		api "net.fabricmc:fabric-loader:${project.loader_version}"
 
 		testmodImplementation sourceSets.main.output
 		testmodClientImplementation sourceSets.main.output
@@ -277,7 +276,7 @@ allprojects {
 	}
 
 	remoteSign {
-		sign remapJar
+		sign jar
 	}
 
 	// Run this task after updating minecraft to regenerate any required resources
@@ -292,33 +291,14 @@ allprojects {
 		archiveClassifier = "testmod"
 	}
 
+	build.dependsOn testmodJar
+
 	String archivesName = project.base.archivesName.get()
 	[jar, sourcesJar].each {
 		it.from(rootProject.file("LICENSE")) {
 			rename { "${it}-${archivesName}"}
 		}
 	}
-
-	if (file("src/client").exists() && !file("src/main").exists()) {
-		tasks.named("remapJar", net.fabricmc.loom.task.AbstractRemapJarTask) {
-			additionalClientOnlyEntries.add("LICENSE-${archivesName}".toString())
-		}
-
-		remapSourcesJar {
-			additionalClientOnlyEntries.add("LICENSE-${archivesName}".toString())
-		}
-	}
-
-	tasks.register('remapTestmodJar', net.fabricmc.loom.task.RemapJarTask) {
-		dependsOn testmodJar
-		input = testmodJar.archiveFile
-		archiveClassifier = "testmod"
-		addNestedDependencies = false
-		includesClientOnlyClasses = true
-		clientOnlySourceSetName = sourceSets.testmodClient.name
-		classpath.from(sourceSets.testmodClient.compileClasspath)
-	}
-	build.dependsOn remapTestmodJar
 
 	tasks.register('enigma', net.fabricmc.loom.task.tool.ModEnigmaTask) {
 		def clientOnly = file('src/client').exists() && !file('src/main').exists()
@@ -339,21 +319,21 @@ allprojects {
 	apply from: rootProject.file('gradle/validate-annotations.gradle')
 }
 
-remapTestmodJar {
-	def testModJarTasks = []
-
-	subprojects {
-		if (metaProjects.contains(it.name) || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) {
-			return
-		}
-
-		testModJarTasks += it.tasks.remapTestmodJar
-	}
-
-	nestedJars.setFrom(testModJarTasks)
-	addNestedDependencies = true
-	clientOnlySourceSetName = sourceSets.testmodClient.name
-}
+//remapTestmodJar {
+//	def testModJarTasks = []
+//
+//	subprojects {
+//		if (metaProjects.contains(it.name) || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) {
+//			return
+//		}
+//
+//		testModJarTasks += it.tasks.remapTestmodJar
+//	}
+//
+//	nestedJars.setFrom(testModJarTasks)
+//	addNestedDependencies = true
+//	clientOnlySourceSetName = sourceSets.testmodClient.name
+//}
 
 // Apply auxiliary buildscripts to submodules
 // This must be done after all plugins are applied to subprojects
@@ -446,7 +426,7 @@ dependencies {
 	productionMods project(':fabric-client-gametest-api-v1')
 }
 
-def productionMods = project.files(configurations.productionMods, remapJar.archiveFile, remapTestmodJar.archiveFile)
+def productionMods = project.files(configurations.productionMods, tasks.jar.archiveFile, tasks.testmodJar.archiveFile)
 
 tasks.register('runProductionClientGametest', net.fabricmc.loom.task.prod.ClientProductionRunTask) {
 	mods.setFrom productionMods
@@ -548,12 +528,12 @@ subprojects {
 				pom {
 					addPomMetadataInformation(project, pom)
 				}
-				artifact(signRemapJar.output) {
-					builtBy(signRemapJar)
+				artifact(tasks.jar.archiveFile) {
+					builtBy(tasks.jar)
 				}
 
-				artifact(remapSourcesJar) {
-					builtBy remapSourcesJar
+				artifact(tasks.sourcesJar) {
+					builtBy tasks.sourcesJar
 				}
 			}
 		}
@@ -601,16 +581,16 @@ subprojects {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifact(signRemapJar.output) {
-				builtBy(signRemapJar)
+			artifact(signJar.output) {
+				builtBy(signJar)
 			}
 
 			artifact(sourcesJar) {
-				builtBy remapSourcesJar
+				builtBy sourcesJar
 			}
 
 			artifact javadocJar
-			artifact remapTestmodJar
+			artifact testmodJar
 
 			pom {
 				addPomMetadataInformation(rootProject, pom)
@@ -672,14 +652,6 @@ void setupRepositories(RepositoryHandler repositories) {
 	}
 }
 
-subprojects.each {
-	if (metaProjects.contains(it.name)) {
-		return
-	}
-
-	remapJar.dependsOn("${it.path}:remapJar")
-}
-
 // These modules are not included in the fat jar, maven will resolve them via the pom.
 def devOnlyModules = [
 	"fabric-client-gametest-api-v1",
@@ -687,18 +659,16 @@ def devOnlyModules = [
 ]
 
 dependencies {
-	afterEvaluate {
-		subprojects.each {
-			if (metaProjects.contains(it.name)) {
-				return
-			}
-
-			api project(path: "${it.path}", configuration: "namedElements")
-			clientImplementation project("${it.path}:").sourceSets.client.output
-
-			testmodImplementation project("${it.path}:").sourceSets.testmod.output
-			testmodClientImplementation project("${it.path}:").sourceSets.testmodClient.output
+	subprojects.each {
+		if (metaProjects.contains(it.name)) {
+			return
 		}
+
+		api project(path: "${it.path}", configuration: "namedElements")
+		clientImplementation project("${it.path}:").sourceSets.client.output
+
+		testmodImplementation project("${it.path}:").sourceSets.testmod.output
+		testmodClientImplementation project("${it.path}:").sourceSets.testmodClient.output
 	}
 }
 
@@ -718,9 +688,9 @@ dependencies {
 	}
 }
 
-remapJar {
-	nestedJars.from configurations.nestedJars
-}
+//remapJar {
+//	nestedJars.from configurations.nestedJars
+//}
 
 // Attempt to create a single jar with all files from all nested jars, this will fail if there are duplicate files.
 tasks.register("checkNoDuplicateFiles", Zip) {
@@ -739,7 +709,7 @@ tasks.register("checkNoDuplicateFiles", Zip) {
 check.dependsOn "checkNoDuplicateFiles"
 
 publishMods {
-	file = signRemapJar.output
+	file = signJar.output
 	changelog = providers.environmentVariable("CHANGELOG").getOrElse("No changelog provided")
 	type = project.prerelease == "true" ? BETA : STABLE
 	displayName = "[${project.minecraft_version}] Fabric API $project.version"
@@ -763,9 +733,8 @@ publishMods {
 	}
 }
 
-assemble.dependsOn signRemapJar
+assemble.dependsOn signJar
 
-import java.util.stream.Collectors
 
 // A task to ensure that the version being released has not already been released.
 tasks.register('checkVersion') {

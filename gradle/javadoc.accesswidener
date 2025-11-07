@@ -1,4 +1,4 @@
-accessWidener	v2	named
+accessWidener	v2	official
 # Place access wideners that are required during javadoc generation here
 
 accessible	class	net/minecraft/data/recipes/RecipeProvider$Runner

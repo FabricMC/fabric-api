@@ -1,2 +1,2 @@
-accessWidener	v1	named
+accessWidener	v1	official
 accessible	method	net/minecraft/world/item/alchemy/PotionBrewing$Mix	<init>	(Lnet/minecraft/core/Holder;Lnet/minecraft/world/item/crafting/Ingredient;Lnet/minecraft/core/Holder;)V

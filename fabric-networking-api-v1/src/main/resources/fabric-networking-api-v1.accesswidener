@@ -1,4 +1,4 @@
-accessWidener	v2	named
+accessWidener	v2	official
 accessible	field	net/minecraft/network/VarInt	MAX_VARINT_SIZE	I
 accessible	field	net/minecraft/network/protocol/common/ServerboundCustomPayloadPacket	MAX_PAYLOAD_SIZE	I
 accessible	field	net/minecraft/network/protocol/common/ClientboundCustomPayloadPacket	MAX_PAYLOAD_SIZE	I

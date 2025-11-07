@@ -1,4 +1,4 @@
-accessWidener	v2	named
+accessWidener	v2	official
 extendable	class	net/minecraft/world/item/crafting/Ingredient
 accessible	method	net/minecraft/world/item/crafting/Ingredient	<init>	(Lnet/minecraft/core/HolderSet;)V
 accessible	method	net/minecraft/world/item/crafting/Ingredient	displayForSingleItem	(Lnet/minecraft/core/Holder;)Lnet/minecraft/world/item/crafting/display/SlotDisplay;

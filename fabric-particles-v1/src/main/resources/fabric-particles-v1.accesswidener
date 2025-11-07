@@ -1,4 +1,4 @@
-accessWidener	v1	named
+accessWidener	v1	official
 accessible	field	net/minecraft/client/particle/ParticleEngine	resourceManager	Lnet/minecraft/client/particle/ParticleResources;
 accessible	field	net/minecraft/client/particle/ParticleResources	providers	Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;
 accessible	field	net/minecraft/client/particle/ParticleResources	spriteSets	Ljava/util/Map;

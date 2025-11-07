@@ -1,4 +1,4 @@
-accessWidener	v2	named
+accessWidener	v2	official
 
 # fields for mods to check whether the environment is as desired for registration
 transitive-accessible	field	net/minecraft/commands/Commands$CommandSelection	includeDedicated	Z

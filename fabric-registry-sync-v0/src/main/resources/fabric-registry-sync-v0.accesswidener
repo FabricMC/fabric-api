@@ -1,4 +1,4 @@
-accessWidener	v2	named
+accessWidener	v2	official
 accessible	field	net/minecraft/core/MappedRegistry	frozen	Z
 accessible	method	net/minecraft/core/Holder$Reference	bindValue	(Ljava/lang/Object;)V
 accessible	method	net/minecraft/core/registries/BuiltInRegistries	createContents	()V

@@ -1,4 +1,4 @@
-accessWidener	v2	named
+accessWidener	v2	official
 accessible	field	net/minecraft/server/packs/resources/FallbackResourceManager	type	Lnet/minecraft/server/packs/PackType;
 accessible	method	net/minecraft/server/packs/resources/FallbackResourceManager	getMetadataLocation	(Lnet/minecraft/resources/Identifier;)Lnet/minecraft/resources/Identifier;
 accessible	method	net/minecraft/server/packs/resources/FallbackResourceManager	parseMetadata	(Lnet/minecraft/server/packs/resources/IoSupplier;)Lnet/minecraft/server/packs/resources/ResourceMetadata;

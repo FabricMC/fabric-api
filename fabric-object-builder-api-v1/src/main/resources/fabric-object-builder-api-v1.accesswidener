@@ -1,4 +1,4 @@
-accessWidener	v1	named
+accessWidener	v1	official
 extendable	method	net/minecraft/world/level/block/state/BlockBehaviour$Properties	<init>	()V
 accessible	method	net/minecraft/world/entity/ai/village/poi/PoiTypes	register	(Lnet/minecraft/core/Registry;Lnet/minecraft/resources/ResourceKey;Ljava/util/Set;II)Lnet/minecraft/world/entity/ai/village/poi/PoiType;
 extendable	class	net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier

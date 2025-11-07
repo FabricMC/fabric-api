@@ -25,7 +25,7 @@ import java.nio.file.Path
 tasks.register('generateAccessWidener') {
 	doLast {
 		List<String> lines = new ArrayList<>();
-		lines.add("accessWidener v2 named")
+		lines.add("accessWidener v2 official")
 		lines.add("")
 		lines.add("# DO NOT EDIT BY HAND! This file is generated automatically.")
 		lines.add("# Edit \"template.accesswidener\" instead then run \"gradlew generateAccessWidener\".")
