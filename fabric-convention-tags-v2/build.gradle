@@ -19,7 +19,7 @@ fabricApi {
 }
 
 dependencies {
-	datagenImplementation project(path: ":fabric-data-generation-api-v1", configuration: 'namedElements')
+	datagenImplementation project(path: ":fabric-data-generation-api-v1")
 }
 
 loom {

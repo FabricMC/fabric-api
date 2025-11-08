@@ -29,8 +29,8 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_1922": ["net/fabricmc/fabric/api/blockview/v2/FabricBlockView"],
-      "net/minecraft/class_2586": ["net/fabricmc/fabric/api/blockview/v2/RenderDataBlockEntity"]
+      "net/minecraft/world/level/BlockGetter": ["net/fabricmc/fabric/api/blockview/v2/FabricBlockView"],
+      "net/minecraft/world/level/block/entity/BlockEntity": ["net/fabricmc/fabric/api/blockview/v2/RenderDataBlockEntity"]
     }
   }
 }

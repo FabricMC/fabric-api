@@ -43,9 +43,9 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_1856": ["net/fabricmc/fabric/api/recipe/v1/ingredient/FabricIngredient"],
-      "net/minecraft/class_1863": ["net/fabricmc/fabric/api/recipe/v1/FabricServerRecipeManager"],
-      "net/minecraft/class_10286": ["net/fabricmc/fabric/api/recipe/v1/FabricRecipeManager"]
+      "net/minecraft/world/item/crafting/Ingredient": ["net/fabricmc/fabric/api/recipe/v1/ingredient/FabricIngredient"],
+      "net/minecraft/world/item/crafting/RecipeManager": ["net/fabricmc/fabric/api/recipe/v1/FabricServerRecipeManager"],
+      "net/minecraft/world/item/crafting/RecipeAccess": ["net/fabricmc/fabric/api/recipe/v1/FabricRecipeManager"]
     }
   }
 }

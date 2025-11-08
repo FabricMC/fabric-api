@@ -29,7 +29,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_1113": ["net/fabricmc/fabric/api/client/sound/v1/FabricSoundInstance"]
+      "net/minecraft/client/resources/sounds/SoundInstance": ["net/fabricmc/fabric/api/client/sound/v1/FabricSoundInstance"]
     }
   }
 }

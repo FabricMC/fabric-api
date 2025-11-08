@@ -32,7 +32,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_3908": ["net/fabricmc/fabric/api/screenhandler/v1/FabricScreenHandlerFactory"]
+      "net/minecraft/world/MenuProvider": ["net/fabricmc/fabric/api/screenhandler/v1/FabricScreenHandlerFactory"]
     }
   }
 }

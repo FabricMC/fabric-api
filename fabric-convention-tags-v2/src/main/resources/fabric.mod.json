@@ -32,7 +32,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_6862": ["net/fabricmc/fabric/api/tag/FabricTagKey"]
+      "net/minecraft/tags/TagKey": ["net/fabricmc/fabric/api/tag/FabricTagKey"]
     }
   }
 }

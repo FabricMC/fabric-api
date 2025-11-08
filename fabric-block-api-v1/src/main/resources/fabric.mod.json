@@ -27,8 +27,8 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_2248": ["net/fabricmc/fabric/api/block/v1/FabricBlock"],
-      "net/minecraft/class_2680": ["net/fabricmc/fabric/api/block/v1/FabricBlockState"]
+      "net/minecraft/world/level/block/Block": ["net/fabricmc/fabric/api/block/v1/FabricBlock"],
+      "net/minecraft/world/level/block/state/BlockState": ["net/fabricmc/fabric/api/block/v1/FabricBlockState"]
     }
   }
 }

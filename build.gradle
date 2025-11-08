@@ -2,7 +2,7 @@ plugins {
 	id "java-library"
 	id "eclipse"
 	id "maven-publish"
-	id "net.fabricmc.fabric-loom-no-remap-experimental" version "1.14.local" apply false
+	id "net.fabricmc.fabric-loom-no-remap-experimental" version "1.14.0-alpha.11" apply false
 	id "com.diffplug.spotless" version "7.2.1"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
 	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
@@ -52,7 +52,7 @@ def getSubprojectVersion(Project project) {
 }
 
 def moduleDependencies(project, List<String> depNames) {
-	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'namedElements') }
+	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it") }
 	def clientOutputs = depNames.iterator().collect { findProject(":$it").sourceSets.client.output }
 
 	project.dependencies {
@@ -95,7 +95,7 @@ def moduleDependencies(project, List<String> depNames) {
 }
 
 def testDependencies(project, List<String> depNames) {
-	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'namedElements') }
+	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it") }
 	def clientOutputs = depNames.iterator().collect { findProject(":$it").sourceSets.client.output }
 
 	project.dependencies {
@@ -509,15 +509,15 @@ subprojects {
 
 		// Make all modules depend on the gametest api (and thus res loader) to try and promote its usage.
 		if (project.name != "fabric-gametest-api-v1") {
-			testmodImplementation project(path: ':fabric-gametest-api-v1', configuration: 'namedElements')
+			testmodImplementation project(path: ':fabric-gametest-api-v1')
 			testmodClientImplementation project(":fabric-gametest-api-v1").sourceSets.client.output
-			testmodImplementation project(path: ':fabric-resource-loader-v0', configuration: 'namedElements')
+			testmodImplementation project(path: ':fabric-resource-loader-v0')
 			testmodClientImplementation project(":fabric-resource-loader-v0").sourceSets.client.output
 		}
 
 		// Make all testmods run with registry-sync-v0 as it is required to register new objects.
 		if (project.name != "fabric-registry-sync-v0") {
-			testmodRuntimeOnly project(path: ':fabric-registry-sync-v0', configuration: 'namedElements')
+			testmodRuntimeOnly project(path: ':fabric-registry-sync-v0')
 			testmodClientImplementation project(":fabric-registry-sync-v0").sourceSets.client.output
 		}
 	}
@@ -664,7 +664,7 @@ dependencies {
 			return
 		}
 
-		api project(path: "${it.path}", configuration: "namedElements")
+		api project(path: "${it.path}")
 		clientImplementation project("${it.path}:").sourceSets.client.output
 
 		testmodImplementation project("${it.path}:").sourceSets.testmod.output
