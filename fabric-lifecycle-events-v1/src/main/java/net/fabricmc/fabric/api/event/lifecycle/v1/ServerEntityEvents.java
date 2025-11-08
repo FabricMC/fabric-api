@@ -18,7 +18,9 @@ package net.fabricmc.fabric.api.event.lifecycle.v1;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 
@@ -63,6 +65,17 @@ public final class ServerEntityEvents {
 		}
 	});
 
+	/**
+	 * Called during {@link ItemEntity#tick()} if an entity tries to pick up any ItemEntity.
+	 *
+	 * <p>Picking up of an item is determined by {@link ItemEntity#onPlayerCollision(PlayerEntity)}.
+	 */
+	public static final Event<ItemPickup> ITEM_PICKUP = EventFactory.createArrayBacked(ServerEntityEvents.ItemPickup.class, callbacks -> (playerEntity, itemEntity, itemStack) -> {
+		for (ItemPickup callback : callbacks) {
+			callback.onPickup(playerEntity, itemEntity, itemStack);
+		}
+	});
+
 	@FunctionalInterface
 	public interface Load {
 		void onLoad(Entity entity, ServerWorld world);
@@ -76,5 +89,10 @@ public final class ServerEntityEvents {
 	@FunctionalInterface
 	public interface EquipmentChange {
 		void onChange(LivingEntity livingEntity, EquipmentSlot equipmentSlot, ItemStack previousStack, ItemStack currentStack);
+	}
+
+	@FunctionalInterface
+	public interface ItemPickup {
+		void onPickup(PlayerEntity playerEntity, ItemEntity itemEntity, ItemStack itemStack);
 	}
 }
