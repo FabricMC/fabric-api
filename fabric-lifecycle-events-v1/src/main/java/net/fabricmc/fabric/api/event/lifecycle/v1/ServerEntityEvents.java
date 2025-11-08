@@ -70,11 +70,20 @@ public final class ServerEntityEvents {
 	 *
 	 * <p>Picking up of an item is determined by {@link ItemEntity#onPlayerCollision(PlayerEntity)}.
 	 */
-	public static final Event<ItemPickup> ITEM_PICKUP = EventFactory.createArrayBacked(ServerEntityEvents.ItemPickup.class, callbacks -> (playerEntity, itemEntity, itemStack) -> {
-		for (ItemPickup callback : callbacks) {
-			callback.onPickup(playerEntity, itemEntity, itemStack);
-		}
-	});
+	public static final Event<ItemPickup> ITEM_PICKUP = EventFactory.createArrayBacked(
+			ItemPickup.class,
+			(callbacks) -> (playerEntity, itemEntity, itemStack) -> {
+				for (ItemPickup callback : callbacks) {
+					boolean shouldContinue = callback.onPickup(playerEntity, itemEntity, itemStack);
+
+					if (!shouldContinue) {
+						return false;
+					}
+				}
+
+				return true;
+			}
+	);
 
 	@FunctionalInterface
 	public interface Load {
@@ -93,6 +102,6 @@ public final class ServerEntityEvents {
 
 	@FunctionalInterface
 	public interface ItemPickup {
-		void onPickup(PlayerEntity playerEntity, ItemEntity itemEntity, ItemStack itemStack);
+		boolean onPickup(PlayerEntity playerEntity, ItemEntity itemEntity, ItemStack itemStack);
 	}
 }
