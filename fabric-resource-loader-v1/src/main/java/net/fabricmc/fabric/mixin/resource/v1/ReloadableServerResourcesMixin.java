@@ -41,7 +41,7 @@ public class ReloadableServerResourcesMixin implements FabricDataResourceStoreHo
 	private final DataResourceStore.Mutable dataResourceStore = new DataResourceStoreImpl();
 
 	@ModifyArg(
-			method = "method_58296",
+			method = "lambda$loadResources$1",
 			at = @At(
 					value = "INVOKE",
 					target = "Lnet/minecraft/server/packs/resources/SimpleReloadInstance;create(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Z)Lnet/minecraft/server/packs/resources/ReloadInstance;"

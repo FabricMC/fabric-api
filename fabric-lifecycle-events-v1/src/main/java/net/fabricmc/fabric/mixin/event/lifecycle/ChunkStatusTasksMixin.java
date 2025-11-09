@@ -38,7 +38,7 @@ abstract class ChunkStatusTasksMixin {
 	@Unique
 	private static final FullChunkStatus[] fabric_CHUNK_LEVEL_TYPES = FullChunkStatus.values(); // values() clones the internal array each call, so cache the return
 
-	@Inject(method = "method_60553", at = @At("TAIL"))
+	@Inject(method = "lambda$full$2", at = @At("TAIL"))
 	private static void onChunkLoad(ChunkAccess chunk, WorldGenContext chunkGenerationContext, GenerationChunkHolder chunkHolder, CallbackInfoReturnable<ChunkAccess> callbackInfoReturnable) {
 		LevelChunk worldChunk = (LevelChunk) callbackInfoReturnable.getReturnValue();
 

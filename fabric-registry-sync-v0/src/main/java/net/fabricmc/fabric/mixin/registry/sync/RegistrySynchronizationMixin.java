@@ -40,8 +40,8 @@ abstract class RegistrySynchronizationMixin {
 	/**
 	 * Used for tag syncing.
 	 */
-	@Dynamic("method_45961: Stream.filter in stream")
-	@Inject(method = "method_56601", at = @At("HEAD"), cancellable = true)
+	@Dynamic("lambda$ownedNetworkableRegistries$4: Stream.filter in stream")
+	@Inject(method = "lambda$ownedNetworkableRegistries$4", at = @At("HEAD"), cancellable = true)
 	private static void filterNonSyncedEntries(RegistryAccess.RegistryEntry<?> entry, CallbackInfoReturnable<Boolean> cir) {
 		boolean canSkip = DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(entry.key());
 
@@ -53,8 +53,8 @@ abstract class RegistrySynchronizationMixin {
 	/**
 	 * Used for registry serialization.
 	 */
-	@Dynamic("method_56597: Optional.ifPresent in serialize")
-	@Inject(method = "method_56596", at = @At("HEAD"), cancellable = true)
+	@Dynamic("lambda$packRegistry$3: Optional.ifPresent in serialize")
+	@Inject(method = "lambda$packRegistry$3", at = @At("HEAD"), cancellable = true)
 	private static void filterNonSyncedEntriesAgain(Set set, RegistryDataLoader.RegistryData entry, DynamicOps dynamicOps, BiConsumer biConsumer, Registry registry, CallbackInfo ci) {
 		boolean canSkip = DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(registry.key());
 

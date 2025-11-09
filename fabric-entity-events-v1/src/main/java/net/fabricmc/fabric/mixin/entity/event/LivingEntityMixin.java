@@ -106,8 +106,8 @@ abstract class LivingEntityMixin {
 		}
 	}
 
-	@Dynamic("method_18405: Synthetic lambda body for Optional.map in isSleepingInBed")
-	@Inject(method = "method_18405", at = @At("RETURN"), cancellable = true)
+	@Dynamic("lambda$checkBedExists$21: Synthetic lambda body for Optional.map in isSleepingInBed")
+	@Inject(method = "lambda$checkBedExists$21", at = @At("RETURN"), cancellable = true)
 	private void onIsSleepingInBed(BlockPos sleepingPos, CallbackInfoReturnable<Boolean> info) {
 		BlockState bedState = ((LivingEntity) (Object) this).level().getBlockState(sleepingPos);
 		InteractionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, bedState, info.getReturnValueZ());
@@ -124,9 +124,9 @@ abstract class LivingEntityMixin {
 	}
 
 	// This is needed 1) so that the vanilla logic in wakeUp runs for modded beds and 2) for the injector below.
-	// The injector is shared because method_18404 and sleep share much of the structure here.
-	@Dynamic("method_18404: Synthetic lambda body for Optional.ifPresent in wakeUp")
-	@ModifyVariable(method = {"method_18404", "startSleeping"}, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
+	// The injector is shared because lambda$stopSleeping$23 and sleep share much of the structure here.
+	@Dynamic("lambda$stopSleeping$23: Synthetic lambda body for Optional.ifPresent in wakeUp")
+	@ModifyVariable(method = {"lambda$stopSleeping$23", "startSleeping"}, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
 	private BlockState modifyBedForOccupiedState(BlockState state, BlockPos sleepingPos) {
 		InteractionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, state, state.getBlock() instanceof BedBlock);
 
@@ -134,9 +134,9 @@ abstract class LivingEntityMixin {
 		return result.consumesAction() ? Blocks.RED_BED.defaultBlockState() : state;
 	}
 
-	// The injector is shared because method_18404 and sleep share much of the structure here.
-	@Dynamic("method_18404: Synthetic lambda body for Optional.ifPresent in wakeUp")
-	@Redirect(method = {"method_18404", "startSleeping"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
+	// The injector is shared because lambda$stopSleeping$23 and sleep share much of the structure here.
+	@Dynamic("lambda$stopSleeping$23: Synthetic lambda body for Optional.ifPresent in wakeUp")
+	@Redirect(method = {"lambda$stopSleeping$23", "startSleeping"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
 	private boolean setOccupiedState(Level world, BlockPos pos, BlockState state, int flags) {
 		// This might have been replaced by a red bed above, so we get it again.
 		// Note that we *need* to replace it so the state.with(OCCUPIED, ...) call doesn't crash
@@ -155,8 +155,8 @@ abstract class LivingEntityMixin {
 		}
 	}
 
-	@Dynamic("method_18404: Synthetic lambda body for Optional.ifPresent in wakeUp")
-	@Redirect(method = "method_18404", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/BedBlock;findStandUpPosition(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/CollisionGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;F)Ljava/util/Optional;"))
+	@Dynamic("lambda$stopSleeping$23: Synthetic lambda body for Optional.ifPresent in wakeUp")
+	@Redirect(method = "lambda$stopSleeping$23", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/BedBlock;findStandUpPosition(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/CollisionGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;F)Ljava/util/Optional;"))
 	private Optional<Vec3> modifyWakeUpPosition(EntityType<?> type, CollisionGetter world, BlockPos pos, Direction direction, float yaw) {
 		Optional<Vec3> original = Optional.empty();
 		BlockState bedState = world.getBlockState(pos);

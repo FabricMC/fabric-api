@@ -38,10 +38,10 @@ import net.fabricmc.fabric.impl.tag.SimpleRegistryExtension;
 abstract class SimpleRegistry3Mixin {
 	@Shadow
 	@Final
-	MappedRegistry<?> field_53689;
+	MappedRegistry<?> this$0;
 
 	@Inject(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/MappedRegistry;refreshTagsInHolders()V"))
 	private void applyTagAliases(CallbackInfo info) {
-		((SimpleRegistryExtension) this.field_53689).fabric_applyPendingTagAliases();
+		((SimpleRegistryExtension) this.this$0).fabric_applyPendingTagAliases();
 	}
 }

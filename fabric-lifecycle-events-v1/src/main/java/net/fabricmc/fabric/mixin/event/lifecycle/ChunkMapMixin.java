@@ -44,7 +44,7 @@ public abstract class ChunkMapMixin {
 	 * Injection is inside of tryUnloadChunk.
 	 * We inject just after "setLoadedToWorld" is made false, since here the WorldChunk is guaranteed to be unloaded.
 	 */
-	@Inject(method = "method_60440", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap;save(Lnet/minecraft/world/level/chunk/ChunkAccess;)Z"))
+	@Inject(method = "lambda$scheduleUnload$12", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap;save(Lnet/minecraft/world/level/chunk/ChunkAccess;)Z"))
 	private void onChunkUnload(ChunkHolder chunkHolder, CompletableFuture<?> completableFuture, long l, CallbackInfo ci, @Local ChunkAccess chunk) {
 		if (chunk instanceof LevelChunk worldChunk) {
 			ServerChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, worldChunk);

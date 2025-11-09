@@ -71,7 +71,7 @@ public class SimpleJsonResourceReloadListenerMixin {
 	}
 
 	// parse.ifSuccess
-	@Inject(method = "method_63568", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "lambda$scanDirectory$0", at = @At("HEAD"), cancellable = true)
 	private static void skipData(Map<?, ?> map, Identifier identifier, Object object, CallbackInfo ci) {
 		if (object == SKIP_DATA_MARKER) {
 			ci.cancel();

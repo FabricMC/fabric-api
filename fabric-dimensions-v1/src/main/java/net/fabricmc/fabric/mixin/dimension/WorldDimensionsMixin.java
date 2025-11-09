@@ -37,7 +37,7 @@ public class WorldDimensionsMixin {
 	 * After uninstalling a dimension mod/datapack, the dimension config in `level.dat` file cannot be deserialized.
 	 * The solution is to make it fail-soft.
 	 */
-	@Redirect(method = "method_45516", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;group(Lcom/mojang/datafixers/kinds/App;)Lcom/mojang/datafixers/Products$P1;"))
+	@Redirect(method = "lambda$static$0", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;group(Lcom/mojang/datafixers/kinds/App;)Lcom/mojang/datafixers/Products$P1;"))
 	private static Products.P1 useFailSoftMap(RecordCodecBuilder.Instance instance, App app) {
 		return instance.group(
 				new FailSoftMapCodec<>(ResourceKey.codec(Registries.LEVEL_STEM), LevelStem.CODEC)

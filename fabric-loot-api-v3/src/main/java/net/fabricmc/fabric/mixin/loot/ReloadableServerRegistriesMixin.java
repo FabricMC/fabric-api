@@ -80,7 +80,7 @@ abstract class ReloadableServerRegistriesMixin {
 		}), fn, executor);
 	}
 
-	@Inject(method = "method_61240", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
+	@Inject(method = "lambda$scheduleRegistryLoad$3", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
 	private static <T> void modifyLootTable(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir, @Local Map<Identifier, T> map) {
 		map.replaceAll((identifier, t) -> modifyLootTable(t, identifier, registryOps));
 	}
@@ -112,7 +112,7 @@ abstract class ReloadableServerRegistriesMixin {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Inject(method = "method_61240", at = @At("RETURN"))
+	@Inject(method = "lambda$scheduleRegistryLoad$3", at = @At("RETURN"))
 	private static <T> void onLootTablesLoaded(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir) {
 		if (lootDataType != LootDataType.TABLE) return;
 

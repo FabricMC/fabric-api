@@ -55,7 +55,7 @@ public abstract class EntityRenderersMixin {
 
 	// synthetic lambda in reloadEntityRenderers
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	@Redirect(method = "method_32174", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRendererProvider;create(Lnet/minecraft/client/renderer/entity/EntityRendererProvider$Context;)Lnet/minecraft/client/renderer/entity/EntityRenderer;"))
+	@Redirect(method = "lambda$createEntityRenderers$41", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRendererProvider;create(Lnet/minecraft/client/renderer/entity/EntityRendererProvider$Context;)Lnet/minecraft/client/renderer/entity/EntityRenderer;"))
 	private static EntityRenderer<?, ?> createEntityRenderer(EntityRendererProvider<?> entityRendererFactory, EntityRendererProvider.Context context, ImmutableMap.Builder builder, EntityRendererProvider.Context context2, EntityType<?> entityType) {
 		EntityRenderer<?, ?> entityRenderer = entityRendererFactory.create(context);
 

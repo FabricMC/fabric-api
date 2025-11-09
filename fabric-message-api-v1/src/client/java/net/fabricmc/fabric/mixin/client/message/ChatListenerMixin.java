@@ -52,7 +52,7 @@ public abstract class ChatListenerMixin {
 		}
 	}
 
-	@Inject(method = "method_45745", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "lambda$handleDisguisedChatMessage$3", at = @At("HEAD"), cancellable = true)
 	private void fabric_onProfilelessChatMessage(ChatType.Bound params, Component content, Instant receptionTimestamp, CallbackInfoReturnable<Boolean> cir) {
 		fabric_onChatMessage(params.decorate(content), null, null, params, receptionTimestamp, cir);
 	}

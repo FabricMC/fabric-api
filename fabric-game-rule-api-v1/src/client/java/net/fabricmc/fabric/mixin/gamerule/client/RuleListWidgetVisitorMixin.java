@@ -40,21 +40,21 @@ import net.fabricmc.fabric.impl.gamerule.widget.EnumRuleWidget;
 public abstract class RuleListWidgetVisitorMixin implements GameRuleTypeVisitor, FabricGameRuleVisitor {
 	@Final
 	@Shadow
-	private EditGameRulesScreen field_24314;
+	private EditGameRulesScreen val$this$0;
 	@Shadow
 	protected abstract <T> void addEntry(GameRule<T> key, EditGameRulesScreen.EntryFactory<T> widgetFactory);
 
 	@Override
 	public void visitDouble(GameRule<Double> doubleRule) {
 		this.addEntry(doubleRule, (name, description, ruleName, rule) -> {
-			return new DoubleRuleWidget(this.field_24314, name, description, ruleName, rule);
+			return new DoubleRuleWidget(this.val$this$0, name, description, ruleName, rule);
 		});
 	}
 
 	@Override
 	public <E extends Enum<E>> void visitEnum(GameRule<E> enumRule) {
 		this.addEntry(enumRule, (name, description, ruleName, rule) -> {
-			return new EnumRuleWidget<>(this.field_24314, name, description, ruleName, rule, enumRule.getDescriptionId());
+			return new EnumRuleWidget<>(this.val$this$0, name, description, ruleName, rule, enumRule.getDescriptionId());
 		});
 	}
 

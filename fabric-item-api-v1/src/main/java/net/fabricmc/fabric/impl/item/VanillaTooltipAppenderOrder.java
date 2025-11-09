@@ -41,8 +41,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 
-import net.fabricmc.loader.api.FabricLoader;
-
 public final class VanillaTooltipAppenderOrder {
 	private static final List<DataComponentType<?>> VANILLA_ORDER = scrapeVanillaOrder();
 
@@ -58,19 +56,7 @@ public final class VanillaTooltipAppenderOrder {
 		try {
 			ClassNode itemStackNode = MixinService.getService().getBytecodeProvider().getClassNode(Type.getInternalName(ItemStack.class));
 
-			String methodName = FabricLoader.getInstance().getMappingResolver().mapMethodName(
-					"intermediary",
-					"net.minecraft.class_1799", // ItemStack
-					"method_67194", // appendTooltip
-					Type.getMethodDescriptor(
-							Type.VOID_TYPE,
-							Type.getObjectType("net/minecraft/class_1792$class_9635"), // Item.TooltipContext
-							Type.getObjectType("net/minecraft/class_10712"), // TooltipDisplayComponent
-							Type.getObjectType("net/minecraft/class_1657"), // PlayerEntity
-							Type.getObjectType("net/minecraft/class_1836"), // TooltipType
-							Type.getType(Consumer.class)
-					)
-			);
+			String methodName = "addDetailsToTooltip";
 			String methodDesc = Type.getMethodDescriptor(
 					Type.VOID_TYPE,
 					Type.getType(Item.TooltipContext.class),
@@ -80,17 +66,7 @@ public final class VanillaTooltipAppenderOrder {
 					Type.getType(Consumer.class)
 			);
 
-			String appendAttributeModifiersTooltipName = FabricLoader.getInstance().getMappingResolver().mapMethodName(
-					"intermediary",
-					"net.minecraft.class_1799", // ItemStack
-					"method_57363", // appendAttributeModifiersTooltip
-					Type.getMethodDescriptor(
-							Type.VOID_TYPE,
-							Type.getType(Consumer.class),
-							Type.getObjectType("net/minecraft/class_10712"), // TooltipDisplayComponent
-							Type.getObjectType("net/minecraft/class_1657") // PlayerEntity
-					)
-			);
+			String appendAttributeModifiersTooltipName = "addAttributeTooltips";
 			String appendAttributeModifiersTooltipDesc = Type.getMethodDescriptor(
 					Type.VOID_TYPE,
 					Type.getType(Consumer.class),

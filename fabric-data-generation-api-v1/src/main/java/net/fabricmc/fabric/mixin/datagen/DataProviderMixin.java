@@ -32,7 +32,7 @@ public interface DataProviderMixin {
 	/**
 	 * Adjust the default sort order of some keys provided by Fabric API.
 	 */
-	@Inject(method = "method_43808", at = @At("RETURN"))
+	@Inject(method = "lambda$static$0", at = @At("RETURN"))
 	private static void addFabricKeySortOrders(Object2IntOpenHashMap<String> map, CallbackInfo ci) {
 		map.put(ResourceConditions.CONDITIONS_KEY, -100); // always at the beginning
 		map.put(CustomIngredientImpl.TYPE_KEY, 0); // mimic vanilla "type"

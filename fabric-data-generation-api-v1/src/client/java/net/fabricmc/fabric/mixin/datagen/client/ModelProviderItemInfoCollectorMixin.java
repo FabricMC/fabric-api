@@ -55,7 +55,7 @@ public class ModelProviderItemInfoCollectorMixin implements FabricItemAssetDefin
 		this.fabricDataOutput = fabricDataOutput;
 	}
 
-	@WrapOperation(method = "method_65470", at = @At(value = "INVOKE", target = "Ljava/util/Map;containsKey(Ljava/lang/Object;)Z", ordinal = 1))
+	@WrapOperation(method = "lambda$finalizeAndValidate$0", at = @At(value = "INVOKE", target = "Ljava/util/Map;containsKey(Ljava/lang/Object;)Z", ordinal = 1))
 	private boolean filterItemsForProcessingMod(Map<Item, ClientItem> map, Object o, Operation<Boolean> original) {
 		BlockItem blockItem = (BlockItem) o;
 

@@ -97,7 +97,7 @@ public class IngredientMixin implements FabricIngredient {
 	// Targets the lambdas in the codecs which extract the entries from an ingredient.
 	// For custom ingredients, these lambdas will only be invoked when the client does not support this ingredient.
 	// In this case, use CustomIngredientImpl#getCustomMatchingItems, which as close as we can get.
-	@Inject(method = {"method_61673", "method_61677", "method_61680"}, at = @At("HEAD"), cancellable = true)
+	@Inject(method = {"lambda$static$4", "lambda$static$2", "lambda$static$0"}, at = @At("HEAD"), cancellable = true)
 	private static void onGetEntries(Ingredient ingredient, CallbackInfoReturnable<HolderSet<Item>> cir) {
 		if (ingredient instanceof CustomIngredientImpl customIngredient) {
 			cir.setReturnValue(HolderSet.direct(customIngredient.getCustomMatchingItems()));

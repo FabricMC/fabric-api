@@ -51,12 +51,12 @@ public class DataPackCommandMixin {
 	private static final DynamicCommandExceptionType INTERNAL_PACK_EXCEPTION = new DynamicCommandExceptionType(
 			packName -> Component.translatableEscape("commands.datapack.fabric.internal", packName));
 
-	@Redirect(method = "method_13136", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/PackRepository;getSelectedIds()Ljava/util/Collection;"))
+	@Redirect(method = "lambda$static$10", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/PackRepository;getSelectedIds()Ljava/util/Collection;"))
 	private static Collection<String> filterEnabledPackSuggestions(PackRepository dataPackManager) {
 		return dataPackManager.getSelectedPacks().stream().filter(profile -> !((FabricResourcePackProfile) profile).fabric_isHidden()).map(Pack::getId).toList();
 	}
 
-	@WrapOperation(method = "method_13120", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
+	@WrapOperation(method = "lambda$static$13", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
 	private static Stream<Pack> filterDisabledPackSuggestions(Stream<Pack> instance, Predicate<? super Pack> predicate, Operation<Stream<Pack>> original) {
 		return original.call(instance, predicate).filter(profile -> !((FabricResourcePackProfile) profile).fabric_isHidden());
 	}

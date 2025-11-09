@@ -2,7 +2,7 @@ plugins {
 	id "java-library"
 	id "eclipse"
 	id "maven-publish"
-	id "net.fabricmc.fabric-loom-no-remap-experimental" version "1.14.0-alpha.11" apply false
+	id "net.fabricmc.fabric-loom-no-remap-experimental" version "1.14.0-alpha.13" apply false
 	id "com.diffplug.spotless" version "7.2.1"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
 	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
@@ -319,21 +319,17 @@ allprojects {
 	apply from: rootProject.file('gradle/validate-annotations.gradle')
 }
 
-//remapTestmodJar {
-//	def testModJarTasks = []
-//
-//	subprojects {
-//		if (metaProjects.contains(it.name) || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) {
-//			return
-//		}
-//
-//		testModJarTasks += it.tasks.remapTestmodJar
-//	}
-//
-//	nestedJars.setFrom(testModJarTasks)
-//	addNestedDependencies = true
-//	clientOnlySourceSetName = sourceSets.testmodClient.name
-//}
+def nestedTestModJars = project.files()
+
+subprojects {
+	if (metaProjects.contains(it.name) || !(it.file("src/testmod").exists() || it.file("src/testmodClient").exists())) {
+		return
+	}
+
+	nestedTestModJars.from(it.tasks.named("testmodJar"))
+}
+
+loom.nestJars(tasks.named("testmodJar"), nestedTestModJars)
 
 // Apply auxiliary buildscripts to submodules
 // This must be done after all plugins are applied to subprojects
@@ -688,9 +684,7 @@ dependencies {
 	}
 }
 
-//remapJar {
-//	nestedJars.from configurations.nestedJars
-//}
+loom.nestJars(tasks.named("jar"), configurations.nestedJars)
 
 // Attempt to create a single jar with all files from all nested jars, this will fail if there are duplicate files.
 tasks.register("checkNoDuplicateFiles", Zip) {
