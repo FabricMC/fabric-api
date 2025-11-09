@@ -25,6 +25,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import net.fabricmc.api.EnvType;
@@ -97,6 +98,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 		public CompletableFuture<Void> reload(SharedState store, Executor prepareExecutor, PreparationBarrier reloadSynchronizer, Executor applyExecutor) {
 			HolderLookup.Provider registries = store.get(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY);
 			registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+			registries.lookupOrThrow(Registries.ITEM).getOrThrow(ItemTags.AXES);
 			return reloadSynchronizer.wait(null).thenRunAsync(
 					() -> store.get(DataResourceLoader.DATA_RESOURCE_STORE_KEY)
 							.put(STORE_KEY, "Hello from RegistryReloader."),
@@ -111,6 +113,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 		@Override
 		public CompletableFuture<Void> reload(SharedState store, Executor prepareExecutor, PreparationBarrier reloadSynchronizer, Executor applyExecutor) {
 			this.registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+			this.registries.lookupOrThrow(Registries.ITEM).getOrThrow(ItemTags.AXES);
 			return reloadSynchronizer.wait(null);
 		}
 	}
