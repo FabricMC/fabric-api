@@ -1,0 +1,37 @@
+{
+  "target": {
+    "type": "fabric:require_all",
+    "children": [
+      {
+        "type": "fabric:loot_table_id",
+        "loot_tables": ["minecraft:blocks/green_wool"]
+      },
+      {
+        "type": "fabric:source",
+        "sources": "any_builtin"
+      }
+    ]
+  },
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:poisonous_potato"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "function": "minecraft:set_count",
+      "count": 10
+    }
+  ]
+}

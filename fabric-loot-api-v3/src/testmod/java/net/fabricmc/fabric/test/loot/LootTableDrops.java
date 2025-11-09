@@ -108,6 +108,11 @@ public final class LootTableDrops {
 				.set(LootContextParams.DAMAGE_SOURCE, context.getLevel().damageSources().generic());
 	}
 
+	@Override
+	public String toString() {
+		return name.getString() + ": " + stacks;
+	}
+
 	public static final class Builder {
 		private final GameTestHelper testContext;
 		private final Component name;
