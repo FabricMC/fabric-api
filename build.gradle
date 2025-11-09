@@ -2,7 +2,7 @@ plugins {
 	id "java-library"
 	id "eclipse"
 	id "maven-publish"
-	id "net.fabricmc.fabric-loom-no-remap-experimental" version "1.14.0-alpha.16" apply false
+	id "net.fabricmc.fabric-loom-no-remap-experimental" version "1.14.0-alpha.17" apply false
 	id "com.diffplug.spotless" version "7.2.1"
 	id "me.modmuss50.remotesign" version "0.5.0" apply false
 	id "me.modmuss50.mod-publish-plugin" version "1.1.0"
@@ -402,6 +402,7 @@ loom {
 			vmArg "-Dfabric.client.gametest"
 			vmArg "-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail"
 			vmArg "-Dfabric-tag-conventions-v1.legacyTagWarning=fail"
+			vmArg "-Dfabric.client.gametest.disableNetworkSynchronizer=true"
 		}
 	}
 }
@@ -411,43 +412,6 @@ runGametest {
 }
 
 test.dependsOn runGametest
-
-configurations {
-	productionMods {
-		transitive = false
-	}
-}
-
-dependencies {
-	productionMods project(':fabric-client-gametest-api-v1')
-}
-
-def productionMods = project.files(configurations.productionMods, tasks.jar.archiveFile, tasks.testmodJar.archiveFile)
-
-tasks.register('runProductionClientGametest', net.fabricmc.loom.task.prod.ClientProductionRunTask) {
-	mods.setFrom productionMods
-	jvmArgs.addAll([
-		"-Dfabric.client.gametest",
-		"-Dfabric-tag-conventions-v2.missingTagTranslationWarning=fail",
-		"-Dfabric-tag-conventions-v1.legacyTagWarning=fail",
-		"-Dfabric.client.gametest.disableNetworkSynchronizer=true"
-	])
-	jvmArgs.addAll(debugArgs)
-
-	if (providers.environmentVariable("ENABLE_TRACY").getOrNull() == "true") {
-		tracy {
-			tracyCapture = file("tracy-capture")
-			output = file("profile.tracy")
-		}
-	}
-}
-
-tasks.register('runProductionAutoTestServer', net.fabricmc.loom.task.prod.ServerProductionRunTask) {
-	mods.setFrom productionMods
-	jvmArgs.add("-Dfabric.autoTest")
-	jvmArgs.addAll(debugArgs)
-	programArgs.add("nogui")
-}
 
 // Format all the gradle files
 spotless {

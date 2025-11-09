@@ -47,7 +47,7 @@ jobs:
           curl -L -o tracy-capture https://github.com/modmuss50/tracy-utils/releases/download/0.0.2/linux-x86_64-tracy-capture
           chmod +x tracy-capture
           mkdir run && echo "eula=true" >> run/eula.txt
-      - run: ./gradlew runProductionClientGametest --stacktrace --warning-mode=fail
+      - run: ./gradlew runClientGametest --stacktrace --warning-mode=fail
         env:
           ENABLE_TRACY: false
       - uses: actions/upload-artifact@v4
@@ -72,7 +72,7 @@ jobs:
           distribution: 'microsoft'
           java-version: '21'
       - run: mkdir run && echo "eula=true" >> run/eula.txt
-      - run: ./gradlew runProductionAutoTestServer --stacktrace --warning-mode=fail
+      - run: ./gradlew runAutoTestServer --stacktrace --warning-mode=fail
 
   check_resources:
     runs-on: ubuntu-24.04
