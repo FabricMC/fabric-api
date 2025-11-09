@@ -6,5 +6,6 @@ loom {
 
 moduleDependencies(project, [
 	'fabric-api-base',
-	'fabric-renderer-api-v1'
+	'fabric-renderer-api-v1',
+	'fabric-rendering-v1'
 ])
