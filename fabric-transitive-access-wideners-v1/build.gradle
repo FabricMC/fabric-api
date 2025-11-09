@@ -162,7 +162,7 @@ def generateEnchantmentMethods(List<String> lines, FileSystem fs) {
 	for (def node : [ loadClass(fs.getPath("net/minecraft/world/item/enchantment/EnchantmentHelper.class")), loadClass(fs.getPath("net/minecraft/world/item/enchantment/Enchantment.class")) ]) {
 		for (def method : node.methods) {
 			// All private inner methods of EnchantmentHelper
-			if ((method.access & Opcodes.ACC_PRIVATE) != 0 && !method.name.startsWith("method_")) {
+			if ((method.access & Opcodes.ACC_PRIVATE) != 0 && !method.name.startsWith("lambda\$")) {
 				lines.add("transitive-accessible method $node.name $method.name $method.desc")
 			}
 		}

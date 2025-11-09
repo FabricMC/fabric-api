@@ -93,7 +93,7 @@ tasks.register('generateAccessWidener') {
 		def clientJar = minecraftProvider.clientOnlyJar.path.toFile()
 		def classes = getClasses([commonJar, clientJar])
 
-		String accessWidener = "accessWidener\tv2\tnamed\n"
+		String accessWidener = "accessWidener\tv2\tofficial\n"
 		accessWidener += "\n"
 		accessWidener += "# DO NOT EDIT BY HAND! This file is generated automatically.\n"
 		accessWidener += "# Edit \"template.accesswidener\" instead then run \"gradlew generateAccessWidener\".\n"
