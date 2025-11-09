@@ -22,6 +22,7 @@ import java.util.concurrent.Executor;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.SynchronousResourceReloader;
@@ -97,6 +98,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 		public CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer reloadSynchronizer, Executor applyExecutor) {
 			RegistryWrapper.WrapperLookup registries = store.getOrThrow(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY);
 			registries.getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+			registries.getOrThrow(RegistryKeys.ITEM).getOrThrow(ItemTags.AXES);
 			return reloadSynchronizer.whenPrepared(null).thenRunAsync(
 					() -> store.getOrThrow(DataResourceLoader.DATA_RESOURCE_STORE_KEY)
 							.put(STORE_KEY, "Hello from RegistryReloader."),
@@ -111,6 +113,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 		@Override
 		public CompletableFuture<Void> reload(Store store, Executor prepareExecutor, Synchronizer reloadSynchronizer, Executor applyExecutor) {
 			this.registries.getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+			this.registries.getOrThrow(RegistryKeys.ITEM).getOrThrow(ItemTags.AXES);
 			return reloadSynchronizer.whenPrepared(null);
 		}
 	}

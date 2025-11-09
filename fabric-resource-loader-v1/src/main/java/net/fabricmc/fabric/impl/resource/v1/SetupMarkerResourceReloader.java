@@ -25,11 +25,14 @@ import net.minecraft.server.DataPackContents;
 import net.fabricmc.fabric.api.resource.v1.DataResourceLoader;
 
 // Used to inject into the ResourceReloader store.
-public record SetupMarkerResourceReloader(DataPackContents dataPackContents, FeatureSet featureSet) implements SynchronousResourceReloader {
+public record SetupMarkerResourceReloader(
+		DataPackContents dataPackContents,
+		RegistryWrapper.WrapperLookup registries,
+		FeatureSet featureSet
+) implements SynchronousResourceReloader {
 	@Override
 	public void prepareSharedState(Store store) {
-		RegistryWrapper.WrapperLookup registries = this.dataPackContents.getReloadableRegistries().createRegistryLookup();
-		store.put(DataResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY, registries);
+		store.put(DataResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY, this.registries);
 		store.put(DataResourceLoader.RELOADER_FEATURE_SET_KEY, this.featureSet);
 		store.put(DataResourceLoader.ADVANCEMENT_LOADER_KEY, this.dataPackContents.getServerAdvancementLoader());
 		store.put(DataResourceLoader.RECIPE_MANAGER_KEY, this.dataPackContents.getRecipeManager());

@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
+import net.minecraft.registry.ReloadableRegistries;
 import net.minecraft.resource.ResourceReloader;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.DataPackContents;
@@ -49,6 +50,7 @@ public class DataPackContentsMixin implements FabricDataResourceStoreHolder {
 	)
 	private static List<ResourceReloader> onSetupDataReloaders(
 			List<ResourceReloader> reloaders,
+			@Local(argsOnly = true) ReloadableRegistries.ReloadResult loadResult,
 			@Local(argsOnly = true) FeatureSet featureSet,
 			@Local DataPackContents dataPackContents
 	) {
@@ -56,6 +58,7 @@ public class DataPackContentsMixin implements FabricDataResourceStoreHolder {
 		list.addFirst(
 				new SetupMarkerResourceReloader(
 						dataPackContents,
+						loadResult.lookupWithUpdatedTags(),
 						featureSet
 				)
 		);
