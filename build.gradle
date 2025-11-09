@@ -287,7 +287,6 @@ allprojects {
 	tasks.register('testmodJar', Jar) {
 		from sourceSets.testmod.output
 		from sourceSets.testmodClient.output
-		destinationDirectory = new File(project.buildDir, "devlibs")
 		archiveClassifier = "testmod"
 	}
 
