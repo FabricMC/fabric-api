@@ -28,16 +28,13 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 
 @Mixin(ItemEntity.class)
 public class ItemEntityMixin {
-	@Inject(method = "onPlayerCollision", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "onPlayerCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;insertStack(Lnet/minecraft/item/ItemStack;)Z"), cancellable = true)
 	private void onPlayerPickup(PlayerEntity playerEntity, CallbackInfo ci) {
 		ItemEntity itemEntity = (ItemEntity) (Object) this;
+		boolean allowPickup = ServerEntityEvents.ITEM_PICKUP.invoker().onPickup(playerEntity, itemEntity, itemEntity.getStack());
 
-		if (!itemEntity.getWorld().isClient && !itemEntity.cannotPickup()) {
-			boolean allowPickup = ServerEntityEvents.ITEM_PICKUP.invoker().onPickup(playerEntity, itemEntity, itemEntity.getStack());
-
-			if (!allowPickup) {
-				ci.cancel();
-			}
+		if (!allowPickup) {
+			ci.cancel();
 		}
 	}
 }

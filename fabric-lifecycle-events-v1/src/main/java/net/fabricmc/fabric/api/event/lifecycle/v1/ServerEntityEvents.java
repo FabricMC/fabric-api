@@ -66,9 +66,11 @@ public final class ServerEntityEvents {
 	});
 
 	/**
-	 * Called during {@link ItemEntity#tick()} if an entity tries to pick up any ItemEntity.
+	 * Called during {@link ItemEntity#tick()} on the logical server if an entity tries to pick up any {@link ItemEntity}.
 	 *
 	 * <p>Picking up of an item is determined by {@link ItemEntity#onPlayerCollision(PlayerEntity)}.
+	 *
+	 * <p>Returning {@code false} prevents vanilla from handling the pick-up.
 	 */
 	public static final Event<ItemPickup> ITEM_PICKUP = EventFactory.createArrayBacked(
 			ItemPickup.class,
