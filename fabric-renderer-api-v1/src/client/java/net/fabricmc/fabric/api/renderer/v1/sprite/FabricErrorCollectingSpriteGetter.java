@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
  */
 public interface FabricErrorCollectingSpriteGetter {
 	/**
-	 * {@return the sprite finder for the given atlas ID}
+	 * {@return the sprite finder for the given atlas texture ID}
 	 */
 	default SpriteFinder spriteFinder(Identifier atlasId) {
 		throw new UnsupportedOperationException();

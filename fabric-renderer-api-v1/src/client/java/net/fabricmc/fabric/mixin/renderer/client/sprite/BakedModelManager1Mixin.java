@@ -23,9 +23,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.client.renderer.texture.SpriteLoader;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.SpriteGetter;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
@@ -39,6 +39,9 @@ abstract class BakedModelManager1Mixin implements SpriteGetter {
 	@Shadow
 	@Final
 	SpriteLoader.Preparations val$blockAtlas;
+	@Shadow
+	@Final
+	SpriteLoader.Preparations val$itemAtlas;
 
 	@Unique
 	@Nullable
@@ -46,8 +49,10 @@ abstract class BakedModelManager1Mixin implements SpriteGetter {
 
 	@Override
 	public SpriteFinder spriteFinder(Identifier atlasId) {
-		if (atlasId.equals(AtlasIds.BLOCKS)) {
+		if (atlasId.equals(TextureAtlas.LOCATION_BLOCKS)) {
 			return val$blockAtlas.spriteFinder();
+		} else if (atlasId.equals(TextureAtlas.LOCATION_ITEMS)) {
+			return val$itemAtlas.spriteFinder();
 		}
 
 		MissingSpriteFinderImpl result = missingSpriteFinder;
