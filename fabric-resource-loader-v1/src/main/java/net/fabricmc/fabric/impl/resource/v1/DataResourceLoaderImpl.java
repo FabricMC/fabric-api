@@ -73,7 +73,7 @@ public final class DataResourceLoaderImpl extends ResourceLoaderImpl implements 
 			throw new IllegalStateException("The setup marker should not be null for data resource loading.");
 		}
 
-		HolderLookup.Provider registries = setupMarker.dataPackContents().fullRegistries().lookup();
+		HolderLookup.Provider registries = setupMarker.registries();
 		Set<Map.Entry<Identifier, PreparableReloadListener>> reloadersToAdd = super.collectReloadersToAdd(setupMarker);
 
 		for (Map.Entry<Identifier, Function<HolderLookup.Provider, PreparableReloadListener>> entry
