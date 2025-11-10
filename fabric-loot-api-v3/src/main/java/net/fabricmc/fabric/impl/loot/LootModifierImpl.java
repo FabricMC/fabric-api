@@ -40,10 +40,10 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctions;
 
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
-import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
-import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.fabricmc.fabric.api.loot.v3.LootModifier;
 import net.fabricmc.fabric.api.loot.v3.LootModifierTarget;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 
 public record LootModifierImpl(LootModifierTarget target, List<LootPool> pools, List<LootItemFunction> functions) implements LootModifier {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LootModifierImpl.class);

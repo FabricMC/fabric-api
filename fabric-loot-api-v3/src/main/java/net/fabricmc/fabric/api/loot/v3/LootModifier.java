@@ -1,6 +1,8 @@
 package net.fabricmc.fabric.api.loot.v3;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +25,8 @@ import net.fabricmc.fabric.impl.loot.LootModifierImpl;
  * {@snippet lang=json :
  * "something"
  * }
- * You can also generate loot modifier files using the {@linkplain #CODEC codec}.
+ * You can also generate loot modifier files using {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider
+ * FabricCodecDataProvider}.
  * New modifiers can be created with a {@linkplain #builder() builder}.
  *
  * <p>Loot modifiers determine which loot tables they modify by using a {@link LootModifierTarget}.
@@ -83,7 +86,68 @@ public interface LootModifier {
 			return this;
 		}
 
-		// TODO: methods to add pools and functions
+		/**
+		 * Adds pools to this builder.
+		 *
+		 * @param pools the pools to add
+		 * @return this builder
+		 */
+		public Builder pools(LootPool.Builder... pools) {
+			return pools(Arrays.stream(pools).map(LootPool.Builder::build).toList());
+		}
+
+		/**
+		 * Adds pools to this builder.
+		 *
+		 * @param pools the pools to add
+		 * @return this builder
+		 */
+		public Builder pools(LootPool... pools) {
+			return pools(Arrays.asList(pools));
+		}
+
+		/**
+		 * Adds pools to this builder.
+		 *
+		 * @param pools the pools to add
+		 * @return this builder
+		 */
+		public Builder pools(Collection<? extends LootPool> pools) {
+			this.pools.addAll(pools);
+			return this;
+		}
+
+		/**
+		 * Adds functions to this builder.
+		 *
+		 * @param functions the functions to add
+		 * @return this builder
+		 */
+		public Builder functions(LootItemFunction.Builder... functions) {
+			return functions(Arrays.stream(functions).map(LootItemFunction.Builder::build).toList());
+		}
+
+		/**
+		 * Adds functions to this builder.
+		 *
+		 * @param functions the functions to add
+		 * @return this builder
+		 */
+		public Builder functions(LootItemFunction... functions) {
+			return functions(Arrays.asList(functions));
+		}
+
+		/**
+		 * Adds functions to this builder.
+		 *
+		 * @param functions the functions to add
+		 * @return this builder
+		 */
+		public Builder functions(Collection<? extends LootItemFunction> functions) {
+			this.functions.addAll(functions);
+			return this;
+		}
+
 		// TODO: test datagenning
 
 		/**

@@ -26,6 +26,8 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.impl.loot.LootModifierTargets;
@@ -76,8 +78,29 @@ public interface LootModifierTarget {
 	 * @param tables the keys to match
 	 * @return the target
 	 */
+	@SafeVarargs
 	static LootModifierTarget lootTable(ResourceKey<LootTable>... tables) {
 		return lootTable(Arrays.asList(tables));
+	}
+
+	/**
+	 * Returns a loot modifier target that matches specific block loot tables.
+	 *
+	 * @param blocks the blocks to match
+	 * @return the target
+	 */
+	static LootModifierTarget lootTable(Block... blocks) {
+		return lootTable(Arrays.stream(blocks).map(block -> block.getLootTable().orElseThrow()).toList());
+	}
+
+	/**
+	 * Returns a loot modifier target that matches specific entity loot tables.
+	 *
+	 * @param entityTypes the entity types to match
+	 * @return the target
+	 */
+	static LootModifierTarget lootTable(EntityType<?>... entityTypes) {
+		return lootTable(Arrays.stream(entityTypes).map(type -> type.getDefaultLootTable().orElseThrow()).toList());
 	}
 
 	/**

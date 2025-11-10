@@ -32,8 +32,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.fabricmc.fabric.api.loot.v3.LootModifierTarget;
+import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 
 public final class LootModifierTargets {
 	// TODO: or registry?
