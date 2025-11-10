@@ -50,9 +50,8 @@ rootProject.allprojects.each { p ->
 	}
 }
 
-//tasks.named("remapTestmodJar", net.fabricmc.loom.task.RemapJarTask) {
-//	nestedJars.from(tasks.testmodAJar)
-//	nestedJars.from(tasks.testmodBJar)
-//	nestedJars.from(tasks.testmodCJar)
-//	addNestedDependencies = true
-//}
+loom.nestJars(tasks.named("testmodJar"), project.files(
+	tasks.testmodAJar,
+	tasks.testmodBJar,
+	tasks.testmodCJar
+))
