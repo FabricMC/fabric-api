@@ -160,6 +160,18 @@ public final class AttachmentRegistry {
 		AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate);
 
 		/**
+		 * Declares that this attachment type may be automatically synchronized with some clients, as determined by {@code syncPredicate}.
+		 *
+		 * <p>The max size limit should be increased with care, as syncing large amounts of data may result in network lag and excessive bandwidth usage.
+		 *
+		 * @param packetCodec the codec used to serialize the attachment data over the network
+		 * @param syncPredicate an {@link AttachmentSyncPredicate} determining with which clients to synchronize data
+		 * @param maxSyncBytes the max number of data bytes that can be synced, defaults to 1 MiB
+		 * @return the builder
+		 */
+		AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate, int maxSyncBytes);
+
+		/**
 		 * Builds and registers the {@link AttachmentType}.
 		 *
 		 * @param id the attachment's identifier

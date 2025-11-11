@@ -36,6 +36,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 
 public final class AttachmentRegistryImpl {
@@ -84,6 +85,7 @@ public final class AttachmentRegistryImpl {
 		@Nullable
 		private AttachmentSyncPredicate syncPredicate = null;
 		private boolean copyOnDeath = false;
+		private int maxSyncBytes = 1024 * 1024; // 1 MiB
 
 		@Override
 		public AttachmentRegistry.Builder<A> persistent(Codec<A> codec) {
@@ -107,13 +109,27 @@ public final class AttachmentRegistryImpl {
 			return this;
 		}
 
-		@Deprecated
+		@Override
 		public AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate) {
 			Objects.requireNonNull(packetCodec, "packet codec cannot be null");
 			Objects.requireNonNull(syncPredicate, "sync predicate cannot be null");
 
 			this.packetCodec = packetCodec;
 			this.syncPredicate = syncPredicate;
+			return this;
+		}
+
+		@Override
+		public AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate, int maxSyncBytes) {
+			syncWith(packetCodec, syncPredicate);
+
+			if (maxSyncBytes > AttachmentChange.MAX_DATA_SIZE_IN_BYTES) {
+				throw new IllegalArgumentException("max sync bytes cannot be greater than " + AttachmentChange.MAX_DATA_SIZE_IN_BYTES);
+			} else if (maxSyncBytes <= 0) {
+				throw new IllegalArgumentException("max sync bytes must be positive");
+			}
+
+			this.maxSyncBytes = maxSyncBytes;
 			return this;
 		}
 
@@ -136,6 +152,7 @@ public final class AttachmentRegistryImpl {
 					persistenceCodec,
 					packetCodec,
 					syncPredicate,
+					maxSyncBytes,
 					copyOnDeath
 			);
 			register(id, attachment);

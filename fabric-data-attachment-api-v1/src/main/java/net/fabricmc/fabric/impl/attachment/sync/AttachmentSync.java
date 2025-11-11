@@ -46,6 +46,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerI
 
 public class AttachmentSync implements ModInitializer {
 	public static final int MAX_IDENTIFIER_SIZE = 256;
+	public static final int MAX_ATTACHMENT_SYNC_PAYLOAD_SIZE = Integer.MAX_VALUE;
 
 	public static AcceptedAttachmentsPayloadC2S createResponsePayload() {
 		return new AcceptedAttachmentsPayloadC2S(AttachmentRegistryImpl.getSyncableAttachments());
@@ -103,7 +104,7 @@ public class AttachmentSync implements ModInitializer {
 		});
 
 		// Play
-		PayloadTypeRegistry.playS2C().register(AttachmentSyncPayloadS2C.ID, AttachmentSyncPayloadS2C.CODEC);
+		PayloadTypeRegistry.playS2C().registerLarge(AttachmentSyncPayloadS2C.ID, AttachmentSyncPayloadS2C.CODEC, MAX_ATTACHMENT_SYNC_PAYLOAD_SIZE);
 
 		ServerPlayerEvents.JOIN.register((player) -> {
 			List<AttachmentChange> changes = new ArrayList<>();

@@ -45,7 +45,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
-import net.fabricmc.fabric.mixin.attachment.ServerboundCustomPayloadPacketAccessor;
 import net.fabricmc.fabric.mixin.attachment.VarIntAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
 
@@ -60,7 +59,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			AttachmentChange::new
 	);
 	private static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + AttachmentSync.MAX_IDENTIFIER_SIZE;
-	private static final int MAX_DATA_SIZE_IN_BYTES = ServerboundCustomPayloadPacketAccessor.getMaxPayloadSize() - MAX_PADDING_SIZE_IN_BYTES;
+	public static final int MAX_DATA_SIZE_IN_BYTES = AttachmentSync.MAX_ATTACHMENT_SYNC_PAYLOAD_SIZE - MAX_PADDING_SIZE_IN_BYTES;
 
 	@SuppressWarnings("unchecked")
 	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, RegistryAccess dynamicRegistryManager) {
@@ -77,13 +76,15 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			buf.writeBoolean(false);
 		}
 
-		byte[] encoded = buf.array();
+		byte[] encoded = new byte[buf.readableBytes()]; // buf.array() will return the backing array directly, which may contain unused space
+		buf.readBytes(encoded);
+		int maxSyncBytes = ((AttachmentTypeImpl<?>) type).maxSyncBytes();
 
-		if (encoded.length > MAX_DATA_SIZE_IN_BYTES) {
-			throw new IllegalArgumentException("Data for attachment '%s' was too big (%d bytes, over maximum %d)".formatted(
+		if (encoded.length > maxSyncBytes) {
+			throw new IllegalArgumentException("Data for attachment '%s' was too big (%d bytes, over maximum %d). This limit can be configured during attachment registration.".formatted(
 					type.identifier(),
 					encoded.length,
-					MAX_DATA_SIZE_IN_BYTES
+					maxSyncBytes
 			));
 		}
 

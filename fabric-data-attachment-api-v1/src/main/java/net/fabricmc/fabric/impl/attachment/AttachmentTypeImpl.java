@@ -34,6 +34,7 @@ public record AttachmentTypeImpl<A>(
 		@Nullable Codec<A> persistenceCodec,
 		@Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec,
 		@Nullable AttachmentSyncPredicate syncPredicate,
+		int maxSyncBytes,
 		boolean copyOnDeath
 ) implements AttachmentType<A> {
 	@Override
