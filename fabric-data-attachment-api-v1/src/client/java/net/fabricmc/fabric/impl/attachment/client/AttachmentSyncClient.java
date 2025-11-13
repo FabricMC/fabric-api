@@ -20,7 +20,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncException;
 import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
@@ -39,14 +38,11 @@ public class AttachmentSyncClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(
 				AttachmentSyncPayloadS2C.ID,
 				(payload, context) -> {
-					for (AttachmentChange attachmentChange : payload.attachments()) {
-						try {
-							attachmentChange.tryApply(context.client().level);
-						} catch (AttachmentSyncException e) {
-							AttachmentEntrypoint.LOGGER.error("Error accepting attachment changes", e);
-							context.responseSender().disconnect(e.getText());
-							break;
-						}
+					try {
+						payload.attachment().tryApply(context.client().level);
+					} catch (AttachmentSyncException e) {
+						AttachmentEntrypoint.LOGGER.error("Error accepting attachment changes", e);
+						context.responseSender().disconnect(e.getText());
 					}
 				}
 		);

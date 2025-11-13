@@ -166,7 +166,7 @@ public final class AttachmentRegistry {
 		 *
 		 * @param packetCodec the codec used to serialize the attachment data over the network
 		 * @param syncPredicate an {@link AttachmentSyncPredicate} determining with which clients to synchronize data
-		 * @param maxSyncBytes the max number of data bytes that can be synced, defaults to 1 MiB
+		 * @param maxSyncBytes the max number of data bytes that can be synced, defaults to 1 MiB minus some small padding
 		 * @return the builder
 		 */
 		AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate, int maxSyncBytes);

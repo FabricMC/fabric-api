@@ -16,11 +16,7 @@
 
 package net.fabricmc.fabric.impl.attachment.sync;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import io.netty.buffer.Unpooled;
 import org.jspecify.annotations.Nullable;
@@ -35,18 +31,13 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
-import net.fabricmc.fabric.mixin.attachment.VarIntAccessor;
-import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
 
 public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, byte[] data) {
 	public static final StreamCodec<FriendlyByteBuf, AttachmentChange> PACKET_CODEC = StreamCodec.composite(
@@ -58,8 +49,6 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 			ByteBufCodecs.BYTE_ARRAY, AttachmentChange::data,
 			AttachmentChange::new
 	);
-	private static final int MAX_PADDING_SIZE_IN_BYTES = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + AttachmentSync.MAX_IDENTIFIER_SIZE;
-	public static final int MAX_DATA_SIZE_IN_BYTES = AttachmentSync.MAX_ATTACHMENT_SYNC_PAYLOAD_SIZE - MAX_PADDING_SIZE_IN_BYTES;
 
 	@SuppressWarnings("unchecked")
 	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, RegistryAccess dynamicRegistryManager) {
@@ -89,37 +78,6 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		}
 
 		return new AttachmentChange(targetInfo, type, encoded);
-	}
-
-	public static void partitionAndSendPackets(List<AttachmentChange> changes, ServerPlayer player) {
-		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonPacketListenerImplAccessor) player.connection).getConnection())
-				.fabric_getSupportedAttachments();
-		// sort by size to better partition packets
-		changes.sort(Comparator.comparingInt(c -> c.data().length));
-		List<AttachmentChange> packetChanges = new ArrayList<>();
-		int maxVarIntSize = VarIntAccessor.getMaxByteSize();
-		int byteSize = maxVarIntSize;
-
-		for (AttachmentChange change : changes) {
-			if (!supported.contains(change.type.identifier())) {
-				continue;
-			}
-
-			int size = MAX_PADDING_SIZE_IN_BYTES + change.data.length;
-
-			if (byteSize + size > MAX_DATA_SIZE_IN_BYTES) {
-				ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(packetChanges));
-				packetChanges.clear();
-				byteSize = maxVarIntSize;
-			}
-
-			packetChanges.add(change);
-			byteSize += size;
-		}
-
-		if (!packetChanges.isEmpty()) {
-			ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(packetChanges));
-		}
 	}
 
 	@SuppressWarnings("unchecked")

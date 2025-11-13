@@ -25,25 +25,30 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBufUtil;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.VarInt;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
+import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
 
 public final class AttachmentRegistryImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-data-attachment-api-v1");
 	private static final Map<Identifier, AttachmentType<?>> attachmentRegistry = new HashMap<>();
 	private static final Set<Identifier> syncableAttachments = new HashSet<>();
 	private static final Set<Identifier> syncableView = Collections.unmodifiableSet(syncableAttachments);
+	private static int currentMaxPayloadSize = AttachmentSync.INITIAL_MAX_ATTACHMENT_SYNC_PAYLOAD_SIZE;
 
 	public static <A> void register(Identifier id, AttachmentType<A> attachmentType) {
 		AttachmentType<?> existing = attachmentRegistry.put(id, attachmentType);
@@ -85,7 +90,7 @@ public final class AttachmentRegistryImpl {
 		@Nullable
 		private AttachmentSyncPredicate syncPredicate = null;
 		private boolean copyOnDeath = false;
-		private int maxSyncBytes = 1024 * 1024; // 1 MiB
+		private int maxSyncBytes = -1;
 
 		@Override
 		public AttachmentRegistry.Builder<A> persistent(Codec<A> codec) {
@@ -121,13 +126,11 @@ public final class AttachmentRegistryImpl {
 
 		@Override
 		public AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate, int maxSyncBytes) {
-			syncWith(packetCodec, syncPredicate);
-
-			if (maxSyncBytes > AttachmentChange.MAX_DATA_SIZE_IN_BYTES) {
-				throw new IllegalArgumentException("max sync bytes cannot be greater than " + AttachmentChange.MAX_DATA_SIZE_IN_BYTES);
-			} else if (maxSyncBytes <= 0) {
+			if (maxSyncBytes <= 0) {
 				throw new IllegalArgumentException("max sync bytes must be positive");
 			}
+
+			syncWith(packetCodec, syncPredicate);
 
 			this.maxSyncBytes = maxSyncBytes;
 			return this;
@@ -137,13 +140,26 @@ public final class AttachmentRegistryImpl {
 		public AttachmentType<A> buildAndRegister(Identifier id) {
 			Objects.requireNonNull(id, "identifier cannot be null");
 
-			if (syncPredicate != null && id.toString().length() > AttachmentSync.MAX_IDENTIFIER_SIZE) {
-				throw new IllegalArgumentException(
-						"Identifier length is too long for a synced attachment type (was %d, maximum is %d)".formatted(
-								id.toString().length(),
-								AttachmentSync.MAX_IDENTIFIER_SIZE
-						)
-				);
+			if (syncPredicate != null) {
+				int identifierBytes = ByteBufUtil.utf8MaxBytes(id.toString());
+				int maxPaddingBytes = AttachmentTargetInfo.MAX_SIZE_IN_BYTES + VarInt.getByteSize(identifierBytes) + identifierBytes + 5 * 2;
+
+				if (maxSyncBytes == -1) { // If no custom limit set, then calculate default limit based on id size of the attachment
+					maxSyncBytes = AttachmentSync.INITIAL_MAX_ATTACHMENT_SYNC_PAYLOAD_SIZE - maxPaddingBytes;
+				}
+
+				int maxPayloadBytes = maxSyncBytes + maxPaddingBytes;
+
+				// Prevent overflow
+				if (maxPayloadBytes < 0) {
+					maxPayloadBytes = Integer.MAX_VALUE;
+					maxSyncBytes = Integer.MAX_VALUE - maxPaddingBytes;
+				}
+
+				if (maxPayloadBytes > currentMaxPayloadSize) {
+					currentMaxPayloadSize = maxPayloadBytes;
+					PayloadTypeRegistry.playS2C().modifyLargePayloadMaxSize(AttachmentSyncPayloadS2C.ID, currentMaxPayloadSize);
+				}
 			}
 
 			var attachment = new AttachmentTypeImpl<>(

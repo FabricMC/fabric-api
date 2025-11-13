@@ -22,8 +22,13 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import io.netty.buffer.ByteBufUtil;
+
 import net.minecraft.network.Connection;
+import net.minecraft.network.VarInt;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ConfigurationTask;
@@ -45,8 +50,16 @@ import net.fabricmc.fabric.impl.attachment.sync.s2c.RequestAcceptedAttachmentsPa
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
 
 public class AttachmentSync implements ModInitializer {
-	public static final int MAX_IDENTIFIER_SIZE = 256;
-	public static final int MAX_ATTACHMENT_SYNC_PAYLOAD_SIZE = Integer.MAX_VALUE;
+	public static final int INITIAL_MAX_ATTACHMENT_SYNC_PAYLOAD_SIZE;
+
+	static {
+		int identifierSize = ByteBufUtil.utf8MaxBytes(AttachmentSyncPayloadS2C.ID.toString());
+		// Max vanilla S2C packet size - id size, to ensure no splitting by default
+		INITIAL_MAX_ATTACHMENT_SYNC_PAYLOAD_SIZE = 1024 * 1024 - (VarInt.getByteSize(identifierSize) + identifierSize + 5 * 2);
+
+		// Ensure packet is registered before mods register any large attachments
+		PayloadTypeRegistry.playS2C().registerLarge(AttachmentSyncPayloadS2C.ID, AttachmentSyncPayloadS2C.CODEC, INITIAL_MAX_ATTACHMENT_SYNC_PAYLOAD_SIZE);
+	}
 
 	public static AcceptedAttachmentsPayloadC2S createResponsePayload() {
 		return new AcceptedAttachmentsPayloadC2S(AttachmentRegistryImpl.getSyncableAttachments());
@@ -57,7 +70,23 @@ public class AttachmentSync implements ModInitializer {
 				.fabric_getSupportedAttachments();
 
 		if (supported.contains(change.type().identifier())) {
-			ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(List.of(change)));
+			ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(change));
+		}
+	}
+
+	public static void trySync(List<AttachmentChange> changes, ServerPlayer player) {
+		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonPacketListenerImplAccessor) player.connection).getConnection())
+				.fabric_getSupportedAttachments();
+
+		List<Packet<? super ClientGamePacketListener>> syncableChanges = new ArrayList<>();
+		changes.forEach(change -> {
+			if (supported.contains(change.type().identifier())) {
+				syncableChanges.add(ServerPlayNetworking.createS2CPacket(new AttachmentSyncPayloadS2C(change)));
+			}
+		});
+
+		if (!syncableChanges.isEmpty()) {
+			ServerPlayNetworking.getSender(player).sendPacket(new ClientboundBundlePacket(syncableChanges));
 		}
 	}
 
@@ -104,8 +133,6 @@ public class AttachmentSync implements ModInitializer {
 		});
 
 		// Play
-		PayloadTypeRegistry.playS2C().registerLarge(AttachmentSyncPayloadS2C.ID, AttachmentSyncPayloadS2C.CODEC, MAX_ATTACHMENT_SYNC_PAYLOAD_SIZE);
-
 		ServerPlayerEvents.JOIN.register((player) -> {
 			List<AttachmentChange> changes = new ArrayList<>();
 			// sync world attachments
@@ -114,7 +141,7 @@ public class AttachmentSync implements ModInitializer {
 			((AttachmentTargetImpl) player).fabric_computeInitialSyncChanges(player, changes::add);
 
 			if (!changes.isEmpty()) {
-				AttachmentChange.partitionAndSendPackets(changes, player);
+				trySync(changes, player);
 			}
 		});
 
@@ -125,7 +152,7 @@ public class AttachmentSync implements ModInitializer {
 			((AttachmentTargetImpl) destination).fabric_computeInitialSyncChanges(player, changes::add);
 
 			if (!changes.isEmpty()) {
-				AttachmentChange.partitionAndSendPackets(changes, player);
+				trySync(changes, player);
 			}
 		});
 
@@ -134,7 +161,7 @@ public class AttachmentSync implements ModInitializer {
 			((AttachmentTargetImpl) trackedEntity).fabric_computeInitialSyncChanges(player, changes::add);
 
 			if (!changes.isEmpty()) {
-				AttachmentChange.partitionAndSendPackets(changes, player);
+				trySync(changes, player);
 			}
 		});
 	}

@@ -32,6 +32,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 
 @Mixin(PlayerChunkSender.class)
 abstract class PlayerChunkSenderMixin {
@@ -49,7 +50,7 @@ abstract class PlayerChunkSenderMixin {
 		((AttachmentTargetImpl) chunk).fabric_computeInitialSyncChanges(player, changes::add);
 
 		if (!changes.isEmpty()) {
-			AttachmentChange.partitionAndSendPackets(changes, player);
+			AttachmentSync.trySync(changes, player);
 		}
 	}
 }
