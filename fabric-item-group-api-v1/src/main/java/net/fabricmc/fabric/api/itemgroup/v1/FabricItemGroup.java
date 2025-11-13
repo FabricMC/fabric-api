@@ -40,7 +40,7 @@ public final class FabricItemGroup {
 	 * <p>Example:
 	 *
 	 * <pre>{@code
-	 * private static final RegistryKey<ItemGroup> ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.of(MOD_ID, "test_group"));
+	 * private static final RegistryKey<ItemGroup> ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, Identifier.fromNamespaceAndPath("modid", "custom_group"));
 	 *
 	 * @Override
 	 * public void onInitialize() {
