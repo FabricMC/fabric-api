@@ -178,6 +178,36 @@ public interface BiomeModificationContext {
 		}
 
 		/**
+		 * @see BiomeSpecialEffects#dryFoliageColorOverride()
+		 * @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
+		 */
+		void setDryFoliageColor(Optional<Integer> color);
+
+		/**
+		 * @see BiomeSpecialEffects#dryFoliageColorOverride()
+		 * @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
+		 */
+		default void setDryFoliageColor(int color) {
+			setDryFoliageColor(Optional.of(color));
+		}
+
+		/**
+		 * @see BiomeSpecialEffects#dryFoliageColorOverride()
+		 * @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
+		 */
+		default void setDryFoliageColor(OptionalInt color) {
+			color.ifPresentOrElse(this::setDryFoliageColor, this::clearDryFoliageColor);
+		}
+
+		/**
+		 * @see BiomeSpecialEffects#dryFoliageColorOverride()
+		 * @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
+		 */
+		default void clearDryFoliageColor() {
+			setDryFoliageColor(Optional.empty());
+		}
+
+		/**
 		 * @see BiomeSpecialEffects#grassColorOverride()
 		 * @see BiomeSpecialEffects.Builder#grassColorOverride(int)
 		 */
