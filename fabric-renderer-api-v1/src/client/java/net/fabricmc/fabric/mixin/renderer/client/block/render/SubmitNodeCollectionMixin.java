@@ -62,7 +62,7 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	public void submitBlock(PoseStack matrices, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter blockView, BlockPos pos) {
 		wasUsed = true;
 		extendedBlockCommands.add(new ExtendedBlockCommand(matrices.last().copy(), state, light, overlay, outlineColor, blockView, pos));
-		Minecraft.getInstance().getModelManager().specialBlockModelRenderer().get().renderByBlock(state.getBlock(), ItemDisplayContext.NONE, matrices, submitNodeStorage, light, overlay, outlineColor);
+		Minecraft.getInstance().getModelManager().specialBlockModelRenderer().renderByBlock(state.getBlock(), ItemDisplayContext.NONE, matrices, submitNodeStorage, light, overlay, outlineColor);
 	}
 
 	@Override

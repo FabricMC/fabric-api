@@ -104,7 +104,7 @@ public abstract class CreativeModeInventoryScreenMixin extends AbstractContainer
 	}
 
 	@Inject(method = "renderTabButton", at = @At("HEAD"), cancellable = true)
-	private void renderTabIcon(GuiGraphics drawContext, CreativeModeTab itemGroup, CallbackInfo info) {
+	private void renderTabIcon(GuiGraphics guiGraphics, int i, int j, CreativeModeTab itemGroup, CallbackInfo info) {
 		if (!isGroupVisible(itemGroup)) {
 			info.cancel();
 		}

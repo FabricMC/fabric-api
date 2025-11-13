@@ -30,6 +30,9 @@ import net.minecraft.util.GsonHelper;
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 
+// FIXME 1.21.11: Items that use this model render as empty because the custom geometry has no vanilla quads which
+//  causes BlockModelWrapper to select a render type that uses the item atlas, which is then used because all quads in
+//  the mesh use the default render type.
 public class BuiltInMeshUnbakedModelDeserializer implements UnbakedModelDeserializer {
 	@Override
 	public UnbakedModel deserialize(JsonObject jsonObject, JsonDeserializationContext context) {

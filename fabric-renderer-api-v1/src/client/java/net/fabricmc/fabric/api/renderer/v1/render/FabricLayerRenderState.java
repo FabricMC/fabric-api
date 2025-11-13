@@ -36,7 +36,7 @@ public interface FabricLayerRenderState {
 	 * {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList()}  vanilla quads} when this layer is rendered. Vertex
 	 * positions of geometry added to this emitter will automatically be output on
 	 * {@link ItemStackRenderState#visitExtents(Consumer)} ({@link ItemStackRenderState.LayerRenderState#setExtents(Supplier)} must still
-	 * be used to add positions of {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList()}  vanilla quads}). Adding quads
+	 * be used to add positions of {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads}). Adding quads
 	 * that use animated sprites to this emitter will not automatically call {@link ItemStackRenderState#setAnimated()}. Any
 	 * quads added to this emitter will be cleared on {@link ItemStackRenderState.LayerRenderState#clear()}.
 	 *

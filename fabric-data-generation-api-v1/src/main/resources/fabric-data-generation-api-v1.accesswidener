@@ -121,6 +121,7 @@ transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	simpleCoo
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	waxRecipes	(Lnet/minecraft/world/flag/FeatureFlagSet;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	grate	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	copperBulb	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V
+transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	waxedChiseled	(Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	suspiciousStew	(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/level/block/SuspiciousEffectHolder;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	generateRecipes	(Lnet/minecraft/data/BlockFamily;Lnet/minecraft/world/flag/FeatureFlagSet;)V
 transitive-accessible	method	net/minecraft/data/recipes/RecipeProvider	getBaseBlock	(Lnet/minecraft/data/BlockFamily;Lnet/minecraft/data/BlockFamily$Variant;)Lnet/minecraft/world/level/block/Block;

@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
+import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.flag.FeatureFlagSet;
@@ -49,6 +50,7 @@ public class ReloadableServerResourcesMixin implements FabricDataResourceStoreHo
 	)
 	private static List<PreparableReloadListener> onSetupDataReloaders(
 			List<PreparableReloadListener> reloaders,
+			@Local(argsOnly = true) ReloadableServerRegistries.LoadResult loadResult,
 			@Local(argsOnly = true) FeatureFlagSet featureSet,
 			@Local ReloadableServerResources dataPackContents
 	) {
@@ -56,6 +58,7 @@ public class ReloadableServerResourcesMixin implements FabricDataResourceStoreHo
 		list.addFirst(
 				new SetupMarkerResourceReloader(
 						dataPackContents,
+						loadResult.lookupWithUpdatedTags(),
 						featureSet
 				)
 		);
