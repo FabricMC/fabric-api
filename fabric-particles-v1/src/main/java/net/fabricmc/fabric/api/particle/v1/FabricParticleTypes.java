@@ -38,7 +38,7 @@ import net.minecraft.network.codec.StreamCodec;
  * {@literal @}Override
  * public void onInitialize() {
  *     Registry.register(Registries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("modid", "simple"), SIMPLE_TEST_PARTICLE);
- *     Registry.register(Registries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("modid", "custom3"), CUSTOM_TEST_PARTICLE);
+ *     Registry.register(Registries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("modid", "custom"), CUSTOM_TEST_PARTICLE);
  * }}
  * </pre>
  * </blockquote>
