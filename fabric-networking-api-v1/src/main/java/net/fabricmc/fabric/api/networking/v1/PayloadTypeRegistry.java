@@ -61,6 +61,15 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> id, StreamCodec<? super B, T> codec, int maxPacketSize);
 
 	/**
+	 * Modifies the maximum size of an <strong>already registered</strong> large payload type via {@link PayloadTypeRegistry#registerLarge(CustomPacketPayload.Type, StreamCodec, int)}.
+	 *
+	 * @param id		    the id of the payload type
+	 * @param maxPacketSize the maximum size of payload packet
+	 * @param <T>           the payload type
+	 */
+	<T extends CustomPacketPayload> void modifyLargePayloadMaxSize(CustomPacketPayload.Type<T> id, int maxPacketSize);
+
+	/**
 	 * @return the {@link PayloadTypeRegistry} instance for the client to server configuration channel.
 	 */
 	static PayloadTypeRegistry<FriendlyByteBuf> configurationC2S() {

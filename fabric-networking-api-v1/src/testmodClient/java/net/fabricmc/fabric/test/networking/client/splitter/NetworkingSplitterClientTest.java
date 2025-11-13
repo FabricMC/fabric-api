@@ -24,7 +24,7 @@ public class NetworkingSplitterClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(NetworkingSplitterTest.LargePayload.ID, (payload, context) -> {
-			NetworkingSplitterTest.validateLargePacketData(payload.index(), payload.data(), "client");
+			NetworkingSplitterTest.validateLargePacketData(payload.index(), payload.data(), "client", context.responseSender());
 			context.responseSender().sendPacket(payload);
 		});
 	}
