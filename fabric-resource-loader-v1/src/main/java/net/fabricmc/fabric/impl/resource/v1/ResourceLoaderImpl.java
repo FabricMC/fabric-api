@@ -306,7 +306,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 	 * @see ResourceLoader#registerBuiltinPack(Identifier, ModContainer, PackActivationType)
 	 */
 	public static boolean registerBuiltinPack(Identifier id, String subPath, ModContainer container, Component displayName, PackActivationType activationType) {
-		// Assuming the mod has multiple paths, we simply "hope" that the  file separator is *not* different across them
+		// Assuming the mod has multiple paths, we simply "hope" that the file separator is *not* different across them
 		List<Path> paths = container.getRootPaths();
 		String separator = paths.getFirst().getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
