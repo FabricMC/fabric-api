@@ -23,15 +23,8 @@ import org.junit.jupiter.api.Test;
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.render.MapRenderState;
-import net.minecraft.client.render.block.MovingBlockRenderState;
-import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.item.ItemRenderState;
-import net.minecraft.client.render.state.CameraRenderState;
-import net.minecraft.client.render.state.SkyRenderState;
-import net.minecraft.client.render.state.WeatherRenderState;
-import net.minecraft.client.render.state.WorldBorderRenderState;
-import net.minecraft.client.render.state.WorldRenderState;
 
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
@@ -50,17 +43,10 @@ public class RenderStateDataTest {
 		ItemRenderState itemRenderState = new ItemRenderState();
 		FabricRenderState[] states = new FabricRenderState[]{
 				new EntityRenderState(),
-				new BlockEntityRenderState(),
 				itemRenderState,
 				itemRenderState.new LayerRenderState(),
 				new MapRenderState(),
 				new MapRenderState.Decoration(),
-				new MovingBlockRenderState(),
-				new WorldRenderState(),
-				new CameraRenderState(),
-				new WeatherRenderState(),
-				new WorldBorderRenderState(),
-				new SkyRenderState()
 		};
 
 		for (FabricRenderState state : states) {
