@@ -34,7 +34,7 @@ public enum ResourcePackActivationType {
 	/**
 	 * Always enabled. The user cannot disable the resource pack.
 	 */
-	ALWAYS_ENABLED(PackActivationType.ALWAYS_ENABLED),;
+	ALWAYS_ENABLED(PackActivationType.ALWAYS_ENABLED);
 
 	final PackActivationType replacement;
 
