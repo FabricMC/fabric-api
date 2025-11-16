@@ -16,6 +16,7 @@
     "loot.EntityLootSubProviderAccessor",
     "loot.EntityLootSubProviderMixin",
     "recipe.AllCraftingRecipeJsonBuildersMixin",
+    "recipe.RecipeOutputMixin",
     "recipe.SpecialRecipeBuilderMixin",
     "recipe.SmithingTransformRecipeBuilderMixin",
     "recipe.SmithingTrimRecipeBuilderMixin"
