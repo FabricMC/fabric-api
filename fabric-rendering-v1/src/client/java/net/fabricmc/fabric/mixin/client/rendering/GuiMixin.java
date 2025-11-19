@@ -172,11 +172,11 @@ abstract class GuiMixin {
 
 			if (newDeferred != null && newDeferred != originalDeferred) {
 				this.deferredSubtitles = () -> HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES)
-					.render(context, tickCounter, (ctx, tc) -> newDeferred.run());
+						.render(context, tickCounter, (ctx, tc) -> newDeferred.run());
 			}
 		} else {
 			HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES)
-				.render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, false));
+					.render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, false));
 		}
 	}
 }
