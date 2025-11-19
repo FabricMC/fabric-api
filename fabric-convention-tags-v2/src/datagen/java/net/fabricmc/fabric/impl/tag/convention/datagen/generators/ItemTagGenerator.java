@@ -746,6 +746,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		valueLookupBuilder(ConventionalItemTags.ENCHANTABLES)
 				.addOptionalTag(ItemTags.ARMOR_ENCHANTABLE)
 				.addOptionalTag(ItemTags.EQUIPPABLE_ENCHANTABLE)
+				.addOptionalTag(ItemTags.SHARP_WEAPON_ENCHANTABLE)
 				.addOptionalTag(ItemTags.WEAPON_ENCHANTABLE)
 				.addOptionalTag(ItemTags.SWEEPING_ENCHANTABLE)
 				.addOptionalTag(ItemTags.MINING_ENCHANTABLE)
