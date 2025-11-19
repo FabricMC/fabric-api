@@ -45,6 +45,9 @@ abstract class GuiMixin {
 	@Final
 	private Minecraft minecraft;
 
+	@Shadow
+	private Runnable deferredSubtitles;
+
 	@Inject(method = "render", at = @At(value = "TAIL"))
 	public void render(GuiGraphics drawContext, DeltaTracker tickCounter, CallbackInfo callbackInfo) {
 		HudRenderCallback.EVENT.invoker().onHudRender(drawContext, tickCounter);
@@ -161,7 +164,19 @@ abstract class GuiMixin {
 	}
 
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSubtitleOverlay(Lnet/minecraft/client/gui/GuiGraphics;Z)V"))
-	private void wrapSubtitlesHud(Gui instance, GuiGraphics context, boolean bl, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker tickCounter) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, bl));
+	private void wrapSubtitlesHud(Gui instance, GuiGraphics context, boolean deferRendering, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker tickCounter) {
+		if (deferRendering) {
+			Runnable originalDeferred = this.deferredSubtitles;
+			renderVanilla.call(instance, context, true);
+			Runnable newDeferred = this.deferredSubtitles;
+
+			if (newDeferred != null && newDeferred != originalDeferred) {
+				this.deferredSubtitles = () -> HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES)
+					.render(context, tickCounter, (ctx, tc) -> newDeferred.run());
+			}
+		} else {
+			HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES)
+				.render(context, tickCounter, (ctx, tc) -> renderVanilla.call(instance, ctx, false));
+		}
 	}
 }
