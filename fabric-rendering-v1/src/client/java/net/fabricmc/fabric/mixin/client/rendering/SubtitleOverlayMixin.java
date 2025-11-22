@@ -38,14 +38,12 @@ public class SubtitleOverlayMixin {
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private void wrapSubtitleRender(GuiGraphics context, CallbackInfo ci) {
 		if (!fabric_renderingThroughHud) {
-
 			DeltaTracker deltaTracker = Minecraft.getInstance().getDeltaTracker();
 
 			ci.cancel();
 
 			HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES)
 					.render(context, deltaTracker, (ctx, tc) -> {
-
 						fabric_renderingThroughHud = true;
 
 						try {
@@ -59,6 +57,6 @@ public class SubtitleOverlayMixin {
 
 	@Unique
 	private void fabric_callOriginalRender(GuiGraphics context) {
-		((SubtitleOverlay)(Object)this).render(context);
+		((SubtitleOverlay) (Object) this).render(context);
 	}
 }
