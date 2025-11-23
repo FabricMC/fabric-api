@@ -10,6 +10,7 @@
     "loot.BlockLootTableGeneratorAccessor",
     "loot.BlockLootTableGeneratorMixin",
     "recipe.AllCraftingRecipeJsonBuildersMixin",
+    "recipe.RecipeOutputMixin",
     "recipe.ComplexRecipeJsonBuilderMixin",
     "recipe.SmithingTransformRecipeJsonBuilderMixin",
     "recipe.SmithingTrimRecipeJsonBuilderMixin"
