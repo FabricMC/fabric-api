@@ -50,12 +50,12 @@ import net.minecraft.world.inventory.MenuType;
  * // Creating and registering the type
  * public static final ExtendedScreenHandlerType<OvenScreenHandler> OVEN =
  * 	new ExtendedScreenHandlerType((syncId, inventory, data) -> ..., OvenData.PACKET_CODEC);
- * Registry.register(Registry.SCREEN_HANDLER, Identifier.of(...), OVEN);
+ * Registry.register(Registry.MENU, Identifier.fromNamespaceAndPath("modid", "custom_menu"), OVEN);
  *
- * // Note: remember to also register the screen using vanilla's HandledScreens!
+ * // Note: remember to also register the screen using vanilla's MenuScreens!
  *
  * // Screen handler class
- * public class OvenScreenHandler extends ScreenHandler {
+ * public class OvenScreenHandler extends AbstractContainerMenu {
  * 	public OvenScreenHandler(int syncId) {
  * 		super(MyScreenHandlers.OVEN, syncId);
  * 	}

@@ -64,7 +64,7 @@ public final class FabricDefaultAttributeRegistry {
 	 *
 	 * <p>It can be used in a fashion similar to this:
 	 * <blockquote><pre>
-	 * EntityAttributeRegistry.INSTANCE.register(type, LivingEntity.createLivingAttributes());
+	 * FabricDefaultAttributeRegistry.register(type, LivingEntity.createLivingAttributes());
 	 * </pre></blockquote>
 	 * </p>
 	 *

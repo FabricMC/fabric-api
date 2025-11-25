@@ -18,6 +18,8 @@ accessible	field	net/minecraft/world/level/biome/BiomeSpecialEffects	waterColor	
 mutable	field	net/minecraft/world/level/biome/BiomeSpecialEffects	waterColor	I
 accessible	field	net/minecraft/world/level/biome/BiomeSpecialEffects	foliageColorOverride	Ljava/util/Optional;
 mutable	field	net/minecraft/world/level/biome/BiomeSpecialEffects	foliageColorOverride	Ljava/util/Optional;
+accessible	field	net/minecraft/world/level/biome/BiomeSpecialEffects	dryFoliageColorOverride	Ljava/util/Optional;
+mutable	field	net/minecraft/world/level/biome/BiomeSpecialEffects	dryFoliageColorOverride	Ljava/util/Optional;
 accessible	field	net/minecraft/world/level/biome/BiomeSpecialEffects	grassColorOverride	Ljava/util/Optional;
 mutable	field	net/minecraft/world/level/biome/BiomeSpecialEffects	grassColorOverride	Ljava/util/Optional;
 accessible	field	net/minecraft/world/level/biome/BiomeSpecialEffects	grassColorModifier	Lnet/minecraft/world/level/biome/BiomeSpecialEffects$GrassColorModifier;

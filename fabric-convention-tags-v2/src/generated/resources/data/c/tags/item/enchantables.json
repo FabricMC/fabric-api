@@ -9,6 +9,10 @@
       "required": false
     },
     {
+      "id": "#minecraft:enchantable/sharp_weapon",
+      "required": false
+    },
+    {
       "id": "#minecraft:enchantable/weapon",
       "required": false
     },

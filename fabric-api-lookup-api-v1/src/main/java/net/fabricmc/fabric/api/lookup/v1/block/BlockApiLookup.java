@@ -51,7 +51,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  *
  * <pre>{@code
  * public final class MyApi {
- *     public static final BlockApiLookup<FluidContainer, Direction> FLUID_CONTAINER = BlockApiLookup.get(Identifier.of("mymod", "fluid_container"), FluidContainer.class, Direction.class);
+ *     public static final BlockApiLookup<FluidContainer, Direction> FLUID_CONTAINER = BlockApiLookup.get(Identifier.fromNamespaceAndPath("modid", "fluid_container"), FluidContainer.class, Direction.class);
  * }}</pre>
  * Using that, we can query instances of {@code FluidContainer}:
  *

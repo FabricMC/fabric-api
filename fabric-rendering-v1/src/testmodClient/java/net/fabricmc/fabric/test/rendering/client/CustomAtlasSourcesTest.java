@@ -27,7 +27,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.slf4j.Logger;
 
-import net.minecraft.client.renderer.texture.MipmapStrategy;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.atlas.SpriteResourceLoader;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
@@ -139,7 +138,7 @@ public class CustomAtlasSourcesTest implements ClientModInitializer {
 					}
 				}
 
-				return new SpriteContents(spriteId, dimensions, doubleImage, Optional.of(animationMetadata), List.of(), MipmapStrategy.AUTO);
+				return new SpriteContents(spriteId, dimensions, doubleImage, Optional.of(animationMetadata), List.of(), Optional.empty());
 			}
 
 			private static void blendRect(NativeImage src, NativeImage dst, int srcX, int srcY, int destX, int destY, int width, int height) {

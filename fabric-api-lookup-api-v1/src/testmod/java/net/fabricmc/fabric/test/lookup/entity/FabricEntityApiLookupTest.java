@@ -25,7 +25,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.monster.Creeper;
 
 import net.fabricmc.fabric.api.lookup.v1.entity.EntityApiLookup;

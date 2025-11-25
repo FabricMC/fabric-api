@@ -41,8 +41,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>For example, to register a feature renderer for a player model, the example below may be used:
  * <blockquote><pre>
  * LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
- * 	if (entityRenderer instanceof PlayerEntityModel) {
- * 		registrationHelper.register(new MyFeatureRenderer((PlayerEntityModel) entityRenderer));
+ * 	if (entityRenderer instanceof AvatarRenderer&lt;?&gt; avatarEntityRenderer) {
+ * 		registrationHelper.register(new MyFeatureRenderer(avatarEntityRenderer, context.getModelSet()));
  * 	}
  * });
  * </pre></blockquote>

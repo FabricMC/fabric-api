@@ -24,8 +24,8 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 
 import net.fabricmc.fabric.impl.object.builder.TradeOfferInternals;
 
@@ -41,7 +41,7 @@ public final class TradeOfferHelper {
 	 *
 	 * <p>Below is an example, of registering a trade offer factory to be added a blacksmith with a profession level of 3:
 	 * <blockquote><pre>
-	 * TradeOfferHelper.registerVillagerOffers(VillagerProfession.BLACKSMITH, 3, factories -> {
+	 * TradeOfferHelper.registerVillagerOffers(VillagerProfession.WEAPONSMITH, 3, factories -> {
 	 * 	factories.add(new CustomTradeFactory(...);
 	 * });
 	 * </pre></blockquote>
@@ -63,7 +63,7 @@ public final class TradeOfferHelper {
 	 *
 	 * <p>Below is an example, of registering a trade offer factory to be added a blacksmith with a profession level of 3:
 	 * <blockquote><pre>
-	 * TradeOfferHelper.registerVillagerOffers(VillagerProfession.BLACKSMITH, 3, (factories, rebalanced) -> {
+	 * TradeOfferHelper.registerVillagerOffers(VillagerProfession.WEAPONSMITH, 3, (factories, rebalanced) -> {
 	 * 	factories.add(new CustomTradeFactory(...);
 	 * });
 	 * </pre></blockquote>

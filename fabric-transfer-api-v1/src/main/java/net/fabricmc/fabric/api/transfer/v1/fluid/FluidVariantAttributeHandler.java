@@ -87,7 +87,7 @@ public interface FluidVariantAttributeHandler {
 	 * Return a positive integer, representing the viscosity of this fluid.
 	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
 	 *
-	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowingFluid#getSlopeFindDistance} for flowable fluids.
+	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowingFluid#getTickDelay} for flowable fluids.
 	 * The reference values are {@value FluidConstants#WATER_VISCOSITY} for water,
 	 * {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),
 	 * and {@value FluidConstants#LAVA_VISCOSITY} for lava in other dimensions.

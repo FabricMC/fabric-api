@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.content.registry;
-
-import java.util.Map;
+package net.fabricmc.fabric.mixin.datagen.recipe;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.ai.behavior.GiveGiftToHero;
-import net.minecraft.world.entity.npc.villager.VillagerProfession;
-import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.data.recipes.RecipeOutput;
 
-@Mixin(GiveGiftToHero.class)
-public interface GiveGiftToHeroAccessor {
-	@Accessor("GIFTS")
-	static Map<ResourceKey<VillagerProfession>, ResourceKey<LootTable>> fabric_getGifts() {
-		throw new AssertionError("Untransformed @Accessor");
-	}
+import net.fabricmc.fabric.api.datagen.v1.recipe.FabricRecipeExporter;
+
+@Mixin(RecipeOutput.class)
+public interface RecipeOutputMixin extends FabricRecipeExporter {
 }

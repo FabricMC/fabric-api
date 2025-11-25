@@ -356,6 +356,7 @@ transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerator
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateFlatItem	(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/Item;Lnet/minecraft/client/data/models/model/ModelTemplate;)V
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateItemWithTintedOverlay	(Lnet/minecraft/world/item/Item;Lnet/minecraft/client/color/item/ItemTintSource;)V
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateItemWithTintedOverlay	(Lnet/minecraft/world/item/Item;Ljava/lang/String;Lnet/minecraft/client/color/item/ItemTintSource;)V
+transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateItemWithTintedBaseLayer	(Lnet/minecraft/world/item/Item;I)V
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	createCompassModels	(Lnet/minecraft/world/item/Item;)Ljava/util/List;
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateStandardCompassItem	(Lnet/minecraft/world/item/Item;)V
 transitive-accessible	method	net/minecraft/client/data/models/ItemModelGenerators	generateRecoveryCompassItem	(Lnet/minecraft/world/item/Item;)V

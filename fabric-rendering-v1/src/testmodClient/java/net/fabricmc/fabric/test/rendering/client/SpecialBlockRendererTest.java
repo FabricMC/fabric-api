@@ -24,7 +24,7 @@ import com.mojang.serialization.MapCodec;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.model.AllayModel;
+import net.minecraft.client.model.animal.allay.AllayModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;

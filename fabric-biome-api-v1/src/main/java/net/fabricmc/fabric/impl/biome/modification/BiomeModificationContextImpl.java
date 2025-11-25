@@ -188,6 +188,11 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
+		public void setDryFoliageColor(Optional<Integer> color) {
+			effects.dryFoliageColorOverride = Objects.requireNonNull(color);
+		}
+
+		@Override
 		public void setGrassColor(Optional<Integer> color) {
 			effects.grassColorOverride = Objects.requireNonNull(color);
 		}
