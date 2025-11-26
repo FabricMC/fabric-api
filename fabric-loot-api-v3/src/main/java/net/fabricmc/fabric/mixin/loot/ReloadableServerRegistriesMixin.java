@@ -41,17 +41,15 @@ import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.storage.loot.LootDataType;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
-import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.fabricmc.fabric.impl.loot.FabricLootTable;
+import net.fabricmc.fabric.impl.loot.LootModifierImpl;
 import net.fabricmc.fabric.impl.loot.LootUtil;
 
 /**
@@ -63,52 +61,29 @@ abstract class ReloadableServerRegistriesMixin {
 	 * Due to possible cross-thread handling, this uses WeakHashMap instead of ThreadLocal.
 	 */
 	@Unique
-	private static final WeakHashMap<RegistryOps<JsonElement>, HolderLookup.Provider> WRAPPERS = new WeakHashMap<>();
+	private static final WeakHashMap<RegistryOps<JsonElement>, HolderLookup.Provider> REGISTRIES_BY_OPS = new WeakHashMap<>();
 
 	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/HolderLookup$Provider;createSerializationContext(Lcom/mojang/serialization/DynamicOps;)Lnet/minecraft/resources/RegistryOps;"))
 	private static RegistryOps<JsonElement> storeOps(HolderLookup.Provider registries, DynamicOps<JsonElement> ops, Operation<RegistryOps<JsonElement>> original) {
 		RegistryOps<JsonElement> created = original.call(registries, ops);
-		WRAPPERS.put(created, registries);
+		REGISTRIES_BY_OPS.put(created, registries);
 		return created;
 	}
 
 	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;thenApplyAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
 	private static CompletableFuture<LayeredRegistryAccess<RegistryLayer>> removeOps(CompletableFuture<List<WritableRegistry<?>>> future, Function<? super List<WritableRegistry<?>>, ? extends LayeredRegistryAccess<RegistryLayer>> fn, Executor executor, Operation<CompletableFuture<LayeredRegistryAccess<RegistryLayer>>> original, @Local RegistryOps<JsonElement> ops) {
 		return original.call(future.thenApply(v -> {
-			WRAPPERS.remove(ops);
+			REGISTRIES_BY_OPS.remove(ops);
 			return v;
 		}), fn, executor);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Inject(method = "method_61240", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
 	private static <T> void modifyLootTable(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir, @Local Map<Identifier, T> map) {
-		map.replaceAll((identifier, t) -> modifyLootTable(t, identifier, registryOps));
-	}
-
-	@Unique
-	private static <T> T modifyLootTable(T value, Identifier id, RegistryOps<JsonElement> ops) {
-		if (!(value instanceof LootTable table)) return value;
-
-		ResourceKey<LootTable> key = ResourceKey.create(Registries.LOOT_TABLE, id);
-		// Populated above.
-		HolderLookup.Provider registries = WRAPPERS.get(ops);
-		// Populated inside SimpleJsonResourceReloadListenerMixin
-		LootTableSource source = LootUtil.SOURCES.get().getOrDefault(id, LootTableSource.DATA_PACK);
-		// Invoke the REPLACE event for the current loot table.
-		LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(key, table, source, registries);
-
-		if (replacement != null) {
-			// Set the loot table to MODIFY to be the replacement loot table.
-			// The MODIFY event will also see it as a replaced loot table via the source.
-			table = replacement;
-			source = LootTableSource.REPLACED;
+		if (lootDataType.registryKey() == (Object) Registries.LOOT_TABLE) {
+			LootModifierImpl.modifyLootTables(resourceManager, registryOps, REGISTRIES_BY_OPS.get(registryOps), (Map<Identifier, LootTable>) map);
 		}
-
-		// Turn the current table into a modifiable builder and invoke the MODIFY event.
-		LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
-		LootTableEvents.MODIFY.invoker().modifyLootTable(key, builder, source, registries);
-
-		return (T) builder.build();
 	}
 
 	@SuppressWarnings("unchecked")

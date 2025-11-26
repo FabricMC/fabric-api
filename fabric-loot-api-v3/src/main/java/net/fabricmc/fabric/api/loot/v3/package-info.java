@@ -25,6 +25,10 @@
  * {@link net.fabricmc.fabric.api.loot.v3.LootTableSource}. This is useful when you only want to modify
  * loot tables from mods or vanilla, but not user-created data packs.
  *
+ * <h2>Modifiers</h2>
+ * {@linkplain net.fabricmc.fabric.api.loot.v3.LootModifier Loot modifiers} can do simple additions to loot tables
+ * directly from data packs without having to use code. They can add new loot pools and loot item functions.
+ *
  * <h2>Extended loot table and pool builders</h2>
  * This API has injected interfaces to add useful methods to
  * {@linkplain net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder loot table} and

@@ -16,14 +16,18 @@
 
 package net.fabricmc.fabric.api.loot.v3;
 
+import com.mojang.serialization.Codec;
+
+import net.minecraft.util.StringRepresentable;
+
 /**
  * Describes where a loot table has been loaded from.
  */
-public enum LootTableSource {
+public enum LootTableSource implements StringRepresentable {
 	/**
 	 * A loot table loaded from the default data pack.
 	 */
-	VANILLA(true),
+	VANILLA(true, "vanilla"),
 
 	/**
 	 * A loot table loaded from mods' bundled resources.
@@ -31,22 +35,29 @@ public enum LootTableSource {
 	 * <p>This includes the additional builtin data packs registered by mods
 	 * with Fabric Resource Loader.
 	 */
-	MOD(true),
+	MOD(true, "mod"),
 
 	/**
 	 * A loot table loaded from an external data pack.
 	 */
-	DATA_PACK(false),
+	DATA_PACK(false, "data_pack"),
 
 	/**
 	 * A loot table created in {@link LootTableEvents#REPLACE}.
 	 */
-	REPLACED(false);
+	REPLACED(false, "replaced");
+
+	/**
+	 * A codec that serializes sources in their {@link StringRepresentable} format (the enum name in lowercase).
+	 */
+	public static final Codec<LootTableSource> CODEC = StringRepresentable.fromEnum(LootTableSource::values);
 
 	private final boolean builtin;
+	private final String id;
 
-	LootTableSource(boolean builtin) {
+	LootTableSource(boolean builtin, String id) {
 		this.builtin = builtin;
+		this.id = id;
 	}
 
 	/**
@@ -59,5 +70,10 @@ public enum LootTableSource {
 	 */
 	public boolean isBuiltin() {
 		return builtin;
+	}
+
+	@Override
+	public String getSerializedName() {
+		return id;
 	}
 }

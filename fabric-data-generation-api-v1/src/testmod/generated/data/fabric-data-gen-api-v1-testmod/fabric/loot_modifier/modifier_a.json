@@ -1,0 +1,34 @@
+{
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:apple"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "target": {
+    "type": "fabric:require_all",
+    "children": [
+      {
+        "type": "fabric:source",
+        "sources": "any_builtin"
+      },
+      {
+        "type": "fabric:loot_table_id",
+        "loot_tables": [
+          "minecraft:blocks/acacia_button"
+        ]
+      }
+    ]
+  }
+}

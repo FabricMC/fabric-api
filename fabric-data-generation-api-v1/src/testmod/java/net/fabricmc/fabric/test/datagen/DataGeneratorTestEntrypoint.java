@@ -77,7 +77,9 @@ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
@@ -96,6 +98,9 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
+import net.fabricmc.fabric.api.loot.v3.LootModifier;
+import net.fabricmc.fabric.api.loot.v3.LootModifierTarget;
+import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
@@ -123,6 +128,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		pack.addProvider(JapaneseLangProvider::new);
 		pack.addProvider(TestDynamicRegistryProvider::new);
 		pack.addProvider(TestPredicateProvider::new);
+		pack.addProvider(TestLootModifierProvider::new);
 		pack.addProvider(TestCustomCodecProvider::new);
 
 		TestBlockTagProvider blockTagProvider = pack.addProvider(TestBlockTagProvider::new);
@@ -493,6 +499,44 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		@Override
 		public String getName() {
 			return "Predicates";
+		}
+	}
+
+	private static class TestLootModifierProvider extends FabricCodecDataProvider<LootModifier> {
+		private TestLootModifierProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+			super(dataOutput, registriesFuture, PackOutput.Target.DATA_PACK, LootModifier.DATA_DIRECTORY, LootModifier.CODEC);
+		}
+
+		@Override
+		protected void configure(BiConsumer<Identifier, LootModifier> provider, HolderLookup.Provider lookup) {
+			LootModifier modifierA = LootModifier.builder()
+					.target(LootModifierTarget.all(LootModifierTarget.builtinSource(), LootModifierTarget.lootTable(net.minecraft.world.level.block.Blocks.ACACIA_BUTTON.getLootTable().orElseThrow())))
+					.pools(LootPool.lootPool()
+							.add(LootItem.lootTableItem(Items.APPLE))
+							.when(ExplosionCondition.survivesExplosion())
+							.build())
+					.build();
+			LootModifier modifierB = LootModifier.builder()
+					.target(LootModifierTarget.any(
+							LootModifierTarget.lootTable(net.minecraft.world.level.block.Blocks.ANVIL),
+							LootModifierTarget.all(
+									LootModifierTarget.lootTable(EntityType.ALLAY),
+									LootModifierTarget.source(LootTableSource.DATA_PACK)
+							)
+					))
+					.pools(LootPool.lootPool()
+							.add(LootItem.lootTableItem(Items.GOLDEN_APPLE))
+							.when(ExplosionCondition.survivesExplosion()))
+					.functions(SetItemCountFunction.setCount(ConstantValue.exactly(10)))
+					.build();
+
+			provider.accept(Identifier.fromNamespaceAndPath(MOD_ID, "modifier_a"), modifierA);
+			provider.accept(Identifier.fromNamespaceAndPath(MOD_ID, "modifier_b"), modifierB);
+		}
+
+		@Override
+		public String getName() {
+			return "Loot Modifiers";
 		}
 	}
 

@@ -85,6 +85,8 @@ public final class LootTableEvents {
 	 *     }
 	 * });
 	 * }
+	 *
+	 * @see LootModifier data-driven loot modifiers
 	 */
 	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(Modify.class, listeners -> (key, tableBuilder, source, registries) -> {
 		for (Modify listener : listeners) {

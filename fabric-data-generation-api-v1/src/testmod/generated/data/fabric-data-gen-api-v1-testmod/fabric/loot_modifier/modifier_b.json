@@ -1,0 +1,54 @@
+{
+  "functions": [
+    {
+      "add": false,
+      "count": 10.0,
+      "function": "minecraft:set_count"
+    }
+  ],
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_apple"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "target": {
+    "type": "fabric:require_any",
+    "children": [
+      {
+        "type": "fabric:loot_table_id",
+        "loot_tables": [
+          "minecraft:blocks/anvil"
+        ]
+      },
+      {
+        "type": "fabric:require_all",
+        "children": [
+          {
+            "type": "fabric:loot_table_id",
+            "loot_tables": [
+              "minecraft:entities/allay"
+            ]
+          },
+          {
+            "type": "fabric:source",
+            "sources": [
+              "data_pack"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

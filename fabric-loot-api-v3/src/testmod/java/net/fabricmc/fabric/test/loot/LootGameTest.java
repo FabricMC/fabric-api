@@ -109,4 +109,13 @@ public final class LootGameTest {
 		context.assertTrue(seenAtStart < seenAtEnd, Component.literal("inline loot table should've been processed by MODIFY_DROPS"));
 		context.succeed();
 	}
+
+	@GameTest
+	public void testLootModifier(GameTestHelper helper) {
+		// Green wool should drop 10 green wools and 10 poisonous potatoes
+		LootTableDrops drops = LootTableDrops.block(helper, Blocks.GREEN_WOOL).drop();
+		drops.assertContains(new ItemStack(Items.GREEN_WOOL, 10));
+		drops.assertContains(new ItemStack(Items.POISONOUS_POTATO, 10));
+		helper.succeed();
+	}
 }
