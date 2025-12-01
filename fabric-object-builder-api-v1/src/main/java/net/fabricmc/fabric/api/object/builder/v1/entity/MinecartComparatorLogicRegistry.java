@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 
 /**
  * A registry for {@linkplain MinecartComparatorLogic custom minecart comparator logic}.

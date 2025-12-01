@@ -45,7 +45,7 @@ public final class RenderLayerHelper {
 	 * {@link BlockState}.
 	 */
 	public static RenderType getEntityBlockLayer(ChunkSectionLayer layer) {
-		return layer == ChunkSectionLayer.TRANSLUCENT ? Sheets.translucentItemSheet() : Sheets.cutoutBlockSheet();
+		return layer == ChunkSectionLayer.TRANSLUCENT ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockSheet();
 	}
 
 	/**

@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ai.behavior.GiveGiftToHero;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 @Mixin(GiveGiftToHero.class)

@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.test.rendering.client;
 
-import java.util.Set;
+import java.util.function.Consumer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.model.AllayModel;
+import net.minecraft.client.model.animal.allay.AllayModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -66,8 +66,7 @@ public class SpecialBlockRendererTest implements ClientModInitializer {
 					}
 
 					@Override
-					public void getExtents(Set<Vector3f> set) {
-					}
+					public void getExtents(Consumer<Vector3fc> consumer) { }
 
 					@Override
 					@Nullable

@@ -26,6 +26,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -48,19 +49,30 @@ import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderingImpl;
 
 @Mixin(LiquidBlockRenderer.class)
 public class LiquidBlockRendererMixin {
+	@Shadow
 	@Final
-	@Shadow
-	private TextureAtlasSprite[] lavaIcons;
-	@Final
-	@Shadow
-	private TextureAtlasSprite[] waterIcons;
-	@Shadow
 	private TextureAtlasSprite waterOverlay;
 
-	@Inject(method = "setupSprites", at = @At("RETURN"))
+	@Shadow
+	@Final
+	private TextureAtlasSprite waterStill;
+
+	@Shadow
+	@Final
+	private TextureAtlasSprite waterFlowing;
+
+	@Shadow
+	@Final
+	private TextureAtlasSprite lavaStill;
+
+	@Shadow
+	@Final
+	private TextureAtlasSprite lavaFlowing;
+
+	@Inject(method = "<init>", at = @At("RETURN"))
 	public void onResourceReloadReturn(CallbackInfo info) {
 		LiquidBlockRenderer self = (LiquidBlockRenderer) (Object) this;
-		((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).onFluidRendererReload(self, waterIcons, lavaIcons, waterOverlay);
+		((FluidRenderHandlerRegistryImpl) FluidRenderHandlerRegistry.INSTANCE).onFluidRendererReload(self, new TextureAtlasSprite[]{waterStill, waterFlowing, waterOverlay}, new TextureAtlasSprite[]{lavaStill, lavaFlowing}, waterOverlay);
 	}
 
 	@Inject(method = "tesselate", at = @At("HEAD"), cancellable = true)
@@ -77,14 +89,37 @@ public class LiquidBlockRendererMixin {
 		}
 	}
 
+	@Unique
+	private TextureAtlasSprite getOrDefault(int index, TextureAtlasSprite original) {
+		FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
+
+		if (info.handler == null) {
+			return original;
+		}
+
+		if (info.sprites.length == index - 1) {
+			return original;
+		}
+
+		return info.sprites[index];
+	}
+
 	@ModifyVariable(
 			method = "tesselate",
 			at = @At("STORE"),
 			ordinal = 0
 	)
-	public TextureAtlasSprite[] modSpriteArray(TextureAtlasSprite[] original) {
-		FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
-		return info.handler != null ? info.sprites : original;
+	public TextureAtlasSprite modStill(TextureAtlasSprite original) {
+		return getOrDefault(0, original);
+	}
+
+	@ModifyVariable(
+			method = "tesselate",
+			at = @At("STORE"),
+			ordinal = 1
+	)
+	public TextureAtlasSprite modFlowing(TextureAtlasSprite original) {
+		return getOrDefault(1, original);
 	}
 
 	@ModifyExpressionValue(
@@ -99,20 +134,21 @@ public class LiquidBlockRendererMixin {
 		return info.handler != null ? info.handler.getFluidColor(world, pos, fluidState) : original;
 	}
 
-	@Definition(id = "getFrameU", method = "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;getU(F)F")
-	@Definition(id = "sprite2", local = @Local(type = TextureAtlasSprite.class))
-	@Expression("@(sprite2).getFrameU(0.0)")
+	@Definition(id = "getU", method = "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;getU(F)F")
+	@Definition(id = "sprite2", local = @Local(type = TextureAtlasSprite.class, ordinal = 2))
+	@Expression("@(sprite2).getU(0.0)")
 	@ModifyVariable(
 			method = "tesselate",
 			at = @At(value = "MIXINEXTRAS:EXPRESSION", ordinal = 0),
-			slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;waterOverlay:Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;"))
+			slice = @Slice(from = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;waterOverlay:Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;")),
+			ordinal = 2
 	)
 	private TextureAtlasSprite modifyOverlaySprite(
-			TextureAtlasSprite sprite2,
+			TextureAtlasSprite waterOverlay,
 			BlockAndTintGetter world,
 			@Local(ordinal = 1) BlockPos neighborPos,
 			@Local(ordinal = 0) boolean isLava,
-			@Local TextureAtlasSprite[] sprites,
+			@Local(ordinal = 1) TextureAtlasSprite flowingSprite,
 			@Share("useOverlay") LocalBooleanRef useOverlay
 	) {
 		final FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
@@ -124,11 +160,11 @@ public class LiquidBlockRendererMixin {
 		if (useOverlay.get()) {
 			return info.handler != null ? info.overlaySprite : this.waterOverlay;
 		} else {
-			return sprites[1];
+			return flowingSprite;
 		}
 	}
 
-	@Definition(id = "sprite2", local = @Local(type = TextureAtlasSprite.class))
+	@Definition(id = "sprite2", local = @Local(type = TextureAtlasSprite.class, ordinal = 2))
 	@Definition(id = "waterOverlaySprite", field = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;waterOverlay:Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;")
 	@Expression("sprite2 != this.waterOverlaySprite")
 	@ModifyExpressionValue(method = "tesselate", at = @At("MIXINEXTRAS:EXPRESSION"))

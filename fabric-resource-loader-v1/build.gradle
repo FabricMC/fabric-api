@@ -12,3 +12,45 @@ testDependencies(project, [
 	':fabric-gametest-api-v1',
 	':fabric-resource-loader-v1'
 ])
+
+sourceSets {
+	testmodA
+	testmodB
+	testmodC
+}
+
+[sourceSets.testmodA, sourceSets.testmodB, sourceSets.testmodC].each { sourceSet ->
+	dependencies {
+		testmodImplementation sourceSet.output
+	}
+	rootProject.dependencies {
+		testmodImplementation sourceSet.output
+	}
+
+	tasks.register("${sourceSet.name}Jar", Jar) {
+		from sourceSet.output
+		archiveBaseName.set(sourceSet.name)
+	}
+}
+
+rootProject.allprojects.each { p ->
+	if (p.extensions.findByName("loom") == null) {
+		return // Skip over the meta projects
+	}
+
+	p.loom.mods.register("fabric-resource-loader-v1-testmod-a") {
+		sourceSet sourceSets.testmodA
+	}
+	p.loom.mods.register("fabric-resource-loader-v1-testmod-b") {
+		sourceSet sourceSets.testmodB
+	}
+	p.loom.mods.register("fabric-resource-loader-v1-testmod-c") {
+		sourceSet sourceSets.testmodC
+	}
+}
+
+loom.nestJars(tasks.named("testmodJar"), project.files(
+	tasks.testmodAJar,
+	tasks.testmodBJar,
+	tasks.testmodCJar
+))

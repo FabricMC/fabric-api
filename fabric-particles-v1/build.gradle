@@ -12,7 +12,7 @@ moduleDependencies(project, [
 testDependencies(project, [
 		':fabric-command-api-v2',
 		':fabric-rendering-v1',
-		':fabric-resource-loader-v0'
+		':fabric-resource-loader-v1'
 ])
 
 validateMixinNames {

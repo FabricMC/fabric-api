@@ -30,9 +30,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.item.v1.EnchantmentSource;
-import net.fabricmc.fabric.impl.resource.loader.BuiltinModResourcePackSource;
-import net.fabricmc.fabric.impl.resource.loader.FabricResource;
-import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
+import net.fabricmc.fabric.impl.resource.pack.BuiltinModResourcePackSource;
+import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 import net.fabricmc.fabric.mixin.item.EnchantmentBuilderAccessor;
 
 public class EnchantmentUtil {
@@ -78,7 +77,7 @@ public class EnchantmentUtil {
 
 	public static EnchantmentSource determineSource(Resource resource) {
 		if (resource != null) {
-			PackSource packSource = ((FabricResource) resource).getFabricPackSource();
+			PackSource packSource = resource.getFabricPackSource();
 
 			if (packSource == PackSource.BUILT_IN) {
 				return EnchantmentSource.VANILLA;

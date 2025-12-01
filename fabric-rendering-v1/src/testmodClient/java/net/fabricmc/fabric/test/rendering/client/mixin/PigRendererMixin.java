@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.entity.PigRenderer;
 import net.minecraft.client.renderer.entity.state.PigRenderState;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -43,7 +43,7 @@ public class PigRendererMixin {
 	@Unique
 	private static final RenderStateDataKey<MovingBlockRenderState> MOVING_BLOCK = RenderStateDataKey.create(() -> "Moving block");
 
-	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/animal/Pig;Lnet/minecraft/client/renderer/entity/state/PigRenderState;F)V", at = @At("TAIL"))
+	@Inject(method = "extractRenderState(Lnet/minecraft/world/entity/animal/pig/Pig;Lnet/minecraft/client/renderer/entity/state/PigRenderState;F)V", at = @At("TAIL"))
 	private void updateRenderStateData(Pig entity, PigRenderState state, float tickProgress, CallbackInfo ci) {
 		BlockState blockState = entity.getBlockStateOn();
 

@@ -38,7 +38,7 @@ import net.fabricmc.fabric.mixin.registry.sync.BuiltInRegistriesAccessor;
  *
  * <pre>
  * {@code
- *  RegistryKey<Registry<String>> registryKey = RegistryKey.ofRegistry(Identifier.of("modid", "registry_name"));
+ *  RegistryKey<Registry<String>> registryKey = RegistryKey.ofRegistry(Identifier.fromNamespaceAndPath("modid", "custom_registry"));
  *  Registry<String> registry = FabricRegistryBuilder.createSimple(registryKey)
  * 													.attribute(RegistryAttribute.SYNCED)
  * 													.buildAndRegister();

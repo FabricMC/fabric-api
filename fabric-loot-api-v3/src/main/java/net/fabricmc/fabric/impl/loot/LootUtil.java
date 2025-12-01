@@ -30,16 +30,15 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
-import net.fabricmc.fabric.impl.resource.loader.BuiltinModResourcePackSource;
-import net.fabricmc.fabric.impl.resource.loader.FabricResource;
-import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
+import net.fabricmc.fabric.impl.resource.pack.BuiltinModResourcePackSource;
+import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 
 public final class LootUtil {
 	public static final ThreadLocal<Map<Identifier, LootTableSource>> SOURCES = ThreadLocal.withInitial(HashMap::new);
 
 	public static LootTableSource determineSource(Resource resource) {
 		if (resource != null) {
-			PackSource packSource = ((FabricResource) resource).getFabricPackSource();
+			PackSource packSource = resource.getFabricPackSource();
 
 			if (packSource == PackSource.BUILT_IN) {
 				return LootTableSource.VANILLA;

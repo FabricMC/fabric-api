@@ -151,7 +151,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 		int cacheIndex;
 
-		if (layer == Sheets.translucentItemSheet()) {
+		if (layer == Sheets.translucentBlockItemSheet()) {
 			cacheIndex = 0;
 		} else if (layer == Sheets.cutoutBlockSheet()) {
 			cacheIndex = GLINT_COUNT;

@@ -68,7 +68,7 @@ public interface FabricSoundInstance {
 	 * class CustomSound extends AbstractSoundInstance {
 	 *     CustomSound() {
 	 *         // Use the sound defined in sounds.json
-	 *         super(Identifier.of("mod_id", "custom_sound"), SoundCategory.BLOCKS, SoundInstance.createRandom());
+	 *         super(Identifier.fromNamespaceAndPath("modid", "custom_sound"), SoundCategory.BLOCKS, SoundInstance.createRandom());
 	 *     }
 	 *
 	 *     @Override

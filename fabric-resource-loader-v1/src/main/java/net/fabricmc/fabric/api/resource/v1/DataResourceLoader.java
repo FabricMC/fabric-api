@@ -27,7 +27,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.crafting.RecipeManager;
 
-import net.fabricmc.fabric.impl.resource.v1.DataResourceLoaderImpl;
+import net.fabricmc.fabric.impl.resource.DataResourceLoaderImpl;
 
 /**
  * Provides various hooks into the {@linkplain net.minecraft.server.packs.PackType#SERVER_DATA server data} resource loader.

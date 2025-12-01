@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.test.resource.loader.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "SynchronizeRegistriesTaskMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

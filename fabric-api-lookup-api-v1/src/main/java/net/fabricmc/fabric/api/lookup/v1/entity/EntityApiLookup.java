@@ -45,7 +45,7 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
  * <p>We need to create the EntityApiLookup. We don't need any context so we use {@link Void}.
  * <pre>{@code
  * public class MyApi {
- *     public static final EntityApiLookup<Leveled, Void> LEVELED_ENTITY = EntityApiLookup.get(Identifier.of("mymod", "leveled_entity"), Leveled.class, Void.class);
+ *     public static final EntityApiLookup<Leveled, Void> LEVELED_ENTITY = EntityApiLookup.get(Identifier.fromNamespaceAndPath("modid", "leveled_entity"), Leveled.class, Void.class);
  * }
  * }</pre>
  *

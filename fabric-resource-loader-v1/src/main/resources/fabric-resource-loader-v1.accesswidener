@@ -1,2 +1,5 @@
 accessWidener	v2	official
 accessible	class	net/minecraft/server/MinecraftServer$ReloadableResources
+accessible	field	net/minecraft/server/packs/repository/FolderRepositorySource	packSource	Lnet/minecraft/server/packs/repository/PackSource;
+accessible	field	net/minecraft/server/packs/repository/PackRepository	sources	Ljava/util/Set;
+accessible	method	net/minecraft/server/packs/metadata/pack/PackMetadataSection	codecForPackType	(Lnet/minecraft/server/packs/PackType;)Lcom/mojang/serialization/Codec;

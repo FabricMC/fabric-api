@@ -22,17 +22,17 @@ transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	roll
 transitive-accessible	field	net/minecraft/world/level/storage/loot/LootPool	bonusRolls	Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
 
 # Villager trade factories
-transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$TypeSpecificTrade
-transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$EnchantBookForEmeralds
-transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$EmeraldForItems
-transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$ItemsForEmeralds
-transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$SuspiciousStewForEmerald
-transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$ItemsAndEmeraldsToItems
-transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$EnchantedItemForEmeralds
-transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$EmeraldsForVillagerTypeItem
-transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$TippedArrowForItemsAndEmeralds
-transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$TreasureMapForEmeralds
-transitive-accessible	class	net/minecraft/world/entity/npc/VillagerTrades$DyedArmorForEmeralds
+transitive-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$TypeSpecificTrade
+transitive-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$EnchantBookForEmeralds
+transitive-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$EmeraldForItems
+transitive-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$ItemsForEmeralds
+transitive-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$SuspiciousStewForEmerald
+transitive-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$ItemsAndEmeraldsToItems
+transitive-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$EnchantedItemForEmeralds
+transitive-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$EmeraldsForVillagerTypeItem
+transitive-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$TippedArrowForItemsAndEmeralds
+transitive-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$TreasureMapForEmeralds
+transitive-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$DyedArmorForEmeralds
 
 # Registering custom entity spawn restrictions
 transitive-accessible	method	net/minecraft/world/entity/SpawnPlacements	register	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/SpawnPlacementType;Lnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/entity/SpawnPlacements$SpawnPredicate;)V
@@ -88,7 +88,7 @@ transitive-accessible	method	net/minecraft/network/chat/TextColor	formatValue	()
 transitive-accessible	method	net/minecraft/network/chat/contents/TranslatableContents	getArgument	(I)Lnet/minecraft/network/chat/FormattedText;
 
 # Villagers
-transitive-accessible	field	net/minecraft/world/entity/npc/VillagerType	BY_BIOME	Ljava/util/Map;
+transitive-accessible	field	net/minecraft/world/entity/npc/villager/VillagerType	BY_BIOME	Ljava/util/Map;
 
 # Access stack list in SimpleInventory
 transitive-accessible	field	net/minecraft/world/SimpleContainer	items	Lnet/minecraft/core/NonNullList;

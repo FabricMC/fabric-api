@@ -30,8 +30,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.SpriteGetter;
-import net.minecraft.data.AtlasIds;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
@@ -60,7 +60,7 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 		this.mesh = mesh;
 
 		if (!animated) {
-			SpriteFinder spriteFinder = spriteGetter.spriteFinder(AtlasIds.BLOCKS);
+			SpriteFinder spriteFinder = spriteGetter.spriteFinder(TextureAtlas.LOCATION_BLOCKS);
 
 			mesh.forEach(quad -> {
 				if (animated) {
