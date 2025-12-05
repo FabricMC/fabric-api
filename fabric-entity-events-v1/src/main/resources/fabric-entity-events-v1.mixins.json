@@ -2,14 +2,20 @@
   "required": true,
   "package": "net.fabricmc.fabric.mixin.entity.event",
   "compatibilityLevel": "JAVA_21",
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  },
   "mixins": [
     "EntityMixin",
     "LivingEntityMixin",
     "MobMixin",
-    "PlayerMixin",
     "PlayerListMixin",
+    "PlayerMixin",
     "ServerPlayerMixin",
-    "elytra.LivingEntityMixin"
+    "elytra.LivingEntityMixin",
+    "effect.ClearAllStatusEffectsConsumeEffectMixin",
+    "effect.LivingEntityMixin",
+    "effect.RemoveStatusEffectsConsumeEffectMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

@@ -1,0 +1,123 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.mixin.entity.event.effect;
+
+import java.util.Collection;
+
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.sugar.Local;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.core.Holder;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+
+import net.fabricmc.fabric.api.entity.event.v1.ServerMobEffectEvents;
+
+@Mixin(LivingEntity.class)
+public final class LivingEntityMixin {
+	@WrapMethod(method = "canBeAffected")
+	private boolean allowAddEffect(MobEffectInstance effectInstance, Operation<Boolean> original) {
+		if (!ServerMobEffectEvents.ALLOW_ADD.invoker().allowAdd(effectInstance, (LivingEntity) (Object) this)) {
+			return false;
+		} else {
+			return original.call(effectInstance);
+		}
+	}
+
+	@Inject(
+			method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z",
+			at = @At(
+					value = "INVOKE",
+					target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"
+			)
+	)
+	private void beforeAddEffect(MobEffectInstance effectInstance, Entity entity, CallbackInfoReturnable<Boolean> cir) {
+		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, (LivingEntity) (Object) this);
+	}
+
+	@Inject(
+			method = "forceAddEffect",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/world/entity/LivingEntity;canBeAffected(Lnet/minecraft/world/effect/MobEffectInstance;)Z",
+					shift = At.Shift.AFTER
+			)
+	)
+	private void beforeForceAddEffect(MobEffectInstance effectInstance, Entity entity, CallbackInfo ci) {
+		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, (LivingEntity) (Object) this);
+	}
+
+	@Inject(
+			method = "onEffectAdded",
+			at = @At("RETURN")
+	)
+	private void afterAddEffect(MobEffectInstance effectInstance, Entity entity, CallbackInfo ci) {
+		if (!((LivingEntity) (Object) this).level().isClientSide()) {
+			ServerMobEffectEvents.AFTER_ADD.invoker().afterAdd(effectInstance, (LivingEntity) (Object) this);
+		}
+	}
+
+	@Inject(
+			method = "removeEffect",
+			at = @At("HEAD")
+	)
+	private void beforeRemoveEffect(Holder<MobEffect> holder, CallbackInfoReturnable<Boolean> cir) {
+		ServerMobEffectEvents.BEFORE_REMOVE.invoker().beforeRemove(((LivingEntity) (Object) this).getEffect(holder), (LivingEntity) (Object) this);
+	}
+
+	@Inject(
+			method = "tickEffects",
+			at = @At(
+					value = "INVOKE",
+					target = "Ljava/util/Iterator;remove()V"
+			)
+	)
+	private void beforeExpireRemoveEffect(CallbackInfo ci, @Local MobEffectInstance effectInstance) {
+		ServerMobEffectEvents.BEFORE_REMOVE.invoker().beforeRemove(effectInstance, (LivingEntity) (Object) this);
+	}
+
+	@Inject(
+			method = "removeAllEffects",
+			at = @At(
+					value = "INVOKE",
+					target = "Lcom/google/common/collect/Maps;newHashMap(Ljava/util/Map;)Ljava/util/HashMap;"
+			)
+	)
+	private void beforeRemoveAllEffects(CallbackInfoReturnable<Boolean> cir) {
+		for (MobEffectInstance effectInstance : ((LivingEntity) (Object) this).getActiveEffects()) {
+			ServerMobEffectEvents.BEFORE_REMOVE.invoker().beforeRemove(effectInstance, (LivingEntity) (Object) this);
+		}
+	}
+
+	@Inject(
+			method = "onEffectsRemoved",
+			at = @At("RETURN")
+	)
+	private void afterRemoveEffect(Collection<MobEffectInstance> collection, CallbackInfo ci) {
+		for (MobEffectInstance effectInstance : collection) {
+			ServerMobEffectEvents.AFTER_REMOVE.invoker().afterRemove(effectInstance, (LivingEntity) (Object) this);
+		}
+	}
+}
