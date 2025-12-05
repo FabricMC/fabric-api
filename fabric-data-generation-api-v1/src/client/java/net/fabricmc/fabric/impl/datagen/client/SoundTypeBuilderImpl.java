@@ -45,7 +45,6 @@ import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
 public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SoundTypeBuilderImpl.class);
 
-	private SoundSource category = SoundSource.NEUTRAL;
 	private boolean replace = false;
 	@Nullable
 	private String subtitle;
@@ -55,8 +54,6 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 
 	@Override
 	public SoundTypeBuilder category(SoundSource category) {
-		Objects.requireNonNull(category, "Sound event category must not be null.");
-		this.category = category;
 		return this;
 	}
 
@@ -100,27 +97,23 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 			}
 		}
 
-		return new SoundType(sounds, category, replace, Optional.ofNullable(subtitle));
+		return new SoundType(sounds, replace, Optional.ofNullable(subtitle));
 	}
 
 	/**
-	 * Extension of the sound event registration class for data generation.
+	 * Record of the sound event registration class for data generation.
 	 *
 	 * @param sounds   List of sounds to use by the sound event.
-	 * @param category Sound source that can be used by fabric and mods to play the sound event with.
 	 * @param replace  Whether the sound type is allowed to override an existing sound event.
 	 * @param subtitle Optional string to use as translation key for subtitle text.
 	 * @see net.minecraft.client.resources.sounds.SoundEventRegistration
 	 */
-	public record SoundType(List<Entry> sounds, SoundSource category, boolean replace, Optional<String> subtitle) {
-		private static final Map<String, SoundSource> CATEGORIES = Arrays.stream(SoundSource.values()).collect(Collectors.toMap(SoundSource::getName, Function.identity()));
-		private static final Codec<SoundSource> SOUND_CATEGORY_CODEC = Codec.stringResolver(SoundSource::getName, name -> CATEGORIES.getOrDefault(name.toLowerCase(Locale.ROOT), SoundSource.NEUTRAL));
+	public record SoundType(List<Entry> sounds, boolean replace, Optional<String> subtitle) {
 		/**
 		 * @see net.minecraft.client.resources.sounds.SoundEventRegistrationSerializer
 		 */
 		public static final Codec<SoundType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Entry.CODEC.listOf().fieldOf("sounds").forGetter(SoundType::sounds),
-				SOUND_CATEGORY_CODEC.optionalFieldOf("category", SoundSource.NEUTRAL).forGetter(SoundType::category),
 				Codec.BOOL.optionalFieldOf("replace", false).forGetter(SoundType::replace),
 				Codec.STRING.optionalFieldOf("subtitle").forGetter(SoundType::subtitle)
 		).apply(instance, SoundType::new));
