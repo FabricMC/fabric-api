@@ -46,6 +46,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SoundTypeBuilderImpl.class);
 
 	private SoundSource category = SoundSource.NEUTRAL;
+	private boolean replace = false;
 	@Nullable
 	private String subtitle;
 	private final List<Entry> sounds = new ArrayList<>();
@@ -56,6 +57,12 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	public SoundTypeBuilder category(SoundSource category) {
 		Objects.requireNonNull(category, "Sound event category must not be null.");
 		this.category = category;
+		return this;
+	}
+
+	@Override
+	public SoundTypeBuilder replace(boolean replace) {
+		this.replace = replace;
 		return this;
 	}
 
@@ -93,15 +100,19 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 			}
 		}
 
-		return new SoundType(sounds, category, Optional.ofNullable(subtitle));
+		return new SoundType(sounds, category, replace, Optional.ofNullable(subtitle));
 	}
 
-	public record SoundType(List<Entry> sounds, SoundSource category, Optional<String> subtitle) {
+	public record SoundType(List<Entry> sounds, SoundSource category, boolean replace, Optional<String> subtitle) {
 		private static final Map<String, SoundSource> CATEGORIES = Arrays.stream(SoundSource.values()).collect(Collectors.toMap(SoundSource::getName, Function.identity()));
 		private static final Codec<SoundSource> SOUND_CATEGORY_CODEC = Codec.stringResolver(SoundSource::getName, name -> CATEGORIES.getOrDefault(name.toLowerCase(Locale.ROOT), SoundSource.NEUTRAL));
+		/**
+		 * @see net.minecraft.client.resources.sounds.SoundEventRegistrationSerializer
+		 */
 		public static final Codec<SoundType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Entry.CODEC.listOf().fieldOf("sounds").forGetter(SoundType::sounds),
-				SOUND_CATEGORY_CODEC.fieldOf("category").forGetter(SoundType::category),
+				SOUND_CATEGORY_CODEC.optionalFieldOf("category", SoundSource.NEUTRAL).forGetter(SoundType::category),
+				Codec.BOOL.optionalFieldOf("replace", false).forGetter(SoundType::replace),
 				Codec.STRING.optionalFieldOf("subtitle").forGetter(SoundType::subtitle)
 		).apply(instance, SoundType::new));
 	}
