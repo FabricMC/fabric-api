@@ -103,6 +103,15 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		return new SoundType(sounds, category, replace, Optional.ofNullable(subtitle));
 	}
 
+	/**
+	 * Extension of the sound event registration class for data generation.
+	 *
+	 * @param sounds   List of sounds to use by the sound event.
+	 * @param category Sound source that can be used by fabric and mods to play the sound event with.
+	 * @param replace  Whether the sound type is allowed to override an existing sound event.
+	 * @param subtitle Optional string to use as translation key for subtitle text.
+	 * @see net.minecraft.client.resources.sounds.SoundEventRegistration
+	 */
 	public record SoundType(List<Entry> sounds, SoundSource category, boolean replace, Optional<String> subtitle) {
 		private static final Map<String, SoundSource> CATEGORIES = Arrays.stream(SoundSource.values()).collect(Collectors.toMap(SoundSource::getName, Function.identity()));
 		private static final Codec<SoundSource> SOUND_CATEGORY_CODEC = Codec.stringResolver(SoundSource::getName, name -> CATEGORIES.getOrDefault(name.toLowerCase(Locale.ROOT), SoundSource.NEUTRAL));
@@ -117,13 +126,19 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		).apply(instance, SoundType::new));
 	}
 
-	private record Entry(Identifier name, RegistrationType type, float volume, float pitch, int weight, int attenuationDistance, boolean stream, boolean preload) {
+	/**
+	 * Record of the sound class to use for data generation.
+	 *
+	 * @see net.minecraft.client.resources.sounds.Sound
+	 */
+	private record Entry(Identifier name, RegistrationType type, float volume, float pitch, int weight,
+						 int attenuationDistance, boolean stream, boolean preload) {
 		private static final Codec<Entry> MAP_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Identifier.CODEC.fieldOf("name").forGetter(Entry::name),
 				RegistrationType.CODEC.optionalFieldOf("type", RegistrationType.FILE).forGetter(Entry::type),
-				Codec.FLOAT.optionalFieldOf("volume", EntryBuilder.DEFAULT_VOLUME).forGetter(Entry::volume),
-				Codec.FLOAT.optionalFieldOf("pitch", EntryBuilder.DEFAULT_PITCH).forGetter(Entry::pitch),
-				Codec.INT.optionalFieldOf("weight", EntryBuilder.DEFAULT_WEIGHT).forGetter(Entry::weight),
+				Codec.floatRange(0.0F, Float.MAX_VALUE).optionalFieldOf("volume", EntryBuilder.DEFAULT_VOLUME).forGetter(Entry::volume),
+				Codec.floatRange(0.0F, Float.MAX_VALUE).optionalFieldOf("pitch", EntryBuilder.DEFAULT_PITCH).forGetter(Entry::pitch),
+				Codec.intRange(0, Integer.MAX_VALUE).optionalFieldOf("weight", EntryBuilder.DEFAULT_WEIGHT).forGetter(Entry::weight),
 				Codec.INT.optionalFieldOf("attenuation_distance", EntryBuilder.DEFAULT_ATTENUATION_DISTANCE).forGetter(Entry::attenuationDistance),
 				Codec.BOOL.optionalFieldOf("stream", false).forGetter(Entry::stream),
 				Codec.BOOL.optionalFieldOf("preload", false).forGetter(Entry::preload)
