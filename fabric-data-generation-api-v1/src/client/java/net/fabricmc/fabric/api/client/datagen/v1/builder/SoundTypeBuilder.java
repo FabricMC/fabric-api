@@ -67,6 +67,9 @@ public interface SoundTypeBuilder {
 	 * Sets the sound category the sound event must play on.
 	 *
 	 * <p>The default category is {@link SoundSource#NEUTRAL}. GUI elements should use {@link SoundSource#MASTER}.
+	 *
+	 * @apiNote Category is not used by vanilla for the sound event registration,
+	 * but can be specified for fabric and other mods to use.
 	 */
 	SoundTypeBuilder category(SoundSource category);
 
