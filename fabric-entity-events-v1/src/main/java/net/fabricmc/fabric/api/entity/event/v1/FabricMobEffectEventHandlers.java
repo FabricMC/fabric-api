@@ -9,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
  */
 public interface FabricMobEffectEventHandlers {
 	/**
-	 * Called after an {@linkplain MobEffectInstance instance of this effect} has been added to a {@linkplain LivingEntity living entity}.
+	 * Called before an {@linkplain MobEffectInstance instance of this effect} has been added to a {@linkplain LivingEntity living entity}.
 	 *
 	 * @param effectInstance an instance of this effect
 	 * @param entity the entity the effect instance is being applied to
@@ -18,7 +18,7 @@ public interface FabricMobEffectEventHandlers {
 	}
 
 	/**
-	 * Called after an {@linkplain MobEffectInstance instance of this effect} has been removed from a {@linkplain LivingEntity living entity}.
+	 * Called before an {@linkplain MobEffectInstance instance of this effect} has been removed from a {@linkplain LivingEntity living entity}.
 	 *
 	 * @param effectInstance an instance of this effect
 	 * @param entity the entity the effect instance is being removed from
