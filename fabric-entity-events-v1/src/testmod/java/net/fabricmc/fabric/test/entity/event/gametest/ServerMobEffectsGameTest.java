@@ -57,11 +57,11 @@ public class ServerMobEffectsGameTest {
 		var obj = new Object() { // Scoped events at home
 			GameTestHelper contextRef = context;
 		};
-		ServerMobEffectEvents.BEFORE_ADD.register((effectInstance, entity) -> {
+		ServerMobEffectEvents.BEFORE_ADD.register((effectInstance, entity, ctx) -> {
 			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
 			obj.contextRef.assertFalse(entity.hasEffect(MobEffects.ABSORPTION), "The Salmon mustn't have absorption yet");
 		});
-		ServerMobEffectEvents.AFTER_ADD.register((effectInstance, entity) -> {
+		ServerMobEffectEvents.AFTER_ADD.register((effectInstance, entity, ctx) -> {
 			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
 			obj.contextRef.assertTrue(entity.hasEffect(MobEffects.ABSORPTION), "The Salmon must have absorption at this point");
 		});
@@ -113,11 +113,11 @@ public class ServerMobEffectsGameTest {
 		var obj = new Object() { // Scoped events at home
 			GameTestHelper contextRef = context;
 		};
-		ServerMobEffectEvents.BEFORE_REMOVE.register((effectInstance, entity) -> {
+		ServerMobEffectEvents.BEFORE_REMOVE.register((effectInstance, entity, ctx) -> {
 			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
 			obj.contextRef.assertTrue(entity.hasEffect(MobEffects.SATURATION), "The Salmon must have saturation as it should not yet have been removed");
 		});
-		ServerMobEffectEvents.AFTER_REMOVE.register((effectInstance, entity) -> {
+		ServerMobEffectEvents.AFTER_REMOVE.register((effectInstance, entity, ctx) -> {
 			if (!isThisTheSalmon(entity) || obj.contextRef == null) return;
 			obj.contextRef.assertFalse(entity.hasEffect(MobEffects.SATURATION), "The Salmon mustn't have saturation as it should have been removed by now");
 		});

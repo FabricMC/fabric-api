@@ -49,7 +49,7 @@ public final class ServerMobEffectEvents {
 	 */
 	public static final Event<AllowAdd> ALLOW_ADD = EventFactory.createArrayBacked(AllowAdd.class, callbacks -> (effectInstance, entity, ctx) -> {
 		for (AllowAdd callback : callbacks) {
-			if (!callback.allowAdd(effectInstance, entity, MobEffectUtil.CURRENT_COMMAND_CONTEXT.get())) {
+			if (!callback.allowAdd(effectInstance, entity, ctx)) {
 				return false;
 			}
 		}
@@ -66,9 +66,9 @@ public final class ServerMobEffectEvents {
 	 *
 	 * @see MobEffect#onEffectAdded(MobEffectInstance, LivingEntity)
 	 */
-	public static final Event<BeforeAdd> BEFORE_ADD = EventFactory.createArrayBacked(BeforeAdd.class, callbacks -> (effectInstance, entity) -> {
+	public static final Event<BeforeAdd> BEFORE_ADD = EventFactory.createArrayBacked(BeforeAdd.class, callbacks -> (effectInstance, entity, ctx) -> {
 		for (BeforeAdd callback : callbacks) {
-			callback.beforeAdd(effectInstance, entity);
+			callback.beforeAdd(effectInstance, entity, ctx);
 		}
 	});
 
@@ -79,9 +79,9 @@ public final class ServerMobEffectEvents {
 	 * only after an effect is applied, such as a method that
 	 * checks if an effect is present on an entity.
 	 */
-	public static final Event<AfterAdd> AFTER_ADD = EventFactory.createArrayBacked(AfterAdd.class, callbacks -> (effectInstance, entity) -> {
+	public static final Event<AfterAdd> AFTER_ADD = EventFactory.createArrayBacked(AfterAdd.class, callbacks -> (effectInstance, entity, ctx) -> {
 		for (AfterAdd callback : callbacks) {
-			callback.afterAdd(effectInstance, entity);
+			callback.afterAdd(effectInstance, entity, ctx);
 		}
 	});
 
@@ -106,7 +106,7 @@ public final class ServerMobEffectEvents {
 	 */
 	public static final Event<AllowEarlyRemove> ALLOW_EARLY_REMOVE = EventFactory.createArrayBacked(AllowEarlyRemove.class, callbacks -> (effectInstance, entity, ctx) -> {
 		for (AllowEarlyRemove callback : callbacks) {
-			if (!callback.allowEarlyRemove(effectInstance, entity, MobEffectUtil.CURRENT_COMMAND_CONTEXT.get())) {
+			if (!callback.allowEarlyRemove(effectInstance, entity, ctx)) {
 				return false;
 			}
 		}
@@ -123,9 +123,9 @@ public final class ServerMobEffectEvents {
 	 *
 	 * @see MobEffect#onEffectRemoved(MobEffectInstance, LivingEntity)
 	 */
-	public static final Event<BeforeRemove> BEFORE_REMOVE = EventFactory.createArrayBacked(BeforeRemove.class, callbacks -> (effectInstance, entity) -> {
+	public static final Event<BeforeRemove> BEFORE_REMOVE = EventFactory.createArrayBacked(BeforeRemove.class, callbacks -> (effectInstance, entity, ctx) -> {
 		for (BeforeRemove callback : callbacks) {
-			callback.beforeRemove(effectInstance, entity);
+			callback.beforeRemove(effectInstance, entity, ctx);
 		}
 	});
 
@@ -136,17 +136,17 @@ public final class ServerMobEffectEvents {
 	 * only after an effect is removed, such as a method that
 	 * checks if an effect is present on an entity.
 	 */
-	public static final Event<AfterRemove> AFTER_REMOVE = EventFactory.createArrayBacked(AfterRemove.class, callbacks -> (effectInstance, entity) -> {
+	public static final Event<AfterRemove> AFTER_REMOVE = EventFactory.createArrayBacked(AfterRemove.class, callbacks -> (effectInstance, entity, ctx) -> {
 		for (AfterRemove callback : callbacks) {
-			callback.afterRemove(effectInstance, entity);
+			callback.afterRemove(effectInstance, entity, ctx);
 		}
 	});
 
 	static {
-		BEFORE_ADD.register(((effectInstance, entity) -> {
+		BEFORE_ADD.register(((effectInstance, entity, ctx) -> {
 			effectInstance.getEffect().value().onEffectAdded(effectInstance, entity);
 		}));
-		BEFORE_REMOVE.register((effectInstance, entity) -> {
+		BEFORE_REMOVE.register((effectInstance, entity, ctx) -> {
 			effectInstance.getEffect().value().onEffectRemoved(effectInstance, entity);
 		});
 	}
@@ -174,8 +174,9 @@ public final class ServerMobEffectEvents {
 		 *
 		 * @param effectInstance the instance of the status effect being added
 		 * @param entity the entity on which the effect is being added
+		 * @param ctx context
 		 */
-		void beforeAdd(MobEffectInstance effectInstance, LivingEntity entity);
+		void beforeAdd(MobEffectInstance effectInstance, LivingEntity entity, EffectEventContext ctx);
 	}
 
 	@FunctionalInterface
@@ -185,8 +186,9 @@ public final class ServerMobEffectEvents {
 		 *
 		 * @param effectInstance the instance of the added status effect
 		 * @param entity the entity on which the effect has been added
+		 * @param ctx context
 		 */
-		void afterAdd(MobEffectInstance effectInstance, LivingEntity entity);
+		void afterAdd(MobEffectInstance effectInstance, LivingEntity entity, EffectEventContext ctx);
 	}
 
 	@FunctionalInterface
@@ -212,8 +214,9 @@ public final class ServerMobEffectEvents {
 		 *
 		 * @param effectInstance the instance of the status effect being removed
 		 * @param entity the entity on which the effect is being removed
+		 * @param ctx context
 		 */
-		void beforeRemove(MobEffectInstance effectInstance, LivingEntity entity);
+		void beforeRemove(MobEffectInstance effectInstance, LivingEntity entity, EffectEventContext ctx);
 	}
 
 	@FunctionalInterface
@@ -223,7 +226,8 @@ public final class ServerMobEffectEvents {
 		 *
 		 * @param effectInstance the instance of the removed status effect
 		 * @param entity the entity from which the effect has been removed
+		 * @param ctx context
 		 */
-		void afterRemove(MobEffectInstance effectInstance, LivingEntity entity);
+		void afterRemove(MobEffectInstance effectInstance, LivingEntity entity, EffectEventContext ctx);
 	}
 }

@@ -73,7 +73,7 @@ public abstract class LivingEntityMixin extends Entity {
 			return;
 		}
 
-		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, (LivingEntity) (Object) this);
+		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.CURRENT_COMMAND_CONTEXT.get());
 	}
 
 	@Inject(
@@ -89,7 +89,7 @@ public abstract class LivingEntityMixin extends Entity {
 			return;
 		}
 
-		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, (LivingEntity) (Object) this);
+		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.CURRENT_COMMAND_CONTEXT.get());
 	}
 
 	@Inject(
@@ -102,7 +102,7 @@ public abstract class LivingEntityMixin extends Entity {
 		}
 
 		if (!(this).level().isClientSide()) {
-			ServerMobEffectEvents.AFTER_ADD.invoker().afterAdd(effectInstance, (LivingEntity) (Object) this);
+			ServerMobEffectEvents.AFTER_ADD.invoker().afterAdd(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.CURRENT_COMMAND_CONTEXT.get());
 		}
 	}
 
@@ -160,7 +160,7 @@ public abstract class LivingEntityMixin extends Entity {
 		}
 
 		ServerMobEffectEvents.BEFORE_REMOVE.invoker()
-				.beforeRemove(((LivingEntity) (Object) this).getEffect(holder), (LivingEntity) (Object) this);
+				.beforeRemove(((LivingEntity) (Object) this).getEffect(holder), (LivingEntity) (Object) this, MobEffectUtil.CURRENT_COMMAND_CONTEXT.get());
 	}
 
 	@Inject(
@@ -176,7 +176,7 @@ public abstract class LivingEntityMixin extends Entity {
 		}
 
 		ServerMobEffectEvents.BEFORE_REMOVE.invoker()
-				.beforeRemove(effectInstance, (LivingEntity) (Object) this);
+				.beforeRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.CURRENT_COMMAND_CONTEXT.get());
 	}
 
 	@Inject(
@@ -193,7 +193,7 @@ public abstract class LivingEntityMixin extends Entity {
 
 		for (MobEffectInstance effectInstance : ((LivingEntity) (Object) this).getActiveEffects()) {
 			ServerMobEffectEvents.BEFORE_REMOVE.invoker()
-					.beforeRemove(effectInstance, (LivingEntity) (Object) this);
+					.beforeRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.CURRENT_COMMAND_CONTEXT.get());
 		}
 	}
 
@@ -208,7 +208,7 @@ public abstract class LivingEntityMixin extends Entity {
 
 		for (MobEffectInstance effectInstance : collection) {
 			ServerMobEffectEvents.AFTER_REMOVE.invoker()
-					.afterRemove(effectInstance, (LivingEntity) (Object) this);
+					.afterRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.CURRENT_COMMAND_CONTEXT.get());
 		}
 	}
 
