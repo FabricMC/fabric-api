@@ -37,12 +37,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerMobEffectEvents;
+import net.fabricmc.fabric.impl.entity.event.effect.MobEffectUtil;
 
 @Mixin(LivingEntity.class)
 public final class LivingEntityMixin {
 	@WrapMethod(method = "canBeAffected")
 	private boolean allowAddEffect(MobEffectInstance effectInstance, Operation<Boolean> original) {
-		if (!ServerMobEffectEvents.ALLOW_ADD.invoker().allowAdd(effectInstance, (LivingEntity) (Object) this)) {
+		if (!ServerMobEffectEvents.ALLOW_ADD.invoker().allowAdd(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.ARE_WE_COMMAND.get())) {
 			return false;
 		} else {
 			return original.call(effectInstance);
@@ -97,7 +98,7 @@ public final class LivingEntityMixin {
 			Holder<MobEffect> effect = entry.getKey();
 			MobEffectInstance effectInstance = entry.getValue();
 			boolean cannotRemove = !ServerMobEffectEvents.ALLOW_EARLY_REMOVE.invoker()
-					.allowEarlyRemove(effectInstance, (LivingEntity) (Object) this);
+					.allowEarlyRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.ARE_WE_COMMAND.get());
 
 			if (cannotRemove) {
 				instance.put(effect, effectInstance);
@@ -109,7 +110,7 @@ public final class LivingEntityMixin {
 	private boolean allowRemoveEffect(Holder<MobEffect> holder, Operation<Boolean> original) {
 		MobEffectInstance effectInstance = ((LivingEntity) (Object) this).getEffect(holder);
 		boolean cannotRemove = !ServerMobEffectEvents.ALLOW_EARLY_REMOVE.invoker()
-				.allowEarlyRemove(effectInstance, (LivingEntity) (Object) this);
+				.allowEarlyRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.ARE_WE_COMMAND.get());
 
 		if (cannotRemove) {
 			return false;

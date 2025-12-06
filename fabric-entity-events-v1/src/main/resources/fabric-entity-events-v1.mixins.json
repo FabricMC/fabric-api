@@ -12,6 +12,7 @@
     "PlayerListMixin",
     "PlayerMixin",
     "ServerPlayerMixin",
+    "effect.CommandDispatcherMixin",
     "effect.LivingEntityMixin",
     "effect.MobEffectMixin",
     "elytra.LivingEntityMixin"

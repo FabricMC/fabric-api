@@ -22,6 +22,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.impl.entity.event.effect.MobEffectUtil;
 
 /**
  * Events related to {@linkplain MobEffect status effects} in mobs.
@@ -46,9 +47,9 @@ public final class ServerMobEffectEvents {
 	 * {@linkplain net.fabricmc.fabric.api.attachment.v1.AttachmentType data attachment},
 	 * or another status effect.
 	 */
-	public static final Event<AllowAdd> ALLOW_ADD = EventFactory.createArrayBacked(AllowAdd.class, callbacks -> (effectInstance, entity) -> {
+	public static final Event<AllowAdd> ALLOW_ADD = EventFactory.createArrayBacked(AllowAdd.class, callbacks -> (effectInstance, entity, isFromCommand) -> {
 		for (AllowAdd callback : callbacks) {
-			if (!callback.allowAdd(effectInstance, entity)) {
+			if (!callback.allowAdd(effectInstance, entity, MobEffectUtil.ARE_WE_COMMAND.get())) {
 				return false;
 			}
 		}
@@ -84,9 +85,9 @@ public final class ServerMobEffectEvents {
 		}
 	});
 
-	public static final Event<AllowEarlyRemove> ALLOW_EARLY_REMOVE = EventFactory.createArrayBacked(AllowEarlyRemove.class, callbacks -> (effectInstance, entity) -> {
+	public static final Event<AllowEarlyRemove> ALLOW_EARLY_REMOVE = EventFactory.createArrayBacked(AllowEarlyRemove.class, callbacks -> (effectInstance, entity, isFromCommand) -> {
 		for (AllowEarlyRemove callback : callbacks) {
-			if (!callback.allowEarlyRemove(effectInstance, entity)) {
+			if (!callback.allowEarlyRemove(effectInstance, entity, MobEffectUtil.ARE_WE_COMMAND.get())) {
 				return false;
 			}
 		}
@@ -141,9 +142,10 @@ public final class ServerMobEffectEvents {
 		 *
 		 * @param effectInstance the instance of the status effect being added
 		 * @param entity the entity on which the effect is being added
+		 * @param isFromCommand whether the caller of the addition method is a command
 		 * @return whether this effect may be added
 		 */
-		boolean allowAdd(MobEffectInstance effectInstance, LivingEntity entity);
+		boolean allowAdd(MobEffectInstance effectInstance, LivingEntity entity, boolean isFromCommand);
 	}
 
 	@FunctionalInterface
@@ -179,9 +181,10 @@ public final class ServerMobEffectEvents {
 		 *
 		 * @param effectInstance the instance of the status effect being removed
 		 * @param entity the entity on which the effect is being removed
+		 * @param isFromCommand whether the caller of the removal method is a command
 		 * @return whether this effect may be removed
 		 */
-		boolean allowEarlyRemove(MobEffectInstance effectInstance, LivingEntity entity);
+		boolean allowEarlyRemove(MobEffectInstance effectInstance, LivingEntity entity, boolean isFromCommand);
 	}
 
 	@FunctionalInterface
