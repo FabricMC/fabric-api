@@ -38,17 +38,18 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 
 public class CustomEnchantmentEffectsTest implements ModInitializer {
-	// weird impaling is a copy of impaling used for testing (just in case minecraft changes impaling for some reason)
+	// weird impaling is a copy of impaling used for testing (just in case minecraft
+	// changes impaling for some reason)
 	public static final ResourceKey<Enchantment> WEIRD_IMPALING = ResourceKey.create(
 			Registries.ENCHANTMENT,
-			Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "weird_impaling")
-	);
+			Identifier.fromNamespaceAndPath("fabric-item-api-v1-testmod", "weird_impaling"));
 
 	@Override
 	public void onInitialize() {
 		EnchantmentEvents.MODIFY.register(
 				(key, builder, source) -> {
 					if (source.isBuiltin() && key == WEIRD_IMPALING) {
+
 						// make impaling set things on fire
 						builder.withEffect(
 								EnchantmentEffectComponents.POST_ATTACK,
@@ -56,9 +57,7 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 								EnchantmentTarget.VICTIM,
 								new Ignite(LevelBasedValue.perLevel(4.0f)),
 								DamageSourceCondition.hasDamageSource(
-										DamageSourcePredicate.Builder.damageType().isDirect(true)
-								)
-						);
+										DamageSourcePredicate.Builder.damageType().isDirect(true)));
 
 						// add bonus impaling damage to zombie
 						builder.withEffect(
@@ -67,11 +66,9 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 								LootItemEntityPropertyCondition.hasProperties(
 										LootContext.EntityTarget.THIS,
 										EntityPredicate.Builder.entity()
-												.entityType(EntityTypePredicate.of(BuiltInRegistries.ENTITY_TYPE, EntityType.ZOMBIE))
-								)
-						);
+												.entityType(EntityTypePredicate.of(BuiltInRegistries.ENTITY_TYPE,
+														EntityType.ZOMBIE))));
 					}
-				}
-		);
+				});
 	}
 }
