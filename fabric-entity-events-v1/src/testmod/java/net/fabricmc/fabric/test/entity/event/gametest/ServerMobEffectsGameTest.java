@@ -31,7 +31,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerMobEffectEvents;
+import net.fabricmc.fabric.api.entity.event.v1.effect.ServerMobEffectEvents;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class ServerMobEffectsGameTest {

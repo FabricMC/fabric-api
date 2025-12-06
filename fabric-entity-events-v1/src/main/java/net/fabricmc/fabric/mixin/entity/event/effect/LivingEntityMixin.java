@@ -36,7 +36,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerMobEffectEvents;
+import net.fabricmc.fabric.api.entity.event.v1.effect.ServerMobEffectEvents;
 import net.fabricmc.fabric.impl.entity.event.effect.MobEffectUtil;
 
 @Mixin(LivingEntity.class)

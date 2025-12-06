@@ -25,7 +25,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/class_1291": ["net/fabricmc/fabric/api/entity/event/v1/FabricMobEffectEventHandlers"]
+      "net/minecraft/class_1291": ["net/fabricmc/fabric/api/entity/event/v1/effect/FabricMobEffectEventHandlers"]
     }
   }
 }
