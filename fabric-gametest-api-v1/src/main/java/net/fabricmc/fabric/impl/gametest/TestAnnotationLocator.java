@@ -148,6 +148,8 @@ final class TestAnnotationLocator {
 						throw runtimeException;
 					}
 
+					LOGGER.error("skibidi");
+					LOGGER.error("e: ", e);
 					throw new RuntimeException("Failed to invoke test method", e);
 				} catch (ReflectiveOperationException e) {
 					throw new RuntimeException("Failed to invoke test method", e);

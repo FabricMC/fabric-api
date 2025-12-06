@@ -12,8 +12,9 @@
     "PlayerListMixin",
     "PlayerMixin",
     "ServerPlayerMixin",
-    "elytra.LivingEntityMixin",
-    "effect.LivingEntityMixin"
+    "effect.LivingEntityMixin",
+    "effect.MobEffectMixin",
+    "elytra.LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
