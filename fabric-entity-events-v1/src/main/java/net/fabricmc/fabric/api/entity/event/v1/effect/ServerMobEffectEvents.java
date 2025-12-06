@@ -42,8 +42,8 @@ public final class ServerMobEffectEvents {
 	/**
 	 * An event that checks whether an effect may be added.
 	 *
-	 * <p>This event can be used to no-op effects given specific
-	 * conditions such as an item held, a
+	 * <p>This event can be used to cancel effects given specific
+	 * conditions such as a held item, a
 	 * {@linkplain net.fabricmc.fabric.api.attachment.v1.AttachmentType data attachment},
 	 * or another status effect.
 	 */
@@ -76,7 +76,7 @@ public final class ServerMobEffectEvents {
 	 * An event that is called after an effect is added.
 	 *
 	 * <p>This event is useful for code that is required to run
-	 * only after an effect is applied such as a method that
+	 * only after an effect is applied, such as a method that
 	 * checks if an effect is present on an entity.
 	 */
 	public static final Event<AfterAdd> AFTER_ADD = EventFactory.createArrayBacked(AfterAdd.class, callbacks -> (effectInstance, entity) -> {
@@ -85,6 +85,18 @@ public final class ServerMobEffectEvents {
 		}
 	});
 
+	/**
+	 * An event checks whether an effect may be removed.
+	 *
+	 * <p><b>Note:</b> this event is not called when an
+	 * effect expires. The behavior of effect expiry
+	 * typically should not be modified.
+	 *
+	 * <p>This event can be used to cancel the removal of
+	 * effects given specific conditions such as a held item, a
+	 * {@linkplain net.fabricmc.fabric.api.attachment.v1.AttachmentType data attachment},
+	 * or another status effect.
+	 */
 	public static final Event<AllowEarlyRemove> ALLOW_EARLY_REMOVE = EventFactory.createArrayBacked(AllowEarlyRemove.class, callbacks -> (effectInstance, entity, isFromCommand) -> {
 		for (AllowEarlyRemove callback : callbacks) {
 			if (!callback.allowEarlyRemove(effectInstance, entity, MobEffectUtil.ARE_WE_COMMAND.get())) {
@@ -114,7 +126,7 @@ public final class ServerMobEffectEvents {
 	 * An event that is called after an effect is removed.
 	 *
 	 * <p>This event is useful for code that is required to run
-	 * only after an effect is removed such as a method that
+	 * only after an effect is removed, such as a method that
 	 * checks if an effect is present on an entity.
 	 */
 	public static final Event<AfterRemove> AFTER_REMOVE = EventFactory.createArrayBacked(AfterRemove.class, callbacks -> (effectInstance, entity) -> {
