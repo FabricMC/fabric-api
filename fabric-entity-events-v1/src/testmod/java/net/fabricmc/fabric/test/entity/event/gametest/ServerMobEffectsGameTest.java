@@ -37,8 +37,8 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 public class ServerMobEffectsGameTest {
 	@GameTest
 	public void allowAdd(GameTestHelper context) {
-		ServerMobEffectEvents.ALLOW_ADD.register((effectInstance, entity, isFromCommand) -> {
-			if (isFromCommand) return true;
+		ServerMobEffectEvents.ALLOW_ADD.register((effectInstance, entity, ctx) -> {
+			if (ctx.isFromCommand()) return true;
 			// If the entity wants to regenerate and is holding a potato,
 			// deny them regeneration privileges.
 			// This is specific enough since events aren't scoped for
@@ -75,8 +75,8 @@ public class ServerMobEffectsGameTest {
 			maxTicks = 150
 	)
 	public void allowEarlyRemove(GameTestHelper context) {
-		ServerMobEffectEvents.ALLOW_EARLY_REMOVE.register((effectInstance, entity, isFromCommand) -> {
-			if (isFromCommand) return true;
+		ServerMobEffectEvents.ALLOW_EARLY_REMOVE.register((effectInstance, entity, ctx) -> {
+			if (ctx.isFromCommand()) return true;
 			// Same thing as ALLOW_ADD.
 			boolean isThisTheEntity = isThisTheSalmon(entity) || isThisThePlayer(entity);
 			boolean cannotRemove = effectInstance.is(MobEffects.BLINDNESS) || effectInstance.is(MobEffects.POISON);

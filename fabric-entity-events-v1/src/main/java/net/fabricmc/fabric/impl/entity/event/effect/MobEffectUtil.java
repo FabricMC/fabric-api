@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.impl.entity.event.effect;
 
+import net.fabricmc.fabric.api.entity.event.v1.effect.EffectEventContext;
+
 public final class MobEffectUtil {
-	public static final ThreadLocal<Boolean> ARE_WE_COMMAND = ThreadLocal.withInitial(() -> false);
+	public static final ThreadLocal<EffectEventContext> CURRENT_COMMAND_CONTEXT = ThreadLocal.withInitial(() -> EffectEventContextImpl.DEFAULT);
 
 	private MobEffectUtil() {
 	}
