@@ -17,15 +17,18 @@
 package net.fabricmc.fabric.mixin.item;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.serialization.Decoder;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.RegistryDataLoader;
@@ -55,7 +58,7 @@ abstract class RegistryDataLoaderMixin {
 		if (object instanceof Enchantment enchantment) {
 			Enchantment modified = EnchantmentUtil.modify((ResourceKey<Enchantment>) objectKey, enchantment,
 					EnchantmentUtil.determineSource(resource),
-					((RegistryOpsAccessor) (Object) ops).getLookupProvider());
+					getLookupProvider(ops));
 
 			if (modified != null) {
 				object = modified;
@@ -67,5 +70,28 @@ abstract class RegistryDataLoaderMixin {
 		}
 
 		return original.call(instance, registryKey, object, registryEntryInfo);
+	}
+
+	@Unique
+	private static HolderLookup.Provider getLookupProvider(Object obj) {
+		if (obj instanceof RegistryOpsAccessor accessor) {
+			RegistryOps.RegistryInfoLookup lookupProvider = accessor.getLookupProvider();
+			return new HolderLookup.Provider() {
+				@Override
+				@SuppressWarnings("unchecked")
+				public <T> Optional<HolderLookup.RegistryLookup<T>> lookup(
+						ResourceKey<? extends net.minecraft.core.Registry<? extends T>> registryKey) {
+					return lookupProvider.lookup(registryKey)
+							.map(info -> (HolderLookup.RegistryLookup<T>) info.owner());
+				}
+
+				@Override
+				public Stream<ResourceKey<? extends net.minecraft.core.Registry<?>>> listRegistryKeys() {
+					return Stream.empty();
+				}
+			};
+		}
+
+		throw new RuntimeException("Could not find HolderLookup.Provider in object " + obj.getClass());
 	}
 }
