@@ -113,8 +113,8 @@ public class SoundsTypeBuilderTest {
 	/**
 	 * Assert that the expected and specified sound type equal.
 	 *
-	 * @param expected Sound type to be expected.
-	 * @param soundType Sound type to assert against the expected sound type.
+	 * @param expected sound type to be expected
+	 * @param soundType sound type to assert against
 	 */
 	public void soundTypeEquals(SoundTypeBuilderImpl.SoundType expected, SoundTypeBuilderImpl.SoundType soundType) {
 		Assertions.assertEquals(expected.subtitle(), soundType.subtitle());
@@ -131,8 +131,8 @@ public class SoundsTypeBuilderTest {
 	/**
 	 * Assert that all fields of the expected and specified entry equal each other.
 	 *
-	 * @param expected Entry with fields to be expected.
-	 * @param entry Entry to assert against the expected entry.
+	 * @param expected entry with fields to be expected
+	 * @param entry entry to assert against
 	 */
 	public void entryEquals(SoundTypeBuilderImpl.Entry expected, SoundTypeBuilderImpl.Entry entry) {
 		Assertions.assertEquals(expected.name().getNamespace(), entry.name().getNamespace());
