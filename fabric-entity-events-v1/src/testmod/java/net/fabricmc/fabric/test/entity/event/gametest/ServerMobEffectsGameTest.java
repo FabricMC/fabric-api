@@ -25,9 +25,11 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.fish.Salmon;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.consume_effects.ClearAllStatusEffectsConsumeEffect;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerMobEffectEvents;
@@ -69,16 +71,37 @@ public class ServerMobEffectsGameTest {
 		obj.contextRef = null;
 	}
 
-	@GameTest
-	public void allowEarlyRemove(GameTestHelper context) {
+	@GameTest(
+			maxTicks = 150
+	)
+	public void allowEarlyRemove(GameTestHelper context) throws InterruptedException {
 		ServerMobEffectEvents.ALLOW_EARLY_REMOVE.register((effectInstance, entity) -> {
 			// Same thing as ALLOW_ADD.
-			return !(effectInstance.is(MobEffects.BLINDNESS) && isThisTheSalmon(entity));
+			return !(effectInstance.is(MobEffects.BLINDNESS) && (isThisTheSalmon(entity) || isThisThePlayer(entity)));
 		});
+
+		// Regular Salmon testing
 		Salmon theSalmon = summonTheSalmon(context);
 		theSalmon.addEffect(createEffect(MobEffects.BLINDNESS));
 		context.assertFalse(ClearAllStatusEffectsConsumeEffect.INSTANCE.apply(context.getLevel(), null, theSalmon), "ClearAllStatusEffectsConsumeEffect#apply != false");
 		context.assertTrue(theSalmon.hasEffect(MobEffects.BLINDNESS), "The Salmon must have blindness");
+
+		// Player testing
+		Player thePlayer = summonThePlayer(context);
+		thePlayer.addEffect(createEffect(MobEffects.WEAVING));
+		thePlayer.addEffect(createEffect(MobEffects.BLINDNESS));
+		thePlayer.startUsingItem(InteractionHand.MAIN_HAND);
+		for (int i = 0; i < thePlayer.getMainHandItem().getUseDuration(thePlayer) + 1; i++) {
+			thePlayer.tick();
+		}
+
+		System.out.println("skibidi");
+		System.out.println(thePlayer.getMainHandItem().getUseDuration(thePlayer));
+		System.out.println(thePlayer.getUseItemRemainingTicks());
+		System.out.println(thePlayer.getActiveEffects());
+		context.assertFalse(thePlayer.isUsingItem(), "The Player mustn't be using an item at this point; this is a bug with the test");
+		context.assertFalse(thePlayer.hasEffect(MobEffects.WEAVING), "The Player mustn't have weaving as it should have been cleared after drinking milk");
+		context.assertTrue(thePlayer.hasEffect(MobEffects.BLINDNESS), "The Player must still have blindness after drinking milk");
 		context.succeed();
 	}
 
@@ -108,8 +131,20 @@ public class ServerMobEffectsGameTest {
 		return theSalmon;
 	}
 
+	private static Player summonThePlayer(GameTestHelper context) {
+		Player thePlayer = context.makeMockPlayer(GameType.SURVIVAL);
+		var itemStack = new ItemStack(Items.MILK_BUCKET);
+		thePlayer.setItemInHand(InteractionHand.MAIN_HAND, itemStack);
+		thePlayer.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(Items.POTATO));
+		return thePlayer;
+	}
+
 	private static boolean isThisTheSalmon(LivingEntity livingEntity) {
 		return livingEntity instanceof Salmon && livingEntity.getMainHandItem().is(Items.POTATO);
+	}
+
+	private static boolean isThisThePlayer(LivingEntity livingEntity) {
+		return livingEntity instanceof Player && livingEntity.getOffhandItem().is(Items.POTATO);
 	}
 
 	private static MobEffectInstance createEffect(Holder<MobEffect> effect) {
