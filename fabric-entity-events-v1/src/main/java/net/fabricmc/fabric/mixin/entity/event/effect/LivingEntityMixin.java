@@ -25,6 +25,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,15 +35,25 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.entity.event.v1.effect.ServerMobEffectEvents;
 import net.fabricmc.fabric.impl.entity.event.effect.MobEffectUtil;
 
 @Mixin(LivingEntity.class)
-public final class LivingEntityMixin {
+public abstract class LivingEntityMixin extends Entity {
+	private LivingEntityMixin(EntityType<?> entityType, Level level) {
+		super(entityType, level);
+	}
+
 	@WrapMethod(method = "canBeAffected")
 	private boolean allowAddEffect(MobEffectInstance effectInstance, Operation<Boolean> original) {
+		if (this.fabric_isClient()) {
+			return original.call(effectInstance);
+		}
+
 		if (!ServerMobEffectEvents.ALLOW_ADD.invoker().allowAdd(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.CURRENT_COMMAND_CONTEXT.get())) {
 			return false;
 		} else {
@@ -58,6 +69,10 @@ public final class LivingEntityMixin {
 			)
 	)
 	private void beforeAddEffect(MobEffectInstance effectInstance, Entity entity, CallbackInfoReturnable<Boolean> cir) {
+		if (this.fabric_isClient()) {
+			return;
+		}
+
 		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, (LivingEntity) (Object) this);
 	}
 
@@ -70,6 +85,10 @@ public final class LivingEntityMixin {
 			)
 	)
 	private void beforeForceAddEffect(MobEffectInstance effectInstance, Entity entity, CallbackInfo ci) {
+		if (this.fabric_isClient()) {
+			return;
+		}
+
 		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, (LivingEntity) (Object) this);
 	}
 
@@ -78,7 +97,11 @@ public final class LivingEntityMixin {
 			at = @At("RETURN")
 	)
 	private void afterAddEffect(MobEffectInstance effectInstance, Entity entity, CallbackInfo ci) {
-		if (!((LivingEntity) (Object) this).level().isClientSide()) {
+		if (this.fabric_isClient()) {
+			return;
+		}
+
+		if (!(this).level().isClientSide()) {
 			ServerMobEffectEvents.AFTER_ADD.invoker().afterAdd(effectInstance, (LivingEntity) (Object) this);
 		}
 	}
@@ -91,6 +114,10 @@ public final class LivingEntityMixin {
 			)
 	)
 	private void allowRemoveAllEffects(Map<Holder<MobEffect>, MobEffectInstance> instance, Operation<Void> original) {
+		if (this.fabric_isClient()) {
+			return;
+		}
+
 		Set<Map.Entry<Holder<MobEffect>, MobEffectInstance>> effectEntries = Set.copyOf(instance.entrySet());
 		original.call(instance);
 
@@ -108,6 +135,10 @@ public final class LivingEntityMixin {
 
 	@WrapMethod(method = "removeEffect")
 	private boolean allowRemoveEffect(Holder<MobEffect> holder, Operation<Boolean> original) {
+		if (this.fabric_isClient()) {
+			return original.call(holder);
+		}
+
 		MobEffectInstance effectInstance = ((LivingEntity) (Object) this).getEffect(holder);
 		boolean cannotRemove = !ServerMobEffectEvents.ALLOW_EARLY_REMOVE.invoker()
 				.allowEarlyRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.CURRENT_COMMAND_CONTEXT.get());
@@ -124,6 +155,10 @@ public final class LivingEntityMixin {
 			at = @At("HEAD")
 	)
 	private void beforeRemoveEffect(Holder<MobEffect> holder, CallbackInfoReturnable<Boolean> cir) {
+		if (this.fabric_isClient()) {
+			return;
+		}
+
 		ServerMobEffectEvents.BEFORE_REMOVE.invoker()
 				.beforeRemove(((LivingEntity) (Object) this).getEffect(holder), (LivingEntity) (Object) this);
 	}
@@ -136,6 +171,10 @@ public final class LivingEntityMixin {
 			)
 	)
 	private void beforeExpireRemoveEffect(CallbackInfo ci, @Local MobEffectInstance effectInstance) {
+		if (this.fabric_isClient()) {
+			return;
+		}
+
 		ServerMobEffectEvents.BEFORE_REMOVE.invoker()
 				.beforeRemove(effectInstance, (LivingEntity) (Object) this);
 	}
@@ -148,6 +187,10 @@ public final class LivingEntityMixin {
 			)
 	)
 	private void beforeRemoveAllEffects(CallbackInfoReturnable<Boolean> cir) {
+		if (this.fabric_isClient()) {
+			return;
+		}
+
 		for (MobEffectInstance effectInstance : ((LivingEntity) (Object) this).getActiveEffects()) {
 			ServerMobEffectEvents.BEFORE_REMOVE.invoker()
 					.beforeRemove(effectInstance, (LivingEntity) (Object) this);
@@ -159,9 +202,18 @@ public final class LivingEntityMixin {
 			at = @At("RETURN")
 	)
 	private void afterRemoveEffect(Collection<MobEffectInstance> collection, CallbackInfo ci) {
+		if (this.fabric_isClient()) {
+			return;
+		}
+
 		for (MobEffectInstance effectInstance : collection) {
 			ServerMobEffectEvents.AFTER_REMOVE.invoker()
 					.afterRemove(effectInstance, (LivingEntity) (Object) this);
 		}
+	}
+
+	@Unique
+	private boolean fabric_isClient() {
+		return this.level().isClientSide();
 	}
 }
