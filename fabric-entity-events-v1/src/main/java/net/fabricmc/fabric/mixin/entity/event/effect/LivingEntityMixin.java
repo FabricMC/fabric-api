@@ -17,9 +17,12 @@
 package net.fabricmc.fabric.mixin.entity.event.effect;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -79,12 +82,49 @@ public final class LivingEntityMixin {
 		}
 	}
 
+	@WrapOperation(
+			method = "removeAllEffects",
+			at = @At(
+					value = "INVOKE",
+					target = "Ljava/util/Map;clear()V"
+			)
+	)
+	private void allowRemoveAllEffects(Map<Holder<MobEffect>, MobEffectInstance> instance, Operation<Void> original) {
+		Set<Map.Entry<Holder<MobEffect>, MobEffectInstance>> effectEntries = Set.copyOf(instance.entrySet());
+		original.call(instance);
+
+		for (Map.Entry<Holder<MobEffect>, MobEffectInstance> entry : effectEntries) {
+			Holder<MobEffect> effect = entry.getKey();
+			MobEffectInstance effectInstance = entry.getValue();
+			boolean cannotRemove = !ServerMobEffectEvents.ALLOW_EARLY_REMOVE.invoker()
+					.allowEarlyRemove(effectInstance, (LivingEntity) (Object) this);
+
+			if (cannotRemove) {
+				instance.put(effect, effectInstance);
+			}
+		}
+	}
+
+	@WrapMethod(method = "removeEffect")
+	private boolean allowRemoveEffect(Holder<MobEffect> holder, Operation<Boolean> original) {
+		MobEffectInstance effectInstance = ((LivingEntity) (Object) this).getEffect(holder);
+		boolean cannotRemove = !ServerMobEffectEvents.ALLOW_EARLY_REMOVE.invoker()
+				.allowEarlyRemove(effectInstance, (LivingEntity) (Object) this);
+
+		if (cannotRemove) {
+			return false;
+		} else {
+			return original.call(holder);
+		}
+	}
+
 	@Inject(
 			method = "removeEffect",
 			at = @At("HEAD")
 	)
 	private void beforeRemoveEffect(Holder<MobEffect> holder, CallbackInfoReturnable<Boolean> cir) {
-		ServerMobEffectEvents.BEFORE_REMOVE.invoker().beforeRemove(((LivingEntity) (Object) this).getEffect(holder), (LivingEntity) (Object) this);
+		ServerMobEffectEvents.BEFORE_REMOVE.invoker()
+				.beforeRemove(((LivingEntity) (Object) this).getEffect(holder), (LivingEntity) (Object) this);
 	}
 
 	@Inject(
@@ -95,7 +135,8 @@ public final class LivingEntityMixin {
 			)
 	)
 	private void beforeExpireRemoveEffect(CallbackInfo ci, @Local MobEffectInstance effectInstance) {
-		ServerMobEffectEvents.BEFORE_REMOVE.invoker().beforeRemove(effectInstance, (LivingEntity) (Object) this);
+		ServerMobEffectEvents.BEFORE_REMOVE.invoker()
+				.beforeRemove(effectInstance, (LivingEntity) (Object) this);
 	}
 
 	@Inject(
@@ -107,7 +148,8 @@ public final class LivingEntityMixin {
 	)
 	private void beforeRemoveAllEffects(CallbackInfoReturnable<Boolean> cir) {
 		for (MobEffectInstance effectInstance : ((LivingEntity) (Object) this).getActiveEffects()) {
-			ServerMobEffectEvents.BEFORE_REMOVE.invoker().beforeRemove(effectInstance, (LivingEntity) (Object) this);
+			ServerMobEffectEvents.BEFORE_REMOVE.invoker()
+					.beforeRemove(effectInstance, (LivingEntity) (Object) this);
 		}
 	}
 
@@ -117,7 +159,8 @@ public final class LivingEntityMixin {
 	)
 	private void afterRemoveEffect(Collection<MobEffectInstance> collection, CallbackInfo ci) {
 		for (MobEffectInstance effectInstance : collection) {
-			ServerMobEffectEvents.AFTER_REMOVE.invoker().afterRemove(effectInstance, (LivingEntity) (Object) this);
+			ServerMobEffectEvents.AFTER_REMOVE.invoker()
+					.afterRemove(effectInstance, (LivingEntity) (Object) this);
 		}
 	}
 }

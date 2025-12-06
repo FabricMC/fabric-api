@@ -13,9 +13,7 @@
     "PlayerMixin",
     "ServerPlayerMixin",
     "elytra.LivingEntityMixin",
-    "effect.ClearAllStatusEffectsConsumeEffectMixin",
-    "effect.LivingEntityMixin",
-    "effect.RemoveStatusEffectsConsumeEffectMixin"
+    "effect.LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
