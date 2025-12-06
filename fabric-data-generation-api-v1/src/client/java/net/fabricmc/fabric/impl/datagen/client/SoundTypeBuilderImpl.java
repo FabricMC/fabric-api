@@ -103,9 +103,6 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	/**
 	 * Record of the sound event registration class for data generation.
 	 *
-	 * @param sounds   List of sounds to use by the sound event.
-	 * @param replace  Whether the sound type is allowed to override an existing sound event.
-	 * @param subtitle Optional string to use as translation key for subtitle text.
 	 * @see net.minecraft.client.resources.sounds.SoundEventRegistration
 	 */
 	public record SoundType(List<Entry> sounds, boolean replace, Optional<String> subtitle) {
@@ -124,14 +121,14 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	 *
 	 * @see net.minecraft.client.resources.sounds.Sound
 	 */
-	private record Entry(Identifier name, RegistrationType type, float volume, float pitch, int weight,
+	public record Entry(Identifier name, RegistrationType type, float volume, float pitch, int weight,
 						 int attenuationDistance, boolean stream, boolean preload) {
 		private static final Codec<Entry> MAP_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Identifier.CODEC.fieldOf("name").forGetter(Entry::name),
 				RegistrationType.CODEC.optionalFieldOf("type", RegistrationType.FILE).forGetter(Entry::type),
-				Codec.floatRange(0.0F, Float.MAX_VALUE).optionalFieldOf("volume", EntryBuilder.DEFAULT_VOLUME).forGetter(Entry::volume),
-				Codec.floatRange(0.0F, Float.MAX_VALUE).optionalFieldOf("pitch", EntryBuilder.DEFAULT_PITCH).forGetter(Entry::pitch),
-				Codec.intRange(0, Integer.MAX_VALUE).optionalFieldOf("weight", EntryBuilder.DEFAULT_WEIGHT).forGetter(Entry::weight),
+				Codec.floatRange(Float.MIN_VALUE, 1.0F).optionalFieldOf("volume", EntryBuilder.DEFAULT_VOLUME).forGetter(Entry::volume),
+				Codec.floatRange(0.5F, 2.0F).optionalFieldOf("pitch", EntryBuilder.DEFAULT_PITCH).forGetter(Entry::pitch),
+				Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("weight", EntryBuilder.DEFAULT_WEIGHT).forGetter(Entry::weight),
 				Codec.INT.optionalFieldOf("attenuation_distance", EntryBuilder.DEFAULT_ATTENUATION_DISTANCE).forGetter(Entry::attenuationDistance),
 				Codec.BOOL.optionalFieldOf("stream", false).forGetter(Entry::stream),
 				Codec.BOOL.optionalFieldOf("preload", false).forGetter(Entry::preload)
