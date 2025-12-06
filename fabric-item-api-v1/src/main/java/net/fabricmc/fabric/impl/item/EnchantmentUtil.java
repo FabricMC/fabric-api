@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.repository.PackSource;
@@ -39,7 +40,8 @@ public class EnchantmentUtil {
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment, EnchantmentSource source) {
+	public static Enchantment modify(ResourceKey<Enchantment> key, Enchantment originalEnchantment,
+			EnchantmentSource source, HolderLookup.Provider registries) {
 		Enchantment.Builder builder = Enchantment.enchantment(originalEnchantment.definition());
 		EnchantmentBuilderAccessor accessor = (EnchantmentBuilderAccessor) builder;
 		BuilderExtensions builderExtensions = (BuilderExtensions) builder;
@@ -56,8 +58,10 @@ public class EnchantmentUtil {
 					}
 				});
 
-		// Reset the modified flag before invoking the event as we setup the builder above
+		// Reset the modified flag before invoking the event as we setup the builder
+		// above
 		builderExtensions.fabric$resetModified();
+		builderExtensions.fabric$setRegistries(registries);
 
 		EnchantmentEvents.MODIFY.invoker().modify(key, builder, source);
 
@@ -68,8 +72,7 @@ public class EnchantmentUtil {
 					originalEnchantment.description(),
 					accessor.getDefinition(),
 					accessor.getExclusiveSet(),
-					accessor.getEffectMap().build()
-			);
+					accessor.getEffectMap().build());
 		}
 
 		return null;
@@ -81,21 +84,27 @@ public class EnchantmentUtil {
 
 			if (packSource == PackSource.BUILT_IN) {
 				return EnchantmentSource.VANILLA;
-			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE || packSource instanceof BuiltinModResourcePackSource) {
+			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE
+					|| packSource instanceof BuiltinModResourcePackSource) {
 				return EnchantmentSource.MOD;
 			}
 		}
 
 		// If not builtin or mod, assume external data pack.
-		// It might also be a virtual enchantment injected via mixin instead of being loaded
+		// It might also be a virtual enchantment injected via mixin instead of being
+		// loaded
 		// from a resource, but we can't determine that here.
 		return EnchantmentSource.DATA_PACK;
 	}
 
-	private EnchantmentUtil() { }
+	private EnchantmentUtil() {
+	}
 
 	public interface BuilderExtensions {
 		void fabric$resetModified();
+
 		boolean fabric$didModify();
+
+		void fabric$setRegistries(HolderLookup.Provider registries);
 	}
 }

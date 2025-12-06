@@ -38,13 +38,7 @@ import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 
 @Mixin(RegistryDataLoader.class)
 abstract class RegistryDataLoaderMixin {
-	@WrapOperation(
-			method = "loadElementFromResource",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/core/WritableRegistry;register(Lnet/minecraft/resources/ResourceKey;Ljava/lang/Object;Lnet/minecraft/core/RegistrationInfo;)Lnet/minecraft/core/Holder$Reference;"
-			)
-	)
+	@WrapOperation(method = "loadElementFromResource", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/WritableRegistry;register(Lnet/minecraft/resources/ResourceKey;Ljava/lang/Object;Lnet/minecraft/core/RegistrationInfo;)Lnet/minecraft/core/Holder$Reference;"))
 	@SuppressWarnings("unchecked")
 	private static <T> Holder.Reference<T> enchantmentKey(
 			WritableRegistry<T> instance,
@@ -57,15 +51,17 @@ abstract class RegistryDataLoaderMixin {
 			RegistryOps<JsonElement> ops,
 			ResourceKey<T> registryKey,
 			Resource resource,
-			RegistrationInfo entryInfo
-	) {
+			RegistrationInfo entryInfo) {
 		if (object instanceof Enchantment enchantment) {
-			Enchantment modified = EnchantmentUtil.modify((ResourceKey<Enchantment>) objectKey, enchantment, EnchantmentUtil.determineSource(resource));
+			Enchantment modified = EnchantmentUtil.modify((ResourceKey<Enchantment>) objectKey, enchantment,
+					EnchantmentUtil.determineSource(resource),
+					((RegistryOpsAccessor) (Object) ops).getLookupProvider());
 
 			if (modified != null) {
 				object = modified;
 
-				// Clear the knownPackInfo to force the server to sync the data pack to the client
+				// Clear the knownPackInfo to force the server to sync the data pack to the
+				// client
 				registryEntryInfo = new RegistrationInfo(Optional.empty(), registryEntryInfo.lifecycle());
 			}
 		}

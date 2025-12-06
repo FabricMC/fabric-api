@@ -22,16 +22,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.enchantment.Enchantment;
 
+import net.fabricmc.fabric.api.item.v1.FabricEnchantmentBuilder;
 import net.fabricmc.fabric.impl.item.EnchantmentUtil;
 
 @Mixin(Enchantment.Builder.class)
-public class EnchantmentBuilderMixin implements EnchantmentUtil.BuilderExtensions {
+public class EnchantmentBuilderMixin implements EnchantmentUtil.BuilderExtensions, FabricEnchantmentBuilder {
 	@Unique
 	private boolean didModify = false;
+	@Unique
+	private HolderLookup.Provider registries;
 
-	// Target all methods in the builder, but only mark as modified if the return value is the builder itself.
+	// Target all methods in the builder, but only mark as modified if the return
+	// value is the builder itself.
 	@Inject(method = "*", at = @At(value = "RETURN"))
 	private void markModified(CallbackInfoReturnable<?> cir) {
 		if (cir.getReturnValue() == this) {
@@ -47,5 +52,15 @@ public class EnchantmentBuilderMixin implements EnchantmentUtil.BuilderExtension
 	@Override
 	public boolean fabric$didModify() {
 		return didModify;
+	}
+
+	@Override
+	public HolderLookup.Provider getRegistries() {
+		return registries;
+	}
+
+	@Override
+	public void fabric$setRegistries(HolderLookup.Provider registries) {
+		this.registries = registries;
 	}
 }
