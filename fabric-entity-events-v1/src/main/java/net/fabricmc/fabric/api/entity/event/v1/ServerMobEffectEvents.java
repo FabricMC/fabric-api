@@ -73,6 +73,15 @@ public final class ServerMobEffectEvents {
 		}
 	});
 
+	static {
+		AFTER_ADD.register(((effectInstance, entity) -> {
+			effectInstance.getEffect().value().onEffectAdded(effectInstance, entity);
+		}));
+		AFTER_REMOVE.register((effectInstance, entity) -> {
+			effectInstance.getEffect().value().onEffectRemoved(effectInstance, entity);
+		});
+	}
+
 	private ServerMobEffectEvents() {
 	}
 
