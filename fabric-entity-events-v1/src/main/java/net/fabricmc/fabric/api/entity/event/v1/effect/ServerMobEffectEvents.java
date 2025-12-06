@@ -86,11 +86,18 @@ public final class ServerMobEffectEvents {
 	});
 
 	/**
-	 * An event checks whether an effect may be removed.
+	 * An event that checks whether an effect may be removed.
 	 *
 	 * <p><b>Note:</b> this event is not called when an
 	 * effect expires. The behavior of effect expiry
 	 * typically should not be modified.
+	 *
+	 * <p>This event is called when effects are removed before
+	 * they expire. For example, drinking milk, drinking honey
+	 * when poisoned, using a totem of undying, or using a command
+	 * such as {@code /effect clear} triggers this event. If you
+	 * don't want commands to be affected, an {@link EffectEventContext}
+	 * parameter is passed to listeners.
 	 *
 	 * <p>This event can be used to cancel the removal of
 	 * effects given specific conditions such as a held item, a
