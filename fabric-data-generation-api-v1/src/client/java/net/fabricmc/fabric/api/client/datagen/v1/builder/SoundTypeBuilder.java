@@ -37,7 +37,6 @@ import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
  *
  * <p>Use in conjunction with {@link FabricSoundsProvider} to generate sound definitions.
  *
- * @see net.minecraft.client.sounds.SoundManager
  * @see net.minecraft.client.resources.sounds.SoundEventRegistration
  */
 @ApiStatus.NonExtendable
