@@ -36,6 +36,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyC
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
+import net.fabricmc.fabric.api.item.v1.FabricEnchantmentBuilder;
 
 public class CustomEnchantmentEffectsTest implements ModInitializer {
 	// weird impaling is a copy of impaling used for testing (just in case minecraft
@@ -49,6 +50,9 @@ public class CustomEnchantmentEffectsTest implements ModInitializer {
 		EnchantmentEvents.MODIFY.register(
 				(key, builder, source) -> {
 					if (source.isBuiltin() && key == WEIRD_IMPALING) {
+						if (!(((FabricEnchantmentBuilder) builder).getRegistries() != null)) {
+							throw new AssertionError("Registries should not be null");
+						}
 
 						// make impaling set things on fire
 						builder.withEffect(
