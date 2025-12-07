@@ -101,9 +101,7 @@ public abstract class LivingEntityMixin extends Entity {
 			return;
 		}
 
-		if (!(this).level().isClientSide()) {
-			ServerMobEffectEvents.AFTER_ADD.invoker().afterAdd(effectInstance, this.self(), MobEffectUtil.getCommandContext());
-		}
+		ServerMobEffectEvents.AFTER_ADD.invoker().afterAdd(effectInstance, this.self(), MobEffectUtil.getCommandContext());
 	}
 
 	@WrapOperation(
