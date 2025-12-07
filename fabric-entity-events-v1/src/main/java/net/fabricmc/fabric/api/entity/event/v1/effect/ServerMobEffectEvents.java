@@ -22,7 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.impl.entity.event.effect.MobEffectUtil;
 
 /**
  * Events related to {@linkplain MobEffect status effects} in mobs.
@@ -36,7 +35,11 @@ import net.fabricmc.fabric.impl.entity.event.effect.MobEffectUtil;
  * consider using {@link MobEffect#onEffectAdded(MobEffectInstance, LivingEntity)}
  * or {@link MobEffect#onEffectRemoved(MobEffectInstance, LivingEntity)}.
  *
+ * <p>Additionally, an {@link EffectEventContext} parameter is passed to all
+ * listeners of these events.
+ *
  * @see FabricMobEffectEventHandlers
+ * @see #ALLOW_EARLY_REMOVE
  */
 public final class ServerMobEffectEvents {
 	/**
