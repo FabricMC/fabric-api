@@ -17,14 +17,9 @@
 package net.fabricmc.fabric.impl.datagen.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -122,7 +117,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	 * @see net.minecraft.client.resources.sounds.Sound
 	 */
 	public record Entry(Identifier name, RegistrationType type, float volume, float pitch, int weight,
-						 int attenuationDistance, boolean stream, boolean preload) {
+						int attenuationDistance, boolean stream, boolean preload) {
 		private static final Codec<Entry> MAP_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Identifier.CODEC.fieldOf("name").forGetter(Entry::name),
 				RegistrationType.CODEC.optionalFieldOf("type", RegistrationType.FILE).forGetter(Entry::type),
