@@ -50,7 +50,7 @@ public abstract class LivingEntityMixin extends Entity {
 
 	@WrapMethod(method = "canBeAffected")
 	private boolean allowAddEffect(MobEffectInstance effectInstance, Operation<Boolean> original) {
-		if (this.fabric_isClient()) {
+		if (this.isClient()) {
 			return original.call(effectInstance);
 		}
 
@@ -69,7 +69,7 @@ public abstract class LivingEntityMixin extends Entity {
 			)
 	)
 	private void beforeAddEffect(MobEffectInstance effectInstance, Entity entity, CallbackInfoReturnable<Boolean> cir) {
-		if (this.fabric_isClient()) {
+		if (this.isClient()) {
 			return;
 		}
 
@@ -85,7 +85,7 @@ public abstract class LivingEntityMixin extends Entity {
 			)
 	)
 	private void beforeForceAddEffect(MobEffectInstance effectInstance, Entity entity, CallbackInfo ci) {
-		if (this.fabric_isClient()) {
+		if (this.isClient()) {
 			return;
 		}
 
@@ -97,7 +97,7 @@ public abstract class LivingEntityMixin extends Entity {
 			at = @At("RETURN")
 	)
 	private void afterAddEffect(MobEffectInstance effectInstance, Entity entity, CallbackInfo ci) {
-		if (this.fabric_isClient()) {
+		if (this.isClient()) {
 			return;
 		}
 
@@ -114,7 +114,7 @@ public abstract class LivingEntityMixin extends Entity {
 			)
 	)
 	private void allowRemoveAllEffects(Map<Holder<MobEffect>, MobEffectInstance> instance, Operation<Void> original) {
-		if (this.fabric_isClient()) {
+		if (this.isClient()) {
 			return;
 		}
 
@@ -135,7 +135,7 @@ public abstract class LivingEntityMixin extends Entity {
 
 	@WrapMethod(method = "removeEffect")
 	private boolean allowRemoveEffect(Holder<MobEffect> holder, Operation<Boolean> original) {
-		if (this.fabric_isClient()) {
+		if (this.isClient()) {
 			return original.call(holder);
 		}
 
@@ -155,7 +155,7 @@ public abstract class LivingEntityMixin extends Entity {
 			at = @At("HEAD")
 	)
 	private void beforeRemoveEffect(Holder<MobEffect> holder, CallbackInfoReturnable<Boolean> cir) {
-		if (this.fabric_isClient()) {
+		if (this.isClient()) {
 			return;
 		}
 
@@ -171,7 +171,7 @@ public abstract class LivingEntityMixin extends Entity {
 			)
 	)
 	private void beforeExpireRemoveEffect(CallbackInfo ci, @Local MobEffectInstance effectInstance) {
-		if (this.fabric_isClient()) {
+		if (this.isClient()) {
 			return;
 		}
 
@@ -187,7 +187,7 @@ public abstract class LivingEntityMixin extends Entity {
 			)
 	)
 	private void beforeRemoveAllEffects(CallbackInfoReturnable<Boolean> cir) {
-		if (this.fabric_isClient()) {
+		if (this.isClient()) {
 			return;
 		}
 
@@ -202,7 +202,7 @@ public abstract class LivingEntityMixin extends Entity {
 			at = @At("RETURN")
 	)
 	private void afterRemoveEffect(Collection<MobEffectInstance> collection, CallbackInfo ci) {
-		if (this.fabric_isClient()) {
+		if (this.isClient()) {
 			return;
 		}
 
@@ -213,7 +213,7 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@Unique
-	private boolean fabric_isClient() {
+	private boolean isClient() {
 		return this.level().isClientSide();
 	}
 }
