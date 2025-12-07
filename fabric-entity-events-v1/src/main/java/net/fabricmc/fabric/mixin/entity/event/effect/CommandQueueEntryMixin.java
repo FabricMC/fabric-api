@@ -58,14 +58,14 @@ public final class CommandQueueEntryMixin<T extends ExecutionCommandSource<T>, S
 		}
 
 		try {
-			MobEffectUtil.CURRENT_COMMAND_CONTEXT.get().push(new EffectEventContextImpl(
+			MobEffectUtil.pushContext(new EffectEventContextImpl(
 					true,
 					commandNode.getName()
 			));
 
 			original.call(executionContext);
 		} finally {
-			MobEffectUtil.CURRENT_COMMAND_CONTEXT.get().pop();
+			MobEffectUtil.popContext();
 		}
 	}
 }

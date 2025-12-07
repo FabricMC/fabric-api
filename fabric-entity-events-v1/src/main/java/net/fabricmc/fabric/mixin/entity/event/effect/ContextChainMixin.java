@@ -49,14 +49,14 @@ public final class ContextChainMixin {
 		}
 
 		try {
-			MobEffectUtil.CURRENT_COMMAND_CONTEXT.get().push(new EffectEventContextImpl(
+			MobEffectUtil.pushContext(new EffectEventContextImpl(
 					true,
 					commandNode.getName()
 			));
 
 			result = original.call(executable, source, resultConsumer, forkedMode);
 		} finally {
-			MobEffectUtil.CURRENT_COMMAND_CONTEXT.get().pop();
+			MobEffectUtil.popContext();
 		}
 
 		return result;
