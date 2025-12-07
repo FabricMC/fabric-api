@@ -56,9 +56,9 @@ public abstract class LivingEntityMixin extends Entity {
 
 		if (!ServerMobEffectEvents.ALLOW_ADD.invoker().allowAdd(effectInstance, this.self(), MobEffectUtil.getCommandContext())) {
 			return false;
-		} else {
-			return original.call(effectInstance);
 		}
+
+		return original.call(effectInstance);
 	}
 
 	@Inject(
@@ -143,9 +143,9 @@ public abstract class LivingEntityMixin extends Entity {
 
 		if (cannotRemove) {
 			return false;
-		} else {
-			return original.call(holder);
 		}
+
+		return original.call(holder);
 	}
 
 	@Inject(
