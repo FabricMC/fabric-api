@@ -33,7 +33,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 
 import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
 
@@ -46,11 +45,6 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	private final List<Entry> sounds = new ArrayList<>();
 
 	public SoundTypeBuilderImpl() { }
-
-	@Override
-	public SoundTypeBuilder category(SoundSource category) {
-		return this;
-	}
 
 	@Override
 	public SoundTypeBuilder replace(boolean replace) {

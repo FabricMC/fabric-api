@@ -67,7 +67,9 @@ public interface SoundTypeBuilder {
 	 * calling this method will have no effect.
 	 */
 	@Deprecated
-	SoundTypeBuilder category(SoundSource category);
+	default SoundTypeBuilder category(SoundSource category) {
+		return this;
+	}
 
 	/**
 	 * Sets an optional replace boolean, which on true allows this sound type to override others.
