@@ -54,7 +54,7 @@ public abstract class LivingEntityMixin extends Entity {
 			return original.call(effectInstance);
 		}
 
-		if (!ServerMobEffectEvents.ALLOW_ADD.invoker().allowAdd(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.getCommandContext())) {
+		if (!ServerMobEffectEvents.ALLOW_ADD.invoker().allowAdd(effectInstance, this.self(), MobEffectUtil.getCommandContext())) {
 			return false;
 		} else {
 			return original.call(effectInstance);
@@ -73,7 +73,7 @@ public abstract class LivingEntityMixin extends Entity {
 			return;
 		}
 
-		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
+		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, this.self(), MobEffectUtil.getCommandContext());
 	}
 
 	@Inject(
@@ -89,7 +89,7 @@ public abstract class LivingEntityMixin extends Entity {
 			return;
 		}
 
-		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
+		ServerMobEffectEvents.BEFORE_ADD.invoker().beforeAdd(effectInstance, this.self(), MobEffectUtil.getCommandContext());
 	}
 
 	@Inject(
@@ -102,7 +102,7 @@ public abstract class LivingEntityMixin extends Entity {
 		}
 
 		if (!(this).level().isClientSide()) {
-			ServerMobEffectEvents.AFTER_ADD.invoker().afterAdd(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
+			ServerMobEffectEvents.AFTER_ADD.invoker().afterAdd(effectInstance, this.self(), MobEffectUtil.getCommandContext());
 		}
 	}
 
@@ -125,7 +125,7 @@ public abstract class LivingEntityMixin extends Entity {
 			Holder<MobEffect> effect = entry.getKey();
 			MobEffectInstance effectInstance = entry.getValue();
 			boolean cannotRemove = !ServerMobEffectEvents.ALLOW_EARLY_REMOVE.invoker()
-					.allowEarlyRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
+					.allowEarlyRemove(effectInstance, this.self(), MobEffectUtil.getCommandContext());
 
 			if (cannotRemove) {
 				instance.put(effect, effectInstance);
@@ -139,9 +139,9 @@ public abstract class LivingEntityMixin extends Entity {
 			return original.call(holder);
 		}
 
-		MobEffectInstance effectInstance = ((LivingEntity) (Object) this).getEffect(holder);
+		MobEffectInstance effectInstance = (this.self()).getEffect(holder);
 		boolean cannotRemove = !ServerMobEffectEvents.ALLOW_EARLY_REMOVE.invoker()
-				.allowEarlyRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
+				.allowEarlyRemove(effectInstance, this.self(), MobEffectUtil.getCommandContext());
 
 		if (cannotRemove) {
 			return false;
@@ -160,7 +160,7 @@ public abstract class LivingEntityMixin extends Entity {
 		}
 
 		ServerMobEffectEvents.BEFORE_REMOVE.invoker()
-				.beforeRemove(((LivingEntity) (Object) this).getEffect(holder), (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
+				.beforeRemove((this.self()).getEffect(holder), (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
 	}
 
 	@Inject(
@@ -176,7 +176,7 @@ public abstract class LivingEntityMixin extends Entity {
 		}
 
 		ServerMobEffectEvents.BEFORE_REMOVE.invoker()
-				.beforeRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
+				.beforeRemove(effectInstance, this.self(), MobEffectUtil.getCommandContext());
 	}
 
 	@Inject(
@@ -191,9 +191,9 @@ public abstract class LivingEntityMixin extends Entity {
 			return;
 		}
 
-		for (MobEffectInstance effectInstance : ((LivingEntity) (Object) this).getActiveEffects()) {
+		for (MobEffectInstance effectInstance : (this.self()).getActiveEffects()) {
 			ServerMobEffectEvents.BEFORE_REMOVE.invoker()
-					.beforeRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
+					.beforeRemove(effectInstance, this.self(), MobEffectUtil.getCommandContext());
 		}
 	}
 
@@ -208,12 +208,17 @@ public abstract class LivingEntityMixin extends Entity {
 
 		for (MobEffectInstance effectInstance : collection) {
 			ServerMobEffectEvents.AFTER_REMOVE.invoker()
-					.afterRemove(effectInstance, (LivingEntity) (Object) this, MobEffectUtil.getCommandContext());
+					.afterRemove(effectInstance, this.self(), MobEffectUtil.getCommandContext());
 		}
 	}
 
 	@Unique
 	private boolean isClient() {
 		return this.level().isClientSide();
+	}
+
+	@Unique
+	private LivingEntity self() {
+		return (LivingEntity) (Object) this;
 	}
 }
