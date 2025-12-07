@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.frabricmc.fabric.test.datagen.client;
+package net.fabricmc.fabric.test.datagen.client;
 
 import java.util.List;
 import java.util.Optional;

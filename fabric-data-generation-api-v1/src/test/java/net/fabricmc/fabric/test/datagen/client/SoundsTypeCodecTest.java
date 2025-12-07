@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.frabricmc.fabric.test.datagen.client;
+package net.fabricmc.fabric.test.datagen.client;
 
 import java.util.List;
 import java.util.Map;
@@ -44,19 +44,19 @@ import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 
 public class SoundsTypeCodecTest {
 	/**
-	 * {@link net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider#CODEC}
+	 * Codec copied from {@link net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider} to use in testing, as it is not accessible.
 	 */
 	private static final Codec<Map<String, SoundTypeBuilderImpl.SoundType>> CODEC =
 			Codec.unboundedMap(Codec.STRING, SoundTypeBuilderImpl.SoundType.CODEC);
 	/**
-	 * {@link net.minecraft.client.sounds.SoundManager#GSON}
+	 * Gson copied from {@link net.minecraft.client.sounds.SoundManager} to use in testing, as it is not accessible.
 	 */
-	final Gson GSON = new GsonBuilder().registerTypeAdapter(SoundEventRegistration.class,
+	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(SoundEventRegistration.class,
 			new SoundEventRegistrationSerializer()).create();
 	/**
-	 * {@link net.minecraft.client.sounds.SoundManager#SOUND_EVENT_REGISTRATION_TYPE}
+	 * Type token copied from {@link net.minecraft.client.sounds.SoundManager} to use in testing, as it is not accessible.
 	 */
-	final TypeToken<Map<String, SoundEventRegistration>> SOUND_EVENT_REGISTRATION_TYPE = new TypeToken<>() {};
+	private static final TypeToken<Map<String, SoundEventRegistration>> SOUND_EVENT_REGISTRATION_TYPE = new TypeToken<>() { };
 
 	private static final Identifier IDENTIFIER =
 			Identifier.fromNamespaceAndPath("datagen-test", "sound-event-registrable-codec");
@@ -141,7 +141,6 @@ public class SoundsTypeCodecTest {
 				Sound sound = soundList.get(i);
 				expectInputDataInOutput(entry, sound);
 			}
-
 		}
 	}
 

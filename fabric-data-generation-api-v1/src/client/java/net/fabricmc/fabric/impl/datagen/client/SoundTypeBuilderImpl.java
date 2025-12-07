@@ -135,10 +135,10 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		);
 		private static final Codec<Entry> CODEC = Codec.xor(STRING_CODEC, MAP_CODEC).xmap(Either::unwrap, sound -> {
 			if (sound.type() != RegistrationType.FILE
-					|| sound.volume() != 1F
-					|| sound.pitch() != 1F
-					|| sound.weight() != 1
-					|| sound.attenuationDistance() != 16
+					|| sound.volume() != EntryBuilder.DEFAULT_VOLUME
+					|| sound.pitch() != EntryBuilder.DEFAULT_PITCH
+					|| sound.weight() != EntryBuilder.DEFAULT_WEIGHT
+					|| sound.attenuationDistance() != EntryBuilder.DEFAULT_ATTENUATION_DISTANCE
 					|| sound.stream()
 					|| sound.preload()) {
 				return Either.right(sound);
