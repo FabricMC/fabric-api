@@ -12,7 +12,10 @@
     "PlayerListMixin",
     "PlayerMixin",
     "ServerPlayerMixin",
-    "effect.CommandsMixin",
+    "effect.BuildContextsAccessor",
+    "effect.CommandQueueEntryMixin",
+    "effect.ContextChainAccessor",
+    "effect.ContextChainMixin",
     "effect.LivingEntityMixin",
     "effect.MobEffectMixin",
     "elytra.LivingEntityMixin"

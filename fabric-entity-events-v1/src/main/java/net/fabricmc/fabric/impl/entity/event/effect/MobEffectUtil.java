@@ -16,11 +16,23 @@
 
 package net.fabricmc.fabric.impl.entity.event.effect;
 
+import java.util.Stack;
+
 import net.fabricmc.fabric.api.entity.event.v1.effect.EffectEventContext;
 
 public final class MobEffectUtil {
-	public static final ThreadLocal<EffectEventContext> CURRENT_COMMAND_CONTEXT = ThreadLocal.withInitial(() -> EffectEventContextImpl.DEFAULT);
+	// we must use a stack because nested commands like "/execute run" exist,
+	// and we must mixin to multiple places
+	public static final FinalThreadLocal<Stack<EffectEventContext>> CURRENT_COMMAND_CONTEXT = new FinalThreadLocal<>(() -> {
+		var stack = new Stack<EffectEventContext>();
+		stack.push(EffectEventContextImpl.DEFAULT);
+		return stack;
+	});
 
 	private MobEffectUtil() {
+	}
+
+	public static EffectEventContext getCommandContext() {
+		return CURRENT_COMMAND_CONTEXT.get().getLast();
 	}
 }
