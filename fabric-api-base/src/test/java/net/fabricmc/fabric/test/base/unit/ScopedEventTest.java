@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.test.base.EventScope;
-import net.fabricmc.fabric.test.base.ModMussScopedEvent;
+import net.fabricmc.fabric.test.base.ScopedEvent;
 
 public class ScopedEventTest {
 	private static final Event<SimpleEvent> SIMPLE_EVENT = EventFactory.createArrayBacked(SimpleEvent.class, callbacks -> arg -> {
@@ -48,7 +48,19 @@ public class ScopedEventTest {
 		return null;
 	});
 
-	private static final ModMussScopedEvent<SimpleEvent> SIMPLE_EVENT_SCOPE = new ModMussScopedEvent<>(SIMPLE_EVENT, SimpleEvent.class);
+	private static final Event<ReturnEvent> MODMUSS_RETURN_EVENT = EventFactory.createArrayBacked(ReturnEvent.class, callbacks -> arg -> {
+		for (ReturnEvent callback : callbacks) {
+			String result = callback.onEvent(arg);
+
+			if (result != null) {
+				return result;
+			}
+		}
+
+		return null;
+	});
+
+	private static final ScopedEvent<SimpleEvent> SIMPLE_EVENT_SCOPE = new ScopedEvent<>(SIMPLE_EVENT, SimpleEvent.class);
 
 	@Test
 	void sylvEventScopeTest() {
@@ -59,9 +71,9 @@ public class ScopedEventTest {
 
 			SIMPLE_EVENT.invoker().onEvent("2");
 		}
-		
+
 		SIMPLE_EVENT.invoker().onEvent("3");
-		
+
 		assertEquals(1, results.size());
 		assertEquals("2", results.getFirst());
 	}
@@ -69,7 +81,8 @@ public class ScopedEventTest {
 	@Test
 	void sylvReturnEventScopeTest() {
 		try (var eventScope = new EventScope()) {
-			eventScope.register(RETURN_EVENT, arg -> {
+			eventScope.register(
+					RETURN_EVENT, arg -> {
 				System.out.println(arg);
 				return arg.toUpperCase(Locale.ROOT);
 			});
@@ -97,18 +110,17 @@ public class ScopedEventTest {
 		assertEquals("2", results.getFirst());
 	}
 
+	private static final ScopedEvent<ReturnEvent> RETURN_EVENT_SCOPE = new ScopedEvent<>(MODMUSS_RETURN_EVENT, ReturnEvent.class, "Hello World");
+
 	@Test
 	void returnEventScopeTest() {
-		// moved this because it was interfering with sylvReturnEventScopeTest
-		final ModMussScopedEvent<ReturnEvent> RETURN_EVENT_SCOPE = new ModMussScopedEvent<>(RETURN_EVENT, ReturnEvent.class, "Hello World");
-
-		assertEquals("Hello World", RETURN_EVENT.invoker().onEvent("Hello World"));
+		assertEquals("Hello World", MODMUSS_RETURN_EVENT.invoker().onEvent("Hello World"));
 
 		try (var ignored = RETURN_EVENT_SCOPE.register(arg -> arg.toUpperCase(Locale.ROOT))) {
-			assertEquals("HELLO WORLD", RETURN_EVENT.invoker().onEvent("Hello World"));
+			assertEquals("HELLO WORLD", MODMUSS_RETURN_EVENT.invoker().onEvent("Hello World"));
 		}
 
-		assertEquals("Hello World", RETURN_EVENT.invoker().onEvent("Hello World"));
+		assertEquals("Hello World", MODMUSS_RETURN_EVENT.invoker().onEvent("Hello World"));
 	}
 
 	interface SimpleEvent {

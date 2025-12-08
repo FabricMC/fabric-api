@@ -25,22 +25,22 @@ import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.event.Event;
 
-public class ModMussScopedEvent<T> implements InvocationHandler {
+public class ScopedEvent<T> implements InvocationHandler {
 	@Nullable
 	private final Object defaultReturnValue;
 
 	@Nullable
 	private T activeHandler = null;
 
-	public ModMussScopedEvent(Event<T> event, Class<T> handlerClass, @Nullable Object defaultReturnValue) {
-        this.defaultReturnValue = defaultReturnValue;
+	public ScopedEvent(Event<T> event, Class<T> handlerClass, @Nullable Object defaultReturnValue) {
+		this.defaultReturnValue = defaultReturnValue;
 
 		//noinspection unchecked
-		T proxy = (T) Proxy.newProxyInstance(ModMussScopedEvent.class.getClassLoader(), new Class[]{handlerClass}, this);
+		T proxy = (T) Proxy.newProxyInstance(ScopedEvent.class.getClassLoader(), new Class[]{handlerClass}, this);
 		event.register(proxy);
-    }
+	}
 
-	public ModMussScopedEvent(Event<T> event, Class<T> handlerClass) {
+	public ScopedEvent(Event<T> event, Class<T> handlerClass) {
 		this(event, handlerClass, null);
 	}
 
