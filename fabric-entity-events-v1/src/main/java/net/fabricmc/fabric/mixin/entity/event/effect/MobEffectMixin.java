@@ -20,10 +20,10 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.world.effect.MobEffect;
 
-import net.fabricmc.fabric.api.entity.event.v1.effect.FabricMobEffectEventHandlers;
+import net.fabricmc.fabric.api.entity.event.v1.effect.FabricMobEffect;
 
 @Mixin(MobEffect.class)
-public final class MobEffectMixin implements FabricMobEffectEventHandlers {
+public final class MobEffectMixin implements FabricMobEffect {
 	private MobEffectMixin() {
 	}
 }

@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>Additionally, an {@link EffectEventContext} parameter is passed to all
  * listeners of these events.
  *
- * @see FabricMobEffectEventHandlers
+ * @see FabricMobEffect
  * @see #ALLOW_EARLY_REMOVE
  */
 public final class ServerMobEffectEvents {

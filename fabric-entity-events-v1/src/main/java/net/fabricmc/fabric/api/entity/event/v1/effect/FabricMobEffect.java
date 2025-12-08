@@ -23,7 +23,7 @@ import net.minecraft.world.entity.LivingEntity;
 /**
  * An extension for {@link MobEffect} subclasses adding basic events.
  */
-public interface FabricMobEffectEventHandlers {
+public interface FabricMobEffect {
 	/**
 	 * Called before an {@linkplain MobEffectInstance instance of this effect} has been added to a {@linkplain LivingEntity living entity}.
 	 *
