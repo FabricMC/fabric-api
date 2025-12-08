@@ -81,11 +81,7 @@ public class ScopedEventTest {
 	@Test
 	void sylvReturnEventScopeTest() {
 		try (var eventScope = new EventScope()) {
-			eventScope.register(
-					RETURN_EVENT, arg -> {
-				System.out.println(arg);
-				return arg.toUpperCase(Locale.ROOT);
-			});
+			eventScope.register(RETURN_EVENT, arg -> arg.toUpperCase(Locale.ROOT));
 			assertEquals("HELLO WORLD", RETURN_EVENT.invoker().onEvent("Hello World"));
 		}
 
@@ -127,7 +123,7 @@ public class ScopedEventTest {
 		void onEvent(String arg);
 	}
 
-	interface  ReturnEvent {
+	interface ReturnEvent {
 		String onEvent(String arg);
 	}
 }
