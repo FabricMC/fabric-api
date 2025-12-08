@@ -31,9 +31,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * existing status effects.
  *
  * <p>When only one class of {@linkplain MobEffect status effects}
- * requires code to be run before the addition or removal of the effect,
- * consider using {@link MobEffect#onEffectAdded(MobEffectInstance, LivingEntity)}
- * or {@link MobEffect#onEffectRemoved(MobEffectInstance, LivingEntity)}.
+ * requires code to be run before/after the addition or removal of the effect,
+ * consider using {@link MobEffect#onEffectAdded(MobEffectInstance, LivingEntity)},
+ * {@link MobEffect#onEffectRemoved(MobEffectInstance, LivingEntity)}, or
+ * {@link MobEffect#onEffectStarted(MobEffectInstance, LivingEntity)}.
  *
  * <p>Additionally, an {@link EffectEventContext} parameter is passed to all
  * listeners of these events.
@@ -146,9 +147,12 @@ public final class ServerMobEffectEvents {
 	});
 
 	static {
-		BEFORE_ADD.register(((effectInstance, entity, ctx) -> {
+		BEFORE_ADD.register((effectInstance, entity, ctx) -> {
 			effectInstance.getEffect().value().onEffectAdded(effectInstance, entity);
-		}));
+		});
+		AFTER_ADD.register((effectInstance, entity, ctx) -> {
+			effectInstance.getEffect().value().onEffectStarted(effectInstance, entity);
+		});
 		BEFORE_REMOVE.register((effectInstance, entity, ctx) -> {
 			effectInstance.getEffect().value().onEffectRemoved(effectInstance, entity);
 		});
