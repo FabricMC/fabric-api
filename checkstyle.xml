@@ -249,6 +249,7 @@
                             or @text='Inject'
                             or @text='ModifyArg'
                             or @text='ModifyExpressionValue'
+                            or @text='ModifyReceiver'
                             or @text='ModifyReturnValue'
                             or @text='ModifyVariable'
                             or @text='Override'
