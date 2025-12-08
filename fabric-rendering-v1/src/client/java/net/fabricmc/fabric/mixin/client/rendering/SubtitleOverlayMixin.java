@@ -16,13 +16,10 @@
 
 package net.fabricmc.fabric.mixin.client.rendering;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.SubtitleOverlay;
@@ -32,31 +29,12 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 
 @Mixin(SubtitleOverlay.class)
 public class SubtitleOverlayMixin {
-	@Unique
-	private boolean fabric_renderingThroughHud = false;
-
-	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
-	private void wrapSubtitleRender(GuiGraphics context, CallbackInfo ci) {
-		if (!fabric_renderingThroughHud) {
-			DeltaTracker deltaTracker = Minecraft.getInstance().getDeltaTracker();
-
-			ci.cancel();
-
-			HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES)
-					.render(context, deltaTracker, (ctx, tc) -> {
-						fabric_renderingThroughHud = true;
-
-						try {
-							fabric_callOriginalRender(ctx);
-						} finally {
-							fabric_renderingThroughHud = false;
-						}
-					});
-		}
-	}
-
-	@Unique
-	private void fabric_callOriginalRender(GuiGraphics context) {
-		((SubtitleOverlay) (Object) this).render(context);
+	@WrapMethod(method = "render")
+	private void wrapSubtitleRender(GuiGraphics context, Operation<Void> original) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).render(
+				context,
+				Minecraft.getInstance().getDeltaTracker(),
+				(ctx, tc) -> original.call(ctx)
+		);
 	}
 }
