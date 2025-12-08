@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.test.base.ScopedEvent;
+import net.fabricmc.fabric.test.base.ModMussScopedEvent;
 
 public class ScopedEventTest {
 	private static final Event<SimpleEvent> SIMPLE_EVENT = EventFactory.createArrayBacked(SimpleEvent.class, callbacks -> arg -> {
@@ -47,7 +47,7 @@ public class ScopedEventTest {
 		return null;
 	});
 
-	private static final ScopedEvent<SimpleEvent> SIMPLE_EVENT_SCOPE = new ScopedEvent<>(SIMPLE_EVENT, SimpleEvent.class);
+	private static final ModMussScopedEvent<SimpleEvent> SIMPLE_EVENT_SCOPE = new ModMussScopedEvent<>(SIMPLE_EVENT, SimpleEvent.class);
 
 	@Test
 	void eventScopeTest() {
@@ -55,7 +55,7 @@ public class ScopedEventTest {
 
 		SIMPLE_EVENT.invoker().onEvent("1");
 
-		try (var s = SIMPLE_EVENT_SCOPE.register(results::add)) {
+		try (var ignored = SIMPLE_EVENT_SCOPE.register(results::add)) {
 			SIMPLE_EVENT.invoker().onEvent("2");
 		}
 
@@ -65,13 +65,13 @@ public class ScopedEventTest {
 		assertEquals("2", results.getFirst());
 	}
 
-	private static final ScopedEvent<ReturnEvent> RETURN_EVENT_SCOPE = new ScopedEvent<>(RETURN_EVENT, ReturnEvent.class, "Hello World");
+	private static final ModMussScopedEvent<ReturnEvent> RETURN_EVENT_SCOPE = new ModMussScopedEvent<>(RETURN_EVENT, ReturnEvent.class, "Hello World");
 
 	@Test
 	void returnEventScopeTest() {
 		assertEquals("Hello World", RETURN_EVENT.invoker().onEvent("Hello World"));
 
-		try (var s = RETURN_EVENT_SCOPE.register(arg -> arg.toUpperCase(Locale.ROOT))) {
+		try (var ignored = RETURN_EVENT_SCOPE.register(arg -> arg.toUpperCase(Locale.ROOT))) {
 			assertEquals("HELLO WORLD", RETURN_EVENT.invoker().onEvent("Hello World"));
 		}
 
