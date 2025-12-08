@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.test.base.EventScope;
 import net.fabricmc.fabric.test.base.ModMussScopedEvent;
 
 public class ScopedEventTest {
@@ -50,6 +51,37 @@ public class ScopedEventTest {
 	private static final ModMussScopedEvent<SimpleEvent> SIMPLE_EVENT_SCOPE = new ModMussScopedEvent<>(SIMPLE_EVENT, SimpleEvent.class);
 
 	@Test
+	void sylvEventScopeTest() {
+		List<String> results = new ArrayList<>();
+
+		try (var eventScope = new EventScope()) {
+			eventScope.register(SIMPLE_EVENT, results::add);
+
+			SIMPLE_EVENT.invoker().onEvent("2");
+		}
+		
+		SIMPLE_EVENT.invoker().onEvent("3");
+		
+		assertEquals(1, results.size());
+		assertEquals("2", results.getFirst());
+	}
+
+	@Test
+	void sylvReturnEventScopeTest() {
+		try (var eventScope = new EventScope()) {
+			eventScope.register(RETURN_EVENT, arg -> {
+				System.out.println(arg);
+				return arg.toUpperCase(Locale.ROOT);
+			});
+			assertEquals("HELLO WORLD", RETURN_EVENT.invoker().onEvent("Hello World"));
+		}
+
+		// this would be ignored if the scoped listener still worked
+		RETURN_EVENT.register(arg -> arg);
+		assertEquals("Hello World", RETURN_EVENT.invoker().onEvent("Hello World"));
+	}
+
+	@Test
 	void eventScopeTest() {
 		List<String> results = new ArrayList<>();
 
@@ -65,10 +97,11 @@ public class ScopedEventTest {
 		assertEquals("2", results.getFirst());
 	}
 
-	private static final ModMussScopedEvent<ReturnEvent> RETURN_EVENT_SCOPE = new ModMussScopedEvent<>(RETURN_EVENT, ReturnEvent.class, "Hello World");
-
 	@Test
 	void returnEventScopeTest() {
+		// moved this because it was interfering with sylvReturnEventScopeTest
+		final ModMussScopedEvent<ReturnEvent> RETURN_EVENT_SCOPE = new ModMussScopedEvent<>(RETURN_EVENT, ReturnEvent.class, "Hello World");
+
 		assertEquals("Hello World", RETURN_EVENT.invoker().onEvent("Hello World"));
 
 		try (var ignored = RETURN_EVENT_SCOPE.register(arg -> arg.toUpperCase(Locale.ROOT))) {
@@ -77,7 +110,6 @@ public class ScopedEventTest {
 
 		assertEquals("Hello World", RETURN_EVENT.invoker().onEvent("Hello World"));
 	}
-
 
 	interface SimpleEvent {
 		void onEvent(String arg);

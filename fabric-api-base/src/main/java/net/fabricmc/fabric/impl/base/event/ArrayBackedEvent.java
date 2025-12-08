@@ -123,4 +123,9 @@ class ArrayBackedEvent<T> extends Event<T> {
 			rebuildInvoker(handlers.length);
 		}
 	}
+
+	Class<T> getInnerClass() {
+		//noinspection unchecked
+		return (Class<T>) handlers.getClass().getComponentType();
+	}
 }
