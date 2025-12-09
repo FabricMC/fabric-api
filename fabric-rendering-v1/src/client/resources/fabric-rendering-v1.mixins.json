@@ -6,6 +6,7 @@
     "BlockColorsMixin",
     "BlockEntityRenderersMixin",
     "CapeLayerMixin",
+    "ClientDebugSubscriberMixin",
     "ClientLevelMixin",
     "ClientTooltipComponentMixin",
     "DebugOptionsScreenEntryMixin",

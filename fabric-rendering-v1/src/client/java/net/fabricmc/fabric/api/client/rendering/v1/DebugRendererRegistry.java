@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.debug.DebugRenderer;
+import net.minecraft.util.debug.DebugSubscription;
 
 import net.fabricmc.fabric.impl.client.rendering.DebugRendererRegistryImpl;
 
@@ -14,14 +15,18 @@ public final class DebugRendererRegistry {
 	private DebugRendererRegistry() {
 	}
 
-	public static void register(DebugRendererFactory debugRenderer) {
-		DebugRendererRegistryImpl.register(debugRenderer);
+	public static <T> void register(
+			DebugRendererFactory debugRenderer,
+			DebugSubscription<T> debugSubscription
+	) {
+		DebugRendererRegistryImpl.register(debugRenderer, debugSubscription);
 	}
 
-	public static void registerConditional(
+	public static <T> void registerConditional(
 			DebugRendererFactory debugRenderer,
+			DebugSubscription<T> debugSubscription,
 			Predicate<Minecraft> isEnabled
 	) {
-		DebugRendererRegistryImpl.registerConditional(debugRenderer, isEnabled);
+		DebugRendererRegistryImpl.registerConditional(debugRenderer, debugSubscription, isEnabled);
 	}
 }

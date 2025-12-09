@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.debug.DebugSubscription;
 
 import net.fabricmc.fabric.api.client.rendering.v1.DebugRendererFactory;
 
@@ -16,19 +17,21 @@ public final class DebugRendererRegistryImpl {
 	private DebugRendererRegistryImpl() {
 	}
 
-	public static void register(DebugRendererFactory debugRenderer) {
-		RENDERERS.add(new RendererEntry(debugRenderer, null));
+	public static <T> void register(DebugRendererFactory debugRenderer, DebugSubscription<T> debugSubscription) {
+		RENDERERS.add(new RendererEntry<>(debugRenderer, debugSubscription, null));
 	}
 
-	public static void registerConditional(
+	public static <T> void registerConditional(
 			DebugRendererFactory debugRenderer,
+			DebugSubscription<T> debugSubscription,
 			Predicate<Minecraft> isEnabled
 	) {
-		RENDERERS.add(new RendererEntry(debugRenderer, isEnabled));
+		RENDERERS.add(new RendererEntry<>(debugRenderer, debugSubscription, isEnabled));
 	}
 
-	public record RendererEntry(
+	public record RendererEntry<T>(
 			DebugRendererFactory debugRenderer,
+			DebugSubscription<T> debugSubscription,
 			@Nullable Predicate<Minecraft> isEnabled
 	) {
 	}
