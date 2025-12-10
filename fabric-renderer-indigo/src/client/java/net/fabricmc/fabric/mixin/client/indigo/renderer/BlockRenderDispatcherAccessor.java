@@ -27,10 +27,6 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 
 @Mixin(BlockRenderDispatcher.class)
 public interface BlockRenderDispatcherAccessor {
-	// fixme: where's the blockEntityModelsGetter?
-//	@Accessor("specialBlockModelRenderer")
-//	Supplier<SpecialBlockModelRenderer> getBlockEntityModelsGetter();
-
 	@Accessor("blockColors")
 	BlockColors getBlockColors();
 }
