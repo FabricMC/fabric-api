@@ -16,20 +16,12 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TINT_INDEX;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_COLOR;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_LIGHTMAP;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_NORMAL;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_STRIDE;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_U;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
-
 import java.util.Objects;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
+import net.minecraft.client.model.geom.builders.UVPair;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.LightTexture;
@@ -45,6 +37,8 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
+
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.*;
 
 /**
  * Almost-concrete implementation of a mutable quad. The only missing part is {@link #emitDirectly()},
@@ -265,7 +259,41 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl fromBakedQuad(BakedQuad quad) {
-		fromVanilla(quad.vertices(), 0);
+		// meow, 1.21.11 refactors
+		this.data = new int[VANILLA_QUAD_STRIDE];
+
+		isGeometryInvalid = true;
+
+		int colorIndex = baseIndex + VERTEX_COLOR;
+		int indexX = baseIndex + VERTEX_X;
+		int indexY = baseIndex + VERTEX_Y;
+		int indexZ = baseIndex + VERTEX_Z;
+		int indexU = baseIndex + VERTEX_U;
+		int indexV = baseIndex + VERTEX_V;
+
+		for (int i = 0; i < 4; i++) {
+			// default is white since BakedQuad has no color
+			data[colorIndex] = 0xFFFFFFFF; // white in ARGB
+
+			data[indexX] = Float.floatToRawIntBits(quad.position(i).x());
+			data[indexY] = Float.floatToRawIntBits(quad.position(i).y());
+			data[indexZ] = Float.floatToRawIntBits(quad.position(i).z());
+
+			long packedUV = quad.packedUV(i);
+			data[indexU] = Float.floatToRawIntBits(UVPair.unpackU(packedUV));
+			data[indexV] = Float.floatToRawIntBits(UVPair.unpackV(packedUV));
+
+			colorIndex += VERTEX_STRIDE;
+			indexX += VERTEX_STRIDE;
+			indexY += VERTEX_STRIDE;
+			indexZ += VERTEX_STRIDE;
+			indexU += VERTEX_STRIDE;
+			indexV += VERTEX_STRIDE;
+		}
+
+		// normals are off by default, BakedQuad has no normals
+		normalFlags(0);
+
 		nominalFace(quad.direction());
 		diffuseShade(quad.shade());
 		tintIndex(quad.tintIndex());
@@ -300,10 +328,10 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	public void popTransform() {
 		transformStack.pop();
 
-		if (transformStack.size() == 0) {
+		if (transformStack.isEmpty()) {
 			activeTransform = NO_TRANSFORM;
 		} else if (transformStack.size() == 1) {
-			activeTransform = transformStack.get(0);
+			activeTransform = transformStack.getFirst();
 		}
 	}
 

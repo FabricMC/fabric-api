@@ -137,11 +137,6 @@ public interface MutableQuadView extends QuadView {
 		return pos(vertexIndex, pos.x(), pos.y(), pos.z());
 	}
 
-	/**
-	 * Sets the color in ARGB format (0xAARRGGBB) for the given vertex.
-	 *
-	 * <p>The default value for all vertices is {@code 0xFFFFFFFF}.
-	 */
 	MutableQuadView color(int vertexIndex, int color);
 
 	/**
@@ -373,13 +368,17 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Sets this quad's vertex data for all vertices using data in given array, starting at the given index. The array
 	 * must have at least {@link #VANILLA_QUAD_STRIDE} elements starting at the given index. The format of the data must
-	 * be the same as {@link BakedQuad#vertices()}. This quad's lightmap values and normals will be set even though
+	 * be the same as {@code BakedQuad#vertices()}. This quad's lightmap values and normals will be set even though
 	 * vanilla does not decode them from packed vertex data.
 	 *
 	 * <p>Prefer using {@link #fromBakedQuad(BakedQuad)} instead if you have a {@link BakedQuad}.
 	 *
 	 * <p>Calling this method does not emit this quad.
+	 *
+	 * @deprecated This no longer represents how vanilla represents vertices in
+	 * {@link BakedQuad}.
 	 */
+	@Deprecated
 	MutableQuadView fromVanilla(int[] vertexData, int startIndex);
 
 	/**

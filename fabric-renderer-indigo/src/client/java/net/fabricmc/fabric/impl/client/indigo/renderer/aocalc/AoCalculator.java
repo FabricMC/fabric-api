@@ -127,7 +127,7 @@ public class AoCalculator {
 		final Direction lightFace = quad.lightFace();
 		quad.toVanilla(vertexData, 0);
 
-		ModelBlockRenderer.calculateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, lightFace, vanillaCalc);
+		ModelBlockRenderer.calculateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, quad.toBakedQuad(null), vanillaCalc);
 		vanillaCalc.calculate(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, quad.diffuseShade());
 
 		System.arraycopy(vanillaCalc.brightness, 0, aoDest, 0, 4);

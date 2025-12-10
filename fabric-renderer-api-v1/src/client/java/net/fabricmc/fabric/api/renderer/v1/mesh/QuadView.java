@@ -17,6 +17,9 @@
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+
+import net.minecraft.client.model.geom.builders.UVPair;
+
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -33,11 +36,11 @@ import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.api.util.TriState;
 
 /**
- * Interface for reading quad data encoded in {@link Mesh}es.
+ * Interface for reading quad data encoded in {@linkplain Mesh Meshes}.
  * Enables models to do analysis, re-texturing or translation without knowing the
  * renderer's vertex formats and without retaining redundant information.
  *
- * <p>Unless otherwise stated, assume all properties persist through serialization into {@link Mesh}es and have an
+ * <p>Unless otherwise stated, assume all properties persist through serialization into {@linkplain Mesh Meshes} and have an
  * effect in both block and item contexts. If a property is described as transient, then its value will not persist
  * through serialization into a {@link Mesh}.
  *
@@ -208,9 +211,12 @@ public interface QuadView {
 	/**
 	 * Outputs this quad's vertex data into the given array, starting at the given index. The array must have at least
 	 * {@link #VANILLA_QUAD_STRIDE} elements available starting at the given index. The format of the data is the same
-	 * as {@link BakedQuad#vertices()}. Lightmap values and normals will be populated even though vanilla does not use
+	 * as {@code BakedQuad#vertices()}. Lightmap values and normals will be populated even though vanilla does not use
 	 * them.
+	 * @deprecated This no longer represents how vanilla represents vertices in
+	 * {@link BakedQuad}.
 	 */
+	@Deprecated
 	void toVanilla(int[] target, int startIndex);
 
 	/**
@@ -221,9 +227,6 @@ public interface QuadView {
 	 * {@link SpriteFinder#find(QuadView)} if it is not already known.
 	 */
 	default BakedQuad toBakedQuad(TextureAtlasSprite sprite) {
-		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
-		toVanilla(vertexData, 0);
-
 		// The light emission is set to 15 if the quad is emissive; otherwise, to the minimum of all four sky light
 		// values and all four block light values.
 		int lightEmission = 15;
@@ -243,6 +246,33 @@ public interface QuadView {
 			}
 		}
 
-		return new BakedQuad(vertexData, tintIndex(), lightFace(), sprite, diffuseShade(), lightEmission);
+		Vector3f position0 = new Vector3f();
+		Vector3f position1 = new Vector3f();
+		Vector3f position2 = new Vector3f();
+		Vector3f position3 = new Vector3f();
+		this.copyPos(0, position0);
+		this.copyPos(1, position1);
+		this.copyPos(2, position2);
+		this.copyPos(3, position3);
+		long packedUV0 = UVPair.pack(this.u(0), this.v(0));
+		long packedUV1 = UVPair.pack(this.u(1), this.v(1));
+		long packedUV2 = UVPair.pack(this.u(2), this.v(2));
+		long packedUV3 = UVPair.pack(this.u(3), this.v(3));
+
+		return new BakedQuad(
+				position0,
+				position1,
+				position2,
+				position3,
+				packedUV0,
+				packedUV1,
+				packedUV2,
+				packedUV3,
+				tintIndex(),
+				lightFace(),
+				sprite,
+				diffuseShade(),
+				lightEmission
+		);
 	}
 }
