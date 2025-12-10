@@ -48,9 +48,11 @@ import net.fabricmc.fabric.api.util.TriState;
  */
 public interface QuadView {
 	/** Count of integers in a conventional (un-modded) block or item vertex. */
+	@Deprecated
 	int VANILLA_VERTEX_STRIDE = DefaultVertexFormat.BLOCK.getVertexSize() / 4;
 
 	/** Count of integers in a conventional (un-modded) block or item quad. */
+	@Deprecated
 	int VANILLA_QUAD_STRIDE = VANILLA_VERTEX_STRIDE * 4;
 
 	/**

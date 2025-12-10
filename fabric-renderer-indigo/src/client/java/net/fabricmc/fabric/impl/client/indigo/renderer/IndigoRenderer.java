@@ -76,7 +76,8 @@ public class IndigoRenderer implements Renderer {
 			float green = (tint >> 8 & 255) / 255.0F;
 			float blue = (tint & 255) / 255.0F;
 			FabricBlockModelRenderer.render(matrices.last(), RenderLayerHelper.entityDelegate(vertexConsumers), model, red, green, blue, light, overlay, blockView, pos, state);
-			((BlockRenderDispatcherAccessor) renderManager).getBlockEntityModelsGetter().get().renderByBlock(state.getBlock(), ItemDisplayContext.NONE, matrices, Minecraft.getInstance().gameRenderer.getSubmitNodeStorage(), light, overlay, 0);
+			// fixme: where's the blockEntityModelsGetter?
+//			((BlockRenderDispatcherAccessor) renderManager).getBlockEntityModelsGetter().get().renderByBlock(state.getBlock(), ItemDisplayContext.NONE, matrices, Minecraft.getInstance().gameRenderer.getSubmitNodeStorage(), light, overlay, 0);
 		}
 	}
 
