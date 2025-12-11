@@ -81,6 +81,15 @@ public class FrameBlockStateModel implements BlockStateModel {
 				quad.emissive(true);
 			}
 
+			// Change vertex colors to be partially transparent
+			for (int vertex = 0; vertex < 4; ++vertex) {
+				int color = quad.color(vertex);
+				int alpha = (color >> 24) & 0xFF;
+				alpha = alpha * 3 / 4;
+				color = (color & 0xFFFFFF) | (alpha << 24);
+				quad.color(vertex, color);
+			}
+
 			// Return true because we want the quad to be rendered
 			return true;
 		});
