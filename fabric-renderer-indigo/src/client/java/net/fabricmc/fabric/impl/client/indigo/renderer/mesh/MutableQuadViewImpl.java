@@ -233,9 +233,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl fromBakedQuad(BakedQuad quad) {
-		// meow, 1.21.11 refactors
-		this.data = new int[TOTAL_STRIDE];
-
 		isGeometryInvalid = true;
 
 		int colorIndex = baseIndex + VERTEX_COLOR;
