@@ -16,82 +16,69 @@
 
 package net.fabricmc.fabric.test.model.loading;
 
-import net.fabricmc.api.ClientModInitializer;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
-// FIXME
+import com.google.gson.JsonParseException;
+
+import com.google.gson.JsonSyntaxException;
+import com.mojang.math.Transformation;
+import com.mojang.serialization.JsonOps;
+
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
+
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.Identifier;
+
+import net.minecraft.util.GsonHelper;
+
+import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
+
+// FIXME: idk what this was for but it seems to have broken before the mojmap boundary
 public class UnbakedModelDeserializerTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		//UnbakedModelDeserializer.register(ModelTestModClient.id("transformed"), TransformedModelDeserializer.INSTANCE);
+		UnbakedModelDeserializer.register(ModelTestModClient.id("transformed"), TransformedModelDeserializer.INSTANCE);
 	}
 
-	//private static class TransformedModelDeserializer implements UnbakedModelDeserializer {
-	//	public static final TransformedModelDeserializer INSTANCE = new TransformedModelDeserializer();
-	//
-	//	@Override
-	//	public UnbakedModel deserialize(JsonObject jsonObject, JsonDeserializationContext context) throws JsonParseException {
-	//		JsonElement transformationElement = JsonHelper.getElement(jsonObject, "transformation");
-	//		AffineTransformation transformation = AffineTransformation.ANY_CODEC.parse(JsonOps.INSTANCE, transformationElement).getOrThrow();
-	//
-	//		JsonElement parentElement = JsonHelper.getElement(jsonObject, "parent");
-	//
-	//		if (JsonHelper.isString(parentElement)) {
-	//			Identifier parentId = Identifier.of(parentElement.getAsString());
-	//			return new TransformedUnbakedModel(transformation, parentId);
-	//		} else if (parentElement.isJsonObject()) {
-	//			UnbakedModel parent = context.deserialize(parentElement, UnbakedModel.class);
-	//			return new TransformedUnbakedModel(transformation, parent);
-	//		} else {
-	//			throw new JsonSyntaxException("parent must be string or object");
-	//		}
-	//	}
-	//}
-	//
-	//private static class TransformedUnbakedModel implements UnbakedModel {
-	//	private final AffineTransformation transformation;
-	//	@Nullable
-	//	private final Identifier parentId;
-	//	private UnbakedModel parent;
-	//
-	//	private TransformedUnbakedModel(AffineTransformation transformation, Identifier parentId) {
-	//		this.transformation = transformation;
-	//		this.parentId = parentId;
-	//	}
-	//
-	//	private TransformedUnbakedModel(AffineTransformation transformation, UnbakedModel parent) {
-	//		this.transformation = transformation;
-	//		parentId = null;
-	//		this.parent = parent;
-	//	}
-	//
-	//	@Override
-	//	public void resolve(Resolver resolver) {
-	//		if (parentId != null) {
-	//			parent = resolver.resolve(parentId);
-	//		}
-	//	}
-	//
-	//	@Override
-	//	public UnbakedModel getParent() {
-	//		return parent;
-	//	}
-	//
-	//	@Override
-	//	public BakedModel bake(ModelTextures textures, Baker baker, ModelBakeSettings settings, boolean ambientOcclusion, boolean isSideLit, ModelTransformation transformation) {
-	//		settings = new SimpleModelBakeSettings(settings.getRotation().multiply(this.transformation), settings.isUvLocked());
-	//		return parent.bake(textures, baker, settings, ambientOcclusion, isSideLit, transformation);
-	//	}
-	//}
-	//
-	//private record SimpleModelBakeSettings(AffineTransformation transformation, boolean uvLocked) implements ModelBakeSettings {
-	//	@Override
-	//	public AffineTransformation getRotation() {
-	//		return transformation;
-	//	}
-	//
-	//	@Override
-	//	public boolean isUvLocked() {
-	//		return uvLocked;
-	//	}
-	//}
+	private static class TransformedModelDeserializer implements UnbakedModelDeserializer {
+		public static final TransformedModelDeserializer INSTANCE = new TransformedModelDeserializer();
+
+		@Override
+		public UnbakedModel deserialize(JsonObject jsonObject, JsonDeserializationContext context) throws JsonParseException {
+			JsonElement transformationElement = GsonHelper.getNonNull(jsonObject, "transformation");
+			Transformation transformation = Transformation.EXTENDED_CODEC.parse(
+					JsonOps.INSTANCE, transformationElement).getOrThrow();
+
+			JsonElement parentElement = GsonHelper.getNonNull(jsonObject, "parent");
+
+			if (GsonHelper.isStringValue(parentElement)) {
+				Identifier parentId = Identifier.tryParse(parentElement.getAsString());
+				Objects.requireNonNull(parentId, "invalid identifier " + parentElement.getAsString());
+				return new TransformedUnbakedModel(transformation, parentId);
+			} else {
+				throw new JsonSyntaxException("parent must be string or object");
+			}
+		}
+	}
+
+	private static class TransformedUnbakedModel implements UnbakedModel {
+		private final Transformation transformation;
+		@Nullable
+		private final Identifier parentId;
+
+		private TransformedUnbakedModel(Transformation transformation, @Nullable Identifier parentId) {
+			this.transformation = transformation;
+			this.parentId = parentId;
+		}
+
+		@Override
+		public @Nullable Identifier parent() {
+			return this.parentId;
+		}
+	}
 }
