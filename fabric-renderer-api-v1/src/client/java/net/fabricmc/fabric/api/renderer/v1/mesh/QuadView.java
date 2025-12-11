@@ -16,13 +16,12 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-import net.minecraft.client.model.geom.builders.UVPair;
-
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;

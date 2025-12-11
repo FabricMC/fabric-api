@@ -22,9 +22,6 @@ import java.util.function.Function;
 
 import com.mojang.math.MatrixUtil;
 import com.mojang.math.Transformation;
-
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
-
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
@@ -38,6 +35,7 @@ import net.minecraft.client.resources.model.UnbakedGeometry;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.Direction;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 
 /**

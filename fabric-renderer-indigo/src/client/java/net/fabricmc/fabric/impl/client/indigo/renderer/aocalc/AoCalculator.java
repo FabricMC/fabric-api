@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.LightDataProvider;

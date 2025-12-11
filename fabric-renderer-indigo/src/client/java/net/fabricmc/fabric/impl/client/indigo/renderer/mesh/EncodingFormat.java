@@ -19,9 +19,6 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.jspecify.annotations.Nullable;
 
@@ -30,7 +27,7 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.util.TriState;

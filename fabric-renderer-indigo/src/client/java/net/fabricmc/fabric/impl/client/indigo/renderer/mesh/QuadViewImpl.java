@@ -30,8 +30,6 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Y;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
-
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -41,6 +39,7 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.Direction;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.util.TriState;
@@ -285,5 +284,4 @@ public class QuadViewImpl implements QuadView {
 	public final int tag() {
 		return data[baseIndex + HEADER_TAG];
 	}
-
 }
