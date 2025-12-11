@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.renderer.client.item;
 
+import java.util.function.Function;
+
 import com.llamalad7.mixinextras.sugar.Local;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -30,10 +32,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.impl.renderer.BasicItemModelExtension;
 
@@ -44,9 +49,20 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 	@Mutable
 	private boolean animated;
 
+	@Shadow
+	@Final
+	private static Function<ItemStack, RenderType> BLOCK_RENDER_TYPE_GETTER;
+	@Shadow
+	@Final
+	private static Function<ItemStack, RenderType> ITEM_RENDER_TYPE_GETTER;
 	@Unique
 	@Nullable
 	private Mesh mesh;
+
+	@Shadow
+	@Final
+	@Mutable
+	private Function<ItemStack, RenderType> renderType;
 
 	@Inject(method = "update", at = @At("RETURN"))
 	private void onReturnUpdate(CallbackInfo ci, @Local ItemStackRenderState.LayerRenderState layer) {
@@ -74,5 +90,21 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 				}
 			});
 		}
+
+		// correct the renderType
+		final QuadAtlas[] quadAtlas = {null};
+		this.mesh.forEach(quadView -> {
+			if (quadAtlas[0] == null) {
+				quadAtlas[0] = quadView.atlas();
+			} else if (quadView.atlas() != quadAtlas[0]) {
+				throw new IllegalStateException("Item models must not use more than one atlas per layer");
+			}
+		});
+
+		this.renderType = switch (quadAtlas[0]) {
+		case BLOCK -> BLOCK_RENDER_TYPE_GETTER;
+		case ITEM -> ITEM_RENDER_TYPE_GETTER;
+		case null -> BLOCK_RENDER_TYPE_GETTER;
+		};
 	}
 }
