@@ -35,7 +35,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.*;
@@ -229,31 +228,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 			faceNormal.set(q.faceNormal);
 		}
 
-		return this;
-	}
-
-	@Override
-	public final MutableQuadViewImpl fromVanilla(int[] vertexData, int startIndex) {
-		System.arraycopy(vertexData, startIndex, data, baseIndex + HEADER_STRIDE, VANILLA_QUAD_STRIDE);
-		isGeometryInvalid = true;
-
-		int normalFlags = 0;
-		int colorIndex = baseIndex + VERTEX_COLOR;
-		int normalIndex = baseIndex + VERTEX_NORMAL;
-
-		for (int i = 0; i < 4; i++) {
-			data[colorIndex] = ColorHelper.fromVanillaColor(data[colorIndex]);
-
-			// Set normal flag if normal is not zero, ignoring W component
-			if ((data[normalIndex] & 0xFFFFFF) != 0) {
-				normalFlags |= 1 << i;
-			}
-
-			colorIndex += VERTEX_STRIDE;
-			normalIndex += VERTEX_STRIDE;
-		}
-
-		normalFlags(normalFlags);
 		return this;
 	}
 

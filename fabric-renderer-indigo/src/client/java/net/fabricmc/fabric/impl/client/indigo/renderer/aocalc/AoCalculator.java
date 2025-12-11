@@ -120,12 +120,10 @@ public class AoCalculator {
 	// These are what vanilla AO calc wants, per its usage in vanilla code
 	// Because this instance is effectively thread-local, we preserve instances
 	// to avoid making a new allocation each call.
-	private final int[] vertexData = new int[EncodingFormat.QUAD_STRIDE];
 	private final ModelBlockRenderer.AmbientOcclusionRenderStorage vanillaCalc = new ModelBlockRenderer.AmbientOcclusionRenderStorage();
 
 	private void calcVanilla(QuadViewImpl quad, float[] aoDest, int[] lightDest) {
 		final Direction lightFace = quad.lightFace();
-		quad.toVanilla(vertexData, 0);
 
 		ModelBlockRenderer.calculateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, quad.toBakedQuad(null), vanillaCalc);
 		vanillaCalc.calculate(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, quad.diffuseShade());

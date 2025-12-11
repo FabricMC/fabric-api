@@ -366,22 +366,6 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView copyFrom(QuadView quad);
 
 	/**
-	 * Sets this quad's vertex data for all vertices using data in given array, starting at the given index. The array
-	 * must have at least {@link #VANILLA_QUAD_STRIDE} elements starting at the given index. The format of the data must
-	 * be the same as {@code BakedQuad#vertices()}. This quad's lightmap values and normals will be set even though
-	 * vanilla does not decode them from packed vertex data.
-	 *
-	 * <p>Prefer using {@link #fromBakedQuad(BakedQuad)} instead if you have a {@link BakedQuad}.
-	 *
-	 * <p>Calling this method does not emit this quad.
-	 *
-	 * @deprecated This no longer represents how vanilla represents vertices in
-	 * {@link BakedQuad}.
-	 */
-	@Deprecated
-	MutableQuadView fromVanilla(int[] vertexData, int startIndex);
-
-	/**
 	 * Sets all applicable data and properties of this quad as specified by the given {@link BakedQuad}. This quad's
 	 * lightmap values and normals will be set even though vanilla does not decode them from packed vertex data. The
 	 * {@linkplain BakedQuad#lightEmission() baked quad's light emission} will be applied to the lightmap values from

@@ -151,9 +151,6 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter copyFrom(QuadView quad);
 
 	@Override
-	QuadEmitter fromVanilla(int[] vertexData, int startIndex);
-
-	@Override
 	QuadEmitter fromBakedQuad(BakedQuad quad);
 
 	/**

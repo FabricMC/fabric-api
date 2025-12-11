@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-
 import net.minecraft.client.model.geom.builders.UVPair;
 
 import org.joml.Vector2f;
@@ -47,14 +45,6 @@ import net.fabricmc.fabric.api.util.TriState;
  * <p>Only the renderer should implement or extend this interface.
  */
 public interface QuadView {
-	/** Count of integers in a conventional (un-modded) block or item vertex. */
-	@Deprecated
-	int VANILLA_VERTEX_STRIDE = DefaultVertexFormat.BLOCK.getVertexSize() / 4;
-
-	/** Count of integers in a conventional (un-modded) block or item quad. */
-	@Deprecated
-	int VANILLA_QUAD_STRIDE = VANILLA_VERTEX_STRIDE * 4;
-
 	/**
 	 * Gets the X coordinate of the geometric position of the given vertex.
 	 */
@@ -209,17 +199,6 @@ public interface QuadView {
 	 * @see MutableQuadView#tag(int)
 	 */
 	int tag();
-
-	/**
-	 * Outputs this quad's vertex data into the given array, starting at the given index. The array must have at least
-	 * {@link #VANILLA_QUAD_STRIDE} elements available starting at the given index. The format of the data is the same
-	 * as {@code BakedQuad#vertices()}. Lightmap values and normals will be populated even though vanilla does not use
-	 * them.
-	 * @deprecated This no longer represents how vanilla represents vertices in
-	 * {@link BakedQuad}.
-	 */
-	@Deprecated
-	void toVanilla(int[] target, int startIndex);
 
 	/**
 	 * Creates a new {@link BakedQuad} with an appearance as close as possible to this quad, as permitted by vanilla.
