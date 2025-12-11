@@ -176,6 +176,15 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
+	 * Sets the {@linkplain QuadAtlas atlas} used by this quad. Keep in mind
+	 * quads may only use one atlas per quad and are restricted to atlases
+	 * defined in {@link QuadAtlas}.
+	 *
+	 * @see QuadAtlas
+	 */
+	MutableQuadView atlas(QuadAtlas quadAtlas);
+
+	/**
 	 * Sets the texture coordinates for all vertices using the given sprite. Can handle UV locking, rotation,
 	 * interpolation, etc. Control this behavior by passing additive combinations of the BAKE_ flags defined in this
 	 * interface.

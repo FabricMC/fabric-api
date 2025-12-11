@@ -30,6 +30,8 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Y;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
+
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -137,6 +139,11 @@ public class QuadViewImpl implements QuadView {
 	@Override
 	public final float v(int vertexIndex) {
 		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_V]);
+	}
+
+	@Override
+	public QuadAtlas atlas() {
+		return EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override

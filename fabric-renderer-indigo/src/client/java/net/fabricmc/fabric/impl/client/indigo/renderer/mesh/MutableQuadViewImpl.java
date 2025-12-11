@@ -20,6 +20,8 @@ import java.util.Objects;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
+
 import net.minecraft.client.model.geom.builders.UVPair;
 
 import org.jspecify.annotations.Nullable;
@@ -115,6 +117,12 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		final int i = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U;
 		data[i] = Float.floatToRawIntBits(u);
 		data[i + 1] = Float.floatToRawIntBits(v);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl atlas(QuadAtlas quadAtlas) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS], quadAtlas);
 		return this;
 	}
 

@@ -93,6 +93,11 @@ public interface QuadView {
 	Vector2f copyUv(int vertexIndex, @Nullable Vector2f target);
 
 	/**
+	 * Gets the {@linkplain QuadAtlas atlas} used by this quad.
+	 */
+	QuadAtlas atlas();
+
+	/**
 	 * Gets the minimum lightmap value of the given vertex.
 	 */
 	int lightmap(int vertexIndex);
