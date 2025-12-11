@@ -137,6 +137,11 @@ public interface MutableQuadView extends QuadView {
 		return pos(vertexIndex, pos.x(), pos.y(), pos.z());
 	}
 
+	/**
+	 * Sets the color in ARGB format (0xAARRGGBB) for the given vertex.
+	 *
+	 * <p>The default value for all vertices is {@code 0xFFFFFFFF}.
+	 */
 	MutableQuadView color(int vertexIndex, int color);
 
 	/**
