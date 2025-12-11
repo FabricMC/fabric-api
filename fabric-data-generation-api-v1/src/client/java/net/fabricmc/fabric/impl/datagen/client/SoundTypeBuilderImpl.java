@@ -17,14 +17,9 @@
 package net.fabricmc.fabric.impl.datagen.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -38,14 +33,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 
 import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
 
 public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SoundTypeBuilderImpl.class);
 
-	private SoundSource category = SoundSource.NEUTRAL;
+	private boolean replace = false;
 	@Nullable
 	private String subtitle;
 	private final List<Entry> sounds = new ArrayList<>();
@@ -53,9 +47,8 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	public SoundTypeBuilderImpl() { }
 
 	@Override
-	public SoundTypeBuilder category(SoundSource category) {
-		Objects.requireNonNull(category, "Sound event category must not be null.");
-		this.category = category;
+	public SoundTypeBuilder replace(boolean replace) {
+		this.replace = replace;
 		return this;
 	}
 
@@ -93,26 +86,38 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 			}
 		}
 
-		return new SoundType(sounds, category, Optional.ofNullable(subtitle));
+		return new SoundType(sounds, replace, Optional.ofNullable(subtitle));
 	}
 
-	public record SoundType(List<Entry> sounds, SoundSource category, Optional<String> subtitle) {
-		private static final Map<String, SoundSource> CATEGORIES = Arrays.stream(SoundSource.values()).collect(Collectors.toMap(SoundSource::getName, Function.identity()));
-		private static final Codec<SoundSource> SOUND_CATEGORY_CODEC = Codec.stringResolver(SoundSource::getName, name -> CATEGORIES.getOrDefault(name.toLowerCase(Locale.ROOT), SoundSource.NEUTRAL));
+	/**
+	 * Record of the sound event registration class for data generation.
+	 *
+	 * @see net.minecraft.client.resources.sounds.SoundEventRegistration
+	 */
+	public record SoundType(List<Entry> sounds, boolean replace, Optional<String> subtitle) {
+		/**
+		 * @see net.minecraft.client.resources.sounds.SoundEventRegistrationSerializer
+		 */
 		public static final Codec<SoundType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Entry.CODEC.listOf().fieldOf("sounds").forGetter(SoundType::sounds),
-				SOUND_CATEGORY_CODEC.fieldOf("category").forGetter(SoundType::category),
+				Codec.BOOL.optionalFieldOf("replace", false).forGetter(SoundType::replace),
 				Codec.STRING.optionalFieldOf("subtitle").forGetter(SoundType::subtitle)
 		).apply(instance, SoundType::new));
 	}
 
-	private record Entry(Identifier name, RegistrationType type, float volume, float pitch, int weight, int attenuationDistance, boolean stream, boolean preload) {
+	/**
+	 * Record of the sound class to use for data generation.
+	 *
+	 * @see net.minecraft.client.resources.sounds.Sound
+	 */
+	public record Entry(Identifier name, RegistrationType type, float volume, float pitch, int weight,
+						int attenuationDistance, boolean stream, boolean preload) {
 		private static final Codec<Entry> MAP_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Identifier.CODEC.fieldOf("name").forGetter(Entry::name),
 				RegistrationType.CODEC.optionalFieldOf("type", RegistrationType.FILE).forGetter(Entry::type),
-				Codec.FLOAT.optionalFieldOf("volume", EntryBuilder.DEFAULT_VOLUME).forGetter(Entry::volume),
-				Codec.FLOAT.optionalFieldOf("pitch", EntryBuilder.DEFAULT_PITCH).forGetter(Entry::pitch),
-				Codec.INT.optionalFieldOf("weight", EntryBuilder.DEFAULT_WEIGHT).forGetter(Entry::weight),
+				Codec.floatRange(Float.MIN_VALUE, 1.0F).optionalFieldOf("volume", EntryBuilder.DEFAULT_VOLUME).forGetter(Entry::volume),
+				Codec.floatRange(0.5F, 2.0F).optionalFieldOf("pitch", EntryBuilder.DEFAULT_PITCH).forGetter(Entry::pitch),
+				Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("weight", EntryBuilder.DEFAULT_WEIGHT).forGetter(Entry::weight),
 				Codec.INT.optionalFieldOf("attenuation_distance", EntryBuilder.DEFAULT_ATTENUATION_DISTANCE).forGetter(Entry::attenuationDistance),
 				Codec.BOOL.optionalFieldOf("stream", false).forGetter(Entry::stream),
 				Codec.BOOL.optionalFieldOf("preload", false).forGetter(Entry::preload)
@@ -124,10 +129,10 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		);
 		private static final Codec<Entry> CODEC = Codec.xor(STRING_CODEC, MAP_CODEC).xmap(Either::unwrap, sound -> {
 			if (sound.type() != RegistrationType.FILE
-					|| sound.volume() != 1F
-					|| sound.pitch() != 1F
-					|| sound.weight() != 1
-					|| sound.attenuationDistance() != 16
+					|| sound.volume() != EntryBuilder.DEFAULT_VOLUME
+					|| sound.pitch() != EntryBuilder.DEFAULT_PITCH
+					|| sound.weight() != EntryBuilder.DEFAULT_WEIGHT
+					|| sound.attenuationDistance() != EntryBuilder.DEFAULT_ATTENUATION_DISTANCE
 					|| sound.stream()
 					|| sound.preload()) {
 				return Either.right(sound);

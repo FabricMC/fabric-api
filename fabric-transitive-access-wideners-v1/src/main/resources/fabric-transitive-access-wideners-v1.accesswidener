@@ -143,6 +143,9 @@ transitive-accessible	method	net/minecraft/world/level/block/Blocks	register	(Ln
 # Debug HUD Entries
 transitive-accessible	method	net/minecraft/client/gui/components/debug/DebugScreenEntries	register	(Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/gui/components/debug/DebugScreenEntry;)Lnet/minecraft/resources/Identifier;
 
+# Render Types
+transitive-accessible	method	net/minecraft/client/renderer/rendertype/RenderType	create	(Ljava/lang/String;Lnet/minecraft/client/renderer/rendertype/RenderSetup;)Lnet/minecraft/client/renderer/rendertype/RenderType;
+
 ### Generated access wideners below
 # Constructors of non-abstract block classes
 transitive-accessible method net/minecraft/world/level/block/AttachedStemBlock <init> (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/block/state/BlockBehaviour$Properties;)V
