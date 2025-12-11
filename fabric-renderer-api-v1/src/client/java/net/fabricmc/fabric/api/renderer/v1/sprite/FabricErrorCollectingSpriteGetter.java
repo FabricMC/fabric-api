@@ -21,7 +21,7 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 
-// TODO: extend Function<QuadAtlas, SpriteFinder> ?
+// TODO: extend QuadAtlasSpriteGetter ?
 /**
  * Note: This interface is automatically implemented on {@link SpriteGetter} via Mixin and interface injection.
  */

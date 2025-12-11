@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.renderer.v1.model;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.mojang.math.MatrixUtil;
 import com.mojang.math.Transformation;
@@ -35,7 +34,6 @@ import net.minecraft.client.resources.model.UnbakedGeometry;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.Direction;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 
 /**
@@ -180,7 +178,7 @@ public final class ModelBakeSettingsHelper {
 	 * <p>This method is most useful when creating custom implementations of {@link UnbakedGeometry}, which receive a
 	 * {@link ModelState}.
 	 */
-	public static QuadTransform asQuadTransform(ModelState settings, Function<QuadAtlas, SpriteFinder> spriteFinderMap) {
+	public static QuadTransform asQuadTransform(ModelState settings, QuadAtlasSpriteGetter spriteFinderMap) {
 		Matrix4fc matrix = settings.transformation().getMatrix();
 
 		// Assumes face transformations are identity if main transformation is identity
@@ -194,7 +192,7 @@ public final class ModelBakeSettingsHelper {
 		Vector3f vec3 = new Vector3f();
 
 		return quad -> {
-			SpriteFinder spriteFinder = spriteFinderMap.apply(quad.atlas());
+			SpriteFinder spriteFinder = spriteFinderMap.spriteFinder(quad.atlas());
 			Direction lightFace = quad.lightFace();
 			Matrix4fc reverseMatrix = settings.inverseFaceTransformation(lightFace);
 
