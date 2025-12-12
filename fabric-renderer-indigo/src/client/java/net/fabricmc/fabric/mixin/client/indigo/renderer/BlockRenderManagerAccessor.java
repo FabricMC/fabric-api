@@ -16,20 +16,14 @@
 
 package net.fabricmc.fabric.mixin.client.indigo.renderer;
 
-import java.util.function.Supplier;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.block.entity.LoadedBlockEntityModels;
 
 @Mixin(BlockRenderManager.class)
 public interface BlockRenderManagerAccessor {
-	@Accessor("blockEntityModelsGetter")
-	Supplier<LoadedBlockEntityModels> getBlockEntityModelsGetter();
-
 	@Accessor("blockColors")
 	BlockColors getBlockColors();
 }
