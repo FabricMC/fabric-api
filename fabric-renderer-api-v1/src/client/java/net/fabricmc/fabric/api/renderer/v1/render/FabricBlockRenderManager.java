@@ -21,7 +21,6 @@ import java.util.function.Predicate;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
 import net.minecraft.client.render.model.BlockStateModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
@@ -45,7 +44,7 @@ public interface FabricBlockRenderManager {
 	 * on multiple render layers and to provide the model with additional context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Also invokes
-	 * the {@link SpecialModelRenderer}. Usually used by entity renderers.
+	 * the {@link FabricBlockModelRenderer}. Usually used by entity renderers.
 	 *
 	 * @param state The block state.
 	 * @param matrices The matrices.
