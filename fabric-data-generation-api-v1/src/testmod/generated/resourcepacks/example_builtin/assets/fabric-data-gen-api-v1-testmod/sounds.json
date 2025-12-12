@@ -1,6 +1,6 @@
 {
   "test_sound": {
-    "category": "neutral",
+    "replace": true,
     "sounds": [
       {
         "name": "minecraft:mob/parrot/idle1",

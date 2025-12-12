@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabric-resource-loader-v0": "*",
+    "fabric-resource-loader-v1": "*",
     "fabric-object-builder-api-v1": "*"
   },
   "description": "Test mod for fabric object builder API v1.",

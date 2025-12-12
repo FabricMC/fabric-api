@@ -1,9 +1,0 @@
-{
-  "commands.datapack.fabric.internal": "Fabric 내부 팩 \"%s\"을(를) 활성화 또는 비활성화할 수 없습니다.",
-  "pack.description.modResources": "모드 리소스.",
-  "pack.name.fabricMod": "\"%s\" Fabric 모드",
-  "pack.name.fabricMod.subPack": "\"%s\" (%s) Fabric 모드",
-  "pack.name.fabricMods": "Fabric 모드",
-  "pack.source.builtinMod": "내장: %s",
-  "pack.source.fabricmod": "Fabric 모드"
-}

@@ -724,14 +724,15 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.LEATHER_HORSE_ARMOR)
 				.add(Items.COPPER_HORSE_ARMOR)
 				.add(Items.IRON_HORSE_ARMOR)
+				.add(Items.GOLDEN_HORSE_ARMOR)
 				.add(Items.DIAMOND_HORSE_ARMOR)
-				.add(Items.GOLDEN_HORSE_ARMOR);
+				.add(Items.NETHERITE_HORSE_ARMOR);
 
 		valueLookupBuilder(ConventionalItemTags.NAUTILUS_ARMORS)
 				.add(Items.COPPER_NAUTILUS_ARMOR)
 				.add(Items.IRON_NAUTILUS_ARMOR)
-				.add(Items.DIAMOND_NAUTILUS_ARMOR)
 				.add(Items.GOLDEN_NAUTILUS_ARMOR)
+				.add(Items.DIAMOND_NAUTILUS_ARMOR)
 				.add(Items.NETHERITE_NAUTILUS_ARMOR);
 
 		valueLookupBuilder(ConventionalItemTags.WOLF_ARMORS)
@@ -746,6 +747,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		valueLookupBuilder(ConventionalItemTags.ENCHANTABLES)
 				.addOptionalTag(ItemTags.ARMOR_ENCHANTABLE)
 				.addOptionalTag(ItemTags.EQUIPPABLE_ENCHANTABLE)
+				.addOptionalTag(ItemTags.SHARP_WEAPON_ENCHANTABLE)
 				.addOptionalTag(ItemTags.WEAPON_ENCHANTABLE)
 				.addOptionalTag(ItemTags.SWEEPING_ENCHANTABLE)
 				.addOptionalTag(ItemTags.MINING_ENCHANTABLE)

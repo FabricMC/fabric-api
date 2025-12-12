@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.17.3",
     "fabric-api-base": "*",
-    "fabric-resource-loader-v0": "*"
+    "fabric-resource-loader-v1": "*"
   },
   "description": "An API for adding custom item groups.",
   "mixins": [

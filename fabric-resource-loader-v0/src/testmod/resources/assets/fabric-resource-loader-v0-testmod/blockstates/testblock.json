@@ -1,7 +1,0 @@
-{
-  "variants": {
-    "": {
-      "model": "fabric-resource-loader-v0-testmod:block/testblock"
-    }
-  }
-}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-resource-loader-v0",
+  "name": "Fabric Resource Loader (v0)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-resource-loader-v0/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.17.3",
+    "fabric-resource-loader-v1": "*"
+  },
+  "description": "Asset and data resource loading.",
+  "custom": {
+    "fabric-api:module-lifecycle": "deprecated"
+  }
+}

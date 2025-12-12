@@ -125,7 +125,7 @@ public final class GlobalReceiverRegistry<H> {
 	}
 
 	public Map<Identifier, H> getHandlers() {
-		Lock lock = this.lock.writeLock();
+		Lock lock = this.lock.readLock();
 		lock.lock();
 
 		try {

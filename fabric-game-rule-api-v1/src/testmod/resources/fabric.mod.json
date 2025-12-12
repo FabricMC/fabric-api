@@ -8,7 +8,7 @@
   "depends": {
     "fabric-game-rule-api-v1": "*",
     "fabric-lifecycle-events-v1":"*",
-    "fabric-resource-loader-v0": "*"
+    "fabric-resource-loader-v1": "*"
   },
   "entrypoints": {
     "main": [
