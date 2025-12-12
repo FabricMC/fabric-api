@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.test.rendering.client;
 
 import java.util.Set;
@@ -10,7 +26,6 @@ import net.minecraft.gizmos.Gizmos;
 import net.minecraft.gizmos.TextGizmo;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.debug.DebugValueAccess;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -39,7 +54,7 @@ public class DebugRendererTest implements ClientModInitializer {
 		@Override
 		public void emitGizmos(double d, double e, double f, DebugValueAccess debugValueAccess, Frustum frustum, float g) {
 			debugValueAccess.forEachEntity(DebugSubscriptions.SUS_AVATAR, (entity, susDebugInfo) -> {
-				Gizmos.billboardText(susDebugInfo.sussyPlayerName(), new Vec3(entity.getX(), entity.getY() + 4.0, entity.getZ()), TextGizmo.Style.whiteAndCentered());
+				Gizmos.billboardText(susDebugInfo.sussyPlayerName(), new Vec3(entity.getX(), entity.getY() + 3.25, entity.getZ()), TextGizmo.Style.whiteAndCentered());
 
 				if (susDebugInfo.isSuspicious()) {
 					Vec3 arrowPos = new Vec3(entity.getX() + 1.0, entity.getY() + 2.7, entity.getZ() + 1.0);
