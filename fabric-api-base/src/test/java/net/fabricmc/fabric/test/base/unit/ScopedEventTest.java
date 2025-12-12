@@ -17,6 +17,10 @@
 package net.fabricmc.fabric.test.base.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +50,16 @@ public class ScopedEventTest {
 		}
 
 		return null;
+	});
+
+	private static final Event<BoolEvent> BOOL_EVENT = EventFactory.createArrayBacked(BoolEvent.class, callbacks -> () -> {
+		for (BoolEvent callback : callbacks) {
+			if (!callback.onEvent()) {
+				return false;
+			}
+		}
+
+		return true;
 	});
 
 	private static final Event<ReturnEvent> MODMUSS_RETURN_EVENT = EventFactory.createArrayBacked(ReturnEvent.class, callbacks -> arg -> {
@@ -80,14 +94,42 @@ public class ScopedEventTest {
 
 	@Test
 	void sylvReturnEventScopeTest() {
+		assertNull(RETURN_EVENT.invoker().onEvent("Hello World"));
+
 		try (var eventScope = new EventScope()) {
 			eventScope.register(RETURN_EVENT, arg -> arg.toUpperCase(Locale.ROOT));
 			assertEquals("HELLO WORLD", RETURN_EVENT.invoker().onEvent("Hello World"));
 		}
 
-		// this would be ignored if the scoped listener still worked
-		RETURN_EVENT.register(arg -> arg);
-		assertEquals("Hello World", RETURN_EVENT.invoker().onEvent("Hello World"));
+		try (var eventScope = new EventScope()) {
+			eventScope.registerEarlyReturn(RETURN_EVENT, arg -> arg.toLowerCase(Locale.ROOT), args -> {
+				String arg = (String) args[0];
+
+				if (arg.toLowerCase(Locale.ROOT).equals("hello worlde")) {
+					return "meow!";
+				}
+
+				return "Hello World";
+			});
+			assertEquals("hello worlde", RETURN_EVENT.invoker().onEvent("Hello Worlde"));
+		}
+
+		assertNotEquals("hello worlde", RETURN_EVENT.invoker().onEvent("Hello Worlde"));
+		assertEquals("meow!", RETURN_EVENT.invoker().onEvent("Hello Worlde"));
+
+		assertEquals("Hello World", RETURN_EVENT.invoker().onEvent(" Hasdfello World plus some other nonsense"));
+	}
+
+	@Test
+	void sylvBoolEventScopeTest() {
+		assertTrue(BOOL_EVENT.invoker().onEvent());
+
+		try (var eventScope = new EventScope()) {
+			eventScope.registerEarlyReturn(BOOL_EVENT, () -> false, true);
+			assertFalse(BOOL_EVENT.invoker().onEvent());
+		}
+
+		assertTrue(BOOL_EVENT.invoker().onEvent());
 	}
 
 	@Test
@@ -125,5 +167,9 @@ public class ScopedEventTest {
 
 	interface ReturnEvent {
 		String onEvent(String arg);
+	}
+
+	interface BoolEvent {
+		boolean onEvent();
 	}
 }

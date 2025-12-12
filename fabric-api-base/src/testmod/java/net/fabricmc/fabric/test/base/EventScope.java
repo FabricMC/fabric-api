@@ -22,6 +22,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+
+import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.base.event.TestEncapsulationBreaker3000;
@@ -42,6 +45,14 @@ public class EventScope implements Closeable {
 		handlers.add(new Handler(event, callback));
 	}
 
+	public <T> void registerEarlyReturn(Event<T> event, T callback, Object defaultValue) {
+		handlers.add(new Handler(event, callback, defaultValue));
+	}
+
+	public <T> void registerEarlyReturn(Event<T> event, T callback, Function<Object[], Object> defaultValue) {
+		handlers.add(new Handler(event, callback, defaultValue));
+	}
+
 	@Override
 	public void close() {
 		this.inScope = false;
@@ -49,6 +60,8 @@ public class EventScope implements Closeable {
 
 	public class Handler implements InvocationHandler {
 		private final Object callback;
+		private @Nullable Object defaultValue;
+		private @Nullable Function<Object[], Object> defaultValueGetter;
 
 		<T> Handler(Event<T> event, T callback) {
 			this.callback = callback;
@@ -59,11 +72,26 @@ public class EventScope implements Closeable {
 			event.register(proxy);
 		}
 
+		<T> Handler(Event<T> event, T callback, Object defaultValue) {
+			this(event, callback);
+			this.defaultValue = defaultValue;
+		}
+
+		<T> Handler(Event<T> event, T callback, Function<Object[], Object> defaultValueGetter) {
+			this(event, callback);
+			this.defaultValueGetter = defaultValueGetter;
+		}
+
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			// event scopes truly are the event scopes we have at home:
 			// guard if we're out-of-scope
 			if (!EventScope.this.inScope) {
-				return null;
+				if (this.defaultValueGetter != null) {
+					return this.defaultValueGetter.apply(args);
+				}
+
+				return this.defaultValue;
 			}
 
 			method.setAccessible(true); // hack because it's public abstract
