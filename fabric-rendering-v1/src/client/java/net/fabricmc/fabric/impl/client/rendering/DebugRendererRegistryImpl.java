@@ -9,7 +9,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.debug.DebugSubscription;
 
-import net.fabricmc.fabric.api.client.rendering.v1.DebugRendererFactory;
+import net.fabricmc.fabric.api.client.rendering.v1.debug.DebugRendererFactory;
 
 public final class DebugRendererRegistryImpl {
 	public static final List<RendererEntry> RENDERERS = new ArrayList<>();

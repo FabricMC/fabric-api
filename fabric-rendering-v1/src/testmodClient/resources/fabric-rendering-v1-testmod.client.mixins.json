@@ -12,5 +12,9 @@
   },
   "overwrites": {
     "requireAnnotations": true
-  }
+  },
+  "mixins": [
+    "CircleGizmoMixin",
+    "ClientDebugSubscriberMixin"
+  ]
 }

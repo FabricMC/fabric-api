@@ -40,6 +40,7 @@
     {
       "config": "fabric-rendering-v1-testmod.client.mixins.json",
       "environment": "client"
-    }
+    },
+    "fabric-rendering-v1-testmod.mixins.json"
   ]
 }

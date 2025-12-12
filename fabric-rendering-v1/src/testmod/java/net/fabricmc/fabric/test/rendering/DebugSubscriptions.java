@@ -8,7 +8,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.debug.DebugSubscription;
 
 public final class DebugSubscriptions {
-	public static final DebugSubscription<SusDebugInfo> SUS_PLAYER = register(
+	public static final DebugSubscription<SusDebugInfo> SUS_AVATAR = register(
 			"sus",
 			SusDebugInfo.STREAM_CODEC
 	);
