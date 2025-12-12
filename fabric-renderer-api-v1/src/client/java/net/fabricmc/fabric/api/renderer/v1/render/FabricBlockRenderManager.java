@@ -43,8 +43,7 @@ public interface FabricBlockRenderManager {
 	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
 	 * on multiple render layers and to provide the model with additional context.</b>
 	 *
-	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Also invokes
-	 * the {@link FabricBlockModelRenderer}. Usually used by entity renderers.
+	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by entity renderers.
 	 *
 	 * @param state The block state.
 	 * @param matrices The matrices.
