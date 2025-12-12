@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.command.v2;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -99,7 +101,7 @@ public interface FabricClientCommandSource extends SharedSuggestionProvider {
 	 * @param key the meta key
 	 * @return the meta
 	 */
-	default Object getMeta(String key) {
+	default @Nullable Object getMeta(String key) {
 		return null;
 	}
 }
