@@ -37,8 +37,7 @@ import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
  *
  * <p>Use in conjunction with {@link FabricSoundsProvider} to generate sound definitions.
  *
- * @see net.minecraft.client.sounds.SoundManager
- * @see net.minecraft.client.sounds.WeighedSoundEvents
+ * @see net.minecraft.client.resources.sounds.SoundEventRegistration
  */
 @ApiStatus.NonExtendable
 public interface SoundTypeBuilder {
@@ -64,11 +63,20 @@ public interface SoundTypeBuilder {
 	}
 
 	/**
-	 * Sets the sound category the sound event must play on.
-	 *
-	 * <p>The default category is {@link SoundSource#NEUTRAL}. GUI elements should use {@link SoundSource#MASTER}.
+	 * @deprecated Category is not a field interpreted by vanilla in the sounds file,
+	 * calling this method will have no effect.
 	 */
-	SoundTypeBuilder category(SoundSource category);
+	@Deprecated(forRemoval = true)
+	default SoundTypeBuilder category(SoundSource category) {
+		return this;
+	}
+
+	/**
+	 * Sets an optional replace boolean, which on true allows this sound type to override others.
+	 *
+	 * <p>The default is false.
+	 */
+	SoundTypeBuilder replace(boolean replace);
 
 	/**
 	 * Sets an optional translation key string to use for the sound's subtitle.
@@ -134,6 +142,8 @@ public interface SoundTypeBuilder {
 
 	/**
 	 * Builder for creating a weighted sound entry that can be played for a particular sound type.
+	 *
+	 * @see net.minecraft.client.resources.sounds.Sound
 	 */
 	@ApiStatus.NonExtendable
 	interface EntryBuilder {
