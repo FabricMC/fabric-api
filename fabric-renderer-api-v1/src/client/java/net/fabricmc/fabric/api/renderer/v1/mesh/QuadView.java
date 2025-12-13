@@ -92,11 +92,6 @@ public interface QuadView {
 	Vector2f copyUv(int vertexIndex, @Nullable Vector2f target);
 
 	/**
-	 * Gets the {@linkplain QuadAtlas atlas} used by this quad.
-	 */
-	QuadAtlas atlas();
-
-	/**
 	 * Gets the minimum lightmap value of the given vertex.
 	 */
 	int lightmap(int vertexIndex);
@@ -193,6 +188,11 @@ public interface QuadView {
 	ShadeMode shadeMode();
 
 	/**
+	 * @see MutableQuadView#atlas(QuadAtlas)
+	 */
+	QuadAtlas atlas();
+
+	/**
 	 * This method is equivalent to {@link BakedQuad#tintIndex()}.
 	 *
 	 * @see MutableQuadView#tintIndex(int)
@@ -206,12 +206,20 @@ public interface QuadView {
 
 	/**
 	 * Creates a new {@link BakedQuad} with an appearance as close as possible to this quad, as permitted by vanilla.
-	 * Vertex lightmap values and vertex normals will be populated even though vanilla does not use them.
 	 *
 	 * @param sprite The sprite is not serialized so it must be provided by the caller. Retrieve it using
 	 * {@link SpriteFinder#find(QuadView)} if it is not already known.
 	 */
 	default BakedQuad toBakedQuad(TextureAtlasSprite sprite) {
+		Vector3f position0 = copyPos(0, null);
+		Vector3f position1 = copyPos(1, null);
+		Vector3f position2 = copyPos(2, null);
+		Vector3f position3 = copyPos(3, null);
+		long packedUV0 = UVPair.pack(u(0), v(0));
+		long packedUV1 = UVPair.pack(u(1), v(1));
+		long packedUV2 = UVPair.pack(u(2), v(2));
+		long packedUV3 = UVPair.pack(u(3), v(3));
+
 		// The light emission is set to 15 if the quad is emissive; otherwise, to the minimum of all four sky light
 		// values and all four block light values.
 		int lightEmission = 15;
@@ -230,19 +238,6 @@ public interface QuadView {
 				lightEmission = Math.min(lightEmission, Math.min(blockLight, skyLight));
 			}
 		}
-
-		Vector3f position0 = new Vector3f();
-		Vector3f position1 = new Vector3f();
-		Vector3f position2 = new Vector3f();
-		Vector3f position3 = new Vector3f();
-		this.copyPos(0, position0);
-		this.copyPos(1, position1);
-		this.copyPos(2, position2);
-		this.copyPos(3, position3);
-		long packedUV0 = UVPair.pack(this.u(0), this.v(0));
-		long packedUV1 = UVPair.pack(this.u(1), this.v(1));
-		long packedUV2 = UVPair.pack(this.u(2), this.v(2));
-		long packedUV3 = UVPair.pack(this.u(3), this.v(3));
 
 		return new BakedQuad(
 				position0,

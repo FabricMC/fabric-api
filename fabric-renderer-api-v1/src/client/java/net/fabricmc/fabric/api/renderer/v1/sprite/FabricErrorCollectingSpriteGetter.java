@@ -29,7 +29,7 @@ public interface FabricErrorCollectingSpriteGetter {
 	/**
 	 * {@return the sprite finder for the given atlas texture ID}
 	 */
-	default SpriteFinder spriteFinder(Identifier atlasId) {
+	default SpriteFinder spriteFinder(Identifier atlasTextureId) {
 		throw new UnsupportedOperationException();
 	}
 }

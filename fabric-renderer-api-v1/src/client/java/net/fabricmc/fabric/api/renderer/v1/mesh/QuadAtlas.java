@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.Identifier;
 
@@ -26,13 +28,24 @@ public enum QuadAtlas {
 	BLOCK(TextureAtlas.LOCATION_BLOCKS),
 	ITEM(TextureAtlas.LOCATION_ITEMS);
 
-	private final Identifier id;
+	private final Identifier textureId;
 
-	QuadAtlas(Identifier id) {
-		this.id = id;
+	QuadAtlas(Identifier textureId) {
+		this.textureId = textureId;
 	}
 
-	public Identifier getId() {
-		return id;
+	@Nullable
+	public static QuadAtlas of(Identifier atlasTextureId) {
+		if (atlasTextureId.equals(TextureAtlas.LOCATION_BLOCKS)) {
+			return BLOCK;
+		} else if (atlasTextureId.equals(TextureAtlas.LOCATION_ITEMS)) {
+			return ITEM;
+		} else {
+			return null;
+		}
+	}
+
+	public Identifier getTextureId() {
+		return textureId;
 	}
 }

@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -120,12 +121,26 @@ public class AoCalculator {
 	// Because this instance is effectively thread-local, we preserve instances
 	// to avoid making a new allocation each call.
 	private final ModelBlockRenderer.AmbientOcclusionRenderStorage vanillaCalc = new ModelBlockRenderer.AmbientOcclusionRenderStorage();
+	private final Vector3f vanillaPos0 = new Vector3f();
+	private final Vector3f vanillaPos1 = new Vector3f();
+	private final Vector3f vanillaPos2 = new Vector3f();
+	private final Vector3f vanillaPos3 = new Vector3f();
 
 	private void calcVanilla(QuadViewImpl quad, float[] aoDest, int[] lightDest) {
-		final Direction lightFace = quad.lightFace();
+		// calculateShape only uses the vertex positions and light face of the quad, so making a new BakedQuad every
+		// time here is very inefficient, but this is by far the simplest choice. We don't use QuadView.toBakedQuad here
+		// as it requires the sprite to be not null, it's less efficient as it needs to populate all fields correctly,
+		// and it doesn't allow us to reuse Vector3f objects.
+		BakedQuad bakedQuad = new BakedQuad(
+				quad.copyPos(0, vanillaPos0),
+				quad.copyPos(1, vanillaPos1),
+				quad.copyPos(2, vanillaPos2),
+				quad.copyPos(3, vanillaPos3),
+				0, 0, 0, 0, -1, quad.lightFace(), null, true, 0
+		);
 
-		ModelBlockRenderer.calculateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, quad.toBakedQuad(null), vanillaCalc);
-		vanillaCalc.calculate(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, lightFace, quad.diffuseShade());
+		ModelBlockRenderer.calculateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, bakedQuad, vanillaCalc);
+		vanillaCalc.calculate(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, quad.lightFace(), quad.diffuseShade());
 
 		System.arraycopy(vanillaCalc.brightness, 0, aoDest, 0, 4);
 		System.arraycopy(vanillaCalc.lightmap, 0, lightDest, 0, 4);

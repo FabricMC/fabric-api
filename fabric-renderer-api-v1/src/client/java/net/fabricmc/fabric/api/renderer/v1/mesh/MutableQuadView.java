@@ -23,11 +23,11 @@ import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -181,21 +181,19 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
-	 * Sets the {@linkplain QuadAtlas atlas} used by this quad. Keep in mind
-	 * quads may only use one atlas per quad and are restricted to atlases
-	 * defined in {@link QuadAtlas}.
-	 *
-	 * @see QuadAtlas
-	 */
-	MutableQuadView atlas(QuadAtlas quadAtlas);
-
-	/**
-	 * Sets the texture coordinates for all vertices using the given sprite. Can handle UV locking, rotation,
-	 * interpolation, etc. Control this behavior by passing additive combinations of the BAKE_ flags defined in this
-	 * interface.
+	 * Sets the texture coordinates for all vertices using the given sprite. Also sets this quad's atlas to the given
+	 * sprite's atlas. Can handle UV locking, rotation, interpolation, etc. Control this behavior by passing additive
+	 * combinations of the BAKE_ flags defined in this interface.
 	 */
 	default MutableQuadView spriteBake(TextureAtlasSprite sprite, int bakeFlags) {
 		QuadSpriteBaker.bakeSprite(this, sprite, bakeFlags);
+		QuadAtlas atlas = QuadAtlas.of(sprite.atlasLocation());
+
+		if (atlas == null) {
+			atlas = QuadAtlas.BLOCK;
+		}
+
+		atlas(atlas);
 		return this;
 	}
 
@@ -281,8 +279,8 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Controls how this quad's pixels should be blended with the scene.
 	 *
-	 * <p>If set to {@code null}, {@link RenderTypes#getBlockLayer(BlockState)} will be used to retrieve the render
-	 * layer in block contexts and
+	 * <p>If set to {@code null}, {@link ItemBlockRenderTypes#getChunkRenderType(BlockState)} will be used to retrieve
+	 * the render layer in block contexts and
 	 * {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(RenderType)}  the render layer of the state layer}
 	 * will be used in item contexts. Set to another value to override this behavior.
 	 *
@@ -357,6 +355,16 @@ public interface MutableQuadView extends QuadView {
 	 */
 	MutableQuadView shadeMode(ShadeMode mode);
 
+	// TODO: add more details to this javadoc
+	/**
+	 * Sets the {@linkplain QuadAtlas atlas texture} used by this quad.
+	 *
+	 * <p>The default value is {@link QuadAtlas#BLOCK}.
+	 *
+	 * @see QuadAtlas
+	 */
+	MutableQuadView atlas(QuadAtlas quadAtlas);
+
 	/**
 	 * Sets the tint index, which is used to retrieve the tint color.
 	 *
@@ -380,10 +388,8 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView copyFrom(QuadView quad);
 
 	/**
-	 * Sets all applicable data and properties of this quad as specified by the given {@link BakedQuad}. This quad's
-	 * lightmap values and normals will be set even though vanilla does not decode them from packed vertex data. The
-	 * {@linkplain BakedQuad#lightEmission() baked quad's light emission} will be applied to the lightmap values from
-	 * the vertex data after copying.
+	 * Sets all applicable data and properties of this quad as specified by the given {@link BakedQuad}. In addition,
+	 * this quad's vertex colors and vertex normals will be reset. This quad's existing lightmap values will be ignored.
 	 *
 	 * <p>Calling this method does not emit this quad.
 	 */

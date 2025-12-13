@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
@@ -114,7 +115,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 			final int tint = tints[tintIndex];
 
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, net.minecraft.util.ARGB.multiply(quad.color(i), tint));
+				quad.color(i, ARGB.multiply(quad.color(i), tint));
 			}
 		}
 	}

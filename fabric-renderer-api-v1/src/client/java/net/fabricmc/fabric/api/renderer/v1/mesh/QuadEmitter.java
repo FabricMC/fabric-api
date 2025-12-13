@@ -80,9 +80,6 @@ public interface QuadEmitter extends MutableQuadView {
 	}
 
 	@Override
-	QuadEmitter atlas(QuadAtlas quadAtlas);
-
-	@Override
 	default QuadEmitter spriteBake(TextureAtlasSprite sprite, int bakeFlags) {
 		MutableQuadView.super.spriteBake(sprite, bakeFlags);
 		return this;
@@ -143,6 +140,9 @@ public interface QuadEmitter extends MutableQuadView {
 
 	@Override
 	QuadEmitter shadeMode(ShadeMode mode);
+
+	@Override
+	QuadEmitter atlas(QuadAtlas quadAtlas);
 
 	@Override
 	QuadEmitter tintIndex(int tintIndex);

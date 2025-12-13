@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.renderer.client.item;
 
+import java.util.List;
 import java.util.function.Function;
 
 import com.llamalad7.mixinextras.sugar.Local;
@@ -29,11 +30,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.world.item.ItemStack;
 
@@ -46,23 +47,29 @@ import net.fabricmc.fabric.impl.renderer.BasicItemModelExtension;
 abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtension {
 	@Shadow
 	@Final
+	private static Function<ItemStack, RenderType> ITEM_RENDER_TYPE_GETTER;
+
+	@Shadow
+	@Final
+	private static Function<ItemStack, RenderType> BLOCK_RENDER_TYPE_GETTER;
+
+	@Shadow
+	@Final
+	private List<BakedQuad> quads;
+
+	@Shadow
+	@Final
 	@Mutable
 	private boolean animated;
 
 	@Shadow
 	@Final
-	private static Function<ItemStack, RenderType> BLOCK_RENDER_TYPE_GETTER;
-	@Shadow
-	@Final
-	private static Function<ItemStack, RenderType> ITEM_RENDER_TYPE_GETTER;
+	@Mutable
+	private Function<ItemStack, RenderType> renderType;
+
 	@Unique
 	@Nullable
 	private Mesh mesh;
-
-	@Shadow
-	@Final
-	@Mutable
-	private Function<ItemStack, RenderType> renderType;
 
 	@Inject(method = "update", at = @At("RETURN"))
 	private void onReturnUpdate(CallbackInfo ci, @Local ItemStackRenderState.LayerRenderState layer) {
@@ -73,10 +80,48 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 
 	@Override
 	public void fabric_setMesh(Mesh mesh, SpriteGetter spriteGetter) {
+		if (mesh.size() == 0) {
+			return;
+		}
+
+		QuadAtlas atlas;
+
+		if (quads.isEmpty()) {
+			QuadAtlas[] mutableAtlas = new QuadAtlas[1];
+
+			mesh.forEach(quad -> {
+				if (mutableAtlas[0] == null) {
+					mutableAtlas[0] = quad.atlas();
+				} else if (quad.atlas() != mutableAtlas[0]) {
+					throw new IllegalStateException("Multiple atlases used in model, expected " + mutableAtlas[0].getTextureId() + ", but also got " + quad.atlas().getTextureId());
+				}
+			});
+
+			atlas = mutableAtlas[0];
+
+			renderType = switch (atlas) {
+			case ITEM -> ITEM_RENDER_TYPE_GETTER;
+			case BLOCK -> BLOCK_RENDER_TYPE_GETTER;
+			};
+		} else {
+			atlas = QuadAtlas.of(quads.getFirst().sprite().atlasLocation());
+
+			if (atlas == null) {
+				// We should log something here
+				return;
+			}
+
+			mesh.forEach(quad -> {
+				if (quad.atlas() != atlas) {
+					throw new IllegalStateException("Multiple atlases used in model, expected " + atlas.getTextureId() + ", but also got " + quad.atlas().getTextureId());
+				}
+			});
+		}
+
 		this.mesh = mesh;
 
 		if (!animated) {
-			SpriteFinder spriteFinder = spriteGetter.spriteFinder(TextureAtlas.LOCATION_BLOCKS);
+			SpriteFinder spriteFinder = spriteGetter.spriteFinder(atlas.getTextureId());
 
 			mesh.forEach(quad -> {
 				if (animated) {
@@ -90,21 +135,5 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 				}
 			});
 		}
-
-		// correct the renderType
-		final QuadAtlas[] quadAtlas = {null};
-		this.mesh.forEach(quadView -> {
-			if (quadAtlas[0] == null) {
-				quadAtlas[0] = quadView.atlas();
-			} else if (quadView.atlas() != quadAtlas[0]) {
-				throw new IllegalStateException("Item models must not use more than one atlas per layer");
-			}
-		});
-
-		this.renderType = switch (quadAtlas[0]) {
-		case BLOCK -> BLOCK_RENDER_TYPE_GETTER;
-		case ITEM -> ITEM_RENDER_TYPE_GETTER;
-		case null -> BLOCK_RENDER_TYPE_GETTER;
-		};
 	}
 }

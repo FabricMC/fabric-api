@@ -26,7 +26,7 @@
     "client.item.BlockModelWrapperMixin",
     "client.item.BlockModelWrapperUnbakedMixin",
     "client.item.ItemStackRenderStateLayerRenderStateMixin",
-    "client.sprite.BakedModelManager1Mixin",
+    "client.sprite.ModelManager1Mixin",
     "client.sprite.SpriteGetterMixin",
     "client.sprite.TextureAtlasMixin",
     "client.sprite.SpriteLoaderPreparationsMixin"

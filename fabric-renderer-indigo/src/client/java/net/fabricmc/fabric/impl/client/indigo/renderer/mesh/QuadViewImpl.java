@@ -141,11 +141,6 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	public QuadAtlas atlas() {
-		return EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS]);
-	}
-
-	@Override
 	public final Vector2f copyUv(int vertexIndex, @Nullable Vector2f target) {
 		if (target == null) {
 			target = new Vector2f();
@@ -273,6 +268,11 @@ public class QuadViewImpl implements QuadView {
 	@Override
 	public ShadeMode shadeMode() {
 		return EncodingFormat.shadeMode(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
+	public QuadAtlas atlas() {
+		return EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override

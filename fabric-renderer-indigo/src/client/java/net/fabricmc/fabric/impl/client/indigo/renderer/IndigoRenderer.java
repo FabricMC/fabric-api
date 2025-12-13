@@ -18,14 +18,12 @@ package net.fabricmc.fabric.impl.client.indigo.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -76,7 +74,6 @@ public class IndigoRenderer implements Renderer {
 			float green = (tint >> 8 & 255) / 255.0F;
 			float blue = (tint & 255) / 255.0F;
 			FabricBlockModelRenderer.render(matrices.last(), RenderLayerHelper.entityDelegate(vertexConsumers), model, red, green, blue, light, overlay, blockView, pos, state);
-			renderManager.getBlockModelShaper().getModelManager().specialBlockModelRenderer().renderByBlock(state.getBlock(), ItemDisplayContext.NONE, matrices, Minecraft.getInstance().gameRenderer.getSubmitNodeStorage(), light, overlay, 0);
 		}
 	}
 

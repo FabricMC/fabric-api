@@ -24,10 +24,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_NORMAL;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_U;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_V;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Y;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
 import java.util.Objects;
 
@@ -129,12 +126,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl atlas(QuadAtlas quadAtlas) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS], quadAtlas);
-		return this;
-	}
-
-	@Override
 	public final MutableQuadViewImpl lightmap(int vertexIndex, int lightmap) {
 		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_LIGHTMAP] = lightmap;
 		return this;
@@ -222,6 +213,12 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
+	public MutableQuadViewImpl atlas(QuadAtlas quadAtlas) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS], quadAtlas);
+		return this;
+	}
+
+	@Override
 	public final MutableQuadViewImpl tintIndex(int tintIndex) {
 		data[baseIndex + HEADER_TINT_INDEX] = tintIndex;
 		return this;
@@ -249,50 +246,39 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl fromBakedQuad(BakedQuad quad) {
-		isGeometryInvalid = true;
+		pos(0, quad.position0());
+		pos(1, quad.position1());
+		pos(2, quad.position2());
+		pos(3, quad.position3());
 
-		int colorIndex = baseIndex + VERTEX_COLOR;
-		int indexX = baseIndex + VERTEX_X;
-		int indexY = baseIndex + VERTEX_Y;
-		int indexZ = baseIndex + VERTEX_Z;
-		int indexU = baseIndex + VERTEX_U;
-		int indexV = baseIndex + VERTEX_V;
+		color(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 
-		for (int i = 0; i < 4; i++) {
-			// default is white since BakedQuad has no color
-			data[colorIndex] = 0xFFFFFFFF; // white in ARGB
+		long packedUV0 = quad.packedUV0();
+		long packedUV1 = quad.packedUV1();
+		long packedUV2 = quad.packedUV2();
+		long packedUV3 = quad.packedUV3();
+		uv(0, UVPair.unpackU(packedUV0), UVPair.unpackV(packedUV0));
+		uv(1, UVPair.unpackU(packedUV1), UVPair.unpackV(packedUV1));
+		uv(2, UVPair.unpackU(packedUV2), UVPair.unpackV(packedUV2));
+		uv(3, UVPair.unpackU(packedUV3), UVPair.unpackV(packedUV3));
 
-			data[indexX] = Float.floatToRawIntBits(quad.position(i).x());
-			data[indexY] = Float.floatToRawIntBits(quad.position(i).y());
-			data[indexZ] = Float.floatToRawIntBits(quad.position(i).z());
+		int lightEmission = quad.lightEmission();
+		int lightmap = LightTexture.pack(lightEmission, lightEmission);
+		lightmap(lightmap, lightmap, lightmap, lightmap);
 
-			long packedUV = quad.packedUV(i);
-			data[indexU] = Float.floatToRawIntBits(UVPair.unpackU(packedUV));
-			data[indexV] = Float.floatToRawIntBits(UVPair.unpackV(packedUV));
-
-			colorIndex += VERTEX_STRIDE;
-			indexX += VERTEX_STRIDE;
-			indexY += VERTEX_STRIDE;
-			indexZ += VERTEX_STRIDE;
-			indexU += VERTEX_STRIDE;
-			indexV += VERTEX_STRIDE;
-		}
-
-		// normals are off by default, BakedQuad has no normals
 		normalFlags(0);
 
 		nominalFace(quad.direction());
+		emissive(lightEmission == 15);
 		diffuseShade(quad.shade());
-		tintIndex(quad.tintIndex());
+		QuadAtlas atlas = QuadAtlas.of(quad.sprite().atlasLocation());
 
-		int lightEmission = quad.lightEmission();
-
-		if (lightEmission > 0) {
-			for (int i = 0; i < 4; i++) {
-				lightmap(i, LightTexture.lightCoordsWithEmission(lightmap(i), lightEmission));
-			}
+		if (atlas == null) {
+			atlas = QuadAtlas.BLOCK;
 		}
 
+		atlas(atlas);
+		tintIndex(quad.tintIndex());
 		return this;
 	}
 
