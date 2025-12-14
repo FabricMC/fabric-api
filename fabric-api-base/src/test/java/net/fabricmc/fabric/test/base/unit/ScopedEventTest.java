@@ -53,9 +53,13 @@ public class ScopedEventTest {
 		return true;
 	});
 
-	// Terminating early return events like this are janky with event scopes,
+	// Terminating early return events like this are janky with scoped events,
 	// so we need multiple.
-	// TODO: Should we mention that event scopes don't support early-terminating events?
+	// The reason why these are considered terminating is because it is
+	// generally expected in the tests that they return a default value rather
+	// than the pass condition of null. In theory they are non-terminal; in
+	// practice, they terminate early.
+	// TODO: Should we mention that scoped events don't support early-terminating events?
 	private static final Event<ReturnEvent> LAMBDA_RETURN_EVENT = EventFactory.createArrayBacked(ReturnEvent.class, callbacks -> arg -> {
 		for (ReturnEvent callback : callbacks) {
 			String result = callback.onEvent(arg);
