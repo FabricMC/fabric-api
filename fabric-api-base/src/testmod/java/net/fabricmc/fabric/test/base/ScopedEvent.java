@@ -20,6 +20,7 @@ import java.io.Closeable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.function.Function;
 
 import org.jspecify.annotations.Nullable;
 
@@ -28,20 +29,44 @@ import net.fabricmc.fabric.api.event.Event;
 public class ScopedEvent<T> implements InvocationHandler {
 	@Nullable
 	private final Object defaultReturnValue;
+	@Nullable
+	private final Function<Object[], Object> defaultReturner;
 
 	@Nullable
 	private T activeHandler = null;
 
-	public ScopedEvent(Event<T> event, Class<T> handlerClass, @Nullable Object defaultReturnValue) {
+	private ScopedEvent(
+			Event<T> event,
+			Class<T> handlerClass,
+			@Nullable Object defaultReturnValue,
+			@Nullable Function<Object[], Object> defaultReturner
+	) {
 		this.defaultReturnValue = defaultReturnValue;
+		this.defaultReturner = defaultReturner;
 
 		//noinspection unchecked
 		T proxy = (T) Proxy.newProxyInstance(ScopedEvent.class.getClassLoader(), new Class[]{handlerClass}, this);
 		event.register(proxy);
 	}
 
+	public ScopedEvent(
+			Event<T> event,
+			Class<T> handlerClass,
+			Object defaultReturnValue
+	) {
+		this(event, handlerClass, defaultReturnValue, null);
+	}
+
+	public ScopedEvent(
+			Event<T> event,
+			Class<T> handlerClass,
+			Function<Object[], Object> defaultReturner
+	) {
+		this(event, handlerClass, null, defaultReturner);
+	}
+
 	public ScopedEvent(Event<T> event, Class<T> handlerClass) {
-		this(event, handlerClass, null);
+		this(event, handlerClass, null, null);
 	}
 
 	public Scope register(T handler) {
@@ -60,6 +85,10 @@ public class ScopedEvent<T> implements InvocationHandler {
 		if (activeHandler != null) {
 			method.setAccessible(true);
 			return method.invoke(activeHandler, args);
+		}
+
+		if (defaultReturner != null) {
+			return defaultReturner.apply(args);
 		}
 
 		return defaultReturnValue;

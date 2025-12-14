@@ -40,6 +40,34 @@ public class ScopedEventTest {
 		}
 	});
 
+	private static final Event<BoolEvent> NON_TERMINAL_EVENT = EventFactory.createArrayBacked(BoolEvent.class, callbacks -> () -> {
+		for (BoolEvent callback : callbacks) {
+			// In a non-terminal event, the invoker passes to the next callback
+			// given a 'pass condition'. In this case, the pass condition is
+			// returning true.
+			if (!callback.onEvent()) {
+				return false;
+			}
+		}
+
+		return true;
+	});
+
+	// Terminating early return events like this are janky with event scopes,
+	// so we need multiple.
+	// TODO: Should we mention that event scopes don't support early-terminating events?
+	private static final Event<ReturnEvent> LAMBDA_RETURN_EVENT = EventFactory.createArrayBacked(ReturnEvent.class, callbacks -> arg -> {
+		for (ReturnEvent callback : callbacks) {
+			String result = callback.onEvent(arg);
+
+			if (result != null) {
+				return result;
+			}
+		}
+
+		return null;
+	});
+
 	private static final Event<ReturnEvent> RETURN_EVENT = EventFactory.createArrayBacked(ReturnEvent.class, callbacks -> arg -> {
 		for (ReturnEvent callback : callbacks) {
 			String result = callback.onEvent(arg);
@@ -52,17 +80,7 @@ public class ScopedEventTest {
 		return null;
 	});
 
-	private static final Event<BoolEvent> BOOL_EVENT = EventFactory.createArrayBacked(BoolEvent.class, callbacks -> () -> {
-		for (BoolEvent callback : callbacks) {
-			if (!callback.onEvent()) {
-				return false;
-			}
-		}
-
-		return true;
-	});
-
-	private static final Event<ReturnEvent> MODMUSS_RETURN_EVENT = EventFactory.createArrayBacked(ReturnEvent.class, callbacks -> arg -> {
+	private static final Event<ReturnEvent> SCOPED_EVENT_RETURN_EVENT = EventFactory.createArrayBacked(ReturnEvent.class, callbacks -> arg -> {
 		for (ReturnEvent callback : callbacks) {
 			String result = callback.onEvent(arg);
 
@@ -77,7 +95,7 @@ public class ScopedEventTest {
 	private static final ScopedEvent<SimpleEvent> SIMPLE_EVENT_SCOPE = new ScopedEvent<>(SIMPLE_EVENT, SimpleEvent.class);
 
 	@Test
-	void sylvEventScopeTest() {
+	void eventScopeTest() {
 		List<String> results = new ArrayList<>();
 
 		try (var eventScope = new EventScope()) {
@@ -93,47 +111,66 @@ public class ScopedEventTest {
 	}
 
 	@Test
-	void sylvReturnEventScopeTest() {
-		assertNull(RETURN_EVENT.invoker().onEvent("Hello World"));
+	void returnEventScopeLambdaTest() {
+		assertNull(LAMBDA_RETURN_EVENT.invoker().onEvent("Hello World"));
 
 		try (var eventScope = new EventScope()) {
-			eventScope.register(RETURN_EVENT, arg -> arg.toUpperCase(Locale.ROOT));
+			eventScope.register(LAMBDA_RETURN_EVENT, arg -> arg.toUpperCase(Locale.ROOT));
+			assertEquals("HELLO WORLD", LAMBDA_RETURN_EVENT.invoker().onEvent("Hello World"));
+		}
+
+		try (var eventScope = new EventScope()) {
+			eventScope.registerEarlyReturn(
+					LAMBDA_RETURN_EVENT,
+					arg -> arg.toLowerCase(Locale.ROOT),
+					args -> {
+						String arg = (String) args[0];
+
+						if (arg.toLowerCase(Locale.ROOT).equals("hello worlde")) {
+							return "meow!";
+						}
+
+						return "Hello World";
+					}
+			);
+			assertEquals("hello worlde", LAMBDA_RETURN_EVENT.invoker().onEvent("Hello Worlde"));
+		}
+
+		assertNotEquals("hello worlde", LAMBDA_RETURN_EVENT.invoker().onEvent("Hello Worlde"));
+		assertEquals("meow!", LAMBDA_RETURN_EVENT.invoker().onEvent("Hello Worlde"));
+
+		assertEquals("Hello World", LAMBDA_RETURN_EVENT.invoker().onEvent(" Hasdfello World plus some other nonsense"));
+	}
+
+	@Test
+	void returnEventScopeTest() {
+		// We do not yet have a default value.
+		assertNull(RETURN_EVENT.invoker().onEvent("Hello World"));
+
+		try (var scope = new EventScope()) {
+			scope.registerEarlyReturn(RETURN_EVENT, arg -> arg.toUpperCase(Locale.ROOT), "Hello World");
 			assertEquals("HELLO WORLD", RETURN_EVENT.invoker().onEvent("Hello World"));
 		}
 
-		try (var eventScope = new EventScope()) {
-			eventScope.registerEarlyReturn(RETURN_EVENT, arg -> arg.toLowerCase(Locale.ROOT), args -> {
-				String arg = (String) args[0];
-
-				if (arg.toLowerCase(Locale.ROOT).equals("hello worlde")) {
-					return "meow!";
-				}
-
-				return "Hello World";
-			});
-			assertEquals("hello worlde", RETURN_EVENT.invoker().onEvent("Hello Worlde"));
-		}
-
-		assertNotEquals("hello worlde", RETURN_EVENT.invoker().onEvent("Hello Worlde"));
-		assertEquals("meow!", RETURN_EVENT.invoker().onEvent("Hello Worlde"));
-
-		assertEquals("Hello World", RETURN_EVENT.invoker().onEvent(" Hasdfello World plus some other nonsense"));
+		// We have a default value now.
+		assertEquals("Hello World", RETURN_EVENT.invoker().onEvent("Hello World"));
 	}
 
 	@Test
-	void sylvBoolEventScopeTest() {
-		assertTrue(BOOL_EVENT.invoker().onEvent());
+	void nonTerminalEventScopeTest() {
+		assertTrue(NON_TERMINAL_EVENT.invoker().onEvent());
 
 		try (var eventScope = new EventScope()) {
-			eventScope.registerEarlyReturn(BOOL_EVENT, () -> false, true);
-			assertFalse(BOOL_EVENT.invoker().onEvent());
+			// a default value of true ensures the invoker passes to the next callbacks
+			eventScope.registerEarlyReturn(NON_TERMINAL_EVENT, () -> false, true);
+			assertFalse(NON_TERMINAL_EVENT.invoker().onEvent());
 		}
 
-		assertTrue(BOOL_EVENT.invoker().onEvent());
+		assertTrue(NON_TERMINAL_EVENT.invoker().onEvent());
 	}
 
 	@Test
-	void eventScopeTest() {
+	void scopedEventTest() {
 		List<String> results = new ArrayList<>();
 
 		SIMPLE_EVENT.invoker().onEvent("1");
@@ -148,17 +185,20 @@ public class ScopedEventTest {
 		assertEquals("2", results.getFirst());
 	}
 
-	private static final ScopedEvent<ReturnEvent> RETURN_EVENT_SCOPE = new ScopedEvent<>(MODMUSS_RETURN_EVENT, ReturnEvent.class, "Hello World");
-
 	@Test
-	void returnEventScopeTest() {
-		assertEquals("Hello World", MODMUSS_RETURN_EVENT.invoker().onEvent("Hello World"));
+	void returnScopedEventTest() {
+		// These interfere with event callback invocation.
+		// *Do not* define these in static fields and then leave them.
+		final ScopedEvent<ReturnEvent> returnScopedEvent = new ScopedEvent<>(
+				SCOPED_EVENT_RETURN_EVENT, ReturnEvent.class, "Hello World");
 
-		try (var ignored = RETURN_EVENT_SCOPE.register(arg -> arg.toUpperCase(Locale.ROOT))) {
-			assertEquals("HELLO WORLD", MODMUSS_RETURN_EVENT.invoker().onEvent("Hello World"));
+		assertEquals("Hello World", SCOPED_EVENT_RETURN_EVENT.invoker().onEvent("Hello World"));
+
+		try (var ignored = returnScopedEvent.register(arg -> arg.toUpperCase(Locale.ROOT))) {
+			assertEquals("HELLO WORLD", SCOPED_EVENT_RETURN_EVENT.invoker().onEvent("Hello World"));
 		}
 
-		assertEquals("Hello World", MODMUSS_RETURN_EVENT.invoker().onEvent("Hello World"));
+		assertEquals("Hello World", SCOPED_EVENT_RETURN_EVENT.invoker().onEvent("Hello World"));
 	}
 
 	interface SimpleEvent {
