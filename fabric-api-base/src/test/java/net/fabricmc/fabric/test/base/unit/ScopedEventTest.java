@@ -41,24 +41,18 @@ public class ScopedEventTest {
 	});
 
 	private static final Event<BoolEvent> NON_TERMINAL_EVENT = EventFactory.createArrayBacked(BoolEvent.class, callbacks -> () -> {
+		boolean ret = true;
+
 		for (BoolEvent callback : callbacks) {
-			// In a non-terminal event, the invoker passes to the next callback
-			// given a 'pass condition'. In this case, the pass condition is
-			// returning true.
-			if (!callback.onEvent()) {
-				return false;
-			}
+			// In a non-terminal event, the invoker passes to the next callback.
+			ret = callback.onEvent();
 		}
 
-		return true;
+		return ret;
 	});
 
 	// Terminating early return events like this are janky with scoped events,
 	// so we need multiple.
-	// The reason why these are considered terminating is because it is
-	// generally expected in the tests that they return a default value rather
-	// than the pass condition of null. In theory they are non-terminal; in
-	// practice, they terminate early.
 	// TODO: Should we mention that scoped events don't support early-terminating events?
 	private static final Event<ReturnEvent> LAMBDA_RETURN_EVENT = EventFactory.createArrayBacked(ReturnEvent.class, callbacks -> arg -> {
 		for (ReturnEvent callback : callbacks) {
