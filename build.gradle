@@ -684,6 +684,7 @@ subprojects.each {
 def devOnlyModules = [
 	"fabric-client-gametest-api-v1",
 	"fabric-gametest-api-v1",
+	"fabric-test-api-v1",
 ]
 
 dependencies {

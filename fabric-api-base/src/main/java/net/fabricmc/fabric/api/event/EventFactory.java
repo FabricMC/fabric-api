@@ -41,7 +41,7 @@ public final class EventFactory {
 	 * @return The Event instance.
 	 */
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
-		return EventFactoryImpl.createArrayBacked(type, invokerFactory);
+		return EventFactoryImpl.INSTANCE.createArrayBacked(type, invokerFactory);
 	}
 
 	/**
