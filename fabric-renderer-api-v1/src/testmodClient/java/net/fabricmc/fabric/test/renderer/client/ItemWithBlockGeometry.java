@@ -1,8 +1,5 @@
 package net.fabricmc.fabric.test.renderer.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.TextureSlots;
@@ -30,8 +27,6 @@ public record ItemWithBlockGeometry(
 		Identifier itemModelId,
 		Identifier blockModelId
 ) implements UnbakedGeometry {
-	public static final Map<Identifier, MeshBakedGeometry> BAKED_GEOMETRY = new HashMap<>();
-
 	public ItemWithBlockGeometry(Identifier itemId, Item item, Block block) {
 		this(
 				itemId,
@@ -116,7 +111,6 @@ public record ItemWithBlockGeometry(
 		emitter.popTransform();
 		MeshBakedGeometry meshBakedGeometry = new MeshBakedGeometry(
 				mutableMesh.immutableCopy());
-		BAKED_GEOMETRY.put(itemId, meshBakedGeometry);
 		return meshBakedGeometry;
 	}
 }
