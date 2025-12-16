@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "net.fabricmc.fabric.mixin.client.rendering.fluid",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "client": [
     "LiquidBlockRendererMixin"
   ],

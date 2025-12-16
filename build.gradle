@@ -146,7 +146,7 @@ allprojects {
 	apply plugin: "com.diffplug.spotless"
 
 	tasks.withType(JavaCompile).configureEach {
-		it.options.release = 21
+		it.options.release = 25
 	}
 
 	java {
@@ -341,7 +341,7 @@ loom {
 
 javadoc {
 	options {
-		source = "21"
+		source = "25"
 		encoding = "UTF-8"
 		charSet = "UTF-8"
 		memberLevel = JavadocMemberLevel.PACKAGE
