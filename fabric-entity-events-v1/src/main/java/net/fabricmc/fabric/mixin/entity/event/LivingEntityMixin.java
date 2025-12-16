@@ -106,8 +106,8 @@ abstract class LivingEntityMixin {
 		}
 	}
 
-	@Dynamic("lambda$checkBedExists$21: Synthetic lambda body for Optional.map in isSleepingInBed")
-	@Inject(method = "lambda$checkBedExists$21", at = @At("RETURN"), cancellable = true)
+	@Dynamic("lambda$checkBedExists$0: Synthetic lambda body for Optional.map in checkBedExists")
+	@Inject(method = "lambda$checkBedExists$0", at = @At("RETURN"), cancellable = true)
 	private void onIsSleepingInBed(BlockPos sleepingPos, CallbackInfoReturnable<Boolean> info) {
 		BlockState bedState = ((LivingEntity) (Object) this).level().getBlockState(sleepingPos);
 		InteractionResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, bedState, info.getReturnValueZ());
@@ -155,8 +155,8 @@ abstract class LivingEntityMixin {
 		}
 	}
 
-	@Dynamic("lambda$stopSleeping$23: Synthetic lambda body for Optional.ifPresent in wakeUp")
-	@Redirect(method = "lambda$stopSleeping$23", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/BedBlock;findStandUpPosition(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/CollisionGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;F)Ljava/util/Optional;"))
+	@Dynamic("lambda$stopSleeping$0: Synthetic lambda body for Optional.ifPresent in stopSleeping")
+	@Redirect(method = "lambda$stopSleeping$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/BedBlock;findStandUpPosition(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/CollisionGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;F)Ljava/util/Optional;"))
 	private Optional<Vec3> modifyWakeUpPosition(EntityType<?> type, CollisionGetter world, BlockPos pos, Direction direction, float yaw) {
 		Optional<Vec3> original = Optional.empty();
 		BlockState bedState = world.getBlockState(pos);

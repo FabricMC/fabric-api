@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 @Mixin(EnchantRandomlyFunction.class)
 abstract class EnchantRandomlyFunctionMixin {
 	@Redirect(
-			method = "lambda$run$4",
+			method = "lambda$run$1",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/Enchantment;canEnchant(Lnet/minecraft/world/item/ItemStack;)Z")
 	)
 	private static boolean callAllowEnchantingEvent(Enchantment enchantment, ItemStack stack, boolean bl, ItemStack itemStack, Holder<Enchantment> registryEntry) {

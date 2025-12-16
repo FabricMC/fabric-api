@@ -38,7 +38,7 @@ public class V2832Mixin {
 	 */
 	@Redirect(
 			method = {
-					"lambda$registerTypes$7", "lambda$registerTypes$6"
+					"lambda$registerTypes$2", "lambda$registerTypes$4"
 			},
 			at = @At(
 					value = "INVOKE",
