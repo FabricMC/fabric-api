@@ -23,12 +23,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.object.banner.BannerModel;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BannerRenderer;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Unit;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 
@@ -51,7 +51,7 @@ public class BannerGuiElementRenderer extends PictureInPictureRenderer<BannerGui
 				client.getAtlasManager(),
 				matrices,
 				renderDispatcher.getSubmitNodeStorage(),
-				LightTexture.FULL_BRIGHT,
+				LightCoordsUtil.FULL_BRIGHT,
 				OverlayTexture.NO_OVERLAY,
 				new BannerModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.STANDING_BANNER_FLAG).getChild("flag")),
 				Unit.INSTANCE,

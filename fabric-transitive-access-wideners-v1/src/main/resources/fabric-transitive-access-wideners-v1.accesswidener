@@ -312,7 +312,8 @@ transitive-accessible method net/minecraft/world/item/enchantment/Enchantment it
 transitive-accessible method net/minecraft/world/item/enchantment/Enchantment locationContext (Lnet/minecraft/server/level/ServerLevel;ILnet/minecraft/world/entity/Entity;Z)Lnet/minecraft/world/level/storage/loot/LootContext;
 transitive-accessible method net/minecraft/world/item/enchantment/Enchantment entityContext (Lnet/minecraft/server/level/ServerLevel;ILnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/level/storage/loot/LootContext;
 transitive-accessible method net/minecraft/world/item/enchantment/Enchantment blockHitContext (Lnet/minecraft/server/level/ServerLevel;ILnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/level/storage/loot/LootContext;
-transitive-accessible method net/minecraft/world/item/enchantment/Enchantment applyEffects (Ljava/util/List;Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V
+transitive-accessible method net/minecraft/world/item/enchantment/Enchantment applyEffects (Ljava/util/List;Lnet/minecraft/world/level/storage/loot/LootContext;Lnet/minecraft/world/item/enchantment/Enchantment$GenericAction;)V
+transitive-accessible method net/minecraft/world/item/enchantment/Enchantment applyEffects (Ljava/util/List;Lnet/minecraft/world/level/storage/loot/LootContext;Lorg/apache/commons/lang3/mutable/MutableFloat;Lnet/minecraft/world/item/enchantment/Enchantment$FloatAction;)V
 transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentVisitor
 transitive-accessible class net/minecraft/world/item/enchantment/EnchantmentHelper$EnchantmentInSlotVisitor
 
