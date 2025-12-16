@@ -6,7 +6,8 @@
     "ReloadableServerResourcesMixin",
     "DataProviderMixin",
     "SimpleJsonResourceReloadListenerMixin",
-    "RegistryDataLoaderMixin",
+    "RegistryDataLoaderPendingRegistrationMixin",
+    "RegistryDataLoaderResourceManagerRegistryLoadTaskMixin",
     "RegistryOpsAccessor",
     "FileToIdConverterAccessor",
     "PackMixin"

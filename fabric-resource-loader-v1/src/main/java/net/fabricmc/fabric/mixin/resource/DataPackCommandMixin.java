@@ -56,7 +56,7 @@ public class DataPackCommandMixin {
 		return dataPackManager.getSelectedPacks().stream().filter(profile -> !((FabricPack) profile).fabric$isHidden()).map(Pack::getId).toList();
 	}
 
-	@WrapOperation(method = "lambda$static$13", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
+	@WrapOperation(method = "lambda$static$11", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
 	private static Stream<Pack> filterDisabledPackSuggestions(Stream<Pack> instance, Predicate<? super Pack> predicate, Operation<Stream<Pack>> original) {
 		return original.call(instance, predicate).filter(profile -> !((FabricPack) profile).fabric$isHidden());
 	}

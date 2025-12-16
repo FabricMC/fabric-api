@@ -19,7 +19,7 @@
     "ItemStackMixin",
     "LivingEntityMixin",
     "BuiltInRegistriesMixin",
-    "RegistryDataLoaderMixin"
+    "RegistryDataLoaderResourceManagerRegistryLoadTaskMixin"
   ],
   "injectors": {
     "defaultRequire": 1

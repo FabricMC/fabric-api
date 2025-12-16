@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry.sync;
+package net.fabricmc.fabric.mixin.resource.conditions;
 
-import java.util.List;
-
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.resources.RegistryDataLoader;
 
-import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
+import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 
-@Mixin(RegistryPatchGenerator.class)
-class RegistryPatchGeneratorMixin {
-	@Redirect(at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;WORLDGEN_REGISTRIES:Ljava/util/List;"), method = "lambda$createLookup$0")
-	private static List<RegistryDataLoader.RegistryData<?>> getDynamicRegistries() {
-		// Register cloners for all dynamic registries.
-		return DynamicRegistries.getDynamicRegistries();
+@Mixin(RegistryDataLoader.ResourceManagerRegistryLoadTask.class)
+public class RegistryDataLoaderResourceManagerRegistryLoadTaskMixin {
+	@ModifyExpressionValue(method = "lambda$load$2", at = @At(value = "NEW", target = "net/minecraft/resources/RegistryDataLoader$PendingRegistration"))
+	private RegistryDataLoader.PendingRegistration<?> load(RegistryDataLoader.PendingRegistration original) {
+		if (original.value().right().isPresent() && original.value().right().get() == ResourceConditionsImpl.DISABLED_RESOURCE_EXCEPTION) {
+			return null;
+		}
+
+		return original;
 	}
 }

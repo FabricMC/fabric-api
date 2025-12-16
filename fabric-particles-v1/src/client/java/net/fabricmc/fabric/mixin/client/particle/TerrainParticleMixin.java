@@ -52,7 +52,7 @@ abstract class TerrainParticleMixin extends SingleQuadParticle {
 			argsOnly = true,
 			slice = @Slice(
 					from = @At(value = "FIELD", target = "Lnet/minecraft/client/particle/TerrainParticle;bCol:F", ordinal = 0),
-					to = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Lnet/minecraft/world/level/block/Block;)Z")
+					to = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Ljava/lang/Object;)Z")
 			),
 			allow = 1
 	)

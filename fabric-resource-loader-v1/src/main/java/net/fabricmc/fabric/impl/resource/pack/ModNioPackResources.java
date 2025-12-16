@@ -284,7 +284,7 @@ public class ModNioPackResources implements PackResources, ModPackResources {
 		try (InputStream is = Objects.requireNonNull(this.openFile("pack.mcmeta")).get()) {
 			ResourceMetadata resourceMetadata = ResourceMetadata.fromJsonStream(is);
 			Optional<T> section = resourceMetadata.getSection(metaReader);
-			return section.get();
+			return section.orElse(null);
 		}
 	}
 

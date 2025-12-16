@@ -67,7 +67,7 @@ public class TagsProviderMixin<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	@WrapOperation(method = "lambda$run$7", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"))
+	@WrapOperation(method = "lambda$run$2", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"))
 	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] futures, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true) CachedOutput writer) {
 		if ((Object) this instanceof FabricTagProvider<?>) {
 			// Note: no pattern matching instanceof so that we can cast directly to FabricTagProvider<T> instead of a wildcard

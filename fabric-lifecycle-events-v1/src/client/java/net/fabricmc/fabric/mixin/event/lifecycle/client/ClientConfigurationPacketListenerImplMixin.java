@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 
 @Mixin(ClientConfigurationPacketListenerImpl.class)
 public class ClientConfigurationPacketListenerImplMixin {
-	@Inject(method = "lambda$handleConfigurationFinished$1", at = @At(value = "RETURN"))
+	@Inject(method = "lambda$handleConfigurationFinished$0", at = @At(value = "RETURN"))
 	private void invokeTagsLoaded(ResourceProvider factory, CallbackInfoReturnable<RegistryAccess.Frozen> cir) {
 		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(cir.getReturnValue(), true);
 	}

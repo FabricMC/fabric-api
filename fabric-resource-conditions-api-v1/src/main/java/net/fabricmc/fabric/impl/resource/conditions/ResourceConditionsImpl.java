@@ -45,6 +45,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public final class ResourceConditionsImpl implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Fabric Resource Conditions");
 	public static FeatureFlagSet currentFeatures = null;
+	public static Exception DISABLED_RESOURCE_EXCEPTION = new Exception("Disabled resource");
 
 	@Override
 	public void onInitialize() {

@@ -101,13 +101,13 @@ public abstract class LevelRendererMixin {
 		WorldRenderEvents.END_EXTRACTION.invoker().endExtraction(extractionContext);
 	}
 
-	@ModifyExpressionValue(method = "lambda$addMainPass$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;prepareChunkRenders(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;"))
+	@ModifyExpressionValue(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;prepareChunkRenders(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;"))
 	private ChunkSectionsToRender onRenderBlockLayers(ChunkSectionsToRender sectionRenderState) {
 		renderContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, sectionRenderState, submitNodeStorage, renderBuffers.bufferSource());
 		return sectionRenderState;
 	}
 
-	@Inject(method = "lambda$addMainPass$1",
+	@Inject(method = "lambda$addMainPass$0",
 			slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;prepareChunkRenders(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;")),
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;renderGroup(Lnet/minecraft/client/renderer/chunk/ChunkSectionLayerGroup;Lcom/mojang/blaze3d/textures/GpuSampler;)V", ordinal = 0)
 	)
@@ -115,18 +115,18 @@ public abstract class LevelRendererMixin {
 		WorldRenderEvents.START_MAIN.invoker().startMain(renderContext);
 	}
 
-	@ModifyExpressionValue(method = "lambda$addMainPass$1", at = @At(value = "NEW", target = "Lcom/mojang/blaze3d/vertex/PoseStack;"))
+	@ModifyExpressionValue(method = "lambda$addMainPass$0", at = @At(value = "NEW", target = "Lcom/mojang/blaze3d/vertex/PoseStack;"))
 	private PoseStack onCreateMatrixStack(PoseStack matrixStack) {
 		renderContext.setMatrixStack(matrixStack);
 		return matrixStack;
 	}
 
-	@Inject(method = "lambda$addMainPass$1", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities"))
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities"))
 	private void beforeEntitySubmission(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_ENTITIES.invoker().beforeEntities(renderContext);
 	}
 
-	@WrapOperation(method = "lambda$addMainPass$1",
+	@WrapOperation(method = "lambda$addMainPass$0",
 			slice = @Slice(from = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities")),
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OutlineBufferSource;endOutlineBatch()V")
 	)
@@ -140,7 +140,7 @@ public abstract class LevelRendererMixin {
 		WorldRenderEvents.BEFORE_DEBUG_RENDER.invoker().beforeDebugRender(renderContext);
 	}
 
-	@Inject(method = "lambda$addMainPass$1", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V", args = "ldc=translucent"))
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;push(Ljava/lang/String;)V", args = "ldc=translucent"))
 	private void beforeTranslucentRender(CallbackInfo ci) {
 		WorldRenderEvents.BEFORE_TRANSLUCENT.invoker().beforeTranslucent(renderContext);
 	}
@@ -153,7 +153,7 @@ public abstract class LevelRendererMixin {
 		}
 	}
 
-	@Inject(method = "lambda$addMainPass$1", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V"))
+	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE:LAST", target = "Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;endBatch()V"))
 	private void endMainRender(CallbackInfo ci) {
 		WorldRenderEvents.END_MAIN.invoker().endMain(renderContext);
 	}
