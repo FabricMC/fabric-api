@@ -26,6 +26,9 @@ import com.mojang.blaze3d.platform.ScreenManager;
 import com.mojang.blaze3d.platform.VideoMode;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.platform.WindowEventHandler;
+import com.mojang.blaze3d.shaders.GpuDebugOptions;
+import com.mojang.blaze3d.shaders.ShaderSource;
+import com.mojang.blaze3d.systems.GpuBackend;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -87,7 +90,7 @@ public abstract class WindowMixin implements WindowHooks {
 	private int realFramebufferHeight;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void onInit(WindowEventHandler eventHandler, ScreenManager monitorTracker, DisplayData settings, @Nullable String fullscreenVideoMode, String title, CallbackInfo ci) {
+	private void onInit(WindowEventHandler eventHandler, DisplayData settings, String fullscreenVideoModeString, String title, GpuBackend[] backends, ShaderSource defaultShaderSource, GpuDebugOptions debugOptions, CallbackInfo ci) {
 		this.defaultWidth = settings.width();
 		this.defaultHeight = settings.height();
 		this.realWidth = this.width;

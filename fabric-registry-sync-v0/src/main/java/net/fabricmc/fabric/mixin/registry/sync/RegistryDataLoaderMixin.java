@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -29,6 +31,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.HolderLookup;
@@ -43,20 +46,23 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistryViewImpl;
 @Mixin(RegistryDataLoader.class)
 public class RegistryDataLoaderMixin {
 	@Unique
-	private static final ThreadLocal<Boolean> IS_SERVER = ThreadLocal.withInitial(() -> false);
+	private static final ScopedValue<Boolean> IS_SERVER = ScopedValue.newInstance();
 
-	/**
-	 * Sets IS_SERVER flag. Note that this must be reset after call, as the render thread
-	 * invokes this method as well.
-	 */
-	@WrapOperation(method = "Lnet/minecraft/resources/RegistryDataLoader;load(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/List;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/RegistryDataLoader;load(Lnet/minecraft/resources/RegistryDataLoader$LoaderFactory;Ljava/util/List;Ljava/util/List;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
+	@WrapOperation(method = "load(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Ljava/util/List;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/RegistryDataLoader;load(Lnet/minecraft/resources/RegistryDataLoader$LoaderFactory;Ljava/util/List;Ljava/util/List;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
 	private static CompletableFuture<RegistryAccess.Frozen> wrapIsServerCall(@Coerce Object loaderFactory, List<HolderLookup.RegistryLookup<?>> contextRegistries, List<RegistryDataLoader.RegistryData<?>> registriesToLoad, Executor executor, Operation<CompletableFuture<RegistryAccess.Frozen>> original) {
-		try {
-			IS_SERVER.set(true);
-			return original.call(loaderFactory, contextRegistries, registriesToLoad, executor);
-		} finally {
-			IS_SERVER.set(false);
-		}
+		return ScopedValue.where(IS_SERVER, true).call(() -> original.call(loaderFactory, contextRegistries, registriesToLoad, executor));
+	}
+
+	@ModifyArg(method = "load(Lnet/minecraft/resources/RegistryDataLoader$LoaderFactory;Ljava/util/List;Ljava/util/List;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;supplyAsync(Ljava/util/function/Supplier;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
+	private static Supplier<CompletableFuture<RegistryAccess.Frozen>> supplyAsync(Supplier<CompletableFuture<RegistryAccess.Frozen>> supplier) {
+		final boolean isServer = IS_SERVER.orElse(false);
+		return () -> ScopedValue.where(IS_SERVER, isServer).call(supplier::get);
+	}
+
+	@ModifyArg(method = "lambda$load$0", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;thenApplyAsync(Ljava/util/function/Function;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
+	private static Function<Void, RegistryAccess.Frozen> thenApplyAsync(Function<Void, RegistryAccess.Frozen> function) {
+		final boolean isServer = IS_SERVER.get();
+		return (arg1) -> ScopedValue.where(IS_SERVER, isServer).call(() -> function.apply(arg1));
 	}
 
 	@Inject(

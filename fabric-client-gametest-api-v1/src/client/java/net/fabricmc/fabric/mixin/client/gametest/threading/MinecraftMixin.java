@@ -137,7 +137,7 @@ public class MinecraftMixin {
 		NetworkSynchronizer.CLIENTBOUND.reset();
 	}
 
-	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;runTick(Z)V", shift = At.Shift.AFTER))
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;renderFrame(ZZ)V", shift = At.Shift.AFTER))
 	private void onDisconnectBusyWait(CallbackInfo ci) {
 		// give the server a chance to tick too
 		preRunTasks();

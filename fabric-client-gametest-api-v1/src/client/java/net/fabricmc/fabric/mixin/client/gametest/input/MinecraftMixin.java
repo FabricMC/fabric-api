@@ -33,7 +33,7 @@ public class MinecraftMixin {
 	@Final
 	private Window window;
 
-	@ModifyExpressionValue(method = "runTick", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;isMinimized()Z"))
+	@ModifyExpressionValue(method = "renderFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;isMinimized()Z"))
 	private boolean hasZeroRealWidthOrHeight(boolean original) {
 		WindowHooks windowHooks = (WindowHooks) (Object) window;
 		return windowHooks.fabric_getRealFramebufferWidth() == 0 || windowHooks.fabric_getRealFramebufferHeight() == 0;
