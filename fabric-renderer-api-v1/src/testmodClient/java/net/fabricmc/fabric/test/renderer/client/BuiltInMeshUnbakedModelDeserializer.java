@@ -77,7 +77,7 @@ public class BuiltInMeshUnbakedModelDeserializer implements UnbakedModelDeserial
 					.getAsString());
 			ItemWithBlock item = ItemWithBlock.LOOKUP
 					.get(itemId);
-			yield new ItemWithBlockModel.Unbaked(itemId, item.getItem(), item.getBlock());
+			yield new ItemWithBlockGeometry(itemId, item.getItem(), item.getBlock());
 		}
 		default -> throw new IllegalArgumentException("Invalid mesh ID: " + meshId);
 		};

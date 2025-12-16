@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
@@ -74,6 +75,23 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 	@Inject(method = "update", at = @At("RETURN"))
 	private void onReturnUpdate(CallbackInfo ci, @Local ItemStackRenderState.LayerRenderState layer) {
 		if (mesh != null) {
+			// Set a default render type getter.
+			// This lets us use block atlases and item atlases
+			// on the same item layers.
+			layer.setRenderTypeGetter((quadAtlas, sectionLayer) -> {
+				if (quadAtlas == QuadAtlas.BLOCK) {
+					return switch (sectionLayer) {
+					case SOLID -> Sheets.solidBlockSheet();
+					case CUTOUT -> Sheets.cutoutBlockSheet();
+					case null, default -> Sheets.translucentBlockItemSheet();
+					};
+				} else if (quadAtlas == QuadAtlas.ITEM) {
+					return Sheets.translucentItemSheet();
+				}
+
+				return null;
+			});
+
 			mesh.outputTo(layer.emitter());
 		}
 	}
