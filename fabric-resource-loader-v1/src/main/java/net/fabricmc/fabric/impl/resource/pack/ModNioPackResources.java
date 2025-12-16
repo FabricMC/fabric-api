@@ -44,13 +44,13 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.AbstractPackResources;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionType;
 import net.minecraft.server.packs.repository.KnownPack;
 import net.minecraft.server.packs.resources.IoSupplier;
+import net.minecraft.server.packs.resources.ResourceMetadata;
 import net.minecraft.util.FileUtil;
 
 import net.fabricmc.fabric.api.resource.v1.pack.ModPackResources;
@@ -282,7 +282,9 @@ public class ModNioPackResources implements PackResources, ModPackResources {
 	@Override
 	public <T> T getMetadataSection(MetadataSectionType<T> metaReader) throws IOException {
 		try (InputStream is = Objects.requireNonNull(this.openFile("pack.mcmeta")).get()) {
-			return AbstractPackResources.getMetadataFromStream(metaReader, is, this.metadata);
+			ResourceMetadata resourceMetadata = ResourceMetadata.fromJsonStream(is);
+			Optional<T> section = resourceMetadata.getSection(metaReader);
+			return section.get();
 		}
 	}
 

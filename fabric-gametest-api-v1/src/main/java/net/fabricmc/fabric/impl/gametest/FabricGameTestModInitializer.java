@@ -52,15 +52,15 @@ public final class FabricGameTestModInitializer implements ModInitializer {
 		}
 	}
 
-	public static void registerDynamicEntries(List<RegistryDataLoader.Loader<?>> registriesList) {
-		Map<ResourceKey<? extends Registry<?>>, Registry<?>> registries = new IdentityHashMap<>(registriesList.size());
+	public static void registerDynamicEntries(List<RegistryDataLoader.RegistryLoadTask<?>> loadTasks) {
+		Map<ResourceKey<? extends Registry<?>>, Registry<?>> registries = new IdentityHashMap<>(loadTasks.size());
 
-		for (RegistryDataLoader.Loader<?> entry : registriesList) {
-			registries.put(entry.registry().key(), entry.registry());
+		for (RegistryDataLoader.RegistryLoadTask<?> entry : loadTasks) {
+			registries.put(entry.registry.key(), entry.registry);
 		}
 
 		Registry<GameTestInstance> testInstances = (Registry<GameTestInstance>) registries.get(Registries.TEST_INSTANCE);
-		Registry<TestEnvironmentDefinition> testEnvironmentDefinitionRegistry = (Registry<TestEnvironmentDefinition>) Objects.requireNonNull(registries.get(Registries.TEST_ENVIRONMENT));
+		Registry<TestEnvironmentDefinition<?>> testEnvironmentDefinitionRegistry = (Registry<TestEnvironmentDefinition<?>>) Objects.requireNonNull(registries.get(Registries.TEST_ENVIRONMENT));
 
 		for (TestAnnotationLocator.TestMethod testMethod : locator.getTestMethods()) {
 			GameTestInstance testInstance = testMethod.testInstance(testEnvironmentDefinitionRegistry);

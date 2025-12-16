@@ -155,8 +155,8 @@ final class TestAnnotationLocator {
 			};
 		}
 
-		TestData<Holder<TestEnvironmentDefinition>> testData(Registry<TestEnvironmentDefinition> testEnvironmentDefinitionRegistry) {
-			Holder<TestEnvironmentDefinition> testEnvironment = testEnvironmentDefinitionRegistry.getOrThrow(ResourceKey.create(Registries.TEST_ENVIRONMENT, Identifier.parse(gameTest.environment())));
+		TestData<Holder<TestEnvironmentDefinition<?>>> testData(Registry<TestEnvironmentDefinition<?>> testEnvironmentDefinitionRegistry) {
+			Holder<TestEnvironmentDefinition<?>> testEnvironment = testEnvironmentDefinitionRegistry.getOrThrow(ResourceKey.create(Registries.TEST_ENVIRONMENT, Identifier.parse(gameTest.environment())));
 
 			return new TestData<>(
 					testEnvironment,
@@ -172,7 +172,7 @@ final class TestAnnotationLocator {
 			);
 		}
 
-		GameTestInstance testInstance(Registry<TestEnvironmentDefinition> testEnvironmentDefinitionRegistry) {
+		GameTestInstance testInstance(Registry<TestEnvironmentDefinition<?>> testEnvironmentDefinitionRegistry) {
 			return new FunctionGameTestInstance(
 					ResourceKey.create(Registries.TEST_FUNCTION, identifier()),
 					testData(testEnvironmentDefinitionRegistry)
