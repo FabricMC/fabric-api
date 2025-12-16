@@ -20,7 +20,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.DispenserMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +50,7 @@ public class BagScreenHandler extends DispenserMenu {
 	}
 
 	@Override
-	public void clicked(int slotId, int clickData, ClickType actionType, Player playerEntity) {
+	public void clicked(int slotId, int clickData, ContainerInput containerInput, Player playerEntity) {
 		if (slotId >= 0) { // slotId < 0 are used for networking internals
 			ItemStack stack = getSlot(slotId).getItem();
 
@@ -60,6 +60,6 @@ public class BagScreenHandler extends DispenserMenu {
 			}
 		}
 
-		super.clicked(slotId, clickData, actionType, playerEntity);
+		super.clicked(slotId, clickData, containerInput, playerEntity);
 	}
 }

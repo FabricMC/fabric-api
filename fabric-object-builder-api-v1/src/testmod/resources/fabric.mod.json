@@ -23,8 +23,6 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.object.builder.BlockEntityTypeBuilderTest",
-      "net.fabricmc.fabric.test.object.builder.VillagerTypeTest1",
-      "net.fabricmc.fabric.test.object.builder.VillagerTypeTest2",
       "net.fabricmc.fabric.test.object.builder.TealSignTest",
       "net.fabricmc.fabric.test.object.builder.PersistentStateManagerTest",
       "net.fabricmc.fabric.test.object.builder.EntityTrackedDataTest"
@@ -33,8 +31,7 @@
       "net.fabricmc.fabric.test.object.builder.client.EntityTrackedDataClientTest"
     ],
     "fabric-gametest": [
-      "net.fabricmc.fabric.test.object.builder.ObjectBuilderGameTest",
-      "net.fabricmc.fabric.test.object.builder.EmptyTypeAwareBuyForOneEmeraldTradeOfferGameTest"
+      "net.fabricmc.fabric.test.object.builder.ObjectBuilderGameTest"
     ]
   }
 }

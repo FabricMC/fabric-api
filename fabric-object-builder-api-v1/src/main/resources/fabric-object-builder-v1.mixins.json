@@ -11,8 +11,7 @@
     "EntityTypeMixin",
     "DimensionDataStorageMixin",
     "EntityDataSerializersAccessor",
-    "EntityDataSerializersMixin",
-    "VillagerTradesEmeraldsForVillagerTypeItemMixin"
+    "EntityDataSerializersMixin"
   ],
   "injectors": {
     "defaultRequire": 1

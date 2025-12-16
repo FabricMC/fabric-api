@@ -47,6 +47,7 @@ import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.storage.loot.LootDataType;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.Validatable;
 
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
@@ -80,8 +81,8 @@ abstract class ReloadableServerRegistriesMixin {
 		}), fn, executor);
 	}
 
-	@Inject(method = "lambda$scheduleRegistryLoad$3", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
-	private static <T> void modifyLootTable(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir, @Local Map<Identifier, T> map) {
+	@Inject(method = "lambda$scheduleRegistryLoad$0", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
+	private static <T extends Validatable> void modifyLootTable(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir, @Local Map<Identifier, T> map) {
 		map.replaceAll((identifier, t) -> modifyLootTable(t, identifier, registryOps));
 	}
 
@@ -112,8 +113,8 @@ abstract class ReloadableServerRegistriesMixin {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Inject(method = "lambda$scheduleRegistryLoad$3", at = @At("RETURN"))
-	private static <T> void onLootTablesLoaded(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir) {
+	@Inject(method = "lambda$scheduleRegistryLoad$0", at = @At("RETURN"))
+	private static <T extends Validatable> void onLootTablesLoaded(LootDataType<T> lootDataType, ResourceManager resourceManager, RegistryOps<JsonElement> registryOps, CallbackInfoReturnable<WritableRegistry<?>> cir) {
 		if (lootDataType != LootDataType.TABLE) return;
 
 		Registry<LootTable> lootTableRegistry = (Registry<LootTable>) cir.getReturnValue();

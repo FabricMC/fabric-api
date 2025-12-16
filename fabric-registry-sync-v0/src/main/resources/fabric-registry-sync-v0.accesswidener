@@ -6,4 +6,5 @@ accessible	field	net/minecraft/resources/RegistryDataLoader	SYNCHRONIZED_REGISTR
 mutable	field	net/minecraft/resources/RegistryDataLoader	SYNCHRONIZED_REGISTRIES	Ljava/util/List;
 accessible	field	net/minecraft/core/RegistrySynchronization	NETWORKABLE_REGISTRIES	Ljava/util/Set;
 mutable	field	net/minecraft/core/RegistrySynchronization	NETWORKABLE_REGISTRIES	Ljava/util/Set;
-accessible	class	net/minecraft/resources/RegistryDataLoader$Loader
+accessible class net/minecraft/resources/RegistryDataLoader$RegistryLoadTask
+accessible field net/minecraft/resources/RegistryDataLoader$RegistryLoadTask registry Lnet/minecraft/core/WritableRegistry;

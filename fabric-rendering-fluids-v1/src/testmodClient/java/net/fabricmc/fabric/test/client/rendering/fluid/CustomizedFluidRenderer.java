@@ -74,8 +74,8 @@ public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
 	}
 
 	private int getLight(BlockAndTintGetter world, BlockPos pos) {
-		int i = LevelRenderer.getLightColor(world, pos);
-		int j = LevelRenderer.getLightColor(world, pos.above());
+		int i = LevelRenderer.getLightCoords(world, pos);
+		int j = LevelRenderer.getLightCoords(world, pos.above());
 		int k = i & 255;
 		int l = j & 255;
 		int m = i >> 16 & 255;

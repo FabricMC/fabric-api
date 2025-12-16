@@ -146,7 +146,7 @@ public interface FabricItem {
 	 * @return the namespace of the mod that created the item
 	 */
 	default String getCreatorNamespace(ItemStack stack) {
-		Holder<?> entry = stack.getItemHolder();
+		Holder<?> entry = stack.typeHolder();
 
 		if ((this instanceof PotionItem || this instanceof TippedArrowItem) && stack.has(DataComponents.POTION_CONTENTS)) {
 			Optional<Holder<Potion>> potion = stack.get(DataComponents.POTION_CONTENTS).potion();
