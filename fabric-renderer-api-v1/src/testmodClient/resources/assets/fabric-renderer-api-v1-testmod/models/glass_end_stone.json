@@ -1,0 +1,9 @@
+{
+  "fabric:type": "fabric-renderer-api-v1-testmod:builtin_mesh",
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "missingno"
+  },
+  "mesh": "item_with_block",
+  "item": "fabric-renderer-api-v1-testmod:glass_end_stone"
+}

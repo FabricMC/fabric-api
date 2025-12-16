@@ -50,6 +50,14 @@ public final class Registration {
 			settings -> new ItemWithBlock(settings, Items.CHORUS_FRUIT, Blocks.END_STONE)
 	);
 
+	public static final Item GLASS_END_STONE = registerItem("glass_end_stone",
+			settings -> new ItemWithBlock(settings, Items.GLASS, Blocks.END_STONE)
+	);
+
+	public static final Item CHORUS_GLASS = registerItem("chorus_glass",
+			settings -> new ItemWithBlock(settings, Items.CHORUS_FRUIT, Blocks.GLASS)
+	);
+
 	// see also Blocks#register, which is functionally the same
 	private static <T extends Block> T register(String path, Function<BlockBehaviour.Properties, T> constructor, BlockBehaviour.Properties settings) {
 		Identifier id = RendererTest.id(path);

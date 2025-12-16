@@ -1,5 +1,7 @@
 package net.fabricmc.fabric.test.renderer.client;
 
+import org.jspecify.annotations.NonNull;
+
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.TextureSlots;
@@ -12,7 +14,9 @@ import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.UnbakedGeometry;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -30,9 +34,17 @@ public record ItemWithBlockGeometry(
 	public ItemWithBlockGeometry(Identifier itemId, Item item, Block block) {
 		this(
 				itemId,
-				ModelLocationUtils.getModelLocation(item),
+				getModelLocation(item),
 				ModelLocationUtils.getModelLocation(block)
 		);
+	}
+
+	private static @NonNull Identifier getModelLocation(ItemLike item) {
+		if (item instanceof BlockItem blockItem) {
+			return ModelLocationUtils.getModelLocation(blockItem.getBlock());
+		}
+
+		return ModelLocationUtils.getModelLocation((Item) item);
 	}
 
 	@Override
@@ -109,8 +121,6 @@ public record ItemWithBlockGeometry(
 
 		emitter.popTransform();
 		emitter.popTransform();
-		MeshBakedGeometry meshBakedGeometry = new MeshBakedGeometry(
-				mutableMesh.immutableCopy());
-		return meshBakedGeometry;
+		return new MeshBakedGeometry(mutableMesh.immutableCopy());
 	}
 }
