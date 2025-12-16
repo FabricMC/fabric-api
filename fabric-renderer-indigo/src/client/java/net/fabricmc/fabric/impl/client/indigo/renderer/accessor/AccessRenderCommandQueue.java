@@ -27,7 +27,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
-import net.fabricmc.fabric.api.renderer.v1.render.ItemLayerRenderTypeGetter;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 
 public interface AccessRenderCommandQueue {
 	void fabric_submitItem(
@@ -41,6 +41,6 @@ public interface AccessRenderCommandQueue {
 			RenderType renderLayer,
 			ItemStackRenderState.FoilType glintType,
 			MeshView mesh,
-			@Nullable ItemLayerRenderTypeGetter renderTypeGetter
+			@Nullable ItemRenderTypeGetter renderTypeGetter
 	);
 }

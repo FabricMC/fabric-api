@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
-import net.fabricmc.fabric.api.renderer.v1.render.ItemLayerRenderTypeGetter;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
@@ -86,7 +86,7 @@ public class IndigoRenderer implements Renderer {
 	@Override
 	public void setLayerRenderTypeGetter(
 			ItemStackRenderState.LayerRenderState layer,
-			ItemLayerRenderTypeGetter renderTypeGetter
+			ItemRenderTypeGetter renderTypeGetter
 	) {
 		((AccessLayerRenderState) layer).fabric_setRenderTypeGetter(renderTypeGetter);
 	}

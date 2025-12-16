@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.renderer.v1.model;
+package net.fabricmc.fabric.api.renderer.v1.sprite;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
+import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 
 @FunctionalInterface
-public interface QuadAtlasSpriteGetter {
+public interface SpriteFinderGetter {
 	/**
-	 * Gets a {@link SpriteFinder} linked to a {@link QuadAtlas}.
+	 * Gets the {@link SpriteFinder} for the given {@link QuadAtlas}.
 	 */
 	SpriteFinder spriteFinder(QuadAtlas quadAtlas);
 }

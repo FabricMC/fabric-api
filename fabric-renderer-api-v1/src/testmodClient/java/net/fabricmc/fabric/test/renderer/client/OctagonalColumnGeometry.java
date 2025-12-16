@@ -44,7 +44,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 	public QuadCollection bake(TextureSlots textures, ModelBaker baker, ModelState settings, ModelDebugName model) {
 		MutableMesh builder = Renderer.get().mutableMesh();
 		QuadEmitter emitter = builder.emitter();
-		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, atlas -> baker.sprites().spriteFinder(atlas.getTextureId())));
+		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.sprites()));
 
 		TextureAtlasSprite sprite = baker.sprites().get(textures.getMaterial("column"), model);
 

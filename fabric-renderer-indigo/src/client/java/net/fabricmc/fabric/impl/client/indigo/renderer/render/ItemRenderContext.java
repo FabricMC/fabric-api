@@ -39,8 +39,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
-import net.fabricmc.fabric.api.renderer.v1.render.ItemLayerRenderTypeGetter;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
@@ -57,7 +56,8 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private int[] tints;
 
 	private RenderType defaultLayer;
-	private @Nullable ItemLayerRenderTypeGetter renderTypeGetter;
+	@Nullable
+	private ItemRenderTypeGetter renderTypeGetter;
 	private ItemStackRenderState.FoilType defaultGlint;
 	private boolean ignoreQuadGlint;
 
@@ -74,9 +74,9 @@ public class ItemRenderContext extends AbstractRenderContext {
 			List<BakedQuad> vanillaQuads,
 			MeshView mesh,
 			RenderType layer,
+			@Nullable ItemRenderTypeGetter renderTypeGetter,
 			ItemStackRenderState.FoilType glint,
-			boolean ignoreQuadGlint,
-			@Nullable ItemLayerRenderTypeGetter renderTypeGetter
+			boolean ignoreQuadGlint
 	) {
 		this.displayContext = displayContext;
 		matrices = matrixStack.last();
@@ -86,9 +86,9 @@ public class ItemRenderContext extends AbstractRenderContext {
 		this.tints = tints;
 
 		defaultLayer = layer;
+		this.renderTypeGetter = renderTypeGetter;
 		defaultGlint = glint;
 		this.ignoreQuadGlint = ignoreQuadGlint;
-		this.renderTypeGetter = renderTypeGetter;
 
 		bufferQuads(vanillaQuads, mesh);
 
@@ -119,7 +119,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final VertexConsumer vertexConsumer = getVertexConsumer(quad.atlas(), quad.renderLayer(), quad.renderLayer(), quad.glint());
+		final VertexConsumer vertexConsumer = getVertexConsumer(quad.atlas(), quad.renderLayer(), quad.glint());
 
 		tintQuad(quad);
 		shadeQuad(quad, quad.emissive());
@@ -152,16 +152,18 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	private VertexConsumer getVertexConsumer(QuadAtlas quadAtlas, @Nullable ChunkSectionLayer chunkSectionLayer, @Nullable ChunkSectionLayer quadRenderLayer, ItemStackRenderState.@Nullable FoilType quadGlint) {
+	private VertexConsumer getVertexConsumer(QuadAtlas quadAtlas, @Nullable ChunkSectionLayer quadRenderLayer, ItemStackRenderState.@Nullable FoilType quadGlint) {
 		RenderType layer;
 		ItemStackRenderState.FoilType glint;
 
-		if (this.renderTypeGetter != null) {
-			layer = this.renderTypeGetter.renderType(quadAtlas, chunkSectionLayer);
-		} else if (quadRenderLayer == null) {
-			layer = defaultLayer;
+		if (renderTypeGetter != null) {
+			layer = renderTypeGetter.renderType(quadAtlas, quadRenderLayer);
+
+			if (layer == null) {
+				layer = defaultLayer;
+			}
 		} else {
-			layer = RenderLayerHelper.getEntityBlockLayer(quadRenderLayer);
+			layer = defaultLayer;
 		}
 
 		if (ignoreQuadGlint || quadGlint == null) {
@@ -172,12 +174,14 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 		int cacheIndex;
 
-		if (layer == Sheets.translucentBlockItemSheet()) {
+		if (layer == Sheets.translucentItemSheet()) {
 			cacheIndex = 0;
 		} else if (layer == Sheets.cutoutBlockSheet()) {
 			cacheIndex = GLINT_COUNT;
-		} else {
+		} else if (layer == Sheets.translucentBlockItemSheet()) {
 			cacheIndex = 2 * GLINT_COUNT;
+		} else {
+			return createVertexConsumer(layer, glint);
 		}
 
 		cacheIndex += glint.ordinal();

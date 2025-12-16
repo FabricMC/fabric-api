@@ -19,11 +19,10 @@ package net.fabricmc.fabric.api.renderer.v1.render;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /**
@@ -49,12 +48,18 @@ public interface FabricLayerRenderState {
 	}
 
 	/**
-	 * Sets the function used when choosing which {@link net.minecraft.client.renderer.rendertype.RenderType}
-	 * to use when rendering the item layer.
+	 * Sets the function that chooses the {@link RenderType} for quads added to this layer through {@link #emitter()}
+	 * based on certain quad properties. This method has no effect on how
+	 * {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads} are rendered. If this function
+	 * is not set, all non-vanilla quads in this layer will be rendered using this layer's
+	 * {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(RenderType) default render type}. If the
+	 * function returns {@code null} for a certain combination of quad properties, then all non-vanilla quads with
+	 * matching property values will use this layer's default render type. This layer's function will be unset on
+	 * {@link ItemStackRenderState.LayerRenderState#clear()}.
 	 *
-	 * @see ItemLayerRenderTypeGetter#renderType(QuadAtlas, ChunkSectionLayer)
+	 * @see ItemRenderTypeGetter
 	 */
-	default void setRenderTypeGetter(ItemLayerRenderTypeGetter renderTypeGetter) {
+	default void setRenderTypeGetter(ItemRenderTypeGetter renderTypeGetter) {
 		Renderer.get().setLayerRenderTypeGetter((ItemStackRenderState.LayerRenderState) this, renderTypeGetter);
 	}
 }

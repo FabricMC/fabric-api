@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.mixin.renderer.client.item;
 
-import java.util.List;
-import java.util.function.Function;
-
 import com.llamalad7.mixinextras.sugar.Local;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -30,66 +27,61 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.world.entity.ItemOwner;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
-import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.impl.renderer.BasicItemModelExtension;
 
 @Mixin(BlockModelWrapper.class)
 abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtension {
 	@Shadow
 	@Final
-	private static Function<ItemStack, RenderType> ITEM_RENDER_TYPE_GETTER;
-
-	@Shadow
-	@Final
-	private static Function<ItemStack, RenderType> BLOCK_RENDER_TYPE_GETTER;
-
-	@Shadow
-	@Final
-	private List<BakedQuad> quads;
-
-	@Shadow
-	@Final
 	@Mutable
 	private boolean animated;
-
-	@Shadow
-	@Final
-	@Mutable
-	private Function<ItemStack, RenderType> renderType;
 
 	@Unique
 	@Nullable
 	private Mesh mesh;
 
 	@Inject(method = "update", at = @At("RETURN"))
-	private void onReturnUpdate(CallbackInfo ci, @Local ItemStackRenderState.LayerRenderState layer) {
+	private void onReturnUpdate(final ItemStackRenderState output, final ItemStack item, final ItemModelResolver resolver, final ItemDisplayContext displayContext, final @Nullable ClientLevel level, final @Nullable ItemOwner owner, final int seed, CallbackInfo ci, @Local ItemStackRenderState.LayerRenderState layer) {
 		if (mesh != null) {
-			// Set a default render type getter.
-			// This lets us use block atlases and item atlases
-			// on the same item layers.
-			layer.setRenderTypeGetter((quadAtlas, sectionLayer) -> {
-				if (quadAtlas == QuadAtlas.BLOCK) {
-					return switch (sectionLayer) {
-					case SOLID -> Sheets.solidBlockSheet();
-					case CUTOUT -> Sheets.cutoutBlockSheet();
-					case null, default -> Sheets.translucentBlockItemSheet();
-					};
-				} else if (quadAtlas == QuadAtlas.ITEM) {
-					return Sheets.translucentItemSheet();
-				}
+			// This logic matches that of ITEM_RENDER_TYPE_GETTER and BLOCK_RENDER_TYPE_GETTER
+			ChunkSectionLayer defaultSectionLayer;
 
-				return null;
+			if (item.getItem() instanceof BlockItem blockItem) {
+				defaultSectionLayer = ItemBlockRenderTypes.getChunkRenderType(blockItem.getBlock().defaultBlockState());
+			} else {
+				defaultSectionLayer = ChunkSectionLayer.TRANSLUCENT;
+			}
+
+			layer.setRenderTypeGetter((quadAtlas, sectionLayer) -> {
+				return switch (quadAtlas) {
+				case BLOCK -> {
+					if (sectionLayer == null) {
+						sectionLayer = defaultSectionLayer;
+					}
+
+					if (sectionLayer != ChunkSectionLayer.TRANSLUCENT) {
+						yield Sheets.cutoutBlockSheet();
+					}
+
+					yield Sheets.translucentBlockItemSheet();
+				}
+				case ITEM -> Sheets.translucentItemSheet();
+				};
 			});
 
 			mesh.outputTo(layer.emitter());
@@ -98,51 +90,18 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 
 	@Override
 	public void fabric_setMesh(Mesh mesh, SpriteGetter spriteGetter) {
-		if (mesh.size() == 0) {
-			return;
-		}
-
-		QuadAtlas atlas;
-
-		if (quads.isEmpty()) {
-			QuadAtlas[] mutableAtlas = new QuadAtlas[1];
-
-			mesh.forEach(quad -> {
-				// Using multiple atlases means the user must implement ItemModel
-				// themself
-				if (mutableAtlas[0] == null) {
-					mutableAtlas[0] = quad.atlas();
-				}
-			});
-
-			atlas = mutableAtlas[0];
-
-			renderType = switch (atlas) {
-			case ITEM -> ITEM_RENDER_TYPE_GETTER;
-			case BLOCK -> BLOCK_RENDER_TYPE_GETTER;
-			};
-		} else {
-			atlas = QuadAtlas.of(quads.getFirst().sprite().atlasLocation());
-
-			if (atlas == null) {
-				// We should log something here
-				return;
-			}
-		}
-
 		this.mesh = mesh;
 
 		if (!animated) {
 			mesh.forEach(quad -> {
-				SpriteFinder spriteFinder = spriteGetter.spriteFinder(quad.atlas().getTextureId());
-
 				if (animated) {
 					return;
 				}
 
 				ItemStackRenderState.FoilType glint = quad.glint();
 
-				if ((glint != null && glint != ItemStackRenderState.FoilType.NONE) || spriteFinder.find(quad).contents().isAnimated()) {
+				if ((glint != null && glint != ItemStackRenderState.FoilType.NONE)
+						|| spriteGetter.spriteFinder(quad.atlas().getTextureId()).find(quad).contents().isAnimated()) {
 					animated = true;
 				}
 			});

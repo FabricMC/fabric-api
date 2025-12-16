@@ -36,7 +36,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
-import net.fabricmc.fabric.api.renderer.v1.render.ItemLayerRenderTypeGetter;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessBatchingRenderCommandQueue;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessRenderCommandQueue;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemCommand;
@@ -66,7 +66,7 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 			RenderType renderLayer,
 			ItemStackRenderState.FoilType glintType,
 			MeshView mesh,
-			@Nullable ItemLayerRenderTypeGetter renderTypeGetter
+			@Nullable ItemRenderTypeGetter renderTypeGetter
 	) {
 		wasUsed = true;
 		meshItemCommands.add(new MeshItemCommand(

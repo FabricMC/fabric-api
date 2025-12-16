@@ -60,9 +60,9 @@ abstract class ItemFeatureRendererMixin {
 					itemCommand.quads(),
 					itemCommand.mesh(),
 					itemCommand.renderLayer(),
+					itemCommand.renderTypeGetter(),
 					itemCommand.glintType(),
-					false,
-					itemCommand.renderTypeGetter()
+					false
 			);
 
 			if (itemCommand.outlineColor() != 0) {
@@ -77,9 +77,9 @@ abstract class ItemFeatureRendererMixin {
 						itemCommand.quads(),
 						itemCommand.mesh(),
 						itemCommand.renderLayer(),
+						itemCommand.renderTypeGetter(),
 						ItemStackRenderState.FoilType.NONE,
-						true,
-						itemCommand.renderTypeGetter()
+						true
 				);
 			}
 

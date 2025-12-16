@@ -34,7 +34,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
-import net.fabricmc.fabric.api.renderer.v1.render.ItemLayerRenderTypeGetter;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessRenderCommandQueue;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
@@ -43,20 +43,22 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 abstract class ItemStackRenderStateLayerRenderStateMixin implements FabricLayerRenderState, AccessLayerRenderState {
 	@Unique
 	private final MutableMeshImpl mutableMesh = new MutableMeshImpl();
+
 	@Unique
 	@Nullable
-	private ItemLayerRenderTypeGetter renderTypeGetter;
+	private ItemRenderTypeGetter renderTypeGetter = null;
 
 	@Inject(method = "clear()V", at = @At("RETURN"))
 	private void onReturnClear(CallbackInfo ci) {
 		mutableMesh.clear();
+		renderTypeGetter = null;
 	}
 
 	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitItem(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemDisplayContext;III[ILjava/util/List;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/item/ItemStackRenderState$FoilType;)V"))
 	private void submitItemProxy(SubmitNodeCollector commandQueue, PoseStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColor, int[] tints, List<BakedQuad> quads, RenderType layer, ItemStackRenderState.FoilType glint) {
 		if (mutableMesh.size() > 0 && commandQueue instanceof AccessRenderCommandQueue access) {
 			// We don't have to copy the mesh here because vanilla doesn't copy the tint array or quad list either.
-			access.fabric_submitItem(matrices, displayContext, light, overlay, outlineColor, tints, quads, layer, glint, mutableMesh, this.renderTypeGetter);
+			access.fabric_submitItem(matrices, displayContext, light, overlay, outlineColor, tints, quads, layer, glint, mutableMesh, renderTypeGetter);
 		} else {
 			commandQueue.submitItem(matrices, displayContext, light, overlay, outlineColor, tints, quads, layer, glint);
 		}
@@ -68,7 +70,7 @@ abstract class ItemStackRenderStateLayerRenderStateMixin implements FabricLayerR
 	}
 
 	@Override
-	public void fabric_setRenderTypeGetter(ItemLayerRenderTypeGetter renderTypeGetter) {
+	public void fabric_setRenderTypeGetter(ItemRenderTypeGetter renderTypeGetter) {
 		this.renderTypeGetter = renderTypeGetter;
 	}
 }

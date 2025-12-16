@@ -32,7 +32,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.renderer.QuadSpriteBaker;
 
@@ -280,12 +281,10 @@ public interface MutableQuadView extends QuadView {
 	 * Controls how this quad's pixels should be blended with the scene.
 	 *
 	 * <p>If set to {@code null}, {@link ItemBlockRenderTypes#getChunkRenderType(BlockState)} will be used to retrieve
-	 * the render layer in block contexts and
-	 * {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(RenderType)}  the render layer of the state layer}
-	 * will be used in item contexts. Set to another value to override this behavior.
+	 * the render layer in block contexts. Set to another value to override this behavior.
 	 *
-	 * <p>In block contexts, a non-null value will be used directly. In item contexts, a non-null value will be
-	 * converted to a {@link RenderType} using {@link RenderLayerHelper#getEntityBlockLayer(ChunkSectionLayer)}.
+	 * <p>In block contexts, a non-null value will be used directly. In item contexts, any value will be converted to a
+	 * {@link RenderType} using {@link FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)}.
 	 *
 	 * <p>The default value is {@code null}.
 	 */
@@ -355,9 +354,11 @@ public interface MutableQuadView extends QuadView {
 	 */
 	MutableQuadView shadeMode(ShadeMode mode);
 
-	// TODO: add more details to this javadoc
 	/**
 	 * Sets the {@linkplain QuadAtlas atlas texture} used by this quad.
+	 *
+	 * <p>In block contexts, this property must be {@link QuadAtlas#BLOCK}. In item contexts, this property will be
+	 * converted to a {@link RenderType} using {@link FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)}.
 	 *
 	 * <p>The default value is {@link QuadAtlas#BLOCK}.
 	 *
