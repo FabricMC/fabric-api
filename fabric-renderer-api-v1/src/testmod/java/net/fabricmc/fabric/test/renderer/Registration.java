@@ -25,6 +25,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -44,6 +45,10 @@ public final class Registration {
 	public static final BlockItem RIVERSTONE_ITEM = registerItem("riverstone", settings -> new BlockItem(RIVERSTONE_BLOCK, settings));
 
 	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY_TYPE = register("frame", FabricBlockEntityTypeBuilder.create(FrameBlockEntity::new, FRAME_BLOCK).build());
+
+	public static final Item CHORUS_END_STONE = registerItem("chorus_end_stone",
+			settings -> new ItemWithBlock(settings, Items.CHORUS_FRUIT, Blocks.END_STONE)
+	);
 
 	// see also Blocks#register, which is functionally the same
 	private static <T extends Block> T register(String path, Function<BlockBehaviour.Properties, T> constructor, BlockBehaviour.Properties settings) {

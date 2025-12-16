@@ -19,9 +19,11 @@ package net.fabricmc.fabric.api.renderer.v1.render;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /**
@@ -44,5 +46,15 @@ public interface FabricLayerRenderState {
 	 */
 	default QuadEmitter emitter() {
 		return Renderer.get().getLayerRenderStateEmitter((ItemStackRenderState.LayerRenderState) this);
+	}
+
+	/**
+	 * Sets the function used when choosing which {@link net.minecraft.client.renderer.rendertype.RenderType}
+	 * to use when rendering the item layer.
+	 *
+	 * @see ItemLayerRenderTypeGetter#renderType(QuadAtlas, ChunkSectionLayer)
+	 */
+	default void setRenderTypeGetter(ItemLayerRenderTypeGetter renderTypeGetter) {
+		Renderer.get().setLayerRenderTypeGetter((ItemStackRenderState.LayerRenderState) this, renderTypeGetter);
 	}
 }

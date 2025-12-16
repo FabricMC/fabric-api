@@ -90,10 +90,10 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 			QuadAtlas[] mutableAtlas = new QuadAtlas[1];
 
 			mesh.forEach(quad -> {
+				// Using multiple atlases means the user must implement ItemModel
+				// themself
 				if (mutableAtlas[0] == null) {
 					mutableAtlas[0] = quad.atlas();
-				} else if (quad.atlas() != mutableAtlas[0]) {
-					throw new IllegalStateException("Multiple atlases used in model, expected " + mutableAtlas[0].getTextureId() + ", but also got " + quad.atlas().getTextureId());
 				}
 			});
 
@@ -110,20 +110,14 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 				// We should log something here
 				return;
 			}
-
-			mesh.forEach(quad -> {
-				if (quad.atlas() != atlas) {
-					throw new IllegalStateException("Multiple atlases used in model, expected " + atlas.getTextureId() + ", but also got " + quad.atlas().getTextureId());
-				}
-			});
 		}
 
 		this.mesh = mesh;
 
 		if (!animated) {
-			SpriteFinder spriteFinder = spriteGetter.spriteFinder(atlas.getTextureId());
-
 			mesh.forEach(quad -> {
+				SpriteFinder spriteFinder = spriteGetter.spriteFinder(quad.atlas().getTextureId());
+
 				if (animated) {
 					return;
 				}

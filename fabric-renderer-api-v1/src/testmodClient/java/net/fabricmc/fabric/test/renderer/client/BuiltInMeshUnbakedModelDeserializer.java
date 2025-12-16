@@ -29,6 +29,7 @@ import net.minecraft.util.GsonHelper;
 
 import net.fabricmc.fabric.api.client.model.loading.v1.UnbakedModelDeserializer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
+import net.fabricmc.fabric.test.renderer.ItemWithBlock;
 
 public class BuiltInMeshUnbakedModelDeserializer implements UnbakedModelDeserializer {
 	@Override
@@ -37,7 +38,7 @@ public class BuiltInMeshUnbakedModelDeserializer implements UnbakedModelDeserial
 
 		if (jsonObject.has("mesh")) {
 			String meshId = GsonHelper.getAsString(jsonObject, "mesh");
-			geometry = geometryFromMeshId(meshId);
+			geometry = geometryFromMeshId(meshId, jsonObject);
 		}
 
 		UnbakedModel.GuiLight guiLight = null;
@@ -59,13 +60,25 @@ public class BuiltInMeshUnbakedModelDeserializer implements UnbakedModelDeserial
 		return new BlockModel(geometry, guiLight, true, transformation, textures, parentId);
 	}
 
-	private static UnbakedGeometry geometryFromMeshId(String meshId) {
+	private static UnbakedGeometry geometryFromMeshId(String meshId, JsonObject jsonObject
+	) {
 		return switch (meshId) {
 		case "emissive_frame" -> new FrameGeometry(true);
 		case "frame" -> new FrameGeometry(false);
 		case "pillar" -> new PillarGeometry();
 		case "octagonal_column_enhanced" -> new OctagonalColumnGeometry(ShadeMode.ENHANCED);
 		case "octagonal_column_vanilla" -> new OctagonalColumnGeometry(ShadeMode.VANILLA);
+		case "item_with_block" -> {
+			if (!jsonObject.has("item")) {
+				throw new IllegalArgumentException("An item field is required in item_with_block meshes");
+			}
+
+			Identifier itemId = Identifier.parse(jsonObject.get("item")
+					.getAsString());
+			ItemWithBlock item = ItemWithBlock.LOOKUP
+					.get(itemId);
+			yield new ItemWithBlockModel.Unbaked(itemId, item.getItem(), item.getBlock());
+		}
 		default -> throw new IllegalArgumentException("Invalid mesh ID: " + meshId);
 		};
 	}

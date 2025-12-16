@@ -39,6 +39,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockRenderManager;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemLayerRenderTypeGetter;
 import net.fabricmc.fabric.impl.renderer.RendererManager;
 
 /**
@@ -114,4 +115,10 @@ public interface Renderer {
 	 */
 	@ApiStatus.OverrideOnly
 	QuadEmitter getLayerRenderStateEmitter(ItemStackRenderState.LayerRenderState layer);
+
+	/**
+	 * @see FabricLayerRenderState#setRenderTypeGetter(ItemLayerRenderTypeGetter)
+	 */
+	@ApiStatus.OverrideOnly
+	void setLayerRenderTypeGetter(ItemStackRenderState.LayerRenderState layer, ItemLayerRenderTypeGetter renderTypeGetter);
 }
