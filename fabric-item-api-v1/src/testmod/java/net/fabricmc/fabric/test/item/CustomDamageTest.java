@@ -86,7 +86,7 @@ public class CustomDamageTest implements ModInitializer {
 		}
 
 		@Override
-		public ItemStack getRecipeRemainder(ItemStack stack) {
+		public ItemStack getCraftingRemainder(ItemStack stack) {
 			if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 				ItemStack moreDamaged = stack.copy();
 				moreDamaged.setCount(1);
