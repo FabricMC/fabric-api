@@ -34,12 +34,12 @@ public record TagAliasGroup<T>(List<TagKey<T>> tags) {
 	/**
 	 * Creates a codec for tag alias groups in the specified registry.
 	 *
-	 * @param registryKey the key of the registry where the tags are from
+	 * @param resourceKey the key of the registry where the tags are from
 	 * @param <T>         the entry type
 	 * @return the codec
 	 */
-	public static <T> Codec<TagAliasGroup<T>> codec(ResourceKey<? extends Registry<T>> registryKey) {
-		return TagKey.codec(registryKey)
+	public static <T> Codec<TagAliasGroup<T>> codec(ResourceKey<? extends Registry<T>> resourceKey) {
+		return TagKey.codec(resourceKey)
 				.listOf()
 				.fieldOf("tags")
 				.xmap(TagAliasGroup::new, TagAliasGroup::tags)

@@ -70,7 +70,7 @@ public final class ClientTags {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(entry);
 
-		return ClientTagsImpl.getRegistryEntry(tagKey, entry).map(re -> isInWithLocalFallback(tagKey, re)).orElse(false);
+		return ClientTagsImpl.getHolder(tagKey, entry).map(re -> isInWithLocalFallback(tagKey, re)).orElse(false);
 	}
 
 	/**
@@ -82,30 +82,30 @@ public final class ClientTags {
 	 * synced tags and entries contained within.
 	 *
 	 * @param tagKey        the {@code TagKey} to be checked
-	 * @param registryEntry the entry to check
+	 * @param holder the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> registryEntry) {
+	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> holder) {
 		Objects.requireNonNull(tagKey);
-		Objects.requireNonNull(registryEntry);
-		return ClientTagsImpl.isInWithLocalFallback(tagKey, registryEntry);
+		Objects.requireNonNull(holder);
+		return ClientTagsImpl.isInWithLocalFallback(tagKey, holder);
 	}
 
 	/**
 	 * Checks if an entry is in a tag provided by the available mods.
 	 *
 	 * @param tagKey      the {@code TagKey} to being checked
-	 * @param registryKey the entry to check
+	 * @param resourceKey the entry to check
 	 * @return if the entry is in the given tag
 	 */
-	public static <T> boolean isInLocal(TagKey<T> tagKey, ResourceKey<T> registryKey) {
+	public static <T> boolean isInLocal(TagKey<T> tagKey, ResourceKey<T> resourceKey) {
 		Objects.requireNonNull(tagKey);
-		Objects.requireNonNull(registryKey);
+		Objects.requireNonNull(resourceKey);
 
-		if (tagKey.registry().identifier().equals(registryKey.registry())) {
+		if (tagKey.registry().identifier().equals(resourceKey.registry())) {
 			// Check local tags
 			Set<Identifier> ids = getOrCreateLocalTag(tagKey);
-			return ids.contains(registryKey.identifier());
+			return ids.contains(resourceKey.identifier());
 		}
 
 		return false;
