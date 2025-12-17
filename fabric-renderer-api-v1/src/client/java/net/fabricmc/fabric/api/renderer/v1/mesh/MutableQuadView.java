@@ -318,9 +318,9 @@ public interface MutableQuadView extends QuadView {
 	 * Controls whether vertex colors should be modified for ambient occlusion.
 	 *
 	 * <p>If set to {@link TriState#DEFAULT}, ambient occlusion will be used if the block state has
-	 * {@linkplain BlockState#getLightEmission()}  a luminance} of 0. Set to {@link TriState#TRUE} or {@link TriState#FALSE}
+	 * {@linkplain BlockState#getLightEmission() a luminance} of 0. Set to {@link TriState#TRUE} or {@link TriState#FALSE}
 	 * to override this behavior. {@link TriState#TRUE} will not have an effect if
-	 * {@linkplain Minecraft#useAmbientOcclusion()}  ambient occlusion is disabled globally}.
+	 * {@linkplain Minecraft#useAmbientOcclusion() ambient occlusion is disabled globally}.
 	 *
 	 * <p>The default value is {@link TriState#DEFAULT}.
 	 *
@@ -332,7 +332,7 @@ public interface MutableQuadView extends QuadView {
 	 * Controls how glint should be applied.
 	 *
 	 * <p>If set to {@code null}, glint will be applied in item contexts based on
-	 * {@linkplain ItemStackRenderState.LayerRenderState#setFoilType(ItemStackRenderState.FoilType)}  the glint type of the layer}. Set
+	 * {@linkplain ItemStackRenderState.LayerRenderState#setFoilType(ItemStackRenderState.FoilType) the glint type of the layer}. Set
 	 * to another value to override this behavior.
 	 *
 	 * <p>The default value is {@code null}.
