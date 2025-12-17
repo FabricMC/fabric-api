@@ -21,10 +21,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
-
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +37,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 

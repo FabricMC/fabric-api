@@ -34,7 +34,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/world/MenuProvider": ["net/fabricmc/fabric/api/menu/v1/FabricScreenHandlerFactory"]
+      "net/minecraft/world/MenuProvider": ["net/fabricmc/fabric/api/menu/v1/FabricMenuFactory"]
     }
   }
 }

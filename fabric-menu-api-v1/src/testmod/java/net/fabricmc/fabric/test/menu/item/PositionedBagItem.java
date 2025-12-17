@@ -18,8 +18,6 @@ package net.fabricmc.fabric.test.menu.item;
 
 import java.util.Optional;
 
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
 import net.fabricmc.fabric.test.menu.menu.PositionedBagMenu;
 
 public class PositionedBagItem extends BagItem {

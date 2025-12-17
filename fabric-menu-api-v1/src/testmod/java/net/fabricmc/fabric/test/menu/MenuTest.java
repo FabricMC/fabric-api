@@ -32,8 +32,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.test.menu.block.BoxBlock;
 import net.fabricmc.fabric.test.menu.block.BoxBlockEntity;
 import net.fabricmc.fabric.test.menu.item.BagItem;
