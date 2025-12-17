@@ -31,14 +31,14 @@ public interface FabricItemStack {
 	/**
 	 * Return a leftover item for use in recipes.
 	 *
-	 * <p>See {@link FabricItem#getRecipeRemainder(ItemStack)} for a more in depth description.
+	 * <p>See {@link FabricItem#getCraftingRemainder(ItemStack)} for a more in depth description.
 	 *
 	 * <p>Stack-aware version of {@link Item#getCraftingRemainder()}.
 	 *
 	 * @return the leftover item
 	 */
-	default ItemStack getRecipeRemainder() {
-		return ((ItemStack) this).getItem().getRecipeRemainder((ItemStack) this);
+	default ItemStack getCraftingRemainder() {
+		return ((ItemStack) this).getItem().getCraftingRemainder((ItemStack) this);
 	}
 
 	/**

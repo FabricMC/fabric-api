@@ -70,7 +70,7 @@
  *         <td>Consistency of tests</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.Options#cloudStatus()}  Cloud render mode}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#cloudStatus() Cloud render mode}</td>
  *         <td>{@link net.minecraft.client.CloudStatus#OFF OFF}</td>
  *         <td>{@link net.minecraft.client.CloudStatus#FANCY FANCY}</td>
  *         <td>Consistency of tests</td>
@@ -82,14 +82,14 @@
  *         <td>Would cause the game test runner to have to click through the onboard accessibility prompt</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.Options#renderDistance()}  View distance}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#renderDistance() View distance}</td>
  *         <td>{@code 5}</td>
  *         <td>{@code 10}</td>
  *         <td>Speeds up loading of chunks, especially for functions such as
  *         {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext#waitForChunksRender() TestClientWorldContext.waitForChunksRender()}</td>
  *     </tr>
  *     <tr>
- *         <td>{@linkplain net.minecraft.client.Options#getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource)}  Music volume}</td>
+ *         <td>{@linkplain net.minecraft.client.Options#getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource) Music volume}</td>
  *         <td>{@code 0.0}</td>
  *         <td>{@code 1.0}</td>
  *         <td>The game music is annoying while running gametests</td>

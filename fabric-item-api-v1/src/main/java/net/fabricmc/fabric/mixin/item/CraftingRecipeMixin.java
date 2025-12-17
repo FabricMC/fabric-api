@@ -26,20 +26,20 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
-import net.fabricmc.fabric.impl.item.RecipeRemainderHandler;
+import net.fabricmc.fabric.impl.item.CraftingRemainderHandler;
 
 @Mixin(CraftingRecipe.class)
 public interface CraftingRecipeMixin {
 	@WrapOperation(method = "defaultCraftingReminder", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getItem()Lnet/minecraft/world/item/Item;"))
 	private static Item captureStack(ItemStack stack, Operation<Item> operation) {
-		RecipeRemainderHandler.REMAINDER_STACK.set(stack.getRecipeRemainder());
+		CraftingRemainderHandler.REMAINDER_STACK.set(stack.getCraftingRemainder());
 		return operation.call(stack);
 	}
 
 	@Redirect(method = "defaultCraftingReminder", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;getCraftingRemainder()Lnet/minecraft/world/item/ItemStack;"))
 	private static ItemStack getStackRemainder(Item item) {
-		ItemStack remainder = RecipeRemainderHandler.REMAINDER_STACK.get();
-		RecipeRemainderHandler.REMAINDER_STACK.remove();
+		ItemStack remainder = CraftingRemainderHandler.REMAINDER_STACK.get();
+		CraftingRemainderHandler.REMAINDER_STACK.remove();
 		return remainder;
 	}
 }

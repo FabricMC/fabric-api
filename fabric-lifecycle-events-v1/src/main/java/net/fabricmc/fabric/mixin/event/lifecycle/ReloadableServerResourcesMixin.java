@@ -38,15 +38,15 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 @Mixin(ReloadableServerResources.class)
 public class ReloadableServerResourcesMixin {
 	@Unique
-	private RegistryAccess dynamicRegistryManager;
+	private RegistryAccess layeredRegistries;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(LayeredRegistryAccess<RegistryLayer> combinedDynamicRegistries, HolderLookup.Provider registries, FeatureFlagSet enabledFeatures, Commands.CommandSelection environment, List pendingTagLoads, PermissionSet permissionPredicate, CallbackInfo ci) {
-		dynamicRegistryManager = combinedDynamicRegistries.compositeAccess();
+	private void init(LayeredRegistryAccess<RegistryLayer> layeredRegistries, HolderLookup.Provider registries, FeatureFlagSet enabledFeatures, Commands.CommandSelection environment, List pendingTagLoads, PermissionSet permissionPredicate, CallbackInfo ci) {
+		this.layeredRegistries = layeredRegistries.compositeAccess();
 	}
 
 	@Inject(method = "updateStaticRegistryTags", at = @At("TAIL"))
 	private void hookRefresh(CallbackInfo ci) {
-		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(dynamicRegistryManager, false);
+		CommonLifecycleEvents.TAGS_LOADED.invoker().onTagsLoaded(layeredRegistries, false);
 	}
 }

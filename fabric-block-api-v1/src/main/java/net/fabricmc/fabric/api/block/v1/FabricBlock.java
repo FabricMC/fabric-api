@@ -59,10 +59,10 @@ public interface FabricBlock {
 	 * The block entity should override {@code RenderDataBlockEntity#getBlockEntityRenderData} to return
 	 * the necessary data. Refer to the documentation of {@code RenderDataBlockEntity} for more information.
 	 * <pre>{@code @Override
-	 * public BlockState getAppearance(BlockState state, BlockRenderView renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
-	 *     if (renderView instanceof ServerWorld serverWorld) {
+	 * public BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+	 *     if (blockAndTintGetter instanceof ServerLevel serverLevel) {
 	 *         // Server side; ok to use block entity directly!
-	 *         BlockEntity blockEntity = serverWorld.getBlockEntity(pos);
+	 *         BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
 	 *
 	 *         if (blockEntity instanceof ...) {
 	 *             // Get data from block entity
@@ -70,7 +70,7 @@ public interface FabricBlock {
 	 *         }
 	 *     } else {
 	 *         // Client side; need to use the block entity render data!
-	 *         Object data = renderView.getBlockEntityRenderData(pos);
+	 *         Object data = blockAndTintGetter.getBlockEntityRenderData(pos);
 	 *
 	 *         // Check if data is not null and of the correct type, and use that to determine the appearance
 	 *         if (data instanceof ...) {
@@ -90,15 +90,15 @@ public interface FabricBlock {
 	 * });
 	 * }</pre>
 	 *
-	 * @param state       state of this block, whose appearance is being queried
-	 * @param renderView  the world this block is in
-	 * @param pos         position of this block, whose appearance is being queried
-	 * @param side        the side for which the appearance is being queried
-	 * @param sourceState (optional) state of the block that is querying the appearance, or null if unknown
-	 * @param sourcePos   (optional) position of the block that is querying the appearance, or null if unknown
+	 * @param state       			state of this block, whose appearance is being queried
+	 * @param blockAndTintGetter  	the level this block is in
+	 * @param pos			        position of this block, whose appearance is being queried
+	 * @param side       			the side for which the appearance is being queried
+	 * @param sourceState 			(optional) state of the block that is querying the appearance, or null if unknown
+	 * @param sourcePos   			(optional) position of the block that is querying the appearance, or null if unknown
 	 * @return the appearance of the block on the given side; the original {@code state} can be returned if there is no better option
 	 */
-	default BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+	default BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		return state;
 	}
 }

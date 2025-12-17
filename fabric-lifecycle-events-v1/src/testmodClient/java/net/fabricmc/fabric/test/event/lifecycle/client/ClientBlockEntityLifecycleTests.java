@@ -41,7 +41,7 @@ public final class ClientBlockEntityLifecycleTests implements ClientModInitializ
 	public void onInitializeClient() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
+		ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, level) -> {
 			this.clientBlockEntities.add(blockEntity);
 
 			if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {
@@ -49,7 +49,7 @@ public final class ClientBlockEntityLifecycleTests implements ClientModInitializ
 			}
 		});
 
-		ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
+		ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, level) -> {
 			this.clientBlockEntities.remove(blockEntity);
 
 			if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {

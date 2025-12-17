@@ -27,11 +27,11 @@ public final class ServerResourceReloadTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((server, serverResourceManager) -> {
+		ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((server, resourceManager) -> {
 			LOGGER.info("PREPARING FOR RELOAD");
 		});
 
-		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
+		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
 			if (success) {
 				LOGGER.info("FINISHED RELOAD on {}", Thread.currentThread());
 			} else {

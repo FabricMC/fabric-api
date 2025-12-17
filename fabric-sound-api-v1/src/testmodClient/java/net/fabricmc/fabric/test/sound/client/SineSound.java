@@ -35,7 +35,7 @@ class SineSound extends AbstractSoundInstance {
 	}
 
 	@Override
-	public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary loader, Identifier id, boolean repeatInstantly) {
+	public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
 		return CompletableFuture.completedFuture(new SineStream());
 	}
 }

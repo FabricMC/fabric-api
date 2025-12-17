@@ -100,7 +100,7 @@ public final class EntitySleepEvents {
 	 * If {@code false}, the player wakes up.
 	 *
 	 * <p>This event is only checked <i>during</i> sleeping, so an entity can
-	 * {@linkplain LivingEntity#startSleeping(BlockPos)}  start sleeping} on any block, but will immediately
+	 * {@linkplain LivingEntity#startSleeping(BlockPos) start sleeping} on any block, but will immediately
 	 * wake up if this check fails.
 	 *
 	 * @see LivingEntity#checkBedExists()
@@ -230,7 +230,7 @@ public final class EntitySleepEvents {
 		 * Called when an entity starts to sleep.
 		 *
 		 * @param entity      the sleeping entity
-		 * @param sleepingPos the {@linkplain LivingEntity#getSleepingPos()}  sleeping position} of the entity
+		 * @param sleepingPos the {@linkplain LivingEntity#getSleepingPos() sleeping position} of the entity
 		 */
 		void onStartSleeping(LivingEntity entity, BlockPos sleepingPos);
 	}
