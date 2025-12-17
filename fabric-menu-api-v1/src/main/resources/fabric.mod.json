@@ -5,7 +5,7 @@
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-screen-handler-api-v1/icon.png",
+  "icon": "assets/fabric-menu-api-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -21,20 +21,20 @@
     "fabric-networking-api-v1": "*"
   },
   "entrypoints": {
-    "main": ["net.fabricmc.fabric.impl.screenhandler.Networking"],
+    "main": ["net.fabricmc.fabric.impl.menu.Networking"],
     "client": [
       "net.fabricmc.fabric.impl.menu.client.ClientNetworking"
     ]
   },
   "description": "Hooks and extensions for creating screen handlers.",
   "mixins": [
-    "fabric-screen-handler-api-v1.mixins.json"
+    "fabric-menu-api-v1.mixins.json"
   ],
-  "accessWidener": "fabric-screen-handler-api-v1.accesswidener",
+  "accessWidener": "fabric-menu-api-v1.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/world/MenuProvider": ["net/fabricmc/fabric/api/screenhandler/v1/FabricScreenHandlerFactory"]
+      "net/minecraft/world/MenuProvider": ["net/fabricmc/fabric/api/menu/v1/FabricScreenHandlerFactory"]
     }
   }
 }

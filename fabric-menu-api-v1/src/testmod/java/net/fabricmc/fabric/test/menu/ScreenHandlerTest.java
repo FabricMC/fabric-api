@@ -43,7 +43,7 @@ import net.fabricmc.fabric.test.menu.screen.BoxScreenHandler;
 import net.fabricmc.fabric.test.menu.screen.PositionedBagScreenHandler;
 
 public class ScreenHandlerTest implements ModInitializer {
-	public static final String ID = "fabric-screen-handler-api-v1-testmod";
+	public static final String ID = "fabric-menu-api-v1-testmod";
 
 	public static final ResourceKey<Item> BAG_KEY = ResourceKey.create(Registries.ITEM, id("bag"));
 	public static final Item BAG = new BagItem(new Item.Properties().stacksTo(1).setId(BAG_KEY));

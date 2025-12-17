@@ -43,14 +43,14 @@ import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
 
 public final class Networking implements ModInitializer {
-	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-screen-handler-api-v1/server");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-menu-api-v1/server");
 
 	// [Packet format]
 	// typeId: identifier
 	// syncId: varInt
 	// title: text
 	// customData: buf
-	public static final Identifier OPEN_ID = Identifier.fromNamespaceAndPath("fabric-screen-handler-api-v1", "open_screen");
+	public static final Identifier OPEN_ID = Identifier.fromNamespaceAndPath("fabric-menu-api-v1", "open_screen");
 	public static final Map<Identifier, StreamCodec<? super RegistryFriendlyByteBuf, ?>> CODEC_BY_ID = new HashMap<>();
 
 	/**

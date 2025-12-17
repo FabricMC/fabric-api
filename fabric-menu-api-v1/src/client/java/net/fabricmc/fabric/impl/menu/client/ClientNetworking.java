@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.impl.menu.Networking;
 
 public final class ClientNetworking implements ClientModInitializer {
-	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-screen-handler-api-v1/client");
+	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-menu-api-v1/client");
 
 	@Override
 	public void onInitializeClient() {
