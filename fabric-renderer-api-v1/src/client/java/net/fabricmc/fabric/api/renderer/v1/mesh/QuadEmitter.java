@@ -142,6 +142,9 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter shadeMode(ShadeMode mode);
 
 	@Override
+	QuadEmitter atlas(QuadAtlas quadAtlas);
+
+	@Override
 	QuadEmitter tintIndex(int tintIndex);
 
 	@Override
@@ -149,9 +152,6 @@ public interface QuadEmitter extends MutableQuadView {
 
 	@Override
 	QuadEmitter copyFrom(QuadView quad);
-
-	@Override
-	QuadEmitter fromVanilla(int[] vertexData, int startIndex);
 
 	@Override
 	QuadEmitter fromBakedQuad(BakedQuad quad);

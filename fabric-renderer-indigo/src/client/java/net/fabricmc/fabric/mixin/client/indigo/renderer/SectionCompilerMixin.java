@@ -71,7 +71,11 @@ abstract class SectionCompilerMixin {
 	private BlockRenderDispatcher blockRenderer;
 
 	@Shadow
-	abstract BufferBuilder getOrBeginLayer(Map<ChunkSectionLayer, BufferBuilder> builders, SectionBufferBuilderPack allocatorStorage, ChunkSectionLayer layer);
+	protected abstract BufferBuilder getOrBeginLayer(
+			Map<ChunkSectionLayer, BufferBuilder> builders,
+			SectionBufferBuilderPack allocatorStorage,
+			ChunkSectionLayer layer
+	);
 
 	@Inject(method = "compile",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;betweenClosed(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;)Ljava/lang/Iterable;"))

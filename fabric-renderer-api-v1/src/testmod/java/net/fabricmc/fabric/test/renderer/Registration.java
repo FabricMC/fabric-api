@@ -42,6 +42,8 @@ public final class Registration {
 	public static final BlockItem PILLAR_ITEM = registerItem("pillar", settings -> new BlockItem(PILLAR_BLOCK, settings));
 	public static final BlockItem OCTAGONAL_COLUMN_ITEM = registerItem("octagonal_column", settings -> new BlockItem(OCTAGONAL_COLUMN_BLOCK, settings));
 	public static final BlockItem RIVERSTONE_ITEM = registerItem("riverstone", settings -> new BlockItem(RIVERSTONE_BLOCK, settings));
+	public static final BlockItem CHORUS_END_STONE = registerItem("chorus_end_stone", settings -> new BlockItem(Blocks.END_STONE, settings));
+	public static final BlockItem CHORUS_GLASS = registerItem("chorus_glass", settings -> new BlockItem(Blocks.GLASS, settings));
 
 	public static final BlockEntityType<FrameBlockEntity> FRAME_BLOCK_ENTITY_TYPE = register("frame", FabricBlockEntityTypeBuilder.create(FrameBlockEntity::new, FRAME_BLOCK).build());
 

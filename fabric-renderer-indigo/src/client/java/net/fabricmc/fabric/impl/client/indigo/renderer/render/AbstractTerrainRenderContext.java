@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
@@ -90,7 +91,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 			}
 
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, net.minecraft.util.ARGB.multiply(quad.color(i), tint));
+				quad.color(i, ARGB.multiply(quad.color(i), tint));
 			}
 		}
 	}
@@ -102,12 +103,12 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 			if (emissive) {
 				for (int i = 0; i < 4; i++) {
-					quad.color(i, net.minecraft.util.ARGB.scaleRGB(quad.color(i), aoCalc.ao[i]));
+					quad.color(i, ARGB.scaleRGB(quad.color(i), aoCalc.ao[i]));
 					quad.lightmap(i, LightTexture.FULL_BRIGHT);
 				}
 			} else {
 				for (int i = 0; i < 4; i++) {
-					quad.color(i, net.minecraft.util.ARGB.scaleRGB(quad.color(i), aoCalc.ao[i]));
+					quad.color(i, ARGB.scaleRGB(quad.color(i), aoCalc.ao[i]));
 					quad.lightmap(i, ColorHelper.maxLight(quad.lightmap(i), aoCalc.light[i]));
 				}
 			}
@@ -140,7 +141,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 			if (quad.hasAllVertexNormals()) {
 				for (int i = 0; i < 4; i++) {
 					float shade = normalShade(quad.normalX(i), quad.normalY(i), quad.normalZ(i), hasShade);
-					quad.color(i, net.minecraft.util.ARGB.scaleRGB(quad.color(i), shade));
+					quad.color(i, ARGB.scaleRGB(quad.color(i), shade));
 				}
 			} else {
 				final float faceShade;
@@ -162,12 +163,12 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 							shade = faceShade;
 						}
 
-						quad.color(i, net.minecraft.util.ARGB.scaleRGB(quad.color(i), shade));
+						quad.color(i, ARGB.scaleRGB(quad.color(i), shade));
 					}
 				} else {
 					if (faceShade != 1.0f) {
 						for (int i = 0; i < 4; i++) {
-							quad.color(i, net.minecraft.util.ARGB.scaleRGB(quad.color(i), faceShade));
+							quad.color(i, ARGB.scaleRGB(quad.color(i), faceShade));
 						}
 					}
 				}
@@ -177,7 +178,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 			if (faceShade != 1.0f) {
 				for (int i = 0; i < 4; i++) {
-					quad.color(i, net.minecraft.util.ARGB.scaleRGB(quad.color(i), faceShade));
+					quad.color(i, ARGB.scaleRGB(quad.color(i), faceShade));
 				}
 			}
 		}

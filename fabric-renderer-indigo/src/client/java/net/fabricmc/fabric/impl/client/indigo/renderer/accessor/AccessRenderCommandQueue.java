@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.accessor;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -26,7 +27,20 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 
 public interface AccessRenderCommandQueue {
-	void fabric_submitItem(PoseStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColors, int[] tintLayers, List<BakedQuad> quads, RenderType renderLayer, ItemStackRenderState.FoilType glintType, MeshView mesh);
+	void fabric_submitItem(
+			PoseStack matrices,
+			ItemDisplayContext displayContext,
+			int light,
+			int overlay,
+			int outlineColors,
+			int[] tintLayers,
+			List<BakedQuad> quads,
+			RenderType renderLayer,
+			ItemStackRenderState.FoilType glintType,
+			MeshView mesh,
+			@Nullable ItemRenderTypeGetter renderTypeGetter
+	);
 }

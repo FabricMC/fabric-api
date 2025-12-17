@@ -18,14 +18,12 @@ package net.fabricmc.fabric.impl.client.indigo.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,6 +33,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
@@ -76,12 +75,19 @@ public class IndigoRenderer implements Renderer {
 			float green = (tint >> 8 & 255) / 255.0F;
 			float blue = (tint & 255) / 255.0F;
 			FabricBlockModelRenderer.render(matrices.last(), RenderLayerHelper.entityDelegate(vertexConsumers), model, red, green, blue, light, overlay, blockView, pos, state);
-			((BlockRenderDispatcherAccessor) renderManager).getBlockEntityModelsGetter().get().renderByBlock(state.getBlock(), ItemDisplayContext.NONE, matrices, Minecraft.getInstance().gameRenderer.getSubmitNodeStorage(), light, overlay, 0);
 		}
 	}
 
 	@Override
 	public QuadEmitter getLayerRenderStateEmitter(ItemStackRenderState.LayerRenderState layer) {
 		return ((AccessLayerRenderState) layer).fabric_getMutableMesh().emitter();
+	}
+
+	@Override
+	public void setLayerRenderTypeGetter(
+			ItemStackRenderState.LayerRenderState layer,
+			ItemRenderTypeGetter renderTypeGetter
+	) {
+		((AccessLayerRenderState) layer).fabric_setRenderTypeGetter(renderTypeGetter);
 	}
 }

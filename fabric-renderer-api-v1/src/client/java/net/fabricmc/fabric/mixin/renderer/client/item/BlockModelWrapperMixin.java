@@ -27,14 +27,21 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.world.entity.ItemOwner;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.impl.renderer.BasicItemModelExtension;
 
 @Mixin(BlockModelWrapper.class)
@@ -49,8 +56,34 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 	private Mesh mesh;
 
 	@Inject(method = "update", at = @At("RETURN"))
-	private void onReturnUpdate(CallbackInfo ci, @Local ItemStackRenderState.LayerRenderState layer) {
+	private void onReturnUpdate(final ItemStackRenderState output, final ItemStack item, final ItemModelResolver resolver, final ItemDisplayContext displayContext, final @Nullable ClientLevel level, final @Nullable ItemOwner owner, final int seed, CallbackInfo ci, @Local ItemStackRenderState.LayerRenderState layer) {
 		if (mesh != null) {
+			// This logic matches that of ITEM_RENDER_TYPE_GETTER and BLOCK_RENDER_TYPE_GETTER
+			ChunkSectionLayer defaultSectionLayer;
+
+			if (item.getItem() instanceof BlockItem blockItem) {
+				defaultSectionLayer = ItemBlockRenderTypes.getChunkRenderType(blockItem.getBlock().defaultBlockState());
+			} else {
+				defaultSectionLayer = ChunkSectionLayer.TRANSLUCENT;
+			}
+
+			layer.setRenderTypeGetter((quadAtlas, sectionLayer) -> {
+				return switch (quadAtlas) {
+				case BLOCK -> {
+					if (sectionLayer == null) {
+						sectionLayer = defaultSectionLayer;
+					}
+
+					if (sectionLayer != ChunkSectionLayer.TRANSLUCENT) {
+						yield Sheets.cutoutBlockSheet();
+					}
+
+					yield Sheets.translucentBlockItemSheet();
+				}
+				case ITEM -> Sheets.translucentItemSheet();
+				};
+			});
+
 			mesh.outputTo(layer.emitter());
 		}
 	}
@@ -60,8 +93,6 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 		this.mesh = mesh;
 
 		if (!animated) {
-			SpriteFinder spriteFinder = spriteGetter.spriteFinder(TextureAtlas.LOCATION_BLOCKS);
-
 			mesh.forEach(quad -> {
 				if (animated) {
 					return;
@@ -69,7 +100,8 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 
 				ItemStackRenderState.FoilType glint = quad.glint();
 
-				if ((glint != null && glint != ItemStackRenderState.FoilType.NONE) || spriteFinder.find(quad).contents().isAnimated()) {
+				if ((glint != null && glint != ItemStackRenderState.FoilType.NONE)
+						|| spriteGetter.spriteFinder(quad.atlas().getTextureId()).find(quad).contents().isAnimated()) {
 					animated = true;
 				}
 			});

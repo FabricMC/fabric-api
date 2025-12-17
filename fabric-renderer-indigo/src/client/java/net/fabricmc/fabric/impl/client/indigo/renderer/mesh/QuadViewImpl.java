@@ -18,10 +18,8 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_FACE_NORMAL;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TINT_INDEX;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.QUAD_STRIDE;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_COLOR;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_LIGHTMAP;
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_NORMAL;
@@ -41,10 +39,10 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.Direction;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 
@@ -273,6 +271,11 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
+	public QuadAtlas atlas() {
+		return EncodingFormat.quadAtlas(data[baseIndex + HEADER_BITS]);
+	}
+
+	@Override
 	public final int tintIndex() {
 		return data[baseIndex + HEADER_TINT_INDEX];
 	}
@@ -280,17 +283,5 @@ public class QuadViewImpl implements QuadView {
 	@Override
 	public final int tag() {
 		return data[baseIndex + HEADER_TAG];
-	}
-
-	@Override
-	public final void toVanilla(int[] target, int startIndex) {
-		System.arraycopy(data, baseIndex + HEADER_STRIDE, target, startIndex, QUAD_STRIDE);
-
-		int colorIndex = startIndex + VERTEX_COLOR - HEADER_STRIDE;
-
-		for (int i = 0; i < 4; i++) {
-			target[colorIndex] = ColorHelper.toVanillaColor(target[colorIndex]);
-			colorIndex += VANILLA_VERTEX_STRIDE;
-		}
 	}
 }

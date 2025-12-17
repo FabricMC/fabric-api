@@ -18,7 +18,6 @@ package net.fabricmc.fabric.test.renderer.client;
 
 import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
@@ -45,7 +44,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 	public QuadCollection bake(TextureSlots textures, ModelBaker baker, ModelState settings, ModelDebugName model) {
 		MutableMesh builder = Renderer.get().mutableMesh();
 		QuadEmitter emitter = builder.emitter();
-		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.sprites().spriteFinder(TextureAtlas.LOCATION_BLOCKS)));
+		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.sprites()));
 
 		TextureAtlasSprite sprite = baker.sprites().get(textures.getMaterial("column"), model);
 

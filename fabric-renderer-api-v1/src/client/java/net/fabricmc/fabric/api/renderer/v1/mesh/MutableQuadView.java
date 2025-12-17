@@ -23,16 +23,17 @@ import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.renderer.QuadSpriteBaker;
 
@@ -181,12 +182,19 @@ public interface MutableQuadView extends QuadView {
 	}
 
 	/**
-	 * Sets the texture coordinates for all vertices using the given sprite. Can handle UV locking, rotation,
-	 * interpolation, etc. Control this behavior by passing additive combinations of the BAKE_ flags defined in this
-	 * interface.
+	 * Sets the texture coordinates for all vertices using the given sprite. Also sets this quad's atlas to the given
+	 * sprite's atlas. Can handle UV locking, rotation, interpolation, etc. Control this behavior by passing additive
+	 * combinations of the BAKE_ flags defined in this interface.
 	 */
 	default MutableQuadView spriteBake(TextureAtlasSprite sprite, int bakeFlags) {
 		QuadSpriteBaker.bakeSprite(this, sprite, bakeFlags);
+		QuadAtlas atlas = QuadAtlas.of(sprite.atlasLocation());
+
+		if (atlas == null) {
+			atlas = QuadAtlas.BLOCK;
+		}
+
+		atlas(atlas);
 		return this;
 	}
 
@@ -272,13 +280,11 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Controls how this quad's pixels should be blended with the scene.
 	 *
-	 * <p>If set to {@code null}, {@link RenderTypes#getBlockLayer(BlockState)} will be used to retrieve the render
-	 * layer in block contexts and
-	 * {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(RenderType)}  the render layer of the state layer}
-	 * will be used in item contexts. Set to another value to override this behavior.
+	 * <p>If set to {@code null}, {@link ItemBlockRenderTypes#getChunkRenderType(BlockState)} will be used to retrieve
+	 * the render layer in block contexts. Set to another value to override this behavior.
 	 *
-	 * <p>In block contexts, a non-null value will be used directly. In item contexts, a non-null value will be
-	 * converted to a {@link RenderType} using {@link RenderLayerHelper#getEntityBlockLayer(ChunkSectionLayer)}.
+	 * <p>In block contexts, a non-null value will be used directly. In item contexts, any value will be converted to a
+	 * {@link RenderType} using {@link FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)}.
 	 *
 	 * <p>The default value is {@code null}.
 	 */
@@ -349,6 +355,18 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView shadeMode(ShadeMode mode);
 
 	/**
+	 * Sets the {@linkplain QuadAtlas atlas texture} used by this quad.
+	 *
+	 * <p>In block contexts, this property must be {@link QuadAtlas#BLOCK}. In item contexts, this property will be
+	 * converted to a {@link RenderType} using {@link FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)}.
+	 *
+	 * <p>The default value is {@link QuadAtlas#BLOCK}.
+	 *
+	 * @see QuadAtlas
+	 */
+	MutableQuadView atlas(QuadAtlas quadAtlas);
+
+	/**
 	 * Sets the tint index, which is used to retrieve the tint color.
 	 *
 	 * <p>The default value is {@code -1}.
@@ -371,22 +389,8 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView copyFrom(QuadView quad);
 
 	/**
-	 * Sets this quad's vertex data for all vertices using data in given array, starting at the given index. The array
-	 * must have at least {@link #VANILLA_QUAD_STRIDE} elements starting at the given index. The format of the data must
-	 * be the same as {@link BakedQuad#vertices()}. This quad's lightmap values and normals will be set even though
-	 * vanilla does not decode them from packed vertex data.
-	 *
-	 * <p>Prefer using {@link #fromBakedQuad(BakedQuad)} instead if you have a {@link BakedQuad}.
-	 *
-	 * <p>Calling this method does not emit this quad.
-	 */
-	MutableQuadView fromVanilla(int[] vertexData, int startIndex);
-
-	/**
-	 * Sets all applicable data and properties of this quad as specified by the given {@link BakedQuad}. This quad's
-	 * lightmap values and normals will be set even though vanilla does not decode them from packed vertex data. The
-	 * {@linkplain BakedQuad#lightEmission() baked quad's light emission} will be applied to the lightmap values from
-	 * the vertex data after copying.
+	 * Sets all applicable data and properties of this quad as specified by the given {@link BakedQuad}. In addition,
+	 * this quad's vertex colors and vertex normals will be reset. This quad's existing lightmap values will be ignored.
 	 *
 	 * <p>Calling this method does not emit this quad.
 	 */

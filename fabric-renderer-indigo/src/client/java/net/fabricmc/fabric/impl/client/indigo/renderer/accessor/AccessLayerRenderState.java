@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.accessor;
 
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 
 public interface AccessLayerRenderState {
 	MutableMeshImpl fabric_getMutableMesh();
+
+	void fabric_setRenderTypeGetter(ItemRenderTypeGetter renderTypeGetter);
 }
