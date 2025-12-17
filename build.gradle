@@ -673,18 +673,18 @@ publishMods {
 	modLoaders.add("fabric")
 	dryRun = providers.environmentVariable("CURSEFORGE_API_KEY").getOrNull() == null
 
-	/*
-	 curseforge {
-	 accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
-	 projectId = "306612"
-	 minecraftVersions.add(project.curseforge_minecraft_version)
-	 }
-	 modrinth {
-	 accessToken = providers.environmentVariable("MODRINTH_TOKEN")
-	 projectId = "P7dR8mSH"
-	 minecraftVersions.add(project.minecraft_version)
-	 }
-	 */
+	curseforge {
+		accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+		projectId = "306612"
+		minecraftVersions.add(project.curseforge_minecraft_version)
+	}
+
+	modrinth {
+		accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+		projectId = "P7dR8mSH"
+		minecraftVersions.add(project.minecraft_version)
+	}
+
 	github {
 		accessToken = providers.environmentVariable("GITHUB_TOKEN")
 		repository = providers.environmentVariable("GITHUB_REPOSITORY").getOrElse("FabricMC/dryrun")
