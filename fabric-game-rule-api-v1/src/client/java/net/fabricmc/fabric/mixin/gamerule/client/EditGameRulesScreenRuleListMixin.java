@@ -58,7 +58,7 @@ public abstract class EditGameRulesScreenRuleListMixin extends AbstractSelection
 	}
 
 	// Synthetic method
-	@Inject(method = "lambda$new$0(Ljava/util/Map$Entry;)V", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "lambda$new$1(Ljava/util/Map$Entry;)V", at = @At("HEAD"), cancellable = true)
 	private void ignoreKeysWithCustomCategories(Map.Entry<GameRule<?>, EditGameRulesScreen.RuleEntry> entry, CallbackInfo ci) {
 		final GameRule<?> rule = entry.getKey();
 		CustomGameRuleCategory.getCategory(rule).ifPresent(category -> {

@@ -23,6 +23,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen;
@@ -40,22 +41,27 @@ import net.fabricmc.fabric.impl.gamerule.widget.EnumRuleWidget;
 public abstract class RuleListWidgetVisitorMixin implements GameRuleTypeVisitor, FabricGameRuleVisitor {
 	@Final
 	@Shadow
-	private EditGameRulesScreen val$this$0;
+	private EditGameRulesScreen.RuleList this$1;
 	@Shadow
 	protected abstract <T> void addEntry(GameRule<T> key, EditGameRulesScreen.EntryFactory<T> widgetFactory);
 
 	@Override
 	public void visitDouble(GameRule<Double> doubleRule) {
 		this.addEntry(doubleRule, (name, description, ruleName, rule) -> {
-			return new DoubleRuleWidget(this.val$this$0, name, description, ruleName, rule);
+			return new DoubleRuleWidget(getThis(), name, description, ruleName, rule);
 		});
 	}
 
 	@Override
 	public <E extends Enum<E>> void visitEnum(GameRule<E> enumRule) {
 		this.addEntry(enumRule, (name, description, ruleName, rule) -> {
-			return new EnumRuleWidget<>(this.val$this$0, name, description, ruleName, rule, enumRule.getDescriptionId());
+			return new EnumRuleWidget<>(getThis(), name, description, ruleName, rule, enumRule.getDescriptionId());
 		});
+	}
+
+	@Unique
+	EditGameRulesScreen getThis() {
+		return ((EditGameRulesScreenRuleListAccessor) this$1).getThis();
 	}
 
 	/**
