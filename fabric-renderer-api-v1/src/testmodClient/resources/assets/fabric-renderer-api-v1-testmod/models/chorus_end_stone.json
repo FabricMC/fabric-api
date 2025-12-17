@@ -1,9 +1,7 @@
 {
-  "fabric:type": "fabric-renderer-api-v1-testmod:builtin_mesh",
-  "parent": "item/generated",
+  "fabric:type": "fabric-renderer-api-v1-testmod:overlayed",
+  "parent": "block/end_stone",
   "textures": {
-    "layer0": "missingno"
-  },
-  "mesh": "item_with_block",
-  "item": "fabric-renderer-api-v1-testmod:chorus_end_stone"
+    "overlay": "item/chorus_fruit"
+  }
 }

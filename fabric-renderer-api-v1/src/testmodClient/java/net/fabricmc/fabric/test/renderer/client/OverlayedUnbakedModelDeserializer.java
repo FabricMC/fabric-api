@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer;
+package net.fabricmc.fabric.test.renderer.client;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.resources.model.UnbakedGeometry;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 
-public class ItemWithBlock extends BlockItem {
-	public static final Map<Identifier, ItemWithBlock> LOOKUP = new HashMap<>();
-	private final Item item;
+public class OverlayedUnbakedModelDeserializer extends SimpleUnbakedModelDeserializer {
+	@Override
+	protected @Nullable UnbakedGeometry getElements(JsonDeserializationContext context, JsonObject object) {
+		Identifier parentLocation = getParentLocation(object);
 
-	public ItemWithBlock(Properties properties, Item item, Block block) {
-		super(block, properties);
-		this.item = item;
-		LOOKUP.put(properties.effectiveModel(), this);
-	}
+		if (parentLocation == null) {
+			return null;
+		}
 
-	public Item getItem() {
-		return item;
+		return new OverlayedGeometry(parentLocation);
 	}
 }
