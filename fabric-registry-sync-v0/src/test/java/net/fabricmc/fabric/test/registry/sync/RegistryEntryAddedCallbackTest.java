@@ -64,7 +64,7 @@ public class RegistryEntryAddedCallbackTest {
 	@Test
 	void testEntryAddedCallback() {
 		ResourceKey<Registry<String>> testRegistryKey = ResourceKey.createRegistryKey(id(UUID.randomUUID().toString()));
-		MappedRegistry<String> testRegistry = FabricRegistryBuilder.createSimple(testRegistryKey)
+		MappedRegistry<String> testRegistry = FabricRegistryBuilder.create(testRegistryKey)
 				.buildAndRegister();
 
 		Registry.register(testRegistry, id("before"), "before");

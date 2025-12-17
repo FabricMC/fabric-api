@@ -30,8 +30,8 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
  * themselves.
  *
  * @see net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys
- * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(Identifier, PreparableReloadListener)}
- * and {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#addReloaderOrdering(Identifier, Identifier)} instead.
+ * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloadListener(Identifier, PreparableReloadListener)}
+ * and {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#addListenerOrdering(Identifier, Identifier)} instead.
  */
 @Deprecated
 public interface IdentifiableResourceReloadListener extends PreparableReloadListener {

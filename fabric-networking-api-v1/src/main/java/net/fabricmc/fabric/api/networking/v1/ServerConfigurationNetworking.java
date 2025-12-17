@@ -36,9 +36,9 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerI
 /**
  * Offers access to configuration stage server-side networking functionalities.
  *
- * <p>Server-side networking functionalities include receiving serverbound packets, sending clientbound packets, and events related to server-side network handlers.
- * Packets <strong>received</strong> by this class must be registered to {@link PayloadTypeRegistry#configurationC2S()} on both ends.
- * Packets <strong>sent</strong> by this class must be registered to {@link PayloadTypeRegistry#configurationS2C()} on both ends.
+ * <p>Server-side networking functionalities include receiving serverbound packets, sending clientbound packets, and events related to server-side packet listeners.
+ * Packets <strong>received</strong> by this class must be registered to {@link PayloadTypeRegistry#serverboundConfiguration()} on both ends.
+ * Packets <strong>sent</strong> by this class must be registered to {@link PayloadTypeRegistry#clientboundConfiguration()} on both ends.
  * Packets must be registered before registering any receivers.
  *
  * <p>This class should be only used for the logical server.
@@ -61,7 +61,7 @@ public final class ServerConfigurationNetworking {
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered to the channel
-	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#configurationC2S() registered} yet
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#serverboundConfiguration() registered} yet
 	 * @see ServerConfigurationNetworking#unregisterGlobalReceiver(Identifier)
 	 * @see ServerConfigurationNetworking#registerReceiver(ServerConfigurationPacketListenerImpl, CustomPacketPayload.Type, ConfigurationPacketHandler)
 	 */
@@ -103,15 +103,15 @@ public final class ServerConfigurationNetworking {
 	 * <p>If a handler is already registered for the {@code type}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregisterReceiver(ServerConfigurationPacketListenerImpl, Identifier)} to unregister the existing handler.
 	 *
-	 * @param networkHandler the network handler
+	 * @param packetListener the packet listener
 	 * @param type the packet type
 	 * @param handler the handler
 	 * @return {@code false} if a handler is already registered to the channel name
-	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#configurationC2S() registered} yet
+	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#serverboundConfiguration() registered} yet
 	 * @see ServerPlayConnectionEvents#INIT
 	 */
-	public static <T extends CustomPacketPayload> boolean registerReceiver(ServerConfigurationPacketListenerImpl networkHandler, CustomPacketPayload.Type<T> type, ConfigurationPacketHandler<T> handler) {
-		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(type.id(), handler);
+	public static <T extends CustomPacketPayload> boolean registerReceiver(ServerConfigurationPacketListenerImpl packetListener, CustomPacketPayload.Type<T> type, ConfigurationPacketHandler<T> handler) {
+		return ServerNetworkingImpl.getAddon(packetListener).registerChannel(type.id(), handler);
 	}
 
 	/**
@@ -123,60 +123,60 @@ public final class ServerConfigurationNetworking {
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel,
 	 * or it was not registered using {@link #registerReceiver(ServerConfigurationPacketListenerImpl, CustomPacketPayload.Type, ConfigurationPacketHandler)}
 	 */
-	public static ServerConfigurationNetworking.@Nullable ConfigurationPacketHandler<?> unregisterReceiver(ServerConfigurationPacketListenerImpl networkHandler, Identifier id) {
-		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(id);
+	public static ServerConfigurationNetworking.@Nullable ConfigurationPacketHandler<?> unregisterReceiver(ServerConfigurationPacketListenerImpl packetListener, Identifier id) {
+		return ServerNetworkingImpl.getAddon(packetListener).unregisterChannel(id);
 	}
 
 	/**
 	 * Gets all the channel names that the server can receive packets on.
 	 *
-	 * @param handler the network handler
+	 * @param listener the packet listener
 	 * @return All the channel names that the server can receive packets on
 	 */
-	public static Set<Identifier> getReceived(ServerConfigurationPacketListenerImpl handler) {
-		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
+	public static Set<Identifier> getReceived(ServerConfigurationPacketListenerImpl listener) {
+		Objects.requireNonNull(listener, "Server configuration packet listener cannot be null");
 
-		return ServerNetworkingImpl.getAddon(handler).getReceivableChannels();
+		return ServerNetworkingImpl.getAddon(listener).getReceivableChannels();
 	}
 
 	/**
 	 * Gets all channel names that a connected client declared the ability to receive a packets on.
 	 *
-	 * @param handler the network handler
+	 * @param listener the packet listener
 	 * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
 	 */
-	public static Set<Identifier> getSendable(ServerConfigurationPacketListenerImpl handler) {
-		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
+	public static Set<Identifier> getSendable(ServerConfigurationPacketListenerImpl listener) {
+		Objects.requireNonNull(listener, "Server configuration packet listener cannot be null");
 
-		return ServerNetworkingImpl.getAddon(handler).getSendableChannels();
+		return ServerNetworkingImpl.getAddon(listener).getSendableChannels();
 	}
 
 	/**
 	 * Checks if the connected client declared the ability to receive a packet on a specified channel name.
 	 *
-	 * @param handler the network handler
+	 * @param listener the packet listener
 	 * @param channelName the channel name
 	 * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
 	 */
-	public static boolean canSend(ServerConfigurationPacketListenerImpl handler, Identifier channelName) {
-		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
+	public static boolean canSend(ServerConfigurationPacketListenerImpl listener, Identifier channelName) {
+		Objects.requireNonNull(listener, "Server configuration packet listener cannot be null");
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
-		return ServerNetworkingImpl.getAddon(handler).getSendableChannels().contains(channelName);
+		return ServerNetworkingImpl.getAddon(listener).getSendableChannels().contains(channelName);
 	}
 
 	/**
 	 * Checks if the connected client declared the ability to receive a specific type of packet.
 	 *
-	 * @param handler the network handler
+	 * @param packetListener the packet listener
 	 * @param id the payload id
 	 * @return {@code true} if the connected client has declared the ability to receive a specific type of packet
 	 */
-	public static boolean canSend(ServerConfigurationPacketListenerImpl handler, CustomPacketPayload.Type<?> id) {
-		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
+	public static boolean canSend(ServerConfigurationPacketListenerImpl packetListener, CustomPacketPayload.Type<?> id) {
+		Objects.requireNonNull(packetListener, "Server configuration packet listener cannot be null");
 		Objects.requireNonNull(id, "Payload id cannot be null");
 
-		return ServerNetworkingImpl.getAddon(handler).getSendableChannels().contains(id.id());
+		return ServerNetworkingImpl.getAddon(packetListener).getSendableChannels().contains(id.id());
 	}
 
 	/**
@@ -185,64 +185,64 @@ public final class ServerConfigurationNetworking {
 	 * @param payload the payload
 	 * @return a new packet
 	 */
-	public static Packet<ClientCommonPacketListener> createS2CPacket(CustomPacketPayload payload) {
+	public static Packet<ClientCommonPacketListener> createClientboundPacket(CustomPacketPayload payload) {
 		Objects.requireNonNull(payload, "Payload cannot be null");
-		Objects.requireNonNull(payload.type(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
+		Objects.requireNonNull(payload.type(), "CustomPacketPayload#type() cannot return null for payload class: " + payload.getClass());
 
-		return ServerNetworkingImpl.createS2CPacket(payload);
+		return ServerNetworkingImpl.createClientboundPacket(payload);
 	}
 
 	/**
 	 * Gets the packet sender which sends packets to the connected client.
 	 *
-	 * @param handler the network handler, representing the connection to the player/client
+	 * @param listener the packet listener, representing the connection to the player/client
 	 * @return the packet sender
 	 */
-	public static PacketSender getSender(ServerConfigurationPacketListenerImpl handler) {
-		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
+	public static PacketSender getSender(ServerConfigurationPacketListenerImpl listener) {
+		Objects.requireNonNull(listener, "Server configuration packet listener cannot be null");
 
-		return ServerNetworkingImpl.getAddon(handler);
+		return ServerNetworkingImpl.getAddon(listener);
 	}
 
 	/**
 	 * Sends a packet to a configuring player.
 	 *
-	 * <p>Any packets sent must be {@linkplain PayloadTypeRegistry#configurationS2C() registered}.</p>
+	 * <p>Any packets sent must be {@linkplain PayloadTypeRegistry#clientboundConfiguration() registered}.</p>
 	 *
-	 * @param handler the network handler to send the packet to
+	 * @param listener the packet listener to send the packet to
 	 * @param payload to be sent
 	 */
-	public static void send(ServerConfigurationPacketListenerImpl handler, CustomPacketPayload payload) {
-		Objects.requireNonNull(handler, "Server configuration handler cannot be null");
+	public static void send(ServerConfigurationPacketListenerImpl listener, CustomPacketPayload payload) {
+		Objects.requireNonNull(listener, "Server configuration listener cannot be null");
 		Objects.requireNonNull(payload, "Payload cannot be null");
-		Objects.requireNonNull(payload.type(), "CustomPayload#getId() cannot return null for payload class: " + payload.getClass());
+		Objects.requireNonNull(payload.type(), "CustomPacketPayload#type() cannot return null for payload class: " + payload.getClass());
 
-		handler.send(createS2CPacket(payload));
+		listener.send(createClientboundPacket(payload));
 	}
 
 	// Helper methods
 
 	/**
-	 * Returns the <i>Minecraft</i> Server of a server configuration network handler.
+	 * Returns the <i>Minecraft</i> Server of a server configuration packet listener.
 	 *
-	 * @param handler the server configuration network handler
+	 * @param listener the server configuration packet listener
 	 */
-	public static MinecraftServer getServer(ServerConfigurationPacketListenerImpl handler) {
-		Objects.requireNonNull(handler, "Network handler cannot be null");
+	public static MinecraftServer getServer(ServerConfigurationPacketListenerImpl listener) {
+		Objects.requireNonNull(listener, "Packet listener cannot be null");
 
-		return ((ServerCommonPacketListenerImplAccessor) handler).getServer();
+		return ((ServerCommonPacketListenerImplAccessor) listener).getServer();
 	}
 
 	/**
 	 * Returns true if the client has previously completed configuration, and has re-entered the configuration phase.
 	 *
-	 * @param handler the server configuration network handler
+	 * @param listener the server configuration packet listener
 	 * @return {@code true} if the client is reconfiguring
 	 */
-	public static boolean isReconfiguring(ServerConfigurationPacketListenerImpl handler) {
-		Objects.requireNonNull(handler, "Server configuration network handler cannot be null");
+	public static boolean isReconfiguring(ServerConfigurationPacketListenerImpl listener) {
+		Objects.requireNonNull(listener, "Server configuration packet listener cannot be null");
 
-		return ServerNetworkingImpl.getAddon(handler).isReconfiguring();
+		return ServerNetworkingImpl.getAddon(listener).isReconfiguring();
 	}
 
 	private ServerConfigurationNetworking() {
@@ -284,9 +284,9 @@ public final class ServerConfigurationNetworking {
 		MinecraftServer server();
 
 		/**
-		 * @return The ServerConfigurationNetworkHandler instance
+		 * @return The ServerConfigurationPacketListenerImpl instance
 		 */
-		ServerConfigurationPacketListenerImpl networkHandler();
+		ServerConfigurationPacketListenerImpl packetListener();
 
 		/**
 		 * @return The packet sender

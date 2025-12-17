@@ -168,7 +168,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 				return;
 			}
 
-			throw new UnsupportedOperationException("Cannot add language entry for ItemGroup (%s) as the display name is not translatable.".formatted(group.getDisplayName().getString()));
+			throw new UnsupportedOperationException("Cannot add language entry for CreativeModeTab (%s) as the display name is not translatable.".formatted(group.getDisplayName().getString()));
 		}
 
 		/**

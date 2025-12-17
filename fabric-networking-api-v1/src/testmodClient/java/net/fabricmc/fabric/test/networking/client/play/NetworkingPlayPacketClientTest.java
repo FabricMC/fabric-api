@@ -38,9 +38,9 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 	@Override
 	public void onInitializeClient() {
 		// Register the payload only on the client.
-		PayloadTypeRegistry.playC2S().register(UnknownPayload.ID, UnknownPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(UnknownPayload.TYPE, UnknownPayload.CODEC);
 
-		ClientPlayConnectionEvents.INIT.register((handler, client) -> ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.ID, (payload, context) -> {
+		ClientPlayConnectionEvents.INIT.register((listener, client) -> ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.OverlayPacket.TYPE, (payload, context) -> {
 			Objects.requireNonNull(context);
 			Objects.requireNonNull(context.client());
 			Objects.requireNonNull(context.player());
@@ -58,12 +58,12 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 	}
 
 	private record UnknownPayload(String data) implements CustomPacketPayload {
-		private static final CustomPacketPayload.Type<UnknownPayload> ID = new Type<>(NetworkingTestmods.id("unknown_test_channel_c2s"));
+		private static final CustomPacketPayload.Type<UnknownPayload> TYPE = new Type<>(NetworkingTestmods.id("unknown_test_channel_c2s"));
 		private static final StreamCodec<FriendlyByteBuf, UnknownPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(UnknownPayload::new, UnknownPayload::data).cast();
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {
-			return ID;
+			return TYPE;
 		}
 	}
 }

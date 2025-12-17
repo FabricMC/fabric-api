@@ -98,7 +98,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	}
 
 	@Override
-	public SpawnSettingsContext getSpawnSettings() {
+	public MobSpawnSettingsContext getMobSpawnSettings() {
 		return spawnSettings;
 	}
 
@@ -183,17 +183,17 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void setFoliageColor(Optional<Integer> color) {
+		public void setFoliageColorOverride(Optional<Integer> color) {
 			effects.foliageColorOverride = Objects.requireNonNull(color);
 		}
 
 		@Override
-		public void setDryFoliageColor(Optional<Integer> color) {
+		public void setDryFoliageColorOverride(Optional<Integer> color) {
 			effects.dryFoliageColorOverride = Objects.requireNonNull(color);
 		}
 
 		@Override
-		public void setGrassColor(Optional<Integer> color) {
+		public void setGrassColorOverride(Optional<Integer> color) {
 			effects.grassColorOverride = Objects.requireNonNull(color);
 		}
 
@@ -311,8 +311,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public boolean removeCarver(ResourceKey<ConfiguredWorldCarver<?>> configuredCarverKey) {
-			ConfiguredWorldCarver<?> carver = getEntry(carvers, configuredCarverKey).value();
+		public boolean removeCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey) {
+			ConfiguredWorldCarver<?> carver = getEntry(carvers, carverKey).value();
 			List<Holder<ConfiguredWorldCarver<?>>> genCarvers = new ArrayList<>(generationSettings.carvers.stream().toList());
 
 			if (genCarvers.removeIf(entry -> entry.value() == carver)) {
@@ -348,7 +348,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		return entry;
 	}
 
-	private class SpawnSettingsContextImpl implements SpawnSettingsContext {
+	private class SpawnSettingsContextImpl implements MobSpawnSettingsContext {
 		private final MobSpawnSettings spawnSettings = biome.getMobSettings();
 		private final EnumMap<MobCategory, List<Weighted<MobSpawnSettings.SpawnerData>>> fabricSpawners = new EnumMap<>(MobCategory.class);
 
@@ -399,23 +399,23 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void setCreatureSpawnProbability(float probability) {
+		public void setCreatureGenerationProbability(float probability) {
 			spawnSettings.creatureGenerationProbability = probability;
 		}
 
 		@Override
-		public @UnmodifiableView List<Weighted<MobSpawnSettings.SpawnerData>> getSpawnEntries(MobCategory spawnGroup) {
-			Objects.requireNonNull(spawnGroup);
+		public @UnmodifiableView List<Weighted<MobSpawnSettings.SpawnerData>> getMobs(MobCategory category) {
+			Objects.requireNonNull(category);
 
-			return Collections.unmodifiableList(fabricSpawners.get(spawnGroup));
+			return Collections.unmodifiableList(fabricSpawners.get(category));
 		}
 
 		@Override
-		public void addSpawn(MobCategory spawnGroup, MobSpawnSettings.SpawnerData spawnEntry, int weight) {
-			Objects.requireNonNull(spawnGroup);
-			Objects.requireNonNull(spawnEntry);
+		public void addSpawn(MobCategory category, MobSpawnSettings.SpawnerData data, int weight) {
+			Objects.requireNonNull(category);
+			Objects.requireNonNull(data);
 
-			fabricSpawners.get(spawnGroup).add(new Weighted<>(spawnEntry, weight));
+			fabricSpawners.get(category).add(new Weighted<>(data, weight));
 		}
 
 		@Override
@@ -432,13 +432,13 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 
 		@Override
-		public void setSpawnCost(EntityType<?> entityType, double mass, double gravityLimit) {
+		public void addMobCharge(EntityType<?> entityType, double charge, double energyBudget) {
 			Objects.requireNonNull(entityType);
-			spawnSettings.mobSpawnCosts.put(entityType, new MobSpawnSettings.MobSpawnCost(gravityLimit, mass));
+			spawnSettings.mobSpawnCosts.put(entityType, new MobSpawnSettings.MobSpawnCost(energyBudget, charge));
 		}
 
 		@Override
-		public void clearSpawnCost(EntityType<?> entityType) {
+		public void clearMobCharge(EntityType<?> entityType) {
 			spawnSettings.mobSpawnCosts.remove(entityType);
 		}
 	}

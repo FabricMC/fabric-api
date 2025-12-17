@@ -33,7 +33,7 @@ public final class NetworkingKeybindPacketTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.playC2S().register(KeybindPayload.ID, KeybindPayload.CODEC);
-		ServerPlayConnectionEvents.INIT.register((handler, server) -> ServerPlayNetworking.registerReceiver(handler, KeybindPayload.ID, NetworkingKeybindPacketTest::receive));
+		PayloadTypeRegistry.serverboundPlay().register(KeybindPayload.TYPE, KeybindPayload.CODEC);
+		ServerPlayConnectionEvents.INIT.register((handler, server) -> ServerPlayNetworking.registerReceiver(handler, KeybindPayload.TYPE, NetworkingKeybindPacketTest::receive));
 	}
 }

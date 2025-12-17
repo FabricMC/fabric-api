@@ -53,7 +53,7 @@ import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
@@ -68,16 +68,16 @@ import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddo
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
 public class CommonPacketTests {
-	private static final CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CommonVersionPayload> VERSION_PAYLOAD_TYPE = new CustomPacketPayload.TypeAndCodec<>(CommonVersionPayload.ID, CommonVersionPayload.CODEC);
-	private static final CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CommonRegisterPayload> REGISTER_PAYLOAD_TYPE = new CustomPacketPayload.TypeAndCodec<>(CommonRegisterPayload.ID, CommonRegisterPayload.CODEC);
+	private static final CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CommonVersionPayload> VERSION_PAYLOAD_TYPE = new CustomPacketPayload.TypeAndCodec<>(CommonVersionPayload.TYPE, CommonVersionPayload.CODEC);
+	private static final CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, CommonRegisterPayload> REGISTER_PAYLOAD_TYPE = new CustomPacketPayload.TypeAndCodec<>(CommonRegisterPayload.TYPE, CommonRegisterPayload.CODEC);
 
 	private PacketSender packetSender;
 	private ChannelInfoHolder channelInfoHolder;
 
-	private ClientConfigurationPacketListenerImpl clientNetworkHandler;
+	private ClientConfigurationPacketListenerImpl clientPacketListener;
 	private ClientConfigurationNetworkAddon clientAddon;
 
-	private ServerConfigurationPacketListenerImpl serverNetworkHandler;
+	private ServerConfigurationPacketListenerImpl serverPacketListener;
 	private ServerConfigurationNetworkAddon serverAddon;
 
 	private ClientConfigurationNetworking.Context clientContext;
@@ -89,16 +89,16 @@ public class CommonPacketTests {
 		ClientNetworkingImpl.clientInit();
 
 		// Register the packet codec on both sides
-		PayloadTypeRegistry.playS2C().register(TestPayload.ID, TestPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(TestPayload.TYPE, TestPayload.CODEC);
 
 		// Listen for the payload on the client
-		ClientPlayNetworking.registerGlobalReceiver(TestPayload.ID, (payload, context) -> {
+		ClientPlayNetworking.registerGlobalReceiver(TestPayload.TYPE, (payload, context) -> {
 			System.out.println(payload.data());
 		});
 	}
 
 	private record TestPayload(String data) implements CustomPacketPayload {
-		static final CustomPacketPayload.Type<TestPayload> ID = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath("fabric", "global_client"));
+		static final CustomPacketPayload.Type<TestPayload> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath("fabric", "global_client"));
 		static final StreamCodec<RegistryFriendlyByteBuf, TestPayload> CODEC = CustomPacketPayload.codec(TestPayload::write, TestPayload::new);
 
 		TestPayload(RegistryFriendlyByteBuf buf) {
@@ -111,7 +111,7 @@ public class CommonPacketTests {
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {
-			return ID;
+			return TYPE;
 		}
 	}
 
@@ -120,14 +120,14 @@ public class CommonPacketTests {
 		packetSender = mock(PacketSender.class);
 		channelInfoHolder = new MockChannelInfoHolder();
 
-		clientNetworkHandler = mock(ClientConfigurationPacketListenerImpl.class);
+		clientPacketListener = mock(ClientConfigurationPacketListenerImpl.class);
 		clientAddon = mock(ClientConfigurationNetworkAddon.class);
-		when(ClientNetworkingImpl.getAddon(clientNetworkHandler)).thenReturn(clientAddon);
+		when(ClientNetworkingImpl.getAddon(clientPacketListener)).thenReturn(clientAddon);
 		when(clientAddon.getChannelInfoHolder()).thenReturn(channelInfoHolder);
 
-		serverNetworkHandler = mock(ServerConfigurationPacketListenerImpl.class);
+		serverPacketListener = mock(ServerConfigurationPacketListenerImpl.class);
 		serverAddon = mock(ServerConfigurationNetworkAddon.class);
-		when(ServerNetworkingImpl.getAddon(serverNetworkHandler)).thenReturn(serverAddon);
+		when(ServerNetworkingImpl.getAddon(serverPacketListener)).thenReturn(serverAddon);
 		when(serverAddon.getChannelInfoHolder()).thenReturn(channelInfoHolder);
 
 		ClientNetworkingImpl.setClientConfigurationAddon(clientAddon);
@@ -139,8 +139,8 @@ public class CommonPacketTests {
 			}
 
 			@Override
-			public ClientConfigurationPacketListenerImpl networkHandler() {
-				return clientNetworkHandler;
+			public ClientConfigurationPacketListenerImpl packetListener() {
+				return clientPacketListener;
 			}
 
 			@Override
@@ -155,8 +155,8 @@ public class CommonPacketTests {
 			}
 
 			@Override
-			public ServerConfigurationPacketListenerImpl networkHandler() {
-				return serverNetworkHandler;
+			public ServerConfigurationPacketListenerImpl packetListener() {
+				return serverPacketListener;
 			}
 
 			@Override
@@ -169,11 +169,11 @@ public class CommonPacketTests {
 	// Test handling the version packet on the client
 	@Test
 	void handleVersionPacketClient() {
-		ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonVersionPayload> packetHandler = (ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonVersionPayload>) ClientNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.ID.id());
+		ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonVersionPayload> packetHandler = (ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonVersionPayload>) ClientNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.TYPE.id());
 		assertNotNull(packetHandler);
 
 		// Receive a packet from the server
-		FriendlyByteBuf buf = PacketByteBufs.create();
+		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarIntArray(new int[]{1, 2, 3});
 
 		CommonVersionPayload payload = CommonVersionPayload.CODEC.decode(buf);
@@ -193,11 +193,11 @@ public class CommonPacketTests {
 	// Test handling the version packet on the client, when the server sends unsupported versions
 	@Test
 	void handleVersionPacketClientUnsupported() {
-		ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonVersionPayload> packetHandler = (ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonVersionPayload>) ClientNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.ID.id());
+		ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonVersionPayload> packetHandler = (ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonVersionPayload>) ClientNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.TYPE.id());
 		assertNotNull(packetHandler);
 
 		// Receive a packet from the server
-		FriendlyByteBuf buf = PacketByteBufs.create();
+		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarIntArray(new int[]{2, 3}); // We only support version 1
 
 		assertThrows(UnsupportedOperationException.class, () -> {
@@ -212,11 +212,11 @@ public class CommonPacketTests {
 	// Test handling the version packet on the server
 	@Test
 	void handleVersionPacketServer() {
-		ServerConfigurationNetworking.ConfigurationPacketHandler<CommonVersionPayload> packetHandler = (ServerConfigurationNetworking.ConfigurationPacketHandler<CommonVersionPayload>) ServerNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.ID.id());
+		ServerConfigurationNetworking.ConfigurationPacketHandler<CommonVersionPayload> packetHandler = (ServerConfigurationNetworking.ConfigurationPacketHandler<CommonVersionPayload>) ServerNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.TYPE.id());
 		assertNotNull(packetHandler);
 
 		// Receive a packet from the client
-		FriendlyByteBuf buf = PacketByteBufs.create();
+		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarIntArray(new int[]{1, 2, 3});
 
 		CommonVersionPayload payload = CommonVersionPayload.CODEC.decode(buf);
@@ -230,11 +230,11 @@ public class CommonPacketTests {
 	// Test handling the version packet on the server unsupported version
 	@Test
 	void handleVersionPacketServerUnsupported() {
-		ServerConfigurationNetworking.ConfigurationPacketHandler<CommonVersionPayload> packetHandler = (ServerConfigurationNetworking.ConfigurationPacketHandler<CommonVersionPayload>) ServerNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.ID.id());
+		ServerConfigurationNetworking.ConfigurationPacketHandler<CommonVersionPayload> packetHandler = (ServerConfigurationNetworking.ConfigurationPacketHandler<CommonVersionPayload>) ServerNetworkingImpl.CONFIGURATION.getHandler(CommonVersionPayload.TYPE.id());
 		assertNotNull(packetHandler);
 
 		// Receive a packet from the client
-		FriendlyByteBuf buf = PacketByteBufs.create();
+		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarIntArray(new int[]{3}); // Server only supports version 1
 
 		assertThrows(UnsupportedOperationException.class, () -> {
@@ -249,13 +249,13 @@ public class CommonPacketTests {
 	// Test handing the play registry packet on the client configuration handler
 	@Test
 	void handlePlayRegistryClient() {
-		ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonRegisterPayload> packetHandler = (ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonRegisterPayload>) ClientNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.ID.id());
+		ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonRegisterPayload> packetHandler = (ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonRegisterPayload>) ClientNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.TYPE.id());
 		assertNotNull(packetHandler);
 
 		when(clientAddon.getNegotiatedVersion()).thenReturn(1);
 
 		// Receive a packet from the server
-		FriendlyByteBuf buf = PacketByteBufs.create();
+		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarInt(1); // Version
 		buf.writeUtf("play"); // Target phase
 		buf.writeCollection(List.of(Identifier.fromNamespaceAndPath("fabric", "test")), FriendlyByteBuf::writeIdentifier);
@@ -278,14 +278,14 @@ public class CommonPacketTests {
 	// Test handling the configuration registry packet on the client configuration handler
 	@Test
 	void handleConfigurationRegistryClient() {
-		ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonRegisterPayload> packetHandler = (ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonRegisterPayload>) ClientNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.ID.id());
+		ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonRegisterPayload> packetHandler = (ClientConfigurationNetworking.ConfigurationPayloadHandler<CommonRegisterPayload>) ClientNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.TYPE.id());
 		assertNotNull(packetHandler);
 
 		when(clientAddon.getNegotiatedVersion()).thenReturn(1);
 		when(clientAddon.createRegisterPayload()).thenAnswer(i -> new CommonRegisterPayload(1, "configuration", Set.of(Identifier.fromNamespaceAndPath("fabric", "global_configuration_client"))));
 
 		// Receive a packet from the server
-		FriendlyByteBuf buf = PacketByteBufs.create();
+		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarInt(1); // Version
 		buf.writeUtf("configuration"); // Target phase
 		buf.writeCollection(List.of(Identifier.fromNamespaceAndPath("fabric", "test")), FriendlyByteBuf::writeIdentifier);
@@ -308,13 +308,13 @@ public class CommonPacketTests {
 	// Test handing the play registry packet on the server configuration handler
 	@Test
 	void handlePlayRegistryServer() {
-		ServerConfigurationNetworking.ConfigurationPacketHandler<CommonRegisterPayload> packetHandler = (ServerConfigurationNetworking.ConfigurationPacketHandler<CommonRegisterPayload>) ServerNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.ID.id());
+		ServerConfigurationNetworking.ConfigurationPacketHandler<CommonRegisterPayload> packetHandler = (ServerConfigurationNetworking.ConfigurationPacketHandler<CommonRegisterPayload>) ServerNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.TYPE.id());
 		assertNotNull(packetHandler);
 
 		when(serverAddon.getNegotiatedVersion()).thenReturn(1);
 
 		// Receive a packet from the client
-		FriendlyByteBuf buf = PacketByteBufs.create();
+		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarInt(1); // Version
 		buf.writeUtf("play"); // Target phase
 		buf.writeCollection(List.of(Identifier.fromNamespaceAndPath("fabric", "test")), FriendlyByteBuf::writeIdentifier);
@@ -330,13 +330,13 @@ public class CommonPacketTests {
 	// Test handing the configuration registry packet on the server configuration handler
 	@Test
 	void handleConfigurationRegistryServer() {
-		ServerConfigurationNetworking.ConfigurationPacketHandler<CommonRegisterPayload> packetHandler = (ServerConfigurationNetworking.ConfigurationPacketHandler<CommonRegisterPayload>) ServerNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.ID.id());
+		ServerConfigurationNetworking.ConfigurationPacketHandler<CommonRegisterPayload> packetHandler = (ServerConfigurationNetworking.ConfigurationPacketHandler<CommonRegisterPayload>) ServerNetworkingImpl.CONFIGURATION.getHandler(CommonRegisterPayload.TYPE.id());
 		assertNotNull(packetHandler);
 
 		when(serverAddon.getNegotiatedVersion()).thenReturn(1);
 
 		// Receive a packet from the client
-		FriendlyByteBuf buf = PacketByteBufs.create();
+		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		buf.writeVarInt(1); // Version
 		buf.writeUtf("configuration"); // Target phase
 		buf.writeCollection(List.of(Identifier.fromNamespaceAndPath("fabric", "test")), FriendlyByteBuf::writeIdentifier);
@@ -389,7 +389,7 @@ public class CommonPacketTests {
 		verify(packetSender, times(1)).sendPacket(responseCaptor.capture());
 
 		final T payload = (T) responseCaptor.getValue();
-		final FriendlyByteBuf buf = PacketByteBufs.create();
+		final FriendlyByteBuf buf = FriendlyByteBufs.create();
 		type.codec().encode(buf, payload);
 
 		return buf;
@@ -405,8 +405,8 @@ public class CommonPacketTests {
 		private final Map<ConnectionProtocol, Collection<Identifier>> playChannels = new ConcurrentHashMap<>();
 
 		@Override
-		public Collection<Identifier> fabric_getPendingChannelsNames(ConnectionProtocol state) {
-			return this.playChannels.computeIfAbsent(state, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
+		public Collection<Identifier> fabric_getPendingChannelsNames(ConnectionProtocol protocol) {
+			return this.playChannels.computeIfAbsent(protocol, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
 		}
 	}
 }

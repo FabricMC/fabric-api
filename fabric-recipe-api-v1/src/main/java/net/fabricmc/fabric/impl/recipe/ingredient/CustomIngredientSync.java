@@ -75,9 +75,9 @@ public class CustomIngredientSync implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.configurationC2S()
+		PayloadTypeRegistry.serverboundConfiguration()
 				.register(CustomIngredientPayloadC2S.ID, CustomIngredientPayloadC2S.CODEC);
-		PayloadTypeRegistry.configurationS2C()
+		PayloadTypeRegistry.clientboundConfiguration()
 				.register(CustomIngredientPayloadS2C.ID, CustomIngredientPayloadS2C.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
@@ -88,8 +88,8 @@ public class CustomIngredientSync implements ModInitializer {
 
 		ServerConfigurationNetworking.registerGlobalReceiver(CustomIngredientPayloadC2S.ID, (payload, context) -> {
 			Set<Identifier> supportedCustomIngredients = decodeResponsePayload(payload);
-			((SupportedIngredientsClientConnection) ((ServerCommonPacketListenerImplAccessor) context.networkHandler()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
-			context.networkHandler().completeTask(IngredientSyncTask.KEY);
+			((SupportedIngredientsClientConnection) ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
+			context.packetListener().completeTask(IngredientSyncTask.KEY);
 		});
 	}
 
@@ -100,7 +100,7 @@ public class CustomIngredientSync implements ModInitializer {
 		public void start(Consumer<Packet<?>> sender) {
 			// Send packet with 1 so the client can send us back the list of supported tags.
 			// 1 is sent in case we need a different protocol later for some reason.
-			sender.accept(ServerConfigurationNetworking.createS2CPacket(new CustomIngredientPayloadS2C(PROTOCOL_VERSION_1)));
+			sender.accept(ServerConfigurationNetworking.createClientboundPacket(new CustomIngredientPayloadS2C(PROTOCOL_VERSION_1)));
 		}
 
 		@Override

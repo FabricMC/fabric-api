@@ -32,26 +32,26 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientHandshakePacketListenerImplAccessor;
 
 public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginQueryRequestHandler> {
-	private final ClientHandshakePacketListenerImpl handler;
+	private final ClientHandshakePacketListenerImpl listener;
 	private final Minecraft client;
 	private boolean firstResponse = true;
 
-	public ClientLoginNetworkAddon(ClientHandshakePacketListenerImpl handler, Minecraft client) {
+	public ClientLoginNetworkAddon(ClientHandshakePacketListenerImpl listener, Minecraft client) {
 		super(ClientNetworkingImpl.LOGIN, "ClientLoginNetworkAddon for Client");
-		this.handler = handler;
+		this.listener = listener;
 		this.client = client;
 	}
 
 	@Override
 	protected void invokeInitEvent() {
-		ClientLoginConnectionEvents.INIT.invoker().onLoginStart(this.handler, this.client);
+		ClientLoginConnectionEvents.INIT.invoker().onLoginStart(this.listener, this.client);
 	}
 
 	public boolean handlePacket(ClientboundCustomQueryPacket packet) {
@@ -63,7 +63,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		this.logger.debug("Handling inbound login response with id {} and channel with name {}", queryId, channelName);
 
 		if (this.firstResponse) {
-			ClientLoginConnectionEvents.QUERY_START.invoker().onLoginQueryStart(this.handler, this.client);
+			ClientLoginConnectionEvents.QUERY_START.invoker().onLoginQueryStart(this.listener, this.client);
 			this.firstResponse = false;
 		}
 
@@ -73,14 +73,14 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 			return false;
 		}
 
-		FriendlyByteBuf buf = PacketByteBufs.slice(originalBuf);
+		FriendlyByteBuf buf = FriendlyByteBufs.slice(originalBuf);
 		List<ChannelFutureListener> callbacks = new ArrayList<>();
 
 		try {
-			CompletableFuture<@Nullable FriendlyByteBuf> future = handler.receive(this.client, this.handler, buf, callbacks::add);
+			CompletableFuture<@Nullable FriendlyByteBuf> future = handler.receive(this.client, this.listener, buf, callbacks::add);
 			future.thenAccept(result -> {
 				ServerboundCustomQueryAnswerPacket packet = new ServerboundCustomQueryAnswerPacket(queryId, result == null ? null : new PacketByteBufLoginQueryResponse(result));
-				((ClientHandshakePacketListenerImplAccessor) this.handler).getConnection().send(packet, operation -> {
+				((ClientHandshakePacketListenerImplAccessor) this.listener).getConnection().send(packet, operation -> {
 					for (ChannelFutureListener callback : callbacks) {
 						callback.operationComplete(operation);
 					}
@@ -104,7 +104,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 
 	@Override
 	protected void invokeDisconnectEvent() {
-		ClientLoginConnectionEvents.DISCONNECT.invoker().onLoginDisconnect(this.handler, this.client);
+		ClientLoginConnectionEvents.DISCONNECT.invoker().onLoginDisconnect(this.listener, this.client);
 	}
 
 	@Override

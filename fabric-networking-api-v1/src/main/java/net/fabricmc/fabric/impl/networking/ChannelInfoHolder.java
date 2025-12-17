@@ -25,5 +25,5 @@ public interface ChannelInfoHolder {
 	/**
 	 * @return Channels which are declared as receivable by the other side but have not been declared yet.
 	 */
-	Collection<Identifier> fabric_getPendingChannelsNames(ConnectionProtocol state);
+	Collection<Identifier> fabric_getPendingChannelsNames(ConnectionProtocol protocol);
 }

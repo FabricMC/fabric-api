@@ -77,7 +77,7 @@ abstract class ServerLevelMixin extends Level implements AttachmentTargetImpl {
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
 		if ((Object) this instanceof ServerLevel serverWorld) {
-			PlayerLookup.world(serverWorld)
+			PlayerLookup.level(serverWorld)
 					.forEach(player -> {
 						if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
 							AttachmentSync.trySync(change, player);

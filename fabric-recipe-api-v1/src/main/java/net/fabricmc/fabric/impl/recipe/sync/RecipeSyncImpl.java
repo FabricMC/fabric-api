@@ -47,8 +47,8 @@ public class RecipeSyncImpl implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.configurationC2S().register(SupportedRecipeSerializersPayloadC2S.ID, SupportedRecipeSerializersPayloadC2S.CODEC);
-		PayloadTypeRegistry.playS2C().registerLarge(RecipeSyncPayloadS2C.ID, RecipeSyncPayloadS2C.CODEC, RECIPE_PAYLOAD_MAX_SIZE);
+		PayloadTypeRegistry.serverboundConfiguration().register(SupportedRecipeSerializersPayloadC2S.ID, SupportedRecipeSerializersPayloadC2S.CODEC);
+		PayloadTypeRegistry.clientboundPlay().registerLarge(RecipeSyncPayloadS2C.ID, RecipeSyncPayloadS2C.CODEC, RECIPE_PAYLOAD_MAX_SIZE);
 
 		ServerConfigurationNetworking.registerGlobalReceiver(SupportedRecipeSerializersPayloadC2S.ID, RecipeSyncImpl::onRecipeSyncRequest);
 
@@ -63,7 +63,7 @@ public class RecipeSyncImpl implements ModInitializer {
 			BuiltInRegistries.RECIPE_SERIALIZER.getOptional(identifier).ifPresent(set::add);
 		}
 
-		((SyncedSerializerAwareClientConnection) ((ServerCommonPacketListenerImplAccessor) context.networkHandler()).getConnection())
+		((SyncedSerializerAwareClientConnection) ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection())
 				.fabric_setSyncedRecipeSerializers(set);
 	}
 

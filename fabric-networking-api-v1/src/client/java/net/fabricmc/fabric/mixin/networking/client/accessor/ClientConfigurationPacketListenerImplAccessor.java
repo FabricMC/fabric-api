@@ -24,6 +24,6 @@ import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl;
 
 @Mixin(ClientConfigurationPacketListenerImpl.class)
 public interface ClientConfigurationPacketListenerImplAccessor {
-	@Accessor("localGameProfile")
-	GameProfile getProfile();
+	@Accessor
+	GameProfile getLocalGameProfile();
 }

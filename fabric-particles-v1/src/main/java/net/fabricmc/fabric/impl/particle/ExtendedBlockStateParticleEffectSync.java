@@ -33,7 +33,7 @@ public class ExtendedBlockStateParticleEffectSync implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.configurationS2C().register(DummyPayload.ID, DummyPayload.CODEC);
+		PayloadTypeRegistry.clientboundConfiguration().register(DummyPayload.ID, DummyPayload.CODEC);
 	}
 
 	public static boolean shouldEncodeFallback(RegistryFriendlyByteBuf buf) {

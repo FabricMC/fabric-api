@@ -44,8 +44,8 @@ import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
-import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
+import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.fabricmc.fabric.impl.networking.VanillaPacketTypes;
 import net.fabricmc.fabric.impl.networking.splitter.FabricPacketMerger;
@@ -60,7 +60,7 @@ abstract class ConnectionMixin implements ChannelInfoHolder {
 	private Map<ConnectionProtocol, Collection<Identifier>> playChannels;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	private void initAddedFields(PacketFlow side, CallbackInfo ci) {
+	private void initAddedFields(PacketFlow flow, CallbackInfo ci) {
 		this.playChannels = new ConcurrentHashMap<>();
 	}
 
@@ -72,43 +72,43 @@ abstract class ConnectionMixin implements ChannelInfoHolder {
 	}
 
 	@Inject(method = "validateListener", at = @At("HEAD"))
-	private void unwatchAddon(ProtocolInfo<?> state, PacketListener listener, CallbackInfo ci) {
-		if (this.packetListener instanceof NetworkHandlerExtensions oldListener) {
+	private void unwatchAddon(ProtocolInfo<?> protocolInfo, PacketListener listener, CallbackInfo ci) {
+		if (this.packetListener instanceof PacketListenerExtensions oldListener) {
 			oldListener.getAddon().endSession();
 		}
 	}
 
 	@Inject(method = "channelInactive", at = @At("HEAD"))
 	private void disconnectAddon(ChannelHandlerContext channelHandlerContext, CallbackInfo ci) {
-		if (packetListener instanceof NetworkHandlerExtensions extension) {
+		if (packetListener instanceof PacketListenerExtensions extension) {
 			extension.getAddon().handleDisconnect();
 		}
 	}
 
 	@Inject(method = "handleDisconnection", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketListener;onDisconnect(Lnet/minecraft/network/DisconnectionDetails;)V"))
 	private void disconnectAddon(CallbackInfo ci) {
-		if (packetListener instanceof NetworkHandlerExtensions extension) {
+		if (packetListener instanceof PacketListenerExtensions extension) {
 			extension.getAddon().handleDisconnect();
 		}
 	}
 
 	@ModifyArg(method = "setupInboundProtocol", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
-	private Object injectFabricPacketSlitterHandlerInbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> state) {
-		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(state);
+	private Object injectFabricPacketSlitterHandlerInbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> protocolInfo) {
+		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(protocolInfo);
 
 		if (payloadTypeRegistry == null) {
 			return transitioner;
 		}
 
 		return ((UnconfiguredPipelineHandler.InboundConfigurationTask) transitioner).andThen((context) -> {
-			FabricPacketMerger merger = new FabricPacketMerger(context.pipeline().get(PacketDecoder.class), payloadTypeRegistry, VanillaPacketTypes.get(state));
+			FabricPacketMerger merger = new FabricPacketMerger(context.pipeline().get(PacketDecoder.class), payloadTypeRegistry, VanillaPacketTypes.get(protocolInfo));
 			context.pipeline().addAfter("decoder", "fabric:merger", merger);
 		});
 	}
 
 	@ModifyArg(method = "setupOutboundProtocol", at = @At(value = "INVOKE", target = "Lio/netty/channel/Channel;writeAndFlush(Ljava/lang/Object;)Lio/netty/channel/ChannelFuture;"))
-	private Object injectFabricPacketSlitterHandlerOutbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> state) {
-		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(state);
+	private Object injectFabricPacketSlitterHandlerOutbound(Object transitioner, @Local(argsOnly = true) ProtocolInfo<?> protocolInfo) {
+		PayloadTypeRegistryImpl<?> payloadTypeRegistry = PayloadTypeRegistryImpl.get(protocolInfo);
 
 		if (payloadTypeRegistry == null) {
 			return transitioner;
@@ -121,7 +121,7 @@ abstract class ConnectionMixin implements ChannelInfoHolder {
 	}
 
 	@Override
-	public Collection<Identifier> fabric_getPendingChannelsNames(ConnectionProtocol state) {
-		return this.playChannels.computeIfAbsent(state, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
+	public Collection<Identifier> fabric_getPendingChannelsNames(ConnectionProtocol protocol) {
+		return this.playChannels.computeIfAbsent(protocol, (key) -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
 	}
 }

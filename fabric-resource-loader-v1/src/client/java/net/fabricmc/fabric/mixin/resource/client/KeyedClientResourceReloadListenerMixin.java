@@ -84,23 +84,23 @@ public abstract class KeyedClientResourceReloadListenerMixin implements FabricRe
 			} else if (self instanceof ModelManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.MODELS;
 			} else if (self instanceof BlockEntityRenderDispatcher) {
-				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_ENTITY_RENDERERS;
+				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_ENTITY_RENDER_DISPATCHER;
 			} else if (self instanceof BlockRenderDispatcher) {
-				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_RENDER_MANAGER;
+				this.fabric$id = ResourceReloaderKeys.Client.BLOCK_RENDER_DISPATCHER;
 			} else if (self instanceof CloudRenderer) {
-				this.fabric$id = ResourceReloaderKeys.Client.CLOUD_CELLS;
+				this.fabric$id = ResourceReloaderKeys.Client.CLOUD_RENDERER;
 			} else if (self instanceof DryFoliageColorReloadListener) {
-				this.fabric$id = ResourceReloaderKeys.Client.DRY_FOLIAGE_COLORMAP;
+				this.fabric$id = ResourceReloaderKeys.Client.DRY_FOLIAGE_COLOR;
 			} else if (self instanceof EquipmentAssetManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.EQUIPMENT_MODELS;
+				this.fabric$id = ResourceReloaderKeys.Client.EQUIPMENT_ASSETS;
 			} else if (self instanceof EntityRenderDispatcher) {
-				this.fabric$id = ResourceReloaderKeys.Client.ENTITY_RENDERERS;
+				this.fabric$id = ResourceReloaderKeys.Client.ENTITY_RENDER_DISPATCHER;
 			} else if (self instanceof FontManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.FONTS;
 			} else if (self instanceof FoliageColorReloadListener) {
-				this.fabric$id = ResourceReloaderKeys.Client.FOLIAGE_COLORMAP;
+				this.fabric$id = ResourceReloaderKeys.Client.FOLIAGE_COLOR;
 			} else if (self instanceof GrassColorReloadListener) {
-				this.fabric$id = ResourceReloaderKeys.Client.GRASS_COLORMAP;
+				this.fabric$id = ResourceReloaderKeys.Client.GRASS_COLOR;
 			} else if (self instanceof LanguageManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.LANGUAGES;
 			} else if (self instanceof ParticleResources) {
@@ -114,7 +114,7 @@ public abstract class KeyedClientResourceReloadListenerMixin implements FabricRe
 			} else if (self instanceof TextureManager) {
 				this.fabric$id = ResourceReloaderKeys.Client.TEXTURES;
 			} else if (self instanceof WaypointStyleManager) {
-				this.fabric$id = ResourceReloaderKeys.Client.WAYPOINT_STYLE_ASSETS;
+				this.fabric$id = ResourceReloaderKeys.Client.WAYPOINT_STYLE;
 			} else {
 				this.fabric$id = Identifier.withDefaultNamespace("private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}

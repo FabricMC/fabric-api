@@ -23,7 +23,7 @@ import net.minecraft.resources.Identifier;
 
 public record CommonVersionPayload(int[] versions) implements CustomPacketPayload {
 	public static final StreamCodec<FriendlyByteBuf, CommonVersionPayload> CODEC = CustomPacketPayload.codec(CommonVersionPayload::write, CommonVersionPayload::new);
-	public static final CustomPacketPayload.Type<CommonVersionPayload> ID = new Type<>(Identifier.parse("c:version"));
+	public static final CustomPacketPayload.Type<CommonVersionPayload> TYPE = new Type<>(Identifier.parse("c:version"));
 
 	private CommonVersionPayload(FriendlyByteBuf buf) {
 		this(buf.readVarIntArray());
@@ -35,6 +35,6 @@ public record CommonVersionPayload(int[] versions) implements CustomPacketPayloa
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
-		return ID;
+		return TYPE;
 	}
 }

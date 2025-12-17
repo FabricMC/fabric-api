@@ -33,9 +33,9 @@ public final class ServerConfigurationConnectionEvents {
 	 *
 	 * <p>Task queued during this event will complete before vanilla configuration starts.
 	 */
-	public static final Event<Configure> BEFORE_CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (handler, server) -> {
+	public static final Event<Configure> BEFORE_CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (listener, server) -> {
 		for (Configure callback : callbacks) {
-			callback.onSendConfiguration(handler, server);
+			callback.onSendConfiguration(listener, server);
 		}
 	});
 
@@ -46,24 +46,24 @@ public final class ServerConfigurationConnectionEvents {
 	 *
 	 * <p>An example usage of this:
 	 * <pre>{@code
-	 * ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
-	 * 	if (ServerConfigurationNetworking.canSend(handler, ConfigurationPacket.PACKET_TYPE)) {
-	 *  handler.addTask(new TestConfigurationTask("Example data"));
+	 * ServerConfigurationConnectionEvents.CONFIGURE.register((listener, server) -> {
+	 * 	if (ServerConfigurationNetworking.canSend(listener, ConfigurationPacket.PACKET_TYPE)) {
+	 *    listener.addTask(new TestConfigurationTask("Example data"));
 	 * 	} else {
 	 * 	  // You can opt to disconnect the client if it cannot handle the configuration task
-	 * 	  handler.disconnect(Text.literal("Network test configuration not supported by client"));
-	 * 	  }
+	 * 	  listener.disconnect(Component.literal("Network test configuration not supported by client"));
+	 * 	}
 	 * });
 	 * }</pre>
 	 */
-	public static final Event<Configure> CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (handler, server) -> {
+	public static final Event<Configure> CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (listener, server) -> {
 		for (Configure callback : callbacks) {
-			callback.onSendConfiguration(handler, server);
+			callback.onSendConfiguration(listener, server);
 		}
 	});
 
 	/**
-	 * An event for the disconnection of the server configuration network handler.
+	 * An event for the disconnection of the server configuration packet listener.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
@@ -78,11 +78,11 @@ public final class ServerConfigurationConnectionEvents {
 
 	@FunctionalInterface
 	public interface Configure {
-		void onSendConfiguration(ServerConfigurationPacketListenerImpl handler, MinecraftServer server);
+		void onSendConfiguration(ServerConfigurationPacketListenerImpl listener, MinecraftServer server);
 	}
 
 	@FunctionalInterface
 	public interface Disconnect {
-		void onConfigureDisconnect(ServerConfigurationPacketListenerImpl handler, MinecraftServer server);
+		void onConfigureDisconnect(ServerConfigurationPacketListenerImpl listener, MinecraftServer server);
 	}
 }

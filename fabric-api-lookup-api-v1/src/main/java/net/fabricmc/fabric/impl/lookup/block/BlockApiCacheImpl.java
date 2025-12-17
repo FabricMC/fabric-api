@@ -119,7 +119,7 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 	}
 
 	@Override
-	public ServerLevel getWorld() {
+	public ServerLevel getLevel() {
 		return world;
 	}
 

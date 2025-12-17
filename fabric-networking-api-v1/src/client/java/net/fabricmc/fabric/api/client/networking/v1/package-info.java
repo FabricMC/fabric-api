@@ -31,14 +31,14 @@
  *     world at this point. Clients can use this phase to send configurations or verify their mod
  *     versions. Note that some server mods allow players in the PLAY stage to re-enter this stage,
  *     for example when a player chooses a minigame server in a lobby.
- *     Related events are found at {@link net.fabricmc.fabric.api.client.networking.v1.C2SConfigurationChannelEvents}
+ *     Related events are found at {@link net.fabricmc.fabric.api.client.networking.v1.ServerboundConfigurationChannelEvents}
  *     and {@link net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents}, and related methods are found at
  *     {@link net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking}.
  *     </dd>
  *     <dt>PLAY</dt>
  *     <dd>This is the stage after CONFIGURATION, where gameplay-related packets are sent and received.
  *     The player has joined the world and is playing the game. Related events are found at
- *     {@link net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents}
+ *     {@link net.fabricmc.fabric.api.client.networking.v1.ServerboundPlayChannelEvents}
  *     and {@link net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents}, and related methods are found at
  *     {@link net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking}.</dd>
  * </dl>

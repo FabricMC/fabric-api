@@ -38,8 +38,8 @@ import net.fabricmc.fabric.mixin.registry.sync.BuiltInRegistriesAccessor;
  *
  * <pre>
  * {@code
- *  RegistryKey<Registry<String>> registryKey = RegistryKey.ofRegistry(Identifier.fromNamespaceAndPath("modid", "custom_registry"));
- *  Registry<String> registry = FabricRegistryBuilder.createSimple(registryKey)
+ *  ResourceKey<Registry<String>> key = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("modid", "custom_registry"));
+ *  Registry<String> registry = FabricRegistryBuilder.createSimple(key)
  * 													.attribute(RegistryAttribute.SYNCED)
  * 													.buildAndRegister();
  * 	}
@@ -68,24 +68,24 @@ public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
 	/**
 	 * Create a new {@link FabricRegistryBuilder} using a {@link MappedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
-	 * @param registryKey The registry {@link ResourceKey}
+	 * @param key The registry's {@link ResourceKey}
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T> FabricRegistryBuilder<T, MappedRegistry<T>> createSimple(ResourceKey<Registry<T>> registryKey) {
-		return from(new MappedRegistry<>(registryKey, Lifecycle.stable(), false));
+	public static <T> FabricRegistryBuilder<T, MappedRegistry<T>> create(ResourceKey<Registry<T>> key) {
+		return from(new MappedRegistry<>(key, Lifecycle.stable(), false));
 	}
 
 	/**
 	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
-	 * @param registryKey The registry {@link ResourceKey}
+	 * @param key The registry's {@link ResourceKey}
 	 * @param defaultId The default registry id
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T> FabricRegistryBuilder<T, DefaultedMappedRegistry<T>> createDefaulted(ResourceKey<Registry<T>> registryKey, Identifier defaultId) {
-		return from(new DefaultedMappedRegistry<T>(defaultId.toString(), registryKey, Lifecycle.stable(), false));
+	public static <T> FabricRegistryBuilder<T, DefaultedMappedRegistry<T>> createDefaulted(ResourceKey<Registry<T>> key, Identifier defaultId) {
+		return from(new DefaultedMappedRegistry<T>(defaultId.toString(), key, Lifecycle.stable(), false));
 	}
 
 	/**
@@ -94,11 +94,11 @@ public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
 	 * @param registryId The registry {@link Identifier} used as the registry id
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
-	 * @deprecated Please migrate to {@link FabricRegistryBuilder#createSimple(ResourceKey)}
+	 * @deprecated Please migrate to {@link FabricRegistryBuilder#create(ResourceKey)}
 	 */
 	@Deprecated
-	public static <T> FabricRegistryBuilder<T, MappedRegistry<T>> createSimple(Class<T> type, Identifier registryId) {
-		return createSimple(ResourceKey.createRegistryKey(registryId));
+	public static <T> FabricRegistryBuilder<T, MappedRegistry<T>> create(Class<T> type, Identifier registryId) {
+		return create(ResourceKey.createRegistryKey(registryId));
 	}
 
 	/**

@@ -38,7 +38,7 @@ import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.scores.PlayerTeam;
 
-import net.fabricmc.fabric.impl.event.interaction.FakePlayerNetworkHandler;
+import net.fabricmc.fabric.impl.event.interaction.FakePlayerPacketListener;
 
 /**
  * A "fake player" is a {@link ServerPlayer} that is not a human player.
@@ -104,7 +104,7 @@ public class FakePlayer extends ServerPlayer {
 	protected FakePlayer(ServerLevel world, GameProfile profile) {
 		super(world.getServer(), world, profile, ClientInformation.createDefault());
 
-		this.connection = new FakePlayerNetworkHandler(this);
+		this.connection = new FakePlayerPacketListener(this);
 	}
 
 	@Override

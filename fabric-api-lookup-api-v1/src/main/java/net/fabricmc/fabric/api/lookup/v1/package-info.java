@@ -23,13 +23,13 @@
  * <h2>Definitions and purpose</h2>
  * <ul>
  *     <li>What we call an <i>API</i> is any object that can be offered or queried, possibly by different mods, to be used in an agreed-upon manner.</li>
- *     <li>This module allows flexible retrieving of such APIs, represented by the generic type {@code A}, from blocks in the world or from item stacks.</li>
+ *     <li>This module allows flexible retrieving of such APIs, represented by the generic type {@code A}, from blocks in the level or from item stacks.</li>
  *     <li>It also provides building blocks for defining custom ways of retrieving APIs from other game objects.</li>
  * </ul>
  *
- * <h2>Retrieving APIs from blocks in the world</h2>
+ * <h2>Retrieving APIs from blocks in the level</h2>
  * <ul>
- *     <li>A block query for an API is an operation that takes a world, a block position, and additional context of type {@code C}, and uses that
+ *     <li>A block query for an API is an operation that takes a level, a block position, and additional context of type {@code C}, and uses that
  *     to find an object of type {@code A}, or {@code null} if there was no such object.</li>
  *     <li>An instance of {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup BlockApiLookup&lt;A, C&gt;}
  *     provides a {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#find find()} function that does exactly that.</li>

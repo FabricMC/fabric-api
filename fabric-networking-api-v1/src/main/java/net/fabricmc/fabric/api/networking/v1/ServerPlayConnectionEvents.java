@@ -32,31 +32,31 @@ public final class ServerPlayConnectionEvents {
 	 *
 	 * @see ServerPlayNetworking#registerReceiver(ServerGamePacketListenerImpl, CustomPacketPayload.Type, ServerPlayNetworking.PlayPayloadHandler)
 	 */
-	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (handler, server) -> {
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (listener, server) -> {
 		for (Init callback : callbacks) {
-			callback.onPlayInit(handler, server);
+			callback.onPlayInit(listener, server);
 		}
 	});
 
 	/**
-	 * An event for notification when the server play network handler is ready to send packets to the client.
+	 * An event for notification when the server game packet listener is ready to send packets to the client.
 	 *
-	 * <p>At this stage, the network handler is ready to send packets to the client.
+	 * <p>At this stage, the packet listener is ready to send packets to the client.
 	 */
-	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> (handler, sender, server) -> {
+	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> (listener, sender, server) -> {
 		for (Join callback : callbacks) {
-			callback.onPlayReady(handler, sender, server);
+			callback.onPlayReady(listener, sender, server);
 		}
 	});
 
 	/**
-	 * An event for the disconnection of the server play network handler.
+	 * An event for the disconnection of the server game packet listener.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (handler, server) -> {
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (listener, server) -> {
 		for (Disconnect callback : callbacks) {
-			callback.onPlayDisconnect(handler, server);
+			callback.onPlayDisconnect(listener, server);
 		}
 	});
 
@@ -65,16 +65,16 @@ public final class ServerPlayConnectionEvents {
 
 	@FunctionalInterface
 	public interface Init {
-		void onPlayInit(ServerGamePacketListenerImpl handler, MinecraftServer server);
+		void onPlayInit(ServerGamePacketListenerImpl listener, MinecraftServer server);
 	}
 
 	@FunctionalInterface
 	public interface Join {
-		void onPlayReady(ServerGamePacketListenerImpl handler, PacketSender sender, MinecraftServer server);
+		void onPlayReady(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server);
 	}
 
 	@FunctionalInterface
 	public interface Disconnect {
-		void onPlayDisconnect(ServerGamePacketListenerImpl handler, MinecraftServer server);
+		void onPlayDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer server);
 	}
 }

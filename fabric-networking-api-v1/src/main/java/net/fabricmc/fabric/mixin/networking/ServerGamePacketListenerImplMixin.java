@@ -35,14 +35,14 @@ import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
-import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
-import net.fabricmc.fabric.impl.networking.UntrackedNetworkHandler;
+import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
+import net.fabricmc.fabric.impl.networking.UntrackedPacketListener;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ServerGamePacketListenerImpl.class, priority = 999)
-abstract class ServerGamePacketListenerImplMixin extends ServerCommonPacketListenerImpl implements NetworkHandlerExtensions {
+abstract class ServerGamePacketListenerImplMixin extends ServerCommonPacketListenerImpl implements PacketListenerExtensions {
 	@Unique
 	private ServerPlayNetworkAddon addon;
 
@@ -54,7 +54,7 @@ abstract class ServerGamePacketListenerImplMixin extends ServerCommonPacketListe
 	private void initAddon(CallbackInfo ci) {
 		this.addon = new ServerPlayNetworkAddon((ServerGamePacketListenerImpl) (Object) this, connection, server);
 
-		if (!(this instanceof UntrackedNetworkHandler)) {
+		if (!(this instanceof UntrackedPacketListener)) {
 			// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
 			this.addon.lateInit();
 		}
@@ -73,14 +73,14 @@ abstract class ServerGamePacketListenerImplMixin extends ServerCommonPacketListe
 	}
 
 	@WrapOperation(method = "handleConfigurationAcknowledged", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setupInboundProtocol(Lnet/minecraft/network/ProtocolInfo;Lnet/minecraft/network/PacketListener;)V"))
-	private <T extends PacketListener> void onAcknowledgeReconfiguration(Connection instance, ProtocolInfo<T> state, T packetListener, Operation<Void> original) {
-		original.call(instance, state, packetListener);
+	private <T extends PacketListener> void onAcknowledgeReconfiguration(Connection instance, ProtocolInfo<T> protocolInfo, T packetListener, Operation<Void> original) {
+		original.call(instance, protocolInfo, packetListener);
 
-		ServerConfigurationPacketListenerImpl networkHandler = (ServerConfigurationPacketListenerImpl) packetListener;
-		ServerNetworkingImpl.getAddon(networkHandler).setReconfiguring();
+		ServerConfigurationPacketListenerImpl configPacketListener = (ServerConfigurationPacketListenerImpl) packetListener;
+		ServerNetworkingImpl.getAddon(configPacketListener).setReconfiguring();
 
 		if (addon.requestedReconfigure()) {
-			networkHandler.startConfiguration();
+			configPacketListener.startConfiguration();
 		}
 	}
 
