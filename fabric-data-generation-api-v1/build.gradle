@@ -9,7 +9,7 @@ moduleDependencies(project, [
 ])
 
 testDependencies(project, [
-	':fabric-item-group-api-v1',
+	':fabric-creative-mode-tab-api-v1',
     ':fabric-object-builder-api-v1'
 ])
 

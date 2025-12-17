@@ -39,9 +39,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.creativemodetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativemodetab.v1.FabricCreativeModeTab;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
 public class DataGeneratorTestContent implements ModInitializer {
 	public static final String MOD_ID = "fabric-data-gen-api-v1-testmod";
@@ -84,9 +84,9 @@ public class DataGeneratorTestContent implements ModInitializer {
 		SIMPLE_ENTITY_TYPE = createEntityType("simple_entity", EntityType.Builder.createNothing(MobCategory.MISC));
 		ENTITY_TYPE_WITHOUT_LOOT_TABLE = createEntityType("entity_without_loot_table", EntityType.Builder.createNothing(MobCategory.MISC));
 
-		ItemGroupEvents.modifyEntriesEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.accept(SIMPLE_BLOCK));
+		CreativeModeTabEvents.modifyOutputEvent(SIMPLE_ITEM_GROUP).register(entries -> entries.accept(SIMPLE_BLOCK));
 
-		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, SIMPLE_ITEM_GROUP, FabricItemGroup.builder()
+		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, SIMPLE_ITEM_GROUP, FabricCreativeModeTab.builder()
 				.icon(() -> new ItemStack(Items.DIAMOND_PICKAXE))
 				.title(Component.translatable("fabric-data-gen-api-v1-testmod.simple_item_group"))
 				.build());
