@@ -32,8 +32,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 
+import net.fabricmc.fabric.api.networking.v1.ClientboundConfigurationChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.S2CConfigurationChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
@@ -43,7 +43,7 @@ import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
 
 public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetworkAddon<ServerConfigurationNetworking.ConfigurationPacketHandler<?>> {
-	private final ServerConfigurationPacketListenerImpl handler;
+	private final ServerConfigurationPacketListenerImpl listener;
 	private final MinecraftServer server;
 	private final ServerConfigurationNetworking.Context context;
 	private RegisterState registerState = RegisterState.NOT_SENT;
@@ -51,11 +51,11 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	private String clientBrand = null;
 	private boolean isReconfiguring = false;
 
-	public ServerConfigurationNetworkAddon(ServerConfigurationPacketListenerImpl handler, MinecraftServer server) {
-		super(ServerNetworkingImpl.CONFIGURATION, ((ServerCommonPacketListenerImplAccessor) handler).getConnection(), "ServerConfigurationNetworkAddon for " + handler.getOwner().name());
-		this.handler = handler;
+	public ServerConfigurationNetworkAddon(ServerConfigurationPacketListenerImpl listener, MinecraftServer server) {
+		super(ServerNetworkingImpl.CONFIGURATION, ((ServerCommonPacketListenerImplAccessor) listener).getConnection(), "ServerConfigurationNetworkAddon for " + listener.getOwner().name());
+		this.listener = listener;
 		this.server = server;
-		this.context = new ContextImpl(server, handler, this);
+		this.context = new ContextImpl(server, listener, this);
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, ConnectionProtocol.CONFIGURATION);
@@ -82,11 +82,11 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	public void preConfiguration() {
-		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.invoker().onSendConfiguration(handler, server);
+		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.invoker().onSendConfiguration(listener, server);
 	}
 
 	public void configuration() {
-		ServerConfigurationConnectionEvents.CONFIGURE.invoker().onSendConfiguration(handler, server);
+		ServerConfigurationConnectionEvents.CONFIGURE.invoker().onSendConfiguration(listener, server);
 	}
 
 	public boolean startConfiguration() {
@@ -116,7 +116,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		if (register && registerState == RegisterState.SENT) {
 			// We received the registration packet, thus we know this is a modded client, continue with configuration.
 			registerState = RegisterState.RECEIVED;
-			handler.startConfiguration();
+			listener.startConfiguration();
 		}
 	}
 
@@ -124,13 +124,13 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 		if (registerState == RegisterState.SENT) {
 			// We did not receive the registration packet, thus we think this is a vanilla client, continue with configuration.
 			registerState = RegisterState.NOT_RECEIVED;
-			handler.startConfiguration();
+			listener.startConfiguration();
 		}
 	}
 
 	@Override
-	protected void receive(ServerConfigurationNetworking.ConfigurationPacketHandler<?> handler, CustomPacketPayload payload) {
-		((ServerConfigurationNetworking.ConfigurationPacketHandler) handler).receive(payload, this.context);
+	protected void receive(ServerConfigurationNetworking.ConfigurationPacketHandler<?> listener, CustomPacketPayload payload) {
+		((ServerConfigurationNetworking.ConfigurationPacketHandler) listener).receive(payload, this.context);
 	}
 
 	// impl details
@@ -142,17 +142,17 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	public Packet<?> createPacket(CustomPacketPayload packet) {
-		return ServerConfigurationNetworking.createS2CPacket(packet);
+		return ServerConfigurationNetworking.createClientboundPacket(packet);
 	}
 
 	@Override
 	protected void invokeRegisterEvent(List<Identifier> ids) {
-		S2CConfigurationChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.server, ids);
+		ClientboundConfigurationChannelEvents.REGISTER.invoker().onChannelRegister(this.listener, this, this.server, ids);
 	}
 
 	@Override
 	protected void invokeUnregisterEvent(List<Identifier> ids) {
-		S2CConfigurationChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.server, ids);
+		ClientboundConfigurationChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.listener, this, this.server, ids);
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	protected void invokeDisconnectEvent() {
-		ServerConfigurationConnectionEvents.DISCONNECT.invoker().onConfigureDisconnect(handler, server);
+		ServerConfigurationConnectionEvents.DISCONNECT.invoker().onConfigureDisconnect(listener, server);
 	}
 
 	@Override
@@ -191,7 +191,7 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	public void sendPacket(Packet<?> packet, ChannelFutureListener callback) {
-		handler.send(packet, callback);
+		listener.send(packet, callback);
 	}
 
 	public @Nullable String getClientBrand() {
@@ -214,13 +214,13 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 	}
 
 	public ChannelInfoHolder getChannelInfoHolder() {
-		return (ChannelInfoHolder) ((ServerCommonPacketListenerImplAccessor) handler).getConnection();
+		return (ChannelInfoHolder) ((ServerCommonPacketListenerImplAccessor) listener).getConnection();
 	}
 
-	private record ContextImpl(MinecraftServer server, ServerConfigurationPacketListenerImpl networkHandler, PacketSender responseSender) implements ServerConfigurationNetworking.Context {
+	private record ContextImpl(MinecraftServer server, ServerConfigurationPacketListenerImpl packetListener, PacketSender responseSender) implements ServerConfigurationNetworking.Context {
 		private ContextImpl {
 			Objects.requireNonNull(server, "server");
-			Objects.requireNonNull(networkHandler, "networkHandler");
+			Objects.requireNonNull(packetListener, "packetListener");
 			Objects.requireNonNull(responseSender, "responseSender");
 		}
 	}

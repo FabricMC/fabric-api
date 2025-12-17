@@ -29,15 +29,15 @@ public class NetworkingConfigurationClientTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientConfigurationNetworking.registerGlobalReceiver(NetworkingConfigurationTest.ConfigurationPacket.ID, (packet, context) -> {
+		ClientConfigurationNetworking.registerGlobalReceiver(NetworkingConfigurationTest.ConfigurationPacket.TYPE, (packet, context) -> {
 			// Handle stuff here
 
 			// Respond back to the server that the task is complete
 			context.responseSender().sendPacket(NetworkingConfigurationTest.ConfigurationCompletePacket.INSTANCE);
 		});
 
-		ClientConfigurationConnectionEvents.START.register((handler, client) -> {
-			if (!ClientConfigurationNetworking.canSend(NetworkingConfigurationTest.ConfigurationStartPacket.ID)) {
+		ClientConfigurationConnectionEvents.START.register((listener, client) -> {
+			if (!ClientConfigurationNetworking.canSend(NetworkingConfigurationTest.ConfigurationStartPacket.TYPE)) {
 				// This isn't fatal as it will happen when connecting to a vanilla server.
 				LOGGER.warn("Not sending configuration start packet; is this a vanilla server?");
 				return;

@@ -30,11 +30,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.RunningOnDifferentThreadException;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 
-import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 
 @Mixin(ServerCommonPacketListenerImpl.class)
-public abstract class ServerCommonPacketListenerImplMixin implements NetworkHandlerExtensions {
+public abstract class ServerCommonPacketListenerImplMixin implements PacketListenerExtensions {
 	@Shadow
 	@Final
 	protected MinecraftServer server;

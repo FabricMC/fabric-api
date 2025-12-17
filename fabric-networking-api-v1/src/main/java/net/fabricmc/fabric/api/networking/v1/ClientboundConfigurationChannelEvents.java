@@ -28,43 +28,43 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Offers access to events related to the indication of a connected client's ability to receive packets in certain channels.
  */
-public final class S2CConfigurationChannelEvents {
+public final class ClientboundConfigurationChannelEvents {
 	/**
-	 * An event for the server configuration network handler receiving an update indicating the connected client's ability to receive packets in certain channels.
+	 * An event for the server configuration packet listener receiving an update indicating the connected client's ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
 	 */
-	public static final Event<Register> REGISTER = EventFactory.createArrayBacked(Register.class, callbacks -> (handler, sender, server, channels) -> {
+	public static final Event<Register> REGISTER = EventFactory.createArrayBacked(Register.class, callbacks -> (listener, sender, server, channels) -> {
 		for (Register callback : callbacks) {
-			callback.onChannelRegister(handler, sender, server, channels);
+			callback.onChannelRegister(listener, sender, server, channels);
 		}
 	});
 
 	/**
-	 * An event for the server configuration network handler receiving an update indicating the connected client's lack of ability to receive packets in certain channels.
+	 * An event for the server configuration packet listener receiving an update indicating the connected client's lack of ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
 	 */
-	public static final Event<Unregister> UNREGISTER = EventFactory.createArrayBacked(Unregister.class, callbacks -> (handler, sender, server, channels) -> {
+	public static final Event<Unregister> UNREGISTER = EventFactory.createArrayBacked(Unregister.class, callbacks -> (listener, sender, server, channels) -> {
 		for (Unregister callback : callbacks) {
-			callback.onChannelUnregister(handler, sender, server, channels);
+			callback.onChannelUnregister(listener, sender, server, channels);
 		}
 	});
 
-	private S2CConfigurationChannelEvents() {
+	private ClientboundConfigurationChannelEvents() {
 	}
 
 	/**
-	 * @see S2CConfigurationChannelEvents#REGISTER
+	 * @see ClientboundConfigurationChannelEvents#REGISTER
 	 */
 	@FunctionalInterface
 	public interface Register {
-		void onChannelRegister(ServerConfigurationPacketListenerImpl handler, PacketSender sender, MinecraftServer server, List<Identifier> channels);
+		void onChannelRegister(ServerConfigurationPacketListenerImpl listener, PacketSender sender, MinecraftServer server, List<Identifier> channels);
 	}
 
 	/**
-	 * @see S2CConfigurationChannelEvents#UNREGISTER
+	 * @see ClientboundConfigurationChannelEvents#UNREGISTER
 	 */
 	@FunctionalInterface
 	public interface Unregister {
-		void onChannelUnregister(ServerConfigurationPacketListenerImpl handler, PacketSender sender, MinecraftServer server, List<Identifier> channels);
+		void onChannelUnregister(ServerConfigurationPacketListenerImpl listener, PacketSender sender, MinecraftServer server, List<Identifier> channels);
 	}
 }

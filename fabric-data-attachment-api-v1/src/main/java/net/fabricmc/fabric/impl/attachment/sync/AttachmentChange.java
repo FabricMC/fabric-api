@@ -40,7 +40,7 @@ import net.minecraft.world.level.Level;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
@@ -68,7 +68,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		Objects.requireNonNull(codec, "attachment packet codec cannot be null");
 		Objects.requireNonNull(dynamicRegistryManager, "dynamic registry manager cannot be null");
 
-		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(PacketByteBufs.create(), dynamicRegistryManager);
+		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), dynamicRegistryManager);
 
 		if (value != null) {
 			buf.writeBoolean(true);

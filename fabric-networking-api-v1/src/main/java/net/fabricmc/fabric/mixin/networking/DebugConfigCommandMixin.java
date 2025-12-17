@@ -27,7 +27,7 @@ import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 public class DebugConfigCommandMixin {
 	// endConfiguration() does not re-run the configuration tasks. This means we loose the state such as what channels we can send on when in the play phase.
 	@Redirect(method = "unconfig", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerConfigurationPacketListenerImpl;returnToWorld()V"))
-	private static void sendConfigurations(ServerConfigurationPacketListenerImpl networkHandler) {
-		networkHandler.startConfiguration();
+	private static void sendConfigurations(ServerConfigurationPacketListenerImpl packetListener) {
+		packetListener.startConfiguration();
 	}
 }

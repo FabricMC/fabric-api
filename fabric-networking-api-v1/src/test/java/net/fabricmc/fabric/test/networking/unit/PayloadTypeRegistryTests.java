@@ -33,7 +33,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.Bootstrap;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class PayloadTypeRegistryTests {
@@ -42,23 +42,23 @@ public class PayloadTypeRegistryTests {
 		SharedConstants.tryDetectVersion();
 		Bootstrap.bootStrap();
 
-		PayloadTypeRegistry.playC2S().register(C2SPlayPayload.ID, C2SPlayPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(S2CPlayPayload.ID, S2CPlayPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(ServerboundPlayPayload.TYPE, ServerboundPlayPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(ClientboundPlayPayload.TYPE, ClientboundPlayPayload.CODEC);
 
-		PayloadTypeRegistry.configurationC2S().register(C2SConfigPayload.ID, C2SConfigPayload.CODEC);
-		PayloadTypeRegistry.configurationS2C().register(S2CConfigPayload.ID, S2CConfigPayload.CODEC);
+		PayloadTypeRegistry.serverboundConfiguration().register(ServerboundConfigPayload.ID, ServerboundConfigPayload.CODEC);
+		PayloadTypeRegistry.clientboundConfiguration().register(ClientboundConfigPayload.ID, ClientboundConfigPayload.CODEC);
 	}
 
 	@Test
-	void C2SPlay() {
-		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(PacketByteBufs.create(), null);
+	void serverboundPlay() {
+		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), null);
 
-		var packetToSend = new ServerboundCustomPayloadPacket(new C2SPlayPayload("Hello"));
+		var packetToSend = new ServerboundCustomPayloadPacket(new ServerboundPlayPayload("Hello"));
 		ServerboundCustomPayloadPacket.STREAM_CODEC.encode(buf, packetToSend);
 
 		ServerboundCustomPayloadPacket decodedPacket = ServerboundCustomPayloadPacket.STREAM_CODEC.decode(buf);
 
-		if (decodedPacket.payload() instanceof C2SPlayPayload payload) {
+		if (decodedPacket.payload() instanceof ServerboundPlayPayload payload) {
 			assertEquals("Hello", payload.value());
 		} else {
 			fail();
@@ -66,15 +66,15 @@ public class PayloadTypeRegistryTests {
 	}
 
 	@Test
-	void S2CPlay() {
-		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(PacketByteBufs.create(), null);
+	void clientboundPlay() {
+		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), null);
 
-		var packetToSend = new ClientboundCustomPayloadPacket(new S2CPlayPayload("Hello"));
+		var packetToSend = new ClientboundCustomPayloadPacket(new ClientboundPlayPayload("Hello"));
 		ClientboundCustomPayloadPacket.GAMEPLAY_STREAM_CODEC.encode(buf, packetToSend);
 
 		ClientboundCustomPayloadPacket decodedPacket = ClientboundCustomPayloadPacket.GAMEPLAY_STREAM_CODEC.decode(buf);
 
-		if (decodedPacket.payload() instanceof S2CPlayPayload payload) {
+		if (decodedPacket.payload() instanceof ClientboundPlayPayload payload) {
 			assertEquals("Hello", payload.value());
 		} else {
 			fail();
@@ -82,15 +82,15 @@ public class PayloadTypeRegistryTests {
 	}
 
 	@Test
-	void C2SConfig() {
-		FriendlyByteBuf buf = PacketByteBufs.create();
+	void serverboundConfig() {
+		FriendlyByteBuf buf = FriendlyByteBufs.create();
 
-		var packetToSend = new ServerboundCustomPayloadPacket(new C2SConfigPayload("Hello"));
+		var packetToSend = new ServerboundCustomPayloadPacket(new ServerboundConfigPayload("Hello"));
 		ServerboundCustomPayloadPacket.STREAM_CODEC.encode(buf, packetToSend);
 
 		ServerboundCustomPayloadPacket decodedPacket = ServerboundCustomPayloadPacket.STREAM_CODEC.decode(buf);
 
-		if (decodedPacket.payload() instanceof C2SConfigPayload payload) {
+		if (decodedPacket.payload() instanceof ServerboundConfigPayload payload) {
 			assertEquals("Hello", payload.value());
 		} else {
 			fail();
@@ -98,24 +98,44 @@ public class PayloadTypeRegistryTests {
 	}
 
 	@Test
-	void S2CConfig() {
-		FriendlyByteBuf buf = PacketByteBufs.create();
+	void clientboundConfig() {
+		FriendlyByteBuf buf = FriendlyByteBufs.create();
 
-		var packetToSend = new ClientboundCustomPayloadPacket(new S2CConfigPayload("Hello"));
+		var packetToSend = new ClientboundCustomPayloadPacket(new ClientboundConfigPayload("Hello"));
 		ClientboundCustomPayloadPacket.CONFIG_STREAM_CODEC.encode(buf, packetToSend);
 
 		ClientboundCustomPayloadPacket decodedPacket = ClientboundCustomPayloadPacket.CONFIG_STREAM_CODEC.decode(buf);
 
-		if (decodedPacket.payload() instanceof S2CConfigPayload payload) {
+		if (decodedPacket.payload() instanceof ClientboundConfigPayload payload) {
 			assertEquals("Hello", payload.value());
 		} else {
 			fail();
 		}
 	}
 
-	private record C2SPlayPayload(String value) implements CustomPacketPayload {
-		public static final CustomPacketPayload.Type<C2SPlayPayload> ID = new Type<>(Identifier.parse("fabric:c2s_play"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, C2SPlayPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(C2SPlayPayload::new, C2SPlayPayload::value).cast();
+	private record ServerboundPlayPayload(String value) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<ServerboundPlayPayload> TYPE = new Type<>(Identifier.parse("fabric:c2s_play"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundPlayPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(ServerboundPlayPayload::new, ServerboundPlayPayload::value).cast();
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
+
+	private record ClientboundPlayPayload(String value) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<ClientboundPlayPayload> TYPE = new Type<>(Identifier.parse("fabric:s2c_play"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundPlayPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(ClientboundPlayPayload::new, ClientboundPlayPayload::value).cast();
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
+
+	private record ServerboundConfigPayload(String value) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<ServerboundConfigPayload> ID = new Type<>(Identifier.parse("fabric:c2s_config"));
+		public static final StreamCodec<FriendlyByteBuf, ServerboundConfigPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(ServerboundConfigPayload::new, ServerboundConfigPayload::value).cast();
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {
@@ -123,29 +143,9 @@ public class PayloadTypeRegistryTests {
 		}
 	}
 
-	private record S2CPlayPayload(String value) implements CustomPacketPayload {
-		public static final CustomPacketPayload.Type<S2CPlayPayload> ID = new Type<>(Identifier.parse("fabric:s2c_play"));
-		public static final StreamCodec<RegistryFriendlyByteBuf, S2CPlayPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(S2CPlayPayload::new, S2CPlayPayload::value).cast();
-
-		@Override
-		public Type<? extends CustomPacketPayload> type() {
-			return ID;
-		}
-	}
-
-	private record C2SConfigPayload(String value) implements CustomPacketPayload {
-		public static final CustomPacketPayload.Type<C2SConfigPayload> ID = new Type<>(Identifier.parse("fabric:c2s_config"));
-		public static final StreamCodec<FriendlyByteBuf, C2SConfigPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(C2SConfigPayload::new, C2SConfigPayload::value).cast();
-
-		@Override
-		public Type<? extends CustomPacketPayload> type() {
-			return ID;
-		}
-	}
-
-	private record S2CConfigPayload(String value) implements CustomPacketPayload {
-		public static final CustomPacketPayload.Type<S2CConfigPayload> ID = new Type<>(Identifier.parse("fabric:s2c_config"));
-		public static final StreamCodec<FriendlyByteBuf, S2CConfigPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(S2CConfigPayload::new, S2CConfigPayload::value).cast();
+	private record ClientboundConfigPayload(String value) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<ClientboundConfigPayload> ID = new Type<>(Identifier.parse("fabric:s2c_config"));
+		public static final StreamCodec<FriendlyByteBuf, ClientboundConfigPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(ClientboundConfigPayload::new, ClientboundConfigPayload::value).cast();
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {

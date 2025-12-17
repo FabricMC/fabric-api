@@ -90,10 +90,10 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 				}))
 				.then(literal("bundled").executes(ctx -> {
 					ClientboundBundlePacket packet = new ClientboundBundlePacket(List.of(
-							ServerPlayNetworking.createS2CPacket(new OverlayPacket(Component.literal("bundled #1"))),
+							ServerPlayNetworking.createClientboundPacket(new OverlayPacket(Component.literal("bundled #1"))),
 							new ClientboundBundlePacket(List.of(
-									ServerPlayNetworking.createS2CPacket(new OverlayPacket(Component.literal("bundled #2"))),
-									ServerPlayNetworking.createS2CPacket(new OverlayPacket(Component.literal("bundled #3")))
+									ServerPlayNetworking.createClientboundPacket(new OverlayPacket(Component.literal("bundled #2"))),
+									ServerPlayNetworking.createClientboundPacket(new OverlayPacket(Component.literal("bundled #3")))
 							))
 					));
 					ServerPlayNetworking.getSender(ctx.getSource().getPlayer()).sendPacket(packet);
@@ -110,10 +110,10 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 	public void onInitialize() {
 		NetworkingTestmods.LOGGER.info("Hello from networking user!");
 
-		PayloadTypeRegistry.playS2C().register(OverlayPacket.ID, OverlayPacket.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(OverlayPacket.TYPE, OverlayPacket.CODEC);
 
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
-			PayloadTypeRegistry.playS2C().register(UnknownPayload.ID, UnknownPayload.CODEC);
+			PayloadTypeRegistry.clientboundPlay().register(UnknownPayload.TYPE, UnknownPayload.CODEC);
 		}
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
@@ -137,7 +137,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 	}
 
 	public record OverlayPacket(Component message) implements CustomPacketPayload {
-		public static final CustomPacketPayload.Type<OverlayPacket> ID = new Type<>(NetworkingTestmods.id("test_channel"));
+		public static final CustomPacketPayload.Type<OverlayPacket> TYPE = new Type<>(NetworkingTestmods.id("test_channel"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, OverlayPacket> CODEC = CustomPacketPayload.codec(OverlayPacket::write, OverlayPacket::new);
 
 		public OverlayPacket(RegistryFriendlyByteBuf buf) {
@@ -150,7 +150,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 			Collection<Identifier> channels = fabricRegistryByteBuf.fabric_getSendableConfigurationChannels();
 			Objects.requireNonNull(channels);
 
-			if (!channels.contains(NetworkingCommonTest.CommonPayload.ID.id())) {
+			if (!channels.contains(NetworkingCommonTest.CommonPayload.TYPE.id())) {
 				throw new IllegalStateException("Expected common payload channel to be sent");
 			}
 
@@ -159,17 +159,17 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {
-			return ID;
+			return TYPE;
 		}
 	}
 
 	private record UnknownPayload(String data) implements CustomPacketPayload {
-		private static final CustomPacketPayload.Type<UnknownPayload> ID = new Type<>(NetworkingTestmods.id("unknown_test_channel_s2c"));
+		private static final CustomPacketPayload.Type<UnknownPayload> TYPE = new Type<>(NetworkingTestmods.id("unknown_test_channel_s2c"));
 		private static final StreamCodec<FriendlyByteBuf, UnknownPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(UnknownPayload::new, UnknownPayload::data).cast();
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {
-			return ID;
+			return TYPE;
 		}
 	}
 }

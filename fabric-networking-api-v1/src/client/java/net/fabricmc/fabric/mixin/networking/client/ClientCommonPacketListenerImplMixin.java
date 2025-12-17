@@ -29,12 +29,12 @@ import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.RunningOnDifferentThreadException;
 
-import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 
 @Mixin(ClientCommonPacketListenerImpl.class)
-public abstract class ClientCommonPacketListenerImplMixin implements NetworkHandlerExtensions {
+public abstract class ClientCommonPacketListenerImplMixin implements PacketListenerExtensions {
 	@Shadow
 	@Final
 	protected Minecraft minecraft;

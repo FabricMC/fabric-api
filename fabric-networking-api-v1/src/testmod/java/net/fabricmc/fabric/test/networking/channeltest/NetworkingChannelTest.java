@@ -104,7 +104,7 @@ public final class NetworkingChannelTest implements ModInitializer {
 			throw new SimpleCommandExceptionType(Component.literal(String.format("Cannot register channel %s twice for server player", channel))).create();
 		}
 
-		CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends CustomPacketPayload> payloadType = PayloadTypeRegistryImpl.PLAY_C2S.get(channel);
+		CustomPacketPayload.TypeAndCodec<RegistryFriendlyByteBuf, ? extends CustomPacketPayload> payloadType = PayloadTypeRegistryImpl.SERVERBOUND_PLAY.get(channel);
 
 		if (payloadType != null) {
 			ServerPlayNetworking.registerReceiver(executor.connection, payloadType.type(), (payload, ctx) -> {

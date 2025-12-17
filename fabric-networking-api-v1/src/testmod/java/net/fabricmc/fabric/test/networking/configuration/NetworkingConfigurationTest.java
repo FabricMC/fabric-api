@@ -45,29 +45,29 @@ public class NetworkingConfigurationTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.configurationS2C().register(ConfigurationPacket.ID, ConfigurationPacket.CODEC);
-		PayloadTypeRegistry.configurationC2S().register(ConfigurationCompletePacket.ID, ConfigurationCompletePacket.CODEC);
-		PayloadTypeRegistry.configurationC2S().register(ConfigurationStartPacket.ID, ConfigurationStartPacket.CODEC);
+		PayloadTypeRegistry.clientboundConfiguration().register(ConfigurationPacket.TYPE, ConfigurationPacket.CODEC);
+		PayloadTypeRegistry.serverboundConfiguration().register(ConfigurationCompletePacket.TYPE, ConfigurationCompletePacket.CODEC);
+		PayloadTypeRegistry.serverboundConfiguration().register(ConfigurationStartPacket.TYPE, ConfigurationStartPacket.CODEC);
 
-		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
-			if (ServerConfigurationNetworking.isReconfiguring(handler)) {
+		ServerConfigurationConnectionEvents.CONFIGURE.register((listener, server) -> {
+			if (ServerConfigurationNetworking.isReconfiguring(listener)) {
 				LOGGER.info("Reconfiguring client");
 			}
 
 			// You must check to see if the client can handle your config task
-			if (ServerConfigurationNetworking.canSend(handler, ConfigurationPacket.ID)) {
-				handler.addTask(new TestConfigurationTask("Example data"));
+			if (ServerConfigurationNetworking.canSend(listener, ConfigurationPacket.TYPE)) {
+				listener.addTask(new TestConfigurationTask("Example data"));
 			} else {
 				// You can opt to disconnect the client if it cannot handle the configuration task
-				handler.disconnect(Component.literal("Network test configuration not supported by client"));
+				listener.disconnect(Component.literal("Network test configuration not supported by client"));
 			}
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationCompletePacket.ID, (packet, context) -> {
-			context.networkHandler().completeTask(TestConfigurationTask.KEY);
+		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationCompletePacket.TYPE, (packet, context) -> {
+			context.packetListener().completeTask(TestConfigurationTask.KEY);
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationStartPacket.ID, (packet, context) -> {
+		ServerConfigurationNetworking.registerGlobalReceiver(ConfigurationStartPacket.TYPE, (packet, context) -> {
 			LOGGER.info("Received configuration start packet from client");
 		});
 
@@ -81,7 +81,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		@Override
 		public void start(Consumer<Packet<?>> sender) {
 			var packet = new ConfigurationPacket(data);
-			sender.accept(ServerConfigurationNetworking.createS2CPacket(packet));
+			sender.accept(ServerConfigurationNetworking.createClientboundPacket(packet));
 		}
 
 		@Override
@@ -91,7 +91,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 	}
 
 	public record ConfigurationPacket(String data) implements CustomPacketPayload {
-		public static final CustomPacketPayload.Type<ConfigurationPacket> ID = new Type<>(Identifier.fromNamespaceAndPath(NetworkingTestmods.ID, "configure"));
+		public static final CustomPacketPayload.Type<ConfigurationPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(NetworkingTestmods.ID, "configure"));
 		public static final StreamCodec<FriendlyByteBuf, ConfigurationPacket> CODEC = CustomPacketPayload.codec(ConfigurationPacket::write, ConfigurationPacket::new);
 
 		public ConfigurationPacket(FriendlyByteBuf buf) {
@@ -104,13 +104,13 @@ public class NetworkingConfigurationTest implements ModInitializer {
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {
-			return ID;
+			return TYPE;
 		}
 	}
 
 	public static class ConfigurationCompletePacket implements CustomPacketPayload {
 		public static final ConfigurationCompletePacket INSTANCE = new ConfigurationCompletePacket();
-		public static final CustomPacketPayload.Type<ConfigurationCompletePacket> ID = new Type<>(Identifier.fromNamespaceAndPath(NetworkingTestmods.ID, "configure_complete"));
+		public static final CustomPacketPayload.Type<ConfigurationCompletePacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(NetworkingTestmods.ID, "configure_complete"));
 		public static final StreamCodec<FriendlyByteBuf, ConfigurationCompletePacket> CODEC = StreamCodec.unit(INSTANCE);
 
 		private ConfigurationCompletePacket() {
@@ -118,13 +118,13 @@ public class NetworkingConfigurationTest implements ModInitializer {
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {
-			return ID;
+			return TYPE;
 		}
 	}
 
 	public static class ConfigurationStartPacket implements CustomPacketPayload {
 		public static final ConfigurationStartPacket INSTANCE = new ConfigurationStartPacket();
-		public static final CustomPacketPayload.Type<ConfigurationStartPacket> ID = new Type<>(Identifier.fromNamespaceAndPath(NetworkingTestmods.ID, "configure_start"));
+		public static final CustomPacketPayload.Type<ConfigurationStartPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(NetworkingTestmods.ID, "configure_start"));
 		public static final StreamCodec<FriendlyByteBuf, ConfigurationStartPacket> CODEC = StreamCodec.unit(INSTANCE);
 
 		private ConfigurationStartPacket() {
@@ -132,7 +132,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {
-			return ID;
+			return TYPE;
 		}
 	}
 }

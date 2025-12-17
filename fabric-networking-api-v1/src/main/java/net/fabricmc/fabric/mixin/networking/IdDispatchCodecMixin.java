@@ -34,7 +34,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 public abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements StreamCodec<B, V> {
 	// Add the custom payload id to the error message
 	@Inject(method = "encode(Lio/netty/buffer/ByteBuf;Ljava/lang/Object;)V", at = @At(value = "NEW", target = "(Ljava/lang/String;Ljava/lang/Throwable;)Lio/netty/handler/codec/EncoderException;"))
-	public void encode(B byteBuf, V packet, CallbackInfo ci, @Local(ordinal = 1) T packetId, @Local Exception e) {
+	public void encode(B byteBuf, V packet, CallbackInfo ci, @Local(ordinal = 1) T packetType, @Local Exception e) {
 		CustomPacketPayload payload = null;
 
 		if (packet instanceof ServerboundCustomPayloadPacket customPayloadC2SPacket) {
@@ -44,7 +44,7 @@ public abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements S
 		}
 
 		if (payload != null && payload.type() != null) {
-			throw new EncoderException("Failed to encode packet '%s' (%s)".formatted(packetId, payload.type().id().toString()), e);
+			throw new EncoderException("Failed to encode packet '%s' (%s)".formatted(packetType, payload.type().id().toString()), e);
 		}
 	}
 }

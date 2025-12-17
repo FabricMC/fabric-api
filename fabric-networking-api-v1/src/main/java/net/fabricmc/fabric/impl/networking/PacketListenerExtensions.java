@@ -16,6 +16,6 @@
 
 package net.fabricmc.fabric.impl.networking;
 
-public interface NetworkHandlerExtensions {
+public interface PacketListenerExtensions {
 	AbstractNetworkAddon<?> getAddon();
 }

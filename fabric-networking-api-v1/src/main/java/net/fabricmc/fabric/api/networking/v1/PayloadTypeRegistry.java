@@ -36,12 +36,12 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	 * <p>This must be done on both the sending and receiving side, usually during mod initialization
 	 * and <strong>before registering a packet handler</strong>.
 	 *
-	 * @param id    the id of the payload type
+	 * @param type  the payload type
 	 * @param codec the codec for the payload type
-	 * @param <T>   the payload type
+	 * @param <T>   the payload class
 	 * @return the registered payload type
 	 */
-	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> register(CustomPacketPayload.Type<T> id, StreamCodec<? super B, T> codec);
+	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> register(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec);
 
 	/**
 	 * Registers a large custom payload type.
@@ -52,39 +52,39 @@ public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
 	 * <p>Payload types registered with this method will be split into multiple packets,
 	 * allowing to send packets larger than vanilla limited size.
 	 *
-	 * @param id            the id of the payload type
+	 * @param type          the payload type
 	 * @param codec         the codec for the payload type
-	 * @param <T>           the payload type
+	 * @param <T>           the payload class
 	 * @param maxPacketSize the maximum size of payload packet
 	 * @return the registered payload type
 	 */
-	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> id, StreamCodec<? super B, T> codec, int maxPacketSize);
+	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, int maxPacketSize);
 
 	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the client to server configuration channel.
+	 * @return the {@link PayloadTypeRegistry} instance for the serverbound (client to server) configuration channel.
 	 */
-	static PayloadTypeRegistry<FriendlyByteBuf> configurationC2S() {
-		return PayloadTypeRegistryImpl.CONFIGURATION_C2S;
+	static PayloadTypeRegistry<FriendlyByteBuf> serverboundConfiguration() {
+		return PayloadTypeRegistryImpl.SERVERBOUND_CONFIGURATION;
 	}
 
 	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the server to client configuration channel.
+	 * @return the {@link PayloadTypeRegistry} instance for the clientbound (server to client) configuration channel.
 	 */
-	static PayloadTypeRegistry<FriendlyByteBuf> configurationS2C() {
-		return PayloadTypeRegistryImpl.CONFIGURATION_S2C;
+	static PayloadTypeRegistry<FriendlyByteBuf> clientboundConfiguration() {
+		return PayloadTypeRegistryImpl.CLIENTBOUND_CONFIGURATION;
 	}
 
 	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the client to server play channel.
+	 * @return the {@link PayloadTypeRegistry} instance for the serverbound (client to server) play channel.
 	 */
-	static PayloadTypeRegistry<RegistryFriendlyByteBuf> playC2S() {
-		return PayloadTypeRegistryImpl.PLAY_C2S;
+	static PayloadTypeRegistry<RegistryFriendlyByteBuf> serverboundPlay() {
+		return PayloadTypeRegistryImpl.SERVERBOUND_PLAY;
 	}
 
 	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the server to client play channel.
+	 * @return the {@link PayloadTypeRegistry} instance for the clientbound (server to client) play channel.
 	 */
-	static PayloadTypeRegistry<RegistryFriendlyByteBuf> playS2C() {
-		return PayloadTypeRegistryImpl.PLAY_S2C;
+	static PayloadTypeRegistry<RegistryFriendlyByteBuf> clientboundPlay() {
+		return PayloadTypeRegistryImpl.CLIENTBOUND_PLAY;
 	}
 }

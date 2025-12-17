@@ -25,6 +25,6 @@ import net.minecraft.server.network.ServerPlayerConnection;
 
 @Mixin(targets = "net.minecraft.server.level.ChunkMap$TrackedEntity")
 public interface EntityTrackerAccessor {
-	@Accessor("seenBy")
-	Set<ServerPlayerConnection> getPlayersTracking();
+	@Accessor
+	Set<ServerPlayerConnection> getSeenBy();
 }

@@ -25,8 +25,8 @@ import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import net.minecraft.util.Util;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.fabricmc.fabric.api.networking.v1.LoginPacketSender;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
@@ -44,7 +44,7 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 		ServerLoginConnectionEvents.QUERY_START.register(this::delaySimply);
 
 		// login delaying example
-		ServerLoginNetworking.registerGlobalReceiver(GLOBAL_TEST_CHANNEL, (server, handler, understood, buf, synchronizer, sender) -> {
+		ServerLoginNetworking.registerGlobalReceiver(GLOBAL_TEST_CHANNEL, (server, listener, understood, buf, synchronizer, sender) -> {
 			if (understood) {
 				NetworkingTestmods.LOGGER.info("Understood response from client in {}", GLOBAL_TEST_CHANNEL);
 
@@ -67,8 +67,8 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 			}
 		});
 
-		ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) -> {
-			ServerLoginNetworking.registerReceiver(handler, LOCAL_TEST_CHANNEL, (server1, handler1, understood, buf, synchronizer1, responseSender) -> {
+		ServerLoginConnectionEvents.QUERY_START.register((listener, server, sender, synchronizer) -> {
+			ServerLoginNetworking.registerReceiver(listener, LOCAL_TEST_CHANNEL, (server1, handler1, understood, buf, synchronizer1, responseSender) -> {
 				if (understood) {
 					NetworkingTestmods.LOGGER.info("Understood response from client in {}", LOCAL_TEST_CHANNEL);
 				} else {
@@ -76,11 +76,11 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 				}
 			});
 
-			sender.sendPacket(LOCAL_TEST_CHANNEL, PacketByteBufs.create());
+			sender.sendPacket(LOCAL_TEST_CHANNEL, FriendlyByteBufs.create());
 		});
 	}
 
-	private void delaySimply(ServerLoginPacketListenerImpl handler, MinecraftServer server, PacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
+	private void delaySimply(ServerLoginPacketListenerImpl listener, MinecraftServer server, PacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
 		if (useLoginDelayTest) {
 			synchronizer.waitFor(CompletableFuture.runAsync(() -> {
 				NetworkingTestmods.LOGGER.info("Starting simple delay task for 3000 milliseconds");
@@ -95,8 +95,8 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 		}
 	}
 
-	private void onLoginStart(ServerLoginPacketListenerImpl networkHandler, MinecraftServer server, LoginPacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
+	private void onLoginStart(ServerLoginPacketListenerImpl packetListener, MinecraftServer server, LoginPacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
 		// Send a dummy query when the client starts accepting queries.
-		sender.sendPacket(GLOBAL_TEST_CHANNEL, PacketByteBufs.empty()); // dummy packet
+		sender.sendPacket(GLOBAL_TEST_CHANNEL, FriendlyByteBufs.empty()); // dummy packet
 	}
 }

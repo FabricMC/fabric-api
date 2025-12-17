@@ -23,7 +23,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
 public record FabricSplitPacketPayload(ByteBuf byteBuf) implements CustomPacketPayload {
-	public static final Type<FabricSplitPacketPayload> ID = new Type<>(Identifier.fromNamespaceAndPath("fabric", "split"));
+	public static final Type<FabricSplitPacketPayload> TYPE = new Type<>(Identifier.fromNamespaceAndPath("fabric", "split"));
 	public static final StreamCodec<ByteBuf, FabricSplitPacketPayload> CODEC = StreamCodec.of(FabricSplitPacketPayload::write, FabricSplitPacketPayload::read);
 
 	private static FabricSplitPacketPayload read(ByteBuf buf) {
@@ -36,6 +36,6 @@ public record FabricSplitPacketPayload(ByteBuf byteBuf) implements CustomPacketP
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
-		return ID;
+		return TYPE;
 	}
 }

@@ -23,7 +23,7 @@ import net.fabricmc.fabric.test.networking.splitter.NetworkingSplitterTest;
 public class NetworkingSplitterClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(NetworkingSplitterTest.LargePayload.ID, (payload, context) -> {
+		ClientPlayNetworking.registerGlobalReceiver(NetworkingSplitterTest.LargePayload.TYPE, (payload, context) -> {
 			NetworkingSplitterTest.validateLargePacketData(payload.index(), payload.data(), "client");
 			context.responseSender().sendPacket(payload);
 		});

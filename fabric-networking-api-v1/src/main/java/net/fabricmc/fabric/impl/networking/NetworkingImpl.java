@@ -47,23 +47,23 @@ public final class NetworkingImpl {
 
 	public static void init() {
 		// Legacy register / unregister packets
-		PayloadTypeRegistry.configurationS2C().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
-		PayloadTypeRegistry.configurationS2C().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
-		PayloadTypeRegistry.configurationC2S().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
-		PayloadTypeRegistry.configurationC2S().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
-		PayloadTypeRegistry.playS2C().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
-		PayloadTypeRegistry.playS2C().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
-		PayloadTypeRegistry.playC2S().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
-		PayloadTypeRegistry.playC2S().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.clientboundConfiguration().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.clientboundConfiguration().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.serverboundConfiguration().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.serverboundConfiguration().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(RegistrationPayload.REGISTER, RegistrationPayload.REGISTER_CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(RegistrationPayload.UNREGISTER, RegistrationPayload.UNREGISTER_CODEC);
 
 		// Fabric Packet Splitter packet
-		registerGeneric(FabricSplitPacketPayload.ID, FabricSplitPacketPayload.CODEC);
+		registerGeneric(FabricSplitPacketPayload.TYPE, FabricSplitPacketPayload.CODEC);
 	}
 
 	private static <T extends CustomPacketPayload> void registerGeneric(CustomPacketPayload.Type<T> id, StreamCodec<? super FriendlyByteBuf, T> codec) {
-		PayloadTypeRegistry.configurationS2C().register(id, codec);
-		PayloadTypeRegistry.configurationC2S().register(id, codec);
-		PayloadTypeRegistry.playS2C().register(id, codec);
-		PayloadTypeRegistry.playC2S().register(id, codec);
+		PayloadTypeRegistry.clientboundConfiguration().register(id, codec);
+		PayloadTypeRegistry.serverboundConfiguration().register(id, codec);
+		PayloadTypeRegistry.clientboundPlay().register(id, codec);
+		PayloadTypeRegistry.serverboundPlay().register(id, codec);
 	}
 }

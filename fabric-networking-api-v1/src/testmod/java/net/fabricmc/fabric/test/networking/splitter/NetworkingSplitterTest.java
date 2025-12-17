@@ -47,15 +47,15 @@ public class NetworkingSplitterTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Register the payload on both sides for play and configuration
-		PayloadTypeRegistry.playS2C().registerLarge(LargePayload.ID, LargePayload.CODEC, DATA_SIZE + 14);
-		PayloadTypeRegistry.playC2S().registerLarge(LargePayload.ID, LargePayload.CODEC, DATA_SIZE + 14);
+		PayloadTypeRegistry.clientboundPlay().registerLarge(LargePayload.TYPE, LargePayload.CODEC, DATA_SIZE + 14);
+		PayloadTypeRegistry.serverboundPlay().registerLarge(LargePayload.TYPE, LargePayload.CODEC, DATA_SIZE + 14);
 
 		// When the client joins, send a packet expecting it to be validated and echoed back
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sender.sendPacket(new LargePayload(0, RANDOM_DATA[0])));
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sender.sendPacket(new LargePayload(1, RANDOM_DATA[1])));
+		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> sender.sendPacket(new LargePayload(0, RANDOM_DATA[0])));
+		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> sender.sendPacket(new LargePayload(1, RANDOM_DATA[1])));
 
 		// Validate received packet
-		ServerPlayNetworking.registerGlobalReceiver(LargePayload.ID, (payload, context) -> {
+		ServerPlayNetworking.registerGlobalReceiver(LargePayload.TYPE, (payload, context) -> {
 			validateLargePacketData(payload.index(), payload.data(), "server");
 		});
 	}
@@ -72,7 +72,7 @@ public class NetworkingSplitterTest implements ModInitializer {
 	// A payload registered on both sides
 	// This tests that the server can send a large packet to the client, and then receive a response from the client
 	public record LargePayload(int index, int[] data) implements CustomPacketPayload {
-		public static final Type<LargePayload> ID = new Type<>(NetworkingTestmods.id("large_packet"));
+		public static final Type<LargePayload> TYPE = new Type<>(NetworkingTestmods.id("large_packet"));
 		public static final StreamCodec<FriendlyByteBuf, LargePayload> CODEC = StreamCodec.ofMember(LargePayload::write, LargePayload::read);
 
 		private static LargePayload read(FriendlyByteBuf buf) {
@@ -97,7 +97,7 @@ public class NetworkingSplitterTest implements ModInitializer {
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {
-			return ID;
+			return TYPE;
 		}
 	}
 }

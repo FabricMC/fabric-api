@@ -40,7 +40,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/server/network/ServerConfigurationPacketListenerImpl": [ "net/fabricmc/fabric/api/networking/v1/FabricServerConfigurationNetworkHandler" ]
+      "net/minecraft/server/network/ServerConfigurationPacketListenerImpl": [ "net/fabricmc/fabric/api/networking/v1/FabricServerConfigurationPacketListenerImpl" ]
     }
   }
 }

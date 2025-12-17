@@ -88,15 +88,15 @@ public final class ServerLoginNetworking {
 	 * <p>If a handler is already registered to the {@code channelName}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregisterReceiver(ServerLoginPacketListenerImpl, Identifier)} to unregister the existing handler.
 	 *
-	 * @param networkHandler the handler
+	 * @param packetListener the listener
 	 * @param channelName the id of the channel
 	 * @param responseHandler the handler
 	 * @return false if a handler is already registered to the channel name
 	 */
-	public static boolean registerReceiver(ServerLoginPacketListenerImpl networkHandler, Identifier channelName, LoginQueryResponseHandler responseHandler) {
-		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+	public static boolean registerReceiver(ServerLoginPacketListenerImpl packetListener, Identifier channelName, LoginQueryResponseHandler responseHandler) {
+		Objects.requireNonNull(packetListener, "Packet listener cannot be null");
 
-		return ServerNetworkingImpl.getAddon(networkHandler).registerChannel(channelName, responseHandler);
+		return ServerNetworkingImpl.getAddon(packetListener).registerChannel(channelName, responseHandler);
 	}
 
 	/**
@@ -107,34 +107,34 @@ public final class ServerLoginNetworking {
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel name
 	 */
-	public static ServerLoginNetworking.@Nullable LoginQueryResponseHandler unregisterReceiver(ServerLoginPacketListenerImpl networkHandler, Identifier channelName) {
-		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+	public static ServerLoginNetworking.@Nullable LoginQueryResponseHandler unregisterReceiver(ServerLoginPacketListenerImpl packetListener, Identifier channelName) {
+		Objects.requireNonNull(packetListener, "Packet listener cannot be null");
 
-		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
+		return ServerNetworkingImpl.getAddon(packetListener).unregisterChannel(channelName);
 	}
 
 	// Helper methods
 
 	/**
-	 * Returns the <i>Minecraft</i> Server of a server login network handler.
+	 * Returns the <i>Minecraft</i> Server of a server login packet listener.
 	 *
-	 * @param handler the server login network handler
+	 * @param listener the server login packet listener
 	 */
-	public static MinecraftServer getServer(ServerLoginPacketListenerImpl handler) {
-		Objects.requireNonNull(handler, "Network handler cannot be null");
+	public static MinecraftServer getServer(ServerLoginPacketListenerImpl listener) {
+		Objects.requireNonNull(listener, "Packet listener cannot be null");
 
-		return ((ServerLoginPacketListenerImplAccessor) handler).getServer();
+		return ((ServerLoginPacketListenerImplAccessor) listener).getServer();
 	}
 
 	/**
 	 * Gets the packet sender which sends packets to the connected client.
 	 *
-	 * @param handler the network handler, representing the connection to the client
+	 * @param listener the packet listener, representing the connection to the client
 	 * @return the packet sender
 	 */
-	public static LoginPacketSender getSender(ServerLoginPacketListenerImpl handler) {
-		Objects.requireNonNull(handler, "Network handler cannot be null");
-		return ServerNetworkingImpl.getAddon(handler);
+	public static LoginPacketSender getSender(ServerLoginPacketListenerImpl listener) {
+		Objects.requireNonNull(listener, "Packet listener cannot be null");
+		return ServerNetworkingImpl.getAddon(listener);
 	}
 
 	private ServerLoginNetworking() {
@@ -150,13 +150,13 @@ public final class ServerLoginNetworking {
 		 *
 		 * <p><b>Whether the client understood the query should be checked before reading from the payload of the packet.</b>
 		 * @param server the server
-		 * @param handler the network handler that received this packet, representing the player/client who sent the response
+		 * @param listener the packet listener that received this packet, representing the player/client who sent the response
 		 * @param understood whether the client understood the packet
 		 * @param buf the payload of the packet
 		 * @param synchronizer the synchronizer which may be used to delay log-in till a {@link Future} is completed.
 		 * @param responseSender the packet sender
 		 */
-		void receive(MinecraftServer server, ServerLoginPacketListenerImpl handler, boolean understood, FriendlyByteBuf buf, LoginSynchronizer synchronizer, PacketSender responseSender);
+		void receive(MinecraftServer server, ServerLoginPacketListenerImpl listener, boolean understood, FriendlyByteBuf buf, LoginSynchronizer synchronizer, PacketSender responseSender);
 	}
 
 	/**
@@ -176,9 +176,9 @@ public final class ServerLoginNetworking {
 		 * building of a followup query request can be performed properly on the logical server
 		 * thread before the player successfully logs in:
 		 * <pre>{@code
-		 * ServerLoginNetworking.registerGlobalReceiver(CHECK_CHANNEL, (server, handler, understood, buf, synchronizer, responseSender) -&gt; {
+		 * ServerLoginNetworking.registerGlobalReceiver(CHECK_CHANNEL, (server, listener, understood, buf, synchronizer, responseSender) -&gt; {
 		 * 	if (!understood) {
-		 * 		handler.disconnect(Text.literal("Only accept clients that can check!"));
+		 * 		listener.disconnect(Component.literal("Only accept clients that can check!"));
 		 * 		return;
 		 * 	}
 		 *
@@ -188,12 +188,12 @@ public final class ServerLoginNetworking {
 		 * 	synchronizer.waitFor(server.submit(() -&gt; {
 		 * 		LoginInfoChecker checker = LoginInfoChecker.get(server);
 		 *
-		 * 		if (!checker.check(handler.getConnectionInfo(), checkMessage)) {
-		 * 			handler.disconnect(Text.literal("Invalid credentials!"));
+		 * 		if (!checker.check(listener.getUserName(), checkMessage)) {
+		 * 			listener.disconnect(Component.literal("Invalid credentials!"));
 		 * 			return;
 		 * 		}
 		 *
-		 * 		responseSender.send(UPCOMING_CHECK, checker.buildSecondQueryPacket(handler, checkMessage));
+		 * 		responseSender.send(UPCOMING_CHECK, checker.buildSecondQueryPacket(listener, checkMessage));
 		 * 	}));
 		 * });
 		 * }</pre>

@@ -34,9 +34,9 @@ public final class ClientLoginConnectionEvents {
 	 *
 	 * @see ClientLoginNetworking#registerReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)
 	 */
-	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (handler, client) -> {
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (listener, client) -> {
 		for (Init callback : callbacks) {
-			callback.onLoginStart(handler, client);
+			callback.onLoginStart(listener, client);
 		}
 	});
 
@@ -54,9 +54,9 @@ public final class ClientLoginConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<QueryStart> QUERY_START = EventFactory.createArrayBacked(QueryStart.class, callbacks -> (handler, client) -> {
+	public static final Event<QueryStart> QUERY_START = EventFactory.createArrayBacked(QueryStart.class, callbacks -> (listener, client) -> {
 		for (QueryStart callback : callbacks) {
-			callback.onLoginQueryStart(handler, client);
+			callback.onLoginQueryStart(listener, client);
 		}
 	});
 
@@ -65,9 +65,9 @@ public final class ClientLoginConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (handler, client) -> {
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (listener, client) -> {
 		for (Disconnect callback : callbacks) {
-			callback.onLoginDisconnect(handler, client);
+			callback.onLoginDisconnect(listener, client);
 		}
 	});
 
@@ -79,7 +79,7 @@ public final class ClientLoginConnectionEvents {
 	 */
 	@FunctionalInterface
 	public interface Init {
-		void onLoginStart(ClientHandshakePacketListenerImpl handler, Minecraft client);
+		void onLoginStart(ClientHandshakePacketListenerImpl listener, Minecraft client);
 	}
 
 	/**
@@ -87,7 +87,7 @@ public final class ClientLoginConnectionEvents {
 	 */
 	@FunctionalInterface
 	public interface QueryStart {
-		void onLoginQueryStart(ClientHandshakePacketListenerImpl handler, Minecraft client);
+		void onLoginQueryStart(ClientHandshakePacketListenerImpl listener, Minecraft client);
 	}
 
 	/**
@@ -95,6 +95,6 @@ public final class ClientLoginConnectionEvents {
 	 */
 	@FunctionalInterface
 	public interface Disconnect {
-		void onLoginDisconnect(ClientHandshakePacketListenerImpl handler, Minecraft client);
+		void onLoginDisconnect(ClientHandshakePacketListenerImpl listener, Minecraft client);
 	}
 }
