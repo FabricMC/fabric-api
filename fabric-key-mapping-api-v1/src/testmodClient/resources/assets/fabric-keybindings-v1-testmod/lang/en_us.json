@@ -1,0 +1,8 @@
+{
+  "key.category.fabric-key-mapping-api-v1-testmod.test_category_1": "First Test Category",
+  "key.category.fabric-key-mapping-api-v1-testmod.test_category_2": "Second Test Category",
+  "key.fabric-key-mapping-api-v1-testmod.test_keymapping_1": "Test 1",
+  "key.fabric-key-mapping-api-v1-testmod.test_keymapping_2": "Test 2",
+  "key.fabric-key-mapping-api-v1-testmod.test_keymapping_duplicate": "Duplicate Test",
+  "key.fabric-key-mapping-api-v1-testmod.test_keymapping_sticky": "Sticky Test"
+}

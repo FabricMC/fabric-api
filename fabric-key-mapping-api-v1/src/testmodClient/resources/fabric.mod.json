@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-key-mapping-api-v1-testmod",
+  "name": "Fabric Key Mapping API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-api-base": "*",
+    "fabric-lifecycle-events-v1": "*",
+    "fabric-key-mapping-api-v1": "*"
+  },
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.test.client.keymapping.KeyMappingsTest"
+    ]
+  }
+}

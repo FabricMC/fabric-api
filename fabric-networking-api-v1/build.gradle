@@ -5,7 +5,7 @@ moduleDependencies(project, ['fabric-api-base'])
 testDependencies(project, [
 	':fabric-command-api-v2',
 	':fabric-lifecycle-events-v1',
-	':fabric-key-binding-api-v1'
+	':fabric-key-mapping-api-v1'
 ])
 
 loom {

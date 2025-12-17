@@ -61,20 +61,20 @@ public final class TestInputImpl implements TestInput {
 	}
 
 	@Override
-	public void holdKey(KeyMapping keyBinding) {
+	public void holdKey(KeyMapping keyMapping) {
 		ThreadingImpl.checkOnGametestThread("holdKey");
-		Preconditions.checkNotNull(keyBinding, "keyBinding");
+		Preconditions.checkNotNull(keyMapping, "keyMapping");
 
-		holdKey(getBoundKey(keyBinding, "hold"));
+		holdKey(getBoundKey(keyMapping, "hold"));
 	}
 
 	@Override
-	public void holdKey(Function<Options, KeyMapping> keyBindingGetter) {
+	public void holdKey(Function<Options, KeyMapping> keyMappingGetter) {
 		ThreadingImpl.checkOnGametestThread("holdKey");
-		Preconditions.checkNotNull(keyBindingGetter, "keyBindingGetter");
+		Preconditions.checkNotNull(keyMappingGetter, "keyMappingGetter");
 
-		KeyMapping keyBinding = context.computeOnClient(client -> keyBindingGetter.apply(client.options));
-		holdKey(keyBinding);
+		KeyMapping keyMapping = context.computeOnClient(client -> keyMappingGetter.apply(client.options));
+		holdKey(keyMapping);
 	}
 
 	@Override
@@ -123,20 +123,20 @@ public final class TestInputImpl implements TestInput {
 	}
 
 	@Override
-	public void releaseKey(KeyMapping keyBinding) {
+	public void releaseKey(KeyMapping keyMapping) {
 		ThreadingImpl.checkOnGametestThread("releaseKey");
-		Preconditions.checkNotNull(keyBinding, "keyBinding");
+		Preconditions.checkNotNull(keyMapping, "keyMapping");
 
-		releaseKey(getBoundKey(keyBinding, "release"));
+		releaseKey(getBoundKey(keyMapping, "release"));
 	}
 
 	@Override
-	public void releaseKey(Function<Options, KeyMapping> keyBindingGetter) {
+	public void releaseKey(Function<Options, KeyMapping> keyMappingGetter) {
 		ThreadingImpl.checkOnGametestThread("releaseKey");
-		Preconditions.checkNotNull(keyBindingGetter, "keyBindingGetter");
+		Preconditions.checkNotNull(keyMappingGetter, "keyMappingGetter");
 
-		KeyMapping keyBinding = context.computeOnClient(client -> keyBindingGetter.apply(client.options));
-		releaseKey(keyBinding);
+		KeyMapping keyMapping = context.computeOnClient(client -> keyMappingGetter.apply(client.options));
+		releaseKey(keyMapping);
 	}
 
 	@Override
@@ -193,20 +193,20 @@ public final class TestInputImpl implements TestInput {
 	}
 
 	@Override
-	public void pressKey(KeyMapping keyBinding) {
+	public void pressKey(KeyMapping keyMapping) {
 		ThreadingImpl.checkOnGametestThread("pressKey");
-		Preconditions.checkNotNull(keyBinding, "keyBinding");
+		Preconditions.checkNotNull(keyMapping, "keyMapping");
 
-		pressKey(getBoundKey(keyBinding, "press"));
+		pressKey(getBoundKey(keyMapping, "press"));
 	}
 
 	@Override
-	public void pressKey(Function<Options, KeyMapping> keyBindingGetter) {
+	public void pressKey(Function<Options, KeyMapping> keyMappingGetter) {
 		ThreadingImpl.checkOnGametestThread("pressKey");
-		Preconditions.checkNotNull(keyBindingGetter, "keyBindingGetter");
+		Preconditions.checkNotNull(keyMappingGetter, "keyMappingGetter");
 
-		KeyMapping keyBinding = context.computeOnClient(client -> keyBindingGetter.apply(client.options));
-		pressKey(keyBinding);
+		KeyMapping keyMapping = context.computeOnClient(client -> keyMappingGetter.apply(client.options));
+		pressKey(keyMapping);
 	}
 
 	@Override
@@ -234,22 +234,22 @@ public final class TestInputImpl implements TestInput {
 	}
 
 	@Override
-	public void holdKeyFor(KeyMapping keyBinding, int ticks) {
+	public void holdKeyFor(KeyMapping keyMapping, int ticks) {
 		ThreadingImpl.checkOnGametestThread("holdKeyFor");
-		Preconditions.checkNotNull(keyBinding, "keyBinding");
+		Preconditions.checkNotNull(keyMapping, "keyMapping");
 		Preconditions.checkArgument(ticks >= 0, "ticks cannot be negative");
 
-		holdKeyFor(getBoundKey(keyBinding, "hold"), ticks);
+		holdKeyFor(getBoundKey(keyMapping, "hold"), ticks);
 	}
 
 	@Override
-	public void holdKeyFor(Function<Options, KeyMapping> keyBindingGetter, int ticks) {
+	public void holdKeyFor(Function<Options, KeyMapping> keyMappingGetter, int ticks) {
 		ThreadingImpl.checkOnGametestThread("holdKeyFor");
-		Preconditions.checkNotNull(keyBindingGetter, "keyBindingGetter");
+		Preconditions.checkNotNull(keyMappingGetter, "keyMappingGetter");
 		Preconditions.checkArgument(ticks >= 0, "ticks cannot be negative");
 
-		KeyMapping keyBinding = context.computeOnClient(client -> keyBindingGetter.apply(client.options));
-		holdKeyFor(keyBinding, ticks);
+		KeyMapping keyMapping = context.computeOnClient(client -> keyMappingGetter.apply(client.options));
+		holdKeyFor(keyMapping, ticks);
 	}
 
 	@Override
@@ -338,11 +338,11 @@ public final class TestInputImpl implements TestInput {
 		context.runOnClient(client -> ((WindowHooks) (Object) client.getWindow()).fabric_resize(width, height));
 	}
 
-	private static InputConstants.Key getBoundKey(KeyMapping keyBinding, String action) {
-		InputConstants.Key boundKey = ((KeyMappingAccessor) keyBinding).getBoundKey();
+	private static InputConstants.Key getBoundKey(KeyMapping keyMapping, String action) {
+		InputConstants.Key boundKey = ((KeyMappingAccessor) keyMapping).getBoundKey();
 
 		if (boundKey == InputConstants.UNKNOWN) {
-			throw new AssertionError("Cannot %s binding '%s' because it isn't bound to a key".formatted(action, keyBinding.getName()));
+			throw new AssertionError("Cannot %s binding '%s' because it isn't bound to a key".formatted(action, keyMapping.getName()));
 		}
 
 		return boundKey;

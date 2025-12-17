@@ -23,14 +23,14 @@ import net.minecraft.client.KeyMapping;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.test.networking.keybindreciever.KeybindPayload;
 
-// Sends a packet to the server when a keybinding was pressed
+// Sends a packet to the server when a keymapping was pressed
 // The server in response will send a chat message to the client.
 public class NetworkingKeybindClientPacketTest implements ClientModInitializer {
-	public static final KeyMapping TEST_BINDING = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.fabric-networking-api-v1-testmod.test", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_BRACKET, KeyMapping.Category.MISC));
+	public static final KeyMapping TEST_BINDING = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-networking-api-v1-testmod.test", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_BRACKET, KeyMapping.Category.MISC));
 
 	@Override
 	public void onInitializeClient() {

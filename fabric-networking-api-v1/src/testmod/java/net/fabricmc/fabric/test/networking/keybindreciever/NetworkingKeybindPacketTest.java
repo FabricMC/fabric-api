@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
-// Listens for a packet from the client which is sent to the server when a keybinding is pressed.
+// Listens for a packet from the client which is sent to the server when a keymapping is pressed.
 // In response the server will send a message containing the keybind text letting the client know it pressed that key.
 public final class NetworkingKeybindPacketTest implements ModInitializer {
 	private static void receive(KeybindPayload payload, ServerPlayNetworking.Context context) {

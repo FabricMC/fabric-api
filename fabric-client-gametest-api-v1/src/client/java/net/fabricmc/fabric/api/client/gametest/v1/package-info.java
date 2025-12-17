@@ -29,7 +29,7 @@
  * <p>The game remains paused unless you explicitly unpause it using various waiting functions such as
  * {@link net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#waitTick() ClientGameTestContext.waitTick()}.
  * A side effect of this is that <strong>the results of your code may not be immediate if the game needs a tick to
- * process them</strong>. A big example of this is key bindings, although some key binding methods have built-in tick
+ * process them</strong>. A big example of this is key mappings, although some key mapping methods have built-in tick
  * waits to mitigate the issue. See the {@link net.fabricmc.fabric.api.client.gametest.v1.TestInput TestInput}
  * documentation for details. Another pseudo-example is effects on the server need a tick to propagate to the client and
  * vice versa, although this is related to packets more than the fact the game is suspended (see the network

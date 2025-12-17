@@ -197,7 +197,7 @@
 			- largely unconstained trailing subpackages
 			-->
 			<property name="format"
-			value="^net\.fabricmc\.fabric\.(api(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+([a-rt-z]|ss))+\.v[0-9]+|(impl|mixin|test)(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+([a-rt-z]|ss))+(\.v[0-9]+)?|api\.(event|util|biomes\.v1|registry|client\.screen|container|block|entity|client\.creativemodetab|client\.keybinding|tag|tools|client\.model|network|server|client\.render|resource|client\.texture))(|\.[a-z]+(\.[a-z0-9]+)*)$"/>
+			value="^net\.fabricmc\.fabric\.(api(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+([a-rt-z]|ss))+\.v[0-9]+|(impl|mixin|test)(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+([a-rt-z]|ss))+(\.v[0-9]+)?|api\.(event|util|biomes\.v1|registry|client\.screen|container|block|entity|client\.creativemodetab|client\.keymapping|tag|tools|client\.model|network|server|client\.render|resource|client\.texture))(|\.[a-z]+(\.[a-z0-9]+)*)$"/>
 		</module>
 
 		<!--<module name="InvalidJavadocPosition"/>-->
