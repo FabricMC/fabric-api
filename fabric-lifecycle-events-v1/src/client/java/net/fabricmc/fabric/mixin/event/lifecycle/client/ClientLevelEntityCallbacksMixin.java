@@ -29,7 +29,7 @@ import net.minecraft.world.entity.Entity;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 
 @Mixin(targets = "net.minecraft.client.multiplayer.ClientLevel$EntityCallbacks")
-abstract class ClientWorldClientEntityHandlerMixin {
+abstract class ClientLevelEntityCallbacksMixin {
 	// final synthetic Lnet/minecraft/client/multiplayer/ClientLevel; this$0
 	@SuppressWarnings("ShadowTarget")
 	@Shadow

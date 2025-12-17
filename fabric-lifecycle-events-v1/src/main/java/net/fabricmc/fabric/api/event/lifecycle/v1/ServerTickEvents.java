@@ -57,26 +57,26 @@ public final class ServerTickEvents {
 	});
 
 	/**
-	 * Called at the start of a ServerWorld's tick.
+	 * Called at the start of a ServerLevel's tick.
 	 *
 	 * <p>When the dedicated server is "paused", this event is not invoked.
 	 */
-	public static final Event<StartWorldTick> START_WORLD_TICK = EventFactory.createArrayBacked(StartWorldTick.class, callbacks -> world -> {
-		for (StartWorldTick callback : callbacks) {
-			callback.onStartTick(world);
+	public static final Event<StartLevelTick> START_LEVEL_TICK = EventFactory.createArrayBacked(StartLevelTick.class, callbacks -> level -> {
+		for (StartLevelTick callback : callbacks) {
+			callback.onStartTick(level);
 		}
 	});
 
 	/**
-	 * Called at the end of a ServerWorld's tick.
+	 * Called at the end of a ServerLevel's tick.
 	 *
-	 * <p>End of world tick may be used to start async computations for the next tick.
+	 * <p>End of level tick may be used to start async computations for the next tick.
 	 *
 	 * <p>When the dedicated server is "paused", this event is not invoked.
 	 */
-	public static final Event<EndWorldTick> END_WORLD_TICK = EventFactory.createArrayBacked(EndWorldTick.class, callbacks -> world -> {
-		for (EndWorldTick callback : callbacks) {
-			callback.onEndTick(world);
+	public static final Event<EndLevelTick> END_LEVEL_TICK = EventFactory.createArrayBacked(EndLevelTick.class, callbacks -> level -> {
+		for (EndLevelTick callback : callbacks) {
+			callback.onEndTick(level);
 		}
 	});
 
@@ -91,12 +91,12 @@ public final class ServerTickEvents {
 	}
 
 	@FunctionalInterface
-	public interface StartWorldTick {
-		void onStartTick(ServerLevel world);
+	public interface StartLevelTick {
+		void onStartTick(ServerLevel level);
 	}
 
 	@FunctionalInterface
-	public interface EndWorldTick {
-		void onEndTick(ServerLevel world);
+	public interface EndLevelTick {
+		void onEndTick(ServerLevel level);
 	}
 }

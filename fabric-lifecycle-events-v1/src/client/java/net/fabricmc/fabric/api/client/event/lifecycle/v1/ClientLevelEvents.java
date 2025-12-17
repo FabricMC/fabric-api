@@ -22,27 +22,27 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public final class ClientWorldEvents {
-	private ClientWorldEvents() {
+public final class ClientLevelEvents {
+	private ClientLevelEvents() {
 	}
 
 	/**
-	 * An event which is called after the client world has been changed.
+	 * An event which is called after the client level has been changed.
 	 */
-	public static final Event<AfterClientWorldChange> AFTER_CLIENT_WORLD_CHANGE = EventFactory.createArrayBacked(AfterClientWorldChange.class, callbacks -> (client, world) -> {
-		for (AfterClientWorldChange callback : callbacks) {
-			callback.afterWorldChange(client, world);
+	public static final Event<AfterClientLevelChange> AFTER_CLIENT_LEVEL_CHANGE = EventFactory.createArrayBacked(AfterClientLevelChange.class, callbacks -> (client, level) -> {
+		for (AfterClientLevelChange callback : callbacks) {
+			callback.afterLevelChange(client, level);
 		}
 	});
 
 	@FunctionalInterface
-	public interface AfterClientWorldChange {
+	public interface AfterClientLevelChange {
 		/**
-		 * Called after the client world has been changed.
+		 * Called after the client level has been changed.
 		 *
 		 * @param client the client instance
-		 * @param world the new world instance
+		 * @param level the new level instance
 		 */
-		void afterWorldChange(Minecraft client, ClientLevel world);
+		void afterLevelChange(Minecraft client, ClientLevel level);
 	}
 }

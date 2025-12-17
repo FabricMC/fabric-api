@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 
 /**
  * This is a server only mixin for good reason:
- * Since all block entity tracking is now on the world chunk, we inject into WorldChunk.
+ * Since all block entity tracking is now on the world chunk, we inject into LevelChunk.
  * In order to prevent client logic from being loaded due to the mixin, we have a mixin for the client and this one for the server.
  */
 @Mixin(LevelChunk.class)

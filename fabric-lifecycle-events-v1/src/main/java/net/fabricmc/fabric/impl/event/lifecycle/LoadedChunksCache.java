@@ -27,12 +27,12 @@ public interface LoadedChunksCache {
 	Set<LevelChunk> fabric_getLoadedChunks();
 
 	/**
-	 * Marks a chunk as loaded in a world.
+	 * Marks a chunk as loaded in a level.
 	 */
 	void fabric_markLoaded(LevelChunk chunk);
 
 	/**
-	 * Marks a chunk as unloaded in a world.
+	 * Marks a chunk as unloaded in a level.
 	 */
 	void fabric_markUnloaded(LevelChunk chunk);
 }
