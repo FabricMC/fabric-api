@@ -68,25 +68,25 @@ public interface FabricSoundInstance {
 	 * class CustomSound extends AbstractSoundInstance {
 	 *     CustomSound() {
 	 *         // Use the sound defined in sounds.json
-	 *         super(Identifier.fromNamespaceAndPath("modid", "custom_sound"), SoundCategory.BLOCKS, SoundInstance.createRandom());
+	 *         super(Identifier.fromNamespaceAndPath("modid", "custom_sound"), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
 	 *     }
 	 *
 	 *     @Override
-	 *     public CompletableFuture<AudioStream> getAudioStream(SoundLoader loader, Identifier id, boolean repeatInstantly) {
+	 *     public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
 	 *         // Return your custom AudioStream implementation.
 	 *         return CompletableFuture.completedFuture(new CustomStream());
 	 *     }
 	 * }
 	 * }</pre>
 	 *
-	 * @param loader          The default sound loader, capable of loading {@code .ogg} files.
+	 * @param library         The default buffer library, capable of loading {@code .ogg} files.
 	 * @param id              The resolved sound ID, equal to {@link SoundInstance#getSound()}'s location.
 	 * @param repeatInstantly Whether this sound should loop. This is true when the sound
 	 *                        {@linkplain SoundInstance#isLooping()}  is repeatable} and has
 	 *                        {@linkplain SoundInstance#getDelay()}  no delay}.
 	 * @return the loaded audio stream
 	 */
-	default CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary loader, Identifier id, boolean repeatInstantly) {
-		return loader.getStream(id, repeatInstantly);
+	default CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
+		return library.getStream(id, repeatInstantly);
 	}
 }
