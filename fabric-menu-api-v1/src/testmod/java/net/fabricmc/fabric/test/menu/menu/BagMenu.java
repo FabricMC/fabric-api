@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.menu.screen;
+package net.fabricmc.fabric.test.menu.menu;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;

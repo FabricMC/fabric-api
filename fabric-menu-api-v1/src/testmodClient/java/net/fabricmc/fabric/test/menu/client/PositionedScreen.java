@@ -27,7 +27,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import net.fabricmc.fabric.test.menu.screen.PositionedMenu;
+import net.fabricmc.fabric.test.menu.menu.PositionedMenu;
 
 public class PositionedScreen extends AbstractContainerScreen<AbstractContainerMenu> {
 	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/dispenser.png");

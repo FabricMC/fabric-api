@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.menu.screen;
+package net.fabricmc.fabric.test.menu.menu;
 
 import java.util.Optional;
 

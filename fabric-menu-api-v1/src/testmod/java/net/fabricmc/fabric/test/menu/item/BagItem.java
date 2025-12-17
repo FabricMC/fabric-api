@@ -25,7 +25,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.test.menu.screen.BagMenu;
+import net.fabricmc.fabric.test.menu.menu.BagMenu;
 
 public class BagItem extends Item {
 	public BagItem(Properties properties) {

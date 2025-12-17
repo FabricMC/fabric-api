@@ -26,6 +26,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
+// TODO: This example needs an overhaul
 /**
  * A {@link MenuType} for an extended menus that
  * synchronizes additional data to the client when it is opened.

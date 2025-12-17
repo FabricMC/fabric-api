@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
 import net.fabricmc.fabric.test.menu.MenuTest;
-import net.fabricmc.fabric.test.menu.screen.BoxMenu;
+import net.fabricmc.fabric.test.menu.menu.BoxMenu;
 
 public class BoxBlockEntity extends RandomizableContainerBlockEntity implements ExtendedMenuFactory<BlockPos> {
 	private NonNullList<ItemStack> items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);

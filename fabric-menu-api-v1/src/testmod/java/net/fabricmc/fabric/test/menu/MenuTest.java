@@ -38,9 +38,9 @@ import net.fabricmc.fabric.test.menu.block.BoxBlock;
 import net.fabricmc.fabric.test.menu.block.BoxBlockEntity;
 import net.fabricmc.fabric.test.menu.item.BagItem;
 import net.fabricmc.fabric.test.menu.item.PositionedBagItem;
-import net.fabricmc.fabric.test.menu.screen.BagMenu;
-import net.fabricmc.fabric.test.menu.screen.BoxMenu;
-import net.fabricmc.fabric.test.menu.screen.PositionedBagMenu;
+import net.fabricmc.fabric.test.menu.menu.BagMenu;
+import net.fabricmc.fabric.test.menu.menu.BoxMenu;
+import net.fabricmc.fabric.test.menu.menu.PositionedBagMenu;
 
 public class MenuTest implements ModInitializer {
 	public static final String ID = "fabric-menu-api-v1-testmod";
