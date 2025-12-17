@@ -25,111 +25,111 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.ValueInput;
 
 /**
- * A delegating ReadView, used to force usage of fallback implementation of FabricReadView.
+ * A delegating ValueInput, used to force usage of fallback implementation of FabricValueInput.
  */
-public record DelegateReadView(ValueInput view) implements ValueInput {
+public record DelegateValueInput(ValueInput input) implements ValueInput {
 	@Override
 	public <T> Optional<T> read(String key, Codec<T> codec) {
-		return view.read(key, codec);
+		return input.read(key, codec);
 	}
 
 	@Override
 	public <T> Optional<T> read(MapCodec<T> mapCodec) {
-		return view.read(mapCodec);
+		return input.read(mapCodec);
 	}
 
 	@Override
 	public Optional<ValueInput> child(String key) {
-		return view.child(key).map(DelegateReadView::new);
+		return input.child(key).map(DelegateValueInput::new);
 	}
 
 	@Override
 	public ValueInput childOrEmpty(String key) {
-		return new DelegateReadView(view.childOrEmpty(key));
+		return new DelegateValueInput(input.childOrEmpty(key));
 	}
 
 	@Override
 	public Optional<ValueInputList> childrenList(String key) {
-		return view.childrenList(key);
+		return input.childrenList(key);
 	}
 
 	@Override
 	public ValueInputList childrenListOrEmpty(String key) {
-		return view.childrenListOrEmpty(key);
+		return input.childrenListOrEmpty(key);
 	}
 
 	@Override
 	public <T> Optional<TypedInputList<T>> list(String key, Codec<T> typeCodec) {
-		return view.list(key, typeCodec);
+		return input.list(key, typeCodec);
 	}
 
 	@Override
 	public <T> TypedInputList<T> listOrEmpty(String key, Codec<T> typeCodec) {
-		return view.listOrEmpty(key, typeCodec);
+		return input.listOrEmpty(key, typeCodec);
 	}
 
 	@Override
 	public boolean getBooleanOr(String key, boolean fallback) {
-		return view.getBooleanOr(key, fallback);
+		return input.getBooleanOr(key, fallback);
 	}
 
 	@Override
 	public byte getByteOr(String key, byte fallback) {
-		return view.getByteOr(key, fallback);
+		return input.getByteOr(key, fallback);
 	}
 
 	@Override
 	public int getShortOr(String key, short fallback) {
-		return view.getShortOr(key, fallback);
+		return input.getShortOr(key, fallback);
 	}
 
 	@Override
 	public Optional<Integer> getInt(String key) {
-		return view.getInt(key);
+		return input.getInt(key);
 	}
 
 	@Override
 	public int getIntOr(String key, int fallback) {
-		return view.getIntOr(key, fallback);
+		return input.getIntOr(key, fallback);
 	}
 
 	@Override
 	public long getLongOr(String key, long fallback) {
-		return view.getLongOr(key, fallback);
+		return input.getLongOr(key, fallback);
 	}
 
 	@Override
 	public Optional<Long> getLong(String key) {
-		return view.getLong(key);
+		return input.getLong(key);
 	}
 
 	@Override
 	public float getFloatOr(String key, float fallback) {
-		return view.getFloatOr(key, fallback);
+		return input.getFloatOr(key, fallback);
 	}
 
 	@Override
 	public double getDoubleOr(String key, double fallback) {
-		return view.getDoubleOr(key, fallback);
+		return input.getDoubleOr(key, fallback);
 	}
 
 	@Override
 	public Optional<String> getString(String key) {
-		return view.getString(key);
+		return input.getString(key);
 	}
 
 	@Override
 	public String getStringOr(String key, String fallback) {
-		return view.getStringOr(key, fallback);
+		return input.getStringOr(key, fallback);
 	}
 
 	@Override
 	public Optional<int[]> getIntArray(String key) {
-		return view.getIntArray(key);
+		return input.getIntArray(key);
 	}
 
 	@Override
 	public HolderLookup.Provider lookup() {
-		return view.lookup();
+		return input.lookup();
 	}
 }
