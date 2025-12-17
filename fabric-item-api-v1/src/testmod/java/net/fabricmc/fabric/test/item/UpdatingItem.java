@@ -40,8 +40,8 @@ public class UpdatingItem extends Item {
 
 	private final boolean allowUpdateAnimation;
 
-	public UpdatingItem(boolean allowUpdateAnimation, Item.Properties settings) {
-		super(settings
+	public UpdatingItem(boolean allowUpdateAnimation, Item.Properties properties) {
+		super(properties
 					.component(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.builder()
 						.add(Attributes.ATTACK_DAMAGE, PLUS_FIVE, EquipmentSlotGroup.MAINHAND)
 						.build()
