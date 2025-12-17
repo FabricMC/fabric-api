@@ -63,13 +63,13 @@ public class ResourceReloaderTestMod implements ModInitializer {
 		Identifier clientSecondId = Constants.id("client_second");
 
 		ResourceLoader resourceLoader = ResourceLoader.get(PackType.CLIENT_RESOURCES);
-		resourceLoader.registerReloader(clientSecondId, (ResourceManagerReloadListener) manager -> {
+		resourceLoader.registerReloadListener(clientSecondId, (ResourceManagerReloadListener) manager -> {
 			if (!clientResources) {
 				throw new AssertionError("Second reload listener was called before the first!");
 			}
 		});
-		resourceLoader.registerReloader(clientFirstId, (ResourceManagerReloadListener) manager -> clientResources = true);
-		resourceLoader.addReloaderOrdering(clientFirstId, clientSecondId);
+		resourceLoader.registerReloadListener(clientFirstId, (ResourceManagerReloadListener) manager -> clientResources = true);
+		resourceLoader.addListenerOrdering(clientFirstId, clientSecondId);
 	}
 
 	private void setupServerReloadListeners() {
@@ -77,15 +77,15 @@ public class ResourceReloaderTestMod implements ModInitializer {
 		Identifier serverSecondId = Constants.id("server_second");
 
 		DataResourceLoader resourceLoader = DataResourceLoader.get();
-		resourceLoader.registerReloader(serverSecondId, (ResourceManagerReloadListener) manager -> {
+		resourceLoader.registerReloadListener(serverSecondId, (ResourceManagerReloadListener) manager -> {
 			if (!serverResources) {
 				throw new AssertionError("Second reload listener was called before the first!");
 			}
 		});
-		resourceLoader.registerReloader(serverFirstId, (ResourceManagerReloadListener) manager -> serverResources = true);
-		resourceLoader.addReloaderOrdering(serverFirstId, serverSecondId);
-		resourceLoader.registerReloader(RegistryReloader.ID, new RegistryReloader());
-		resourceLoader.registerReloader(StatefulRegistryReloader.ID, StatefulRegistryReloader::new);
+		resourceLoader.registerReloadListener(serverFirstId, (ResourceManagerReloadListener) manager -> serverResources = true);
+		resourceLoader.addListenerOrdering(serverFirstId, serverSecondId);
+		resourceLoader.registerReloadListener(RegistryReloader.ID, new RegistryReloader());
+		resourceLoader.registerReloadListener(StatefulRegistryReloader.ID, StatefulRegistryReloader::new);
 	}
 
 	private static class RegistryReloader implements PreparableReloadListener {
@@ -94,7 +94,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 
 		@Override
 		public CompletableFuture<Void> reload(SharedState store, Executor prepareExecutor, PreparationBarrier reloadSynchronizer, Executor applyExecutor) {
-			HolderLookup.Provider registries = store.get(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY);
+			HolderLookup.Provider registries = store.get(ResourceLoader.HOLDER_LOOKUP_KEY);
 			registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
 			registries.lookupOrThrow(Registries.ITEM).getOrThrow(ItemTags.AXES);
 			return reloadSynchronizer.wait(null).thenRunAsync(

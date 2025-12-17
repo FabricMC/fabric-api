@@ -35,29 +35,29 @@ import net.fabricmc.fabric.impl.resource.DataResourceLoaderImpl;
 @ApiStatus.NonExtendable
 public interface DataResourceLoader extends ResourceLoader {
 	/**
-	 * The resource reloader store key for the recipe manager.
+	 * The reload listener state key for the recipe manager.
 	 *
-	 * @apiNote The recipe manager is only available in {@linkplain PackType#SERVER_DATA server data} resource reloaders.
+	 * @apiNote The recipe manager is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
 	 * <br/>
-	 * It should <b>only</b> be accessed in the application phase of the resource reloader,
+	 * It should <b>only</b> be accessed in the application phase of the reload listeners,
 	 * and you should depend on {@link net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server#RECIPES}.
 	 */
 	PreparableReloadListener.StateKey<RecipeManager> RECIPE_MANAGER_KEY = new PreparableReloadListener.StateKey<>();
 	/**
-	 * The resource reloader store key for the advancement loader.
+	 * The reload listener state key for the advancement loader.
 	 *
-	 * @apiNote The advancement loader is only available in {@linkplain PackType#SERVER_DATA server data} resource reloaders.
+	 * @apiNote The advancement loader is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
 	 * <br/>
-	 * It should <b>only</b> be accessed in the application phase of the resource reloader,
+	 * It should <b>only</b> be accessed in the application phase of the reload listeners,
 	 * and you should depend on {@link net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server#ADVANCEMENTS}.
 	 */
 	PreparableReloadListener.StateKey<ServerAdvancementManager> ADVANCEMENT_LOADER_KEY = new PreparableReloadListener.StateKey<>();
 	/**
-	 * The resource reloader store key for the data resource store.
+	 * The reload listener state key for the data resource store.
 	 *
-	 * @apiNote The data resource store is only available in {@linkplain PackType#SERVER_DATA server data} resource reloaders.
+	 * @apiNote The data resource store is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
 	 * <br/>
-	 * It should <b>only</b> be mutated in the application phase of the resource reloader.
+	 * It should <b>only</b> be mutated in the application phase of the reload listeners.
 	 */
 	PreparableReloadListener.StateKey<DataResourceStore.Mutable> DATA_RESOURCE_STORE_KEY = new PreparableReloadListener.StateKey<>();
 
@@ -66,21 +66,21 @@ public interface DataResourceLoader extends ResourceLoader {
 	}
 
 	/**
-	 * Registers a data resource reloader.
+	 * Registers a data reload listener.
 	 *
-	 * @param id the identifier of the resource reloader
-	 * @param factory the factory function of the resource reloader
-	 * @see #registerReloader(Identifier, PreparableReloadListener)
-	 * @see #addReloaderOrdering(Identifier, Identifier)
+	 * @param id the identifier of the reload listener
+	 * @param factory the factory function of the reload listener
+	 * @see #registerReloadListener(Identifier, PreparableReloadListener)
+	 * @see #addListenerOrdering(Identifier, Identifier)
 	 *
-	 * @apiNote In most cases {@link #registerReloader(Identifier, PreparableReloadListener)} is sufficient and should be preferred,
-	 * but for some resource reloaders like {@link net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener} constructing the resource reloader
-	 * with a known instance of the wrapper lookup is required.
+	 * @apiNote In most cases {@link #registerReloadListener(Identifier, PreparableReloadListener)} is sufficient and should be preferred,
+	 * but for some reload listeners like {@link net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener} constructing the reload listener
+	 * with a known instance of the holder lookup is required.
 	 * <br/>
-	 * While this may encourage stateful resource reloaders, it is best to primarily use resource reloaders as stateless loaders,
+	 * While this may encourage stateful reload listeners, it is best to primarily use reload listeners as stateless loaders,
 	 * as storing a state may easily lead to incomplete or leaking data.
 	 */
-	void registerReloader(
+	void registerReloadListener(
 			Identifier id,
 			Function<HolderLookup.Provider, PreparableReloadListener> factory
 	);

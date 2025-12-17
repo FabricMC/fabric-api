@@ -19,43 +19,43 @@ package net.fabricmc.fabric.api.resource.v1.reloader;
 import net.minecraft.resources.Identifier;
 
 /**
- * This class contains default keys for various Minecraft resource reloaders.
+ * This class contains default keys for various Minecraft reload listener.
  *
  * @see net.minecraft.server.packs.resources.PreparableReloadListener
  */
 public final class ResourceReloaderKeys {
 	/**
-	 * Represents the application phase before Vanilla resource reloaders are invoked.
+	 * Represents the application phase before Vanilla reload listeners are invoked.
 	 *
-	 * <p>No resource reloaders are assigned to this identifier.
+	 * <p>No reload listeners are assigned to this identifier.
 	 *
-	 * @see net.fabricmc.fabric.api.resource.v1.ResourceLoader#addReloaderOrdering(Identifier, Identifier)
+	 * @see net.fabricmc.fabric.api.resource.v1.ResourceLoader#addListenerOrdering(Identifier, Identifier)
 	 */
 	public static final Identifier BEFORE_VANILLA = Identifier.fromNamespaceAndPath("fabric", "before_vanilla");
 	/**
-	 * Represents the application phase after Vanilla resource reloaders are invoked.
+	 * Represents the application phase after Vanilla reload listeners are invoked.
 	 *
-	 * <p>No resource reloaders are assigned to this identifier.
+	 * <p>No reload listeners are assigned to this identifier.
 	 *
-	 * @see net.fabricmc.fabric.api.resource.v1.ResourceLoader#addReloaderOrdering(Identifier, Identifier)
+	 * @see net.fabricmc.fabric.api.resource.v1.ResourceLoader#addListenerOrdering(Identifier, Identifier)
 	 */
 	public static final Identifier AFTER_VANILLA = Identifier.fromNamespaceAndPath("fabric", "after_vanilla");
 
 	private ResourceReloaderKeys() { }
 
 	/**
-	 * Keys for various client resource reloaders.
+	 * Keys for various client reload listeners.
 	 */
 	public static final class Client {
-		public static final Identifier BLOCK_ENTITY_RENDERERS = Identifier.withDefaultNamespace("block_entity_renderers");
-		public static final Identifier BLOCK_RENDER_MANAGER = Identifier.withDefaultNamespace("block_render_manager");
-		public static final Identifier CLOUD_CELLS = Identifier.withDefaultNamespace("cloud_cells");
-		public static final Identifier EQUIPMENT_MODELS = Identifier.withDefaultNamespace("equipment_models");
-		public static final Identifier ENTITY_RENDERERS = Identifier.withDefaultNamespace("entity_renderers");
-		public static final Identifier DRY_FOLIAGE_COLORMAP = Identifier.withDefaultNamespace("dry_foliage_colormap");
-		public static final Identifier FOLIAGE_COLORMAP = Identifier.withDefaultNamespace("foliage_colormap");
+		public static final Identifier BLOCK_ENTITY_RENDER_DISPATCHER = Identifier.withDefaultNamespace("block_entity_render_dispatcher");
+		public static final Identifier BLOCK_RENDER_DISPATCHER = Identifier.withDefaultNamespace("block_render_dispatcher");
+		public static final Identifier CLOUD_RENDERER = Identifier.withDefaultNamespace("cloud_renderer");
+		public static final Identifier EQUIPMENT_ASSETS = Identifier.withDefaultNamespace("equipment_assets");
+		public static final Identifier ENTITY_RENDER_DISPATCHER = Identifier.withDefaultNamespace("entity_render_dispatcher");
+		public static final Identifier DRY_FOLIAGE_COLOR = Identifier.withDefaultNamespace("dry_foliage_color");
+		public static final Identifier FOLIAGE_COLOR = Identifier.withDefaultNamespace("foliage_color");
 		public static final Identifier FONTS = Identifier.withDefaultNamespace("fonts");
-		public static final Identifier GRASS_COLORMAP = Identifier.withDefaultNamespace("grass_colormap");
+		public static final Identifier GRASS_COLOR = Identifier.withDefaultNamespace("grass_color");
 		public static final Identifier ATLAS = Identifier.withDefaultNamespace("atlas");
 		public static final Identifier LANGUAGES = Identifier.withDefaultNamespace("languages");
 		public static final Identifier MODELS = Identifier.withDefaultNamespace("models");
@@ -64,14 +64,14 @@ public final class ResourceReloaderKeys {
 		public static final Identifier SOUNDS = Identifier.withDefaultNamespace("sounds");
 		public static final Identifier SPLASH_TEXTS = Identifier.withDefaultNamespace("splash_texts");
 		public static final Identifier TEXTURES = Identifier.withDefaultNamespace("textures");
-		public static final Identifier WAYPOINT_STYLE_ASSETS = Identifier.withDefaultNamespace("waypoint_style_assets");
+		public static final Identifier WAYPOINT_STYLE = Identifier.withDefaultNamespace("waypoint_style");
 
 		private Client() {
 		}
 	}
 
 	/**
-	 * Keys for various server resource reloaders.
+	 * Keys for various server reload listeners.
 	 */
 	public static final class Server {
 		public static final Identifier ADVANCEMENTS = Identifier.withDefaultNamespace("advancements");

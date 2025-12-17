@@ -46,7 +46,7 @@ public final class DataResourceLoaderImpl extends ResourceLoaderImpl implements 
 	}
 
 	@Override
-	public void registerReloader(Identifier id, Function<HolderLookup.Provider, PreparableReloadListener> factory) {
+	public void registerReloadListener(Identifier id, Function<HolderLookup.Provider, PreparableReloadListener> factory) {
 		Objects.requireNonNull(id, "The reloader identifier should not be null.");
 		Objects.requireNonNull(factory, "The reloader factory should not be null.");
 		this.checkUniqueResourceReloader(id);

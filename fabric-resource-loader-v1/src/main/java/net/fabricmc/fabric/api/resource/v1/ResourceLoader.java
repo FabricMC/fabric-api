@@ -35,45 +35,45 @@ import net.fabricmc.loader.api.ModContainer;
 @ApiStatus.NonExtendable
 public interface ResourceLoader {
 	/**
-	 * The resource reloader store key for the registry lookup.
+	 * The resource listener state key for the holder lookup.
 	 *
-	 * @apiNote The registry lookup is only available in {@linkplain PackType#SERVER_DATA server data} resource reloaders.
+	 * @apiNote The holder lookup is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
 	 */
-	PreparableReloadListener.StateKey<HolderLookup.Provider> RELOADER_REGISTRY_LOOKUP_KEY = new PreparableReloadListener.StateKey<>();
+	PreparableReloadListener.StateKey<HolderLookup.Provider> HOLDER_LOOKUP_KEY = new PreparableReloadListener.StateKey<>();
 	/**
-	 * The resource reloader store key for the currently enabled feature set.
+	 * The resource listener state key for the currently enabled feature flag set.
 	 *
-	 * @apiNote The feature set is only available in {@linkplain PackType#SERVER_DATA server data} resource reloaders.
+	 * @apiNote The feature flag set is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
 	 */
-	PreparableReloadListener.StateKey<FeatureFlagSet> RELOADER_FEATURE_SET_KEY = new PreparableReloadListener.StateKey<>();
+	PreparableReloadListener.StateKey<FeatureFlagSet> FEATURE_FLAG_SET_KEY = new PreparableReloadListener.StateKey<>();
 
 	static ResourceLoader get(PackType type) {
 		return ResourceLoaderImpl.get(type);
 	}
 
 	/**
-	 * Registers a resource reloader for a given resource manager type.
+	 * Registers a reload listener for a given resource manager type.
 	 *
-	 * @param id the identifier of the resource reloader
-	 * @param reloader the resource reloader
-	 * @see #addReloaderOrdering(Identifier, Identifier)
+	 * @param id the identifier of the resource listener
+	 * @param listener the resource listener
+	 * @see #addListenerOrdering(Identifier, Identifier)
 	 */
-	void registerReloader(Identifier id, PreparableReloadListener reloader);
+	void registerReloadListener(Identifier id, PreparableReloadListener listener);
 
 	/**
-	 * Requests that resource reloaders registered as the first identifier is applied before the other referenced resource reloader.
+	 * Requests that reload listeners registered as the first identifier is applied before the other referenced reload listener.
 	 *
 	 * <p>Incompatible ordering constraints such as cycles will lead to inconsistent behavior:
 	 * some constraints will be respected and some will be ignored. If this happens, a warning will be logged.
 	 *
 	 * <p>Please keep in mind that this only takes effect during the application stage!
 	 *
-	 * @param firstReloader  the identifier of the resource reloader that should run before the other
-	 * @param secondReloader the identifier of the resource reloader that should run after the other
-	 * @see net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys identifiers of Vanilla resource reloaders
-	 * @see #registerReloader(Identifier, PreparableReloadListener) register a new resource reloader
+	 * @param firstListener  the identifier of the reload listener that should run before the other
+	 * @param secondListener the identifier of the reload listener that should run after the other
+	 * @see net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys identifiers of Vanilla reload listeners
+	 * @see #registerReloadListener(Identifier, PreparableReloadListener) register a new reload listener
 	 */
-	void addReloaderOrdering(Identifier firstReloader, Identifier secondReloader);
+	void addListenerOrdering(Identifier firstListener, Identifier secondListener);
 
 	/**
 	 * Registers a built-in resource pack.
