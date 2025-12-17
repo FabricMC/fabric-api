@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.screenhandler;
 
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -71,5 +72,7 @@ public class ScreenHandlerTest implements ModInitializer {
 		Registry.register(Registries.SCREEN_HANDLER, id("bag"), BAG_SCREEN_HANDLER);
 		Registry.register(Registries.SCREEN_HANDLER, id("positioned_bag"), POSITIONED_BAG_SCREEN_HANDLER);
 		Registry.register(Registries.SCREEN_HANDLER, id("box"), BOX_SCREEN_HANDLER);
+
+
 	}
 }

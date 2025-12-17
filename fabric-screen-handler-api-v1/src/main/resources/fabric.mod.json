@@ -12,19 +12,21 @@
     "issues": "https://github.com/FabricMC/fabric/issues",
     "sources": "https://github.com/FabricMC/fabric"
   },
-  "authors": [
-    "FabricMC"
-  ],
+  "authors": ["FabricMC"],
   "depends": {
     "fabricloader": ">=0.17.0",
     "fabric-api-base": "*",
     "fabric-networking-api-v1": "*"
   },
   "entrypoints": {
-    "main": ["net.fabricmc.fabric.impl.screenhandler.Networking"],
-    "client": ["net.fabricmc.fabric.impl.screenhandler.client.ClientNetworking"]
+    "main": [
+      "net.fabricmc.fabric.impl.screenhandler.Networking"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.screenhandler.client.ClientNetworking"
+    ]
   },
-  "description": "Hooks and extensions for creating screen handlers.",
+  "description": "Hooks and extensions for creating screen handlers and inventory events.",
   "mixins": [
     "fabric-screen-handler-api-v1.mixins.json"
   ],
