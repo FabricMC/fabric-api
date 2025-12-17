@@ -40,7 +40,7 @@ public final class ServerBlockEntityLifecycleTests implements ModInitializer {
 	public void onInitialize() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
+		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, level) -> {
 			this.serverBlockEntities.add(blockEntity);
 
 			if (PRINT_SERVER_BLOCKENTITY_MESSAGES) {
@@ -48,7 +48,7 @@ public final class ServerBlockEntityLifecycleTests implements ModInitializer {
 			}
 		});
 
-		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
+		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, level) -> {
 			this.serverBlockEntities.remove(blockEntity);
 
 			if (PRINT_SERVER_BLOCKENTITY_MESSAGES) {
@@ -64,18 +64,18 @@ public final class ServerBlockEntityLifecycleTests implements ModInitializer {
 					logger.info("[SERVER] Tracked BlockEntities:" + this.serverBlockEntities.size() + " Ticked at: " + minecraftServer.getTickCount() + "ticks");
 				}
 
-				for (ServerLevel world : minecraftServer.getAllLevels()) {
-					int worldEntities = 0;
+				for (ServerLevel level : minecraftServer.getAllLevels()) {
+					int levelEntities = 0;
 
-					for (LevelChunk chunk : ((LoadedChunksCache) world).fabric_getLoadedChunks()) {
-						worldEntities += chunk.getBlockEntities().size();
+					for (LevelChunk chunk : ((LoadedChunksCache) level).fabric_getLoadedChunks()) {
+						levelEntities += chunk.getBlockEntities().size();
 					}
 
 					if (PRINT_SERVER_BLOCKENTITY_MESSAGES) {
-						logger.info("[SERVER] Tracked BlockEntities in " + world.dimension().toString() + " - " + worldEntities);
+						logger.info("[SERVER] Tracked BlockEntities in " + level.dimension().toString() + " - " + levelEntities);
 					}
 
-					entities += worldEntities;
+					entities += levelEntities;
 				}
 
 				if (PRINT_SERVER_BLOCKENTITY_MESSAGES) {

@@ -64,8 +64,8 @@ public class CreatorNamespaceTest implements ModInitializer {
 	}
 
 	public static class TestItem extends Item {
-		public TestItem(Properties settings) {
-			super(settings);
+		public TestItem(Properties properties) {
+			super(properties);
 		}
 
 		@Override

@@ -6,8 +6,8 @@
     "ClientChunkCacheMixin",
     "ClientPacketListenerMixin",
     "ClientConfigurationPacketListenerImplMixin",
-    "ClientWorldClientEntityHandlerMixin",
     "ClientLevelMixin",
+    "ClientLevelEntityCallbacksMixin",
     "MinecraftMixin",
     "LevelChunkMixin"
   ],

@@ -23,10 +23,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.storage.TagValueOutput;
 
-import net.fabricmc.fabric.api.serialization.v1.view.FabricWriteView;
+import net.fabricmc.fabric.api.serialization.v1.value.FabricValueOutput;
 
 @Mixin(TagValueOutput.class)
-public class TagValueOutputMixin implements FabricWriteView {
+public class TagValueOutputMixin implements FabricValueOutput {
 	@Shadow
 	@Final
 	private CompoundTag output;

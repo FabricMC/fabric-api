@@ -78,7 +78,7 @@ public abstract class ItemStackMixin implements FabricItemStack {
 		if (handler != null && !entity.hasInfiniteMaterials()) {
 			// Track whether an item has been broken by custom handler
 			MutableBoolean mut = new MutableBoolean(false);
-			amount = handler.damage((ItemStack) (Object) this, amount, entity, slot, () -> {
+			amount = handler.hurtAndBreak((ItemStack) (Object) this, amount, entity, slot, () -> {
 				mut.setTrue();
 				this.shrink(1);
 				consumer.accept(this.getItem());

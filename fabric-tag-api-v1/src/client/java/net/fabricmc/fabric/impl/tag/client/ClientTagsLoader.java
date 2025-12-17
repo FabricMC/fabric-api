@@ -47,8 +47,8 @@ import net.fabricmc.loader.api.ModContainer;
 public class ClientTagsLoader {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-tags-api-v1");
 	/**
-	 * Load a given tag from the available mods into a set of {@code Identifier}s.
-	 * Parsing based on {@link net.minecraft.tags.TagLoader#loadTags(net.minecraft.server.packs.resources.ResourceManager)}
+	 * Load a given tag from the available mods into a set of {@link Identifier}s.
+	 * Parsing based on {@link net.minecraft.tags.TagLoader#load(net.minecraft.server.packs.resources.ResourceManager)}
 	 */
 	public static LoadedTag loadTag(TagKey<?> tagKey) {
 		var tags = new HashSet<TagEntry>();
@@ -106,12 +106,12 @@ public class ClientTagsLoader {
 	}
 
 	/**
-	 * @param registryKey the RegistryKey of the TagKey
-	 * @param identifier  the Identifier of the tag
+	 * @param resourceKey the {@link ResourceKey} of the {@link TagKey}
+	 * @param identifier  the {@link Identifier} of the tag
 	 * @return the paths to all tag json files within the available mods
 	 */
-	private static HashSet<Path> getTagFiles(ResourceKey<? extends Registry<?>> registryKey, Identifier identifier) {
-		return getTagFiles(Registries.tagsDirPath(registryKey), identifier);
+	private static HashSet<Path> getTagFiles(ResourceKey<? extends Registry<?>> resourceKey, Identifier identifier) {
+		return getTagFiles(Registries.tagsDirPath(resourceKey), identifier);
 	}
 
 	/**

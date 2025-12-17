@@ -27,34 +27,34 @@ public final class ClientEntityEvents {
 	}
 
 	/**
-	 * Called when an Entity is loaded into a ClientWorld.
+	 * Called when an Entity is loaded into a ClientLevel.
 	 *
-	 * <p>When this event is called, the chunk is already in the world.
+	 * <p>When this event is called, the chunk is already in the level.
 	 */
-	public static final Event<ClientEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ClientEntityEvents.Load.class, callbacks -> (entity, world) -> {
+	public static final Event<ClientEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ClientEntityEvents.Load.class, callbacks -> (entity, level) -> {
 		for (Load callback : callbacks) {
-			callback.onLoad(entity, world);
+			callback.onLoad(entity, level);
 		}
 	});
 
 	/**
-	 * Called when an Entity is about to be unloaded from a ClientWorld.
+	 * Called when an Entity is about to be unloaded from a ClientLevel.
 	 *
-	 * <p>This event is called before the entity is unloaded from the world.
+	 * <p>This event is called before the entity is unloaded from the level.
 	 */
-	public static final Event<ClientEntityEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientEntityEvents.Unload.class, callbacks -> (entity, world) -> {
+	public static final Event<ClientEntityEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientEntityEvents.Unload.class, callbacks -> (entity, level) -> {
 		for (Unload callback : callbacks) {
-			callback.onUnload(entity, world);
+			callback.onUnload(entity, level);
 		}
 	});
 
 	@FunctionalInterface
 	public interface Load {
-		void onLoad(Entity entity, ClientLevel world);
+		void onLoad(Entity entity, ClientLevel level);
 	}
 
 	@FunctionalInterface
 	public interface Unload {
-		void onUnload(Entity entity, ClientLevel world);
+		void onUnload(Entity entity, ClientLevel level);
 	}
 }

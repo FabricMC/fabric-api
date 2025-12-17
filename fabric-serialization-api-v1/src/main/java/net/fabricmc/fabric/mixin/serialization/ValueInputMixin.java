@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.world.level.storage.ValueInput;
 
-import net.fabricmc.fabric.api.serialization.v1.view.FabricReadView;
+import net.fabricmc.fabric.api.serialization.v1.value.FabricValueInput;
 
 @Mixin(ValueInput.class)
-public interface ValueInputMixin extends FabricReadView {
+public interface ValueInputMixin extends FabricValueInput {
 }

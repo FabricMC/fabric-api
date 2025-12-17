@@ -31,12 +31,12 @@ public final class FabricItemInternals {
 	private FabricItemInternals() {
 	}
 
-	public static ExtraData computeExtraData(Item.Properties settings) {
-		return extraData.computeIfAbsent(settings, s -> new ExtraData());
+	public static ExtraData computeExtraData(Item.Properties properties) {
+		return extraData.computeIfAbsent(properties, s -> new ExtraData());
 	}
 
-	public static void onBuild(Item.Properties settings, Item item) {
-		ExtraData data = extraData.get(settings);
+	public static void onBuild(Item.Properties properties, Item item) {
+		ExtraData data = extraData.get(properties);
 
 		if (data != null) {
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);

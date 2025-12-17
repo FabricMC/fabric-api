@@ -35,7 +35,7 @@ abstract class LivingEntityMixin {
 		EquipmentSlotProvider equipmentSlotProvider = ((ItemExtensions) stack.getItem()).fabric_getEquipmentSlotProvider();
 
 		if (equipmentSlotProvider != null) {
-			info.setReturnValue(equipmentSlotProvider.getPreferredEquipmentSlot((LivingEntity) (Object) this, stack));
+			info.setReturnValue(equipmentSlotProvider.getEquipmentSlotForItem((LivingEntity) (Object) this, stack));
 		}
 	}
 }

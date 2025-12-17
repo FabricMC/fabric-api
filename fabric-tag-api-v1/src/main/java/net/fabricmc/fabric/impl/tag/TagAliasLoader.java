@@ -62,8 +62,8 @@ public final class TagAliasLoader extends SimpleReloadListener<Map<ResourceKey<?
 		Iterator<ResourceKey<? extends Registry<?>>> registryIterator = registries.listRegistryKeys().iterator();
 
 		while (registryIterator.hasNext()) {
-			ResourceKey<? extends Registry<?>> registryKey = registryIterator.next();
-			FileToIdConverter resourceFinder = FileToIdConverter.json(getDirectory(registryKey));
+			ResourceKey<? extends Registry<?>> resourceKey = registryIterator.next();
+			FileToIdConverter resourceFinder = FileToIdConverter.json(getDirectory(resourceKey));
 
 			for (Map.Entry<Identifier, Resource> entry : resourceFinder.listMatchingResources(state.resourceManager()).entrySet()) {
 				Identifier resourcePath = entry.getKey();
@@ -71,12 +71,12 @@ public final class TagAliasLoader extends SimpleReloadListener<Map<ResourceKey<?
 
 				try (Reader reader = entry.getValue().openAsReader()) {
 					JsonElement json = StrictJsonParser.parse(reader);
-					Codec<TagAliasGroup<Object>> codec = TagAliasGroup.codec((ResourceKey<? extends Registry<Object>>) registryKey);
+					Codec<TagAliasGroup<Object>> codec = TagAliasGroup.codec((ResourceKey<? extends Registry<Object>>) resourceKey);
 
 					switch (codec.parse(JsonOps.INSTANCE, json)) {
 					case DataResult.Success(TagAliasGroup<Object> group, Lifecycle unused) -> {
 						var data = new Data(groupId, group);
-						dataByRegistry.computeIfAbsent(registryKey, key -> new ArrayList<>()).add(data);
+						dataByRegistry.computeIfAbsent(resourceKey, key -> new ArrayList<>()).add(data);
 					}
 					case DataResult.Error<?> error -> {
 						LOGGER.error("[Fabric] Couldn't parse tag alias group file '{}' from '{}': {}", groupId, resourcePath, error.message());
@@ -91,9 +91,9 @@ public final class TagAliasLoader extends SimpleReloadListener<Map<ResourceKey<?
 		return dataByRegistry;
 	}
 
-	private static String getDirectory(ResourceKey<? extends Registry<?>> registryKey) {
+	private static String getDirectory(ResourceKey<? extends Registry<?>> resourceKey) {
 		String directory = "fabric/tag_alias/";
-		Identifier registryId = registryKey.identifier();
+		Identifier registryId = resourceKey.identifier();
 
 		if (!Identifier.DEFAULT_NAMESPACE.equals(registryId.getNamespace())) {
 			directory += registryId.getNamespace() + '/';

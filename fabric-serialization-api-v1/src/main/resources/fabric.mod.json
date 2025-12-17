@@ -25,8 +25,8 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/world/level/storage/ValueInput": ["net/fabricmc/fabric/api/serialization/v1/view/FabricReadView"],
-      "net/minecraft/world/level/storage/ValueOutput": ["net/fabricmc/fabric/api/serialization/v1/view/FabricWriteView"]
+      "net/minecraft/world/level/storage/ValueInput": ["net/fabricmc/fabric/api/serialization/v1/value/FabricValueInput"],
+      "net/minecraft/world/level/storage/ValueOutput": ["net/fabricmc/fabric/api/serialization/v1/value/FabricValueOutput"]
     }
   }
 }

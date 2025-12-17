@@ -24,9 +24,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
@@ -55,7 +55,7 @@ public abstract class MinecraftMixin {
 	private void afterClientWorldChange(ClientLevel world, CallbackInfo ci) {
 		if (world != null) {
 			Minecraft client = (Minecraft) (Object) this;
-			ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.invoker().afterWorldChange(client, world);
+			ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.invoker().afterLevelChange(client, world);
 		}
 	}
 }

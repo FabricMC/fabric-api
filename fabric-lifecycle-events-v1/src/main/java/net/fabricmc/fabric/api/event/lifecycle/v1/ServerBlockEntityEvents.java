@@ -27,35 +27,35 @@ public final class ServerBlockEntityEvents {
 	}
 
 	/**
-	 * Called when an BlockEntity is loaded into a ServerWorld.
+	 * Called when an BlockEntity is loaded into a ServerLevel.
 	 *
-	 * <p>When this is event is called, the block entity is already in the world.
+	 * <p>When this is event is called, the block entity is already in the level.
 	 * However, its data might not be loaded yet, so don't rely on it.
 	 */
-	public static final Event<ServerBlockEntityEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ServerBlockEntityEvents.Load.class, callbacks -> (blockEntity, world) -> {
+	public static final Event<ServerBlockEntityEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ServerBlockEntityEvents.Load.class, callbacks -> (blockEntity, level) -> {
 		for (Load callback : callbacks) {
-			callback.onLoad(blockEntity, world);
+			callback.onLoad(blockEntity, level);
 		}
 	});
 
 	/**
-	 * Called when an BlockEntity is about to be unloaded from a ServerWorld.
+	 * Called when an BlockEntity is about to be unloaded from a ServerLevel.
 	 *
-	 * <p>When this event is called, the block entity is still present on the world.
+	 * <p>When this event is called, the block entity is still present on the level.
 	 */
-	public static final Event<Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerBlockEntityEvents.Unload.class, callbacks -> (blockEntity, world) -> {
+	public static final Event<Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerBlockEntityEvents.Unload.class, callbacks -> (blockEntity, level) -> {
 		for (Unload callback : callbacks) {
-			callback.onUnload(blockEntity, world);
+			callback.onUnload(blockEntity, level);
 		}
 	});
 
 	@FunctionalInterface
 	public interface Load {
-		void onLoad(BlockEntity blockEntity, ServerLevel world);
+		void onLoad(BlockEntity blockEntity, ServerLevel level);
 	}
 
 	@FunctionalInterface
 	public interface Unload {
-		void onUnload(BlockEntity blockEntity, ServerLevel world);
+		void onUnload(BlockEntity blockEntity, ServerLevel level);
 	}
 }

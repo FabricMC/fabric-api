@@ -42,7 +42,7 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 	public void onInitialize() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
 			this.serverEntities.add(entity);
 
 			if (PRINT_SERVER_ENTITY_MESSAGES) {
@@ -50,7 +50,7 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 			}
 		});
 
-		ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+		ServerEntityEvents.ENTITY_UNLOAD.register((entity, level) -> {
 			this.serverEntities.remove(entity);
 
 			if (PRINT_SERVER_ENTITY_MESSAGES) {
@@ -68,14 +68,14 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 			if (this.serverTicks++ % 200 == 0) {
 				int entities = 0;
 
-				for (ServerLevel world : server.getAllLevels()) {
-					final int worldEntities = Iterables.size(world.getAllEntities());
+				for (ServerLevel level : server.getAllLevels()) {
+					final int levelEntities = Iterables.size(level.getAllEntities());
 
 					if (PRINT_SERVER_ENTITY_MESSAGES) {
-						logger.info("[SERVER] Tracked Entities in " + world.dimension().toString() + " - " + worldEntities);
+						logger.info("[SERVER] Tracked Entities in " + level.dimension().toString() + " - " + levelEntities);
 					}
 
-					entities += worldEntities;
+					entities += levelEntities;
 				}
 
 				if (PRINT_SERVER_ENTITY_MESSAGES) {

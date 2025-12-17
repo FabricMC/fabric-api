@@ -147,7 +147,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 			LOGGER.info("The client command tests have passed! Please make sure you execute the two commands for extra safety.");
 		});
 
-		ClientTickEvents.START_WORLD_TICK.register(world -> {
+		ClientTickEvents.START_LEVEL_TICK.register(world -> {
 			if (wasTested) {
 				return;
 			}

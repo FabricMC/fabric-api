@@ -20,8 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 
 /**
  * Tests related to the lifecycle of a server.
@@ -43,12 +43,12 @@ public final class ServerLifecycleTests implements ModInitializer {
 			LOGGER.info("Stopped Server!");
 		});
 
-		ServerWorldEvents.LOAD.register((server, world) -> {
-			LOGGER.info("Loaded world " + world.dimension().identifier().toString());
+		ServerLevelEvents.LOAD.register((server, level) -> {
+			LOGGER.info("Loaded level " + level.dimension().identifier().toString());
 		});
 
-		ServerWorldEvents.UNLOAD.register((server, world) -> {
-			LOGGER.info("Unloaded world " + world.dimension().identifier().toString());
+		ServerLevelEvents.UNLOAD.register((server, level) -> {
+			LOGGER.info("Unloaded level " + level.dimension().identifier().toString());
 		});
 
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {

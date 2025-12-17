@@ -46,18 +46,18 @@ public final class ClientTickTests implements ClientModInitializer {
 			if (client) tagsLoadedCalled = true;
 		});
 
-		ClientTickEvents.END_WORLD_TICK.register(world -> {
+		ClientTickEvents.END_LEVEL_TICK.register(level -> {
 			if (!tagsLoadedCalled) {
 				throw new IllegalStateException("TAGS_LOADED was not invoked during configuration!");
 			}
 
-			final int worldTicks = this.tickTracker.computeIfAbsent(world.dimension(), k -> 0);
+			final int levelTicks = this.tickTracker.computeIfAbsent(level.dimension(), k -> 0);
 
-			if (worldTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the client world
-				ServerLifecycleTests.LOGGER.info("Ticked Client World - " + worldTicks + " ticks:" + world.dimension());
+			if (levelTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the client level
+				ServerLifecycleTests.LOGGER.info("Ticked Client Level - " + levelTicks + " ticks:" + level.dimension());
 			}
 
-			this.tickTracker.put(world.dimension(), worldTicks + 1);
+			this.tickTracker.put(level.dimension(), levelTicks + 1);
 		});
 	}
 }

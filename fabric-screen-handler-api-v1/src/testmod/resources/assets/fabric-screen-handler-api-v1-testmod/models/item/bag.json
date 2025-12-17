@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "fabric-screen-handler-api-v1-testmod:item/bag"
-  }
-}

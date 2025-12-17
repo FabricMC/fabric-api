@@ -43,7 +43,7 @@ public final class ClientEntityLifecycleTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+		ClientEntityEvents.ENTITY_LOAD.register((entity, level) -> {
 			this.clientEntities.add(entity);
 
 			if (PRINT_CLIENT_ENTITY_MESSAGES) {
@@ -51,7 +51,7 @@ public final class ClientEntityLifecycleTests implements ClientModInitializer {
 			}
 		});
 
-		ClientEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+		ClientEntityEvents.ENTITY_UNLOAD.register((entity, level) -> {
 			this.clientEntities.remove(entity);
 
 			if (PRINT_CLIENT_ENTITY_MESSAGES) {

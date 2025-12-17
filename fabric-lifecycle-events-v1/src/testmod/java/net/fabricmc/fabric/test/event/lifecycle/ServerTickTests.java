@@ -39,21 +39,21 @@ public final class ServerTickTests implements ModInitializer {
 			}
 		});
 
-		ServerTickEvents.START_WORLD_TICK.register(world -> {
+		ServerTickEvents.START_LEVEL_TICK.register(level -> {
 			// Verify we are inside the tick
-			if (!world.isHandlingTick()) {
-				throw new AssertionError("Start tick event should be fired while ServerWorld is inside of block tick");
+			if (!level.isHandlingTick()) {
+				throw new AssertionError("Start tick event should be fired while ServerLevel is inside of block tick");
 			}
 		});
 
-		ServerTickEvents.END_WORLD_TICK.register(world -> {
-			final int worldTicks = tickTracker.computeIfAbsent(world.dimension(), k -> 0);
+		ServerTickEvents.END_LEVEL_TICK.register(level -> {
+			final int levelTicks = tickTracker.computeIfAbsent(level.dimension(), k -> 0);
 
-			if (worldTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the server world
-				ServerLifecycleTests.LOGGER.info("Ticked Server World - " + worldTicks + " ticks:" + world.dimension().identifier());
+			if (levelTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the server world
+				ServerLifecycleTests.LOGGER.info("Ticked Server Level - " + levelTicks + " ticks:" + level.dimension().identifier());
 			}
 
-			this.tickTracker.put(world.dimension(), worldTicks + 1);
+			this.tickTracker.put(level.dimension(), levelTicks + 1);
 		});
 	}
 }
