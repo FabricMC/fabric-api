@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.screenhandler",
+  "package": "net.fabricmc.fabric.mixin.menu",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
     "MenuProviderMixin",

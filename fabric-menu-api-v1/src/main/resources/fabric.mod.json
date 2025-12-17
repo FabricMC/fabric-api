@@ -22,7 +22,9 @@
   },
   "entrypoints": {
     "main": ["net.fabricmc.fabric.impl.screenhandler.Networking"],
-    "client": ["net.fabricmc.fabric.impl.screenhandler.client.ClientNetworking"]
+    "client": [
+      "net.fabricmc.fabric.impl.menu.client.ClientNetworking"
+    ]
   },
   "description": "Hooks and extensions for creating screen handlers.",
   "mixins": [
