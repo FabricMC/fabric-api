@@ -22,11 +22,11 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHel
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Vector3fc;
 
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
@@ -104,7 +104,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 			if (emissive) {
 				for (int i = 0; i < 4; i++) {
 					quad.color(i, ARGB.scaleRGB(quad.color(i), aoCalc.ao[i]));
-					quad.lightmap(i, LightTexture.FULL_BRIGHT);
+					quad.lightmap(i, LightCoordsUtil.FULL_BRIGHT);
 				}
 			} else {
 				for (int i = 0; i < 4; i++) {
@@ -117,7 +117,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 			if (emissive) {
 				for (int i = 0; i < 4; i++) {
-					quad.lightmap(i, LightTexture.FULL_BRIGHT);
+					quad.lightmap(i, LightCoordsUtil.FULL_BRIGHT);
 				}
 			} else {
 				final int light = flatLight(quad);

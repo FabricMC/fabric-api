@@ -146,7 +146,7 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 
 		@Override
 		public int light(BlockPos pos, BlockState state) {
-			return LevelRenderer.getLightColor(lightGetter, blockInfo.blockView, state, pos);
+			return LevelRenderer.getLightCoords(lightGetter, blockInfo.blockView, state, pos);
 		}
 
 		@Override

@@ -21,11 +21,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -85,7 +85,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 	private void shadeQuad(MutableQuadViewImpl quad, boolean emissive) {
 		if (emissive) {
 			for (int i = 0; i < 4; i++) {
-				quad.lightmap(i, LightTexture.FULL_BRIGHT);
+				quad.lightmap(i, LightCoordsUtil.FULL_BRIGHT);
 			}
 		} else {
 			final int light = this.light;

@@ -32,11 +32,11 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.model.geom.builders.UVPair;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -263,7 +263,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		uv(3, UVPair.unpackU(packedUV3), UVPair.unpackV(packedUV3));
 
 		int lightEmission = quad.lightEmission();
-		int lightmap = LightTexture.pack(lightEmission, lightEmission);
+		int lightmap = LightCoordsUtil.pack(lightEmission, lightEmission);
 		lightmap(lightmap, lightmap, lightmap, lightmap);
 
 		normalFlags(0);

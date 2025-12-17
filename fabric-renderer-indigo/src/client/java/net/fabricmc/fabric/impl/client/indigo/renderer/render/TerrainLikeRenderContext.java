@@ -50,7 +50,7 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 		return new LightDataProvider() {
 			@Override
 			public int light(BlockPos pos, BlockState state) {
-				return LevelRenderer.getLightColor(LevelRenderer.BrightnessGetter.DEFAULT, blockInfo.blockView, state, pos);
+				return LevelRenderer.getLightCoords(LevelRenderer.BrightnessGetter.DEFAULT, blockInfo.blockView, state, pos);
 			}
 
 			@Override

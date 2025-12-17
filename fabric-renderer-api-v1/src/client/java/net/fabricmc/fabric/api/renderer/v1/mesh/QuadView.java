@@ -22,12 +22,12 @@ import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.model.geom.builders.UVPair;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.api.util.TriState;
@@ -233,8 +233,8 @@ public interface QuadView {
 					break;
 				}
 
-				int blockLight = LightTexture.block(lightmap);
-				int skyLight = LightTexture.sky(lightmap);
+				int blockLight = LightCoordsUtil.block(lightmap);
+				int skyLight = LightCoordsUtil.sky(lightmap);
 				lightEmission = Math.min(lightEmission, Math.min(blockLight, skyLight));
 			}
 		}

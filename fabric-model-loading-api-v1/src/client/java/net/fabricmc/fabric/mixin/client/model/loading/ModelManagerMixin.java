@@ -134,7 +134,7 @@ abstract class ModelManagerMixin implements FabricBakedModelManager {
 	// We want to redirect the JsonUnbakedModel.deserialize call, but its return type is JsonUnbakedModel, so we can't
 	// do that directly.
 	// Instead, cancel the original call and then modify the null value when it's being used to construct the Pair.
-	@Redirect(method = "lambda$loadBlockModels$6(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/model/BlockModel;fromStream(Ljava/io/Reader;)Lnet/minecraft/client/renderer/block/model/BlockModel;"))
+	@Redirect(method = "lambda$loadBlockModels$2(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/model/BlockModel;fromStream(Ljava/io/Reader;)Lnet/minecraft/client/renderer/block/model/BlockModel;"))
 	private static BlockModel cancelVanillaDeserialize(Reader reader) {
 		return null;
 	}
@@ -143,7 +143,7 @@ abstract class ModelManagerMixin implements FabricBakedModelManager {
 	// The Pair's type is actually Pair<Identifier, JsonUnbakedModel>, but since generics don't really exist, vanilla
 	// code doesn't explicitly cast the model to JsonUnbakedModel, and the enclosing method returns UnbakedModels per
 	// its return type, it's safe to return an UnbakedModel here.
-	@ModifyArg(method = "lambda$loadBlockModels$6(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "Lcom/mojang/datafixers/util/Pair;of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;"), index = 1)
+	@ModifyArg(method = "lambda$loadBlockModels$2(Ljava/util/Map$Entry;)Lcom/mojang/datafixers/util/Pair;", at = @At(value = "INVOKE", target = "Lcom/mojang/datafixers/util/Pair;of(Ljava/lang/Object;Ljava/lang/Object;)Lcom/mojang/datafixers/util/Pair;"), index = 1)
 	private static Object actuallyDeserializeModel(Object originalModel, @Local Reader reader) {
 		return UnbakedModelDeserializer.deserialize(reader);
 	}

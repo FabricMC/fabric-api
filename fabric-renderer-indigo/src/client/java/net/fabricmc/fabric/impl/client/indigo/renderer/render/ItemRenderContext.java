@@ -24,7 +24,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.MatrixUtil;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -33,6 +32,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
@@ -141,7 +141,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 	private void shadeQuad(MutableQuadViewImpl quad, boolean emissive) {
 		if (emissive) {
 			for (int i = 0; i < 4; i++) {
-				quad.lightmap(i, LightTexture.FULL_BRIGHT);
+				quad.lightmap(i, LightCoordsUtil.FULL_BRIGHT);
 			}
 		} else {
 			final int light = this.light;
