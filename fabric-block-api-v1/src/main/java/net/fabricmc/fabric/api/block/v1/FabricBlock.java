@@ -60,7 +60,7 @@ public interface FabricBlock {
 	 * the necessary data. Refer to the documentation of {@code RenderDataBlockEntity} for more information.
 	 * <pre>{@code @Override
 	 * public BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
-	 *     if (renderView instanceof ServerLevel serverLevel) {
+	 *     if (blockAndTintGetter instanceof ServerLevel serverLevel) {
 	 *         // Server side; ok to use block entity directly!
 	 *         BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
 	 *
@@ -70,7 +70,7 @@ public interface FabricBlock {
 	 *         }
 	 *     } else {
 	 *         // Client side; need to use the block entity render data!
-	 *         Object data = renderView.getBlockEntityRenderData(pos);
+	 *         Object data = blockAndTintGetter.getBlockEntityRenderData(pos);
 	 *
 	 *         // Check if data is not null and of the correct type, and use that to determine the appearance
 	 *         if (data instanceof ...) {
