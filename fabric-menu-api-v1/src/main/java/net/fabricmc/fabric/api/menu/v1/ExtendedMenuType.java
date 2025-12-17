@@ -26,7 +26,6 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
-// TODO: I think this needs an overhaul
 /**
  * A {@link MenuType} for an extended menus that
  * synchronizes additional data to the client when it is opened.
@@ -129,7 +128,6 @@ public class ExtendedMenuType<T extends AbstractContainerMenu, D> extends MenuTy
 	 */
 	@FunctionalInterface
 	public interface ExtendedFactory<T extends AbstractContainerMenu, D> {
-		// TODO: Should this be named screen opening data or menu opening data? ( I'd say screen, but not sure)
 		/**
 		 * Creates a new menu with additional screen opening data.
 		 *

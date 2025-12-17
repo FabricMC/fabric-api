@@ -32,6 +32,5 @@ public interface ExtendedMenuFactory<D> extends MenuProvider {
 	 * @param player the player that is opening the screen
 	 * @return the screen opening data
 	 */
-	// TODO: Should this be named getScreenOpeningData or getMenuOpeningData? ( I think it should stay getScreenOpening...)
 	D getScreenOpeningData(ServerPlayer player);
 }
