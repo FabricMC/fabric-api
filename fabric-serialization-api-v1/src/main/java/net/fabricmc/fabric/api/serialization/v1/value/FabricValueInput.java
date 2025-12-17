@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.serialization.v1.view;
+package net.fabricmc.fabric.api.serialization.v1.value;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,17 +25,17 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.fabricmc.fabric.impl.serialization.SpecialCodecs;
 
 /**
- * Fabric provided extension of ReadView.
+ * Fabric provided extension of ValueInput.
  *
  * <p>Note: This interface is automatically implemented on {@link ValueInput} via Mixin and interface injection.
  */
-public interface FabricReadView {
+public interface FabricValueInput {
 	/**
 	 * Returns a collection of keys available in this {@link ValueInput}.
 	 *
 	 * @return collection of keys or empty list if this {@link ValueInput} is empty.
 	 */
-	default Collection<String> keys() {
+	default Collection<String> keySet() {
 		//noinspection deprecation
 		return ((ValueInput) this).read(SpecialCodecs.KEYS_EXTRACT).orElse(List.of());
 	}

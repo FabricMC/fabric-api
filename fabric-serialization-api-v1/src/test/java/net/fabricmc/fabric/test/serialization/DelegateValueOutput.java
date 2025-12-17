@@ -23,91 +23,91 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.world.level.storage.ValueOutput;
 
 /**
- * A delegating WriteView, used to force usage of fallback implementation of FabricWriteView.
+ * A delegating ValueOutput, used to force usage of fallback implementation of FabricValueOutput.
  */
-public record DelegateWriteView(ValueOutput view) implements ValueOutput {
+public record DelegateValueOutput(ValueOutput output) implements ValueOutput {
 	@Override
 	public <T> void store(String key, Codec<T> codec, T value) {
-		view.store(key, codec, value);
+		output.store(key, codec, value);
 	}
 
 	@Override
 	public <T> void storeNullable(String key, Codec<T> codec, @Nullable T value) {
-		view.storeNullable(key, codec, value);
+		output.storeNullable(key, codec, value);
 	}
 
 	@Override
 	public <T> void store(MapCodec<T> codec, T value) {
-		view.store(codec, value);
+		output.store(codec, value);
 	}
 
 	@Override
 	public void putBoolean(String key, boolean value) {
-		view.putBoolean(key, value);
+		output.putBoolean(key, value);
 	}
 
 	@Override
 	public void putByte(String key, byte value) {
-		view.putByte(key, value);
+		output.putByte(key, value);
 	}
 
 	@Override
 	public void putShort(String key, short value) {
-		view.putShort(key, value);
+		output.putShort(key, value);
 	}
 
 	@Override
 	public void putInt(String key, int value) {
-		view.putInt(key, value);
+		output.putInt(key, value);
 	}
 
 	@Override
 	public void putLong(String key, long value) {
-		view.putLong(key, value);
+		output.putLong(key, value);
 	}
 
 	@Override
 	public void putFloat(String key, float value) {
-		view.putFloat(key, value);
+		output.putFloat(key, value);
 	}
 
 	@Override
 	public void putDouble(String key, double value) {
-		view.putDouble(key, value);
+		output.putDouble(key, value);
 	}
 
 	@Override
 	public void putString(String key, String value) {
-		view.putString(key, value);
+		output.putString(key, value);
 	}
 
 	@Override
 	public void putIntArray(String key, int[] value) {
-		view.putIntArray(key, value);
+		output.putIntArray(key, value);
 	}
 
 	@Override
 	public ValueOutput child(String key) {
-		return new DelegateWriteView(view.child(key));
+		return new DelegateValueOutput(output.child(key));
 	}
 
 	@Override
 	public ValueOutputList childrenList(String key) {
-		return view.childrenList(key);
+		return output.childrenList(key);
 	}
 
 	@Override
 	public <T> TypedOutputList<T> list(String key, Codec<T> codec) {
-		return view.list(key, codec);
+		return output.list(key, codec);
 	}
 
 	@Override
 	public void discard(String key) {
-		view.discard(key);
+		output.discard(key);
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return view.isEmpty();
+		return output.isEmpty();
 	}
 }
