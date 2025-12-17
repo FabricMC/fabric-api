@@ -51,7 +51,7 @@ import net.fabricmc.fabric.mixin.command.HelpCommandAccessor;
 
 public final class ClientCommandInternals {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientCommandInternals.class);
-	private static final String API_COMMAND_NAME = "fabric-command-api-v2:instance";
+	private static final String API_COMMAND_NAME = "fabric-command-api-v2:client";
 	private static final String SHORT_API_COMMAND_NAME = "fcc";
 	private static @Nullable CommandDispatcher<FabricClientCommandSource> activeDispatcher;
 
@@ -64,7 +64,7 @@ public final class ClientCommandInternals {
 	}
 
 	/**
-	 * Executes a instance-sided command. Callers should ensure that this is only called
+	 * Executes a client-sided command. Callers should ensure that this is only called
 	 * on slash-prefixed messages and the slash needs to be removed before calling.
 	 *
 	 * @param command the command with slash removed
@@ -89,15 +89,15 @@ public final class ClientCommandInternals {
 			boolean ignored = isIgnoredException(e.getType());
 
 			if (ignored) {
-				LOGGER.debug("Syntax exception for instance-sided command '{}'", command, e);
+				LOGGER.debug("Syntax exception for client-sided command '{}'", command, e);
 				return false;
 			}
 
-			LOGGER.warn("Syntax exception for instance-sided command '{}'", command, e);
+			LOGGER.warn("Syntax exception for client-sided command '{}'", command, e);
 			source.sendError(getErrorMessage(e));
 			return true;
 		} catch (Exception e) {
-			LOGGER.warn("Error while executing instance-sided command '{}'", command, e);
+			LOGGER.warn("Error while executing client-sided command '{}'", command, e);
 			source.sendError(Component.nullToEmpty(e.getMessage()));
 			return true;
 		} finally {
@@ -136,7 +136,7 @@ public final class ClientCommandInternals {
 	public static void finalizeInit() {
 		if (!activeDispatcher.getRoot().getChildren().isEmpty()) {
 			// Register an API command if there are other commands;
-			// these helpers are not needed if there are no instance commands
+			// these helpers are not needed if there are no client commands
 			LiteralArgumentBuilder<FabricClientCommandSource> help = literal("help");
 			help.executes(ClientCommandInternals::executeRootHelp);
 			help.then(argument("command", StringArgumentType.greedyString()).executes(ClientCommandInternals::executeArgumentHelp));

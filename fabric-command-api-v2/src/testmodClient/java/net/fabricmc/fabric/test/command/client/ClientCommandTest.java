@@ -56,7 +56,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 				}
 
 				if (context.getSource().getLevel() == null) {
-					throw IS_NULL.create("world");
+					throw IS_NULL.create("level");
 				}
 
 				if (context.getSource().getPlayer() == null) {
@@ -159,7 +159,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 			CommandNode<FabricClientCommandSource> hiddenClientCommand = rootNode.getChild("hidden_client_command");
 
 			if (!(suggestionsProvider instanceof FabricClientCommandSource)) {
-				throw new AssertionError("Client command source not a FabricClientCommandSource!");
+				throw new AssertionError("Client suggestions provider is not a FabricClientCommandSource!");
 			}
 
 			if (hiddenClientCommand.canUse((FabricClientCommandSource) suggestionsProvider)) {
