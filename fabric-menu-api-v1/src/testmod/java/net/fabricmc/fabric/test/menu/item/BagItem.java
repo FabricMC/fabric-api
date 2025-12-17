@@ -40,8 +40,8 @@ public class BagItem extends Item {
 	}
 
 	private MenuProvider createMenuFactory(ItemStack stack) {
-		return new SimpleMenuProvider((syncId, inventory, player) -> {
-			return new BagMenu(syncId, inventory, new BagInventory(stack));
+		return new SimpleMenuProvider((containerId, inventory, player) -> {
+			return new BagMenu(containerId, inventory, new BagInventory(stack));
 		}, stack.getHoverName());
 	}
 }

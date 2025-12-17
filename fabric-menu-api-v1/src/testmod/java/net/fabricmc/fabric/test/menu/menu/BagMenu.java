@@ -31,16 +31,16 @@ import net.fabricmc.fabric.test.menu.item.BagItem;
 public class BagMenu extends DispenserMenu {
 	private final MenuType<?> type;
 
-	public BagMenu(int syncId, Inventory playerInventory) {
-		this(syncId, playerInventory, new SimpleContainer(9));
+	public BagMenu(int containerId, Inventory playerInventory) {
+		this(containerId, playerInventory, new SimpleContainer(9));
 	}
 
-	public BagMenu(int syncId, Inventory playerInventory, Container inventory) {
-		this(MenuTest.BAG_MENU, syncId, playerInventory, inventory);
+	public BagMenu(int containerId, Inventory playerInventory, Container inventory) {
+		this(MenuTest.BAG_MENU, containerId, playerInventory, inventory);
 	}
 
-	protected BagMenu(MenuType<?> type, int syncId, Inventory playerInventory, Container inventory) {
-		super(syncId, playerInventory, inventory);
+	protected BagMenu(MenuType<?> type, int containerId, Inventory playerInventory, Container inventory) {
+		super(containerId, playerInventory, inventory);
 		this.type = type;
 	}
 

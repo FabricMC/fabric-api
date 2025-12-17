@@ -49,7 +49,7 @@ public final class Networking implements ModInitializer {
 
 	// [Packet format]
 	// typeId: identifier
-	// syncId: varInt
+	// containerId: varInt
 	// title: text
 	// customData: buf
 	public static final Identifier OPEN_ID = Identifier.fromNamespaceAndPath("fabric-menu-api-v1", "open_screen");
@@ -61,10 +61,10 @@ public final class Networking implements ModInitializer {
 	 * @param player  the player
 	 * @param factory the menu factory
 	 * @param menu the menu instance
-	 * @param syncId  the synchronization ID
+	 * @param containerId  the container ID
 	 */
 	@SuppressWarnings("unchecked")
-	public static <D> void sendOpenPacket(ServerPlayer player, ExtendedMenuFactory<D> factory, AbstractContainerMenu menu, int syncId) {
+	public static <D> void sendOpenPacket(ServerPlayer player, ExtendedMenuFactory<D> factory, AbstractContainerMenu menu, int containerId) {
 		Objects.requireNonNull(player, "player is null");
 		Objects.requireNonNull(factory, "factory is null");
 		Objects.requireNonNull(menu, "menu is null");
@@ -79,7 +79,7 @@ public final class Networking implements ModInitializer {
 		StreamCodec<RegistryFriendlyByteBuf, D> codec = (StreamCodec<RegistryFriendlyByteBuf, D>) Objects.requireNonNull(CODEC_BY_ID.get(typeId), () -> "Codec for " + typeId + " is not registered!");
 		D data = factory.getScreenOpeningData(player);
 
-		ServerPlayNetworking.send(player, new OpenScreenPayload<>(typeId, syncId, factory.getDisplayName(), codec, data));
+		ServerPlayNetworking.send(player, new OpenScreenPayload<>(typeId, containerId, factory.getDisplayName(), codec, data));
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public final class Networking implements ModInitializer {
 		});
 	}
 
-	public record OpenScreenPayload<D>(Identifier identifier, int syncId, Component title, StreamCodec<RegistryFriendlyByteBuf, D> innerCodec, D data) implements CustomPacketPayload {
+	public record OpenScreenPayload<D>(Identifier identifier, int containerId, Component title, StreamCodec<RegistryFriendlyByteBuf, D> innerCodec, D data) implements CustomPacketPayload {
 		public static final StreamCodec<RegistryFriendlyByteBuf, OpenScreenPayload<?>> CODEC = CustomPacketPayload.codec(OpenScreenPayload::write, OpenScreenPayload::fromBuf);
 		public static final CustomPacketPayload.Type<OpenScreenPayload<?>> ID = new Type<>(OPEN_ID);
 
@@ -118,7 +118,7 @@ public final class Networking implements ModInitializer {
 
 		private void write(RegistryFriendlyByteBuf buf) {
 			buf.writeIdentifier(this.identifier);
-			buf.writeByte(this.syncId);
+			buf.writeByte(this.containerId);
 			ComponentSerialization.STREAM_CODEC.encode(buf, this.title);
 			this.innerCodec.encode(buf, this.data);
 		}

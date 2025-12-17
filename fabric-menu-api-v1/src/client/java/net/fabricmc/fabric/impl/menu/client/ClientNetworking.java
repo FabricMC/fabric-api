@@ -47,7 +47,7 @@ public final class ClientNetworking implements ClientModInitializer {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	private <D> void openScreen(Networking.OpenScreenPayload<D> payload) {
 		Identifier typeId = payload.identifier();
-		int syncId = payload.syncId();
+		int syncId = payload.containerId();
 		Component title = payload.title();
 
 		MenuType<?> type = BuiltInRegistries.MENU.getValue(typeId);

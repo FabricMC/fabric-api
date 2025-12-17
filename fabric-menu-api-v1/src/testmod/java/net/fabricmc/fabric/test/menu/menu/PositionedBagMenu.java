@@ -31,12 +31,12 @@ import net.fabricmc.fabric.test.menu.MenuTest;
 public class PositionedBagMenu extends BagMenu implements PositionedMenu {
 	private final BlockPos pos;
 
-	public PositionedBagMenu(int syncId, Inventory playerInventory, BagData data) {
-		this(syncId, playerInventory, new SimpleContainer(9), data.pos().orElse(null));
+	public PositionedBagMenu(int containerId, Inventory playerInventory, BagData data) {
+		this(containerId, playerInventory, new SimpleContainer(9), data.pos().orElse(null));
 	}
 
-	public PositionedBagMenu(int syncId, Inventory playerInventory, Container inventory, BlockPos pos) {
-		super(MenuTest.POSITIONED_BAG_MENU, syncId, playerInventory, inventory);
+	public PositionedBagMenu(int containerId, Inventory playerInventory, Container inventory, BlockPos pos) {
+		super(MenuTest.POSITIONED_BAG_MENU, containerId, playerInventory, inventory);
 		this.pos = pos;
 	}
 

@@ -50,7 +50,7 @@ import net.minecraft.world.inventory.MenuType;
  *
  * // Creating and registering the type
  * public static final ExtendedMenuType<OvenScreenHandler> OVEN =
- * 	new ExtendedMenuType((syncId, inventory, data) -> ..., OvenData.PACKET_CODEC);
+ * 	new ExtendedMenuType((containerId, inventory, data) -> ..., OvenData.PACKET_CODEC);
  * Registry.register(Registry.MENU, Identifier.fromNamespaceAndPath("modid", "custom_menu"), OVEN);
  *
  * // Note: remember to also register the screen using vanilla's MenuScreens!
@@ -94,20 +94,20 @@ public class ExtendedMenuType<T extends AbstractContainerMenu, D> extends MenuTy
 	 */
 	@Deprecated
 	@Override
-	public final T create(int syncId, Inventory inventory) {
+	public final T create(int containerId, Inventory inventory) {
 		throw new UnsupportedOperationException("Use ExtendedMenuType.create(int, PlayerInventory, PacketByteBuf)!");
 	}
 
 	/**
 	 * Creates a new menu using the extra opening data.
 	 *
-	 * @param syncId    the sync ID
+	 * @param containerId    the container ID
 	 * @param inventory the player inventory
 	 * @param data      the synced opening data
 	 * @return the created menu
 	 */
-	public T create(int syncId, Inventory inventory, D data) {
-		return factory.create(syncId, inventory, data);
+	public T create(int containerId, Inventory inventory, D data) {
+		return factory.create(containerId, inventory, data);
 	}
 
 	/**
@@ -132,11 +132,11 @@ public class ExtendedMenuType<T extends AbstractContainerMenu, D> extends MenuTy
 		/**
 		 * Creates a new menu with additional screen opening data.
 		 *
-		 * @param syncId    the synchronization ID
+		 * @param containerId    the container ID
 		 * @param inventory the player inventory
 		 * @param data      the synced data
 		 * @return the created menu
 		 */
-		T create(int syncId, Inventory inventory, D data);
+		T create(int containerId, Inventory inventory, D data);
 	}
 }

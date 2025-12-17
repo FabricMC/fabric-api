@@ -27,13 +27,13 @@ import net.fabricmc.fabric.test.menu.MenuTest;
 public class BoxMenu extends DispenserMenu implements PositionedMenu {
 	private final BlockPos pos;
 
-	public BoxMenu(int syncId, Inventory playerInventory, BlockPos pos) {
-		super(syncId, playerInventory);
+	public BoxMenu(int containerId, Inventory playerInventory, BlockPos pos) {
+		super(containerId, playerInventory);
 		this.pos = pos;
 	}
 
-	public BoxMenu(int syncId, Inventory playerInventory, Container inventory) {
-		super(syncId, playerInventory, inventory);
+	public BoxMenu(int containerId, Inventory playerInventory, Container inventory) {
+		super(containerId, playerInventory, inventory);
 		this.pos = BlockPos.ZERO;
 	}
 

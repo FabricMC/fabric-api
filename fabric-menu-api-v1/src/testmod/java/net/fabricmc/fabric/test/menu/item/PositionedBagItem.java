@@ -58,8 +58,8 @@ public class PositionedBagItem extends BagItem {
 	private ExtendedMenuFactory<PositionedBagMenu.BagData> createScreenHandlerFactory(ItemStack stack, BlockPos pos) {
 		return new ExtendedMenuFactory<>() {
 			@Override
-			public AbstractContainerMenu createMenu(int syncId, Inventory inventory, Player player) {
-				return new PositionedBagMenu(syncId, inventory, new BagInventory(stack), pos);
+			public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
+				return new PositionedBagMenu(containerId, inventory, new BagInventory(stack), pos);
 			}
 
 			@Override

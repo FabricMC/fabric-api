@@ -53,8 +53,8 @@ public class BoxBlockEntity extends RandomizableContainerBlockEntity implements 
 	}
 
 	@Override
-	protected AbstractContainerMenu createMenu(int syncId, Inventory playerInventory) {
-		return new BoxMenu(syncId, playerInventory, this);
+	protected AbstractContainerMenu createMenu(int containerId, Inventory playerInventory) {
+		return new BoxMenu(containerId, playerInventory, this);
 	}
 
 	@Override
