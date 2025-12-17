@@ -7,7 +7,8 @@
     "MappedRegistryMixin",
     "SimpleRegistry2Mixin",
     "SimpleRegistry3Mixin",
-    "SimpleRegistryTagLookup2Accessor"
+    "SimpleRegistryTagLookup2Accessor",
+    "TagLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
