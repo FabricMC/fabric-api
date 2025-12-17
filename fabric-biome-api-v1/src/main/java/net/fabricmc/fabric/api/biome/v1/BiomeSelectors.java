@@ -132,7 +132,7 @@ public final class BiomeSelectors {
 	/**
 	 * Returns a biome selector that will match biomes in which one of the given entity types can spawn.
 	 *
-	 * <p>Matches spawns in all {@link MobCategory spawn groups}.
+	 * <p>Matches spawns in all {@link MobCategory categories}.
 	 */
 	public static Predicate<BiomeSelectionContext> spawnsOneOf(EntityType<?>... entityTypes) {
 		return spawnsOneOf(ImmutableSet.copyOf(entityTypes));
@@ -141,7 +141,7 @@ public final class BiomeSelectors {
 	/**
 	 * Returns a biome selector that will match biomes in which one of the given entity types can spawn.
 	 *
-	 * <p>Matches spawns in all {@link MobCategory spawn groups}.
+	 * <p>Matches spawns in all {@link MobCategory categories}.
 	 */
 	public static Predicate<BiomeSelectionContext> spawnsOneOf(Set<EntityType<?>> entityTypes) {
 		return context -> {
