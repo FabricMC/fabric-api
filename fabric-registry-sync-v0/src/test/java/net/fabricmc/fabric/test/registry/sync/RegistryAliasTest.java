@@ -56,7 +56,7 @@ public class RegistryAliasTest {
 	@BeforeEach
 	void beforeEach() {
 		testRegistryKey = ResourceKey.createRegistryKey(id(UUID.randomUUID().toString()));
-		testRegistry = Mockito.spy(FabricRegistryBuilder.createSimple(testRegistryKey).buildAndRegister());
+		testRegistry = Mockito.spy(FabricRegistryBuilder.create(testRegistryKey).buildAndRegister());
 
 		Registry.register(testRegistry, NEW_ID, "entry");
 		Registry.register(testRegistry, OTHER, "other");

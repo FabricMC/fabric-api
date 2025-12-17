@@ -128,7 +128,7 @@ public final class FabricTrackedDataRegistryImpl {
 
 		if (handlerRegistry == null) {
 			handlerRegistry = FabricRegistryBuilder
-					.createSimple(HANDLER_REGISTRY_KEY)
+					.create(HANDLER_REGISTRY_KEY)
 					.attribute(RegistryAttribute.SYNCED)
 					.buildAndRegister();
 

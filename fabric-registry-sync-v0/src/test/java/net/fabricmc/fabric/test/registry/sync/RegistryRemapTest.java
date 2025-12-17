@@ -61,7 +61,7 @@ public class RegistryRemapTest {
 	@BeforeEach
 	void beforeEach() {
 		testRegistryKey = ResourceKey.createRegistryKey(id(UUID.randomUUID().toString()));
-		testRegistry = FabricRegistryBuilder.createSimple(testRegistryKey)
+		testRegistry = FabricRegistryBuilder.create(testRegistryKey)
 				.attribute(RegistryAttribute.SYNCED)
 				.buildAndRegister();
 

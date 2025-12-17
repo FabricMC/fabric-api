@@ -72,7 +72,7 @@ public class RegistrySyncTest implements ModInitializer {
 		}
 
 		ResourceKey<Registry<String>> fabricRegistryKey = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("registry_sync", "fabric_registry"));
-		MappedRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(fabricRegistryKey)
+		MappedRegistry<String> fabricRegistry = FabricRegistryBuilder.create(fabricRegistryKey)
 				.attribute(RegistryAttribute.SYNCED)
 				.buildAndRegister();
 

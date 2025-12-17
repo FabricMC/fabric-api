@@ -39,7 +39,7 @@ public interface DynamicRegistryView {
 	/**
 	 * @return an {@link RegistryAccess} instance representing the registry view
 	 */
-	RegistryAccess asDynamicRegistryManager();
+	RegistryAccess asRegistryAccess();
 
 	/**
 	 * @return the stream of registries that are currently being loaded
@@ -47,7 +47,7 @@ public interface DynamicRegistryView {
 	Stream<Registry<?>> stream();
 
 	/**
-	 * Returns the registry identified by the registry key. This returns an empty optional if
+	 * Returns the registry identified by the resource key. This returns an empty optional if
 	 * the key does not refer to a registry, or if the current combined registry layer being loaded
 	 * does not contain the registry.
 	 *
@@ -58,7 +58,7 @@ public interface DynamicRegistryView {
 
 	/**
 	 * A shortcut to register {@link RegistryEntryAddedCallback}.
-	 * @param registryRef the registry key of the registry to register the event to
+	 * @param registryRef the resource key of the registry to register the event to
 	 * @param callback the callback of the event
 	 */
 	<T> void registerEntryAdded(ResourceKey<? extends Registry<? extends T>> registryRef, RegistryEntryAddedCallback<T> callback);
