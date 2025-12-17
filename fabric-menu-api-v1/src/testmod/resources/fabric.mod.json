@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-screen-handler-api-v1-testmod",
-  "name": "Fabric Screen Handler API (v1) Test Mod",
+  "id": "fabric-menu-api-v1-testmod",
+  "name": "Fabric Menu API (v1) Test Mod",
   "version": "1.0.0",
   "environment": "*",
   "license": "Apache-2.0",
   "depends": {
     "fabric-resource-loader-v1": "*",
-    "fabric-screen-handler-api-v1": "*"
+    "fabric-menu-api-v1": "*"
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest"
+      "net.fabricmc.fabric.test.menu.ScreenHandlerTest"
     ],
     "client": [
-      "net.fabricmc.fabric.test.screenhandler.client.ClientScreenHandlerTest"
+      "net.fabricmc.fabric.test.menu.client.ClientScreenHandlerTest"
     ]
   }
 }
