@@ -47,7 +47,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * </ul>
  *
  * <p>Note that on the server, the {@link EntityHitResult} may be {@code null} if the client successfully interacted using
- * the {@linkplain Player#interactOn(Entity, InteractionHand)}  position-less overload}.
+ * the {@linkplain Player#interactOn(Entity, InteractionHand) position-less overload}.
  * On the client, the {@link EntityHitResult} will never be null.
  */
 public interface UseEntityCallback {

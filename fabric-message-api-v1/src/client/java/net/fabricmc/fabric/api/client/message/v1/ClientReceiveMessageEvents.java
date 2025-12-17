@@ -65,7 +65,7 @@ public final class ClientReceiveMessageEvents {
 	 *
 	 * <p>Overlay is whether the message will be displayed in the action bar.
 	 * To toggle overlay, return false and call
-	 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean)}  ClientPlayerEntity.sendMessage(message, overlay)}.
+	 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean) ClientPlayerEntity.sendMessage(message, overlay)}.
 	 */
 	public static final Event<AllowGame> ALLOW_GAME = EventFactory.createArrayBacked(AllowGame.class, listeners -> (message, overlay) -> {
 		boolean allow = true;
@@ -173,7 +173,7 @@ public final class ClientReceiveMessageEvents {
 		 *
 		 * <p>Overlay is whether the message will be displayed in the action bar.
 		 * To toggle overlay, return false and call
-		 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean)}  ClientPlayerEntity.sendMessage(message, overlay)}.
+		 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean) ClientPlayerEntity.sendMessage(message, overlay)}.
 		 *
 		 * @param message the message received from the server
 		 * @param overlay whether the message will be displayed in the action bar

@@ -166,7 +166,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		 * Adds a new object to be data generated with several resource conditions.
 		 *
 		 * @param object     The object to generate. This registry entry must have both a
-		 *                   {@linkplain Holder#isBound()}  key and value}.
+		 *                   {@linkplain Holder#isBound() key and value}.
 		 * @param conditions Conditions that must be satisfied to load this object.
 		 */
 		public <T> void add(Holder.Reference<T> object, ResourceCondition... conditions) {

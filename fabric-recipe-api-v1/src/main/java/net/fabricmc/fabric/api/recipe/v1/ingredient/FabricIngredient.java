@@ -40,7 +40,7 @@ public interface FabricIngredient {
 	 * and custom ingredients need to {@linkplain CustomIngredient#requiresTesting() provide this information}.
 	 *
 	 * <p>If {@code false}, {@linkplain Ingredient#test testing this ingredient} with an item stack must be equivalent to checking whether
-	 * the item stack's item is included in the ingredient's {@linkplain Ingredient#items()}  list of matching stacks}.
+	 * the item stack's item is included in the ingredient's {@linkplain Ingredient#items() list of matching stacks}.
 	 * In that case, optimized matching logic can be used.
 	 *
 	 * <p>If {@code true}, the ingredient must always be tested using {@link Ingredient#test(ItemStack)}.

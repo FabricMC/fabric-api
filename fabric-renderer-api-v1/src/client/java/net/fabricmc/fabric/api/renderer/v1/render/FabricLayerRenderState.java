@@ -34,7 +34,7 @@ public interface FabricLayerRenderState {
 	 * Retrieves the {@link QuadEmitter} used to append quads to this layer. Calling this method a second time
 	 * invalidates any prior result. Geometry added to this emitter will not be visible in
 	 * {@link ItemStackRenderState.LayerRenderState#prepareQuadList()} and will be rendered after any
-	 * {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList()}  vanilla quads} when this layer is rendered. Vertex
+	 * {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads} when this layer is rendered. Vertex
 	 * positions of geometry added to this emitter will automatically be output on
 	 * {@link ItemStackRenderState#visitExtents(Consumer)} ({@link ItemStackRenderState.LayerRenderState#setExtents(Supplier)} must still
 	 * be used to add positions of {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads}). Adding quads
