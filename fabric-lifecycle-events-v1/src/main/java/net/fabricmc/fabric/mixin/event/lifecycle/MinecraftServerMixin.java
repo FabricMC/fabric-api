@@ -34,9 +34,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
@@ -74,16 +74,16 @@ public abstract class MinecraftServerMixin {
 	}
 
 	@WrapOperation(method = "createLevels", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
-	private <K, V> V onLoadWorld(Map<K, V> worlds, K registryKey, V serverWorld, Operation<V> original) {
-		final V result = original.call(worlds, registryKey, serverWorld);
-		ServerWorldEvents.LOAD.invoker().onWorldLoad((MinecraftServer) (Object) this, (ServerLevel) serverWorld);
+	private <K, V> V onLoadWorld(Map<K, V> levels, K dimension, V level, Operation<V> original) {
+		final V result = original.call(levels, dimension, level);
+		ServerLevelEvents.LOAD.invoker().onLevelLoad((MinecraftServer) (Object) this, (ServerLevel) level);
 
 		return result;
 	}
 
 	@Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;close()V"))
 	private void onUnloadWorldAtShutdown(CallbackInfo ci, @Local ServerLevel world) {
-		ServerWorldEvents.UNLOAD.invoker().onWorldUnload((MinecraftServer) (Object) this, world);
+		ServerLevelEvents.UNLOAD.invoker().onLevelUnload((MinecraftServer) (Object) this, world);
 	}
 
 	@Inject(method = "reloadResources", at = @At("HEAD"))

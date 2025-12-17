@@ -33,7 +33,7 @@ public class PersistentStateManagerTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerTickEvents.END_WORLD_TICK.register(world -> {
+		ServerTickEvents.END_LEVEL_TICK.register(world -> {
 			if (ranTests) return;
 			ranTests = true;
 

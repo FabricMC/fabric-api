@@ -29,11 +29,11 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 public abstract class ClientLevelMixin {
 	@Inject(method = "tickEntities", at = @At("TAIL"))
 	public void tickWorldAfterBlockEntities(CallbackInfo ci) {
-		ClientTickEvents.END_WORLD_TICK.invoker().onEndTick((ClientLevel) (Object) this);
+		ClientTickEvents.END_LEVEL_TICK.invoker().onEndTick((ClientLevel) (Object) this);
 	}
 
 	@Inject(method = "tickEntities", at = @At("HEAD"))
 	private void startWorldTick(CallbackInfo ci) {
-		ClientTickEvents.START_WORLD_TICK.invoker().onStartTick((ClientLevel) (Object) this);
+		ClientTickEvents.START_LEVEL_TICK.invoker().onStartTick((ClientLevel) (Object) this);
 	}
 }

@@ -27,34 +27,34 @@ public final class ClientChunkEvents {
 	}
 
 	/**
-	 * Called when a chunk is loaded into a ClientWorld.
+	 * Called when a chunk is loaded into a ClientLevel.
 	 *
-	 * <p>When this event is called, the chunk is already in the world.
+	 * <p>When this event is called, the chunk is already in the level.
 	 */
-	public static final Event<ClientChunkEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ClientChunkEvents.Load.class, callbacks -> (clientWorld, chunk) -> {
+	public static final Event<ClientChunkEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ClientChunkEvents.Load.class, callbacks -> (clientLevel, chunk) -> {
 		for (Load callback : callbacks) {
-			callback.onChunkLoad(clientWorld, chunk);
+			callback.onChunkLoad(clientLevel, chunk);
 		}
 	});
 
 	/**
-	 * Called when a chunk is about to be unloaded from a ClientWorld.
+	 * Called when a chunk is about to be unloaded from a ClientLevel.
 	 *
-	 * <p>When this event is called, the chunk is still present in the world.
+	 * <p>When this event is called, the chunk is still present in the level.
 	 */
-	public static final Event<ClientChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ClientChunkEvents.Unload.class, callbacks -> (clientWorld, chunk) -> {
+	public static final Event<ClientChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ClientChunkEvents.Unload.class, callbacks -> (clientLevel, chunk) -> {
 		for (Unload callback : callbacks) {
-			callback.onChunkUnload(clientWorld, chunk);
+			callback.onChunkUnload(clientLevel, chunk);
 		}
 	});
 
 	@FunctionalInterface
 	public interface Load {
-		void onChunkLoad(ClientLevel world, LevelChunk chunk);
+		void onChunkLoad(ClientLevel level, LevelChunk chunk);
 	}
 
 	@FunctionalInterface
 	public interface Unload {
-		void onChunkUnload(ClientLevel world, LevelChunk chunk);
+		void onChunkUnload(ClientLevel level, LevelChunk chunk);
 	}
 }
