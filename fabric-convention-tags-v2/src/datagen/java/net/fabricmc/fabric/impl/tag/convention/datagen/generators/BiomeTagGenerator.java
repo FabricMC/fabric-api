@@ -43,7 +43,6 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 		generateOtherBiomeTypes();
 		generateClimateAndVegetationTags();
 		generateTerrainDescriptorTags();
-		generateBackwardsCompatTags();
 	}
 
 	private void generateDimensionTags() {
@@ -438,31 +437,5 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 				.add(Biomes.SNOWY_PLAINS);
 		builder(ConventionalBiomeTags.IS_STONY_SHORES)
 				.add(Biomes.STONY_SHORE);
-	}
-
-	private void generateBackwardsCompatTags() {
-		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
-		// TODO: Remove backwards compat tag entries in 1.22
-
-		builder(ConventionalBiomeTags.IS_NETHER).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "in_nether")));
-		builder(ConventionalBiomeTags.IS_END).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "in_the_end")));
-		builder(ConventionalBiomeTags.IS_OVERWORLD).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "in_the_overworld")));
-		builder(ConventionalBiomeTags.IS_CAVE).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "caves")));
-		builder(ConventionalBiomeTags.IS_COLD_OVERWORLD).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "climate_cold")));
-		builder(ConventionalBiomeTags.IS_TEMPERATE_OVERWORLD).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "climate_temperate")));
-		builder(ConventionalBiomeTags.IS_HOT_OVERWORLD).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "climate_hot")));
-		builder(ConventionalBiomeTags.IS_WET_OVERWORLD).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "climate_wet")));
-		builder(ConventionalBiomeTags.IS_DRY_OVERWORLD).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "climate_dry")));
-		builder(ConventionalBiomeTags.IS_VEGETATION_DENSE_OVERWORLD).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "vegetation_dense")));
-		builder(ConventionalBiomeTags.IS_VEGETATION_SPARSE_OVERWORLD).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "vegetation_sparse")));
-		builder(ConventionalBiomeTags.IS_CONIFEROUS_TREE).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "tree_coniferous")));
-		builder(ConventionalBiomeTags.IS_DECIDUOUS_TREE).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "tree_deciduous")));
-		builder(ConventionalBiomeTags.IS_JUNGLE_TREE).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "tree_jungle")));
-		builder(ConventionalBiomeTags.IS_SAVANNA_TREE).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "tree_savanna")));
-		builder(ConventionalBiomeTags.IS_MOUNTAIN_PEAK).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "mountain_peak")));
-		builder(ConventionalBiomeTags.IS_MOUNTAIN_SLOPE).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "mountain_slope")));
-		builder(ConventionalBiomeTags.IS_OUTER_END_ISLAND).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "end_islands")));
-		builder(ConventionalBiomeTags.IS_NETHER_FOREST).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "nether_forests")));
-		builder(ConventionalBiomeTags.IS_FLOWER_FOREST).addOptionalTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TagUtil.C_TAG_NAMESPACE, "flower_forests")));
 	}
 }

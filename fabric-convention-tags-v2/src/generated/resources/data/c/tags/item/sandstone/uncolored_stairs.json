@@ -1,10 +1,6 @@
 {
   "values": [
     "minecraft:sandstone_stairs",
-    "minecraft:smooth_sandstone_stairs",
-    {
-      "id": "#c:uncolored_sandstone_stairs",
-      "required": false
-    }
+    "minecraft:smooth_sandstone_stairs"
   ]
 }

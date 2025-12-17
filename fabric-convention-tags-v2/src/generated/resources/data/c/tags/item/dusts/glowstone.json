@@ -1,9 +1,5 @@
 {
   "values": [
-    "minecraft:glowstone_dust",
-    {
-      "id": "#c:glowstone_dusts",
-      "required": false
-    }
+    "minecraft:glowstone_dust"
   ]
 }

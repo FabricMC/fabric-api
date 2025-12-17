@@ -1,10 +1,6 @@
 {
   "values": [
     "minecraft:warped_forest",
-    "minecraft:crimson_forest",
-    {
-      "id": "#c:nether_forests",
-      "required": false
-    }
+    "minecraft:crimson_forest"
   ]
 }

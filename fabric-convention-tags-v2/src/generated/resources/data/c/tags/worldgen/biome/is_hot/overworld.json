@@ -12,10 +12,6 @@
     "minecraft:windswept_savanna",
     "minecraft:stony_peaks",
     "minecraft:mushroom_fields",
-    "minecraft:warm_ocean",
-    {
-      "id": "#c:climate_hot",
-      "required": false
-    }
+    "minecraft:warm_ocean"
   ]
 }

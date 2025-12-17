@@ -1,9 +1,5 @@
 {
   "values": [
-    "minecraft:diamond",
-    {
-      "id": "#c:diamonds",
-      "required": false
-    }
+    "minecraft:diamond"
   ]
 }

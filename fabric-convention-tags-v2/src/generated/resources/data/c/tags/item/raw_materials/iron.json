@@ -1,9 +1,5 @@
 {
   "values": [
-    "minecraft:raw_iron",
-    {
-      "id": "#c:raw_iron_ores",
-      "required": false
-    }
+    "minecraft:raw_iron"
   ]
 }

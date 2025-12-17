@@ -2,10 +2,6 @@
   "values": [
     "minecraft:sandstone_slab",
     "minecraft:cut_sandstone_slab",
-    "minecraft:smooth_sandstone_slab",
-    {
-      "id": "#c:uncolored_sandstone_slabs",
-      "required": false
-    }
+    "minecraft:smooth_sandstone_slab"
   ]
 }

@@ -14,10 +14,6 @@
     "minecraft:mangrove_swamp",
     "minecraft:beach",
     "minecraft:ocean",
-    "minecraft:deep_ocean",
-    {
-      "id": "#c:climate_temperate",
-      "required": false
-    }
+    "minecraft:deep_ocean"
   ]
 }

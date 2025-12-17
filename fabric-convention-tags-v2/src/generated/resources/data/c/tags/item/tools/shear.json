@@ -4,10 +4,6 @@
     {
       "id": "#c:tools/shears",
       "required": false
-    },
-    {
-      "id": "#c:shears",
-      "required": false
     }
   ]
 }

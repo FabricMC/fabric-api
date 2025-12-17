@@ -19,10 +19,6 @@
     "minecraft:cold_ocean",
     "minecraft:frozen_ocean",
     "minecraft:deep_cold_ocean",
-    "minecraft:deep_frozen_ocean",
-    {
-      "id": "#c:climate_cold",
-      "required": false
-    }
+    "minecraft:deep_frozen_ocean"
   ]
 }

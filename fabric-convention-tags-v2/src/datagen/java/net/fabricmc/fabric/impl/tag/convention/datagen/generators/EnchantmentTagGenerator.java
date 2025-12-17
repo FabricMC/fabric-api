@@ -20,8 +20,6 @@ import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -60,12 +58,5 @@ public final class EnchantmentTagGenerator extends FabricTagProvider<Enchantment
 				.add(Enchantments.FIRE_PROTECTION)
 				.add(Enchantments.RESPIRATION)
 				.add(Enchantments.FEATHER_FALLING);
-
-		// Backwards compat with pre-1.21 tags. Done after so optional tag is last for better readability.
-		// TODO: Remove backwards compat tag entries in 1.22
-		builder(ConventionalEnchantmentTags.ENTITY_SPEED_ENHANCEMENTS)
-				.addOptionalTag(TagKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath("c", "entity_movement_enhancement")));
-		builder(ConventionalEnchantmentTags.ENTITY_DEFENSE_ENHANCEMENTS)
-				.addOptionalTag(TagKey.create(Registries.ENCHANTMENT, Identifier.fromNamespaceAndPath("c", "entity_defense_enhancement")));
 	}
 }

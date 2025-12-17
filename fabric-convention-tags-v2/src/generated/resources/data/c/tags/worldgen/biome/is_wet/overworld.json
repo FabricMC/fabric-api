@@ -7,10 +7,6 @@
     "minecraft:sparse_jungle",
     "minecraft:beach",
     "minecraft:lush_caves",
-    "minecraft:dripstone_caves",
-    {
-      "id": "#c:climate_wet",
-      "required": false
-    }
+    "minecraft:dripstone_caves"
   ]
 }

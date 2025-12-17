@@ -4,10 +4,6 @@
     {
       "id": "#c:tools/bows",
       "required": false
-    },
-    {
-      "id": "#c:bows",
-      "required": false
     }
   ]
 }
