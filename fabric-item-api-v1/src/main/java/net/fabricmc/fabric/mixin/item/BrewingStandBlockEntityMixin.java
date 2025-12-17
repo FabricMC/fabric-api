@@ -38,14 +38,14 @@ public class BrewingStandBlockEntityMixin {
 
 	@Inject(method = "doBrew", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V", shift = At.Shift.AFTER))
 	private static void captureItemStack(Level world, BlockPos pos, NonNullList<ItemStack> slots, CallbackInfo ci, @Local ItemStack itemStack) {
-		REMAINDER_STACK.set(itemStack.getRecipeRemainder());
+		REMAINDER_STACK.set(itemStack.getCraftingRemainder());
 	}
 
 	/**
-	 * Wrap the {@link Item#getRecipeRemainder} call to replace the old remainder with the new one.
+	 * Wrap the {@link Item#getCraftingRemainder} call to replace the old remainder with the new one.
 	 */
 	@Redirect(method = "doBrew", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;getCraftingRemainder()Lnet/minecraft/world/item/ItemStack;"))
-	private static ItemStack createStackRecipeRemainder(Item item) {
+	private static ItemStack createStackCraftingRemainder(Item item) {
 		ItemStack remainder = REMAINDER_STACK.get();
 		REMAINDER_STACK.remove();
 		return remainder;

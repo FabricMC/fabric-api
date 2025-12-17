@@ -25,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
  * This is useful for items that, for example, may drain durability from some other source before damaging
  * the stack itself.
  *
- * <p>Custom damage handlers can be set with {@link FabricItem.Settings#customDamage}.
+ * <p>Custom damage handlers can be set with {@link FabricItem.Properties#customDamage}.
  */
 @FunctionalInterface
 public interface CustomDamageHandler {
@@ -39,5 +39,5 @@ public interface CustomDamageHandler {
 	 * @param amount the amount of damage originally requested
 	 * @return The amount of damage to pass to vanilla's logic
 	 */
-	int damage(ItemStack stack, int amount, LivingEntity entity, EquipmentSlot slot, Runnable breakCallback);
+	int hurtAndBreak(ItemStack stack, int amount, LivingEntity entity, EquipmentSlot slot, Runnable breakCallback);
 }
