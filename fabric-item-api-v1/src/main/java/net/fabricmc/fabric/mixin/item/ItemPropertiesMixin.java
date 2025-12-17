@@ -28,7 +28,7 @@ import net.minecraft.world.item.Item;
 import net.fabricmc.fabric.api.item.v1.FabricItem;
 
 @Mixin(Item.Properties.class)
-public class ItemPropertiesMixin implements FabricItem.Settings {
+public class ItemPropertiesMixin implements FabricItem.Properties {
 	@Final
 	@Shadow
 	@Mutable
@@ -37,6 +37,6 @@ public class ItemPropertiesMixin implements FabricItem.Settings {
 	@Override
 	public Item.Properties modelId(Identifier modelId) {
 		this.model = DependantName.fixed(modelId);
-		return FabricItem.Settings.super.modelId(modelId);
+		return FabricItem.Properties.super.modelId(modelId);
 	}
 }

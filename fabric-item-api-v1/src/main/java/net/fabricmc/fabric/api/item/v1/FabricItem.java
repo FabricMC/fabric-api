@@ -74,10 +74,10 @@ public interface FabricItem {
 
 	/**
 	 * Returns a leftover item stack after {@code stack} is consumed in a recipe.
-	 * (This is also known as "recipe remainder".)
+	 * (This is also known as a "crafting remainder".)
 	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
 	 *
-	 * <p>Here is an example for a recipe remainder that increments the item's damage.
+	 * <p>Here is an example for a crafting remainder that increments the item's damage.
 	 *
 	 * <pre>{@code
 	 *  if (stack.getDamage() < stack.getMaxDamage() - 1) {
@@ -95,12 +95,12 @@ public interface FabricItem {
 	 * <p>Note that simple item remainders can also be set via {@link Item.Properties#craftRemainder(Item)}.
 	 *
 	 * <p>If you want to get a remainder for a stack,
-	 * is recommended to use the stack version of this method: {@link FabricItemStack#getRecipeRemainder()}.
+	 * is recommended to use the stack version of this method: {@link FabricItemStack#getCraftingRemainder()}.
 	 *
 	 * @param stack the consumed {@link ItemStack}
 	 * @return the leftover item stack
 	 */
-	default ItemStack getRecipeRemainder(ItemStack stack) {
+	default ItemStack getCraftingRemainder(ItemStack stack) {
 		return ((Item) this).getCraftingRemainder();
 	}
 
@@ -161,9 +161,9 @@ public interface FabricItem {
 
 	/**
 	 * Fabric-provided extensions for {@link Item.Properties}.
-	 * This interface is automatically implemented on all item settings via Mixin and interface injection.
+	 * This interface is automatically implemented on all item properties via Mixin and interface injection.
 	 */
-	interface Settings {
+	interface Properties {
 		/**
 		 * Sets the equipment slot provider of the item.
 		 *

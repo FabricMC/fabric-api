@@ -33,12 +33,12 @@ import net.minecraft.tags.TagKey;
 public class ClientTagsImpl {
 	private static final Map<TagKey<?>, ClientTagsLoader.LoadedTag> LOCAL_TAG_HIERARCHY = new ConcurrentHashMap<>();
 
-	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> registryEntry) {
-		return isInWithLocalFallback(tagKey, registryEntry, new HashSet<>());
+	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> holder) {
+		return isInWithLocalFallback(tagKey, holder, new HashSet<>());
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> registryEntry, Set<TagKey<T>> checked) {
+	private static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> holder, Set<TagKey<T>> checked) {
 		if (checked.contains(tagKey)) {
 			return false;
 		}
@@ -51,11 +51,11 @@ public class ClientTagsImpl {
 		if (maybeRegistry.isPresent()) {
 			// Check the synced tag exists and use that
 			if (maybeRegistry.get().get(tagKey).isPresent()) {
-				return registryEntry.is(tagKey);
+				return holder.is(tagKey);
 			}
 		}
 
-		if (registryEntry.unwrapKey().isEmpty()) {
+		if (holder.unwrapKey().isEmpty()) {
 			// No key?
 			return false;
 		}
@@ -63,12 +63,12 @@ public class ClientTagsImpl {
 		// Recursively search the entries contained with the tag
 		ClientTagsLoader.LoadedTag wt = ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey);
 
-		if (wt.immediateChildIds().contains(registryEntry.unwrapKey().get().identifier())) {
+		if (wt.immediateChildIds().contains(holder.unwrapKey().get().identifier())) {
 			return true;
 		}
 
 		for (TagKey<?> key : wt.immediateChildTags()) {
-			if (isInWithLocalFallback((TagKey<T>) key, registryEntry, checked)) {
+			if (isInWithLocalFallback((TagKey<T>) key, holder, checked)) {
 				return true;
 			}
 
@@ -97,7 +97,7 @@ public class ClientTagsImpl {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> Optional<Holder<T>> getRegistryEntry(TagKey<T> tagKey, T entry) {
+	public static <T> Optional<Holder<T>> getHolder(TagKey<T> tagKey, T entry) {
 		Optional<? extends Registry<?>> maybeRegistry = getRegistry(tagKey);
 
 		if (maybeRegistry.isEmpty() || !tagKey.isFor(maybeRegistry.get().key())) {
