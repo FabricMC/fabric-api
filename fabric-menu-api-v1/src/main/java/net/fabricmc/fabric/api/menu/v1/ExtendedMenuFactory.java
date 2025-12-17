@@ -21,16 +21,17 @@ import net.minecraft.world.MenuProvider;
 
 /**
  * An extension of {@code NamedScreenHandlerFactory} that can write additional data to a screen opening packet.
- * This is used for {@linkplain ExtendedScreenHandlerType extended screen handlers}.
+ * This is used for {@linkplain ExtendedMenuType extended menus}.
  *
- * @see ExtendedScreenHandlerType usage examples
+ * @see ExtendedMenuType usage examples
  */
-public interface ExtendedScreenHandlerFactory<D> extends MenuProvider {
+public interface ExtendedMenuFactory<D> extends MenuProvider {
 	/**
 	 * Writes additional server -&gt; client screen opening data to the buffer.
 	 *
 	 * @param player the player that is opening the screen
 	 * @return the screen opening data
 	 */
+	// TODO: Should this be named getScreenOpeningData or getMenuOpeningData? ( I think it should stay getScreenOpening...)
 	D getScreenOpeningData(ServerPlayer player);
 }

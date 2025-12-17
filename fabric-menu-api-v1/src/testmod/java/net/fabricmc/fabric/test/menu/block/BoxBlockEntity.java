@@ -26,15 +26,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.test.menu.ScreenHandlerTest;
-import net.fabricmc.fabric.test.menu.screen.BoxScreenHandler;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
+import net.fabricmc.fabric.test.menu.MenuTest;
+import net.fabricmc.fabric.test.menu.screen.BoxMenu;
 
-public class BoxBlockEntity extends RandomizableContainerBlockEntity implements ExtendedScreenHandlerFactory<BlockPos> {
+public class BoxBlockEntity extends RandomizableContainerBlockEntity implements ExtendedMenuFactory<BlockPos> {
 	private NonNullList<ItemStack> items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 
-	public BoxBlockEntity(BlockPos blockPos, BlockState blockState) {
-		super(ScreenHandlerTest.BOX_ENTITY, blockPos, blockState);
+	public BoxBlockEntity(BlockPos pos, BlockState state) {
+		super(MenuTest.BOX_ENTITY, pos, state);
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class BoxBlockEntity extends RandomizableContainerBlockEntity implements 
 
 	@Override
 	protected AbstractContainerMenu createMenu(int syncId, Inventory playerInventory) {
-		return new BoxScreenHandler(syncId, playerInventory, this);
+		return new BoxMenu(syncId, playerInventory, this);
 	}
 
 	@Override

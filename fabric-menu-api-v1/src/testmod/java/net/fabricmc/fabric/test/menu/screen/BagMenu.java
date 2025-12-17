@@ -25,21 +25,21 @@ import net.minecraft.world.inventory.DispenserMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import net.fabricmc.fabric.test.menu.ScreenHandlerTest;
+import net.fabricmc.fabric.test.menu.MenuTest;
 import net.fabricmc.fabric.test.menu.item.BagItem;
 
-public class BagScreenHandler extends DispenserMenu {
+public class BagMenu extends DispenserMenu {
 	private final MenuType<?> type;
 
-	public BagScreenHandler(int syncId, Inventory playerInventory) {
+	public BagMenu(int syncId, Inventory playerInventory) {
 		this(syncId, playerInventory, new SimpleContainer(9));
 	}
 
-	public BagScreenHandler(int syncId, Inventory playerInventory, Container inventory) {
-		this(ScreenHandlerTest.BAG_SCREEN_HANDLER, syncId, playerInventory, inventory);
+	public BagMenu(int syncId, Inventory playerInventory, Container inventory) {
+		this(MenuTest.BAG_MENU, syncId, playerInventory, inventory);
 	}
 
-	protected BagScreenHandler(MenuType<?> type, int syncId, Inventory playerInventory, Container inventory) {
+	protected BagMenu(MenuType<?> type, int syncId, Inventory playerInventory, Container inventory) {
 		super(syncId, playerInventory, inventory);
 		this.type = type;
 	}
@@ -50,7 +50,7 @@ public class BagScreenHandler extends DispenserMenu {
 	}
 
 	@Override
-	public void clicked(int slotId, int clickData, ContainerInput containerInput, Player playerEntity) {
+	public void clicked(int slotId, int clickData, ContainerInput containerInput, Player player) {
 		if (slotId >= 0) { // slotId < 0 are used for networking internals
 			ItemStack stack = getSlot(slotId).getItem();
 
@@ -60,6 +60,6 @@ public class BagScreenHandler extends DispenserMenu {
 			}
 		}
 
-		super.clicked(slotId, clickData, containerInput, playerEntity);
+		super.clicked(slotId, clickData, containerInput, player);
 	}
 }

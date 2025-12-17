@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.menu.item;
 
 import java.util.Optional;
 
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,16 +32,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.test.menu.screen.PositionedBagScreenHandler;
+import net.fabricmc.fabric.test.menu.screen.PositionedBagMenu;
 
 public class PositionedBagItem extends BagItem {
-	public PositionedBagItem(Properties settings) {
-		super(settings);
+	public PositionedBagItem(Properties properties) {
+		super(properties);
 	}
 
 	@Override
-	public InteractionResult use(Level world, Player user, InteractionHand hand) {
+	public InteractionResult use(Level level, Player user, InteractionHand hand) {
 		ItemStack stack = user.getItemInHand(hand);
 		user.openMenu(createScreenHandlerFactory(stack, null));
 		return InteractionResult.SUCCESS;
@@ -54,11 +55,11 @@ public class PositionedBagItem extends BagItem {
 		return InteractionResult.SUCCESS;
 	}
 
-	private ExtendedScreenHandlerFactory<PositionedBagScreenHandler.BagData> createScreenHandlerFactory(ItemStack stack, BlockPos pos) {
-		return new ExtendedScreenHandlerFactory<>() {
+	private ExtendedMenuFactory<PositionedBagMenu.BagData> createScreenHandlerFactory(ItemStack stack, BlockPos pos) {
+		return new ExtendedMenuFactory<>() {
 			@Override
 			public AbstractContainerMenu createMenu(int syncId, Inventory inventory, Player player) {
-				return new PositionedBagScreenHandler(syncId, inventory, new BagInventory(stack), pos);
+				return new PositionedBagMenu(syncId, inventory, new BagInventory(stack), pos);
 			}
 
 			@Override
@@ -67,8 +68,8 @@ public class PositionedBagItem extends BagItem {
 			}
 
 			@Override
-			public PositionedBagScreenHandler.BagData getScreenOpeningData(ServerPlayer player) {
-				return new PositionedBagScreenHandler.BagData(Optional.of(pos));
+			public PositionedBagMenu.BagData getScreenOpeningData(ServerPlayer player) {
+				return new PositionedBagMenu.BagData(Optional.of(pos));
 			}
 		};
 	}

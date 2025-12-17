@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "fabric-screen-handler-api-v1-testmod:block/box"
+    "all": "fabric-menu-api-v1-testmod:block/box"
   }
 }

@@ -33,16 +33,16 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.test.menu.block.BoxBlock;
 import net.fabricmc.fabric.test.menu.block.BoxBlockEntity;
 import net.fabricmc.fabric.test.menu.item.BagItem;
 import net.fabricmc.fabric.test.menu.item.PositionedBagItem;
-import net.fabricmc.fabric.test.menu.screen.BagScreenHandler;
-import net.fabricmc.fabric.test.menu.screen.BoxScreenHandler;
-import net.fabricmc.fabric.test.menu.screen.PositionedBagScreenHandler;
+import net.fabricmc.fabric.test.menu.screen.BagMenu;
+import net.fabricmc.fabric.test.menu.screen.BoxMenu;
+import net.fabricmc.fabric.test.menu.screen.PositionedBagMenu;
 
-public class ScreenHandlerTest implements ModInitializer {
+public class MenuTest implements ModInitializer {
 	public static final String ID = "fabric-menu-api-v1-testmod";
 
 	public static final ResourceKey<Item> BAG_KEY = ResourceKey.create(Registries.ITEM, id("bag"));
@@ -53,9 +53,9 @@ public class ScreenHandlerTest implements ModInitializer {
 	public static final Block BOX = new BoxBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WOOD).setId(BOX_KEY));
 	public static final Item BOX_ITEM = new BlockItem(BOX, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, BOX_KEY.identifier())));
 	public static final BlockEntityType<BoxBlockEntity> BOX_ENTITY = FabricBlockEntityTypeBuilder.create(BoxBlockEntity::new, BOX).build();
-	public static final MenuType<BagScreenHandler> BAG_SCREEN_HANDLER = new MenuType<>(BagScreenHandler::new, FeatureFlags.VANILLA_SET);
-	public static final MenuType<PositionedBagScreenHandler> POSITIONED_BAG_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(PositionedBagScreenHandler::new, PositionedBagScreenHandler.BagData.PACKET_CODEC);
-	public static final MenuType<BoxScreenHandler> BOX_SCREEN_HANDLER = new ExtendedScreenHandlerType<>(BoxScreenHandler::new, BlockPos.STREAM_CODEC.cast());
+	public static final MenuType<BagMenu> BAG_MENU = new MenuType<>(BagMenu::new, FeatureFlags.VANILLA_SET);
+	public static final MenuType<PositionedBagMenu> POSITIONED_BAG_MENU = new ExtendedMenuType<>(PositionedBagMenu::new, PositionedBagMenu.BagData.PACKET_CODEC);
+	public static final MenuType<BoxMenu> BOX_SCREEN_MENU = new ExtendedMenuType<>(BoxMenu::new, BlockPos.STREAM_CODEC.cast());
 
 	public static Identifier id(String path) {
 		return Identifier.fromNamespaceAndPath(ID, path);
@@ -68,8 +68,8 @@ public class ScreenHandlerTest implements ModInitializer {
 		Registry.register(BuiltInRegistries.BLOCK, BOX_KEY, BOX);
 		Registry.register(BuiltInRegistries.ITEM, BOX_KEY.identifier(), BOX_ITEM);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, id("box"), BOX_ENTITY);
-		Registry.register(BuiltInRegistries.MENU, id("bag"), BAG_SCREEN_HANDLER);
-		Registry.register(BuiltInRegistries.MENU, id("positioned_bag"), POSITIONED_BAG_SCREEN_HANDLER);
-		Registry.register(BuiltInRegistries.MENU, id("box"), BOX_SCREEN_HANDLER);
+		Registry.register(BuiltInRegistries.MENU, id("bag"), BAG_MENU);
+		Registry.register(BuiltInRegistries.MENU, id("positioned_bag"), POSITIONED_BAG_MENU);
+		Registry.register(BuiltInRegistries.MENU, id("box"), BOX_SCREEN_MENU);
 	}
 }

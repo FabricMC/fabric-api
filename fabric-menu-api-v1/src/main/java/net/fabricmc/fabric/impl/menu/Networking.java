@@ -21,6 +21,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
+
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +43,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
 
 public final class Networking implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-menu-api-v1/server");
@@ -54,23 +56,23 @@ public final class Networking implements ModInitializer {
 	public static final Map<Identifier, StreamCodec<? super RegistryFriendlyByteBuf, ?>> CODEC_BY_ID = new HashMap<>();
 
 	/**
-	 * Opens an extended screen handler by sending a custom packet to the client.
+	 * Opens an extended menu by sending a custom packet to the client.
 	 *
 	 * @param player  the player
-	 * @param factory the screen handler factory
-	 * @param handler the screen handler instance
+	 * @param factory the menu factory
+	 * @param menu the menu instance
 	 * @param syncId  the synchronization ID
 	 */
 	@SuppressWarnings("unchecked")
-	public static <D> void sendOpenPacket(ServerPlayer player, ExtendedScreenHandlerFactory<D> factory, AbstractContainerMenu handler, int syncId) {
+	public static <D> void sendOpenPacket(ServerPlayer player, ExtendedMenuFactory<D> factory, AbstractContainerMenu menu, int syncId) {
 		Objects.requireNonNull(player, "player is null");
 		Objects.requireNonNull(factory, "factory is null");
-		Objects.requireNonNull(handler, "handler is null");
+		Objects.requireNonNull(menu, "menu is null");
 
-		Identifier typeId = BuiltInRegistries.MENU.getKey(handler.getType());
+		Identifier typeId = BuiltInRegistries.MENU.getKey(menu.getType());
 
 		if (typeId == null) {
-			LOGGER.warn("Trying to open unregistered screen handler {}", handler);
+			LOGGER.warn("Trying to open unregistered menu {}", menu);
 			return;
 		}
 
@@ -85,7 +87,7 @@ public final class Networking implements ModInitializer {
 		PayloadTypeRegistry.playS2C().register(OpenScreenPayload.ID, OpenScreenPayload.CODEC);
 
 		forEachEntry(BuiltInRegistries.MENU, (type, id) -> {
-			if (type instanceof ExtendedScreenHandlerType<?, ?> extended) {
+			if (type instanceof ExtendedMenuType<?, ?> extended) {
 				CODEC_BY_ID.put(id, extended.getPacketCodec());
 			}
 		});

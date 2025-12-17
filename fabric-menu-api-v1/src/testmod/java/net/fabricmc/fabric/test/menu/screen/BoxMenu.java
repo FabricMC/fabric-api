@@ -22,17 +22,17 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.DispenserMenu;
 import net.minecraft.world.inventory.MenuType;
 
-import net.fabricmc.fabric.test.menu.ScreenHandlerTest;
+import net.fabricmc.fabric.test.menu.MenuTest;
 
-public class BoxScreenHandler extends DispenserMenu implements PositionedScreenHandler {
+public class BoxMenu extends DispenserMenu implements PositionedMenu {
 	private final BlockPos pos;
 
-	public BoxScreenHandler(int syncId, Inventory playerInventory, BlockPos pos) {
+	public BoxMenu(int syncId, Inventory playerInventory, BlockPos pos) {
 		super(syncId, playerInventory);
 		this.pos = pos;
 	}
 
-	public BoxScreenHandler(int syncId, Inventory playerInventory, Container inventory) {
+	public BoxMenu(int syncId, Inventory playerInventory, Container inventory) {
 		super(syncId, playerInventory, inventory);
 		this.pos = BlockPos.ZERO;
 	}
@@ -44,6 +44,6 @@ public class BoxScreenHandler extends DispenserMenu implements PositionedScreenH
 
 	@Override
 	public MenuType<?> getType() {
-		return ScreenHandlerTest.BOX_SCREEN_HANDLER;
+		return MenuTest.BOX_SCREEN_MENU;
 	}
 }

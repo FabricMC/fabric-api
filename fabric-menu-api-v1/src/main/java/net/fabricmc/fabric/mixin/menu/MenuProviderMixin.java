@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.world.MenuProvider;
 
-import net.fabricmc.fabric.api.menu.v1.FabricScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.FabricMenuFactory;
 
 @Mixin(MenuProvider.class)
-public interface MenuProviderMixin extends FabricScreenHandlerFactory {
+public interface MenuProviderMixin extends FabricMenuFactory {
 }

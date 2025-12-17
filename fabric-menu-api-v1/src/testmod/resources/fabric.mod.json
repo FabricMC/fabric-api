@@ -11,10 +11,10 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.menu.ScreenHandlerTest"
+      "net.fabricmc.fabric.test.menu.MenuTest"
     ],
     "client": [
-      "net.fabricmc.fabric.test.menu.client.ClientScreenHandlerTest"
+      "net.fabricmc.fabric.test.menu.client.ClientMenuTest"
     ]
   }
 }

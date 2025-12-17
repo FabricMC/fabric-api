@@ -20,13 +20,13 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.DispenserScreen;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.test.menu.ScreenHandlerTest;
+import net.fabricmc.fabric.test.menu.MenuTest;
 
-public class ClientScreenHandlerTest implements ClientModInitializer {
+public class ClientMenuTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		MenuScreens.register(ScreenHandlerTest.BAG_SCREEN_HANDLER, DispenserScreen::new);
-		MenuScreens.register(ScreenHandlerTest.POSITIONED_BAG_SCREEN_HANDLER, PositionedScreen::new);
-		MenuScreens.register(ScreenHandlerTest.BOX_SCREEN_HANDLER, PositionedScreen::new);
+		MenuScreens.register(MenuTest.BAG_MENU, DispenserScreen::new);
+		MenuScreens.register(MenuTest.POSITIONED_BAG_MENU, PositionedScreen::new);
+		MenuScreens.register(MenuTest.BOX_SCREEN_MENU, PositionedScreen::new);
 	}
 }

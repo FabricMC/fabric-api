@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.menu.v1;
 
 /**
  * An extension to {@link net.minecraft.world.MenuProvider}.
- * Unlike {@link ExtendedScreenHandlerFactory}, this can be used by any screen
- * handlers, and is implemented via interface injection.
+ * Unlike {@link ExtendedMenuFactory}, this can be used by any menus,
+ * and is implemented via interface injection.
  */
-public interface FabricScreenHandlerFactory {
+public interface FabricMenuFactory {
 	/**
 	 * {@return whether the server should send {@link
 	 * net.minecraft.network.protocol.game.ClientboundContainerClosePacket } when opening the screen}

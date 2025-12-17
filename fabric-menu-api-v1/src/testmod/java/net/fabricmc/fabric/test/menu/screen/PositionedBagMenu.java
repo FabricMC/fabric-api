@@ -26,17 +26,17 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 
-import net.fabricmc.fabric.test.menu.ScreenHandlerTest;
+import net.fabricmc.fabric.test.menu.MenuTest;
 
-public class PositionedBagScreenHandler extends BagScreenHandler implements PositionedScreenHandler {
+public class PositionedBagMenu extends BagMenu implements PositionedMenu {
 	private final BlockPos pos;
 
-	public PositionedBagScreenHandler(int syncId, Inventory playerInventory, BagData data) {
+	public PositionedBagMenu(int syncId, Inventory playerInventory, BagData data) {
 		this(syncId, playerInventory, new SimpleContainer(9), data.pos().orElse(null));
 	}
 
-	public PositionedBagScreenHandler(int syncId, Inventory playerInventory, Container inventory, BlockPos pos) {
-		super(ScreenHandlerTest.POSITIONED_BAG_SCREEN_HANDLER, syncId, playerInventory, inventory);
+	public PositionedBagMenu(int syncId, Inventory playerInventory, Container inventory, BlockPos pos) {
+		super(MenuTest.POSITIONED_BAG_MENU, syncId, playerInventory, inventory);
 		this.pos = pos;
 	}
 

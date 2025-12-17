@@ -26,14 +26,15 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
+// TODO: I think this needs an overhaul
 /**
- * A {@link MenuType} for an extended screen handler that
+ * A {@link MenuType} for an extended menus that
  * synchronizes additional data to the client when it is opened.
  *
- * <p>Extended screen handlers can be opened using
+ * <p>Extended menus can be opened using
  * {@link net.minecraft.world.entity.player.Player#openMenu(MenuProvider)
- * PlayerEntity.openHandledScreen} with an
- * {@link ExtendedScreenHandlerFactory}.
+ * PlayerEntity.openMenu} with an
+ * {@link ExtendedMenuFactory}.
  *
  * <h2>Example</h2>
  * <pre>
@@ -48,8 +49,8 @@ import net.minecraft.world.inventory.MenuType;
  * }
  *
  * // Creating and registering the type
- * public static final ExtendedScreenHandlerType<OvenScreenHandler> OVEN =
- * 	new ExtendedScreenHandlerType((syncId, inventory, data) -> ..., OvenData.PACKET_CODEC);
+ * public static final ExtendedMenuType<OvenScreenHandler> OVEN =
+ * 	new ExtendedMenuType((syncId, inventory, data) -> ..., OvenData.PACKET_CODEC);
  * Registry.register(Registry.MENU, Identifier.fromNamespaceAndPath("modid", "custom_menu"), OVEN);
  *
  * // Note: remember to also register the screen using vanilla's MenuScreens!
@@ -62,7 +63,7 @@ import net.minecraft.world.inventory.MenuType;
  * }
  *
  * // Opening the extended screen handler
- * var factory = new ExtendedScreenHandlerFactory() {
+ * var factory = new ExtendedMenuFactory() {
  * 	...
  * };
  * player.openHandlerScreen(factory); // only works on ServerPlayerEntity instances
@@ -72,18 +73,18 @@ import net.minecraft.world.inventory.MenuType;
  * @param <T> the type of screen handler created by this type
  * @param <D> the type of the data
  */
-public class ExtendedScreenHandlerType<T extends AbstractContainerMenu, D> extends MenuType<T> {
+public class ExtendedMenuType<T extends AbstractContainerMenu, D> extends MenuType<T> {
 	private final ExtendedFactory<T, D> factory;
 	private final StreamCodec<? super RegistryFriendlyByteBuf, D> packetCodec;
 
 	/**
-	 * Constructs an extended screen handler type.
+	 * Constructs an extended menu type.
 	 *
-	 * @param factory the screen handler factory used for {@link #create(int, Inventory, Object)}
+	 * @param factory the menu factory used for {@link #create(int, Inventory, Object)}
 	 */
-	public ExtendedScreenHandlerType(ExtendedFactory<T, D> factory, StreamCodec<? super RegistryFriendlyByteBuf, D> packetCodec) {
+	public ExtendedMenuType(ExtendedFactory<T, D> factory, StreamCodec<? super RegistryFriendlyByteBuf, D> packetCodec) {
 		super(null, FeatureFlags.VANILLA_SET);
-		this.factory = Objects.requireNonNull(factory, "screen handler factory cannot be null");
+		this.factory = Objects.requireNonNull(factory, "menu factory cannot be null");
 		this.packetCodec = Objects.requireNonNull(packetCodec, "packet codec cannot be null");
 	}
 
@@ -94,47 +95,48 @@ public class ExtendedScreenHandlerType<T extends AbstractContainerMenu, D> exten
 	@Deprecated
 	@Override
 	public final T create(int syncId, Inventory inventory) {
-		throw new UnsupportedOperationException("Use ExtendedScreenHandlerType.create(int, PlayerInventory, PacketByteBuf)!");
+		throw new UnsupportedOperationException("Use ExtendedMenuType.create(int, PlayerInventory, PacketByteBuf)!");
 	}
 
 	/**
-	 * Creates a new screen handler using the extra opening data.
+	 * Creates a new menu using the extra opening data.
 	 *
 	 * @param syncId    the sync ID
 	 * @param inventory the player inventory
 	 * @param data      the synced opening data
-	 * @return the created screen handler
+	 * @return the created menu
 	 */
 	public T create(int syncId, Inventory inventory, D data) {
 		return factory.create(syncId, inventory, data);
 	}
 
 	/**
-	 * @return the packet codec for serializing the data of this screen handler
+	 * @return the packet codec for serializing the data of this menu
 	 */
 	public StreamCodec<? super RegistryFriendlyByteBuf, D> getPacketCodec() {
 		return packetCodec;
 	}
 
 	/**
-	 * A factory for creating screen handler instances from
+	 * A factory for creating menu instances from
 	 * additional opening data.
 	 * This is primarily used on the client, but can be called on the
 	 * server too.
 	 *
-	 * @param <T> the type of screen handlers created
+	 * @param <T> the type of menus created
 	 * @param <D> the type of the data
 	 * @see #create(int, Inventory, Object)
 	 */
 	@FunctionalInterface
 	public interface ExtendedFactory<T extends AbstractContainerMenu, D> {
+		// TODO: Should this be named screen opening data or menu opening data? ( I'd say screen, but not sure)
 		/**
-		 * Creates a new screen handler with additional screen opening data.
+		 * Creates a new menu with additional screen opening data.
 		 *
 		 * @param syncId    the synchronization ID
 		 * @param inventory the player inventory
 		 * @param data      the synced data
-		 * @return the created screen handler
+		 * @return the created menu
 		 */
 		T create(int syncId, Inventory inventory, D data);
 	}

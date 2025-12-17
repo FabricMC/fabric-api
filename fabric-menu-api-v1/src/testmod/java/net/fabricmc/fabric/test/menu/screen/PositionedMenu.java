@@ -18,6 +18,6 @@ package net.fabricmc.fabric.test.menu.screen;
 
 import net.minecraft.core.BlockPos;
 
-public interface PositionedScreenHandler {
+public interface PositionedMenu {
 	BlockPos getPos();
 }

@@ -35,8 +35,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class BoxBlock extends BaseEntityBlock {
-	public BoxBlock(Properties settings) {
-		super(settings);
+	public BoxBlock(Properties properties) {
+		super(properties);
 	}
 
 	@Override
@@ -45,12 +45,12 @@ public class BoxBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
-		if (!world.isClientSide()) {
-			MenuProvider screenHandlerFactory = state.getMenuProvider(world, pos);
+	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		if (!level.isClientSide()) {
+			MenuProvider menu = state.getMenuProvider(level, pos);
 
-			if (screenHandlerFactory != null) {
-				player.openMenu(screenHandlerFactory);
+			if (menu != null) {
+				player.openMenu(menu);
 			}
 		}
 
@@ -58,8 +58,8 @@ public class BoxBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-		return new BoxBlockEntity(blockPos, blockState);
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new BoxBlockEntity(pos, state);
 	}
 
 	@Override
@@ -68,19 +68,19 @@ public class BoxBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public void affectNeighborsAfterRemoval(BlockState state, ServerLevel world, BlockPos pos, boolean moved) {
-		BlockEntity be = world.getBlockEntity(pos);
+	public void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean moved) {
+		BlockEntity be = level.getBlockEntity(pos);
 
 		if (be instanceof Container) {
-			Containers.dropContents(world, pos, (Container) be);
-			world.updateNeighbourForOutputSignal(pos, this);
+			Containers.dropContents(level, pos, (Container) be);
+			level.updateNeighbourForOutputSignal(pos, this);
 		}
 
-		super.affectNeighborsAfterRemoval(state, world, pos, moved);
+		super.affectNeighborsAfterRemoval(state, level, pos, moved);
 	}
 
 	@Override
-	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
-		return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos));
+	public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction dir) {
+		return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
 	}
 }

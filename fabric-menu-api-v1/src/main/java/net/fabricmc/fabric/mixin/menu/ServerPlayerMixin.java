@@ -39,8 +39,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.impl.menu.Networking;
 
 @Mixin(ServerPlayer.class)
@@ -48,8 +48,8 @@ public abstract class ServerPlayerMixin extends Player {
 	@Shadow
 	private int containerCounter;
 
-	private ServerPlayerMixin(Level world, GameProfile gameProfile) {
-		super(world, gameProfile);
+	private ServerPlayerMixin(Level level, GameProfile gameProfile) {
+		super(level, gameProfile);
 	}
 
 	@Shadow
@@ -66,30 +66,30 @@ public abstract class ServerPlayerMixin extends Player {
 	}
 
 	@Inject(method = "openMenu(Lnet/minecraft/world/MenuProvider;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
-	private void fabric_storeOpenedScreenHandler(MenuProvider factory, CallbackInfoReturnable<OptionalInt> info, @Local AbstractContainerMenu handler) {
-		if (factory instanceof ExtendedScreenHandlerFactory || (factory instanceof SimpleMenuProvider simpleFactory && simpleFactory.menuConstructor instanceof ExtendedScreenHandlerFactory)) {
-			// Set the screen handler, so the factory method can access it through the player.
-			containerMenu = handler;
-		} else if (handler.getType() instanceof ExtendedScreenHandlerType<?, ?>) {
-			Identifier id = BuiltInRegistries.MENU.getKey(handler.getType());
-			throw new IllegalArgumentException("[Fabric] Extended screen handler " + id + " must be opened with an ExtendedScreenHandlerFactory!");
+	private void fabric_storeOpenedScreenHandler(MenuProvider factory, CallbackInfoReturnable<OptionalInt> info, @Local AbstractContainerMenu menu) {
+		if (factory instanceof ExtendedMenuFactory || (factory instanceof SimpleMenuProvider simpleFactory && simpleFactory.menuConstructor instanceof ExtendedMenuFactory)) {
+			// Set the menu, so the factory method can access it through the player.
+			containerMenu = menu;
+		} else if (menu.getType() instanceof ExtendedMenuType<?, ?>) {
+			Identifier id = BuiltInRegistries.MENU.getKey(menu.getType());
+			throw new IllegalArgumentException("[Fabric] Extended screen handler " + id + " must be opened with an ExtendedMenuFactory!");
 		}
 	}
 
 	@Redirect(method = "openMenu(Lnet/minecraft/world/MenuProvider;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
 	private void fabric_replaceVanillaScreenPacket(ServerGamePacketListenerImpl networkHandler, Packet<?> packet, MenuProvider factory) {
-		if (factory instanceof SimpleMenuProvider simpleFactory && simpleFactory.menuConstructor instanceof ExtendedScreenHandlerFactory<?> extendedFactory) {
+		if (factory instanceof SimpleMenuProvider simpleFactory && simpleFactory.menuConstructor instanceof ExtendedMenuFactory<?> extendedFactory) {
 			factory = extendedFactory;
 		}
 
-		if (factory instanceof ExtendedScreenHandlerFactory<?> extendedFactory) {
+		if (factory instanceof ExtendedMenuFactory<?> extendedFactory) {
 			AbstractContainerMenu handler = Objects.requireNonNull(containerMenu);
 
-			if (handler.getType() instanceof ExtendedScreenHandlerType<?, ?>) {
+			if (handler.getType() instanceof ExtendedMenuType<?, ?>) {
 				Networking.sendOpenPacket((ServerPlayer) (Object) this, extendedFactory, handler, containerCounter);
 			} else {
 				Identifier id = BuiltInRegistries.MENU.getKey(handler.getType());
-				throw new IllegalArgumentException("[Fabric] Non-extended screen handler " + id + " must not be opened with an ExtendedScreenHandlerFactory!");
+				throw new IllegalArgumentException("[Fabric] Non-extended screen handler " + id + " must not be opened with an ExtendedMenuFactory!");
 			}
 		} else {
 			// Use vanilla logic for non-extended screen handlers

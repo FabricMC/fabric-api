@@ -27,18 +27,18 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-import net.fabricmc.fabric.test.menu.screen.PositionedScreenHandler;
+import net.fabricmc.fabric.test.menu.screen.PositionedMenu;
 
 public class PositionedScreen extends AbstractContainerScreen<AbstractContainerMenu> {
 	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/dispenser.png");
 
-	public PositionedScreen(AbstractContainerMenu handler, Inventory inventory, Component title) {
-		super(handler, inventory, getPositionText(handler).orElse(title));
+	public PositionedScreen(AbstractContainerMenu menu, Inventory inventory, Component title) {
+		super(menu, inventory, getPositionText(menu).orElse(title));
 	}
 
-	private static Optional<Component> getPositionText(AbstractContainerMenu handler) {
-		if (handler instanceof PositionedScreenHandler) {
-			BlockPos pos = ((PositionedScreenHandler) handler).getPos();
+	private static Optional<Component> getPositionText(AbstractContainerMenu menu) {
+		if (menu instanceof PositionedMenu) {
+			BlockPos pos = ((PositionedMenu) menu).getPos();
 			return pos != null ? Optional.of(Component.literal("(" + pos.toShortString() + ")")) : Optional.empty();
 		} else {
 			return Optional.empty();
@@ -46,10 +46,10 @@ public class PositionedScreen extends AbstractContainerScreen<AbstractContainerM
 	}
 
 	@Override
-	public void render(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
-		renderBackground(drawContext, mouseX, mouseY, delta);
-		super.render(drawContext, mouseX, mouseY, delta);
-		renderTooltip(drawContext, mouseX, mouseY);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+		renderBackground(guiGraphics, mouseX, mouseY, delta);
+		super.render(guiGraphics, mouseX, mouseY, delta);
+		renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override
@@ -60,9 +60,9 @@ public class PositionedScreen extends AbstractContainerScreen<AbstractContainerM
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics drawContext, float delta, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
-		drawContext.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
+		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
 	}
 }

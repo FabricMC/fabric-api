@@ -31,7 +31,7 @@ import net.minecraft.world.inventory.MenuType;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.menu.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.impl.menu.Networking;
 
 public final class ClientNetworking implements ClientModInitializer {
@@ -53,12 +53,12 @@ public final class ClientNetworking implements ClientModInitializer {
 		MenuType<?> type = BuiltInRegistries.MENU.getValue(typeId);
 
 		if (type == null || payload.data() == null) {
-			LOGGER.warn("Unknown screen handler ID: {}", typeId);
+			LOGGER.warn("Unknown menu ID: {}", typeId);
 			return;
 		}
 
-		if (!(type instanceof ExtendedScreenHandlerType)) {
-			LOGGER.warn("Received extended opening packet for non-extended screen handler {}", typeId);
+		if (!(type instanceof ExtendedMenuType)) {
+			LOGGER.warn("Received extended opening packet for non-extended menu {}", typeId);
 			return;
 		}
 
@@ -69,7 +69,7 @@ public final class ClientNetworking implements ClientModInitializer {
 			Player player = client.player;
 
 			Screen screen = screenFactory.create(
-					((ExtendedScreenHandlerType<?, D>) type).create(syncId, player.getInventory(), payload.data()),
+					((ExtendedMenuType<?, D>) type).create(syncId, player.getInventory(), payload.data()),
 					player.getInventory(),
 					title
 			);
@@ -77,7 +77,7 @@ public final class ClientNetworking implements ClientModInitializer {
 			player.containerMenu = ((MenuAccess<?>) screen).getMenu();
 			client.setScreen(screen);
 		} else {
-			LOGGER.warn("Screen not registered for screen handler {}!", typeId);
+			LOGGER.warn("Screen not registered for menu {}!", typeId);
 		}
 	}
 }

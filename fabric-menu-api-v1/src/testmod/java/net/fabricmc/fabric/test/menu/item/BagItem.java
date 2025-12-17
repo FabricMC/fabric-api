@@ -25,23 +25,23 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.test.menu.screen.BagScreenHandler;
+import net.fabricmc.fabric.test.menu.screen.BagMenu;
 
 public class BagItem extends Item {
-	public BagItem(Properties settings) {
-		super(settings);
+	public BagItem(Properties properties) {
+		super(properties);
 	}
 
 	@Override
-	public InteractionResult use(Level world, Player user, InteractionHand hand) {
+	public InteractionResult use(Level level, Player user, InteractionHand hand) {
 		ItemStack stack = user.getItemInHand(hand);
-		user.openMenu(createScreenHandlerFactory(stack));
+		user.openMenu(createMenuFactory(stack));
 		return InteractionResult.SUCCESS;
 	}
 
-	private MenuProvider createScreenHandlerFactory(ItemStack stack) {
+	private MenuProvider createMenuFactory(ItemStack stack) {
 		return new SimpleMenuProvider((syncId, inventory, player) -> {
-			return new BagScreenHandler(syncId, inventory, new BagInventory(stack));
+			return new BagMenu(syncId, inventory, new BagInventory(stack));
 		}, stack.getHoverName());
 	}
 }
