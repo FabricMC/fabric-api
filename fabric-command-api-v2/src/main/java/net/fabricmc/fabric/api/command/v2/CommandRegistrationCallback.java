@@ -31,16 +31,16 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>To register some commands, you would register an event listener and implement the callback.
  *
  * <pre>{@code
- * CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+ * CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) -> {
  *     // For example, this command is only registered on an integrated server like the vanilla publish command
- *     if (environment.integrated) dispatcher.register(CommandManager.literal("integrated_command").executes(context -> {...}));
+ *     if (selection.integrated) dispatcher.register(CommandManager.literal("integrated_command").executes(context -> {...}));
  * })};
  * }</pre>
  */
 public interface CommandRegistrationCallback {
-	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dispatcher, registryAccess, environment) -> {
+	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dispatcher, buildContext, selection) -> {
 		for (CommandRegistrationCallback callback : callbacks) {
-			callback.register(dispatcher, registryAccess, environment);
+			callback.register(dispatcher, buildContext, selection);
 		}
 	});
 
@@ -48,8 +48,8 @@ public interface CommandRegistrationCallback {
 	 * Called when the server is registering commands.
 	 *
 	 * @param dispatcher the command dispatcher to register commands to
-	 * @param registryAccess object exposing access to the game's registries
-	 * @param environment environment the registrations should be done for, used for commands that are dedicated or integrated server only
+	 * @param buildContext    object exposing access to the game's holders
+	 * @param selection  environment selection the registrations should be done for, used for commands that are dedicated or integrated server only
 	 */
-	void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment);
+	void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext, Commands.CommandSelection selection);
 }

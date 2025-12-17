@@ -39,7 +39,7 @@ public class CustomArgumentTest implements ModInitializer {
 	public void onInitialize() {
 		ArgumentTypeRegistry.registerArgumentType(Identifier.fromNamespaceAndPath("fabric-command-test", "smiley"), SmileyArgumentType.class, SingletonArgumentInfo.contextFree(SmileyArgumentType::smiley));
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+		CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) -> {
 			dispatcher.register(
 					literal("fabric_custom_argument_test").then(
 							argument(ARG_NAME, SmileyArgumentType.smiley())

@@ -44,16 +44,16 @@ public final class CommandTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+		CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) -> {
 			// A command that exists on both types of servers
 			dispatcher.register(literal("fabric_common_test_command").executes(this::executeCommonCommand));
 
-			if (environment.includeDedicated) {
+			if (selection.includeDedicated) {
 				// The command here should only be present on a dedicated server
 				dispatcher.register(literal("fabric_dedicated_test_command").executes(this::executeDedicatedCommand));
 			}
 
-			if (environment.includeIntegrated) {
+			if (selection.includeIntegrated) {
 				// The command here should only be present on an integrated server
 				dispatcher.register(literal("fabric_integrated_test_command").executes(this::executeIntegratedCommand));
 			}
@@ -103,11 +103,11 @@ public final class CommandTest implements ModInitializer {
 		EntitySelectorOptionRegistry.registerNonRepeatable(
 				SELECTOR_ID,
 				Component.literal("Minimum entity health"),
-				(reader) -> {
-					final float minHealth = reader.getReader().readFloat();
+				(parser) -> {
+					final float minHealth = parser.getReader().readFloat();
 
 					if (minHealth > 0) {
-						reader.addPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);
+						parser.addPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);
 					}
 				}
 		);

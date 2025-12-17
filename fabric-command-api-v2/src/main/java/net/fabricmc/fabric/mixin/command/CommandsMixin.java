@@ -44,7 +44,7 @@ public abstract class CommandsMixin {
 	 * @reason Add commands before ambiguities are calculated.
 	 */
 	@Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;setConsumer(Lcom/mojang/brigadier/ResultConsumer;)V"), method = "<init>")
-	private void fabric_addCommands(Commands.CommandSelection environment, CommandBuildContext registryAccess, CallbackInfo ci) {
-		CommandRegistrationCallback.EVENT.invoker().register(this.dispatcher, registryAccess, environment);
+	private void fabric_addCommands(Commands.CommandSelection selection, CommandBuildContext buildContext, CallbackInfo ci) {
+		CommandRegistrationCallback.EVENT.invoker().register(this.dispatcher, buildContext, selection);
 	}
 }

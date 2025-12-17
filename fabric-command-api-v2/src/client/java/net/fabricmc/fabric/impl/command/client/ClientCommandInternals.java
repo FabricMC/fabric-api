@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.command.client;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +51,7 @@ import net.fabricmc.fabric.mixin.command.HelpCommandAccessor;
 
 public final class ClientCommandInternals {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientCommandInternals.class);
-	private static final String API_COMMAND_NAME = "fabric-command-api-v2:client";
+	private static final String API_COMMAND_NAME = "fabric-command-api-v2:instance";
 	private static final String SHORT_API_COMMAND_NAME = "fcc";
 	private static @Nullable CommandDispatcher<FabricClientCommandSource> activeDispatcher;
 
@@ -64,19 +64,18 @@ public final class ClientCommandInternals {
 	}
 
 	/**
-	 * Executes a client-sided command. Callers should ensure that this is only called
+	 * Executes a instance-sided command. Callers should ensure that this is only called
 	 * on slash-prefixed messages and the slash needs to be removed before calling.
-	 * (This is the same requirement as {@code ClientPlayerEntity#sendCommand}.)
 	 *
 	 * @param command the command with slash removed
 	 * @return true if the command should not be sent to the server, false otherwise
 	 */
 	public static boolean executeCommand(String command) {
-		Minecraft client = Minecraft.getInstance();
+		Minecraft instance = Minecraft.getInstance();
 
-		// The interface is implemented on ClientCommandSource with a mixin.
+		// The interface is implemented on ClientSuggestionProvider with a mixin.
 		// noinspection ConstantConditions
-		FabricClientCommandSource commandSource = (FabricClientCommandSource) client.getConnection().getSuggestionsProvider();
+		FabricClientCommandSource source = (FabricClientCommandSource) instance.getConnection().getSuggestionsProvider();
 
 		Profiler.get().push(command);
 
@@ -84,22 +83,22 @@ public final class ClientCommandInternals {
 			// TODO: Check for server commands before executing.
 			//   This requires parsing the command, checking if they match a server command
 			//   and then executing the command with the parse results.
-			activeDispatcher.execute(command, commandSource);
+			activeDispatcher.execute(command, source);
 			return true;
 		} catch (CommandSyntaxException e) {
 			boolean ignored = isIgnoredException(e.getType());
 
 			if (ignored) {
-				LOGGER.debug("Syntax exception for client-sided command '{}'", command, e);
+				LOGGER.debug("Syntax exception for instance-sided command '{}'", command, e);
 				return false;
 			}
 
-			LOGGER.warn("Syntax exception for client-sided command '{}'", command, e);
-			commandSource.sendError(getErrorMessage(e));
+			LOGGER.warn("Syntax exception for instance-sided command '{}'", command, e);
+			source.sendError(getErrorMessage(e));
 			return true;
 		} catch (Exception e) {
-			LOGGER.warn("Error while executing client-sided command '{}'", command, e);
-			commandSource.sendError(Component.nullToEmpty(e.getMessage()));
+			LOGGER.warn("Error while executing instance-sided command '{}'", command, e);
+			source.sendError(Component.nullToEmpty(e.getMessage()));
 			return true;
 		} finally {
 			Profiler.get().pop();
@@ -137,7 +136,7 @@ public final class ClientCommandInternals {
 	public static void finalizeInit() {
 		if (!activeDispatcher.getRoot().getChildren().isEmpty()) {
 			// Register an API command if there are other commands;
-			// these helpers are not needed if there are no client commands
+			// these helpers are not needed if there are no instance commands
 			LiteralArgumentBuilder<FabricClientCommandSource> help = literal("help");
 			help.executes(ClientCommandInternals::executeRootHelp);
 			help.then(argument("command", StringArgumentType.greedyString()).executes(ClientCommandInternals::executeArgumentHelp));
@@ -178,28 +177,28 @@ public final class ClientCommandInternals {
 	}
 
 	public static void addCommands(CommandDispatcher<FabricClientCommandSource> target, FabricClientCommandSource source) {
-		Map<CommandNode<FabricClientCommandSource>, CommandNode<FabricClientCommandSource>> originalToCopy = new HashMap<>();
-		originalToCopy.put(activeDispatcher.getRoot(), target.getRoot());
-		copyChildren(activeDispatcher.getRoot(), target.getRoot(), source, originalToCopy);
+		Map<CommandNode<FabricClientCommandSource>, CommandNode<FabricClientCommandSource>> nodes = new HashMap<>();
+		nodes.put(activeDispatcher.getRoot(), target.getRoot());
+		copyChildren(activeDispatcher.getRoot(), target.getRoot(), source, nodes);
 	}
 
 	/**
-	 * Copies the child commands from origin to target, filtered by {@code child.canUse(source)}.
-	 * Mimics vanilla's CommandManager.makeTreeForSource.
+	 * Copies the child commands from root to newRoot, filtered by {@code child.canUse(source)}.
+	 * Mimics vanilla's CommandManager.fillUsableCommands.
 	 *
-	 * @param origin         the source command node
-	 * @param target         the target command node
+	 * @param root           the root command node
+	 * @param newRoot        the new root command node
 	 * @param source         the command source
-	 * @param originalToCopy a mutable map from original command nodes to their copies, used for redirects;
-	 *                       should contain a mapping from origin to target
+	 * @param nodes          a mutable map from original command nodes to their copies, used for redirects;
+	 *                       should contain a mapping from root to newRoot
 	 */
 	private static void copyChildren(
-			CommandNode<FabricClientCommandSource> origin,
-			CommandNode<FabricClientCommandSource> target,
+			CommandNode<FabricClientCommandSource> root,
+			CommandNode<FabricClientCommandSource> newRoot,
 			FabricClientCommandSource source,
-			Map<CommandNode<FabricClientCommandSource>, CommandNode<FabricClientCommandSource>> originalToCopy
+			Map<CommandNode<FabricClientCommandSource>, CommandNode<FabricClientCommandSource>> nodes
 	) {
-		for (CommandNode<FabricClientCommandSource> child : origin.getChildren()) {
+		for (CommandNode<FabricClientCommandSource> child : root.getChildren()) {
 			if (!child.canUse(source)) continue;
 
 			ArgumentBuilder<FabricClientCommandSource, ?> builder = child.createBuilder();
@@ -213,15 +212,15 @@ public final class ClientCommandInternals {
 
 			// Set up redirects
 			if (builder.getRedirect() != null) {
-				builder.redirect(originalToCopy.get(builder.getRedirect()));
+				builder.redirect(nodes.get(builder.getRedirect()));
 			}
 
 			CommandNode<FabricClientCommandSource> result = builder.build();
-			originalToCopy.put(child, result);
-			target.addChild(result);
+			nodes.put(child, result);
+			newRoot.addChild(result);
 
 			if (!child.getChildren().isEmpty()) {
-				copyChildren(child, result, source, originalToCopy);
+				copyChildren(child, result, source, nodes);
 			}
 		}
 	}

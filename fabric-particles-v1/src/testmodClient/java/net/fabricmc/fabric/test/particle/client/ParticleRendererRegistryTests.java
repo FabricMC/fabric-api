@@ -38,8 +38,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandsRegistrationCallback;
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry;
@@ -58,8 +58,8 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 		ParticleRendererRegistry.register(TEST_PARTICLE_TEXTURE_SHEET, TestParticleRenderer::new);
 		ParticleRendererRegistry.registerOrdering(TEST_PARTICLE_TEXTURE_SHEET, ParticleRenderType.ITEM_PICKUP);
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommandManager.literal("custom_particles").executes(context -> {
+		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+				dispatcher.register(ClientCommands.literal("custom_particles").executes(context -> {
 					ClientLevel world = Minecraft.getInstance().level;
 					RandomSource random = world.getRandom();
 					LocalPlayer player = context.getSource().getPlayer();
