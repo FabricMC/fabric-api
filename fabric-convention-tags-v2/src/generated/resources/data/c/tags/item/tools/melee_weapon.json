@@ -15,10 +15,6 @@
     "minecraft:golden_axe",
     "minecraft:iron_axe",
     "minecraft:diamond_axe",
-    "minecraft:netherite_axe",
-    {
-      "id": "#c:tools/melee_weapons",
-      "required": false
-    }
+    "minecraft:netherite_axe"
   ]
 }

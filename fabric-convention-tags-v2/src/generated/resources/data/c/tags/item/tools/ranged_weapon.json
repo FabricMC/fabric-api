@@ -2,10 +2,6 @@
   "values": [
     "minecraft:bow",
     "minecraft:crossbow",
-    "minecraft:trident",
-    {
-      "id": "#c:tools/ranged_weapons",
-      "required": false
-    }
+    "minecraft:trident"
   ]
 }

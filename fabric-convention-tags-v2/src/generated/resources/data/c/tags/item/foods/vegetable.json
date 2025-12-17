@@ -3,10 +3,6 @@
     "minecraft:carrot",
     "minecraft:golden_carrot",
     "minecraft:potato",
-    "minecraft:beetroot",
-    {
-      "id": "#c:foods/vegetables",
-      "required": false
-    }
+    "minecraft:beetroot"
   ]
 }
