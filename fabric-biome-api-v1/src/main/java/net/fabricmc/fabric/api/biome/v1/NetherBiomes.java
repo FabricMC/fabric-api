@@ -33,17 +33,17 @@ public final class NetherBiomes {
 	 * Adds a biome to the Nether generator.
 	 *
 	 * @param biome           The biome to add. Must not be null.
-	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
+	 * @param targetPoint data about the given {@link Biome}'s spawning information in the nether.
 	 * @see Climate.TargetPoint
 	 */
-	public static void addNetherBiome(ResourceKey<Biome> biome, Climate.TargetPoint mixedNoisePoint) {
+	public static void addNetherBiome(ResourceKey<Biome> biome, Climate.TargetPoint targetPoint) {
 		NetherBiomeData.addNetherBiome(biome, Climate.parameters(
-				mixedNoisePoint.temperature(),
-				mixedNoisePoint.humidity(),
-				mixedNoisePoint.continentalness(),
-				mixedNoisePoint.erosion(),
-				mixedNoisePoint.depth(),
-				mixedNoisePoint.weirdness(),
+				targetPoint.temperature(),
+				targetPoint.humidity(),
+				targetPoint.continentalness(),
+				targetPoint.erosion(),
+				targetPoint.depth(),
+				targetPoint.weirdness(),
 				0
 		));
 	}
@@ -52,11 +52,11 @@ public final class NetherBiomes {
 	 * Adds a biome to the Nether generator.
 	 *
 	 * @param biome           The biome to add. Must not be null.
-	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
+	 * @param parameterPoint data about the given {@link Biome}'s spawning information in the nether.
 	 * @see Climate.ParameterPoint
 	 */
-	public static void addNetherBiome(ResourceKey<Biome> biome, Climate.ParameterPoint mixedNoisePoint) {
-		NetherBiomeData.addNetherBiome(biome, mixedNoisePoint);
+	public static void addNetherBiome(ResourceKey<Biome> biome, Climate.ParameterPoint parameterPoint) {
+		NetherBiomeData.addNetherBiome(biome, parameterPoint);
 	}
 
 	/**

@@ -49,15 +49,15 @@ public class ResourceLoaderImplTest {
 		var dummyReloader3 = new Dummy(Identifier.fromNamespaceAndPath("fabric", "dummy_reloader_3"));
 		var dummyReloader4 = new Dummy(Identifier.fromNamespaceAndPath("fabric", "dummy_reloader_4"));
 
-		resourceLoader.registerReloader(dummyReloader1.id, dummyReloader1.reloader);
-		resourceLoader.registerReloader(dummyReloader2.id, dummyReloader2.reloader);
-		resourceLoader.registerReloader(dummyReloader3.id, dummyReloader3.reloader);
-		resourceLoader.registerReloader(dummyReloader4.id, dummyReloader4.reloader);
+		resourceLoader.registerReloadListener(dummyReloader1.id, dummyReloader1.reloader);
+		resourceLoader.registerReloadListener(dummyReloader2.id, dummyReloader2.reloader);
+		resourceLoader.registerReloadListener(dummyReloader3.id, dummyReloader3.reloader);
+		resourceLoader.registerReloadListener(dummyReloader4.id, dummyReloader4.reloader);
 
-		resourceLoader.addReloaderOrdering(dummyReloader3.id, dummyReloader1.id);
-		resourceLoader.addReloaderOrdering(dummyReloader1.id, dummyReloader2.id);
+		resourceLoader.addListenerOrdering(dummyReloader3.id, dummyReloader1.id);
+		resourceLoader.addListenerOrdering(dummyReloader1.id, dummyReloader2.id);
 
-		resourceLoader.addReloaderOrdering(dummyReloader4.id, ResourceReloaderKeys.BEFORE_VANILLA);
+		resourceLoader.addListenerOrdering(dummyReloader4.id, ResourceReloaderKeys.BEFORE_VANILLA);
 
 		var languageReloader = new LanguageManager(
 				"en_us", translationStorage -> {

@@ -119,8 +119,8 @@ public class ModelTestModClient implements ClientModInitializer {
 		});
 
 		ResourceLoader resourceLoader = ResourceLoader.get(PackType.CLIENT_RESOURCES);
-		resourceLoader.registerReloader(SpecificModelReloadListener.ID, SpecificModelReloadListener.INSTANCE);
-		resourceLoader.addReloaderOrdering(ResourceReloaderKeys.Client.MODELS, SpecificModelReloadListener.ID);
+		resourceLoader.registerReloadListener(SpecificModelReloadListener.ID, SpecificModelReloadListener.INSTANCE);
+		resourceLoader.addListenerOrdering(ResourceReloaderKeys.Client.MODELS, SpecificModelReloadListener.ID);
 
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
 			if (entityRenderer instanceof AvatarRenderer playerRenderer) {

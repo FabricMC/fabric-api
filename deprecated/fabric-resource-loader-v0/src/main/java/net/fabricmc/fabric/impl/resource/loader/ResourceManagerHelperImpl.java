@@ -46,16 +46,16 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 	@Override
 	public void registerReloadListener(IdentifiableResourceReloadListener listener) {
-		this.resourceLoader.registerReloader(listener.getFabricId(), listener);
-		listener.getFabricDependencies().forEach(dependency -> this.resourceLoader.addReloaderOrdering(dependency, listener.getFabricId()));
+		this.resourceLoader.registerReloadListener(listener.getFabricId(), listener);
+		listener.getFabricDependencies().forEach(dependency -> this.resourceLoader.addListenerOrdering(dependency, listener.getFabricId()));
 	}
 
 	@Override
 	public void registerReloadListener(Identifier identifier, Function<HolderLookup.Provider, IdentifiableResourceReloadListener> listenerFactory) {
-		this.resourceLoader.registerReloader(identifier, new PreparableReloadListener() {
+		this.resourceLoader.registerReloadListener(identifier, new PreparableReloadListener() {
 			@Override
 			public CompletableFuture<Void> reload(SharedState store, Executor prepareExecutor, PreparationBarrier reloadSynchronizer, Executor applyExecutor) {
-				HolderLookup.Provider registries = store.get(ResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY);
+				HolderLookup.Provider registries = store.get(ResourceLoader.HOLDER_LOOKUP_KEY);
 				PreparableReloadListener resourceReloader = listenerFactory.apply(registries);
 
 				return resourceReloader.reload(store, prepareExecutor, reloadSynchronizer, applyExecutor);

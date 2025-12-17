@@ -54,14 +54,14 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
  * Leveled leveled = MyApi.LEVELED_ENTITY.find(entity, null);
  * if (leveled != null) {
  *     // Do something with the API.
- *     System.out.println("Entity " + entity.getEntityName() + " is level " + leveled.getLevel());
+ *     System.out.println("Entity " + entity.getScoreboardName() + " is level " + leveled.getLevel());
  * }
  * }</pre>
  *
  * <p>For query to return useful result, we must expose the API.
  * <pre>{@code
  * // If the entity directly implements the interface, registerSelf can be used.
- * public class LeveledPigEntity extends PigEntity implements Leveled {
+ * public class LeveledPig extends Pig implements Leveled {
  *     ...
  * }
  * MyApi.LEVELED_ENTITY.registerSelf(LEVELED_PIG_ENTITY_TYPE);

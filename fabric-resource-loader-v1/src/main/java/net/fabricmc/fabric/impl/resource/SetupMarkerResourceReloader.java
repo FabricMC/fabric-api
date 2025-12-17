@@ -32,8 +32,8 @@ public record SetupMarkerResourceReloader(
 ) implements ResourceManagerReloadListener {
 	@Override
 	public void prepareSharedState(SharedState store) {
-		store.set(DataResourceLoader.RELOADER_REGISTRY_LOOKUP_KEY, this.registries);
-		store.set(DataResourceLoader.RELOADER_FEATURE_SET_KEY, this.featureSet);
+		store.set(DataResourceLoader.HOLDER_LOOKUP_KEY, this.registries);
+		store.set(DataResourceLoader.FEATURE_FLAG_SET_KEY, this.featureSet);
 		store.set(DataResourceLoader.ADVANCEMENT_LOADER_KEY, this.dataPackContents.getAdvancements());
 		store.set(DataResourceLoader.RECIPE_MANAGER_KEY, this.dataPackContents.getRecipeManager());
 		store.set(

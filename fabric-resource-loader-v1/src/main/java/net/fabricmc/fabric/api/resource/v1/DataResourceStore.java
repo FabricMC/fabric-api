@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.resource.v1;
 /**
  * Represents a resource store for data.
  *
- * <p>Such resource store can be filled in the application phase of data {@linkplain net.minecraft.server.packs.resources.PreparableReloadListener resource reloaders}.
+ * <p>Such resource store can be filled in the application phase of data {@linkplain net.minecraft.server.packs.resources.PreparableReloadListener reload listeners}.
  * And queried through an instance of {@link net.minecraft.server.MinecraftServer}.
  */
 public interface DataResourceStore {

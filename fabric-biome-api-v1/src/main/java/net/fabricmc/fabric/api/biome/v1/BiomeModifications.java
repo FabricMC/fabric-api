@@ -31,7 +31,7 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 /**
- * Provides an API to modify Biomes after they have been loaded and before they are used in the World.
+ * Provides an API to modify Biomes after they have been loaded and before they are used in the Level.
  *
  * <p>Any modifications made to biomes will not be available for use in the demo level.
  */
@@ -44,9 +44,9 @@ public final class BiomeModifications {
 	 *
 	 * @see BiomeSelectors
 	 */
-	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Decoration step, ResourceKey<PlacedFeature> placedFeatureRegistryKey) {
-		create(placedFeatureRegistryKey.identifier()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getGenerationSettings().addFeature(step, placedFeatureRegistryKey);
+	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Decoration step, ResourceKey<PlacedFeature> placedFeatureKey) {
+		create(placedFeatureKey.identifier()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
+			context.getGenerationSettings().addFeature(step, placedFeatureKey);
 		});
 	}
 
@@ -68,18 +68,18 @@ public final class BiomeModifications {
 	 * @see net.minecraft.world.level.biome.MobSpawnSettings.Builder#addSpawn(MobCategory, int, MobSpawnSettings.SpawnerData)
 	 */
 	public static void addSpawn(Predicate<BiomeSelectionContext> biomeSelector,
-								MobCategory spawnGroup, EntityType<?> entityType,
+								MobCategory category, EntityType<?> entityType,
 								int weight, int minGroupSize, int maxGroupSize) {
 		// See constructor of SpawnSettings.SpawnEntry for context
 		Preconditions.checkArgument(entityType.getCategory() != MobCategory.MISC,
-				"Cannot add spawns for entities with spawnGroup=MISC since they'd be replaced by pigs.");
+				"Cannot add spawns for entities with category=MISC since they'd be replaced by pigs.");
 
 		// We need the entity type to be registered, or we cannot deduce an ID otherwise
 		Identifier id = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
 		Preconditions.checkState(BuiltInRegistries.ENTITY_TYPE.getResourceKey(entityType).isPresent(), "Unregistered entity type: %s", entityType);
 
 		create(id).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
-			context.getSpawnSettings().addSpawn(spawnGroup, new MobSpawnSettings.SpawnerData(entityType, minGroupSize, maxGroupSize), weight);
+			context.getMobSpawnSettings().addSpawn(category, new MobSpawnSettings.SpawnerData(entityType, minGroupSize, maxGroupSize), weight);
 		});
 	}
 

@@ -90,39 +90,39 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 	protected final void checkUniqueResourceReloader(Identifier id) {
 		if (this.hasResourceReloader(id)) {
 			throw new IllegalStateException(
-					"Tried to register resource reloader %s twice!".formatted(id)
+					"Tried to register resource listener %s twice!".formatted(id)
 			);
 		}
 	}
 
 	@Override
-	public void registerReloader(Identifier id, PreparableReloadListener reloader) {
-		Objects.requireNonNull(id, "The reloader identifier should not be null.");
-		Objects.requireNonNull(reloader, "The reloader should not be null.");
+	public void registerReloadListener(Identifier id, PreparableReloadListener listener) {
+		Objects.requireNonNull(id, "The listener identifier should not be null.");
+		Objects.requireNonNull(listener, "The listener should not be null.");
 		this.checkUniqueResourceReloader(id);
 
 		for (Map.Entry<Identifier, PreparableReloadListener> entry : this.addedReloaders.entrySet()) {
-			if (entry.getValue() == reloader) {
+			if (entry.getValue() == listener) {
 				throw new IllegalStateException(
-						"Resource reloader with ID %s already in resource reloader set with ID %s!"
+						"Resource listener with ID %s already in resource listener set with ID %s!"
 								.formatted(id, entry.getKey())
 				);
 			}
 		}
 
-		this.addedReloaders.put(id, reloader);
+		this.addedReloaders.put(id, listener);
 	}
 
 	@Override
-	public void addReloaderOrdering(Identifier firstReloader, Identifier secondReloader) {
-		Objects.requireNonNull(firstReloader, "The first reloader identifier should not be null.");
-		Objects.requireNonNull(secondReloader, "The second reloader identifier should not be null.");
+	public void addListenerOrdering(Identifier firstListener, Identifier secondListener) {
+		Objects.requireNonNull(firstListener, "The first listener identifier should not be null.");
+		Objects.requireNonNull(secondListener, "The second listener identifier should not be null.");
 
-		if (firstReloader.equals(secondReloader)) {
+		if (firstListener.equals(secondListener)) {
 			throw new IllegalArgumentException("Tried to add a phase that depends on itself.");
 		}
 
-		this.reloadersOrdering.add(new ReloaderOrder(firstReloader, secondReloader));
+		this.reloadersOrdering.add(new ReloaderOrder(firstListener, secondListener));
 	}
 
 	private Identifier getResourceReloaderIdForSorting(PreparableReloadListener reloader) {
@@ -131,7 +131,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		} else {
 			if (DEBUG_RELOADERS_IDENTITY) {
 				LOGGER.warn(
-						"The resource reloader at {} does not use identifiable registration "
+						"The resource listener at {} does not use identifiable registration "
 								+ "making ordering support more difficult for other modders.",
 						reloader.getClass().getName()
 				);
@@ -248,7 +248,7 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		// Apply the sorting!
 		reloaders.clear();
 
-		// Inject back the setup reloader at the beginning.
+		// Inject back the setup listener at the beginning.
 		if (setupReloader != null) {
 			reloaders.add(setupReloader);
 		}

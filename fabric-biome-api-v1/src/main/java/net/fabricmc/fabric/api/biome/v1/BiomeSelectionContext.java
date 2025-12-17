@@ -40,7 +40,7 @@ public interface BiomeSelectionContext {
 	 */
 	Biome getBiome();
 
-	Holder<Biome> getBiomeRegistryEntry();
+	Holder<Biome> getBiomeHolder();
 
 	/**
 	 * Returns true if this biome contains a placed feature referencing a configured feature with the given key.
@@ -77,14 +77,14 @@ public interface BiomeSelectionContext {
 	}
 
 	/**
-	 * Tries to retrieve the registry key for the given configured feature, which should be from this biomes
+	 * Tries to retrieve the resource key for the given configured feature, which should be from this biomes
 	 * current feature list. May be empty if the configured feature is not registered, or does not come
 	 * from this biomes feature list.
 	 */
 	Optional<ResourceKey<ConfiguredFeature<?, ?>>> getFeatureKey(ConfiguredFeature<?, ?> configuredFeature);
 
 	/**
-	 * Tries to retrieve the registry key for the given placed feature, which should be from this biomes
+	 * Tries to retrieve the resource key for the given placed feature, which should be from this biomes
 	 * current feature list. May be empty if the placed feature is not registered, or does not come
 	 * from this biomes feature list.
 	 */
@@ -92,12 +92,12 @@ public interface BiomeSelectionContext {
 
 	/**
 	 * Returns true if the configured structure with the given key can start in this biome in any chunk generator
-	 * used by the current world-save.
+	 * used by the current world.
 	 */
 	boolean validForStructure(ResourceKey<Structure> key);
 
 	/**
-	 * Tries to retrieve the registry key for the given configured feature, which should be from this biomes
+	 * Tries to retrieve the resource key for the given configured feature, which should be from this biomes
 	 * current structure list. May be empty if the configured feature is not registered, or does not come
 	 * from this biomes feature list.
 	 */
@@ -105,14 +105,14 @@ public interface BiomeSelectionContext {
 
 	/**
 	 * Tries to determine whether this biome generates in a specific dimension, based on the {@link net.minecraft.world.level.levelgen.WorldOptions}
-	 * used by the current world-save.
+	 * used by the current world.
 	 *
-	 * <p>If no dimension options exist for the given dimension key, <code>false</code> is returned.
+	 * <p>If no dimension options exist for the given level stem key, <code>false</code> is returned.
 	 */
-	boolean canGenerateIn(ResourceKey<LevelStem> dimensionKey);
+	boolean canGenerateIn(ResourceKey<LevelStem> levelStemKey);
 
 	/**
-	 * {@return true if this biome is in the given {@link TagKey }}.
+	 * {@return true if this biome is in the given {@link TagKey}}.
 	 */
 	boolean hasTag(TagKey<Biome> tag);
 }

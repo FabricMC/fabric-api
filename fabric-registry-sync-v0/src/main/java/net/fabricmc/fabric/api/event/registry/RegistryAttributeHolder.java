@@ -25,8 +25,8 @@ import net.fabricmc.fabric.impl.registry.sync.RegistryAttributeImpl;
 
 @ApiStatus.NonExtendable
 public interface RegistryAttributeHolder {
-	static RegistryAttributeHolder get(ResourceKey<?> registryKey) {
-		return RegistryAttributeImpl.getHolder(registryKey);
+	static RegistryAttributeHolder get(ResourceKey<?> key) {
+		return RegistryAttributeImpl.getHolder(key);
 	}
 
 	static RegistryAttributeHolder get(Registry<?> registry) {

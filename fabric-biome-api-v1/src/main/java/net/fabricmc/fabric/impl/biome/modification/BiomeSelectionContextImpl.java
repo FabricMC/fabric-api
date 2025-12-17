@@ -56,7 +56,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	}
 
 	@Override
-	public Holder<Biome> getBiomeRegistryEntry() {
+	public Holder<Biome> getBiomeHolder() {
 		return entry;
 	}
 
@@ -80,7 +80,7 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 			return false;
 		}
 
-		return instance.biomes().contains(getBiomeRegistryEntry());
+		return instance.biomes().contains(getBiomeHolder());
 	}
 
 	@Override
@@ -90,8 +90,8 @@ public class BiomeSelectionContextImpl implements BiomeSelectionContext {
 	}
 
 	@Override
-	public boolean canGenerateIn(ResourceKey<LevelStem> dimensionKey) {
-		LevelStem dimension = dynamicRegistries.lookupOrThrow(Registries.LEVEL_STEM).getValue(dimensionKey);
+	public boolean canGenerateIn(ResourceKey<LevelStem> levelStemKey) {
+		LevelStem dimension = dynamicRegistries.lookupOrThrow(Registries.LEVEL_STEM).getValue(levelStemKey);
 
 		if (dimension == null) {
 			return false;

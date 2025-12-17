@@ -24,7 +24,7 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 /**
  * A variant of {@link net.minecraft.server.packs.resources.SimplePreparableReloadListener}
- * which passes the shared state store instead of the resource manager in its methods.
+ * which passes the shared state instead of the resource manager in its methods.
  *
  * <p>In essence, there are two stages:
  *
@@ -40,28 +40,28 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
  *
  * @param <T> the data object
  */
-public abstract class SimpleResourceReloader<T> implements PreparableReloadListener {
-	public final CompletableFuture<Void> reload(SharedState store, Executor prepareExecutor, PreparationBarrier reloadSynchronizer, Executor applyExecutor) {
-		CompletableFuture<T> prepareStep = CompletableFuture.supplyAsync(() -> this.prepare(store), prepareExecutor);
-		Objects.requireNonNull(reloadSynchronizer);
-		return prepareStep.thenCompose(reloadSynchronizer::wait)
-				.thenAcceptAsync((prepared) -> this.apply(prepared, store), applyExecutor);
+public abstract class SimpleReloadListener<T> implements PreparableReloadListener {
+	public final CompletableFuture<Void> reload(SharedState state, Executor prepareExecutor, PreparationBarrier preparationBarrier, Executor applyExecutor) {
+		CompletableFuture<T> prepareStep = CompletableFuture.supplyAsync(() -> this.prepare(state), prepareExecutor);
+		Objects.requireNonNull(preparationBarrier);
+		return prepareStep.thenCompose(preparationBarrier::wait)
+				.thenAcceptAsync((prepared) -> this.apply(prepared, state), applyExecutor);
 	}
 
 	/**
 	 * Asynchronously processes and prepares resource-based data.
 	 * The code must be thread-safe and not modify game state!
 	 *
-	 * @param store the data store used for sharing state between resource reloaders
+	 * @param state the data state used for sharing state between reload listeners
 	 * @return the prepared data
 	 */
-	protected abstract T prepare(SharedState store);
+	protected abstract T prepare(SharedState state);
 
 	/**
 	 * Synchronously applies prepared data to the game state.
 	 *
 	 * @param prepared the prepared data
-	 * @param store the data store used for sharing state between resource reloaders
+	 * @param state the data state used for sharing state between reload listeners
 	 */
-	protected abstract void apply(T prepared, SharedState store);
+	protected abstract void apply(T prepared, SharedState state);
 }

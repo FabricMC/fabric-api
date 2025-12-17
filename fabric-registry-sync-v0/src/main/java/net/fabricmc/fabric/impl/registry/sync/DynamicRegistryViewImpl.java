@@ -35,7 +35,7 @@ public final class DynamicRegistryViewImpl implements DynamicRegistryView {
 	}
 
 	@Override
-	public RegistryAccess asDynamicRegistryManager() {
+	public RegistryAccess asRegistryAccess() {
 		return new RegistryAccess.Frozen() {
 			@SuppressWarnings("unchecked")
 			public <T> Optional<Registry<T>> lookup(ResourceKey<? extends Registry<? extends T>> key) {

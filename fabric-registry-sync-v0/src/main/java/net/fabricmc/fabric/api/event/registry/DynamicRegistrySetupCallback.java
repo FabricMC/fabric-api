@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <pre>
  * {@code
  * DynamicRegistrySetupCallback.EVENT.register(registryView -> {
- *     registryView.registerEntryAdded(RegistryKeys.BIOME, (rawId, id, object) -> {
+ *     registryView.registerEntryAdded(Registries.BIOME, (rawId, id, object) -> {
  *         // Do something
  *     });
  * });

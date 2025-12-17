@@ -59,12 +59,12 @@
  *
  * <p>Note that while the current behavior is to sort bundled resource packs by mod ID in descending order (A to Z), this may change over time.</p>
  *
- * <h3>Resource Reloader</h3>
- * The Resource Loader allows mods to register resource reloaders, also called resource reload listeners through
- * {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloader(net.minecraft.resources.Identifier, net.minecraft.server.packs.resources.PreparableReloadListener)},
+ * <h3>Reload Listeners</h3>
+ * The Resource Loader allows mods to register reload listeners, previously known as resource reloaders, through
+ * {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloadListener(net.minecraft.resources.Identifier, net.minecraft.server.packs.resources.PreparableReloadListener)},
  * which are triggered when resources are reloaded.
- * A resource reloader can be ordered depending on other resource reloaders using {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#addReloaderOrdering(net.minecraft.resources.Identifier, net.minecraft.resources.Identifier)},
- * keys for Vanilla resource reloaders can be found at {@link net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys}.
+ * A reload listener can be ordered to depend on other reload listeners using {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#addListenerOrdering(net.minecraft.resources.Identifier, net.minecraft.resources.Identifier)},
+ * keys for Vanilla reload listeners can be found at {@link net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys}.
  */
 
 @NullMarked
