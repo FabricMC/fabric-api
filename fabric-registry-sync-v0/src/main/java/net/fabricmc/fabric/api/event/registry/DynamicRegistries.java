@@ -55,10 +55,10 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
  *
  * <h2>Examples</h2>
  * {@snippet :
- * // @link region substring=RegistryKey target=RegistryKey
- * // @link region substring=ofRegistry target="RegistryKey#ofRegistry"
- * // @link region substring=Identifier target="net.minecraft.util.Identifier#Identifier(String, String)"
- * public static final RegistryKey<Registry<MyData>> MY_DATA_KEY = RegistryKey.ofRegistry(Identifier.fromNamespaceAndPath("modid", "my_data"));
+ * // @link region substring=ResourceKey target=ResourceKey
+ * // @link region substring=create target="ResourceKey#create"
+ * // @link region substring=Identifier target="net.minecraft.resources.Identifier#Identifier(String, String)"
+ * public static final ResourceKey<Registry<MyData>> MY_DATA_KEY = ResourceKey.create(Identifier.fromNamespaceAndPath("modid", "my_data"));
  * // @end @end @end
  *
  * // Option 1: Register a non-synced registry

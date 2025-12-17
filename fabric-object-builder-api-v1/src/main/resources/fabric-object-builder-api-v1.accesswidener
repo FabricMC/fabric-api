@@ -3,9 +3,6 @@ extendable	method	net/minecraft/world/level/block/state/BlockBehaviour$Propertie
 accessible	method	net/minecraft/world/entity/ai/village/poi/PoiTypes	register	(Lnet/minecraft/core/Registry;Lnet/minecraft/resources/ResourceKey;Ljava/util/Set;II)Lnet/minecraft/world/entity/ai/village/poi/PoiType;
 extendable	class	net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
 accessible	method	net/minecraft/world/level/block/entity/BlockEntityType	<init>	(Lnet/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier;Ljava/util/Set;)V
-accessible	class	net/minecraft/world/entity/npc/villager/VillagerTrades$EmeraldsForVillagerTypeItem
-mutable	field	net/minecraft/world/entity/npc/villager/VillagerTrades	EXPERIMENTAL_TRADES	Ljava/util/Map;
-mutable	field	net/minecraft/world/entity/npc/villager/VillagerTrades	WANDERING_TRADER_TRADES	Ljava/util/List;
 accessible	method	net/minecraft/world/entity/SpawnPlacements	register	(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/entity/SpawnPlacementType;Lnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/world/entity/SpawnPlacements$SpawnPredicate;)V
 accessible	field	net/minecraft/world/entity/npc/villager/VillagerType	BY_BIOME	Ljava/util/Map;
 accessible	method	net/minecraft/world/level/block/state/properties/WoodType	register	(Lnet/minecraft/world/level/block/state/properties/WoodType;)Lnet/minecraft/world/level/block/state/properties/WoodType;

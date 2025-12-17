@@ -86,7 +86,6 @@ public interface BiomeModificationContext {
 		void setTemperatureModifier(Biome.TemperatureModifier temperatureModifier);
 
 		/**
-		 * @see Biome.ClimateSettings#downfall()
 		 * @see Biome.BiomeBuilder#downfall(float)
 		 */
 		void setDownfall(float downfall);
