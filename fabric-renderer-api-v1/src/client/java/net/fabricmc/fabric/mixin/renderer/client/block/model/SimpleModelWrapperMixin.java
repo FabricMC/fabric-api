@@ -18,16 +18,28 @@ package net.fabricmc.fabric.mixin.renderer.client.block.model;
 
 import java.util.function.Predicate;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
 import net.fabricmc.fabric.api.util.TriState;
@@ -40,6 +52,25 @@ abstract class SimpleModelWrapperMixin implements BlockModelPart {
 	@Shadow
 	@Final
 	private boolean useAmbientOcclusion;
+
+	@Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/resources/model/ModelState;)Lnet/minecraft/client/renderer/block/model/BlockModelPart;", at = @At(value = "INVOKE", target = "net/minecraft/client/resources/model/QuadCollection.getAll()Ljava/util/List;"))
+	private static void validateMeshAtlas(final ModelBaker modelBakery, final Identifier location, final ModelState state, CallbackInfoReturnable<BlockModelPart> cir, @Local QuadCollection geometry, @Local LocalRef<Multimap<Identifier, Identifier>> forbiddenSpritesRef) {
+		if (geometry instanceof MeshBakedGeometry meshGeometry) {
+			meshGeometry.getMesh().forEach(quad -> {
+				if (quad.atlas() != QuadAtlas.BLOCK) {
+					Multimap<Identifier, Identifier> forbiddenSprites = forbiddenSpritesRef.get();
+
+					if (forbiddenSprites == null) {
+						forbiddenSprites = HashMultimap.create();
+						forbiddenSpritesRef.set(forbiddenSprites);
+					}
+
+					TextureAtlasSprite sprite = modelBakery.sprites().spriteFinder(quad.atlas()).find(quad);
+					forbiddenSprites.put(sprite.atlasLocation(), sprite.contents().name());
+				}
+			});
+		}
+	}
 
 	@Override
 	public void emitQuads(QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
