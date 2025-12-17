@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-screen-handler-api-v1",
-  "name": "Fabric Screen Handler API (v1)",
+  "id": "fabric-menu-api-v1",
+  "name": "Fabric Menu API (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
@@ -26,7 +26,7 @@
       "net.fabricmc.fabric.impl.menu.client.ClientNetworking"
     ]
   },
-  "description": "Hooks and extensions for creating screen handlers.",
+  "description": "Hooks and extensions for creating menus.",
   "mixins": [
     "fabric-menu-api-v1.mixins.json"
   ],
