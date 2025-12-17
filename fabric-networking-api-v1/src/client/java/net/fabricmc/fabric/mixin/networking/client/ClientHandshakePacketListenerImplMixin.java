@@ -29,12 +29,12 @@ import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.login.ClientboundCustomQueryPacket;
 
-import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkAddon;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
 
 @Mixin(ClientHandshakePacketListenerImpl.class)
-abstract class ClientHandshakePacketListenerImplMixin implements NetworkHandlerExtensions {
+abstract class ClientHandshakePacketListenerImplMixin implements PacketListenerExtensions {
 	@Shadow
 	@Final
 	private Minecraft minecraft;

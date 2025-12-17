@@ -36,7 +36,7 @@ import net.minecraft.world.phys.Vec3;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
 @Mixin(targets = "net.minecraft.server.network.ServerGamePacketListenerImpl$1")
-public abstract class ServerPlayNetworkHandlerInteractEntityHandlerMixin implements ServerboundInteractPacket.Handler {
+public abstract class ServerPlayPacketListenerInteractEntityHandlerMixin implements ServerboundInteractPacket.Handler {
 	@Shadow
 	@Final
 	ServerGamePacketListenerImpl this$0;

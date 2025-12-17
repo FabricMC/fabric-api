@@ -34,9 +34,9 @@ public final class ClientConfigurationConnectionEvents {
 	 *
 	 * @see ClientConfigurationNetworking#registerReceiver(CustomPacketPayload.Type, ClientConfigurationNetworking.ConfigurationPayloadHandler)
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Init> INIT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Init.class, callbacks -> (handler, client) -> {
+	public static final Event<ClientConfigurationConnectionEvents.Init> INIT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Init.class, callbacks -> (listener, client) -> {
 		for (ClientConfigurationConnectionEvents.Init callback : callbacks) {
-			callback.onConfigurationInit(handler, client);
+			callback.onConfigurationInit(listener, client);
 		}
 	});
 
@@ -45,9 +45,9 @@ public final class ClientConfigurationConnectionEvents {
 	 *
 	 * <p>Packets may be sent during this event.
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Start> START = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Start.class, callbacks -> (handler, client) -> {
+	public static final Event<ClientConfigurationConnectionEvents.Start> START = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Start.class, callbacks -> (listener, client) -> {
 		for (ClientConfigurationConnectionEvents.Start callback : callbacks) {
-			callback.onConfigurationStart(handler, client);
+			callback.onConfigurationStart(listener, client);
 		}
 	});
 
@@ -56,20 +56,20 @@ public final class ClientConfigurationConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Complete> COMPLETE = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Complete.class, callbacks -> (handler, client) -> {
+	public static final Event<ClientConfigurationConnectionEvents.Complete> COMPLETE = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Complete.class, callbacks -> (listener, client) -> {
 		for (ClientConfigurationConnectionEvents.Complete callback : callbacks) {
-			callback.onConfigurationComplete(handler, client);
+			callback.onConfigurationComplete(listener, client);
 		}
 	});
 
 	/**
-	 * An event for the disconnection of the client configuration network handler.
+	 * An event for the disconnection of the client configuration packet listener.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<ClientConfigurationConnectionEvents.Disconnect> DISCONNECT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Disconnect.class, callbacks -> (handler, client) -> {
+	public static final Event<ClientConfigurationConnectionEvents.Disconnect> DISCONNECT = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Disconnect.class, callbacks -> (listener, client) -> {
 		for (ClientConfigurationConnectionEvents.Disconnect callback : callbacks) {
-			callback.onConfigurationDisconnect(handler, client);
+			callback.onConfigurationDisconnect(listener, client);
 		}
 	});
 
@@ -78,22 +78,22 @@ public final class ClientConfigurationConnectionEvents {
 
 	@FunctionalInterface
 	public interface Init {
-		void onConfigurationInit(ClientConfigurationPacketListenerImpl handler, Minecraft client);
+		void onConfigurationInit(ClientConfigurationPacketListenerImpl listener, Minecraft client);
 	}
 
 	@FunctionalInterface
 	public interface Start {
-		void onConfigurationStart(ClientConfigurationPacketListenerImpl handler, Minecraft client);
+		void onConfigurationStart(ClientConfigurationPacketListenerImpl listener, Minecraft client);
 	}
 
 	@FunctionalInterface
 	public interface Complete {
-		void onConfigurationComplete(ClientConfigurationPacketListenerImpl handler, Minecraft client);
+		void onConfigurationComplete(ClientConfigurationPacketListenerImpl listener, Minecraft client);
 	}
 
 	@FunctionalInterface
 	public interface Disconnect {
-		void onConfigurationDisconnect(ClientConfigurationPacketListenerImpl handler, Minecraft client);
+		void onConfigurationDisconnect(ClientConfigurationPacketListenerImpl listener, Minecraft client);
 	}
 
 	// Deprecated:
@@ -102,9 +102,9 @@ public final class ClientConfigurationConnectionEvents {
 	 * @deprecated replaced by {@link #COMPLETE}
 	 */
 	@Deprecated
-	public static final Event<ClientConfigurationConnectionEvents.Ready> READY = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Ready.class, callbacks -> (handler, client) -> {
+	public static final Event<ClientConfigurationConnectionEvents.Ready> READY = EventFactory.createArrayBacked(ClientConfigurationConnectionEvents.Ready.class, callbacks -> (listener, client) -> {
 		for (ClientConfigurationConnectionEvents.Ready callback : callbacks) {
-			callback.onConfigurationReady(handler, client);
+			callback.onConfigurationReady(listener, client);
 		}
 	});
 
@@ -114,6 +114,6 @@ public final class ClientConfigurationConnectionEvents {
 	@Deprecated
 	@FunctionalInterface
 	public interface Ready {
-		void onConfigurationReady(ClientConfigurationPacketListenerImpl handler, Minecraft client);
+		void onConfigurationReady(ClientConfigurationPacketListenerImpl listener, Minecraft client);
 	}
 }

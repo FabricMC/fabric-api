@@ -26,20 +26,20 @@ import net.minecraft.network.FriendlyByteBuf;
 /**
  * Helper methods for working with and creating {@link FriendlyByteBuf}s.
  */
-public final class PacketByteBufs {
-	private static final FriendlyByteBuf EMPTY_PACKET_BYTE_BUF = new FriendlyByteBuf(Unpooled.EMPTY_BUFFER);
+public final class FriendlyByteBufs {
+	private static final FriendlyByteBuf EMPTY_FRIENDLY_BYTE_BUF = new FriendlyByteBuf(Unpooled.EMPTY_BUFFER);
 
 	/**
-	 * Returns an empty instance of packet byte buf.
+	 * Returns an empty instance of friendly byte buf.
 	 *
 	 * @return an empty buf
 	 */
 	public static FriendlyByteBuf empty() {
-		return EMPTY_PACKET_BYTE_BUF;
+		return EMPTY_FRIENDLY_BYTE_BUF;
 	}
 
 	/**
-	 * Returns a new heap memory-backed instance of packet byte buf.
+	 * Returns a new heap memory-backed instance of friendly byte buf.
 	 *
 	 * @return a new buf
 	 */
@@ -50,7 +50,7 @@ public final class PacketByteBufs {
 	// Convenience methods for byte buf methods that return a new byte buf
 
 	/**
-	 * Wraps the newly created buf from {@code buf.readBytes} in a packet byte buf.
+	 * Wraps the newly created buf from {@code buf.readBytes} in a friendly byte buf.
 	 *
 	 * @param buf    the original buf
 	 * @param length the number of bytes to transfer
@@ -64,7 +64,7 @@ public final class PacketByteBufs {
 	}
 
 	/**
-	 * Wraps the newly created buf from {@code buf.readSlice} in a packet byte buf.
+	 * Wraps the newly created buf from {@code buf.readSlice} in a friendly byte buf.
 	 *
 	 * @param buf    the original buf
 	 * @param length the size of the new slice
@@ -78,7 +78,7 @@ public final class PacketByteBufs {
 	}
 
 	/**
-	 * Wraps the newly created buf from {@code buf.readRetainedSlice} in a packet byte buf.
+	 * Wraps the newly created buf from {@code buf.readRetainedSlice} in a friendly byte buf.
 	 *
 	 * @param buf    the original buf
 	 * @param length the size of the new slice
@@ -92,7 +92,7 @@ public final class PacketByteBufs {
 	}
 
 	/**
-	 * Wraps the newly created buf from {@code buf.copy} in a packet byte buf.
+	 * Wraps the newly created buf from {@code buf.copy} in a friendly byte buf.
 	 *
 	 * @param buf the original buf
 	 * @return a copy of the buf
@@ -105,7 +105,7 @@ public final class PacketByteBufs {
 	}
 
 	/**
-	 * Wraps the newly created buf from {@code buf.copy} in a packet byte buf.
+	 * Wraps the newly created buf from {@code buf.copy} in a friendly byte buf.
 	 *
 	 * @param buf    the original buf
 	 * @param index  the starting index
@@ -120,7 +120,7 @@ public final class PacketByteBufs {
 	}
 
 	/**
-	 * Wraps the newly created buf from {@code buf.slice} in a packet byte buf.
+	 * Wraps the newly created buf from {@code buf.slice} in a friendly byte buf.
 	 *
 	 * @param buf the original buf
 	 * @return a slice of the buf
@@ -133,7 +133,7 @@ public final class PacketByteBufs {
 	}
 
 	/**
-	 * Wraps the newly created buf from {@code buf.retainedSlice} in a packet byte buf.
+	 * Wraps the newly created buf from {@code buf.retainedSlice} in a friendly byte buf.
 	 *
 	 * @param buf the original buf
 	 * @return a slice of the buf
@@ -146,7 +146,7 @@ public final class PacketByteBufs {
 	}
 
 	/**
-	 * Wraps the newly created buf from {@code buf.slice} in a packet byte buf.
+	 * Wraps the newly created buf from {@code buf.slice} in a friendly byte buf.
 	 *
 	 * @param buf    the original buf
 	 * @param index  the starting index
@@ -161,7 +161,7 @@ public final class PacketByteBufs {
 	}
 
 	/**
-	 * Wraps the newly created buf from {@code buf.retainedSlice} in a packet byte buf.
+	 * Wraps the newly created buf from {@code buf.retainedSlice} in a friendly byte buf.
 	 *
 	 * @param buf    the original buf
 	 * @param index  the starting index
@@ -176,7 +176,7 @@ public final class PacketByteBufs {
 	}
 
 	/**
-	 * Wraps the newly created buf from {@code buf.duplicate} in a packet byte buf.
+	 * Wraps the newly created buf from {@code buf.duplicate} in a friendly byte buf.
 	 *
 	 * @param buf the original buf
 	 * @return a duplicate of the buf
@@ -189,7 +189,7 @@ public final class PacketByteBufs {
 	}
 
 	/**
-	 * Wraps the newly created buf from {@code buf.retainedDuplicate} in a packet byte buf.
+	 * Wraps the newly created buf from {@code buf.retainedDuplicate} in a friendly byte buf.
 	 *
 	 * @param buf the original buf
 	 * @return a duplicate of the buf
@@ -201,6 +201,6 @@ public final class PacketByteBufs {
 		return new FriendlyByteBuf(buf.retainedDuplicate());
 	}
 
-	private PacketByteBufs() {
+	private FriendlyByteBufs() {
 	}
 }

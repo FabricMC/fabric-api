@@ -121,12 +121,12 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	@Nullable
-	protected RegistrationPayload createRegistrationPayload(CustomPacketPayload.Type<RegistrationPayload> id, Collection<Identifier> channels) {
+	protected RegistrationPayload createRegistrationPayload(CustomPacketPayload.Type<RegistrationPayload> type, Collection<Identifier> channels) {
 		if (channels.isEmpty()) {
 			return null;
 		}
 
-		return new RegistrationPayload(id, new ArrayList<>(channels));
+		return new RegistrationPayload(type, new ArrayList<>(channels));
 	}
 
 	// wrap in try with res (buf)
@@ -206,18 +206,18 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			throw new IllegalStateException("Negotiated common packet version: %d but received packet with version: %d".formatted(commonVersion, payload.version()));
 		}
 
-		final String currentPhase = getPhase();
+		final String currentPhase = getProtocol();
 
 		if (currentPhase == null) {
 			// We don't support receiving the register packet during this phase. See getPhase() for supported phases.
 			// The normal case where the play channels are sent during configuration is handled in the client/common configuration packet handlers.
-			logger.warn("Received common register packet for phase {} in network state: {}", payload.phase(), receiver.getPhase());
+			logger.warn("Received common register packet for protocol {} in protocol: {}", payload.protocol(), receiver.getProtocol());
 			return;
 		}
 
-		if (!payload.phase().equals(currentPhase)) {
+		if (!payload.protocol().equals(currentPhase)) {
 			// We need to handle receiving the play phase during configuration!
-			throw new IllegalStateException("Register packet received for phase (%s) on handler for phase(%s)".formatted(payload.phase(), currentPhase));
+			throw new IllegalStateException("Register packet received for protocol (%s) on handler for protocol(%s)".formatted(payload.protocol(), currentPhase));
 		}
 
 		register(new ArrayList<>(payload.channels()));
@@ -225,7 +225,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	@Override
 	public CommonRegisterPayload createRegisterPayload() {
-		return new CommonRegisterPayload(getNegotiatedVersion(), getPhase(), this.getReceivableChannels());
+		return new CommonRegisterPayload(getNegotiatedVersion(), getProtocol(), this.getReceivableChannels());
 	}
 
 	@Override
@@ -238,10 +238,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	@Nullable
-	private String getPhase() {
-		return switch (receiver.getPhase()) {
-		case PLAY -> CommonRegisterPayload.PLAY_PHASE;
-		case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PHASE;
+	private String getProtocol() {
+		return switch (receiver.getProtocol()) {
+		case PLAY -> CommonRegisterPayload.PLAY_PROTOCOL;
+		case CONFIGURATION -> CommonRegisterPayload.CONFIGURATION_PROTOCOL;
 		default -> null; // We don't support receiving this packet on any other phase
 		};
 	}

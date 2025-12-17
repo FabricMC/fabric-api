@@ -31,12 +31,12 @@ public class FabricRegistryInit implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.configurationC2S().register(SyncCompletePayload.ID, SyncCompletePayload.CODEC);
-		PayloadTypeRegistry.configurationS2C().registerLarge(RegistrySyncPayload.ID, RegistrySyncPayload.CODEC, MAX_PACKET_SIZE);
+		PayloadTypeRegistry.serverboundConfiguration().register(SyncCompletePayload.ID, SyncCompletePayload.CODEC);
+		PayloadTypeRegistry.clientboundConfiguration().registerLarge(RegistrySyncPayload.ID, RegistrySyncPayload.CODEC, MAX_PACKET_SIZE);
 
 		ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register(RegistrySyncManager::configureClient);
 		ServerConfigurationNetworking.registerGlobalReceiver(SyncCompletePayload.ID, (payload, context) -> {
-			context.networkHandler().completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
+			context.packetListener().completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
 		});
 
 		// Synced in PlaySoundS2CPacket.

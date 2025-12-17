@@ -29,8 +29,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
+import net.fabricmc.fabric.api.networking.v1.ClientboundPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
@@ -39,18 +39,18 @@ import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayPayloadHandler<?>> {
-	private final ServerGamePacketListenerImpl handler;
+	private final ServerGamePacketListenerImpl listener;
 	private final MinecraftServer server;
 	private final ServerPlayNetworking.Context context;
 
 	private boolean sentInitialRegisterPacket;
 	private boolean requestedReconfigure = false;
 
-	public ServerPlayNetworkAddon(ServerGamePacketListenerImpl handler, Connection connection, MinecraftServer server) {
-		super(ServerNetworkingImpl.PLAY, connection, "ServerPlayNetworkAddon for " + handler.player.getDisplayName());
-		this.handler = handler;
+	public ServerPlayNetworkAddon(ServerGamePacketListenerImpl listener, Connection connection, MinecraftServer server) {
+		super(ServerNetworkingImpl.PLAY, connection, "ServerPlayNetworkAddon for " + listener.player.getDisplayName());
+		this.listener = listener;
 		this.server = server;
-		this.context = new ContextImpl(server, handler, this);
+		this.context = new ContextImpl(server, listener, this);
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, ConnectionProtocol.PLAY);
@@ -58,11 +58,11 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void invokeInitEvent() {
-		ServerPlayConnectionEvents.INIT.invoker().onPlayInit(this.handler, this.server);
+		ServerPlayConnectionEvents.INIT.invoker().onPlayInit(this.listener, this.server);
 	}
 
 	public void onClientReady() {
-		ServerPlayConnectionEvents.JOIN.invoker().onPlayReady(this.handler, this, this.server);
+		ServerPlayConnectionEvents.JOIN.invoker().onPlayReady(this.listener, this, this.server);
 
 		this.sendInitialChannelRegistrationPacket();
 		this.sentInitialRegisterPacket = true;
@@ -82,22 +82,22 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void schedule(Runnable task) {
-		this.handler.player.level().getServer().execute(task);
+		this.listener.player.level().getServer().execute(task);
 	}
 
 	@Override
 	public Packet<?> createPacket(CustomPacketPayload packet) {
-		return ServerPlayNetworking.createS2CPacket(packet);
+		return ServerPlayNetworking.createClientboundPacket(packet);
 	}
 
 	@Override
 	protected void invokeRegisterEvent(List<Identifier> ids) {
-		S2CPlayChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.server, ids);
+		ClientboundPlayChannelEvents.REGISTER.invoker().onChannelRegister(this.listener, this, this.server, ids);
 	}
 
 	@Override
 	protected void invokeUnregisterEvent(List<Identifier> ids) {
-		S2CPlayChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.server, ids);
+		ClientboundPlayChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.listener, this, this.server, ids);
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void invokeDisconnectEvent() {
-		ServerPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.server);
+		ServerPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.listener, this.server);
 	}
 
 	@Override
@@ -140,23 +140,23 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		}
 
 		requestedReconfigure = true;
-		handler.switchToConfig();
+		listener.switchToConfig();
 	}
 
 	public boolean requestedReconfigure() {
 		return requestedReconfigure;
 	}
 
-	private record ContextImpl(MinecraftServer server, ServerGamePacketListenerImpl handler, PacketSender responseSender) implements ServerPlayNetworking.Context {
+	private record ContextImpl(MinecraftServer server, ServerGamePacketListenerImpl listener, PacketSender responseSender) implements ServerPlayNetworking.Context {
 		private ContextImpl {
 			Objects.requireNonNull(server, "server");
-			Objects.requireNonNull(handler, "handler");
+			Objects.requireNonNull(listener, "listener");
 			Objects.requireNonNull(responseSender, "responseSender");
 		}
 
 		@Override
 		public ServerPlayer player() {
-			return handler.getPlayer();
+			return listener.getPlayer();
 		}
 	}
 }

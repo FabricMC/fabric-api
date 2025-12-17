@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.networking.payload;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 
 public class PayloadHelper {
 	public static void write(FriendlyByteBuf byteBuf, FriendlyByteBuf data) {
@@ -28,7 +28,7 @@ public class PayloadHelper {
 	public static FriendlyByteBuf read(FriendlyByteBuf byteBuf, int maxSize) {
 		assertSize(byteBuf, maxSize);
 
-		FriendlyByteBuf newBuf = PacketByteBufs.create();
+		FriendlyByteBuf newBuf = FriendlyByteBufs.create();
 		newBuf.writeBytes(byteBuf.copy());
 		byteBuf.skipBytes(byteBuf.readableBytes());
 		return newBuf;

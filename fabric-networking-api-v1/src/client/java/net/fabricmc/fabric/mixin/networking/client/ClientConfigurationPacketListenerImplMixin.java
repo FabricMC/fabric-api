@@ -29,13 +29,13 @@ import net.minecraft.client.multiplayer.CommonListenerCookie;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.configuration.ClientboundFinishConfigurationPacket;
 
-import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientConfigurationNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ClientConfigurationPacketListenerImpl.class, priority = 999)
-public abstract class ClientConfigurationPacketListenerImplMixin extends ClientCommonPacketListenerImpl implements NetworkHandlerExtensions {
+public abstract class ClientConfigurationPacketListenerImplMixin extends ClientCommonPacketListenerImpl implements PacketListenerExtensions {
 	@Unique
 	private ClientConfigurationNetworkAddon addon;
 

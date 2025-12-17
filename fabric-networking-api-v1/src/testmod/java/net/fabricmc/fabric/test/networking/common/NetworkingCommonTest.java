@@ -46,24 +46,24 @@ public class NetworkingCommonTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Register the payload on both sides for play and configuration
-		PayloadTypeRegistry.playS2C().register(CommonPayload.ID, CommonPayload.CODEC);
-		PayloadTypeRegistry.playC2S().register(CommonPayload.ID, CommonPayload.CODEC);
-		PayloadTypeRegistry.configurationS2C().register(CommonPayload.ID, CommonPayload.CODEC);
-		PayloadTypeRegistry.configurationC2S().register(CommonPayload.ID, CommonPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(CommonPayload.TYPE, CommonPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(CommonPayload.TYPE, CommonPayload.CODEC);
+		PayloadTypeRegistry.clientboundConfiguration().register(CommonPayload.TYPE, CommonPayload.CODEC);
+		PayloadTypeRegistry.serverboundConfiguration().register(CommonPayload.TYPE, CommonPayload.CODEC);
 
 		// When the client joins, send a packet expecting it to be echoed back
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sender.sendPacket(new CommonPayload("play")));
-		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> ServerConfigurationNetworking.send(handler, new CommonPayload("configuration")));
+		ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> sender.sendPacket(new CommonPayload("play")));
+		ServerConfigurationConnectionEvents.CONFIGURE.register((listener, server) -> ServerConfigurationNetworking.send(listener, new CommonPayload("configuration")));
 
 		// Store the player uuid once received from the client
-		ServerPlayNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedPlay.add(context.player().getStringUUID()));
-		ServerConfigurationNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedConfig.add(context.networkHandler().getOwner().id().toString()));
+		ServerPlayNetworking.registerGlobalReceiver(CommonPayload.TYPE, (payload, context) -> receivedPlay.add(context.player().getStringUUID()));
+		ServerConfigurationNetworking.registerGlobalReceiver(CommonPayload.TYPE, (payload, context) -> receivedConfig.add(context.packetListener().getOwner().id().toString()));
 
 		AtomicLong runOnTick = new AtomicLong(-1);
 		AtomicReference<String> uuid = new AtomicReference<>();
 
 		// Ensure that the packets were received on the server
-		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
 			if (!firstLoad) {
 				// No need to check again if the player changes dimensions
 				return;
@@ -97,12 +97,12 @@ public class NetworkingCommonTest implements ModInitializer {
 	// A payload registered on both sides, for play and configuration
 	// This tests that the server can send a packet to the client, and then receive a response from the client
 	public record CommonPayload(String data) implements CustomPacketPayload {
-		public static final CustomPacketPayload.Type<CommonPayload> ID = new Type<>(NetworkingTestmods.id("common_payload"));
+		public static final CustomPacketPayload.Type<CommonPayload> TYPE = new Type<>(NetworkingTestmods.id("common_payload"));
 		public static final StreamCodec<FriendlyByteBuf, CommonPayload> CODEC = ByteBufCodecs.STRING_UTF8.map(CommonPayload::new, CommonPayload::data).cast();
 
 		@Override
 		public Type<? extends CustomPacketPayload> type() {
-			return ID;
+			return TYPE;
 		}
 	}
 }

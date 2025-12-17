@@ -30,9 +30,9 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ServerboundPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 
@@ -41,8 +41,8 @@ public final class ClientPlayNetworkAddon extends ClientCommonNetworkAddon<Clien
 
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	public ClientPlayNetworkAddon(ClientPacketListener handler, Minecraft client) {
-		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getLocalGameProfile().name(), handler, client);
+	public ClientPlayNetworkAddon(ClientPacketListener listener, Minecraft client) {
+		super(ClientNetworkingImpl.PLAY, listener.getConnection(), "ClientPlayNetworkAddon for " + listener.getLocalGameProfile().name(), listener, client);
 		this.context = new ContextImpl(client, this);
 
 		// Must register pending channels via lateinit
@@ -51,13 +51,13 @@ public final class ClientPlayNetworkAddon extends ClientCommonNetworkAddon<Clien
 
 	@Override
 	protected void invokeInitEvent() {
-		ClientPlayConnectionEvents.INIT.invoker().onPlayInit(this.handler, this.client);
+		ClientPlayConnectionEvents.INIT.invoker().onPlayInit(this.listener, this.client);
 	}
 
 	@Override
 	public void onServerReady() {
 		try {
-			ClientPlayConnectionEvents.JOIN.invoker().onPlayReady(this.handler, this, this.client);
+			ClientPlayConnectionEvents.JOIN.invoker().onPlayReady(this.listener, this, this.client);
 		} catch (RuntimeException e) {
 			LOGGER.error("Exception thrown while invoking ClientPlayConnectionEvents.JOIN", e);
 		}
@@ -80,22 +80,22 @@ public final class ClientPlayNetworkAddon extends ClientCommonNetworkAddon<Clien
 	// impl details
 	@Override
 	public Packet<?> createPacket(CustomPacketPayload packet) {
-		return ClientPlayNetworking.createC2SPacket(packet);
+		return ClientPlayNetworking.createServerboundPacket(packet);
 	}
 
 	@Override
 	protected void invokeRegisterEvent(List<Identifier> ids) {
-		C2SPlayChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.client, ids);
+		ServerboundPlayChannelEvents.REGISTER.invoker().onChannelRegister(this.listener, this, this.client, ids);
 	}
 
 	@Override
 	protected void invokeUnregisterEvent(List<Identifier> ids) {
-		C2SPlayChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.client, ids);
+		ServerboundPlayChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.listener, this, this.client, ids);
 	}
 
 	@Override
 	protected void invokeDisconnectEvent() {
-		ClientPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.client);
+		ClientPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.listener, this.client);
 	}
 
 	private record ContextImpl(Minecraft client, PacketSender responseSender) implements ClientPlayNetworking.Context {

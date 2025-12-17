@@ -29,13 +29,13 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ServerboundPlayChannelEvents;
 
 public final class NetworkingChannelClientTest implements ClientModInitializer {
 	public static final KeyMapping OPEN = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.fabric-networking-api-v1-testmod.open", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_MENU, KeyMapping.Category.MISC));
-	static final Set<Identifier> SUPPORTED_C2S_CHANNELS = new HashSet<>();
+	static final Set<Identifier> SUPPORTED_SERVERBOUND_CHANNELS = new HashSet<>();
 
 	@Override
 	public void onInitializeClient() {
@@ -47,16 +47,16 @@ public final class NetworkingChannelClientTest implements ClientModInitializer {
 			}
 		});
 
-		C2SPlayChannelEvents.REGISTER.register((handler, sender, client, channels) -> {
-			SUPPORTED_C2S_CHANNELS.addAll(channels);
+		ServerboundPlayChannelEvents.REGISTER.register((listener, sender, client, channels) -> {
+			SUPPORTED_SERVERBOUND_CHANNELS.addAll(channels);
 
 			if (Minecraft.getInstance().screen instanceof ChannelScreen) {
 				((ChannelScreen) Minecraft.getInstance().screen).refresh();
 			}
 		});
 
-		C2SPlayChannelEvents.UNREGISTER.register((handler, sender, client, channels) -> {
-			SUPPORTED_C2S_CHANNELS.removeAll(channels);
+		ServerboundPlayChannelEvents.UNREGISTER.register((listener, sender, client, channels) -> {
+			SUPPORTED_SERVERBOUND_CHANNELS.removeAll(channels);
 
 			if (Minecraft.getInstance().screen instanceof ChannelScreen) {
 				((ChannelScreen) Minecraft.getInstance().screen).refresh();
@@ -64,12 +64,12 @@ public final class NetworkingChannelClientTest implements ClientModInitializer {
 		});
 
 		// State destruction on disconnection:
-		ClientLoginConnectionEvents.DISCONNECT.register((handler, client) -> {
-			SUPPORTED_C2S_CHANNELS.clear();
+		ClientLoginConnectionEvents.DISCONNECT.register((listener, client) -> {
+			SUPPORTED_SERVERBOUND_CHANNELS.clear();
 		});
 
-		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-			SUPPORTED_C2S_CHANNELS.clear();
+		ClientPlayConnectionEvents.DISCONNECT.register((listener, client) -> {
+			SUPPORTED_SERVERBOUND_CHANNELS.clear();
 		});
 	}
 }

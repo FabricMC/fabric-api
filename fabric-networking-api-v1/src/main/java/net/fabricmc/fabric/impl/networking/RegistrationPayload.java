@@ -29,7 +29,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
-public record RegistrationPayload(Type<RegistrationPayload> id, List<Identifier> channels) implements CustomPacketPayload {
+public record RegistrationPayload(Type<RegistrationPayload> type, List<Identifier> channels) implements CustomPacketPayload {
 	public static final CustomPacketPayload.Type<RegistrationPayload> REGISTER = new CustomPacketPayload.Type<>(NetworkingImpl.REGISTER_CHANNEL);
 	public static final CustomPacketPayload.Type<RegistrationPayload> UNREGISTER = new CustomPacketPayload.Type<>(NetworkingImpl.UNREGISTER_CHANNEL);
 	public static final StreamCodec<FriendlyByteBuf, RegistrationPayload> REGISTER_CODEC = codec(REGISTER);
@@ -81,11 +81,6 @@ public record RegistrationPayload(Type<RegistrationPayload> id, List<Identifier>
 		} catch (IdentifierException ex) {
 			NetworkingImpl.LOGGER.warn("Received invalid channel identifier \"{}\"", literal);
 		}
-	}
-
-	@Override
-	public Type<? extends CustomPacketPayload> type() {
-		return id;
 	}
 
 	private static StreamCodec<FriendlyByteBuf, RegistrationPayload> codec(Type<RegistrationPayload> id) {

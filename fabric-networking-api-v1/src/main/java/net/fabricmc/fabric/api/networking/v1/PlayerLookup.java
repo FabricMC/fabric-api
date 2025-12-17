@@ -66,36 +66,36 @@ public final class PlayerLookup {
 	}
 
 	/**
-	 * Gets all the players in a server world.
+	 * Gets all the players in a server level.
 	 *
 	 * <p>The returned collection is immutable.
 	 *
-	 * @param world the server world
-	 * @return the players in the server world
+	 * @param level the server level
+	 * @return the players in the server level
 	 */
-	public static Collection<ServerPlayer> world(ServerLevel world) {
-		Objects.requireNonNull(world, "The world cannot be null");
+	public static Collection<ServerPlayer> level(ServerLevel level) {
+		Objects.requireNonNull(level, "The level cannot be null");
 
 		// return an immutable collection to guard against accidental removals.
-		return Collections.unmodifiableCollection(world.players());
+		return Collections.unmodifiableCollection(level.players());
 	}
 
 	/**
-	 * Gets all players tracking a chunk in a server world.
+	 * Gets all players tracking a chunk in a server level.
 	 *
-	 * @param world the server world
+	 * @param level the server level
 	 * @param pos   the chunk in question
 	 * @return the players tracking the chunk
 	 */
-	public static Collection<ServerPlayer> tracking(ServerLevel world, ChunkPos pos) {
-		Objects.requireNonNull(world, "The world cannot be null");
+	public static Collection<ServerPlayer> tracking(ServerLevel level, ChunkPos pos) {
+		Objects.requireNonNull(level, "The level cannot be null");
 		Objects.requireNonNull(pos, "The chunk pos cannot be null");
 
-		return world.getChunkSource().chunkMap.getPlayers(pos, false);
+		return level.getChunkSource().chunkMap.getPlayers(pos, false);
 	}
 
 	/**
-	 * Gets all players tracking an entity in a server world.
+	 * Gets all players tracking an entity in a server level.
 	 *
 	 * <p>The returned collection is immutable.
 	 *
@@ -105,7 +105,7 @@ public final class PlayerLookup {
 	 *
 	 * @param entity the entity being tracked
 	 * @return the players tracking the entity
-	 * @throws IllegalArgumentException if the entity is not in a server world
+	 * @throws IllegalArgumentException if the entity is not in a server level
 	 */
 	public static Collection<ServerPlayer> tracking(Entity entity) {
 		Objects.requireNonNull(entity, "Entity cannot be null");
@@ -113,31 +113,31 @@ public final class PlayerLookup {
 
 		if (manager instanceof ServerChunkCache) {
 			ChunkMap chunkLoadingManager = ((ServerChunkCache) manager).chunkMap;
-			EntityTrackerAccessor tracker = ((ChunkMapAccessor) chunkLoadingManager).getEntityTrackers().get(entity.getId());
+			EntityTrackerAccessor tracker = ((ChunkMapAccessor) chunkLoadingManager).getEntityMap().get(entity.getId());
 
 			// return an immutable collection to guard against accidental removals.
 			if (tracker != null) {
-				return tracker.getPlayersTracking()
+				return tracker.getSeenBy()
 						.stream().map(ServerPlayerConnection::getPlayer).collect(Collectors.toUnmodifiableSet());
 			}
 
 			return Collections.emptySet();
 		}
 
-		throw new IllegalArgumentException("Only supported on server worlds!");
+		throw new IllegalArgumentException("Only supported on server levels!");
 	}
 
 	/**
-	 * Gets all players tracking a block entity in a server world.
+	 * Gets all players tracking a block entity in a server level.
 	 *
 	 * @param blockEntity the block entity
 	 * @return the players tracking the block position
-	 * @throws IllegalArgumentException if the block entity is not in a server world
+	 * @throws IllegalArgumentException if the block entity is not in a server level
 	 */
 	public static Collection<ServerPlayer> tracking(BlockEntity blockEntity) {
 		Objects.requireNonNull(blockEntity, "BlockEntity cannot be null");
 
-		//noinspection ConstantConditions - IJ intrinsics don't know hasWorld == true will result in no null
+		//noinspection ConstantConditions - IJ intrinsics don't know hasLevel == true will result in no null
 		if (!blockEntity.hasLevel() || blockEntity.getLevel().isClientSide()) {
 			throw new IllegalArgumentException("Only supported on server worlds!");
 		}
@@ -146,51 +146,51 @@ public final class PlayerLookup {
 	}
 
 	/**
-	 * Gets all players tracking a block position in a server world.
+	 * Gets all players tracking a block position in a server level.
 	 *
-	 * @param world the server world
+	 * @param level the server level
 	 * @param pos   the block position
 	 * @return the players tracking the block position
 	 */
-	public static Collection<ServerPlayer> tracking(ServerLevel world, BlockPos pos) {
+	public static Collection<ServerPlayer> tracking(ServerLevel level, BlockPos pos) {
 		Objects.requireNonNull(pos, "BlockPos cannot be null");
 
-		return tracking(world, new ChunkPos(pos));
+		return tracking(level, new ChunkPos(pos));
 	}
 
 	/**
-	 * Gets all players around a position in a world.
+	 * Gets all players around a position in a level.
 	 *
 	 * <p>The distance check is done in the three-dimensional space instead of in the horizontal plane.
 	 *
-	 * @param world  the world
+	 * @param level  the level
 	 * @param pos the position
 	 * @param radius the maximum distance from the position in blocks
 	 * @return the players around the position
 	 */
-	public static Collection<ServerPlayer> around(ServerLevel world, Vec3 pos, double radius) {
+	public static Collection<ServerPlayer> around(ServerLevel level, Vec3 pos, double radius) {
 		double radiusSq = radius * radius;
 
-		return world(world)
+		return level(level)
 				.stream()
 				.filter((p) -> p.distanceToSqr(pos) <= radiusSq)
 				.collect(Collectors.toList());
 	}
 
 	/**
-	 * Gets all players around a position in a world.
+	 * Gets all players around a position in a level.
 	 *
 	 * <p>The distance check is done in the three-dimensional space instead of in the horizontal plane.
 	 *
-	 * @param world  the world
+	 * @param level  the level
 	 * @param pos    the position (can be a block pos)
 	 * @param radius the maximum distance from the position in blocks
 	 * @return the players around the position
 	 */
-	public static Collection<ServerPlayer> around(ServerLevel world, Vec3i pos, double radius) {
+	public static Collection<ServerPlayer> around(ServerLevel level, Vec3i pos, double radius) {
 		double radiusSq = radius * radius;
 
-		return world(world)
+		return level(level)
 				.stream()
 				.filter((p) -> p.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) <= radiusSq)
 				.collect(Collectors.toList());

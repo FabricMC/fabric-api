@@ -79,9 +79,9 @@ public class AttachmentSync implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Config
-		PayloadTypeRegistry.configurationC2S()
+		PayloadTypeRegistry.serverboundConfiguration()
 				.register(AcceptedAttachmentsPayloadC2S.ID, AcceptedAttachmentsPayloadC2S.CODEC);
-		PayloadTypeRegistry.configurationS2C()
+		PayloadTypeRegistry.clientboundConfiguration()
 				.register(RequestAcceptedAttachmentsPayloadS2C.ID, RequestAcceptedAttachmentsPayloadS2C.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
@@ -96,14 +96,14 @@ public class AttachmentSync implements ModInitializer {
 
 		ServerConfigurationNetworking.registerGlobalReceiver(AcceptedAttachmentsPayloadC2S.ID, (payload, context) -> {
 			Set<Identifier> supportedAttachments = decodeResponsePayload(payload);
-			Connection connection = ((ServerCommonPacketListenerImplAccessor) context.networkHandler()).getConnection();
+			Connection connection = ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection();
 			((SupportedAttachmentsClientConnection) connection).fabric_setSupportedAttachments(supportedAttachments);
 
-			context.networkHandler().completeTask(AttachmentSyncTask.KEY);
+			context.packetListener().completeTask(AttachmentSyncTask.KEY);
 		});
 
 		// Play
-		PayloadTypeRegistry.playS2C().register(AttachmentSyncPayloadS2C.ID, AttachmentSyncPayloadS2C.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(AttachmentSyncPayloadS2C.ID, AttachmentSyncPayloadS2C.CODEC);
 
 		ServerPlayerEvents.JOIN.register((player) -> {
 			List<AttachmentChange> changes = new ArrayList<>();
@@ -143,7 +143,7 @@ public class AttachmentSync implements ModInitializer {
 
 		@Override
 		public void start(Consumer<Packet<?>> sender) {
-			sender.accept(ServerConfigurationNetworking.createS2CPacket(RequestAcceptedAttachmentsPayloadS2C.INSTANCE));
+			sender.accept(ServerConfigurationNetworking.createClientboundPacket(RequestAcceptedAttachmentsPayloadS2C.INSTANCE));
 		}
 
 		@Override

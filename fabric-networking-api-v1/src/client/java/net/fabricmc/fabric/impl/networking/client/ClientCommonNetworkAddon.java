@@ -29,14 +29,14 @@ import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
 
 abstract class ClientCommonNetworkAddon<H, T extends ClientCommonPacketListenerImpl> extends AbstractChanneledNetworkAddon<H> {
-	protected final T handler;
+	protected final T listener;
 	protected final Minecraft client;
 
 	protected boolean isServerReady = false;
 
-	protected ClientCommonNetworkAddon(GlobalReceiverRegistry<H> receiver, Connection connection, String description, T handler, Minecraft client) {
+	protected ClientCommonNetworkAddon(GlobalReceiverRegistry<H> receiver, Connection connection, String description, T listener, Minecraft client) {
 		super(receiver, connection, description);
-		this.handler = handler;
+		this.listener = listener;
 		this.client = client;
 	}
 

@@ -82,7 +82,7 @@ public final class Networking implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.playS2C().register(OpenScreenPayload.ID, OpenScreenPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(OpenScreenPayload.ID, OpenScreenPayload.CODEC);
 
 		forEachEntry(BuiltInRegistries.MENU, (type, id) -> {
 			if (type instanceof ExtendedScreenHandlerType<?, ?> extended) {

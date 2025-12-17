@@ -149,12 +149,12 @@ public final class ClientLoginNetworking {
 		 * If your request processes instantly, you may use {@link CompletableFuture#completedFuture(Object)} to wrap your response for immediate sending.
 		 *
 		 * @param client the client
-		 * @param handler the network handler that received this packet
+		 * @param listener the packet listener that received this packet
 		 * @param buf the payload of the packet
 		 * @param callbacksConsumer listeners to be called when the response packet is sent to the server
 		 * @return a completable future which contains the payload to respond to the server with.
 		 * If the future contains {@code null}, then the server will be notified that the client did not understand the query.
 		 */
-		CompletableFuture<@Nullable FriendlyByteBuf> receive(Minecraft client, ClientHandshakePacketListenerImpl handler, FriendlyByteBuf buf, Consumer<ChannelFutureListener> callbacksConsumer);
+		CompletableFuture<@Nullable FriendlyByteBuf> receive(Minecraft client, ClientHandshakePacketListenerImpl listener, FriendlyByteBuf buf, Consumer<ChannelFutureListener> callbacksConsumer);
 	}
 }

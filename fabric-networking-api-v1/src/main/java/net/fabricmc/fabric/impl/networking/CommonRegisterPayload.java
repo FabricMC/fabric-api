@@ -24,12 +24,12 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
-public record CommonRegisterPayload(int version, String phase, Set<Identifier> channels) implements CustomPacketPayload {
-	public static final CustomPacketPayload.Type<CommonRegisterPayload> ID = new Type<>(Identifier.parse("c:register"));
+public record CommonRegisterPayload(int version, String protocol, Set<Identifier> channels) implements CustomPacketPayload {
+	public static final CustomPacketPayload.Type<CommonRegisterPayload> TYPE = new Type<>(Identifier.parse("c:register"));
 	public static final StreamCodec<FriendlyByteBuf, CommonRegisterPayload> CODEC = CustomPacketPayload.codec(CommonRegisterPayload::write, CommonRegisterPayload::new);
 
-	public static final String PLAY_PHASE = "play";
-	public static final String CONFIGURATION_PHASE = "configuration";
+	public static final String PLAY_PROTOCOL = "play";
+	public static final String CONFIGURATION_PROTOCOL = "configuration";
 
 	private CommonRegisterPayload(FriendlyByteBuf buf) {
 		this(
@@ -41,12 +41,12 @@ public record CommonRegisterPayload(int version, String phase, Set<Identifier> c
 
 	public void write(FriendlyByteBuf buf) {
 		buf.writeVarInt(version);
-		buf.writeUtf(phase);
+		buf.writeUtf(protocol);
 		buf.writeCollection(channels, FriendlyByteBuf::writeIdentifier);
 	}
 
 	@Override
 	public Type<CommonRegisterPayload> type() {
-		return ID;
+		return TYPE;
 	}
 }

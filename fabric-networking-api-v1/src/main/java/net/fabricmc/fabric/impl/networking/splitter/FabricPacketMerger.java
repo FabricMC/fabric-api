@@ -61,7 +61,7 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 			}
 
 			if (!(payload instanceof FabricSplitPacketPayload splitPacketPayload)) {
-				throw new DecoderException("Expected '" + FabricSplitPacketPayload.ID.id() +"' payload packet, but received '" + payload.type().id() + "'!");
+				throw new DecoderException("Expected '" + FabricSplitPacketPayload.TYPE.id() +"' payload packet, but received '" + payload.type().id() + "'!");
 			}
 
 			if (this.packetMerger.add(channelHandlerContext, splitPacketPayload, list)) {

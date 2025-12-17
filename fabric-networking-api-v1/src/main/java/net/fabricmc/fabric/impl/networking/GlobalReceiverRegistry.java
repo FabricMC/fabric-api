@@ -37,8 +37,8 @@ public final class GlobalReceiverRegistry<H> {
 	public static final int DEFAULT_CHANNEL_NAME_MAX_LENGTH = 128;
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalReceiverRegistry.class);
 
-	private final PacketFlow side;
-	private final ConnectionProtocol phase;
+	private final PacketFlow flow;
+	private final ConnectionProtocol protocol;
 	@Nullable
 	private final PayloadTypeRegistryImpl<?> payloadTypeRegistry;
 
@@ -46,17 +46,17 @@ public final class GlobalReceiverRegistry<H> {
 	private final Map<Identifier, H> handlers = new HashMap<>();
 	private final Set<AbstractNetworkAddon<H>> trackedAddons = new HashSet<>();
 
-	public GlobalReceiverRegistry(PacketFlow side, ConnectionProtocol phase, @Nullable PayloadTypeRegistryImpl<?> payloadTypeRegistry) {
-		this.side = side;
-		this.phase = phase;
+	public GlobalReceiverRegistry(PacketFlow flow, ConnectionProtocol protocol, @Nullable PayloadTypeRegistryImpl<?> payloadTypeRegistry) {
+		this.flow = flow;
+		this.protocol = protocol;
 		this.payloadTypeRegistry = payloadTypeRegistry;
 
 		if (payloadTypeRegistry != null) {
-			if (phase != payloadTypeRegistry.getPhase()) {
+			if (protocol != payloadTypeRegistry.getProtocol()) {
 				throw new IllegalStateException();
 			}
 
-			if (side != payloadTypeRegistry.getSide()) {
+			if (flow != payloadTypeRegistry.getFlow()) {
 				throw new IllegalStateException();
 			}
 		}
@@ -180,7 +180,7 @@ public final class GlobalReceiverRegistry<H> {
 	 */
 	private void logTrackedAddonSize() {
 		if (LOGGER.isTraceEnabled() && this.trackedAddons.size() > 1) {
-			LOGGER.trace("{} receiver registry tracks {} addon instances", phase.id(), trackedAddons.size());
+			LOGGER.trace("{} receiver registry tracks {} addon instances", protocol.id(), trackedAddons.size());
 		}
 	}
 
@@ -220,7 +220,7 @@ public final class GlobalReceiverRegistry<H> {
 		}
 
 		if (payloadTypeRegistry.get(channelName) == null) {
-			throw new IllegalArgumentException(String.format("Cannot register handler as no payload type has been registered with name \"%s\" for %s %s", channelName, side, phase));
+			throw new IllegalArgumentException(String.format("Cannot register handler as no payload type has been registered with name \"%s\" for %s %s", channelName, flow, protocol));
 		}
 
 		if (channelName.toString().length() > DEFAULT_CHANNEL_NAME_MAX_LENGTH) {
@@ -228,7 +228,7 @@ public final class GlobalReceiverRegistry<H> {
 		}
 	}
 
-	public ConnectionProtocol getPhase() {
-		return phase;
+	public ConnectionProtocol getProtocol() {
+		return protocol;
 	}
 }

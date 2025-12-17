@@ -27,10 +27,10 @@ import net.minecraft.network.protocol.common.custom.BrandPayload;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.api.client.networking.v1.C2SConfigurationChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ServerboundConfigurationChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.RegistrationPayload;
@@ -42,9 +42,9 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 	private boolean sentInitialRegisterPacket;
 	private boolean hasStarted;
 
-	public ClientConfigurationNetworkAddon(ClientConfigurationPacketListenerImpl handler, Minecraft client) {
-		super(ClientNetworkingImpl.CONFIGURATION, ((ClientCommonPacketListenerImplAccessor) handler).getConnection(), "ClientPlayNetworkAddon for " + ((ClientConfigurationPacketListenerImplAccessor) handler).getProfile().name(), handler, client);
-		this.context = new ContextImpl(client, handler, this);
+	public ClientConfigurationNetworkAddon(ClientConfigurationPacketListenerImpl listener, Minecraft client) {
+		super(ClientNetworkingImpl.CONFIGURATION, ((ClientCommonPacketListenerImplAccessor) listener).getConnection(), "ClientPlayNetworkAddon for " + ((ClientConfigurationPacketListenerImplAccessor) listener).getLocalGameProfile().name(), listener, client);
+		this.context = new ContextImpl(client, listener, this);
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection, ConnectionProtocol.CONFIGURATION);
@@ -52,7 +52,7 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 
 	@Override
 	protected void invokeInitEvent() {
-		ClientConfigurationConnectionEvents.INIT.invoker().onConfigurationInit(this.handler, this.client);
+		ClientConfigurationConnectionEvents.INIT.invoker().onConfigurationInit(this.listener, this.client);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 	private void invokeStartEvent() {
 		if (!hasStarted) {
 			hasStarted = true;
-			ClientConfigurationConnectionEvents.START.invoker().onConfigurationStart(this.handler, this.client);
+			ClientConfigurationConnectionEvents.START.invoker().onConfigurationStart(this.listener, this.client);
 		}
 	}
 
@@ -106,38 +106,38 @@ public final class ClientConfigurationNetworkAddon extends ClientCommonNetworkAd
 	// impl details
 	@Override
 	public Packet<?> createPacket(CustomPacketPayload packet) {
-		return ClientPlayNetworking.createC2SPacket(packet);
+		return ClientPlayNetworking.createServerboundPacket(packet);
 	}
 
 	@Override
 	protected void invokeRegisterEvent(List<Identifier> ids) {
-		C2SConfigurationChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.client, ids);
+		ServerboundConfigurationChannelEvents.REGISTER.invoker().onChannelRegister(this.listener, this, this.client, ids);
 	}
 
 	@Override
 	protected void invokeUnregisterEvent(List<Identifier> ids) {
-		C2SConfigurationChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.client, ids);
+		ServerboundConfigurationChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.listener, this, this.client, ids);
 	}
 
 	public void handleComplete() {
-		ClientConfigurationConnectionEvents.COMPLETE.invoker().onConfigurationComplete(this.handler, this.client);
-		ClientConfigurationConnectionEvents.READY.invoker().onConfigurationReady(this.handler, this.client);
+		ClientConfigurationConnectionEvents.COMPLETE.invoker().onConfigurationComplete(this.listener, this.client);
+		ClientConfigurationConnectionEvents.READY.invoker().onConfigurationReady(this.listener, this.client);
 		ClientNetworkingImpl.setClientConfigurationAddon(null);
 	}
 
 	@Override
 	protected void invokeDisconnectEvent() {
-		ClientConfigurationConnectionEvents.DISCONNECT.invoker().onConfigurationDisconnect(this.handler, this.client);
+		ClientConfigurationConnectionEvents.DISCONNECT.invoker().onConfigurationDisconnect(this.listener, this.client);
 	}
 
 	public ChannelInfoHolder getChannelInfoHolder() {
-		return (ChannelInfoHolder) ((ClientCommonPacketListenerImplAccessor) handler).getConnection();
+		return (ChannelInfoHolder) ((ClientCommonPacketListenerImplAccessor) listener).getConnection();
 	}
 
-	private record ContextImpl(Minecraft client, ClientConfigurationPacketListenerImpl networkHandler, PacketSender responseSender) implements ClientConfigurationNetworking.Context {
+	private record ContextImpl(Minecraft client, ClientConfigurationPacketListenerImpl packetListener, PacketSender responseSender) implements ClientConfigurationNetworking.Context {
 		private ContextImpl {
 			Objects.requireNonNull(client, "client");
-			Objects.requireNonNull(networkHandler, "networkHandler");
+			Objects.requireNonNull(packetListener, "packetListener");
 			Objects.requireNonNull(responseSender, "responseSender");
 		}
 	}

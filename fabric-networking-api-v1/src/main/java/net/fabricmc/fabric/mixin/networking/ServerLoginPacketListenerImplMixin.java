@@ -31,13 +31,13 @@ import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 
-import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
+import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
-abstract class ServerLoginPacketListenerImplMixin implements NetworkHandlerExtensions, PacketCallbackListener {
+abstract class ServerLoginPacketListenerImplMixin implements PacketListenerExtensions, PacketCallbackListener {
 	@Shadow
 	protected abstract void verifyLoginAndFinishConnectionSetup(GameProfile gameProfile);
 

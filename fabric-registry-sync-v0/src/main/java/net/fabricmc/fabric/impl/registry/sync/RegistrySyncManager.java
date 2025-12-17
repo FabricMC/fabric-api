@@ -142,7 +142,7 @@ public final class RegistrySyncManager {
 
 		@Override
 		public void start(Consumer<Packet<?>> sender) {
-			sender.accept(ServerConfigurationNetworking.createS2CPacket(new RegistrySyncPayload(map)));
+			sender.accept(ServerConfigurationNetworking.createClientboundPacket(new RegistrySyncPayload(map)));
 		}
 
 		@Override

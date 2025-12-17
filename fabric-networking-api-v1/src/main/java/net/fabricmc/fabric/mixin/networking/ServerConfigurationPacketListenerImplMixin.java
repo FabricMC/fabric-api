@@ -41,14 +41,14 @@ import net.minecraft.server.network.ConfigurationTask;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 
-import net.fabricmc.fabric.api.networking.v1.FabricServerConfigurationNetworkHandler;
+import net.fabricmc.fabric.api.networking.v1.FabricServerConfigurationPacketListenerImpl;
 import net.fabricmc.fabric.impl.networking.FabricRegistryByteBuf;
-import net.fabricmc.fabric.impl.networking.NetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ServerConfigurationPacketListenerImpl.class, priority = 900)
-public abstract class ServerConfigurationPacketListenerImplMixin extends ServerCommonPacketListenerImpl implements NetworkHandlerExtensions, FabricServerConfigurationNetworkHandler {
+public abstract class ServerConfigurationPacketListenerImplMixin extends ServerCommonPacketListenerImpl implements PacketListenerExtensions, FabricServerConfigurationPacketListenerImpl {
 	@Shadow
 	@Nullable
 	private ConfigurationTask currentTask;

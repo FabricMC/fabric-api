@@ -24,13 +24,13 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 public class KeybindPayload implements CustomPacketPayload {
 	public static final KeybindPayload INSTANCE = new KeybindPayload();
-	public static final CustomPacketPayload.Type<KeybindPayload> ID = new CustomPacketPayload.Type<>(NetworkingTestmods.id("keybind_press_test"));
+	public static final CustomPacketPayload.Type<KeybindPayload> TYPE = new CustomPacketPayload.Type<>(NetworkingTestmods.id("keybind_press_test"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, KeybindPayload> CODEC = StreamCodec.unit(INSTANCE);
 
 	private KeybindPayload() { }
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
-		return ID;
+		return TYPE;
 	}
 }
