@@ -79,7 +79,7 @@ public class CustomIngredientImpl extends Ingredient {
 	private List<Holder<Item>> customMatchingItems;
 
 	public CustomIngredientImpl(CustomIngredient customIngredient) {
-		// We must pass a registry entry list that contains something that isn't air. It doesn't actually get used.
+		// We must pass a holder list that contains something that isn't air. It doesn't actually get used.
 		super(HolderSet.direct(Items.STONE.builtInRegistryHolder()));
 
 		this.customIngredient = customIngredient;
@@ -119,8 +119,8 @@ public class CustomIngredientImpl extends Ingredient {
 	}
 
 	@Override
-	public boolean acceptsItem(Holder<Item> registryEntry) {
-		return getCustomMatchingItems().contains(registryEntry);
+	public boolean acceptsItem(Holder<Item> holder) {
+		return getCustomMatchingItems().contains(holder);
 	}
 
 	@Override
