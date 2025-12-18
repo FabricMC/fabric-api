@@ -33,9 +33,9 @@ import net.minecraft.world.level.gamerules.GameRuleTypeVisitor;
 
 import net.fabricmc.fabric.api.gamerule.v1.FabricGameRuleTypeVisitor;
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
-import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 import net.fabricmc.fabric.impl.gamerule.entry.DoubleRuleEntry;
 import net.fabricmc.fabric.impl.gamerule.entry.EnumRuleEntry;
+import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 
 @Mixin(targets = "net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen$RuleList$1")
 public abstract class RuleListEntryTypeVisitorMixin implements GameRuleTypeVisitor, FabricGameRuleTypeVisitor {
