@@ -98,7 +98,6 @@ public final class FluidStorage {
 	 * A typical usage example is a mod adding support for filling empty bottles with a honey fluid:
 	 * Fabric API already registers a storage for empty bottles to allow filling them with water through the event,
 	 * and a mod can register an event handler that will attach a second storage allowing empty bottles to be filled with its honey fluid.
-	 *inventory
 	 * @throws IllegalStateException If an incompatible provider is already registered for the item.
 	 */
 	public static Event<CombinedItemApiProvider> combinedItemApiProvider(Item item) {
