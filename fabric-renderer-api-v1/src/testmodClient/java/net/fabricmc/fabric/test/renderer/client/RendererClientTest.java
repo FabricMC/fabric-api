@@ -29,6 +29,7 @@ public final class RendererClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		UnbakedModelDeserializer.register(RendererTest.id("builtin_mesh"), new BuiltInMeshUnbakedModelDeserializer());
+		UnbakedModelDeserializer.register(RendererTest.id("overlayed"), new OverlayedUnbakedModelDeserializer());
 
 		CustomUnbakedBlockStateModel.register(RendererTest.id("biome_dependent"), BiomeDependentBlockStateModel.Unbaked.CODEC);
 		CustomUnbakedBlockStateModel.register(RendererTest.id("frame"), FrameBlockStateModel.Unbaked.CODEC);

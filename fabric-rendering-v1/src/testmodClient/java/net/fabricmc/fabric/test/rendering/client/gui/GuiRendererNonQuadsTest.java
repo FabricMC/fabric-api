@@ -95,8 +95,8 @@ public class GuiRendererNonQuadsTest implements ClientModInitializer {
 		private static ScreenRectangle createBounds(int x0, int y0, int x1, int y1, Matrix3x2f matrix, @Nullable ScreenRectangle scissorArea) {
 			ScreenRectangle screenRect = new ScreenRectangle(x0, y0, x1 - x0, y1 - y0).transformMaxBounds(matrix);
 			return scissorArea != null
-				? scissorArea.intersection(screenRect)
-				: screenRect;
+					? scissorArea.intersection(screenRect)
+					: screenRect;
 		}
 	}
 }

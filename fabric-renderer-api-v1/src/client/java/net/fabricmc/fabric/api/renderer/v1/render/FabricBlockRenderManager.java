@@ -23,7 +23,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -45,8 +44,8 @@ public interface FabricBlockRenderManager {
 	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
 	 * on multiple render layers and to provide the model with additional context.</b>
 	 *
-	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Also invokes
-	 * the {@link SpecialModelRenderer}. Usually used by entity renderers.
+	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
+	 * entity renderers.
 	 *
 	 * @param state The block state.
 	 * @param matrices The matrices.

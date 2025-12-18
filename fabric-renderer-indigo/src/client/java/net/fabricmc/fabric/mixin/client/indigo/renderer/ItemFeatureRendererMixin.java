@@ -50,11 +50,37 @@ abstract class ItemFeatureRendererMixin {
 			poseStack.pushPose();
 			poseStack.last().set(itemCommand.positionMatrix());
 
-			itemRenderContext.renderItem(itemCommand.displayContext(), poseStack, vertexConsumers, itemCommand.lightCoords(), itemCommand.overlayCoords(), itemCommand.tintLayers(), itemCommand.quads(), itemCommand.mesh(), itemCommand.renderLayer(), itemCommand.glintType(), false);
+			itemRenderContext.renderItem(
+					itemCommand.displayContext(),
+					poseStack,
+					vertexConsumers,
+					itemCommand.lightCoords(),
+					itemCommand.overlayCoords(),
+					itemCommand.tintLayers(),
+					itemCommand.quads(),
+					itemCommand.mesh(),
+					itemCommand.renderLayer(),
+					itemCommand.renderTypeGetter(),
+					itemCommand.glintType(),
+					false
+			);
 
 			if (itemCommand.outlineColor() != 0) {
 				outlineVertexConsumers.setColor(itemCommand.outlineColor());
-				itemRenderContext.renderItem(itemCommand.displayContext(), poseStack, outlineVertexConsumers, itemCommand.lightCoords(), itemCommand.overlayCoords(), itemCommand.tintLayers(), itemCommand.quads(), itemCommand.mesh(), itemCommand.renderLayer(), ItemStackRenderState.FoilType.NONE, true);
+				itemRenderContext.renderItem(
+						itemCommand.displayContext(),
+						poseStack,
+						outlineVertexConsumers,
+						itemCommand.lightCoords(),
+						itemCommand.overlayCoords(),
+						itemCommand.tintLayers(),
+						itemCommand.quads(),
+						itemCommand.mesh(),
+						itemCommand.renderLayer(),
+						itemCommand.renderTypeGetter(),
+						ItemStackRenderState.FoilType.NONE,
+						true
+				);
 			}
 
 			poseStack.popPose();

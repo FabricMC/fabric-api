@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.impl.renderer.MissingSpriteFinderImpl;
 
 @Mixin(targets = "net.minecraft.client.resources.model.ModelManager$1")
-abstract class BakedModelManager1Mixin implements SpriteGetter {
+abstract class ModelManager1Mixin implements SpriteGetter {
 	@Shadow
 	@Final
 	private TextureAtlasSprite blockMissing;
@@ -48,10 +48,10 @@ abstract class BakedModelManager1Mixin implements SpriteGetter {
 	private volatile MissingSpriteFinderImpl missingSpriteFinder;
 
 	@Override
-	public SpriteFinder spriteFinder(Identifier atlasId) {
-		if (atlasId.equals(TextureAtlas.LOCATION_BLOCKS)) {
+	public SpriteFinder spriteFinder(Identifier atlasTextureId) {
+		if (atlasTextureId.equals(TextureAtlas.LOCATION_BLOCKS)) {
 			return val$blockAtlas.spriteFinder();
-		} else if (atlasId.equals(TextureAtlas.LOCATION_ITEMS)) {
+		} else if (atlasTextureId.equals(TextureAtlas.LOCATION_ITEMS)) {
 			return val$itemAtlas.spriteFinder();
 		}
 

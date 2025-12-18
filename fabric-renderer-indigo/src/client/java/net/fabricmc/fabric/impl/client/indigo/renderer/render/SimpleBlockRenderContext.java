@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -76,7 +77,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 			final float blue = this.blue;
 
 			for (int i = 0; i < 4; i++) {
-				quad.color(i, net.minecraft.util.ARGB.scaleRGB(quad.color(i), red, green, blue));
+				quad.color(i, ARGB.scaleRGB(quad.color(i), red, green, blue));
 			}
 		}
 	}

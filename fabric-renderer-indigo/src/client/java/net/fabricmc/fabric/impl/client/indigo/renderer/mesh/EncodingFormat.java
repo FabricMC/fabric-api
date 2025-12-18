@@ -27,7 +27,7 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.util.TriState;
@@ -75,9 +75,6 @@ public final class EncodingFormat {
 		QUAD_STRIDE = VERTEX_STRIDE * 4;
 		QUAD_STRIDE_BYTES = QUAD_STRIDE * 4;
 		TOTAL_STRIDE = HEADER_STRIDE + QUAD_STRIDE;
-
-		Preconditions.checkState(VERTEX_STRIDE == QuadView.VANILLA_VERTEX_STRIDE, "Indigo vertex stride (%s) mismatched with rendering API (%s)", VERTEX_STRIDE, QuadView.VANILLA_VERTEX_STRIDE);
-		Preconditions.checkState(QUAD_STRIDE == QuadView.VANILLA_QUAD_STRIDE, "Indigo quad stride (%s) mismatched with rendering API (%s)", QUAD_STRIDE, QuadView.VANILLA_QUAD_STRIDE);
 	}
 
 	private static final int DIRECTION_COUNT = Direction.values().length;
@@ -91,6 +88,8 @@ public final class EncodingFormat {
 	private static final int NULLABLE_GLINT_COUNT = NULLABLE_GLINTS.length;
 	private static final ShadeMode[] SHADE_MODES = ShadeMode.values();
 	private static final int SHADE_MODE_COUNT = SHADE_MODES.length;
+	private static final QuadAtlas[] QUAD_ATLASES = QuadAtlas.values();
+	private static final int QUAD_ATLAS_COUNT = QUAD_ATLASES.length;
 
 	private static final int NULL_RENDER_LAYER_INDEX = NULLABLE_BLOCK_RENDER_LAYER_COUNT - 1;
 	private static final int NULL_GLINT_INDEX = NULLABLE_GLINT_COUNT - 1;
@@ -105,6 +104,7 @@ public final class EncodingFormat {
 	private static final int AO_BIT_LENGTH = Mth.ceillog2(TRI_STATE_COUNT);
 	private static final int GLINT_BIT_LENGTH = Mth.ceillog2(NULLABLE_GLINT_COUNT);
 	private static final int SHADE_MODE_BIT_LENGTH = Mth.ceillog2(SHADE_MODE_COUNT);
+	private static final int QUAD_ATLAS_BIT_LENGTH = Mth.ceillog2(QUAD_ATLAS_COUNT);
 
 	private static final int CULL_BIT_OFFSET = 0;
 	private static final int LIGHT_BIT_OFFSET = CULL_BIT_OFFSET + CULL_BIT_LENGTH;
@@ -116,7 +116,8 @@ public final class EncodingFormat {
 	private static final int AO_BIT_OFFSET = DIFFUSE_BIT_OFFSET + DIFFUSE_BIT_LENGTH;
 	private static final int GLINT_BIT_OFFSET = AO_BIT_OFFSET + AO_BIT_LENGTH;
 	private static final int SHADE_MODE_BIT_OFFSET = GLINT_BIT_OFFSET + GLINT_BIT_LENGTH;
-	private static final int TOTAL_BIT_LENGTH = SHADE_MODE_BIT_OFFSET + SHADE_MODE_BIT_LENGTH;
+	private static final int QUAD_ATLAS_BIT_OFFSET = SHADE_MODE_BIT_OFFSET + SHADE_MODE_BIT_LENGTH;
+	private static final int TOTAL_BIT_LENGTH = QUAD_ATLAS_BIT_OFFSET + QUAD_ATLAS_BIT_LENGTH;
 
 	private static final int CULL_MASK = bitMask(CULL_BIT_LENGTH, CULL_BIT_OFFSET);
 	private static final int LIGHT_MASK = bitMask(LIGHT_BIT_LENGTH, LIGHT_BIT_OFFSET);
@@ -128,6 +129,7 @@ public final class EncodingFormat {
 	private static final int AO_MASK = bitMask(AO_BIT_LENGTH, AO_BIT_OFFSET);
 	private static final int GLINT_MASK = bitMask(GLINT_BIT_LENGTH, GLINT_BIT_OFFSET);
 	private static final int SHADE_MODE_MASK = bitMask(SHADE_MODE_BIT_LENGTH, SHADE_MODE_BIT_OFFSET);
+	private static final int QUAD_ATLAS_MASK = bitMask(QUAD_ATLAS_BIT_LENGTH, QUAD_ATLAS_BIT_OFFSET);
 
 	static {
 		Preconditions.checkArgument(TOTAL_BIT_LENGTH <= 32, "Indigo header encoding bit count (%s) exceeds integer bit length)", TOTAL_STRIDE);
@@ -220,5 +222,13 @@ public final class EncodingFormat {
 
 	static int shadeMode(int bits, ShadeMode mode) {
 		return (bits & ~SHADE_MODE_MASK) | (mode.ordinal() << SHADE_MODE_BIT_OFFSET);
+	}
+
+	static QuadAtlas quadAtlas(int bits) {
+		return QUAD_ATLASES[(bits & QUAD_ATLAS_MASK) >>> QUAD_ATLAS_BIT_OFFSET];
+	}
+
+	static int quadAtlas(int bits, QuadAtlas quadAtlas) {
+		return (bits & ~QUAD_ATLAS_MASK) | (quadAtlas.ordinal() << QUAD_ATLAS_BIT_OFFSET);
 	}
 }

@@ -14,32 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.indigo.renderer.render;
+package net.fabricmc.fabric.api.renderer.v1.render;
 
-import java.util.List;
-
-import com.mojang.blaze3d.vertex.PoseStack;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.world.item.ItemDisplayContext;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
-import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 
-public record MeshItemCommand(
-		PoseStack.Pose positionMatrix,
-		ItemDisplayContext displayContext,
-		int lightCoords,
-		int overlayCoords,
-		int outlineColor,
-		int[] tintLayers,
-		List<BakedQuad> quads,
-		RenderType renderLayer,
-		ItemStackRenderState.FoilType glintType,
-		MeshView mesh,
-		@Nullable ItemRenderTypeGetter renderTypeGetter
-) {
+@FunctionalInterface
+public interface ItemRenderTypeGetter {
+	/**
+	 * Gets the {@link RenderType} for the given {@link QuadAtlas} and nullable {@link ChunkSectionLayer}. Quads with
+	 * matching property values will be rendered using the returned render type.
+	 *
+	 * <p>A return value of {@code null} means that the current item layer's
+	 * {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(RenderType) default render type} will be used.
+	 */
+	@Nullable
+	RenderType renderType(QuadAtlas quadAtlas, @Nullable ChunkSectionLayer sectionLayer);
 }

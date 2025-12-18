@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -35,6 +36,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessBatchingRenderCommandQueue;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessRenderCommandQueue;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemCommand;
@@ -53,9 +55,33 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	}
 
 	@Override
-	public void fabric_submitItem(PoseStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColors, int[] tintLayers, List<BakedQuad> quads, RenderType renderLayer, ItemStackRenderState.FoilType glintType, MeshView mesh) {
+	public void fabric_submitItem(
+			PoseStack matrices,
+			ItemDisplayContext displayContext,
+			int light,
+			int overlay,
+			int outlineColors,
+			int[] tintLayers,
+			List<BakedQuad> quads,
+			RenderType renderLayer,
+			ItemStackRenderState.FoilType glintType,
+			MeshView mesh,
+			@Nullable ItemRenderTypeGetter renderTypeGetter
+	) {
 		wasUsed = true;
-		meshItemCommands.add(new MeshItemCommand(matrices.last().copy(), displayContext, light, overlay, outlineColors, tintLayers, quads, renderLayer, glintType, mesh));
+		meshItemCommands.add(new MeshItemCommand(
+				matrices.last().copy(),
+				displayContext,
+				light,
+				overlay,
+				outlineColors,
+				tintLayers,
+				quads,
+				renderLayer,
+				glintType,
+				mesh,
+				renderTypeGetter
+		));
 	}
 
 	@Override

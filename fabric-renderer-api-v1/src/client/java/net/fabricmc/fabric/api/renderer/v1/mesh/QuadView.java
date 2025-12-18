@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
+import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
@@ -33,23 +33,17 @@ import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.fabricmc.fabric.api.util.TriState;
 
 /**
- * Interface for reading quad data encoded in {@link Mesh}es.
+ * Interface for reading quad data encoded in {@linkplain Mesh Meshes}.
  * Enables models to do analysis, re-texturing or translation without knowing the
  * renderer's vertex formats and without retaining redundant information.
  *
- * <p>Unless otherwise stated, assume all properties persist through serialization into {@link Mesh}es and have an
+ * <p>Unless otherwise stated, assume all properties persist through serialization into {@linkplain Mesh Meshes} and have an
  * effect in both block and item contexts. If a property is described as transient, then its value will not persist
  * through serialization into a {@link Mesh}.
  *
  * <p>Only the renderer should implement or extend this interface.
  */
 public interface QuadView {
-	/** Count of integers in a conventional (un-modded) block or item vertex. */
-	int VANILLA_VERTEX_STRIDE = DefaultVertexFormat.BLOCK.getVertexSize() / 4;
-
-	/** Count of integers in a conventional (un-modded) block or item quad. */
-	int VANILLA_QUAD_STRIDE = VANILLA_VERTEX_STRIDE * 4;
-
 	/**
 	 * Gets the X coordinate of the geometric position of the given vertex.
 	 */
@@ -194,6 +188,11 @@ public interface QuadView {
 	ShadeMode shadeMode();
 
 	/**
+	 * @see MutableQuadView#atlas(QuadAtlas)
+	 */
+	QuadAtlas atlas();
+
+	/**
 	 * This method is equivalent to {@link BakedQuad#tintIndex()}.
 	 *
 	 * @see MutableQuadView#tintIndex(int)
@@ -206,23 +205,20 @@ public interface QuadView {
 	int tag();
 
 	/**
-	 * Outputs this quad's vertex data into the given array, starting at the given index. The array must have at least
-	 * {@link #VANILLA_QUAD_STRIDE} elements available starting at the given index. The format of the data is the same
-	 * as {@link BakedQuad#vertices()}. Lightmap values and normals will be populated even though vanilla does not use
-	 * them.
-	 */
-	void toVanilla(int[] target, int startIndex);
-
-	/**
 	 * Creates a new {@link BakedQuad} with an appearance as close as possible to this quad, as permitted by vanilla.
-	 * Vertex lightmap values and vertex normals will be populated even though vanilla does not use them.
 	 *
 	 * @param sprite The sprite is not serialized so it must be provided by the caller. Retrieve it using
 	 * {@link SpriteFinder#find(QuadView)} if it is not already known.
 	 */
 	default BakedQuad toBakedQuad(TextureAtlasSprite sprite) {
-		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
-		toVanilla(vertexData, 0);
+		Vector3f position0 = copyPos(0, null);
+		Vector3f position1 = copyPos(1, null);
+		Vector3f position2 = copyPos(2, null);
+		Vector3f position3 = copyPos(3, null);
+		long packedUV0 = UVPair.pack(u(0), v(0));
+		long packedUV1 = UVPair.pack(u(1), v(1));
+		long packedUV2 = UVPair.pack(u(2), v(2));
+		long packedUV3 = UVPair.pack(u(3), v(3));
 
 		// The light emission is set to 15 if the quad is emissive; otherwise, to the minimum of all four sky light
 		// values and all four block light values.
@@ -243,6 +239,20 @@ public interface QuadView {
 			}
 		}
 
-		return new BakedQuad(vertexData, tintIndex(), lightFace(), sprite, diffuseShade(), lightEmission);
+		return new BakedQuad(
+				position0,
+				position1,
+				position2,
+				position3,
+				packedUV0,
+				packedUV1,
+				packedUV2,
+				packedUV3,
+				tintIndex(),
+				lightFace(),
+				sprite,
+				diffuseShade(),
+				lightEmission
+		);
 	}
 }

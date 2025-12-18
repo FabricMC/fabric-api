@@ -30,16 +30,29 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
+import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessRenderCommandQueue;
 
 @Mixin(SubmitNodeStorage.class)
 abstract class SubmitNodeStorageMixin implements SubmitNodeCollector, AccessRenderCommandQueue {
 	@Override
-	public void fabric_submitItem(PoseStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColors, int[] tintLayers, List<BakedQuad> quads, RenderType renderLayer, ItemStackRenderState.FoilType glintType, MeshView mesh) {
+	public void fabric_submitItem(
+			PoseStack matrices,
+			ItemDisplayContext displayContext,
+			int light,
+			int overlay,
+			int outlineColors,
+			int[] tintLayers,
+			List<BakedQuad> quads,
+			RenderType renderLayer,
+			ItemStackRenderState.FoilType glintType,
+			MeshView mesh,
+			ItemRenderTypeGetter renderTypeGetter
+	) {
 		OrderedSubmitNodeCollector queue = order(0);
 
 		if (queue instanceof AccessRenderCommandQueue access) {
-			access.fabric_submitItem(matrices, displayContext, light, overlay, outlineColors, tintLayers, quads, renderLayer, glintType, mesh);
+			access.fabric_submitItem(matrices, displayContext, light, overlay, outlineColors, tintLayers, quads, renderLayer, glintType, mesh, renderTypeGetter);
 		} else {
 			queue.submitItem(matrices, displayContext, light, overlay, outlineColors, tintLayers, quads, renderLayer, glintType);
 		}
