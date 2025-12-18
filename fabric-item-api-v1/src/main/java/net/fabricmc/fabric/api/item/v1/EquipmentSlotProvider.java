@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
  * an armor slot that they can go in.
  *
  * <p>The preferred equipment slot of an item stack can be queried using
- * {@link LivingEntity#getEquipmentSlotForItem(ItemStack).
+ * {@link LivingEntity#getEquipmentSlotForItem(ItemStack)}.
  *
  * <p>Equipment slot providers can be set with {@link FabricItem.Properties#equipmentSlot(EquipmentSlotProvider)}.
  *
