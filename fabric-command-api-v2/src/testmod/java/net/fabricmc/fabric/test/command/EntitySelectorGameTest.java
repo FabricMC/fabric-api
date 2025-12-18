@@ -27,19 +27,19 @@ import net.minecraft.world.entity.Mob;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class EntitySelectorGameTest {
-	private void spawn(GameTestHelper context, float health) {
-		Mob entity = context.spawnWithNoFreeWill(EntityType.CREEPER, BlockPos.ZERO);
+	private void spawn(GameTestHelper helper, float health) {
+		Mob entity = helper.spawnWithNoFreeWill(EntityType.CREEPER, BlockPos.ZERO);
 		entity.setNoAi(true);
 		entity.setHealth(health);
 	}
 
 	@GameTest
-	public void testEntitySelector(GameTestHelper context) {
-		BlockPos absolute = context.absolutePos(BlockPos.ZERO);
+	public void testEntitySelector(GameTestHelper helper) {
+		BlockPos absolute = helper.absolutePos(BlockPos.ZERO);
 
-		spawn(context, 1.0f);
-		spawn(context, 5.0f);
-		spawn(context, 10.0f);
+		spawn(helper, 1.0f);
+		spawn(helper, 5.0f);
+		spawn(helper, 10.0f);
 
 		String command = String.format(
 				Locale.ROOT,
@@ -50,11 +50,11 @@ public class EntitySelectorGameTest {
 				CommandTest.SELECTOR_ID.toDebugFileName()
 		);
 
-		context.assertEntitiesPresent(EntityType.CREEPER, BlockPos.ZERO, 3, 2.0);
-		MinecraftServer server = context.getLevel().getServer();
+		helper.assertEntitiesPresent(EntityType.CREEPER, BlockPos.ZERO, 3, 2.0);
+		MinecraftServer server = helper.getLevel().getServer();
 		server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command);
-		//context.assertTrue(result == 2, "Expected 2 entities killed, got " + result);
-		context.assertEntitiesPresent(EntityType.CREEPER, BlockPos.ZERO, 1, 2.0);
-		context.succeed();
+		//helper.assertTrue(result == 2, "Expected 2 entities killed, got " + result);
+		helper.assertEntitiesPresent(EntityType.CREEPER, BlockPos.ZERO, 1, 2.0);
+		helper.succeed();
 	}
 }

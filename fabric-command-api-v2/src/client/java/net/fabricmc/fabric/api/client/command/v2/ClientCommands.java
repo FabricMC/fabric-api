@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
  * <p>Client-sided commands are fully executed on the client,
  * so players can use them in both singleplayer and multiplayer.
  *
- * <p>Registrations can be done in handlers for {@link ClientCommandRegistrationCallback#EVENT}
+ * <p>Registrations can be done in handlers for {@link ClientCommandsRegistrationCallback#EVENT}
  * (See example below.)
  *
  * <p>The commands are run on the client game thread by default.
@@ -53,10 +53,10 @@ import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
  * <h2>Example command</h2>
  * <pre>
  * {@code
- * ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+ * ClientCommandsRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
  * 		dispatcher.register(
- * 			ClientCommandManager.literal("hello").executes(context -> {
- * 				context.getSource().sendFeedback(Text.literal("Hello, world!"));
+ * 			ClientCommands.literal("hello").executes(context -> {
+ * 				context.getSource().sendFeedback(Component.literal("Hello, world!"));
  * 				return 0;
  * 			})
  * 		);
@@ -64,8 +64,8 @@ import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
  * }
  * </pre>
  */
-public final class ClientCommandManager {
-	private ClientCommandManager() {
+public final class ClientCommands {
+	private ClientCommands() {
 	}
 
 	/**
@@ -88,19 +88,19 @@ public final class ClientCommandManager {
 	 * {@code minecraft:commands} packet has been received yet
 	 */
 	public static void refreshCommandCompletions() {
-		ClientPacketListener networkHandler = Minecraft.getInstance().getConnection();
+		ClientPacketListener packetListener = Minecraft.getInstance().getConnection();
 
-		if (networkHandler == null) {
+		if (packetListener == null) {
 			throw new IllegalStateException("Not connected to a server (dedicated or integrated)!");
 		}
 
-		ClientboundCommandsPacket lastReceivedCommandsPacket = ((ClientCommandInternals.LastReceivedCommandsPacketAccessor) networkHandler).fabric_api$getLastReceivedCommandsPacket();
+		ClientboundCommandsPacket lastReceivedCommandsPacket = ((ClientCommandInternals.LastReceivedCommandsPacketAccessor) packetListener).fabric_api$getLastReceivedCommandsPacket();
 
 		if (lastReceivedCommandsPacket == null) {
 			throw new IllegalStateException("Not yet received a 'minecraft:commands' packet!");
 		}
 
-		networkHandler.handleCommands(lastReceivedCommandsPacket);
+		packetListener.handleCommands(lastReceivedCommandsPacket);
 	}
 
 	/**

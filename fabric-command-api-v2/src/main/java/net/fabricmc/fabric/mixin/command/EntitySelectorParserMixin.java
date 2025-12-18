@@ -25,10 +25,10 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.api.command.v2.FabricEntitySelectorReader;
+import net.fabricmc.fabric.api.command.v2.FabricEntitySelectorParser;
 
 @Mixin(EntitySelectorParser.class)
-public class EntitySelectorParserMixin implements FabricEntitySelectorReader {
+public class EntitySelectorParserMixin implements FabricEntitySelectorParser {
 	@Unique
 	private final Set<Identifier> flags = new HashSet<>();
 
