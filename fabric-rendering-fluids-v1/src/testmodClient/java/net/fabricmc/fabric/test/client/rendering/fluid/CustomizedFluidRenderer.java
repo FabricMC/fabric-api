@@ -33,19 +33,19 @@ public class CustomizedFluidRenderer extends SimpleFluidRenderHandler {
 	}
 
 	@Override
-	public void renderFluid(BlockPos pos, BlockAndTintGetter world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-		int light = getLight(world, pos);
+	public void renderFluid(BlockPos pos, BlockAndTintGetter level, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+		int light = getLight(level, pos);
 		float u1 = sprites[2].getU(0);
 		float v1 = sprites[2].getV(0);
 		float u2 = sprites[2].getU(1);
-		float v2 = sprites[2].getV(fluidState.getHeight(world, pos));
+		float v2 = sprites[2].getV(fluidState.getHeight(level, pos));
 
 		float x1 = (pos.getX() & 15) + 0.1f;
 		float y1 = pos.getY() & 15;
 		float z1 = (pos.getZ() & 15) + 0.1f;
 
 		float x2 = (pos.getX() & 15) + 0.9f;
-		float y2 = (pos.getY() & 15) + fluidState.getHeight(world, pos);
+		float y2 = (pos.getY() & 15) + fluidState.getHeight(level, pos);
 		float z2 = (pos.getZ() & 15) + 0.9f;
 
 		vertex(vertexConsumer, x1, y1, z1, 1, 1, 1, u1, v1, light);

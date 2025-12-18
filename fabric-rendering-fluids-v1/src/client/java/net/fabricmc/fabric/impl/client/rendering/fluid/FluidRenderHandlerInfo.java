@@ -32,10 +32,10 @@ public class FluidRenderHandlerInfo {
 	public boolean hasOverlay;
 	public TextureAtlasSprite overlaySprite;
 
-	public void setup(FluidRenderHandler handler, BlockAndTintGetter world, BlockPos pos, FluidState fluidState) {
+	public void setup(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, FluidState fluidState) {
 		this.handler = handler;
 
-		TextureAtlasSprite[] sprites = handler.getFluidSprites(world, pos, fluidState);
+		TextureAtlasSprite[] sprites = handler.getFluidSprites(level, pos, fluidState);
 
 		this.sprites[0] = sprites[0];
 		this.sprites[1] = sprites[1];

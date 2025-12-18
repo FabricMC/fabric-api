@@ -129,9 +129,9 @@ public class LiquidBlockRendererMixin {
 					@At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/BiomeColors;getAverageWaterColor(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;)I")
 			}
 	)
-	public int modTintColor(int original, BlockAndTintGetter world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	public int modTintColor(int original, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
 		FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
-		return info.handler != null ? info.handler.getFluidColor(world, pos, fluidState) : original;
+		return info.handler != null ? info.handler.getFluidColor(level, pos, fluidState) : original;
 	}
 
 	@Definition(id = "getU", method = "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;getU(F)F")
@@ -145,7 +145,7 @@ public class LiquidBlockRendererMixin {
 	)
 	private TextureAtlasSprite modifyOverlaySprite(
 			TextureAtlasSprite waterOverlay,
-			BlockAndTintGetter world,
+			BlockAndTintGetter level,
 			@Local(ordinal = 1) BlockPos neighborPos,
 			@Local(ordinal = 0) boolean isLava,
 			@Local(ordinal = 1) TextureAtlasSprite flowingSprite,
@@ -154,7 +154,7 @@ public class LiquidBlockRendererMixin {
 		final FluidRenderHandlerInfo info = FluidRenderingImpl.getCurrentInfo();
 		boolean hasOverlay = info.handler != null ? info.hasOverlay : !isLava;
 
-		Block neighborBlock = world.getBlockState(neighborPos).getBlock();
+		Block neighborBlock = level.getBlockState(neighborPos).getBlock();
 		useOverlay.set(hasOverlay && FluidRenderHandlerRegistry.INSTANCE.isBlockTransparent(neighborBlock));
 
 		if (useOverlay.get()) {

@@ -65,10 +65,10 @@ public class FluidChuteBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public InteractionResult useItemOn(ItemStack stack, BlockState blockState, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-		if (world.getBlockEntity(pos) instanceof FluidChuteBlockEntity chute) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+		if (level.getBlockEntity(pos) instanceof FluidChuteBlockEntity chute) {
 			if (!FluidStorageUtil.interactWithFluidStorage(chute.storage, player, hand)) {
-				if (!world.isClientSide()) {
+				if (!level.isClientSide()) {
 					player.displayClientMessage(
 							Component.literal("Fluid: ")
 									.append(FluidVariantAttributes.getName(chute.storage.variant))

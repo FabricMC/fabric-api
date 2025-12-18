@@ -54,7 +54,7 @@ public interface TransferVariant<O> {
 	DataComponentMap getComponentMap();
 
 	/**
-	 * Return true if this variant has a component changes.
+	 * Return true if this variant has a component patch.
 	 */
 	default boolean hasComponents() {
 		return !getComponents().isEmpty();
@@ -77,11 +77,11 @@ public interface TransferVariant<O> {
 	}
 
 	/**
-	 * Creates a copy of this TransferVariant with the provided component changes applied.
-	 * @param changes the changes to apply
-	 * @return the new variant with the changes applied
+	 * Creates a copy of this TransferVariant with the provided component patch applied.
+	 * @param patch the patch to apply
+	 * @return the new variant with the patch applied
 	 */
-	default TransferVariant<O> withComponentChanges(DataComponentPatch changes) {
-		throw new UnsupportedOperationException("withComponentChanges is not supported by this TransferVariant");
+	default TransferVariant<O> withComponents(DataComponentPatch patch) {
+		throw new UnsupportedOperationException("withComponents is not supported by this TransferVariant");
 	}
 }

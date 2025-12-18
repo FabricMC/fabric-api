@@ -39,15 +39,15 @@ public final class FluidRendering {
 	 * renderer whenever the handler requests default geometry to be rendered.
 	 *
 	 * @param handler the render handler to invoke {@link FluidRenderHandler#renderFluid} on
-	 * @param world the world
+	 * @param level the level
 	 * @param pos the pos
 	 * @param vertexConsumer the vertex consumer
 	 * @param blockState the block state
 	 * @param fluidState the fluid state
 	 * @param defaultRenderer the renderer to use whenever the handler requests default geometry
 	 */
-	public static void render(FluidRenderHandler handler, BlockAndTintGetter world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, DefaultRenderer defaultRenderer) {
-		FluidRenderingImpl.render(handler, world, pos, vertexConsumer, blockState, fluidState, defaultRenderer);
+	public static void render(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, DefaultRenderer defaultRenderer) {
+		FluidRenderingImpl.render(handler, level, pos, vertexConsumer, blockState, fluidState, defaultRenderer);
 	}
 
 	public interface DefaultRenderer {
@@ -60,14 +60,14 @@ public final class FluidRendering {
 		 * should not be retrieved and only the passed one should be used.
 		 *
 		 * @param handler the handler that {@link FluidRenderHandler#renderFluid} was invoked on
-		 * @param world the world
+		 * @param level the level
 		 * @param pos the pos
 		 * @param vertexConsumer the vertex consumer
 		 * @param blockState the block state
 		 * @param fluidState the fluid state
 		 */
-		default void render(FluidRenderHandler handler, BlockAndTintGetter world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-			FluidRenderingImpl.renderVanillaDefault(handler, world, pos, vertexConsumer, blockState, fluidState);
+		default void render(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+			FluidRenderingImpl.renderVanillaDefault(handler, level, pos, vertexConsumer, blockState, fluidState);
 		}
 	}
 }

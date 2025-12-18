@@ -34,11 +34,11 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
  * <p>How it works is that fabric registers fallback providers for instances of this interface.
  * This can be used for convenient Storage registration, but please always use the SIDED lookups for queries:
  * <pre>{@code
- * Storage<FluidVariant> maybeFluidStorage = FluidStorage.SIDED.find(world, pos, direction);
+ * Storage<FluidVariant> maybeFluidStorage = FluidStorage.SIDED.find(level, pos, direction);
  * if (maybeFluidStorage != null) {
  *     // use it
  * }
- * Storage<ItemVariant> maybeItemStorage = ItemStorage.SIDED.find(world, pos, direction);
+ * Storage<ItemVariant> maybeItemStorage = ItemStorage.SIDED.find(level, pos, direction);
  * if (maybeItemStorage != null) {
  *     // use it
  * }

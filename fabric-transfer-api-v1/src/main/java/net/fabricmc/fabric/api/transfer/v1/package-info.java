@@ -59,13 +59,13 @@
  * Instances can be accessed through the API lookup defined in {@link net.fabricmc.fabric.api.transfer.v1.item.ItemStorage ItemStorage}.
  *
  * <p>The lookup already provides compatibility with vanilla inventories, however it may sometimes be interesting to use
- * {@link net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage InventoryStorage} or
- * {@link net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage PlayerInventoryStorage} when interaction with
- * {@code Inventory}-based APIs is required.
+ * {@link net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage ContainerStorage} or
+ * {@link net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage InventoryStorage} when interaction with
+ * {@link net.minecraft.world.Container Container}-based APIs is required.
  *
  * <h2>{@code ContainerItemContext}</h2>
  * {@link net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext ContainerItemContext} is a context designed for {@code ItemApiLookup} queries
- * that allows the returned APIs to interact with the containing inventory.
+ * that allows the returned APIs to interact with the container.
  * Notably, it is used by the {@code FluidStorage.ITEM} lookup for fluid-containing items.
  */
 @NullMarked

@@ -32,13 +32,13 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
+import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
 
 /**
  * Defer cook time updates for furnaces, so that aborted transactions don't reset the cook time.
  */
 @Mixin(AbstractFurnaceBlockEntity.class)
-public abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlockEntity implements SpecialLogicInventory {
+public abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlockEntity implements SpecialLogicContainer {
 	@Shadow
 	protected NonNullList<ItemStack> items;
 	@Shadow

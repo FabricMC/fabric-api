@@ -111,14 +111,14 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		private final TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];
 
 		@Override
-		public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
+		public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
 			return sprites;
 		}
 
 		@Override
-		public int getFluidColor(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
-			if (view != null && pos != null) {
-				return BiomeColors.getAverageWaterColor(view, pos);
+		public int getFluidColor(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
+			if (level != null && pos != null) {
+				return BiomeColors.getAverageWaterColor(level, pos);
 			} else {
 				return DEFAULT_WATER_COLOR;
 			}
@@ -137,7 +137,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		private TextureAtlasSprite[] sprites;
 
 		@Override
-		public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
+		public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
 			return sprites;
 		}
 

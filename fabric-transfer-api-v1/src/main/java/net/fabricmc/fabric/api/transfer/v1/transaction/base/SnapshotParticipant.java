@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
  *     <li>Override {@link #createSnapshot}: it is called when necessary to create an object representing the state of your subclass.</li>
  *     <li>Override {@link #readSnapshot}: it is called when necessary to revert to a previous state of your subclass.</li>
  *     <li>You may optionally override {@link #onFinalCommit}: it is called at the of a transaction that modified the state.
- *     For example, it could contain a call to {@code markDirty()}.</li>
+ *     For example, it could contain a call to {@code setChanged()}.</li>
  *     <li>(Advanced!) You may optionally override {@link #releaseSnapshot}: it is called once a snapshot object will not be used,
  *     for example you may wish to pool expensive state objects.</li>
  * </ul>
@@ -75,7 +75,7 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 
 	/**
 	 * Called after an outer transaction succeeded,
-	 * to perform irreversible actions such as {@code markDirty()} or neighbor updates.
+	 * to perform irreversible actions such as {@code setChanged()} or neighbor updates.
 	 */
 	protected void onFinalCommit() {
 	}

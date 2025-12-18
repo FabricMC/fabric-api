@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 /**
  * A storage that can store a single transfer variant at any given time.
  * Implementors should at least override {@link #getCapacity(TransferVariant)},
- * and probably {@link #onFinalCommit} as well for {@code markDirty()} and similar calls.
+ * and probably {@link #onFinalCommit} as well for {@code setChanged()} and similar calls.
  *
  * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which variants may be inserted or extracted.
  * If one of these two functions is overridden to always return false, implementors may also wish to override
@@ -159,13 +159,13 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	 *
 	 * @param storage the {@link SingleVariantStorage} to read into
 	 * @param codec the item variant codec
-	 * @param fallback the fallback item variant, used when the data is invalid
-	 * @param data the @{@link ValueInput} instance to read from
+	 * @param fallback the fallback item variant, used when the value is invalid
+	 * @param value the @{@link ValueInput} instance to read from
 	 * @param <T> the type of the item variant
 	 */
-	public static <T extends TransferVariant<?>> void readData(SingleVariantStorage<T> storage, Codec<T> codec, Supplier<T> fallback, ValueInput data) {
-		storage.variant = data.read("variant", codec).orElseGet(fallback);
-		storage.amount = data.getLongOr("amount", 0L);
+	public static <T extends TransferVariant<?>> void readValue(SingleVariantStorage<T> storage, Codec<T> codec, Supplier<T> fallback, ValueInput value) {
+		storage.variant = value.read("variant", codec).orElseGet(fallback);
+		storage.amount = value.getLongOr("amount", 0L);
 	}
 
 	/**
@@ -173,11 +173,11 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 	 *
 	 * @param storage the {@link SingleVariantStorage} to write from
 	 * @param codec the item variant codec
-	 * @param data the @{@link ValueOutput} instance to write from
+	 * @param value the @{@link ValueOutput} instance to write to
 	 * @param <T> the type of the item variant
 	 */
-	public static <T extends TransferVariant<?>> void writeData(SingleVariantStorage<T> storage, Codec<T> codec, ValueOutput data) {
-		data.store("variant", codec, storage.variant);
-		data.putLong("amount", storage.amount);
+	public static <T extends TransferVariant<?>> void writeValue(SingleVariantStorage<T> storage, Codec<T> codec, ValueOutput value) {
+		value.store("variant", codec, storage.variant);
+		value.putLong("amount", storage.amount);
 	}
 }

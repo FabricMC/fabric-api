@@ -113,7 +113,7 @@ public class TransferApiImpl {
 		};
 	}
 
-	public static DataComponentPatch mergeChanges(DataComponentPatch base, DataComponentPatch applied) {
+	public static DataComponentPatch mergePatches(DataComponentPatch base, DataComponentPatch applied) {
 		DataComponentPatch.Builder builder = DataComponentPatch.builder();
 
 		writeChangesTo(base, builder);

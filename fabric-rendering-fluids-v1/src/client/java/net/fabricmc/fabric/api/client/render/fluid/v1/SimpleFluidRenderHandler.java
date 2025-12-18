@@ -143,7 +143,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
+	public TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
 		return sprites;
 	}
 
@@ -164,7 +164,7 @@ public class SimpleFluidRenderHandler implements FluidRenderHandler {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getFluidColor(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
+	public int getFluidColor(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
 		return tint;
 	}
 }

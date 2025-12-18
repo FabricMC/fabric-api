@@ -48,7 +48,7 @@ import net.minecraft.world.level.storage.TagValueOutput;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -132,7 +132,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		}
 
 		TagValueOutput writeView = TagValueOutput.createWithoutContext(null);
-		storage.writeData(writeView);
+		storage.writeValue(writeView);
 		assertEquals("{amount:1L,variant:{item:\"minecraft:diamond\"}}", writeView.buildResult().toString());
 	}
 
@@ -153,7 +153,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		}
 
 		TagValueOutput writeView = TagValueOutput.createWithoutContext(null);
-		storage.writeData(writeView);
+		storage.writeValue(writeView);
 		assertEquals("{amount:1L,variant:{components:{\"minecraft:custom_name\":\"test name\"},item:\"minecraft:diamond\"}}", writeView.buildResult().toString());
 	}
 
@@ -173,7 +173,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		nbt.putLong("amount", 1);
 		nbt.put("variant", variantNbt);
 
-		storage.readData(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), nbt));
+		storage.readValue(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), nbt));
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(1L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
@@ -197,7 +197,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		nbt.putLong("amount", 1);
 		nbt.put("variant", variantNbt);
 
-		storage.readData(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), nbt));
+		storage.readValue(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), nbt));
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(0L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
@@ -272,10 +272,10 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 	}
 
 	private static class InventoryContainerItemContext implements ContainerItemContext {
-		private final InventoryStorage storage;
+		private final ContainerStorage storage;
 
 		private InventoryContainerItemContext(Container inventory) {
-			this.storage = InventoryStorage.of(inventory, null);
+			this.storage = ContainerStorage.of(inventory, null);
 		}
 
 		@Override

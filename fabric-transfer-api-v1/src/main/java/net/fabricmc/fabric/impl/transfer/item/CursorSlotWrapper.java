@@ -36,24 +36,24 @@ public class CursorSlotWrapper extends SingleStackStorage {
 		return WRAPPERS.computeIfAbsent(screenHandler, CursorSlotWrapper::new);
 	}
 
-	private final AbstractContainerMenu screenHandler;
+	private final AbstractContainerMenu menu;
 
-	private CursorSlotWrapper(AbstractContainerMenu screenHandler) {
-		this.screenHandler = screenHandler;
+	private CursorSlotWrapper(AbstractContainerMenu menu) {
+		this.menu = menu;
 	}
 
 	@Override
 	protected ItemStack getStack() {
-		return screenHandler.getCarried();
+		return menu.getCarried();
 	}
 
 	@Override
 	protected void setStack(ItemStack stack) {
-		screenHandler.setCarried(stack);
+		menu.setCarried(stack);
 	}
 
 	@Override
 	public String toString() {
-		return "CursorSlotWrapper[" + screenHandler + "/" + BuiltInRegistries.MENU.getKey(screenHandler.getType()) + "]";
+		return "CursorSlotWrapper[" + menu + "/" + BuiltInRegistries.MENU.getKey(menu.getType()) + "]";
 	}
 }

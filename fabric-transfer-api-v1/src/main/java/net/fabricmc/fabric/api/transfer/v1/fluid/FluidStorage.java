@@ -51,7 +51,7 @@ public final class FluidStorage {
 	/**
 	 * Sided block access to fluid variant storages.
 	 * Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
-	 * The {@code Direction} parameter may be null, meaning that the full inventory (ignoring side restrictions) should be queried.
+	 * The {@code Direction} parameter may be null, meaning that the full storage (ignoring side restrictions) should be queried.
 	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
 	 *
 	 * <p>A simple way to expose fluid variant storages for a block entity hierarchy is to extend {@link SidedStorageBlockEntity}.
@@ -61,8 +61,8 @@ public final class FluidStorage {
 	 * the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
 	 *
 	 * <p>This may be queried safely both on the logical server and on the logical client threads.
-	 * On the server thread (i.e. with a server world), all transfer functionality is always supported.
-	 * On the client thread (i.e. with a client world), contents of queried Storages are unreliable and should not be modified.
+	 * On the server thread (i.e. with a server level), all transfer functionality is always supported.
+	 * On the client thread (i.e. with a client level), contents of queried Storages are unreliable and should not be modified.
 	 */
 	public static final BlockApiLookup<Storage<FluidVariant>, @Nullable Direction> SIDED =
 			BlockApiLookup.get(Identifier.fromNamespaceAndPath("fabric", "sided_fluid_storage"), Storage.asClass(), Direction.class);
@@ -98,7 +98,6 @@ public final class FluidStorage {
 	 * A typical usage example is a mod adding support for filling empty bottles with a honey fluid:
 	 * Fabric API already registers a storage for empty bottles to allow filling them with water through the event,
 	 * and a mod can register an event handler that will attach a second storage allowing empty bottles to be filled with its honey fluid.
-	 *
 	 * @throws IllegalStateException If an incompatible provider is already registered for the item.
 	 */
 	public static Event<CombinedItemApiProvider> combinedItemApiProvider(Item item) {
@@ -133,7 +132,7 @@ public final class FluidStorage {
 		CauldronFluidContent.getForFluid(Fluids.WATER);
 
 		// Support for SidedStorageBlockEntity.
-		FluidStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
+		FluidStorage.SIDED.registerFallback((level, pos, state, blockEntity, direction) -> {
 			if (blockEntity instanceof SidedStorageBlockEntity sidedStorageBlockEntity) {
 				return sidedStorageBlockEntity.getFluidStorage(direction);
 			}
@@ -148,7 +147,7 @@ public final class FluidStorage {
 		// Register full bucket storage
 		GENERAL_COMBINED_PROVIDER.register(context -> {
 			if (context.getItemVariant().getItem() instanceof BucketItem bucketItem) {
-				Fluid bucketFluid = ((BucketItemAccessor) bucketItem).fabric_getFluid();
+				Fluid bucketFluid = ((BucketItemAccessor) bucketItem).fabric_getContent();
 
 				// Make sure the mapping is bidirectional.
 				if (bucketFluid != null && bucketFluid.getBucket() == bucketItem) {

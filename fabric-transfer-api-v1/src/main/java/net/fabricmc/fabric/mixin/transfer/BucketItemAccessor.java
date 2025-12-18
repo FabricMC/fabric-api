@@ -25,5 +25,5 @@ import net.minecraft.world.level.material.Fluid;
 @Mixin(BucketItem.class)
 public interface BucketItemAccessor {
 	@Accessor("content")
-	Fluid fabric_getFluid();
+	Fluid fabric_getContent();
 }

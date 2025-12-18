@@ -30,14 +30,14 @@ import net.minecraft.world.level.block.entity.ChiseledBookShelfBlockEntity;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
-import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
+import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
 
 /**
  * This mixin tracks the last interacted slot for transaction support, defers block state updates,
  * and allows setting empty stacks via {@link Container#setStack} in a transfer API context (needed for extractions).
  */
 @Mixin(ChiseledBookShelfBlockEntity.class)
-public class ChiseledBookShelfBlockEntityMixin implements SpecialLogicInventory {
+public class ChiseledBookShelfBlockEntityMixin implements SpecialLogicContainer {
 	@Shadow
 	private NonNullList<ItemStack> items;
 	@Shadow

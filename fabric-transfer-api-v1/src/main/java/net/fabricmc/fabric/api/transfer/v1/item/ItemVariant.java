@@ -108,12 +108,12 @@ public interface ItemVariant extends TransferVariant<Item> {
 	}
 
 	/**
-	 * Creates a copy of this ItemVariant with the provided component changes applied.
-	 * @param changes the changes to apply
-	 * @return the new variant with the changes applied
+	 * Creates a copy of this ItemVariant with the provided component patch applied.
+	 * @param patch the patch to apply
+	 * @return the new variant with the patch applied
 	 *
 	 * @see ItemStack#applyComponents(DataComponentPatch)
 	 */
 	@Override
-	ItemVariant withComponentChanges(DataComponentPatch changes);
+	ItemVariant withComponents(DataComponentPatch patch);
 }

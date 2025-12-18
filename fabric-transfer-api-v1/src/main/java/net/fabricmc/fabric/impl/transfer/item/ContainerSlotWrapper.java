@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.transfer.item;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
@@ -40,37 +42,37 @@ import net.fabricmc.fabric.impl.transfer.DebugMessages;
  * or the transaction logic will not work correctly.
  * This is handled by the Map in InventoryStorageImpl.
  */
-class InventorySlotWrapper extends SingleStackStorage {
+class ContainerSlotWrapper extends SingleStackStorage {
 	/**
 	 * The strong reference to the InventoryStorageImpl ensures that the weak value doesn't get GC'ed when individual slots are still being accessed.
 	 */
-	private final InventoryStorageImpl storage;
+	private final ContainerStorageImpl storage;
 	final int slot;
-	private final SpecialLogicInventory specialInv;
+	private final @Nullable SpecialLogicContainer specialContainer;
 	private ItemStack lastReleasedSnapshot = null;
 
-	InventorySlotWrapper(InventoryStorageImpl storage, int slot) {
+	ContainerSlotWrapper(ContainerStorageImpl storage, int slot) {
 		this.storage = storage;
 		this.slot = slot;
-		this.specialInv = storage.inventory instanceof SpecialLogicInventory specialInv ? specialInv : null;
+		this.specialContainer = storage.container instanceof SpecialLogicContainer special ? special : null;
 	}
 
 	@Override
 	protected ItemStack getStack() {
-		return storage.inventory.getItem(slot);
+		return storage.container.getItem(slot);
 	}
 
 	@Override
 	protected void setStack(ItemStack stack) {
-		if (specialInv == null) {
-			storage.inventory.setItem(slot, stack);
+		if (specialContainer == null) {
+			storage.container.setItem(slot, stack);
 		} else {
-			specialInv.fabric_setSuppress(true);
+			specialContainer.fabric_setSuppress(true);
 
 			try {
-				storage.inventory.setItem(slot, stack);
+				storage.container.setItem(slot, stack);
 			} finally {
-				specialInv.fabric_setSuppress(false);
+				specialContainer.fabric_setSuppress(false);
 			}
 		}
 	}
@@ -82,60 +84,60 @@ class InventorySlotWrapper extends SingleStackStorage {
 		}
 
 		long ret = super.insert(insertedVariant, maxAmount, transaction);
-		if (specialInv != null && ret > 0) specialInv.fabric_onTransfer(slot, transaction);
+		if (specialContainer != null && ret > 0) specialContainer.fabric_onTransfer(slot, transaction);
 		return ret;
 	}
 
 	private boolean canInsert(int slot, ItemStack stack) {
-		if (storage.inventory instanceof ShulkerBoxBlockEntity shulker) {
+		if (storage.container instanceof ShulkerBoxBlockEntity shulker) {
 			// Shulkers override canInsert but not isValid.
 			return shulker.canPlaceItemThroughFace(slot, stack, null);
 		} else {
-			return storage.inventory.canPlaceItem(slot, stack);
+			return storage.container.canPlaceItem(slot, stack);
 		}
 	}
 
 	@Override
 	public long extract(ItemVariant variant, long maxAmount, TransactionContext transaction) {
 		long ret = super.extract(variant, maxAmount, transaction);
-		if (specialInv != null && ret > 0) specialInv.fabric_onTransfer(slot, transaction);
+		if (specialContainer != null && ret > 0) specialContainer.fabric_onTransfer(slot, transaction);
 		return ret;
 	}
 
 	/**
 	 * Special cases because vanilla checks the current stack in the following functions (which it shouldn't):
 	 * <ul>
-	 *     <li>{@link AbstractFurnaceBlockEntity#isValid(int, ItemStack)}.</li>
-	 *     <li>{@link BrewingStandBlockEntity#isValid(int, ItemStack)}.</li>
+	 *     <li>{@link AbstractFurnaceBlockEntity#canPlaceItem(int, ItemStack)}.</li>
+	 *     <li>{@link BrewingStandBlockEntity#canPlaceItem(int, ItemStack)}.</li>
 	 * </ul>
 	 */
 	@Override
 	public int getCapacity(ItemVariant variant) {
 		// Special case to limit buckets to 1 in furnace fuel inputs.
-		if (storage.inventory instanceof AbstractFurnaceBlockEntity && slot == 1 && variant.isOf(Items.BUCKET)) {
+		if (storage.container instanceof AbstractFurnaceBlockEntity && slot == 1 && variant.isOf(Items.BUCKET)) {
 			return 1;
 		}
 
 		// Special case to limit brewing stand "bottle inputs" to 1.
-		if (storage.inventory instanceof BrewingStandBlockEntity && slot < 3) {
+		if (storage.container instanceof BrewingStandBlockEntity && slot < 3) {
 			return 1;
 		}
 
-		return Math.min(storage.inventory.getMaxStackSize(), variant.getItem().getDefaultMaxStackSize());
+		return Math.min(storage.container.getMaxStackSize(), variant.getItem().getDefaultMaxStackSize());
 	}
 
-	// We override updateSnapshots to also schedule a markDirty call for the backing inventory.
+	// We override updateSnapshots to also schedule a setChanged call for the backing inventory.
 	@Override
 	public void updateSnapshots(TransactionContext transaction) {
-		storage.markDirtyParticipant.updateSnapshots(transaction);
+		storage.setChangedParticipant.updateSnapshots(transaction);
 		super.updateSnapshots(transaction);
 
-		// For chests: also schedule a markDirty call for the other half
-		if (storage.inventory instanceof ChestBlockEntity chest && chest.getBlockState().getValue(ChestBlock.TYPE) != ChestType.SINGLE) {
+		// For chests: also schedule a setChanged call for the other half
+		if (storage.container instanceof ChestBlockEntity chest && chest.getBlockState().getValue(ChestBlock.TYPE) != ChestType.SINGLE) {
 			BlockPos otherChestPos = chest.getBlockPos().relative(ChestBlock.getConnectedDirection(chest.getBlockState()));
 
 			if (chest.getLevel().getBlockEntity(otherChestPos) instanceof ChestBlockEntity otherChest) {
-				((InventoryStorageImpl) InventoryStorageImpl.of(otherChest, null)).markDirtyParticipant.updateSnapshots(transaction);
+				((ContainerStorageImpl) ContainerStorageImpl.of(otherChest, null)).setChangedParticipant.updateSnapshots(transaction);
 			}
 		}
 	}
@@ -151,7 +153,7 @@ class InventorySlotWrapper extends SingleStackStorage {
 		ItemStack original = lastReleasedSnapshot;
 		ItemStack currentStack = getStack();
 
-		if (storage.inventory instanceof SpecialLogicInventory specialLogicInv) {
+		if (storage.container instanceof SpecialLogicContainer specialLogicInv) {
 			specialLogicInv.fabric_onFinalCommit(slot, original, currentStack);
 		}
 
@@ -177,6 +179,6 @@ class InventorySlotWrapper extends SingleStackStorage {
 
 	@Override
 	public String toString() {
-		return "InventorySlotWrapper[%s#%d]".formatted(DebugMessages.forInventory(storage.inventory), slot);
+		return "ContainerSlotWrapper[%s#%d]".formatted(DebugMessages.forInventory(storage.container), slot);
 	}
 }

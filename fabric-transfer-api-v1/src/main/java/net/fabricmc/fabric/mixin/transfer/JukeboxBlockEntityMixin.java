@@ -26,10 +26,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 
-import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
+import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
 
 @Mixin(JukeboxBlockEntity.class)
-public abstract class JukeboxBlockEntityMixin implements SpecialLogicInventory {
+public abstract class JukeboxBlockEntityMixin implements SpecialLogicContainer {
 	@Shadow
 	private ItemStack item;
 
