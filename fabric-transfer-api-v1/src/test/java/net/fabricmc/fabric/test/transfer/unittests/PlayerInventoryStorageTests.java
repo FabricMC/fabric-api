@@ -29,7 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
@@ -51,10 +51,10 @@ public class PlayerInventoryStorageTests extends AbstractTransferApiTest {
 		testStacking(playerInv -> playerInv::insert);
 	}
 
-	private void testStacking(Function<PlayerInventoryStorage, InsertionFunction> inserterBuilder) {
+	private void testStacking(Function<InventoryStorage, InsertionFunction> inserterBuilder) {
 		// A bit hacky... but nothing should try using the null player entity as long as we don't call drop.
 		Inventory inv = new Inventory(null, new EntityEquipment());
-		InsertionFunction inserter = inserterBuilder.apply(PlayerInventoryStorage.of(inv));
+		InsertionFunction inserter = inserterBuilder.apply(InventoryStorage.of(inv));
 
 		// Fill everything with stone besides the first two inventory slots.
 		inv.setSelectedSlot(3);

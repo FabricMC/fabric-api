@@ -43,7 +43,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
@@ -67,7 +67,7 @@ public class VanillaStorageTests {
 		ItemVariant rawIron = ItemVariant.of(Items.RAW_IRON);
 		furnace.setItem(0, rawIron.toStack(64));
 		furnace.setItem(1, new ItemStack(Items.COAL, 64));
-		InventoryStorage furnaceWrapper = InventoryStorage.of(furnace, null);
+		ContainerStorage furnaceWrapper = ContainerStorage.of(furnace, null);
 
 		context.runAtTickTime(5, () -> {
 			if (accessor.getCookingTimeSpent() <= 0) {
@@ -113,7 +113,7 @@ public class VanillaStorageTests {
 		// Shelf comparator output is directional
 		context.setBlock(pos, block.defaultBlockState().trySetValue(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST));
 		T inventory = context.getBlockEntity(pos, inventoryClass);
-		InventoryStorage storage = InventoryStorage.of(inventory, null);
+		ContainerStorage storage = ContainerStorage.of(inventory, null);
 
 		BlockPos comparatorPos = new BlockPos(1, 2, 0);
 		Direction comparatorFacing = context.getTestRotation().rotate(Direction.WEST);
@@ -179,7 +179,7 @@ public class VanillaStorageTests {
 		BlockPos pos = new BlockPos(0, 1, 0);
 		context.setBlock(pos, Blocks.CHISELED_BOOKSHELF.defaultBlockState());
 		ChiseledBookShelfBlockEntity bookshelf = context.getBlockEntity(pos, ChiseledBookShelfBlockEntity.class);
-		InventoryStorage storage = InventoryStorage.of(bookshelf, null);
+		ContainerStorage storage = ContainerStorage.of(bookshelf, null);
 
 		// First, check that we can correctly undo insert operations, because vanilla's setStack doesn't permit it without our patches.
 		try (Transaction transaction = Transaction.openOuter()) {
@@ -240,7 +240,7 @@ public class VanillaStorageTests {
 		BlockPos pos = new BlockPos(0, 2, 0);
 		context.setBlock(pos, Blocks.SHULKER_BOX);
 		ShulkerBoxBlockEntity shulker = context.getBlockEntity(pos, ShulkerBoxBlockEntity.class);
-		InventoryStorage storage = InventoryStorage.of(shulker, null);
+		ContainerStorage storage = ContainerStorage.of(shulker, null);
 
 		if (StorageUtil.simulateInsert(storage, ItemVariant.of(Items.SHULKER_BOX), 1, null) > 0) {
 			context.fail(Component.literal("Expected shulker box to be rejected"), pos);
@@ -259,7 +259,7 @@ public class VanillaStorageTests {
 		BlockPos pos = new BlockPos(0, 1, 0);
 		context.setBlock(pos, Blocks.FURNACE.defaultBlockState());
 		FurnaceBlockEntity furnace = context.getBlockEntity(pos, FurnaceBlockEntity.class);
-		InventoryStorage furnaceWrapper = InventoryStorage.of(furnace, null);
+		ContainerStorage furnaceWrapper = ContainerStorage.of(furnace, null);
 
 		try (Transaction tx = Transaction.openOuter()) {
 			if (furnaceWrapper.getSlot(1).insert(ItemVariant.of(Items.BUCKET), 2, tx) != 1) {
@@ -278,7 +278,7 @@ public class VanillaStorageTests {
 		BlockPos pos = new BlockPos(0, 1, 0);
 		context.setBlock(pos, Blocks.BREWING_STAND.defaultBlockState());
 		BrewingStandBlockEntity brewingStand = context.getBlockEntity(pos, BrewingStandBlockEntity.class);
-		InventoryStorage brewingStandWrapper = InventoryStorage.of(brewingStand, null);
+		ContainerStorage brewingStandWrapper = ContainerStorage.of(brewingStand, null);
 
 		try (Transaction tx = Transaction.openOuter()) {
 			for (int bottleSlot = 0; bottleSlot < 3; ++bottleSlot) {

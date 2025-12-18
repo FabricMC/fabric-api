@@ -17,121 +17,131 @@
 package net.fabricmc.fabric.impl.transfer.item;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
-import com.google.common.collect.MapMaker;
-import org.jspecify.annotations.Nullable;
-
-import net.minecraft.core.Direction;
-import net.minecraft.world.Container;
-import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
-/**
- * Implementation of {@link InventoryStorage}.
- * Note on thread-safety: we assume that Inventory's are inherently single-threaded, and no attempt is made at synchronization.
- * However, the access to implementations can happen on multiple threads concurrently, which is why we use a thread-safe wrapper map.
- */
-public class InventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlotStorage<ItemVariant>> implements InventoryStorage {
-	/**
-	 * Global wrapper concurrent map.
-	 *
-	 * <p>A note on GC: weak keys alone are not suitable as the InventoryStorage slots strongly reference the Inventory keys.
-	 * Weak values are suitable, but we have to ensure that the InventoryStorageImpl remains strongly reachable as long as
-	 * one of the slot wrappers refers to it, hence the {@code strongRef} field in {@link InventorySlotWrapper}.
-	 */
-	// TODO: look into promoting the weak reference to a soft reference if building the wrappers becomes a performance bottleneck.
-	// TODO: should have identity semantics?
-	private static final Map<Container, InventoryStorageImpl> WRAPPERS = new MapMaker().weakValues().makeMap();
+class InventoryStorageImpl extends ContainerStorageImpl implements InventoryStorage {
+	private final DroppedStacks droppedStacks;
+	private final Inventory inventory;
 
-	public static InventoryStorage of(Container inventory, @Nullable Direction direction) {
-		InventoryStorageImpl storage = WRAPPERS.computeIfAbsent(inventory, inv -> {
-			if (inv instanceof Inventory playerInventory) {
-				return new PlayerInventoryStorageImpl(playerInventory);
-			} else {
-				return new InventoryStorageImpl(inv);
-			}
-		});
-		storage.resizeSlotList();
-		return storage.getSidedWrapper(direction);
-	}
-
-	final Container inventory;
-	/**
-	 * This {@code backingList} is the real list of wrappers.
-	 * The {@code parts} in the superclass is the public-facing unmodifiable sublist with exactly the right amount of slots.
-	 */
-	final List<InventorySlotWrapper> backingList;
-	/**
-	 * This participant ensures that markDirty is only called once for the entire inventory.
-	 */
-	final MarkDirtyParticipant markDirtyParticipant = new MarkDirtyParticipant();
-
-	InventoryStorageImpl(Container inventory) {
-		super(Collections.emptyList());
+	InventoryStorageImpl(Inventory inventory) {
+		super(inventory);
+		this.droppedStacks = new DroppedStacks();
 		this.inventory = inventory;
-		this.backingList = new ArrayList<>();
 	}
 
 	@Override
-	public List<SingleSlotStorage<ItemVariant>> getSlots() {
-		return parts;
+	public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+		return offer(resource, maxAmount, transaction);
 	}
 
-	/**
-	 * Resize slot list to match the current size of the inventory.
-	 */
-	private void resizeSlotList() {
-		int inventorySize = inventory.getContainerSize();
+	@Override
+	public long offer(ItemVariant resource, long amount, TransactionContext tx) {
+		StoragePreconditions.notBlankNotNegative(resource, amount);
+		long initialAmount = amount;
 
-		// If the public-facing list must change...
-		if (inventorySize != parts.size()) {
-			// Ensure we have enough wrappers in the backing list.
-			while (backingList.size() < inventorySize) {
-				backingList.add(new InventorySlotWrapper(this, backingList.size()));
+		List<SingleSlotStorage<ItemVariant>> mainSlots = getSlots().subList(0, Inventory.INVENTORY_SIZE);
+
+		// Stack into the main stack first and the offhand stack second.
+		for (InteractionHand hand : InteractionHand.values()) {
+			SingleSlotStorage<ItemVariant> handSlot = getHandSlot(hand);
+
+			if (handSlot.getResource().equals(resource)) {
+				amount -= handSlot.insert(resource, amount, tx);
+
+				if (amount == 0) return initialAmount;
 			}
+		}
 
-			// Update the public-facing list.
-			parts = Collections.unmodifiableList(backingList.subList(0, inventorySize));
+		// Otherwise insert into the main slots, stacking first.
+		amount -= StorageUtil.insertStacking(mainSlots, resource, amount, tx);
+
+		return initialAmount - amount;
+	}
+
+	@Override
+	public void drop(ItemVariant variant, long amount, boolean throwRandomly, boolean retainOwnership, TransactionContext transaction) {
+		StoragePreconditions.notBlankNotNegative(variant, amount);
+
+		// Drop in the world on the server side (will be synced by the game with the client).
+		// Dropping items is server-side only because it involves randomness.
+		if (amount > 0 && !inventory.player.level().isClientSide()) {
+			droppedStacks.addDrop(variant, amount, throwRandomly, retainOwnership, transaction);
 		}
 	}
 
-	private InventoryStorage getSidedWrapper(@Nullable Direction direction) {
-		if (inventory instanceof WorldlyContainer && direction != null) {
-			return new SidedInventoryStorageImpl(this, direction);
+	@Override
+	public SingleSlotStorage<ItemVariant> getHandSlot(InteractionHand hand) {
+		if (Objects.requireNonNull(hand) == InteractionHand.MAIN_HAND) {
+			if (Inventory.isHotbarSlot(inventory.getSelectedSlot())) {
+				return getSlot(inventory.getSelectedSlot());
+			} else {
+				throw new RuntimeException("Unexpected player selected slot: " + inventory.getSelectedSlot());
+			}
+		} else if (hand == InteractionHand.OFF_HAND) {
+			return getSlot(Inventory.SLOT_OFFHAND);
 		} else {
-			return this;
+			throw new UnsupportedOperationException("Unknown hand: " + hand);
 		}
 	}
 
 	@Override
 	public String toString() {
-		return "InventoryStorage[" + DebugMessages.forInventory(inventory) + "]";
+		return "PlayerInventoryStorage[" + DebugMessages.forInventory(inventory) + "]";
 	}
 
-	// Boolean is used to prevent allocation. Null values are not allowed by SnapshotParticipant.
-	class MarkDirtyParticipant extends SnapshotParticipant<Boolean> {
-		@Override
-		protected Boolean createSnapshot() {
-			return Boolean.TRUE;
+	private class DroppedStacks extends SnapshotParticipant<Integer> {
+		final List<Entry> entries = new ArrayList<>();
+
+		void addDrop(ItemVariant key, long amount, boolean throwRandomly, boolean retainOwnership, TransactionContext transaction) {
+			updateSnapshots(transaction);
+			entries.add(new Entry(key, amount, throwRandomly, retainOwnership));
 		}
 
 		@Override
-		protected void readSnapshot(Boolean snapshot) {
+		protected Integer createSnapshot() {
+			return entries.size();
+		}
+
+		@Override
+		protected void readSnapshot(Integer snapshot) {
+			// effectively cancel dropping the stacks
+			int previousSize = snapshot;
+
+			while (entries.size() > previousSize) {
+				entries.remove(entries.size() - 1);
+			}
 		}
 
 		@Override
 		protected void onFinalCommit() {
-			inventory.setChanged();
+			// actually drop the stacks
+			for (Entry entry : entries) {
+				long remainder = entry.amount;
+
+				while (remainder > 0) {
+					int dropped = (int) Math.min(entry.key.getItem().getDefaultMaxStackSize(), remainder);
+					inventory.player.drop(entry.key.toStack(dropped), entry.throwRandomly, entry.retainOwnership);
+					remainder -= dropped;
+				}
+			}
+
+			entries.clear();
+		}
+
+		private record Entry(ItemVariant key, long amount, boolean throwRandomly, boolean retainOwnership) {
 		}
 	}
 }

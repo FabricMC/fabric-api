@@ -73,7 +73,7 @@ public class ContainerComponentStorage extends CombinedSlottedStorage<ItemVarian
 		}
 
 		private ItemStack getStack() {
-			List<ItemStack> stacks = ContainerComponentStorage.this.containerAccessor().fabric_getStacks();
+			List<ItemStack> stacks = ContainerComponentStorage.this.containerAccessor().fabric_getItems();
 
 			if (stacks.size() <= slot) return ItemStack.EMPTY;
 
@@ -89,7 +89,7 @@ public class ContainerComponentStorage extends CombinedSlottedStorage<ItemVarian
 
 			ContainerItemContext ctx = ContainerComponentStorage.this.ctx;
 
-			ItemVariant newVariant = ctx.getItemVariant().withComponentChanges(DataComponentPatch.builder()
+			ItemVariant newVariant = ctx.getItemVariant().withComponents(DataComponentPatch.builder()
 							.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(stacks))
 							.build());
 

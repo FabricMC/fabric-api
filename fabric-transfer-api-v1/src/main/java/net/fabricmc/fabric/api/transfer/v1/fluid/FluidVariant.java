@@ -86,10 +86,10 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 	}
 
 	/**
-	 * Creates a copy of this FluidVariant with the provided component changes applied.
-	 * @param changes the changes to apply
-	 * @return the new variant with the changes applied
+	 * Creates a copy of this FluidVariant with the provided component patch applied.
+	 * @param patch the patch to apply
+	 * @return the new variant with the patch applied
 	 */
 	@Override
-	FluidVariant withComponentChanges(DataComponentPatch changes);
+	FluidVariant withComponents(DataComponentPatch patch);
 }

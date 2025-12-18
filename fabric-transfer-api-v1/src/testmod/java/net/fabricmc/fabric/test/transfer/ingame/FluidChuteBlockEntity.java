@@ -60,12 +60,12 @@ public class FluidChuteBlockEntity extends BlockEntity {
 	@Override
 	protected void saveAdditional(ValueOutput data) {
 		super.saveAdditional(data);
-		storage.writeData(data);
+		storage.writeValue(data);
 	}
 
 	@Override
 	public void loadAdditional(ValueInput data) {
 		super.loadAdditional(data);
-		storage.readData(data);
+		storage.readValue(data);
 	}
 }

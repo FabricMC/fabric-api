@@ -23,21 +23,21 @@ import net.minecraft.world.entity.player.Player;
 
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class PlayerContainerItemContext implements ContainerItemContext {
-	private final PlayerInventoryStorage playerWrapper;
+	private final InventoryStorage playerWrapper;
 	private final SingleSlotStorage<ItemVariant> slot;
 
 	public PlayerContainerItemContext(Player player, InteractionHand hand) {
-		this.playerWrapper = PlayerInventoryStorage.of(player);
+		this.playerWrapper = InventoryStorage.of(player);
 		this.slot = playerWrapper.getHandSlot(hand);
 	}
 
 	public PlayerContainerItemContext(Player player, SingleSlotStorage<ItemVariant> slot) {
-		this.playerWrapper = PlayerInventoryStorage.of(player);
+		this.playerWrapper = InventoryStorage.of(player);
 		this.slot = slot;
 	}
 

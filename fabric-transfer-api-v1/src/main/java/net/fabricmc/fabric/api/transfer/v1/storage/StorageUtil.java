@@ -384,13 +384,13 @@ public final class StorageUtil {
 	}
 
 	/**
-	 * Compute the comparator output for a storage, similar to {@link AbstractContainerMenu#getRedstoneSignalFromContainer(Container)}.
+	 * Compute the redstone signal for a storage, similar to {@link AbstractContainerMenu#getRedstoneSignalFromContainer(Container)}.
 	 *
 	 * @param storage The storage for which the comparator level should be computed.
 	 * @param <T> The type of the stored resources.
-	 * @return An integer between 0 and 15 (inclusive): the comparator output for the passed storage.
+	 * @return An integer between 0 and 15 (inclusive): the redstone signal for the passed storage.
 	 */
-	public static <T> int calculateComparatorOutput(@Nullable Storage<T> storage) {
+	public static <T> int getRedstoneSignal(@Nullable Storage<T> storage) {
 		if (storage == null) return 0;
 
 		double fillPercentage = 0;

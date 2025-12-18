@@ -51,7 +51,7 @@ import net.fabricmc.fabric.mixin.transfer.CompoundContainerAccessor;
 public final class ItemStorage {
 	/**
 	 * Sided block access to item variant storages.
-	 * The {@code Direction} parameter may be null, meaning that the full inventory (ignoring side restrictions) should be queried.
+	 * The {@code Direction} parameter may be null, meaning that the full storage (ignoring side restrictions) should be queried.
 	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
 	 *
 	 * <p>When the operations supported by a storage change,
@@ -60,17 +60,17 @@ public final class ItemStorage {
 	 *
 	 * <p>Block entities directly implementing {@link Container} or {@link WorldlyContainer} are automatically handled by a fallback provider,
 	 * and don't need to do anything.
-	 * Blocks that implement {@link WorldlyContainerHolder} and whose returned inventory is constant (it's the same for two subsequent calls)
+	 * Blocks that implement {@link WorldlyContainerHolder} and whose returned container is constant (it's the same for two subsequent calls)
 	 * are also handled automatically and don't need to do anything.
 	 * The fallback provider assumes that the {@link Container} "owns" its contents. If that's not the case,
-	 * for example because it redirects all function calls to another inventory, then implementing {@link Container} should be avoided.
+	 * for example because it redirects all function calls to another container, then implementing {@link Container} should be avoided.
 	 *
 	 * <p>Hoppers and droppers will interact with storages exposed through this lookup, thus implementing one of the vanilla APIs is not necessary.
 	 *
 	 * <p>Depending on the use case, the following strategies can be used to offer a {@code Storage<ItemVariant>} implementation:
 	 * <ul>
-	 *     <li>Directly implementing {@code Inventory} or {@code SidedInventory} on a block entity - it will be wrapped automatically.</li>
-	 *     <li>Storing an inventory inside a block entity field, and converting it manually with {@link InventoryStorage#of}.
+	 *     <li>Directly implementing {@link Container} or {@link WorldlyContainer} on a block entity - it will be wrapped automatically.</li>
+	 *     <li>Storing a container inside a block entity field, and converting it manually with {@link ContainerStorage#of}.
 	 *     {@link SimpleContainer} can be used for easy implementation.</li>
 	 *     <li>{@link SingleStackStorage} can also be used for more flexibility. Multiple of them can be combined with {@link CombinedStorage}.</li>
 	 *     <li>Directly providing a custom implementation of {@code Storage<ItemVariant>} is also possible.</li>
@@ -111,37 +111,37 @@ public final class ItemStorage {
 			return null;
 		});
 
-		// Register Inventory fallback.
+		// Register container fallback.
 		ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
-			Container inventoryToWrap = null;
+			Container containerToWrap = null;
 
 			if (state.getBlock() instanceof WorldlyContainerHolder provider) {
 				WorldlyContainer first = provider.getContainer(state, world, pos);
 				WorldlyContainer second = provider.getContainer(state, world, pos);
 
-				// Hopefully we can trust the sided inventory not to change.
+				// Hopefully we can trust the sided container not to change.
 				if (first == second && first != null) {
-					return InventoryStorage.of(first, direction);
+					return ContainerStorage.of(first, direction);
 				}
 			}
 
-			if (blockEntity instanceof Container inventory) {
+			if (blockEntity instanceof Container container) {
 				if (blockEntity instanceof ChestBlockEntity && state.getBlock() instanceof ChestBlock chestBlock) {
-					inventoryToWrap = ChestBlock.getContainer(chestBlock, state, world, pos, true);
+					containerToWrap = ChestBlock.getContainer(chestBlock, state, world, pos, true);
 
 					// For double chests, we need to retrieve a wrapper for each part separately.
-					if (inventoryToWrap instanceof CompoundContainerAccessor accessor) {
-						SlottedStorage<ItemVariant> first = InventoryStorage.of(accessor.fabric_getFirst(), direction);
-						SlottedStorage<ItemVariant> second = InventoryStorage.of(accessor.fabric_getSecond(), direction);
+					if (containerToWrap instanceof CompoundContainerAccessor accessor) {
+						SlottedStorage<ItemVariant> first = ContainerStorage.of(accessor.fabric_getContainer1(), direction);
+						SlottedStorage<ItemVariant> second = ContainerStorage.of(accessor.fabric_getContainer2(), direction);
 
 						return new CombinedSlottedStorage<>(List.of(first, second));
 					}
 				} else {
-					inventoryToWrap = inventory;
+					containerToWrap = container;
 				}
 			}
 
-			return inventoryToWrap != null ? InventoryStorage.of(inventoryToWrap, direction) : null;
+			return containerToWrap != null ? ContainerStorage.of(containerToWrap, direction) : null;
 		});
 
 		ItemStorage.ITEM.registerForItems(

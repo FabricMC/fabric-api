@@ -42,15 +42,15 @@ public interface FluidRenderHandler {
 	 * <p>The "fabric-textures" module contains sprite rendering facilities,
 	 * which may come in handy here.
 	 *
-	 * @param view The world view pertaining to the fluid. May be null!
-	 * @param pos The position of the fluid in the world. May be null!
+	 * @param level The level view pertaining to the fluid. May be null!
+	 * @param pos The position of the fluid in the level. May be null!
 	 * @param state The current state of the fluid.
 	 * @return An array of size two or more: the first entry contains the
 	 * "still" sprite, while the second entry contains the "flowing" sprite. If
 	 * it contains a third sprite, that sprite is used as overlay behind glass
 	 * and leaves.
 	 */
-	TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state);
+	TextureAtlasSprite[] getFluidSprites(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state);
 
 	/**
 	 * Get the tint color for a fluid being rendered at a given position.
@@ -58,12 +58,12 @@ public interface FluidRenderHandler {
 	 * <p>Note: As of right now, our hook cannot handle setting a custom alpha
 	 * tint here - as such, it must be contained in the texture itself!
 	 *
-	 * @param view The world view pertaining to the fluid. May be null!
-	 * @param pos The position of the fluid in the world. May be null!
+	 * @param level The level view pertaining to the fluid. May be null!
+	 * @param pos The position of the fluid in the level. May be null!
 	 * @param state The current state of the fluid.
 	 * @return The tint color of the fluid.
 	 */
-	default int getFluidColor(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, FluidState state) {
+	default int getFluidColor(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, FluidState state) {
 		return -1;
 	}
 
@@ -76,14 +76,14 @@ public interface FluidRenderHandler {
 	 * geometry, the current handler will be used instead of looking up
 	 * a new one for the passed fluid state.
 	 *
-	 * @param pos The position in the world, of the fluid to render.
-	 * @param world The world the fluid is in
+	 * @param pos The position in the level, of the fluid to render.
+	 * @param level The level the fluid is in
 	 * @param vertexConsumer The vertex consumer to tessellate the fluid in.
 	 * @param blockState The block state being rendered.
 	 * @param fluidState The fluid state being rendered.
 	 */
-	default void renderFluid(BlockPos pos, BlockAndTintGetter world, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
-		FluidRenderingImpl.renderDefault(this, world, pos, vertexConsumer, blockState, fluidState);
+	default void renderFluid(BlockPos pos, BlockAndTintGetter level, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+		FluidRenderingImpl.renderDefault(this, level, pos, vertexConsumer, blockState, fluidState);
 	}
 
 	/**

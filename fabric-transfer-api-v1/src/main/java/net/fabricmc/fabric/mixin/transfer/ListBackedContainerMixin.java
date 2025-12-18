@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.transfer.item.SpecialLogicAccess;
 @Mixin(ListBackedContainer.class)
 interface ListBackedContainerMixin extends ListBackedContainer, SpecialLogicAccess {
 	@WrapOperation(method = "setItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/ListBackedContainer;setChanged()V"))
-	private void cancelMarkDirty(ListBackedContainer instance, Operation<Void> original) {
+	private void cancelSetChanged(ListBackedContainer instance, Operation<Void> original) {
 		if (!this.fabric_shouldSuppressSpecialLogic()) {
 			original.call(instance);
 		}

@@ -78,8 +78,8 @@ public class ItemVariantImpl implements ItemVariant {
 	}
 
 	@Override
-	public ItemVariant withComponentChanges(DataComponentPatch changes) {
-		return of(item, TransferApiImpl.mergeChanges(getComponents(), changes));
+	public ItemVariant withComponents(DataComponentPatch patch) {
+		return of(item, TransferApiImpl.mergePatches(getComponents(), patch));
 	}
 
 	@Override

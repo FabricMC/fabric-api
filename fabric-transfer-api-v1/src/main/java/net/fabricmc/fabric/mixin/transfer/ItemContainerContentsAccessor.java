@@ -26,5 +26,5 @@ import net.minecraft.world.item.component.ItemContainerContents;
 @Mixin(ItemContainerContents.class)
 public interface ItemContainerContentsAccessor {
 	@Accessor("items")
-	NonNullList<ItemStack> fabric_getStacks();
+	NonNullList<ItemStack> fabric_getItems();
 }

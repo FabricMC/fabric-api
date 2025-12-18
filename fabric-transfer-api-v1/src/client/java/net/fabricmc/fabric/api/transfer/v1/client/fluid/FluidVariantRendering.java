@@ -85,17 +85,17 @@ public final class FluidVariantRendering {
 	 * Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
 	 * and the id of the fluid if advanced tooltips are enabled.
 	 */
-	public static List<Component> getTooltip(FluidVariant fluidVariant, TooltipFlag type) {
+	public static List<Component> getTooltip(FluidVariant fluidVariant, TooltipFlag flag) {
 		List<Component> tooltip = new ArrayList<>();
 
 		// Name first
 		tooltip.add(FluidVariantAttributes.getName(fluidVariant));
 
 		// Additional tooltip information
-		getHandlerOrDefault(fluidVariant.getFluid()).appendTooltip(fluidVariant, tooltip, type);
+		getHandlerOrDefault(fluidVariant.getFluid()).appendTooltip(fluidVariant, tooltip, flag);
 
 		// If advanced tooltips are enabled, render the fluid id
-		if (type.isAdvanced()) {
+		if (flag.isAdvanced()) {
 			tooltip.add(Component.literal(BuiltInRegistries.FLUID.getKey(fluidVariant.getFluid()).toString()).withStyle(ChatFormatting.DARK_GRAY));
 		}
 

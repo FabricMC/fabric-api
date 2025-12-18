@@ -46,7 +46,7 @@ import net.fabricmc.fabric.api.event.Event;
  * BlockEntity be = ...;
  * MutableType data = be.getAttachedOrCreate(MUTABLE_ATTACHMENT_TYPE);
  * data.mutate();
- * be.markDirty(); // Required because we are not using setAttached
+ * be.setChanged(); // Required because we are not using setAttached
  * }</pre>
  * </p>
  *

@@ -29,7 +29,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.test.transfer.TestUtil;
@@ -60,7 +60,7 @@ public class UnderlyingViewTests extends AbstractTransferApiTest {
 		}));
 
 		for (Direction direction : Direction.values()) {
-			viewSet.addAll(InventoryStorage.of(furnace, direction).getSlots());
+			viewSet.addAll(ContainerStorage.of(furnace, direction).getSlots());
 		}
 
 		TestUtil.assertEquals(3, viewSet.size());

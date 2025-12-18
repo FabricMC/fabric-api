@@ -41,7 +41,7 @@ public interface FluidVariantRenderHandler {
 	 * <p>The name of the fluid, and its identifier if the tooltip context is advanced, should not be appended.
 	 * They are already added by {@link FluidVariantRendering#getTooltip}.
 	 */
-	default void appendTooltip(FluidVariant fluidVariant, List<Component> tooltip, TooltipFlag tooltipType) {
+	default void appendTooltip(FluidVariant fluidVariant, List<Component> tooltip, TooltipFlag tooltipFlag) {
 	}
 
 	/**
@@ -68,17 +68,17 @@ public interface FluidVariantRenderHandler {
 	 * Return the color to use when rendering {@linkplain #getSprites the sprites} of this fluid variant.
 	 * Transparency (alpha) will generally be taken into account and should be specified as well.
 	 *
-	 * <p>The world and position are optional context parameters and may be {@code null}.
+	 * <p>The level and position are optional context parameters and may be {@code null}.
 	 * If they are null, this method must return a location-independent color.
 	 * If they are provided, this method may return a color that depends on the location.
 	 * For example, water returns the biome-dependent color if the context parameters are specified, or its default color if one of them is null.
 	 */
-	default int getColor(FluidVariant fluidVariant, @Nullable BlockAndTintGetter view, @Nullable BlockPos pos) {
+	default int getColor(FluidVariant fluidVariant, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos) {
 		// Use the fluid render handler by default.
 		FluidRenderHandler fluidRenderHandler = FluidRenderHandlerRegistry.INSTANCE.get(fluidVariant.getFluid());
 
 		if (fluidRenderHandler != null) {
-			return fluidRenderHandler.getFluidColor(view, pos, fluidVariant.getFluid().defaultFluidState()) | 255 << 24;
+			return fluidRenderHandler.getFluidColor(level, pos, fluidVariant.getFluid().defaultFluidState()) | 255 << 24;
 		} else {
 			return -1;
 		}

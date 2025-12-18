@@ -24,13 +24,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 
-import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
+import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
 
 /**
- * Defer markDirty until the outer transaction close callback when setStack is called from an inventory wrapper.
+ * Defer setChanged until the outer transaction close callback when setStack is called from an inventory wrapper.
  */
 @Mixin(SimpleContainer.class)
-public class SimpleContainerMixin implements SpecialLogicInventory {
+public class SimpleContainerMixin implements SpecialLogicContainer {
 	@Unique
 	private boolean fabric_suppressSpecialLogic = false;
 
@@ -38,7 +38,7 @@ public class SimpleContainerMixin implements SpecialLogicInventory {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/SimpleContainer;setChanged()V"),
 			method = "setItem(ILnet/minecraft/world/item/ItemStack;)V"
 	)
-	public void fabric_redirectMarkDirty(SimpleContainer self) {
+	public void fabric_redirectChanged(SimpleContainer self) {
 		if (!fabric_suppressSpecialLogic) {
 			self.setChanged();
 		}

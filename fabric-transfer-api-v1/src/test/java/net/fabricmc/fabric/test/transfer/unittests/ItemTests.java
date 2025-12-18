@@ -46,7 +46,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
@@ -72,7 +72,7 @@ class ItemTests extends AbstractTransferApiTest {
 		// In many cases, MC code captures a reference to the ItemStack so we want to edit that stack directly
 		// and not a copy whenever we can. Obviously this can't be perfect, but we try to cover as many cases as possible.
 		SimpleContainer inv = new SimpleContainer(new ItemStack(Items.DIAMOND, 2));
-		InventoryStorage invWrapper = InventoryStorage.of(inv, null);
+		ContainerStorage invWrapper = ContainerStorage.of(inv, null);
 		ItemStack stack = inv.getItem(0);
 
 		// Simulate should correctly reset the stack.
@@ -109,15 +109,15 @@ class ItemTests extends AbstractTransferApiTest {
 	public void testInventoryWrappers() {
 		ItemVariant emptyBucket = ItemVariant.of(Items.BUCKET);
 		TestSidedInventory testInventory = new TestSidedInventory();
-		checkComparatorOutput(testInventory);
+		checkRedstoneSignal(testInventory);
 
 		// Create a few wrappers.
-		InventoryStorage unsidedWrapper = InventoryStorage.of(testInventory, null);
-		InventoryStorage downWrapper = InventoryStorage.of(testInventory, Direction.DOWN);
-		InventoryStorage upWrapper = InventoryStorage.of(testInventory, Direction.UP);
+		ContainerStorage unsidedWrapper = ContainerStorage.of(testInventory, null);
+		ContainerStorage downWrapper = ContainerStorage.of(testInventory, Direction.DOWN);
+		ContainerStorage upWrapper = ContainerStorage.of(testInventory, Direction.UP);
 
 		// Make sure querying a new wrapper returns the same one.
-		if (InventoryStorage.of(testInventory, null) != unsidedWrapper) throw new AssertionError("Wrappers should be ==.");
+		if (ContainerStorage.of(testInventory, null) != unsidedWrapper) throw new AssertionError("Wrappers should be ==.");
 
 		for (int iter = 0; iter < 2; ++iter) {
 			// First time, abort.
@@ -145,12 +145,12 @@ class ItemTests extends AbstractTransferApiTest {
 		if (!testInventory.getItem(0).isEmpty()) throw new AssertionError("Slot 0 should have been empty.");
 		if (!testInventory.getItem(1).is(Items.BUCKET) || testInventory.getItem(1).getCount() != 1) throw new AssertionError("Slot 1 should have been a bucket.");
 
-		checkComparatorOutput(testInventory);
+		checkRedstoneSignal(testInventory);
 
 		// Check that we return sensible results if amount stored > capacity
 		ItemStack oversizedStack = new ItemStack(Items.DIAMOND_PICKAXE, 2);
 		SimpleContainer simpleInventory = new SimpleContainer(oversizedStack);
-		InventoryStorage wrapper = InventoryStorage.of(simpleInventory, null);
+		ContainerStorage wrapper = ContainerStorage.of(simpleInventory, null);
 
 		try (Transaction transaction = Transaction.openOuter()) {
 			assertEquals(0L, wrapper.insert(ItemVariant.of(oversizedStack), 10, transaction));
@@ -214,7 +214,7 @@ class ItemTests extends AbstractTransferApiTest {
 	public void testLimitedStackCountInventory() {
 		ItemVariant diamond = ItemVariant.of(Items.DIAMOND);
 		LimitedStackCountInventory inventory = new LimitedStackCountInventory(diamond.toStack(), diamond.toStack(), diamond.toStack());
-		InventoryStorage wrapper = InventoryStorage.of(inventory, null);
+		ContainerStorage wrapper = ContainerStorage.of(inventory, null);
 
 		// Should only be able to insert 2 diamonds per stack * 3 stacks = 6 diamonds.
 		try (Transaction transaction = Transaction.openOuter()) {
@@ -222,7 +222,7 @@ class ItemTests extends AbstractTransferApiTest {
 				throw new AssertionError("Only 6 diamonds should have been inserted.");
 			}
 
-			checkComparatorOutput(inventory);
+			checkRedstoneSignal(inventory);
 		}
 	}
 
@@ -233,7 +233,7 @@ class ItemTests extends AbstractTransferApiTest {
 	public void testLimitedStackCountItem() {
 		ItemVariant diamondPickaxe = ItemVariant.of(Items.DIAMOND_PICKAXE);
 		LimitedStackCountInventory inventory = new LimitedStackCountInventory(5);
-		InventoryStorage wrapper = InventoryStorage.of(inventory, null);
+		ContainerStorage wrapper = ContainerStorage.of(inventory, null);
 
 		// Should only be able to insert 5 pickaxes, as the item limits stack counts to 1.
 		try (Transaction transaction = Transaction.openOuter()) {
@@ -241,7 +241,7 @@ class ItemTests extends AbstractTransferApiTest {
 				throw new AssertionError("Only 5 pickaxes should have been inserted.");
 			}
 
-			checkComparatorOutput(inventory);
+			checkRedstoneSignal(inventory);
 		}
 	}
 
@@ -260,11 +260,11 @@ class ItemTests extends AbstractTransferApiTest {
 		}
 	}
 
-	private static void checkComparatorOutput(Container inventory) {
-		Storage<ItemVariant> storage = InventoryStorage.of(inventory, null);
+	private static void checkRedstoneSignal(Container inventory) {
+		Storage<ItemVariant> storage = ContainerStorage.of(inventory, null);
 
 		int vanillaOutput = AbstractContainerMenu.getRedstoneSignalFromContainer(inventory);
-		int transferApiOutput = StorageUtil.calculateComparatorOutput(storage);
+		int transferApiOutput = StorageUtil.getRedstoneSignal(storage);
 
 		if (vanillaOutput != transferApiOutput) {
 			String error = String.format(
@@ -277,24 +277,24 @@ class ItemTests extends AbstractTransferApiTest {
 	}
 
 	/**
-	 * Ensure that SimpleInventory only calls markDirty at the end of a successful transaction.
+	 * Ensure that SimpleInventory only calls setChanged at the end of a successful transaction.
 	 */
 	@Test
 	public void testSimpleInventoryUpdates() {
 		var simpleInventory = new SimpleContainer(2) {
-			boolean throwOnMarkDirty = true;
-			boolean markDirtyCalled = false;
+			boolean throwOnSetChanged = true;
+			boolean setChangedCalled = false;
 
 			@Override
 			public void setChanged() {
-				if (throwOnMarkDirty) {
-					throw new AssertionError("Unexpected markDirty call!");
+				if (throwOnSetChanged) {
+					throw new AssertionError("Unexpected setChanged call!");
 				}
 
-				markDirtyCalled = true;
+				setChangedCalled = true;
 			}
 		};
-		InventoryStorage wrapper = InventoryStorage.of(simpleInventory, null);
+		ContainerStorage wrapper = ContainerStorage.of(simpleInventory, null);
 		ItemVariant diamond = ItemVariant.of(Items.DIAMOND);
 
 		// Simulation should not trigger notifications.
@@ -306,12 +306,12 @@ class ItemTests extends AbstractTransferApiTest {
 		try (Transaction tx = Transaction.openOuter()) {
 			wrapper.insert(diamond, 1000, tx);
 
-			simpleInventory.throwOnMarkDirty = false;
+			simpleInventory.throwOnSetChanged = false;
 			tx.commit();
 		}
 
-		if (!simpleInventory.markDirtyCalled) {
-			throw new AssertionError("markDirty should have been called when committing.");
+		if (!simpleInventory.setChangedCalled) {
+			throw new AssertionError("setChanged should have been called when committing.");
 		}
 	}
 }
