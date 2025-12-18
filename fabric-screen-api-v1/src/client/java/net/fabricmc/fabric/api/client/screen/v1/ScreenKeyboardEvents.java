@@ -112,12 +112,12 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Checks if a key should be allowed to be pressed.
 		 *
-		 * @param context the context of the key press, containing the key, scancode and modifiers
+		 * @param event the key press event, containing the key, scancode and modifiers
 		 * @return whether the key press should be processed
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		boolean allowKeyPress(Screen screen, KeyEvent context);
+		boolean allowKeyPress(Screen screen, KeyEvent event);
 	}
 
 	@FunctionalInterface
@@ -125,11 +125,11 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called before a key press is handled.
 		 *
-		 * @param context the context of the key press, containing the key, scancode and modifiers
+		 * @param event the key press event, containing the key, scancode and modifiers
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void beforeKeyPress(Screen screen, KeyEvent context);
+		void beforeKeyPress(Screen screen, KeyEvent event);
 	}
 
 	@FunctionalInterface
@@ -137,11 +137,11 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called after a key press is handled.
 		 *
-		 * @param context the context of the key press, containing the key, scancode and modifiers
+		 * @param event the key press event, containing the key, scancode and modifiers
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void afterKeyPress(Screen screen, KeyEvent context);
+		void afterKeyPress(Screen screen, KeyEvent event);
 	}
 
 	@FunctionalInterface
@@ -149,12 +149,12 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Checks if a pressed key should be allowed to be released.
 		 *
-		 * @param context the context of the key press, containing the key, scancode and modifiers
+		 * @param event the key press event, containing the key, scancode and modifiers
 		 * @return whether the key press should be released
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		boolean allowKeyRelease(Screen screen, KeyEvent context);
+		boolean allowKeyRelease(Screen screen, KeyEvent event);
 	}
 
 	@FunctionalInterface
@@ -162,11 +162,11 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called before a pressed key has been released.
 		 *
-		 * @param context the context of the key press, containing the key, scancode and modifiers
+		 * @param event the key press event, containing the key, scancode and modifiers
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void beforeKeyRelease(Screen screen, KeyEvent context);
+		void beforeKeyRelease(Screen screen, KeyEvent event);
 	}
 
 	@FunctionalInterface
@@ -174,10 +174,10 @@ public final class ScreenKeyboardEvents {
 		/**
 		 * Called after a pressed key has been released.
 		 *
-		 * @param context the context of the key press, containing the key, scancode and modifiers
+		 * @param event the key press event, containing the key, scancode and modifiers
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void afterKeyRelease(Screen screen, KeyEvent context);
+		void afterKeyRelease(Screen screen, KeyEvent event);
 	}
 }
