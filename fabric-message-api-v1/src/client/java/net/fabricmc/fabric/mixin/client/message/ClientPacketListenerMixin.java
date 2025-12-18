@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.multiplayer.ClientPacketListener;
 
-import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientHandleChatInputEvents;
 
 /**
  * Mixin to {@link ClientPacketListener} to listen for sending messages and commands.
@@ -34,23 +34,23 @@ import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 @Mixin(value = ClientPacketListener.class, priority = 800)
 public abstract class ClientPacketListenerMixin {
 	@Inject(method = "sendChat", at = @At("HEAD"), cancellable = true)
-	private void fabric_allowSendChatMessage(String _content, CallbackInfo ci, @Local(argsOnly = true) LocalRef<String> content) {
-		if (ClientSendMessageEvents.IS_CHAT_ALLOWED.invoker().allowSendChatMessage(content.get())) {
-			content.set(ClientSendMessageEvents.MODIFY_CHAT.invoker().modifySendChatMessage(content.get()));
-			ClientSendMessageEvents.CHAT.invoker().onSendChatMessage(content.get());
+	private void fabric_allowLogChatMessage(String _content, CallbackInfo ci, @Local(argsOnly = true) LocalRef<String> content) {
+		if (ClientHandleChatInputEvents.IS_CHAT_ALLOWED.invoker().allowLogChatMessage(content.get())) {
+			content.set(ClientHandleChatInputEvents.MODIFY_CHAT.invoker().modifyLogChatMessage(content.get()));
+			ClientHandleChatInputEvents.CHAT.invoker().onLogChatMessage(content.get());
 		} else {
-			ClientSendMessageEvents.CHAT_CANCELED.invoker().onSendChatMessageCanceled(content.get());
+			ClientHandleChatInputEvents.CHAT_CANCELED.invoker().onLogChatMessageCanceled(content.get());
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "sendCommand", at = @At("HEAD"), cancellable = true)
-	private void fabric_allowSendCommandMessage(String _command, CallbackInfo ci, @Local(argsOnly = true) LocalRef<String> command) {
-		if (ClientSendMessageEvents.ALLOW_COMMAND.invoker().allowSendCommandMessage(command.get())) {
-			command.set(ClientSendMessageEvents.MODIFY_COMMAND.invoker().modifySendCommandMessage(command.get()));
-			ClientSendMessageEvents.COMMAND.invoker().onSendCommandMessage(command.get());
+	private void fabric_allowLogCommandMessage(String _command, CallbackInfo ci, @Local(argsOnly = true) LocalRef<String> command) {
+		if (ClientHandleChatInputEvents.ALLOW_COMMAND.invoker().allowLogCommandMessage(command.get())) {
+			command.set(ClientHandleChatInputEvents.MODIFY_COMMAND.invoker().modifyLogCommandMessage(command.get()));
+			ClientHandleChatInputEvents.COMMAND.invoker().onLogCommandMessage(command.get());
 		} else {
-			ClientSendMessageEvents.COMMAND_CANCELED.invoker().onSendCommandMessageCanceled(command.get());
+			ClientHandleChatInputEvents.COMMAND_CANCELED.invoker().onLogCommandMessageCanceled(command.get());
 			ci.cancel();
 		}
 	}

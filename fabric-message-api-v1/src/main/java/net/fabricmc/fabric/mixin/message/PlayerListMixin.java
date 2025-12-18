@@ -42,7 +42,7 @@ public abstract class PlayerListMixin {
 	private MinecraftServer server;
 
 	@Inject(method = "broadcastChatMessage(Lnet/minecraft/network/chat/PlayerChatMessage;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/network/chat/ChatType$Bound;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound params, CallbackInfo ci) {
+	private void onLogChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound params, CallbackInfo ci) {
 		if (!ServerMessageEvents.IS_CHAT_ALLOWED_MESSAGE.invoker().allowChatMessage(message, sender, params)) {
 			ci.cancel();
 			return;
@@ -62,7 +62,7 @@ public abstract class PlayerListMixin {
 	}
 
 	@Inject(method = "broadcastChatMessage(Lnet/minecraft/network/chat/PlayerChatMessage;Lnet/minecraft/commands/CommandSourceStack;Lnet/minecraft/network/chat/ChatType$Bound;)V", at = @At("HEAD"), cancellable = true)
-	private void onSendCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound params, CallbackInfo ci) {
+	private void onLogCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound params, CallbackInfo ci) {
 		if (!ServerMessageEvents.ALLOW_COMMAND_MESSAGE.invoker().allowCommandMessage(message, source, params)) {
 			ci.cancel();
 			return;

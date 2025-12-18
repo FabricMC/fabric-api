@@ -26,7 +26,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientLogChatMessageEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientHandleChatInputEvents;
 
 public class ChatTestClient implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatTestClient.class);
@@ -37,13 +37,13 @@ public class ChatTestClient implements ClientModInitializer {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommandManager.literal("block").then(ClientCommandManager.literal("send").executes(context -> {
 			throw new AssertionError("This client command should be blocked!");
 		}))));
-		//Register the modified result command from ClientSendMessageEvents#MODIFY_COMMAND to ensure that MODIFY_COMMAND executes before the client command api
+		//Register the modified result command from ClientHandleChatInputEvents#MODIFY_COMMAND to ensure that MODIFY_COMMAND executes before the client command api
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommandManager.literal("sending").then(ClientCommandManager.literal("modified").then(ClientCommandManager.literal("command").then(ClientCommandManager.literal("message").executes(context -> {
-			LOGGER.info("Command modified by ClientSendMessageEvents#MODIFY_COMMAND successfully processed by fabric client command api");
+			LOGGER.info("Command modified by ClientHandleChatInputEvents#MODIFY_COMMAND successfully processed by fabric client command api");
 			return Command.SINGLE_SUCCESS;
 		}))))));
 		//Test client send message events
-		ClientSendMessageEvents.IS_CHAT_ALLOWED.register((message) -> {
+		ClientHandleChatInputEvents.IS_CHAT_ALLOWED.register((message) -> {
 			if (message.contains("block send")) {
 				LOGGER.info("Blocked chat message: " + message);
 				return false;
@@ -51,7 +51,7 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientSendMessageEvents.MODIFY_CHAT.register((message) -> {
+		ClientHandleChatInputEvents.MODIFY_CHAT.register((message) -> {
 			if (message.contains("modify send")) {
 				LOGGER.info("Modifying chat message: " + message);
 				return "sending modified chat message";
@@ -59,10 +59,10 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return message;
 		});
-		ClientSendMessageEvents.CHAT.register((message -> LOGGER.info("Sent chat message: " + message)));
-		ClientSendMessageEvents.CHAT_CANCELED.register((message) -> LOGGER.info("Canceled sending chat message: " + message));
+		ClientHandleChatInputEvents.CHAT.register((message -> LOGGER.info("Sent chat message: " + message)));
+		ClientHandleChatInputEvents.CHAT_CANCELED.register((message) -> LOGGER.info("Canceled sending chat message: " + message));
 		//Test client send command events
-		ClientSendMessageEvents.ALLOW_COMMAND.register((command) -> {
+		ClientHandleChatInputEvents.ALLOW_COMMAND.register((command) -> {
 			if (command.contains("block send")) {
 				LOGGER.info("Blocked command message: " + command);
 				return false;
@@ -70,7 +70,7 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientSendMessageEvents.MODIFY_COMMAND.register((command) -> {
+		ClientHandleChatInputEvents.MODIFY_COMMAND.register((command) -> {
 			if (command.contains("modify send")) {
 				LOGGER.info("Modifying command message: " + command);
 				return "sending modified command message";
@@ -78,8 +78,8 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return command;
 		});
-		ClientSendMessageEvents.COMMAND.register((command -> LOGGER.info("Sent command message: " + command)));
-		ClientSendMessageEvents.COMMAND_CANCELED.register((command) -> LOGGER.info("Canceled sending command message: " + command));
+		ClientHandleChatInputEvents.COMMAND.register((command -> LOGGER.info("Sent command message: " + command)));
+		ClientHandleChatInputEvents.COMMAND_CANCELED.register((command) -> LOGGER.info("Canceled sending command message: " + command));
 		//Test client receive message events
 		ClientLogChatMessageEvents.IS_CHAT_ALLOWED.register((message, signedMessage, sender, params, receptionTimestamp) -> {
 			if (message.getString().contains("block receive")) {
