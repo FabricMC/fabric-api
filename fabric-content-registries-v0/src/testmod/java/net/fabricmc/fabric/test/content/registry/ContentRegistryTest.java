@@ -53,16 +53,16 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.BlockHitResult;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
+import net.fabricmc.fabric.api.registry.CompostableRegistry;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
-import net.fabricmc.fabric.api.registry.SculkSensorFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
+import net.fabricmc.fabric.api.registry.VibrationFrequencyRegistry;
 import net.fabricmc.fabric.api.registry.VillagerInteractionRegistries;
 
 public final class ContentRegistryTest implements ModInitializer {
@@ -108,7 +108,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - if Redstone Experiments experiment is enabled, luck potions can be brewed from awkward potions with a bundle
 		//  - dirty potions can be brewed by adding any item in the 'minecraft:dirt' tag to any standard potion
 
-		CompostingChanceRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
+		CompostableRegistry.INSTANCE.add(Items.OBSIDIAN, 0.5F);
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.DIAMOND_BLOCK, 4, 4);
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.defaultBlockState());
@@ -129,22 +129,22 @@ public final class ContentRegistryTest implements ModInitializer {
 
 		TillableBlockRegistry.register(Blocks.GREEN_WOOL, context -> true, HoeItem.changeIntoState(Blocks.LIME_WOOL.defaultBlockState()));
 
-		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.COPPER_ORE, Blocks.IRON_ORE);
-		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.IRON_ORE, Blocks.GOLD_ORE);
-		OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.GOLD_ORE, Blocks.DIAMOND_ORE);
+		OxidizableBlocksRegistry.registerNextStage(Blocks.COPPER_ORE, Blocks.IRON_ORE);
+		OxidizableBlocksRegistry.registerNextStage(Blocks.IRON_ORE, Blocks.GOLD_ORE);
+		OxidizableBlocksRegistry.registerNextStage(Blocks.GOLD_ORE, Blocks.DIAMOND_ORE);
 
-		OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE);
-		OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE);
-		OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE);
-		OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE);
+		OxidizableBlocksRegistry.registerWaxable(Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE);
+		OxidizableBlocksRegistry.registerWaxable(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE);
+		OxidizableBlocksRegistry.registerWaxable(Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE);
+		OxidizableBlocksRegistry.registerWaxable(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE);
 
 		// assert that OxidizableBlocksRegistry throws when registered blocks are null
 		try {
-			OxidizableBlocksRegistry.registerOxidizableBlockPair(Blocks.EMERALD_ORE, null);
-			OxidizableBlocksRegistry.registerOxidizableBlockPair(null, Blocks.COAL_ORE);
+			OxidizableBlocksRegistry.registerNextStage(Blocks.EMERALD_ORE, null);
+			OxidizableBlocksRegistry.registerNextStage(null, Blocks.COAL_ORE);
 
-			OxidizableBlocksRegistry.registerWaxableBlockPair(null, Blocks.DEAD_BRAIN_CORAL);
-			OxidizableBlocksRegistry.registerWaxableBlockPair(Blocks.BRAIN_CORAL, null);
+			OxidizableBlocksRegistry.registerWaxable(null, Blocks.DEAD_BRAIN_CORAL);
+			OxidizableBlocksRegistry.registerWaxable(Blocks.BRAIN_CORAL, null);
 
 			throw new AssertionError("OxidizableBlocksRegistry didn't throw when blocks were null!");
 		} catch (NullPointerException e) {
@@ -155,7 +155,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		Block testOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.UNAFFECTED, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK).setId(TEST_OXIDIZING_BLOCK_KEY)));
 		Block exposedTestOxidizingBlock = Registry.register(BuiltInRegistries.BLOCK, EXPOSED_TEST_OXIDIZING_BLOCK_KEY, new WeatheringCopperFullBlock(WeatheringCopper.WeatherState.EXPOSED, BlockBehaviour.Properties.ofFullCopy(Blocks.EXPOSED_COPPER).setId(EXPOSED_TEST_OXIDIZING_BLOCK_KEY)));
 
-		OxidizableBlocksRegistry.registerOxidizableBlockPair(testOxidizingBlock, exposedTestOxidizingBlock);
+		OxidizableBlocksRegistry.registerNextStage(testOxidizingBlock, exposedTestOxidizingBlock);
 
 		if (!testOxidizingBlock.getStateDefinition().any().isRandomlyTicking()) {
 			throw new AssertionError("OxidizableBlocksRegistry didn't refresh random ticks cache for state!");
@@ -169,11 +169,11 @@ public final class ContentRegistryTest implements ModInitializer {
 		VillagerInteractionRegistries.registerGiftLootTable(VillagerProfession.NITWIT, ResourceKey.create(Registries.LOOT_TABLE, Identifier.withDefaultNamespace("fake_loot_table")));
 
 		Registry.register(BuiltInRegistries.BLOCK, TEST_EVENT_BLOCK_KEY, new TestEventBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).setId(TEST_EVENT_BLOCK_KEY)));
-		SculkSensorFrequencyRegistry.register(TEST_EVENT.key(), 2);
+		VibrationFrequencyRegistry.register(TEST_EVENT.key(), 2);
 
-		// assert that SculkSensorFrequencyRegistry throws when registering a frequency outside the allowed range
+		// assert that VibrationFrequencyRegistry throws when registering a frequency outside the allowed range
 		try {
-			SculkSensorFrequencyRegistry.register(GameEvent.SHRIEK.key(), 18);
+			VibrationFrequencyRegistry.register(GameEvent.SHRIEK.key(), 18);
 
 			throw new AssertionError("SculkSensorFrequencyRegistry didn't throw when frequency was outside allowed range!");
 		} catch (IllegalArgumentException e) {
@@ -198,21 +198,21 @@ public final class ContentRegistryTest implements ModInitializer {
 	}
 
 	public static class TestEventBlock extends Block {
-		public TestEventBlock(Properties settings) {
-			super(settings);
+		public TestEventBlock(Properties properties) {
+			super(properties);
 		}
 
 		@Override
-		public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+		public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 			// Emit the test event
-			world.gameEvent(player, TEST_EVENT, pos);
+			level.gameEvent(player, TEST_EVENT, pos);
 			return InteractionResult.SUCCESS;
 		}
 	}
 
 	public static class DirtyPotionItem extends PotionItem {
-		public DirtyPotionItem(Properties settings) {
-			super(settings);
+		public DirtyPotionItem(Properties properties) {
+			super(properties);
 		}
 
 		@Override

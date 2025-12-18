@@ -47,9 +47,9 @@ public final class VillagerInteractionRegistries {
 	 * @deprecated Add items to the {@linkplain net.minecraft.tags.ItemTags#VILLAGER_PICKS_UP {@code minecraft:villager_picks_up} item tag} instead.
 	 */
 	@Deprecated
-	public static void registerCollectable(ItemLike item) {
+	public static void registerGatherableItem(ItemLike item) {
 		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
-		VillagerInteractionRegistriesImpl.getCollectableRegistry().add(item.asItem());
+		VillagerInteractionRegistriesImpl.getGatherableItemRegistry().add(item.asItem());
 	}
 
 	/**

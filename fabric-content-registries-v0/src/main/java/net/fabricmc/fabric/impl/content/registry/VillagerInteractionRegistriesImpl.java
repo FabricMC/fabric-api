@@ -34,7 +34,7 @@ public final class VillagerInteractionRegistriesImpl {
 	private VillagerInteractionRegistriesImpl() {
 	}
 
-	public static Set<Item> getCollectableRegistry() {
+	public static Set<Item> getGatherableItemRegistry() {
 		return GATHERABLE_ITEMS;
 	}
 

@@ -26,16 +26,16 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 
 /**
- * Provides a method for registering sculk sensor frequencies.
+ * Provides a method for registering vibration frequencies.
  */
-public final class SculkSensorFrequencyRegistry {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SculkSensorFrequencyRegistry.class);
+public final class VibrationFrequencyRegistry {
+	private static final Logger LOGGER = LoggerFactory.getLogger(VibrationFrequencyRegistry.class);
 
-	private SculkSensorFrequencyRegistry() {
+	private VibrationFrequencyRegistry() {
 	}
 
 	/**
-	 * Registers a sculk sensor frequency for the given game event.
+	 * Registers a sculk vibration for the given game event.
 	 *
 	 * <p>A frequency is defined as the redstone signal strength a sculk sensor will emit to a comparator when it detects a specific vibration.
 	 *
@@ -50,7 +50,7 @@ public final class SculkSensorFrequencyRegistry {
 	 */
 	public static void register(ResourceKey<GameEvent> event, int frequency) {
 		if (frequency <= 0 || frequency >= 16) {
-			throw new IllegalArgumentException("Attempted to register Sculk Sensor frequency for event "+ event.identifier() +" with frequency "+frequency+". Sculk Sensor frequencies must be between 1 and 15 inclusive.");
+			throw new IllegalArgumentException("Attempted to register vibration frequency for event "+ event.identifier() +" with frequency "+frequency+". Sculk Sensor frequencies must be between 1 and 15 inclusive.");
 		}
 
 		final Reference2IntOpenHashMap<ResourceKey<GameEvent>> map = (Reference2IntOpenHashMap<ResourceKey<GameEvent>>) VibrationSystem.VIBRATION_FREQUENCY_FOR_EVENT;
