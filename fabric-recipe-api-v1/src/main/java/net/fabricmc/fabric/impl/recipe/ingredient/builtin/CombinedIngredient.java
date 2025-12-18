@@ -61,7 +61,7 @@ abstract class CombinedIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public SlotDisplay toDisplay() {
+	public SlotDisplay display() {
 		return new SlotDisplay.Composite(
 				ingredients.stream().map(Ingredient::display).toList()
 		);
