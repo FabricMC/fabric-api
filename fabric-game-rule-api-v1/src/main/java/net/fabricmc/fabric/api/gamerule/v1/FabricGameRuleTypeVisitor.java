@@ -28,7 +28,7 @@ import net.minecraft.world.level.gamerules.GameRuleTypeVisitor;
  * <p>Rule types specified by this interface are not exhaustive.
  * New entries may be added in the future.
  */
-public interface FabricGameRuleVisitor extends GameRuleTypeVisitor {
+public interface FabricGameRuleTypeVisitor extends GameRuleTypeVisitor {
 	/**
 	 * Visit a double rule.
 	 */
