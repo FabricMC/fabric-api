@@ -34,7 +34,7 @@ public final class ClientSendMessageEvents {
 	 * the remaining listeners will not be called (if any), and
 	 * {@link #CHAT_CANCELED} will be triggered instead of {@link #MODIFY_CHAT}.
 	 */
-	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, listeners -> (message) -> {
+	public static final Event<AllowChat> IS_CHAT_ALLOWED = EventFactory.createArrayBacked(AllowChat.class, listeners -> (message) -> {
 		for (AllowChat listener : listeners) {
 			if (!listener.allowSendChatMessage(message)) {
 				return false;
@@ -68,7 +68,7 @@ public final class ClientSendMessageEvents {
 	/**
 	 * An event triggered when the client sends a chat message,
 	 * typically from a client GUI. Is not called when {@linkplain
-	 * #ALLOW_CHAT chat messages are blocked}.
+	 * #IS_CHAT_ALLOWED chat messages are blocked}.
 	 * Mods can use this to modify the message.
 	 * Use {@link #CHAT} if not modifying the message.
 	 */
@@ -100,7 +100,7 @@ public final class ClientSendMessageEvents {
 	/**
 	 * An event triggered when the client sends a chat message,
 	 * typically from a client GUI. Is not called when {@linkplain
-	 * #ALLOW_CHAT chat messages are blocked}.
+	 * #IS_CHAT_ALLOWED chat messages are blocked}.
 	 * Mods can use this to listen to the message.
 	 */
 	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message) -> {
@@ -124,7 +124,7 @@ public final class ClientSendMessageEvents {
 	});
 
 	/**
-	 * An event triggered when sending a chat message is canceled with {@link #ALLOW_CHAT}.
+	 * An event triggered when sending a chat message is canceled with {@link #IS_CHAT_ALLOWED}.
 	 */
 	public static final Event<ChatCanceled> CHAT_CANCELED = EventFactory.createArrayBacked(ChatCanceled.class, listeners -> (message) -> {
 		for (ChatCanceled listener : listeners) {
@@ -177,7 +177,7 @@ public final class ClientSendMessageEvents {
 		/**
 		 * Called when the client sends a chat message,
 		 * typically from a client GUI. Is not called when {@linkplain
-		 * #ALLOW_CHAT chat messages are blocked}.
+		 * #IS_CHAT_ALLOWED chat messages are blocked}.
 		 * Use {@link #CHAT} if not modifying the message.
 		 *
 		 * @param message the message that will be sent to the server
@@ -207,7 +207,7 @@ public final class ClientSendMessageEvents {
 		/**
 		 * Called when the client sends a chat message,
 		 * typically from a client GUI. Is not called when {@linkplain
-		 * #ALLOW_CHAT chat messages are blocked}.
+		 * #IS_CHAT_ALLOWED chat messages are blocked}.
 		 *
 		 * @param message the message that will be sent to the server
 		 */
@@ -231,7 +231,7 @@ public final class ClientSendMessageEvents {
 	@FunctionalInterface
 	public interface ChatCanceled {
 		/**
-		 * Called when sending a chat message is canceled with {@link #ALLOW_CHAT}.
+		 * Called when sending a chat message is canceled with {@link #IS_CHAT_ALLOWED}.
 		 *
 		 * @param message the message that is canceled from being sent to the server
 		 */

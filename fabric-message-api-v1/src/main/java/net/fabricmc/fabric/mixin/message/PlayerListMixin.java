@@ -43,7 +43,7 @@ public abstract class PlayerListMixin {
 
 	@Inject(method = "broadcastChatMessage(Lnet/minecraft/network/chat/PlayerChatMessage;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/network/chat/ChatType$Bound;)V", at = @At("HEAD"), cancellable = true)
 	private void onSendChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound params, CallbackInfo ci) {
-		if (!ServerMessageEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(message, sender, params)) {
+		if (!ServerMessageEvents.IS_CHAT_ALLOWED_MESSAGE.invoker().allowChatMessage(message, sender, params)) {
 			ci.cancel();
 			return;
 		}

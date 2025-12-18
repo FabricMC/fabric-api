@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 public abstract class ClientPacketListenerMixin {
 	@Inject(method = "sendChat", at = @At("HEAD"), cancellable = true)
 	private void fabric_allowSendChatMessage(String _content, CallbackInfo ci, @Local(argsOnly = true) LocalRef<String> content) {
-		if (ClientSendMessageEvents.ALLOW_CHAT.invoker().allowSendChatMessage(content.get())) {
+		if (ClientSendMessageEvents.IS_CHAT_ALLOWED.invoker().allowSendChatMessage(content.get())) {
 			content.set(ClientSendMessageEvents.MODIFY_CHAT.invoker().modifySendChatMessage(content.get()));
 			ClientSendMessageEvents.CHAT.invoker().onSendChatMessage(content.get());
 		} else {

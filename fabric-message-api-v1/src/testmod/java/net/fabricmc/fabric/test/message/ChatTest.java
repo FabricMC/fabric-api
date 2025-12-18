@@ -76,7 +76,7 @@ public class ChatTest implements ModInitializer {
 		);
 
 		// ServerMessageEvents blocking
-		ServerMessageEvents.ALLOW_CHAT_MESSAGE.register(
+		ServerMessageEvents.IS_CHAT_ALLOWED_MESSAGE.register(
 				(message, sender, params) -> !message.signedContent().contains("sadtater")
 		);
 		ServerMessageEvents.ALLOW_GAME_MESSAGE.register((server, message, overlay) -> {

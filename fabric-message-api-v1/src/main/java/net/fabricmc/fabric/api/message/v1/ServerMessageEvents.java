@@ -43,7 +43,7 @@ public final class ServerMessageEvents {
 	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 	 * and after triggering {@link #COMMAND_MESSAGE} event.
 	 */
-	public static final Event<AllowChatMessage> ALLOW_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, handlers -> (message, sender, params) -> {
+	public static final Event<AllowChatMessage> IS_CHAT_ALLOWED_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, handlers -> (message, sender, params) -> {
 		for (AllowChatMessage handler : handlers) {
 			if (!handler.allowChatMessage(message, sender, params)) return false;
 		}
@@ -78,7 +78,7 @@ public final class ServerMessageEvents {
 	 * event will not be triggered.
 	 *
 	 * <p>If the command is executed by a player and the message is not blocked,
-	 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
+	 * {@link #IS_CHAT_ALLOWED_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
 	 * triggered after triggering {@link #COMMAND_MESSAGE}.
 	 */
 	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, handlers -> (message, source, params) -> {
@@ -92,7 +92,7 @@ public final class ServerMessageEvents {
 	/**
 	 * An event triggered when the server broadcasts a chat message sent by a player, typically
 	 * from a client GUI or a player-executed command. Is not called when {@linkplain
-	 * #ALLOW_CHAT_MESSAGE chat messages are blocked}.
+	 * #IS_CHAT_ALLOWED_MESSAGE chat messages are blocked}.
 	 *
 	 * <p>If the message is from a player-executed command, this will be called
 	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
@@ -121,7 +121,7 @@ public final class ServerMessageEvents {
 	 * {@code /msg}). Is not called when {@linkplain #ALLOW_COMMAND_MESSAGE command messages
 	 * are blocked}.
 	 *
-	 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
+	 * <p>If the command is executed by a player, {@link #IS_CHAT_ALLOWED_MESSAGE} and
 	 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
 	 */
 	public static final Event<CommandMessage> COMMAND_MESSAGE = EventFactory.createArrayBacked(CommandMessage.class, handlers -> (message, source, params) -> {
@@ -178,7 +178,7 @@ public final class ServerMessageEvents {
 		 * and the {@link #COMMAND_MESSAGE} event from triggering.
 		 *
 		 * <p>If the command is executed by a player and the message is not blocked,
-		 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
+		 * {@link #IS_CHAT_ALLOWED_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
 		 * triggered after triggering {@link #COMMAND_MESSAGE}.
 		 *
 		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.getContent()} to get the text
@@ -194,7 +194,7 @@ public final class ServerMessageEvents {
 		/**
 		 * Called when the server broadcasts a chat message sent by a player, typically
 		 * from a client GUI or a player-executed command. Is not called when {@linkplain
-		 * #ALLOW_CHAT_MESSAGE chat messages are blocked}.
+		 * #IS_CHAT_ALLOWED_MESSAGE chat messages are blocked}.
 		 *
 		 * <p>If the message is from a player-executed command, this will be called
 		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
@@ -229,7 +229,7 @@ public final class ServerMessageEvents {
 		 * {@code /msg}). Is not called when {@linkplain #ALLOW_COMMAND_MESSAGE command messages
 		 * are blocked}.
 		 *
-		 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
+		 * <p>If the command is executed by a player, {@link #IS_CHAT_ALLOWED_MESSAGE} and
 		 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
 		 *
 		 * @param message the broadcast message with message decorators applied if applicable; use {@code message.getContent()} to get the text
