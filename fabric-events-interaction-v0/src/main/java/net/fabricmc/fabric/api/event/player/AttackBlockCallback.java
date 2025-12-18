@@ -46,9 +46,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface AttackBlockCallback {
 	Event<AttackBlockCallback> EVENT = EventFactory.createArrayBacked(AttackBlockCallback.class,
-			(listeners) -> (player, world, hand, pos, direction) -> {
+			(listeners) -> (player, level, hand, pos, direction) -> {
 				for (AttackBlockCallback event : listeners) {
-					InteractionResult result = event.interact(player, world, hand, pos, direction);
+					InteractionResult result = event.interact(player, level, hand, pos, direction);
 
 					if (result != InteractionResult.PASS) {
 						return result;
@@ -59,5 +59,5 @@ public interface AttackBlockCallback {
 			}
 	);
 
-	InteractionResult interact(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction);
+	InteractionResult interact(Player player, Level level, InteractionHand hand, BlockPos pos, Direction direction);
 }

@@ -48,10 +48,10 @@ public abstract class ServerPlayPacketListenerInteractEntityHandlerMixin impleme
 	@Inject(method = "onInteraction(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/Vec3;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(InteractionHand hand, Vec3 hitPosition, CallbackInfo info) {
 		Player player = this.this$0.player;
-		Level world = player.level();
+		Level level = player.level();
 
 		EntityHitResult hitResult = new EntityHitResult(val$target, hitPosition.add(val$target.getX(), val$target.getY(), val$target.getZ()));
-		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, world, hand, val$target, hitResult);
+		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, level, hand, val$target, hitResult);
 
 		if (result != InteractionResult.PASS) {
 			info.cancel();
@@ -61,9 +61,9 @@ public abstract class ServerPlayPacketListenerInteractEntityHandlerMixin impleme
 	@Inject(method = "onInteraction(Lnet/minecraft/world/InteractionHand;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(InteractionHand hand, CallbackInfo info) {
 		Player player = this.this$0.player;
-		Level world = player.level();
+		Level level = player.level();
 
-		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, world, hand, val$target, null);
+		InteractionResult result = UseEntityCallback.EVENT.invoker().interact(player, level, hand, val$target, null);
 
 		if (result != InteractionResult.PASS) {
 			info.cancel();
