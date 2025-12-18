@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
@@ -32,7 +32,7 @@ public class AttachmentEntrypoint implements ModInitializer {
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) ->
 				AttachmentTargetImpl.transfer(oldPlayer, newPlayer, !alive)
 		);
-		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.register(((originalEntity, newEntity, origin, destination) ->
+		ServerEntityLevelChangeEvents.AFTER_ENTITY_CHANGE_LEVEL.register(((originalEntity, newEntity, origin, destination) ->
 				AttachmentTargetImpl.transfer(originalEntity, newEntity, false))
 		);
 		// using the corresponding player event is unnecessary as no new instance is created

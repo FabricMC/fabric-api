@@ -33,9 +33,9 @@ public final class ServerEntityCombatEvents {
 	 *
 	 * @see Entity#killedEntity(ServerLevel, LivingEntity, DamageSource)
 	 */
-	public static final Event<AfterKilledOtherEntity> AFTER_KILLED_OTHER_ENTITY = EventFactory.createArrayBacked(AfterKilledOtherEntity.class, callbacks -> (world, entity, killedEntity, damageSource) -> {
+	public static final Event<AfterKilledOtherEntity> AFTER_KILLED_OTHER_ENTITY = EventFactory.createArrayBacked(AfterKilledOtherEntity.class, callbacks -> (level, entity, killedEntity, damageSource) -> {
 		for (AfterKilledOtherEntity callback : callbacks) {
-			callback.afterKilledOtherEntity(world, entity, killedEntity, damageSource);
+			callback.afterKilledOtherEntity(level, entity, killedEntity, damageSource);
 		}
 	});
 
@@ -44,12 +44,12 @@ public final class ServerEntityCombatEvents {
 		/**
 		 * Called after an entity has killed another entity.
 		 *
-		 * @param world the world
+		 * @param level the level
 		 * @param entity the entity
 		 * @param killedEntity the entity which was killed by the {@code entity}
 		 * @param damageSource the damage source that killed the entity
 		 */
-		void afterKilledOtherEntity(ServerLevel world, Entity entity, LivingEntity killedEntity, DamageSource damageSource);
+		void afterKilledOtherEntity(ServerLevel level, Entity entity, LivingEntity killedEntity, DamageSource damageSource);
 	}
 
 	private ServerEntityCombatEvents() {
