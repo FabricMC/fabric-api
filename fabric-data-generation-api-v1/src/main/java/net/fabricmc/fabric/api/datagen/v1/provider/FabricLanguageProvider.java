@@ -108,7 +108,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		});
 	}
 
-	private Path getLangFilePath(String code) {
+	protected Path getLangFilePath(String code) {
 		return dataOutput
 				.createPathProvider(PackOutput.Target.RESOURCE_PACK, "lang")
 				.json(Identifier.fromNamespaceAndPath(dataOutput.getModId(), code));
