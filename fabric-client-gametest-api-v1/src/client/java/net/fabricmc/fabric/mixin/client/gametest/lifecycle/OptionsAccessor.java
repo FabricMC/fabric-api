@@ -23,6 +23,6 @@ import net.minecraft.client.Options;
 
 @Mixin(Options.class)
 public interface OptionsAccessor {
-	@Invoker("processOptions")
-	void invokeAccept(Options.FieldAccess visitor);
+	@Invoker
+	void invokeProcessOptions(Options.FieldAccess visitor);
 }

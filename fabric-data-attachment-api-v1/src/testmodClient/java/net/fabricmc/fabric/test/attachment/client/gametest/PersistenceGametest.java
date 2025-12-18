@@ -69,7 +69,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 				.adjustSettings(worldCreator -> worldCreator.setGameMode(WorldCreationUiState.SelectedGameMode.CREATIVE))
 				.create()) {
 			save = spContext.getWorldSave();
-			spContext.getClientWorld().waitForChunksDownload();
+			spContext.getClientLevel().waitForChunksDownload();
 
 			spContext.getServer().runOnServer(server -> {
 				ServerLevel overworld = server.overworld();
@@ -98,7 +98,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 
 		// second launch
 		try (TestSingleplayerContext spContext = save.open()) {
-			spContext.getClientWorld().waitForChunksDownload();
+			spContext.getClientLevel().waitForChunksDownload();
 
 			LOGGER.info("Testing persistent attachments");
 			spContext.getServer().runOnServer(server -> {
@@ -129,7 +129,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 			LOGGER.info("Testing ProtoChunk transfer");
 			// load far chunk
 			spContext.getServer().runCommand("tp @p 4800 ~ 0");
-			spContext.getClientWorld().waitForChunksDownload();
+			spContext.getClientLevel().waitForChunksDownload();
 
 			spContext.getServer().runOnServer(server -> {
 				LevelChunk farChunk = server.overworld().getChunk(FAR_CHUNK_POS.x, FAR_CHUNK_POS.z);

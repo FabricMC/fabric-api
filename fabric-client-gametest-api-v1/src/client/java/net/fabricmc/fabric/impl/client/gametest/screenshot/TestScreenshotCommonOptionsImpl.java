@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotCommo
 
 public abstract class TestScreenshotCommonOptionsImpl<SELF extends TestScreenshotCommonOptions<SELF>> implements TestScreenshotCommonOptions<SELF> {
 	public boolean counterPrefix = true;
-	public float tickDelta = 1;
+	public float deltaTicks = 1;
 	@Nullable
 	public Vector2i size;
 	@Nullable
@@ -39,10 +39,10 @@ public abstract class TestScreenshotCommonOptionsImpl<SELF extends TestScreensho
 	}
 
 	@Override
-	public SELF withTickDelta(float tickDelta) {
-		Preconditions.checkArgument(tickDelta >= 0 && tickDelta <= 1, "tickDelta must be between 0 and 1");
+	public SELF withDeltaTicks(float deltaTicks) {
+		Preconditions.checkArgument(deltaTicks >= 0 && deltaTicks <= 1, "deltaTicks must be between 0 and 1");
 
-		this.tickDelta = tickDelta;
+		this.deltaTicks = deltaTicks;
 		return getThis();
 	}
 

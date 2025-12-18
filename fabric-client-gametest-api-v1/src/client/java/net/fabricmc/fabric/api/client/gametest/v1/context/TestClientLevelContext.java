@@ -23,12 +23,12 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 
 /**
- * Context for a client gametest containing various helpful functions while a client world is open.
+ * Context for a client gametest containing various helpful functions while a client level is open.
  *
  * <p>Functions in this class can only be called on the client gametest thread.
  */
 @ApiStatus.NonExtendable
-public interface TestClientWorldContext {
+public interface TestClientLevelContext {
 	/**
 	 * The default timeout in ticks to wait for chunks to load/render (1 minute).
 	 */
@@ -45,7 +45,7 @@ public interface TestClientWorldContext {
 	}
 
 	/**
-	Waits for all chunks that will be downloaded from the server to be downloaded. After this, methods such as
+	 * Waits for all chunks that will be downloaded from the server to be downloaded. After this, methods such as
 	 * {@link ClientLevel#getChunk(int, int)} and {@link ClientLevel#getBlockState(BlockPos)} will return the expected
 	 * value. However, the chunks may not yet be rendered and may not appear in screenshots, if you need this, use
 	 * {@link #waitForChunksRender(int)} instead. Fails if the chunks haven't been downloaded after {@code timeout}
@@ -80,7 +80,7 @@ public interface TestClientWorldContext {
 
 	/**
 	 * Waits for all chunks to be rendered, optionally waiting for chunks to be downloaded first. After this, all chunks
-	 * that are present in the client world will be visible in screenshots. Fails if the chunks haven't been rendered
+	 * that are present in the client level will be visible in screenshots. Fails if the chunks haven't been rendered
 	 * (and optionally downloaded) after {@link #DEFAULT_CHUNK_LOAD_TIMEOUT} ticks.
 	 *
 	 * @param waitForDownload Whether to wait for chunks to be downloaded
@@ -92,7 +92,7 @@ public interface TestClientWorldContext {
 
 	/**
 	 * Waits for all chunks to be rendered, optionally waiting for chunks to be downloaded first. After this, all chunks
-	 * that are present in the client world will be visible in screenshots. Fails if the chunks haven't been rendered
+	 * that are present in the client level will be visible in screenshots. Fails if the chunks haven't been rendered
 	 * (and optionally downloaded) after {@code timeout} ticks.
 	 *
 	 * @param waitForDownload Whether to wait for chunks to be downloaded

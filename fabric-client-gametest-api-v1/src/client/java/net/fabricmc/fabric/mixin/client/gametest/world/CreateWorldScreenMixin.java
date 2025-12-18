@@ -38,9 +38,9 @@ import net.fabricmc.fabric.impl.client.gametest.util.DedicatedServerImplUtil;
 @Mixin(CreateWorldScreen.class)
 public class CreateWorldScreenMixin {
 	@Inject(method = "onCreate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/worldselection/WorldOpenFlows;confirmWorldCreation(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/gui/screens/worldselection/CreateWorldScreen;Lcom/mojang/serialization/Lifecycle;Ljava/lang/Runnable;Z)V"), cancellable = true)
-	private void createLevelDataForServers(CallbackInfo ci, @Local LayeredRegistryAccess<RegistryLayer> dynamicRegistries, @Local PrimaryLevelData levelProperties) {
+	private void createLevelDataForServers(CallbackInfo ci, @Local LayeredRegistryAccess<RegistryLayer> registries, @Local PrimaryLevelData levelData) {
 		if (DedicatedServerImplUtil.saveLevelDataTo != null) {
-			CompoundTag levelDatInner = levelProperties.createTag(dynamicRegistries.compositeAccess(), null);
+			CompoundTag levelDatInner = levelData.createTag(registries.compositeAccess(), null);
 			CompoundTag levelDat = new CompoundTag();
 			levelDat.put("Data", levelDatInner);
 

@@ -22,7 +22,7 @@ import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.server.dedicated.DedicatedServer;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientLevelContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestDedicatedServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
@@ -47,8 +47,8 @@ public class TestDedicatedServerContextImpl extends TestServerContextImpl implem
 
 		ClientGameTestImpl.waitForWorldLoad(context);
 
-		TestClientWorldContext clientWorld = new TestClientWorldContextImpl(context);
-		return new TestServerConnectionImpl(context, clientWorld);
+		TestClientLevelContext clientLevel = new TestClientLevelContextImpl(context);
+		return new TestServerConnectionImpl(context, clientLevel);
 	}
 
 	private String getConnectionAddress() {

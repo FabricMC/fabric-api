@@ -36,14 +36,14 @@ public interface TestScreenshotCommonOptions<SELF extends TestScreenshotCommonOp
 	SELF disableCounterPrefix();
 
 	/**
-	 * Changes the tick delta to take this screenshot with. Tick delta controls interpolation between the previous tick and the
+	 * Changes the delta ticks to take this screenshot with. Delta ticks controls interpolation between the previous tick and the
 	 * current tick to make objects appear to move more smoothly when there are multiple frames in a tick. Defaults to
 	 * {@code 1}, which renders all objects as their appear in the current tick.
 	 *
-	 * @param tickDelta The tick delta to take this screenshot with
+	 * @param deltaTicks The delta ticks to take this screenshot with
 	 * @return This screenshot options instance
 	 */
-	SELF withTickDelta(float tickDelta);
+	SELF withDeltaTicks(float deltaTicks);
 
 	/**
 	 * Changes the resolution of the screenshot, which defaults to the resolution of the Minecraft window.
