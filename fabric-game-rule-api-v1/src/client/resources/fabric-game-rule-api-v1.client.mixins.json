@@ -6,7 +6,7 @@
     "EditGameRulesScreenAccessor",
     "EditGameRulesScreenRuleListAccessor",
     "EditGameRulesScreenRuleListMixin",
-    "RuleListWidgetVisitorMixin"
+    "RuleListEntryTypeVisitorMixin"
   ],
   "injectors": {
     "defaultRequire": 1

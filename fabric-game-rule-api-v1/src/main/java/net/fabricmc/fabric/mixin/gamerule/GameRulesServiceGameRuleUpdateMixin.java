@@ -68,7 +68,7 @@ public abstract class GameRulesServiceGameRuleUpdateMixin implements FabricTyped
 	}
 
 	@ModifyReturnValue(method = "getValueAndTypeCodec", at = @At("RETURN"))
-	private static <T, R extends GameRulesService.GameRuleUpdate<T>> MapCodec<R> fabricTypeCodec(MapCodec<? extends GameRulesService.GameRuleUpdate<T>> original, GameRule<T> gameRule) {
+	private static <T, R extends GameRulesService.GameRuleUpdate<T>> MapCodec<R> getValueAndFabricTypeCodec(MapCodec<? extends GameRulesService.GameRuleUpdate<T>> original, GameRule<T> gameRule) {
 		MapCodec<? extends GameRulesService.GameRuleUpdate<?>> fabricTypedCodec = fabric_createTypedCodec(gameRule);
 		//noinspection unchecked
 		return (MapCodec<R>) Codec.mapEither(fabricTypedCodec, original).xmap(

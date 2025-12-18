@@ -31,31 +31,31 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRuleTypeVisitor;
 
-import net.fabricmc.fabric.api.gamerule.v1.FabricGameRuleVisitor;
+import net.fabricmc.fabric.api.gamerule.v1.FabricGameRuleTypeVisitor;
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
-import net.fabricmc.fabric.impl.gamerule.widget.DoubleRuleWidget;
-import net.fabricmc.fabric.impl.gamerule.widget.EnumRuleWidget;
+import net.fabricmc.fabric.impl.gamerule.entry.DoubleRuleEntry;
+import net.fabricmc.fabric.impl.gamerule.entry.EnumRuleEntry;
 
 @Mixin(targets = "net.minecraft.client.gui.screens.worldselection.EditGameRulesScreen$RuleList$1")
-public abstract class RuleListWidgetVisitorMixin implements GameRuleTypeVisitor, FabricGameRuleVisitor {
+public abstract class RuleListEntryTypeVisitorMixin implements GameRuleTypeVisitor, FabricGameRuleTypeVisitor {
 	@Final
 	@Shadow
 	private EditGameRulesScreen.RuleList this$1;
 	@Shadow
-	protected abstract <T> void addEntry(GameRule<T> key, EditGameRulesScreen.EntryFactory<T> widgetFactory);
+	protected abstract <T> void addEntry(GameRule<T> gameRule, EditGameRulesScreen.EntryFactory<T> entryFactory);
 
 	@Override
 	public void visitDouble(GameRule<Double> doubleRule) {
 		this.addEntry(doubleRule, (name, description, ruleName, rule) -> {
-			return new DoubleRuleWidget(getThis(), name, description, ruleName, rule);
+			return new DoubleRuleEntry(getThis(), name, description, ruleName, rule);
 		});
 	}
 
 	@Override
 	public <E extends Enum<E>> void visitEnum(GameRule<E> enumRule) {
 		this.addEntry(enumRule, (name, description, ruleName, rule) -> {
-			return new EnumRuleWidget<>(getThis(), name, description, ruleName, rule, enumRule.getDescriptionId());
+			return new EnumRuleEntry<>(getThis(), name, description, ruleName, rule, enumRule.getDescriptionId());
 		});
 	}
 

@@ -175,14 +175,14 @@ public class GameRuleBuilder<T> {
 
 	// RULE VISITORS
 	private static void visitDouble(GameRuleTypeVisitor visitor, GameRule<Double> rule) {
-		if (visitor instanceof FabricGameRuleVisitor) {
-			((FabricGameRuleVisitor) visitor).visitDouble(rule);
+		if (visitor instanceof FabricGameRuleTypeVisitor) {
+			((FabricGameRuleTypeVisitor) visitor).visitDouble(rule);
 		}
 	}
 
 	private static <E extends Enum<E>> void visitEnum(GameRuleTypeVisitor visitor, GameRule<E> rule) {
-		if (visitor instanceof FabricGameRuleVisitor) {
-			((FabricGameRuleVisitor) visitor).visitEnum(rule);
+		if (visitor instanceof FabricGameRuleTypeVisitor) {
+			((FabricGameRuleTypeVisitor) visitor).visitEnum(rule);
 		}
 	}
 

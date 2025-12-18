@@ -26,10 +26,10 @@ import net.minecraft.world.level.gamerules.GameRules;
 @Mixin(EditGameRulesScreen.class)
 public interface EditGameRulesScreenAccessor {
 	@Invoker("clearInvalid")
-	void callMarkValid(EditGameRulesScreen.RuleEntry ruleWidget);
+	void callClearInvalid(EditGameRulesScreen.RuleEntry invalidEntry);
 
 	@Invoker("markInvalid")
-	void callMarkInvalid(EditGameRulesScreen.RuleEntry ruleWidget);
+	void callMarkInvalid(EditGameRulesScreen.RuleEntry invalidEntry);
 
 	@Accessor("gameRules")
 	GameRules getGameRules();
