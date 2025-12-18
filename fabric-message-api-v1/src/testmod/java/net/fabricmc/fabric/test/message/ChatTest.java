@@ -27,8 +27,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.message.v1.ServerMessageDecoratorEvent;
-import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
+import net.fabricmc.fabric.api.message.v1.ServerChatDecoratorEvent;
+import net.fabricmc.fabric.api.message.v1.ServerChatEvents;
 
 public class ChatTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatTest.class);
@@ -38,7 +38,7 @@ public class ChatTest implements ModInitializer {
 		Executor ioWorkerExecutor = Util.ioPool();
 
 		// Basic content phase testing
-		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
+		ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
 			if (message.getString().contains("tater")) {
 				return message.copy().append(" :tiny_potato:");
 			}
@@ -47,7 +47,7 @@ public class ChatTest implements ModInitializer {
 		});
 
 		// Content phase testing, with variable info
-		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
+		ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
 			if (message.getString().contains("random")) {
 				return Component.nullToEmpty(String.valueOf(RandomSource.create().nextIntBetweenInclusive(0, 100)));
 			}
@@ -56,7 +56,7 @@ public class ChatTest implements ModInitializer {
 		});
 
 		// Basic styling phase testing
-		ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) -> {
+		ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.STYLING_PHASE, (sender, message) -> {
 			if (sender != null && sender.hasInfiniteMaterials()) {
 				return message.copy().withStyle(style -> style.withColor(0xFFA500));
 			}
@@ -64,29 +64,29 @@ public class ChatTest implements ModInitializer {
 			return message;
 		});
 
-		// ServerMessageEvents
-		ServerMessageEvents.CHAT_MESSAGE.register(
+		// ServerChatEvents.java
+		ServerChatEvents.CHAT_MESSAGE.register(
 				(message, sender, params) -> LOGGER.info("ChatTest: {} sent \"{}\"", sender, message)
 		);
-		ServerMessageEvents.GAME_MESSAGE.register(
+		ServerChatEvents.GAME_MESSAGE.register(
 				(server, message, overlay) -> LOGGER.info("ChatTest: server sent \"{}\"", message)
 		);
-		ServerMessageEvents.COMMAND_MESSAGE.register(
+		ServerChatEvents.COMMAND_MESSAGE.register(
 				(message, source, params) -> LOGGER.info("ChatTest: command sent \"{}\"", message)
 		);
 
-		// ServerMessageEvents blocking
-		ServerMessageEvents.IS_CHAT_ALLOWED_MESSAGE.register(
+		// ServerChatEvents.java blocking
+		ServerChatEvents.IS_CHAT_ALLOWED_MESSAGE.register(
 				(message, sender, params) -> !message.signedContent().contains("sadtater")
 		);
-		ServerMessageEvents.ALLOW_GAME_MESSAGE.register((server, message, overlay) -> {
+		ServerChatEvents.ALLOW_GAME_MESSAGE.register((server, message, overlay) -> {
 			if (message.getContents() instanceof TranslatableContents translatable) {
 				return !translatable.getKey().startsWith("death.attack.badRespawnPoint.");
 			}
 
 			return true;
 		});
-		ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register(
+		ServerChatEvents.ALLOW_COMMAND_MESSAGE.register(
 				(message, source, params) -> !message.signedContent().contains("sadtater")
 		);
 	}

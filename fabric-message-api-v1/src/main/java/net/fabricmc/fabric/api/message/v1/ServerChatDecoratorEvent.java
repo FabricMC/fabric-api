@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>Example of registering a content phase message decorator:
  *
  * <pre>{@code
- * ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
+ * ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
  *     // Add smiley face. Has to copy() to get a MutableText with siblings and styles.
  *     return message.copy().append(" :)");
  * });
@@ -49,7 +49,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>Example of registering a styling phase message decorator:
  *
  * <pre>{@code
- * ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) -> {
+ * ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.STYLING_PHASE, (sender, message) -> {
  *     // Apply orange color to messages sent by server operators
  *     if (sender != null && sender.server.getPlayerManager().isOperator(sender.getGameProfile())) {
  *         return message.copy().styled(style -> style.withColor(0xFFA500));
@@ -58,8 +58,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * });
  * }</pre>
  */
-public final class ServerMessageDecoratorEvent {
-	private ServerMessageDecoratorEvent() {
+public final class ServerChatDecoratorEvent {
+	private ServerChatDecoratorEvent() {
 	}
 
 	/**
@@ -85,6 +85,6 @@ public final class ServerMessageDecoratorEvent {
 
 	private static <T extends Component> T handle(T decorated, ChatDecorator decorator) {
 		String decoratorName = decorator.getClass().getName();
-		return Objects.requireNonNull(decorated, "message decorator %s returned null".formatted(decoratorName));
+		return Objects.requireNonNull(decorated, "chat decorator %s returned null".formatted(decoratorName));
 	}
 }
