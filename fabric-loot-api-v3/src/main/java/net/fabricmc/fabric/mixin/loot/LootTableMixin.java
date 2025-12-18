@@ -61,7 +61,7 @@ class LootTableMixin implements FabricLootTable {
 	}
 
 	@Override
-	public void fabric$setRegistryEntry(Holder<LootTable> key) {
+	public void fabric$setHolder(Holder<LootTable> key) {
 		this.entry = key;
 	}
 }
