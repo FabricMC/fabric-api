@@ -28,13 +28,13 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ServerboundPlayChannelEvents;
 
 public final class NetworkingChannelClientTest implements ClientModInitializer {
-	public static final KeyMapping OPEN = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.fabric-networking-api-v1-testmod.open", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_MENU, KeyMapping.Category.MISC));
+	public static final KeyMapping OPEN = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.fabric-networking-api-v1-testmod.open", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_MENU, KeyMapping.Category.MISC));
 	static final Set<Identifier> SUPPORTED_SERVERBOUND_CHANNELS = new HashSet<>();
 
 	@Override
