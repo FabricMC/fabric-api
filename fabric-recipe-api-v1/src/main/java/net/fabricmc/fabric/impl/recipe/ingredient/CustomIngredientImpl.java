@@ -87,7 +87,7 @@ public class CustomIngredientImpl extends Ingredient {
 
 	public List<Holder<Item>> getCustomMatchingItems() {
 		if (customMatchingItems == null) {
-			customMatchingItems = customIngredient.getMatchingItems().toList();
+			customMatchingItems = customIngredient.items().toList();
 		}
 
 		return customMatchingItems;
@@ -125,7 +125,7 @@ public class CustomIngredientImpl extends Ingredient {
 
 	@Override
 	public SlotDisplay display() {
-		return customIngredient.toDisplay();
+		return customIngredient.display();
 	}
 
 	@Override
