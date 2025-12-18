@@ -60,12 +60,12 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 
 		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
 				dispatcher.register(ClientCommands.literal("custom_particles").executes(context -> {
-					ClientLevel world = Minecraft.getInstance().level;
+					ClientLevel level = Minecraft.getInstance().level;
 					RandomSource random = world.getRandom();
 					LocalPlayer player = context.getSource().getPlayer();
 
 					for (int i = 0; i < 35; i++) {
-						world.addParticle(
+						level.addParticle(
 								TEST_PARTICLE_TYPE,
 								player.getX(), player.getY(), player.getZ(),
 								Mth.randomBetween(random, -1.0F, 1.0F),
@@ -80,14 +80,14 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 
 	private record TestParticleFactory(FabricSpriteProvider spriteProvider) implements ParticleProvider<SimpleParticleType> {
 		@Override
-		public Particle createParticle(SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random) {
-			return new TestParticle(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.get(random));
+		public Particle createParticle(SimpleParticleType parameters, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random) {
+			return new TestParticle(level, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.get(random));
 		}
 	}
 
 	private static class TestParticle extends SingleQuadParticle {
-		TestParticle(ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, TextureAtlasSprite sprite) {
-			super(world, x, y, z, velocityX, velocityY, velocityZ, sprite);
+		TestParticle(ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ, TextureAtlasSprite sprite) {
+			super(level, x, y, z, velocityX, velocityY, velocityZ, sprite);
 		}
 
 		@Override
