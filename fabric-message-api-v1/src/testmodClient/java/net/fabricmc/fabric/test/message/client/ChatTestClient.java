@@ -25,8 +25,8 @@ import net.minecraft.network.chat.Component;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.message.v1.ClientLogChatMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientHandleChatInputEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientLogChatMessageEvents;
 
 public class ChatTestClient implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatTestClient.class);
