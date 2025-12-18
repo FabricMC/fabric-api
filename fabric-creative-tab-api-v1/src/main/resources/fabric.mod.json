@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-creative-mode-tab-api-v1",
-  "name": "Fabric Creative Mode Tab API (v1)",
+  "id": "fabric-creative-tab-api-v1",
+  "name": "Fabric Creative Tab API (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-creative-mode-tab-api-v1/icon.png",
+  "icon": "assets/fabric-creative-tab-api-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -22,13 +22,13 @@
   },
   "description": "An API for adding custom item groups.",
   "mixins": [
-    "fabric-creative-mode-tab-api-v1.mixins.json",
+    "fabric-creative-tab-api-v1.mixins.json",
     {
-      "config": "fabric-creative-mode-tab-api-v1.client.mixins.json",
+      "config": "fabric-creative-tab-api-v1.client.mixins.json",
       "environment": "client"
     }
   ],
-  "accessWidener": "fabric-creative-mode-tab-api-v1.accesswidener",
+  "accessWidener": "fabric-creative-tab-api-v1.accesswidener",
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
