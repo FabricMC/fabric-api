@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.transfer.item;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
@@ -33,8 +35,6 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.impl.transfer.DebugMessages;
-
-import org.jspecify.annotations.Nullable;
 
 /**
  * A wrapper around a single slot of an inventory.
