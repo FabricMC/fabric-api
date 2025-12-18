@@ -55,7 +55,7 @@ public final class ScreenTests implements ClientModInitializer {
 		LOGGER.info("Initializing {}", screen.getClass().getName());
 
 		if (screen instanceof TitleScreen) {
-			final List<AbstractWidget> buttons = Screens.getButtons(screen);
+			final List<AbstractWidget> buttons = Screens.getWidgets(screen);
 
 			// Shrink the realms button, should be the third button on the list
 			final AbstractWidget optionsButton = buttons.get(2);
@@ -87,7 +87,7 @@ public final class ScreenTests implements ClientModInitializer {
 				LOGGER.warn("Pressed, Context: {}", context);
 			});
 		} else if (screen instanceof CreativeModeInventoryScreen) {
-			Screens.getButtons(screen).add(new TestButtonWidget());
+			Screens.getWidgets(screen).add(new TestButtonWidget());
 		} else if (screen instanceof GrindstoneScreen) {
 			// Register render event to draw an icon on the screen
 			// Expected result: the icon is drawn BEHIND both the handled screen interface and the darkened background, text, items, the carried item, tooltips, etc.

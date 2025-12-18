@@ -33,13 +33,13 @@
  * <p>Each "test method" represents a set of code that sets up the testing site and checks the
  * behavior of the code - for example, it could check that using a flint and steel on a creeper
  * causes explosion, or that hoppers can insert items into barrels. A test method is always annotated
- * with {@link net.fabricmc.fabric.api.gametest.v1.GameTest}. By default the test will run with
- * an empty structure, you can specify a structure using {@link net.fabricmc.fabric.api.gametest.v1.GameTest#structure()}
+ * with {@link net.fabricmc.fabric.api.gametest.v1.GameTest}. By default, the test will run with
+ * an empty structure; you can specify a structure using {@link net.fabricmc.fabric.api.gametest.v1.GameTest#structure()}
  * For complex tests, you can also save a structure as an SNBT file under {@code modid/gametest/structure/}
  * in the test mod's data pack and reference that structure. It will then be loaded before the test.
  *
  * <p>Test methods are instance methods (i.e. not static) and take exactly one argument - {@link
- * net.minecraft.gametest.framework.GameTestHelper}. This provides access to the world and additionally provides
+ * net.minecraft.gametest.framework.GameTestHelper}. This provides access to the level and additionally provides
  * dozens of assertions, utility methods, and more.
  * Test methods should end with {@link net.minecraft.gametest.framework.GameTestHelper#succeed()}.
  *
@@ -47,9 +47,9 @@
  * <pre>{@code
  * public class MyTest {
  * 	@FabricGameTest
- * 	public void testSomething(TestContext context) {
- * 		context.assertTrue(MyMod.getSomeValue(context.getWorld()) > 0, "SomeValue should be positive.");
- * 	    context.complete(); // do not forget!
+ * 	public void testSomething(GameTestHelper helper) {
+ * 		helper.assertTrue(MyMod.getSomeValue(helper.getLevel()) > 0, "SomeValue should be positive.");
+ * 	    helper.succeed(); // do not forget!
  * 	}
  * }
  * }</pre>
