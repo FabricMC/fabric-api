@@ -123,7 +123,7 @@ public class SyncGametest implements FabricClientGameTest {
 			LOGGER.info("Joining dedicated server");
 
 			try (TestServerConnection connection = serverContext.connect()) {
-				connection.getClientWorld().waitForChunksDownload();
+				connection.getClientLevel().waitForChunksDownload();
 
 				LOGGER.info("Setting up rest of synced attachments");
 				serverContext.runOnServer(server -> {

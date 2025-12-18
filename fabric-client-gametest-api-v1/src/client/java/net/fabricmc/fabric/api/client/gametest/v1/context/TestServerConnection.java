@@ -28,11 +28,11 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.NonExtendable
 public interface TestServerConnection extends AutoCloseable {
 	/**
-	 * Gets the client world context for this connection.
+	 * Gets the client level context for this connection.
 	 *
-	 * @return The client world context
+	 * @return The client level context
 	 */
-	TestClientWorldContext getClientWorld();
+	TestClientLevelContext getClientLevel();
 
 	/**
 	 * Disconnects the client from the dedicated server.

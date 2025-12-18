@@ -24,6 +24,6 @@ import net.minecraft.client.KeyMapping;
 
 @Mixin(KeyMapping.class)
 public interface KeyMappingAccessor {
-	@Accessor("key")
-	InputConstants.Key getBoundKey();
+	@Accessor
+	InputConstants.Key getKey();
 }

@@ -192,7 +192,7 @@ public class MinecraftMixin {
 	private static void checkThreadOnGetInstance(CallbackInfoReturnable<Minecraft> cir) {
 		Preconditions.checkState(
 				Thread.currentThread() != ThreadingImpl.testThread,
-				"MinecraftClient.getInstance() cannot be called from the gametest thread. Try using ClientGameTestContext.runOnClient or ClientGameTestContext.computeOnClient"
+				"Minecraft.getInstance() cannot be called from the gametest thread. Try using ClientGameTestContext.runOnClient or ClientGameTestContext.computeOnClient"
 		);
 	}
 

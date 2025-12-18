@@ -25,6 +25,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 
 @Mixin(ClientLevel.class)
 public interface ClientLevelAccessor {
-	@Accessor("lightUpdateQueue")
-	Deque<Runnable> getChunkUpdaters();
+	@Accessor
+	Deque<Runnable> getLightUpdateQueue();
 }

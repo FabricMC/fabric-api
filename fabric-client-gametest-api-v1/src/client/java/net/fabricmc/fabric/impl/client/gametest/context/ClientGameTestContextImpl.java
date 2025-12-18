@@ -108,7 +108,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		// Disable chunk fade
 		options.chunkSectionFadeInTime().set(0D);
 
-		((OptionsAccessor) options).invokeAccept(new Options.FieldAccess() {
+		((OptionsAccessor) options).invokeProcessOptions(new Options.FieldAccess() {
 			@Override
 			public int process(String key, int current) {
 				DEFAULT_GAME_OPTIONS.put(key, current);
@@ -250,16 +250,16 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		final String buttonText = Component.translatable(translationKey).getString();
 		final ScreenAccessor screenAccessor = (ScreenAccessor) screen;
 
-		for (Renderable drawable : screenAccessor.getDrawables()) {
-			if (drawable instanceof AbstractButton pressableWidget && pressMatchingButton(pressableWidget, buttonText)) {
+		for (Renderable renderable : screenAccessor.getRenderables()) {
+			if (renderable instanceof AbstractButton pressableWidget && pressMatchingButton(pressableWidget, buttonText)) {
 				return true;
 			}
 
-			if (drawable instanceof LayoutElement widget) {
+			if (renderable instanceof LayoutElement layoutElement) {
 				MutableBoolean found = new MutableBoolean(false);
-				widget.visitWidgets(clickableWidget -> {
+				layoutElement.visitWidgets(widget -> {
 					if (!found.booleanValue()) {
-						found.setValue(pressMatchingButton(clickableWidget, buttonText));
+						found.setValue(pressMatchingButton(widget, buttonText));
 					}
 				});
 
@@ -286,7 +286,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		if (widget instanceof CycleButton<?> buttonWidget) {
 			CycleButtonAccessor accessor = (CycleButtonAccessor) buttonWidget;
 
-			if (text.equals(accessor.getOptionText().getString())) {
+			if (text.equals(accessor.getName().getString())) {
 				buttonWidget.onPress(clickEvent);
 				return true;
 			}
@@ -395,7 +395,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 
 		try {
 			CompletableFuture<T> future = computeOnClient(client -> {
-				client.gameRenderer.render(DeltaTrackerDefaultValueAccessor.create(options.tickDelta), true);
+				client.gameRenderer.render(DeltaTrackerDefaultValueAccessor.create(options.deltaTicks), true);
 				CompletableFuture<T> resultFuture = new CompletableFuture<>();
 
 				Screenshot.takeScreenshot(client.getMainRenderTarget(), screenshot -> {
@@ -483,7 +483,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		ThreadingImpl.checkOnGametestThread("restoreDefaultGameOptions");
 
 		runOnClient(client -> {
-			((OptionsAccessor) Minecraft.getInstance().options).invokeAccept(new Options.FieldAccess() {
+			((OptionsAccessor) Minecraft.getInstance().options).invokeProcessOptions(new Options.FieldAccess() {
 				@Override
 				public int process(String key, int current) {
 					return (Integer) DEFAULT_GAME_OPTIONS.get(key);

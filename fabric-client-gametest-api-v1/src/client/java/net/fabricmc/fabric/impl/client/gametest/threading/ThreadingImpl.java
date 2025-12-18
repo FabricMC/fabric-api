@@ -55,7 +55,7 @@ import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
  * queues are when most packets are handled, and without them being run in sequence it would be unspecified whether a
  * packet would be handled on the current tick until the next one. The server task queue is before the client so that
  * changes on the server appear on the client more readily. The test phase is run after the task queues rather than at
- * the end of the physical tick (i.e. {@code MinecraftClient}'s and {@code MinecraftServer}'s {@code tick} methods), for
+ * the end of the physical tick (i.e. {@code Minecraft}'s and {@code MinecraftServer}'s {@code tick} methods), for
  * no particular reason other than to avoid needing a 5th phase, and having a power of 2 number of phases is convenient
  * when using {@linkplain Phaser}, as it doesn't break when the phase counter overflows.
  *
