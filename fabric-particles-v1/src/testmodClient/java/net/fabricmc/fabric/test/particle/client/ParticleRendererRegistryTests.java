@@ -61,7 +61,7 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
 				dispatcher.register(ClientCommands.literal("custom_particles").executes(context -> {
 					ClientLevel level = Minecraft.getInstance().level;
-					RandomSource random = world.getRandom();
+					RandomSource random = level.getRandom();
 					LocalPlayer player = context.getSource().getPlayer();
 
 					for (int i = 0; i < 35; i++) {
@@ -80,7 +80,7 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 
 	private record TestParticleFactory(FabricSpriteProvider spriteProvider) implements ParticleProvider<SimpleParticleType> {
 		@Override
-		public Particle createParticle(SimpleParticleType parameters, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random) {
+		public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random) {
 			return new TestParticle(level, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.get(random));
 		}
 	}
@@ -106,10 +106,10 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 	}
 
 	private static class TestParticleRenderer extends ParticleGroup<TestParticle> {
-		final QuadParticleRenderState submittable = new QuadParticleRenderState();
+		final QuadParticleRenderState state = new QuadParticleRenderState();
 
-		TestParticleRenderer(ParticleEngine particleManager) {
-			super(particleManager);
+		TestParticleRenderer(ParticleEngine particleEngine) {
+			super(particleEngine);
 		}
 
 		@Override
@@ -119,10 +119,10 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 					continue;
 				}
 
-				particle.extract(this.submittable, camera, tickProgress);
+				particle.extract(this.state, camera, tickProgress);
 			}
 
-			return submittable;
+			return state;
 		}
 	}
 }
