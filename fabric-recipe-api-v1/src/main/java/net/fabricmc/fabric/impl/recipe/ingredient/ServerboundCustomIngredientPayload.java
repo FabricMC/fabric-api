@@ -25,16 +25,16 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
-public record CustomIngredientPayloadC2S(int protocolVersion, Set<Identifier> registeredSerializers) implements CustomPacketPayload {
-	public static final StreamCodec<FriendlyByteBuf, CustomIngredientPayloadC2S> CODEC = StreamCodec.composite(
-			ByteBufCodecs.VAR_INT, CustomIngredientPayloadC2S::protocolVersion,
-			ByteBufCodecs.collection(HashSet::new, Identifier.STREAM_CODEC), CustomIngredientPayloadC2S::registeredSerializers,
-			CustomIngredientPayloadC2S::new
+public record ServerboundCustomIngredientPayload(int protocolVersion, Set<Identifier> registeredSerializers) implements CustomPacketPayload {
+	public static final StreamCodec<FriendlyByteBuf, ServerboundCustomIngredientPayload> CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, ServerboundCustomIngredientPayload::protocolVersion,
+			ByteBufCodecs.collection(HashSet::new, Identifier.STREAM_CODEC), ServerboundCustomIngredientPayload::registeredSerializers,
+			ServerboundCustomIngredientPayload::new
 	);
-	public static final CustomPacketPayload.Type<CustomIngredientPayloadC2S> ID = new Type<>(CustomIngredientSync.PACKET_ID);
+	public static final CustomPacketPayload.Type<ServerboundCustomIngredientPayload> TYPE = new Type<>(CustomIngredientSync.PACKET_ID);
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
-		return ID;
+		return TYPE;
 	}
 }
