@@ -39,12 +39,12 @@ import net.minecraft.server.packs.resources.ResourceMetadata;
 import net.minecraft.util.Mth;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.AtlasSourceRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.SpriteSourceRegistry;
 
-public class CustomAtlasSourcesTest implements ClientModInitializer {
+public class CustomSpriteSourcesTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		AtlasSourceRegistry.register(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "double"), DoubleAtlasSource.CODEC);
+		SpriteSourceRegistry.register(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "double"), DoubleAtlasSource.CODEC);
 	}
 
 	private static class DoubleAtlasSource implements SpriteSource {

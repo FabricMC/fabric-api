@@ -25,8 +25,8 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.mixin.client.rendering.SpriteSourcesAccessor;
 
-public final class AtlasSourceRegistryImpl {
-	private AtlasSourceRegistryImpl() {
+public final class SpriteSourceRegistryImpl {
+	private SpriteSourceRegistryImpl() {
 	}
 
 	public static void register(Identifier id, MapCodec<? extends SpriteSource> codec) {

@@ -21,22 +21,22 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.impl.client.rendering.AtlasSourceRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.SpriteSourceRegistryImpl;
 
 /**
  * A registry for custom {@link SpriteSource}s. Registered types will be automatically available for use in atlas definition JSON files.
  */
-public final class AtlasSourceRegistry {
-	private AtlasSourceRegistry() {
+public final class SpriteSourceRegistry {
+	private SpriteSourceRegistry() {
 	}
 
 	/**
 	 * Registers a new {@link SpriteSource} by providing a codec for it.
 	 *
-	 * @param id the identifier of the atlas source type
-	 * @param codec the codec for the atlas source type
+	 * @param id the identifier of the sprite source type
+	 * @param codec the codec for the sprite source type
 	 */
 	public static void register(Identifier id, MapCodec<? extends SpriteSource> codec) {
-		AtlasSourceRegistryImpl.register(id, codec);
+		SpriteSourceRegistryImpl.register(id, codec);
 	}
 }
