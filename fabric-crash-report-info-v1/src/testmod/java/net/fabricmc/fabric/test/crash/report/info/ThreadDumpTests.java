@@ -36,7 +36,7 @@ public class ThreadDumpTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+		CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) ->
 				dispatcher.register(literal("print_thread_dump_test_command").executes(this::executeDumpCommand)));
 	}
 

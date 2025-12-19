@@ -22,8 +22,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Contains client-side events triggered when sending messages.
  */
-public final class ClientSendMessageEvents {
-	private ClientSendMessageEvents() {
+public final class ClientHandleChatInputEvents {
+	private ClientHandleChatInputEvents() {
 	}
 
 	/**
@@ -34,9 +34,9 @@ public final class ClientSendMessageEvents {
 	 * the remaining listeners will not be called (if any), and
 	 * {@link #CHAT_CANCELED} will be triggered instead of {@link #MODIFY_CHAT}.
 	 */
-	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, listeners -> (message) -> {
-		for (AllowChat listener : listeners) {
-			if (!listener.allowSendChatMessage(message)) {
+	public static final Event<IsChatAllowed> IS_CHAT_ALLOWED = EventFactory.createArrayBacked(IsChatAllowed.class, listeners -> (message) -> {
+		for (IsChatAllowed listener : listeners) {
+			if (!listener.allowLogChatMessage(message)) {
 				return false;
 			}
 		}
@@ -57,7 +57,7 @@ public final class ClientSendMessageEvents {
 	 */
 	public static final Event<AllowCommand> ALLOW_COMMAND = EventFactory.createArrayBacked(AllowCommand.class, listeners -> (command) -> {
 		for (AllowCommand listener : listeners) {
-			if (!listener.allowSendCommandMessage(command)) {
+			if (!listener.allowLogCommandMessage(command)) {
 				return false;
 			}
 		}
@@ -68,13 +68,13 @@ public final class ClientSendMessageEvents {
 	/**
 	 * An event triggered when the client sends a chat message,
 	 * typically from a client GUI. Is not called when {@linkplain
-	 * #ALLOW_CHAT chat messages are blocked}.
+	 * #IS_CHAT_ALLOWED chat messages are blocked}.
 	 * Mods can use this to modify the message.
 	 * Use {@link #CHAT} if not modifying the message.
 	 */
 	public static final Event<ModifyChat> MODIFY_CHAT = EventFactory.createArrayBacked(ModifyChat.class, listeners -> (message) -> {
 		for (ModifyChat listener : listeners) {
-			message = listener.modifySendChatMessage(message);
+			message = listener.modifyLogChatMessage(message);
 		}
 
 		return message;
@@ -91,7 +91,7 @@ public final class ClientSendMessageEvents {
 	 */
 	public static final Event<ModifyCommand> MODIFY_COMMAND = EventFactory.createArrayBacked(ModifyCommand.class, listeners -> (command) -> {
 		for (ModifyCommand listener : listeners) {
-			command = listener.modifySendCommandMessage(command);
+			command = listener.modifyLogCommandMessage(command);
 		}
 
 		return command;
@@ -100,12 +100,12 @@ public final class ClientSendMessageEvents {
 	/**
 	 * An event triggered when the client sends a chat message,
 	 * typically from a client GUI. Is not called when {@linkplain
-	 * #ALLOW_CHAT chat messages are blocked}.
+	 * #IS_CHAT_ALLOWED chat messages are blocked}.
 	 * Mods can use this to listen to the message.
 	 */
 	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message) -> {
 		for (Chat listener : listeners) {
-			listener.onSendChatMessage(message);
+			listener.onLogChatMessage(message);
 		}
 	});
 
@@ -119,16 +119,16 @@ public final class ClientSendMessageEvents {
 	 */
 	public static final Event<Command> COMMAND = EventFactory.createArrayBacked(Command.class, listeners -> (command) -> {
 		for (Command listener : listeners) {
-			listener.onSendCommandMessage(command);
+			listener.onLogCommandMessage(command);
 		}
 	});
 
 	/**
-	 * An event triggered when sending a chat message is canceled with {@link #ALLOW_CHAT}.
+	 * An event triggered when sending a chat message is canceled with {@link #IS_CHAT_ALLOWED}.
 	 */
 	public static final Event<ChatCanceled> CHAT_CANCELED = EventFactory.createArrayBacked(ChatCanceled.class, listeners -> (message) -> {
 		for (ChatCanceled listener : listeners) {
-			listener.onSendChatMessageCanceled(message);
+			listener.onLogChatMessageCanceled(message);
 		}
 	});
 
@@ -138,12 +138,12 @@ public final class ClientSendMessageEvents {
 	 */
 	public static final Event<CommandCanceled> COMMAND_CANCELED = EventFactory.createArrayBacked(CommandCanceled.class, listeners -> (command) -> {
 		for (CommandCanceled listener : listeners) {
-			listener.onSendCommandMessageCanceled(command);
+			listener.onLogCommandMessageCanceled(command);
 		}
 	});
 
 	@FunctionalInterface
-	public interface AllowChat {
+	public interface IsChatAllowed {
 		/**
 		 * Called when the client is about to send a chat message,
 		 * typically from a client GUI. Returning {@code false}
@@ -153,7 +153,7 @@ public final class ClientSendMessageEvents {
 		 * @param message the message that will be sent to the server
 		 * @return {@code true} if the message should be sent, otherwise {@code false}
 		 */
-		boolean allowSendChatMessage(String message);
+		boolean allowLogChatMessage(String message);
 	}
 
 	@FunctionalInterface
@@ -169,7 +169,7 @@ public final class ClientSendMessageEvents {
 		 * @param command the command that will be sent to the server, without a slash at the beginning.
 		 * @return {@code true} if the command should be sent, otherwise {@code false}
 		 */
-		boolean allowSendCommandMessage(String command);
+		boolean allowLogCommandMessage(String command);
 	}
 
 	@FunctionalInterface
@@ -177,13 +177,13 @@ public final class ClientSendMessageEvents {
 		/**
 		 * Called when the client sends a chat message,
 		 * typically from a client GUI. Is not called when {@linkplain
-		 * #ALLOW_CHAT chat messages are blocked}.
+		 * #IS_CHAT_ALLOWED chat messages are blocked}.
 		 * Use {@link #CHAT} if not modifying the message.
 		 *
 		 * @param message the message that will be sent to the server
 		 * @return the modified message that will be sent to the server
 		 */
-		String modifySendChatMessage(String message);
+		String modifyLogChatMessage(String message);
 	}
 
 	@FunctionalInterface
@@ -199,7 +199,7 @@ public final class ClientSendMessageEvents {
 		 * @param command the command that will be sent to the server, without a slash at the beginning.
 		 * @return the modified command that will be sent to the server, without a slash at the beginning.
 		 */
-		String modifySendCommandMessage(String command);
+		String modifyLogCommandMessage(String command);
 	}
 
 	@FunctionalInterface
@@ -207,11 +207,11 @@ public final class ClientSendMessageEvents {
 		/**
 		 * Called when the client sends a chat message,
 		 * typically from a client GUI. Is not called when {@linkplain
-		 * #ALLOW_CHAT chat messages are blocked}.
+		 * #IS_CHAT_ALLOWED chat messages are blocked}.
 		 *
 		 * @param message the message that will be sent to the server
 		 */
-		void onSendChatMessage(String message);
+		void onLogChatMessage(String message);
 	}
 
 	@FunctionalInterface
@@ -225,17 +225,17 @@ public final class ClientSendMessageEvents {
 		 *
 		 * @param command the command that will be sent to the server, without a slash at the beginning.
 		 */
-		void onSendCommandMessage(String command);
+		void onLogCommandMessage(String command);
 	}
 
 	@FunctionalInterface
 	public interface ChatCanceled {
 		/**
-		 * Called when sending a chat message is canceled with {@link #ALLOW_CHAT}.
+		 * Called when sending a chat message is canceled with {@link #IS_CHAT_ALLOWED}.
 		 *
 		 * @param message the message that is canceled from being sent to the server
 		 */
-		void onSendChatMessageCanceled(String message);
+		void onLogChatMessageCanceled(String message);
 	}
 
 	@FunctionalInterface
@@ -246,6 +246,6 @@ public final class ClientSendMessageEvents {
 		 *
 		 * @param command the command that is being sent to the server, without a slash at the beginning.
 		 */
-		void onSendCommandMessageCanceled(String command);
+		void onLogCommandMessageCanceled(String command);
 	}
 }
