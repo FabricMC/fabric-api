@@ -108,6 +108,9 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		});
 	}
 
+	/**
+	 * Override this method to change where the generated language file is placed.
+	 */
 	protected Path getLangFilePath(String code) {
 		return dataOutput
 				.createPathProvider(PackOutput.Target.RESOURCE_PACK, "lang")
