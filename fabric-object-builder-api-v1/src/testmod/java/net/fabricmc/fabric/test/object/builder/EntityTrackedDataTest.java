@@ -35,7 +35,7 @@ import net.minecraft.world.item.Item;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityType;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricTrackedDataRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityDataRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class EntityTrackedDataTest implements ModInitializer {
@@ -58,13 +58,13 @@ public class EntityTrackedDataTest implements ModInitializer {
 	public void onInitialize() {
 		// Register in a different order between a client and dedicated server
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			FabricTrackedDataRegistry.register(GLOBAL_POS_ID, GLOBAL_POS);
-			FabricTrackedDataRegistry.register(ITEM_ID, ITEM);
-			FabricTrackedDataRegistry.register(OPTIONAL_DYE_COLOR_ID, OPTIONAL_DYE_COLOR);
+			FabricEntityDataRegistry.register(GLOBAL_POS_ID, GLOBAL_POS);
+			FabricEntityDataRegistry.register(ITEM_ID, ITEM);
+			FabricEntityDataRegistry.register(OPTIONAL_DYE_COLOR_ID, OPTIONAL_DYE_COLOR);
 		} else {
-			FabricTrackedDataRegistry.register(ITEM_ID, ITEM);
-			FabricTrackedDataRegistry.register(OPTIONAL_DYE_COLOR_ID, OPTIONAL_DYE_COLOR);
-			FabricTrackedDataRegistry.register(GLOBAL_POS_ID, GLOBAL_POS);
+			FabricEntityDataRegistry.register(ITEM_ID, ITEM);
+			FabricEntityDataRegistry.register(OPTIONAL_DYE_COLOR_ID, OPTIONAL_DYE_COLOR);
+			FabricEntityDataRegistry.register(GLOBAL_POS_ID, GLOBAL_POS);
 		}
 
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, TRACK_STACK_KEY, TRACK_STACK_ENTITY);

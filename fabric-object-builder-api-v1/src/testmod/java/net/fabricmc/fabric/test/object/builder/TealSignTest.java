@@ -66,9 +66,9 @@ public class TealSignTest implements ModInitializer {
 		Registry.register(BuiltInRegistries.ITEM, TEAL_SIGN_KEY.identifier(), TEAL_SIGN_ITEM);
 		Registry.register(BuiltInRegistries.ITEM, TEAL_HANGING_SIGN_KEY.identifier(), TEAL_HANGING_SIGN_ITEM);
 
-		BlockEntityType.SIGN.addSupportedBlock(TEAL_SIGN);
-		BlockEntityType.SIGN.addSupportedBlock(TEAL_WALL_SIGN);
-		BlockEntityType.HANGING_SIGN.addSupportedBlock(TEAL_HANGING_SIGN);
-		BlockEntityType.HANGING_SIGN.addSupportedBlock(TEAL_WALL_HANGING_SIGN);
+		BlockEntityType.SIGN.addValidBlock(TEAL_SIGN);
+		BlockEntityType.SIGN.addValidBlock(TEAL_WALL_SIGN);
+		BlockEntityType.HANGING_SIGN.addValidBlock(TEAL_HANGING_SIGN);
+		BlockEntityType.HANGING_SIGN.addValidBlock(TEAL_WALL_HANGING_SIGN);
 	}
 }

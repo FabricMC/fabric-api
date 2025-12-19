@@ -34,32 +34,32 @@ import net.minecraft.world.level.block.state.properties.WoodType;
  * @see BlockSetTypeBuilder
  */
 public final class WoodTypeBuilder {
-	private SoundType soundGroup = SoundType.WOOD;
-	private SoundType hangingSignSoundGroup = SoundType.HANGING_SIGN;
+	private SoundType soundType = SoundType.WOOD;
+	private SoundType hangingSignSoundType = SoundType.HANGING_SIGN;
 	private SoundEvent fenceGateCloseSound = SoundEvents.FENCE_GATE_CLOSE;
 	private SoundEvent fenceGateOpenSound = SoundEvents.FENCE_GATE_OPEN;
 
 	/**
-	 * Sets this wood type's sound group.
+	 * Sets this wood type's sound type.
 	 *
 	 * <p>Defaults to {@link SoundType#WOOD}.
 	 *
 	 * @return this builder for chaining
 	 */
-	public WoodTypeBuilder soundGroup(SoundType soundGroup) {
-		this.soundGroup = soundGroup;
+	public WoodTypeBuilder soundType(SoundType soundType) {
+		this.soundType = soundType;
 		return this;
 	}
 
 	/**
-	 * Sets this wood type's hanging sign sound group.
+	 * Sets this wood type's hanging sign sound type.
 	 *
 	 * <p>Defaults to {@link SoundType#HANGING_SIGN}.
 	 *
 	 * @return this builder for chaining
 	 */
-	public WoodTypeBuilder hangingSignSoundGroup(SoundType hangingSignSoundGroup) {
-		this.hangingSignSoundGroup = hangingSignSoundGroup;
+	public WoodTypeBuilder hangingSignSoundType(SoundType hangingSignSoundType) {
+		this.hangingSignSoundType = hangingSignSoundType;
 		return this;
 	}
 
@@ -96,8 +96,8 @@ public final class WoodTypeBuilder {
 	 */
 	public static WoodTypeBuilder copyOf(WoodTypeBuilder builder) {
 		WoodTypeBuilder copy = new WoodTypeBuilder();
-		copy.soundGroup(builder.soundGroup);
-		copy.hangingSignSoundGroup(builder.hangingSignSoundGroup);
+		copy.soundType(builder.soundType);
+		copy.hangingSignSoundType(builder.hangingSignSoundType);
 		copy.fenceGateCloseSound(builder.fenceGateCloseSound);
 		copy.fenceGateOpenSound(builder.fenceGateOpenSound);
 		return copy;
@@ -112,8 +112,8 @@ public final class WoodTypeBuilder {
 	 */
 	public static WoodTypeBuilder copyOf(WoodType woodType) {
 		WoodTypeBuilder copy = new WoodTypeBuilder();
-		copy.soundGroup(woodType.soundType());
-		copy.hangingSignSoundGroup(woodType.hangingSignSoundType());
+		copy.soundType(woodType.soundType());
+		copy.hangingSignSoundType(woodType.hangingSignSoundType());
 		copy.fenceGateCloseSound(woodType.fenceGateClose());
 		copy.fenceGateOpenSound(woodType.fenceGateOpen());
 		return copy;
@@ -146,6 +146,8 @@ public final class WoodTypeBuilder {
 	 * @return the built {@link WoodType}
 	 */
 	public WoodType build(Identifier id, BlockSetType setType) {
-		return new WoodType(id.toString(), setType, soundGroup, hangingSignSoundGroup, fenceGateCloseSound, fenceGateOpenSound);
+		return new WoodType(id.toString(), setType,
+				soundType,
+				hangingSignSoundType, fenceGateCloseSound, fenceGateOpenSound);
 	}
 }

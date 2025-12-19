@@ -35,8 +35,9 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.mixin.object.builder.EntityDataSerializersAccessor;
 
-public final class FabricTrackedDataRegistryImpl {
-	private static final Logger LOGGER = LoggerFactory.getLogger(FabricTrackedDataRegistryImpl.class);
+public final class FabricEntityDataRegistryImpl {
+	private static final Logger LOGGER = LoggerFactory.getLogger(
+			FabricEntityDataRegistryImpl.class);
 
 	private static final Identifier HANDLER_REGISTRY_ID = Identifier.fromNamespaceAndPath("fabric-object-builder-api-v1", "tracked_data_handler");
 	private static final ResourceKey<Registry<EntityDataSerializer<?>>> HANDLER_REGISTRY_KEY = ResourceKey.createRegistryKey(HANDLER_REGISTRY_ID);
@@ -46,7 +47,7 @@ public final class FabricTrackedDataRegistryImpl {
 	private static Registry<EntityDataSerializer<?>> handlerRegistry = null;
 	private static final List<EntityDataSerializer<?>> EXTERNAL_MODDED_HANDLERS = new ArrayList<>();
 
-	private FabricTrackedDataRegistryImpl() {
+	private FabricEntityDataRegistryImpl() {
 	}
 
 	public static boolean hasStoredVanillaHandlers() {
