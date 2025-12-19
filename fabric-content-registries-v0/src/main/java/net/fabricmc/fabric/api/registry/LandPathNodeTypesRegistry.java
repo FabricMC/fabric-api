@@ -113,17 +113,17 @@ public final class LandPathNodeTypesRegistry {
 	 * You cannot use this method to retrieve vanilla block node types.
 	 *
 	 * @param state    Current block state.
-	 * @param world    Current world.
+	 * @param level    Current level.
 	 * @param pos      Current position.
 	 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
 	 * @return the custom {@link PathType} from the provider registered for the specified block,
-	 * passing the block state, the world, and the position to the provider, or {@code null} if no valid
+	 * passing the block state, the level, and the position to the provider, or {@code null} if no valid
 	 * provider is registered for the block.
 	 */
 	@Nullable
-	public static PathType getPathNodeType(BlockState state, BlockGetter world, BlockPos pos, boolean neighbor) {
+	public static PathType getPathNodeType(BlockState state, BlockGetter level, BlockPos pos, boolean neighbor) {
 		Objects.requireNonNull(state, "BlockState cannot be null!");
-		Objects.requireNonNull(world, "BlockView cannot be null!");
+		Objects.requireNonNull(level, "BlockGetter cannot be null!");
 		Objects.requireNonNull(pos, "BlockPos cannot be null!");
 
 		// Gets the node type provider for the block.
@@ -135,7 +135,7 @@ public final class LandPathNodeTypesRegistry {
 		//If a provider exists, returns the node type obtained from the provider.
 		//The node type can be null too.
 		if (provider instanceof DynamicPathNodeTypeProvider) {
-			return ((DynamicPathNodeTypeProvider) provider).getPathNodeType(state, world, pos, neighbor);
+			return ((DynamicPathNodeTypeProvider) provider).getPathNodeType(state, level, pos, neighbor);
 		} else {
 			return ((StaticPathNodeTypeProvider) provider).getPathNodeType(state, neighbor);
 		}
@@ -201,7 +201,7 @@ public final class LandPathNodeTypesRegistry {
 	}
 
 	/**
-	 * A functional interface that provides the {@link PathType}, given the block state world and position.
+	 * A functional interface that provides the {@link PathType}, given the block state level and position.
 	 */
 	@FunctionalInterface
 	public non-sealed interface DynamicPathNodeTypeProvider extends PathNodeTypeProvider {
@@ -218,13 +218,13 @@ public final class LandPathNodeTypesRegistry {
 		 * close to the block because is dangerous.
 		 *
 		 * @param state    Current block state.
-		 * @param world    Current world.
+		 * @param level    Current level.
 		 * @param pos      Current position.
 		 * @param neighbor Specifies that the block is in a direct neighbor position to an entity path
 		 *                 (directly next to a block that the entity will pass through or above).
 		 * @return the custom {@link PathType} registered for the specified block state at the specified position.
 		 */
 		@Nullable
-		PathType getPathNodeType(BlockState state, BlockGetter world, BlockPos pos, boolean neighbor);
+		PathType getPathNodeType(BlockState state, BlockGetter level, BlockPos pos, boolean neighbor);
 	}
 }

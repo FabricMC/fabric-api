@@ -29,13 +29,13 @@ public final class OxidizableBlocksRegistry {
 	}
 
 	/**
-	 * Registers a block pair as being able to increase and decrease oxidation.
+	 * Registers the next oxidization stage from one block to the other.
 	 *
-	 * @param less the variant with less oxidation
-	 * @param more the variant with more oxidation
+	 * @param from the variant with less oxidation
+	 * @param to the variant with more oxidation
 	 */
-	public static void registerOxidizableBlockPair(Block less, Block more) {
-		OxidizableBlocksRegistryImpl.registerOxidizableBlockPair(less, more);
+	public static void registerNextStage(Block from, Block to) {
+		OxidizableBlocksRegistryImpl.registerNextStage(from, to);
 	}
 
 	/**
@@ -44,8 +44,8 @@ public final class OxidizableBlocksRegistry {
 	 * @param unwaxed the unwaxed variant
 	 * @param waxed   the waxed variant
 	 */
-	public static void registerWaxableBlockPair(Block unwaxed, Block waxed) {
-		OxidizableBlocksRegistryImpl.registerWaxableBlockPair(unwaxed, waxed);
+	public static void registerWaxable(Block unwaxed, Block waxed) {
+		OxidizableBlocksRegistryImpl.registerWaxable(unwaxed, waxed);
 	}
 
 	/**

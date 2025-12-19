@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.WeatheringCopper;
 
 @Mixin(WeatheringCopper.class)
 public interface WeatheringCopperMixin {
-	@Dynamic("lambda$static$0: Synthetic lambda body for Suppliers.memoize in initialization of OXIDATION_LEVEL_INCREASES")
+	@Dynamic("lambda$static$0: Synthetic lambda body for Suppliers.memoize in initialization of NEXT_BY_BLOCK")
 	@Inject(method = "lambda$static$0", at = @At("RETURN"), cancellable = true)
 	private static void createOxidationLevelIncreasesMap(CallbackInfoReturnable<BiMap> cir) {
 		cir.setReturnValue(HashBiMap.create(cir.getReturnValue()));

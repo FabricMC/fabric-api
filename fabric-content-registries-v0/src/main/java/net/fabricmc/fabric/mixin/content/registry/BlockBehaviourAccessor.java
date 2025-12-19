@@ -24,6 +24,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 @Mixin(BlockBehaviour.class)
 public interface BlockBehaviourAccessor {
-	@Invoker("isRandomlyTicking")
-	boolean callHasRandomTicks(BlockState state);
+	@Invoker
+	boolean callIsRandomlyTicking(BlockState state);
 }

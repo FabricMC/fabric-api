@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 @Mixin(ShovelItem.class)
 public interface ShovelItemAccessor {
 	@Accessor("FLATTENABLES")
-	static Map<Block, BlockState> getPathStates() {
+	static Map<Block, BlockState> getFlattenables() {
 		throw new AssertionError("Untransformed @Accessor");
 	}
 }

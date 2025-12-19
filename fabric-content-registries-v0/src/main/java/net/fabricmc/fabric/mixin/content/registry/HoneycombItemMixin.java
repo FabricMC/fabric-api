@@ -28,9 +28,9 @@ import net.minecraft.world.item.HoneycombItem;
 
 @Mixin(HoneycombItem.class)
 public class HoneycombItemMixin {
-	@Dynamic("lambda$static$0: Synthetic lambda body for Suppliers.memoize in initialization of UNWAXED_TO_WAXED_BLOCKS")
+	@Dynamic("lambda$static$0: Synthetic lambda body for Suppliers.memoize in initialization of WAXABLES")
 	@Inject(method = "lambda$static$0", at = @At("RETURN"), cancellable = true)
-	private static void createUnwaxedToWaxedMap(CallbackInfoReturnable<BiMap> cir) {
+	private static void createWaxables(CallbackInfoReturnable<BiMap> cir) {
 		cir.setReturnValue(HashBiMap.create(cir.getReturnValue()));
 	}
 }
