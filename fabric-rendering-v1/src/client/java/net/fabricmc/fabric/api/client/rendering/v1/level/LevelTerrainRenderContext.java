@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendering.v1.world;
+package net.fabricmc.fabric.api.client.rendering.v1.level;
 
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
 
 @ApiStatus.NonExtendable
-public interface WorldTerrainRenderContext extends AbstractWorldRenderContext {
+public interface LevelTerrainRenderContext extends AbstractLevelRenderContext {
 	/**
 	 * The render state for all chunk section to be rendered.
 	 *
 	 * <p>Render states contain information about the current frame used for rendering,
-	 * and should be used instead of accessing the world or other objects directly from rendering events.
+	 * and should be used instead of accessing the level or other objects directly from rendering events.
 	 */
-	ChunkSectionsToRender sectionState();
+	ChunkSectionsToRender sectionsToRender();
 }

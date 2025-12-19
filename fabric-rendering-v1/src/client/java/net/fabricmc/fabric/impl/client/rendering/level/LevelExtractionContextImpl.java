@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.rendering.world;
+package net.fabricmc.fabric.impl.client.rendering.level;
 
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
@@ -28,38 +28,38 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.state.LevelRenderState;
 
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldExtractionContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
 
-public class WorldExtractionContextImpl implements WorldExtractionContext {
+public class LevelExtractionContextImpl implements LevelExtractionContext {
 	private GameRenderer gameRenderer;
-	private LevelRenderer worldRenderer;
-	private LevelRenderState worldRenderState;
-	private ClientLevel world;
+	private LevelRenderer levelRenderer;
+	private LevelRenderState levelRenderState;
+	private ClientLevel level;
 	private Camera camera;
 	@Nullable
 	private Frustum frustum;
-	private DeltaTracker tickCounter;
+	private DeltaTracker deltaTracker;
 	private Matrix4f viewMatrix;
 	private Matrix4f cullProjectionMatrix;
 	private boolean blockOutlines;
 
 	public void prepare(
 			GameRenderer gameRenderer,
-			LevelRenderer worldRenderer,
-			LevelRenderState worldRenderState,
-			ClientLevel world,
-			DeltaTracker tickCounter,
+			LevelRenderer levelRenderer,
+			LevelRenderState levelRenderState,
+			ClientLevel level,
+			DeltaTracker deltaTracker,
 			boolean blockOutlines,
 			Camera camera,
 			Matrix4f viewMatrix,
 			Matrix4f cullProjectionMatrix
 	) {
 		this.gameRenderer = gameRenderer;
-		this.worldRenderer = worldRenderer;
-		this.worldRenderState = worldRenderState;
-		this.world = world;
+		this.levelRenderer = levelRenderer;
+		this.levelRenderState = levelRenderState;
+		this.level = level;
 
-		this.tickCounter = tickCounter;
+		this.deltaTracker = deltaTracker;
 		this.blockOutlines = blockOutlines;
 		this.camera = camera;
 		this.viewMatrix = viewMatrix;
@@ -78,18 +78,18 @@ public class WorldExtractionContextImpl implements WorldExtractionContext {
 	}
 
 	@Override
-	public LevelRenderer worldRenderer() {
-		return worldRenderer;
+	public LevelRenderer levelRenderer() {
+		return levelRenderer;
 	}
 
 	@Override
-	public LevelRenderState worldState() {
-		return worldRenderState;
+	public LevelRenderState levelState() {
+		return levelRenderState;
 	}
 
 	@Override
-	public ClientLevel world() {
-		return world;
+	public ClientLevel level() {
+		return level;
 	}
 
 	@Override
@@ -104,8 +104,8 @@ public class WorldExtractionContextImpl implements WorldExtractionContext {
 	}
 
 	@Override
-	public DeltaTracker tickCounter() {
-		return this.tickCounter;
+	public DeltaTracker deltaTracker() {
+		return this.deltaTracker;
 	}
 
 	@Override

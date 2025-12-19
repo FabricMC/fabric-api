@@ -29,8 +29,8 @@ public interface HudElement {
 	/**
 	 * Renders the HUD element.
 	 *
-	 * @param context the {@link GuiGraphics} used for rendering
-	 * @param tickCounter the {@link DeltaTracker} providing timing information
+	 * @param graphics the {@link GuiGraphics} used for rendering
+	 * @param deltaTracker the {@link DeltaTracker} providing timing information
 	 */
-	void render(GuiGraphics context, DeltaTracker tickCounter);
+	void render(GuiGraphics graphics, DeltaTracker deltaTracker);
 }

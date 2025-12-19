@@ -77,9 +77,9 @@ public interface ArmorRenderer {
 	 * @param delegateModelState    the model state of the delegate model
 	 * @param setDelegateAngles     {@code true} if the {@link Model#setupAnim(Object)} method should be called for the
 	 *                                             delegate model after it is called for the source model
-	 * @param queue                 the {@link OrderedSubmitNodeCollector}
-	 * @param matrices              the matrix stack
-	 * @param renderLayer           the render layer
+	 * @param nodeCollector         the {@link OrderedSubmitNodeCollector}
+	 * @param poseStack             the pose stack
+	 * @param renderType            the render type
 	 * @param light                 packed lightmap coordinates
 	 * @param overlay               packed overlay texture coordinates
 	 * @param tintedColor           the color to tint the model with
@@ -89,8 +89,10 @@ public interface ArmorRenderer {
 	 * @param <S>                   state type of the source model
 	 * @param <D>                   state type of the delegate model
 	 */
-	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, OrderedSubmitNodeCollector queue, PoseStack matrices, RenderType renderLayer, int light, int overlay, int tintedColor, @Nullable TextureAtlasSprite sprite, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
-		queue.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, tintedColor, sprite, outlineColor, crumblingOverlay);
+	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, OrderedSubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, int light, int overlay, int tintedColor, @Nullable TextureAtlasSprite sprite, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+		nodeCollector.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState),
+				poseStack,
+				renderType, light, overlay, tintedColor, sprite, outlineColor, crumblingOverlay);
 	}
 
 	/**
@@ -102,9 +104,9 @@ public interface ArmorRenderer {
 	 * @param delegateModelState    the model state of the delegate model
 	 * @param setDelegateAngles     {@code true} if the {@link Model#setupAnim(Object)} method should be called for the
 	 *                                             delegate model after it is called for the source model
-	 * @param queue                 the {@link OrderedSubmitNodeCollector}
-	 * @param matrices              the matrix stack
-	 * @param renderLayer           the render layer
+	 * @param nodeCollector         the {@link OrderedSubmitNodeCollector}
+	 * @param poseStack             the pose stack
+	 * @param renderType            the render type
 	 * @param light                 packed lightmap coordinates
 	 * @param overlay               packed overlay texture coordinates
 	 * @param outlineColor          the outline color of the model
@@ -112,22 +114,24 @@ public interface ArmorRenderer {
 	 * @param <S>                   state type of the source model
 	 * @param <D>                   state type of the delegate model
 	 */
-	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, OrderedSubmitNodeCollector queue, PoseStack matrices, RenderType renderLayer, int light, int overlay, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
-		queue.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState), matrices, renderLayer, light, overlay, outlineColor, crumblingOverlay);
+	static <S, D> void submitTransformCopyingModel(Model<? super S> sourceModel, S sourceModelState, Model<? super D> delegateModel, D delegateModelState, boolean setDelegateAngles, OrderedSubmitNodeCollector nodeCollector, PoseStack poseStack, RenderType renderType, int light, int overlay, int outlineColor, ModelFeatureRenderer.@Nullable CrumblingOverlay crumblingOverlay) {
+		nodeCollector.submitModel(TransformCopyingModel.create(sourceModel, delegateModel, setDelegateAngles), Pair.of(sourceModelState, delegateModelState),
+				poseStack,
+				renderType, light, overlay, outlineColor, crumblingOverlay);
 	}
 
 	/**
 	 * Renders an armor part.
 	 *
-	 * @param matrices                  the matrix stack
-	 * @param orderedRenderCommandQueue the {@link SubmitNodeCollector} instance
+	 * @param poseStack                 the pose stack
+	 * @param submitNodeCollector       the {@link SubmitNodeCollector} instance
 	 * @param stack                     the item stack of the armor item
-	 * @param bipedEntityRenderState    the render state of the entity
+	 * @param humanoidRenderState       the render state of the entity
 	 * @param slot                      the equipment slot in which the armor stack is worn
 	 * @param light                     packed lightmap coordinates
 	 * @param contextModel              the model provided by {@link RenderLayer#getParentModel()}
 	 */
-	void render(PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, ItemStack stack, HumanoidRenderState bipedEntityRenderState, EquipmentSlot slot, int light, HumanoidModel<HumanoidRenderState> contextModel);
+	void render(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack stack, HumanoidRenderState humanoidRenderState, EquipmentSlot slot, int light, HumanoidModel<HumanoidRenderState> contextModel);
 
 	/**
 	 * Checks whether an item stack equipped on the head should also be

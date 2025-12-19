@@ -35,10 +35,10 @@ public interface HudRenderCallback {
 	});
 
 	/**
-	 * Called after rendering the whole hud, which is displayed in game, in a world.
+	 * Called after rendering the whole hud, which is displayed in game, in a level.
 	 *
-	 * @param drawContext the {@link GuiGraphics} instance
-	 * @param tickCounter the {@link DeltaTracker} instance
+	 * @param graphics the {@link GuiGraphics} instance
+	 * @param deltaTracker the {@link DeltaTracker} instance
 	 */
-	void onHudRender(GuiGraphics drawContext, DeltaTracker tickCounter);
+	void onHudRender(GuiGraphics graphics, DeltaTracker deltaTracker);
 }

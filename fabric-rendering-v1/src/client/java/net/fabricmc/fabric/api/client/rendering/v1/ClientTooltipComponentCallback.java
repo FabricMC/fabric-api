@@ -27,16 +27,17 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Allows registering a mapping from {@link TooltipComponent} to {@link ClientTooltipComponent}.
- * This allows custom tooltips for items: first, override {@link Item#getTooltipImage} and return a custom {@code TooltipData}.
- * Second, register a listener to this event and convert the data to your component implementation if it's an instance of your data class.
+ * This allows custom tooltips for items: first, override {@link Item#getTooltipImage} and return a custom {@link TooltipComponent}.
+ * Second, register a listener to this event and convert the component to your client component implementation if it's an instance of your component class.
  *
- * <p>Note that failure to map some data to a component will throw an exception,
- * so make sure that any data you return in {@link Item#getTooltipImage} will be handled by one of the callbacks.
+ * <p>Note that failure to map some components to a client component will throw an exception,
+ * so make sure that any components you return in {@link Item#getTooltipImage} will be handled by one of the callbacks.
  */
-public interface TooltipComponentCallback {
-	Event<TooltipComponentCallback> EVENT = EventFactory.createArrayBacked(TooltipComponentCallback.class, listeners -> data -> {
-		for (TooltipComponentCallback listener : listeners) {
-			ClientTooltipComponent component = listener.getComponent(data);
+public interface ClientTooltipComponentCallback {
+	Event<ClientTooltipComponentCallback> EVENT = EventFactory.createArrayBacked(
+			ClientTooltipComponentCallback.class, listeners -> data -> {
+		for (ClientTooltipComponentCallback listener : listeners) {
+			ClientTooltipComponent component = listener.getClientComponent(data);
 
 			if (component != null) {
 				return component;
@@ -47,8 +48,8 @@ public interface TooltipComponentCallback {
 	});
 
 	/**
-	 * Return the tooltip component for the passed data, or null if none is available.
+	 * Return the client tooltip component for the passed tooltip component, or null if none is available.
 	 */
 	@Nullable
-	ClientTooltipComponent getComponent(TooltipComponent data);
+	ClientTooltipComponent getClientComponent(TooltipComponent component);
 }

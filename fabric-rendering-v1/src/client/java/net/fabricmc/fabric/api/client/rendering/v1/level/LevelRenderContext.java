@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendering.v1.world;
+package net.fabricmc.fabric.api.client.rendering.v1.level;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.ApiStatus;
@@ -23,22 +23,22 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 
 @ApiStatus.NonExtendable
-public interface WorldRenderContext extends WorldTerrainRenderContext {
-	SubmitNodeCollector commandQueue();
+public interface LevelRenderContext extends LevelTerrainRenderContext {
+	SubmitNodeCollector submitNodeCollector();
 
-	PoseStack matrices();
+	PoseStack poseStack();
 
 	/**
-	 * The {@code VertexConsumerProvider} instance being used by the world renderer for most non-terrain renders.
+	 * The {@code VertexConsumerProvider} instance being used by the level renderer for most non-terrain renders.
 	 * Generally this will be better for most use cases because quads for the same layer can be buffered
-	 * incrementally and then drawn all at once by the world renderer.
+	 * incrementally and then drawn all at once by the level renderer.
 	 *
 	 * <p>IMPORTANT - all vertex coordinates sent to consumers should be relative to the camera to
-	 * be consistent with other quads emitted by the world renderer and other mods.  If this isn't
+	 * be consistent with other quads emitted by the level renderer and other mods.  If this isn't
 	 * possible, caller should use a separate "immediate" instance.
 	 *
 	 * <p>Renders that cannot draw in one of the supported events must be drawn directly to the frame buffer,
-	 * preferably in {@link WorldRenderEvents#END_MAIN} to avoid being overdrawn or cleared.
+	 * preferably in {@link LevelRenderEvents#END_MAIN} to avoid being overdrawn or cleared.
 	 */
-	MultiBufferSource consumers();
+	MultiBufferSource bufferSource();
 }

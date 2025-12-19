@@ -22,12 +22,12 @@ import java.util.Map;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
 
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 
-public final class EntityModelLayerImpl {
-	public static final Map<ModelLayerLocation, EntityModelLayerRegistry.TexturedModelDataProvider> PROVIDERS = new HashMap<>();
-	public static final Map<ArmorModelSet<ModelLayerLocation>, EntityModelLayerRegistry.TexturedEquipmentModelDataProvider> EQUIPMENT_PROVIDERS = new HashMap<>();
+public final class ModelLayerImpl {
+	public static final Map<ModelLayerLocation, ModelLayerRegistry.TexturedLayerDefinitionProvider> PROVIDERS = new HashMap<>();
+	public static final Map<ArmorModelSet<ModelLayerLocation>, ModelLayerRegistry.TexturedArmorModelSetProvider> ARMOR_PROVIDERS = new HashMap<>();
 
-	private EntityModelLayerImpl() {
+	private ModelLayerImpl() {
 	}
 }

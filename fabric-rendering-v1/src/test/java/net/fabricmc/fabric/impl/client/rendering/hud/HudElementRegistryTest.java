@@ -167,16 +167,18 @@ public class HudElementRegistryTest {
 	}
 
 	private void assertOrder(List<String> expectedLayers) {
-		GuiGraphics drawContext = mock(GuiGraphics.class);
-		DeltaTracker tickCounter = mock(DeltaTracker.class);
+		GuiGraphics graphics = mock(GuiGraphics.class);
+		DeltaTracker deltaTracker = mock(DeltaTracker.class);
 		Matrix3x2fStack matrixStack = mock(Matrix3x2fStack.class);
 
-		when(drawContext.pose()).thenReturn(matrixStack);
+		when(graphics.pose()).thenReturn(matrixStack);
 
 		drawnLayers.clear();
 
 		for (Identifier id : HudElementRegistryImpl.VANILLA_ELEMENT_IDS) {
-			HudElementRegistryImpl.ROOT_ELEMENTS.get(id).render(drawContext, tickCounter, (ctx, tc) -> { });
+			HudElementRegistryImpl.ROOT_ELEMENTS.get(id).render(
+					graphics,
+					deltaTracker, (_, _) -> { });
 		}
 
 		assertEquals(expectedLayers, drawnLayers);

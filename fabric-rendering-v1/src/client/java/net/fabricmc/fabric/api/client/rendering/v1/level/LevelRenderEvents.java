@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendering.v1.world;
+package net.fabricmc.fabric.api.client.rendering.v1.level;
 
 import org.jspecify.annotations.Nullable;
 
@@ -38,8 +38,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>To attach modded data to vanilla render states, see {@link net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState FabricRenderState}.
  * Only attach the minimum data needed for rendering. Do not attach objects that are not thread-safe such as {@link net.minecraft.client.multiplayer.ClientLevel}.
  */
-public final class WorldRenderEvents {
-	private WorldRenderEvents() { }
+public final class LevelRenderEvents {
+	private LevelRenderEvents() { }
 
 	/**
 	 * Called after the block outline render state is extracted, before it is drawn.
@@ -193,7 +193,7 @@ public final class WorldRenderEvents {
 	 * terrain, and translucent terrain are drawn to the framebuffer,
 	 * before particles, clouds, weather, and late debug are drawn to the framebuffer.
 	 *
-	 * <p>Use to draw on top of the world before hand and GUI are drawn.
+	 * <p>Use to draw on top of the level before hand and GUI are drawn.
 	 */
 	public static final Event<EndMain> END_MAIN = EventFactory.createArrayBacked(EndMain.class, callbacks -> context -> {
 		for (final EndMain callback : callbacks) {
@@ -203,46 +203,46 @@ public final class WorldRenderEvents {
 
 	@FunctionalInterface
 	public interface AfterBlockOutlineExtraction {
-		void afterBlockOutlineExtraction(WorldExtractionContext context, @Nullable HitResult result);
+		void afterBlockOutlineExtraction(LevelExtractionContext context, @Nullable HitResult result);
 	}
 
 	@FunctionalInterface
 	public interface EndExtraction {
-		void endExtraction(WorldExtractionContext context);
+		void endExtraction(LevelExtractionContext context);
 	}
 
 	@FunctionalInterface
 	public interface StartMain {
-		void startMain(WorldTerrainRenderContext context);
+		void startMain(LevelTerrainRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface BeforeEntities {
-		void beforeEntities(WorldRenderContext context);
+		void beforeEntities(LevelRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface AfterEntities {
-		void afterEntities(WorldRenderContext context);
+		void afterEntities(LevelRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface DebugRender {
-		void beforeDebugRender(WorldRenderContext context);
+		void beforeDebugRender(LevelRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface BeforeTranslucent {
-		void beforeTranslucent(WorldRenderContext context);
+		void beforeTranslucent(LevelRenderContext context);
 	}
 
 	@FunctionalInterface
 	public interface BeforeBlockOutline {
-		boolean beforeBlockOutline(WorldRenderContext context, BlockOutlineRenderState outlineRenderState);
+		boolean beforeBlockOutline(LevelRenderContext context, BlockOutlineRenderState outlineRenderState);
 	}
 
 	@FunctionalInterface
 	public interface EndMain {
-		void endMain(WorldRenderContext context);
+		void endMain(LevelRenderContext context);
 	}
 }

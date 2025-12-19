@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendering.v1.world;
+package net.fabricmc.fabric.api.client.rendering.v1.level;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.state.LevelRenderState;
 
 @ApiStatus.NonExtendable
-public interface AbstractWorldRenderContext {
+public interface AbstractLevelRenderContext {
 	/**
 	 * The game renderer instance.
 	 *
@@ -32,19 +32,19 @@ public interface AbstractWorldRenderContext {
 	GameRenderer gameRenderer();
 
 	/**
-	 * The world renderer instance doing the rendering and invoking the event.
+	 * The level renderer instance doing the rendering and invoking the event.
 	 *
-	 * @return WorldRenderer instance invoking the event
+	 * @return {@link LevelRenderer} instance invoking the event
 	 */
-	LevelRenderer worldRenderer();
+	LevelRenderer levelRenderer();
 
 	/**
-	 * The render state for the world being rendered.
+	 * The render state for the level being rendered.
 	 *
 	 * <p>Render states contain information about the current frame used for rendering,
-	 * and should be used instead of accessing the world or other objects directly from rendering events.
+	 * and should be used instead of accessing the level or other objects directly from rendering events.
 	 *
-	 * @return WorldRenderState instance
+	 * @return {@link LevelRenderState} instance
 	 */
-	LevelRenderState worldState();
+	LevelRenderState levelState();
 }

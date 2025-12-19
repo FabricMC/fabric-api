@@ -367,19 +367,19 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 
 	private static void replaceVanillaElement(Identifier id, ResolvedHeightProvider heightProvider) {
 		HudElementRegistry.replaceElement(id, (HudElement layer) -> {
-			return (GuiGraphics context, DeltaTracker tickCounter) -> {
+			return (GuiGraphics graphics, DeltaTracker deltaTracker) -> {
 				Player player = ((GuiAccessor) Minecraft.getInstance().gui).fabric$callGetCameraPlayer();
 				int height = player != null ? heightProvider.getResolvedHeight(player) : 0;
 
 				if (height != 0) {
-					context.pose().pushMatrix();
-					context.pose().translate(0.0F, height);
+					graphics.pose().pushMatrix();
+					graphics.pose().translate(0.0F, height);
 				}
 
-				layer.render(context, tickCounter);
+				layer.render(graphics, deltaTracker);
 
 				if (height != 0) {
-					context.pose().popMatrix();
+					graphics.pose().popMatrix();
 				}
 			};
 		});

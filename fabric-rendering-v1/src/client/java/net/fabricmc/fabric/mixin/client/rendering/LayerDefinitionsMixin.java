@@ -30,19 +30,19 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
 
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.impl.client.rendering.EntityModelLayerImpl;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.impl.client.rendering.ModelLayerImpl;
 
 @Mixin(LayerDefinitions.class)
 abstract class LayerDefinitionsMixin {
 	@Inject(method = "createRoots", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;"))
 	private static void registerExtraModelData(CallbackInfoReturnable<Map<ModelLayerLocation, LayerDefinition>> info, @Local ImmutableMap.Builder<ModelLayerLocation, LayerDefinition> builder) {
-		for (Map.Entry<ModelLayerLocation, EntityModelLayerRegistry.TexturedModelDataProvider> entry : EntityModelLayerImpl.PROVIDERS.entrySet()) {
-			builder.put(entry.getKey(), entry.getValue().createModelData());
+		for (Map.Entry<ModelLayerLocation, ModelLayerRegistry.TexturedLayerDefinitionProvider> entry : ModelLayerImpl.PROVIDERS.entrySet()) {
+			builder.put(entry.getKey(), entry.getValue().createLayerDefinition());
 		}
 
-		for (Map.Entry<ArmorModelSet<ModelLayerLocation>, EntityModelLayerRegistry.TexturedEquipmentModelDataProvider> entry : EntityModelLayerImpl.EQUIPMENT_PROVIDERS.entrySet()) {
-			entry.getKey().putFrom(entry.getValue().createEquipmentModelData(), builder);
+		for (Map.Entry<ArmorModelSet<ModelLayerLocation>, ModelLayerRegistry.TexturedArmorModelSetProvider> entry : ModelLayerImpl.ARMOR_PROVIDERS.entrySet()) {
+			entry.getKey().putFrom(entry.getValue().createArmorModelSet(), builder);
 		}
 	}
 }

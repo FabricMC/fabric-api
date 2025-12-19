@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendering.v1.world;
+package net.fabricmc.fabric.api.client.rendering.v1.level;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Matrix4fc;
@@ -26,20 +26,20 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 
 @ApiStatus.NonExtendable
-public interface WorldExtractionContext extends AbstractWorldRenderContext {
+public interface LevelExtractionContext extends AbstractLevelRenderContext {
 	/**
 	 * Convenient access to {@link LevelRenderer#level}.
 	 *
-	 * @return the world renderer's client world instance
+	 * @return the level renderer's client level instance
 	 */
 	@SuppressWarnings("JavadocReference")
-	ClientLevel world();
+	ClientLevel level();
 
 	Camera camera();
 
 	Frustum frustum();
 
-	DeltaTracker tickCounter();
+	DeltaTracker deltaTracker();
 
 	Matrix4fc viewMatrix();
 
