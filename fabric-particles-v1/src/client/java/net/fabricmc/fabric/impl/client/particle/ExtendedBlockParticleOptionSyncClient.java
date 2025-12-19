@@ -20,13 +20,13 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.impl.particle.ExtendedBlockParticleOptionSync;
 
-public class ExtendedBlockStateParticleEffectSyncClient implements ClientModInitializer {
+public class ExtendedBlockParticleOptionSyncClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// Register a receiver so ExtendedBlockStateParticleEffectSync#shouldEncodeFallback can detect that this client
 		// supports extended data
 		ClientConfigurationNetworking.registerGlobalReceiver(
-				ExtendedBlockParticleOptionSync.DummyPayload.ID, (payload, context) -> {
-		});
+				ExtendedBlockParticleOptionSync.DummyPayload.ID, (_, _) -> {
+			});
 	}
 }

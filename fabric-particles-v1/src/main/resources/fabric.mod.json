@@ -24,7 +24,7 @@
 	    "net.fabricmc.fabric.impl.particle.ExtendedBlockParticleOptionSync"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.client.particle.ExtendedBlockStateParticleEffectSyncClient"
+	    "net.fabricmc.fabric.impl.client.particle.ExtendedBlockParticleOptionSyncClient"
     ]
   },
   "description": "Hooks for registering custom particles.",
