@@ -47,16 +47,16 @@ public class RecipeSyncImpl implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.serverboundConfiguration().register(SupportedRecipeSerializersPayloadC2S.ID, SupportedRecipeSerializersPayloadC2S.CODEC);
-		PayloadTypeRegistry.clientboundPlay().registerLarge(RecipeSyncPayloadS2C.ID, RecipeSyncPayloadS2C.CODEC, RECIPE_PAYLOAD_MAX_SIZE);
+		PayloadTypeRegistry.serverboundConfiguration().register(ServerboundSupportedRecipeSerializersPayload.TYPE, ServerboundSupportedRecipeSerializersPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().registerLarge(ClientBoundRecipeSyncPayload.TYPE, ClientBoundRecipeSyncPayload.CODEC, RECIPE_PAYLOAD_MAX_SIZE);
 
-		ServerConfigurationNetworking.registerGlobalReceiver(SupportedRecipeSerializersPayloadC2S.ID, RecipeSyncImpl::onRecipeSyncRequest);
+		ServerConfigurationNetworking.registerGlobalReceiver(ServerboundSupportedRecipeSerializersPayload.TYPE, RecipeSyncImpl::onRecipeSyncRequest);
 
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.addPhaseOrdering(Event.DEFAULT_PHASE, RECIPE_SYNC_EVENT_PHASE);
 		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(RECIPE_SYNC_EVENT_PHASE, RecipeSyncImpl::sendRecipes);
 	}
 
-	private static void onRecipeSyncRequest(SupportedRecipeSerializersPayloadC2S payload, ServerConfigurationNetworking.Context context) {
+	private static void onRecipeSyncRequest(ServerboundSupportedRecipeSerializersPayload payload, ServerConfigurationNetworking.Context context) {
 		var set = new ReferenceOpenHashSet<RecipeSerializer<?>>();
 
 		for (Identifier identifier : payload.synchronizedSerializers()) {
@@ -68,7 +68,7 @@ public class RecipeSyncImpl implements ModInitializer {
 	}
 
 	private static void sendRecipes(ServerPlayer player, boolean exist) {
-		if (!ServerPlayNetworking.canSend(player, RecipeSyncPayloadS2C.ID)) {
+		if (!ServerPlayNetworking.canSend(player, ClientBoundRecipeSyncPayload.TYPE)) {
 			return;
 		}
 
@@ -76,13 +76,13 @@ public class RecipeSyncImpl implements ModInitializer {
 
 		SyncedSerializerAwarePreparedRecipe accessor = (SyncedSerializerAwarePreparedRecipe) ((RecipeManagerAccessor) player.level().recipeAccess()).getPreparedRecipes();
 
-		var list = new ArrayList<RecipeSyncPayloadS2C.Entry>();
+		var list = new ArrayList<ClientBoundRecipeSyncPayload.Entry>();
 
 		for (RecipeSerializer<?> serializer : serializers) {
 			List<RecipeHolder<?>> recipes = accessor.fabric_getRecipesBySyncedSerializer(serializer);
 
 			if (recipes != null && !recipes.isEmpty()) {
-				list.add(new RecipeSyncPayloadS2C.Entry(serializer, recipes));
+				list.add(new ClientBoundRecipeSyncPayload.Entry(serializer, recipes));
 			}
 		}
 
@@ -90,7 +90,7 @@ public class RecipeSyncImpl implements ModInitializer {
 			return;
 		}
 
-		ServerPlayNetworking.send(player, new RecipeSyncPayloadS2C(list));
+		ServerPlayNetworking.send(player, new ClientBoundRecipeSyncPayload(list));
 	}
 
 	public static void addSynchronizedSerializer(RecipeSerializer<?> serializer) {

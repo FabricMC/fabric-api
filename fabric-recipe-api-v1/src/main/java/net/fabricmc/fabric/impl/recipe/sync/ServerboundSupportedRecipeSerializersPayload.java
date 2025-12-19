@@ -28,15 +28,15 @@ import net.minecraft.resources.Identifier;
 /**
  * Used to notify server which recipes can be synced to the client.
  */
-public record SupportedRecipeSerializersPayloadC2S(Set<Identifier> synchronizedSerializers) implements CustomPacketPayload {
-	public static final StreamCodec<FriendlyByteBuf, SupportedRecipeSerializersPayloadC2S> CODEC = StreamCodec.composite(
-			ByteBufCodecs.collection(HashSet::new, Identifier.STREAM_CODEC), SupportedRecipeSerializersPayloadC2S::synchronizedSerializers,
-			SupportedRecipeSerializersPayloadC2S::new
+public record ServerboundSupportedRecipeSerializersPayload(Set<Identifier> synchronizedSerializers) implements CustomPacketPayload {
+	public static final StreamCodec<FriendlyByteBuf, ServerboundSupportedRecipeSerializersPayload> CODEC = StreamCodec.composite(
+			ByteBufCodecs.collection(HashSet::new, Identifier.STREAM_CODEC), ServerboundSupportedRecipeSerializersPayload::synchronizedSerializers,
+			ServerboundSupportedRecipeSerializersPayload::new
 	);
-	public static final Type<SupportedRecipeSerializersPayloadC2S> ID = new Type<>(Identifier.fromNamespaceAndPath("fabric", "recipe_sync/supported_serializers"));
+	public static final Type<ServerboundSupportedRecipeSerializersPayload> TYPE = new Type<>(Identifier.fromNamespaceAndPath("fabric", "recipe_sync/supported_serializers"));
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
-		return ID;
+		return TYPE;
 	}
 }
