@@ -108,11 +108,11 @@ public final class AttachmentRegistryImpl {
 		}
 
 		@Deprecated
-		public AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate) {
-			Objects.requireNonNull(packetCodec, "packet codec cannot be null");
+		public AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> streamCodec, AttachmentSyncPredicate syncPredicate) {
+			Objects.requireNonNull(streamCodec, "packet codec cannot be null");
 			Objects.requireNonNull(syncPredicate, "sync predicate cannot be null");
 
-			this.packetCodec = packetCodec;
+			this.packetCodec = streamCodec;
 			this.syncPredicate = syncPredicate;
 			return this;
 		}

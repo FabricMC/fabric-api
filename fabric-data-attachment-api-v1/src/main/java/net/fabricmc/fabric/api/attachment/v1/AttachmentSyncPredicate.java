@@ -35,7 +35,7 @@ public interface AttachmentSyncPredicate extends BiPredicate<AttachmentTarget, S
 	 * @return a predicate that syncs an attachment with all clients
 	 */
 	static AttachmentSyncPredicate all() {
-		return (t, p) -> true;
+		return (_, _) -> true;
 	}
 
 	/**
