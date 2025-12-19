@@ -56,7 +56,7 @@ public class ShapelessRecipeMixin {
 	}
 
 	@Inject(at = @At("HEAD"), method = "matches(Lnet/minecraft/world/item/crafting/CraftingInput;Lnet/minecraft/world/level/Level;)Z", cancellable = true)
-	public void customIngredientMatch(CraftingInput recipeInput, Level world, CallbackInfoReturnable<Boolean> cir) {
+	public void customIngredientMatch(CraftingInput recipeInput, Level level, CallbackInfoReturnable<Boolean> cir) {
 		if (fabric_requiresTesting) {
 			List<ItemStack> nonEmptyStacks = new ArrayList<>(recipeInput.ingredientCount());
 
