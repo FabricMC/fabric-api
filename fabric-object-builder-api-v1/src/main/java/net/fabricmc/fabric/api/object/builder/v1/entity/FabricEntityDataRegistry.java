@@ -22,13 +22,13 @@ import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.impl.object.builder.FabricTrackedDataRegistryImpl;
+import net.fabricmc.fabric.impl.object.builder.FabricEntityDataRegistryImpl;
 
 /**
  * Allows registering custom {@link EntityDataSerializer}s in a reliable way.
  */
-public final class FabricTrackedDataRegistry {
-	private FabricTrackedDataRegistry() {
+public final class FabricEntityDataRegistry {
+	private FabricEntityDataRegistry() {
 	}
 
 	/**
@@ -42,7 +42,7 @@ public final class FabricTrackedDataRegistry {
 	 * The integer IDs of vanilla handlers are guaranteed to remain constant.
 	 */
 	public static void register(Identifier id, EntityDataSerializer<?> handler) {
-		FabricTrackedDataRegistryImpl.register(id, handler);
+		FabricEntityDataRegistryImpl.register(id, handler);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public final class FabricTrackedDataRegistry {
 	 */
 	@Nullable
 	public static EntityDataSerializer<?> get(Identifier id) {
-		return FabricTrackedDataRegistryImpl.get(id);
+		return FabricEntityDataRegistryImpl.get(id);
 	}
 
 	/**
@@ -59,6 +59,6 @@ public final class FabricTrackedDataRegistry {
 	 */
 	@Nullable
 	public static Identifier getId(EntityDataSerializer<?> handler) {
-		return FabricTrackedDataRegistryImpl.getId(handler);
+		return FabricEntityDataRegistryImpl.getId(handler);
 	}
 }

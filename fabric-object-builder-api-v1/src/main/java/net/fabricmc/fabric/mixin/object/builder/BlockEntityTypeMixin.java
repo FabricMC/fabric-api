@@ -49,7 +49,7 @@ public class BlockEntityTypeMixin<T extends BlockEntity> implements FabricBlockE
 	}
 
 	@Override
-	public void addSupportedBlock(Block block) {
+	public void addValidBlock(Block block) {
 		Objects.requireNonNull(block, "block");
 		validBlocks.add(block);
 	}

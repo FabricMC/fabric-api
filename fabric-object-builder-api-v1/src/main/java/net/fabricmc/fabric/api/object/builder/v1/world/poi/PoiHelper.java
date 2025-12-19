@@ -33,11 +33,11 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * This class provides utilities to create a {@link PoiType}.
  *
- * <p>A point of interest is typically used by villagers to specify their workstation blocks, meeting zones and homes.
+ * <p>A point of interest or POI is typically used by villagers to specify their workstation blocks, meeting zones and homes.
  * Points of interest are also used by bees to specify where their bee hive is and nether portals to find existing portals.
  */
-public final class PointOfInterestHelper {
-	private PointOfInterestHelper() {
+public final class PoiHelper {
+	private PoiHelper() {
 	}
 
 	/**
