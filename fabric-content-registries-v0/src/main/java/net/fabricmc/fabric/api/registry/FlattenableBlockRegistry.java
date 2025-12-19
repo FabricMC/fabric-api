@@ -44,7 +44,7 @@ public final class FlattenableBlockRegistry {
 	public static void register(Block input, BlockState flattened) {
 		Objects.requireNonNull(input, "input block cannot be null");
 		Objects.requireNonNull(flattened, "flattened block state cannot be null");
-		BlockState old = ShovelItemAccessor.getPathStates().put(input, flattened);
+		BlockState old = ShovelItemAccessor.getFlattenables().put(input, flattened);
 
 		if (old != null) {
 			LOGGER.debug("Replaced old flattening mapping from {} to {} with {}", input, old, flattened);

@@ -56,25 +56,25 @@ abstract class LootPoolBuilderMixin implements FabricLootPoolBuilder {
 	}
 
 	@Override
-	public LootPool.Builder with(LootPoolEntryContainer entry) {
+	public LootPool.Builder add(LootPoolEntryContainer entry) {
 		this.entries.add(entry);
 		return self();
 	}
 
 	@Override
-	public LootPool.Builder with(Collection<? extends LootPoolEntryContainer> entries) {
+	public LootPool.Builder add(Collection<? extends LootPoolEntryContainer> entries) {
 		this.entries.addAll(entries);
 		return self();
 	}
 
 	@Override
-	public LootPool.Builder conditionally(LootItemCondition condition) {
+	public LootPool.Builder when(LootItemCondition condition) {
 		this.conditions.add(condition);
 		return self();
 	}
 
 	@Override
-	public LootPool.Builder conditionally(Collection<? extends LootItemCondition> conditions) {
+	public LootPool.Builder when(Collection<? extends LootItemCondition> conditions) {
 		this.conditions.addAll(conditions);
 		return self();
 	}

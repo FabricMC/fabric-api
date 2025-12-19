@@ -53,7 +53,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
@@ -84,15 +84,15 @@ public final class EntityEventTests implements ModInitializer {
 		Registry.register(BuiltInRegistries.ITEM, TEST_BED_KEY.identifier(), new BlockItem(TEST_BED, new Item.Properties().setId(ResourceKey.create(Registries.ITEM, TEST_BED_KEY.identifier()))));
 		Registry.register(BuiltInRegistries.ITEM, DIAMOND_ELYTRA_KEY, DIAMOND_ELYTRA);
 
-		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed, damageSource) -> {
+		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((level, entity, killed, damageSource) -> {
 			LOGGER.info("Entity {} Killed: {}, source {}", entity, killed, damageSource);
 		});
 
-		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
+		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> {
 			LOGGER.info("Moved player {}: [{} -> {}]", player, origin.dimension().identifier(), destination.dimension().identifier());
 		});
 
-		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.register((originalEntity, newEntity, origin, destination) -> {
+		ServerEntityLevelChangeEvents.AFTER_ENTITY_CHANGE_LEVEL.register((originalEntity, newEntity, origin, destination) -> {
 			LOGGER.info("Moved entity {} -> {}: [({} -> {}]", originalEntity, newEntity, origin.dimension().identifier(), destination.dimension().identifier());
 		});
 

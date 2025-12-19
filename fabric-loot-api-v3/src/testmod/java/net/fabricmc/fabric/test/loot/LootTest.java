@@ -56,7 +56,7 @@ public class LootTest implements ModInitializer {
 		// Test loot table load event
 		// The LootTable.Builder LootPool.Builder methods here should use
 		// prebuilt entries and pools to test the injected methods.
-		LootTableEvents.REPLACE.register((key, original, source, registries) -> {
+		LootTableEvents.REPLACE.register((key, original, source, provider) -> {
 			if (Blocks.BLACK_WOOL.getLootTable().orElse(null) == key) {
 				if (source != LootTableSource.VANILLA) {
 					throw new AssertionError("black wool loot table should have LootTableSource.VANILLA, got " + source);
@@ -64,7 +64,7 @@ public class LootTest implements ModInitializer {
 
 				// Replace black wool drops with an iron ingot
 				LootPool pool = LootPool.lootPool()
-						.with(LootItem.lootTableItem(Items.IRON_INGOT).build())
+						.add(LootItem.lootTableItem(Items.IRON_INGOT).build())
 						.build();
 
 				return LootTable.lootTable().pool(pool).build();
@@ -74,7 +74,7 @@ public class LootTest implements ModInitializer {
 		});
 
 		// Test that the event is stopped when the loot table is replaced
-		LootTableEvents.REPLACE.register((key, original, source, registries) -> {
+		LootTableEvents.REPLACE.register((key, original, source, provider) -> {
 			if (Blocks.BLACK_WOOL.getLootTable().orElse(null) == key) {
 				throw new AssertionError("Event should have been stopped from replaced loot table");
 			}
@@ -82,7 +82,7 @@ public class LootTest implements ModInitializer {
 			return null;
 		});
 
-		LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
+		LootTableEvents.MODIFY.register((key, tableBuilder, source, provider) -> {
 			if (Blocks.BLACK_WOOL.getLootTable().orElse(null) == key && source != LootTableSource.REPLACED) {
 				throw new AssertionError("black wool loot table should have LootTableSource.REPLACED, got " + source);
 			}
@@ -94,8 +94,8 @@ public class LootTest implements ModInitializer {
 
 				// Add gold ingot with custom name to white wool drops
 				LootPool pool = LootPool.lootPool()
-						.with(LootItem.lootTableItem(Items.GOLD_INGOT).build())
-						.conditionally(ExplosionCondition.survivesExplosion().build())
+						.add(LootItem.lootTableItem(Items.GOLD_INGOT).build())
+						.when(ExplosionCondition.survivesExplosion().build())
 						.apply(SetNameFunction.setName(Component.literal("Gold from White Wool"), SetNameFunction.Target.CUSTOM_NAME).build())
 						.build();
 
@@ -114,9 +114,9 @@ public class LootTest implements ModInitializer {
 			}
 		});
 
-		LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
+		LootTableEvents.MODIFY.register((key, tableBuilder, source, provider) -> {
 			if (EntityType.SALMON.getDefaultLootTable().orElse(null) == key) {
-				Optional<Holder<Enchantment>> lure = registries.lookup(Registries.ENCHANTMENT).flatMap(registry -> registry.get(Enchantments.LURE));
+				Optional<Holder<Enchantment>> lure = provider.lookup(Registries.ENCHANTMENT).flatMap(registry -> registry.get(Enchantments.LURE));
 
 				lure.ifPresent((lureEnchantment) -> tableBuilder.withPool(LootPool.lootPool().add(
 						LootItem.lootTableItem(Items.FISHING_ROD)
@@ -134,10 +134,10 @@ public class LootTest implements ModInitializer {
 			}
 		});
 
-		RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> matchGetter = RecipeManager.createCheck(RecipeType.SMELTING);
+		RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> cachedCheck = RecipeManager.createCheck(RecipeType.SMELTING);
 
 		// smelt any smeltable drops from blocks broken with a diamond pickaxe
-		LootTableEvents.MODIFY_DROPS.register((entry, context, drops) -> {
+		LootTableEvents.MODIFY_DROPS.register((holder, context, drops) -> {
 			if (!context.hasParameter(LootContextParams.TOOL) || !context.hasParameter(LootContextParams.BLOCK_STATE)) {
 				return;
 			}
@@ -148,12 +148,12 @@ public class LootTest implements ModInitializer {
 				return;
 			}
 
-			ServerLevel world = context.getLevel();
-			HolderLookup.Provider lookup = world.registryAccess();
+			ServerLevel level = context.getLevel();
+			HolderLookup.Provider lookup = level.registryAccess();
 
 			drops.replaceAll(drop -> {
 				SingleRecipeInput input = new SingleRecipeInput(drop);
-				return matchGetter.getRecipeFor(input, world).map(RecipeHolder::value)
+				return cachedCheck.getRecipeFor(input, level).map(RecipeHolder::value)
 						.map(recipe -> recipe.assemble(input, lookup))
 						.orElse(drop);
 			});
@@ -180,12 +180,12 @@ public class LootTest implements ModInitializer {
 		}
 
 		@Override
-		public void modifyLootTableDrops(Holder<LootTable> entry, LootContext context, List<ItemStack> drops) {
+		public void modifyLootTableDrops(Holder<LootTable> holder, LootContext context, List<ItemStack> drops) {
 			if (running) return;
 
 			try {
 				running = true;
-				inner.modifyLootTableDrops(entry, context, drops);
+				inner.modifyLootTableDrops(holder, context, drops);
 			} finally {
 				running = false;
 			}

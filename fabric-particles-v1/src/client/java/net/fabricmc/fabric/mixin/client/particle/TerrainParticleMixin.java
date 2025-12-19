@@ -57,7 +57,7 @@ abstract class TerrainParticleMixin extends SingleQuadParticle {
 			allow = 1
 	)
 	private BlockState removeUntintableParticles(BlockState state, @Local(argsOnly = true) ClientLevel world, @Local(argsOnly = true) BlockPos blockPos) {
-		if (!ParticleRenderEvents.ALLOW_BLOCK_DUST_TINT.invoker().allowBlockDustTint(state, world, blockPos)) {
+		if (!ParticleRenderEvents.ALLOW_TERRAIN_PARTICLE_TINT.invoker().allowTerrainParticleTint(state, world, blockPos)) {
 			// As of 1.20.1, vanilla hardcodes grass block particles to not get tinted.
 			return Blocks.GRASS_BLOCK.defaultBlockState();
 		}

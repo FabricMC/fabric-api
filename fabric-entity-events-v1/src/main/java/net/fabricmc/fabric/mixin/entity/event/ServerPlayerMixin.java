@@ -46,7 +46,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
@@ -81,7 +81,7 @@ abstract class ServerPlayerMixin extends LivingEntityMixin {
 	 */
 	@Inject(method = "triggerDimensionChangeTriggers(Lnet/minecraft/server/level/ServerLevel;)V", at = @At("TAIL"))
 	private void afterWorldChanged(ServerLevel origin, CallbackInfo ci) {
-		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.invoker().afterChangeWorld((ServerPlayer) (Object) this, origin, this.level());
+		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.invoker().afterChangeLevel((ServerPlayer) (Object) this, origin, this.level());
 	}
 
 	@Inject(method = "restoreFrom", at = @At("TAIL"))

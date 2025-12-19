@@ -52,9 +52,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface UseEntityCallback {
 	Event<UseEntityCallback> EVENT = EventFactory.createArrayBacked(UseEntityCallback.class,
-			(listeners) -> (player, world, hand, entity, hitResult) -> {
+			(listeners) -> (player, level, hand, entity, hitResult) -> {
 				for (UseEntityCallback event : listeners) {
-					InteractionResult result = event.interact(player, world, hand, entity, hitResult);
+					InteractionResult result = event.interact(player, level, hand, entity, hitResult);
 
 					if (result != InteractionResult.PASS) {
 						return result;
@@ -65,5 +65,5 @@ public interface UseEntityCallback {
 			}
 	);
 
-	InteractionResult interact(Player player, Level world, InteractionHand hand, Entity entity, @Nullable EntityHitResult hitResult);
+	InteractionResult interact(Player player, Level level, InteractionHand hand, Entity entity, @Nullable EntityHitResult hitResult);
 }

@@ -53,17 +53,17 @@ public final class LootUtil {
 		return LootTableSource.DATA_PACK;
 	}
 
-	public static Holder<LootTable> getEntryOrDirect(ServerLevel world, LootTable table) {
-		HolderLookup.Provider wrapperLookup = world
+	public static Holder<LootTable> getEntryOrDirect(ServerLevel level, LootTable table) {
+		HolderLookup.Provider provider = level
 				.getServer()
 				.reloadableRegistries()
 				.lookup();
 
-		HolderLookup<LootTable> lootTableRegistryWrapper = wrapperLookup
+		HolderLookup<LootTable> lootTableHolderLookup = provider
 				.lookup(Registries.LOOT_TABLE)
-				.orElseThrow(() -> new IllegalStateException("Failed to fetch LootTable wrapper from WrapperLookup"));
+				.orElseThrow(() -> new IllegalStateException("Failed to fetch LootTable provider from HolderLookup.Provider"));
 
-		return lootTableRegistryWrapper
+		return lootTableHolderLookup
 				.listElements()
 				.filter(it -> it.value().equals(table))
 				.findFirst()

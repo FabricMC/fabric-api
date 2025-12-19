@@ -67,9 +67,9 @@ abstract class ReloadableServerRegistriesMixin {
 	private static final WeakHashMap<RegistryOps<JsonElement>, HolderLookup.Provider> WRAPPERS = new WeakHashMap<>();
 
 	@WrapOperation(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/HolderLookup$Provider;createSerializationContext(Lcom/mojang/serialization/DynamicOps;)Lnet/minecraft/resources/RegistryOps;"))
-	private static RegistryOps<JsonElement> storeOps(HolderLookup.Provider registries, DynamicOps<JsonElement> ops, Operation<RegistryOps<JsonElement>> original) {
-		RegistryOps<JsonElement> created = original.call(registries, ops);
-		WRAPPERS.put(created, registries);
+	private static RegistryOps<JsonElement> storeOps(HolderLookup.Provider holder, DynamicOps<JsonElement> ops, Operation<RegistryOps<JsonElement>> original) {
+		RegistryOps<JsonElement> created = original.call(holder, ops);
+		WRAPPERS.put(created, holder);
 		return created;
 	}
 
@@ -92,11 +92,11 @@ abstract class ReloadableServerRegistriesMixin {
 
 		ResourceKey<LootTable> key = ResourceKey.create(Registries.LOOT_TABLE, id);
 		// Populated above.
-		HolderLookup.Provider registries = WRAPPERS.get(ops);
+		HolderLookup.Provider provider = WRAPPERS.get(ops);
 		// Populated inside SimpleJsonResourceReloadListenerMixin
 		LootTableSource source = LootUtil.SOURCES.get().getOrDefault(id, LootTableSource.DATA_PACK);
 		// Invoke the REPLACE event for the current loot table.
-		LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(key, table, source, registries);
+		LootTable replacement = LootTableEvents.REPLACE.invoker().replaceLootTable(key, table, source, provider);
 
 		if (replacement != null) {
 			// Set the loot table to MODIFY to be the replacement loot table.
@@ -107,7 +107,7 @@ abstract class ReloadableServerRegistriesMixin {
 
 		// Turn the current table into a modifiable builder and invoke the MODIFY event.
 		LootTable.Builder builder = FabricLootTableBuilder.copyOf(table);
-		LootTableEvents.MODIFY.invoker().modifyLootTable(key, builder, source, registries);
+		LootTableEvents.MODIFY.invoker().modifyLootTable(key, builder, source, provider);
 
 		return (T) builder.build();
 	}
@@ -121,6 +121,6 @@ abstract class ReloadableServerRegistriesMixin {
 
 		LootTableEvents.ALL_LOADED.invoker().onLootTablesLoaded(resourceManager, lootTableRegistry);
 		LootUtil.SOURCES.remove();
-		lootTableRegistry.listElements().forEach(reference -> ((FabricLootTable) reference.value()).fabric$setRegistryEntry(reference));
+		lootTableRegistry.listElements().forEach(reference -> ((FabricLootTable) reference.value()).fabric$setHolder(reference));
 	}
 }

@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.client.particle.ParticleFactoryRegistryImpl;
 
 /**
  * Registry for adding particle factories on the client for
- * particle types created using FabricParticleTypes (or otherwise).
+ * particle types created using {@link FabricParticleTypes} (or otherwise).
  *
  * @see FabricParticleTypes
  */
@@ -67,6 +67,6 @@ public interface ParticleFactoryRegistry {
 		 *
 		 * @return A new particle factory.
 		 */
-		ParticleProvider<T> create(FabricSpriteProvider provider);
+		ParticleProvider<T> create(FabricSpriteSet provider);
 	}
 }

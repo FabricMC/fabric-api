@@ -27,7 +27,7 @@ import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 
-import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectExtension;
+import net.fabricmc.fabric.impl.particle.BlockParticleOptionExtension;
 
 @Mixin(Warden.class)
 abstract class WardenMixin extends Monster implements VibrationSystem {
@@ -37,7 +37,7 @@ abstract class WardenMixin extends Monster implements VibrationSystem {
 
 	@ModifyExpressionValue(method = "clientDiggingParticles", at = @At(value = "NEW", target = "(Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/core/particles/BlockParticleOption;"))
 	private BlockParticleOption modifyBlockStateParticleEffect(BlockParticleOption original) {
-		((BlockStateParticleEffectExtension) original).fabric_setBlockPos(getOnPos());
+		((BlockParticleOptionExtension) original).fabric_setBlockPos(getOnPos());
 		return original;
 	}
 }

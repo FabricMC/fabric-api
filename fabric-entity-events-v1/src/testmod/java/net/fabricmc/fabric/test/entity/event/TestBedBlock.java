@@ -43,21 +43,21 @@ public class TestBedBlock extends Block {
 	}
 
 	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		return SHAPE;
 	}
 
 	@Override
-	public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (state.getValue(OCCUPIED)) {
 			player.displayClientMessage(Component.translatable("block.minecraft.bed.occupied"), true);
 			return InteractionResult.CONSUME;
 		}
 
-		BedRule bedRule = world.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, pos);
+		BedRule bedRule = level.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, pos);
 
-		if (bedRule.canSleep().test(world)) {
-			if (!world.isClientSide()) {
+		if (bedRule.canSleep().test(level)) {
+			if (!level.isClientSide()) {
 				player.startSleepInBed(pos).ifLeft(sleepFailureReason -> {
 					Component message = sleepFailureReason.message();
 

@@ -41,7 +41,7 @@ public interface FabricLootPoolBuilder {
 	 * @param entry the added loot entry
 	 * @return this builder
 	 */
-	default LootPool.Builder with(LootPoolEntryContainer entry) {
+	default LootPool.Builder add(LootPoolEntryContainer entry) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -51,7 +51,7 @@ public interface FabricLootPoolBuilder {
 	 * @param entries the added loot entries
 	 * @return this builder
 	 */
-	default LootPool.Builder with(Collection<? extends LootPoolEntryContainer> entries) {
+	default LootPool.Builder add(Collection<? extends LootPoolEntryContainer> entries) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -61,7 +61,7 @@ public interface FabricLootPoolBuilder {
 	 * @param condition the added condition
 	 * @return this builder
 	 */
-	default LootPool.Builder conditionally(LootItemCondition condition) {
+	default LootPool.Builder when(LootItemCondition condition) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -71,7 +71,7 @@ public interface FabricLootPoolBuilder {
 	 * @param conditions the added conditions
 	 * @return this builder
 	 */
-	default LootPool.Builder conditionally(Collection<? extends LootItemCondition> conditions) {
+	default LootPool.Builder when(Collection<? extends LootItemCondition> conditions) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
@@ -106,8 +106,8 @@ public interface FabricLootPoolBuilder {
 		return LootPool.lootPool()
 				.setRolls(accessor.fabric_getRolls())
 				.setBonusRolls(accessor.fabric_getBonusRolls())
-				.with(accessor.fabric_getEntries())
-				.conditionally(accessor.fabric_getConditions())
+				.add(accessor.fabric_getEntries())
+				.when(accessor.fabric_getConditions())
 				.apply(accessor.fabric_getFunctions());
 	}
 }

@@ -27,7 +27,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 @Mixin(ParticleEngine.class)
 public interface ParticleEngineAccessor {
 	@Accessor("RENDER_ORDER")
-	static List<ParticleRenderType> getParticleTextureSheets() {
+	static List<ParticleRenderType> getParticleRenderTypes() {
 		throw new IllegalStateException();
 	}
 }

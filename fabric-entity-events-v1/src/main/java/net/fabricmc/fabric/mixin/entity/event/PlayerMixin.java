@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 @Mixin(Player.class)
 abstract class PlayerMixin {
 	@Inject(method = "startSleepInBed", at = @At("HEAD"), cancellable = true)
-	private void onTrySleep(BlockPos pos, CallbackInfoReturnable<Either<Player.BedSleepingProblem, Unit>> info) {
+	private void onStartSleepInBed(BlockPos pos, CallbackInfoReturnable<Either<Player.BedSleepingProblem, Unit>> info) {
 		Player.BedSleepingProblem failureReason = EntitySleepEvents.ALLOW_SLEEPING.invoker().allowSleep((Player) (Object) this, pos);
 
 		if (failureReason != null) {
