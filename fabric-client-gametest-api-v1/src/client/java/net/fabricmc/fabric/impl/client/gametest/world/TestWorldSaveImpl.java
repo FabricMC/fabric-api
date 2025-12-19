@@ -51,7 +51,7 @@ public final class TestWorldSaveImpl implements TestWorldSave {
 
 		context.runOnClient(client -> {
 			client.createWorldOpenFlows().openWorld(saveDirectory.getFileName().toString(), () -> {
-				throw new AssertionError("Level loading should not be canceled");
+				throw new AssertionError("World opening should not be canceled");
 			});
 		});
 

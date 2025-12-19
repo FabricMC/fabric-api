@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.gamerule.widget;
+package net.fabricmc.fabric.impl.gamerule.entry;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,11 +30,11 @@ import net.minecraft.world.level.gamerules.GameRule;
 import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
-public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen.GameRuleEntry {
+public final class EnumRuleEntry<E extends Enum<E>> extends EditGameRulesScreen.GameRuleEntry {
 	private final Button buttonWidget;
 	private final String rootTranslationKey;
 
-	public EnumRuleWidget(EditGameRulesScreen gameRuleScreen, Component name, List<FormattedCharSequence> description, final String ruleName, GameRule<E> enumRule, String translationKey) {
+	public EnumRuleEntry(EditGameRulesScreen gameRuleScreen, Component name, List<FormattedCharSequence> description, final String ruleName, GameRule<E> enumRule, String translationKey) {
 		gameRuleScreen.super(description, name);
 		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
 

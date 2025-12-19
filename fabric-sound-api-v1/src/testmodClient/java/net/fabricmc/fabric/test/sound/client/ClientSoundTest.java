@@ -19,8 +19,8 @@ package net.fabricmc.fabric.test.sound.client;
 import net.minecraft.client.Minecraft;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandsRegistrationCallback;
 
 /**
  * Plays a sine wave when the {@code /sine} client command is run.
@@ -30,8 +30,8 @@ public class ClientSoundTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, access) -> {
-			dispatcher.register(ClientCommandManager.literal("sine").executes(o -> {
+		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, access) -> {
+			dispatcher.register(ClientCommands.literal("sine").executes(o -> {
 				Minecraft client = o.getSource().getClient();
 				client.getSoundManager().play(new SineSound(client.player.position()));
 				return 0;

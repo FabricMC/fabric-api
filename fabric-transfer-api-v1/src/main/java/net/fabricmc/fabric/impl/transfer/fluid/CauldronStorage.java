@@ -39,34 +39,34 @@ import net.fabricmc.fabric.impl.transfer.DebugMessages;
  *
  * <p>Implementation notes:
  * <ul>
- *     <li>To make sure multiple access to the same cauldron return the same wrapper, we maintain a {@code (World, BlockPos) -> Wrapper} cache.</li>
- *     <li>The wrapper mutates the world directly with setBlockState, but updates are suppressed.
+ *     <li>To make sure multiple access to the same cauldron return the same wrapper, we maintain a {@code (Level, BlockPos) -> Wrapper} cache.</li>
+ *     <li>The wrapper mutates the level directly with setBlockState, but updates are suppressed.
  *     On final commit, a block update is sent by reverting to {@linkplain #lastReleasedSnapshot the initial block state} with updates suppressed,
  *     then setting the final block state again, without suppressing updates.</li>
  * </ul>
  */
 public class CauldronStorage extends SnapshotParticipant<BlockState> implements SingleSlotStorage<FluidVariant> {
 	// Record is used for convenient constructor, hashcode and equals implementations.
-	private record WorldLocation(Level world, BlockPos pos) {
+	private record LevelLocation(Level level, BlockPos pos) {
 		@Override
 		public String toString() {
-			return DebugMessages.forGlobalPos(world, pos);
+			return DebugMessages.forGlobalPos(level, pos);
 		}
 	}
 
 	// Weak values to make sure wrappers are cleaned up after use, thread-safe.
-	private static final Map<WorldLocation, CauldronStorage> CAULDRONS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
+	private static final Map<LevelLocation, CauldronStorage> CAULDRONS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
 
-	public static CauldronStorage get(Level world, BlockPos pos) {
-		WorldLocation location = new WorldLocation(world, pos.immutable());
+	public static CauldronStorage get(Level level, BlockPos pos) {
+		LevelLocation location = new LevelLocation(level, pos.immutable());
 		return CAULDRONS.computeIfAbsent(location, CauldronStorage::new);
 	}
 
-	private final WorldLocation location;
+	private final LevelLocation location;
 	// this is the last released snapshot, which means it's the first snapshot ever saved when onFinalCommit() is called.
 	private BlockState lastReleasedSnapshot;
 
-	CauldronStorage(WorldLocation location) {
+	CauldronStorage(LevelLocation location) {
 		this.location = location;
 	}
 
@@ -96,7 +96,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 		}
 
 		// Set block state without updates.
-		location.world.setBlock(location.pos, newState, 0);
+		location.level.setBlock(location.pos, newState, 0);
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 				if (levelsExtracted == currentLevel) {
 					// Fully extract -> back to empty cauldron
 					updateSnapshots(transaction);
-					location.world.setBlock(location.pos, Blocks.CAULDRON.defaultBlockState(), 0);
+					location.level.setBlock(location.pos, Blocks.CAULDRON.defaultBlockState(), 0);
 				} else {
 					// Otherwise just decrease levels
 					updateLevel(currentContent, currentLevel - levelsExtracted, transaction);
@@ -189,12 +189,12 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 
 	@Override
 	public BlockState createSnapshot() {
-		return location.world.getBlockState(location.pos);
+		return location.level.getBlockState(location.pos);
 	}
 
 	@Override
 	public void readSnapshot(BlockState savedState) {
-		location.world.setBlock(location.pos, savedState, 0);
+		location.level.setBlock(location.pos, savedState, 0);
 	}
 
 	@Override
@@ -204,9 +204,9 @@ public class CauldronStorage extends SnapshotParticipant<BlockState> implements 
 
 		if (originalState != state) {
 			// Revert change
-			location.world.setBlock(location.pos, originalState, 0);
+			location.level.setBlock(location.pos, originalState, 0);
 			// Then do the actual change with normal block updates
-			location.world.setBlockAndUpdate(location.pos, state);
+			location.level.setBlockAndUpdate(location.pos, state);
 		}
 	}
 

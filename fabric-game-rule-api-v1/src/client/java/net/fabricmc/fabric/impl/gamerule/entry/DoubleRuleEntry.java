@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.gamerule.widget;
+package net.fabricmc.fabric.impl.gamerule.entry;
 
 import java.util.List;
 
@@ -31,43 +31,43 @@ import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
-public final class DoubleRuleWidget extends EditGameRulesScreen.GameRuleEntry {
-	private final EditBox textFieldWidget;
+public final class DoubleRuleEntry extends EditGameRulesScreen.GameRuleEntry {
+	private final EditBox input;
 
-	public DoubleRuleWidget(EditGameRulesScreen gameRuleScreen, Component name, List<FormattedCharSequence> description, final String ruleName, final GameRule<Double> doubleRule) {
+	public DoubleRuleEntry(EditGameRulesScreen gameRuleScreen, Component name, List<FormattedCharSequence> description, final String ruleName, final GameRule<Double> doubleRule) {
 		gameRuleScreen.super(description, name);
 		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
 
-		this.textFieldWidget = new EditBox(Minecraft.getInstance().font, 10, 5, 42, 20,
+		this.input = new EditBox(Minecraft.getInstance().font, 10, 5, 42, 20,
 				name.copy()
 				.append(CommonComponents.NEW_LINE)
 				.append(ruleName)
 				.append(CommonComponents.NEW_LINE)
 		);
 
-		this.textFieldWidget.setValue(accessor.getGameRules().getAsString(doubleRule));
-		this.textFieldWidget.setResponder(value -> {
+		this.input.setValue(accessor.getGameRules().getAsString(doubleRule));
+		this.input.setResponder(value -> {
 			DataResult<Double> dataResult = doubleRule.deserialize(value);
 
 			if (dataResult.isSuccess()) {
-				this.textFieldWidget.setTextColor(0xFFE0E0E0);
-				accessor.callMarkValid(this);
+				this.input.setTextColor(0xFFE0E0E0);
+				accessor.callClearInvalid(this);
 				accessor.getGameRules().set(doubleRule, dataResult.getOrThrow(), null);
 			} else {
-				this.textFieldWidget.setTextColor(0xFFFF0000);
+				this.input.setTextColor(0xFFFF0000);
 				accessor.callMarkInvalid(this);
 			}
 		});
 
-		this.children.add(this.textFieldWidget);
+		this.children.add(this.input);
 	}
 
 	@Override
-	public void renderContent(GuiGraphics drawContext, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		this.renderLabel(drawContext, this.getContentY(), this.getContentX());
+	public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		this.renderLabel(graphics, this.getContentY(), this.getContentX());
 
-		this.textFieldWidget.setX(this.getContentRight() - 44);
-		this.textFieldWidget.setY(this.getContentY());
-		this.textFieldWidget.render(drawContext, mouseX, mouseY, tickDelta);
+		this.input.setX(this.getContentRight() - 44);
+		this.input.setY(this.getContentY());
+		this.input.render(graphics, mouseX, mouseY, tickDelta);
 	}
 }

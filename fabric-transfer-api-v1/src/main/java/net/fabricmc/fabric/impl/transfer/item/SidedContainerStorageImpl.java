@@ -23,18 +23,18 @@ import java.util.List;
 import net.minecraft.core.Direction;
 import net.minecraft.world.WorldlyContainer;
 
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 
 /**
- * Sidedness-aware wrapper around a {@link InventoryStorageImpl} for sided inventories.
+ * Sidedness-aware wrapper around a {@link ContainerStorageImpl} for sided inventories.
  */
-class SidedInventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlotStorage<ItemVariant>> implements InventoryStorage {
-	private final InventoryStorageImpl backingStorage;
+class SidedContainerStorageImpl extends CombinedStorage<ItemVariant, SingleSlotStorage<ItemVariant>> implements ContainerStorage {
+	private final ContainerStorageImpl backingStorage;
 
-	SidedInventoryStorageImpl(InventoryStorageImpl storage, Direction direction) {
+	SidedContainerStorageImpl(ContainerStorageImpl storage, Direction direction) {
 		super(Collections.unmodifiableList(createWrapperList(storage, direction)));
 		this.backingStorage = storage;
 	}
@@ -44,13 +44,13 @@ class SidedInventoryStorageImpl extends CombinedStorage<ItemVariant, SingleSlotS
 		return parts;
 	}
 
-	private static List<SingleSlotStorage<ItemVariant>> createWrapperList(InventoryStorageImpl storage, Direction direction) {
-		WorldlyContainer inventory = (WorldlyContainer) storage.inventory;
+	private static List<SingleSlotStorage<ItemVariant>> createWrapperList(ContainerStorageImpl storage, Direction direction) {
+		WorldlyContainer inventory = (WorldlyContainer) storage.container;
 		int[] availableSlots = inventory.getSlotsForFace(direction);
-		SidedInventorySlotWrapper[] slots = new SidedInventorySlotWrapper[availableSlots.length];
+		WorldlyContainerSlotWrapper[] slots = new WorldlyContainerSlotWrapper[availableSlots.length];
 
 		for (int i = 0; i < availableSlots.length; ++i) {
-			slots[i] = new SidedInventorySlotWrapper(storage.backingList.get(availableSlots[i]), inventory, direction);
+			slots[i] = new WorldlyContainerSlotWrapper(storage.backingList.get(availableSlots[i]), inventory, direction);
 		}
 
 		return Arrays.asList(slots);

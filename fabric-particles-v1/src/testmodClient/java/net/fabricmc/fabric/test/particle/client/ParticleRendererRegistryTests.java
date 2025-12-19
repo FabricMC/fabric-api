@@ -38,8 +38,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandsRegistrationCallback;
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry;
@@ -58,14 +58,14 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 		ParticleRendererRegistry.register(TEST_PARTICLE_TEXTURE_SHEET, TestParticleRenderer::new);
 		ParticleRendererRegistry.registerOrdering(TEST_PARTICLE_TEXTURE_SHEET, ParticleRenderType.ITEM_PICKUP);
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-				dispatcher.register(ClientCommandManager.literal("custom_particles").executes(context -> {
-					ClientLevel world = Minecraft.getInstance().level;
-					RandomSource random = world.getRandom();
+		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+				dispatcher.register(ClientCommands.literal("custom_particles").executes(context -> {
+					ClientLevel level = Minecraft.getInstance().level;
+					RandomSource random = level.getRandom();
 					LocalPlayer player = context.getSource().getPlayer();
 
 					for (int i = 0; i < 35; i++) {
-						world.addParticle(
+						level.addParticle(
 								TEST_PARTICLE_TYPE,
 								player.getX(), player.getY(), player.getZ(),
 								Mth.randomBetween(random, -1.0F, 1.0F),
@@ -80,14 +80,14 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 
 	private record TestParticleFactory(FabricSpriteProvider spriteProvider) implements ParticleProvider<SimpleParticleType> {
 		@Override
-		public Particle createParticle(SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random) {
-			return new TestParticle(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.get(random));
+		public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random) {
+			return new TestParticle(level, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.get(random));
 		}
 	}
 
 	private static class TestParticle extends SingleQuadParticle {
-		TestParticle(ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, TextureAtlasSprite sprite) {
-			super(world, x, y, z, velocityX, velocityY, velocityZ, sprite);
+		TestParticle(ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ, TextureAtlasSprite sprite) {
+			super(level, x, y, z, velocityX, velocityY, velocityZ, sprite);
 		}
 
 		@Override
@@ -106,10 +106,10 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 	}
 
 	private static class TestParticleRenderer extends ParticleGroup<TestParticle> {
-		final QuadParticleRenderState submittable = new QuadParticleRenderState();
+		final QuadParticleRenderState state = new QuadParticleRenderState();
 
-		TestParticleRenderer(ParticleEngine particleManager) {
-			super(particleManager);
+		TestParticleRenderer(ParticleEngine particleEngine) {
+			super(particleEngine);
 		}
 
 		@Override
@@ -119,10 +119,10 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 					continue;
 				}
 
-				particle.extract(this.submittable, camera, tickProgress);
+				particle.extract(this.state, camera, tickProgress);
 			}
 
-			return submittable;
+			return state;
 		}
 	}
 }

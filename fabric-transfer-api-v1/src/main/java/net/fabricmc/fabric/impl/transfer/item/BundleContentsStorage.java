@@ -49,8 +49,8 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		this.originalItem = ctx.getItemVariant().getItem();
 	}
 
-	private boolean updateStack(DataComponentPatch changes, TransactionContext transaction) {
-		ItemVariant newVariant = ctx.getItemVariant().withComponentChanges(changes);
+	private boolean updateStack(DataComponentPatch patch, TransactionContext transaction) {
+		ItemVariant newVariant = ctx.getItemVariant().withComponents(patch);
 		return ctx.exchange(newVariant, 1, transaction) > 0;
 	}
 
@@ -182,7 +182,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 		public long getCapacity() {
 			Fraction remainingSpace = Fraction.ONE.subtract(bundleContents().weight());
 			int extraAllowed = Math.max(
-					remainingSpace.divideBy(BundleContentsAccessor.getOccupancy(getStack())).intValue(),
+					remainingSpace.divideBy(BundleContentsAccessor.getWeight(getStack())).intValue(),
 					0
 			);
 			return getAmount() + extraAllowed;

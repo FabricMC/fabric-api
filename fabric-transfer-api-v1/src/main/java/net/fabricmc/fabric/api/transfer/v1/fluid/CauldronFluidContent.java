@@ -148,7 +148,7 @@ public final class CauldronFluidContent {
 		BLOCK_TO_CAULDRON.putIfAbsent(block, data);
 		FLUID_TO_CAULDRON.putIfAbsent(fluid, data);
 
-		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, context) -> CauldronStorage.get(world, pos), block);
+		FluidStorage.SIDED.registerForBlocks((level, pos, state, be, context) -> CauldronStorage.get(level, pos), block);
 
 		return data;
 	}

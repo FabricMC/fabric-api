@@ -26,22 +26,22 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
 /**
- * Wrapper around an {@link InventorySlotWrapper}, with additional canInsert and canExtract checks.
+ * Wrapper around an {@link ContainerSlotWrapper}, with additional canInsert and canExtract checks.
  */
-class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
-	private final InventorySlotWrapper slotWrapper;
-	private final WorldlyContainer sidedInventory;
+class WorldlyContainerSlotWrapper implements SingleSlotStorage<ItemVariant> {
+	private final ContainerSlotWrapper slotWrapper;
+	private final WorldlyContainer container;
 	private final Direction direction;
 
-	SidedInventorySlotWrapper(InventorySlotWrapper slotWrapper, WorldlyContainer sidedInventory, Direction direction) {
+	WorldlyContainerSlotWrapper(ContainerSlotWrapper slotWrapper, WorldlyContainer container, Direction direction) {
 		this.slotWrapper = slotWrapper;
-		this.sidedInventory = sidedInventory;
+		this.container = container;
 		this.direction = direction;
 	}
 
 	@Override
 	public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-		if (!sidedInventory.canPlaceItemThroughFace(slotWrapper.slot, ((ItemVariantImpl) resource).getCachedStack(), direction)) {
+		if (!container.canPlaceItemThroughFace(slotWrapper.slot, ((ItemVariantImpl) resource).getCachedStack(), direction)) {
 			return 0;
 		} else {
 			return slotWrapper.insert(resource, maxAmount, transaction);
@@ -50,7 +50,7 @@ class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 
 	@Override
 	public long extract(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-		if (!sidedInventory.canTakeItemThroughFace(slotWrapper.slot, ((ItemVariantImpl) resource).getCachedStack(), direction)) {
+		if (!container.canTakeItemThroughFace(slotWrapper.slot, ((ItemVariantImpl) resource).getCachedStack(), direction)) {
 			return 0;
 		} else {
 			return slotWrapper.extract(resource, maxAmount, transaction);
@@ -84,6 +84,6 @@ class SidedInventorySlotWrapper implements SingleSlotStorage<ItemVariant> {
 
 	@Override
 	public String toString() {
-		return "SidedInventorySlotWrapper[%s#%d/%s]".formatted(DebugMessages.forInventory(sidedInventory), slotWrapper.slot, direction.name());
+		return "WorldlyContainerSlotWrapper[%s#%d/%s]".formatted(DebugMessages.forInventory(container), slotWrapper.slot, direction.name());
 	}
 }

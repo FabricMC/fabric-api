@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 /**
  * An item variant storage backed by an {@link ItemStack}.
  * Implementors should at least override {@link #getStack} and {@link #setStack},
- * and probably {@link #onFinalCommit} as well for {@code markDirty()} and similar calls.
+ * and probably {@link #onFinalCommit} as well for {@code setChanged()} and similar calls.
  *
  * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which items may be inserted or extracted.
  * If one of these two functions is overridden to always return false, implementors may also wish to override

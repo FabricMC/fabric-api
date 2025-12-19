@@ -26,7 +26,7 @@ import net.minecraft.world.item.component.BundleContents;
 @Mixin(BundleContents.class)
 public interface BundleContentsAccessor {
 	@Invoker("getWeight")
-	static Fraction getOccupancy(ItemStack stack) {
+	static Fraction getWeight(ItemStack stack) {
 		throw new AssertionError("This shouldn't happen!");
 	}
 }

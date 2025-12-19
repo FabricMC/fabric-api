@@ -68,7 +68,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 			{
 				setDebugHud(context, true);
-				singleplayer.getClientWorld().waitForChunksRender();
+				singleplayer.getClientLevel().waitForChunksRender();
 				context.takeScreenshot("in_game_overworld");
 			}
 
@@ -98,13 +98,13 @@ public class ClientGameTestTest implements FabricClientGameTest {
 		}
 
 		try (TestSingleplayerContext singleplayer = spWorldSave.open()) {
-			singleplayer.getClientWorld().waitForChunksRender();
+			singleplayer.getClientLevel().waitForChunksRender();
 			context.takeScreenshot("in_game_overworld_2");
 		}
 
 		try (TestDedicatedServerContext server = context.worldBuilder().createServer()) {
 			try (TestServerConnection connection = server.connect()) {
-				connection.getClientWorld().waitForChunksRender();
+				connection.getClientLevel().waitForChunksRender();
 				context.takeScreenshot("server_in_game");
 
 				{ // Test that we can enter and exit configuration
@@ -124,7 +124,7 @@ public class ClientGameTestTest implements FabricClientGameTest {
 
 	private static void waitForTitleScreenFade(ClientGameTestContext context) {
 		context.waitFor(client -> {
-			return !(client.screen instanceof TitleScreenAccessor titleScreen) || !titleScreen.getDoBackgroundFade();
+			return !(client.screen instanceof TitleScreenAccessor titleScreen) || !titleScreen.isFading();
 		});
 	}
 

@@ -28,6 +28,6 @@ import net.minecraft.network.chat.Component;
 @Mixin(EntitySelectorOptions.class)
 public interface EntitySelectorOptionsAccessor {
 	@Invoker("register")
-	static void callPutOption(String id, EntitySelectorOptions.Modifier handler, Predicate<EntitySelectorParser> condition, Component description) {
+	static void callPutOption(String id, EntitySelectorOptions.Modifier modifier, Predicate<EntitySelectorParser> condition, Component description) {
 	}
 }

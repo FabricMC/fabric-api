@@ -53,7 +53,7 @@ public class EmptyBucketStorage implements InsertionOnlyStorage<FluidVariant> {
 		Item fullBucket = resource.getFluid().getBucket();
 
 		// Make sure the resource is a correct fluid mapping: the fluid <-> bucket mapping must be bidirectional.
-		if (fullBucket instanceof BucketItemAccessor accessor && resource.isOf(accessor.fabric_getFluid())) {
+		if (fullBucket instanceof BucketItemAccessor accessor && resource.isOf(accessor.fabric_getContent())) {
 			if (maxAmount >= FluidConstants.BUCKET) {
 				ItemVariant newVariant = ItemVariant.of(fullBucket, context.getItemVariant().getComponents());
 

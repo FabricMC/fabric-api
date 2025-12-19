@@ -35,7 +35,7 @@ public final class EnumRuleCommand {
 		String name = enumRule.toString();
 		literalArgumentBuilder.then(literal(name).executes(context -> {
 			// We can use the vanilla query method
-			return GameRuleCommandAccessor.invokeExecuteQuery(context.getSource(), enumRule);
+			return GameRuleCommandAccessor.callQueryRule(context.getSource(), enumRule);
 		}));
 
 		// The LiteralRuleType handles the executeSet

@@ -29,8 +29,8 @@ public final class GameRuleEvents {
 	private GameRuleEvents() {
 	}
 
-	public static <T> Event<ValueUpdate<T>> changeCallback(GameRule<T> rule) {
-		return GameRuleEventsImpl.changeCallback(rule);
+	public static <T> Event<ValueUpdate<T>> changeCallback(GameRule<T> gameRule) {
+		return GameRuleEventsImpl.changeCallback(gameRule);
 	}
 
 	/**

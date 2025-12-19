@@ -29,7 +29,7 @@ import net.fabricmc.fabric.impl.client.gametest.TestInputImpl;
 @Mixin(InputConstants.class)
 public class InputConstantsMixin {
 	@Inject(method = "isKeyDown", at = @At("HEAD"), cancellable = true)
-	private static void useGameTestInputForKeyPressed(Window window, int keyCode, CallbackInfoReturnable<Boolean> cir) {
+	private static void useGameTestInputForKeyDown(Window window, int keyCode, CallbackInfoReturnable<Boolean> cir) {
 		cir.setReturnValue(TestInputImpl.isKeyDown(keyCode));
 	}
 
@@ -39,7 +39,7 @@ public class InputConstantsMixin {
 	}
 
 	@Inject(method = "grabOrReleaseMouse", at = @At("HEAD"), cancellable = true)
-	private static void disableCursorLocking(CallbackInfo ci) {
+	private static void disableCursorGrabbing(CallbackInfo ci) {
 		ci.cancel();
 	}
 }

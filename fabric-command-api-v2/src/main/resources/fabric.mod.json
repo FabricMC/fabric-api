@@ -32,7 +32,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/commands/arguments/selector/EntitySelectorParser": ["net/fabricmc/fabric/api/command/v2/FabricEntitySelectorReader"]
+      "net/minecraft/commands/arguments/selector/EntitySelectorParser": ["net/fabricmc/fabric/api/command/v2/FabricEntitySelectorParser"]
     }
   }
 }

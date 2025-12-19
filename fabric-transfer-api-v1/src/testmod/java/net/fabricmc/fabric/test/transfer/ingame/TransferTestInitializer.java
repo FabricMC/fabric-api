@@ -67,13 +67,13 @@ public class TransferTestInitializer implements ModInitializer {
 		FLUID_CHUTE_TYPE = FabricBlockEntityTypeBuilder.create(FluidChuteBlockEntity::new, FLUID_CHUTE).build();
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "fluid_chute"), FLUID_CHUTE_TYPE);
 
-		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeStorage.WATER, INFINITE_WATER_SOURCE);
-		FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeStorage.LAVA, INFINITE_LAVA_SOURCE);
+		FluidStorage.SIDED.registerForBlocks((level, pos, state, be, direction) -> CreativeStorage.WATER, INFINITE_WATER_SOURCE);
+		FluidStorage.SIDED.registerForBlocks((level, pos, state, be, direction) -> CreativeStorage.LAVA, INFINITE_LAVA_SOURCE);
 
 		// Obsidian is now a trash can :-P
-		ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashingStorage.ITEM, Blocks.OBSIDIAN);
+		ItemStorage.SIDED.registerForBlocks((level, pos, state, be, direction) -> TrashingStorage.ITEM, Blocks.OBSIDIAN);
 		// And diamond ore blocks are an infinite source of diamonds! Yay!
-		ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeStorage.DIAMONDS, Blocks.DIAMOND_ORE);
+		ItemStorage.SIDED.registerForBlocks((level, pos, state, be, direction) -> CreativeStorage.DIAMONDS, Blocks.DIAMOND_ORE);
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			dispatcher.register(

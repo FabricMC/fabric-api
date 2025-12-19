@@ -26,7 +26,7 @@ import net.minecraft.world.level.gamerules.GameRule;
 @Mixin(GameRuleCommand.class)
 public interface GameRuleCommandAccessor {
 	@Invoker("queryRule")
-	static <T> int invokeExecuteQuery(CommandSourceStack serverCommandSource, GameRule<T> ruleKey) {
+	static <T> int callQueryRule(CommandSourceStack source, GameRule<T> gameRule) {
 		throw new AssertionError("This shouldn't happen!");
 	}
 }

@@ -41,7 +41,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
@@ -79,7 +79,7 @@ class FluidItemTests extends AbstractTransferApiTest {
 			// Check that it filled slot 0.
 			if (!stackEquals(testInventory.getItem(0), Items.WATER_BUCKET, 1)) throw new AssertionError("Should have filled slot 0.");
 			// Now we yeet the bucket just because we can.
-			SingleSlotStorage<ItemVariant> slot0 = InventoryStorage.of(testInventory, null).getSlots().get(0);
+			SingleSlotStorage<ItemVariant> slot0 = ContainerStorage.of(testInventory, null).getSlots().get(0);
 			if (slot0.extract(waterBucket, 1, transaction) != 1) throw new AssertionError("Failed to yeet bucket.");
 			// Now insert should fill slot 1 with a bucket.
 			if (slot1Storage.insert(water, BUCKET, transaction) != BUCKET) throw new AssertionError("Failed to insert.");
@@ -110,11 +110,11 @@ class FluidItemTests extends AbstractTransferApiTest {
 	}
 
 	private static class InventoryContainerItem implements ContainerItemContext {
-		private final InventoryStorage inventory;
+		private final ContainerStorage inventory;
 		private final SingleSlotStorage<ItemVariant> slot;
 
 		InventoryContainerItem(Container inv, int slotIndex) {
-			this.inventory = InventoryStorage.of(inv, null);
+			this.inventory = ContainerStorage.of(inv, null);
 			this.slot = inventory.getSlots().get(slotIndex);
 		}
 

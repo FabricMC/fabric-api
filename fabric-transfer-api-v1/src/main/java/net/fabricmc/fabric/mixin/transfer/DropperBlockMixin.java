@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.DropperBlock;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -69,7 +69,7 @@ public class DropperBlockMixin {
 			}
 
 			StorageUtil.move(
-					InventoryStorage.of(dispenser, null).getSlot(slot),
+					ContainerStorage.of(dispenser, null).getSlot(slot),
 					target,
 					k -> true,
 					1,

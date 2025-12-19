@@ -57,18 +57,18 @@ public abstract class NoOverlayFluid extends FlowingFluid {
 	}
 
 	@Override
-	protected boolean canConvertToSource(ServerLevel world) {
+	protected boolean canConvertToSource(ServerLevel level) {
 		return true;
 	}
 
 	@Override
-	protected void beforeDestroyingBlock(LevelAccessor world, BlockPos pos, BlockState state) {
-		BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
-		Block.dropResources(state, world, pos, blockEntity);
+	protected void beforeDestroyingBlock(LevelAccessor level, BlockPos pos, BlockState state) {
+		BlockEntity blockEntity = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
+		Block.dropResources(state, level, pos, blockEntity);
 	}
 
 	@Override
-	public int getSlopeFindDistance(LevelReader world) {
+	public int getSlopeFindDistance(LevelReader level) {
 		return 4;
 	}
 
@@ -83,17 +83,17 @@ public abstract class NoOverlayFluid extends FlowingFluid {
 	}
 
 	@Override
-	public int getDropOff(LevelReader world) {
+	public int getDropOff(LevelReader level) {
 		return 1;
 	}
 
 	@Override
-	public int getTickDelay(LevelReader world) {
+	public int getTickDelay(LevelReader level) {
 		return 5;
 	}
 
 	@Override
-	public boolean canBeReplacedWith(FluidState state, BlockGetter world, BlockPos pos, Fluid fluid, Direction direction) {
+	public boolean canBeReplacedWith(FluidState state, BlockGetter level, BlockPos pos, Fluid fluid, Direction direction) {
 		return direction == Direction.DOWN && !fluid.isSame(TestFluids.NO_OVERLAY);
 	}
 

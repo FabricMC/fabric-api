@@ -23,8 +23,8 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandsRegistrationCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientHandleChatInputEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientLogChatMessageEvents;
 
@@ -34,12 +34,12 @@ public class ChatTestClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		//Register test client commands
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommandManager.literal("block").then(ClientCommandManager.literal("send").executes(context -> {
+		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommands.literal("block").then(ClientCommands.literal("send").executes(context -> {
 			throw new AssertionError("This client command should be blocked!");
 		}))));
-		//Register the modified result command from ClientHandleChatInputEvents#MODIFY_COMMAND to ensure that MODIFY_COMMAND executes before the client command api
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommandManager.literal("sending").then(ClientCommandManager.literal("modified").then(ClientCommandManager.literal("command").then(ClientCommandManager.literal("message").executes(context -> {
-			LOGGER.info("Command modified by ClientHandleChatInputEvents#MODIFY_COMMAND successfully processed by fabric client command api");
+		//Register the modified result command from ClientSendMessageEvents#MODIFY_COMMAND to ensure that MODIFY_COMMAND executes before the client command api
+		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(ClientCommands.literal("sending").then(ClientCommands.literal("modified").then(ClientCommands.literal("command").then(ClientCommands.literal("message").executes(context -> {
+			LOGGER.info("Command modified by ClientSendMessageEvents#MODIFY_COMMAND successfully processed by fabric client command api");
 			return Command.SINGLE_SUCCESS;
 		}))))));
 		//Test client send message events

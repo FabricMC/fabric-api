@@ -87,11 +87,11 @@ public interface FabricClientCommandSource extends SharedSuggestionProvider {
 	}
 
 	/**
-	 * Gets the world where the player used the command.
+	 * Gets the level where the player used the command.
 	 *
-	 * @return the world
+	 * @return the level
 	 */
-	ClientLevel getWorld();
+	ClientLevel getLevel();
 
 	/**
 	 * Gets the meta property under {@code key} that was assigned to this source.

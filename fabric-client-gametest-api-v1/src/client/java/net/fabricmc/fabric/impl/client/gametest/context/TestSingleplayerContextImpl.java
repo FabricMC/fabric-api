@@ -23,7 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientLevelContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
@@ -32,13 +32,13 @@ import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 public class TestSingleplayerContextImpl implements TestSingleplayerContext {
 	private final ClientGameTestContext context;
 	private final TestWorldSave worldSave;
-	private final TestClientWorldContext clientWorld;
+	private final TestClientLevelContext clientLevel;
 	private final TestServerContext server;
 
 	public TestSingleplayerContextImpl(ClientGameTestContext context, TestWorldSave worldSave, MinecraftServer server) {
 		this.context = context;
 		this.worldSave = worldSave;
-		this.clientWorld = new TestClientWorldContextImpl(context);
+		this.clientLevel = new TestClientLevelContextImpl(context);
 		this.server = new TestServerContextImpl(server);
 	}
 
@@ -48,8 +48,8 @@ public class TestSingleplayerContextImpl implements TestSingleplayerContext {
 	}
 
 	@Override
-	public TestClientWorldContext getClientWorld() {
-		return clientWorld;
+	public TestClientLevelContext getClientLevel() {
+		return clientLevel;
 	}
 
 	@Override

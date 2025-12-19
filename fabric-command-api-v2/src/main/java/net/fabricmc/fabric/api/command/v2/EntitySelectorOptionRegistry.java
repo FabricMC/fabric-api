@@ -41,30 +41,30 @@ public final class EntitySelectorOptionRegistry {
 	 * <pre>{@code
 	 * EntitySelectorOptionRegistry.register(
 	 * 	Identifier.fromNamespaceAndPath("modid", "min_health"),
-	 * 	Text.literal("Minimum entity health"),
-	 * 	(reader) -> {
-	 * 	    final float minHealth = reader.getReader().readFloat();
+	 * 	Component.literal("Minimum entity health"),
+	 * 	(parser) -> {
+	 * 	    final float minHealth = parser.getReader().readFloat();
 	 *
 	 * 	    if (minHealth > 0) {
-	 * 	        reader.addPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);
+	 * 	        parser.addPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);
 	 * 	    }
 	 * 	},
-	 * 	(reader) -> true
+	 * 	(parser) -> true
 	 * );
 	 * }</pre>
 	 *
 	 * <p>By default, a selector option can be used multiple times. To make a non-repeatable
-	 * option, either use {@link FabricEntitySelectorReader} to flag the existence of an option
+	 * option, either use {@link FabricEntitySelectorParser} to flag the existence of an option
 	 * and check it inside {@code canUse}, or use {@link #registerNonRepeatable} instead of this
 	 * method.
 	 *
 	 * @param id the ID of the option
 	 * @param description the description of the option
-	 * @param handler the handler for the entity option that reads and sets the predicate
+	 * @param modifier the modifier for the entity option that reads and sets the predicate
 	 * @param canUse the predicate that checks whether the option is syntactically valid
 	 */
-	public static void register(Identifier id, Component description, EntitySelectorOptions.Modifier handler, Predicate<EntitySelectorParser> canUse) {
-		EntitySelectorOptionsAccessor.callPutOption(id.toDebugFileName(), handler, canUse, description);
+	public static void register(Identifier id, Component description, EntitySelectorOptions.Modifier modifier, Predicate<EntitySelectorParser> canUse) {
+		EntitySelectorOptionsAccessor.callPutOption(id.toDebugFileName(), modifier, canUse, description);
 	}
 
 	/**
@@ -73,12 +73,12 @@ public final class EntitySelectorOptionRegistry {
 	 *
 	 * @param id the ID of the option
 	 * @param description the description of the option
-	 * @param handler the handler for the entity option that reads and sets the predicate
+	 * @param modifier the modifier for the entity option that reads and sets the predicate
 	 */
-	public static void registerNonRepeatable(Identifier id, Component description, EntitySelectorOptions.Modifier handler) {
-		register(id, description, (reader) -> {
-			handler.handle(reader);
-			reader.setCustomFlag(id, true);
-		}, (reader) -> !reader.getCustomFlag(id)); // has a flag = used before
+	public static void registerNonRepeatable(Identifier id, Component description, EntitySelectorOptions.Modifier modifier) {
+		register(id, description, (parser) -> {
+			modifier.handle(parser);
+			parser.setCustomFlag(id, true);
+		}, (parser) -> !parser.getCustomFlag(id)); // has a flag = used before
 	}
 }

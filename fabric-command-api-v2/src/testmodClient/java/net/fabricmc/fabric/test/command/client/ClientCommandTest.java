@@ -32,8 +32,8 @@ import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandsRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
@@ -47,16 +47,16 @@ public final class ClientCommandTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal("test_client_command").executes(context -> {
+		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
+			dispatcher.register(ClientCommands.literal("test_client_command").executes(context -> {
 				context.getSource().sendFeedback(Component.literal("This is a client command!"));
 
 				if (context.getSource().getClient() == null) {
 					throw IS_NULL.create("client");
 				}
 
-				if (context.getSource().getWorld() == null) {
-					throw IS_NULL.create("world");
+				if (context.getSource().getLevel() == null) {
+					throw IS_NULL.create("level");
 				}
 
 				if (context.getSource().getPlayer() == null) {
@@ -67,8 +67,8 @@ public final class ClientCommandTest implements ClientModInitializer {
 			}));
 
 			// Command with argument
-			dispatcher.register(ClientCommandManager.literal("test_client_command_with_arg").then(
-					ClientCommandManager.argument("number", DoubleArgumentType.doubleArg()).executes(context -> {
+			dispatcher.register(ClientCommands.literal("test_client_command_with_arg").then(
+					ClientCommands.argument("number", DoubleArgumentType.doubleArg()).executes(context -> {
 						double number = DoubleArgumentType.getDouble(context, "number");
 
 						// Test error formatting
@@ -79,13 +79,13 @@ public final class ClientCommandTest implements ClientModInitializer {
 			));
 
 			// Unexecutable command
-			dispatcher.register(ClientCommandManager.literal("hidden_client_command").requires(source -> false).executes(context -> {
+			dispatcher.register(ClientCommands.literal("hidden_client_command").requires(source -> false).executes(context -> {
 				throw UNEXECUTABLE_EXECUTED.create();
 			}));
 
 			// Command with argument using CommandRegistryAccess
-			dispatcher.register(ClientCommandManager.literal("test_client_command_with_registry_using_arg").then(
-					ClientCommandManager.argument("item", ItemArgument.item(registryAccess)).executes(context -> {
+			dispatcher.register(ClientCommands.literal("test_client_command_with_registry_using_arg").then(
+					ClientCommands.argument("item", ItemArgument.item(buildContext)).executes(context -> {
 						final ItemInput item = ItemArgument.getItem(context, "item");
 						context.getSource().sendFeedback(item.createItemStack(1, false).getDisplayName());
 
@@ -97,15 +97,15 @@ public final class ClientCommandTest implements ClientModInitializer {
 			String commandWithCondition = "test_client_command_with_condition_toggle";
 			// The user should check whether the command is suggested iff the condition evaluates to true
 			// Initially, the command should not be suggested, as the command flag is initially false
-			dispatcher.register(ClientCommandManager.literal(commandWithCondition).requires(source -> commandFlag).executes(context -> {
+			dispatcher.register(ClientCommands.literal(commandWithCondition).requires(source -> commandFlag).executes(context -> {
 				context.getSource().sendFeedback(Component.literal("Expected: true, is: " + commandFlag));
 				return Command.SINGLE_SUCCESS;
 			}));
 			// After this command is first executed, the above command should now be suggested
 			// After this command is executed a second time, the above command should now not be suggested again, etc.
-			dispatcher.register(ClientCommandManager.literal("test_client_command_that_toggles_condition").executes(context -> {
+			dispatcher.register(ClientCommands.literal("test_client_command_that_toggles_condition").executes(context -> {
 				commandFlag = !commandFlag;
-				ClientCommandManager.refreshCommandCompletions();
+				ClientCommands.refreshCommandCompletions();
 				context.getSource().sendFeedback(Component.literal("Toggled command flag to " + commandFlag));
 
 				if (commandFlag) {
@@ -147,22 +147,22 @@ public final class ClientCommandTest implements ClientModInitializer {
 			LOGGER.info("The client command tests have passed! Please make sure you execute the two commands for extra safety.");
 		});
 
-		ClientTickEvents.START_LEVEL_TICK.register(world -> {
+		ClientTickEvents.START_LEVEL_TICK.register(level -> {
 			if (wasTested) {
 				return;
 			}
 
 			Minecraft client = Minecraft.getInstance();
-			ClientSuggestionProvider commandSource = client.getConnection().getSuggestionsProvider();
+			ClientSuggestionProvider suggestionsProvider = client.getConnection().getSuggestionsProvider();
 
-			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandManager.getActiveDispatcher().getRoot();
+			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommands.getActiveDispatcher().getRoot();
 			CommandNode<FabricClientCommandSource> hiddenClientCommand = rootNode.getChild("hidden_client_command");
 
-			if (!(commandSource instanceof FabricClientCommandSource)) {
-				throw new AssertionError("Client command source not a FabricClientCommandSource!");
+			if (!(suggestionsProvider instanceof FabricClientCommandSource)) {
+				throw new AssertionError("Client suggestions provider is not a FabricClientCommandSource!");
 			}
 
-			if (hiddenClientCommand.canUse((FabricClientCommandSource) commandSource)) {
+			if (hiddenClientCommand.canUse((FabricClientCommandSource) suggestionsProvider)) {
 				throw new AssertionError("'hidden_client_command' should not be usable.");
 			}
 

@@ -25,9 +25,9 @@ import net.minecraft.client.input.KeyEvent;
 
 @Mixin(KeyboardHandler.class)
 public interface KeyboardHandlerAccessor {
-	@Invoker("keyPress")
-	void invokeOnKey(long window, int key, KeyEvent arg);
+	@Invoker
+	void invokeKeyPress(long window, int key, KeyEvent arg);
 
-	@Invoker("charTyped")
-	void invokeOnChar(long window, CharacterEvent arg);
+	@Invoker
+	void invokeCharTyped(long window, CharacterEvent arg);
 }

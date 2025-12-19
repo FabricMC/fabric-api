@@ -115,7 +115,7 @@ public class WorldRenderEventsTests implements ClientModInitializer, FabricClien
 			singleplayer.getServer().runCommand("/setblock 0 99 -3 minecraft:stone");
 			singleplayer.getServer().runCommand("/tp @a 0 100 -3");
 			singleplayer.getServer().runCommand("/setblock 0 101 0 minecraft:diamond_block");
-			singleplayer.getClientWorld().waitForChunksRender();
+			singleplayer.getClientLevel().waitForChunksRender();
 
 			context.assertScreenshotEquals(TestScreenshotComparisonOptions.of("world_render_events_block_outline_and_after_translucent").withRegion(356, 98, 142, 238).save());
 		}

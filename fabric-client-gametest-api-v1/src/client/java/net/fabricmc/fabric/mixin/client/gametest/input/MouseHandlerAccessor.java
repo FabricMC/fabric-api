@@ -24,12 +24,12 @@ import net.minecraft.client.input.MouseButtonInfo;
 
 @Mixin(MouseHandler.class)
 public interface MouseHandlerAccessor {
-	@Invoker("onButton")
-	void invokeOnMouseButton(long window, MouseButtonInfo arg, int action);
+	@Invoker
+	void invokeOnButton(long window, MouseButtonInfo arg, int action);
 
-	@Invoker("onScroll")
-	void invokeOnMouseScroll(long window, double horizontal, double vertical);
+	@Invoker
+	void invokeOnScroll(long window, double horizontal, double vertical);
 
-	@Invoker("onMove")
-	void invokeOnCursorPos(long window, double x, double y);
+	@Invoker
+	void invokeOnMove(long window, double x, double y);
 }

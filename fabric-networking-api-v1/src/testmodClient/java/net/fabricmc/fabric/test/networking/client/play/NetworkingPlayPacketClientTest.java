@@ -26,8 +26,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandsRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -48,9 +48,9 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 			context.client().gui.setOverlayMessage(payload.message(), true);
 		}));
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
-				ClientCommandManager.literal("clientnetworktestcommand")
-						.then(ClientCommandManager.literal("unknown").executes(context -> {
+		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
+				ClientCommands.literal("clientnetworktestcommand")
+						.then(ClientCommands.literal("unknown").executes(context -> {
 							ClientPlayNetworking.send(new UnknownPayload("Hello"));
 							return Command.SINGLE_SUCCESS;
 						}

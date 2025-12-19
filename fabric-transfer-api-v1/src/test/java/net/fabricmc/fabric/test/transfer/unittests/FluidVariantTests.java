@@ -46,12 +46,12 @@ class FluidVariantTests extends AbstractTransferApiTest {
 	}
 
 	@Test
-	public void testWithComponentChanges() {
+	public void testWithComponents() {
 		FluidVariant variant = FluidVariant.of(Fluids.WATER, DataComponentPatch.builder()
 				.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT)
 				.build());
 
-		FluidVariant newVariant = variant.withComponentChanges(DataComponentPatch.builder()
+		FluidVariant newVariant = variant.withComponents(DataComponentPatch.builder()
 				.remove(DataComponents.TOOLTIP_DISPLAY)
 				.set(DataComponents.GLIDER, Unit.INSTANCE)
 				.build());

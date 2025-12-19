@@ -57,7 +57,7 @@ abstract class ClientSuggestionProviderMixin implements FabricClientCommandSourc
 	}
 
 	@Override
-	public ClientLevel getWorld() {
+	public ClientLevel getLevel() {
 		return minecraft.level;
 	}
 }

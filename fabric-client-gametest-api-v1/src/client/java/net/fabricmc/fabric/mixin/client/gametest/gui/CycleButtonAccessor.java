@@ -24,6 +24,6 @@ import net.minecraft.network.chat.Component;
 
 @Mixin(CycleButton.class)
 public interface CycleButtonAccessor {
-	@Accessor("name")
-	Component getOptionText();
+	@Accessor
+	Component getName();
 }

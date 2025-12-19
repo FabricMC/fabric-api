@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 /**
  * A storage that can store a single fluid variant at any given time.
  * Implementors should at least override {@link #getCapacity(TransferVariant) getCapacity(FluidVariant)},
- * and probably {@link #onFinalCommit} as well for {@code markDirty()} and similar calls.
+ * and probably {@link #onFinalCommit} as well for {@code setChanged()} and similar calls.
  *
  * <p>This is a convenient specialization of {@link SingleVariantStorage} for fluids that additionally offers methods
  * to deserialize the contents of the storage.
@@ -39,7 +39,7 @@ public abstract class SingleFluidStorage extends SingleVariantStorage<FluidVaria
 	 * Create a fluid storage with a fixed capacity and a change handler.
 	 *
 	 * @param capacity Fixed capacity of the fluid storage. Must be non-negative.
-	 * @param onChange Change handler, generally for {@code markDirty()} or similar calls. May not be null.
+	 * @param onChange Change handler, generally for {@code setChanged()} or similar calls. May not be null.
 	 */
 	public static SingleFluidStorage withFixedCapacity(long capacity, Runnable onChange) {
 		StoragePreconditions.notNegative(capacity);
@@ -64,17 +64,17 @@ public abstract class SingleFluidStorage extends SingleVariantStorage<FluidVaria
 	}
 
 	/**
-	 * Simple implementation of reading from {@link ValueInput}, to match what is written by {@link #writeData}.
+	 * Simple implementation of reading from {@link ValueInput}, to match what is written by {@link #writeValue}.
 	 * Other formats are allowed, this is just a suggestion.
 	 */
-	public void readData(ValueInput data) {
-		SingleVariantStorage.readData(this, FluidVariant.CODEC, FluidVariant::blank, data);
+	public void readValue(ValueInput value) {
+		SingleVariantStorage.readValue(this, FluidVariant.CODEC, FluidVariant::blank, value);
 	}
 
 	/**
 	 * Simple implementation of writing to {@link ValueOutput}. Other formats are allowed, this is just a convenient suggestion.
 	 */
-	public void writeData(ValueOutput data) {
-		SingleVariantStorage.writeData(this, FluidVariant.CODEC, data);
+	public void writeValue(ValueOutput value) {
+		SingleVariantStorage.writeValue(this, FluidVariant.CODEC, value);
 	}
 }

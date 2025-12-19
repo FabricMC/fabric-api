@@ -23,10 +23,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.ShelfBlockEntity;
 
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicAccess;
-import net.fabricmc.fabric.impl.transfer.item.SpecialLogicInventory;
+import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
 
 @Mixin(ShelfBlockEntity.class)
-public abstract class ShelfBlockEntityMixin implements SpecialLogicInventory, SpecialLogicAccess {
+public abstract class ShelfBlockEntityMixin implements SpecialLogicContainer, SpecialLogicAccess {
 	@Unique
 	boolean fabric_suppressSpecialLogic;
 

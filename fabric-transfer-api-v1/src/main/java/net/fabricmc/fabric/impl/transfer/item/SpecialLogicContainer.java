@@ -21,9 +21,9 @@ import net.minecraft.world.item.ItemStack;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 /**
- * Internal class that allows inventory instances to defer special logic until {@link InventorySlotWrapper#onFinalCommit()} is called.
+ * Internal class that allows inventory instances to defer special logic until {@link ContainerSlotWrapper#onFinalCommit()} is called.
  */
-public interface SpecialLogicInventory {
+public interface SpecialLogicContainer {
 	/**
 	 * Decide whether special logic should now be suppressed. If true, must remain suppressed until the next call.
 	 */

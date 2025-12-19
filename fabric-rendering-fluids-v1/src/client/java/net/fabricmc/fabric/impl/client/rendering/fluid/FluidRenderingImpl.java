@@ -33,35 +33,35 @@ public class FluidRenderingImpl {
 	private static LiquidBlockRenderer vanillaRenderer;
 
 	// Only invoked manually from FluidRendering#render
-	public static void render(FluidRenderHandler handler, BlockAndTintGetter world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, FluidRendering.DefaultRenderer defaultRenderer) {
+	public static void render(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, FluidRendering.DefaultRenderer defaultRenderer) {
 		CURRENT_DEFAULT_RENDERER.set(defaultRenderer);
 
 		try {
-			handler.renderFluid(pos, world, vertexConsumer, blockState, fluidState);
+			handler.renderFluid(pos, level, vertexConsumer, blockState, fluidState);
 		} finally {
 			CURRENT_DEFAULT_RENDERER.remove();
 		}
 	}
 
 	// Only invoked when FluidRenderHandler#renderFluid calls super
-	public static void renderDefault(FluidRenderHandler handler, BlockAndTintGetter world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	public static void renderDefault(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
 		FluidRendering.DefaultRenderer renderer = CURRENT_DEFAULT_RENDERER.get();
 
 		if (renderer != null) {
-			renderer.render(handler, world, pos, vertexConsumer, blockState, fluidState);
+			renderer.render(handler, level, pos, vertexConsumer, blockState, fluidState);
 		} else {
-			renderVanillaDefault(handler, world, pos, vertexConsumer, blockState, fluidState);
+			renderVanillaDefault(handler, level, pos, vertexConsumer, blockState, fluidState);
 		}
 	}
 
 	// Invoked when FluidRenderHandler#renderFluid is called directly without using FluidRendering#render (such as
 	// from vanilla FluidRenderer#render via mixin) or from the default implementation of DefaultRenderer#render
-	public static void renderVanillaDefault(FluidRenderHandler handler, BlockAndTintGetter world, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
+	public static void renderVanillaDefault(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
 		FluidRenderHandlerInfo info = CURRENT_INFO.get();
-		info.setup(handler, world, pos, fluidState);
+		info.setup(handler, level, pos, fluidState);
 
 		try {
-			vanillaRenderer.tesselate(world, pos, vertexConsumer, blockState, fluidState);
+			vanillaRenderer.tesselate(level, pos, vertexConsumer, blockState, fluidState);
 		} finally {
 			info.clear();
 		}

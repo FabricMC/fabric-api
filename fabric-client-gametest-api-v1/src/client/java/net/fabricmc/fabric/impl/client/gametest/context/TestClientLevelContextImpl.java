@@ -24,16 +24,16 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientWorldContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestClientLevelContext;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.fabricmc.fabric.mixin.client.gametest.ClientChunkCacheAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.ClientChunkCacheStorageAccessor;
 import net.fabricmc.fabric.mixin.client.gametest.ClientLevelAccessor;
 
-public class TestClientWorldContextImpl implements TestClientWorldContext {
+public class TestClientLevelContextImpl implements TestClientLevelContext {
 	private final ClientGameTestContext context;
 
-	public TestClientWorldContextImpl(ClientGameTestContext context) {
+	public TestClientLevelContextImpl(ClientGameTestContext context) {
 		this.context = context;
 	}
 
@@ -41,7 +41,7 @@ public class TestClientWorldContextImpl implements TestClientWorldContext {
 	public int waitForChunksDownload(int timeout) {
 		ThreadingImpl.checkOnGametestThread("waitForChunksDownload");
 
-		return context.waitFor(TestClientWorldContextImpl::areChunksLoaded, timeout);
+		return context.waitFor(TestClientLevelContextImpl::areChunksLoaded, timeout);
 	}
 
 	@Override
@@ -52,16 +52,16 @@ public class TestClientWorldContextImpl implements TestClientWorldContext {
 	}
 
 	private static boolean areChunksLoaded(Minecraft client) {
-		int viewDistance = client.options.getEffectiveRenderDistance();
-		ClientLevel world = Objects.requireNonNull(client.level);
-		ClientChunkCache.Storage chunks = ((ClientChunkCacheAccessor) world.getChunkSource()).getChunks();
+		int renderDistance = client.options.getEffectiveRenderDistance();
+		ClientLevel level = Objects.requireNonNull(client.level);
+		ClientChunkCache.Storage chunks = ((ClientChunkCacheAccessor) level.getChunkSource()).getStorage();
 		ClientChunkCacheStorageAccessor chunksAccessor = (ClientChunkCacheStorageAccessor) (Object) chunks;
-		int centerChunkX = chunksAccessor.getCenterChunkX();
-		int centerChunkZ = chunksAccessor.getCenterChunkZ();
+		int viewCenterX = chunksAccessor.getViewCenterX();
+		int viewCenterZ = chunksAccessor.getViewCenterZ();
 
-		for (int dz = -viewDistance; dz <= viewDistance; dz++) {
-			for (int dx = -viewDistance; dx <= viewDistance; dx++) {
-				if (world.getChunk(centerChunkX + dx, centerChunkZ + dz, ChunkStatus.FULL, false) == null) {
+		for (int dz = -renderDistance; dz <= renderDistance; dz++) {
+			for (int dx = -renderDistance; dx <= renderDistance; dx++) {
+				if (level.getChunk(viewCenterX + dx, viewCenterZ + dz, ChunkStatus.FULL, false) == null) {
 					return false;
 				}
 			}
@@ -72,6 +72,6 @@ public class TestClientWorldContextImpl implements TestClientWorldContext {
 
 	private static boolean areChunksRendered(Minecraft client) {
 		ClientLevel world = Objects.requireNonNull(client.level);
-		return ((ClientLevelAccessor) world).getChunkUpdaters().isEmpty() && client.levelRenderer.hasRenderedAllSections();
+		return ((ClientLevelAccessor) world).getLightUpdateQueue().isEmpty() && client.levelRenderer.hasRenderedAllSections();
 	}
 }

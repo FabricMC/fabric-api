@@ -16,67 +16,141 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item;
 
-import java.util.List;
-import java.util.Objects;
-
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.UnmodifiableView;
-import org.jspecify.annotations.Nullable;
 
-import net.minecraft.core.Direction;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 
-import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
-import net.fabricmc.fabric.impl.transfer.item.InventoryStorageImpl;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
 
 /**
- * An implementation of {@code Storage<ItemVariant>} for vanilla's {@link Container}, {@link WorldlyContainer} and {@link Inventory}.
+ * A {@code Storage<ItemVariant>} implementation for a {@link Inventory}.
+ * This is a specialized version of {@link ContainerStorage},
+ * with an additional transactional wrapper for {@link Inventory#placeItemBackInInventory}.
  *
- * <p>{@code Inventory} is often nicer to implement than {@code Storage<ItemVariant>}, but harder to use for item transfer.
- * This wrapper allows one to have the best of both worlds, for example by storing a subclass of {@link SimpleContainer} in a block entity class,
- * while exposing it as a {@code Storage<ItemVariant>} to {@linkplain ItemStorage#SIDED the item transfer API}.
- *
- * <p>In particular, note that {@link #getSlots} can be combined with {@link CombinedStorage} to retrieve a wrapper around a specific range of slots.
- *
- * <p><b>Important note:</b> This wrapper assumes that the inventory owns its slots.
- * If the inventory does not own its slots, for example because it delegates to another inventory, this wrapper should not be used!
+ * <p>Note that this is a wrapper around all the slots of the player inventory.
+ * However, {@link #insert} is overridden to behave like {@link #offer}.
+ * For simple insertions, {@link #offer} or {@link #offerOrDrop} is recommended.
+ * {@link #getSlots} can also be used and combined with {@link CombinedStorage} to retrieve a wrapper around a specific range of slots.
  */
 @ApiStatus.NonExtendable
-public interface InventoryStorage extends SlottedStorage<ItemVariant> {
+// TODO: Consider explicitly syncing stacks by sending a ScreenHandlerSlotUpdateS2CPacket if that proves to be necessary.
+// TODO: Vanilla doesn't seem to be doing it reliably, so we ignore it for now.
+public interface InventoryStorage extends ContainerStorage {
 	/**
-	 * Return a wrapper around an {@link Container}.
-	 *
-	 * <p>If the inventory is a {@link WorldlyContainer} and the direction is nonnull, the wrapper wraps the sided inventory from the given direction.
-	 * The returned wrapper contains only the slots with the indices returned by {@link WorldlyContainer#getSlotsForFace} at query time.
-	 *
-	 * @param inventory The inventory to wrap.
-	 * @param direction The direction to use if the access is sided, or {@code null} if the access is not sided.
+	 * Return an instance for the passed player's inventory.
 	 */
-	static InventoryStorage of(Container inventory, @Nullable Direction direction) {
-		Objects.requireNonNull(inventory, "Null inventory is not supported.");
-		return InventoryStorageImpl.of(inventory, direction);
+	static InventoryStorage of(Player player) {
+		return of(player.getInventory());
 	}
 
 	/**
-	 * Retrieve an unmodifiable list of the wrappers for the slots in this inventory.
-	 * Each wrapper corresponds to a single slot in the inventory.
+	 * Return an instance for the passed player inventory.
+	 */
+	static InventoryStorage of(Inventory playerInventory) {
+		return (InventoryStorage) ContainerStorage.of(playerInventory, null);
+	}
+
+	/**
+	 * Return a wrapper around the cursor slot of a screen handler,
+	 * i.e. the stack that can be manipulated with {@link AbstractContainerMenu#getCarried()} and {@link AbstractContainerMenu#setCarried}.
+	 */
+	static SingleSlotStorage<ItemVariant> getCursorStorage(AbstractContainerMenu screenHandler) {
+		return CursorSlotWrapper.get(screenHandler);
+	}
+
+	/**
+	 * Insert items into this player inventory. Behaves the same as {@link #offer}.
+	 * More fine-tuned insertion, for example over a specific range of slots, is possible with {@linkplain #getSlots() the slot list}.
+	 *
+	 * @see #offer
 	 */
 	@Override
-	@UnmodifiableView
-	List<SingleSlotStorage<ItemVariant>> getSlots();
+	long insert(ItemVariant resource, long maxAmount, TransactionContext transaction);
 
-	@Override
-	default int getSlotCount() {
-		return getSlots().size();
+	/**
+	 * Add items to the inventory if possible, and drop any leftover items in the world, similar to {@link Inventory#placeItemBackInInventory}.
+	 *
+	 * <p>Note: This function has full transaction support, and will not actually drop the items until the outermost transaction is committed.
+	 *
+	 * @param variant The variant to insert.
+	 * @param amount How many of the variant to insert.
+	 * @param transaction The transaction this operation is part of.
+	 */
+	default void offerOrDrop(ItemVariant variant, long amount, TransactionContext transaction) {
+		long offered = offer(variant, amount, transaction);
+		drop(variant, amount - offered, transaction);
 	}
 
-	@Override
-	default SingleSlotStorage<ItemVariant> getSlot(int slot) {
-		return getSlots().get(slot);
+	/**
+	 * Try to add items to the inventory if possible, stacking like {@link Inventory#placeItemBackInInventory}.
+	 * Unlike {@link #offerOrDrop}, this function will not drop excess items.
+	 *
+	 * <p>The exact behavior is:
+	 * <ol>
+	 *     <li>Try to stack inserted items with existing items in the main hand, then the offhand.</li>
+	 *     <li>Try to stack remaining inserted items with existing items in the player main inventory.</li>
+	 *     <li>Try to insert the remainder into empty slots of the player main inventory.</li>
+	 * </ol>
+	 *
+	 * @param variant The variant to insert.
+	 * @param maxAmount How many of the variant to insert, at most.
+	 * @param transaction The transaction this operation is part of.
+	 * @return How many items could be inserted.
+	 */
+	long offer(ItemVariant variant, long maxAmount, TransactionContext transaction);
+
+	/**
+	 * Throw items in the world from the player's location.
+	 *
+	 * <p>Note: This function has full transaction support, and will not actually drop the items until the outermost transaction is committed.
+	 *
+	 * @param variant The variant to drop.
+	 * @param amount How many of the variant to drop.
+	 * @param throwRandomly If true, the variant will be thrown in a random direction from the entity regardless of which direction the entity is facing.
+	 * @param retainOwnership If true, set the {@code Thrower} NBT data to the player's UUID.
+	 * @param transaction The transaction this operation is part of.
+	 * @see Player#drop(ItemStack, boolean, boolean)
+	 */
+	void drop(ItemVariant variant, long amount, boolean throwRandomly, boolean retainOwnership, TransactionContext transaction);
+
+	/**
+	 * Throw items in the world from the player's location.
+	 *
+	 * <p>Note: This function has full transaction support, and will not actually drop the items until the outermost transaction is committed.
+	 *
+	 * @param variant The variant to drop.
+	 * @param amount How many of the variant to drop.
+	 * @param retainOwnership If true, set the {@code Thrower} NBT data to the player's UUID.
+	 * @param transaction The transaction this operation is part of.
+	 * @see Player#drop(ItemStack, boolean, boolean)
+	 */
+	default void drop(ItemVariant variant, long amount, boolean retainOwnership, TransactionContext transaction) {
+		drop(variant, amount, false, retainOwnership, transaction);
 	}
+
+	/**
+	 * Throw items in the world from the player's location.
+	 *
+	 * <p>Note: This function has full transaction support, and will not actually drop the items until the outermost transaction is committed.
+	 *
+	 * @param variant The variant to drop.
+	 * @param amount How many of the variant to drop.
+	 * @param transaction The transaction this operation is part of.
+	 * @see Player#drop(ItemStack, boolean, boolean)
+	 */
+	default void drop(ItemVariant variant, long amount, TransactionContext transaction) {
+		drop(variant, amount, false, transaction);
+	}
+
+	/**
+	 * Return a wrapper around the current slot of the passed hand.
+	 */
+	SingleSlotStorage<ItemVariant> getHandSlot(InteractionHand hand);
 }
