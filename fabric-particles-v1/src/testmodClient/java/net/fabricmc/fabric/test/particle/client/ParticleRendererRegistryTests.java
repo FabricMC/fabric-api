@@ -40,9 +40,9 @@ import net.minecraft.util.RandomSource;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandsRegistrationCallback;
-import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
+import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteSet;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleGroupRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 
 public class ParticleRendererRegistryTests implements ClientModInitializer {
@@ -55,8 +55,8 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 		Registry.register(BuiltInRegistries.PARTICLE_TYPE, PARTICLE_ID, TEST_PARTICLE_TYPE);
 		ParticleFactoryRegistry.getInstance().register(TEST_PARTICLE_TYPE, TestParticleFactory::new);
 
-		ParticleRendererRegistry.register(TEST_PARTICLE_TEXTURE_SHEET, TestParticleRenderer::new);
-		ParticleRendererRegistry.registerOrdering(TEST_PARTICLE_TEXTURE_SHEET, ParticleRenderType.ITEM_PICKUP);
+		ParticleGroupRegistry.register(TEST_PARTICLE_TEXTURE_SHEET, TestParticleRenderer::new);
+		ParticleGroupRegistry.registerOrdering(TEST_PARTICLE_TEXTURE_SHEET, ParticleRenderType.ITEM_PICKUP);
 
 		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
 				dispatcher.register(ClientCommands.literal("custom_particles").executes(context -> {
@@ -78,7 +78,7 @@ public class ParticleRendererRegistryTests implements ClientModInitializer {
 				})));
 	}
 
-	private record TestParticleFactory(FabricSpriteProvider spriteProvider) implements ParticleProvider<SimpleParticleType> {
+	private record TestParticleFactory(FabricSpriteSet spriteProvider) implements ParticleProvider<SimpleParticleType> {
 		@Override
 		public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ, RandomSource random) {
 			return new TestParticle(level, x, y, z, velocityX, velocityY, velocityZ, spriteProvider.get(random));

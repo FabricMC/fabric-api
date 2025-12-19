@@ -25,9 +25,9 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.util.RandomSource;
 
-import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
+import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteSet;
 
-public record FabricSpriteProviderImpl(ParticleResources.MutableSpriteSet delegate) implements FabricSpriteProvider {
+public record FabricSpriteSetImpl(ParticleResources.MutableSpriteSet delegate) implements FabricSpriteSet {
 	@Override
 	public TextureAtlas getAtlas() {
 		return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.PARTICLES);

@@ -21,11 +21,11 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-public class ExtendedBlockStateParticleEffectPacketCodec implements StreamCodec<RegistryFriendlyByteBuf, BlockParticleOption> {
+public class ExtendedBlockParticleOptionStreamCodec implements StreamCodec<RegistryFriendlyByteBuf, BlockParticleOption> {
 	private static final int PACKET_MARKER = -1;
 	private final StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> fallback;
 
-	public ExtendedBlockStateParticleEffectPacketCodec(StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> fallback) {
+	public ExtendedBlockParticleOptionStreamCodec(StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> fallback) {
 		this.fallback = fallback;
 	}
 
@@ -41,7 +41,7 @@ public class ExtendedBlockStateParticleEffectPacketCodec implements StreamCodec<
 
 		BlockParticleOption value = fallback.decode(buf);
 		BlockPos pos = BlockPos.STREAM_CODEC.decode(buf);
-		((BlockStateParticleEffectExtension) value).fabric_setBlockPos(pos);
+		((BlockParticleOptionExtension) value).fabric_setBlockPos(pos);
 		return value;
 	}
 
@@ -49,7 +49,7 @@ public class ExtendedBlockStateParticleEffectPacketCodec implements StreamCodec<
 	public void encode(RegistryFriendlyByteBuf buf, BlockParticleOption value) {
 		BlockPos pos = value.getBlockPos();
 
-		if (pos == null || ExtendedBlockStateParticleEffectSync.shouldEncodeFallback(buf)) {
+		if (pos == null || ExtendedBlockParticleOptionSync.shouldEncodeFallback(buf)) {
 			fallback.encode(buf, value);
 			return;
 		}
