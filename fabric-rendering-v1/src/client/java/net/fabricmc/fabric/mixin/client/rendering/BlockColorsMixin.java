@@ -29,17 +29,17 @@ import net.minecraft.core.IdMapper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 
-import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.BlockColorRegistryImpl;
 
 @Mixin(BlockColors.class)
-public class BlockColorsMixin implements ColorProviderRegistryImpl.ColorMapperHolder<Block, BlockColor> {
+public class BlockColorsMixin implements BlockColorRegistryImpl.ColorMapperHolder<Block, BlockColor> {
 	@Shadow
 	@Final
 	private IdMapper<BlockColor> blockColors;
 
 	@Inject(method = "createDefault", at = @At("RETURN"))
 	private static void create(CallbackInfoReturnable<BlockColors> info) {
-		ColorProviderRegistryImpl.BLOCK.initialize(info.getReturnValue());
+		BlockColorRegistryImpl.BLOCK.initialize(info.getReturnValue());
 	}
 
 	@Override

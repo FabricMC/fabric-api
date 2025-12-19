@@ -21,29 +21,29 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.world.level.block.Block;
 
-import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.BlockColorRegistryImpl;
 
-public interface ColorProviderRegistry<T, Provider> {
-	ColorProviderRegistry<Block, BlockColor> BLOCK = ColorProviderRegistryImpl.BLOCK;
+public interface BlockColorRegistry<T, Color> {
+	BlockColorRegistry<Block, BlockColor> BLOCK = BlockColorRegistryImpl.BLOCK;
 
 	/**
-	 * Register a color provider for one or more objects.
+	 * Register a block color for one or more objects.
 	 *
-	 * @param provider The color provider to register.
-	 * @param objects  The objects which should be colored using this provider.
+	 * @param color The block color to register.
+	 * @param objects  The objects which should be colored using this color.
 	 */
 	@SuppressWarnings("unchecked") // @SafeVarargs is not allowed on interface methods.
-	void register(Provider provider, T... objects);
+	void register(Color color, T... objects);
 
 	/**
-	 * Get a color provider for the given object.
+	 * Get a block color for the given object.
 	 *
 	 * <p>Please note that the underlying registry may not be fully populated or stable until the game has started,
 	 * as other mods may overwrite the registry.
 	 *
-	 * @param object The object to acquire the provider for.
-	 * @return The registered mapper for this provider, or {@code null} if none is registered or available.
+	 * @param object The object to acquire the color for.
+	 * @return The registered mapper for this color, or {@code null} if none is registered or available.
 	 */
 	@Nullable
-	Provider get(T object);
+	Color get(T object);
 }
