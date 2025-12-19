@@ -80,7 +80,7 @@ public final class AttachmentRegistryImpl {
 		@Nullable
 		private Codec<A> persistenceCodec = null;
 		@Nullable
-		private StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec = null;
+		private StreamCodec<? super RegistryFriendlyByteBuf, A> streamCodec = null;
 		@Nullable
 		private AttachmentSyncPredicate syncPredicate = null;
 		private boolean copyOnDeath = false;
@@ -112,7 +112,7 @@ public final class AttachmentRegistryImpl {
 			Objects.requireNonNull(streamCodec, "packet codec cannot be null");
 			Objects.requireNonNull(syncPredicate, "sync predicate cannot be null");
 
-			this.packetCodec = streamCodec;
+			this.streamCodec = streamCodec;
 			this.syncPredicate = syncPredicate;
 			return this;
 		}
@@ -134,7 +134,7 @@ public final class AttachmentRegistryImpl {
 					id,
 					defaultInitializer,
 					persistenceCodec,
-					packetCodec,
+					streamCodec,
 					syncPredicate,
 					copyOnDeath
 			);

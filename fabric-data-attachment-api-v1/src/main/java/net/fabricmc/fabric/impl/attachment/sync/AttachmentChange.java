@@ -64,7 +64,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 
 	@SuppressWarnings("unchecked")
 	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, RegistryAccess dynamicRegistryManager) {
-		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
+		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).streamCodec();
 		Objects.requireNonNull(codec, "attachment packet codec cannot be null");
 		Objects.requireNonNull(dynamicRegistryManager, "dynamic registry manager cannot be null");
 
@@ -124,7 +124,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 	@SuppressWarnings("unchecked")
 	@Nullable
 	public Object decodeValue(RegistryAccess dynamicRegistryManager) {
-		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).packetCodec();
+		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).streamCodec();
 		Objects.requireNonNull(codec, "codec was null");
 		Objects.requireNonNull(dynamicRegistryManager, "dynamic registry manager cannot be null");
 
