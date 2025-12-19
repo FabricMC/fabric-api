@@ -39,9 +39,9 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.sync.serverbound.ServerboundAcceptedAttachmentsPayload;
 import net.fabricmc.fabric.impl.attachment.sync.clientbound.ClientboundAttachmentSyncPayload;
 import net.fabricmc.fabric.impl.attachment.sync.clientbound.ClientboundRequestAcceptedAttachmentsPayload;
+import net.fabricmc.fabric.impl.attachment.sync.serverbound.ServerboundAcceptedAttachmentsPayload;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
 
 public class AttachmentSync implements ModInitializer {
@@ -97,12 +97,12 @@ public class AttachmentSync implements ModInitializer {
 
 		ServerConfigurationNetworking.registerGlobalReceiver(
 				ServerboundAcceptedAttachmentsPayload.ID, (payload, context) -> {
-			Set<Identifier> supportedAttachments = decodeResponsePayload(payload);
-			Connection connection = ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection();
-			((SupportedAttachmentsClientConnection) connection).fabric_setSupportedAttachments(supportedAttachments);
+					Set<Identifier> supportedAttachments = decodeResponsePayload(payload);
+					Connection connection = ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection();
+					((SupportedAttachmentsClientConnection) connection).fabric_setSupportedAttachments(supportedAttachments);
 
-			context.packetListener().completeTask(AttachmentSyncTask.KEY);
-		});
+					context.packetListener().completeTask(AttachmentSyncTask.KEY);
+				});
 
 		// Play
 		PayloadTypeRegistry.clientboundPlay().register(
