@@ -75,7 +75,7 @@ public class SerializationTests {
 	}
 
 	/**
-	 * Check that we can serialise and deserialize a custom ingredient.
+	 * Check that we can serialize and deserialize a custom ingredient.
 	 */
 	@Test
 	public void testCustomIngredientSerialization() {

@@ -47,7 +47,7 @@ public class ComponentsIngredient implements CustomIngredient {
 
 	public ComponentsIngredient(Ingredient base, DataComponentPatch components) {
 		if (components.isEmpty()) {
-			throw new IllegalArgumentException("ComponentIngredient must have at least one defined component");
+			throw new IllegalArgumentException("ComponentsIngredient must have at least one defined component");
 		}
 
 		this.base = base;
