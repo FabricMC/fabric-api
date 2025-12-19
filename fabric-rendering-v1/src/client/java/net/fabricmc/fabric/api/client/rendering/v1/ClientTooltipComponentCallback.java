@@ -36,16 +36,16 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public interface ClientTooltipComponentCallback {
 	Event<ClientTooltipComponentCallback> EVENT = EventFactory.createArrayBacked(
 			ClientTooltipComponentCallback.class, listeners -> data -> {
-		for (ClientTooltipComponentCallback listener : listeners) {
-			ClientTooltipComponent component = listener.getClientComponent(data);
+				for (ClientTooltipComponentCallback listener : listeners) {
+					ClientTooltipComponent component = listener.getClientComponent(data);
 
-			if (component != null) {
-				return component;
-			}
-		}
+					if (component != null) {
+						return component;
+					}
+				}
 
-		return null;
-	});
+				return null;
+			});
 
 	/**
 	 * Return the client tooltip component for the passed tooltip component, or null if none is available.
