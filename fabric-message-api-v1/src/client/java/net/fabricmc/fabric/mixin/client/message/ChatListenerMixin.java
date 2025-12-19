@@ -34,46 +34,46 @@ import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.PlayerChatMessage;
 
-import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientLogChatMessageEvents;
 
 @Mixin(ChatListener.class)
 public abstract class ChatListenerMixin {
 	@Inject(method = "showMessageToPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;getChat()Lnet/minecraft/client/gui/components/ChatComponent;", ordinal = 0), cancellable = true)
-	private void fabric_onSignedChatMessage(ChatType.Bound params, PlayerChatMessage message, Component decorated, GameProfile sender, boolean onlyShowSecureChat, Instant receptionTimestamp, CallbackInfoReturnable<Boolean> cir) {
-		fabric_onChatMessage(decorated, message, sender, params, receptionTimestamp, cir);
+	private void fabric_onSignedChatMessage(ChatType.Bound bind, PlayerChatMessage message, Component decorated, GameProfile sender, boolean onlyShowSecureChat, Instant timeStamp, CallbackInfoReturnable<Boolean> cir) {
+		fabric_onChatMessage(decorated, message, sender, bind, timeStamp, cir);
 	}
 
 	@Inject(method = "showMessageToPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;getChat()Lnet/minecraft/client/gui/components/ChatComponent;", ordinal = 1), cancellable = true)
-	private void fabric_onFilteredSignedChatMessage(ChatType.Bound params, PlayerChatMessage message, Component decorated, GameProfile sender, boolean onlyShowSecureChat, Instant receptionTimestamp, CallbackInfoReturnable<Boolean> cir) {
+	private void fabric_onFilteredSignedChatMessage(ChatType.Bound bind, PlayerChatMessage message, Component decorated, GameProfile sender, boolean onlyShowSecureChat, Instant timeStamp, CallbackInfoReturnable<Boolean> cir) {
 		Component filtered = message.filterMask().applyWithFormatting(message.signedContent());
 
 		if (filtered != null) {
-			fabric_onChatMessage(params.decorate(filtered), message, sender, params, receptionTimestamp, cir);
+			fabric_onChatMessage(bind.decorate(filtered), message, sender, bind, timeStamp, cir);
 		}
 	}
 
 	@Inject(method = "lambda$handleDisguisedChatMessage$0", at = @At("HEAD"), cancellable = true)
-	private void fabric_onProfilelessChatMessage(ChatType.Bound params, Component content, Instant receptionTimestamp, CallbackInfoReturnable<Boolean> cir) {
-		fabric_onChatMessage(params.decorate(content), null, null, params, receptionTimestamp, cir);
+	private void fabric_onProfilelessChatMessage(ChatType.Bound bind, Component content, Instant timeStamp, CallbackInfoReturnable<Boolean> cir) {
+		fabric_onChatMessage(bind.decorate(content), null, null, bind, timeStamp, cir);
 	}
 
 	@Unique
-	private void fabric_onChatMessage(Component message, @Nullable PlayerChatMessage signedMessage, @Nullable GameProfile sender, ChatType.Bound params, Instant receptionTimestamp, CallbackInfoReturnable<Boolean> cir) {
-		if (ClientReceiveMessageEvents.ALLOW_CHAT.invoker().allowReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp)) {
-			ClientReceiveMessageEvents.CHAT.invoker().onReceiveChatMessage(message, signedMessage, sender, params, receptionTimestamp);
+	private void fabric_onChatMessage(Component message, @Nullable PlayerChatMessage playerChatMessage, @Nullable GameProfile sender, ChatType.Bound bind, Instant timeStamp, CallbackInfoReturnable<Boolean> cir) {
+		if (ClientLogChatMessageEvents.IS_CHAT_ALLOWED.invoker().allowLogChatMessage(message, playerChatMessage, sender, bind, timeStamp)) {
+			ClientLogChatMessageEvents.CHAT.invoker().onLogChatMessage(message, playerChatMessage, sender, bind, timeStamp);
 		} else {
-			ClientReceiveMessageEvents.CHAT_CANCELED.invoker().onReceiveChatMessageCanceled(message, signedMessage, sender, params, receptionTimestamp);
+			ClientLogChatMessageEvents.CHAT_CANCELED.invoker().onLogChatMessageCanceled(message, playerChatMessage, sender, bind, timeStamp);
 			cir.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "handleSystemMessage", at = @At("HEAD"), cancellable = true)
 	private void fabric_allowGameMessage(Component _message, boolean overlay, CallbackInfo ci, @Local(argsOnly = true) LocalRef<Component> message) {
-		if (ClientReceiveMessageEvents.ALLOW_GAME.invoker().allowReceiveGameMessage(message.get(), overlay)) {
-			message.set(ClientReceiveMessageEvents.MODIFY_GAME.invoker().modifyReceivedGameMessage(message.get(), overlay));
-			ClientReceiveMessageEvents.GAME.invoker().onReceiveGameMessage(message.get(), overlay);
+		if (ClientLogChatMessageEvents.ALLOW_GAME.invoker().allowLogGameMessage(message.get(), overlay)) {
+			message.set(ClientLogChatMessageEvents.MODIFY_GAME.invoker().modifyLoggedGameMessage(message.get(), overlay));
+			ClientLogChatMessageEvents.GAME.invoker().onLogGameMessage(message.get(), overlay);
 		} else {
-			ClientReceiveMessageEvents.GAME_CANCELED.invoker().onReceiveGameMessageCanceled(message.get(), overlay);
+			ClientLogChatMessageEvents.GAME_CANCELED.invoker().onLogGameMessageCanceled(message.get(), overlay);
 			ci.cancel();
 		}
 	}

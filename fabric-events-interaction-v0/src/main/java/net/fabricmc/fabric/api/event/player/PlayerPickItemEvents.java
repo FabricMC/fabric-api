@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Contains events triggered by server players requesting to pick items from the world.
+ * Contains events triggered by server players requesting to pick items from the level.
  */
 public final class PlayerPickItemEvents {
 	private PlayerPickItemEvents() { }

@@ -30,7 +30,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.ProtoChunk;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
@@ -48,7 +48,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
  * {@link LevelChunk}. By default, attachments are simply copied wholesale, up to {@link #copyOnDeath()}. Since one instance is discarded,
  * an attachment that keeps a reference to an {@link Entity} or {@link ProtoChunk} instance can and will break unexpectedly. If,
  * for whatever reason, keeping a reference to the target is absolutely necessary, be sure to implement custom copying logic.
- * For {@link Entity} targets, use {@link ServerPlayerEvents#COPY_FROM}, {@link ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD},
+ * For {@link Entity} targets, use {@link ServerPlayerEvents#COPY_FROM}, {@link ServerEntityLevelChangeEvents#AFTER_ENTITY_CHANGE_LEVEL},
  * and {@link ServerLivingEntityEvents#MOB_CONVERSION}. For {@link ChunkAccess} targets, mixin into
  * {@link LevelChunk#LevelChunk(ServerLevel, ProtoChunk, LevelChunk.PostLoadProcessor)}.
  * </p>

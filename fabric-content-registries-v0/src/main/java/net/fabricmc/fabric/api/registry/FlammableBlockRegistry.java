@@ -32,28 +32,28 @@ public interface FlammableBlockRegistry extends Block2ObjectMap<FlammableBlockRe
 		return FlammableBlockRegistryImpl.getInstance(block);
 	}
 
-	default void add(Block block, int burn, int spread) {
-		this.add(block, new Entry(burn, spread));
+	default void add(Block block, int igniteOdds, int burnOdds) {
+		this.add(block, new Entry(igniteOdds, burnOdds));
 	}
 
-	default void add(TagKey<Block> tag, int burn, int spread) {
-		this.add(tag, new Entry(burn, spread));
+	default void add(TagKey<Block> tag, int igniteOdds, int burnOdds) {
+		this.add(tag, new Entry(igniteOdds, burnOdds));
 	}
 
 	final class Entry {
-		private final int burn, spread;
+		private final int igniteOdds, burnOdds;
 
-		public Entry(int burn, int spread) {
-			this.burn = burn;
-			this.spread = spread;
+		public Entry(int igniteOdds, int burnOdds) {
+			this.igniteOdds = igniteOdds;
+			this.burnOdds = burnOdds;
 		}
 
-		public int getBurnChance() {
-			return burn;
+		public int getIgniteOdds() {
+			return igniteOdds;
 		}
 
-		public int getSpreadChance() {
-			return spread;
+		public int getBurnOdds() {
+			return burnOdds;
 		}
 
 		@Override
@@ -62,13 +62,13 @@ public interface FlammableBlockRegistry extends Block2ObjectMap<FlammableBlockRe
 				return false;
 			} else {
 				Entry other = (Entry) o;
-				return other.burn == burn && other.spread == spread;
+				return other.igniteOdds == igniteOdds && other.burnOdds == burnOdds;
 			}
 		}
 
 		@Override
 		public int hashCode() {
-			return burn * 11 + spread;
+			return igniteOdds * 11 + burnOdds;
 		}
 	}
 }

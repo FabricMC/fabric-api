@@ -29,7 +29,7 @@ public class FlammableTest {
 	 */
 	@GameTest
 	public void testFlammableTag(GameTestHelper context) {
-		if (FlammableBlockRegistry.getDefaultInstance().get(Blocks.SAND).getBurnChance() != 4) {
+		if (FlammableBlockRegistry.getDefaultInstance().get(Blocks.SAND).getIgniteOdds() != 4) {
 			throw context.assertionException(Component.literal("Expected blocks in the sand tag to be flammable!"));
 		}
 

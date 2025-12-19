@@ -43,6 +43,6 @@ public abstract class BlockBehaviourBlockStateBaseMixin extends StateHolder<Bloc
 
 	@Override
 	public void fabric_api$refreshRandomTickCache() {
-		this.isRandomlyTicking = ((BlockBehaviourAccessor) this.owner).callHasRandomTicks(this.asState());
+		this.isRandomlyTicking = ((BlockBehaviourAccessor) this.owner).callIsRandomlyTicking(this.asState());
 	}
 }

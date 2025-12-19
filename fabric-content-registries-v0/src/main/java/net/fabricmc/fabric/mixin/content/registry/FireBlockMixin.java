@@ -49,7 +49,7 @@ public class FireBlockMixin implements FireBlockHooks {
 	}
 
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void afterConstruct(Block.Properties settings, CallbackInfo info) {
+	private void afterConstruct(Block.Properties properties, CallbackInfo info) {
 		registry = FlammableBlockRegistryImpl.getInstance((Block) (Object) this);
 	}
 
@@ -62,7 +62,7 @@ public class FireBlockMixin implements FireBlockHooks {
 			if (block.hasProperty(BlockStateProperties.WATERLOGGED) && block.getValue(BlockStateProperties.WATERLOGGED)) {
 				info.setReturnValue(0);
 			} else {
-				info.setReturnValue(entry.getBurnChance());
+				info.setReturnValue(entry.getIgniteOdds());
 			}
 		}
 	}
@@ -76,7 +76,7 @@ public class FireBlockMixin implements FireBlockHooks {
 			if (block.hasProperty(BlockStateProperties.WATERLOGGED) && block.getValue(BlockStateProperties.WATERLOGGED)) {
 				info.setReturnValue(0);
 			} else {
-				info.setReturnValue(entry.getSpreadChance());
+				info.setReturnValue(entry.getBurnOdds());
 			}
 		}
 	}

@@ -21,21 +21,21 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
 
-import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
+import net.fabricmc.fabric.api.registry.CompostableRegistry;
 
-public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
+public class CompostableRegistryRegistryImpl implements CompostableRegistry {
 	@Override
 	public Float get(ItemLike item) {
 		return ComposterBlock.COMPOSTABLES.getOrDefault(item.asItem(), 0.0F);
 	}
 
 	@Override
-	public void add(ItemLike item, Float value) {
-		ComposterBlock.COMPOSTABLES.put(item.asItem(), value);
+	public void add(ItemLike item, Float chance) {
+		ComposterBlock.COMPOSTABLES.put(item.asItem(), chance);
 	}
 
 	@Override
-	public void add(TagKey<Item> tag, Float value) {
+	public void add(TagKey<Item> tag, Float chance) {
 		throw new UnsupportedOperationException("Tags currently not supported!");
 	}
 
