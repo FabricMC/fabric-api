@@ -27,12 +27,12 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-import net.fabricmc.fabric.api.particle.v1.FabricBlockStateParticleEffect;
-import net.fabricmc.fabric.impl.particle.BlockStateParticleEffectExtension;
-import net.fabricmc.fabric.impl.particle.ExtendedBlockStateParticleEffectPacketCodec;
+import net.fabricmc.fabric.api.particle.v1.FabricBlockParticleOption;
+import net.fabricmc.fabric.impl.particle.BlockParticleOptionExtension;
+import net.fabricmc.fabric.impl.particle.ExtendedBlockParticleOptionStreamCodec;
 
 @Mixin(BlockParticleOption.class)
-abstract class BlockParticleOptionMixin implements FabricBlockStateParticleEffect, BlockStateParticleEffectExtension {
+abstract class BlockParticleOptionMixin implements FabricBlockParticleOption, BlockParticleOptionExtension {
 	@Nullable
 	@Unique
 	private BlockPos blockPos;
@@ -50,6 +50,6 @@ abstract class BlockParticleOptionMixin implements FabricBlockStateParticleEffec
 
 	@ModifyReturnValue(method = "streamCodec", at = @At("RETURN"))
 	private static StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> modifyPacketCodec(StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> codec) {
-		return new ExtendedBlockStateParticleEffectPacketCodec(codec);
+		return new ExtendedBlockParticleOptionStreamCodec(codec);
 	}
 }

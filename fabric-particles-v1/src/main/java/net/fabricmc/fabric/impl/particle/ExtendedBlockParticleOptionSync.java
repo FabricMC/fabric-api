@@ -28,8 +28,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.impl.networking.FabricRegistryByteBuf;
 
-public class ExtendedBlockStateParticleEffectSync implements ModInitializer {
-	private static final Identifier PACKET_ID = Identifier.fromNamespaceAndPath("fabric", "extended_block_state_particle_effect_sync");
+public class ExtendedBlockParticleOptionSync implements ModInitializer {
+	private static final Identifier PACKET_ID = Identifier.fromNamespaceAndPath("fabric", "extended_block_particle_option_sync");
 
 	@Override
 	public void onInitialize() {
@@ -43,7 +43,7 @@ public class ExtendedBlockStateParticleEffectSync implements ModInitializer {
 			return true;
 		}
 
-		return !channels.contains(ExtendedBlockStateParticleEffectSync.PACKET_ID);
+		return !channels.contains(ExtendedBlockParticleOptionSync.PACKET_ID);
 	}
 
 	public record DummyPayload() implements CustomPacketPayload {

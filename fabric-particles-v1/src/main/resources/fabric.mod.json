@@ -21,10 +21,10 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.particle.ExtendedBlockStateParticleEffectSync"
+	    "net.fabricmc.fabric.impl.particle.ExtendedBlockParticleOptionSync"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.client.particle.ExtendedBlockStateParticleEffectSyncClient"
+	    "net.fabricmc.fabric.impl.client.particle.ExtendedBlockParticleOptionSyncClient"
     ]
   },
   "description": "Hooks for registering custom particles.",
@@ -38,7 +38,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/core/particles/BlockParticleOption": ["net/fabricmc/fabric/api/particle/v1/FabricBlockStateParticleEffect"]
+      "net/minecraft/core/particles/BlockParticleOption": ["net/fabricmc/fabric/api/particle/v1/FabricBlockParticleOption"]
     }
   },
   "accessWidener": "fabric-particles-v1.accesswidener"

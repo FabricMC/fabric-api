@@ -31,33 +31,34 @@ public final class ParticleRenderEvents {
 	}
 
 	/**
-	 * An event that checks if a {@linkplain net.minecraft.client.particle.TerrainParticle block dust particle}
-	 * can be tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor color provider}.
+	 * An event that checks if a {@linkplain net.minecraft.client.particle.TerrainParticle terrain particle}
+	 * can be tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor color}.
 	 *
 	 * <p>The default return value of this event is {@code true}. If any callback returns {@code false} for a given call,
 	 * further iteration will be canceled and the event invoker will return {@code false}.
 	 */
-	public static final Event<AllowBlockDustTint> ALLOW_BLOCK_DUST_TINT = EventFactory.createArrayBacked(AllowBlockDustTint.class, callbacks -> (state, world, pos) -> {
-		for (AllowBlockDustTint callback : callbacks) {
-			if (!callback.allowBlockDustTint(state, world, pos)) {
-				return false;
-			}
-		}
+	public static final Event<AllowTerrainParticleTint> ALLOW_TERRAIN_PARTICLE_TINT = EventFactory.createArrayBacked(
+			AllowTerrainParticleTint.class, callbacks -> (state, world, pos) -> {
+				for (AllowTerrainParticleTint callback : callbacks) {
+					if (!callback.allowTerrainParticleTint(state, world, pos)) {
+						return false;
+					}
+				}
 
-		return true;
-	});
+				return true;
+			});
 
 	@FunctionalInterface
-	public interface AllowBlockDustTint {
+	public interface AllowTerrainParticleTint {
 		/**
-		 * Checks whether a {@linkplain net.minecraft.client.particle.TerrainParticle block dust particle} can be
-		 * tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor color provider}.
+		 * Checks whether a {@linkplain net.minecraft.client.particle.TerrainParticle terrain particle} can be
+		 * tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor block color}.
 		 *
 		 * @param state the block state that the particle represents
 		 * @param world the world the particle is created in
 		 * @param pos   the position of the particle
-		 * @return {@code true} if color provider tinting should be allowed, {@code false} otherwise
+		 * @return {@code true} if block color tinting should be allowed, {@code false} otherwise
 		 */
-		boolean allowBlockDustTint(BlockState state, ClientLevel world, BlockPos pos);
+		boolean allowTerrainParticleTint(BlockState state, ClientLevel world, BlockPos pos);
 	}
 }

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.particle;
 
-import static net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry.getId;
+import static net.fabricmc.fabric.api.client.particle.v1.ParticleGroupRegistry.getId;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -41,25 +41,25 @@ import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 import net.fabricmc.fabric.mixin.client.particle.ParticleEngineAccessor;
 
-public final class ParticleRendererRegistryImpl {
-	public static final ParticleRendererRegistryImpl INSTANCE = new ParticleRendererRegistryImpl(ParticleEngineAccessor.getParticleTextureSheets());
+public final class ParticleGroupRegistryImpl {
+	public static final ParticleGroupRegistryImpl INSTANCE = new ParticleGroupRegistryImpl(ParticleEngineAccessor.getParticleRenderTypes());
 
-	private final List<ParticleRenderType> textureSheets;
+	private final List<ParticleRenderType> renderTypes;
 	private final Map<Identifier, ParticleTextureNode> nodes = new HashMap<>();
 	private final IdentityHashMap<ParticleRenderType, Function<ParticleEngine, ParticleGroup<?>>> factories = new IdentityHashMap<>();
 
 	@VisibleForTesting
-	public ParticleRendererRegistryImpl(List<ParticleRenderType> textureSheets) {
-		var copyOfTextureSheets = new ArrayList<>(textureSheets);
-		this.textureSheets = textureSheets;
+	public ParticleGroupRegistryImpl(List<ParticleRenderType> renderTypes) {
+		var copyOfRenderTypes = new ArrayList<>(renderTypes);
+		this.renderTypes = renderTypes;
 
 		Identifier last = null;
 
 		// Populate the nodes with vanilla texture sheets, to allow sorting with custom sheets later.
-		for (ParticleRenderType sheet : this.textureSheets) {
-			Identifier id = getId(sheet);
+		for (ParticleRenderType renderType : this.renderTypes) {
+			Identifier id = getId(renderType);
 
-			nodes.put(id, new ParticleTextureNode(sheet));
+			nodes.put(id, new ParticleTextureNode(renderType));
 
 			if (last != null) {
 				ParticleTextureNode.link(nodes.get(last), nodes.get(id));
@@ -71,24 +71,24 @@ public final class ParticleRendererRegistryImpl {
 		sort();
 
 		// Just a sanity check to make sure we didn't mess up the order of vanilla texture sheets.
-		assertIdentical(textureSheets, copyOfTextureSheets);
+		assertIdentical(renderTypes, copyOfRenderTypes);
 	}
 
-	public void register(ParticleRenderType textureSheet, Function<ParticleEngine, ParticleGroup<?>> function) {
-		final Identifier id = getId(textureSheet);
+	public void register(ParticleRenderType renderType, Function<ParticleEngine, ParticleGroup<?>> function) {
+		final Identifier id = getId(renderType);
 
 		if (nodes.containsKey(id)) {
-			throw new IllegalArgumentException("A ParticleTextureSheet with the id " + id + " has already been registered.");
+			throw new IllegalArgumentException("A ParticleRenderType with the id " + id + " has already been registered.");
 		}
 
-		if (factories.containsKey(textureSheet)) {
-			throw new IllegalArgumentException("The specified ParticleTextureSheet instance has already been registered.");
+		if (factories.containsKey(renderType)) {
+			throw new IllegalArgumentException("The specified ParticleRenderType instance has already been registered.");
 		}
 
-		var node = new ParticleTextureNode(id, textureSheet);
+		var node = new ParticleTextureNode(id, renderType);
 		nodes.put(id, node);
-		textureSheets.add(textureSheet);
-		factories.put(textureSheet, function);
+		renderTypes.add(renderType);
+		factories.put(renderType, function);
 
 		sort();
 	}
@@ -101,26 +101,26 @@ public final class ParticleRendererRegistryImpl {
 		ParticleTextureNode secondEntry = nodes.get(second);
 
 		if (firstEntry == null) {
-			throw new IllegalArgumentException("The specified first id " + first + " does not correspond to a registered ParticleTextureSheet.");
+			throw new IllegalArgumentException("The specified first id " + first + " does not correspond to a registered ParticleRenderType.");
 		}
 
 		if (secondEntry == null) {
-			throw new IllegalArgumentException("The specified second id " + second + " does not correspond to a registered ParticleTextureSheet.");
+			throw new IllegalArgumentException("The specified second id " + second + " does not correspond to a registered ParticleRenderType.");
 		}
 
 		ParticleTextureNode.link(firstEntry, secondEntry);
 		sort();
 	}
 
-	public @Nullable ParticleRenderType getParticleTextureSheet(Identifier id) {
+	public @Nullable ParticleRenderType getParticleRenderType(Identifier id) {
 		Objects.requireNonNull(id);
 		ParticleTextureNode entry = nodes.get(id);
-		return entry != null ? entry.textureSheet : null;
+		return entry != null ? entry.renderType : null;
 	}
 
 	@Nullable
-	public Function<ParticleEngine, ParticleGroup<?>> getFactory(ParticleRenderType textureSheet) {
-		return factories.get(textureSheet);
+	public Function<ParticleEngine, ParticleGroup<?>> getFactory(ParticleRenderType renderType) {
+		return factories.get(renderType);
 	}
 
 	private void sort() {
@@ -130,10 +130,10 @@ public final class ParticleRendererRegistryImpl {
 		Reference2IntMap<ParticleRenderType> sheets = new Reference2IntLinkedOpenHashMap<>();
 
 		for (int i = 0; i < entries.size(); i++) {
-			sheets.put(entries.get(i).textureSheet, i);
+			sheets.put(entries.get(i).renderType, i);
 		}
 
-		textureSheets.sort(Comparator.comparingInt(sheets::getInt));
+		renderTypes.sort(Comparator.comparingInt(sheets::getInt));
 	}
 
 	private static void assertIdentical(List<?> a, List<?> b) {
@@ -150,16 +150,16 @@ public final class ParticleRendererRegistryImpl {
 
 	private static class ParticleTextureNode extends SortableNode<ParticleTextureNode> {
 		final Identifier id;
-		final ParticleRenderType textureSheet;
+		final ParticleRenderType renderType;
 
-		private ParticleTextureNode(Identifier id, ParticleRenderType textureSheet) {
+		private ParticleTextureNode(Identifier id, ParticleRenderType renderType) {
 			this.id = id;
-			this.textureSheet = textureSheet;
+			this.renderType = renderType;
 		}
 
-		private ParticleTextureNode(ParticleRenderType textureSheet) {
-			this.id = getId(textureSheet);
-			this.textureSheet = textureSheet;
+		private ParticleTextureNode(ParticleRenderType renderType) {
+			this.id = getId(renderType);
+			this.renderType = renderType;
 		}
 
 		@Override

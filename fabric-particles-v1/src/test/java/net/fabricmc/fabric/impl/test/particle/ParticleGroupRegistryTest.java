@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.test.particle;
 
-import static net.fabricmc.fabric.api.client.particle.v1.ParticleRendererRegistry.getId;
+import static net.fabricmc.fabric.api.client.particle.v1.ParticleGroupRegistry.getId;
 import static net.minecraft.client.particle.ParticleRenderType.ELDER_GUARDIANS;
 import static net.minecraft.client.particle.ParticleRenderType.ITEM_PICKUP;
 import static net.minecraft.client.particle.ParticleRenderType.NO_RENDER;
@@ -31,14 +31,14 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.client.particle.ParticleRenderType;
 
-import net.fabricmc.fabric.impl.client.particle.ParticleRendererRegistryImpl;
+import net.fabricmc.fabric.impl.client.particle.ParticleGroupRegistryImpl;
 
-public class ParticleRendererRegistryTest {
+public class ParticleGroupRegistryTest {
 	List<ParticleRenderType> sheets = getVanillaSheets();
 
 	@Test
 	void testInitialSorting() {
-		var registry = new ParticleRendererRegistryImpl(sheets);
+		var registry = new ParticleGroupRegistryImpl(sheets);
 
 		assertSame(SINGLE_QUADS, sheets.getFirst());
 		assertSame(ITEM_PICKUP, sheets.get(1));
@@ -49,7 +49,7 @@ public class ParticleRendererRegistryTest {
 
 	@Test
 	void insertBefore() {
-		var registry = new ParticleRendererRegistryImpl(sheets);
+		var registry = new ParticleGroupRegistryImpl(sheets);
 
 		var customSheet = new ParticleRenderType("mymod:custom");
 		registry.register(customSheet, particleManager -> null);
@@ -65,7 +65,7 @@ public class ParticleRendererRegistryTest {
 
 	@Test
 	void insertAfter() {
-		var registry = new ParticleRendererRegistryImpl(sheets);
+		var registry = new ParticleGroupRegistryImpl(sheets);
 
 		var customSheet = new ParticleRenderType("mymod:custom");
 		registry.register(customSheet, particleManager -> null);
