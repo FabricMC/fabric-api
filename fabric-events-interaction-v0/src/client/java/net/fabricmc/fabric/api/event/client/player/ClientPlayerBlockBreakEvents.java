@@ -40,9 +40,9 @@ public final class ClientPlayerBlockBreakEvents {
 	 * <p>Only called client side. For server side see {@link net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents#AFTER}
 	 */
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
-			(listeners) -> (world, player, pos, state) -> {
+			(listeners) -> (level, player, pos, state) -> {
 				for (After event : listeners) {
-					event.afterBlockBreak(world, player, pos, state);
+					event.afterBlockBreak(level, player, pos, state);
 				}
 			}
 	);
@@ -52,11 +52,11 @@ public final class ClientPlayerBlockBreakEvents {
 		/**
 		 * Called after a block is successfully broken.
 		 *
-		 * @param world  the world where the block was broken
+		 * @param level  the level where the block was broken
 		 * @param player the player who broke the block
 		 * @param pos    the position where the block was broken
 		 * @param state  the block state <strong>before</strong> the block was broken
 		 */
-		void afterBlockBreak(ClientLevel world, LocalPlayer player, BlockPos pos, BlockState state);
+		void afterBlockBreak(ClientLevel level, LocalPlayer player, BlockPos pos, BlockState state);
 	}
 }
