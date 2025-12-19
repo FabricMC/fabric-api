@@ -34,8 +34,8 @@ import net.minecraft.world.item.Item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityType;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityDataRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityType;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class EntityTrackedDataTest implements ModInitializer {
