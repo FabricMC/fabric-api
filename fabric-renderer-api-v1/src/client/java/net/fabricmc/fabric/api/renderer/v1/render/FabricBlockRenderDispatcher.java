@@ -53,7 +53,7 @@ public interface FabricBlockRenderDispatcher {
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
 	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
-	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the world is empty.
+	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
 	 *            </b>
 	 *
 	 * @see FabricOrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
