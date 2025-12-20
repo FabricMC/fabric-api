@@ -134,7 +134,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleSprite(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
 		if (!(((FabricBlockView) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
 			return frameModel.particleIcon(level, pos, state); // No inner block to render, or data of wrong type
