@@ -69,7 +69,7 @@ public interface FabricBlockStateModel {
 	 * <p>Implementations should generally also override {@link #createGeometryKey}.
 	 *
 	 * @param emitter Accepts model output.
-	 * @param blockAndTintGetter Access to level state.
+	 * @param level Access to level state.
 	 * @param pos Position of block for model being rendered.
 	 * @param state Block state whose model was queried for geometry. <b>This is not guaranteed to be the
 	 *              state corresponding to {@code this} model!</b>
@@ -82,7 +82,7 @@ public interface FabricBlockStateModel {
 	 *
 	 * @see #createGeometryKey(BlockAndTintGetter, BlockPos, BlockState, RandomSource)
 	 */
-	default void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+	default void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		final List<BlockModelPart> parts = ((BlockStateModel) this).collectParts(random);
 		final int partCount = parts.size();
 
@@ -107,7 +107,7 @@ public interface FabricBlockStateModel {
 	 * not to if doing so is too complex. Vanilla models correctly implement this method, but may return {@code null}
 	 * when delegating to a submodel that returns {@code null}.
 	 *
-	 * @param blockAndTintGetter The level in which the block exists.
+	 * @param level The level in which the block exists.
 	 * @param pos The position of the block in the level.
 	 * @param state The block state whose model was queried for a geometry key. <b>This is not guaranteed to be the
 	 *              state corresponding to {@code this} model!</b>
@@ -117,7 +117,7 @@ public interface FabricBlockStateModel {
 	 * @see #emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)
 	 */
 	@Nullable
-	default Object createGeometryKey(BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state, RandomSource random) {
+	default Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
 		return null;
 	}
 
@@ -128,13 +128,13 @@ public interface FabricBlockStateModel {
 	 * <p><b>If your model delegates to other {@link BlockStateModel}s, ensure that it also delegates invocations of
 	 * this method to its submodels as appropriate!</b>
 	 *
-	 * @param blockAndTintGetter The level in which the block exists.
+	 * @param level The level in which the block exists.
 	 * @param pos The position of the block in the level.
 	 * @param state The block state whose model was queried for the particle sprite. <b>This is not guaranteed to be the
 	 *              state corresponding to {@code this} model!</b>
 	 * @return the particle sprite
 	 */
-	default TextureAtlasSprite particleSprite(BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state) {
+	default TextureAtlasSprite particleSprite(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return ((BlockStateModel) this).particleIcon();
 	}
 }

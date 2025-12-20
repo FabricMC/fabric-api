@@ -51,7 +51,7 @@ abstract class MultiPartModelMixin implements BlockStateModel {
 	private List<BlockStateModel> models;
 
 	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		if (models == null) {
 			models = shared.selectModels(this.blockState);
 		}
@@ -61,13 +61,13 @@ abstract class MultiPartModelMixin implements BlockStateModel {
 		for (BlockStateModel model : models) {
 			random.setSeed(seed);
 			model.emitQuads(emitter,
-					blockAndTintGetter, pos, state, random, cullTest);
+					level, pos, state, random, cullTest);
 		}
 	}
 
 	@Override
 	@Nullable
-	public Object createGeometryKey(BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state, RandomSource random) {
+	public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
 		if (models == null) {
 			models = shared.selectModels(this.blockState);
 		}
@@ -77,14 +77,14 @@ abstract class MultiPartModelMixin implements BlockStateModel {
 
 		if (count == 1) {
 			random.setSeed(seed);
-			return models.getFirst().createGeometryKey(blockAndTintGetter, pos, state, random);
+			return models.getFirst().createGeometryKey(level, pos, state, random);
 		} else {
 			List<Object> subkeys = new ArrayList<>(count);
 
 			for (int i = 0; i < count; i++) {
 				random.setSeed(seed);
 				Object subkey = models.get(i).createGeometryKey(
-						blockAndTintGetter, pos, state, random);
+						level, pos, state, random);
 
 				if (subkey == null) {
 					return null;
@@ -101,8 +101,8 @@ abstract class MultiPartModelMixin implements BlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleSprite(BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state) {
+	public TextureAtlasSprite particleSprite(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return ((MultiPartModelSharedBakedStateAccessor) (Object) shared).getSelectors().getFirst().model().particleSprite(
-				blockAndTintGetter, pos, state);
+				level, pos, state);
 	}
 }

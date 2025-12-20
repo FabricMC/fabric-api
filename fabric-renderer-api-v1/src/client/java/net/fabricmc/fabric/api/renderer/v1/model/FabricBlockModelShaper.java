@@ -35,13 +35,13 @@ public interface FabricBlockModelShaper {
 	 * context is not available, use the vanilla method instead of passing empty level context to this method.
 	 *
 	 * @param state The block state whose model to retrieve the particle sprite from.
-	 * @param blockAndTintGetter The level in which the block exists. <b>Should not be empty (i.e. not
+	 * @param level The level in which the block exists. <b>Should not be empty (i.e. not
 	 * 	                {@link EmptyBlockAndTintGetter}).</b>
 	 * @param pos The position of the block in the level.
 	 * @return the particle sprite
 	 */
-	default TextureAtlasSprite getModelParticleSprite(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos) {
+	default TextureAtlasSprite getModelParticleSprite(BlockState state, BlockAndTintGetter level, BlockPos pos) {
 		return ((BlockModelShaper) this).getBlockModel(state).particleSprite(
-				blockAndTintGetter, pos, state);
+				level, pos, state);
 	}
 }

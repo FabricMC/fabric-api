@@ -27,5 +27,5 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-public record ExtendedBlockStateModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state) {
+public record ExtendedBlockStateModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 }

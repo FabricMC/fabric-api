@@ -55,21 +55,21 @@ public class IndigoRenderer implements Renderer {
 	}
 
 	@Override
-	public void render(ModelBlockRenderer blockRenderer, BlockAndTintGetter blockAndTintGetter, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay) {
+	public void render(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay) {
 		TerrainLikeRenderContext.POOL.get().bufferModel(
-				blockAndTintGetter, model, state, pos,
+				level, model, state, pos,
 				poseStack, bufferSource, cull, seed, overlay);
 	}
 
 	@Override
-	public void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state) {
+	public void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		SimpleBlockRenderContext.POOL.get().bufferModel(pose,
 				bufferSource, model, red, green, blue, light, overlay,
-				blockAndTintGetter, pos, state);
+				level, pos, state);
 	}
 
 	@Override
-	public void renderBlockAsEntity(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter blockAndTintGetter, BlockPos pos) {
+	public void renderBlockAsEntity(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
 		RenderShape blockRenderType = state.getRenderShape();
 
 		if (blockRenderType != RenderShape.INVISIBLE) {
@@ -81,7 +81,7 @@ public class IndigoRenderer implements Renderer {
 			FabricModelBlockRenderer.render(
 					poseStack.last(), RenderLayerHelper.entityDelegate(
 							bufferSource), model, red, green, blue, light, overlay,
-					blockAndTintGetter, pos, state);
+					level, pos, state);
 		}
 	}
 

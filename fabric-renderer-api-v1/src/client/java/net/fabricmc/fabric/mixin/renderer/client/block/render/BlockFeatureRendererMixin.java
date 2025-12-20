@@ -78,13 +78,13 @@ abstract class BlockFeatureRendererMixin {
 			poseStack.last().set(submit.pose());
 			blockRenderDispatcher.renderBlockAsEntity(
 					submit.state(), poseStack,
-					bufferSource, submit.lightCoords(), submit.overlayCoords(), submit.blockAndTintGetter(), submit.pos());
+					bufferSource, submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos());
 
 			if (submit.outlineColor() != 0) {
 				outlineBufferSource.setColor(submit.outlineColor());
 				blockRenderDispatcher.renderBlockAsEntity(
 						submit.state(), poseStack,
-						outlineBufferSource, submit.lightCoords(), submit.overlayCoords(), submit.blockAndTintGetter(), submit.pos());
+						outlineBufferSource, submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos());
 			}
 
 			poseStack.popPose();
@@ -95,14 +95,14 @@ abstract class BlockFeatureRendererMixin {
 			blockMultiBufferSource.multiBufferSource = bufferSource;
 			FabricModelBlockRenderer.render(
 					submit.pose(),
-					blockMultiBufferSource, submit.model(), submit.r(), submit.g(), submit.b(), submit.lightCoords(), submit.overlayCoords(), submit.blockAndTintGetter(), submit.pos(), submit.state());
+					blockMultiBufferSource, submit.model(), submit.r(), submit.g(), submit.b(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(), submit.state());
 
 			if (submit.outlineColor() != 0) {
 				outlineBufferSource.setColor(submit.outlineColor());
 				blockMultiBufferSource.multiBufferSource = outlineBufferSource;
 				FabricModelBlockRenderer.render(
 						submit.pose(),
-						blockMultiBufferSource, submit.model(), submit.r(), submit.g(), submit.b(), submit.lightCoords(), submit.overlayCoords(), submit.blockAndTintGetter(), submit.pos(), submit.state());
+						blockMultiBufferSource, submit.model(), submit.r(), submit.g(), submit.b(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(), submit.state());
 			}
 		}
 	}

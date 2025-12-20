@@ -42,21 +42,21 @@ abstract class WeightedVariantsMixin implements BlockStateModel {
 	private WeightedList<BlockStateModel> list;
 
 	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		list.getRandomOrThrow(random).emitQuads(emitter,
-				blockAndTintGetter, pos, state, random, cullTest);
+				level, pos, state, random, cullTest);
 	}
 
 	@Override
 	@Nullable
-	public Object createGeometryKey(BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state, RandomSource random) {
+	public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
 		return list.getRandomOrThrow(random).createGeometryKey(
-				blockAndTintGetter, pos, state, random);
+				level, pos, state, random);
 	}
 
 	@Override
-	public TextureAtlasSprite particleSprite(BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state) {
+	public TextureAtlasSprite particleSprite(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return list.unwrap().getFirst().value().particleSprite(
-				blockAndTintGetter, pos, state);
+				level, pos, state);
 	}
 }

@@ -96,19 +96,19 @@ public interface Renderer {
 	 * @see FabricModelBlockRenderer#render(BlockAndTintGetter, BlockStateModel, BlockState, BlockPos, PoseStack, BlockMultiBufferSource, boolean, long, int)
 	 */
 	@ApiStatus.OverrideOnly
-	void render(ModelBlockRenderer blockRenderer, BlockAndTintGetter blockAndTintGetter, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay);
+	void render(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay);
 
 	/**
 	 * @see FabricModelBlockRenderer#render(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
 	@ApiStatus.OverrideOnly
-	void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state);
+	void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
 
 	/**
 	 * @see FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
 	 */
 	@ApiStatus.OverrideOnly
-	void renderBlockAsEntity(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter blockAndTintGetter, BlockPos pos);
+	void renderBlockAsEntity(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos);
 
 	/**
 	 * @see FabricLayerRenderState#emitter()

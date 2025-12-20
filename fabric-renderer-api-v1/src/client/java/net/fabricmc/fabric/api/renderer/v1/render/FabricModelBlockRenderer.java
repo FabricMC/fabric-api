@@ -53,7 +53,7 @@ public interface FabricModelBlockRenderer {
 	 * <p>This method allows buffering a block model in a terrain-like context, which usually includes stages like
 	 * culling, dynamic tinting, shading, and flat/smooth lighting.
 	 *
-	 * @param blockAndTintGetter The level in which to render the model. <b>Should not be empty (i.e. not
+	 * @param level The level in which to render the model. <b>Should not be empty (i.e. not
 	 *                  {@link EmptyBlockAndTintGetter}).</b>
 	 * @param model The model to render.
 	 * @param state The block state.
@@ -64,9 +64,9 @@ public interface FabricModelBlockRenderer {
 	 * @param seed The random seed. Usually retrieved by the caller from {@link BlockState#getSeed(BlockPos)}.
 	 * @param overlay The overlay value to pass to output {@link VertexConsumer}s.
 	 */
-	default void render(BlockAndTintGetter blockAndTintGetter, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay) {
+	default void render(BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay) {
 		Renderer.get().render((ModelBlockRenderer) this,
-				blockAndTintGetter, model, state, pos, poseStack,
+				level, model, state, pos, poseStack,
 				bufferSource, cull, seed, overlay);
 	}
 
@@ -90,17 +90,17 @@ public interface FabricModelBlockRenderer {
 	 * @param blue The blue component of the tint color.
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
-	 * @param blockAndTintGetter The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
+	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
 	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
 	 *            </b>
 	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
 	 *
 	 * @see FabricOrderedSubmitNodeCollector#submitBlockStateModel(PoseStack, Function, BlockStateModel, float, float, float, int, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
-	static void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state) {
+	static void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		Renderer.get().render(
 				pose,
 				bufferSource, model, red, green, blue, light, overlay,
-				blockAndTintGetter, pos, state);
+				level, pos, state);
 	}
 }

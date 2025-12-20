@@ -52,15 +52,15 @@ public interface FabricBlockRenderDispatcher {
 	 * @param bufferSource The buffer source.
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
-	 * @param blockAndTintGetter The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
+	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
 	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the world is empty.
 	 *            </b>
 	 *
 	 * @see FabricOrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
 	 */
-	default void renderBlockAsEntity(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter blockAndTintGetter, BlockPos pos) {
+	default void renderBlockAsEntity(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
 		Renderer.get().renderBlockAsEntity((BlockRenderDispatcher) this, state,
 				poseStack, bufferSource, light, overlay,
-				blockAndTintGetter, pos);
+				level, pos);
 	}
 }

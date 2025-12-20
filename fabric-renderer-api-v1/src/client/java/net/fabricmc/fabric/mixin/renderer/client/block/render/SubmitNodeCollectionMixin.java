@@ -59,21 +59,21 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	private final List<ExtendedBlockStateModelSubmit> extendedBlockStateModelSubmits = new ArrayList<>();
 
 	@Override
-	public void submitBlock(PoseStack poseStack, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter blockAndTintGetter, BlockPos pos) {
+	public void submitBlock(PoseStack poseStack, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos) {
 		wasUsed = true;
 		extendedBlockSubmits.add(new ExtendedBlockSubmit(poseStack.last().copy(), state, light, overlay, outlineColor,
-				blockAndTintGetter, pos));
+				level, pos));
 		Minecraft.getInstance().getModelManager().specialBlockModelRenderer().renderByBlock(state.getBlock(), ItemDisplayContext.NONE,
 				poseStack, submitNodeStorage, light, overlay, outlineColor);
 	}
 
 	@Override
-	public void submitBlockStateModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state) {
+	public void submitBlockStateModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		wasUsed = true;
 		extendedBlockStateModelSubmits.add(new ExtendedBlockStateModelSubmit(
 				poseStack.last().copy(),
 				renderTypeFunction, model, r, g, b, light, overlay, outlineColor,
-				blockAndTintGetter, pos, state));
+				level, pos, state));
 	}
 
 	@Override
