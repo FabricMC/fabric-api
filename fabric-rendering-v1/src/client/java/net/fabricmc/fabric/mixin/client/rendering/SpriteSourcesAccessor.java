@@ -28,7 +28,7 @@ import net.minecraft.util.ExtraCodecs;
 @Mixin(SpriteSources.class)
 public interface SpriteSourcesAccessor {
 	@Accessor("ID_MAPPER")
-	static ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends SpriteSource>> getAtlasSourceCodecs() {
+	static ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends SpriteSource>> getSpriteSourceCodecs() {
 		throw new AssertionError();
 	}
 }

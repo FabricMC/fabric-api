@@ -32,6 +32,6 @@ public final class SpriteSourceRegistryImpl {
 	public static void register(Identifier id, MapCodec<? extends SpriteSource> codec) {
 		Objects.requireNonNull(id, "id must not be null!");
 		Objects.requireNonNull(codec, "codec must not be null!");
-		SpriteSourcesAccessor.getAtlasSourceCodecs().put(id, codec);
+		SpriteSourcesAccessor.getSpriteSourceCodecs().put(id, codec);
 	}
 }
