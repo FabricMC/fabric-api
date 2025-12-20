@@ -68,7 +68,7 @@ abstract class BlockFeatureRendererMixin {
 		}
 	}
 
-	// Support ExtendedBlockSubmitNode and ExtendedBlockStateModelCommand.
+	// Support ExtendedBlockSubmit and ExtendedBlockModelSubmit.
 	@Inject(method = "render", at = @At("RETURN"))
 	private void onReturnRender(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, BlockRenderDispatcher blockRenderDispatcher, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
 		DelegatingBlockMultiBufferSourceImpl blockMultiBufferSource = new DelegatingBlockMultiBufferSourceImpl();
