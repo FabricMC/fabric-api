@@ -49,12 +49,12 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 public abstract class FabricBlockLootTableProvider extends BlockLootSubProvider implements FabricLootTableProvider {
 	private final FabricDataOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
-	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
+	private final CompletableFuture<HolderLookup.Provider> holderProviderFuture;
 
-	protected FabricBlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
-		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), registryLookup.join());
+	protected FabricBlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> holderProviderFuture) {
+		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), holderProviderFuture.join());
 		this.output = dataOutput;
-		this.registryLookupFuture = registryLookup;
+		this.holderProviderFuture = holderProviderFuture;
 	}
 
 	/**
@@ -107,7 +107,7 @@ public abstract class FabricBlockLootTableProvider extends BlockLootSubProvider 
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		return FabricLootTableProviderImpl.run(cache, this, LootContextParamSets.BLOCK, output, registryLookupFuture);
+		return FabricLootTableProviderImpl.run(cache, this, LootContextParamSets.BLOCK, output, holderProviderFuture);
 	}
 
 	@Override
