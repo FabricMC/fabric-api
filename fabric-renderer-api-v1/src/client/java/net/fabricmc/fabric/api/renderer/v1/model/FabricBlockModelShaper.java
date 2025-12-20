@@ -40,7 +40,7 @@ public interface FabricBlockModelShaper {
 	 * @param pos The position of the block in the level.
 	 * @return the particle sprite
 	 */
-	default TextureAtlasSprite getModelParticleSprite(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+	default TextureAtlasSprite getModelParticleIcon(BlockState state, BlockAndTintGetter level, BlockPos pos) {
 		return ((BlockModelShaper) this).getBlockModel(state).particleIcon(
 				level, pos, state);
 	}
