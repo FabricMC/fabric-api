@@ -78,7 +78,7 @@ public abstract class FabricSoundsProvider implements DataProvider {
 	 * <p>Registered sound types will be appended to their own {@code sounds.json} in a namespace corresponding to
 	 * the id of the sound event they are assigned to.
 	 */
-	protected abstract void configure(HolderLookup.Provider registryFuture, SoundExporter exporter);
+	protected abstract void configure(HolderLookup.Provider registryLookup, SoundExporter exporter);
 
 	/**
 	 * A consumer used by {@link FabricSoundsProvider#configure}.
