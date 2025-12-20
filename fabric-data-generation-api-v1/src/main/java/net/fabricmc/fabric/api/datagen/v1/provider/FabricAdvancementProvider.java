@@ -79,7 +79,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput writer) {
+	public CompletableFuture<?> run(CachedOutput cachedOutput) {
 		return this.holderProvider.thenCompose(lookup -> {
 			final Set<Identifier> identifiers = Sets.newHashSet();
 			final Set<AdvancementHolder> advancements = Sets.newHashSet();
@@ -96,7 +96,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 
 				JsonObject advancementJson = Advancement.CODEC.encodeStart(ops, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
 				FabricDataGenHelper.addConditions(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
-				futures.add(DataProvider.saveStable(writer, advancementJson, getOutputPath(advancement)));
+				futures.add(DataProvider.saveStable(cachedOutput, advancementJson, getOutputPath(advancement)));
 			}
 
 			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

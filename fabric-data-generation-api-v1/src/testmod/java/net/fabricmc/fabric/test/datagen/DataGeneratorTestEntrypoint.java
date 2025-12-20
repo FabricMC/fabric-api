@@ -363,7 +363,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
+		public void generateAdvancement(HolderLookup.Provider holderProvider, Consumer<AdvancementHolder> consumer) {
 			AdvancementHolder root = Advancement.Builder.advancement()
 					.display(
 							SIMPLE_BLOCK,
