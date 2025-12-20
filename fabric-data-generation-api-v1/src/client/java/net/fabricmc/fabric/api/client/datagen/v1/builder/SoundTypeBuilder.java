@@ -103,7 +103,9 @@ public interface SoundTypeBuilder {
 	 * <p>Calling this with the count value of {@code 3} is the equivalent of doing:
 	 *
 	 * <p>{@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("1"));}
+	 * <br>
 	 * {@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("2"));}
+	 * <br>
 	 * {@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("3"));}
 	 *
 	 * @param sound base sound to add
