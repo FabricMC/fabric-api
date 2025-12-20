@@ -56,7 +56,7 @@ public abstract class FabricSoundsProvider implements DataProvider {
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput writer) {
+	public CompletableFuture<?> run(CachedOutput cache) {
 		return registriesFuture.thenCompose(lookup -> {
 			final Map<String, Map<String, SoundTypeBuilderImpl.SoundType>> data = new LinkedHashMap<>();
 			configure(lookup, (id, builder) -> {
@@ -67,7 +67,7 @@ public abstract class FabricSoundsProvider implements DataProvider {
 
 			return CompletableFuture.allOf(data.entrySet().stream().map(file -> {
 				Path outputPath = output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(file.getKey() + "/sounds.json");
-				return DataProvider.saveStable(writer, lookup, CODEC, file.getValue(), outputPath);
+				return DataProvider.saveStable(cache, lookup, CODEC, file.getValue(), outputPath);
 			}).toArray(CompletableFuture[]::new));
 		});
 	}

@@ -49,7 +49,7 @@ public final class FabricLootTableProviderImpl {
 	 * Shared run logic for {@link FabricBlockLootTableProvider} and {@link SimpleFabricLootTableProvider}.
 	 */
 	public static CompletableFuture<?> run(
-			CachedOutput writer,
+			CachedOutput cache,
 			FabricLootTableProvider provider,
 			ContextKeySet contextType,
 			FabricDataOutput fabricDataOutput,
@@ -73,7 +73,7 @@ public final class FabricLootTableProviderImpl {
 			for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
 				JsonObject tableJson = (JsonObject) LootTable.DIRECT_CODEC.encodeStart(ops, entry.getValue()).getOrThrow(IllegalStateException::new);
 				FabricDataGenHelper.addConditions(tableJson, conditionMap.remove(entry.getKey()));
-				futures.add(DataProvider.saveStable(writer, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
+				futures.add(DataProvider.saveStable(cache, tableJson, getOutputPath(fabricDataOutput, entry.getKey())));
 			}
 
 			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

@@ -66,7 +66,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput cachedOutput) {
+	public CompletableFuture<?> run(CachedOutput cache) {
 		return this.registriesFuture.thenCompose(lookup -> {
 			Map<Identifier, JsonElement> entries = new HashMap<>();
 			RegistryOps<JsonElement> ops = lookup.createSerializationContext(JsonOps.INSTANCE);
@@ -81,7 +81,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 			};
 
 			this.configure(provider, lookup);
-			return this.write(cachedOutput, entries);
+			return this.write(cache, entries);
 		});
 	}
 
@@ -99,10 +99,10 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 				.getOrThrow();
 	}
 
-	private CompletableFuture<?> write(CachedOutput cachedOutput, Map<Identifier, JsonElement> entries) {
+	private CompletableFuture<?> write(CachedOutput cache, Map<Identifier, JsonElement> entries) {
 		return CompletableFuture.allOf(entries.entrySet().stream().map(entry -> {
 			Path path = this.pathResolver.json(entry.getKey());
-			return DataProvider.saveStable(cachedOutput, entry.getValue(), path);
+			return DataProvider.saveStable(cache, entry.getValue(), path);
 		}).toArray(CompletableFuture[]::new));
 	}
 }

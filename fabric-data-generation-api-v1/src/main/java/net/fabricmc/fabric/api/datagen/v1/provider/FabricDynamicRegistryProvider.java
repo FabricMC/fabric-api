@@ -246,7 +246,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput cachedOutput) {
+	public CompletableFuture<?> run(CachedOutput cache) {
 		return registriesFuture.thenCompose(registries -> {
 			return CompletableFuture
 					.supplyAsync(() -> {
@@ -259,7 +259,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 						ArrayList<CompletableFuture<?>> futures = new ArrayList<>();
 
 						for (RegistryEntries<?> registryEntries : entries.queuedEntries.values()) {
-							futures.add(writeRegistryEntries(cachedOutput, dynamicOps, registryEntries));
+							futures.add(writeRegistryEntries(cache, dynamicOps, registryEntries));
 						}
 
 						return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
@@ -267,7 +267,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		});
 	}
 
-	private <T> CompletableFuture<?> writeRegistryEntries(CachedOutput cachedOutput, RegistryOps<JsonElement> ops, RegistryEntries<T> entries) {
+	private <T> CompletableFuture<?> writeRegistryEntries(CachedOutput cache, RegistryOps<JsonElement> ops, RegistryEntries<T> entries) {
 		final ResourceKey<? extends Registry<T>> registry = entries.registry;
 		final boolean shouldOmitNamespace = registry.identifier().getNamespace().equals(Identifier.DEFAULT_NAMESPACE) || !DynamicRegistriesImpl.FABRIC_DYNAMIC_REGISTRY_KEYS.contains(registry);
 		final String directoryName = shouldOmitNamespace ? registry.identifier().getPath() : registry.identifier().getNamespace() + "/" + registry.identifier().getPath();
@@ -276,7 +276,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 
 		for (Map.Entry<ResourceKey<T>, ConditionalEntry<T>> entry : entries.entries.entrySet()) {
 			Path path = pathResolver.json(entry.getKey().identifier());
-			futures.add(writeToPath(path, cachedOutput, ops, entries.elementCodec, entry.getValue().value(), entry.getValue().conditions()));
+			futures.add(writeToPath(path, cache, ops, entries.elementCodec, entry.getValue().value(), entry.getValue().conditions()));
 		}
 
 		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
