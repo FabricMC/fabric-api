@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
-public final class BlockRenderLayerMapImpl {
+public final class ChunkSectionLayerMapImpl {
 	private static final Map<Block, ChunkSectionLayer> BLOCK_RENDER_LAYER_MAP = new HashMap<>();
 	private static final Map<Fluid, ChunkSectionLayer> FLUID_RENDER_LAYER_MAP = new HashMap<>();
 
@@ -57,6 +57,6 @@ public final class BlockRenderLayerMapImpl {
 		fluidHandler = vanillaFluidHandler;
 	}
 
-	private BlockRenderLayerMapImpl() {
+	private ChunkSectionLayerMapImpl() {
 	}
 }

@@ -43,17 +43,17 @@ import net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 
-import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 
 public final class SpecialGuiElementRegistryImpl {
-	private static final List<SpecialGuiElementRegistry.Factory> FACTORIES = new ArrayList<>();
-	private static final Map<Class<? extends PictureInPictureRenderState>, SpecialGuiElementRegistry.Factory> REGISTERED_FACTORIES = new HashMap<>();
+	private static final List<PictureInPictureRendererRegistry.Factory> FACTORIES = new ArrayList<>();
+	private static final Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRendererRegistry.Factory> REGISTERED_FACTORIES = new HashMap<>();
 	private static boolean frozen;
 
 	private SpecialGuiElementRegistryImpl() {
 	}
 
-	public static void register(SpecialGuiElementRegistry.Factory factory) {
+	public static void register(PictureInPictureRendererRegistry.Factory factory) {
 		if (frozen) {
 			throw new IllegalStateException("Too late to register, GuiRenderer has already been initialized.");
 		}
@@ -69,8 +69,8 @@ public final class SpecialGuiElementRegistryImpl {
 
 		ContextImpl context = new ContextImpl(client, immediate, orderedRenderCommandQueue);
 
-		for (SpecialGuiElementRegistry.Factory factory : FACTORIES) {
-			PictureInPictureRenderer<?> elementRenderer = factory.createSpecialRenderer(context);
+		for (PictureInPictureRendererRegistry.Factory factory : FACTORIES) {
+			PictureInPictureRenderer<?> elementRenderer = factory.createRenderer(context);
 			specialElementRenderers.put(elementRenderer.getRenderStateClass(), elementRenderer);
 			REGISTERED_FACTORIES.put(elementRenderer.getRenderStateClass(), factory);
 		}
@@ -79,18 +79,18 @@ public final class SpecialGuiElementRegistryImpl {
 	// null for render states registered outside FAPI
 	@Nullable
 	public static <S extends PictureInPictureRenderState> PictureInPictureRenderer<S> createNewRenderer(S state, Minecraft client, MultiBufferSource.BufferSource immediate, SubmitNodeCollector orderedRenderCommandQueue) {
-		SpecialGuiElementRegistry.Factory factory = REGISTERED_FACTORIES.get(state.getClass());
-		return factory == null ? null : (PictureInPictureRenderer<S>) factory.createSpecialRenderer(new ContextImpl(client, immediate, orderedRenderCommandQueue));
+		PictureInPictureRendererRegistry.Factory factory = REGISTERED_FACTORIES.get(state.getClass());
+		return factory == null ? null : (PictureInPictureRenderer<S>) factory.createRenderer(new ContextImpl(client, immediate, orderedRenderCommandQueue));
 	}
 
 	private static void registerVanillaFactories() {
 		// Vanilla creates its special element renderers in the GameRenderer constructor
-		REGISTERED_FACTORIES.put(GuiEntityRenderState.class, context -> new GuiEntityRenderer(context.vertexConsumers(), context.client().getEntityRenderDispatcher()));
-		REGISTERED_FACTORIES.put(GuiSkinRenderState.class, context -> new GuiSkinRenderer(context.vertexConsumers()));
-		REGISTERED_FACTORIES.put(GuiBookModelRenderState.class, context -> new GuiBookModelRenderer(context.vertexConsumers()));
-		REGISTERED_FACTORIES.put(GuiBannerResultRenderState.class, context -> new GuiBannerResultRenderer(context.vertexConsumers(), context.client().getAtlasManager()));
-		REGISTERED_FACTORIES.put(GuiSignRenderState.class, context -> new GuiSignRenderer(context.vertexConsumers(), context.client().getAtlasManager()));
-		REGISTERED_FACTORIES.put(GuiProfilerChartRenderState.class, context -> new GuiProfilerChartRenderer(context.vertexConsumers()));
+		REGISTERED_FACTORIES.put(GuiEntityRenderState.class, context -> new GuiEntityRenderer(context.bufferSource(), context.minecraft().getEntityRenderDispatcher()));
+		REGISTERED_FACTORIES.put(GuiSkinRenderState.class, context -> new GuiSkinRenderer(context.bufferSource()));
+		REGISTERED_FACTORIES.put(GuiBookModelRenderState.class, context -> new GuiBookModelRenderer(context.bufferSource()));
+		REGISTERED_FACTORIES.put(GuiBannerResultRenderState.class, context -> new GuiBannerResultRenderer(context.bufferSource(), context.minecraft().getAtlasManager()));
+		REGISTERED_FACTORIES.put(GuiSignRenderState.class, context -> new GuiSignRenderer(context.bufferSource(), context.minecraft().getAtlasManager()));
+		REGISTERED_FACTORIES.put(GuiProfilerChartRenderState.class, context -> new GuiProfilerChartRenderer(context.bufferSource()));
 	}
 
 	@VisibleForTesting
@@ -98,5 +98,5 @@ public final class SpecialGuiElementRegistryImpl {
 		return REGISTERED_FACTORIES.keySet();
 	}
 
-	record ContextImpl(Minecraft client, MultiBufferSource.BufferSource vertexConsumers, SubmitNodeCollector orderedRenderCommandQueue) implements SpecialGuiElementRegistry.Context { }
+	record ContextImpl(Minecraft minecraft, MultiBufferSource.BufferSource bufferSource, SubmitNodeCollector submitNodeCollector) implements PictureInPictureRendererRegistry.Context { }
 }

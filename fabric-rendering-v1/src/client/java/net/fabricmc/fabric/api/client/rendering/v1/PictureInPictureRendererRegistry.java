@@ -28,13 +28,13 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRegistryImpl;
 
 /**
- * Allows registering {@linkplain PictureInPictureRenderer special gui element renderers},
- * used to render custom gui elements beyond the methods available in {@link net.minecraft.client.gui.GuiGraphics DrawContext}.
+ * Allows registering {@linkplain PictureInPictureRenderer picture-in-picture renderers},
+ * used to render custom gui elements beyond the methods available in {@link net.minecraft.client.gui.GuiGraphics GuiGraphics}.
  *
  * <p>To render a custom gui element, first implement and register a {@link PictureInPictureRenderer}.
- * When you want to render, add an instance of the corresponding render state to {@link net.minecraft.client.gui.GuiGraphics#guiRenderState DrawContext#state} using {@link net.minecraft.client.gui.render.state.GuiRenderState#submitPicturesInPictureState(net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState) GuiRenderState#addSpecialElement(SpecialGuiElementRenderState)}.
+ * When you want to render, add an instance of the corresponding render state to {@link net.minecraft.client.gui.GuiGraphics#guiRenderState GuiGraphics#guiRenderState} using {@link net.minecraft.client.gui.render.state.GuiRenderState#submitPicturesInPictureState(net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState) GuiRenderState#submitPicturesInPictureState(PictureInPictureRenderState)}.
  */
-public final class SpecialGuiElementRegistry {
+public final class PictureInPictureRendererRegistry {
 	/**
 	 * Registers a new {@link Factory} used to create a new {@link PictureInPictureRenderer} instance.
 	 */
@@ -48,7 +48,7 @@ public final class SpecialGuiElementRegistry {
 	 */
 	@FunctionalInterface
 	public interface Factory {
-		PictureInPictureRenderer<?> createSpecialRenderer(Context ctx);
+		PictureInPictureRenderer<?> createRenderer(Context ctx);
 	}
 
 	@ApiStatus.NonExtendable
@@ -56,16 +56,16 @@ public final class SpecialGuiElementRegistry {
 		/**
 		 * @return the {@link MultiBufferSource.BufferSource}.
 		 */
-		MultiBufferSource.BufferSource vertexConsumers();
+		MultiBufferSource.BufferSource bufferSource();
 
 		/**
 		 * @return the {@link Minecraft} instance.
 		 */
-		Minecraft client();
+		Minecraft minecraft();
 
 		/**
 		 * @return the {@link SubmitNodeCollector} instance.
 		 */
-		SubmitNodeCollector orderedRenderCommandQueue();
+		SubmitNodeCollector submitNodeCollector();
 	}
 }

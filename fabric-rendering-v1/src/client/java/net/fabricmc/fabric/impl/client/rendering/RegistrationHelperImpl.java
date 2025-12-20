@@ -23,9 +23,9 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 
-public final class RegistrationHelperImpl implements LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper {
+public final class RegistrationHelperImpl implements LivingEntityRenderLayerRegistrationCallback.RegistrationHelper {
 	private final Function<RenderLayer<?, ?>, Boolean> delegate;
 
 	public RegistrationHelperImpl(Function<RenderLayer<?, ?>, Boolean> delegate) {
@@ -33,8 +33,8 @@ public final class RegistrationHelperImpl implements LivingEntityFeatureRenderer
 	}
 
 	@Override
-	public <T extends EntityRenderState> void register(RenderLayer<T, ? extends EntityModel<T>> featureRenderer) {
-		Objects.requireNonNull(featureRenderer, "Feature renderer cannot be null");
-		this.delegate.apply(featureRenderer);
+	public <T extends EntityRenderState> void register(RenderLayer<T, ? extends EntityModel<T>> renderLayer) {
+		Objects.requireNonNull(renderLayer, "Render layer cannot be null");
+		this.delegate.apply(renderLayer);
 	}
 }

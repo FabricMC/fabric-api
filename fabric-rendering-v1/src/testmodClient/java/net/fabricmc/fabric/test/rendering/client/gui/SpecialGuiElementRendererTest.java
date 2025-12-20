@@ -37,7 +37,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.SpecialGuiElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.PictureInPictureRendererRegistry;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRegistryImpl;
 import net.fabricmc.fabric.test.rendering.client.mixin.GameRendererAccessor;
@@ -49,7 +49,7 @@ import net.fabricmc.fabric.test.rendering.client.mixin.GuiRendererAccessor;
 public class SpecialGuiElementRendererTest implements ClientModInitializer, FabricClientGameTest {
 	@Override
 	public void onInitializeClient() {
-		SpecialGuiElementRegistry.register(ctx -> new BannerGuiElementRenderer(ctx.vertexConsumers()));
+		PictureInPictureRendererRegistry.register(ctx -> new BannerGuiElementRenderer(ctx.bufferSource()));
 
 		// TODO: Migrate to new HUD API once available
 		//noinspection deprecation

@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Events related to living entity {@link RenderLayer}s.
- * To register a renderer, see {@link LivingEntityFeatureRendererRegistrationCallback} instead.
+ * To register a renderer, see {@link LivingEntityRenderLayerRegistrationCallback} instead.
  */
 public final class LivingEntityFeatureRenderEvents {
 	/**

@@ -35,7 +35,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 
 /**
  * This test exists solely for testing generics.
@@ -45,7 +45,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// These aren't tests in the normal sense. These exist to test that generics are sane.
-		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
+		LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
 			if (entityRenderer instanceof AvatarRenderer) {
 				registrationHelper.register(new TestPlayerFeature((AvatarRenderer) entityRenderer));
 
@@ -67,10 +67,10 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 			}
 		});
 
-		LivingEntityFeatureRendererRegistrationCallback.EVENT.register(this::registerFeatures);
+		LivingEntityRenderLayerRegistrationCallback.EVENT.register(this::registerFeatures);
 	}
 
-	private void registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?, ?> entityRenderer, LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper registrationHelper, EntityRendererProvider.Context context) {
+	private void registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?, ?> entityRenderer, LivingEntityRenderLayerRegistrationCallback.RegistrationHelper registrationHelper, EntityRendererProvider.Context context) {
 		if (entityRenderer instanceof AvatarRenderer playerEntityRenderer) {
 			registrationHelper.register(new TestPlayerFeature(playerEntityRenderer));
 

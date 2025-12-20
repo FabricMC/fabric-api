@@ -31,51 +31,52 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Called when {@link RenderLayer feature renderers} for a {@link LivingEntityRenderer living entity renderer} are registered.
+ * Called when {@link RenderLayer render layers} for a {@link LivingEntityRenderer living entity renderer} are registered.
  *
- * <p>Feature renderers are typically used for rendering additional objects on an entity, such as armor, an elytra or {@link Deadmau5EarsLayer Deadmau5's ears}.
- * This callback lets developers add additional feature renderers for use in entity rendering.
+ * <p>Render layers are typically used for rendering additional objects on an entity, such as armor, an elytra or {@link Deadmau5EarsLayer Deadmau5's ears}.
+ * This callback lets developers add additional render layers for use in entity rendering.
  * Listeners should filter out the specific entity renderer they want to hook into, usually through {@code instanceof} checks or filtering by entity type.
- * Once listeners find a suitable entity renderer, they should register their feature renderer via the registration helper.
+ * Once listeners find a suitable entity renderer, they should register their render layer via the registration helper.
  *
- * <p>For example, to register a feature renderer for a player model, the example below may be used:
+ * <p>For example, to register a render layer for a player model, the example below may be used:
  * <blockquote><pre>
- * LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
+ * LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
  * 	if (entityRenderer instanceof AvatarRenderer&lt;?&gt; avatarEntityRenderer) {
- * 		registrationHelper.register(new MyFeatureRenderer(avatarEntityRenderer, context.getModelSet()));
+ * 		registrationHelper.register(new MyRenderLayer(avatarEntityRenderer, context.getModelSet()));
  * 	}
  * });
  * </pre></blockquote>
  */
 @FunctionalInterface
-public interface LivingEntityFeatureRendererRegistrationCallback {
-	Event<LivingEntityFeatureRendererRegistrationCallback> EVENT = EventFactory.createArrayBacked(LivingEntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper, context) -> {
-		for (LivingEntityFeatureRendererRegistrationCallback callback : callbacks) {
-			callback.registerRenderers(entityType, entityRenderer, registrationHelper, context);
-		}
-	});
+public interface LivingEntityRenderLayerRegistrationCallback {
+	Event<LivingEntityRenderLayerRegistrationCallback> EVENT = EventFactory.createArrayBacked(
+			LivingEntityRenderLayerRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper, context) -> {
+				for (LivingEntityRenderLayerRegistrationCallback callback : callbacks) {
+					callback.registerLayers(entityType, entityRenderer, registrationHelper, context);
+				}
+			});
 
 	/**
-	 * Called when feature renderers may be registered.
+	 * Called when render layers may be registered.
 	 *
 	 * @param entityType     the entity type of the renderer
 	 * @param entityRenderer the entity renderer
 	 */
-	void registerRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?, ?> entityRenderer, RegistrationHelper registrationHelper, EntityRendererProvider.Context context);
+	void registerLayers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?, ?> entityRenderer, RegistrationHelper registrationHelper, EntityRendererProvider.Context context);
 
 	/**
-	 * A delegate object used to help register feature renderers for an entity renderer.
+	 * A delegate object used to help register render layers for an entity renderer.
 	 *
 	 * <p>This is not meant for implementation by users of the API.
 	 */
 	@ApiStatus.NonExtendable
 	interface RegistrationHelper {
 		/**
-		 * Adds a feature renderer to the entity renderer.
+		 * Adds a render layer to the entity renderer.
 		 *
-		 * @param featureRenderer the feature renderer
+		 * @param renderLayer the render layer
 		 * @param <T> the type of entity
 		 */
-		<T extends EntityRenderState> void register(RenderLayer<T, ? extends EntityModel<T>> featureRenderer);
+		<T extends EntityRenderState> void register(RenderLayer<T, ? extends EntityModel<T>> renderLayer);
 	}
 }

@@ -24,26 +24,27 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 @FunctionalInterface
-public interface DrawItemStackOverlayCallback {
+public interface RenderItemDecorationsCallback {
 	/**
 	 * Fires at the end of {@link GuiGraphics#renderItemDecorations(Font, ItemStack, int, int, String)} and allows
 	 * for drawing custom item stack decorations.
 	 *
 	 * <p>In vanilla these are: durability bar, cooldown overlay and stack count.
 	 */
-	Event<DrawItemStackOverlayCallback> EVENT = EventFactory.createArrayBacked(DrawItemStackOverlayCallback.class,
+	Event<RenderItemDecorationsCallback> EVENT = EventFactory.createArrayBacked(
+			RenderItemDecorationsCallback.class,
 			callbacks -> (context, textRenderer, stack, x, y) -> {
-				for (DrawItemStackOverlayCallback callback : callbacks) {
-					callback.onDrawItemStackOverlay(context, textRenderer, stack, x, y);
+				for (RenderItemDecorationsCallback callback : callbacks) {
+					callback.onRenderItemDecorations(context, textRenderer, stack, x, y);
 				}
 			});
 
 	/**
-	 * @param context      the draw context
-	 * @param textRenderer the text renderer
+	 * @param graphics     the {@link GuiGraphics} instance
+	 * @param font         the font
 	 * @param stack        the item stack
 	 * @param x            the x-position of the item stack
 	 * @param y            the y-position of the item stack
 	 */
-	void onDrawItemStackOverlay(GuiGraphics context, Font textRenderer, ItemStack stack, int x, int y);
+	void onRenderItemDecorations(GuiGraphics graphics, Font font, ItemStack stack, int x, int y);
 }

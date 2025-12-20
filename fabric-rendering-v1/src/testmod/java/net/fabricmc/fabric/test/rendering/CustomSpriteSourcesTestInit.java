@@ -25,7 +25,7 @@ import net.minecraft.world.item.Item;
 
 import net.fabricmc.api.ModInitializer;
 
-public class CustomAtlasSourcesTestInit implements ModInitializer {
+public class CustomSpriteSourcesTestInit implements ModInitializer {
 	public static final ResourceKey<Item> DOUBLE_IRON_INGOT_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "double_iron_ingot"));
 	public static final Item DOUBLE_IRON_INGOT = new Item(new Item.Properties().setId(DOUBLE_IRON_INGOT_KEY));
 

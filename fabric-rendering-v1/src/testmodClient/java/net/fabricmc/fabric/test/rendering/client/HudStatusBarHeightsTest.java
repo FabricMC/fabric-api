@@ -66,16 +66,16 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 		// register a custom health bar with a different height for large max health;
 		// ideally tested together with a custom armor bar
 		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR,
-				(HudElement element) -> (GuiGraphics context, DeltaTracker tickCounter) -> {
+				(HudElement _) -> (GuiGraphics graphics, DeltaTracker _) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
 						Gui hud = minecraft.gui;
-						int width = context.guiWidth() / 2 - 91;
-						int height = context.guiHeight() - HudStatusBarHeightRegistry.getHeight(
+						int width = graphics.guiWidth() / 2 - 91;
+						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(
 								VanillaHudElements.HEALTH_BAR);
 						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
-						renderHealth(context, player, height, 0, 10, width);
+						renderHealth(graphics, player, height, 0, 10, width);
 					}
 				});
 		HudStatusBarHeightRegistry.addLeft(VanillaHudElements.HEALTH_BAR, (Player player) -> {
@@ -87,16 +87,16 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	private static void testArmorBar() {
 		// register a custom armor bar with slightly altered rendering compared to the vanilla bar
 		HudElementRegistry.replaceElement(VanillaHudElements.ARMOR_BAR,
-				(HudElement element) -> (GuiGraphics context, DeltaTracker tickCounter) -> {
+				(HudElement _) -> (GuiGraphics graphics, DeltaTracker _) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
 						Gui hud = minecraft.gui;
-						int width = context.guiWidth() / 2 - 91;
-						int height = context.guiHeight() - HudStatusBarHeightRegistry.getHeight(
+						int width = graphics.guiWidth() / 2 - 91;
+						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(
 								VanillaHudElements.ARMOR_BAR);
 						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
-						renderArmor(context, player, height, 0, 10, width);
+						renderArmor(graphics, player, height, 0, 10, width);
 					}
 				});
 
@@ -114,15 +114,15 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 		Identifier id = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "toughness_bar");
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HEALTH_BAR,
 				id,
-				(GuiGraphics context, DeltaTracker tickCounter) -> {
+				(GuiGraphics graphics, DeltaTracker _) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
 						Gui hud = minecraft.gui;
-						int width = context.guiWidth() / 2 - 91;
-						int height = context.guiHeight() - HudStatusBarHeightRegistry.getHeight(id);
+						int width = graphics.guiWidth() / 2 - 91;
+						int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id);
 						Player player = ((GuiAccessor) hud).fabric$callGetCameraPlayer();
-						renderToughness(context, player, height, 0, 10, width);
+						renderToughness(graphics, player, height, 0, 10, width);
 					}
 				});
 		HudStatusBarHeightRegistry.addLeft(id, (Player player) -> {
@@ -137,7 +137,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 		Identifier id = Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "stamina_bar");
 		HudElementRegistry.attachElementAfter(VanillaHudElements.FOOD_BAR,
 				id,
-				(GuiGraphics context, DeltaTracker tickCounter) -> {
+				(GuiGraphics graphics, DeltaTracker _) -> {
 					Minecraft minecraft = Minecraft.getInstance();
 
 					if (minecraft.gameMode.canHurtPlayer()) {
@@ -145,9 +145,9 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 						LivingEntity livingEntity = ((GuiAccessor) hud).fabric$callGetRiddenEntity();
 
 						if (((GuiAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0) {
-							int width = context.guiWidth() / 2 + 91;
-							int height = context.guiHeight() - HudStatusBarHeightRegistry.getHeight(id);
-							renderStamina(context,
+							int width = graphics.guiWidth() / 2 + 91;
+							int height = graphics.guiHeight() - HudStatusBarHeightRegistry.getHeight(id);
+							renderStamina(graphics,
 									((GuiAccessor) hud).fabric$callGetCameraPlayer(),
 									height,
 									width);
@@ -173,7 +173,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	/**
 	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
 	 */
-	private static void renderHealth(GuiGraphics context, Player player, int y, int heartRows, int height, int x) {
+	private static void renderHealth(GuiGraphics graphics, Player player, int y, int heartRows, int height, int x) {
 		int l = Mth.floor(player.getHealth());
 
 		if (l > 0) {
@@ -181,14 +181,14 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 
 			for (int n = 0; n < 10; ++n) {
 				int o = x + n * 8;
-				context.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_CONTAINER_TEXTURE, o, m, 9, 9);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_CONTAINER_TEXTURE, o, m, 9, 9);
 
 				if (n * 2 + 1 < l) {
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_FULL_TEXTURE, o, m, 9, 9);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_FULL_TEXTURE, o, m, 9, 9);
 				}
 
 				if (n * 2 + 1 == l) {
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_HALF_TEXTURE, o, m, 9, 9);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_HALF_TEXTURE, o, m, 9, 9);
 				}
 			}
 		}
@@ -197,7 +197,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	/**
 	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
 	 */
-	private static void renderArmor(GuiGraphics context, Player player, int y, int heartRows, int height, int x) {
+	private static void renderArmor(GuiGraphics graphics, Player player, int y, int heartRows, int height, int x) {
 		int l = player.getArmorValue();
 
 		if (l > 0) {
@@ -207,11 +207,11 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 				int o = x + n * 8;
 
 				if (n * 2 + 1 < l) {
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, ARMOR_FULL_TEXTURE, o, m, 9, 9);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ARMOR_FULL_TEXTURE, o, m, 9, 9);
 				}
 
 				if (n * 2 + 1 == l) {
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, ARMOR_HALF_TEXTURE, o, m, 9, 9);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ARMOR_HALF_TEXTURE, o, m, 9, 9);
 				}
 			}
 		}
@@ -220,7 +220,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	/**
 	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
 	 */
-	private static void renderToughness(GuiGraphics context, Player player, int y, int heartRows, int height, int x) {
+	private static void renderToughness(GuiGraphics graphics, Player player, int y, int heartRows, int height, int x) {
 		int i = Mth.floor(player.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
 
 		if (i > 0) {
@@ -230,15 +230,15 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 				int l = x + k * 8;
 
 				if (k * 2 + 1 < i) {
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, TOUGHNESS_FULL_SPRITE, l, j, 9, 9);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TOUGHNESS_FULL_SPRITE, l, j, 9, 9);
 				}
 
 				if (k * 2 + 1 == i) {
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, TOUGHNESS_HALF_SPRITE, l, j, 9, 9);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TOUGHNESS_HALF_SPRITE, l, j, 9, 9);
 				}
 
 				if (k * 2 + 1 > i) {
-					context.blitSprite(RenderPipelines.GUI_TEXTURED, TOUGHNESS_EMPTY_SPRITE, l, j, 9, 9);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TOUGHNESS_EMPTY_SPRITE, l, j, 9, 9);
 				}
 			}
 		}
@@ -247,19 +247,19 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 	/**
 	 * @see Gui#renderFood(GuiGraphics, Player, int, int)
 	 */
-	private static void renderStamina(GuiGraphics context, Player player, int y, int x) {
+	private static void renderStamina(GuiGraphics graphics, Player player, int y, int x) {
 		int k = player.getFoodData().getFoodLevel();
 
 		for (int l = 0; l < 10; l++) {
 			int n = x - l * 8 - 9;
-			context.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_EMPTY_SPRITE, n, y, 9, 9);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_EMPTY_SPRITE, n, y, 9, 9);
 
 			if (l * 2 + 1 < k) {
-				context.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_FULL_SPRITE, n, y, 9, 9);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_FULL_SPRITE, n, y, 9, 9);
 			}
 
 			if (l * 2 + 1 == k) {
-				context.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_HALF_SPRITE, n, y, 9, 9);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, STAMINA_HALF_SPRITE, n, y, 9, 9);
 			}
 		}
 	}

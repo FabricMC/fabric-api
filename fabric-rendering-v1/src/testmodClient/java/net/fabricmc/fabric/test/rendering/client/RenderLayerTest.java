@@ -32,16 +32,16 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 
-public final class FeatureRendererTest implements ClientModInitializer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(FeatureRendererTest.class);
+public final class RenderLayerTest implements ClientModInitializer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(RenderLayerTest.class);
 	private int playerRegistrations = 0;
 
 	@Override
 	public void onInitializeClient() {
-		LOGGER.info("Registering feature renderer tests");
-		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
+		LOGGER.info("Registering render layer tests");
+		LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
 			// minecraft:player SHOULD be printed twice
 			LOGGER.info(String.format("Received registration for %s", BuiltInRegistries.ENTITY_TYPE.getKey(entityType)));
 

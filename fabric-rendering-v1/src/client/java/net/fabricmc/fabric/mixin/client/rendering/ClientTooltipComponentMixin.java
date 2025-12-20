@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
-import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
 
 @Mixin(ClientTooltipComponent.class)
 public interface ClientTooltipComponentMixin {
@@ -34,7 +34,7 @@ public interface ClientTooltipComponentMixin {
 			cancellable = true
 	)
 	private static void convertCustomTooltipData(TooltipComponent data, CallbackInfoReturnable<ClientTooltipComponent> cir) {
-		ClientTooltipComponent component = TooltipComponentCallback.EVENT.invoker().getComponent(data);
+		ClientTooltipComponent component = ClientTooltipComponentCallback.EVENT.invoker().getClientComponent(data);
 
 		if (component != null) {
 			cir.setReturnValue(component);

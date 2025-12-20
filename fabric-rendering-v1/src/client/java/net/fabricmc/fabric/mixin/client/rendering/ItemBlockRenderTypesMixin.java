@@ -30,7 +30,7 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
-import net.fabricmc.fabric.impl.client.rendering.BlockRenderLayerMapImpl;
+import net.fabricmc.fabric.impl.client.rendering.ChunkSectionLayerMapImpl;
 
 @Mixin(ItemBlockRenderTypes.class)
 abstract class ItemBlockRenderTypesMixin {
@@ -43,6 +43,6 @@ abstract class ItemBlockRenderTypesMixin {
 
 	@Inject(method = "<clinit>*", at = @At("RETURN"))
 	private static void onInitialize(CallbackInfo ci) {
-		BlockRenderLayerMapImpl.setup(TYPE_BY_BLOCK::put, LAYER_BY_FLUID::put);
+		ChunkSectionLayerMapImpl.setup(TYPE_BY_BLOCK::put, LAYER_BY_FLUID::put);
 	}
 }

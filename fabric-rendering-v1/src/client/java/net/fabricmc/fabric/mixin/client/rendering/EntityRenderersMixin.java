@@ -37,7 +37,7 @@ import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.RegistrationHelperImpl;
 
@@ -61,7 +61,7 @@ public abstract class EntityRenderersMixin {
 
 		if (entityRenderer instanceof LivingEntityRenderer) { // Must be living for features
 			LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entityRenderer;
-			LivingEntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers((EntityType<? extends LivingEntity>) entityType, (LivingEntityRenderer) entityRenderer, new RegistrationHelperImpl(accessor::callAddFeature), context);
+			LivingEntityRenderLayerRegistrationCallback.EVENT.invoker().registerLayers((EntityType<? extends LivingEntity>) entityType, (LivingEntityRenderer) entityRenderer, new RegistrationHelperImpl(accessor::callAddFeature), context);
 		}
 
 		return entityRenderer;
@@ -73,7 +73,7 @@ public abstract class EntityRenderersMixin {
 		AvatarRenderer entityRenderer = original.call(context, slim);
 
 		LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entityRenderer;
-		LivingEntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers(EntityType.PLAYER, (LivingEntityRenderer) entityRenderer, new RegistrationHelperImpl(accessor::callAddFeature), context);
+		LivingEntityRenderLayerRegistrationCallback.EVENT.invoker().registerLayers(EntityType.PLAYER, (LivingEntityRenderer) entityRenderer, new RegistrationHelperImpl(accessor::callAddFeature), context);
 
 		return entityRenderer;
 	}

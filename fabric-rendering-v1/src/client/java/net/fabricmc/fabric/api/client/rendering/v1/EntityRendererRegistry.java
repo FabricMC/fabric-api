@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 @Deprecated
 public final class EntityRendererRegistry {
 	/**
-	 * Register an {@link EntityRenderer} for an {@link EntityType}. Can be called clientside before the world is rendered.
+	 * Register an {@link EntityRenderer} for an {@link EntityType}. Can be called clientside before the level is rendered.
 	 *
 	 * @param entityType            the {@link EntityType} to register a renderer for
 	 * @param entityRendererFactory a {@link EntityRendererProvider} that creates a {@link EntityRenderer}, called

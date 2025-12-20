@@ -39,25 +39,25 @@ import net.minecraft.server.packs.resources.ResourceMetadata;
 import net.minecraft.util.Mth;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.AtlasSourceRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.SpriteSourceRegistry;
 
-public class CustomAtlasSourcesTest implements ClientModInitializer {
+public class CustomSpriteSourcesTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		AtlasSourceRegistry.register(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "double"), DoubleAtlasSource.CODEC);
+		SpriteSourceRegistry.register(Identifier.fromNamespaceAndPath("fabric-rendering-v1-testmod", "double"), DoubleSpriteSource.CODEC);
 	}
 
-	private static class DoubleAtlasSource implements SpriteSource {
+	private static class DoubleSpriteSource implements SpriteSource {
 		private static final Logger LOGGER = LogUtils.getLogger();
-		public static final MapCodec<DoubleAtlasSource> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+		public static final MapCodec<DoubleSpriteSource> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				Identifier.CODEC.fieldOf("resource").forGetter(source -> source.resource),
 				Identifier.CODEC.fieldOf("sprite").forGetter(source -> source.sprite)
-		).apply(instance, DoubleAtlasSource::new));
+		).apply(instance, DoubleSpriteSource::new));
 
 		private final Identifier resource;
 		private final Identifier sprite;
 
-		DoubleAtlasSource(Identifier resource, Identifier sprite) {
+		DoubleSpriteSource(Identifier resource, Identifier sprite) {
 			this.resource = resource;
 			this.sprite = sprite;
 		}
