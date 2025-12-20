@@ -36,5 +36,5 @@ public interface BlockAttackInteractionAware {
 	/**
 	 * @return True if the block accepted the player and it should no longer be processed.
 	 */
-	boolean onAttackInteraction(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, Direction direction);
+	boolean onAttackInteraction(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, Direction direction);
 }

@@ -111,24 +111,24 @@ public final class LootTableDrops {
 	public static final class Builder {
 		private final GameTestHelper testContext;
 		private final Component name;
-		private final LootParams.Builder contextBuilder;
-		private final ContextKeySet contextType;
+		private final LootParams.Builder paramsBuilder;
+		private final ContextKeySet contextKeySet;
 		private final ResourceKey<LootTable> tableKey;
 		private long seed;
 
-		private Builder(GameTestHelper testContext, Component name, ContextKeySet contextType, ResourceKey<LootTable> tableKey) {
+		private Builder(GameTestHelper testContext, Component name, ContextKeySet contextKeySet, ResourceKey<LootTable> tableKey) {
 			this.testContext = testContext;
 			this.name = name;
-			this.contextBuilder = new LootParams.Builder(testContext.getLevel());
-			this.contextType = contextType;
+			this.paramsBuilder = new LootParams.Builder(testContext.getLevel());
+			this.contextKeySet = contextKeySet;
 			this.tableKey = tableKey;
 		}
 
 		/**
-		 * Sets a loot context parameter.
+		 * Sets a loot params parameter.
 		 */
-		public <T> Builder set(ContextKey<T> parameter, T value) {
-			contextBuilder.withParameter(parameter, value);
+		public <T> Builder set(ContextKey<T> key, T value) {
+			paramsBuilder.withParameter(key, value);
 			return this;
 		}
 
@@ -144,9 +144,9 @@ public final class LootTableDrops {
 		 * Runs the drops.
 		 */
 		public LootTableDrops drop() {
-			LootParams context = contextBuilder.create(contextType);
+			LootParams params = paramsBuilder.create(contextKeySet);
 			LootTable lootTable = testContext.getLevel().getServer().reloadableRegistries().getLootTable(tableKey);
-			List<ItemStack> stacks = lootTable.getRandomItems(context, seed);
+			List<ItemStack> stacks = lootTable.getRandomItems(params, seed);
 			return new LootTableDrops(testContext, name, stacks);
 		}
 	}

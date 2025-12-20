@@ -100,7 +100,7 @@ public class CustomDamageTest implements ModInitializer {
 		@Override
 		public boolean canBeEnchantedWith(ItemStack stack, Holder<Enchantment> enchantment, EnchantingContext context) {
 			return context == EnchantingContext.ACCEPTABLE && enchantment.is(Enchantments.FIRE_ASPECT)
-				|| !enchantment.is(Enchantments.FORTUNE) && super.canBeEnchantedWith(stack, enchantment, context);
+					|| !enchantment.is(Enchantments.FORTUNE) && super.canBeEnchantedWith(stack, enchantment, context);
 		}
 	}
 }

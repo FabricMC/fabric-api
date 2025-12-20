@@ -66,10 +66,10 @@ public final class FabricParticleTypes {
 	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
 	 *
 	 * @param codec The codec for serialization.
-	 * @param packetCodec The packet codec for network serialization.
+	 * @param streamCodec The stream codec for network serialization.
 	 */
-	public static <T extends ParticleOptions> ParticleType<T> complex(final MapCodec<T> codec, final StreamCodec<? super RegistryFriendlyByteBuf, T> packetCodec) {
-		return complex(false, codec, packetCodec);
+	public static <T extends ParticleOptions> ParticleType<T> complex(final MapCodec<T> codec, final StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
+		return complex(false, codec, streamCodec);
 	}
 
 	/**
@@ -77,9 +77,9 @@ public final class FabricParticleTypes {
 	 *
 	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
 	 * @param codec The codec for serialization.
-	 * @param packetCodec The packet codec for network serialization.
+	 * @param streamCodec The stream codec for network serialization.
 	 */
-	public static <T extends ParticleOptions> ParticleType<T> complex(boolean alwaysSpawn, final MapCodec<T> codec, final StreamCodec<? super RegistryFriendlyByteBuf, T> packetCodec) {
+	public static <T extends ParticleOptions> ParticleType<T> complex(boolean alwaysSpawn, final MapCodec<T> codec, final StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
 		return new ParticleType<>(alwaysSpawn) {
 			@Override
 			public MapCodec<T> codec() {
@@ -88,7 +88,7 @@ public final class FabricParticleTypes {
 
 			@Override
 			public StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec() {
-				return packetCodec;
+				return streamCodec;
 			}
 		};
 	}
@@ -98,10 +98,10 @@ public final class FabricParticleTypes {
 	 * This method is useful when two different {@link ParticleType}s share the same {@link ParticleOptions} implementation.
 	 *
 	 * @param codecGetter A function that, given the newly created type, returns the codec for serialization.
-	 * @param packetCodecGetter A function that, given the newly created type, returns the packet codec for network serialization.
+	 * @param streamCodecGetter A function that, given the newly created type, returns the stream codec for network serialization.
 	 */
-	public static <T extends ParticleOptions> ParticleType<T> complex(final Function<ParticleType<T>, MapCodec<T>> codecGetter, final Function<ParticleType<T>, StreamCodec<? super RegistryFriendlyByteBuf, T>> packetCodecGetter) {
-		return complex(false, codecGetter, packetCodecGetter);
+	public static <T extends ParticleOptions> ParticleType<T> complex(final Function<ParticleType<T>, MapCodec<T>> codecGetter, final Function<ParticleType<T>, StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodecGetter) {
+		return complex(false, codecGetter, streamCodecGetter);
 	}
 
 	/**
@@ -110,9 +110,9 @@ public final class FabricParticleTypes {
 	 *
 	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
 	 * @param codecGetter A function that, given the newly created type, returns the codec for serialization.
-	 * @param packetCodecGetter A function that, given the newly created type, returns the packet codec for network serialization.
+	 * @param streamCodecGetter A function that, given the newly created type, returns the stream codec for network serialization.
 	 */
-	public static <T extends ParticleOptions> ParticleType<T> complex(boolean alwaysSpawn, final Function<ParticleType<T>, MapCodec<T>> codecGetter, final Function<ParticleType<T>, StreamCodec<? super RegistryFriendlyByteBuf, T>> packetCodecGetter) {
+	public static <T extends ParticleOptions> ParticleType<T> complex(boolean alwaysSpawn, final Function<ParticleType<T>, MapCodec<T>> codecGetter, final Function<ParticleType<T>, StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodecGetter) {
 		return new ParticleType<>(alwaysSpawn) {
 			@Override
 			public MapCodec<T> codec() {
@@ -121,7 +121,7 @@ public final class FabricParticleTypes {
 
 			@Override
 			public StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec() {
-				return packetCodecGetter.apply(this);
+				return streamCodecGetter.apply(this);
 			}
 		};
 	}

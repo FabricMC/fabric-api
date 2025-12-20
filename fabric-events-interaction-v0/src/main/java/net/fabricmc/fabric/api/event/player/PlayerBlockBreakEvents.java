@@ -42,9 +42,9 @@ public final class PlayerBlockBreakEvents {
 	 * {@link #AFTER} event is fired.</p>
 	 */
 	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class,
-			(listeners) -> (world, player, pos, state, entity) -> {
+			(listeners) -> (level, player, pos, state, entity) -> {
 				for (Before event : listeners) {
-					boolean result = event.beforeBlockBreak(world, player, pos, state, entity);
+					boolean result = event.beforeBlockBreak(level, player, pos, state, entity);
 
 					if (!result) {
 						return false;
@@ -62,9 +62,9 @@ public final class PlayerBlockBreakEvents {
 	 */
 	@SuppressWarnings("JavadocReference")
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
-			(listeners) -> (world, player, pos, state, entity) -> {
+			(listeners) -> (level, player, pos, state, entity) -> {
 				for (After event : listeners) {
-					event.afterBlockBreak(world, player, pos, state, entity);
+					event.afterBlockBreak(level, player, pos, state, entity);
 				}
 			}
 	);
@@ -75,9 +75,9 @@ public final class PlayerBlockBreakEvents {
 	 * <p>Only called on a logical server. May be used to send packets to revert client-side block changes.
 	 */
 	public static final Event<Canceled> CANCELED = EventFactory.createArrayBacked(Canceled.class,
-			(listeners) -> (world, player, pos, state, entity) -> {
+			(listeners) -> (level, player, pos, state, entity) -> {
 				for (Canceled event : listeners) {
-					event.onBlockBreakCanceled(world, player, pos, state, entity);
+					event.onBlockBreakCanceled(level, player, pos, state, entity);
 				}
 			}
 	);
@@ -87,16 +87,16 @@ public final class PlayerBlockBreakEvents {
 		/**
 		 * Called before a block is broken and allows cancelling the block breaking.
 		 *
-		 * <p>Implementations should not modify the world or assume the block break has completed or failed.</p>
+		 * <p>Implementations should not modify the level or assume the block break has completed or failed.</p>
 		 *
-		 * @param world the world in which the block is broken
+		 * @param level the level in which the block is broken
 		 * @param player the player breaking the block
 		 * @param pos the position at which the block is broken
 		 * @param state the block state <strong>before</strong> the block is broken
 		 * @param blockEntity the block entity <strong>before</strong> the block is broken, can be {@code null}
 		 * @return {@code false} to cancel block breaking action, or {@code true} to pass to next listener
 		 */
-		boolean beforeBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
+		boolean beforeBlockBreak(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
 	}
 
 	@FunctionalInterface
@@ -104,13 +104,13 @@ public final class PlayerBlockBreakEvents {
 		/**
 		 * Called after a block is successfully broken.
 		 *
-		 * @param world the world where the block was broken
+		 * @param level the level where the block was broken
 		 * @param player the player who broke the block
 		 * @param pos the position where the block was broken
 		 * @param state the block state <strong>before</strong> the block was broken
 		 * @param blockEntity the block entity of the broken block, can be {@code null}
 		 */
-		void afterBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
+		void afterBlockBreak(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
 	}
 
 	@FunctionalInterface
@@ -118,12 +118,12 @@ public final class PlayerBlockBreakEvents {
 		/**
 		 * Called when a block break has been canceled.
 		 *
-		 * @param world the world where the block was going to be broken
+		 * @param level the level where the block was going to be broken
 		 * @param player the player who was going to break the block
 		 * @param pos the position where the block was going to be broken
 		 * @param state the block state of the block that was going to be broken
 		 * @param blockEntity the block entity of the block that was going to be broken, can be {@code null}
 		 */
-		void onBlockBreakCanceled(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
+		void onBlockBreakCanceled(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity);
 	}
 }

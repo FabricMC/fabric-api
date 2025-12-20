@@ -35,9 +35,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface UseItemCallback {
 	Event<UseItemCallback> EVENT = EventFactory.createArrayBacked(UseItemCallback.class,
-			listeners -> (player, world, hand) -> {
+			listeners -> (player, level, hand) -> {
 				for (UseItemCallback event : listeners) {
-					InteractionResult result = event.interact(player, world, hand);
+					InteractionResult result = event.interact(player, level, hand);
 
 					if (result != InteractionResult.PASS) {
 						return result;
@@ -48,5 +48,5 @@ public interface UseItemCallback {
 			}
 	);
 
-	InteractionResult interact(Player player, Level world, InteractionHand hand);
+	InteractionResult interact(Player player, Level level, InteractionHand hand);
 }

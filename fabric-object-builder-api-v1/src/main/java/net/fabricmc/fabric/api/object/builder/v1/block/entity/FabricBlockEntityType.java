@@ -30,7 +30,7 @@ public interface FabricBlockEntityType {
 	 *
 	 * @param block the {@link Block} to add
 	 */
-	default void addSupportedBlock(Block block) {
+	default void addValidBlock(Block block) {
 		throw new AssertionError("Implemented in Mixin");
 	}
 }

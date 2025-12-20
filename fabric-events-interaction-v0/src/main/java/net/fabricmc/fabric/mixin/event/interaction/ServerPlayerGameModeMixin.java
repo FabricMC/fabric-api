@@ -82,8 +82,8 @@ public class ServerPlayerGameModeMixin {
 	}
 
 	@Inject(at = @At("HEAD"), method = "useItemOn", cancellable = true)
-	public void interactBlock(ServerPlayer player, Level world, ItemStack stack, InteractionHand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> info) {
-		InteractionResult result = UseBlockCallback.EVENT.invoker().interact(player, world, hand, blockHitResult);
+	public void interactBlock(ServerPlayer player, Level level, ItemStack stack, InteractionHand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> info) {
+		InteractionResult result = UseBlockCallback.EVENT.invoker().interact(player, level, hand, blockHitResult);
 
 		if (result != InteractionResult.PASS) {
 			info.setReturnValue(result);
@@ -93,8 +93,8 @@ public class ServerPlayerGameModeMixin {
 	}
 
 	@Inject(at = @At("HEAD"), method = "useItem", cancellable = true)
-	public void interactItem(ServerPlayer player, Level world, ItemStack stack, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
-		InteractionResult result = UseItemCallback.EVENT.invoker().interact(player, world, hand);
+	public void interactItem(ServerPlayer player, Level level, ItemStack stack, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info) {
+		InteractionResult result = UseItemCallback.EVENT.invoker().interact(player, level, hand);
 
 		if (result != InteractionResult.PASS) {
 			info.setReturnValue(result);

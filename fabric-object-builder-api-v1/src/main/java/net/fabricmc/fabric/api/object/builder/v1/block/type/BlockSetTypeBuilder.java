@@ -34,7 +34,7 @@ public final class BlockSetTypeBuilder {
 	private boolean openableByWindCharge = true;
 	private boolean buttonActivatedByArrows = true;
 	private BlockSetType.PressurePlateSensitivity pressurePlateActivationRule = BlockSetType.PressurePlateSensitivity.EVERYTHING;
-	private SoundType soundGroup = SoundType.WOOD;
+	private SoundType soundType = SoundType.WOOD;
 	private SoundEvent doorCloseSound = SoundEvents.WOODEN_DOOR_CLOSE;
 	private SoundEvent doorOpenSound = SoundEvents.WOODEN_DOOR_OPEN;
 	private SoundEvent trapdoorCloseSound = SoundEvents.WOODEN_TRAPDOOR_CLOSE;
@@ -93,14 +93,14 @@ public final class BlockSetTypeBuilder {
 	}
 
 	/**
-	 * Sets this block set type's sound group.
+	 * Sets this block set type's sound type.
 	 *
 	 * <p>Defaults to {@link SoundType#WOOD}.
 	 *
 	 * @return this builder for chaining
 	 */
-	public BlockSetTypeBuilder soundGroup(SoundType soundGroup) {
-		this.soundGroup = soundGroup;
+	public BlockSetTypeBuilder soundType(SoundType soundType) {
+		this.soundType = soundType;
 		return this;
 	}
 
@@ -213,7 +213,7 @@ public final class BlockSetTypeBuilder {
 		copy.openableByWindCharge(builder.openableByWindCharge);
 		copy.buttonActivatedByArrows(builder.buttonActivatedByArrows);
 		copy.pressurePlateActivationRule(builder.pressurePlateActivationRule);
-		copy.soundGroup(builder.soundGroup);
+		copy.soundType(builder.soundType);
 		copy.doorCloseSound(builder.doorCloseSound);
 		copy.doorOpenSound(builder.doorOpenSound);
 		copy.trapdoorCloseSound(builder.trapdoorCloseSound);
@@ -238,7 +238,7 @@ public final class BlockSetTypeBuilder {
 		copy.openableByWindCharge(setType.canOpenByWindCharge());
 		copy.buttonActivatedByArrows(setType.canButtonBeActivatedByArrows());
 		copy.pressurePlateActivationRule(setType.pressurePlateSensitivity());
-		copy.soundGroup(setType.soundType());
+		copy.soundType(setType.soundType());
 		copy.doorCloseSound(setType.doorClose());
 		copy.doorOpenSound(setType.doorOpen());
 		copy.trapdoorCloseSound(setType.trapdoorClose());
@@ -275,6 +275,7 @@ public final class BlockSetTypeBuilder {
 	 * @return the built {@link BlockSetType}
 	 */
 	public BlockSetType build(Identifier id) {
-		return new BlockSetType(id.toString(), openableByHand, openableByWindCharge, buttonActivatedByArrows, pressurePlateActivationRule, soundGroup, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);
+		return new BlockSetType(id.toString(), openableByHand, openableByWindCharge, buttonActivatedByArrows, pressurePlateActivationRule,
+				soundType, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);
 	}
 }

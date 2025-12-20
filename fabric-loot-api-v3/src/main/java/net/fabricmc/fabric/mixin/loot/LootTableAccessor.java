@@ -42,5 +42,5 @@ public interface LootTableAccessor {
 	List<LootItemFunction> fabric_getFunctions();
 
 	@Accessor("randomSequence")
-	Optional<Identifier> fabric_getRandomSequenceId();
+	Optional<Identifier> fabric_getRandomSequence();
 }
