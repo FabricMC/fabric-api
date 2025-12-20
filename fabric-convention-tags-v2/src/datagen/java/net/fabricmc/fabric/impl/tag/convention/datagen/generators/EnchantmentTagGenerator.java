@@ -33,7 +33,7 @@ public final class EnchantmentTagGenerator extends FabricTagProvider<Enchantment
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider registries) {
+	protected void addTags(HolderLookup.Provider registryLookup) {
 		builder(ConventionalEnchantmentTags.INCREASE_BLOCK_DROPS)
 				.add(Enchantments.FORTUNE);
 		builder(ConventionalEnchantmentTags.INCREASE_ENTITY_DROPS)

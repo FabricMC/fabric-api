@@ -37,7 +37,7 @@ public final class BiomeTagGenerator extends FabricTagProvider<Biome> {
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider arg) {
+	protected void addTags(HolderLookup.Provider registryLookup) {
 		generateDimensionTags();
 		generateCategoryTags();
 		generateOtherBiomeTypes();

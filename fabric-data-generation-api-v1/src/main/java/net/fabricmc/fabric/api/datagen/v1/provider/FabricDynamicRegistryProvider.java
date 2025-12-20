@@ -65,30 +65,30 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDynamicRegistryProvider.class);
 
 	private final FabricDataOutput output;
-	private final CompletableFuture<HolderLookup.Provider> holderProviderFuture;
+	private final CompletableFuture<HolderLookup.Provider> registryFuture;
 
-	public FabricDynamicRegistryProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> holderProviderFuture) {
+	public FabricDynamicRegistryProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryFuture) {
 		this.output = output;
-		this.holderProviderFuture = holderProviderFuture;
+		this.registryFuture = registryFuture;
 	}
 
-	protected abstract void configure(HolderLookup.Provider holderProvider, Entries entries);
+	protected abstract void configure(HolderLookup.Provider registryFuture, Entries entries);
 
 	public static final class Entries {
-		private final HolderLookup.Provider holderProvider;
+		private final HolderLookup.Provider registryFuture;
 		// Registry ID -> Entries for that registry
 		private final Map<Identifier, Holders<?>> queuedEntries;
 		private final String modId;
 
 		@ApiStatus.Internal
-		Entries(HolderLookup.Provider holderProvider, String modId) {
-			this.holderProvider = holderProvider;
+		Entries(HolderLookup.Provider registryFuture, String modId) {
+			this.registryFuture = registryFuture;
 			this.queuedEntries = DynamicRegistries.getDynamicRegistries().stream()
 					// Some modded dynamic registries might not be in the wrapper lookup, filter them out
-					.filter(e -> holderProvider.lookup(e.key()).isPresent())
+					.filter(e -> registryFuture.lookup(e.key()).isPresent())
 					.collect(Collectors.toMap(
 							e -> e.key().identifier(),
-							e -> Holders.create(holderProvider, e)
+							e -> Holders.create(registryFuture, e)
 					));
 			this.modId = modId;
 		}
@@ -97,14 +97,14 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		 * Gets access to all holder lookups.
 		 */
 		public HolderLookup.Provider getLookups() {
-			return holderProvider;
+			return registryFuture;
 		}
 
 		/**
 		 * Gets a lookup for holders from the given holder lookup.
 		 */
 		public <T> HolderGetter<T> getLookup(ResourceKey<? extends Registry<T>> registryKey) {
-			return holderProvider.lookupOrThrow(registryKey);
+			return registryFuture.lookupOrThrow(registryKey);
 		}
 
 		/**
@@ -247,7 +247,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		return holderProviderFuture.thenCompose(registries -> {
+		return registryFuture.thenCompose(registries -> {
 			return CompletableFuture
 					.supplyAsync(() -> {
 						Entries entries = new Entries(registries, output.getModId());

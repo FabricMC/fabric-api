@@ -33,18 +33,18 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
  */
 public abstract class SimpleFabricLootTableProvider implements FabricLootTableProvider {
 	protected final FabricDataOutput output;
-	private final CompletableFuture<HolderLookup.Provider> registryLookup;
+	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 	protected final ContextKeySet contextType;
 
-	public SimpleFabricLootTableProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup, ContextKeySet contextType) {
+	public SimpleFabricLootTableProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture, ContextKeySet contextType) {
 		this.output = output;
-		this.registryLookup = registryLookup;
+		this.registryLookupFuture = registryLookupFuture;
 		this.contextType = contextType;
 	}
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		return FabricLootTableProviderImpl.run(cache, this, contextType, output, registryLookup);
+		return FabricLootTableProviderImpl.run(cache, this, contextType, output, registryLookupFuture);
 	}
 
 	@Override

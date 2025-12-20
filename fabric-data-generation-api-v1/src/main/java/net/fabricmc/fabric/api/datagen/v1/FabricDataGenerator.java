@@ -40,15 +40,15 @@ public final class FabricDataGenerator extends DataGenerator {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
 	private final FabricDataOutput fabricOutput;
-	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
+	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 
 	@ApiStatus.Internal
-	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 		super(output, SharedConstants.getCurrentVersion(), true);
 		this.modContainer = Objects.requireNonNull(mod);
 		this.strictValidation = strictValidation;
 		this.fabricOutput = new FabricDataOutput(mod, output, strictValidation);
-		this.registriesFuture = registriesFuture;
+		this.registryLookupFuture = registryLookupFuture;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public final class FabricDataGenerator extends DataGenerator {
 	 * @return A future containing the builtin registries.
 	 */
 	public CompletableFuture<HolderLookup.Provider> getRegistries() {
-		return registriesFuture;
+		return registryLookupFuture;
 	}
 
 	/**
@@ -154,7 +154,7 @@ public final class FabricDataGenerator extends DataGenerator {
 		 * @return the {@link DataProvider}
 		 */
 		public <T extends DataProvider> T addProvider(RegistryDependentFactory<T> factory) {
-			return super.addProvider(output -> factory.create((FabricDataOutput) output, registriesFuture));
+			return super.addProvider(output -> factory.create((FabricDataOutput) output, registryLookupFuture));
 		}
 
 		/**
@@ -171,7 +171,7 @@ public final class FabricDataGenerator extends DataGenerator {
 		 */
 		@FunctionalInterface
 		public interface RegistryDependentFactory<T extends DataProvider> {
-			T create(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture);
+			T create(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture);
 		}
 	}
 }

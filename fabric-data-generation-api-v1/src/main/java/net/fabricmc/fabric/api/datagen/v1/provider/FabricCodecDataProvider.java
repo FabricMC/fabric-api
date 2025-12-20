@@ -48,26 +48,26 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
  */
 public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	private final PackOutput.PathProvider pathProvider;
-	private final CompletableFuture<HolderLookup.Provider> holderProviderFuture;
+	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 	private final Codec<T> codec;
 
-	private FabricCodecDataProvider(PackOutput.PathProvider pathProvider, CompletableFuture<HolderLookup.Provider> holderProviderFuture, Codec<T> codec) {
+	private FabricCodecDataProvider(PackOutput.PathProvider pathProvider, CompletableFuture<HolderLookup.Provider> registryLookupFuture, Codec<T> codec) {
 		this.pathProvider = pathProvider;
-		this.holderProviderFuture = Objects.requireNonNull(holderProviderFuture);
+		this.registryLookupFuture = Objects.requireNonNull(registryLookupFuture);
 		this.codec = codec;
 	}
 
-	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> holderProviderFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
-		this(dataOutput.createPathProvider(target, directoryName), holderProviderFuture, codec);
+	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
+		this(dataOutput.createPathProvider(target, directoryName), registryLookupFuture, codec);
 	}
 
-	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> holderProviderFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
-		this(dataOutput.createRegistryElementsPathProvider(key), holderProviderFuture, codec);
+	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
+		this(dataOutput.createRegistryElementsPathProvider(key), registryLookupFuture, codec);
 	}
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		return this.holderProviderFuture.thenCompose(lookup -> {
+		return registryLookupFuture.thenCompose(lookup -> {
 			Map<Identifier, JsonElement> entries = new HashMap<>();
 			RegistryOps<JsonElement> ops = lookup.createSerializationContext(JsonOps.INSTANCE);
 
@@ -88,9 +88,9 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	/**
 	 * Implement this method to register entries to generate using a {@link HolderLookup.Provider}.
 	 * @param provider A consumer that accepts an {@link Identifier} and a value to register.
-	 * @param lookup A lookup for registries.
+	 * @param registryLookup A lookup for registries.
 	 */
-	protected abstract void configure(BiConsumer<Identifier, T> provider, HolderLookup.Provider lookup);
+	protected abstract void configure(BiConsumer<Identifier, T> provider, HolderLookup.Provider registryLookup);
 
 	private JsonElement convert(Identifier id, T value, DynamicOps<JsonElement> ops) {
 		DataResult<JsonElement> dataResult = this.codec.encodeStart(ops, value);
