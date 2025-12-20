@@ -56,7 +56,7 @@ abstract class WeightedVariantsMixin implements BlockStateModel {
 
 	@Override
 	public TextureAtlasSprite particleSprite(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-		return list.unwrap().getFirst().value().particleSprite(
+		return list.unwrap().getFirst().value().particleIcon(
 				level, pos, state);
 	}
 }

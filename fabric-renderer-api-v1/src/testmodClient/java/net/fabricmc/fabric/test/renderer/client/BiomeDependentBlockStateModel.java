@@ -84,9 +84,9 @@ public class BiomeDependentBlockStateModel implements BlockStateModel {
 	@Override
 	public TextureAtlasSprite particleSprite(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		if (((FabricBlockView) level).hasBiomes() && ((FabricBlockView) level).getBiomeFabric(pos).is(biomeTag)) {
-			return biomeModel.particleSprite(level, pos, state);
+			return biomeModel.particleIcon(level, pos, state);
 		} else {
-			return regularModel.particleSprite(level, pos, state);
+			return regularModel.particleIcon(level, pos, state);
 		}
 	}
 

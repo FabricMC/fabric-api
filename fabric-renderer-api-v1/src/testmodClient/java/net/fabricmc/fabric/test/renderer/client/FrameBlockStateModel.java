@@ -137,12 +137,12 @@ public class FrameBlockStateModel implements BlockStateModel {
 	public TextureAtlasSprite particleSprite(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
 		if (!(((FabricBlockView) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
-			return frameModel.particleSprite(level, pos, state); // No inner block to render, or data of wrong type
+			return frameModel.particleIcon(level, pos, state); // No inner block to render, or data of wrong type
 		}
 
 		BlockState innerState = mimickedBlock.defaultBlockState();
 		BlockStateModel innerModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(innerState);
-		return innerModel.particleSprite(level, pos, state);
+		return innerModel.particleIcon(level, pos, state);
 	}
 
 	public record Unbaked(BlockStateModel.Unbaked frameModel) implements CustomUnbakedBlockStateModel {

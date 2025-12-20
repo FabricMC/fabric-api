@@ -134,7 +134,7 @@ public interface FabricBlockStateModel {
 	 *              state corresponding to {@code this} model!</b>
 	 * @return the particle sprite
 	 */
-	default TextureAtlasSprite particleSprite(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+	default TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return ((BlockStateModel) this).particleIcon();
 	}
 }

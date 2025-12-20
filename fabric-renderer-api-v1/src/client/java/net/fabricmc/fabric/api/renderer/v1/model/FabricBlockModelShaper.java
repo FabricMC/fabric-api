@@ -30,7 +30,7 @@ public interface FabricBlockModelShaper {
 	/**
 	 * Alternative for {@link BlockModelShaper#getParticleIcon(BlockState)} that additionally accepts a
 	 * {@link BlockAndTintGetter} and {@link BlockPos} to invoke
-	 * {@link FabricBlockStateModel#particleSprite(BlockAndTintGetter, BlockPos, BlockState)}. <b>Prefer using this method
+	 * {@link FabricBlockStateModel#particleIcon(BlockAndTintGetter, BlockPos, BlockState)}. <b>Prefer using this method
 	 * over the vanilla alternative when applicable to correctly retrieve context-aware particle sprites.</b> If level
 	 * context is not available, use the vanilla method instead of passing empty level context to this method.
 	 *
@@ -41,7 +41,7 @@ public interface FabricBlockModelShaper {
 	 * @return the particle sprite
 	 */
 	default TextureAtlasSprite getModelParticleSprite(BlockState state, BlockAndTintGetter level, BlockPos pos) {
-		return ((BlockModelShaper) this).getBlockModel(state).particleSprite(
+		return ((BlockModelShaper) this).getBlockModel(state).particleIcon(
 				level, pos, state);
 	}
 }
