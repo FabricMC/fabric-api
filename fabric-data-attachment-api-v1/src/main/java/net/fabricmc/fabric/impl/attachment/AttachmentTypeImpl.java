@@ -32,7 +32,7 @@ public record AttachmentTypeImpl<A>(
 		Identifier identifier,
 		@Nullable Supplier<A> initializer,
 		@Nullable Codec<A> persistenceCodec,
-		@Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec,
+		@Nullable StreamCodec<? super RegistryFriendlyByteBuf, A> streamCodec,
 		@Nullable AttachmentSyncPredicate syncPredicate,
 		boolean copyOnDeath
 ) implements AttachmentType<A> {
