@@ -23,10 +23,10 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.world.level.block.Block;
 
-import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 
-public abstract class BlockColorRegistryImpl<T, Provider, Underlying> implements BlockColorRegistry<T, Provider> {
-	public static final BlockColorRegistryImpl<Block, BlockColor, BlockColors> BLOCK = new BlockColorRegistryImpl<Block, BlockColor, BlockColors>() {
+public abstract class ColorProviderRegistryImpl<T, Provider, Underlying> implements ColorProviderRegistry<T, Provider> {
+	public static final ColorProviderRegistryImpl<Block, BlockColor, BlockColors> BLOCK = new ColorProviderRegistryImpl<Block, BlockColor, BlockColors>() {
 		@Override
 		void registerUnderlying(BlockColors map, BlockColor mapper, Block block) {
 			map.register(mapper, block);
