@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.renderer.SpriteFinderImpl;
 import net.fabricmc.fabric.impl.renderer.SpriteLoaderPreparationsExtension;
 
 @Mixin(TextureAtlas.class)
-abstract class TextureAtlasMixinAtlas implements FabricTextureAtlas {
+abstract class TextureAtlasMixin implements FabricTextureAtlas {
 	@Shadow
 	@Final
 	private Map<Identifier, TextureAtlasSprite> texturesByName;
