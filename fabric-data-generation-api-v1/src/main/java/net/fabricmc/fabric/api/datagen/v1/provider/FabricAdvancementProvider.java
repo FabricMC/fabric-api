@@ -52,12 +52,12 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 public abstract class FabricAdvancementProvider implements DataProvider {
 	protected final FabricDataOutput output;
 	private final PackOutput.PathProvider pathProvider;
-	private final CompletableFuture<HolderLookup.Provider> holderProvider;
+	private final CompletableFuture<HolderLookup.Provider> provider;
 
-	protected FabricAdvancementProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> holderProvider) {
+	protected FabricAdvancementProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> provider) {
 		this.output = output;
 		this.pathProvider = output.createRegistryElementsPathProvider(Registries.ADVANCEMENT);
-		this.holderProvider = holderProvider;
+		this.provider = provider;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	 *
 	 * <p>Use {@link Advancement.Builder#save(Consumer, String)} to help build advancements.
 	 */
-	public abstract void generateAdvancement(HolderLookup.Provider holderProvider, Consumer<AdvancementHolder> consumer);
+	public abstract void generateAdvancement(HolderLookup.Provider provider, Consumer<AdvancementHolder> consumer);
 
 	/**
 	 * Return a new exporter that applies the specified conditions to any advancement it receives.
@@ -80,7 +80,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		return this.holderProvider.thenCompose(lookup -> {
+		return this.provider.thenCompose(lookup -> {
 			final Set<Identifier> identifiers = Sets.newHashSet();
 			final Set<AdvancementHolder> advancements = Sets.newHashSet();
 
