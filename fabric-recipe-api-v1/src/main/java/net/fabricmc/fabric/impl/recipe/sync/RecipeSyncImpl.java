@@ -48,7 +48,7 @@ public class RecipeSyncImpl implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		PayloadTypeRegistry.serverboundConfiguration().register(ServerboundSupportedRecipeSerializersPayload.TYPE, ServerboundSupportedRecipeSerializersPayload.CODEC);
-		PayloadTypeRegistry.clientboundPlay().registerLarge(ClientBoundRecipeSyncPayload.TYPE, ClientBoundRecipeSyncPayload.CODEC, RECIPE_PAYLOAD_MAX_SIZE);
+		PayloadTypeRegistry.clientboundPlay().registerLarge(ClientboundRecipeSyncPayload.TYPE, ClientboundRecipeSyncPayload.CODEC, RECIPE_PAYLOAD_MAX_SIZE);
 
 		ServerConfigurationNetworking.registerGlobalReceiver(ServerboundSupportedRecipeSerializersPayload.TYPE, RecipeSyncImpl::onRecipeSyncRequest);
 
@@ -68,7 +68,7 @@ public class RecipeSyncImpl implements ModInitializer {
 	}
 
 	private static void sendRecipes(ServerPlayer player, boolean exist) {
-		if (!ServerPlayNetworking.canSend(player, ClientBoundRecipeSyncPayload.TYPE)) {
+		if (!ServerPlayNetworking.canSend(player, ClientboundRecipeSyncPayload.TYPE)) {
 			return;
 		}
 
@@ -76,13 +76,13 @@ public class RecipeSyncImpl implements ModInitializer {
 
 		SyncedSerializerAwarePreparedRecipe accessor = (SyncedSerializerAwarePreparedRecipe) ((RecipeManagerAccessor) player.level().recipeAccess()).getPreparedRecipes();
 
-		var list = new ArrayList<ClientBoundRecipeSyncPayload.Entry>();
+		var list = new ArrayList<ClientboundRecipeSyncPayload.Entry>();
 
 		for (RecipeSerializer<?> serializer : serializers) {
 			List<RecipeHolder<?>> recipes = accessor.fabric_getRecipesBySyncedSerializer(serializer);
 
 			if (recipes != null && !recipes.isEmpty()) {
-				list.add(new ClientBoundRecipeSyncPayload.Entry(serializer, recipes));
+				list.add(new ClientboundRecipeSyncPayload.Entry(serializer, recipes));
 			}
 		}
 
@@ -90,7 +90,7 @@ public class RecipeSyncImpl implements ModInitializer {
 			return;
 		}
 
-		ServerPlayNetworking.send(player, new ClientBoundRecipeSyncPayload(list));
+		ServerPlayNetworking.send(player, new ClientboundRecipeSyncPayload(list));
 	}
 
 	public static void addSynchronizedSerializer(RecipeSerializer<?> serializer) {

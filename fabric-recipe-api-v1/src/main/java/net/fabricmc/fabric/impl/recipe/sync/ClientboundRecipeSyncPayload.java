@@ -35,10 +35,10 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 /**
  * Main packet used to send recipes to the client.
  */
-public record ClientBoundRecipeSyncPayload(List<Entry> entries) implements CustomPacketPayload {
-	public static final StreamCodec<RegistryFriendlyByteBuf, ClientBoundRecipeSyncPayload> CODEC = Entry.CODEC.apply(ByteBufCodecs.list()).map(ClientBoundRecipeSyncPayload::new, ClientBoundRecipeSyncPayload::entries);
+public record ClientboundRecipeSyncPayload(List<Entry> entries) implements CustomPacketPayload {
+	public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundRecipeSyncPayload> CODEC = Entry.CODEC.apply(ByteBufCodecs.list()).map(ClientboundRecipeSyncPayload::new, ClientboundRecipeSyncPayload::entries);
 
-	public static final Type<ClientBoundRecipeSyncPayload> TYPE = new Type<>(Identifier.fromNamespaceAndPath("fabric", "recipe_sync"));
+	public static final Type<ClientboundRecipeSyncPayload> TYPE = new Type<>(Identifier.fromNamespaceAndPath("fabric", "recipe_sync"));
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
