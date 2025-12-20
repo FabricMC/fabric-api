@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.client.rendering.ChunkSectionLayerMapImpl;
  * <p>{@link ChunkSectionLayer} control how sprite pixels for fluids and blocks are blended with the scene. Consult the
  * vanilla {@link ChunkSectionLayer} implementation for examples.
  *
- * <p>The Fabric Renderer API can be used to control this at a per-quad level via {@code BlendMode}.
+ * <p>The Fabric Renderer API can be used to control this at a per-quad level.
  */
 public final class ChunkSectionLayerMap {
 	/**
