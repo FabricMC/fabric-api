@@ -51,13 +51,13 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  */
 public abstract class FabricAdvancementProvider implements DataProvider {
 	protected final FabricDataOutput output;
-	private final PackOutput.PathProvider pathResolver;
-	private final CompletableFuture<HolderLookup.Provider> registryLookup;
+	private final PackOutput.PathProvider pathProvider;
+	private final CompletableFuture<HolderLookup.Provider> holderProvider;
 
-	protected FabricAdvancementProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+	protected FabricAdvancementProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> holderProvider) {
 		this.output = output;
-		this.pathResolver = output.createRegistryElementsPathProvider(Registries.ADVANCEMENT);
-		this.registryLookup = registryLookup;
+		this.pathProvider = output.createRegistryElementsPathProvider(Registries.ADVANCEMENT);
+		this.holderProvider = holderProvider;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	 *
 	 * <p>Use {@link Advancement.Builder#save(Consumer, String)} to help build advancements.
 	 */
-	public abstract void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer);
+	public abstract void generateAdvancement(HolderLookup.Provider holderProvider, Consumer<AdvancementHolder> consumer);
 
 	/**
 	 * Return a new exporter that applies the specified conditions to any advancement it receives.
@@ -80,7 +80,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput writer) {
-		return this.registryLookup.thenCompose(lookup -> {
+		return this.holderProvider.thenCompose(lookup -> {
 			final Set<Identifier> identifiers = Sets.newHashSet();
 			final Set<AdvancementHolder> advancements = Sets.newHashSet();
 
@@ -104,7 +104,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	}
 
 	private Path getOutputPath(AdvancementHolder advancement) {
-		return pathResolver.json(advancement.id());
+		return pathProvider.json(advancement.id());
 	}
 
 	@Override
