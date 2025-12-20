@@ -57,7 +57,7 @@ public final class RenderLayerHelper {
 	}
 
 	/**
-	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render layers using
+	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types using
 	 * {@link #getEntityBlockLayer(ChunkSectionLayer)}.
 	 */
 	public static BlockMultiBufferSource entityDelegate(MultiBufferSource bufferSource) {
