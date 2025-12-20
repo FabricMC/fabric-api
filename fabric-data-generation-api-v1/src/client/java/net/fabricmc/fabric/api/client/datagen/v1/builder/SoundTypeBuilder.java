@@ -67,7 +67,7 @@ public interface SoundTypeBuilder {
 	 * calling this method will have no effect.
 	 */
 	@Deprecated(forRemoval = true)
-	default SoundTypeBuilder category(SoundSource category) {
+	default SoundTypeBuilder category(SoundSource source) {
 		return this;
 	}
 
