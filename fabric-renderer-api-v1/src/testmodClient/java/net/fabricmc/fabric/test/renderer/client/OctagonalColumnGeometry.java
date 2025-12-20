@@ -31,8 +31,8 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
-import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelBakeSettingsHelper;
+import net.fabricmc.fabric.api.renderer.v1.model.MeshQuadCollection;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelStateHelper;
 
 public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeometry {
 	// (B - A) is the side length of a regular octagon that fits in a unit square.
@@ -44,7 +44,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 	public QuadCollection bake(TextureSlots textures, ModelBaker baker, ModelState settings, ModelDebugName model) {
 		MutableMesh builder = Renderer.get().mutableMesh();
 		QuadEmitter emitter = builder.emitter();
-		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.sprites()));
+		emitter.pushTransform(ModelStateHelper.asQuadTransform(settings, baker.sprites()));
 
 		TextureAtlasSprite sprite = baker.sprites().get(textures.getMaterial("column"), model);
 
@@ -208,7 +208,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.glint(ItemStackRenderState.FoilType.STANDARD);
 		emitter.emit();
 
-		return new MeshBakedGeometry(builder.immutableCopy());
+		return new MeshQuadCollection(builder.immutableCopy());
 	}
 
 	private static void cornerSprite(QuadEmitter emitter, TextureAtlasSprite sprite) {

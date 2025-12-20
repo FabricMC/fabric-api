@@ -27,12 +27,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 
-import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
 
 @Mixin(ModelBlockRenderer.class)
 abstract class ModelBlockRendererMixin {
 	@Overwrite
 	public static void renderModel(PoseStack.Pose entry, VertexConsumer vertexConsumer, BlockStateModel model, float red, float green, float blue, int light, int overlay) {
-		FabricBlockModelRenderer.render(entry, layer -> vertexConsumer, model, red, green, blue, light, overlay, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
+		FabricModelBlockRenderer.render(entry, layer -> vertexConsumer, model, red, green, blue, light, overlay, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
 	}
 }

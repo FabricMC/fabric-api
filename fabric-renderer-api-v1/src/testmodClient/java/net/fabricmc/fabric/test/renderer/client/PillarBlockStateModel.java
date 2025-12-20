@@ -59,9 +59,9 @@ public class PillarBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		for (Direction side : Direction.values()) {
-			ConnectedTexture texture = getConnectedTexture(blockView, pos, state, side);
+			ConnectedTexture texture = getConnectedTexture(blockAndTintGetter, pos, state, side);
 			emitter.square(side, 0, 0, 1, 1, 0);
 			emitter.spriteBake(sprites[texture.ordinal()], MutableQuadView.BAKE_LOCK_UV);
 			emitter.emit();
@@ -69,22 +69,22 @@ public class PillarBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public Object createGeometryKey(BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random) {
+	public Object createGeometryKey(BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state, RandomSource random) {
 		record Key(ConnectedTexture north, ConnectedTexture south, ConnectedTexture west, ConnectedTexture east) {
 		}
 
 		return new Key(
-				getConnectedTexture(blockView, pos, state, Direction.NORTH),
-				getConnectedTexture(blockView, pos, state, Direction.SOUTH),
-				getConnectedTexture(blockView, pos, state, Direction.WEST),
-				getConnectedTexture(blockView, pos, state, Direction.EAST)
+				getConnectedTexture(blockAndTintGetter, pos, state, Direction.NORTH),
+				getConnectedTexture(blockAndTintGetter, pos, state, Direction.SOUTH),
+				getConnectedTexture(blockAndTintGetter, pos, state, Direction.WEST),
+				getConnectedTexture(blockAndTintGetter, pos, state, Direction.EAST)
 		);
 	}
 
-	private static ConnectedTexture getConnectedTexture(BlockAndTintGetter blockView, BlockPos pos, BlockState state, Direction side) {
+	private static ConnectedTexture getConnectedTexture(BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state, Direction side) {
 		if (side.getAxis().isHorizontal()) {
-			boolean connectAbove = canConnect(blockView, state, pos, pos.above(), side);
-			boolean connectBelow = canConnect(blockView, state, pos, pos.below(), side);
+			boolean connectAbove = canConnect(blockAndTintGetter, state, pos, pos.above(), side);
+			boolean connectBelow = canConnect(blockAndTintGetter, state, pos, pos.below(), side);
 
 			if (connectAbove && connectBelow) {
 				return ConnectedTexture.MIDDLE;
@@ -98,16 +98,18 @@ public class PillarBlockStateModel implements BlockStateModel {
 		return ConnectedTexture.ALONE;
 	}
 
-	private static boolean canConnect(BlockAndTintGetter blockView, BlockState originState, BlockPos originPos, BlockPos otherPos, Direction side) {
-		BlockState otherState = blockView.getBlockState(otherPos);
+	private static boolean canConnect(BlockAndTintGetter blockAndTintGetter, BlockState originState, BlockPos originPos, BlockPos otherPos, Direction side) {
+		BlockState otherState = blockAndTintGetter.getBlockState(otherPos);
 		// In this testmod we can't rely on injected interfaces - in normal mods the (FabricBlockState) cast will be unnecessary
-		BlockState originAppearance = ((FabricBlockState) originState).getAppearance(blockView, originPos, side, otherState, otherPos);
+		BlockState originAppearance = ((FabricBlockState) originState).getAppearance(
+				blockAndTintGetter, originPos, side, otherState, otherPos);
 
 		if (!originAppearance.is(Registration.PILLAR_BLOCK)) {
 			return false;
 		}
 
-		BlockState otherAppearance = ((FabricBlockState) otherState).getAppearance(blockView, otherPos, side, originState, originPos);
+		BlockState otherAppearance = ((FabricBlockState) otherState).getAppearance(
+				blockAndTintGetter, otherPos, side, originState, originPos);
 
 		if (!otherAppearance.is(Registration.PILLAR_BLOCK)) {
 			return false;

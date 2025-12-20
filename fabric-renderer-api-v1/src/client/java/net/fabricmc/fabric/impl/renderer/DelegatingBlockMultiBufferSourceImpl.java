@@ -24,14 +24,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 
-import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
+import net.fabricmc.fabric.api.renderer.v1.render.BlockMultiBufferSource;
 
-public class DelegatingBlockVertexConsumerProviderImpl implements BlockVertexConsumerProvider {
-	public MultiBufferSource vertexConsumerProvider;
-	public Function<ChunkSectionLayer, RenderType> renderLayerFunction;
+public class DelegatingBlockMultiBufferSourceImpl implements BlockMultiBufferSource {
+	public MultiBufferSource multiBufferSource;
+	public Function<ChunkSectionLayer, RenderType> renderTypeFunction;
 
 	@Override
 	public VertexConsumer getBuffer(ChunkSectionLayer layer) {
-		return vertexConsumerProvider.getBuffer(renderLayerFunction.apply(layer));
+		return multiBufferSource.getBuffer(renderTypeFunction.apply(layer));
 	}
 }

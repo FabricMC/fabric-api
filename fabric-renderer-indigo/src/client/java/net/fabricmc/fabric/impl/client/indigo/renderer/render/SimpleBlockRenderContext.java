@@ -31,7 +31,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
+import net.fabricmc.fabric.api.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
@@ -40,7 +40,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 	private final RandomSource random = RandomSource.createNewThreadLocalInstance();
 
-	private BlockVertexConsumerProvider vertexConsumers;
+	private BlockMultiBufferSource vertexConsumers;
 	private ChunkSectionLayer defaultRenderLayer;
 	private float red;
 	private float green;
@@ -96,7 +96,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	public void bufferModel(PoseStack.Pose entry, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
+	public void bufferModel(PoseStack.Pose entry, BlockMultiBufferSource vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
 		matrices = entry;
 		this.overlay = overlay;
 

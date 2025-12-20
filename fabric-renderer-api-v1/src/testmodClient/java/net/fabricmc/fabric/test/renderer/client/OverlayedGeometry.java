@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
+import net.fabricmc.fabric.api.renderer.v1.model.MeshQuadCollection;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 
 public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry {
@@ -51,8 +51,8 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 			return parentQuads;
 		}
 
-		if (parentQuads instanceof MeshBakedGeometry meshBakedGeometry) {
-			meshBakedGeometry.getMesh().forEach(quad -> {
+		if (parentQuads instanceof MeshQuadCollection meshQuadCollection) {
+			meshQuadCollection.getMesh().forEach(quad -> {
 				emitter.copyFrom(quad).emit();
 				emitter.copyFrom(quad);
 				emitter.atlas(overlayAtlas);
@@ -93,6 +93,6 @@ public record OverlayedGeometry(Identifier parentId) implements UnbakedGeometry 
 			}
 		}
 
-		return new MeshBakedGeometry(mutableMesh.immutableCopy());
+		return new MeshQuadCollection(mutableMesh.immutableCopy());
 	}
 }

@@ -200,7 +200,7 @@ public interface MutableQuadView extends QuadView {
 
 	/**
 	 * Sets the minimum lightmap value for the given vertex. Input values will override lightmap values computed from
-	 * world state if input values are higher. Exposed for completeness but some rendering implementations with
+	 * level state if input values are higher. Exposed for completeness but some rendering implementations with
 	 * non-standard lighting model may not honor it.
 	 *
 	 * <p>For emissive rendering, prefer using {@link #emissive(boolean)}.

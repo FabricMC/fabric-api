@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.renderer.v1.sprite;
+package net.fabricmc.fabric.impl.renderer;
 
-import net.minecraft.client.renderer.texture.SpriteLoader;
+import org.jspecify.annotations.Nullable;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 
-/**
- * Note: This interface is automatically implemented on {@link SpriteLoader.Preparations} via Mixin and interface injection.
- */
-public interface FabricStitchResult {
-	/**
-	 * {@return the sprite finder for this stitch result}
-	 */
-	default SpriteFinder spriteFinder() {
-		throw new UnsupportedOperationException();
-	}
+public interface SpriteLoaderPreparationsExtension {
+	@Nullable
+	SpriteFinder fabric_spriteFinderNullable();
 }

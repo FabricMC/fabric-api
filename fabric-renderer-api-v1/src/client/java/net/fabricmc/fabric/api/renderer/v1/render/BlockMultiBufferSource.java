@@ -26,8 +26,8 @@ import net.minecraft.client.renderer.rendertype.RenderType;
  * Like {@link MultiBufferSource}, but takes {@link ChunkSectionLayer} instead of {@link RenderType}. Primarily
  * used to correctly render block models which have geometry on more than one layer.
  *
- * @see FabricBlockModelRenderer
+ * @see FabricModelBlockRenderer
  */
-public interface BlockVertexConsumerProvider {
+public interface BlockMultiBufferSource {
 	VertexConsumer getBuffer(ChunkSectionLayer layer);
 }

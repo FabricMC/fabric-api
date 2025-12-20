@@ -36,14 +36,14 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 @Mixin(SnowGolemHeadLayer.class)
 abstract class SnowGolemHeadLayerMixin {
 	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitBlockModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/block/model/BlockStateModel;FFFIII)V"))
-	private void renderProxy(SubmitNodeCollector commandQueue, PoseStack matrices, RenderType renderLayer, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local SnowGolemRenderState renderState, @Local BlockState blockState) {
+	private void renderProxy(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, RenderType renderType, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, @Local SnowGolemRenderState renderState, @Local BlockState blockState) {
 		// If true, the render layer is an outline render layer, and we want all geometry to use this render layer.
 		if (renderState.appearsGlowing() && renderState.isInvisible) {
 			// Fix tinted quads being rendered completely black and provide the BlockState as context.
-			commandQueue.submitBlockStateModel(matrices, blockLayer -> renderLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, blockState);
+			submitNodeCollector.submitBlockStateModel(poseStack, blockLayer -> renderType, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, blockState);
 		} else {
 			// Support multi-render layer models, fix tinted quads being rendered completely black, and provide the BlockState as context.
-			commandQueue.submitBlockStateModel(matrices, RenderLayerHelper::getEntityBlockLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, blockState);
+			submitNodeCollector.submitBlockStateModel(poseStack, RenderLayerHelper::getEntityBlockLayer, model, 1, 1, 1, light, overlay, outlineColor, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, blockState);
 		}
 	}
 }

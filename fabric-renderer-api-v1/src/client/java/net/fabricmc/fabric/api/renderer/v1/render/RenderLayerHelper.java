@@ -52,15 +52,15 @@ public final class RenderLayerHelper {
 	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render layers using
 	 * {@link #getMovingBlockLayer(ChunkSectionLayer)}.
 	 */
-	public static BlockVertexConsumerProvider movingDelegate(MultiBufferSource vertexConsumers) {
-		return layer -> vertexConsumers.getBuffer(RenderLayerHelper.getMovingBlockLayer(layer));
+	public static BlockMultiBufferSource movingDelegate(MultiBufferSource bufferSource) {
+		return layer -> bufferSource.getBuffer(RenderLayerHelper.getMovingBlockLayer(layer));
 	}
 
 	/**
 	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render layers using
 	 * {@link #getEntityBlockLayer(ChunkSectionLayer)}.
 	 */
-	public static BlockVertexConsumerProvider entityDelegate(MultiBufferSource vertexConsumers) {
-		return layer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer));
+	public static BlockMultiBufferSource entityDelegate(MultiBufferSource bufferSource) {
+		return layer -> bufferSource.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer));
 	}
 }

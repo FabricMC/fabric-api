@@ -32,9 +32,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
-import net.fabricmc.fabric.api.renderer.v1.sprite.FabricErrorCollectingSpriteGetter;
-import net.fabricmc.fabric.api.renderer.v1.sprite.FabricSpriteAtlasTexture;
-import net.fabricmc.fabric.api.renderer.v1.sprite.FabricStitchResult;
+import net.fabricmc.fabric.api.renderer.v1.sprite.FabricPreparations;
+import net.fabricmc.fabric.api.renderer.v1.sprite.FabricSpriteGetter;
+import net.fabricmc.fabric.api.renderer.v1.sprite.FabricTextureAtlas;
 
 /**
  * Indexes a texture atlas to allow fast lookup of {@link TextureAtlasSprite}s from baked texture coordinates.
@@ -44,10 +44,10 @@ import net.fabricmc.fabric.api.renderer.v1.sprite.FabricStitchResult;
  * finding the sprite for use in {@link QuadView#toBakedQuad(TextureAtlasSprite)}.
  *
  * <p>A sprite finder can be retrieved from various vanilla objects. Always use
- * {@link FabricErrorCollectingSpriteGetter#spriteFinder(Identifier)} or {@link FabricStitchResult#spriteFinder()}
+ * {@link FabricSpriteGetter#spriteFinder(Identifier)} or {@link FabricPreparations#spriteFinder()}
  * whenever an applicable instance is available. For example, model baking is supplied with a
  * {@link SpriteGetter}, so it should be used to retrieve the sprite finder. In most other cases, it is
- * safe to use {@link FabricSpriteAtlasTexture#spriteFinder()}.
+ * safe to use {@link FabricTextureAtlas#spriteFinder()}.
  */
 @ApiStatus.NonExtendable
 public interface SpriteFinder {
@@ -76,7 +76,7 @@ public interface SpriteFinder {
 	TextureAtlasSprite find(float u, float v);
 
 	/**
-	 * @deprecated Use {@link FabricSpriteAtlasTexture#spriteFinder()} instead.
+	 * @deprecated Use {@link FabricTextureAtlas#spriteFinder()} instead.
 	 */
 	@Deprecated
 	static SpriteFinder get(TextureAtlas atlas) {

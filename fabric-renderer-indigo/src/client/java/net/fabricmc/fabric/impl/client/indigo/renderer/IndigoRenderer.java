@@ -31,8 +31,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
-import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
+import net.fabricmc.fabric.api.renderer.v1.render.BlockMultiBufferSource;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
@@ -55,26 +55,33 @@ public class IndigoRenderer implements Renderer {
 	}
 
 	@Override
-	public void render(ModelBlockRenderer modelRenderer, BlockAndTintGetter blockView, BlockStateModel model, BlockState state, BlockPos pos, PoseStack matrices, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
-		TerrainLikeRenderContext.POOL.get().bufferModel(blockView, model, state, pos, matrices, vertexConsumers, cull, seed, overlay);
+	public void render(ModelBlockRenderer blockRenderer, BlockAndTintGetter blockAndTintGetter, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay) {
+		TerrainLikeRenderContext.POOL.get().bufferModel(
+				blockAndTintGetter, model, state, pos,
+				poseStack, bufferSource, cull, seed, overlay);
 	}
 
 	@Override
-	public void render(PoseStack.Pose entry, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
-		SimpleBlockRenderContext.POOL.get().bufferModel(entry, vertexConsumers, model, red, green, blue, light, overlay, blockView, pos, state);
+	public void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state) {
+		SimpleBlockRenderContext.POOL.get().bufferModel(pose,
+				bufferSource, model, red, green, blue, light, overlay,
+				blockAndTintGetter, pos, state);
 	}
 
 	@Override
-	public void renderBlockAsEntity(BlockRenderDispatcher renderManager, BlockState state, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos) {
+	public void renderBlockAsEntity(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter blockAndTintGetter, BlockPos pos) {
 		RenderShape blockRenderType = state.getRenderShape();
 
 		if (blockRenderType != RenderShape.INVISIBLE) {
-			BlockStateModel model = renderManager.getBlockModel(state);
-			int tint = ((BlockRenderDispatcherAccessor) renderManager).getBlockColors().getColor(state, null, null, 0);
+			BlockStateModel model = renderDispatcher.getBlockModel(state);
+			int tint = ((BlockRenderDispatcherAccessor) renderDispatcher).getBlockColors().getColor(state, null, null, 0);
 			float red = (tint >> 16 & 255) / 255.0F;
 			float green = (tint >> 8 & 255) / 255.0F;
 			float blue = (tint & 255) / 255.0F;
-			FabricBlockModelRenderer.render(matrices.last(), RenderLayerHelper.entityDelegate(vertexConsumers), model, red, green, blue, light, overlay, blockView, pos, state);
+			FabricModelBlockRenderer.render(
+					poseStack.last(), RenderLayerHelper.entityDelegate(
+							bufferSource), model, red, green, blue, light, overlay,
+					blockAndTintGetter, pos, state);
 		}
 	}
 

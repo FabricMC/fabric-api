@@ -16,11 +16,16 @@
 
 package net.fabricmc.fabric.impl.renderer;
 
+import java.util.function.Function;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-public record ExtendedBlockCommand(PoseStack.Pose matricesEntry, BlockState state, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter blockView, BlockPos pos) {
+public record ExtendedBlockStateModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter blockAndTintGetter, BlockPos pos, BlockState state) {
 }

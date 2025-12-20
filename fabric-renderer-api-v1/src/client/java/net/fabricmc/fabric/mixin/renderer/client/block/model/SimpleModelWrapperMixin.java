@@ -41,7 +41,7 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
+import net.fabricmc.fabric.api.renderer.v1.model.MeshQuadCollection;
 import net.fabricmc.fabric.api.util.TriState;
 
 @Mixin(SimpleModelWrapper.class)
@@ -55,7 +55,7 @@ abstract class SimpleModelWrapperMixin implements BlockModelPart {
 
 	@Inject(method = "bake(Lnet/minecraft/client/resources/model/ModelBaker;Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/resources/model/ModelState;)Lnet/minecraft/client/renderer/block/model/BlockModelPart;", at = @At(value = "INVOKE", target = "net/minecraft/client/resources/model/QuadCollection.getAll()Ljava/util/List;"))
 	private static void validateMeshAtlas(final ModelBaker modelBakery, final Identifier location, final ModelState state, CallbackInfoReturnable<BlockModelPart> cir, @Local QuadCollection geometry, @Local LocalRef<Multimap<Identifier, Identifier>> forbiddenSpritesRef) {
-		if (geometry instanceof MeshBakedGeometry meshGeometry) {
+		if (geometry instanceof MeshQuadCollection meshGeometry) {
 			meshGeometry.getMesh().forEach(quad -> {
 				if (quad.atlas() != QuadAtlas.BLOCK) {
 					Multimap<Identifier, Identifier> forbiddenSprites = forbiddenSpritesRef.get();
@@ -74,9 +74,9 @@ abstract class SimpleModelWrapperMixin implements BlockModelPart {
 
 	@Override
 	public void emitQuads(QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
-		if (quads instanceof MeshBakedGeometry meshBakedGeometry) {
+		if (quads instanceof MeshQuadCollection meshQuadCollection) {
 			if (useAmbientOcclusion) {
-				meshBakedGeometry.getMesh().outputTo(emitter);
+				meshQuadCollection.getMesh().outputTo(emitter);
 			} else {
 				emitter.pushTransform(quad -> {
 					if (quad.ambientOcclusion() == TriState.DEFAULT) {
@@ -85,7 +85,7 @@ abstract class SimpleModelWrapperMixin implements BlockModelPart {
 
 					return true;
 				});
-				meshBakedGeometry.getMesh().outputTo(emitter);
+				meshQuadCollection.getMesh().outputTo(emitter);
 				emitter.popTransform();
 			}
 		} else {

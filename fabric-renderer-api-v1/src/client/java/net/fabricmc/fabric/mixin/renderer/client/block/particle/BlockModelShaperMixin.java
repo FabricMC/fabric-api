@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.client.renderer.block.BlockModelShaper;
 
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBlockModels;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBlockModelShaper;
 
 @Mixin(BlockModelShaper.class)
-abstract class BlockModelShaperMixin implements FabricBlockModels {
+abstract class BlockModelShaperMixin implements FabricBlockModelShaper {
 }

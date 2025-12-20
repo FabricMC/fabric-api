@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.renderer;
 
-import net.minecraft.client.resources.model.SpriteGetter;
+import java.util.List;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+public interface SubmitNodeCollectionExtension {
+	List<ExtendedBlockSubmit> fabric_getExtendedBlockSubmits();
 
-public interface BasicItemModelExtension {
-	void fabric_setMesh(Mesh mesh, SpriteGetter spriteGetter);
+	List<ExtendedBlockStateModelSubmit> fabric_getExtendedBlockStateModelSubmits();
 }

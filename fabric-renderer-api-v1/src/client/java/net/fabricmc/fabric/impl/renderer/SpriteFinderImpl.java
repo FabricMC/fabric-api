@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 
 /**
- * Indexes an atlas sprite to allow fast lookup of Sprites from
+ * Indexes an atlas sprite to allow fast lookup of TextureAtlasSprites from
  * baked vertex coordinates.  Implementation is a straightforward
  * quad tree. Other options that were considered were linear search
  * (slow) and direct indexing of fixed-size cells. Direct indexing

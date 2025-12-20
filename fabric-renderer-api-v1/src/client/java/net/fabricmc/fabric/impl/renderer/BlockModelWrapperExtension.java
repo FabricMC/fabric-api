@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.renderer;
 
-import java.util.List;
+import net.minecraft.client.resources.model.SpriteGetter;
 
-public interface BatchingRenderCommandQueueExtension {
-	List<ExtendedBlockCommand> fabric_getExtendedBlockCommands();
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 
-	List<ExtendedBlockStateModelCommand> fabric_getExtendedBlockStateModelCommands();
+public interface BlockModelWrapperExtension {
+	void fabric_setMesh(Mesh mesh, SpriteGetter spriteGetter);
 }
