@@ -75,10 +75,10 @@ public abstract class FabricSoundsProvider implements DataProvider {
 	/**
 	 * Implement this method and then use {@link BiConsumer#accept} to register sound events to be data-generated.
 	 *
-	 * <p>Registered sound types will be appended to their own sounds.json in a namespace corresponding to
+	 * <p>Registered sound types will be appended to their own {@code sounds.json} in a namespace corresponding to
 	 * the id of the sound event they are assigned to.
 	 */
-	protected abstract void configure(HolderLookup.Provider registryLookup, SoundExporter exporter);
+	protected abstract void configure(HolderLookup.Provider holderProvider, SoundExporter exporter);
 
 	/**
 	 * A consumer used by {@link FabricSoundsProvider#configure}.
