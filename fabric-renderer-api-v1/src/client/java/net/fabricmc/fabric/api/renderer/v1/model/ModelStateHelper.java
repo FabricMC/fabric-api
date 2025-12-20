@@ -95,7 +95,7 @@ public final class ModelStateHelper {
 	}
 
 	/**
-	 * Creates a new {@link ModelState} that is the product of the two given settings. States are represented
+	 * Creates a new {@link ModelState} that is the product of the two given states. States are represented
 	 * by matrices, so this method follows the rules of matrix multiplication, namely that applying the resulting
 	 * state is (mostly) equivalent to applying the right state and then the left state. The only exception
 	 * during standard application is cull face transformation, as the result must be clamped. Thus, applying a single
