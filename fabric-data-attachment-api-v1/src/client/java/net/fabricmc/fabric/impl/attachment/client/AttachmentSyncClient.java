@@ -23,21 +23,21 @@ import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSync;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentSyncException;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.RequestAcceptedAttachmentsPayloadS2C;
+import net.fabricmc.fabric.impl.attachment.sync.clientbound.ClientboundAttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.clientbound.ClientboundRequestAcceptedAttachmentsPayload;
 
 public class AttachmentSyncClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// config
 		ClientConfigurationNetworking.registerGlobalReceiver(
-				RequestAcceptedAttachmentsPayloadS2C.ID,
+				ClientboundRequestAcceptedAttachmentsPayload.ID,
 				(payload, context) -> context.responseSender().sendPacket(AttachmentSync.createResponsePayload())
 		);
 
 		// play
 		ClientPlayNetworking.registerGlobalReceiver(
-				AttachmentSyncPayloadS2C.ID,
+				ClientboundAttachmentSyncPayload.ID,
 				(payload, context) -> {
 					for (AttachmentChange attachmentChange : payload.attachments()) {
 						try {

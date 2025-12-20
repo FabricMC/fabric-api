@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 public sealed interface AttachmentTargetInfo<T> {
 	int MAX_SIZE_IN_BYTES = Byte.BYTES + Long.BYTES;
 	StreamCodec<ByteBuf, AttachmentTargetInfo<?>> PACKET_CODEC = ByteBufCodecs.BYTE.dispatch(
-			AttachmentTargetInfo::getId, Type::packetCodecFromId
+			AttachmentTargetInfo::getId, Type::streamCodecFromId
 	);
 
 	Type<T> getType();
@@ -53,7 +53,7 @@ public sealed interface AttachmentTargetInfo<T> {
 
 	void appendDebugInformation(MutableComponent text);
 
-	record Type<T>(byte id, StreamCodec<ByteBuf, ? extends AttachmentTargetInfo<T>> packetCodec) {
+	record Type<T>(byte id, StreamCodec<ByteBuf, ? extends AttachmentTargetInfo<T>> streamCodec) {
 		static Byte2ObjectMap<Type<?>> TYPES = new Byte2ObjectArrayMap<>();
 		static Type<BlockEntity> BLOCK_ENTITY = new Type<>((byte) 0, BlockEntityTarget.PACKET_CODEC);
 		static Type<Entity> ENTITY = new Type<>((byte) 1, EntityTarget.PACKET_CODEC);
@@ -64,8 +64,8 @@ public sealed interface AttachmentTargetInfo<T> {
 			TYPES.put(id, this);
 		}
 
-		static StreamCodec<ByteBuf, ? extends AttachmentTargetInfo<?>> packetCodecFromId(byte id) {
-			return TYPES.get(id).packetCodec;
+		static StreamCodec<ByteBuf, ? extends AttachmentTargetInfo<?>> streamCodecFromId(byte id) {
+			return TYPES.get(id).streamCodec;
 		}
 	}
 
