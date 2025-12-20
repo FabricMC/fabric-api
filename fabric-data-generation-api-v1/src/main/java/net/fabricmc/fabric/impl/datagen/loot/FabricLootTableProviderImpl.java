@@ -53,11 +53,11 @@ public final class FabricLootTableProviderImpl {
 			FabricLootTableProvider provider,
 			ContextKeySet contextType,
 			FabricDataOutput fabricDataOutput,
-			CompletableFuture<HolderLookup.Provider> registryLookup) {
+			CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
 		HashMap<Identifier, ResourceCondition[]> conditionMap = new HashMap<>();
 
-		return registryLookup.thenCompose(lookup -> {
+		return registryLookupFuture.thenCompose(lookup -> {
 			provider.generate((registryKey, builder) -> {
 				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(builder);
 				conditionMap.put(registryKey.identifier(), conditions);

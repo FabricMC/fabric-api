@@ -50,13 +50,13 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 public abstract class FabricEntityLootTableProvider extends EntityLootSubProvider implements FabricLootTableProvider {
 	private final FabricDataOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
-	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
+	private final CompletableFuture<HolderLookup.Provider> registryFuture;
 
-	protected FabricEntityLootTableProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
-		super(FeatureFlags.REGISTRY.allFlags(), registryLookup.join());
+	protected FabricEntityLootTableProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryFuture) {
+		super(FeatureFlags.REGISTRY.allFlags(), registryFuture.join());
 
 		this.output = output;
-		this.registryLookupFuture = registryLookup;
+		this.registryFuture = registryFuture;
 	}
 
 	/**
@@ -121,7 +121,7 @@ public abstract class FabricEntityLootTableProvider extends EntityLootSubProvide
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		return FabricLootTableProviderImpl.run(cache, this, LootContextParamSets.ENTITY, this.output, this.registryLookupFuture);
+		return FabricLootTableProviderImpl.run(cache, this, LootContextParamSets.ENTITY, this.output, this.registryFuture);
 	}
 
 	@Override

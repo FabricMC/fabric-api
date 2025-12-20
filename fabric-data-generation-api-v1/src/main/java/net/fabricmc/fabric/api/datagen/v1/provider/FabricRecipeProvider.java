@@ -57,12 +57,12 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  */
 public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 	protected final FabricDataOutput output;
-	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
+	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 
-	public FabricRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-		super(output, registriesFuture);
+	public FabricRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+		super(output, registryLookupFuture);
 		this.output = output;
-		this.registriesFuture = registriesFuture;
+		this.registryLookupFuture = registryLookupFuture;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		return registriesFuture.thenCompose((wrapperLookup -> {
+		return registryLookupFuture.thenCompose((wrapperLookup -> {
 			Set<Identifier> generatedRecipes = Sets.newHashSet();
 			List<CompletableFuture<?>> list = new ArrayList<>();
 			RecipeProvider recipeGenerator = createRecipeProvider(wrapperLookup, new RecipeOutput() {

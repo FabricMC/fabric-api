@@ -142,12 +142,12 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		FabricDataGenerator.Pack extraPack = dataGenerator.createBuiltinResourcePack(Identifier.fromNamespaceAndPath(MOD_ID, "extra"));
-		CompletableFuture<HolderLookup.Provider> extraRegistries = RegistryPatchGenerator.createLookup(dataGenerator.getRegistries(), new RegistrySetBuilder()
+		CompletableFuture<HolderLookup.Provider> extraRegistriesFuture = RegistryPatchGenerator.createLookup(dataGenerator.getRegistries(), new RegistrySetBuilder()
 				.add(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY, c ->
 						c.register(TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY, new DataGeneratorTestContent.TestDatagenObject(":tiny_potato:"))
 				)
 		).thenApply(RegistrySetBuilder.PatchedRegistries::full);
-		extraPack.addProvider((FabricDataOutput out) -> new TestExtraDynamicRegistryProvider(out, extraRegistries));
+		extraPack.addProvider((FabricDataOutput out) -> new TestExtraDynamicRegistryProvider(out, extraRegistriesFuture));
 	}
 
 	@Override
@@ -164,8 +164,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestRecipeProvider extends FabricRecipeProvider {
-		private TestRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-			super(output, registriesFuture);
+		private TestRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+			super(output, registryLookupFuture);
 		}
 
 		@Override
@@ -257,8 +257,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class ExistingEnglishLangProvider extends FabricLanguageProvider {
-		private ExistingEnglishLangProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-			super(output, registriesFuture);
+		private ExistingEnglishLangProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesLookupFuture) {
+			super(output, registriesLookupFuture);
 		}
 
 		@Override
@@ -308,7 +308,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void addTags(HolderLookup.Provider registries) {
+		protected void addTags(HolderLookup.Provider registryLookup) {
 			valueLookupBuilder(BlockTags.FIRE).setReplace(true).add(SIMPLE_BLOCK);
 			valueLookupBuilder(BlockTags.DIRT).add(SIMPLE_BLOCK);
 			valueLookupBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
@@ -326,7 +326,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void addTags(HolderLookup.Provider registries) {
+		protected void addTags(HolderLookup.Provider registryLookup) {
 			copy(BlockTags.DIRT, ItemTags.DIRT);
 		}
 	}
@@ -337,7 +337,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void addTags(HolderLookup.Provider registries) {
+		protected void addTags(HolderLookup.Provider registryLookup) {
 			builder(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(MOD_ID, "biome_tag_test")))
 					.add(Biomes.BADLANDS)
 					.add(Biomes.BAMBOO_JUNGLE)
@@ -351,7 +351,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void addTags(HolderLookup.Provider registries) {
+		protected void addTags(HolderLookup.Provider registryLookup) {
 			builder(TagKey.create(Registries.GAME_EVENT, Identifier.fromNamespaceAndPath(MOD_ID, "game_event_tag_test")))
 					.add(GameEvent.SHRIEK.key());
 		}
@@ -363,7 +363,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generateAdvancement(HolderLookup.Provider provider, Consumer<AdvancementHolder> consumer) {
+		public void generateAdvancement(HolderLookup.Provider registryLookupFuture, Consumer<AdvancementHolder> consumer) {
 			AdvancementHolder root = Advancement.Builder.advancement()
 					.display(
 							SIMPLE_BLOCK,
@@ -446,9 +446,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void configure(HolderLookup.Provider holderProvider, Entries entries) {
+		protected void configure(HolderLookup.Provider registryFuture, Entries entries) {
 			entries.add(
-					holderProvider.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_ITEM_KEY,
+					registryFuture.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_ITEM_KEY,
 					ResourceConditions.allModsLoaded(MOD_ID)
 			);
 		}
@@ -468,8 +468,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void configure(HolderLookup.Provider holderProvider, Entries entries) {
-			entries.add(holderProvider.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY);
+		protected void configure(HolderLookup.Provider registryFuture, Entries entries) {
+			entries.add(registryFuture.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY);
 		}
 
 		@Override
@@ -484,8 +484,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void configure(BiConsumer<Identifier, LootItemCondition> provider, HolderLookup.Provider lookup) {
-			HolderGetter<Block> blocks = lookup.lookupOrThrow(Registries.BLOCK);
+		protected void configure(BiConsumer<Identifier, LootItemCondition> provider, HolderLookup.Provider registryLookup) {
+			HolderGetter<Block> blocks = registryLookup.lookupOrThrow(Registries.BLOCK);
 			provider.accept(Identifier.fromNamespaceAndPath(MOD_ID, "predicate_test"), LootItemBlockStatePropertyCondition.hasBlockStateProperties(
 					blocks.getOrThrow(Blocks.MELON).value()).build()); // Pretend this actually does something and we cannot access the blocks directly
 		}
@@ -502,8 +502,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void configure(BiConsumer<Identifier, Entry> provider, HolderLookup.Provider lookup) {
-			HolderGetter<Biome> biomes = lookup.lookupOrThrow(Registries.BIOME);
+		protected void configure(BiConsumer<Identifier, Entry> provider, HolderLookup.Provider registryLookup) {
+			HolderGetter<Biome> biomes = registryLookup.lookupOrThrow(Registries.BIOME);
 			provider.accept(Identifier.fromNamespaceAndPath(MOD_ID, "custom_codec_test"), new Entry(biomes.getOrThrow(Biomes.PLAINS)));
 		}
 

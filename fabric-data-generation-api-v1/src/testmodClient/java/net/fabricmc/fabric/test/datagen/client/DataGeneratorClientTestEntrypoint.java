@@ -63,7 +63,7 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 		}
 
 		@Override
-		protected void configure(BiConsumer<Identifier, List<SpriteSource>> spriteProvider, HolderLookup.Provider lookupProvider) {
+		protected void configure(BiConsumer<Identifier, List<SpriteSource>> spriteProvider, HolderLookup.Provider registryLookup) {
 			spriteProvider.accept(Identifier.fromNamespaceAndPath(MOD_ID, "atlas_source_test"), List.of(new DirectoryLister("example", "example/")));
 		}
 
@@ -104,7 +104,7 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 		}
 
 		@Override
-		protected void configure(HolderLookup.Provider holderProvider, SoundExporter exporter) {
+		protected void configure(HolderLookup.Provider registryFuture, SoundExporter exporter) {
 			exporter.add(DataGeneratorTestContent.TEST_SOUND, SoundTypeBuilder.of(DataGeneratorTestContent.TEST_SOUND)
 					.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle"))
 						.volume(0.7F), 1)

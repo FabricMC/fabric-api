@@ -32,7 +32,7 @@ public final class EntityTypeTagGenerator extends FabricTagProvider.EntityTypeTa
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider registries) {
+	protected void addTags(HolderLookup.Provider registryLookup) {
 		valueLookupBuilder(ConventionalEntityTypeTags.BOSSES)
 				.add(EntityType.ENDER_DRAGON)
 				.add(EntityType.WITHER);

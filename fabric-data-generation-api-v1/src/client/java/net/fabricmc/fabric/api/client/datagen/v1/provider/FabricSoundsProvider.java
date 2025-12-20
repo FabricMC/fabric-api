@@ -47,17 +47,17 @@ import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
  */
 public abstract class FabricSoundsProvider implements DataProvider {
 	private static final Codec<Map<String, SoundTypeBuilderImpl.SoundType>> CODEC = Codec.unboundedMap(Codec.STRING, SoundTypeBuilderImpl.SoundType.CODEC);
-	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
+	private final CompletableFuture<HolderLookup.Provider> registryFuture;
 	private final PackOutput output;
 
-	public FabricSoundsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-		this.registriesFuture = registriesFuture;
+	public FabricSoundsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registryFuture) {
+		this.registryFuture = registryFuture;
 		this.output = output;
 	}
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		return registriesFuture.thenCompose(lookup -> {
+		return registryFuture.thenCompose(lookup -> {
 			final Map<String, Map<String, SoundTypeBuilderImpl.SoundType>> data = new LinkedHashMap<>();
 			configure(lookup, (id, builder) -> {
 				if (data.computeIfAbsent(id.getNamespace(), n -> new LinkedHashMap<>()).put(id.getPath(), ((SoundTypeBuilderImpl) builder).build()) != null) {
@@ -78,7 +78,7 @@ public abstract class FabricSoundsProvider implements DataProvider {
 	 * <p>Registered sound types will be appended to their own {@code sounds.json} in a namespace corresponding to
 	 * the id of the sound event they are assigned to.
 	 */
-	protected abstract void configure(HolderLookup.Provider holderProvider, SoundExporter exporter);
+	protected abstract void configure(HolderLookup.Provider registryFuture, SoundExporter exporter);
 
 	/**
 	 * A consumer used by {@link FabricSoundsProvider#configure}.

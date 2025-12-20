@@ -63,16 +63,16 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 public abstract class FabricLanguageProvider implements DataProvider {
 	protected final FabricDataOutput dataOutput;
 	private final String languageCode;
-	private final CompletableFuture<HolderLookup.Provider> registryLookup;
+	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 
-	protected FabricLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
-		this(dataOutput, "en_us", registryLookup);
+	protected FabricLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+		this(dataOutput, "en_us", registryLookupFuture);
 	}
 
-	protected FabricLanguageProvider(FabricDataOutput dataOutput, String languageCode, CompletableFuture<HolderLookup.Provider> registryLookup) {
+	protected FabricLanguageProvider(FabricDataOutput dataOutput, String languageCode, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 		this.dataOutput = dataOutput;
 		this.languageCode = languageCode;
-		this.registryLookup = registryLookup;
+		this.registryLookupFuture = registryLookupFuture;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	public CompletableFuture<?> run(CachedOutput cache) {
 		TreeMap<String, String> translationEntries = new TreeMap<>();
 
-		return this.registryLookup.thenCompose(lookup -> {
+		return this.registryLookupFuture.thenCompose(lookup -> {
 			generateTranslations(lookup, (String key, String value) -> {
 				Objects.requireNonNull(key);
 				Objects.requireNonNull(value);
@@ -156,11 +156,11 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		/**
 		 * Adds a translation for an {@link CreativeModeTab}.
 		 *
-		 * @param registryKey The {@link ResourceKey} to get the translation key from.
+		 * @param resourceKey The {@link ResourceKey} to get the translation key from.
 		 * @param value The value of the entry.
 		 */
-		default void add(ResourceKey<CreativeModeTab> registryKey, String value) {
-			final CreativeModeTab group = BuiltInRegistries.CREATIVE_MODE_TAB.getValueOrThrow(registryKey);
+		default void add(ResourceKey<CreativeModeTab> resourceKey, String value) {
+			final CreativeModeTab group = BuiltInRegistries.CREATIVE_MODE_TAB.getValueOrThrow(resourceKey);
 			final ComponentContents content = group.getDisplayName().getContents();
 
 			if (content instanceof TranslatableContents translatableTextContent) {

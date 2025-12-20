@@ -36,7 +36,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider arg) {
+	protected void addTags(HolderLookup.Provider registryLookup) {
 		generateToolTags();
 		generateBucketTags();
 		generateOreAndRelatedTags();
