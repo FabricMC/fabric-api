@@ -73,7 +73,7 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleSprite(BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
+	public TextureAtlasSprite particleIcon(BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
 		return wrapped.particleIcon(blockView, pos, state);
 	}
 }
