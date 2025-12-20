@@ -83,7 +83,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	public abstract void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder);
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput writer) {
+	public CompletableFuture<?> run(CachedOutput cache) {
 		TreeMap<String, String> translationEntries = new TreeMap<>();
 
 		return this.registryLookup.thenCompose(lookup -> {
@@ -104,7 +104,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 				langEntryJson.addProperty(entry.getKey(), entry.getValue());
 			}
 
-			return DataProvider.saveStable(writer, langEntryJson, getLangFilePath(this.languageCode));
+			return DataProvider.saveStable(cache, langEntryJson, getLangFilePath(this.languageCode));
 		});
 	}
 

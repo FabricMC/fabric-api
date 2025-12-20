@@ -42,8 +42,8 @@ public final class TagAliasGenerator {
 		return directory + registryId.getPath();
 	}
 
-	public static <T> CompletableFuture<?> writeTagAlias(CachedOutput writer, PackOutput.PathProvider pathResolver, ResourceKey<? extends Registry<T>> registryRef, Identifier groupId, List<TagKey<T>> tags) {
+	public static <T> CompletableFuture<?> writeTagAlias(CachedOutput cache, PackOutput.PathProvider pathResolver, ResourceKey<? extends Registry<T>> registryRef, Identifier groupId, List<TagKey<T>> tags) {
 		Path path = pathResolver.json(groupId);
-		return DataProvider.saveStable(writer, TagAliasGroup.codec(registryRef), new TagAliasGroup<>(tags), path);
+		return DataProvider.saveStable(cache, TagAliasGroup.codec(registryRef), new TagAliasGroup<>(tags), path);
 	}
 }

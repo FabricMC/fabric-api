@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.datagen",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "DataCacheCachedDataMixin",
+    "HashCacheProviderCacheMixin",
     "HashCacheMixin",
     "DataProviderMixin",
     "TagAppenderMixin",

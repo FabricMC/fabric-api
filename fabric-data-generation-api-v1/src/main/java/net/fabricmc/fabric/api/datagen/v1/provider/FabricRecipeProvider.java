@@ -100,7 +100,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput writer) {
+	public CompletableFuture<?> run(CachedOutput cache) {
 		return registriesFuture.thenCompose((wrapperLookup -> {
 			Set<Identifier> generatedRecipes = Sets.newHashSet();
 			List<CompletableFuture<?>> list = new ArrayList<>();
@@ -121,12 +121,12 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 					final PackOutput.PathProvider recipesPathResolver = output.createRegistryElementsPathProvider(Registries.RECIPE);
 					final PackOutput.PathProvider advancementsPathResolver = output.createRegistryElementsPathProvider(Registries.ADVANCEMENT);
 
-					list.add(DataProvider.saveStable(writer, recipeJson, recipesPathResolver.json(identifier)));
+					list.add(DataProvider.saveStable(cache, recipeJson, recipesPathResolver.json(identifier)));
 
 					if (advancement != null) {
 						JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
 						FabricDataGenHelper.addConditions(advancementJson, conditions);
-						list.add(DataProvider.saveStable(writer, advancementJson, advancementsPathResolver.json(advancement.id())));
+						list.add(DataProvider.saveStable(cache, advancementJson, advancementsPathResolver.json(advancement.id())));
 					}
 				}
 

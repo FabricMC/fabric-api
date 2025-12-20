@@ -120,8 +120,8 @@ public abstract class FabricEntityLootTableProvider extends EntityLootSubProvide
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput writer) {
-		return FabricLootTableProviderImpl.run(writer, this, LootContextParamSets.ENTITY, this.output, this.registryLookupFuture);
+	public CompletableFuture<?> run(CachedOutput cache) {
+		return FabricLootTableProviderImpl.run(cache, this, LootContextParamSets.ENTITY, this.output, this.registryLookupFuture);
 	}
 
 	@Override

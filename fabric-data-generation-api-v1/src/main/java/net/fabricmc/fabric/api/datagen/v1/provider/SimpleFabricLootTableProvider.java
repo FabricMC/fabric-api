@@ -43,8 +43,8 @@ public abstract class SimpleFabricLootTableProvider implements FabricLootTablePr
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput writer) {
-		return FabricLootTableProviderImpl.run(writer, this, contextType, output, registryLookup);
+	public CompletableFuture<?> run(CachedOutput cache) {
+		return FabricLootTableProviderImpl.run(cache, this, contextType, output, registryLookup);
 	}
 
 	@Override
