@@ -124,19 +124,19 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 
 	private static void assertExtractionContext(LevelExtractionContext context) {
 		assertAbstractRenderContext(context);
-		assertNotNull(context.level(), "world is null");
+		assertNotNull(context.level(), "level is null");
 		assertNotNull(context.camera(), "camera is null");
 		assertNotNull(context.frustum(), "frustum is null");
-		assertNotNull(context.deltaTracker(), "tickCounter is null");
+		assertNotNull(context.deltaTracker(), "deltaTracker is null");
 		assertNotNull(context.viewMatrix(), "viewMatrix is null");
 		assertNotNull(context.cullProjectionMatrix(), "cullProjectionMatrix is null");
 	}
 
 	private static void assertRenderContext(LevelRenderContext context) {
 		assertTerrainRenderContext(context);
-		assertNotNull(context.submitNodeCollector(), "commandQueue is null");
-		assertNotNull(context.poseStack(), "matrices is null");
-		assertNotNull(context.bufferSource(), "consumers is null");
+		assertNotNull(context.submitNodeCollector(), "submitNodeCollector is null");
+		assertNotNull(context.poseStack(), "poseStack is null");
+		assertNotNull(context.bufferSource(), "bufferSource is null");
 	}
 
 	private static void assertTerrainRenderContext(LevelTerrainRenderContext context) {
@@ -145,8 +145,8 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 
 	private static void assertAbstractRenderContext(AbstractLevelRenderContext context) {
 		assertNotNull(context.gameRenderer(), "gameRenderer is null");
-		assertNotNull(context.levelRenderer(), "worldRenderer is null");
-		assertNotNull(context.levelState(), "worldRenderState is null");
+		assertNotNull(context.levelRenderer(), "levelRenderer is null");
+		assertNotNull(context.levelState(), "levelRenderState is null");
 	}
 
 	private static void assertNotNull(Object object, String message) {
