@@ -49,7 +49,7 @@ public final class RenderLayerHelper {
 	}
 
 	/**
-	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render layers using
+	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types using
 	 * {@link #getMovingBlockLayer(ChunkSectionLayer)}.
 	 */
 	public static BlockMultiBufferSource movingDelegate(MultiBufferSource bufferSource) {
