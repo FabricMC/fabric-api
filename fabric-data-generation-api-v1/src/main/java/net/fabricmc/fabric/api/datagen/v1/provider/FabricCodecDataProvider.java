@@ -47,27 +47,27 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricCodecDataProvider<T> implements DataProvider {
-	private final PackOutput.PathProvider pathResolver;
-	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
+	private final PackOutput.PathProvider pathProvider;
+	private final CompletableFuture<HolderLookup.Provider> holderProviderFuture;
 	private final Codec<T> codec;
 
-	private FabricCodecDataProvider(PackOutput.PathProvider pathResolver, CompletableFuture<HolderLookup.Provider> registriesFuture, Codec<T> codec) {
-		this.pathResolver = pathResolver;
-		this.registriesFuture = Objects.requireNonNull(registriesFuture);
+	private FabricCodecDataProvider(PackOutput.PathProvider pathProvider, CompletableFuture<HolderLookup.Provider> holderProviderFuture, Codec<T> codec) {
+		this.pathProvider = pathProvider;
+		this.holderProviderFuture = Objects.requireNonNull(holderProviderFuture);
 		this.codec = codec;
 	}
 
-	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target outputType, String directoryName, Codec<T> codec) {
-		this(dataOutput.createPathProvider(outputType, directoryName), registriesFuture, codec);
+	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> holderProviderFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
+		this(dataOutput.createPathProvider(target, directoryName), holderProviderFuture, codec);
 	}
 
-	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
-		this(dataOutput.createRegistryElementsPathProvider(key), registriesFuture, codec);
+	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> holderProviderFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
+		this(dataOutput.createRegistryElementsPathProvider(key), holderProviderFuture, codec);
 	}
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		return this.registriesFuture.thenCompose(lookup -> {
+		return this.holderProviderFuture.thenCompose(lookup -> {
 			Map<Identifier, JsonElement> entries = new HashMap<>();
 			RegistryOps<JsonElement> ops = lookup.createSerializationContext(JsonOps.INSTANCE);
 
@@ -101,7 +101,7 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 
 	private CompletableFuture<?> write(CachedOutput cache, Map<Identifier, JsonElement> entries) {
 		return CompletableFuture.allOf(entries.entrySet().stream().map(entry -> {
-			Path path = this.pathResolver.json(entry.getKey());
+			Path path = this.pathProvider.json(entry.getKey());
 			return DataProvider.saveStable(cache, entry.getValue(), path);
 		}).toArray(CompletableFuture[]::new));
 	}
