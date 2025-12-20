@@ -446,9 +446,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void configure(HolderLookup.Provider registries, Entries entries) {
+		protected void configure(HolderLookup.Provider holderProvider, Entries entries) {
 			entries.add(
-					registries.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_ITEM_KEY,
+					holderProvider.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_ITEM_KEY,
 					ResourceConditions.allModsLoaded(MOD_ID)
 			);
 		}
@@ -468,8 +468,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void configure(HolderLookup.Provider registries, Entries entries) {
-			entries.add(registries.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY);
+		protected void configure(HolderLookup.Provider holderProvider, Entries entries) {
+			entries.add(holderProvider.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY);
 		}
 
 		@Override

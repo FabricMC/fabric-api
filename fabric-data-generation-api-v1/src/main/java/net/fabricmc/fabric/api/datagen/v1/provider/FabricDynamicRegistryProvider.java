@@ -65,46 +65,46 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDynamicRegistryProvider.class);
 
 	private final FabricDataOutput output;
-	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
+	private final CompletableFuture<HolderLookup.Provider> holderProviderFuture;
 
-	public FabricDynamicRegistryProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+	public FabricDynamicRegistryProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> holderProviderFuture) {
 		this.output = output;
-		this.registriesFuture = registriesFuture;
+		this.holderProviderFuture = holderProviderFuture;
 	}
 
-	protected abstract void configure(HolderLookup.Provider registries, Entries entries);
+	protected abstract void configure(HolderLookup.Provider holderProvider, Entries entries);
 
 	public static final class Entries {
-		private final HolderLookup.Provider registries;
+		private final HolderLookup.Provider holderProvider;
 		// Registry ID -> Entries for that registry
 		private final Map<Identifier, RegistryEntries<?>> queuedEntries;
 		private final String modId;
 
 		@ApiStatus.Internal
-		Entries(HolderLookup.Provider registries, String modId) {
-			this.registries = registries;
+		Entries(HolderLookup.Provider holderProvider, String modId) {
+			this.holderProvider = holderProvider;
 			this.queuedEntries = DynamicRegistries.getDynamicRegistries().stream()
 					// Some modded dynamic registries might not be in the wrapper lookup, filter them out
-					.filter(e -> registries.lookup(e.key()).isPresent())
+					.filter(e -> holderProvider.lookup(e.key()).isPresent())
 					.collect(Collectors.toMap(
 							e -> e.key().identifier(),
-							e -> RegistryEntries.create(registries, e)
+							e -> RegistryEntries.create(holderProvider, e)
 					));
 			this.modId = modId;
 		}
 
 		/**
-		 * Gets access to all registry lookups.
+		 * Gets access to all holder lookups.
 		 */
 		public HolderLookup.Provider getLookups() {
-			return registries;
+			return holderProvider;
 		}
 
 		/**
-		 * Gets a lookup for entries from the given registry.
+		 * Gets a lookup for holders from the given holder lookup.
 		 */
 		public <T> HolderGetter<T> getLookup(ResourceKey<? extends Registry<T>> registryKey) {
-			return registries.lookupOrThrow(registryKey);
+			return holderProvider.lookupOrThrow(registryKey);
 		}
 
 		/**
@@ -122,7 +122,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		/**
-		 * Gets a reference to a registry entry for use in other registrations.
+		 * Gets a reference to a holder for use in other registrations.
 		 */
 		public <T> Holder<T> ref(ResourceKey<T> key) {
 			RegistryEntries<T> entries = getQueuedEntries(key);
@@ -155,7 +155,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		/**
 		 * Adds a new object to be data generated.
 		 *
-		 * @param object The object to generate. This registry entry must have both a
+		 * @param object The object to generate. This holder must have both a
 		 *               {@linkplain Holder#isBound() key and value}.
 		 */
 		public <T> void add(Holder.Reference<T> object) {
@@ -165,7 +165,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		/**
 		 * Adds a new object to be data generated with several resource conditions.
 		 *
-		 * @param object     The object to generate. This registry entry must have both a
+		 * @param object     The object to generate. This holder must have both a
 		 *                   {@linkplain Holder#isBound() key and value}.
 		 * @param conditions Conditions that must be satisfied to load this object.
 		 */
@@ -193,7 +193,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		/**
-		 * All the registry entries whose namespace matches the current effective mod ID will be data generated.
+		 * All the holders whose namespace matches the current effective mod ID will be data generated.
 		 */
 		public <T> List<Holder<T>> addAll(HolderLookup.RegistryLookup<T> registry) {
 			return registry.listElementIds()
@@ -238,7 +238,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 
 		Holder<T> add(ResourceKey<T> key, T value, @Nullable ResourceCondition[] conditions) {
 			if (entries.put(key, new ConditionalEntry<>(value, conditions)) != null) {
-				throw new IllegalArgumentException("Trying to add registry key " + key + " more than once.");
+				throw new IllegalArgumentException("Trying to add resource key " + key + " more than once.");
 			}
 
 			return Holder.Reference.createStandAlone(lookup, key);
@@ -247,7 +247,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		return registriesFuture.thenCompose(registries -> {
+		return holderProviderFuture.thenCompose(registries -> {
 			return CompletableFuture
 					.supplyAsync(() -> {
 						Entries entries = new Entries(registries, output.getModId());
