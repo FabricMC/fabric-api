@@ -41,7 +41,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.impl.renderer.ExtendedBlockStateModelSubmit;
+import net.fabricmc.fabric.impl.renderer.ExtendedBlockModelSubmit;
 import net.fabricmc.fabric.impl.renderer.ExtendedBlockSubmit;
 import net.fabricmc.fabric.impl.renderer.SubmitNodeCollectionExtension;
 
@@ -56,7 +56,7 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	@Unique
 	private final List<ExtendedBlockSubmit> extendedBlockSubmits = new ArrayList<>();
 	@Unique
-	private final List<ExtendedBlockStateModelSubmit> extendedBlockStateModelSubmits = new ArrayList<>();
+	private final List<ExtendedBlockModelSubmit> extendedBlockModelSubmits = new ArrayList<>();
 
 	@Override
 	public void submitBlock(PoseStack poseStack, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos) {
@@ -70,7 +70,7 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	@Override
 	public void submitBlockStateModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		wasUsed = true;
-		extendedBlockStateModelSubmits.add(new ExtendedBlockStateModelSubmit(
+		extendedBlockModelSubmits.add(new ExtendedBlockModelSubmit(
 				poseStack.last().copy(),
 				renderTypeFunction, model, r, g, b, light, overlay, outlineColor,
 				level, pos, state));
@@ -82,13 +82,13 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	}
 
 	@Override
-	public List<ExtendedBlockStateModelSubmit> fabric_getExtendedBlockStateModelSubmits() {
-		return extendedBlockStateModelSubmits;
+	public List<ExtendedBlockModelSubmit> fabric_getExtendedBlockModelSubmits() {
+		return extendedBlockModelSubmits;
 	}
 
 	@Inject(method = "clear", at = @At("RETURN"))
 	private void onReturnClear(CallbackInfo ci) {
 		extendedBlockSubmits.clear();
-		extendedBlockStateModelSubmits.clear();
+		extendedBlockModelSubmits.clear();
 	}
 }

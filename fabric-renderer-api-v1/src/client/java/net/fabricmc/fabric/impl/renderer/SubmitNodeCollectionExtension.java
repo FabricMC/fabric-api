@@ -21,5 +21,5 @@ import java.util.List;
 public interface SubmitNodeCollectionExtension {
 	List<ExtendedBlockSubmit> fabric_getExtendedBlockSubmits();
 
-	List<ExtendedBlockStateModelSubmit> fabric_getExtendedBlockStateModelSubmits();
+	List<ExtendedBlockModelSubmit> fabric_getExtendedBlockModelSubmits();
 }

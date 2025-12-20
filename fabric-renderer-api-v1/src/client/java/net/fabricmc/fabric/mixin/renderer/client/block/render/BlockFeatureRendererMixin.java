@@ -41,7 +41,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.impl.renderer.DelegatingBlockMultiBufferSourceImpl;
-import net.fabricmc.fabric.impl.renderer.ExtendedBlockStateModelSubmit;
+import net.fabricmc.fabric.impl.renderer.ExtendedBlockModelSubmit;
 import net.fabricmc.fabric.impl.renderer.ExtendedBlockSubmit;
 import net.fabricmc.fabric.impl.renderer.SubmitNodeCollectionExtension;
 
@@ -90,7 +90,7 @@ abstract class BlockFeatureRendererMixin {
 			poseStack.popPose();
 		}
 
-		for (ExtendedBlockStateModelSubmit submit : ((SubmitNodeCollectionExtension) nodeCollection).fabric_getExtendedBlockStateModelSubmits()) {
+		for (ExtendedBlockModelSubmit submit : ((SubmitNodeCollectionExtension) nodeCollection).fabric_getExtendedBlockModelSubmits()) {
 			blockMultiBufferSource.renderTypeFunction = submit.renderTypeFunction();
 			blockMultiBufferSource.multiBufferSource = bufferSource;
 			FabricModelBlockRenderer.render(
