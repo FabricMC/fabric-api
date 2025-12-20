@@ -221,7 +221,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		final HolderOwner<T> lookup;
 		final ResourceKey<? extends Registry<T>> registry;
 		final Codec<T> elementCodec;
-		Map<ResourceKey<T>, ConditionalEntry<T>> entries = new IdentityHashMap<>();
+		Map<ResourceKey<T>, ConditionalEntry<T>> resources = new IdentityHashMap<>();
 
 		Holders(HolderOwner<T> lookup,
 				ResourceKey<? extends Registry<T>> registry,
@@ -237,7 +237,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		Holder<T> add(ResourceKey<T> key, T value, @Nullable ResourceCondition[] conditions) {
-			if (entries.put(key, new ConditionalEntry<>(value, conditions)) != null) {
+			if (resources.put(key, new ConditionalEntry<>(value, conditions)) != null) {
 				throw new IllegalArgumentException("Trying to add resource key " + key + " more than once.");
 			}
 
@@ -274,7 +274,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		final PackOutput.PathProvider pathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, directoryName);
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-		for (Map.Entry<ResourceKey<T>, ConditionalEntry<T>> entry : holders.entries.entrySet()) {
+		for (Map.Entry<ResourceKey<T>, ConditionalEntry<T>> entry : holders.resources.entrySet()) {
 			Path path = pathResolver.json(entry.getKey().identifier());
 			futures.add(writeToPath(path, cache, ops, holders.elementCodec, entry.getValue().value(), entry.getValue().conditions()));
 		}
