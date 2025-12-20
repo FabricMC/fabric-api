@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.attachment.sync.s2c;
+package net.fabricmc.fabric.impl.attachment.sync.clientbound;
+
+import java.util.List;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
-public class RequestAcceptedAttachmentsPayloadS2C implements CustomPacketPayload {
-	public static final RequestAcceptedAttachmentsPayloadS2C INSTANCE = new RequestAcceptedAttachmentsPayloadS2C();
-	public static final Identifier PACKET_ID = Identifier.fromNamespaceAndPath("fabric", "accepted_attachments_v1");
-	public static final Type<RequestAcceptedAttachmentsPayloadS2C> ID = new Type<>(PACKET_ID);
-	public static final StreamCodec<FriendlyByteBuf, RequestAcceptedAttachmentsPayloadS2C> CODEC = StreamCodec.unit(INSTANCE);
+import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 
-	private RequestAcceptedAttachmentsPayloadS2C() {
-	}
+public record ClientboundAttachmentSyncPayload(List<AttachmentChange> attachments) implements CustomPacketPayload {
+	public static final StreamCodec<FriendlyByteBuf, ClientboundAttachmentSyncPayload> CODEC = StreamCodec.composite(
+			AttachmentChange.PACKET_CODEC.apply(ByteBufCodecs.list()), ClientboundAttachmentSyncPayload::attachments,
+			ClientboundAttachmentSyncPayload::new
+	);
+	public static final Identifier PACKET_ID = Identifier.fromNamespaceAndPath("fabric", "attachment_sync_v1");
+	public static final Type<ClientboundAttachmentSyncPayload> ID = new Type<>(PACKET_ID);
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {

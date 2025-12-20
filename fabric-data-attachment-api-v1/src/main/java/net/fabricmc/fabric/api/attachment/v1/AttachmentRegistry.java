@@ -153,11 +153,11 @@ public final class AttachmentRegistry {
 		/**
 		 * Declares that this attachment type may be automatically synchronized with some clients, as determined by {@code syncPredicate}.
 		 *
-		 * @param packetCodec the codec used to serialize the attachment data over the network
+		 * @param streamCodec the codec used to serialize the attachment data over the network
 		 * @param syncPredicate an {@link AttachmentSyncPredicate} determining with which clients to synchronize data
 		 * @return the builder
 		 */
-		AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> packetCodec, AttachmentSyncPredicate syncPredicate);
+		AttachmentRegistry.Builder<A> syncWith(StreamCodec<? super RegistryFriendlyByteBuf, A> streamCodec, AttachmentSyncPredicate syncPredicate);
 
 		/**
 		 * Builds and registers the {@link AttachmentType}.

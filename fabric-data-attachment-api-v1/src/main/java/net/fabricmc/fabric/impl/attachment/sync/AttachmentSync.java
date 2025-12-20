@@ -39,16 +39,16 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.attachment.AttachmentEntrypoint;
 import net.fabricmc.fabric.impl.attachment.AttachmentRegistryImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
-import net.fabricmc.fabric.impl.attachment.sync.c2s.AcceptedAttachmentsPayloadC2S;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.AttachmentSyncPayloadS2C;
-import net.fabricmc.fabric.impl.attachment.sync.s2c.RequestAcceptedAttachmentsPayloadS2C;
+import net.fabricmc.fabric.impl.attachment.sync.clientbound.ClientboundAttachmentSyncPayload;
+import net.fabricmc.fabric.impl.attachment.sync.clientbound.ClientboundRequestAcceptedAttachmentsPayload;
+import net.fabricmc.fabric.impl.attachment.sync.serverbound.ServerboundAcceptedAttachmentsPayload;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
 
 public class AttachmentSync implements ModInitializer {
 	public static final int MAX_IDENTIFIER_SIZE = 256;
 
-	public static AcceptedAttachmentsPayloadC2S createResponsePayload() {
-		return new AcceptedAttachmentsPayloadC2S(AttachmentRegistryImpl.getSyncableAttachments());
+	public static ServerboundAcceptedAttachmentsPayload createResponsePayload() {
+		return new ServerboundAcceptedAttachmentsPayload(AttachmentRegistryImpl.getSyncableAttachments());
 	}
 
 	public static void trySync(AttachmentChange change, ServerPlayer player) {
@@ -56,11 +56,12 @@ public class AttachmentSync implements ModInitializer {
 				.fabric_getSupportedAttachments();
 
 		if (supported.contains(change.type().identifier())) {
-			ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(List.of(change)));
+			ServerPlayNetworking.send(player, new ClientboundAttachmentSyncPayload(List.of(change)));
 		}
 	}
 
-	private static Set<Identifier> decodeResponsePayload(AcceptedAttachmentsPayloadC2S payload) {
+	private static Set<Identifier> decodeResponsePayload(
+			ServerboundAcceptedAttachmentsPayload payload) {
 		Set<Identifier> atts = payload.acceptedAttachments();
 		Set<Identifier> syncable = AttachmentRegistryImpl.getSyncableAttachments();
 		atts.retainAll(syncable);
@@ -80,12 +81,12 @@ public class AttachmentSync implements ModInitializer {
 	public void onInitialize() {
 		// Config
 		PayloadTypeRegistry.serverboundConfiguration()
-				.register(AcceptedAttachmentsPayloadC2S.ID, AcceptedAttachmentsPayloadC2S.CODEC);
+				.register(ServerboundAcceptedAttachmentsPayload.ID, ServerboundAcceptedAttachmentsPayload.CODEC);
 		PayloadTypeRegistry.clientboundConfiguration()
-				.register(RequestAcceptedAttachmentsPayloadS2C.ID, RequestAcceptedAttachmentsPayloadS2C.CODEC);
+				.register(ClientboundRequestAcceptedAttachmentsPayload.ID, ClientboundRequestAcceptedAttachmentsPayload.CODEC);
 
 		ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
-			if (ServerConfigurationNetworking.canSend(handler, RequestAcceptedAttachmentsPayloadS2C.PACKET_ID)) {
+			if (ServerConfigurationNetworking.canSend(handler, ClientboundRequestAcceptedAttachmentsPayload.PACKET_ID)) {
 				handler.addTask(new AttachmentSyncTask());
 			} else {
 				AttachmentEntrypoint.LOGGER.debug(
@@ -94,16 +95,18 @@ public class AttachmentSync implements ModInitializer {
 			}
 		});
 
-		ServerConfigurationNetworking.registerGlobalReceiver(AcceptedAttachmentsPayloadC2S.ID, (payload, context) -> {
-			Set<Identifier> supportedAttachments = decodeResponsePayload(payload);
-			Connection connection = ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection();
-			((SupportedAttachmentsClientConnection) connection).fabric_setSupportedAttachments(supportedAttachments);
+		ServerConfigurationNetworking.registerGlobalReceiver(
+				ServerboundAcceptedAttachmentsPayload.ID, (payload, context) -> {
+					Set<Identifier> supportedAttachments = decodeResponsePayload(payload);
+					Connection connection = ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection();
+					((SupportedAttachmentsClientConnection) connection).fabric_setSupportedAttachments(supportedAttachments);
 
-			context.packetListener().completeTask(AttachmentSyncTask.KEY);
-		});
+					context.packetListener().completeTask(AttachmentSyncTask.KEY);
+				});
 
 		// Play
-		PayloadTypeRegistry.clientboundPlay().register(AttachmentSyncPayloadS2C.ID, AttachmentSyncPayloadS2C.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(
+				ClientboundAttachmentSyncPayload.ID, ClientboundAttachmentSyncPayload.CODEC);
 
 		ServerPlayerEvents.JOIN.register((player) -> {
 			List<AttachmentChange> changes = new ArrayList<>();
@@ -139,11 +142,13 @@ public class AttachmentSync implements ModInitializer {
 	}
 
 	private record AttachmentSyncTask() implements ConfigurationTask {
-		public static final Type KEY = new Type(RequestAcceptedAttachmentsPayloadS2C.PACKET_ID.toString());
+		public static final Type KEY = new Type(
+				ClientboundRequestAcceptedAttachmentsPayload.PACKET_ID.toString());
 
 		@Override
 		public void start(Consumer<Packet<?>> sender) {
-			sender.accept(ServerConfigurationNetworking.createClientboundPacket(RequestAcceptedAttachmentsPayloadS2C.INSTANCE));
+			sender.accept(ServerConfigurationNetworking.createClientboundPacket(
+					ClientboundRequestAcceptedAttachmentsPayload.INSTANCE));
 		}
 
 		@Override
