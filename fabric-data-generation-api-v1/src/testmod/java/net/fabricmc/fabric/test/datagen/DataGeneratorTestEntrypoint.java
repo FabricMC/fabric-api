@@ -363,7 +363,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		public void generateAdvancement(HolderLookup.Provider registryLookupFuture, Consumer<AdvancementHolder> consumer) {
+		public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
 			AdvancementHolder root = Advancement.Builder.advancement()
 					.display(
 							SIMPLE_BLOCK,
@@ -446,9 +446,9 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void configure(HolderLookup.Provider registryFuture, Entries entries) {
+		protected void configure(HolderLookup.Provider registryLookup, Entries entries) {
 			entries.add(
-					registryFuture.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_ITEM_KEY,
+					registryLookup.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_ITEM_KEY,
 					ResourceConditions.allModsLoaded(MOD_ID)
 			);
 		}
@@ -468,8 +468,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void configure(HolderLookup.Provider registryFuture, Entries entries) {
-			entries.add(registryFuture.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY);
+		protected void configure(HolderLookup.Provider registryLookup, Entries entries) {
+			entries.add(registryLookup.lookupOrThrow(TEST_DATAGEN_DYNAMIC_REGISTRY_KEY), TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY);
 		}
 
 		@Override

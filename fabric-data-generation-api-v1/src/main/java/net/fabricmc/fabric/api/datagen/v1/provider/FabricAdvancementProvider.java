@@ -65,7 +65,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	 *
 	 * <p>Use {@link Advancement.Builder#save(Consumer, String)} to help build advancements.
 	 */
-	public abstract void generateAdvancement(HolderLookup.Provider registryLookupFuture, Consumer<AdvancementHolder> consumer);
+	public abstract void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer);
 
 	/**
 	 * Return a new exporter that applies the specified conditions to any advancement it receives.

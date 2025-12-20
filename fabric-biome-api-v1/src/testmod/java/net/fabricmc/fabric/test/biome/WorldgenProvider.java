@@ -30,10 +30,10 @@ public class WorldgenProvider extends FabricDynamicRegistryProvider {
 	}
 
 	@Override
-	protected void configure(HolderLookup.Provider registryFuture, Entries entries) {
-		entries.addAll(registryFuture.lookupOrThrow(Registries.BIOME));
-		entries.addAll(registryFuture.lookupOrThrow(Registries.PLACED_FEATURE));
-		entries.addAll(registryFuture.lookupOrThrow(Registries.CONFIGURED_FEATURE));
+	protected void configure(HolderLookup.Provider registryLookup, Entries entries) {
+		entries.addAll(registryLookup.lookupOrThrow(Registries.BIOME));
+		entries.addAll(registryLookup.lookupOrThrow(Registries.PLACED_FEATURE));
+		entries.addAll(registryLookup.lookupOrThrow(Registries.CONFIGURED_FEATURE));
 	}
 
 	@Override
