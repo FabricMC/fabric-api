@@ -55,7 +55,7 @@ interface TagAppenderMixin<E, T> extends FabricProvidedTagBuilder<E, T> {
 
 	@Mixin(targets = "net.minecraft.data.tags.TagAppender$2")
 	abstract class ProvidedTagBuilder2Mixin<E, T> implements TagAppenderMixin<E, T> {
-		// ProvidedTagBuilder.this
+		// TagAppender.this
 		@Shadow
 		@Final
 		TagAppender val$original;
