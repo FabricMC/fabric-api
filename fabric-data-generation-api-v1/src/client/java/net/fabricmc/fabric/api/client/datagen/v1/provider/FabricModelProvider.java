@@ -33,7 +33,7 @@ public abstract class FabricModelProvider extends ModelProvider {
 		super(output);
 	}
 
-	public abstract void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator);
+	public abstract void generateBlockStateModels(BlockModelGenerators blockModelGenerators);
 
-	public abstract void generateItemModels(ItemModelGenerators itemModelGenerator);
+	public abstract void generateItemModels(ItemModelGenerators itemModelGenerators);
 }

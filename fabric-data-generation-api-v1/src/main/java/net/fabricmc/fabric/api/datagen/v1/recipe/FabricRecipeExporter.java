@@ -26,7 +26,7 @@ public interface FabricRecipeExporter {
 	/**
 	 * Override this method to change the recipe identifier.
 	 *
-	 * <p>The default implementation returns the ID unchanged.
+	 * <p>The default implementation returns the id unchanged.
 	 * Fabric API implementations automatically apply the corresponding method in
 	 * {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider FabricRecipeProvider}.
 	 *

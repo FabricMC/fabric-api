@@ -79,16 +79,16 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 		}
 
 		@Override
-		public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
-			blockStateModelGenerator.createTrivialCube(DataGeneratorTestContent.SIMPLE_BLOCK);
-			blockStateModelGenerator.createTrivialCube(DataGeneratorTestContent.BLOCK_WITHOUT_ITEM);
-			blockStateModelGenerator.createTrivialCube(DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE);
-			blockStateModelGenerator.createTrivialCube(DataGeneratorTestContent.BLOCK_WITH_VANILLA_LOOT_TABLE);
-			blockStateModelGenerator.createTrivialCube(DataGeneratorTestContent.BLOCK_THAT_DROPS_NOTHING);
+		public void generateBlockStateModels(BlockModelGenerators blockModelGenerators) {
+			blockModelGenerators.createTrivialCube(DataGeneratorTestContent.SIMPLE_BLOCK);
+			blockModelGenerators.createTrivialCube(DataGeneratorTestContent.BLOCK_WITHOUT_ITEM);
+			blockModelGenerators.createTrivialCube(DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE);
+			blockModelGenerators.createTrivialCube(DataGeneratorTestContent.BLOCK_WITH_VANILLA_LOOT_TABLE);
+			blockModelGenerators.createTrivialCube(DataGeneratorTestContent.BLOCK_THAT_DROPS_NOTHING);
 		}
 
 		@Override
-		public void generateItemModels(ItemModelGenerators itemModelGenerator) {
+		public void generateItemModels(ItemModelGenerators itemModelGenerators) {
 			//itemModelGenerator.register(item, Models.SLAB);
 		}
 	}
