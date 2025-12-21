@@ -51,7 +51,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
@@ -64,10 +64,10 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDynamicRegistryProvider.class);
 
-	private final FabricDataOutput output;
+	private final FabricPackOutput output;
 	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 
-	public FabricDynamicRegistryProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+	public FabricDynamicRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 		this.output = output;
 		this.registryLookupFuture = registryLookupFuture;
 	}

@@ -35,19 +35,19 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
 
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.client.FabricItemAssetDefinitions;
 import net.fabricmc.fabric.impl.datagen.client.FabricModelProviderDefinitions;
 
 @Mixin(ModelProvider.class)
 public class ModelProviderMixin {
 	@Unique
-	private FabricDataOutput fabricDataOutput;
+	private FabricPackOutput fabricPackOutput;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void init(PackOutput output, CallbackInfo ci) {
-		if (output instanceof FabricDataOutput fabricDataOutput) {
-			this.fabricDataOutput = fabricDataOutput;
+		if (output instanceof FabricPackOutput fabricPackOutput) {
+			this.fabricPackOutput = fabricPackOutput;
 		}
 	}
 
@@ -75,8 +75,8 @@ public class ModelProviderMixin {
 	private void setFabricDataOutput(CachedOutput cache, CallbackInfoReturnable<CompletableFuture<?>> cir,
 									@Local ModelProvider.BlockStateGeneratorCollector blockStateGeneratorCollector,
 									@Local ModelProvider.ItemInfoCollector itemInfoCollectors) {
-		((FabricModelProviderDefinitions) blockStateGeneratorCollector).setFabricDataOutput(fabricDataOutput);
-		((FabricModelProviderDefinitions) itemInfoCollectors).setFabricDataOutput(fabricDataOutput);
+		((FabricModelProviderDefinitions) blockStateGeneratorCollector).setFabricDataOutput(fabricPackOutput);
+		((FabricModelProviderDefinitions) itemInfoCollectors).setFabricDataOutput(fabricPackOutput);
 		((FabricItemAssetDefinitions) itemInfoCollectors).fabric_setProcessedBlocks(blockStateGeneratorCollector.generators.keySet());
 	}
 }

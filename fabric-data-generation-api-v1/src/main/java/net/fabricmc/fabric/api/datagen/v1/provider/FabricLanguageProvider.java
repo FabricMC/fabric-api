@@ -52,24 +52,24 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
 /**
  * Extend this class and implement {@link FabricLanguageProvider#generateTranslations}.
- * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricDataOutput, String, CompletableFuture) FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
+ * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricPackOutput, String, CompletableFuture) FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
  *
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricLanguageProvider implements DataProvider {
-	protected final FabricDataOutput dataOutput;
+	protected final FabricPackOutput dataOutput;
 	private final String languageCode;
 	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 
-	protected FabricLanguageProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+	protected FabricLanguageProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 		this(dataOutput, "en_us", registryLookupFuture);
 	}
 
-	protected FabricLanguageProvider(FabricDataOutput dataOutput, String languageCode, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+	protected FabricLanguageProvider(FabricPackOutput dataOutput, String languageCode, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 		this.dataOutput = dataOutput;
 		this.languageCode = languageCode;
 		this.registryLookupFuture = registryLookupFuture;

@@ -39,7 +39,7 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
 /**
  * Extend this class and implement {@link FabricCodecDataProvider#configure(BiConsumer, HolderLookup.Provider)}.
@@ -57,11 +57,11 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 		this.codec = codec;
 	}
 
-	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
+	protected FabricCodecDataProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
 		this(dataOutput.createPathProvider(target, directoryName), registryLookupFuture, codec);
 	}
 
-	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
+	protected FabricCodecDataProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
 		this(dataOutput.createRegistryElementsPathProvider(key), registryLookupFuture, codec);
 	}
 

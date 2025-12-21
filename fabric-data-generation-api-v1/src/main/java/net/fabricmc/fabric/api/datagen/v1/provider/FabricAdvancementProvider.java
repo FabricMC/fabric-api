@@ -40,7 +40,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
@@ -50,11 +50,11 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricAdvancementProvider implements DataProvider {
-	protected final FabricDataOutput output;
+	protected final FabricPackOutput output;
 	private final PackOutput.PathProvider pathProvider;
 	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 
-	protected FabricAdvancementProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+	protected FabricAdvancementProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 		this.output = output;
 		this.pathProvider = output.createRegistryElementsPathProvider(Registries.ADVANCEMENT);
 		this.registryLookupFuture = registryLookupFuture;

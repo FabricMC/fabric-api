@@ -39,7 +39,7 @@ import net.fabricmc.loader.api.ModContainer;
 public final class FabricDataGenerator extends DataGenerator {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
-	private final FabricDataOutput fabricOutput;
+	private final FabricPackOutput fabricOutput;
 	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 
 	@ApiStatus.Internal
@@ -47,7 +47,7 @@ public final class FabricDataGenerator extends DataGenerator {
 		super(output, SharedConstants.getCurrentVersion(), true);
 		this.modContainer = Objects.requireNonNull(mod);
 		this.strictValidation = strictValidation;
-		this.fabricOutput = new FabricDataOutput(mod, output, strictValidation);
+		this.fabricOutput = new FabricPackOutput(mod, output, strictValidation);
 		this.registryLookupFuture = registryLookupFuture;
 	}
 
@@ -68,7 +68,7 @@ public final class FabricDataGenerator extends DataGenerator {
 	 */
 	public Pack createBuiltinResourcePack(Identifier id) {
 		Path path = this.vanillaPackOutput.getOutputFolder().resolve("resourcepacks").resolve(id.getPath());
-		return new Pack(true, id.toString(), new FabricDataOutput(modContainer, path, strictValidation));
+		return new Pack(true, id.toString(), new FabricPackOutput(modContainer, path, strictValidation));
 	}
 
 	/**
@@ -134,27 +134,27 @@ public final class FabricDataGenerator extends DataGenerator {
 	 * Represents a pack of generated data (i.e. data pack or resource pack). Providers are added to a pack.
 	 */
 	public final class Pack extends DataGenerator.PackGenerator {
-		private Pack(boolean shouldRun, String name, FabricDataOutput output) {
+		private Pack(boolean shouldRun, String name, FabricPackOutput output) {
 			super(shouldRun, name, output);
 		}
 
 		/**
-		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricDataOutput}.
+		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricPackOutput}.
 		 *
 		 * @return the {@link DataProvider}
 		 */
 		public <T extends DataProvider> T addProvider(Factory<T> factory) {
-			return super.addProvider(output -> factory.create((FabricDataOutput) output));
+			return super.addProvider(output -> factory.create((FabricPackOutput) output));
 		}
 
 		/**
-		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricDataOutput} and the registries.
+		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricPackOutput} and the registries.
 		 * This is used, for example, with {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider}.
 		 *
 		 * @return the {@link DataProvider}
 		 */
 		public <T extends DataProvider> T addProvider(RegistryDependentFactory<T> factory) {
-			return super.addProvider(output -> factory.create((FabricDataOutput) output, registryLookupFuture));
+			return super.addProvider(output -> factory.create((FabricPackOutput) output, registryLookupFuture));
 		}
 
 		/**
@@ -162,7 +162,7 @@ public final class FabricDataGenerator extends DataGenerator {
 		 */
 		@FunctionalInterface
 		public interface Factory<T extends DataProvider> {
-			T create(FabricDataOutput output);
+			T create(FabricPackOutput output);
 		}
 
 		/**
@@ -171,7 +171,7 @@ public final class FabricDataGenerator extends DataGenerator {
 		 */
 		@FunctionalInterface
 		public interface RegistryDependentFactory<T extends DataProvider> {
-			T create(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture);
+			T create(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture);
 		}
 	}
 }

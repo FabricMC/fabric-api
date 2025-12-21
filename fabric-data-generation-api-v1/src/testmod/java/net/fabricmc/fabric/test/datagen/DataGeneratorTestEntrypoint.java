@@ -85,7 +85,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderCallback;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
@@ -147,7 +147,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 						c.register(TEST_DYNAMIC_REGISTRY_EXTRA_ITEM_KEY, new DataGeneratorTestContent.TestDatagenObject(":tiny_potato:"))
 				)
 		).thenApply(RegistrySetBuilder.PatchedRegistries::full);
-		extraPack.addProvider((FabricDataOutput out) -> new TestExtraDynamicRegistryProvider(out, extraRegistriesFuture));
+		extraPack.addProvider((FabricPackOutput out) -> new TestExtraDynamicRegistryProvider(out, extraRegistriesFuture));
 	}
 
 	@Override
@@ -164,7 +164,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestRecipeProvider extends FabricRecipeProvider {
-		private TestRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+		private TestRecipeProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 			super(output, registryLookupFuture);
 		}
 
@@ -257,7 +257,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class ExistingEnglishLangProvider extends FabricLanguageProvider {
-		private ExistingEnglishLangProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesLookupFuture) {
+		private ExistingEnglishLangProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesLookupFuture) {
 			super(output, registriesLookupFuture);
 		}
 
@@ -290,7 +290,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class JapaneseLangProvider extends FabricLanguageProvider {
-		private JapaneseLangProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		private JapaneseLangProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 			super(output, "ja_jp", registriesFuture);
 		}
 
@@ -303,7 +303,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestBlockTagProvider extends FabricTagProvider.BlockTagProvider {
-		TestBlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		TestBlockTagProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 			super(output, registriesFuture);
 		}
 
@@ -321,7 +321,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestItemTagProvider extends FabricTagProvider.ItemTagProvider {
-		private TestItemTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, BlockTagProvider blockTagProvider) {
+		private TestItemTagProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, BlockTagProvider blockTagProvider) {
 			super(output, registriesFuture, blockTagProvider);
 		}
 
@@ -332,7 +332,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestBiomeTagProvider extends FabricTagProvider<Biome> {
-		private TestBiomeTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		private TestBiomeTagProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 			super(output, Registries.BIOME, registriesFuture);
 		}
 
@@ -346,7 +346,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestGameEventTagProvider extends FabricTagProvider<GameEvent> {
-		private TestGameEventTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		private TestGameEventTagProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 			super(output, Registries.GAME_EVENT, registriesFuture);
 		}
 
@@ -358,7 +358,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestAdvancementProvider extends FabricAdvancementProvider {
-		private TestAdvancementProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+		private TestAdvancementProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
 			super(output, registryLookup);
 		}
 
@@ -388,7 +388,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestBlockLootTableProvider extends FabricBlockLootTableProvider {
-		private TestBlockLootTableProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+		private TestBlockLootTableProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
 			super(output, registryLookup);
 		}
 
@@ -403,7 +403,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	public static class TestEntityLootTableProvider extends FabricEntityLootTableProvider {
-		private TestEntityLootTableProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+		private TestEntityLootTableProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
 			super(output, registryLookup);
 		}
 
@@ -421,7 +421,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestBarterLootTableProvider extends SimpleFabricLootTableProvider {
-		private TestBarterLootTableProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+		private TestBarterLootTableProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
 			super(output, registryLookup, LootContextParamSets.PIGLIN_BARTER);
 		}
 
@@ -441,7 +441,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	 * Note that Biome API testmod provides the test for vanilla dynamic registries.
 	 */
 	private static class TestDynamicRegistryProvider extends FabricDynamicRegistryProvider {
-		TestDynamicRegistryProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		TestDynamicRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 			super(output, registriesFuture);
 		}
 
@@ -463,7 +463,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	 * Test generating files for a patched/extended dynamic registry.
 	 */
 	private static class TestExtraDynamicRegistryProvider extends FabricDynamicRegistryProvider {
-		TestExtraDynamicRegistryProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		TestExtraDynamicRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 			super(output, registriesFuture);
 		}
 
@@ -479,7 +479,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestPredicateProvider extends FabricCodecDataProvider<LootItemCondition> {
-		private TestPredicateProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		private TestPredicateProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 			super(dataOutput, registriesFuture, Registries.PREDICATE, LootItemCondition.DIRECT_CODEC);
 		}
 
@@ -497,7 +497,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 	}
 
 	private static class TestCustomCodecProvider extends FabricCodecDataProvider<TestCustomCodecProvider.Entry> {
-		private TestCustomCodecProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		private TestCustomCodecProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 			super(dataOutput, registriesFuture, PackOutput.Target.DATA_PACK, "biome_entry", Entry.CODEC);
 		}
 

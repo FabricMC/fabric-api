@@ -27,12 +27,12 @@ import net.fabricmc.loader.api.ModContainer;
 /**
  * Extends {@link PackOutput} to keep track of the {@link ModContainer} that it originated from.
  */
-public final class FabricDataOutput extends PackOutput {
+public final class FabricPackOutput extends PackOutput {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
 
 	@ApiStatus.Internal
-	public FabricDataOutput(ModContainer modContainer, Path path, boolean strictValidation) {
+	public FabricPackOutput(ModContainer modContainer, Path path, boolean strictValidation) {
 		super(path);
 		this.modContainer = modContainer;
 		this.strictValidation = strictValidation;

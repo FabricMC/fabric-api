@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderCallback;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
 import net.fabricmc.fabric.test.datagen.DataGeneratorTestContent;
@@ -58,7 +58,7 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 	}
 
 	private static class TestAtlasSourceProvider extends FabricCodecDataProvider<List<SpriteSource>> {
-		private TestAtlasSourceProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> holderFuture) {
+		private TestAtlasSourceProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> holderFuture) {
 			super(dataOutput, holderFuture, PackOutput.Target.RESOURCE_PACK, "atlases", SpriteSources.FILE_CODEC);
 		}
 
@@ -74,7 +74,7 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 	}
 
 	private static class TestModelProvider extends FabricModelProvider {
-		private TestModelProvider(FabricDataOutput output) {
+		private TestModelProvider(FabricPackOutput output) {
 			super(output);
 		}
 

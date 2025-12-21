@@ -46,7 +46,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
@@ -56,10 +56,10 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
-	protected final FabricDataOutput output;
+	protected final FabricPackOutput output;
 	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 
-	public FabricRecipeProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+	public FabricRecipeProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 		super(output, registryLookupFuture);
 		this.output = output;
 		this.registryLookupFuture = registryLookupFuture;

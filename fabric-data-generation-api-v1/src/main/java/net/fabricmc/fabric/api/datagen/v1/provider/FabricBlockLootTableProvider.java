@@ -38,7 +38,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 
 /**
@@ -47,11 +47,11 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricBlockLootTableProvider extends BlockLootSubProvider implements FabricLootTableProvider {
-	private final FabricDataOutput output;
+	private final FabricPackOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
 	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 
-	protected FabricBlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+	protected FabricBlockLootTableProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), registryLookupFuture.join());
 		this.output = dataOutput;
 		this.registryLookupFuture = registryLookupFuture;
