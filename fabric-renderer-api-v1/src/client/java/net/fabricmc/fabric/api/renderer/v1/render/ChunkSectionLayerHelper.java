@@ -23,8 +23,8 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.world.level.block.state.BlockState;
 
-public final class RenderLayerHelper {
-	private RenderLayerHelper() {
+public final class ChunkSectionLayerHelper {
+	private ChunkSectionLayerHelper() {
 	}
 
 	/**
@@ -53,7 +53,7 @@ public final class RenderLayerHelper {
 	 * {@link #getMovingBlockLayer(ChunkSectionLayer)}.
 	 */
 	public static BlockMultiBufferSource movingDelegate(MultiBufferSource bufferSource) {
-		return layer -> bufferSource.getBuffer(RenderLayerHelper.getMovingBlockLayer(layer));
+		return layer -> bufferSource.getBuffer(ChunkSectionLayerHelper.getMovingBlockLayer(layer));
 	}
 
 	/**
@@ -61,6 +61,6 @@ public final class RenderLayerHelper {
 	 * {@link #getEntityBlockLayer(ChunkSectionLayer)}.
 	 */
 	public static BlockMultiBufferSource entityDelegate(MultiBufferSource bufferSource) {
-		return layer -> bufferSource.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer));
+		return layer -> bufferSource.getBuffer(ChunkSectionLayerHelper.getEntityBlockLayer(layer));
 	}
 }

@@ -54,7 +54,7 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final ChunkSectionLayer quadRenderLayer = quad.renderLayer();
+		final ChunkSectionLayer quadRenderLayer = quad.chunkLayer();
 		final ChunkSectionLayer renderLayer = quadRenderLayer == null ? defaultRenderLayer : quadRenderLayer;
 		final VertexConsumer vertexConsumer;
 

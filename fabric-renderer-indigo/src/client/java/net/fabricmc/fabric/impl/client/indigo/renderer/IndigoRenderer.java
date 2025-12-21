@@ -32,9 +32,9 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.BlockMultiBufferSource;
+import net.fabricmc.fabric.api.renderer.v1.render.ChunkSectionLayerHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.SimpleBlockRenderContext;
@@ -79,7 +79,7 @@ public class IndigoRenderer implements Renderer {
 			float green = (tint >> 8 & 255) / 255.0F;
 			float blue = (tint & 255) / 255.0F;
 			FabricModelBlockRenderer.render(
-					poseStack.last(), RenderLayerHelper.entityDelegate(
+					poseStack.last(), ChunkSectionLayerHelper.entityDelegate(
 							bufferSource), model, red, green, blue, light, overlay,
 					level, pos, state);
 		}

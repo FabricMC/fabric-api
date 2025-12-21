@@ -48,7 +48,8 @@ public interface FabricModelBlockRenderer {
 	 * {@link BlockMultiBufferSource} instead of a {@link VertexConsumer}. Also accepts the random seed. <b>Prefer
 	 * using this method over the vanilla alternative to correctly retrieve geometry from models that implement
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} and to
-	 * correctly buffer models that have geometry on multiple render layers.</b>
+	 * correctly buffer models that have geometry on multiple
+	 * {@linkplain net.minecraft.client.renderer.chunk.ChunkSectionLayer chunk layers}.</b>
 	 *
 	 * <p>This method allows buffering a block model in a terrain-like context, which usually includes stages like
 	 * culling, dynamic tinting, shading, and flat/smooth lighting.
@@ -77,7 +78,7 @@ public interface FabricModelBlockRenderer {
 	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
 	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
-	 * on multiple render layers and to provide the model with additional context.</b>
+	 * on multiple chunk layers and to provide the model with additional context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
 	 * entity renderers.

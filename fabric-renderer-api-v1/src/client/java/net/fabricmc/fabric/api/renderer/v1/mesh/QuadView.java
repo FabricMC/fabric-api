@@ -155,10 +155,10 @@ public interface QuadView {
 	Direction cullFace();
 
 	/**
-	 * @see MutableQuadView#renderLayer(ChunkSectionLayer)
+	 * @see MutableQuadView#chunkLayer(ChunkSectionLayer)
 	 */
 	@Nullable
-	ChunkSectionLayer renderLayer();
+	ChunkSectionLayer chunkLayer();
 
 	/**
 	 * @see MutableQuadView#emissive(boolean)
@@ -178,9 +178,9 @@ public interface QuadView {
 	TriState ambientOcclusion();
 
 	/**
-	 * @see MutableQuadView#glint(ItemStackRenderState.FoilType)
+	 * @see MutableQuadView#foilType(ItemStackRenderState.FoilType)
 	 */
-	ItemStackRenderState.@Nullable FoilType glint();
+	ItemStackRenderState.@Nullable FoilType foilType();
 
 	/**
 	 * @see MutableQuadView#shadeMode(ShadeMode)

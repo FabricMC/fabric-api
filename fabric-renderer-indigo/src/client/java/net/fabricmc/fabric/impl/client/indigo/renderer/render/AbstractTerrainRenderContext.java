@@ -70,7 +70,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 		final boolean ao = blockInfo.effectiveAo(quad.ambientOcclusion());
 		final boolean vanillaShade = quad.shadeMode() == ShadeMode.VANILLA;
-		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveRenderLayer(quad.renderLayer()));
+		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveRenderLayer(quad.chunkLayer()));
 
 		tintQuad(quad);
 		shadeQuad(quad, ao, quad.emissive(), vanillaShade);

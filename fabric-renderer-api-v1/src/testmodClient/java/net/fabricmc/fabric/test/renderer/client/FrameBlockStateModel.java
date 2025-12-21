@@ -75,7 +75,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 			}
 
 			// Make the quad partially transparent
-			quad.renderLayer(ChunkSectionLayer.TRANSLUCENT);
+			quad.chunkLayer(ChunkSectionLayer.TRANSLUCENT);
 
 			// Make the quad emissive, if requested
 			if (emissive) {

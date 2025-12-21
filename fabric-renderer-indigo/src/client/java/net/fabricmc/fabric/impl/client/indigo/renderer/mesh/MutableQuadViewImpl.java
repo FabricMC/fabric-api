@@ -74,10 +74,10 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		// Apply non-zero defaults
 		quad.color(-1, -1, -1, -1);
 		quad.cullFace(null);
-		quad.renderLayer(null);
+		quad.chunkLayer(null);
 		quad.diffuseShade(true);
 		quad.ambientOcclusion(TriState.DEFAULT);
-		quad.glint(null);
+		quad.foilType(null);
 		quad.tintIndex(-1);
 	}
 
@@ -175,8 +175,10 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl renderLayer(@Nullable ChunkSectionLayer renderLayer) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.renderLayer(data[baseIndex + HEADER_BITS], renderLayer);
+	public MutableQuadViewImpl chunkLayer(@Nullable ChunkSectionLayer layer) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.renderLayer(data[baseIndex + HEADER_BITS],
+				layer
+		);
 		return this;
 	}
 
@@ -200,8 +202,10 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl glint(ItemStackRenderState.@Nullable FoilType glint) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.glint(data[baseIndex + HEADER_BITS], glint);
+	public MutableQuadViewImpl foilType(ItemStackRenderState.@Nullable FoilType foilType) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.glint(data[baseIndex + HEADER_BITS],
+				foilType
+		);
 		return this;
 	}
 

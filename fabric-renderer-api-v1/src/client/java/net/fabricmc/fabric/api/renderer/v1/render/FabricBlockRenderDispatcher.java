@@ -42,7 +42,7 @@ public interface FabricBlockRenderDispatcher {
 	 * additionally accepts the {@link BlockAndTintGetter} and {@link BlockPos} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
 	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
-	 * on multiple render layers and to provide the model with additional context.</b>
+	 * on multiple chunk layers and to provide the model with additional context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
 	 * entity renderers.

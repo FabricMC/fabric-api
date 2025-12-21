@@ -38,8 +38,8 @@ import net.minecraft.client.renderer.feature.BlockFeatureRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
 
+import net.fabricmc.fabric.api.renderer.v1.render.ChunkSectionLayerHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
 import net.fabricmc.fabric.impl.renderer.DelegatingBlockMultiBufferSourceImpl;
 import net.fabricmc.fabric.impl.renderer.ExtendedBlockModelSubmit;
 import net.fabricmc.fabric.impl.renderer.ExtendedBlockSubmit;
@@ -51,9 +51,9 @@ abstract class BlockFeatureRendererMixin {
 	@Final
 	private PoseStack poseStack;
 
-	// Support multi-render layer models (MovingBlockSubmit).
+	// Support multi-chunk layer models (MovingBlockSubmit).
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0))
-	private void beforeRenderMovingBlocks(SubmitNodeCollection queue, MultiBufferSource.BufferSource bufferSource, BlockRenderDispatcher blockRenderDispatcher, OutlineBufferSource outlineBufferSource, CallbackInfo ci, @Local Iterator<SubmitNodeStorage.MovingBlockSubmit> iterator) {
+	private void beforeRenderMovingBlocks(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, BlockRenderDispatcher blockRenderDispatcher, OutlineBufferSource outlineBufferSource, CallbackInfo ci, @Local Iterator<SubmitNodeStorage.MovingBlockSubmit> iterator) {
 		while (iterator.hasNext()) {
 			SubmitNodeStorage.MovingBlockSubmit command = iterator.next();
 			MovingBlockRenderState renderState = command.movingBlockRenderState();
@@ -62,7 +62,7 @@ abstract class BlockFeatureRendererMixin {
 			long seed = blockState.getSeed(renderState.randomSeedPos);
 			poseStack.pushPose();
 			poseStack.mulPose(command.pose());
-			blockRenderDispatcher.getModelRenderer().render(renderState, model, blockState, renderState.blockPos, poseStack, RenderLayerHelper.movingDelegate(
+			blockRenderDispatcher.getModelRenderer().render(renderState, model, blockState, renderState.blockPos, poseStack, ChunkSectionLayerHelper.movingDelegate(
 					bufferSource), false, seed, OverlayTexture.NO_OVERLAY);
 			poseStack.popPose();
 		}

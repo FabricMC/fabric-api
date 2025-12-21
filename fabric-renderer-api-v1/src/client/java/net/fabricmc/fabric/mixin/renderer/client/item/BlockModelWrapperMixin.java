@@ -98,7 +98,7 @@ abstract class BlockModelWrapperMixin implements ItemModel, BlockModelWrapperExt
 					return;
 				}
 
-				ItemStackRenderState.FoilType glint = quad.glint();
+				ItemStackRenderState.FoilType glint = quad.foilType();
 
 				if ((glint != null && glint != ItemStackRenderState.FoilType.NONE)
 						|| spriteGetter.spriteFinder(quad.atlas().getTextureId()).find(quad).contents().isAnimated()) {

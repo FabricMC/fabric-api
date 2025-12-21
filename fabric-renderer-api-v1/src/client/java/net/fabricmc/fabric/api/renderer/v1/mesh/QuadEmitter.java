@@ -124,7 +124,7 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter cullFace(@Nullable Direction face);
 
 	@Override
-	QuadEmitter renderLayer(@Nullable ChunkSectionLayer renderLayer);
+	QuadEmitter chunkLayer(@Nullable ChunkSectionLayer layer);
 
 	@Override
 	QuadEmitter emissive(boolean emissive);
@@ -136,7 +136,7 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter ambientOcclusion(TriState ao);
 
 	@Override
-	QuadEmitter glint(ItemStackRenderState.@Nullable FoilType glint);
+	QuadEmitter foilType(ItemStackRenderState.@Nullable FoilType foilType);
 
 	@Override
 	QuadEmitter shadeMode(ShadeMode mode);
