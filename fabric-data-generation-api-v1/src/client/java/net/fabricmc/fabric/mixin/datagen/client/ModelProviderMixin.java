@@ -75,8 +75,8 @@ public class ModelProviderMixin {
 	private void setFabricDataOutput(CachedOutput cache, CallbackInfoReturnable<CompletableFuture<?>> cir,
 									@Local ModelProvider.BlockStateGeneratorCollector blockStateGeneratorCollector,
 									@Local ModelProvider.ItemInfoCollector itemInfoCollectors) {
-		((FabricModelProviderDefinitions) blockStateGeneratorCollector).setFabricDataOutput(fabricPackOutput);
-		((FabricModelProviderDefinitions) itemInfoCollectors).setFabricDataOutput(fabricPackOutput);
+		((FabricModelProviderDefinitions) blockStateGeneratorCollector).setFabricPackOutput(fabricPackOutput);
+		((FabricModelProviderDefinitions) itemInfoCollectors).setFabricPackOutput(fabricPackOutput);
 		((FabricItemAssetDefinitions) itemInfoCollectors).fabric_setProcessedBlocks(blockStateGeneratorCollector.generators.keySet());
 	}
 }

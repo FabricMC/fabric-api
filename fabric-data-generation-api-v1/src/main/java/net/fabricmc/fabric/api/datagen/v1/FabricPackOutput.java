@@ -32,8 +32,8 @@ public final class FabricPackOutput extends PackOutput {
 	private final boolean strictValidation;
 
 	@ApiStatus.Internal
-	public FabricPackOutput(ModContainer modContainer, Path path, boolean strictValidation) {
-		super(path);
+	public FabricPackOutput(ModContainer modContainer, Path outputFolder, boolean strictValidation) {
+		super(outputFolder);
 		this.modContainer = modContainer;
 		this.strictValidation = strictValidation;
 	}

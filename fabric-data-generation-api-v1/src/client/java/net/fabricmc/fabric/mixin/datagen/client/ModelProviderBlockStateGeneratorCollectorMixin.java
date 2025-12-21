@@ -36,7 +36,7 @@ public class ModelProviderBlockStateGeneratorCollectorMixin implements FabricMod
 	private FabricPackOutput fabricPackOutput;
 
 	@Override
-	public void setFabricDataOutput(FabricPackOutput fabricPackOutput) {
+	public void setFabricPackOutput(FabricPackOutput fabricPackOutput) {
 		this.fabricPackOutput = fabricPackOutput;
 	}
 

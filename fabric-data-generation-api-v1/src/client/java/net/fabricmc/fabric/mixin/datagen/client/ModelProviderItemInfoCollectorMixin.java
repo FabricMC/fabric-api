@@ -51,7 +51,7 @@ public class ModelProviderItemInfoCollectorMixin implements FabricItemAssetDefin
 	}
 
 	@Override
-	public void setFabricDataOutput(FabricPackOutput fabricPackOutput) {
+	public void setFabricPackOutput(FabricPackOutput fabricPackOutput) {
 		this.fabricPackOutput = fabricPackOutput;
 	}
 

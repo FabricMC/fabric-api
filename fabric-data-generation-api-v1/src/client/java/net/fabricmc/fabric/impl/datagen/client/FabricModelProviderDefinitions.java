@@ -19,5 +19,5 @@ package net.fabricmc.fabric.impl.datagen.client;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
 public interface FabricModelProviderDefinitions {
-	void setFabricDataOutput(FabricPackOutput fabricPackOutput);
+	void setFabricPackOutput(FabricPackOutput fabricPackOutput);
 }
