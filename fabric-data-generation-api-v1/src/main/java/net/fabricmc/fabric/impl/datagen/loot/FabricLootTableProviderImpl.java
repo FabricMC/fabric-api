@@ -52,7 +52,7 @@ public final class FabricLootTableProviderImpl {
 			CachedOutput cache,
 			FabricLootTableProvider provider,
 			ContextKeySet contextType,
-			FabricPackOutput fabricPackOutput,
+			FabricPackOutput packOutput,
 			CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
 		HashMap<Identifier, LootTable> builders = Maps.newHashMap();
 		HashMap<Identifier, ResourceCondition[]> conditionMap = new HashMap<>();
@@ -73,15 +73,15 @@ public final class FabricLootTableProviderImpl {
 			for (Map.Entry<Identifier, LootTable> entry : builders.entrySet()) {
 				JsonObject tableJson = (JsonObject) LootTable.DIRECT_CODEC.encodeStart(ops, entry.getValue()).getOrThrow(IllegalStateException::new);
 				FabricDataGenHelper.addConditions(tableJson, conditionMap.remove(entry.getKey()));
-				futures.add(DataProvider.saveStable(cache, tableJson, getOutputPath(fabricPackOutput, entry.getKey())));
+				futures.add(DataProvider.saveStable(cache, tableJson, getOutputPath(packOutput, entry.getKey())));
 			}
 
 			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 		});
 	}
 
-	private static Path getOutputPath(FabricPackOutput dataOutput, Identifier lootTableId) {
-		return dataOutput.createRegistryElementsPathProvider(Registries.LOOT_TABLE).json(lootTableId);
+	private static Path getOutputPath(FabricPackOutput packOutput, Identifier lootTableId) {
+		return packOutput.createRegistryElementsPathProvider(Registries.LOOT_TABLE).json(lootTableId);
 	}
 
 	private FabricLootTableProviderImpl() {
