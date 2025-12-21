@@ -47,17 +47,17 @@ import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
  */
 public abstract class FabricSoundsProvider implements DataProvider {
 	private static final Codec<Map<String, SoundTypeBuilderImpl.SoundType>> CODEC = Codec.unboundedMap(Codec.STRING, SoundTypeBuilderImpl.SoundType.CODEC);
-	private final CompletableFuture<HolderLookup.Provider> registryFuture;
+	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 	private final PackOutput output;
 
-	public FabricSoundsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registryFuture) {
-		this.registryFuture = registryFuture;
+	public FabricSoundsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		this.registriesFuture = registriesFuture;
 		this.output = output;
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput cache) {
-		return registryFuture.thenCompose(lookup -> {
+	public CompletableFuture<?> run(CachedOutput output) {
+		return registriesFuture.thenCompose(lookup -> {
 			final Map<String, Map<String, SoundTypeBuilderImpl.SoundType>> data = new LinkedHashMap<>();
 			configure(lookup, (id, builder) -> {
 				if (data.computeIfAbsent(id.getNamespace(), n -> new LinkedHashMap<>()).put(id.getPath(), ((SoundTypeBuilderImpl) builder).build()) != null) {
@@ -66,8 +66,8 @@ public abstract class FabricSoundsProvider implements DataProvider {
 			});
 
 			return CompletableFuture.allOf(data.entrySet().stream().map(file -> {
-				Path outputPath = output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(file.getKey() + "/sounds.json");
-				return DataProvider.saveStable(cache, lookup, CODEC, file.getValue(), outputPath);
+				Path outputPath = this.output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(file.getKey() + "/sounds.json");
+				return DataProvider.saveStable(output, lookup, CODEC, file.getValue(), outputPath);
 			}).toArray(CompletableFuture[]::new));
 		});
 	}
@@ -99,10 +99,10 @@ public abstract class FabricSoundsProvider implements DataProvider {
 		/**
 		 * Adds a sound event.
 		 *
-		 * @param event   holder for sound event
+		 * @param event   registry entry for sound event
 		 * @param builder the sound event details
 		 *
-		 * @throws IllegalArgumentException if the holder provided has not been registered
+		 * @throws IllegalArgumentException if the  registry entry provided has not been registered
 		 */
 		default void add(Holder<SoundEvent> event, SoundTypeBuilder builder) {
 			add(event.unwrapKey().orElseThrow(() -> new IllegalArgumentException("Direct (non-registered) sound event cannot be added")).identifier(), builder);

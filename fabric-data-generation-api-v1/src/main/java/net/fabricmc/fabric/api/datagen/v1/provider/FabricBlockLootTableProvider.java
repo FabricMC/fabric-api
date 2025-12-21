@@ -106,8 +106,8 @@ public abstract class FabricBlockLootTableProvider extends BlockLootSubProvider 
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput cache) {
-		return FabricLootTableProviderImpl.run(cache, this, LootContextParamSets.BLOCK, output, registryLookupFuture);
+	public CompletableFuture<?> run(CachedOutput output) {
+		return FabricLootTableProviderImpl.run(output, this, LootContextParamSets.BLOCK, this.output, registryLookupFuture);
 	}
 
 	@Override
