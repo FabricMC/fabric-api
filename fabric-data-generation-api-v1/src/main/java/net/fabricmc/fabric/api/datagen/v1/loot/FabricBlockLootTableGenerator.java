@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.datagen.loot.ConditionBlockLootSubProvider;
  *
  * <p>Note: This interface is automatically implemented via Mixin and interface injection.
  */
-public interface FabricBlockLootSubProvider {
+public interface FabricBlockLootTableGenerator {
 	/**
 	 * Return a new generator that applies the specified conditions to any loot table it receives,
 	 * and then forwards the loot tables to this generator.
