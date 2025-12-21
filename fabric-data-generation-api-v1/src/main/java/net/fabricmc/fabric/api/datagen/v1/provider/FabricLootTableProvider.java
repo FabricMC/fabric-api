@@ -26,7 +26,7 @@ import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootTableGenerator;
+import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootSubProvider;
 import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootTableGenerator;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
@@ -43,7 +43,7 @@ public interface FabricLootTableProvider extends LootTableSubProvider, DataProvi
 	/**
 	 * Return a new exporter that applies the specified conditions to any loot table it receives.
 	 *
-	 * <p>For block and entity loot tables, use {@link FabricBlockLootTableGenerator#withConditions} or
+	 * <p>For block and entity loot tables, use {@link FabricBlockLootSubProvider#withConditions} or
 	 * {@link FabricEntityLootTableGenerator#withConditions} instead, respectively.
 	 */
 	default BiConsumer<ResourceKey<LootTable>, LootTable.Builder> withConditions(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> exporter, ResourceCondition... conditions) {
