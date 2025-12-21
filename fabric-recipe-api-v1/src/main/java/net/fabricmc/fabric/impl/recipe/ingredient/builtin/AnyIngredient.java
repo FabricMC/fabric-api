@@ -54,7 +54,7 @@ public class AnyIngredient extends CombinedIngredient {
 	}
 
 	@Override
-	public Stream<Holder<Item>> items() {
+	public Stream<Holder<Item>> getMatchingItems() {
 		return ingredients.stream()
 				.flatMap(Ingredient::items);
 	}

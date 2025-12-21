@@ -169,8 +169,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup, RecipeOutput exporter) {
-			return new RecipeProvider(registryLookup, exporter) {
+		protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput exporter) {
+			return new RecipeProvider(registries, exporter) {
 				@Override
 				public void buildRecipes() {
 					planksFromLog(SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);

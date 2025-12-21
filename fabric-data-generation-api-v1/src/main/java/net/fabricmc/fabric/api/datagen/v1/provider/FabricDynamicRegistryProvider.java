@@ -94,7 +94,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		/**
-		 * Gets access to all holder lookups.
+		 * Gets access to all registry lookups.
 		 */
 		public HolderLookup.Provider getLookups() {
 			return registries;
@@ -155,7 +155,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		/**
 		 * Adds a new object to be data generated.
 		 *
-		 * @param object The object to generate. This holder must have both a
+		 * @param object The object to generate. This registry entry must have both a
 		 *               {@linkplain Holder#isBound() key and value}.
 		 */
 		public <T> void add(Holder.Reference<T> object) {
@@ -165,7 +165,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		/**
 		 * Adds a new object to be data generated with several resource conditions.
 		 *
-		 * @param object     The object to generate. This holder must have both a
+		 * @param object     The object to generate. This registry entry must have both a
 		 *                   {@linkplain Holder#isBound() key and value}.
 		 * @param conditions Conditions that must be satisfied to load this object.
 		 */

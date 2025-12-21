@@ -51,9 +51,9 @@ public abstract class FabricBlockLootTableProvider extends BlockLootSubProvider 
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
 	private final CompletableFuture<HolderLookup.Provider> registryLookup;
 
-	protected FabricBlockLootTableProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+	protected FabricBlockLootTableProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
 		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), registryLookup.join());
-		this.output = dataOutput;
+		this.output = packOutput;
 		this.registryLookup = registryLookup;
 	}
 

@@ -51,7 +51,7 @@ public class DifferenceIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public Stream<Holder<Item>> items() {
+	public Stream<Holder<Item>> getMatchingItems() {
 		final List<Holder<Item>> subtractedMatchingItems = subtracted.items().toList();
 		return base.items()
 				.filter(registryEntry -> !subtractedMatchingItems.contains(registryEntry));

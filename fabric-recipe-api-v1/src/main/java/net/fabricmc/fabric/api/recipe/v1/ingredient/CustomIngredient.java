@@ -75,7 +75,7 @@ public interface CustomIngredient {
 	 *
 	 * <p>Note: no caching needs to be done by the implementation, this is already handled by the ingredient itself.
 	 */
-	Stream<Holder<Item>> items();
+	Stream<Holder<Item>> getMatchingItems();
 
 	/**
 	 * Returns whether this ingredient always requires {@linkplain #test direct stack testing}.
@@ -97,9 +97,9 @@ public interface CustomIngredient {
 	 *
 	 * @return a {@link SlotDisplay} instance.
 	 */
-	default SlotDisplay display() {
+	default SlotDisplay toDisplay() {
 		// Matches the vanilla logic in Ingredient.display()
-		return new SlotDisplay.Composite(items().map(Ingredient::displayForSingleItem).toList());
+		return new SlotDisplay.Composite(getMatchingItems().map(Ingredient::displayForSingleItem).toList());
 	}
 
 	/**

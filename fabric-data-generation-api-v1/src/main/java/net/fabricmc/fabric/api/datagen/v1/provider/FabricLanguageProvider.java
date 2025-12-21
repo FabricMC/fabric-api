@@ -63,16 +63,16 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 public abstract class FabricLanguageProvider implements DataProvider {
 	protected final FabricPackOutput dataOutput;
 	private final String languageCode;
-	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
+	private final CompletableFuture<HolderLookup.Provider> registryLookup;
 
-	protected FabricLanguageProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
-		this(dataOutput, "en_us", registryLookupFuture);
+	protected FabricLanguageProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+		this(dataOutput, "en_us", registryLookup);
 	}
 
-	protected FabricLanguageProvider(FabricPackOutput dataOutput, String languageCode, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+	protected FabricLanguageProvider(FabricPackOutput dataOutput, String languageCode, CompletableFuture<HolderLookup.Provider> registryLookup) {
 		this.dataOutput = dataOutput;
 		this.languageCode = languageCode;
-		this.registryLookupFuture = registryLookupFuture;
+		this.registryLookup = registryLookup;
 	}
 
 	/**
@@ -83,10 +83,10 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	public abstract void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder);
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput cache) {
+	public CompletableFuture<?> run(CachedOutput output) {
 		TreeMap<String, String> translationEntries = new TreeMap<>();
 
-		return this.registryLookupFuture.thenCompose(lookup -> {
+		return this.registryLookup.thenCompose(lookup -> {
 			generateTranslations(lookup, (String key, String value) -> {
 				Objects.requireNonNull(key);
 				Objects.requireNonNull(value);
@@ -104,7 +104,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 				langEntryJson.addProperty(entry.getKey(), entry.getValue());
 			}
 
-			return DataProvider.saveStable(cache, langEntryJson, getLangFilePath(this.languageCode));
+			return DataProvider.saveStable(output, langEntryJson, getLangFilePath(this.languageCode));
 		});
 	}
 
