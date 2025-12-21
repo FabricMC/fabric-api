@@ -110,7 +110,7 @@ public abstract class FabricLanguageProvider implements DataProvider {
 
 	/**
 	 * Override this method to change where the generated language file is placed.
-	 * 
+	 *
 	 * @param code The language code (like "en_us") of the translations.
 	 */
 	protected Path getLangFilePath(String code) {
