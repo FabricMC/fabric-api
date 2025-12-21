@@ -308,7 +308,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void addTags(HolderLookup.Provider registryLookup) {
+		protected void addTags(HolderLookup.Provider registries) {
 			valueLookupBuilder(BlockTags.FIRE).setReplace(true).add(SIMPLE_BLOCK);
 			valueLookupBuilder(BlockTags.DIRT).add(SIMPLE_BLOCK);
 			valueLookupBuilder(BlockTags.ACACIA_LOGS).forceAddTag(BlockTags.ANIMALS_SPAWNABLE_ON);
@@ -326,7 +326,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void addTags(HolderLookup.Provider registryLookup) {
+		protected void addTags(HolderLookup.Provider registries) {
 			copy(BlockTags.DIRT, ItemTags.DIRT);
 		}
 	}
@@ -337,7 +337,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void addTags(HolderLookup.Provider registryLookup) {
+		protected void addTags(HolderLookup.Provider registries) {
 			builder(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(MOD_ID, "biome_tag_test")))
 					.add(Biomes.BADLANDS)
 					.add(Biomes.BAMBOO_JUNGLE)
@@ -351,7 +351,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected void addTags(HolderLookup.Provider registryLookup) {
+		protected void addTags(HolderLookup.Provider registries) {
 			builder(TagKey.create(Registries.GAME_EVENT, Identifier.fromNamespaceAndPath(MOD_ID, "game_event_tag_test")))
 					.add(GameEvent.SHRIEK.key());
 		}

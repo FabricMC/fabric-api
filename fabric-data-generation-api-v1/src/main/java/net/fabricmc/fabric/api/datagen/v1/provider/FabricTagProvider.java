@@ -83,7 +83,7 @@ public abstract class FabricTagProvider<T> extends TagsProvider<T> {
 	/**
 	 * Implement this method and then use {@link FabricTagProvider#builder} to get and register new tag builders.
 	 */
-	protected abstract void addTags(HolderLookup.Provider registryLookup);
+	protected abstract void addTags(HolderLookup.Provider registries);
 
 	protected TagAppender<ResourceKey<T>, T> builder(TagKey<T> tag) {
 		TagBuilder tagBuilder = this.getOrCreateRawBuilder(tag);

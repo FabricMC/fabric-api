@@ -31,7 +31,7 @@ public final class FluidTagGenerator extends FabricTagProvider.FluidTagProvider 
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider registryLookup) {
+	protected void addTags(HolderLookup.Provider registries) {
 		valueLookupBuilder(ConventionalFluidTags.WATER)
 				.addOptionalTag(FluidTags.WATER);
 		valueLookupBuilder(ConventionalFluidTags.LAVA)

@@ -53,7 +53,7 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider registryLookup) {
+	protected void addTags(HolderLookup.Provider registries) {
 		valueLookupBuilder(ConventionalBlockTags.STONES)
 				.add(Blocks.STONE)
 				.add(Blocks.ANDESITE)
