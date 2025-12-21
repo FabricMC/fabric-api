@@ -40,15 +40,15 @@ public final class FabricDataGenerator extends DataGenerator {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
 	private final FabricPackOutput fabricOutput;
-	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
+	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 
 	@ApiStatus.Internal
-	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+	public FabricDataGenerator(Path output, ModContainer mod, boolean strictValidation, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 		super(output, SharedConstants.getCurrentVersion(), true);
 		this.modContainer = Objects.requireNonNull(mod);
 		this.strictValidation = strictValidation;
 		this.fabricOutput = new FabricPackOutput(mod, output, strictValidation);
-		this.registryLookupFuture = registryLookupFuture;
+		this.registriesFuture = registriesFuture;
 	}
 
 	/**
@@ -109,7 +109,7 @@ public final class FabricDataGenerator extends DataGenerator {
 	 * @return A future containing the builtin registries.
 	 */
 	public CompletableFuture<HolderLookup.Provider> getRegistries() {
-		return registryLookupFuture;
+		return registriesFuture;
 	}
 
 	/**
@@ -154,7 +154,7 @@ public final class FabricDataGenerator extends DataGenerator {
 		 * @return the {@link DataProvider}
 		 */
 		public <T extends DataProvider> T addProvider(RegistryDependentFactory<T> factory) {
-			return super.addProvider(output -> factory.create((FabricPackOutput) output, registryLookupFuture));
+			return super.addProvider(output -> factory.create((FabricPackOutput) output, registriesFuture));
 		}
 
 		/**

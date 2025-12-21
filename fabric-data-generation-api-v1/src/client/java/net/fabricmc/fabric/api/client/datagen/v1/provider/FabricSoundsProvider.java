@@ -102,7 +102,7 @@ public abstract class FabricSoundsProvider implements DataProvider {
 		 * @param event   registry entry for sound event
 		 * @param builder the sound event details
 		 *
-		 * @throws IllegalArgumentException if the  registry entry provided has not been registered
+		 * @throws IllegalArgumentException if the registry entry provided has not been registered
 		 */
 		default void add(Holder<SoundEvent> event, SoundTypeBuilder builder) {
 			add(event.unwrapKey().orElseThrow(() -> new IllegalArgumentException("Direct (non-registered) sound event cannot be added")).identifier(), builder);

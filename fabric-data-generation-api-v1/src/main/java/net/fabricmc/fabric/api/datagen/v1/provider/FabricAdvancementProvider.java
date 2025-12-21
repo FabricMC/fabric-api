@@ -52,12 +52,12 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 public abstract class FabricAdvancementProvider implements DataProvider {
 	protected final FabricPackOutput output;
 	private final PackOutput.PathProvider pathProvider;
-	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
+	private final CompletableFuture<HolderLookup.Provider> registryLookup;
 
-	protected FabricAdvancementProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+	protected FabricAdvancementProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
 		this.output = output;
 		this.pathProvider = output.createRegistryElementsPathProvider(Registries.ADVANCEMENT);
-		this.registryLookupFuture = registryLookupFuture;
+		this.registryLookup = registryLookup;
 	}
 
 	/**
@@ -79,8 +79,8 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput cache) {
-		return this.registryLookupFuture.thenCompose(lookup -> {
+	public CompletableFuture<?> run(CachedOutput output) {
+		return this.registryLookup.thenCompose(lookup -> {
 			final Set<Identifier> identifiers = Sets.newHashSet();
 			final Set<AdvancementHolder> advancements = Sets.newHashSet();
 
@@ -96,7 +96,7 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 
 				JsonObject advancementJson = Advancement.CODEC.encodeStart(ops, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
 				FabricDataGenHelper.addConditions(advancementJson, FabricDataGenHelper.consumeConditions(advancement));
-				futures.add(DataProvider.saveStable(cache, advancementJson, getOutputPath(advancement)));
+				futures.add(DataProvider.saveStable(output, advancementJson, getOutputPath(advancement)));
 			}
 
 			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
