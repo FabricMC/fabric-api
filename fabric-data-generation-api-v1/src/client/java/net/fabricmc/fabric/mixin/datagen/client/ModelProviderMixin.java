@@ -54,7 +54,7 @@ public class ModelProviderMixin {
 	@WrapOperation(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/data/models/BlockModelGenerators;run()V"))
 	private void registerBlockStateModels(BlockModelGenerators instance, Operation<Void> original) {
 		if (((Object) this) instanceof FabricModelProvider fabricModelProvider) {
-			fabricModelProvider.generateBlockStateModels(instance);
+			fabricModelProvider.generateBlockModels(instance);
 		} else {
 			// Fallback to the vanilla registration when not a fabric provider
 			original.call(instance);

@@ -79,7 +79,7 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 		}
 
 		@Override
-		public void generateBlockStateModels(BlockModelGenerators blockModelGenerators) {
+		public void generateBlockModels(BlockModelGenerators blockModelGenerators) {
 			blockModelGenerators.createTrivialCube(DataGeneratorTestContent.SIMPLE_BLOCK);
 			blockModelGenerators.createTrivialCube(DataGeneratorTestContent.BLOCK_WITHOUT_ITEM);
 			blockModelGenerators.createTrivialCube(DataGeneratorTestContent.BLOCK_WITHOUT_LOOT_TABLE);
