@@ -98,7 +98,7 @@ public interface CustomIngredient {
 	 * @return a {@link SlotDisplay} instance.
 	 */
 	default SlotDisplay toDisplay() {
-		// Matches the vanilla logic in Ingredient.display()
+		// Matches the vanilla logic in Ingredient.toDisplay()
 		return new SlotDisplay.Composite(getMatchingItems().map(Ingredient::displayForSingleItem).toList());
 	}
 

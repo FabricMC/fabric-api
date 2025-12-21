@@ -166,9 +166,9 @@ public final class DefaultCustomIngredients {
 	 * For strict matching, use {@link #components(Ingredient, UnaryOperator)} like this instead:
 	 *
 	 * <pre>{@code
-	 * components(base, builder -> builder.add(DataComponents.CUSTOM_DATA, NbtComponent.of(nbt)));
+	 * components(base, builder -> builder.add(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt)));
 	 * // or, to check for absence of custom data:
-	 * components(base, builder -> builder.remove(DataComponents.CUSTOM_DATA));
+	 * components(base, builder -> builder.remove(DataComponentTypes.CUSTOM_DATA));
 	 * }</pre>
 	 *
 	 * <p>See {@link NbtUtils#compareNbt} for how matching works.

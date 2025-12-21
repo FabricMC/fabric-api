@@ -56,7 +56,7 @@ public interface SynchronizedRecipes {
 	<I extends RecipeInput, T extends Recipe<I>> Collection<RecipeHolder<T>> getAllOfType(RecipeType<T> type);
 
 	/**
-	 * Finds a first recipe entry (or {@code recipe}, if it matches and isn't null) of the given {@code type} that matches the
+	 * Finds a first recipe entry (or @{code recipe}, if it matches and isn't null) of the given {@code type} that matches the
 	 * given {@code input} and {@code world}.
 	 *
 	 * @return the optional containing matching recipe entry or empty
