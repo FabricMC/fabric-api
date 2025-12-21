@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricProvidedTagBuilder;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 
 /**
- * Extends ProvidedTagBuilder to support setting the replace field.
+ * Extends TagAppender to support setting the replace field.
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Mixin(TagAppender.class)
