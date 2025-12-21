@@ -28,13 +28,13 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricProvidedTagBuilder;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 
 /**
- * Extends TagAppender to support setting the replace field.
+ * Extends ProvidedTagBuilder to support setting the replace field.
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Mixin(TagAppender.class)
 interface TagAppenderMixin<E, T> extends FabricProvidedTagBuilder<E, T> {
 	@Mixin(targets = "net.minecraft.data.tags.TagAppender$1")
-	abstract class TagAppender1Mixin<E, T> implements TagAppenderMixin<E, T> {
+	abstract class ProvidedTagBuilder1Mixin<E, T> implements TagAppenderMixin<E, T> {
 		// the builder param
 		@Shadow
 		@Final
@@ -54,7 +54,7 @@ interface TagAppenderMixin<E, T> extends FabricProvidedTagBuilder<E, T> {
 	}
 
 	@Mixin(targets = "net.minecraft.data.tags.TagAppender$2")
-	abstract class TagAppender2Mixin<E, T> implements TagAppenderMixin<E, T> {
+	abstract class ProvidedTagBuilder2Mixin<E, T> implements TagAppenderMixin<E, T> {
 		// ProvidedTagBuilder.this
 		@Shadow
 		@Final
