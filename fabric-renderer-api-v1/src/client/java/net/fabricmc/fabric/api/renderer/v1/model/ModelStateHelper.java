@@ -40,10 +40,10 @@ import net.fabricmc.fabric.api.renderer.v1.sprite.SpriteFinderGetter;
 /**
  * Utilities to make it easier to work with {@link ModelState}.
  */
-public final class ModelBakeSettingsHelper {
+public final class ModelStateHelper {
 	private static final Direction[] DIRECTIONS = Direction.values();
 
-	private ModelBakeSettingsHelper() {
+	private ModelStateHelper() {
 	}
 
 	/**
@@ -95,9 +95,9 @@ public final class ModelBakeSettingsHelper {
 	}
 
 	/**
-	 * Creates a new {@link ModelState} that is the product of the two given settings. Settings are represented
+	 * Creates a new {@link ModelState} that is the product of the two given states. States are represented
 	 * by matrices, so this method follows the rules of matrix multiplication, namely that applying the resulting
-	 * settings is (mostly) equivalent to applying the right settings and then the left settings. The only exception
+	 * state is (mostly) equivalent to applying the right state and then the left state. The only exception
 	 * during standard application is cull face transformation, as the result must be clamped. Thus, applying a single
 	 * premultiplied transformation generally yields better results than multiple applications.
 	 */
@@ -179,8 +179,8 @@ public final class ModelBakeSettingsHelper {
 	 * <p>This method is most useful when creating custom implementations of {@link UnbakedGeometry}, which receive a
 	 * {@link ModelState}.
 	 */
-	public static QuadTransform asQuadTransform(ModelState settings, SpriteFinderGetter spriteFinderGetter) {
-		Matrix4fc matrix = settings.transformation().getMatrix();
+	public static QuadTransform asQuadTransform(ModelState state, SpriteFinderGetter spriteFinderGetter) {
+		Matrix4fc matrix = state.transformation().getMatrix();
 
 		// Assumes face transformations are identity if main transformation is identity
 		if (MatrixUtil.isIdentity(matrix)) {
@@ -194,7 +194,7 @@ public final class ModelBakeSettingsHelper {
 
 		return quad -> {
 			Direction lightFace = quad.lightFace();
-			Matrix4fc reverseMatrix = settings.inverseFaceTransformation(lightFace);
+			Matrix4fc reverseMatrix = state.inverseFaceTransformation(lightFace);
 
 			if (!MatrixUtil.isIdentity(reverseMatrix)) {
 				SpriteFinder spriteFinder = spriteFinderGetter.spriteFinder(quad.atlas());

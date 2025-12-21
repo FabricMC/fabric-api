@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 /**
  * Note: This interface is automatically implemented on {@link SpriteGetter} via Mixin and interface injection.
  */
-public interface FabricErrorCollectingSpriteGetter extends SpriteFinderGetter {
+public interface FabricSpriteGetter extends SpriteFinderGetter {
 	/**
 	 * {@return the sprite finder for the given atlas texture ID}
 	 */

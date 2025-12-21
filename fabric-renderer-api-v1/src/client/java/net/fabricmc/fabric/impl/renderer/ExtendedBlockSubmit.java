@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.renderer.v1.sprite;
+package net.fabricmc.fabric.impl.renderer;
 
-import net.minecraft.client.renderer.texture.SpriteLoader;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 
-/**
- * Note: This interface is automatically implemented on {@link SpriteLoader.Preparations} via Mixin and interface injection.
- */
-public interface FabricStitchResult {
-	/**
-	 * {@return the sprite finder for this stitch result}
-	 */
-	default SpriteFinder spriteFinder() {
-		throw new UnsupportedOperationException();
-	}
+public record ExtendedBlockSubmit(PoseStack.Pose pose, BlockState state, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter level, BlockPos pos) {
 }

@@ -16,11 +16,10 @@
 
 package net.fabricmc.fabric.impl.renderer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.List;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
+public interface SubmitNodeCollectionExtension {
+	List<ExtendedBlockSubmit> fabric_getExtendedBlockSubmits();
 
-public record ExtendedBlockCommand(PoseStack.Pose matricesEntry, BlockState state, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter blockView, BlockPos pos) {
+	List<ExtendedBlockModelSubmit> fabric_getExtendedBlockModelSubmits();
 }

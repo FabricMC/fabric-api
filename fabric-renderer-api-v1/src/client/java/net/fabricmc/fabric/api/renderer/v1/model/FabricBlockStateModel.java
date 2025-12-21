@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
 /**
  * Interface for baked block state models that output geometry with enhanced rendering features.
- * Can also be used to generate or customize geometry output based on world state.
+ * Can also be used to generate or customize geometry output based on level state.
  *
  * <p>Implementors should have a look at {@link ModelHelper} as it contains many useful functions.
  *
@@ -53,7 +53,7 @@ public interface FabricBlockStateModel {
 	 *
 	 * <p>Like {@link BlockStateModel#collectParts(RandomSource, List)}, this method may be called outside of chunk rebuilds. For
 	 * example, some entities and block entities render blocks. In some such cases, the provided position may be the
-	 * <em>nearest</em> position and not actual position. In others, the provided world may be
+	 * <em>nearest</em> position and not actual position. In others, the provided level may be
 	 * {@linkplain EmptyBlockAndTintGetter#INSTANCE empty}.
 	 *
 	 * <p>If multiple independent subtasks use the provided random, it is recommended that implementations
@@ -69,7 +69,7 @@ public interface FabricBlockStateModel {
 	 * <p>Implementations should generally also override {@link #createGeometryKey}.
 	 *
 	 * @param emitter Accepts model output.
-	 * @param blockView Access to world state.
+	 * @param level Access to level state.
 	 * @param pos Position of block for model being rendered.
 	 * @param state Block state whose model was queried for geometry. <b>This is not guaranteed to be the
 	 *              state corresponding to {@code this} model!</b>
@@ -82,7 +82,7 @@ public interface FabricBlockStateModel {
 	 *
 	 * @see #createGeometryKey(BlockAndTintGetter, BlockPos, BlockState, RandomSource)
 	 */
-	default void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+	default void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		final List<BlockModelPart> parts = ((BlockStateModel) this).collectParts(random);
 		final int partCount = parts.size();
 
@@ -107,8 +107,8 @@ public interface FabricBlockStateModel {
 	 * not to if doing so is too complex. Vanilla models correctly implement this method, but may return {@code null}
 	 * when delegating to a submodel that returns {@code null}.
 	 *
-	 * @param blockView The world in which the block exists.
-	 * @param pos The position of the block in the world.
+	 * @param level The level in which the block exists.
+	 * @param pos The position of the block in the level.
 	 * @param state The block state whose model was queried for a geometry key. <b>This is not guaranteed to be the
 	 *              state corresponding to {@code this} model!</b>
 	 * @param random Random object seeded per vanilla conventions.
@@ -117,24 +117,24 @@ public interface FabricBlockStateModel {
 	 * @see #emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)
 	 */
 	@Nullable
-	default Object createGeometryKey(BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random) {
+	default Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
 		return null;
 	}
 
 	/**
-	 * Extension of {@link BlockStateModel#particleIcon()} that accepts world state. This method will be invoked most
-	 * of the time, but the vanilla method may still be invoked when no world context is available.
+	 * Extension of {@link BlockStateModel#particleIcon()} that accepts level state. This method will be invoked most
+	 * of the time, but the vanilla method may still be invoked when no level context is available.
 	 *
 	 * <p><b>If your model delegates to other {@link BlockStateModel}s, ensure that it also delegates invocations of
 	 * this method to its submodels as appropriate!</b>
 	 *
-	 * @param blockView The world in which the block exists.
-	 * @param pos The position of the block in the world.
+	 * @param level The level in which the block exists.
+	 * @param pos The position of the block in the level.
 	 * @param state The block state whose model was queried for the particle sprite. <b>This is not guaranteed to be the
 	 *              state corresponding to {@code this} model!</b>
 	 * @return the particle sprite
 	 */
-	default TextureAtlasSprite particleSprite(BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
+	default TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		return ((BlockStateModel) this).particleIcon();
 	}
 }

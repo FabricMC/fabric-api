@@ -48,12 +48,13 @@ public class FrameBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		// Emit our frame model
-		frameModel.emitQuads(emitter, blockView, pos, state, random, cullTest);
+		frameModel.emitQuads(emitter,
+				level, pos, state, random, cullTest);
 
 		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
-		if (!(((FabricBlockView) blockView).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
+		if (!(((FabricBlockView) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
 			return; // No inner block to render, or data of wrong type
 		}
 
@@ -74,7 +75,7 @@ public class FrameBlockStateModel implements BlockStateModel {
 			}
 
 			// Make the quad partially transparent
-			quad.renderLayer(ChunkSectionLayer.TRANSLUCENT);
+			quad.chunkLayer(ChunkSectionLayer.TRANSLUCENT);
 
 			// Make the quad emissive, if requested
 			if (emissive) {
@@ -94,22 +95,23 @@ public class FrameBlockStateModel implements BlockStateModel {
 			return true;
 		});
 		// Emit the inner block model
-		innerModel.emitQuads(emitter, blockView, pos, state, random, cullTest);
+		innerModel.emitQuads(emitter,
+				level, pos, state, random, cullTest);
 		// Let's not forget to pop the transform!
 		emitter.popTransform();
 	}
 
 	@Override
 	@Nullable
-	public Object createGeometryKey(BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random) {
+	public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
 		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
-		if (!(((FabricBlockView) blockView).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
+		if (!(((FabricBlockView) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
 			return this; // No inner block to render, or data of wrong type
 		}
 
 		BlockState innerState = mimickedBlock.defaultBlockState();
 		BlockStateModel innerModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(innerState);
-		Object subkey = innerModel.createGeometryKey(blockView, pos, state, random);
+		Object subkey = innerModel.createGeometryKey(level, pos, state, random);
 
 		if (subkey == null) {
 			return null;
@@ -132,15 +134,15 @@ public class FrameBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleSprite(BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
+	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		// We should not access the block entity from here. We should instead use the immutable render data provided by the block entity.
-		if (!(((FabricBlockView) blockView).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
-			return frameModel.particleSprite(blockView, pos, state); // No inner block to render, or data of wrong type
+		if (!(((FabricBlockView) level).getBlockEntityRenderData(pos) instanceof Block mimickedBlock)) {
+			return frameModel.particleIcon(level, pos, state); // No inner block to render, or data of wrong type
 		}
 
 		BlockState innerState = mimickedBlock.defaultBlockState();
 		BlockStateModel innerModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(innerState);
-		return innerModel.particleSprite(blockView, pos, state);
+		return innerModel.particleIcon(level, pos, state);
 	}
 
 	public record Unbaked(BlockStateModel.Unbaked frameModel) implements CustomUnbakedBlockStateModel {

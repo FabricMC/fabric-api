@@ -41,12 +41,12 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.impl.renderer.BatchingRenderCommandQueueExtension;
-import net.fabricmc.fabric.impl.renderer.ExtendedBlockCommand;
-import net.fabricmc.fabric.impl.renderer.ExtendedBlockStateModelCommand;
+import net.fabricmc.fabric.impl.renderer.ExtendedBlockModelSubmit;
+import net.fabricmc.fabric.impl.renderer.ExtendedBlockSubmit;
+import net.fabricmc.fabric.impl.renderer.SubmitNodeCollectionExtension;
 
 @Mixin(SubmitNodeCollection.class)
-abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, BatchingRenderCommandQueueExtension {
+abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, SubmitNodeCollectionExtension {
 	@Shadow
 	@Final
 	private SubmitNodeStorage submitNodeStorage;
@@ -54,36 +54,41 @@ abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, 
 	private boolean wasUsed;
 
 	@Unique
-	private final List<ExtendedBlockCommand> extendedBlockCommands = new ArrayList<>();
+	private final List<ExtendedBlockSubmit> extendedBlockSubmits = new ArrayList<>();
 	@Unique
-	private final List<ExtendedBlockStateModelCommand> extendedBlockStateModelCommands = new ArrayList<>();
+	private final List<ExtendedBlockModelSubmit> extendedBlockModelSubmits = new ArrayList<>();
 
 	@Override
-	public void submitBlock(PoseStack matrices, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter blockView, BlockPos pos) {
+	public void submitBlock(PoseStack poseStack, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos) {
 		wasUsed = true;
-		extendedBlockCommands.add(new ExtendedBlockCommand(matrices.last().copy(), state, light, overlay, outlineColor, blockView, pos));
-		Minecraft.getInstance().getModelManager().specialBlockModelRenderer().renderByBlock(state.getBlock(), ItemDisplayContext.NONE, matrices, submitNodeStorage, light, overlay, outlineColor);
+		extendedBlockSubmits.add(new ExtendedBlockSubmit(poseStack.last().copy(), state, light, overlay, outlineColor,
+				level, pos));
+		Minecraft.getInstance().getModelManager().specialBlockModelRenderer().renderByBlock(state.getBlock(), ItemDisplayContext.NONE,
+				poseStack, submitNodeStorage, light, overlay, outlineColor);
 	}
 
 	@Override
-	public void submitBlockStateModel(PoseStack matrices, Function<ChunkSectionLayer, RenderType> renderLayerFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
+	public void submitBlockStateModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		wasUsed = true;
-		extendedBlockStateModelCommands.add(new ExtendedBlockStateModelCommand(matrices.last().copy(), renderLayerFunction, model, r, g, b, light, overlay, outlineColor, blockView, pos, state));
+		extendedBlockModelSubmits.add(new ExtendedBlockModelSubmit(
+				poseStack.last().copy(),
+				renderTypeFunction, model, r, g, b, light, overlay, outlineColor,
+				level, pos, state));
 	}
 
 	@Override
-	public List<ExtendedBlockCommand> fabric_getExtendedBlockCommands() {
-		return extendedBlockCommands;
+	public List<ExtendedBlockSubmit> fabric_getExtendedBlockSubmits() {
+		return extendedBlockSubmits;
 	}
 
 	@Override
-	public List<ExtendedBlockStateModelCommand> fabric_getExtendedBlockStateModelCommands() {
-		return extendedBlockStateModelCommands;
+	public List<ExtendedBlockModelSubmit> fabric_getExtendedBlockModelSubmits() {
+		return extendedBlockModelSubmits;
 	}
 
 	@Inject(method = "clear", at = @At("RETURN"))
 	private void onReturnClear(CallbackInfo ci) {
-		extendedBlockCommands.clear();
-		extendedBlockStateModelCommands.clear();
+		extendedBlockSubmits.clear();
+		extendedBlockModelSubmits.clear();
 	}
 }

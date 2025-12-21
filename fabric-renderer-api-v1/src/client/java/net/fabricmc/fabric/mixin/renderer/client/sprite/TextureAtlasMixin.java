@@ -33,12 +33,12 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
-import net.fabricmc.fabric.api.renderer.v1.sprite.FabricSpriteAtlasTexture;
+import net.fabricmc.fabric.api.renderer.v1.sprite.FabricTextureAtlas;
 import net.fabricmc.fabric.impl.renderer.SpriteFinderImpl;
-import net.fabricmc.fabric.impl.renderer.StitchResultExtension;
+import net.fabricmc.fabric.impl.renderer.SpriteLoaderPreparationsExtension;
 
 @Mixin(TextureAtlas.class)
-abstract class TextureAtlasMixin implements FabricSpriteAtlasTexture {
+abstract class TextureAtlasMixin implements FabricTextureAtlas {
 	@Shadow
 	@Final
 	private Map<Identifier, TextureAtlasSprite> texturesByName;
@@ -55,7 +55,7 @@ abstract class TextureAtlasMixin implements FabricSpriteAtlasTexture {
 	private void uploadHook(SpriteLoader.Preparations stitchResult, CallbackInfo ci) {
 		// Clear this atlas' old finder. If the finder was already initialized in the stitch result, reuse it for this
 		// atlas.
-		spriteFinder = ((StitchResultExtension) (Object) stitchResult).fabric_spriteFinderNullable();
+		spriteFinder = ((SpriteLoaderPreparationsExtension) (Object) stitchResult).fabric_spriteFinderNullable();
 	}
 
 	@Override

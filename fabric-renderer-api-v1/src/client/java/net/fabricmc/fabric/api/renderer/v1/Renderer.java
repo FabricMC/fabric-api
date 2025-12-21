@@ -35,10 +35,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
-import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
-import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockRenderManager;
+import net.fabricmc.fabric.api.renderer.v1.render.BlockMultiBufferSource;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockRenderDispatcher;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.renderer.RendererManager;
 
@@ -61,7 +61,7 @@ import net.fabricmc.fabric.impl.renderer.RendererManager;
  * {@link BlockStateModel#collectParts(RandomSource)}, or
  * {@link ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
  * are, where appropriate, patched automatically to invoke the corresponding method above or the corresponding method in
- * {@link FabricBlockModelRenderer} or {@link FabricBlockRenderManager}.
+ * {@link FabricModelBlockRenderer} or {@link FabricBlockRenderDispatcher}.
  */
 public interface Renderer {
 	/**
@@ -93,22 +93,22 @@ public interface Renderer {
 	MutableMesh mutableMesh();
 
 	/**
-	 * @see FabricBlockModelRenderer#render(BlockAndTintGetter, BlockStateModel, BlockState, BlockPos, PoseStack, BlockVertexConsumerProvider, boolean, long, int)
+	 * @see FabricModelBlockRenderer#render(BlockAndTintGetter, BlockStateModel, BlockState, BlockPos, PoseStack, BlockMultiBufferSource, boolean, long, int)
 	 */
 	@ApiStatus.OverrideOnly
-	void render(ModelBlockRenderer modelRenderer, BlockAndTintGetter blockView, BlockStateModel model, BlockState state, BlockPos pos, PoseStack matrices, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay);
+	void render(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay);
 
 	/**
-	 * @see FabricBlockModelRenderer#render(PoseStack.Pose, BlockVertexConsumerProvider, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
+	 * @see FabricModelBlockRenderer#render(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	 */
 	@ApiStatus.OverrideOnly
-	void render(PoseStack.Pose matrices, BlockVertexConsumerProvider vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos, BlockState state);
+	void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
 
 	/**
-	 * @see FabricBlockRenderManager#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
+	 * @see FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
 	 */
 	@ApiStatus.OverrideOnly
-	void renderBlockAsEntity(BlockRenderDispatcher renderManager, BlockState state, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos);
+	void renderBlockAsEntity(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos);
 
 	/**
 	 * @see FabricLayerRenderState#emitter()

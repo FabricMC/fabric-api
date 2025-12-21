@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.renderer;
+package net.fabricmc.fabric.api.renderer.v1.render;
 
-import java.util.function.Function;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
 
-public record ExtendedBlockStateModelCommand(PoseStack.Pose matricesEntry, Function<ChunkSectionLayer, RenderType> renderLayerFunction, BlockStateModel model, float r, float g, float b, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
+/**
+ * Like {@link MultiBufferSource}, but takes {@link ChunkSectionLayer} instead of {@link RenderType}. Primarily
+ * used to correctly render block models which have geometry on more than one layer.
+ *
+ * @see FabricModelBlockRenderer
+ */
+public interface BlockMultiBufferSource {
+	VertexConsumer getBuffer(ChunkSectionLayer layer);
 }

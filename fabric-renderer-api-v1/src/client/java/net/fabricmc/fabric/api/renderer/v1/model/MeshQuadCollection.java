@@ -36,10 +36,10 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
  * <p>Any code that interacts with {@link QuadCollection} should first check {@code instanceof MeshBakedGeometry} and use
  * {@link #getMesh()} if {@code true} or the vanilla methods otherwise.
  */
-public final class MeshBakedGeometry extends QuadCollection {
+public final class MeshQuadCollection extends QuadCollection {
 	private final Mesh mesh;
 
-	public MeshBakedGeometry(Mesh mesh) {
+	public MeshQuadCollection(Mesh mesh) {
 		super(List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of());
 		this.mesh = mesh;
 	}

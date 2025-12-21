@@ -43,12 +43,12 @@ abstract class SingleVariantMixin implements BlockStateModel {
 	// Not strictly necessary for FRAPI compatibility like other mixins, but saves a list allocation and some other
 	// operations over this method's default impl.
 	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		model.emitQuads(emitter, cullTest);
 	}
 
 	@Override
-	public Object createGeometryKey(BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random) {
+	public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
 		return this;
 	}
 }

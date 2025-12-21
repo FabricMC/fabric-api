@@ -31,8 +31,8 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
-import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelBakeSettingsHelper;
+import net.fabricmc.fabric.api.renderer.v1.model.MeshQuadCollection;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelStateHelper;
 
 public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeometry {
 	// (B - A) is the side length of a regular octagon that fits in a unit square.
@@ -44,7 +44,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 	public QuadCollection bake(TextureSlots textures, ModelBaker baker, ModelState settings, ModelDebugName model) {
 		MutableMesh builder = Renderer.get().mutableMesh();
 		QuadEmitter emitter = builder.emitter();
-		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.sprites()));
+		emitter.pushTransform(ModelStateHelper.asQuadTransform(settings, baker.sprites()));
 
 		TextureAtlasSprite sprite = baker.sprites().get(textures.getMaterial("column"), model);
 
@@ -132,7 +132,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.cullFace(Direction.NORTH);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		emitter.glint(ItemStackRenderState.FoilType.STANDARD);
+		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
 		emitter.emit();
 
 		// northwest
@@ -142,7 +142,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(3, 0, 1, A);
 		cornerSprite(emitter, sprite);
 		emitter.shadeMode(shadeMode);
-		emitter.glint(ItemStackRenderState.FoilType.STANDARD);
+		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
 		emitter.emit();
 
 		// west
@@ -153,7 +153,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.cullFace(Direction.WEST);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		emitter.glint(ItemStackRenderState.FoilType.STANDARD);
+		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
 		emitter.emit();
 
 		// southwest
@@ -163,7 +163,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(3, A, 1, 1);
 		cornerSprite(emitter, sprite);
 		emitter.shadeMode(shadeMode);
-		emitter.glint(ItemStackRenderState.FoilType.STANDARD);
+		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
 		emitter.emit();
 
 		// south
@@ -174,7 +174,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.cullFace(Direction.SOUTH);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		emitter.glint(ItemStackRenderState.FoilType.STANDARD);
+		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
 		emitter.emit();
 
 		// southeast
@@ -184,7 +184,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(3, 1, 1, B);
 		cornerSprite(emitter, sprite);
 		emitter.shadeMode(shadeMode);
-		emitter.glint(ItemStackRenderState.FoilType.STANDARD);
+		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
 		emitter.emit();
 
 		// east
@@ -195,7 +195,7 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.cullFace(Direction.EAST);
 		emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 		emitter.shadeMode(shadeMode);
-		emitter.glint(ItemStackRenderState.FoilType.STANDARD);
+		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
 		emitter.emit();
 
 		// northeast
@@ -205,10 +205,10 @@ public record OctagonalColumnGeometry(ShadeMode shadeMode) implements UnbakedGeo
 		emitter.pos(3, B, 1, 0);
 		cornerSprite(emitter, sprite);
 		emitter.shadeMode(shadeMode);
-		emitter.glint(ItemStackRenderState.FoilType.STANDARD);
+		emitter.foilType(ItemStackRenderState.FoilType.STANDARD);
 		emitter.emit();
 
-		return new MeshBakedGeometry(builder.immutableCopy());
+		return new MeshQuadCollection(builder.immutableCopy());
 	}
 
 	private static void cornerSprite(QuadEmitter emitter, TextureAtlasSprite sprite) {

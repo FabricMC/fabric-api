@@ -119,7 +119,7 @@ public class ItemRenderContext extends AbstractRenderContext {
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final VertexConsumer vertexConsumer = getVertexConsumer(quad.atlas(), quad.renderLayer(), quad.glint());
+		final VertexConsumer vertexConsumer = getVertexConsumer(quad.atlas(), quad.chunkLayer(), quad.foilType());
 
 		tintQuad(quad);
 		shadeQuad(quad, quad.emissive());

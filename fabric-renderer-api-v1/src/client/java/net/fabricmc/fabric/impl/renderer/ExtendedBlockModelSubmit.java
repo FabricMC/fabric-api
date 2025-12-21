@@ -18,20 +18,14 @@ package net.fabricmc.fabric.impl.renderer;
 
 import java.util.function.Function;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
-
-public class DelegatingBlockVertexConsumerProviderImpl implements BlockVertexConsumerProvider {
-	public MultiBufferSource vertexConsumerProvider;
-	public Function<ChunkSectionLayer, RenderType> renderLayerFunction;
-
-	@Override
-	public VertexConsumer getBuffer(ChunkSectionLayer layer) {
-		return vertexConsumerProvider.getBuffer(renderLayerFunction.apply(layer));
-	}
+public record ExtendedBlockModelSubmit(PoseStack.Pose pose, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int lightCoords, int overlayCoords, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 }

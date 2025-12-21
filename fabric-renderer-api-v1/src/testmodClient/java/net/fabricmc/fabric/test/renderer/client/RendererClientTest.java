@@ -36,7 +36,7 @@ public final class RendererClientTest implements ClientModInitializer {
 		CustomUnbakedBlockStateModel.register(RendererTest.id("pillar"), PillarBlockStateModel.Unbaked.CODEC);
 
 		// We don't specify a material for the frame mesh,
-		// so it will use the default material, i.e. the one from RenderLayers.
+		// so it will use the default material, i.e. the one from ChunkSectionLayers.
 		ChunkSectionLayerMap.putBlock(Registration.FRAME_BLOCK, ChunkSectionLayer.CUTOUT);
 	}
 }

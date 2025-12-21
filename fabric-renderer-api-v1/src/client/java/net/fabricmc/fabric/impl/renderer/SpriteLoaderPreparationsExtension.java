@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.impl.renderer;
 
-import net.minecraft.client.resources.model.SpriteGetter;
+import org.jspecify.annotations.Nullable;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 
-public interface BasicItemModelExtension {
-	void fabric_setMesh(Mesh mesh, SpriteGetter spriteGetter);
+public interface SpriteLoaderPreparationsExtension {
+	@Nullable
+	SpriteFinder fabric_spriteFinderNullable();
 }

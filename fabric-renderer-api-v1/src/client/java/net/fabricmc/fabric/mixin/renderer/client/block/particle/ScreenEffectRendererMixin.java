@@ -39,9 +39,9 @@ abstract class ScreenEffectRendererMixin {
 	private static BlockPos pos;
 
 	@Redirect(method = "renderScreenEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockModelShaper;getParticleIcon(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;"))
-	private static TextureAtlasSprite getModelParticleSpriteProxy(BlockModelShaper models, BlockState state, @Local Player playerEntity) {
+	private static TextureAtlasSprite getParticleIconProxy(BlockModelShaper models, BlockState state, @Local Player playerEntity) {
 		if (pos != null) {
-			TextureAtlasSprite sprite = models.getModelParticleSprite(state, playerEntity.level(), pos);
+			TextureAtlasSprite sprite = models.getParticleIcon(state, playerEntity.level(), pos);
 			pos = null;
 			return sprite;
 		}

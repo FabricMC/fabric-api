@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.renderer.v1.render;
+package net.fabricmc.fabric.impl.renderer;
+
+import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -22,12 +24,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 
-/**
- * Like {@link MultiBufferSource}, but takes {@link ChunkSectionLayer} instead of {@link RenderType}. Primarily
- * used to correctly render block models which have geometry on more than one layer.
- *
- * @see FabricBlockModelRenderer
- */
-public interface BlockVertexConsumerProvider {
-	VertexConsumer getBuffer(ChunkSectionLayer layer);
+import net.fabricmc.fabric.api.renderer.v1.render.BlockMultiBufferSource;
+
+public class DelegatingBlockMultiBufferSourceImpl implements BlockMultiBufferSource {
+	public MultiBufferSource multiBufferSource;
+	public Function<ChunkSectionLayer, RenderType> renderTypeFunction;
+
+	@Override
+	public VertexConsumer getBuffer(ChunkSectionLayer layer) {
+		return multiBufferSource.getBuffer(renderTypeFunction.apply(layer));
+	}
 }

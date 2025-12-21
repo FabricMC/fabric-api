@@ -35,30 +35,32 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 /**
  * Note: This interface is automatically implemented on {@link BlockRenderDispatcher} via Mixin and interface injection.
  */
-public interface FabricBlockRenderManager {
+public interface FabricBlockRenderDispatcher {
 	/**
 	 * Alternative for
 	 * {@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)} that
 	 * additionally accepts the {@link BlockAndTintGetter} and {@link BlockPos} to pass to
 	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
 	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
-	 * on multiple render layers and to provide the model with additional context.</b>
+	 * on multiple chunk layers and to provide the model with additional context.</b>
 	 *
 	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
 	 * entity renderers.
 	 *
 	 * @param state The block state.
-	 * @param matrices The matrices.
-	 * @param vertexConsumers The vertex consumers.
+	 * @param poseStack The pose stack.
+	 * @param bufferSource The buffer source.
 	 * @param light The minimum light value.
 	 * @param overlay The overlay value.
-	 * @param blockView The world in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
-	 * @param pos The position of the block in the world. <b>Should be {@link BlockPos#ZERO} if the world is empty.
+	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
+	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
 	 *            </b>
 	 *
-	 * @see FabricRenderCommandQueue#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
+	 * @see FabricOrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
 	 */
-	default void renderBlockAsEntity(BlockState state, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos) {
-		Renderer.get().renderBlockAsEntity((BlockRenderDispatcher) this, state, matrices, vertexConsumers, light, overlay, blockView, pos);
+	default void renderBlockAsEntity(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
+		Renderer.get().renderBlockAsEntity((BlockRenderDispatcher) this, state,
+				poseStack, bufferSource, light, overlay,
+				level, pos);
 	}
 }

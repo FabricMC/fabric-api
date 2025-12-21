@@ -23,8 +23,8 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.world.level.block.state.BlockState;
 
-public final class RenderLayerHelper {
-	private RenderLayerHelper() {
+public final class ChunkSectionLayerHelper {
+	private ChunkSectionLayerHelper() {
 	}
 
 	/**
@@ -49,18 +49,18 @@ public final class RenderLayerHelper {
 	}
 
 	/**
-	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render layers using
+	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types using
 	 * {@link #getMovingBlockLayer(ChunkSectionLayer)}.
 	 */
-	public static BlockVertexConsumerProvider movingDelegate(MultiBufferSource vertexConsumers) {
-		return layer -> vertexConsumers.getBuffer(RenderLayerHelper.getMovingBlockLayer(layer));
+	public static BlockMultiBufferSource movingDelegate(MultiBufferSource bufferSource) {
+		return layer -> bufferSource.getBuffer(ChunkSectionLayerHelper.getMovingBlockLayer(layer));
 	}
 
 	/**
-	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render layers using
+	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types using
 	 * {@link #getEntityBlockLayer(ChunkSectionLayer)}.
 	 */
-	public static BlockVertexConsumerProvider entityDelegate(MultiBufferSource vertexConsumers) {
-		return layer -> vertexConsumers.getBuffer(RenderLayerHelper.getEntityBlockLayer(layer));
+	public static BlockMultiBufferSource entityDelegate(MultiBufferSource bufferSource) {
+		return layer -> bufferSource.getBuffer(ChunkSectionLayerHelper.getEntityBlockLayer(layer));
 	}
 }

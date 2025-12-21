@@ -52,21 +52,23 @@ public class BiomeDependentBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
-		if (((FabricBlockView) blockView).hasBiomes() && ((FabricBlockView) blockView).getBiomeFabric(pos).is(biomeTag)) {
-			biomeModel.emitQuads(emitter, blockView, pos, state, random, cullTest);
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+		if (((FabricBlockView) level).hasBiomes() && ((FabricBlockView) level).getBiomeFabric(pos).is(biomeTag)) {
+			biomeModel.emitQuads(emitter,
+					level, pos, state, random, cullTest);
 		} else {
-			regularModel.emitQuads(emitter, blockView, pos, state, random, cullTest);
+			regularModel.emitQuads(emitter,
+					level, pos, state, random, cullTest);
 		}
 	}
 
 	@Override
 	@Nullable
-	public Object createGeometryKey(BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random) {
-		if (((FabricBlockView) blockView).hasBiomes() && ((FabricBlockView) blockView).getBiomeFabric(pos).is(biomeTag)) {
-			return biomeModel.createGeometryKey(blockView, pos, state, random);
+	public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+		if (((FabricBlockView) level).hasBiomes() && ((FabricBlockView) level).getBiomeFabric(pos).is(biomeTag)) {
+			return biomeModel.createGeometryKey(level, pos, state, random);
 		} else {
-			return regularModel.createGeometryKey(blockView, pos, state, random);
+			return regularModel.createGeometryKey(level, pos, state, random);
 		}
 	}
 
@@ -80,11 +82,11 @@ public class BiomeDependentBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleSprite(BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
-		if (((FabricBlockView) blockView).hasBiomes() && ((FabricBlockView) blockView).getBiomeFabric(pos).is(biomeTag)) {
-			return biomeModel.particleSprite(blockView, pos, state);
+	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		if (((FabricBlockView) level).hasBiomes() && ((FabricBlockView) level).getBiomeFabric(pos).is(biomeTag)) {
+			return biomeModel.particleIcon(level, pos, state);
 		} else {
-			return regularModel.particleSprite(blockView, pos, state);
+			return regularModel.particleIcon(level, pos, state);
 		}
 	}
 

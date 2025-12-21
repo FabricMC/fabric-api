@@ -29,15 +29,15 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.MeshBakedGeometry;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelBakeSettingsHelper;
+import net.fabricmc.fabric.api.renderer.v1.model.MeshQuadCollection;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelStateHelper;
 
 public record PillarGeometry() implements UnbakedGeometry {
 	@Override
 	public QuadCollection bake(TextureSlots textures, ModelBaker baker, ModelState settings, ModelDebugName model) {
 		MutableMesh builder = Renderer.get().mutableMesh();
 		QuadEmitter emitter = builder.emitter();
-		emitter.pushTransform(ModelBakeSettingsHelper.asQuadTransform(settings, baker.sprites()));
+		emitter.pushTransform(ModelStateHelper.asQuadTransform(settings, baker.sprites()));
 
 		TextureAtlasSprite sprite = baker.sprites().get(textures.getMaterial("pillar"), model);
 
@@ -47,6 +47,6 @@ public record PillarGeometry() implements UnbakedGeometry {
 			emitter.emit();
 		}
 
-		return new MeshBakedGeometry(builder.immutableCopy());
+		return new MeshQuadCollection(builder.immutableCopy());
 	}
 }

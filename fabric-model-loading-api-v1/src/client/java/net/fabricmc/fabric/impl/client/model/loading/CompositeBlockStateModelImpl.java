@@ -123,8 +123,8 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleSprite(BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
-		return models[0].particleSprite(blockView, pos, state);
+	public TextureAtlasSprite particleIcon(BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
+		return models[0].particleIcon(blockView, pos, state);
 	}
 
 	public record Unbaked(@Unmodifiable List<BlockStateModel.Unbaked> models) implements CompositeBlockStateModel.Unbaked {

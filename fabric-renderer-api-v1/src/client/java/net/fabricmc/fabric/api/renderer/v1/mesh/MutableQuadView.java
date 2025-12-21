@@ -200,7 +200,7 @@ public interface MutableQuadView extends QuadView {
 
 	/**
 	 * Sets the minimum lightmap value for the given vertex. Input values will override lightmap values computed from
-	 * world state if input values are higher. Exposed for completeness but some rendering implementations with
+	 * level state if input values are higher. Exposed for completeness but some rendering implementations with
 	 * non-standard lighting model may not honor it.
 	 *
 	 * <p>For emissive rendering, prefer using {@link #emissive(boolean)}.
@@ -281,14 +281,14 @@ public interface MutableQuadView extends QuadView {
 	 * Controls how this quad's pixels should be blended with the scene.
 	 *
 	 * <p>If set to {@code null}, {@link ItemBlockRenderTypes#getChunkRenderType(BlockState)} will be used to retrieve
-	 * the render layer in block contexts. Set to another value to override this behavior.
+	 * the {@linkplain ChunkSectionLayer chunk layer} in block contexts. Set to another value to override this behavior.
 	 *
 	 * <p>In block contexts, a non-null value will be used directly. In item contexts, any value will be converted to a
 	 * {@link RenderType} using {@link FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)}.
 	 *
 	 * <p>The default value is {@code null}.
 	 */
-	MutableQuadView renderLayer(@Nullable ChunkSectionLayer renderLayer);
+	MutableQuadView chunkLayer(@Nullable ChunkSectionLayer layer);
 
 	/**
 	 * When true, this quad will be rendered at full brightness.
@@ -329,10 +329,10 @@ public interface MutableQuadView extends QuadView {
 	MutableQuadView ambientOcclusion(TriState ao);
 
 	/**
-	 * Controls how glint should be applied.
+	 * Controls how foil (also known as glint) should be applied.
 	 *
-	 * <p>If set to {@code null}, glint will be applied in item contexts based on
-	 * {@linkplain ItemStackRenderState.LayerRenderState#setFoilType(ItemStackRenderState.FoilType) the glint type of the layer}. Set
+	 * <p>If set to {@code null}, foil will be applied in item contexts based on
+	 * {@linkplain ItemStackRenderState.LayerRenderState#setFoilType(ItemStackRenderState.FoilType) the foil type of the layer}. Set
 	 * to another value to override this behavior.
 	 *
 	 * <p>The default value is {@code null}.
@@ -340,7 +340,7 @@ public interface MutableQuadView extends QuadView {
 	 * <p>This property is guaranteed to be respected in item contexts. Some renderers may also respect it in block
 	 * contexts, but this is not guaranteed.
 	 */
-	MutableQuadView glint(ItemStackRenderState.@Nullable FoilType glint);
+	MutableQuadView foilType(ItemStackRenderState.@Nullable FoilType foilType);
 
 	/**
 	 * A hint to the renderer about how this quad is intended to be shaded, for example through ambient occlusion and

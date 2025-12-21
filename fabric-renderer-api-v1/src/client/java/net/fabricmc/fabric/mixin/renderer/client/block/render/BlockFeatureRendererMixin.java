@@ -38,12 +38,12 @@ import net.minecraft.client.renderer.feature.BlockFeatureRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockModelRenderer;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderLayerHelper;
-import net.fabricmc.fabric.impl.renderer.BatchingRenderCommandQueueExtension;
-import net.fabricmc.fabric.impl.renderer.DelegatingBlockVertexConsumerProviderImpl;
-import net.fabricmc.fabric.impl.renderer.ExtendedBlockCommand;
-import net.fabricmc.fabric.impl.renderer.ExtendedBlockStateModelCommand;
+import net.fabricmc.fabric.api.renderer.v1.render.ChunkSectionLayerHelper;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
+import net.fabricmc.fabric.impl.renderer.DelegatingBlockMultiBufferSourceImpl;
+import net.fabricmc.fabric.impl.renderer.ExtendedBlockModelSubmit;
+import net.fabricmc.fabric.impl.renderer.ExtendedBlockSubmit;
+import net.fabricmc.fabric.impl.renderer.SubmitNodeCollectionExtension;
 
 @Mixin(BlockFeatureRenderer.class)
 abstract class BlockFeatureRendererMixin {
@@ -51,49 +51,58 @@ abstract class BlockFeatureRendererMixin {
 	@Final
 	private PoseStack poseStack;
 
-	// Support multi-render layer models (MovingBlockCommand).
+	// Support multi-chunk layer models (MovingBlockSubmit).
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z", ordinal = 0))
-	private void beforeRenderMovingBlocks(SubmitNodeCollection queue, MultiBufferSource.BufferSource vertexConsumers, BlockRenderDispatcher blockRenderManager, OutlineBufferSource outlineVertexConsumers, CallbackInfo ci, @Local Iterator<SubmitNodeStorage.MovingBlockSubmit> iterator) {
+	private void beforeRenderMovingBlocks(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, BlockRenderDispatcher blockRenderDispatcher, OutlineBufferSource outlineBufferSource, CallbackInfo ci, @Local Iterator<SubmitNodeStorage.MovingBlockSubmit> iterator) {
 		while (iterator.hasNext()) {
 			SubmitNodeStorage.MovingBlockSubmit command = iterator.next();
 			MovingBlockRenderState renderState = command.movingBlockRenderState();
 			BlockState blockState = renderState.blockState;
-			BlockStateModel model = blockRenderManager.getBlockModel(blockState);
+			BlockStateModel model = blockRenderDispatcher.getBlockModel(blockState);
 			long seed = blockState.getSeed(renderState.randomSeedPos);
 			poseStack.pushPose();
 			poseStack.mulPose(command.pose());
-			blockRenderManager.getModelRenderer().render(renderState, model, blockState, renderState.blockPos, poseStack, RenderLayerHelper.movingDelegate(vertexConsumers), false, seed, OverlayTexture.NO_OVERLAY);
+			blockRenderDispatcher.getModelRenderer().render(renderState, model, blockState, renderState.blockPos, poseStack, ChunkSectionLayerHelper.movingDelegate(
+					bufferSource), false, seed, OverlayTexture.NO_OVERLAY);
 			poseStack.popPose();
 		}
 	}
 
-	// Support ExtendedBlockCommand and ExtendedBlockStateModelCommand.
+	// Support ExtendedBlockSubmit and ExtendedBlockModelSubmit.
 	@Inject(method = "render", at = @At("RETURN"))
-	private void onReturnRender(SubmitNodeCollection queue, MultiBufferSource.BufferSource vertexConsumers, BlockRenderDispatcher blockRenderManager, OutlineBufferSource outlineVertexConsumers, CallbackInfo ci) {
-		DelegatingBlockVertexConsumerProviderImpl blockVertexConsumerProvider = new DelegatingBlockVertexConsumerProviderImpl();
+	private void onReturnRender(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, BlockRenderDispatcher blockRenderDispatcher, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
+		DelegatingBlockMultiBufferSourceImpl blockMultiBufferSource = new DelegatingBlockMultiBufferSourceImpl();
 
-		for (ExtendedBlockCommand command : ((BatchingRenderCommandQueueExtension) queue).fabric_getExtendedBlockCommands()) {
+		for (ExtendedBlockSubmit submit : ((SubmitNodeCollectionExtension) nodeCollection).fabric_getExtendedBlockSubmits()) {
 			poseStack.pushPose();
-			poseStack.last().set(command.matricesEntry());
-			blockRenderManager.renderBlockAsEntity(command.state(), poseStack, vertexConsumers, command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos());
+			poseStack.last().set(submit.pose());
+			blockRenderDispatcher.renderBlockAsEntity(
+					submit.state(), poseStack,
+					bufferSource, submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos());
 
-			if (command.outlineColor() != 0) {
-				outlineVertexConsumers.setColor(command.outlineColor());
-				blockRenderManager.renderBlockAsEntity(command.state(), poseStack, outlineVertexConsumers, command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos());
+			if (submit.outlineColor() != 0) {
+				outlineBufferSource.setColor(submit.outlineColor());
+				blockRenderDispatcher.renderBlockAsEntity(
+						submit.state(), poseStack,
+						outlineBufferSource, submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos());
 			}
 
 			poseStack.popPose();
 		}
 
-		for (ExtendedBlockStateModelCommand command : ((BatchingRenderCommandQueueExtension) queue).fabric_getExtendedBlockStateModelCommands()) {
-			blockVertexConsumerProvider.renderLayerFunction = command.renderLayerFunction();
-			blockVertexConsumerProvider.vertexConsumerProvider = vertexConsumers;
-			FabricBlockModelRenderer.render(command.matricesEntry(), blockVertexConsumerProvider, command.model(), command.r(), command.g(), command.b(), command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos(), command.state());
+		for (ExtendedBlockModelSubmit submit : ((SubmitNodeCollectionExtension) nodeCollection).fabric_getExtendedBlockModelSubmits()) {
+			blockMultiBufferSource.renderTypeFunction = submit.renderTypeFunction();
+			blockMultiBufferSource.multiBufferSource = bufferSource;
+			FabricModelBlockRenderer.render(
+					submit.pose(),
+					blockMultiBufferSource, submit.model(), submit.r(), submit.g(), submit.b(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(), submit.state());
 
-			if (command.outlineColor() != 0) {
-				outlineVertexConsumers.setColor(command.outlineColor());
-				blockVertexConsumerProvider.vertexConsumerProvider = outlineVertexConsumers;
-				FabricBlockModelRenderer.render(command.matricesEntry(), blockVertexConsumerProvider, command.model(), command.r(), command.g(), command.b(), command.lightCoords(), command.overlayCoords(), command.blockView(), command.pos(), command.state());
+			if (submit.outlineColor() != 0) {
+				outlineBufferSource.setColor(submit.outlineColor());
+				blockMultiBufferSource.multiBufferSource = outlineBufferSource;
+				FabricModelBlockRenderer.render(
+						submit.pose(),
+						blockMultiBufferSource, submit.model(), submit.r(), submit.g(), submit.b(), submit.lightCoords(), submit.overlayCoords(), submit.level(), submit.pos(), submit.state());
 			}
 		}
 	}

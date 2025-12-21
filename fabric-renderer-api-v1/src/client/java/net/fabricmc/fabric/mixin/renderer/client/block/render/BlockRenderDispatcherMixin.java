@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 
-import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockRenderManager;
+import net.fabricmc.fabric.api.renderer.v1.render.FabricBlockRenderDispatcher;
 
 @Mixin(BlockRenderDispatcher.class)
-abstract class BlockRenderDispatcherMixin implements FabricBlockRenderManager {
+abstract class BlockRenderDispatcherMixin implements FabricBlockRenderDispatcher {
 }

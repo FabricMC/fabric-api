@@ -31,7 +31,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import net.fabricmc.fabric.api.renderer.v1.render.BlockVertexConsumerProvider;
+import net.fabricmc.fabric.api.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
@@ -42,7 +42,7 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 
 	private final RandomSource random = RandomSource.createNewThreadLocalInstance();
 
-	private BlockVertexConsumerProvider vertexConsumers;
+	private BlockMultiBufferSource vertexConsumers;
 
 	@Override
 	protected LightDataProvider createLightDataProvider(BlockRenderInfo blockInfo) {
@@ -65,7 +65,7 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 		return vertexConsumers.getBuffer(layer);
 	}
 
-	public void bufferModel(BlockAndTintGetter blockView, BlockStateModel model, BlockState state, BlockPos pos, PoseStack matrixStack, BlockVertexConsumerProvider vertexConsumers, boolean cull, long seed, int overlay) {
+	public void bufferModel(BlockAndTintGetter blockView, BlockStateModel model, BlockState state, BlockPos pos, PoseStack matrixStack, BlockMultiBufferSource vertexConsumers, boolean cull, long seed, int overlay) {
 		try {
 			Vec3 offset = state.getOffset(pos);
 			matrixStack.translate(offset.x, offset.y, offset.z);

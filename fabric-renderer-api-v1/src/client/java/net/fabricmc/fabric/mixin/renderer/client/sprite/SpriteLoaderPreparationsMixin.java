@@ -29,12 +29,12 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
-import net.fabricmc.fabric.api.renderer.v1.sprite.FabricStitchResult;
+import net.fabricmc.fabric.api.renderer.v1.sprite.FabricPreparations;
 import net.fabricmc.fabric.impl.renderer.SpriteFinderImpl;
-import net.fabricmc.fabric.impl.renderer.StitchResultExtension;
+import net.fabricmc.fabric.impl.renderer.SpriteLoaderPreparationsExtension;
 
 @Mixin(SpriteLoader.Preparations.class)
-abstract class SpriteLoaderPreparationsMixin implements FabricStitchResult, StitchResultExtension {
+abstract class SpriteLoaderPreparationsMixin implements FabricPreparations, SpriteLoaderPreparationsExtension {
 	@Shadow
 	@Final
 	private TextureAtlasSprite missing;

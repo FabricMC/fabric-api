@@ -26,21 +26,22 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * Note: This interface is automatically implemented on {@link BlockModelShaper} via Mixin and interface injection.
  */
-public interface FabricBlockModels {
+public interface FabricBlockModelShaper {
 	/**
 	 * Alternative for {@link BlockModelShaper#getParticleIcon(BlockState)} that additionally accepts a
 	 * {@link BlockAndTintGetter} and {@link BlockPos} to invoke
-	 * {@link FabricBlockStateModel#particleSprite(BlockAndTintGetter, BlockPos, BlockState)}. <b>Prefer using this method
-	 * over the vanilla alternative when applicable to correctly retrieve context-aware particle sprites.</b> If world
-	 * context is not available, use the vanilla method instead of passing empty world context to this method.
+	 * {@link FabricBlockStateModel#particleIcon(BlockAndTintGetter, BlockPos, BlockState)}. <b>Prefer using this method
+	 * over the vanilla alternative when applicable to correctly retrieve context-aware particle sprites.</b> If level
+	 * context is not available, use the vanilla method instead of passing empty level context to this method.
 	 *
 	 * @param state The block state whose model to retrieve the particle sprite from.
-	 * @param blockView The world in which the block exists. <b>Should not be empty (i.e. not
+	 * @param level The level in which the block exists. <b>Should not be empty (i.e. not
 	 * 	                {@link EmptyBlockAndTintGetter}).</b>
-	 * @param pos The position of the block in the world.
+	 * @param pos The position of the block in the level.
 	 * @return the particle sprite
 	 */
-	default TextureAtlasSprite getModelParticleSprite(BlockState state, BlockAndTintGetter blockView, BlockPos pos) {
-		return ((BlockModelShaper) this).getBlockModel(state).particleSprite(blockView, pos, state);
+	default TextureAtlasSprite getParticleIcon(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+		return ((BlockModelShaper) this).getBlockModel(state).particleIcon(
+				level, pos, state);
 	}
 }

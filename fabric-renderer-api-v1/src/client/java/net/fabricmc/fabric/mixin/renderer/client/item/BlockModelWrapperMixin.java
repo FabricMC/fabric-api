@@ -42,10 +42,10 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.impl.renderer.BasicItemModelExtension;
+import net.fabricmc.fabric.impl.renderer.BlockModelWrapperExtension;
 
 @Mixin(BlockModelWrapper.class)
-abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtension {
+abstract class BlockModelWrapperMixin implements ItemModel, BlockModelWrapperExtension {
 	@Shadow
 	@Final
 	@Mutable
@@ -98,7 +98,7 @@ abstract class BlockModelWrapperMixin implements ItemModel, BasicItemModelExtens
 					return;
 				}
 
-				ItemStackRenderState.FoilType glint = quad.glint();
+				ItemStackRenderState.FoilType glint = quad.foilType();
 
 				if ((glint != null && glint != ItemStackRenderState.FoilType.NONE)
 						|| spriteGetter.spriteFinder(quad.atlas().getTextureId()).find(quad).contents().isAnimated()) {
