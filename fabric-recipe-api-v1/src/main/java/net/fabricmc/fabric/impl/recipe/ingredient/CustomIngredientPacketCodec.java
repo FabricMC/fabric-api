@@ -79,7 +79,7 @@ public class CustomIngredientPacketCodec implements StreamCodec<RegistryFriendly
 			return true;
 		}
 
-		// Can be null if we're not writing a packet from the PacketEncoder; in that case, always write the full ingredient.
+		// Can be null if we're not writing a packet from the StreamEncoder; in that case, always write the full ingredient.
 		// Chances are this is a mod's doing and the client has the Ingredient API with the relevant ingredients.
 		Set<Identifier> supportedIngredients = CustomIngredientSync.CURRENT_SUPPORTED_INGREDIENTS.get();
 		return supportedIngredients != null && !supportedIngredients.contains(customIngredient.getSerializer().getIdentifier());

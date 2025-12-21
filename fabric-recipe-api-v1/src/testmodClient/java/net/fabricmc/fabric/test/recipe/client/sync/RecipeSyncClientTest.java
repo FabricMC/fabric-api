@@ -25,12 +25,12 @@ import net.fabricmc.fabric.api.client.recipe.v1.sync.ClientRecipeSynchronizedEve
 import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
 
 public class RecipeSyncClientTest implements ClientModInitializer {
-	private static void compareWithLocalServer(Minecraft client, SynchronizedRecipes synchronizedRecipes) {
-		if (client.getSingleplayerServer() == null) {
+	private static void compareWithLocalServer(Minecraft minecraft, SynchronizedRecipes synchronizedRecipes) {
+		if (minecraft.getSingleplayerServer() == null) {
 			return;
 		}
 
-		RecipeManager recipeManager = client.getSingleplayerServer().getRecipeManager();
+		RecipeManager recipeManager = minecraft.getSingleplayerServer().getRecipeManager();
 
 		for (RecipeHolder<?> recipeEntry : synchronizedRecipes.recipes()) {
 			RecipeHolder<?> serverRecipeEntry = recipeManager.byKey(recipeEntry.id()).orElseThrow(() -> new IllegalStateException("Server is missing client recipe '" + recipeEntry.id().identifier() + "'!"));

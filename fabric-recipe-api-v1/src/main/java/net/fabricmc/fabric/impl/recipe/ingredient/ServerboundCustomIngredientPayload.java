@@ -16,20 +16,25 @@
 
 package net.fabricmc.fabric.impl.recipe.ingredient;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 
-public record CustomIngredientPayloadS2C(int protocolVersion) implements CustomPacketPayload {
-	public static final StreamCodec<FriendlyByteBuf, CustomIngredientPayloadS2C> CODEC = StreamCodec.composite(
-			ByteBufCodecs.VAR_INT, CustomIngredientPayloadS2C::protocolVersion,
-			CustomIngredientPayloadS2C::new
+public record ServerboundCustomIngredientPayload(int protocolVersion, Set<Identifier> registeredSerializers) implements CustomPacketPayload {
+	public static final StreamCodec<FriendlyByteBuf, ServerboundCustomIngredientPayload> CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, ServerboundCustomIngredientPayload::protocolVersion,
+			ByteBufCodecs.collection(HashSet::new, Identifier.STREAM_CODEC), ServerboundCustomIngredientPayload::registeredSerializers,
+			ServerboundCustomIngredientPayload::new
 	);
-	public static final CustomPacketPayload.Type<CustomIngredientPayloadS2C> ID = new Type<>(CustomIngredientSync.PACKET_ID);
+	public static final CustomPacketPayload.Type<ServerboundCustomIngredientPayload> TYPE = new Type<>(CustomIngredientSync.PACKET_ID);
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
-		return ID;
+		return TYPE;
 	}
 }

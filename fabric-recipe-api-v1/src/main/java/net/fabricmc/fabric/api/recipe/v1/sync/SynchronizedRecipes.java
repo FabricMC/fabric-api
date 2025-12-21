@@ -42,13 +42,13 @@ import net.minecraft.world.level.Level;
 public interface SynchronizedRecipes {
 	/**
 	 * Creates a stream of all recipe entries of the given {@code type} that match the
-	 * given {@code input} and {@code world}.
+	 * given {@code input} and {@code level}.
 	 *
 	 * <p>If {@code input.isEmpty()} returns true, the returned stream will be always empty.
 	 *
 	 * @return the stream of matching recipes
 	 */
-	<I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level world);
+	<I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level level);
 
 	/**
 	 * @return the collection of recipe entries of given type
@@ -56,33 +56,33 @@ public interface SynchronizedRecipes {
 	<I extends RecipeInput, T extends Recipe<I>> Collection<RecipeHolder<T>> getAllOfType(RecipeType<T> type);
 
 	/**
-	 * Finds a first recipe entry (or @{code recipe}, if it matches and isn't null) of the given {@code type} that matches the
-	 * given {@code input} and {@code world}.
+	 * Finds a first recipe entry (or {@code recipe}, if it matches and isn't null) of the given {@code type} that matches the
+	 * given {@code input} and {@code level}.
 	 *
 	 * @return the optional containing matching recipe entry or empty
 	 */
-	default <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level world, @Nullable ResourceKey<Recipe<?>> recipe) {
+	default <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level level, @Nullable ResourceKey<Recipe<?>> recipe) {
 		RecipeHolder<T> recipeEntry = recipe != null ? this.get(type, recipe) : null;
-		return this.getFirstMatch(type, input, world, recipeEntry);
+		return this.getFirstMatch(type, input, level, recipeEntry);
 	}
 
 	/**
-	 * Finds a first recipe entry (or @{code recipe}, if it matches and isn't null) of the given {@code type} that matches the
-	 * given {@code input} and {@code world}.
+	 * Finds a first recipe entry (or {@code recipe}, if it matches and isn't null) of the given {@code type} that matches the
+	 * given {@code input} and {@code level}.
 	 *
 	 * @return the optional containing matching recipe entry or empty
 	 */
-	default <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level world, @Nullable RecipeHolder<T> recipe) {
-		return recipe != null && recipe.value().matches(input, world) ? Optional.of(recipe) : this.getFirstMatch(type, input, world);
+	default <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level level, @Nullable RecipeHolder<T> recipe) {
+		return recipe != null && recipe.value().matches(input, level) ? Optional.of(recipe) : this.getFirstMatch(type, input, level);
 	}
 
 	/**
 	 * Finds a first recipe entry of the given {@code type} that matches the
-	 * given {@code input} and {@code world}.
+	 * given {@code input} and {@code level}.
 	 *
 	 * @return the optional containing matching recipe entry or empty
 	 */
-	<I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level world);
+	<I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level level);
 
 	/**
 	 * @return recipe with matching {@code key} or null if not present

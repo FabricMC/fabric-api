@@ -62,12 +62,12 @@ public class CustomDataIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public Stream<Holder<Item>> getMatchingItems() {
+	public Stream<Holder<Item>> items() {
 		return base.items();
 	}
 
 	@Override
-	public SlotDisplay toDisplay() {
+	public SlotDisplay display() {
 		return new SlotDisplay.Composite(
 				base.items().map(this::createEntryDisplay).toList()
 		);

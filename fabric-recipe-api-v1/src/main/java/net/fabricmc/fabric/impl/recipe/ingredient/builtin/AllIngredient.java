@@ -55,7 +55,7 @@ public class AllIngredient extends CombinedIngredient {
 	}
 
 	@Override
-	public Stream<Holder<Item>> getMatchingItems() {
+	public Stream<Holder<Item>> items() {
 		// There's always at least one sub ingredient, so accessing ingredients[0] is safe.
 		List<Holder<Item>> previewStacks = new ArrayList<>(ingredients.getFirst().items().toList());
 

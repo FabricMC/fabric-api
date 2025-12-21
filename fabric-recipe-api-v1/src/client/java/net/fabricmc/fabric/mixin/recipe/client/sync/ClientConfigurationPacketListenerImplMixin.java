@@ -31,13 +31,13 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.impl.recipe.sync.RecipeSyncImpl;
-import net.fabricmc.fabric.impl.recipe.sync.SupportedRecipeSerializersPayloadC2S;
+import net.fabricmc.fabric.impl.recipe.sync.ServerboundSupportedRecipeSerializersPayload;
 
 @Mixin(ClientConfigurationPacketListenerImpl.class)
 public class ClientConfigurationPacketListenerImplMixin {
 	@Inject(method = "handleSelectKnownPacks", at = @At("TAIL"))
 	private void sendSupportedRecipeSerializers(ClientboundSelectKnownPacks packet, CallbackInfo ci) {
-		if (!ClientConfigurationNetworking.canSend(SupportedRecipeSerializersPayloadC2S.ID)) {
+		if (!ClientConfigurationNetworking.canSend(ServerboundSupportedRecipeSerializersPayload.TYPE)) {
 			return;
 		}
 
@@ -52,6 +52,6 @@ public class ClientConfigurationPacketListenerImplMixin {
 			return;
 		}
 
-		ClientConfigurationNetworking.send(new SupportedRecipeSerializersPayloadC2S(ids));
+		ClientConfigurationNetworking.send(new ServerboundSupportedRecipeSerializersPayload(ids));
 	}
 }
