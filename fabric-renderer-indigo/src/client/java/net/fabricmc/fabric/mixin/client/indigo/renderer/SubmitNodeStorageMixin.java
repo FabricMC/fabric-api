@@ -49,14 +49,14 @@ abstract class SubmitNodeStorageMixin implements SubmitNodeCollector, AccessOrde
 			MeshView mesh,
 			ItemRenderTypeGetter renderTypeGetter
 	) {
-		OrderedSubmitNodeCollector queue = order(0);
+		OrderedSubmitNodeCollector nodeCollector = order(0);
 
-		if (queue instanceof AccessOrderedSubmitNodeCollector access) {
+		if (nodeCollector instanceof AccessOrderedSubmitNodeCollector access) {
 			access.fabric_submitItem(poseStack, displayContext, light, overlay, outlineColors, tintLayers, quads,
 					renderType,
 					foilType, mesh, renderTypeGetter);
 		} else {
-			queue.submitItem(poseStack, displayContext, light, overlay, outlineColors, tintLayers, quads,
+			nodeCollector.submitItem(poseStack, displayContext, light, overlay, outlineColors, tintLayers, quads,
 					renderType,
 					foilType
 			);
