@@ -21,7 +21,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.data.loot.BlockLootSubProvider;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
-import net.fabricmc.fabric.impl.datagen.loot.ConditionBlockLootTableGenerator;
+import net.fabricmc.fabric.impl.datagen.loot.ConditionBlockLootSubProvider;
 
 /**
  * Fabric-provided extensions for {@link BlockLootSubProvider}.
@@ -36,6 +36,6 @@ public interface FabricBlockLootSubProvider {
 	default BlockLootSubProvider withConditions(ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 
-		return new ConditionBlockLootTableGenerator((BlockLootSubProvider) this, conditions);
+		return new ConditionBlockLootSubProvider((BlockLootSubProvider) this, conditions);
 	}
 }
