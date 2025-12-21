@@ -65,30 +65,30 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDynamicRegistryProvider.class);
 
 	private final FabricPackOutput output;
-	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
+	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 
-	public FabricDynamicRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+	public FabricDynamicRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 		this.output = output;
-		this.registryLookupFuture = registryLookupFuture;
+		this.registriesFuture = registriesFuture;
 	}
 
-	protected abstract void configure(HolderLookup.Provider registryLookup, Entries entries);
+	protected abstract void configure(HolderLookup.Provider registries, Entries entries);
 
 	public static final class Entries {
-		private final HolderLookup.Provider registryLookup;
+		private final HolderLookup.Provider registries;
 		// Registry ID -> Entries for that registry
-		private final Map<Identifier, Holders<?>> queuedEntries;
+		private final Map<Identifier, RegistryEntries<?>> queuedEntries;
 		private final String modId;
 
 		@ApiStatus.Internal
-		Entries(HolderLookup.Provider registryLookup, String modId) {
-			this.registryLookup = registryLookup;
+		Entries(HolderLookup.Provider registries, String modId) {
+			this.registries = registries;
 			this.queuedEntries = DynamicRegistries.getDynamicRegistries().stream()
 					// Some modded dynamic registries might not be in the wrapper lookup, filter them out
-					.filter(e -> registryLookup.lookup(e.key()).isPresent())
+					.filter(e -> registries.lookup(e.key()).isPresent())
 					.collect(Collectors.toMap(
 							e -> e.key().identifier(),
-							e -> Holders.create(registryLookup, e)
+							e -> RegistryEntries.create(registries, e)
 					));
 			this.modId = modId;
 		}
@@ -97,14 +97,14 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		 * Gets access to all holder lookups.
 		 */
 		public HolderLookup.Provider getLookups() {
-			return registryLookup;
+			return registries;
 		}
 
 		/**
-		 * Gets a lookup for holders from the given holder lookup.
+		 * Gets a lookup for entries from the given registry.
 		 */
 		public <T> HolderGetter<T> getLookup(ResourceKey<? extends Registry<T>> registryKey) {
-			return registryLookup.lookupOrThrow(registryKey);
+			return registries.lookupOrThrow(registryKey);
 		}
 
 		/**
@@ -125,7 +125,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		 * Gets a reference to a holder for use in other registrations.
 		 */
 		public <T> Holder<T> ref(ResourceKey<T> key) {
-			Holders<T> entries = getQueuedEntries(key);
+			RegistryEntries<T> entries = getQueuedEntries(key);
 			return Holder.Reference.createStandAlone(entries.lookup, key);
 		}
 
@@ -203,37 +203,37 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		@SuppressWarnings("unchecked")
-		<T> Holders<T> getQueuedEntries(ResourceKey<T> key) {
-			Holders<?> regEntries = queuedEntries.get(key.registry());
+		<T> RegistryEntries<T> getQueuedEntries(ResourceKey<T> key) {
+			RegistryEntries<?> regEntries = queuedEntries.get(key.registry());
 
 			if (regEntries == null) {
 				throw new IllegalArgumentException("Registry " + key.registry() + " is not loaded from datapacks");
 			}
 
-			return (Holders<T>) regEntries;
+			return (RegistryEntries<T>) regEntries;
 		}
 	}
 
 	private record ConditionalEntry<T>(T value, @Nullable ResourceCondition... conditions) {
 	}
 
-	private static class Holders<T> {
+	private static class RegistryEntries<T> {
 		final HolderOwner<T> lookup;
 		final ResourceKey<? extends Registry<T>> registry;
 		final Codec<T> elementCodec;
 		Map<ResourceKey<T>, ConditionalEntry<T>> resources = new IdentityHashMap<>();
 
-		Holders(HolderOwner<T> lookup,
-				ResourceKey<? extends Registry<T>> registry,
-				Codec<T> elementCodec) {
+		RegistryEntries(HolderOwner<T> lookup,
+						ResourceKey<? extends Registry<T>> registry,
+						Codec<T> elementCodec) {
 			this.lookup = lookup;
 			this.registry = registry;
 			this.elementCodec = elementCodec;
 		}
 
-		static <T> Holders<T> create(HolderLookup.Provider registryLookups, RegistryDataLoader.RegistryData<T> loaderEntry) {
+		static <T> RegistryEntries<T> create(HolderLookup.Provider registryLookups, RegistryDataLoader.RegistryData<T> loaderEntry) {
 			HolderLookup.RegistryLookup<T> lookup = registryLookups.lookupOrThrow(loaderEntry.key());
-			return new Holders<>(lookup, loaderEntry.key(), loaderEntry.elementCodec());
+			return new RegistryEntries<>(lookup, loaderEntry.key(), loaderEntry.elementCodec());
 		}
 
 		Holder<T> add(ResourceKey<T> key, T value, @Nullable ResourceCondition[] conditions) {
@@ -247,7 +247,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		return registryLookupFuture.thenCompose(registries -> {
+		return registriesFuture.thenCompose(registries -> {
 			return CompletableFuture
 					.supplyAsync(() -> {
 						Entries entries = new Entries(registries, output.getModId());
@@ -258,8 +258,8 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 						final RegistryOps<JsonElement> dynamicOps = registries.createSerializationContext(JsonOps.INSTANCE);
 						ArrayList<CompletableFuture<?>> futures = new ArrayList<>();
 
-						for (Holders<?> holders : entries.queuedEntries.values()) {
-							futures.add(writeHolders(cache, dynamicOps, holders));
+						for (RegistryEntries<?> registryEntries : entries.queuedEntries.values()) {
+							futures.add(writeHolders(cache, dynamicOps, registryEntries));
 						}
 
 						return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
@@ -267,16 +267,16 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		});
 	}
 
-	private <T> CompletableFuture<?> writeHolders(CachedOutput cache, RegistryOps<JsonElement> ops, Holders<T> holders) {
-		final ResourceKey<? extends Registry<T>> registry = holders.registry;
+	private <T> CompletableFuture<?> writeHolders(CachedOutput cache, RegistryOps<JsonElement> ops, RegistryEntries<T> registryEntries) {
+		final ResourceKey<? extends Registry<T>> registry = registryEntries.registry;
 		final boolean shouldOmitNamespace = registry.identifier().getNamespace().equals(Identifier.DEFAULT_NAMESPACE) || !DynamicRegistriesImpl.FABRIC_DYNAMIC_REGISTRY_KEYS.contains(registry);
 		final String directoryName = shouldOmitNamespace ? registry.identifier().getPath() : registry.identifier().getNamespace() + "/" + registry.identifier().getPath();
 		final PackOutput.PathProvider pathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, directoryName);
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-		for (Map.Entry<ResourceKey<T>, ConditionalEntry<T>> entry : holders.resources.entrySet()) {
+		for (Map.Entry<ResourceKey<T>, ConditionalEntry<T>> entry : registryEntries.resources.entrySet()) {
 			Path path = pathResolver.json(entry.getKey().identifier());
-			futures.add(writeToPath(path, cache, ops, holders.elementCodec, entry.getValue().value(), entry.getValue().conditions()));
+			futures.add(writeToPath(path, cache, ops, registryEntries.elementCodec, entry.getValue().value(), entry.getValue().conditions()));
 		}
 
 		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

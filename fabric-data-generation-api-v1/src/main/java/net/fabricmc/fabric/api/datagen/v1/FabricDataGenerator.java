@@ -171,7 +171,7 @@ public final class FabricDataGenerator extends DataGenerator {
 		 */
 		@FunctionalInterface
 		public interface RegistryDependentFactory<T extends DataProvider> {
-			T create(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture);
+			T create(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture);
 		}
 	}
 }

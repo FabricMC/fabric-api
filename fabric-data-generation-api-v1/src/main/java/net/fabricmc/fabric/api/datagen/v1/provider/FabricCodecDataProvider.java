@@ -48,26 +48,26 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
  */
 public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	private final PackOutput.PathProvider pathProvider;
-	private final CompletableFuture<HolderLookup.Provider> registryLookup;
+	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 	private final Codec<T> codec;
 
-	private FabricCodecDataProvider(PackOutput.PathProvider pathProvider, CompletableFuture<HolderLookup.Provider> registryLookup, Codec<T> codec) {
+	private FabricCodecDataProvider(PackOutput.PathProvider pathProvider, CompletableFuture<HolderLookup.Provider> registriesFuture, Codec<T> codec) {
 		this.pathProvider = pathProvider;
-		this.registryLookup = Objects.requireNonNull(registryLookup);
+		this.registriesFuture = Objects.requireNonNull(registriesFuture);
 		this.codec = codec;
 	}
 
-	protected FabricCodecDataProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup, PackOutput.Target target, String directoryName, Codec<T> codec) {
-		this(dataOutput.createPathProvider(target, directoryName), registryLookup, codec);
+	protected FabricCodecDataProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
+		this(dataOutput.createPathProvider(target, directoryName), registriesFuture, codec);
 	}
 
-	protected FabricCodecDataProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
-		this(dataOutput.createRegistryElementsPathProvider(key), registryLookup, codec);
+	protected FabricCodecDataProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
+		this(dataOutput.createRegistryElementsPathProvider(key), registriesFuture, codec);
 	}
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput output) {
-		return registryLookup.thenCompose(lookup -> {
+		return registriesFuture.thenCompose(lookup -> {
 			Map<Identifier, JsonElement> entries = new HashMap<>();
 			RegistryOps<JsonElement> ops = lookup.createSerializationContext(JsonOps.INSTANCE);
 
