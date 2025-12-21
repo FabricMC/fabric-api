@@ -63,7 +63,7 @@ public interface SoundTypeBuilder {
 	}
 
 	/**
-	 * @deprecated Category is not a field interpreted by vanilla in the sounds file,
+	 * @deprecated Source is not a field interpreted by vanilla in the sounds file,
 	 * calling this method will have no effect.
 	 */
 	@Deprecated(forRemoval = true)
