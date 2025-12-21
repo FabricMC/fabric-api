@@ -139,8 +139,8 @@ public class AoCalculator {
 				0, 0, 0, 0, -1, quad.lightFace(), null, true, 0
 		);
 
-		ModelBlockRenderer.calculateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, bakedQuad, vanillaCalc);
-		vanillaCalc.calculate(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, quad.lightFace(), quad.diffuseShade());
+		ModelBlockRenderer.calculateShape(blockInfo.level, blockInfo.blockState, blockInfo.blockPos, bakedQuad, vanillaCalc);
+		vanillaCalc.calculate(blockInfo.level, blockInfo.blockState, blockInfo.blockPos, quad.lightFace(), quad.diffuseShade());
 
 		System.arraycopy(vanillaCalc.brightness, 0, aoDest, 0, 4);
 		System.arraycopy(vanillaCalc.lightmap, 0, lightDest, 0, 4);
@@ -151,7 +151,7 @@ public class AoCalculator {
 		boolean isOnLightFace = (flags & LIGHT_FACE_FLAG) != 0;
 
 		// force to block face if shape is full cube - matches vanilla logic
-		if (!isOnLightFace && (flags & AXIS_ALIGNED_FLAG) != 0 && blockInfo.blockState.isCollisionShapeFullBlock(blockInfo.blockView, blockInfo.blockPos)) {
+		if (!isOnLightFace && (flags & AXIS_ALIGNED_FLAG) != 0 && blockInfo.blockState.isCollisionShapeFullBlock(blockInfo.level, blockInfo.blockPos)) {
 			isOnLightFace = true;
 		}
 
@@ -340,7 +340,7 @@ public class AoCalculator {
 	 * Except for parameterization, the logic itself is practically identical to vanilla.
 	 */
 	private void computeFace(AoFaceData result, Direction lightFace, boolean isOnBlockFace, boolean shade) {
-		final BlockAndTintGetter world = blockInfo.blockView;
+		final BlockAndTintGetter world = blockInfo.level;
 		final BlockPos pos = blockInfo.blockPos;
 		final BlockState blockState = blockInfo.blockState;
 		final BlockPos.MutableBlockPos lightPos = this.lightPos;

@@ -45,7 +45,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRendererRegion;
+import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessRenderSectionRegion;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderContext;
 
 /**
@@ -73,23 +73,25 @@ abstract class SectionCompilerMixin {
 	@Shadow
 	protected abstract BufferBuilder getOrBeginLayer(
 			Map<ChunkSectionLayer, BufferBuilder> builders,
-			SectionBufferBuilderPack allocatorStorage,
+			SectionBufferBuilderPack buffers,
 			ChunkSectionLayer layer
 	);
 
 	@Inject(method = "compile",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;betweenClosed(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/BlockPos;)Ljava/lang/Iterable;"))
 	private void hookBuild(SectionPos sectionPos, RenderSectionRegion region, VertexSorting sorter,
-						SectionBufferBuilderPack allocators,
+						SectionBufferBuilderPack buffers,
 						CallbackInfoReturnable<SectionCompiler.Results> cir,
 						@Local(ordinal = 0) BlockPos sectionOrigin,
-						@Local(ordinal = 0) PoseStack matrixStack,
+						@Local(ordinal = 0) PoseStack poseStack,
 						@Local(ordinal = 0) Map<ChunkSectionLayer, BufferBuilder> builderMap,
 						@Local(ordinal = 0) RandomSource random) {
 		// hook just before iterating over the render chunk's blocks to capture the buffer builder map
 		TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
-		renderer.prepare(region, sectionOrigin, matrixStack, random, layer -> getOrBeginLayer(builderMap, allocators, layer));
-		((AccessChunkRendererRegion) region).fabric_setRenderer(renderer);
+		renderer.prepare(region, sectionOrigin,
+				poseStack, random, layer -> getOrBeginLayer(builderMap,
+						buffers, layer));
+		((AccessRenderSectionRegion) region).fabric_setRenderer(renderer);
 	}
 
 	/**
@@ -106,12 +108,12 @@ abstract class SectionCompilerMixin {
 	 * which was specifically created to provide for enhanced terrain rendering.
 	 */
 	@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getRenderShape()Lnet/minecraft/world/level/block/RenderShape;"))
-	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack allocatorStorage, @Local(ordinal = 2) BlockPos blockPos) {
+	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack buffers, @Local(ordinal = 2) BlockPos blockPos) {
 		RenderShape blockRenderType = blockState.getRenderShape();
 
 		if (blockRenderType == RenderShape.MODEL) {
 			BlockStateModel model = blockRenderer.getBlockModel(blockState);
-			((AccessChunkRendererRegion) renderRegion).fabric_getRenderer().bufferModel(model, blockState, blockPos);
+			((AccessRenderSectionRegion) renderRegion).fabric_getRenderer().bufferModel(model, blockState, blockPos);
 			return RenderShape.INVISIBLE; // Cancel the vanilla logic
 		}
 
@@ -122,8 +124,8 @@ abstract class SectionCompilerMixin {
 	 * Release all references. Probably not necessary but would be $#%! to debug if it is.
 	 */
 	@Inject(method = "compile", at = @At(value = "RETURN"))
-	private void hookBuildReturn(SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack allocatorStorage, CallbackInfoReturnable<SectionCompiler.Results> cir) {
-		((AccessChunkRendererRegion) renderRegion).fabric_getRenderer().release();
-		((AccessChunkRendererRegion) renderRegion).fabric_setRenderer(null);
+	private void hookBuildReturn(SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack buffers, CallbackInfoReturnable<SectionCompiler.Results> cir) {
+		((AccessRenderSectionRegion) renderRegion).fabric_getRenderer().release();
+		((AccessRenderSectionRegion) renderRegion).fabric_setRenderer(null);
 	}
 }

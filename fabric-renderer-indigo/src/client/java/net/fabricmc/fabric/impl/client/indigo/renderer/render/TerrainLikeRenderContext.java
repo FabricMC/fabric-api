@@ -42,7 +42,7 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 
 	private final RandomSource random = RandomSource.createNewThreadLocalInstance();
 
-	private BlockMultiBufferSource vertexConsumers;
+	private BlockMultiBufferSource bufferSource;
 
 	@Override
 	protected LightDataProvider createLightDataProvider(BlockRenderInfo blockInfo) {
@@ -50,44 +50,45 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 		return new LightDataProvider() {
 			@Override
 			public int light(BlockPos pos, BlockState state) {
-				return LevelRenderer.getLightCoords(LevelRenderer.BrightnessGetter.DEFAULT, blockInfo.blockView, state, pos);
+				return LevelRenderer.getLightCoords(LevelRenderer.BrightnessGetter.DEFAULT, blockInfo.level, state, pos);
 			}
 
 			@Override
 			public float ao(BlockPos pos, BlockState state) {
-				return AoLuminanceFix.INSTANCE.apply(blockInfo.blockView, pos, state);
+				return AoLuminanceFix.INSTANCE.apply(blockInfo.level, pos, state);
 			}
 		};
 	}
 
 	@Override
 	protected VertexConsumer getVertexConsumer(ChunkSectionLayer layer) {
-		return vertexConsumers.getBuffer(layer);
+		return bufferSource.getBuffer(layer);
 	}
 
-	public void bufferModel(BlockAndTintGetter blockView, BlockStateModel model, BlockState state, BlockPos pos, PoseStack matrixStack, BlockMultiBufferSource vertexConsumers, boolean cull, long seed, int overlay) {
+	public void bufferModel(BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay) {
 		try {
 			Vec3 offset = state.getOffset(pos);
-			matrixStack.translate(offset.x, offset.y, offset.z);
-			matrices = matrixStack.last();
+			poseStack.translate(offset.x, offset.y, offset.z);
+			pose = poseStack.last();
 			this.overlay = overlay;
 
-			this.vertexConsumers = vertexConsumers;
+			this.bufferSource = bufferSource;
 
-			blockInfo.prepareForWorld(blockView, cull);
+			blockInfo.prepareForLevel(level, cull);
 			random.setSeed(seed);
 
 			prepare(pos, state);
-			model.emitQuads(getEmitter(), blockView, pos, state, random, blockInfo::shouldCullSide);
+			model.emitQuads(getEmitter(), level, pos, state, random, blockInfo::shouldCullSide);
 		} catch (Throwable throwable) {
 			CrashReport crashReport = CrashReport.forThrowable(throwable, "Tessellating block model - Indigo Renderer");
 			CrashReportCategory crashReportSection = crashReport.addCategory("Block model being tessellated");
-			CrashReportCategory.populateBlockDetails(crashReportSection, blockView, pos, state);
+			CrashReportCategory.populateBlockDetails(crashReportSection,
+					level, pos, state);
 			throw new ReportedException(crashReport);
 		} finally {
 			blockInfo.release();
-			matrices = null;
-			this.vertexConsumers = null;
+			pose = null;
+			this.bufferSource = null;
 		}
 	}
 }

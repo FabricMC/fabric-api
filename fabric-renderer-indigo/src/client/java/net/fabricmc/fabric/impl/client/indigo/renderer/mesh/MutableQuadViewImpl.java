@@ -176,7 +176,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public MutableQuadViewImpl chunkLayer(@Nullable ChunkSectionLayer layer) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.renderLayer(data[baseIndex + HEADER_BITS],
+		data[baseIndex + HEADER_BITS] = EncodingFormat.chunkLayer(data[baseIndex + HEADER_BITS],
 				layer
 		);
 		return this;
@@ -203,7 +203,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public MutableQuadViewImpl foilType(ItemStackRenderState.@Nullable FoilType foilType) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.glint(data[baseIndex + HEADER_BITS],
+		data[baseIndex + HEADER_BITS] = EncodingFormat.foilType(data[baseIndex + HEADER_BITS],
 				foilType
 		);
 		return this;

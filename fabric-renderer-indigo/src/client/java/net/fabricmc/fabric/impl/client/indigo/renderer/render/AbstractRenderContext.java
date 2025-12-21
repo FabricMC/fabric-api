@@ -42,7 +42,7 @@ public abstract class AbstractRenderContext {
 	private final Vector4f posVec = new Vector4f();
 	private final Vector3f normalVec = new Vector3f();
 
-	protected PoseStack.Pose matrices;
+	protected PoseStack.Pose pose;
 	protected int overlay;
 
 	protected QuadEmitter getEmitter() {
@@ -56,14 +56,14 @@ public abstract class AbstractRenderContext {
 	protected void bufferQuad(MutableQuadViewImpl quad, VertexConsumer vertexConsumer) {
 		final Vector4f posVec = this.posVec;
 		final Vector3f normalVec = this.normalVec;
-		final PoseStack.Pose matrices = this.matrices;
-		final Matrix4f posMatrix = matrices.pose();
+		final PoseStack.Pose pose = this.pose;
+		final Matrix4f posMatrix = pose.pose();
 		final boolean useNormals = quad.hasVertexNormals();
 
 		if (useNormals) {
 			quad.populateMissingNormals();
 		} else {
-			matrices.transformNormal(quad.faceNormal(), normalVec);
+			pose.transformNormal(quad.faceNormal(), normalVec);
 		}
 
 		for (int i = 0; i < 4; i++) {
@@ -72,7 +72,7 @@ public abstract class AbstractRenderContext {
 
 			if (useNormals) {
 				quad.copyNormal(i, normalVec);
-				matrices.transformNormal(normalVec, normalVec);
+				pose.transformNormal(normalVec, normalVec);
 			}
 
 			vertexConsumer.addVertex(posVec.x(), posVec.y(), posVec.z(), quad.color(i), quad.u(i), quad.v(i), overlay, quad.lightmap(i), normalVec.x(), normalVec.y(), normalVec.z());

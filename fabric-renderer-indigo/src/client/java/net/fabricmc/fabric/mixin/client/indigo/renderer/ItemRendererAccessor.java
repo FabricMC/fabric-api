@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 @Mixin(ItemRenderer.class)
 public interface ItemRendererAccessor {
 	@Invoker("getSpecialFoilBuffer")
-	static VertexConsumer fabric_getDynamicDisplayGlintConsumer(MultiBufferSource provider, RenderType layer, PoseStack.Pose entry) {
+	static VertexConsumer fabric_getSpecialFoilBuffer(MultiBufferSource bufferSource, RenderType renderType, PoseStack.Pose pose) {
 		throw new AssertionError();
 	}
 }

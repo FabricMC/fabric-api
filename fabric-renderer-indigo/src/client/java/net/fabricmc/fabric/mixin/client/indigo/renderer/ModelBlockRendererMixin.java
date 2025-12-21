@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
 @Mixin(ModelBlockRenderer.class)
 abstract class ModelBlockRendererMixin {
 	@Overwrite
-	public static void renderModel(PoseStack.Pose entry, VertexConsumer vertexConsumer, BlockStateModel model, float red, float green, float blue, int light, int overlay) {
-		FabricModelBlockRenderer.render(entry, layer -> vertexConsumer, model, red, green, blue, light, overlay, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
+	public static void renderModel(PoseStack.Pose pose, VertexConsumer vertexConsumer, BlockStateModel model, float red, float green, float blue, int light, int overlay) {
+		FabricModelBlockRenderer.render(pose, layer -> vertexConsumer, model, red, green, blue, light, overlay, EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, Blocks.AIR.defaultBlockState());
 	}
 }
