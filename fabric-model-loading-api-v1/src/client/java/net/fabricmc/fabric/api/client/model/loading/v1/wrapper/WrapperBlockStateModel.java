@@ -62,18 +62,18 @@ public abstract class WrapperBlockStateModel implements BlockStateModel {
 	}
 
 	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
-		wrapped.emitQuads(emitter, blockView, pos, state, random, cullTest);
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+		wrapped.emitQuads(emitter, level, pos, state, random, cullTest);
 	}
 
 	@Override
 	@Nullable
-	public Object createGeometryKey(BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random) {
-		return wrapped.createGeometryKey(blockView, pos, state, random);
+	public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+		return wrapped.createGeometryKey(level, pos, state, random);
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon(BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
-		return wrapped.particleIcon(blockView, pos, state);
+	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		return wrapped.particleIcon(level, pos, state);
 	}
 }

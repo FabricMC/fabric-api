@@ -68,7 +68,7 @@ public interface ModelLoadingPlugin {
 
 		/**
 		 * Add a model that will be loaded, baked, and made available through
-		 * {@link FabricBakedModelManager#getModel(ExtraModelKey)}.
+		 * {@link FabricModelManager#getModel(ExtraModelKey)}.
 		 *
 		 * <p>Dependency gathering and baking is performed by an {@link UnbakedExtraModel}. This allows you to depend
 		 * on multiple models files at once, baking them into a single dynamic model. To load a single model, then

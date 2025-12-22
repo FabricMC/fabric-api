@@ -78,30 +78,30 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	}
 
 	@Override
-	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 		long seed = random.nextLong();
 
 		for (BlockStateModel model : models) {
 			random.setSeed(seed);
-			model.emitQuads(emitter, blockView, pos, state, random, cullTest);
+			model.emitQuads(emitter, level, pos, state, random, cullTest);
 		}
 	}
 
 	@Override
 	@Nullable
-	public Object createGeometryKey(BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random) {
+	public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
 		int count = models.length;
 		long seed = random.nextLong();
 
 		if (count == 1) {
 			random.setSeed(seed);
-			return models[0].createGeometryKey(blockView, pos, state, random);
+			return models[0].createGeometryKey(level, pos, state, random);
 		} else {
 			List<Object> subkeys = new ArrayList<>(count);
 
 			for (BlockStateModel submodel : models) {
 				random.setSeed(seed);
-				Object subkey = submodel.createGeometryKey(blockView, pos, state, random);
+				Object subkey = submodel.createGeometryKey(level, pos, state, random);
 
 				if (subkey == null) {
 					return null;
@@ -123,8 +123,8 @@ public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
 	}
 
 	@Override
-	public TextureAtlasSprite particleIcon(BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
-		return models[0].particleIcon(blockView, pos, state);
+	public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		return models[0].particleIcon(level, pos, state);
 	}
 
 	public record Unbaked(@Unmodifiable List<BlockStateModel.Unbaked> models) implements CompositeBlockStateModel.Unbaked {

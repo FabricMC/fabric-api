@@ -143,10 +143,10 @@ public class ModelTestModClient implements ClientModInitializer {
 		}
 
 		@Override
-		public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+		public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
 			emitter.pushTransform(q -> q.cullFace() != Direction.DOWN);
 			// Modify the cullTest as an example of how to achieve maximum performance
-			super.emitQuads(emitter, blockView, pos, state, random, cullFace -> {
+			super.emitQuads(emitter, level, pos, state, random, cullFace -> {
 				if (cullFace == Direction.DOWN) {
 					return true;
 				}
@@ -158,8 +158,8 @@ public class ModelTestModClient implements ClientModInitializer {
 
 		@Override
 		@Nullable
-		public Object createGeometryKey(BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random) {
-			Object subkey = wrapped.createGeometryKey(blockView, pos, state, random);
+		public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+			Object subkey = wrapped.createGeometryKey(level, pos, state, random);
 
 			if (subkey == null) {
 				return subkey;

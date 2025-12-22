@@ -216,7 +216,7 @@ public final class ModelModifier {
 			/**
 			 * The vanilla context being used to bake this model.
 			 */
-			ItemModel.BakingContext bakeContext();
+			ItemModel.BakingContext bakingContext();
 		}
 	}
 
@@ -250,7 +250,7 @@ public final class ModelModifier {
 			/**
 			 * The vanilla context being used to bake this model.
 			 */
-			ItemModel.BakingContext bakeContext();
+			ItemModel.BakingContext bakingContext();
 		}
 	}
 

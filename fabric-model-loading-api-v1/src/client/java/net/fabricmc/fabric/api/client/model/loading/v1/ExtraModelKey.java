@@ -25,10 +25,10 @@ import org.jetbrains.annotations.Contract;
  *
  * <p>Extra models can be registered with a {@link ModelLoadingPlugin} (see
  * {@link ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)}). Once baking is complete, they may
- * then be queried from the model manager using {@link FabricBakedModelManager#getModel(ExtraModelKey)}.
+ * then be queried from the model manager using {@link FabricModelManager#getModel(ExtraModelKey)}.
  *
  * @param <T> The type of the baked model.
- * @see FabricBakedModelManager#getModel(ExtraModelKey)
+ * @see FabricModelManager#getModel(ExtraModelKey)
  * @see ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)
  */
 public final class ExtraModelKey<T> {

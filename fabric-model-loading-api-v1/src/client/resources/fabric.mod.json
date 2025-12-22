@@ -36,7 +36,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/client/resources/model/ModelManager": ["net/fabricmc/fabric/api/client/model/loading/v1/FabricBakedModelManager"]
+      "net/minecraft/client/resources/model/ModelManager": ["net/fabricmc/fabric/api/client/model/loading/v1/FabricModelManager"]
     }
   }
 }

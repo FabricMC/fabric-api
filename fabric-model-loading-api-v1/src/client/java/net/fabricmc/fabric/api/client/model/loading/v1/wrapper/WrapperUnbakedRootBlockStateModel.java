@@ -24,13 +24,13 @@ import net.minecraft.world.level.block.state.BlockState;
  * A simple implementation of {@link BlockStateModel.UnbakedRoot} that delegates all method calls to the
  * {@link #wrapped} field. Implementations must set the {@link #wrapped} field somehow.
  */
-public abstract class WrapperUnbakedGroupedBlockStateModel implements BlockStateModel.UnbakedRoot {
+public abstract class WrapperUnbakedRootBlockStateModel implements BlockStateModel.UnbakedRoot {
 	protected BlockStateModel.UnbakedRoot wrapped;
 
-	protected WrapperUnbakedGroupedBlockStateModel() {
+	protected WrapperUnbakedRootBlockStateModel() {
 	}
 
-	protected WrapperUnbakedGroupedBlockStateModel(BlockStateModel.UnbakedRoot wrapped) {
+	protected WrapperUnbakedRootBlockStateModel(BlockStateModel.UnbakedRoot wrapped) {
 		this.wrapped = wrapped;
 	}
 
