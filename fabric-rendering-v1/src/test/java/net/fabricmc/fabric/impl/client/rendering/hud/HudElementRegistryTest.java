@@ -159,7 +159,7 @@ public class HudElementRegistryTest {
 	}
 
 	private HudElement testElement(String name) {
-		return (context, tickCounter) -> drawnLayers.add(name);
+		return (context, deltaTracker) -> drawnLayers.add(name);
 	}
 
 	private Identifier testIdentifier(String name) {

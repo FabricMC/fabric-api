@@ -53,7 +53,7 @@ public class SpecialGuiElementRendererTest implements ClientModInitializer, Fabr
 
 		// TODO: Migrate to new HUD API once available
 		//noinspection deprecation
-		HudRenderCallback.EVENT.register((context, tickCounter) -> {
+		HudRenderCallback.EVENT.register((context, deltaTracker) -> {
 			// render it twice to test that special GUI elements can be added multiple times in the same frame
 			context.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 20, 0, 40, 20, new ScreenRectangle(20, 0, 40, 20)));
 			context.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.RED, 40, 0, 60, 20, new ScreenRectangle(40, 0, 60, 20)));

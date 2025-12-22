@@ -44,7 +44,7 @@ public class SpecialGuiElementRendererTestWithNewGuiRenderer implements ClientMo
 
 		// TODO: Migrate to new HUD API once available
 		//noinspection deprecation
-		HudRenderCallback.EVENT.register((context, tickCounter) -> {
+		HudRenderCallback.EVENT.register((context, deltaTracker) -> {
 			Minecraft client = Minecraft.getInstance();
 			GuiRenderState newGuiRenderState = new GuiRenderState();
 
