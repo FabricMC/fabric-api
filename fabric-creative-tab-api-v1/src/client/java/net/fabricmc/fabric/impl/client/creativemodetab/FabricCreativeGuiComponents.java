@@ -56,7 +56,7 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		protected void renderContents(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
+		protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 			this.active = type.isEnabled.test(screen);
 			this.visible = screen.hasAdditionalPages();
 
@@ -66,10 +66,10 @@ public class FabricCreativeGuiComponents {
 
 			int u = active && this.isHovered() ? 20 : 0;
 			int v = active ? 0 : 12;
-			drawContext.blit(RenderPipelines.GUI_TEXTURED, BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 10 : 0), v, 10, 12, 256, 256);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 10 : 0), v, 10, 12, 256, 256);
 
 			if (this.isHovered()) {
-				drawContext.setTooltipForNextFrame(Minecraft.getInstance().font, net.minecraft.network.chat.Component.translatable("fabric.gui.creativeTabPage", screen.getCurrentPage() + 1, getPageCount()), mouseX, mouseY);
+				graphics.setTooltipForNextFrame(Minecraft.getInstance().font, net.minecraft.network.chat.Component.translatable("fabric.gui.creativeTabPage", screen.getCurrentPage() + 1, getPageCount()), mouseX, mouseY);
 			}
 		}
 	}
