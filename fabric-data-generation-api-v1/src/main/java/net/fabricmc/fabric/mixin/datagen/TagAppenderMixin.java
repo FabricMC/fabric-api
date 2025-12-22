@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 @Mixin(TagAppender.class)
 interface TagAppenderMixin<E, T> extends FabricProvidedTagBuilder<E, T> {
 	@Mixin(targets = "net.minecraft.data.tags.TagAppender$1")
-	abstract class ProvidedTagBuilder1Mixin<E, T> implements TagAppenderMixin<E, T> {
+	abstract class TagAppender1Mixin<E, T> implements TagAppenderMixin<E, T> {
 		// the builder param
 		@Shadow
 		@Final
@@ -54,7 +54,7 @@ interface TagAppenderMixin<E, T> extends FabricProvidedTagBuilder<E, T> {
 	}
 
 	@Mixin(targets = "net.minecraft.data.tags.TagAppender$2")
-	abstract class ProvidedTagBuilder2Mixin<E, T> implements TagAppenderMixin<E, T> {
+	abstract class TagAppender2Mixin<E, T> implements TagAppenderMixin<E, T> {
 		// TagAppender.this
 		@Shadow
 		@Final
