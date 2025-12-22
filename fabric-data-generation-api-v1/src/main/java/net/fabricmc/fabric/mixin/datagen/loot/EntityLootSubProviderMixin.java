@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.data.loot.EntityLootSubProvider;
 
-import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootTableGenerator;
+import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootSubProvider;
 
 @Mixin(EntityLootSubProvider.class)
-public class EntityLootSubProviderMixin implements FabricEntityLootTableGenerator {
+public class EntityLootSubProviderMixin implements FabricEntityLootSubProvider {
 }

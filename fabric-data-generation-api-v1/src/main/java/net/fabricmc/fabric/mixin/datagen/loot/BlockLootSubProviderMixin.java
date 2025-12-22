@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.data.loot.BlockLootSubProvider;
 
-import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootTableGenerator;
+import net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootSubProvider;
 
 @Mixin(BlockLootSubProvider.class)
-public class BlockLootSubProviderMixin implements FabricBlockLootTableGenerator {
+public class BlockLootSubProviderMixin implements FabricBlockLootSubProvider {
 }

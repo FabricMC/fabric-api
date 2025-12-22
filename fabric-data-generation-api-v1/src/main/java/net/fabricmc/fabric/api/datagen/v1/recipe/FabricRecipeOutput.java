@@ -22,7 +22,7 @@ import net.minecraft.resources.Identifier;
 /**
  * Injected to all {@link RecipeOutput} instances.
  */
-public interface FabricRecipeExporter {
+public interface FabricRecipeOutput {
 	/**
 	 * Override this method to change the recipe identifier.
 	 *
