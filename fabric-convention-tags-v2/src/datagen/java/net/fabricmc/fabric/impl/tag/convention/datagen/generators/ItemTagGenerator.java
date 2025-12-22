@@ -25,18 +25,18 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 
 public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
-	public ItemTagGenerator(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, FabricTagProvider.BlockTagProvider blockTags) {
+	public ItemTagGenerator(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, FabricTagProvider.BlockTagProvider blockTags) {
 		super(output, registriesFuture, blockTags);
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider arg) {
+	protected void addTags(HolderLookup.Provider registries) {
 		generateToolTags();
 		generateBucketTags();
 		generateOreAndRelatedTags();

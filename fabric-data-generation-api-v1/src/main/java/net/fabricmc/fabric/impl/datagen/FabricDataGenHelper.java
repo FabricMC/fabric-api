@@ -218,9 +218,9 @@ public final class FabricDataGenHelper {
 			value.apply(merged);
 		}
 
-		HolderLookup.Provider wrapperLookup = merged.build(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
-		VanillaRegistries.validateThatAllBiomeFeaturesHaveBiomeFilter(wrapperLookup);
-		return wrapperLookup;
+		HolderLookup.Provider registryLookup = merged.build(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
+		VanillaRegistries.validateThatAllBiomeFeaturesHaveBiomeFilter(registryLookup);
+		return registryLookup;
 	}
 
 	/**

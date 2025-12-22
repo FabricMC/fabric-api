@@ -63,11 +63,11 @@ public interface SoundTypeBuilder {
 	}
 
 	/**
-	 * @deprecated Category is not a field interpreted by vanilla in the sounds file,
+	 * @deprecated Source is not a field interpreted by vanilla in the sounds file,
 	 * calling this method will have no effect.
 	 */
 	@Deprecated(forRemoval = true)
-	default SoundTypeBuilder category(SoundSource category) {
+	default SoundTypeBuilder source(SoundSource source) {
 		return this;
 	}
 
@@ -103,7 +103,9 @@ public interface SoundTypeBuilder {
 	 * <p>Calling this with the count value of {@code 3} is the equivalent of doing:
 	 *
 	 * <p>{@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("1"));}
+	 * <br>
 	 * {@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("2"));}
+	 * <br>
 	 * {@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("3"));}
 	 *
 	 * @param sound base sound to add

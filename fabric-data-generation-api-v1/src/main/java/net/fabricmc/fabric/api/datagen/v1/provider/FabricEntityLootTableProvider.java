@@ -38,7 +38,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 
 /**
@@ -48,15 +48,15 @@ import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
  * {@link DataGeneratorEntrypoint}.
  */
 public abstract class FabricEntityLootTableProvider extends EntityLootSubProvider implements FabricLootTableProvider {
-	private final FabricDataOutput output;
+	private final FabricPackOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
 	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
 
-	protected FabricEntityLootTableProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
-		super(FeatureFlags.REGISTRY.allFlags(), registryLookup.join());
+	protected FabricEntityLootTableProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+		super(FeatureFlags.REGISTRY.allFlags(), registryLookupFuture.join());
 
 		this.output = output;
-		this.registryLookupFuture = registryLookup;
+		this.registryLookupFuture = registryLookupFuture;
 	}
 
 	/**
@@ -120,8 +120,8 @@ public abstract class FabricEntityLootTableProvider extends EntityLootSubProvide
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput writer) {
-		return FabricLootTableProviderImpl.run(writer, this, LootContextParamSets.ENTITY, this.output, this.registryLookupFuture);
+	public CompletableFuture<?> run(CachedOutput output) {
+		return FabricLootTableProviderImpl.run(output, this, LootContextParamSets.ENTITY, this.output, this.registryLookupFuture);
 	}
 
 	@Override

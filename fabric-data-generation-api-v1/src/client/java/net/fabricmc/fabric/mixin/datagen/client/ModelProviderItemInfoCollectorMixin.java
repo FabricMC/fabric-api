@@ -35,13 +35,13 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.client.FabricItemAssetDefinitions;
 
 @Mixin(ModelProvider.ItemInfoCollector.class)
 public class ModelProviderItemInfoCollectorMixin implements FabricItemAssetDefinitions {
 	@Unique
-	private FabricDataOutput fabricDataOutput;
+	private FabricPackOutput fabricPackOutput;
 	@Unique
 	private Set<Block> processedBlocks;
 
@@ -51,21 +51,21 @@ public class ModelProviderItemInfoCollectorMixin implements FabricItemAssetDefin
 	}
 
 	@Override
-	public void setFabricDataOutput(FabricDataOutput fabricDataOutput) {
-		this.fabricDataOutput = fabricDataOutput;
+	public void setFabricPackOutput(FabricPackOutput fabricPackOutput) {
+		this.fabricPackOutput = fabricPackOutput;
 	}
 
 	@WrapOperation(method = "lambda$finalizeAndValidate$0", at = @At(value = "INVOKE", target = "Ljava/util/Map;containsKey(Ljava/lang/Object;)Z", ordinal = 1))
 	private boolean filterItemsForProcessingMod(Map<Item, ClientItem> map, Object o, Operation<Boolean> original) {
 		BlockItem blockItem = (BlockItem) o;
 
-		if (fabricDataOutput != null) {
+		if (fabricPackOutput != null) {
 			// Only generate the item model if the block state json was registered
 			if (!processedBlocks.contains(blockItem.getBlock())) {
 				return true;
 			}
 
-			if (!BuiltInRegistries.ITEM.getKey(blockItem).getNamespace().equals(fabricDataOutput.getModId())) {
+			if (!BuiltInRegistries.ITEM.getKey(blockItem).getNamespace().equals(fabricPackOutput.getModId())) {
 				// Skip over items that are not from the mod we are processing.
 				return true;
 			}
@@ -76,11 +76,11 @@ public class ModelProviderItemInfoCollectorMixin implements FabricItemAssetDefin
 
 	@ModifyArg(method = "finalizeAndValidate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
 	private Predicate<Holder.Reference<Item>> filterItemsForProcessingMod(Predicate<Holder.Reference<Item>> original) {
-		if (fabricDataOutput != null) {
+		if (fabricPackOutput != null) {
 			return original
-					.and(item -> fabricDataOutput.isStrictValidationEnabled())
+					.and(item -> fabricPackOutput.isStrictValidationEnabled())
 					// Skip over items that are not from the mod we are processing.
-					.and(item -> item.key().identifier().getNamespace().equals(fabricDataOutput.getModId()));
+					.and(item -> item.key().identifier().getNamespace().equals(fabricPackOutput.getModId()));
 		}
 
 		return original;

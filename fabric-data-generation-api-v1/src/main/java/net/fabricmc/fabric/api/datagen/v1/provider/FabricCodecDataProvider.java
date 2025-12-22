@@ -39,7 +39,7 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
 /**
  * Extend this class and implement {@link FabricCodecDataProvider#configure(BiConsumer, HolderLookup.Provider)}.
@@ -47,27 +47,27 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricCodecDataProvider<T> implements DataProvider {
-	private final PackOutput.PathProvider pathResolver;
+	private final PackOutput.PathProvider pathProvider;
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 	private final Codec<T> codec;
 
-	private FabricCodecDataProvider(PackOutput.PathProvider pathResolver, CompletableFuture<HolderLookup.Provider> registriesFuture, Codec<T> codec) {
-		this.pathResolver = pathResolver;
+	private FabricCodecDataProvider(PackOutput.PathProvider pathProvider, CompletableFuture<HolderLookup.Provider> registriesFuture, Codec<T> codec) {
+		this.pathProvider = pathProvider;
 		this.registriesFuture = Objects.requireNonNull(registriesFuture);
 		this.codec = codec;
 	}
 
-	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target outputType, String directoryName, Codec<T> codec) {
-		this(dataOutput.createPathProvider(outputType, directoryName), registriesFuture, codec);
+	protected FabricCodecDataProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
+		this(dataOutput.createPathProvider(target, directoryName), registriesFuture, codec);
 	}
 
-	protected FabricCodecDataProvider(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
+	protected FabricCodecDataProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
 		this(dataOutput.createRegistryElementsPathProvider(key), registriesFuture, codec);
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput writer) {
-		return this.registriesFuture.thenCompose(lookup -> {
+	public CompletableFuture<?> run(CachedOutput output) {
+		return registriesFuture.thenCompose(lookup -> {
 			Map<Identifier, JsonElement> entries = new HashMap<>();
 			RegistryOps<JsonElement> ops = lookup.createSerializationContext(JsonOps.INSTANCE);
 
@@ -81,16 +81,16 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 			};
 
 			this.configure(provider, lookup);
-			return this.write(writer, entries);
+			return this.write(output, entries);
 		});
 	}
 
 	/**
 	 * Implement this method to register entries to generate using a {@link HolderLookup.Provider}.
 	 * @param provider A consumer that accepts an {@link Identifier} and a value to register.
-	 * @param lookup A lookup for registries.
+	 * @param registryLookup A lookup for registries.
 	 */
-	protected abstract void configure(BiConsumer<Identifier, T> provider, HolderLookup.Provider lookup);
+	protected abstract void configure(BiConsumer<Identifier, T> provider, HolderLookup.Provider registryLookup);
 
 	private JsonElement convert(Identifier id, T value, DynamicOps<JsonElement> ops) {
 		DataResult<JsonElement> dataResult = this.codec.encodeStart(ops, value);
@@ -99,10 +99,10 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 				.getOrThrow();
 	}
 
-	private CompletableFuture<?> write(CachedOutput writer, Map<Identifier, JsonElement> entries) {
+	private CompletableFuture<?> write(CachedOutput output, Map<Identifier, JsonElement> entries) {
 		return CompletableFuture.allOf(entries.entrySet().stream().map(entry -> {
-			Path path = this.pathResolver.json(entry.getKey());
-			return DataProvider.saveStable(writer, entry.getValue(), path);
+			Path path = this.pathProvider.json(entry.getKey());
+			return DataProvider.saveStable(output, entry.getValue(), path);
 		}).toArray(CompletableFuture[]::new));
 	}
 }

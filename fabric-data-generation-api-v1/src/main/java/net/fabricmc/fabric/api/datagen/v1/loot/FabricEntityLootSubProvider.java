@@ -23,7 +23,7 @@ import net.minecraft.data.loot.EntityLootSubProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.loot.ConditionEntityLootTableGenerator;
 
-public interface FabricEntityLootTableGenerator {
+public interface FabricEntityLootSubProvider {
 	/**
 	 * {@return a new generator that applies the specified conditions to any loot table it receives, and then forwards
 	 * the loot tables to this generator}.

@@ -27,11 +27,11 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.fabricmc.fabric.mixin.datagen.loot.BlockLootSubProviderAccessor;
 
-public class ConditionBlockLootTableGenerator extends BlockLootSubProvider {
+public class ConditionBlockLootSubProvider extends BlockLootSubProvider {
 	private final BlockLootSubProvider parent;
 	private final ResourceCondition[] conditions;
 
-	public ConditionBlockLootTableGenerator(BlockLootSubProvider parent, ResourceCondition[] conditions) {
+	public ConditionBlockLootSubProvider(BlockLootSubProvider parent, ResourceCondition[] conditions) {
 		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), ((BlockLootSubProviderAccessor) parent).getRegistries());
 
 		this.parent = parent;

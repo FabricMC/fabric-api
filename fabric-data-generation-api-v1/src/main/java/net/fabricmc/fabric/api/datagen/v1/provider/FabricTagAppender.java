@@ -23,7 +23,7 @@ import net.minecraft.tags.TagKey;
  * Interface-injected to {@link net.minecraft.data.tags.TagAppender}.
  */
 @SuppressWarnings("unchecked")
-public interface FabricProvidedTagBuilder<E, T> {
+public interface FabricTagAppender<E, T> {
 	/**
 	 * Sets the value of the {@code replace} flag. When set to {@code true}
 	 * this tag will replace contents of any other tag.

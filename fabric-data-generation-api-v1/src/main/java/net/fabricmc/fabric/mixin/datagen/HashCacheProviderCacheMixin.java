@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(targets = "net.minecraft.data.HashCache$ProviderCache")
-public abstract class DataCacheCachedDataMixin {
+public abstract class HashCacheProviderCacheMixin {
 	@ModifyExpressionValue(method = "save", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap;entrySet()Lcom/google/common/collect/ImmutableSet;"))
 	private ImmutableSet<Map.Entry<Path, HashCode>> sortPaths(ImmutableSet<Map.Entry<Path, HashCode>> original) {
 		return original.stream()

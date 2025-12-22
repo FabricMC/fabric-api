@@ -51,7 +51,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
@@ -64,10 +64,10 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDynamicRegistryProvider.class);
 
-	private final FabricDataOutput output;
+	private final FabricPackOutput output;
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 
-	public FabricDynamicRegistryProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+	public FabricDynamicRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 		this.output = output;
 		this.registriesFuture = registriesFuture;
 	}
@@ -122,7 +122,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		/**
-		 * Gets a reference to a registry entry for use in other registrations.
+		 * Gets a reference to a holder for use in other registrations.
 		 */
 		public <T> Holder<T> ref(ResourceKey<T> key) {
 			RegistryEntries<T> entries = getQueuedEntries(key);
@@ -193,7 +193,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		}
 
 		/**
-		 * All the registry entries whose namespace matches the current effective mod ID will be data generated.
+		 * All the holders whose namespace matches the current effective mod ID will be data generated.
 		 */
 		public <T> List<Holder<T>> addAll(HolderLookup.RegistryLookup<T> registry) {
 			return registry.listElementIds()
@@ -221,7 +221,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		final HolderOwner<T> lookup;
 		final ResourceKey<? extends Registry<T>> registry;
 		final Codec<T> elementCodec;
-		Map<ResourceKey<T>, ConditionalEntry<T>> entries = new IdentityHashMap<>();
+		Map<ResourceKey<T>, ConditionalEntry<T>> resources = new IdentityHashMap<>();
 
 		RegistryEntries(HolderOwner<T> lookup,
 						ResourceKey<? extends Registry<T>> registry,
@@ -231,14 +231,14 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 			this.elementCodec = elementCodec;
 		}
 
-		static <T> RegistryEntries<T> create(HolderLookup.Provider lookups, RegistryDataLoader.RegistryData<T> loaderEntry) {
-			HolderLookup.RegistryLookup<T> lookup = lookups.lookupOrThrow(loaderEntry.key());
+		static <T> RegistryEntries<T> create(HolderLookup.Provider registryLookups, RegistryDataLoader.RegistryData<T> loaderEntry) {
+			HolderLookup.RegistryLookup<T> lookup = registryLookups.lookupOrThrow(loaderEntry.key());
 			return new RegistryEntries<>(lookup, loaderEntry.key(), loaderEntry.elementCodec());
 		}
 
 		Holder<T> add(ResourceKey<T> key, T value, @Nullable ResourceCondition[] conditions) {
-			if (entries.put(key, new ConditionalEntry<>(value, conditions)) != null) {
-				throw new IllegalArgumentException("Trying to add registry key " + key + " more than once.");
+			if (resources.put(key, new ConditionalEntry<>(value, conditions)) != null) {
+				throw new IllegalArgumentException("Trying to add resource key " + key + " more than once.");
 			}
 
 			return Holder.Reference.createStandAlone(lookup, key);
@@ -246,7 +246,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	}
 
 	@Override
-	public CompletableFuture<?> run(CachedOutput writer) {
+	public CompletableFuture<?> run(CachedOutput cache) {
 		return registriesFuture.thenCompose(registries -> {
 			return CompletableFuture
 					.supplyAsync(() -> {
@@ -259,7 +259,7 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 						ArrayList<CompletableFuture<?>> futures = new ArrayList<>();
 
 						for (RegistryEntries<?> registryEntries : entries.queuedEntries.values()) {
-							futures.add(writeRegistryEntries(writer, dynamicOps, registryEntries));
+							futures.add(writeHolders(cache, dynamicOps, registryEntries));
 						}
 
 						return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
@@ -267,16 +267,16 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 		});
 	}
 
-	private <T> CompletableFuture<?> writeRegistryEntries(CachedOutput writer, RegistryOps<JsonElement> ops, RegistryEntries<T> entries) {
-		final ResourceKey<? extends Registry<T>> registry = entries.registry;
+	private <T> CompletableFuture<?> writeHolders(CachedOutput cache, RegistryOps<JsonElement> ops, RegistryEntries<T> registryEntries) {
+		final ResourceKey<? extends Registry<T>> registry = registryEntries.registry;
 		final boolean shouldOmitNamespace = registry.identifier().getNamespace().equals(Identifier.DEFAULT_NAMESPACE) || !DynamicRegistriesImpl.FABRIC_DYNAMIC_REGISTRY_KEYS.contains(registry);
 		final String directoryName = shouldOmitNamespace ? registry.identifier().getPath() : registry.identifier().getNamespace() + "/" + registry.identifier().getPath();
 		final PackOutput.PathProvider pathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, directoryName);
 		final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-		for (Map.Entry<ResourceKey<T>, ConditionalEntry<T>> entry : entries.entries.entrySet()) {
+		for (Map.Entry<ResourceKey<T>, ConditionalEntry<T>> entry : registryEntries.resources.entrySet()) {
 			Path path = pathResolver.json(entry.getKey().identifier());
-			futures.add(writeToPath(path, writer, ops, entries.elementCodec, entry.getValue().value(), entry.getValue().conditions()));
+			futures.add(writeToPath(path, cache, ops, registryEntries.elementCodec, entry.getValue().value(), entry.getValue().conditions()));
 		}
 
 		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

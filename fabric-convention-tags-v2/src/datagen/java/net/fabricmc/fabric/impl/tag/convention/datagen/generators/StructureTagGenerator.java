@@ -22,17 +22,17 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalStructureTags;
 
 public final class StructureTagGenerator extends FabricTagProvider<Structure> {
-	public StructureTagGenerator(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+	public StructureTagGenerator(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 		super(output, Registries.STRUCTURE, registriesFuture);
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider arg) {
+	protected void addTags(HolderLookup.Provider registries) {
 		builder(ConventionalStructureTags.HIDDEN_FROM_DISPLAYERS);
 		builder(ConventionalStructureTags.HIDDEN_FROM_LOCATOR_SELECTION);
 	}

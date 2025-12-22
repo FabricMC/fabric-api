@@ -27,27 +27,27 @@ import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.client.FabricModelProviderDefinitions;
 
 @Mixin(ModelProvider.BlockStateGeneratorCollector.class)
 public class ModelProviderBlockStateGeneratorCollectorMixin implements FabricModelProviderDefinitions {
 	@Unique
-	private FabricDataOutput fabricDataOutput;
+	private FabricPackOutput fabricPackOutput;
 
 	@Override
-	public void setFabricDataOutput(FabricDataOutput fabricDataOutput) {
-		this.fabricDataOutput = fabricDataOutput;
+	public void setFabricPackOutput(FabricPackOutput fabricPackOutput) {
+		this.fabricPackOutput = fabricPackOutput;
 	}
 
 	// Target the first .filter() call, to filter out blocks that are not from the mod we are processing.
 	@ModifyArg(method = "validate", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", ordinal = 0))
 	private Predicate<Holder.Reference<Block>> filterBlocksForProcessingMod(Predicate<Holder.Reference<Block>> original) {
-		if (fabricDataOutput != null) {
+		if (fabricPackOutput != null) {
 			return original
-					.and(block -> fabricDataOutput.isStrictValidationEnabled())
+					.and(block -> fabricPackOutput.isStrictValidationEnabled())
 					// Skip over blocks that are not from the mod we are processing.
-					.and(block -> block.key().identifier().getNamespace().equals(fabricDataOutput.getModId()));
+					.and(block -> block.key().identifier().getNamespace().equals(fabricPackOutput.getModId()));
 		}
 
 		return original;
