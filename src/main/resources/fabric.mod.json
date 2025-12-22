@@ -1,9 +1,6 @@
 {
   "schemaVersion": 1,
   "id": "fabric-api",
-  "provides": [
-    "fabric"
-  ],
   "name": "Fabric API",
   "version": "${version}",
   "environment": "*",

@@ -97,27 +97,8 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.RED_SHULKER_BOX)
 				.add(Items.BLACK_SHULKER_BOX);
 		copy(ConventionalBlockTags.GLAZED_TERRACOTTAS, ConventionalItemTags.GLAZED_TERRACOTTAS);
-		copy(ConventionalBlockTags.GLAZED_TERRACOTTA, ConventionalItemTags.GLAZED_TERRACOTTA);
 		copy(ConventionalBlockTags.CONCRETES, ConventionalItemTags.CONCRETES);
-		copy(ConventionalBlockTags.CONCRETE, ConventionalItemTags.CONCRETE);
 		valueLookupBuilder(ConventionalItemTags.CONCRETE_POWDERS)
-				.add(Items.WHITE_CONCRETE_POWDER)
-				.add(Items.ORANGE_CONCRETE_POWDER)
-				.add(Items.MAGENTA_CONCRETE_POWDER)
-				.add(Items.LIGHT_BLUE_CONCRETE_POWDER)
-				.add(Items.YELLOW_CONCRETE_POWDER)
-				.add(Items.LIME_CONCRETE_POWDER)
-				.add(Items.PINK_CONCRETE_POWDER)
-				.add(Items.GRAY_CONCRETE_POWDER)
-				.add(Items.LIGHT_GRAY_CONCRETE_POWDER)
-				.add(Items.CYAN_CONCRETE_POWDER)
-				.add(Items.PURPLE_CONCRETE_POWDER)
-				.add(Items.BLUE_CONCRETE_POWDER)
-				.add(Items.BROWN_CONCRETE_POWDER)
-				.add(Items.GREEN_CONCRETE_POWDER)
-				.add(Items.RED_CONCRETE_POWDER)
-				.add(Items.BLACK_CONCRETE_POWDER);
-		valueLookupBuilder(ConventionalItemTags.CONCRETE_POWDER)
 				.add(Items.WHITE_CONCRETE_POWDER)
 				.add(Items.ORANGE_CONCRETE_POWDER)
 				.add(Items.MAGENTA_CONCRETE_POWDER)
@@ -257,66 +238,55 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
 				.add(Items.CHORUS_FRUIT)
-				.add(Items.MELON_SLICE)
-				.addOptionalTag(ConventionalItemTags.FRUITS_FOODS);
+				.add(Items.MELON_SLICE);
 
 		valueLookupBuilder(ConventionalItemTags.VEGETABLE_FOODS)
 				.add(Items.CARROT)
 				.add(Items.GOLDEN_CARROT)
 				.add(Items.POTATO)
-				.add(Items.BEETROOT)
-				.addOptionalTag(ConventionalItemTags.VEGETABLES_FOODS);
+				.add(Items.BEETROOT);
 
 		valueLookupBuilder(ConventionalItemTags.BERRY_FOODS)
 				.add(Items.SWEET_BERRIES)
-				.add(Items.GLOW_BERRIES)
-				.addOptionalTag(ConventionalItemTags.BERRIES_FOODS);
+				.add(Items.GLOW_BERRIES);
 
 		valueLookupBuilder(ConventionalItemTags.BREAD_FOODS)
-				.add(Items.BREAD)
-				.addOptionalTag(ConventionalItemTags.BREADS_FOODS);
+				.add(Items.BREAD);
 
 		valueLookupBuilder(ConventionalItemTags.COOKIE_FOODS)
-				.add(Items.COOKIE)
-				.addOptionalTag(ConventionalItemTags.COOKIES_FOODS);
+				.add(Items.COOKIE);
 
 		valueLookupBuilder(ConventionalItemTags.RAW_MEAT_FOODS)
 				.add(Items.BEEF)
 				.add(Items.PORKCHOP)
 				.add(Items.CHICKEN)
 				.add(Items.RABBIT)
-				.add(Items.MUTTON)
-				.addOptionalTag(ConventionalItemTags.RAW_MEATS_FOODS);
+				.add(Items.MUTTON);
 
 		valueLookupBuilder(ConventionalItemTags.RAW_FISH_FOODS)
 				.add(Items.COD)
 				.add(Items.SALMON)
 				.add(Items.TROPICAL_FISH)
-				.add(Items.PUFFERFISH)
-				.addOptionalTag(ConventionalItemTags.RAW_FISHES_FOODS);
+				.add(Items.PUFFERFISH);
 
 		valueLookupBuilder(ConventionalItemTags.COOKED_MEAT_FOODS)
 				.add(Items.COOKED_BEEF)
 				.add(Items.COOKED_PORKCHOP)
 				.add(Items.COOKED_CHICKEN)
 				.add(Items.COOKED_RABBIT)
-				.add(Items.COOKED_MUTTON)
-				.addOptionalTag(ConventionalItemTags.COOKED_MEATS_FOODS);
+				.add(Items.COOKED_MUTTON);
 
 		valueLookupBuilder(ConventionalItemTags.COOKED_FISH_FOODS)
 				.add(Items.COOKED_COD)
-				.add(Items.COOKED_SALMON)
-				.addOptionalTag(ConventionalItemTags.COOKED_FISHES_FOODS);
+				.add(Items.COOKED_SALMON);
 
 		valueLookupBuilder(ConventionalItemTags.SOUP_FOODS)
 				.add(Items.BEETROOT_SOUP)
 				.add(Items.MUSHROOM_STEW)
 				.add(Items.RABBIT_STEW)
-				.add(Items.SUSPICIOUS_STEW)
-				.addOptionalTag(ConventionalItemTags.SOUPS_FOODS);
+				.add(Items.SUSPICIOUS_STEW);
 
-		valueLookupBuilder(ConventionalItemTags.CANDY_FOODS)
-				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS);
+		valueLookupBuilder(ConventionalItemTags.CANDY_FOODS);
 
 		valueLookupBuilder(ConventionalItemTags.PIE_FOODS)
 				.add(Items.PUMPKIN_PIE);
@@ -421,61 +391,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.POTION)
 				.add(Items.HONEY_BOTTLE)
 				.add(Items.OMINOUS_BOTTLE);
-
-		// Deprecated tags below
-		valueLookupBuilder(ConventionalItemTags.FRUITS_FOODS)
-				.add(Items.APPLE)
-				.add(Items.GOLDEN_APPLE)
-				.add(Items.ENCHANTED_GOLDEN_APPLE)
-				.add(Items.MELON_SLICE);
-
-		valueLookupBuilder(ConventionalItemTags.VEGETABLES_FOODS)
-				.add(Items.CARROT)
-				.add(Items.GOLDEN_CARROT)
-				.add(Items.POTATO)
-				.add(Items.BEETROOT);
-
-		valueLookupBuilder(ConventionalItemTags.BERRIES_FOODS)
-				.add(Items.SWEET_BERRIES)
-				.add(Items.GLOW_BERRIES);
-
-		valueLookupBuilder(ConventionalItemTags.BREADS_FOODS)
-				.add(Items.BREAD);
-
-		valueLookupBuilder(ConventionalItemTags.COOKIES_FOODS)
-				.add(Items.COOKIE);
-
-		valueLookupBuilder(ConventionalItemTags.RAW_MEATS_FOODS)
-				.add(Items.BEEF)
-				.add(Items.PORKCHOP)
-				.add(Items.CHICKEN)
-				.add(Items.RABBIT)
-				.add(Items.MUTTON);
-
-		valueLookupBuilder(ConventionalItemTags.RAW_FISHES_FOODS)
-				.add(Items.COD)
-				.add(Items.SALMON)
-				.add(Items.TROPICAL_FISH)
-				.add(Items.PUFFERFISH);
-
-		valueLookupBuilder(ConventionalItemTags.COOKED_MEATS_FOODS)
-				.add(Items.COOKED_BEEF)
-				.add(Items.COOKED_PORKCHOP)
-				.add(Items.COOKED_CHICKEN)
-				.add(Items.COOKED_RABBIT)
-				.add(Items.COOKED_MUTTON);
-
-		valueLookupBuilder(ConventionalItemTags.COOKED_FISHES_FOODS)
-				.add(Items.COOKED_COD)
-				.add(Items.COOKED_SALMON);
-
-		valueLookupBuilder(ConventionalItemTags.SOUPS_FOODS)
-				.add(Items.BEETROOT_SOUP)
-				.add(Items.MUSHROOM_STEW)
-				.add(Items.RABBIT_STEW)
-				.add(Items.SUSPICIOUS_STEW);
-
-		valueLookupBuilder(ConventionalItemTags.CANDIES_FOODS);
 	}
 
 	private void generateBucketTags() {
@@ -538,11 +453,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.GOLD_RAW_MATERIALS)
 				.addOptionalTag(ConventionalItemTags.IRON_RAW_MATERIALS);
 
-		valueLookupBuilder(ConventionalItemTags.RAW_BLOCKS)
-				.addOptionalTag(ConventionalItemTags.COPPER_RAW_BLOCKS)
-				.addOptionalTag(ConventionalItemTags.GOLD_RAW_BLOCKS)
-				.addOptionalTag(ConventionalItemTags.IRON_RAW_BLOCKS);
-
 		// Vanilla instances
 		valueLookupBuilder(ConventionalItemTags.NORMAL_BRICKS)
 				.add(Items.BRICK);
@@ -560,13 +470,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		valueLookupBuilder(ConventionalItemTags.NETHERITE_INGOTS)
 				.add(Items.NETHERITE_INGOT);
 
-		valueLookupBuilder(ConventionalItemTags.IRON_RAW_BLOCKS)
-				.add(Items.RAW_IRON_BLOCK);
-		valueLookupBuilder(ConventionalItemTags.COPPER_RAW_BLOCKS)
-				.add(Items.RAW_COPPER_BLOCK);
-		valueLookupBuilder(ConventionalItemTags.GOLD_RAW_BLOCKS)
-				.add(Items.RAW_GOLD_BLOCK);
-
 		valueLookupBuilder(ConventionalItemTags.IRON_RAW_MATERIALS)
 				.add(Items.RAW_IRON);
 		valueLookupBuilder(ConventionalItemTags.COPPER_RAW_MATERIALS)
@@ -578,8 +481,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.REDSTONE);
 		valueLookupBuilder(ConventionalItemTags.GLOWSTONE_DUSTS)
 				.add(Items.GLOWSTONE_DUST);
-		valueLookupBuilder(ConventionalItemTags.COAL)
-				.addOptionalTag(ItemTags.COALS);
 
 		copy(ConventionalBlockTags.COAL_ORES, ConventionalItemTags.COAL_ORES);
 		copy(ConventionalBlockTags.COPPER_ORES, ConventionalItemTags.COPPER_ORES);
@@ -648,26 +549,19 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.RANGED_WEAPON_TOOLS);
 
 		valueLookupBuilder(ConventionalItemTags.BOW_TOOLS)
-				.add(Items.BOW)
-				.addOptionalTag(ConventionalItemTags.BOWS_TOOLS);
+				.add(Items.BOW);
 		valueLookupBuilder(ConventionalItemTags.CROSSBOW_TOOLS)
-				.add(Items.CROSSBOW)
-				.addOptionalTag(ConventionalItemTags.CROSSBOWS_TOOLS);
+				.add(Items.CROSSBOW);
 		valueLookupBuilder(ConventionalItemTags.SHEAR_TOOLS)
-				.add(Items.SHEARS)
-				.addOptionalTag(ConventionalItemTags.SHEARS_TOOLS);
+				.add(Items.SHEARS);
 		valueLookupBuilder(ConventionalItemTags.SHIELD_TOOLS)
-				.add(Items.SHIELD)
-				.addOptionalTag(ConventionalItemTags.SHIELDS_TOOLS);
+				.add(Items.SHIELD);
 		valueLookupBuilder(ConventionalItemTags.SPEAR_TOOLS)
-				.add(Items.TRIDENT)
-				.addOptionalTag(ConventionalItemTags.SPEARS_TOOLS);
+				.add(Items.TRIDENT);
 		valueLookupBuilder(ConventionalItemTags.FISHING_ROD_TOOLS)
-				.add(Items.FISHING_ROD)
-				.addOptionalTag(ConventionalItemTags.FISHING_RODS_TOOLS);
+				.add(Items.FISHING_ROD);
 		valueLookupBuilder(ConventionalItemTags.BRUSH_TOOLS)
-				.add(Items.BRUSH)
-				.addOptionalTag(ConventionalItemTags.BRUSHES_TOOLS);
+				.add(Items.BRUSH);
 		valueLookupBuilder(ConventionalItemTags.IGNITER_TOOLS)
 				.add(Items.FLINT_AND_STEEL);
 		valueLookupBuilder(ConventionalItemTags.MACE_TOOLS)
@@ -681,8 +575,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.GOLDEN_PICKAXE)
 				.add(Items.IRON_PICKAXE)
 				.add(Items.DIAMOND_PICKAXE)
-				.add(Items.NETHERITE_PICKAXE)
-				.addOptionalTag(ConventionalItemTags.MINING_TOOLS);
+				.add(Items.NETHERITE_PICKAXE);
 
 		valueLookupBuilder(ConventionalItemTags.MELEE_WEAPON_TOOLS)
 				.add(Items.MACE)
@@ -700,14 +593,12 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.add(Items.GOLDEN_AXE)
 				.add(Items.IRON_AXE)
 				.add(Items.DIAMOND_AXE)
-				.add(Items.NETHERITE_AXE)
-				.addOptionalTag(ConventionalItemTags.MELEE_WEAPONS_TOOLS);
+				.add(Items.NETHERITE_AXE);
 
 		valueLookupBuilder(ConventionalItemTags.RANGED_WEAPON_TOOLS)
 				.add(Items.BOW)
 				.add(Items.CROSSBOW)
-				.add(Items.TRIDENT)
-				.addOptionalTag(ConventionalItemTags.RANGED_WEAPONS_TOOLS);
+				.add(Items.TRIDENT);
 
 		valueLookupBuilder(ConventionalItemTags.ARMORS)
 				.addOptionalTag(ConventionalItemTags.HUMANOID_ARMORS)
@@ -757,53 +648,6 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ItemTags.VANISHING_ENCHANTABLE)
 				.addOptionalTag(ItemTags.LUNGE_ENCHANTABLE)
 				.addOptionalTag(ItemTags.MELEE_WEAPON_ENCHANTABLE);
-
-		// Deprecated tags below
-
-		valueLookupBuilder(ConventionalItemTags.BOWS_TOOLS)
-				.add(Items.BOW);
-		valueLookupBuilder(ConventionalItemTags.CROSSBOWS_TOOLS)
-				.add(Items.CROSSBOW);
-		valueLookupBuilder(ConventionalItemTags.SHEARS_TOOLS)
-				.add(Items.SHEARS);
-		valueLookupBuilder(ConventionalItemTags.SHIELDS_TOOLS)
-				.add(Items.SHIELD);
-		valueLookupBuilder(ConventionalItemTags.SPEARS_TOOLS)
-				.add(Items.TRIDENT);
-		valueLookupBuilder(ConventionalItemTags.FISHING_RODS_TOOLS)
-				.add(Items.FISHING_ROD);
-		valueLookupBuilder(ConventionalItemTags.BRUSHES_TOOLS)
-				.add(Items.BRUSH);
-
-		valueLookupBuilder(ConventionalItemTags.MINING_TOOLS)
-				.add(Items.WOODEN_PICKAXE)
-				.add(Items.STONE_PICKAXE)
-				.add(Items.COPPER_PICKAXE)
-				.add(Items.GOLDEN_PICKAXE)
-				.add(Items.IRON_PICKAXE)
-				.add(Items.DIAMOND_PICKAXE)
-				.add(Items.NETHERITE_PICKAXE);
-
-		valueLookupBuilder(ConventionalItemTags.MELEE_WEAPONS_TOOLS)
-				.add(Items.WOODEN_SWORD)
-				.add(Items.STONE_SWORD)
-				.add(Items.COPPER_SWORD)
-				.add(Items.GOLDEN_SWORD)
-				.add(Items.IRON_SWORD)
-				.add(Items.DIAMOND_SWORD)
-				.add(Items.NETHERITE_SWORD)
-				.add(Items.WOODEN_AXE)
-				.add(Items.STONE_AXE)
-				.add(Items.COPPER_AXE)
-				.add(Items.GOLDEN_AXE)
-				.add(Items.IRON_AXE)
-				.add(Items.DIAMOND_AXE)
-				.add(Items.NETHERITE_AXE);
-
-		valueLookupBuilder(ConventionalItemTags.RANGED_WEAPONS_TOOLS)
-				.add(Items.BOW)
-				.add(Items.CROSSBOW)
-				.add(Items.TRIDENT);
 	}
 
 	private void generateVillagerJobSites() {

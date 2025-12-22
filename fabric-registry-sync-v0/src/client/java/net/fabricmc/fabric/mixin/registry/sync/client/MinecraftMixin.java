@@ -43,8 +43,8 @@ public class MinecraftMixin {
 	private static Logger LOGGER;
 
 	// Unmap the registry before loading a new SP/MP setup.
-	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V")
-	public void disconnectAfter(Screen disconnectionScreen, boolean bl, CallbackInfo ci) {
+	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V")
+	public void disconnectAfter(Screen disconnectionScreen, boolean bl, boolean bl2, CallbackInfo ci) {
 		try {
 			unmap();
 		} catch (RemapException e) {

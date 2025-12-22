@@ -108,7 +108,12 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		});
 	}
 
-	private Path getLangFilePath(String code) {
+	/**
+	 * Override this method to change where the generated language file is placed.
+	 *
+	 * @param code The language code (like "en_us") of the translations.
+	 */
+	protected Path getLangFilePath(String code) {
 		return dataOutput
 				.createPathProvider(PackOutput.Target.RESOURCE_PACK, "lang")
 				.json(Identifier.fromNamespaceAndPath(dataOutput.getModId(), code));
