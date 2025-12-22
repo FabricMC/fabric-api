@@ -45,7 +45,7 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 		setupClientReloadListeners();
 		setupServerReloadListeners();
 
-		ServerTickEvents.START_LEVEL_TICK.register(world -> {
+		ServerTickEvents.START_LEVEL_TICK.register(level -> {
 			if (!clientResources && FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 				throw new AssertionError("Client reload listener was not called.");
 			}

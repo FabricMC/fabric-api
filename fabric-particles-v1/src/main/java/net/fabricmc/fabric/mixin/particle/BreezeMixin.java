@@ -31,8 +31,8 @@ import net.fabricmc.fabric.impl.particle.BlockParticleOptionExtension;
 
 @Mixin(Breeze.class)
 abstract class BreezeMixin extends Monster {
-	private BreezeMixin(EntityType<? extends Monster> entityType, Level world) {
-		super(entityType, world);
+	private BreezeMixin(EntityType<? extends Monster> entityType, Level level) {
+		super(entityType, level);
 	}
 
 	@ModifyExpressionValue(method = {"emitJumpTrailParticles", "emitGroundParticles"}, at = @At(value = "NEW", target = "(Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/core/particles/BlockParticleOption;"))

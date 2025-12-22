@@ -84,7 +84,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 
 				// setting up persistent attachments for second run
 				getSinglePlayer(server).setAttached(PERSISTENT, "player_data");
-				overworld.setAttached(PERSISTENT, "world_data");
+				overworld.setAttached(PERSISTENT, "level_data");
 				originChunk.setAttached(PERSISTENT, "chunk_data");
 
 				ProtoChunk farChunk = (ProtoChunk) overworld.getChunkSource()
@@ -106,8 +106,8 @@ public class PersistenceGametest implements FabricClientGameTest {
 				LevelChunk originChunk = overworld.getChunk(0, 0);
 
 				assertAttached(getSinglePlayer(server), PERSISTENT, "player_data", "Player attachment did not persist");
-				assertAttached(overworld, PERSISTENT, "world_data", "World attachment did not persist");
-				assertAttached(originChunk, PERSISTENT, "chunk_data", "WorldChunk attachment did not persist");
+				assertAttached(overworld, PERSISTENT, "level_data", "Level attachment did not persist");
+				assertAttached(originChunk, PERSISTENT, "chunk_data", "LevelChunk attachment did not persist");
 
 				ImposterProtoChunk wrapperProtoChunk = (ImposterProtoChunk) overworld.getChunkSource()
 						.getChunk(0, 0, ChunkStatus.EMPTY, true);
@@ -138,7 +138,7 @@ public class PersistenceGametest implements FabricClientGameTest {
 						farChunk,
 						PERSISTENT,
 						"protochunk_data",
-						"ProtoChunk attachment was not transferred to WorldChunk"
+						"ProtoChunk attachment was not transferred to LevelChunk"
 				);
 			});
 

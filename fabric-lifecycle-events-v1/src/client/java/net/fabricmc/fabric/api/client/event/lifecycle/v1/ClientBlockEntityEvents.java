@@ -39,9 +39,9 @@ public final class ClientBlockEntityEvents {
 	});
 
 	/**
-	 * Called when a BlockEntity is about to be unloaded from a ClientWorld.
+	 * Called when a BlockEntity is about to be unloaded from a ClientLevel.
 	 *
-	 * <p>When this event is called, the block entity is still present on the world.
+	 * <p>When this event is called, the block entity is still present on the level.
 	 */
 	public static final Event<ClientBlockEntityEvents.Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Unload.class, callbacks -> (blockEntity, level) -> {
 		for (Unload callback : callbacks) {

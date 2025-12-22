@@ -27,7 +27,7 @@ import net.fabricmc.api.ModInitializer;
 
 public class FabricDimensionTest implements ModInitializer {
 	// The dimension options refer to the JSON-file in the dimension subfolder of the data pack,
-	// which will always share its ID with the world that is created from it
+	// which will always share its ID with the level that is created from it
 	private static final ResourceKey<LevelStem> DIMENSION_KEY = ResourceKey.create(Registries.LEVEL_STEM, Identifier.fromNamespaceAndPath("fabric_dimension", "void"));
 
 	@Override

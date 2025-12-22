@@ -28,7 +28,7 @@ import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 public class AttachmentClientTestMod implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+		ClientEntityEvents.ENTITY_LOAD.register((entity, level) -> {
 			if (entity instanceof LocalPlayer) {
 				entity.onAttachedSet(AttachmentTestMod.SYNCED_RENDER_DISTANCE).register((oldValue, newValue) -> {
 					OptionInstance<Integer> viewDistance = Minecraft.getInstance().options.renderDistance();

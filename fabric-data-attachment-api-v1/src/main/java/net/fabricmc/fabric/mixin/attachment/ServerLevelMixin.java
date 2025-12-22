@@ -64,20 +64,20 @@ abstract class ServerLevelMixin extends Level implements AttachmentTargetImpl {
 	@Inject(at = @At("TAIL"), method = "<init>")
 	private void createAttachmentsPersistentState(CallbackInfo ci) {
 		// Force persistent state creation
-		ServerLevel world = (ServerLevel) (Object) this;
+		ServerLevel level = (ServerLevel) (Object) this;
 		var type = new SavedDataType<>(
 				AttachmentPersistentState.ID,
-				() -> new AttachmentPersistentState(world),
-				AttachmentPersistentState.codec(world),
+				() -> new AttachmentPersistentState(level),
+				AttachmentPersistentState.codec(level),
 				null // Object builder API 12.1.0 and later makes this a no-op
 		);
-		world.getDataStorage().computeIfAbsent(type);
+		level.getDataStorage().computeIfAbsent(type);
 	}
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
-		if ((Object) this instanceof ServerLevel serverWorld) {
-			PlayerLookup.level(serverWorld)
+		if ((Object) this instanceof ServerLevel serverLevel) {
+			PlayerLookup.level(serverLevel)
 					.forEach(player -> {
 						if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
 							AttachmentSync.trySync(change, player);
@@ -88,7 +88,7 @@ abstract class ServerLevelMixin extends Level implements AttachmentTargetImpl {
 
 	@Override
 	public AttachmentTargetInfo<?> fabric_getSyncTargetInfo() {
-		return AttachmentTargetInfo.WorldTarget.INSTANCE;
+		return AttachmentTargetInfo.LevelTarget.INSTANCE;
 	}
 
 	@Override

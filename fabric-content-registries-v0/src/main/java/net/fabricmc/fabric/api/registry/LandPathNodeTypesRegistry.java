@@ -86,7 +86,7 @@ public final class LandPathNodeTypesRegistry {
 	/**
 	 * Registers a {@link DynamicPathNodeTypeProvider} for the specified block, overriding the default block behavior.
 	 *
-	 * <p>A dynamic provider provides the node type basing on the block state, world and position.
+	 * <p>A dynamic provider provides the node type basing on the block state, level and position.
 	 * This is more difficult to handle, must be used only if you want to change the node type basing on the position
 	 * of the block in the world, and may degrade the game performances because cannot be optimized but must be
 	 * recalculated at every tick for every entity.

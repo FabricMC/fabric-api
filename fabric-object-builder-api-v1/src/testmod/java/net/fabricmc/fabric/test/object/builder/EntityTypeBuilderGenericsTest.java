@@ -54,8 +54,8 @@ final class EntityTypeBuilderGenericsTest {
 			.build(DUMMY);
 
 	private static class TestEntity extends LivingEntity {
-		protected TestEntity(EntityType<? extends LivingEntity> entityType, Level world) {
-			super(entityType, world);
+		protected TestEntity(EntityType<? extends LivingEntity> entityType, Level level) {
+			super(entityType, level);
 		}
 
 		@Override
@@ -74,8 +74,8 @@ final class EntityTypeBuilderGenericsTest {
 	}
 
 	private static class TestMob extends Mob {
-		protected TestMob(EntityType<? extends Mob> entityType, Level world) {
-			super(entityType, world);
+		protected TestMob(EntityType<? extends Mob> entityType, Level level) {
+			super(entityType, level);
 		}
 	}
 }

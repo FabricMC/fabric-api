@@ -43,8 +43,8 @@ public class TrackStackEntity extends Mob {
 	private static final EntityDataAccessor<Item> ITEM = SynchedEntityData.defineId(TrackStackEntity.class, EntityTrackedDataTest.ITEM);
 	private static final EntityDataAccessor<Optional<DyeColor>> OPTIONAL_DYE_COLOR = SynchedEntityData.defineId(TrackStackEntity.class, EntityTrackedDataTest.OPTIONAL_DYE_COLOR);
 
-	public TrackStackEntity(EntityType<? extends TrackStackEntity> entityType, Level world) {
-		super(entityType, world);
+	public TrackStackEntity(EntityType<? extends TrackStackEntity> entityType, Level level) {
+		super(entityType, level);
 	}
 
 	@Override

@@ -141,14 +141,14 @@ public final class FluidVariantAttributes {
 	 * {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),
 	 * and {@value FluidConstants#LAVA_VISCOSITY} for lava in other dimensions.
 	 *
-	 * @param world World if available, otherwise null.
+	 * @param level Level if available, otherwise null.
 	 */
-	public static int getViscosity(FluidVariant variant, @Nullable Level world) {
-		int viscosity = getHandlerOrDefault(variant.getFluid()).getViscosity(variant, world);
+	public static int getViscosity(FluidVariant variant, @Nullable Level level) {
+		int viscosity = getHandlerOrDefault(variant.getFluid()).getViscosity(variant, level);
 
 		if (viscosity <= 0) {
 			TransferApiImpl.LOGGER.warn("Broken FluidVariantAttributeHandler. Invalid viscosity %d for fluid variant %s".formatted(viscosity, variant));
-			return DEFAULT_HANDLER.getViscosity(variant, world);
+			return DEFAULT_HANDLER.getViscosity(variant, level);
 		}
 
 		return viscosity;

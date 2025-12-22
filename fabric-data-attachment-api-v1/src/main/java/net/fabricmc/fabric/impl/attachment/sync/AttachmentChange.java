@@ -137,9 +137,9 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		return codec.decode(buf);
 	}
 
-	public void tryApply(Level world) throws AttachmentSyncException {
-		AttachmentTarget target = targetInfo.getTarget(world);
-		Object value = decodeValue(world.registryAccess());
+	public void tryApply(Level level) throws AttachmentSyncException {
+		AttachmentTarget target = targetInfo.getTarget(level);
+		Object value = decodeValue(level.registryAccess());
 
 		if (target == null) {
 			final MutableComponent errorMessageText = Component.empty();
@@ -156,8 +156,8 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 					.append(CommonComponents.NEW_LINE);
 			errorMessageText
 					.append(Component.translatable(
-							"fabric-data-attachment-api-v1.unknown-target.world",
-							Component.literal(String.valueOf(world.dimension().identifier())).withStyle(ChatFormatting.YELLOW)
+							"fabric-data-attachment-api-v1.unknown-target.level",
+							Component.literal(String.valueOf(level.dimension().identifier())).withStyle(ChatFormatting.YELLOW)
 					))
 					.append(CommonComponents.NEW_LINE);
 			targetInfo.appendDebugInformation(errorMessageText);

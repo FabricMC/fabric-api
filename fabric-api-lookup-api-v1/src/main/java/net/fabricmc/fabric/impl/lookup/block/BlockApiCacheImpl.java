@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 
 public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 	private final BlockApiLookupImpl<A, C> lookup;
-	private final ServerLevel world;
+	private final ServerLevel level;
 	private final BlockPos pos;
 	/**
 	 * We always cache the block entity, even if it's null. We rely on BE load and unload events to invalidate the cache when necessary.
@@ -44,10 +44,10 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 	private BlockState lastState = null;
 	private BlockApiLookup.BlockApiProvider<A, C> cachedProvider = null;
 
-	public BlockApiCacheImpl(BlockApiLookupImpl<A, C> lookup, ServerLevel world, BlockPos pos) {
-		((ServerWorldCache) world).fabric_registerCache(pos, this);
+	public BlockApiCacheImpl(BlockApiLookupImpl<A, C> lookup, ServerLevel level, BlockPos pos) {
+		((ServerLevelCache) level).fabric_registerCache(pos, this);
 		this.lookup = lookup;
-		this.world = world;
+		this.level = level;
 		this.pos = pos.immutable();
 	}
 
@@ -69,7 +69,7 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 			if (cachedBlockEntity != null) {
 				state = cachedBlockEntity.getBlockState();
 			} else {
-				state = world.getBlockState(pos);
+				state = level.getBlockState(pos);
 			}
 		}
 
@@ -83,7 +83,7 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 		A instance = null;
 
 		if (cachedProvider != null) {
-			instance = cachedProvider.find(world, pos, state, cachedBlockEntity, context);
+			instance = cachedProvider.find(level, pos, state, cachedBlockEntity, context);
 		}
 
 		if (instance != null) {
@@ -92,7 +92,7 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 
 		// Query the fallback providers
 		for (BlockApiLookup.BlockApiProvider<A, C> fallbackProvider : lookup.getFallbackProviders()) {
-			instance = fallbackProvider.find(world, pos, state, cachedBlockEntity, context);
+			instance = fallbackProvider.find(level, pos, state, cachedBlockEntity, context);
 
 			if (instance != null) {
 				return instance;
@@ -106,7 +106,7 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 	@Nullable
 	public BlockEntity getBlockEntity() {
 		if (!blockEntityCacheValid) {
-			cachedBlockEntity = world.getBlockEntity(pos);
+			cachedBlockEntity = level.getBlockEntity(pos);
 			blockEntityCacheValid = true;
 		}
 
@@ -120,7 +120,7 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 
 	@Override
 	public ServerLevel getLevel() {
-		return world;
+		return level;
 	}
 
 	@Override
@@ -129,12 +129,12 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 	}
 
 	static {
-		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
-			((ServerWorldCache) world).fabric_invalidateCache(blockEntity.getBlockPos());
+		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, level) -> {
+			((ServerLevelCache) level).fabric_invalidateCache(blockEntity.getBlockPos());
 		});
 
-		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
-			((ServerWorldCache) world).fabric_invalidateCache(blockEntity.getBlockPos());
+		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, level) -> {
+			((ServerLevelCache) level).fabric_invalidateCache(blockEntity.getBlockPos());
 		});
 	}
 }

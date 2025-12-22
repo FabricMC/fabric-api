@@ -103,13 +103,13 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 	@Inject(method = "demoteFullChunk", at = @At("HEAD"))
 	private void decreaseLevel(ChunkMap chunkMap, FullChunkStatus target, CallbackInfo ci) {
 		FullChunkStatus previous = ChunkLevel.fullStatus(this.oldTicketLevel);
-		ServerLevel serverWorld = (ServerLevel) levelHeightAccessor;
+		ServerLevel serverLevel = (ServerLevel) levelHeightAccessor;
 
 		for (int i = previous.ordinal(); i > target.ordinal(); i--) {
 			FullChunkStatus oldLevelType = fabric_CHUNK_LEVEL_TYPES[i];
 			FullChunkStatus newLevelType = fabric_CHUNK_LEVEL_TYPES[i-1];
 			if (this.fabric_currentEventChunkStatus.isOrAfter(oldLevelType)) { // if a promotion event got cancelled or never finished, then do _not_ fire an equivalent demotion event
-				ServerChunkEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange(serverWorld, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), oldLevelType, newLevelType);
+				ServerChunkEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange(serverLevel, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), oldLevelType, newLevelType);
 				this.fabric_currentEventChunkStatus = newLevelType;
 			}
 		}

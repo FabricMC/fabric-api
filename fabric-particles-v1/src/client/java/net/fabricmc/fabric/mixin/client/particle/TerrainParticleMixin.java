@@ -56,8 +56,8 @@ abstract class TerrainParticleMixin extends SingleQuadParticle {
 			),
 			allow = 1
 	)
-	private BlockState removeUntintableParticles(BlockState state, @Local(argsOnly = true) ClientLevel world, @Local(argsOnly = true) BlockPos blockPos) {
-		if (!ParticleRenderEvents.ALLOW_TERRAIN_PARTICLE_TINT.invoker().allowTerrainParticleTint(state, world, blockPos)) {
+	private BlockState removeUntintableParticles(BlockState state, @Local(argsOnly = true) ClientLevel level, @Local(argsOnly = true) BlockPos blockPos) {
+		if (!ParticleRenderEvents.ALLOW_TERRAIN_PARTICLE_TINT.invoker().allowTerrainParticleTint(state, level, blockPos)) {
 			// As of 1.20.1, vanilla hardcodes grass block particles to not get tinted.
 			return Blocks.GRASS_BLOCK.defaultBlockState();
 		}
@@ -66,13 +66,13 @@ abstract class TerrainParticleMixin extends SingleQuadParticle {
 	}
 
 	@Redirect(method = "createTerrainParticle", at = @At(value = "NEW", target = "(Lnet/minecraft/client/multiplayer/ClientLevel;DDDDDDLnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/particle/TerrainParticle;"))
-	private static TerrainParticle constructBlockDustParticle(ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state, BlockParticleOption parameters, ClientLevel world1, double x1, double y1, double z1, double velocityX1, double velocityY1, double velocityZ1) {
+	private static TerrainParticle constructBlockDustParticle(ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state, BlockParticleOption parameters, ClientLevel world1, double x1, double y1, double z1, double velocityX1, double velocityY1, double velocityZ1) {
 		BlockPos blockPos = parameters.getBlockPos();
 
 		if (blockPos != null) {
-			return new TerrainParticle(world, x, y, z, velocityX, velocityY, velocityZ, state, blockPos);
+			return new TerrainParticle(level, x, y, z, velocityX, velocityY, velocityZ, state, blockPos);
 		} else {
-			return new TerrainParticle(world, x, y, z, velocityX, velocityY, velocityZ, state);
+			return new TerrainParticle(level, x, y, z, velocityX, velocityY, velocityZ, state);
 		}
 	}
 }

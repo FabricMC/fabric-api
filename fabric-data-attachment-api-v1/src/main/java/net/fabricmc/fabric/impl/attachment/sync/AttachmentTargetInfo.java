@@ -49,7 +49,7 @@ public sealed interface AttachmentTargetInfo<T> {
 	}
 
 	@Nullable
-	AttachmentTarget getTarget(Level world);
+	AttachmentTarget getTarget(Level level);
 
 	void appendDebugInformation(MutableComponent text);
 
@@ -58,7 +58,7 @@ public sealed interface AttachmentTargetInfo<T> {
 		static Type<BlockEntity> BLOCK_ENTITY = new Type<>((byte) 0, BlockEntityTarget.PACKET_CODEC);
 		static Type<Entity> ENTITY = new Type<>((byte) 1, EntityTarget.PACKET_CODEC);
 		static Type<ChunkAccess> CHUNK = new Type<>((byte) 2, ChunkTarget.PACKET_CODEC);
-		static Type<Level> WORLD = new Type<>((byte) 3, WorldTarget.PACKET_CODEC);
+		static Type<Level> WORLD = new Type<>((byte) 3, LevelTarget.PACKET_CODEC);
 
 		public Type {
 			TYPES.put(id, this);
@@ -81,8 +81,8 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public AttachmentTarget getTarget(Level world) {
-			return world.getBlockEntity(pos);
+		public AttachmentTarget getTarget(Level level) {
+			return level.getBlockEntity(pos);
 		}
 
 		@Override
@@ -114,8 +114,8 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public AttachmentTarget getTarget(Level world) {
-			return world.getEntity(networkId);
+		public AttachmentTarget getTarget(Level level) {
+			return level.getEntity(networkId);
 		}
 
 		@Override
@@ -146,8 +146,8 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public AttachmentTarget getTarget(Level world) {
-			return world.getChunk(pos.x, pos.z);
+		public AttachmentTarget getTarget(Level level) {
+			return level.getChunk(pos.x, pos.z);
 		}
 
 		@Override
@@ -167,11 +167,11 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 	}
 
-	final class WorldTarget implements AttachmentTargetInfo<Level> {
-		public static final WorldTarget INSTANCE = new WorldTarget();
-		static final StreamCodec<ByteBuf, WorldTarget> PACKET_CODEC = StreamCodec.unit(INSTANCE);
+	final class LevelTarget implements AttachmentTargetInfo<Level> {
+		public static final LevelTarget INSTANCE = new LevelTarget();
+		static final StreamCodec<ByteBuf, LevelTarget> PACKET_CODEC = StreamCodec.unit(INSTANCE);
 
-		private WorldTarget() {
+		private LevelTarget() {
 		}
 
 		@Override
@@ -180,8 +180,8 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public AttachmentTarget getTarget(Level world) {
-			return world;
+		public AttachmentTarget getTarget(Level level) {
+			return level;
 		}
 
 		@Override
@@ -189,7 +189,7 @@ public sealed interface AttachmentTargetInfo<T> {
 			text
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.target-type",
-							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.world").withStyle(ChatFormatting.YELLOW)
+							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.level").withStyle(ChatFormatting.YELLOW)
 					))
 					.append(CommonComponents.NEW_LINE);
 		}

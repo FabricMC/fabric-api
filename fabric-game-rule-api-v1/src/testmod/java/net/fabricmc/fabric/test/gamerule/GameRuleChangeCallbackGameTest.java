@@ -29,10 +29,10 @@ import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 public class GameRuleChangeCallbackGameTest {
 	@GameTest
 	public void test(GameTestHelper context) {
-		ServerLevel serverWorld = context.getLevel();
-		MinecraftServer server = serverWorld.getServer();
+		ServerLevel serverLevel = context.getLevel();
+		MinecraftServer server = serverLevel.getServer();
 
-		GameRules gameRules = serverWorld.getGameRules();
+		GameRules gameRules = serverLevel.getGameRules();
 
 		// Test change callback positive
 		GameRulesTestMod.FIRE_DAMAGE_CHANGED.set(false);

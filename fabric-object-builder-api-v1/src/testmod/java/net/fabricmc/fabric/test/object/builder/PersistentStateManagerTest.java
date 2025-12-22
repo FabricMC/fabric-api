@@ -33,13 +33,13 @@ public class PersistentStateManagerTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerTickEvents.END_LEVEL_TICK.register(world -> {
+		ServerTickEvents.END_LEVEL_TICK.register(level -> {
 			if (ranTests) return;
 			ranTests = true;
 
-			TestState.getOrCreate(world).setValue("Hello!");
+			TestState.getOrCreate(level).setValue("Hello!");
 
-			if (!Objects.equals(TestState.getOrCreate(world).getValue(), "Hello!")) {
+			if (!Objects.equals(TestState.getOrCreate(level).getValue(), "Hello!")) {
 				throw new IllegalStateException();
 			}
 		});
@@ -54,8 +54,8 @@ public class PersistentStateManagerTest implements ModInitializer {
 		).apply(instance, TestState::new));
 		private static final SavedDataType<TestState> TYPE = new SavedDataType<>(ObjectBuilderTestConstants.id("test_state").toString().replace(":", "_"), TestState::new, CODEC, null);
 
-		public static TestState getOrCreate(ServerLevel world) {
-			return world.getDataStorage().computeIfAbsent(TestState.TYPE);
+		public static TestState getOrCreate(ServerLevel level) {
+			return level.getDataStorage().computeIfAbsent(TestState.TYPE);
 		}
 
 		private String value = "";

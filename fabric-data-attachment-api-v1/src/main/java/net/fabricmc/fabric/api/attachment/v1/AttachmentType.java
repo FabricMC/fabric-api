@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 /**
- * An attachment allows "attaching" arbitrary data to various game objects (entities, block entities, worlds and chunks at the moment).
+ * An attachment allows "attaching" arbitrary data to various game objects (entities, block entities, levels and chunks at the moment).
  * Use the methods provided in {@link AttachmentRegistry} to create and register attachments. Attachments can
  * optionally be made to persist between restarts using a provided {@link Codec}, and to synchronize with player clients.
  *
@@ -44,7 +44,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
  * for attachments not to hold internal references to their target. See the following note on entity targets.</p>
  *
  * <p>Note on {@link Entity} and {@link ChunkAccess} targets: in several instances, the game needs to copy data from one instance to another.
- * These are player respawning, mob conversion, return from the End, cross-world entity teleportation, and conversion of a {@link ProtoChunk} to
+ * These are player respawning, mob conversion, return from the End, cross-level entity teleportation, and conversion of a {@link ProtoChunk} to
  * {@link LevelChunk}. By default, attachments are simply copied wholesale, up to {@link #copyOnDeath()}. Since one instance is discarded,
  * an attachment that keeps a reference to an {@link Entity} or {@link ProtoChunk} instance can and will break unexpectedly. If,
  * for whatever reason, keeping a reference to the target is absolutely necessary, be sure to implement custom copying logic.

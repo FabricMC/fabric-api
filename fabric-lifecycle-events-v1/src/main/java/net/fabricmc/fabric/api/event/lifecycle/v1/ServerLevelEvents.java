@@ -27,7 +27,7 @@ public final class ServerLevelEvents {
 	/**
 	 * Called just after a level is loaded by a Minecraft server.
 	 *
-	 * <p>This can be used to load world specific metadata or initialize a {@link SavedData} on a server level.
+	 * <p>This can be used to load level specific metadata or initialize a {@link SavedData} on a server level.
 	 */
 	public static final Event<Load> LOAD = EventFactory.createArrayBacked(Load.class, callbacks -> (server, level) -> {
 		for (Load callback : callbacks) {

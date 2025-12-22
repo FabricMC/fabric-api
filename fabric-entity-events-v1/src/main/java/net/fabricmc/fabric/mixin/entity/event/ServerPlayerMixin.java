@@ -80,7 +80,7 @@ abstract class ServerPlayerMixin extends LivingEntityMixin {
 	 * This is called by {@code teleportTo}.
 	 */
 	@Inject(method = "triggerDimensionChangeTriggers(Lnet/minecraft/server/level/ServerLevel;)V", at = @At("TAIL"))
-	private void afterWorldChanged(ServerLevel origin, CallbackInfo ci) {
+	private void afterLevelChanged(ServerLevel origin, CallbackInfo ci) {
 		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.invoker().afterChangeLevel((ServerPlayer) (Object) this, origin, this.level());
 	}
 

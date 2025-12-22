@@ -51,7 +51,7 @@ public class AttachmentCopyTests {
 	);
 
 	@GameTest
-	public void testCrossWorldTeleport(GameTestHelper context) {
+	public void testCrossLevelTeleport(GameTestHelper context) {
 		MinecraftServer server = context.getLevel().getServer();
 		ServerLevel overworld = server.overworld();
 		ServerLevel end = server.getLevel(Level.END);
@@ -64,13 +64,13 @@ public class AttachmentCopyTests {
 
 		Vec3 spawnPos = entity.adjustSpawnLocation(end, end.getRespawnData().pos()).getBottomCenter();
 		Entity moved = entity.teleport(new TeleportTransition(end, spawnPos, Vec3.ZERO, 0.0F, 0.0F, TeleportTransition.DO_NOTHING));
-		if (moved == null) throw context.assertionException("Cross-world teleportation failed");
+		if (moved == null) throw context.assertionException("Cross-level teleportation failed");
 
 		IntSupplier attached1 = moved.getAttached(DUMMY);
 		IntSupplier attached2 = moved.getAttached(COPY_ON_DEATH);
 
 		if (attached1 == null || attached1.getAsInt() != 10 || attached2 == null || attached2.getAsInt() != 10) {
-			throw context.assertionException("Attachment copying failed during cross-world teleportation");
+			throw context.assertionException("Attachment copying failed during cross-level teleportation");
 		}
 
 		moved.discard();

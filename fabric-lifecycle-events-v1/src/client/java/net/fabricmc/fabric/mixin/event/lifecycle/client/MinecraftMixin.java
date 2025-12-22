@@ -52,10 +52,10 @@ public abstract class MinecraftMixin {
 	}
 
 	@Inject(method = "updateLevelInEngines", at = @At("TAIL"))
-	private void afterClientWorldChange(ClientLevel world, CallbackInfo ci) {
-		if (world != null) {
+	private void afterClientLevelChange(ClientLevel level, CallbackInfo ci) {
+		if (level != null) {
 			Minecraft client = (Minecraft) (Object) this;
-			ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.invoker().afterLevelChange(client, world);
+			ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.invoker().afterLevelChange(client, level);
 		}
 	}
 }

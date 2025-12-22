@@ -107,7 +107,7 @@ public class VanillaStorageTests {
 	 * @param variant The variant to try to insert (needs to be supported by the Inventory).
 	 */
 	private static <T extends BlockEntity & Container> void testComparatorOnInventory(GameTestHelper context, Block block, ItemVariant variant, Class<T> inventoryClass) {
-		Level world = context.getLevel();
+		Level level = context.getLevel();
 
 		BlockPos pos = new BlockPos(0, 2, 0);
 		// Shelf comparator output is directional
@@ -123,21 +123,21 @@ public class VanillaStorageTests {
 		context.setBlock(comparatorPos, Blocks.COMPARATOR.defaultBlockState().setValue(ComparatorBlock.FACING, comparatorFacing));
 
 		try (Transaction transaction = Transaction.openOuter()) {
-			if (world.getBlockTicks().hasScheduledTick(context.absolutePos(comparatorPos), Blocks.COMPARATOR)) {
+			if (level.getBlockTicks().hasScheduledTick(context.absolutePos(comparatorPos), Blocks.COMPARATOR)) {
 				throw context.assertionException("Comparator should not have a tick scheduled.");
 			}
 
 			storage.insert(variant, 1000000, transaction);
 
 			// uncommitted insert should not schedule an update
-			if (world.getBlockTicks().hasScheduledTick(context.absolutePos(comparatorPos), Blocks.COMPARATOR)) {
+			if (level.getBlockTicks().hasScheduledTick(context.absolutePos(comparatorPos), Blocks.COMPARATOR)) {
 				throw context.assertionException("Comparator should not have a tick scheduled.");
 			}
 
 			transaction.commit();
 
 			// committed insert should schedule an update
-			if (!world.getBlockTicks().hasScheduledTick(context.absolutePos(comparatorPos), Blocks.COMPARATOR)) {
+			if (!level.getBlockTicks().hasScheduledTick(context.absolutePos(comparatorPos), Blocks.COMPARATOR)) {
 				throw context.assertionException("Comparator should have a tick scheduled.");
 			}
 		}

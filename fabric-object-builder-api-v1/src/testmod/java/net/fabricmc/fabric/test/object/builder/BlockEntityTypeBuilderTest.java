@@ -84,9 +84,9 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 		}
 
 		@Override
-		public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
-			if (!world.isClientSide()) {
-				BlockEntity blockEntity = world.getBlockEntity(pos);
+		public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+			if (!level.isClientSide()) {
+				BlockEntity blockEntity = level.getBlockEntity(pos);
 
 				if (blockEntity == null) {
 					throw new AssertionError("Missing block entity for betrayal block at " + pos);

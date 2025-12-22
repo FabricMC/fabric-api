@@ -50,18 +50,18 @@ public class DropperBlockMixin {
 			cancellable = true,
 			allow = 1
 	)
-	public void hookDispense(ServerLevel world, BlockState blockState, BlockPos pos, CallbackInfo ci) {
-		DispenserBlockEntity dispenser = (DispenserBlockEntity) world.getBlockEntity(pos);
+	public void hookDispense(ServerLevel level, BlockState blockState, BlockPos pos, CallbackInfo ci) {
+		DispenserBlockEntity dispenser = (DispenserBlockEntity) level.getBlockEntity(pos);
 		Direction direction = dispenser.getBlockState().getValue(DispenserBlock.FACING);
 
-		Storage<ItemVariant> target = ItemStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite());
+		Storage<ItemVariant> target = ItemStorage.SIDED.find(level, pos.relative(direction), direction.getOpposite());
 
 		if (target != null) {
 			// Always cancel if a storage is available.
 			ci.cancel();
 
 			// We pick a non empty slot. It's not necessarily the same as the one vanilla picked, but that doesn't matter.
-			int slot = dispenser.getRandomSlot(world.getRandom());
+			int slot = dispenser.getRandomSlot(level.getRandom());
 
 			if (slot == -1) {
 				TransferApiImpl.LOGGER.warn("Skipping dropper transfer because the empty slot is unexpectedly -1.");

@@ -32,7 +32,7 @@ public interface FabricBlockState {
 	/**
 	 * Return the current appearance of the block, i.e. which block state this block reports to look like on a given side.
 	 *
-	 * @param blockAndTintGetter	the world this block is in
+	 * @param blockAndTintGetter	the level this block is in
 	 * @param pos     			 	position of this block, whose appearance is being queried
 	 * @param side        			the side for which the appearance is being queried
 	 * @param sourceState 			(optional) state of the block that is querying the appearance, or null if unknown

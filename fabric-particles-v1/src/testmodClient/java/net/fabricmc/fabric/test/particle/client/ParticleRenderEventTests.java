@@ -27,7 +27,7 @@ import net.fabricmc.fabric.test.particle.ParticleTintTestBlock;
 public final class ParticleRenderEventTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> {
+		ColorProviderRegistry.BLOCK.register((state, level, pos, tintIndex) -> {
 			if (tintIndex == 0) {
 				return ((ParticleTintTestBlock) state.getBlock()).color;
 			}
@@ -35,11 +35,11 @@ public final class ParticleRenderEventTests implements ClientModInitializer {
 			return -1;
 		}, ParticleTestSetup.ALWAYS_TINTED, ParticleTestSetup.TINTED_OVER_WATER, ParticleTestSetup.NEVER_TINTED);
 
-		ParticleRenderEvents.ALLOW_TERRAIN_PARTICLE_TINT.register((state, world, pos) -> {
+		ParticleRenderEvents.ALLOW_TERRAIN_PARTICLE_TINT.register((state, level, pos) -> {
 			if (state.is(ParticleTestSetup.NEVER_TINTED)) {
 				return false;
 			} else if (state.is(ParticleTestSetup.TINTED_OVER_WATER)) {
-				return world.getFluidState(pos.below()).is(FluidTags.WATER);
+				return level.getFluidState(pos.below()).is(FluidTags.WATER);
 			}
 
 			return true;

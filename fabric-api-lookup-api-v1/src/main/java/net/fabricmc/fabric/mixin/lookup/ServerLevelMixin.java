@@ -29,10 +29,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
 import net.fabricmc.fabric.impl.lookup.block.BlockApiCacheImpl;
-import net.fabricmc.fabric.impl.lookup.block.ServerWorldCache;
+import net.fabricmc.fabric.impl.lookup.block.ServerLevelCache;
 
 @Mixin(ServerLevel.class)
-abstract class ServerLevelMixin implements ServerWorldCache {
+abstract class ServerLevelMixin implements ServerLevelCache {
 	@Unique
 	private final Map<BlockPos, List<WeakReference<BlockApiCacheImpl<?, ?>>>> apiLookupCaches = new Object2ReferenceOpenHashMap<>();
 	/**

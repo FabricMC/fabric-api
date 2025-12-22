@@ -43,15 +43,15 @@ public class FrameBlock extends Block implements EntityBlock, FabricBlock {
 	}
 
 	@Override
-	public InteractionResult useItemOn(ItemStack stack, BlockState blockState, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-		if (world.getBlockEntity(pos) instanceof FrameBlockEntity frame) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+		if (level.getBlockEntity(pos) instanceof FrameBlockEntity frame) {
 			@Nullable
 			Block currentBlock = frame.getBlock();
 
 			if (stack.isEmpty()) {
 				// Try to remove if the stack in hand is empty
 				if (currentBlock != null) {
-					if (!world.isClientSide()) {
+					if (!level.isClientSide()) {
 						player.getInventory().placeItemBackInInventory(new ItemStack(currentBlock));
 						frame.setBlock(null);
 					}
@@ -78,7 +78,7 @@ public class FrameBlock extends Block implements EntityBlock, FabricBlock {
 				return InteractionResult.PASS;
 			}
 
-			if (!world.isClientSide()) {
+			if (!level.isClientSide()) {
 				stack.consume(1, player);
 
 				if (currentBlock != null) {

@@ -110,7 +110,7 @@ public class AttachmentSync implements ModInitializer {
 
 		ServerPlayerEvents.JOIN.register((player) -> {
 			List<AttachmentChange> changes = new ArrayList<>();
-			// sync world attachments
+			// sync level attachments
 			((AttachmentTargetImpl) player.level()).fabric_computeInitialSyncChanges(player, changes::add);
 			// sync player's own persistent attachments that couldn't be synced earlier
 			((AttachmentTargetImpl) player).fabric_computeInitialSyncChanges(player, changes::add);
@@ -121,8 +121,8 @@ public class AttachmentSync implements ModInitializer {
 		});
 
 		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> {
-			// sync new world's attachments
-			// no conflict with previous one because the client world is recreated every time
+			// sync new level's attachments
+			// no conflict with previous one because the client level is recreated every time
 			List<AttachmentChange> changes = new ArrayList<>();
 			((AttachmentTargetImpl) destination).fabric_computeInitialSyncChanges(player, changes::add);
 

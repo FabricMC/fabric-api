@@ -92,7 +92,7 @@ public interface BiomeSelectionContext {
 
 	/**
 	 * Returns true if the configured structure with the given key can start in this biome in any chunk generator
-	 * used by the current world.
+	 * used by the current level.
 	 */
 	boolean validForStructure(ResourceKey<Structure> key);
 
@@ -105,7 +105,7 @@ public interface BiomeSelectionContext {
 
 	/**
 	 * Tries to determine whether this biome generates in a specific dimension, based on the {@link net.minecraft.world.level.levelgen.WorldOptions}
-	 * used by the current world.
+	 * used by the current level.
 	 *
 	 * <p>If no dimension options exist for the given level stem key, <code>false</code> is returned.
 	 */

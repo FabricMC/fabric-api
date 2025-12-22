@@ -26,8 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public final class DebugMessages {
-	public static String forGlobalPos(@Nullable Level world, BlockPos pos) {
-		String dimension = world != null ? world.dimensionTypeRegistration().getRegisteredName() : "<no dimension>";
+	public static String forGlobalPos(@Nullable Level level, BlockPos pos) {
+		String dimension = level != null ? level.dimensionTypeRegistration().getRegisteredName() : "<no dimension>";
 		return dimension + "@" + pos.toShortString();
 	}
 

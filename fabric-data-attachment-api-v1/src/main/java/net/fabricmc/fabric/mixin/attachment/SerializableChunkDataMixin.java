@@ -72,7 +72,7 @@ abstract class SerializableChunkDataMixin {
 	}
 
 	@Inject(method = "read", at = @At("RETURN"))
-	private void setAttachmentDataInChunk(ServerLevel serverWorld, PoiManager pointOfInterestStorage, RegionStorageInfo storageKey, ChunkPos chunkPos, CallbackInfoReturnable<ProtoChunk> cir) {
+	private void setAttachmentDataInChunk(ServerLevel serverLevel, PoiManager pointOfInterestStorage, RegionStorageInfo storageKey, ChunkPos chunkPos, CallbackInfoReturnable<ProtoChunk> cir) {
 		ProtoChunk chunk = cir.getReturnValue();
 
 		if (chunk != null && attachmentNbtData != null) {
@@ -80,16 +80,16 @@ abstract class SerializableChunkDataMixin {
 			nbt.put(AttachmentTarget.NBT_ATTACHMENT_KEY, attachmentNbtData);
 
 			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
-				ValueInput readView = TagValueInput.create(reporter, serverWorld.registryAccess(), nbt);
+				ValueInput readView = TagValueInput.create(reporter, serverLevel.registryAccess(), nbt);
 				((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(readView);
 			}
 		}
 	}
 
 	@Inject(method = "copyOf", at = @At("RETURN"))
-	private static void storeAttachmentNbtData(ServerLevel world, ChunkAccess chunk, CallbackInfoReturnable<SerializableChunkData> cir) {
+	private static void storeAttachmentNbtData(ServerLevel level, ChunkAccess chunk, CallbackInfoReturnable<SerializableChunkData> cir) {
 		try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
-			TagValueOutput writeView = TagValueOutput.createWithContext(reporter, world.registryAccess());
+			TagValueOutput writeView = TagValueOutput.createWithContext(reporter, level.registryAccess());
 			((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(writeView);
 
 			//noinspection SimplifyOptionalCallChains

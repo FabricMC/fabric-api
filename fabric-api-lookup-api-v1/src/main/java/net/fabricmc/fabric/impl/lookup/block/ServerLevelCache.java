@@ -21,7 +21,7 @@ import net.minecraft.core.BlockPos;
 /**
  * Allows attachment of a BlockApiCache to a {@link net.minecraft.server.level.ServerLevel}.
  */
-public interface ServerWorldCache {
+public interface ServerLevelCache {
 	void fabric_registerCache(BlockPos pos, BlockApiCacheImpl<?, ?> cache);
 
 	void fabric_invalidateCache(BlockPos pos);

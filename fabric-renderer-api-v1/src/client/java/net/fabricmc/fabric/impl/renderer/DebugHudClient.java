@@ -38,7 +38,7 @@ public class DebugHudClient implements ClientModInitializer {
 
 	private static class ActiveRendererDebugHudEntry implements DebugScreenEntry {
 		@Override
-		public void display(DebugScreenDisplayer lines, @Nullable Level world, @Nullable LevelChunk clientChunk, @Nullable LevelChunk chunk) {
+		public void display(DebugScreenDisplayer lines, @Nullable Level level, @Nullable LevelChunk clientChunk, @Nullable LevelChunk chunk) {
 			lines.addLine("[Fabric] Active renderer: " + Renderer.get().getClass().getSimpleName());
 		}
 

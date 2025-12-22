@@ -42,8 +42,8 @@ abstract class PlayerChunkSenderMixin {
 					target = "Lnet/minecraft/server/network/PlayerChunkSender;sendChunk(Lnet/minecraft/server/network/ServerGamePacketListenerImpl;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/LevelChunk;)V"
 			)
 	)
-	private void sendInitialAttachmentData(ServerGamePacketListenerImpl handler, ServerLevel world, LevelChunk chunk, Operation<Void> original, ServerPlayer player) {
-		original.call(handler, world, chunk);
+	private void sendInitialAttachmentData(ServerGamePacketListenerImpl handler, ServerLevel level, LevelChunk chunk, Operation<Void> original, ServerPlayer player) {
+		original.call(handler, level, chunk);
 		// do a wrap operation so this packet is sent *after* the chunk ones
 		List<AttachmentChange> changes = new ArrayList<>();
 		((AttachmentTargetImpl) chunk).fabric_computeInitialSyncChanges(player, changes::add);

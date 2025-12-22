@@ -49,7 +49,7 @@ abstract class ClientPacketListenerMixin {
 
 	@Inject(method = "handleRespawn", at = @At(value = "NEW", target = "net/minecraft/client/multiplayer/ClientLevel"))
 	private void onPlayerRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
-		// If a world already exists, we need to unload all (block)entities in the world.
+		// If a level already exists, we need to unload all (block)entities in the level.
 		if (this.level != null) {
 			for (Entity entity : this.level.entitiesForRendering()) {
 				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);
@@ -71,7 +71,7 @@ abstract class ClientPacketListenerMixin {
 	 */
 	@Inject(method = "handleLogin", at = @At(value = "NEW", target = "net/minecraft/client/multiplayer/ClientLevel"))
 	private void onGameJoin(ClientboundLoginPacket packet, CallbackInfo ci) {
-		// If a world already exists, we need to unload all (block)entities in the world.
+		// If a level already exists, we need to unload all (block)entities in the level.
 		if (this.level != null) {
 			for (Entity entity : level.entitiesForRendering()) {
 				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);
@@ -88,7 +88,7 @@ abstract class ClientPacketListenerMixin {
 	// Called when the client disconnects from a server or enters reconfiguration.
 	@Inject(method = "clearLevel", at = @At("HEAD"))
 	private void onClearLevel(CallbackInfo ci) {
-		// If a world already exists, we need to unload all (block)entities in the world.
+		// If a level already exists, we need to unload all (block)entities in the level.
 		if (this.level != null) {
 			for (Entity entity : this.level.entitiesForRendering()) {
 				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);

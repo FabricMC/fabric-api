@@ -108,18 +108,18 @@ public class CommonAttachmentTests {
 		// Attachment targets
 		/*
 		 * CALLS_REAL_METHODS makes sense here because AttachmentTarget does not refer to anything in the underlying
-		 * class, and it saves us a lot of pain trying to get the regular constructors for ServerWorld and WorldChunk to work.
+		 * class, and it saves us a lot of pain trying to get the regular constructors for ServerLevel and LevelChunk to work.
 		 */
-		ServerLevel serverWorld = mockAndDisableSync(ServerLevel.class);
+		ServerLevel serverLevel = mockAndDisableSync(ServerLevel.class);
 		Entity entity = mockAndDisableSync(Entity.class);
 		BlockEntity blockEntity = mockAndDisableSync(BlockEntity.class);
 
-		LevelChunk worldChunk = mockAndDisableSync(LevelChunk.class);
-		worldChunk.setUnsavedListener(pos -> { });
+		LevelChunk levelChunk = mockAndDisableSync(LevelChunk.class);
+		levelChunk.setUnsavedListener(pos -> { });
 
 		ProtoChunk protoChunk = mockAndDisableSync(ProtoChunk.class);
 
-		for (AttachmentTarget target : new AttachmentTarget[]{serverWorld, entity, blockEntity, worldChunk, protoChunk}) {
+		for (AttachmentTarget target : new AttachmentTarget[]{serverLevel, entity, blockEntity, levelChunk, protoChunk}) {
 			testForTarget(target, basic);
 		}
 	}
@@ -228,9 +228,9 @@ public class CommonAttachmentTests {
 	@Test
 	void testEntityPersistence() {
 		RegistryAccess drm = mockDRM();
-		Level mockWorld = mock(Level.class);
-		when(mockWorld.registryAccess()).thenReturn(drm);
-		Entity entity = new Marker(EntityType.MARKER, mockWorld);
+		Level mockLevel = mock(Level.class);
+		when(mockLevel.registryAccess()).thenReturn(drm);
+		Entity entity = new Marker(EntityType.MARKER, mockLevel);
 		assertFalse(entity.hasAttached(PERSISTENT));
 
 		int expected = 1;
@@ -238,7 +238,7 @@ public class CommonAttachmentTests {
 		TagValueOutput fakeSave = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
 		entity.saveWithoutId(fakeSave);
 
-		entity = new Marker(EntityType.MARKER, mockWorld); // fresh object, like on restart
+		entity = new Marker(EntityType.MARKER, mockLevel); // fresh object, like on restart
 		entity.setLevelCallback(mock());
 		entity.load(TagValueInput.create(ProblemReporter.DISCARDING, drm, fakeSave.buildResult()));
 		assertTrue(entity.hasAttached(PERSISTENT));
@@ -265,34 +265,34 @@ public class CommonAttachmentTests {
 		// Trying to simulate actual saving and loading for the world is too hard
 		RegistryAccess drm = mockDRM();
 
-		ServerLevel world = mockAndDisableSync(ServerLevel.class);
-		when(world.registryAccess()).thenReturn(drm);
+		ServerLevel level = mockAndDisableSync(ServerLevel.class);
+		when(level.registryAccess()).thenReturn(drm);
 
-		AttachmentPersistentState state = new AttachmentPersistentState(world);
-		assertFalse(world.hasAttached(PERSISTENT));
+		AttachmentPersistentState state = new AttachmentPersistentState(level);
+		assertFalse(level.hasAttached(PERSISTENT));
 		assertFalse(state.isDirty());
 
 		int expected = 1;
-		world.setAttached(PERSISTENT, expected);
+		level.setAttached(PERSISTENT, expected);
 		assertTrue(state.isDirty());
-		CompoundTag fakeSave = (CompoundTag) AttachmentPersistentState.codec(world).encodeStart(RegistryOps.create(NbtOps.INSTANCE, drm), state).getOrThrow();
+		CompoundTag fakeSave = (CompoundTag) AttachmentPersistentState.codec(level).encodeStart(RegistryOps.create(NbtOps.INSTANCE, drm), state).getOrThrow();
 		assertEquals("{\"fabric:attachments\":{\"example:persistent\":1}}", fakeSave.toString());
 
-		world = mockAndDisableSync(ServerLevel.class);
-		when(world.registryAccess()).thenReturn(drm);
+		level = mockAndDisableSync(ServerLevel.class);
+		when(level.registryAccess()).thenReturn(drm);
 
-		AttachmentPersistentState.codec(world).decode(RegistryOps.create(NbtOps.INSTANCE, drm), fakeSave).getOrThrow();
-		assertTrue(world.hasAttached(PERSISTENT));
-		assertEquals(expected, world.getAttached(PERSISTENT));
+		AttachmentPersistentState.codec(level).decode(RegistryOps.create(NbtOps.INSTANCE, drm), fakeSave).getOrThrow();
+		assertTrue(level.hasAttached(PERSISTENT));
+		assertEquals(expected, level.getAttached(PERSISTENT));
 	}
 
 	@Test
 	void applyToInvalidTarget() {
 		RegistryAccess drm = mockDRM();
 
-		ServerLevel world = mock(ServerLevel.class);
-		when(world.registryAccess()).thenReturn(drm);
-		when(world.dimension()).thenReturn(Level.END);
+		ServerLevel level = mock(ServerLevel.class);
+		when(level.registryAccess()).thenReturn(drm);
+		when(level.dimension()).thenReturn(Level.END);
 
 		BlockEntity blockEntity = new ChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState());
 
@@ -302,7 +302,7 @@ public class CommonAttachmentTests {
 				new byte[]{0}
 		);
 
-		assertThrows(AttachmentSyncException.class, () -> attachmentChange.tryApply(world));
+		assertThrows(AttachmentSyncException.class, () -> attachmentChange.tryApply(level));
 	}
 
 	/*

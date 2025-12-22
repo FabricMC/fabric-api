@@ -93,7 +93,7 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public boolean fabric_shouldTryToSync() {
-		// Persistent attachments are read at a time with no world
+		// Persistent attachments are read at a time with no level
 		return !this.hasLevel() || !this.level.isClientSide();
 	}
 

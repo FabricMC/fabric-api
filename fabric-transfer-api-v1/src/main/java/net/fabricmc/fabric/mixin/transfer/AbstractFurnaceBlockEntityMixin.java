@@ -75,15 +75,15 @@ public abstract class AbstractFurnaceBlockEntityMixin extends BaseContainerBlock
 			// Update cook time if needed. Code taken from AbstractFurnaceBlockEntity#setStack.
 			boolean bl = !stack.isEmpty() && ItemStack.isSameItemSameComponents(stack, itemStack);
 
-			if (!bl && this.level instanceof ServerLevel world) {
-				this.cookingTotalTime = getTotalCookTime(world, (AbstractFurnaceBlockEntity) (Object) this);
+			if (!bl && this.level instanceof ServerLevel level) {
+				this.cookingTotalTime = getTotalCookTime(level, (AbstractFurnaceBlockEntity) (Object) this);
 				this.cookingTimer = 0;
 			}
 		}
 	}
 
 	@Shadow
-	private static int getTotalCookTime(ServerLevel world, AbstractFurnaceBlockEntity abstractFurnaceBlockEntity) {
+	private static int getTotalCookTime(ServerLevel level, AbstractFurnaceBlockEntity abstractFurnaceBlockEntity) {
 		throw new AssertionError();
 	}
 }

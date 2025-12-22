@@ -134,7 +134,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return new FabricEntityTypeBuilder.Mob<>(MobCategory.MISC, FabricEntityTypeBuilder::emptyFactory);
 	}
 
-	private static <T extends Entity> T emptyFactory(EntityType<T> type, Level world) {
+	private static <T extends Entity> T emptyFactory(EntityType<T> type, Level level) {
 		return null;
 	}
 

@@ -3,16 +3,16 @@
   "package": "net.fabricmc.fabric.mixin.event.lifecycle",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "ChunkStatusTasksMixin",
     "ChunkHolderMixin",
-    "ReloadableServerResourcesMixin",
+    "ChunkMapMixin",
+    "ChunkStatusTasksMixin",
+    "LevelMixin",
     "LivingEntityMixin",
     "MinecraftServerMixin",
     "PlayerListMixin",
-    "ChunkMapMixin",
-    "ServerLevelMixin",
-    "ServerWorldServerEntityHandlerMixin",
-    "LevelMixin"
+    "ReloadableServerResourcesMixin",
+    "ServerLevelEntityCallbacksMixin",
+    "ServerLevelMixin"
   ],
   "server": [
     "server.LevelChunkMixin"

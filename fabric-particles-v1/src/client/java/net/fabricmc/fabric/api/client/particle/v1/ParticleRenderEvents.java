@@ -38,9 +38,9 @@ public final class ParticleRenderEvents {
 	 * further iteration will be canceled and the event invoker will return {@code false}.
 	 */
 	public static final Event<AllowTerrainParticleTint> ALLOW_TERRAIN_PARTICLE_TINT = EventFactory.createArrayBacked(
-			AllowTerrainParticleTint.class, callbacks -> (state, world, pos) -> {
+			AllowTerrainParticleTint.class, callbacks -> (state, level, pos) -> {
 				for (AllowTerrainParticleTint callback : callbacks) {
-					if (!callback.allowTerrainParticleTint(state, world, pos)) {
+					if (!callback.allowTerrainParticleTint(state, level, pos)) {
 						return false;
 					}
 				}
@@ -55,10 +55,10 @@ public final class ParticleRenderEvents {
 		 * tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor block color}.
 		 *
 		 * @param state the block state that the particle represents
-		 * @param world the world the particle is created in
+		 * @param level the level the particle is created in
 		 * @param pos   the position of the particle
 		 * @return {@code true} if block color tinting should be allowed, {@code false} otherwise
 		 */
-		boolean allowTerrainParticleTint(BlockState state, ClientLevel world, BlockPos pos);
+		boolean allowTerrainParticleTint(BlockState state, ClientLevel level, BlockPos pos);
 	}
 }

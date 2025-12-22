@@ -24,8 +24,8 @@ import net.minecraft.world.level.Level;
 import net.fabricmc.fabric.test.lookup.api.Inspectable;
 
 public class InspectablePigEntity extends Pig implements Inspectable {
-	public InspectablePigEntity(EntityType<? extends Pig> entityType, Level world) {
-		super(entityType, world);
+	public InspectablePigEntity(EntityType<? extends Pig> entityType, Level level) {
+		super(entityType, level);
 	}
 
 	@Override

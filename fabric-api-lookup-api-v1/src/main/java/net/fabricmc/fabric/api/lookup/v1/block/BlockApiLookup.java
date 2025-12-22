@@ -173,7 +173,7 @@ public interface BlockApiLookup<A, C> {
 	 * Attempt to retrieve an API from a block in the level.
 	 * Consider using {@link BlockApiCache} if you are doing frequent queries at the same position.
 	 *
-	 * @param world The level.
+	 * @param level The level.
 	 * @param pos The position of the block.
 	 * @param context Additional context for the query, defined by type parameter C.
 	 * @param state The block state at the target position, or null if unknown.
@@ -181,7 +181,7 @@ public interface BlockApiLookup<A, C> {
 	 * @return The retrieved API, or {@code null} if no API was found.
 	 */
 	@Nullable
-	A find(Level world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context);
+	A find(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context);
 
 	/**
 	 * Expose the API for the passed block entities directly implementing it.

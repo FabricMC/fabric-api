@@ -29,7 +29,7 @@ import net.minecraft.world.entity.Entity;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 
 @Mixin(targets = "net.minecraft.server.level.ServerLevel$EntityCallbacks")
-abstract class ServerWorldServerEntityHandlerMixin {
+abstract class ServerLevelEntityCallbacksMixin {
 	// final synthetic Lnet/minecraft/server/level/ServerLevel; this$0
 	@Shadow
 	@Final

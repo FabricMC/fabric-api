@@ -35,30 +35,30 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 
 /**
- * Backing storage for server-side world attachments.
+ * Backing storage for server-side level attachments.
  * Thanks to custom {@link #isDirty()} logic, the file is only written if something needs to be persisted.
  */
 public class AttachmentPersistentState extends SavedData {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentPersistentState.class);
 	public static final String ID = "fabric_attachments";
-	private final AttachmentTargetImpl worldTarget;
+	private final AttachmentTargetImpl levelTarget;
 	private final boolean wasSerialized;
 
-	public AttachmentPersistentState(ServerLevel world) {
-		this.worldTarget = (AttachmentTargetImpl) world;
-		this.wasSerialized = worldTarget.fabric_hasPersistentAttachments();
+	public AttachmentPersistentState(ServerLevel level) {
+		this.levelTarget = (AttachmentTargetImpl) level;
+		this.wasSerialized = levelTarget.fabric_hasPersistentAttachments();
 	}
 
 	// TODO 1.21.5 look at making this more idiomatic
-	public static Codec<AttachmentPersistentState> codec(ServerLevel world) {
-		final ProblemReporter.PathElement reporterContext = () -> "AttachmentPersistentState @ " + world.dimension().identifier();
+	public static Codec<AttachmentPersistentState> codec(ServerLevel level) {
+		final ProblemReporter.PathElement reporterContext = () -> "AttachmentPersistentState @ " + level.dimension().identifier();
 
 		return Codec.of(new Encoder<>() {
 			@Override
 			public <T> DataResult<T> encode(AttachmentPersistentState input, DynamicOps<T> ops, T prefix) {
 				try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(reporterContext, LOGGER)) {
 					TagValueOutput writeView = TagValueOutput.createWithoutContext(reporter);
-					((AttachmentTargetImpl) world).fabric_writeAttachmentsToNbt(writeView);
+					((AttachmentTargetImpl) level).fabric_writeAttachmentsToNbt(writeView);
 					return DataResult.success(NbtOps.INSTANCE.convertTo(ops, writeView.buildResult()));
 				}
 			}
@@ -66,9 +66,9 @@ public class AttachmentPersistentState extends SavedData {
 			@Override
 			public <T> DataResult<Pair<AttachmentPersistentState, T>> decode(DynamicOps<T> ops, T input) {
 				try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(reporterContext, LOGGER)) {
-					ValueInput readView = TagValueInput.create(reporter, world.registryAccess(), (CompoundTag) ops.convertTo(NbtOps.INSTANCE, input));
-					((AttachmentTargetImpl) world).fabric_readAttachmentsFromNbt(readView);
-					return DataResult.success(Pair.of(new AttachmentPersistentState(world), ops.empty()));
+					ValueInput readView = TagValueInput.create(reporter, level.registryAccess(), (CompoundTag) ops.convertTo(NbtOps.INSTANCE, input));
+					((AttachmentTargetImpl) level).fabric_readAttachmentsFromNbt(readView);
+					return DataResult.success(Pair.of(new AttachmentPersistentState(level), ops.empty()));
 				}
 			}
 		});
@@ -77,6 +77,6 @@ public class AttachmentPersistentState extends SavedData {
 	@Override
 	public boolean isDirty() {
 		// Only write data if there are attachments, or if we previously wrote data.
-		return wasSerialized || worldTarget.fabric_hasPersistentAttachments();
+		return wasSerialized || levelTarget.fabric_hasPersistentAttachments();
 	}
 }

@@ -76,7 +76,7 @@ public abstract class RenderRegionCacheMixin {
 	}
 
 	@Inject(method = "createRegion", at = @At(value = "RETURN"))
-	private void createDataMap(Level world, long l, CallbackInfoReturnable<RenderSectionRegion> cir, @Share("dataMap") LocalRef<Long2ObjectOpenHashMap<Object>> mapRef) {
+	private void createDataMap(Level level, long l, CallbackInfoReturnable<RenderSectionRegion> cir, @Share("dataMap") LocalRef<Long2ObjectOpenHashMap<Object>> mapRef) {
 		RenderSectionRegion rendererRegion = cir.getReturnValue();
 		Long2ObjectOpenHashMap<Object> map = mapRef.get();
 

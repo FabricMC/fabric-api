@@ -37,8 +37,8 @@ public class WalkNodeEvaluatorMixin {
 	 * Overrides the node type for the specified position, if the position is a direct target in a path.
 	 */
 	@Inject(method = "getPathTypeFromState", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getBlock()Lnet/minecraft/world/level/block/Block;"), cancellable = true)
-	private static void getCommonNodeType(BlockGetter world, BlockPos pos, CallbackInfoReturnable<PathType> cir, @Local BlockState state) {
-		PathType nodeType = LandPathNodeTypesRegistry.getPathNodeType(state, world, pos, false);
+	private static void getCommonNodeType(BlockGetter level, BlockPos pos, CallbackInfoReturnable<PathType> cir, @Local BlockState state) {
+		PathType nodeType = LandPathNodeTypesRegistry.getPathNodeType(state, level, pos, false);
 
 		if (nodeType != null) {
 			cir.setReturnValue(nodeType);

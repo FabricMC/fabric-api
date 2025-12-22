@@ -32,8 +32,8 @@ import net.fabricmc.fabric.api.entity.event.v1.EntityElytraEvents;
 @SuppressWarnings("unused")
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin extends Entity {
-	LivingEntityMixin(EntityType<?> type, Level world) {
-		super(type, world);
+	LivingEntityMixin(EntityType<?> type, Level level) {
+		super(type, level);
 		throw new AssertionError();
 	}
 

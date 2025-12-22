@@ -102,12 +102,12 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 			levelsChunkLevelEvents.computeIfAbsent(dimensionId, obj -> new Object2IntOpenHashMap<>()).mergeInt(newChunkStatus, 1, Integer::sum);
 		});
 
-		ServerTickEvents.END_LEVEL_TICK.register(world -> {
-			if (world.getGameTime() % 20 == 0) { // limit to 1 per second
-				Object2IntMap<FullChunkStatus> chunkStatuses = levelsChunkLevelEvents.get(world.dimension().identifier());
+		ServerTickEvents.END_LEVEL_TICK.register(level -> {
+			if (level.getGameTime() % 20 == 0) { // limit to 1 per second
+				Object2IntMap<FullChunkStatus> chunkStatuses = levelsChunkLevelEvents.get(level.dimension().identifier());
 
 				if (chunkStatuses != null && !chunkStatuses.isEmpty()) {
-					StringBuilder sb = new StringBuilder(world.dimension().identifier() + " ");
+					StringBuilder sb = new StringBuilder(level.dimension().identifier() + " ");
 					// Logs the number of level type changes for each ChunkLevelType, only logs the newLevelType
 					chunkStatuses.forEach((newChunkStatus, numOfEvents) -> sb.append(newChunkStatus).append(": ").append(numOfEvents).append(", "));
 					LOGGER.info(sb.toString());

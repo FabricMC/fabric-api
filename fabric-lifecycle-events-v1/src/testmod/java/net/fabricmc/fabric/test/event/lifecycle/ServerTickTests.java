@@ -49,7 +49,7 @@ public final class ServerTickTests implements ModInitializer {
 		ServerTickEvents.END_LEVEL_TICK.register(level -> {
 			final int levelTicks = tickTracker.computeIfAbsent(level.dimension(), k -> 0);
 
-			if (levelTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the server world
+			if (levelTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the server level
 				ServerLifecycleTests.LOGGER.info("Ticked Server Level - " + levelTicks + " ticks:" + level.dimension().identifier());
 			}
 
