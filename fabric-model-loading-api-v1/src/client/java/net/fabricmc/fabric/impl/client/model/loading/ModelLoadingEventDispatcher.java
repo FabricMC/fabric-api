@@ -267,7 +267,7 @@ public class ModelLoadingEventDispatcher {
 		}
 
 		@Override
-		public ItemModel.BakingContext bakeContext() {
+		public ItemModel.BakingContext bakingContext() {
 			return bakeContext;
 		}
 

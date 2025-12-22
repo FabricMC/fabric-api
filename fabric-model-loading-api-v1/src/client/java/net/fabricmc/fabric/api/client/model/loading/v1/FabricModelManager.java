@@ -25,7 +25,7 @@ import net.minecraft.client.resources.model.ModelManager;
  *
  * <p>Note: This interface is automatically implemented on the {@link ModelManager} via Mixin and interface injection.
  */
-public interface FabricBakedModelManager {
+public interface FabricModelManager {
 	/**
 	 * Get an extra model from the model manager.
 	 *
