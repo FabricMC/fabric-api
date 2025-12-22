@@ -70,7 +70,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 		final boolean ao = blockInfo.effectiveAo(quad.ambientOcclusion());
 		final boolean vanillaShade = quad.shadeMode() == ShadeMode.VANILLA;
-		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveRenderLayer(quad.chunkLayer()));
+		final VertexConsumer vertexConsumer = getVertexConsumer(blockInfo.effectiveChunkLayer(quad.chunkLayer()));
 
 		tintQuad(quad);
 		shadeQuad(quad, ao, quad.emissive(), vanillaShade);
@@ -147,7 +147,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 				final float faceShade;
 
 				if ((quad.geometryFlags() & AXIS_ALIGNED_FLAG) != 0) {
-					faceShade = blockInfo.blockView.getShade(quad.lightFace(), hasShade);
+					faceShade = blockInfo.level.getShade(quad.lightFace(), hasShade);
 				} else {
 					Vector3fc faceNormal = quad.faceNormal();
 					faceShade = normalShade(faceNormal.x(), faceNormal.y(), faceNormal.z(), hasShade);
@@ -174,7 +174,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 				}
 			}
 		} else {
-			final float faceShade = blockInfo.blockView.getShade(quad.lightFace(), hasShade);
+			final float faceShade = blockInfo.level.getShade(quad.lightFace(), hasShade);
 
 			if (faceShade != 1.0f) {
 				for (int i = 0; i < 4; i++) {
@@ -194,26 +194,26 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		float div = 0;
 
 		if (normalX > 0) {
-			sum += normalX * blockInfo.blockView.getShade(Direction.EAST, hasShade);
+			sum += normalX * blockInfo.level.getShade(Direction.EAST, hasShade);
 			div += normalX;
 		} else if (normalX < 0) {
-			sum += -normalX * blockInfo.blockView.getShade(Direction.WEST, hasShade);
+			sum += -normalX * blockInfo.level.getShade(Direction.WEST, hasShade);
 			div -= normalX;
 		}
 
 		if (normalY > 0) {
-			sum += normalY * blockInfo.blockView.getShade(Direction.UP, hasShade);
+			sum += normalY * blockInfo.level.getShade(Direction.UP, hasShade);
 			div += normalY;
 		} else if (normalY < 0) {
-			sum += -normalY * blockInfo.blockView.getShade(Direction.DOWN, hasShade);
+			sum += -normalY * blockInfo.level.getShade(Direction.DOWN, hasShade);
 			div -= normalY;
 		}
 
 		if (normalZ > 0) {
-			sum += normalZ * blockInfo.blockView.getShade(Direction.SOUTH, hasShade);
+			sum += normalZ * blockInfo.level.getShade(Direction.SOUTH, hasShade);
 			div += normalZ;
 		} else if (normalZ < 0) {
-			sum += -normalZ * blockInfo.blockView.getShade(Direction.NORTH, hasShade);
+			sum += -normalZ * blockInfo.level.getShade(Direction.NORTH, hasShade);
 			div -= normalZ;
 		}
 
@@ -237,7 +237,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		} else {
 			final int flags = quad.geometryFlags();
 
-			if ((flags & LIGHT_FACE_FLAG) != 0 || ((flags & AXIS_ALIGNED_FLAG) != 0 && blockState.isCollisionShapeFullBlock(blockInfo.blockView, pos))) {
+			if ((flags & LIGHT_FACE_FLAG) != 0 || ((flags & AXIS_ALIGNED_FLAG) != 0 && blockState.isCollisionShapeFullBlock(blockInfo.level, pos))) {
 				lightPos.move(quad.lightFace());
 			}
 		}

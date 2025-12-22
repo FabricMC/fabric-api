@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.accessor;
 
 import java.util.List;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemCommand;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemSubmit;
 
-public interface AccessBatchingRenderCommandQueue {
-	List<MeshItemCommand> fabric_getMeshItemCommands();
+public interface AccessSubmitNodeCollection {
+	List<MeshItemSubmit> fabric_getMeshItemSubmits();
 }

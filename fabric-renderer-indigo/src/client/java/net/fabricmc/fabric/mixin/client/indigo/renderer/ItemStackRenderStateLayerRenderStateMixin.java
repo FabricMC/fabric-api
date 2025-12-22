@@ -36,7 +36,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.fabricmc.fabric.api.renderer.v1.render.FabricLayerRenderState;
 import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessLayerRenderState;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessRenderCommandQueue;
+import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessOrderedSubmitNodeCollector;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableMeshImpl;
 
 @Mixin(value = ItemStackRenderState.LayerRenderState.class)
@@ -55,12 +55,15 @@ abstract class ItemStackRenderStateLayerRenderStateMixin implements FabricLayerR
 	}
 
 	@Redirect(method = "submit", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitItem(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemDisplayContext;III[ILjava/util/List;Lnet/minecraft/client/renderer/rendertype/RenderType;Lnet/minecraft/client/renderer/item/ItemStackRenderState$FoilType;)V"))
-	private void submitItemProxy(SubmitNodeCollector commandQueue, PoseStack matrices, ItemDisplayContext displayContext, int light, int overlay, int outlineColor, int[] tints, List<BakedQuad> quads, RenderType layer, ItemStackRenderState.FoilType glint) {
-		if (mutableMesh.size() > 0 && commandQueue instanceof AccessRenderCommandQueue access) {
+	private void submitItemProxy(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, ItemDisplayContext displayContext, int light, int overlay, int outlineColor, int[] tints, List<BakedQuad> quads, RenderType layer, ItemStackRenderState.FoilType foilType) {
+		if (mutableMesh.size() > 0 && submitNodeCollector instanceof AccessOrderedSubmitNodeCollector access) {
 			// We don't have to copy the mesh here because vanilla doesn't copy the tint array or quad list either.
-			access.fabric_submitItem(matrices, displayContext, light, overlay, outlineColor, tints, quads, layer, glint, mutableMesh, renderTypeGetter);
+			access.fabric_submitItem(poseStack, displayContext, light, overlay, outlineColor, tints, quads, layer,
+					foilType, mutableMesh, renderTypeGetter);
 		} else {
-			commandQueue.submitItem(matrices, displayContext, light, overlay, outlineColor, tints, quads, layer, glint);
+			submitNodeCollector.submitItem(poseStack, displayContext, light, overlay, outlineColor, tints, quads, layer,
+					foilType
+			);
 		}
 	}
 

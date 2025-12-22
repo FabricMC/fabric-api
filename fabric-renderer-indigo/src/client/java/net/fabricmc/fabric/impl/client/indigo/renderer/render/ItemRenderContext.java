@@ -48,58 +48,58 @@ import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
  * Used during item buffering to support geometry added through {@link FabricLayerRenderState#emitter()}.
  */
 public class ItemRenderContext extends AbstractRenderContext {
-	private static final int GLINT_COUNT = ItemStackRenderState.FoilType.values().length;
+	private static final int FOIL_TYPE_COUNT = ItemStackRenderState.FoilType.values().length;
 
 	private ItemDisplayContext displayContext;
-	private MultiBufferSource vertexConsumers;
+	private MultiBufferSource bufferSource;
 	private int light;
 	private int[] tints;
 
-	private RenderType defaultLayer;
+	private RenderType defaultRenderType;
 	@Nullable
 	private ItemRenderTypeGetter renderTypeGetter;
-	private ItemStackRenderState.FoilType defaultGlint;
-	private boolean ignoreQuadGlint;
+	private ItemStackRenderState.FoilType defaultFoilType;
+	private boolean ignoreQuadFoilType;
 
-	private PoseStack.Pose specialGlintEntry;
-	private final VertexConsumer[] vertexConsumerCache = new VertexConsumer[3 * GLINT_COUNT];
+	private PoseStack.Pose specialFoilPose;
+	private final VertexConsumer[] vertexConsumerCache = new VertexConsumer[3 * FOIL_TYPE_COUNT];
 
 	public void renderItem(
 			ItemDisplayContext displayContext,
-			PoseStack matrixStack,
-			MultiBufferSource vertexConsumers,
+			PoseStack poseStack,
+			MultiBufferSource bufferSource,
 			int light,
 			int overlay,
 			int[] tints,
 			List<BakedQuad> vanillaQuads,
 			MeshView mesh,
-			RenderType layer,
+			RenderType renderType,
 			@Nullable ItemRenderTypeGetter renderTypeGetter,
-			ItemStackRenderState.FoilType glint,
-			boolean ignoreQuadGlint
+			ItemStackRenderState.FoilType foilType,
+			boolean ignoreQuadFoilType
 	) {
 		this.displayContext = displayContext;
-		matrices = matrixStack.last();
-		this.vertexConsumers = vertexConsumers;
+		pose = poseStack.last();
+		this.bufferSource = bufferSource;
 		this.light = light;
 		this.overlay = overlay;
 		this.tints = tints;
 
-		defaultLayer = layer;
+		defaultRenderType = renderType;
 		this.renderTypeGetter = renderTypeGetter;
-		defaultGlint = glint;
-		this.ignoreQuadGlint = ignoreQuadGlint;
+		defaultFoilType = foilType;
+		this.ignoreQuadFoilType = ignoreQuadFoilType;
 
 		bufferQuads(vanillaQuads, mesh);
 
-		matrices = null;
-		this.vertexConsumers = null;
+		pose = null;
+		this.bufferSource = null;
 		this.tints = null;
 
-		defaultLayer = null;
+		defaultRenderType = null;
 		this.renderTypeGetter = null;
 
-		specialGlintEntry = null;
+		specialFoilPose = null;
 		Arrays.fill(vertexConsumerCache, null);
 	}
 
@@ -152,64 +152,70 @@ public class ItemRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	private VertexConsumer getVertexConsumer(QuadAtlas quadAtlas, @Nullable ChunkSectionLayer quadRenderLayer, ItemStackRenderState.@Nullable FoilType quadGlint) {
-		RenderType layer;
-		ItemStackRenderState.FoilType glint;
+	private VertexConsumer getVertexConsumer(QuadAtlas quadAtlas, @Nullable ChunkSectionLayer quadLayer, ItemStackRenderState.@Nullable FoilType quadFoilType) {
+		RenderType renderType;
+		ItemStackRenderState.FoilType foilType;
 
 		if (renderTypeGetter != null) {
-			layer = renderTypeGetter.renderType(quadAtlas, quadRenderLayer);
+			renderType = renderTypeGetter.renderType(quadAtlas, quadLayer);
 
-			if (layer == null) {
-				layer = defaultLayer;
+			if (renderType == null) {
+				renderType = defaultRenderType;
 			}
 		} else {
-			layer = defaultLayer;
+			renderType = defaultRenderType;
 		}
 
-		if (ignoreQuadGlint || quadGlint == null) {
-			glint = defaultGlint;
+		if (ignoreQuadFoilType || quadFoilType == null) {
+			foilType = defaultFoilType;
 		} else {
-			glint = quadGlint;
+			foilType = quadFoilType;
 		}
 
 		int cacheIndex;
 
-		if (layer == Sheets.translucentItemSheet()) {
+		if (renderType == Sheets.translucentItemSheet()) {
 			cacheIndex = 0;
-		} else if (layer == Sheets.cutoutBlockSheet()) {
-			cacheIndex = GLINT_COUNT;
-		} else if (layer == Sheets.translucentBlockItemSheet()) {
-			cacheIndex = 2 * GLINT_COUNT;
+		} else if (renderType == Sheets.cutoutBlockSheet()) {
+			cacheIndex = FOIL_TYPE_COUNT;
+		} else if (renderType == Sheets.translucentBlockItemSheet()) {
+			cacheIndex = 2 * FOIL_TYPE_COUNT;
 		} else {
-			return createVertexConsumer(layer, glint);
+			return createVertexConsumer(renderType, foilType);
 		}
 
-		cacheIndex += glint.ordinal();
+		cacheIndex += foilType.ordinal();
 		VertexConsumer vertexConsumer = vertexConsumerCache[cacheIndex];
 
 		if (vertexConsumer == null) {
-			vertexConsumer = createVertexConsumer(layer, glint);
+			vertexConsumer = createVertexConsumer(renderType, foilType);
 			vertexConsumerCache[cacheIndex] = vertexConsumer;
 		}
 
 		return vertexConsumer;
 	}
 
-	private VertexConsumer createVertexConsumer(RenderType layer, ItemStackRenderState.FoilType glint) {
-		if (glint == ItemStackRenderState.FoilType.SPECIAL) {
-			if (specialGlintEntry == null) {
-				specialGlintEntry = matrices.copy();
+	private VertexConsumer createVertexConsumer(RenderType renderType, ItemStackRenderState.FoilType foilType) {
+		if (foilType == ItemStackRenderState.FoilType.SPECIAL) {
+			if (specialFoilPose == null) {
+				specialFoilPose = pose.copy();
 
 				if (displayContext == ItemDisplayContext.GUI) {
-					MatrixUtil.mulComponentWise(specialGlintEntry.pose(), 0.5F);
+					MatrixUtil.mulComponentWise(specialFoilPose.pose(), 0.5F);
 				} else if (displayContext.firstPerson()) {
-					MatrixUtil.mulComponentWise(specialGlintEntry.pose(), 0.75F);
+					MatrixUtil.mulComponentWise(specialFoilPose.pose(), 0.75F);
 				}
 			}
 
-			return ItemRendererAccessor.fabric_getDynamicDisplayGlintConsumer(vertexConsumers, layer, specialGlintEntry);
+			return ItemRendererAccessor.fabric_getSpecialFoilBuffer(
+					bufferSource,
+					renderType,
+					specialFoilPose
+			);
 		}
 
-		return ItemRenderer.getFoilBuffer(vertexConsumers, layer, true, glint != ItemStackRenderState.FoilType.NONE);
+		return ItemRenderer.getFoilBuffer(
+				bufferSource,
+				renderType, true, foilType != ItemStackRenderState.FoilType.NONE);
 	}
 }

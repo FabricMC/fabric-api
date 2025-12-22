@@ -22,7 +22,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderConte
  * Used to stash block renderer reference in local scope during
  * chunk rebuild, thus avoiding repeated thread-local lookups.
  */
-public interface AccessChunkRendererRegion {
+public interface AccessRenderSectionRegion {
 	TerrainRenderContext fabric_getRenderer();
 
 	void fabric_setRenderer(TerrainRenderContext renderer);

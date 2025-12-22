@@ -40,29 +40,29 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 	private final RandomSource random = RandomSource.createNewThreadLocalInstance();
 
-	private BlockMultiBufferSource vertexConsumers;
-	private ChunkSectionLayer defaultRenderLayer;
+	private BlockMultiBufferSource bufferSource;
+	private ChunkSectionLayer defaultChunkLayer;
 	private float red;
 	private float green;
 	private float blue;
 	private int light;
 
 	@Nullable
-	private ChunkSectionLayer lastRenderLayer;
+	private ChunkSectionLayer lastChunkLayer;
 	@Nullable
 	private VertexConsumer lastVertexConsumer;
 
 	@Override
 	protected void bufferQuad(MutableQuadViewImpl quad) {
-		final ChunkSectionLayer quadRenderLayer = quad.chunkLayer();
-		final ChunkSectionLayer renderLayer = quadRenderLayer == null ? defaultRenderLayer : quadRenderLayer;
+		final ChunkSectionLayer quadLayer = quad.chunkLayer();
+		final ChunkSectionLayer layer = quadLayer == null ? defaultChunkLayer : quadLayer;
 		final VertexConsumer vertexConsumer;
 
-		if (renderLayer == lastRenderLayer) {
+		if (layer == lastChunkLayer) {
 			vertexConsumer = lastVertexConsumer;
 		} else {
-			lastVertexConsumer = vertexConsumer = vertexConsumers.getBuffer(renderLayer);
-			lastRenderLayer = renderLayer;
+			lastVertexConsumer = vertexConsumer = bufferSource.getBuffer(layer);
+			lastChunkLayer = layer;
 		}
 
 		tintQuad(quad);
@@ -96,12 +96,12 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 		}
 	}
 
-	public void bufferModel(PoseStack.Pose entry, BlockMultiBufferSource vertexConsumers, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter blockView, BlockPos pos, BlockState state) {
-		matrices = entry;
+	public void bufferModel(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		this.pose = pose;
 		this.overlay = overlay;
 
-		this.vertexConsumers = vertexConsumers;
-		this.defaultRenderLayer = ItemBlockRenderTypes.getChunkRenderType(state);
+		this.bufferSource = bufferSource;
+		this.defaultChunkLayer = ItemBlockRenderTypes.getChunkRenderType(state);
 		this.red = Mth.clamp(red, 0, 1);
 		this.green = Mth.clamp(green, 0, 1);
 		this.blue = Mth.clamp(blue, 0, 1);
@@ -109,11 +109,11 @@ public class SimpleBlockRenderContext extends AbstractRenderContext {
 
 		random.setSeed(42L);
 
-		model.emitQuads(getEmitter(), blockView, pos, state, random, cullFace -> false);
+		model.emitQuads(getEmitter(), level, pos, state, random, _ -> false);
 
-		matrices = null;
-		this.vertexConsumers = null;
-		lastRenderLayer = null;
+		this.pose = null;
+		this.bufferSource = null;
+		lastChunkLayer = null;
 		lastVertexConsumer = null;
 	}
 }

@@ -28,15 +28,15 @@ import net.fabricmc.fabric.impl.client.indigo.Indigo;
  */
 @FunctionalInterface
 public interface AoLuminanceFix {
-	float apply(BlockGetter view, BlockPos pos, BlockState state);
+	float apply(BlockGetter level, BlockPos pos, BlockState state);
 
 	AoLuminanceFix INSTANCE = Indigo.FIX_LUMINOUS_AO_SHADE ? AoLuminanceFix::fixed : AoLuminanceFix::vanilla;
 
-	static float vanilla(BlockGetter view, BlockPos pos, BlockState state) {
-		return state.getShadeBrightness(view, pos);
+	static float vanilla(BlockGetter level, BlockPos pos, BlockState state) {
+		return state.getShadeBrightness(level, pos);
 	}
 
-	static float fixed(BlockGetter view, BlockPos pos, BlockState state) {
-		return state.getLightEmission() == 0 ? state.getShadeBrightness(view, pos) : 1f;
+	static float fixed(BlockGetter level, BlockPos pos, BlockState state) {
+		return state.getLightEmission() == 0 ? state.getShadeBrightness(level, pos) : 1f;
 	}
 }

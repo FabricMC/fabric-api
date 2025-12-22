@@ -37,55 +37,55 @@ import net.minecraft.world.item.ItemDisplayContext;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessBatchingRenderCommandQueue;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessRenderCommandQueue;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemCommand;
+import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessOrderedSubmitNodeCollector;
+import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessSubmitNodeCollection;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemSubmit;
 
 @Mixin(SubmitNodeCollection.class)
-abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, AccessRenderCommandQueue, AccessBatchingRenderCommandQueue {
+abstract class SubmitNodeCollectionMixin implements OrderedSubmitNodeCollector, AccessOrderedSubmitNodeCollector, AccessSubmitNodeCollection {
 	@Shadow
 	private boolean wasUsed;
 
 	@Unique
-	private final List<MeshItemCommand> meshItemCommands = new ArrayList<>();
+	private final List<MeshItemSubmit> meshItemSubmits = new ArrayList<>();
 
 	@Inject(method = "clear()V", at = @At("RETURN"))
 	public void clear(CallbackInfo ci) {
-		meshItemCommands.clear();
+		meshItemSubmits.clear();
 	}
 
 	@Override
 	public void fabric_submitItem(
-			PoseStack matrices,
+			PoseStack poseStack,
 			ItemDisplayContext displayContext,
 			int light,
 			int overlay,
 			int outlineColors,
 			int[] tintLayers,
 			List<BakedQuad> quads,
-			RenderType renderLayer,
-			ItemStackRenderState.FoilType glintType,
+			RenderType renderType,
+			ItemStackRenderState.FoilType foilType,
 			MeshView mesh,
 			@Nullable ItemRenderTypeGetter renderTypeGetter
 	) {
 		wasUsed = true;
-		meshItemCommands.add(new MeshItemCommand(
-				matrices.last().copy(),
+		meshItemSubmits.add(new MeshItemSubmit(
+				poseStack.last().copy(),
 				displayContext,
 				light,
 				overlay,
 				outlineColors,
 				tintLayers,
 				quads,
-				renderLayer,
-				glintType,
+				renderType,
+				foilType,
 				mesh,
 				renderTypeGetter
 		));
 	}
 
 	@Override
-	public List<MeshItemCommand> fabric_getMeshItemCommands() {
-		return meshItemCommands;
+	public List<MeshItemSubmit> fabric_getMeshItemSubmits() {
+		return meshItemSubmits;
 	}
 }

@@ -31,9 +31,9 @@ import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.feature.ItemFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessBatchingRenderCommandQueue;
+import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessSubmitNodeCollection;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.ItemRenderContext;
-import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemCommand;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.MeshItemSubmit;
 
 @Mixin(ItemFeatureRenderer.class)
 abstract class ItemFeatureRendererMixin {
@@ -45,39 +45,39 @@ abstract class ItemFeatureRendererMixin {
 	private final ItemRenderContext itemRenderContext = new ItemRenderContext();
 
 	@Inject(method = "render", at = @At("RETURN"))
-	private void onReturnRender(SubmitNodeCollection queue, MultiBufferSource.BufferSource vertexConsumers, OutlineBufferSource outlineVertexConsumers, CallbackInfo ci) {
-		for (MeshItemCommand itemCommand : ((AccessBatchingRenderCommandQueue) queue).fabric_getMeshItemCommands()) {
+	private void onReturnRender(SubmitNodeCollection nodeCollection, MultiBufferSource.BufferSource bufferSource, OutlineBufferSource outlineBufferSource, CallbackInfo ci) {
+		for (MeshItemSubmit itemSubmit : ((AccessSubmitNodeCollection) nodeCollection).fabric_getMeshItemSubmits()) {
 			poseStack.pushPose();
-			poseStack.last().set(itemCommand.positionMatrix());
+			poseStack.last().set(itemSubmit.positionMatrix());
 
 			itemRenderContext.renderItem(
-					itemCommand.displayContext(),
+					itemSubmit.displayContext(),
 					poseStack,
-					vertexConsumers,
-					itemCommand.lightCoords(),
-					itemCommand.overlayCoords(),
-					itemCommand.tintLayers(),
-					itemCommand.quads(),
-					itemCommand.mesh(),
-					itemCommand.renderLayer(),
-					itemCommand.renderTypeGetter(),
-					itemCommand.glintType(),
+					bufferSource,
+					itemSubmit.lightCoords(),
+					itemSubmit.overlayCoords(),
+					itemSubmit.tintLayers(),
+					itemSubmit.quads(),
+					itemSubmit.mesh(),
+					itemSubmit.renderType(),
+					itemSubmit.renderTypeGetter(),
+					itemSubmit.foilType(),
 					false
 			);
 
-			if (itemCommand.outlineColor() != 0) {
-				outlineVertexConsumers.setColor(itemCommand.outlineColor());
+			if (itemSubmit.outlineColor() != 0) {
+				outlineBufferSource.setColor(itemSubmit.outlineColor());
 				itemRenderContext.renderItem(
-						itemCommand.displayContext(),
+						itemSubmit.displayContext(),
 						poseStack,
-						outlineVertexConsumers,
-						itemCommand.lightCoords(),
-						itemCommand.overlayCoords(),
-						itemCommand.tintLayers(),
-						itemCommand.quads(),
-						itemCommand.mesh(),
-						itemCommand.renderLayer(),
-						itemCommand.renderTypeGetter(),
+						outlineBufferSource,
+						itemSubmit.lightCoords(),
+						itemSubmit.overlayCoords(),
+						itemSubmit.tintLayers(),
+						itemSubmit.quads(),
+						itemSubmit.mesh(),
+						itemSubmit.renderType(),
+						itemSubmit.renderTypeGetter(),
 						ItemStackRenderState.FoilType.NONE,
 						true
 				);

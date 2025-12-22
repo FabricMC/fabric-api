@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.indigo.renderer.render;
+package net.fabricmc.fabric.impl.client.indigo.renderer.accessor;
 
 import java.util.List;
 
@@ -29,17 +29,18 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshView;
 import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 
-public record MeshItemCommand(
-		PoseStack.Pose positionMatrix,
-		ItemDisplayContext displayContext,
-		int lightCoords,
-		int overlayCoords,
-		int outlineColor,
-		int[] tintLayers,
-		List<BakedQuad> quads,
-		RenderType renderLayer,
-		ItemStackRenderState.FoilType glintType,
-		MeshView mesh,
-		@Nullable ItemRenderTypeGetter renderTypeGetter
-) {
+public interface AccessOrderedSubmitNodeCollector {
+	void fabric_submitItem(
+			PoseStack poseStack,
+			ItemDisplayContext displayContext,
+			int light,
+			int overlay,
+			int outlineColors,
+			int[] tintLayers,
+			List<BakedQuad> quads,
+			RenderType renderType,
+			ItemStackRenderState.FoilType foilType,
+			MeshView mesh,
+			@Nullable ItemRenderTypeGetter renderTypeGetter
+	);
 }
