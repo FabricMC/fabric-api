@@ -1,2 +1,2 @@
-CLASS net/minecraft/class_5955
+CLASS net/minecraft/world/level/block/WeatheringCopper
 	COMMENT @see net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry registry for modded oxidizable blocks
