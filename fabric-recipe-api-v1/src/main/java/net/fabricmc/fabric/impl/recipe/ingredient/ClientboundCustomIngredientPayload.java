@@ -14,29 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.recipe.sync;
-
-import java.util.HashSet;
-import java.util.Set;
+package net.fabricmc.fabric.impl.recipe.ingredient;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
 
-/**
- * Used to notify server which recipes can be synced to the client.
- */
-public record SupportedRecipeSerializersPayloadC2S(Set<Identifier> synchronizedSerializers) implements CustomPacketPayload {
-	public static final StreamCodec<FriendlyByteBuf, SupportedRecipeSerializersPayloadC2S> CODEC = StreamCodec.composite(
-			ByteBufCodecs.collection(HashSet::new, Identifier.STREAM_CODEC), SupportedRecipeSerializersPayloadC2S::synchronizedSerializers,
-			SupportedRecipeSerializersPayloadC2S::new
+public record ClientboundCustomIngredientPayload(int protocolVersion) implements CustomPacketPayload {
+	public static final StreamCodec<FriendlyByteBuf, ClientboundCustomIngredientPayload> CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, ClientboundCustomIngredientPayload::protocolVersion,
+			ClientboundCustomIngredientPayload::new
 	);
-	public static final Type<SupportedRecipeSerializersPayloadC2S> ID = new Type<>(Identifier.fromNamespaceAndPath("fabric", "recipe_sync/supported_serializers"));
+	public static final CustomPacketPayload.Type<ClientboundCustomIngredientPayload> TYPE = new Type<>(CustomIngredientSync.PACKET_ID);
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
-		return ID;
+		return TYPE;
 	}
 }

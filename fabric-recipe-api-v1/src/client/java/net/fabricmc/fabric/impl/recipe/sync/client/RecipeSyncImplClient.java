@@ -25,22 +25,22 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.recipe.v1.sync.ClientRecipeSynchronizedEvent;
 import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
-import net.fabricmc.fabric.impl.recipe.sync.RecipeSyncPayloadS2C;
+import net.fabricmc.fabric.impl.recipe.sync.ClientboundRecipeSyncPayload;
 import net.fabricmc.fabric.impl.recipe.sync.SynchronizedRecipesImpl;
 
 public class RecipeSyncImplClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(RecipeSyncPayloadS2C.ID, RecipeSyncImplClient::onRecipeSyncPacket);
+		ClientPlayNetworking.registerGlobalReceiver(ClientboundRecipeSyncPayload.TYPE, RecipeSyncImplClient::onRecipeSyncPacket);
 	}
 
-	private static void onRecipeSyncPacket(RecipeSyncPayloadS2C payload, ClientPlayNetworking.Context context) {
+	private static void onRecipeSyncPacket(ClientboundRecipeSyncPayload payload, ClientPlayNetworking.Context context) {
 		SynchronizedRecipes recipes;
 
 		if (!payload.entries().isEmpty()) {
 			var collectedRecipes = new ArrayList<RecipeHolder<?>>();
 
-			for (RecipeSyncPayloadS2C.Entry entry : payload.entries()) {
+			for (ClientboundRecipeSyncPayload.Entry entry : payload.entries()) {
 				collectedRecipes.addAll(entry.recipes());
 			}
 

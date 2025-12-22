@@ -34,7 +34,7 @@ public class ClientPacketListenerMixin {
 	private ClientRecipeContainer recipes;
 
 	/*
-	 * Copies previously synchronized client recipes, as server mods might send the SynchronizeRecipesS2CPacket for custom
+	 * Copies previously synchronized client recipes, as server mods might send the ClientboundUpdateRecipesPacket for custom
 	 * vanilla compatible functionality, without actually wanting to (re)synchronize recipes.
 	 */
 	@WrapOperation(method = "handleUpdateRecipes", at = @At(value = "FIELD", target = "Lnet/minecraft/client/multiplayer/ClientPacketListener;recipes:Lnet/minecraft/client/multiplayer/ClientRecipeContainer;", opcode = Opcodes.PUTFIELD))

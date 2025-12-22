@@ -32,13 +32,13 @@ import net.minecraft.world.level.Level;
 public interface FabricServerRecipeManager extends FabricRecipeManager {
 	/**
 	 * Creates a stream of all recipe entries of the given {@code type} that match the
-	 * given {@code input} and {@code world}.
+	 * given {@code input} and {@code level}.
 	 *
 	 * <p>If {@code input.isEmpty()} returns true, the returned stream will be always empty.
 	 *
 	 * @return the stream of matching recipes
 	 */
-	default <I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level world) {
+	default <I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level level) {
 		throw new AssertionError("Implemented in Mixin");
 	}
 

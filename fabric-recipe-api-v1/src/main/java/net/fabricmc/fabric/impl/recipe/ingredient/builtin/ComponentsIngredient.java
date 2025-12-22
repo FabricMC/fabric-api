@@ -47,7 +47,7 @@ public class ComponentsIngredient implements CustomIngredient {
 
 	public ComponentsIngredient(Ingredient base, DataComponentPatch components) {
 		if (components.isEmpty()) {
-			throw new IllegalArgumentException("ComponentIngredient must have at least one defined component");
+			throw new IllegalArgumentException("ComponentsIngredient must have at least one defined component");
 		}
 
 		this.base = base;
@@ -84,12 +84,12 @@ public class ComponentsIngredient implements CustomIngredient {
 	}
 
 	@Override
-	public Stream<Holder<Item>> getMatchingItems() {
+	public Stream<Holder<Item>> items() {
 		return base.items();
 	}
 
 	@Override
-	public SlotDisplay toDisplay() {
+	public SlotDisplay display() {
 		return new SlotDisplay.Composite(
 			base.items().map(this::createEntryDisplay).toList()
 		);

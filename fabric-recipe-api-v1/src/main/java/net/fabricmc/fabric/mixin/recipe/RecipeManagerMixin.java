@@ -58,8 +58,8 @@ public abstract class RecipeManagerMixin implements FabricServerRecipeManager {
 	}
 
 	@Override
-	public <I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level world) {
-		return this.recipes.getRecipesFor(type, input, world);
+	public <I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level level) {
+		return this.recipes.getRecipesFor(type, input, level);
 	}
 
 	@Override

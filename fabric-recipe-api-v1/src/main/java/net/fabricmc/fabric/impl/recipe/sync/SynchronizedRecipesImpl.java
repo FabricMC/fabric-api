@@ -40,8 +40,8 @@ public record SynchronizedRecipesImpl(RecipeMap preparedRecipes) implements Sync
 	}
 
 	@Override
-	public <I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level world) {
-		return this.preparedRecipes.getRecipesFor(type, input, world);
+	public <I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level level) {
+		return this.preparedRecipes.getRecipesFor(type, input, level);
 	}
 
 	@Override
@@ -50,8 +50,8 @@ public record SynchronizedRecipesImpl(RecipeMap preparedRecipes) implements Sync
 	}
 
 	@Override
-	public <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level world) {
-		return this.preparedRecipes.getRecipesFor(type, input, world).findFirst();
+	public <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level level) {
+		return this.preparedRecipes.getRecipesFor(type, input, level).findFirst();
 	}
 
 	@Override
