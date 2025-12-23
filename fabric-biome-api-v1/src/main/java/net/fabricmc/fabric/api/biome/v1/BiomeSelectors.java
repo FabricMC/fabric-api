@@ -22,6 +22,8 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.fabricmc.fabric.impl.biome.modification.BuiltInResourceKeys;
+
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.random.Weighted;
@@ -30,8 +32,6 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.dimension.LevelStem;
-
-import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
 
 /**
  * Provides several convenient biome selectors that can be used with {@link BiomeModifications}.
@@ -54,7 +54,7 @@ public final class BiomeSelectors {
 		return context -> {
 			// In addition to the namespace, we also check that it exists in the vanilla registries
 			return context.getBiomeKey().identifier().getNamespace().equals("minecraft")
-					&& BuiltInRegistryKeys.isBuiltinBiome(context.getBiomeKey());
+					&& BuiltInResourceKeys.isBuiltinBiome(context.getBiomeKey());
 		};
 	}
 
@@ -147,8 +147,8 @@ public final class BiomeSelectors {
 		return context -> {
 			MobSpawnSettings spawnSettings = context.getBiome().getMobSettings();
 
-			for (MobCategory spawnGroup : MobCategory.values()) {
-				for (Weighted<MobSpawnSettings.SpawnerData> spawnEntry : spawnSettings.getMobs(spawnGroup).unwrap()) {
+			for (MobCategory mobCategory : MobCategory.values()) {
+				for (Weighted<MobSpawnSettings.SpawnerData> spawnEntry : spawnSettings.getMobs(mobCategory).unwrap()) {
 					if (entityTypes.contains(spawnEntry.value().type())) {
 						return true;
 					}

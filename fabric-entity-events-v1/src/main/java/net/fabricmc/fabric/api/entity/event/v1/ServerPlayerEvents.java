@@ -75,7 +75,7 @@ public final class ServerPlayerEvents {
 	/**
 	 * An event that is called when a player takes fatal damage.
 	 *
-	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayerEntity}.
+	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayer}.
 	 */
 	@Deprecated
 	public static final Event<AllowDeath> ALLOW_DEATH = EventFactory.createArrayBacked(AllowDeath.class, callbacks -> (player, damageSource, damageAmount) -> {
@@ -133,7 +133,7 @@ public final class ServerPlayerEvents {
 	}
 
 	/**
-	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayerEntity}.
+	 * @deprecated Use the more general {@link ServerLivingEntityEvents#ALLOW_DEATH} event instead and check for {@code instanceof ServerPlayer}.
 	 */
 	@Deprecated
 	@FunctionalInterface

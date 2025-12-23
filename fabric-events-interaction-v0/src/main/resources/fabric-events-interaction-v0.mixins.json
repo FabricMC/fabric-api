@@ -6,7 +6,7 @@
     "PlayerAdvancementsMixin",
     "ServerPlayerMixin",
     "ServerPlayerGameModeMixin",
-    "ServerPlayPacketListenerInteractEntityHandlerMixin",
+    "ServerGamePacketListenerInteractEntityHandlerMixin",
     "ServerGamePacketListenerImplMixin"
   ],
   "injectors": {

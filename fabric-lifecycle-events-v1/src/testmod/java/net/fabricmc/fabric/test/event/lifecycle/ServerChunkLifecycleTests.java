@@ -40,7 +40,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		setupChunkGenerateTest();
-		setupChunkLevelTypeChangeTest();
+		setupFullChunkStatusChangeTest();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 	 * Moving around within the same chunk (use F3+G) should not log anything.
 	 * Moving into another chunk should trigger some logs.
 	 */
-	private static void setupChunkLevelTypeChangeTest() {
+	private static void setupFullChunkStatusChangeTest() {
 		final Object2ObjectMap<Identifier, Object2IntMap<FullChunkStatus>> levelsChunkLevelEvents = new Object2ObjectOpenHashMap<>();
 		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<ChunkStatusEvent>> levelsChunkStatusTracker = new Object2ObjectOpenHashMap<>();
 
@@ -108,7 +108,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 
 				if (chunkStatuses != null && !chunkStatuses.isEmpty()) {
 					StringBuilder sb = new StringBuilder(level.dimension().identifier() + " ");
-					// Logs the number of level type changes for each ChunkLevelType, only logs the newLevelType
+					// Logs the number of full chunk status changes for each ChunkLevelType, only logs the newChunkStatus
 					chunkStatuses.forEach((newChunkStatus, numOfEvents) -> sb.append(newChunkStatus).append(": ").append(numOfEvents).append(", "));
 					LOGGER.info(sb.toString());
 					chunkStatuses.clear();

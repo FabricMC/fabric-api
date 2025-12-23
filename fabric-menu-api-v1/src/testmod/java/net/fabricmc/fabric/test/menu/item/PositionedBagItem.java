@@ -41,7 +41,7 @@ public class PositionedBagItem extends BagItem {
 	@Override
 	public InteractionResult use(Level level, Player user, InteractionHand hand) {
 		ItemStack stack = user.getItemInHand(hand);
-		user.openMenu(createScreenHandlerFactory(stack, null));
+		user.openMenu(createMenuFactory(stack, null));
 		return InteractionResult.SUCCESS;
 	}
 
@@ -50,11 +50,11 @@ public class PositionedBagItem extends BagItem {
 		Player user = context.getPlayer();
 		ItemStack stack = user.getItemInHand(context.getHand());
 		BlockPos pos = context.getClickedPos();
-		user.openMenu(createScreenHandlerFactory(stack, pos));
+		user.openMenu(createMenuFactory(stack, pos));
 		return InteractionResult.SUCCESS;
 	}
 
-	private ExtendedMenuFactory<PositionedBagMenu.BagData> createScreenHandlerFactory(ItemStack stack, BlockPos pos) {
+	private ExtendedMenuFactory<PositionedBagMenu.BagData> createMenuFactory(ItemStack stack, BlockPos pos) {
 		return new ExtendedMenuFactory<>() {
 			@Override
 			public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {

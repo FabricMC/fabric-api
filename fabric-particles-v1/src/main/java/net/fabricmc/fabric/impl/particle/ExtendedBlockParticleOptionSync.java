@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.particle;
 
 import java.util.Set;
 
+import net.fabricmc.fabric.impl.networking.FabricRegistryFriendlyByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,7 +27,6 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.impl.networking.FabricRegistryByteBuf;
 
 public class ExtendedBlockParticleOptionSync implements ModInitializer {
 	private static final Identifier PACKET_ID = Identifier.fromNamespaceAndPath("fabric", "extended_block_particle_option_sync");
@@ -37,7 +37,7 @@ public class ExtendedBlockParticleOptionSync implements ModInitializer {
 	}
 
 	public static boolean shouldEncodeFallback(RegistryFriendlyByteBuf buf) {
-		Set<Identifier> channels = ((FabricRegistryByteBuf) buf).fabric_getSendableConfigurationChannels();
+		Set<Identifier> channels = ((FabricRegistryFriendlyByteBuf) buf).fabric_getSendableConfigurationChannels();
 
 		if (channels == null) {
 			return true;

@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 
 import com.mojang.serialization.Codec;
+import net.fabricmc.fabric.impl.attachment.AttachmentSavedData;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -65,7 +66,6 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 import net.fabricmc.fabric.impl.attachment.AttachmentSerializingImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
@@ -268,20 +268,20 @@ public class CommonAttachmentTests {
 		ServerLevel level = mockAndDisableSync(ServerLevel.class);
 		when(level.registryAccess()).thenReturn(drm);
 
-		AttachmentPersistentState state = new AttachmentPersistentState(level);
+		AttachmentSavedData state = new AttachmentSavedData(level);
 		assertFalse(level.hasAttached(PERSISTENT));
 		assertFalse(state.isDirty());
 
 		int expected = 1;
 		level.setAttached(PERSISTENT, expected);
 		assertTrue(state.isDirty());
-		CompoundTag fakeSave = (CompoundTag) AttachmentPersistentState.codec(level).encodeStart(RegistryOps.create(NbtOps.INSTANCE, drm), state).getOrThrow();
+		CompoundTag fakeSave = (CompoundTag) AttachmentSavedData.codec(level).encodeStart(RegistryOps.create(NbtOps.INSTANCE, drm), state).getOrThrow();
 		assertEquals("{\"fabric:attachments\":{\"example:persistent\":1}}", fakeSave.toString());
 
 		level = mockAndDisableSync(ServerLevel.class);
 		when(level.registryAccess()).thenReturn(drm);
 
-		AttachmentPersistentState.codec(level).decode(RegistryOps.create(NbtOps.INSTANCE, drm), fakeSave).getOrThrow();
+		AttachmentSavedData.codec(level).decode(RegistryOps.create(NbtOps.INSTANCE, drm), fakeSave).getOrThrow();
 		assertTrue(level.hasAttached(PERSISTENT));
 		assertEquals(expected, level.getAttached(PERSISTENT));
 	}

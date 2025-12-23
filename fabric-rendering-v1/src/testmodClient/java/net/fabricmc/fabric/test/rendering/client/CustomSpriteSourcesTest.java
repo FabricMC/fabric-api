@@ -91,7 +91,7 @@ public class CustomSpriteSourcesTest implements ClientModInitializer {
 			}
 
 			@Override
-			public SpriteContents get(SpriteResourceLoader spriteOpener) {
+			public SpriteContents get(SpriteResourceLoader spriteResourceLoader) {
 				ResourceMetadata metadata;
 
 				try {

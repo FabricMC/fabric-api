@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.resource.PackSourceTracker;
 import net.fabricmc.fabric.impl.resource.pack.FabricPack;
 
 /**
- * Implements resource pack source tracking (for {@link FabricResource}).
+ * Implements pack source tracking (for {@link FabricResource}).
  * {@link PackResources} doesn't hold a reference to its {@link net.minecraft.server.packs.repository.PackSource}
  * so we store the source in a global tracker when the resource packs are created.
  *

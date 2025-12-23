@@ -70,9 +70,9 @@ public class IndigoRenderer implements Renderer {
 
 	@Override
 	public void renderBlockAsEntity(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
-		RenderShape blockRenderType = state.getRenderShape();
+		RenderShape renderShape = state.getRenderShape();
 
-		if (blockRenderType != RenderShape.INVISIBLE) {
+		if (renderShape != RenderShape.INVISIBLE) {
 			BlockStateModel model = renderDispatcher.getBlockModel(state);
 			int tint = ((BlockRenderDispatcherAccessor) renderDispatcher).getBlockColors().getColor(state, null, null, 0);
 			float red = (tint >> 16 & 255) / 255.0F;

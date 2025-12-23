@@ -5,7 +5,7 @@
   "client": [
     "BlockColorsMixin",
     "RegistryDataCollectorMixin",
-    "ClientRegistriesDynamicRegistriesAccessor",
+    "RegistryDataCollectorContentsCollectorAccessor",
     "MinecraftMixin",
     "ParticleResourcesMixin"
   ],

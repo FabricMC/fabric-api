@@ -31,7 +31,7 @@ public final class ServerLifecycleEvents {
 	/**
 	 * Called when a Minecraft server is starting.
 	 *
-	 * <p>This occurs before the {@link PlayerList player manager} and any levels are loaded.
+	 * <p>This occurs before the {@link PlayerList player list} and any levels are loaded.
 	 */
 	public static final Event<ServerStarting> SERVER_STARTING = EventFactory.createArrayBacked(ServerStarting.class, callbacks -> server -> {
 		for (ServerStarting callback : callbacks) {

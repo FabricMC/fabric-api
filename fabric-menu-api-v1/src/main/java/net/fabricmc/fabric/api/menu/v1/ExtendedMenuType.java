@@ -33,7 +33,7 @@ import net.minecraft.world.inventory.MenuType;
  *
  * <p>Extended menus can be opened using
  * {@link net.minecraft.world.entity.player.Player#openMenu(MenuProvider)
- * PlayerEntity.openMenu} with an
+ * Player.openMenu} with an
  * {@link ExtendedMenuFactory}.
  *
  * <h2>Example</h2>
@@ -41,51 +41,51 @@ import net.minecraft.world.inventory.MenuType;
  * {@code
  * // Data class
  * public record OvenData(String label) {
- *     public static final PacketCodec<RegistryByteBuf, OvenData> PACKET_CODEC = PacketCodec.tuple(
- *     	PacketCodecs.STRING,
+ *     public static final StreamCodec<RegistryFriendlyByteBuf, OvenData> STREAM_CODEC = StreamCodec.composite(
+ *     	ByteBufCodecs.STRING_UTF8,
  *     	OvenData::label,
  *     	OvenData::new
  *     );
  * }
  *
  * // Creating and registering the type
- * public static final ExtendedMenuType<OvenScreenHandler> OVEN =
- * 	new ExtendedMenuType((containerId, inventory, data) -> ..., OvenData.PACKET_CODEC);
- * Registry.register(Registry.MENU, Identifier.fromNamespaceAndPath("modid", "custom_menu"), OVEN);
+ * public static final ExtendedMenuType<OvenMenu> OVEN =
+ * 	new ExtendedMenuType((containerId, inventory, data) -> ..., OvenData.STREAM_CODEC);
+ * Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath("modid", "custom_menu"), OVEN);
  *
  * // Note: remember to also register the screen using vanilla's MenuScreens!
  *
- * // Screen handler class
- * public class OvenScreenHandler extends AbstractContainerMenu {
- * 	public OvenScreenHandler(int syncId) {
- * 		super(MyScreenHandlers.OVEN, syncId);
+ * // Menu class
+ * public class OvenMenu extends AbstractContainerMenu {
+ * 	public OvenMenu(int syncId) {
+ * 		super(MyMenus.OVEN, syncId);
  * 	}
  * }
  *
- * // Opening the extended screen handler
+ * // Opening the extended menu
  * var factory = new ExtendedMenuFactory() {
  * 	...
  * };
- * player.openHandlerScreen(factory); // only works on ServerPlayerEntity instances
+ * player.openMenu(factory); // only works on ServerPlayer instances
  * }
  * </pre>
  *
- * @param <T> the type of screen handler created by this type
+ * @param <T> the type of menu created by this type
  * @param <D> the type of the data
  */
 public class ExtendedMenuType<T extends AbstractContainerMenu, D> extends MenuType<T> {
 	private final ExtendedFactory<T, D> factory;
-	private final StreamCodec<? super RegistryFriendlyByteBuf, D> packetCodec;
+	private final StreamCodec<? super RegistryFriendlyByteBuf, D> streamCodec;
 
 	/**
 	 * Constructs an extended menu type.
 	 *
 	 * @param factory the menu factory used for {@link #create(int, Inventory, Object)}
 	 */
-	public ExtendedMenuType(ExtendedFactory<T, D> factory, StreamCodec<? super RegistryFriendlyByteBuf, D> packetCodec) {
+	public ExtendedMenuType(ExtendedFactory<T, D> factory, StreamCodec<? super RegistryFriendlyByteBuf, D> streamCodec) {
 		super(null, FeatureFlags.VANILLA_SET);
 		this.factory = Objects.requireNonNull(factory, "menu factory cannot be null");
-		this.packetCodec = Objects.requireNonNull(packetCodec, "packet codec cannot be null");
+		this.streamCodec = Objects.requireNonNull(streamCodec, "stream codec cannot be null");
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ExtendedMenuType<T extends AbstractContainerMenu, D> extends MenuTy
 	@Deprecated
 	@Override
 	public final T create(int containerId, Inventory inventory) {
-		throw new UnsupportedOperationException("Use ExtendedMenuType.create(int, PlayerInventory, PacketByteBuf)!");
+		throw new UnsupportedOperationException("Use ExtendedMenuType.create(int, Inventory, FriendlyByteBuf)!");
 	}
 
 	/**
@@ -111,10 +111,10 @@ public class ExtendedMenuType<T extends AbstractContainerMenu, D> extends MenuTy
 	}
 
 	/**
-	 * @return the packet codec for serializing the data of this menu
+	 * @return the stream codec for serializing the data of this menu
 	 */
-	public StreamCodec<? super RegistryFriendlyByteBuf, D> getPacketCodec() {
-		return packetCodec;
+	public StreamCodec<? super RegistryFriendlyByteBuf, D> getStreamCodec() {
+		return streamCodec;
 	}
 
 	/**

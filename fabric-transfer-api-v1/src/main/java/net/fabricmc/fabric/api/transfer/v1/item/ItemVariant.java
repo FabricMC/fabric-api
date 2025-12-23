@@ -86,7 +86,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 		return getObject();
 	}
 
-	default Holder<Item> getRegistryEntry() {
+	default Holder<Item> getHolder() {
 		return getItem().builtInRegistryHolder();
 	}
 
@@ -104,7 +104,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 */
 	default ItemStack toStack(int count) {
 		if (isBlank()) return ItemStack.EMPTY;
-		return new ItemStack(getRegistryEntry(), count, getComponents());
+		return new ItemStack(getHolder(), count, getComponents());
 	}
 
 	/**

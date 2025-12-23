@@ -85,7 +85,7 @@ abstract class LevelChunkMixin extends AttachmentTargetsMixin implements Attachm
 	}
 
 	@Override
-	public RegistryAccess fabric_getDynamicRegistryManager() {
+	public RegistryAccess fabric_getRegistryAccess() {
 		return level.registryAccess();
 	}
 }

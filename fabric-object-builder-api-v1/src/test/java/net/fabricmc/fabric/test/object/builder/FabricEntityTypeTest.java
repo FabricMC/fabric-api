@@ -73,7 +73,7 @@ public class FabricEntityTypeTest {
 	@Test
 	void buildMobEntityType() {
 		EntityType<Mob> type = FabricEntityType.Builder.createMob((t, w) -> null, MobCategory.MISC, mob -> mob
-				.spawnRestriction(SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Pig::checkMobSpawnRules)
+				.spawnPlacement(SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Pig::checkMobSpawnRules)
 				.defaultAttributes(FabricEntityTypeTest::createAttributes)
 		).build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath("test", "test3")));
 

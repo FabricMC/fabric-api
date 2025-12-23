@@ -54,7 +54,7 @@ import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
-import net.fabricmc.fabric.impl.resource.pack.BuiltinModResourcePackSource;
+import net.fabricmc.fabric.impl.resource.pack.BuiltinModPackSource;
 import net.fabricmc.fabric.impl.resource.pack.ModNioPackResources;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -334,13 +334,13 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		for (BuiltinPackResourcesEntry entry : BUILTIN_PACK_RESOURCES) {
 			ModNioPackResources pack = entry.packResources();
 
-			// Add the built-in pack only if namespaces for the specified resource type are present.
+			// Add the built-in pack only if namespaces for the specified pack type are present.
 			if (!pack.getNamespaces(type).isEmpty()) {
-				// Make the resource pack profile for built-in pack, should never be always enabled.
+				// Make the resource pack for built-in pack, should never be always enabled.
 				PackLocationInfo info = new PackLocationInfo(
 						pack.packId(),
 						entry.displayName(),
-						new BuiltinModResourcePackSource(pack.getFabricModMetadata().getName()),
+						new BuiltinModPackSource(pack.getFabricModMetadata().getName()),
 						pack.knownPackInfo()
 				);
 				PackSelectionConfig selectionInfo = new PackSelectionConfig(

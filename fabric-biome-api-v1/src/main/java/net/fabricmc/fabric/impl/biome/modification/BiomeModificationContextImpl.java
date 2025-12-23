@@ -342,7 +342,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		if (entry == null) {
 			// The key doesn't exist in the data packs
-			throw new IllegalArgumentException("Couldn't find registry entry for " + key);
+			throw new IllegalArgumentException("Couldn't find holder for " + key);
 		}
 
 		return entry;
@@ -360,13 +360,13 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		private void unfreezeSpawners() {
 			fabricSpawners.clear();
 
-			for (MobCategory spawnGroup : MobCategory.values()) {
-				WeightedList<MobSpawnSettings.SpawnerData> entries = spawnSettings.spawners.get(spawnGroup);
+			for (MobCategory mobCategory : MobCategory.values()) {
+				WeightedList<MobSpawnSettings.SpawnerData> entries = spawnSettings.spawners.get(mobCategory);
 
 				if (entries != null) {
-					fabricSpawners.put(spawnGroup, new ArrayList<>(entries.unwrap()));
+					fabricSpawners.put(mobCategory, new ArrayList<>(entries.unwrap()));
 				} else {
-					fabricSpawners.put(spawnGroup, new ArrayList<>());
+					fabricSpawners.put(mobCategory, new ArrayList<>());
 				}
 			}
 		}

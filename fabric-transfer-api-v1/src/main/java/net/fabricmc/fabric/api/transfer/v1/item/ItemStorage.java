@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.transfer.v1.item;
 
 import java.util.List;
 
+import net.fabricmc.fabric.impl.transfer.item.ItemContainerContentsStorage;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.Direction;
@@ -42,7 +44,6 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fabricmc.fabric.impl.transfer.item.BundleContentsStorage;
 import net.fabricmc.fabric.impl.transfer.item.ComposterWrapper;
-import net.fabricmc.fabric.impl.transfer.item.ContainerComponentStorage;
 import net.fabricmc.fabric.mixin.transfer.CompoundContainerAccessor;
 
 /**
@@ -145,7 +146,7 @@ public final class ItemStorage {
 		});
 
 		ItemStorage.ITEM.registerForItems(
-				(itemStack, context) -> new ContainerComponentStorage(context, 27),
+				(itemStack, context) -> new ItemContainerContentsStorage(context, 27),
 				Items.SHULKER_BOX,
 				Items.WHITE_SHULKER_BOX,
 				Items.ORANGE_SHULKER_BOX,

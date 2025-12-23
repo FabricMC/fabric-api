@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.resource.v1.DataResourceLoader;
 
 // Used to inject into the ResourceReloader store.
 public record SetupMarkerResourceReloader(
-		ReloadableServerResources dataPackContents,
+		ReloadableServerResources reloadableServerResources,
 		HolderLookup.Provider registries,
 		FeatureFlagSet featureSet
 ) implements ResourceManagerReloadListener {
@@ -34,11 +34,11 @@ public record SetupMarkerResourceReloader(
 	public void prepareSharedState(SharedState store) {
 		store.set(DataResourceLoader.HOLDER_LOOKUP_KEY, this.registries);
 		store.set(DataResourceLoader.FEATURE_FLAG_SET_KEY, this.featureSet);
-		store.set(DataResourceLoader.ADVANCEMENT_LOADER_KEY, this.dataPackContents.getAdvancements());
-		store.set(DataResourceLoader.RECIPE_MANAGER_KEY, this.dataPackContents.getRecipeManager());
+		store.set(DataResourceLoader.ADVANCEMENT_LOADER_KEY, this.reloadableServerResources.getAdvancements());
+		store.set(DataResourceLoader.RECIPE_MANAGER_KEY, this.reloadableServerResources.getRecipeManager());
 		store.set(
 				DataResourceLoader.DATA_RESOURCE_STORE_KEY,
-				((FabricDataResourceStoreHolder) this.dataPackContents).fabric$getDataResourceStore()
+				((FabricDataResourceStoreHolder) this.reloadableServerResources).fabric$getDataResourceStore()
 		);
 	}
 

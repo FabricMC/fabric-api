@@ -23,6 +23,8 @@ import static net.minecraft.server.level.FullChunkStatus.INACCESSIBLE;
 
 import java.util.concurrent.Executor;
 
+import net.fabricmc.fabric.impl.event.lifecycle.FullChunkStatusEventTracker;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,10 +45,9 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
-import net.fabricmc.fabric.impl.event.lifecycle.ChunkLevelTypeEventTracker;
 
 @Mixin(ChunkHolder.class)
-public abstract class ChunkHolderMixin extends GenerationChunkHolder implements ChunkLevelTypeEventTracker {
+public abstract class ChunkHolderMixin extends GenerationChunkHolder implements FullChunkStatusEventTracker {
 	@Shadow
 	@Final
 	private LevelHeightAccessor levelHeightAccessor;

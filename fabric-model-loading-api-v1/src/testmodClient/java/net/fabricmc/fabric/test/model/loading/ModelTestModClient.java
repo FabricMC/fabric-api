@@ -124,7 +124,7 @@ public class ModelTestModClient implements ClientModInitializer {
 
 		LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
 			if (entityRenderer instanceof AvatarRenderer playerRenderer) {
-				registrationHelper.register(new BakedModelFeatureRenderer<>(playerRenderer, SpecificModelReloadListener.INSTANCE::getSpecificModel));
+				registrationHelper.register(new BakedModelRenderLayer<>(playerRenderer, SpecificModelReloadListener.INSTANCE::getSpecificModel));
 			}
 		});
 	}

@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.item;
 
 import java.util.List;
 
+import net.fabricmc.fabric.impl.resource.pack.BuiltinModPackSource;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.item.v1.EnchantmentSource;
-import net.fabricmc.fabric.impl.resource.pack.BuiltinModResourcePackSource;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 import net.fabricmc.fabric.mixin.item.EnchantmentBuilderAccessor;
 
@@ -81,7 +81,7 @@ public class EnchantmentUtil {
 
 			if (packSource == PackSource.BUILT_IN) {
 				return EnchantmentSource.VANILLA;
-			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE || packSource instanceof BuiltinModResourcePackSource) {
+			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE || packSource instanceof BuiltinModPackSource) {
 				return EnchantmentSource.MOD;
 			}
 		}

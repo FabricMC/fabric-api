@@ -43,8 +43,8 @@ public class FabricPacketSplitter extends MessageToMessageEncoder<Packet<?>> {
 	private final PacketEncoder<?> encoder;
 	private final PayloadTypeRegistryImpl<?> payloadTypeRegistry;
 
-	public FabricPacketSplitter(PacketEncoder<?> encoderHandler, PayloadTypeRegistryImpl<?> payloadTypeRegistry) {
-		this.encoder = encoderHandler;
+	public FabricPacketSplitter(PacketEncoder<?> encoder, PayloadTypeRegistryImpl<?> payloadTypeRegistry) {
+		this.encoder = encoder;
 		this.payloadTypeRegistry = payloadTypeRegistry;
 	}
 

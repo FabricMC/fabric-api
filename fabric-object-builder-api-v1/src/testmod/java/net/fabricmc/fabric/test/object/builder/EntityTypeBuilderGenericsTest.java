@@ -38,11 +38,11 @@ final class EntityTypeBuilderGenericsTest {
 	static EntityType<LivingEntity> LIVING_ENTITY_1 = FabricEntityTypeBuilder.createLiving().build(DUMMY);
 	static EntityType<TestEntity> TEST_ENTITY_1 = FabricEntityTypeBuilder.createLiving()
 			.entityFactory(TestEntity::new)
-			.spawnGroup(MobCategory.CREATURE)
+			.mobCategory(MobCategory.CREATURE)
 			.build(DUMMY);
 	static EntityType<TestEntity> OLD_TEST = FabricEntityTypeBuilder.<TestEntity>createLiving()
 			.entityFactory(TestEntity::new)
-			.spawnGroup(MobCategory.CREATURE)
+			.mobCategory(MobCategory.CREATURE)
 			.build(DUMMY);
 	static EntityType<TestMob> OLD_MOB = FabricEntityTypeBuilder.<TestMob>createMob()
 			.disableSaving()

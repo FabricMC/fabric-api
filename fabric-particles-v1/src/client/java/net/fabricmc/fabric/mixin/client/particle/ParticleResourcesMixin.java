@@ -23,12 +23,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.particle.ParticleResources;
 
-import net.fabricmc.fabric.impl.client.particle.ParticleFactoryRegistryImpl;
+import net.fabricmc.fabric.impl.client.particle.ParticleProviderRegistryImpl;
 
 @Mixin(ParticleResources.class)
 public abstract class ParticleResourcesMixin {
 	@Inject(method = "registerProviders", at = @At("RETURN"))
 	private void onRegisterDefaultFactories(CallbackInfo info) {
-		ParticleFactoryRegistryImpl.INSTANCE.initialize((ParticleResources) (Object) this);
+		ParticleProviderRegistryImpl.INSTANCE.initialize((ParticleResources) (Object) this);
 	}
 }

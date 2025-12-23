@@ -121,7 +121,7 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	/**
 	 * This serves two purposes: it provides a fixed order for some vanilla status bars; and it provides resolved
 	 * vanilla height providers, to compare with the actual height providers during rendering for potential translations
-	 * for vanilla status bars. Translations are achieved via matrix stack transformations.
+	 * for vanilla status bars. Translations are achieved via pose stack transformations.
 	 *
 	 * <p>Do not use {@link Map#of()}; it does not preserve insertion order.
 	 */
@@ -322,13 +322,13 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 	}
 
 	private static void applyVanillaHeightProviders(Map<Identifier, ResolvedHeightProvider> resolvedHeightProviders, ResolvedHeightProvider maxHeightProvider) {
-		// wrap vanilla status bars with matrix stack transformations to implement potentially altered height values
+		// wrap vanilla status bars with pose stack transformations to implement potentially altered height values
 		for (Map.Entry<Identifier, ResolvedHeightProvider> entry : RESOLVED_VANILLA_HEIGHT_PROVIDERS.entrySet()) {
 			if (isVanillaHeightProvider(entry.getKey())) {
 				ResolvedHeightProvider expectedHeightProvider = entry.getValue();
-				// the vanilla height provider is still in place, it will undergo our matrix stack transformations;
+				// the vanilla height provider is still in place, it will undergo our pose stack transformations;
 				// we therefore have to return a provider in #getHeight(Identifier) that corresponds to vanilla values,
-				// so that the position is correct after matrix stack transformations are applied
+				// so that the position is correct after pose stack transformations are applied
 				ResolvedHeightProvider actualHeightProvider = resolvedHeightProviders.put(entry.getKey(),
 						expectedHeightProvider);
 				Objects.requireNonNull(actualHeightProvider,

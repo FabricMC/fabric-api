@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.LightDataProvider;
 
 /**
- * Adaptation of inner, non-static class in BlockModelRenderer that serves same purpose.
+ * Adaptation of inner, non-static class in ModelBlockRenderer that serves same purpose.
  */
 public class AoCalculator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);

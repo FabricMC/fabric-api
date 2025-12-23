@@ -38,7 +38,7 @@ public class TooltipComponentTests implements ClientModInitializer {
 			return null;
 		});
 
-		// Test that TooltipComponent.of works with custom TooltipData
+		// Test that ClientTooltipComponent.create works with custom TooltipComponent
 		Objects.requireNonNull(ClientTooltipComponent.create(new TooltipComponentTestInit.Data("Hello world!")));
 	}
 }

@@ -112,8 +112,8 @@ public final class PlayerLookup {
 		ChunkSource manager = entity.level().getChunkSource();
 
 		if (manager instanceof ServerChunkCache) {
-			ChunkMap chunkLoadingManager = ((ServerChunkCache) manager).chunkMap;
-			EntityTrackerAccessor tracker = ((ChunkMapAccessor) chunkLoadingManager).getEntityMap().get(entity.getId());
+			ChunkMap chunkMap = ((ServerChunkCache) manager).chunkMap;
+			EntityTrackerAccessor tracker = ((ChunkMapAccessor) chunkMap).getEntityMap().get(entity.getId());
 
 			// return an immutable collection to guard against accidental removals.
 			if (tracker != null) {

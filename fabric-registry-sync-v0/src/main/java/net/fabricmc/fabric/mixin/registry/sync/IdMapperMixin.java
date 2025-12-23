@@ -22,6 +22,9 @@ import java.util.List;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMaps;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+
+import net.fabricmc.fabric.impl.registry.sync.RemovableIdMapper;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,10 +32,8 @@ import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.core.IdMapper;
 
-import net.fabricmc.fabric.impl.registry.sync.RemovableIdList;
-
 @Mixin(IdMapper.class)
-public class IdMapperMixin<T> implements RemovableIdList<T> {
+public class IdMapperMixin<T> implements RemovableIdMapper<T> {
 	@Shadow
 	private int nextId;
 	@Final

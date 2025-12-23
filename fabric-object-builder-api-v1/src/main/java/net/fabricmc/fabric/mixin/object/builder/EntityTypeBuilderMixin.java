@@ -43,7 +43,7 @@ import net.fabricmc.fabric.impl.object.builder.FabricEntityTypeImpl;
 @Mixin(EntityType.Builder.class)
 public abstract class EntityTypeBuilderMixin<T extends Entity> implements FabricEntityType.Builder<T>, FabricEntityTypeImpl.Builder {
 	@Shadow
-	public abstract EntityType<T> build(ResourceKey<EntityType<?>> registryKey);
+	public abstract EntityType<T> build(ResourceKey<EntityType<?>> resourceKey);
 
 	@Unique
 	@Nullable
@@ -70,7 +70,7 @@ public abstract class EntityTypeBuilderMixin<T extends Entity> implements Fabric
 	}
 
 	@Inject(method = "build", at = @At("RETURN"))
-	private void applyChildBuilders(ResourceKey<EntityType<?>> registryKey, CallbackInfoReturnable<EntityType<T>> cir) {
+	private void applyChildBuilders(ResourceKey<EntityType<?>> resourceKey, CallbackInfoReturnable<EntityType<T>> cir) {
 		if (!(cir.getReturnValue() instanceof FabricEntityTypeImpl entityType)) {
 			throw new IllegalStateException();
 		}
@@ -100,8 +100,8 @@ public abstract class EntityTypeBuilderMixin<T extends Entity> implements Fabric
 	}
 
 	@WrapOperation(method = "build", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;fetchChoiceType(Lcom/mojang/datafixers/DSL$TypeReference;Ljava/lang/String;)Lcom/mojang/datafixers/types/Type;"))
-	private @Nullable Type<?> allowNoModdedDatafixers(DSL.TypeReference typeReference, String id, Operation<Type<?>> original, @Local(argsOnly = true) ResourceKey<EntityType<?>> registryKey) {
-		if (!registryKey.identifier().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
+	private @Nullable Type<?> allowNoModdedDatafixers(DSL.TypeReference typeReference, String id, Operation<Type<?>> original, @Local(argsOnly = true) ResourceKey<EntityType<?>> resourceKey) {
+		if (!resourceKey.identifier().getNamespace().equals(Identifier.DEFAULT_NAMESPACE)) {
 			// Don't try to resolve the choice type for modded entities.
 			return null;
 		}

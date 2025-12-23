@@ -88,7 +88,7 @@ public class CommonPacketTests {
 		CommonPacketsImpl.init();
 		ClientNetworkingImpl.clientInit();
 
-		// Register the packet codec on both sides
+		// Register the stream codec on both sides
 		PayloadTypeRegistry.clientboundPlay().register(TestPayload.TYPE, TestPayload.CODEC);
 
 		// Listen for the payload on the client

@@ -48,8 +48,8 @@ public abstract class ParticleEngineMixin {
 	}
 
 	@Inject(method = "createParticleGroup", at = @At(value = "NEW", target = "(Lnet/minecraft/client/particle/ParticleEngine;Lnet/minecraft/client/particle/ParticleRenderType;)Lnet/minecraft/client/particle/QuadParticleGroup;"), cancellable = true)
-	private void createParticleRenderer(ParticleRenderType textureSheet, CallbackInfoReturnable<ParticleGroup<?>> cir) {
-		Function<ParticleEngine, ParticleGroup<?>> factory = ParticleGroupRegistryImpl.INSTANCE.getFactory(textureSheet);
+	private void createParticleGroup(ParticleRenderType type, CallbackInfoReturnable<ParticleGroup<?>> cir) {
+		Function<ParticleEngine, ParticleGroup<?>> factory = ParticleGroupRegistryImpl.INSTANCE.getFactory(type);
 
 		if (factory != null) {
 			cir.setReturnValue(factory.apply((ParticleEngine) (Object) this));

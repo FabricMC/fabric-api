@@ -201,20 +201,20 @@ public final class ModPackResourcesUtil {
 		}
 	}
 
-	public static PackMetadataSection getMetadataPack(PackFormat packVersion, Component description) {
-		return new PackMetadataSection(description, new InclusiveRange<>(packVersion));
+	public static PackMetadataSection getMetadataPack(PackFormat packFormat, Component description) {
+		return new PackMetadataSection(description, new InclusiveRange<>(packFormat));
 	}
 
-	public static JsonObject getMetadataPackJson(PackFormat packVersion, Component description, PackType type) {
+	public static JsonObject getMetadataPackJson(PackFormat packFormat, Component description, PackType type) {
 		return PackMetadataSection.codecForPackType(type)
-				.encodeStart(JsonOps.INSTANCE, getMetadataPack(packVersion, description))
+				.encodeStart(JsonOps.INSTANCE, getMetadataPack(packFormat, description))
 				.getOrThrow()
 				.getAsJsonObject();
 	}
 
-	public static String serializeMetadata(PackFormat packVersion, String description, PackType type) {
+	public static String serializeMetadata(PackFormat packFormat, String description, PackType type) {
 		// This seems to be still manually deserialized
-		JsonObject pack = getMetadataPackJson(packVersion, Component.literal(description), type);
+		JsonObject pack = getMetadataPackJson(packFormat, Component.literal(description), type);
 		var metadata = new JsonObject();
 		metadata.add("pack", pack);
 		return GSON.toJson(metadata);
@@ -229,9 +229,9 @@ public final class ModPackResourcesUtil {
 	}
 
 	/**
-	 * Creates the default data pack settings that replaces
-	 * {@code DataPackSettings.SAFE_MODE} used in vanilla.
-	 * @return the default data pack settings
+	 * Creates the default data pack config that replaces
+	 * {@code DataPackConfig.DEFAULT} used in vanilla.
+	 * @return the default data pack config
 	 */
 	public static WorldDataConfiguration createDefaultDataConfiguration() {
 		var modResourcePackCreator = new ModResourcePackCreator(PackType.SERVER_DATA);
@@ -242,7 +242,7 @@ public final class ModPackResourcesUtil {
 		var disabled = new ArrayList<String>(DataPackConfig.DEFAULT.getDisabled());
 
 		// This ensures that any built-in registered data packs by mods which needs to be enabled by default are
-		// as the data pack screen automatically put any data pack as disabled except the Default data pack.
+		// as the data pack selection screen automatically put any data pack as disabled except the Default data pack.
 		for (Pack profile : moddedResourcePacks) {
 			if (profile.getPackSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
 				enabled.add(profile.getId());
@@ -294,10 +294,10 @@ public final class ModPackResourcesUtil {
 	}
 
 	/**
-	 * Creates the ResourcePackManager used by the ClientDataPackManager and replaces
-	 * {@code VanillaDataPackProvider.createClientManager} used by vanilla.
+	 * Creates the PackRepository used by the KnownPacksManager and replaces
+	 * {@code ServerPacksSource.createVanillaTrustedRepository} used by vanilla.
 	 */
-	public static PackRepository createClientManager() {
+	public static PackRepository createModdedRepository() {
 		return new PackRepository(
 				new ServerPacksSource(new DirectoryValidator((path) -> true)),
 				new ModResourcePackCreator(PackType.SERVER_DATA, true)

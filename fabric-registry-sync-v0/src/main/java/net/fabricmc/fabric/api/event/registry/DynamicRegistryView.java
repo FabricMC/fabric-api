@@ -51,7 +51,7 @@ public interface DynamicRegistryView {
 	 * the key does not refer to a registry, or if the current combined registry layer being loaded
 	 * does not contain the registry.
 	 *
-	 * @param registryRef the registry key of the registry to get
+	 * @param registryRef the key of the registry to get
 	 * @return the registry, or {@link Optional#empty()} if the registry is not currently being loaded
 	 */
 	<T> Optional<Registry<T>> getOptional(ResourceKey<? extends Registry<? extends T>> registryRef);

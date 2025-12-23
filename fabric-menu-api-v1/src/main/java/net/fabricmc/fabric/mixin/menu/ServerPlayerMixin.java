@@ -56,7 +56,7 @@ public abstract class ServerPlayerMixin extends Player {
 	public abstract void closeContainer();
 
 	@Redirect(method = "openMenu(Lnet/minecraft/world/MenuProvider;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;closeContainer()V"))
-	private void fabric_closeHandledScreenIfAllowed(ServerPlayer player, MenuProvider factory) {
+	private void fabric_closeContainerScreenIfAllowed(ServerPlayer player, MenuProvider factory) {
 		if (factory.shouldCloseCurrentScreen()) {
 			this.closeContainer();
 		} else {
@@ -66,13 +66,13 @@ public abstract class ServerPlayerMixin extends Player {
 	}
 
 	@Inject(method = "openMenu(Lnet/minecraft/world/MenuProvider;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
-	private void fabric_storeOpenedScreenHandler(MenuProvider factory, CallbackInfoReturnable<OptionalInt> info, @Local AbstractContainerMenu menu) {
+	private void fabric_storeOpenedMenu(MenuProvider factory, CallbackInfoReturnable<OptionalInt> info, @Local AbstractContainerMenu menu) {
 		if (factory instanceof ExtendedMenuFactory || (factory instanceof SimpleMenuProvider simpleFactory && simpleFactory.menuConstructor instanceof ExtendedMenuFactory)) {
 			// Set the menu, so the factory method can access it through the player.
 			containerMenu = menu;
 		} else if (menu.getType() instanceof ExtendedMenuType<?, ?>) {
 			Identifier id = BuiltInRegistries.MENU.getKey(menu.getType());
-			throw new IllegalArgumentException("[Fabric] Extended screen handler " + id + " must be opened with an ExtendedMenuFactory!");
+			throw new IllegalArgumentException("[Fabric] Extended menu " + id + " must be opened with an ExtendedMenuFactory!");
 		}
 	}
 
@@ -89,10 +89,10 @@ public abstract class ServerPlayerMixin extends Player {
 				Networking.sendOpenPacket((ServerPlayer) (Object) this, extendedFactory, handler, containerCounter);
 			} else {
 				Identifier id = BuiltInRegistries.MENU.getKey(handler.getType());
-				throw new IllegalArgumentException("[Fabric] Non-extended screen handler " + id + " must not be opened with an ExtendedMenuFactory!");
+				throw new IllegalArgumentException("[Fabric] Non-extended menu " + id + " must not be opened with an ExtendedMenuFactory!");
 			}
 		} else {
-			// Use vanilla logic for non-extended screen handlers
+			// Use vanilla logic for non-extended menus
 			networkHandler.send(packet);
 		}
 	}

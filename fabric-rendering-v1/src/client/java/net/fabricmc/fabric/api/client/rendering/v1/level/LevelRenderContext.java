@@ -29,7 +29,7 @@ public interface LevelRenderContext extends LevelTerrainRenderContext {
 	PoseStack poseStack();
 
 	/**
-	 * The {@code VertexConsumerProvider} instance being used by the level renderer for most non-terrain renders.
+	 * The {@code MultiBufferSource} instance being used by the level renderer for most non-terrain renders.
 	 * Generally this will be better for most use cases because quads for the same layer can be buffered
 	 * incrementally and then drawn all at once by the level renderer.
 	 *

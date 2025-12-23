@@ -39,9 +39,9 @@ public class FabricEntityApiLookupTest {
 	public static final EntityApiLookup<Inspectable, Void> INSPECTABLE =
 			EntityApiLookup.get(Identifier.fromNamespaceAndPath(FabricApiLookupTest.MOD_ID, "inspectable"), Inspectable.class, Void.class);
 
-	public static final EntityType<InspectablePigEntity> INSPECTABLE_PIG = FabricEntityTypeBuilder.create()
-			.spawnGroup(MobCategory.CREATURE)
-			.entityFactory(InspectablePigEntity::new)
+	public static final EntityType<InspectablePig> INSPECTABLE_PIG = FabricEntityTypeBuilder.create()
+			.mobCategory(MobCategory.CREATURE)
+			.entityFactory(InspectablePig::new)
 			.dimensions(EntityDimensions.scalable(0.9F, 0.9F))
 			.trackRangeChunks(10)
 			.build(INSPECTABLE_PIG_KEY);
@@ -57,7 +57,7 @@ public class FabricEntityApiLookupTest {
 				EntityType.COW);
 		INSPECTABLE.registerFallback((entity, context) -> {
 			if (entity instanceof Creeper) {
-				return () -> Component.literal("registerFallback: CreeperEntity");
+				return () -> Component.literal("registerFallback: Creeper");
 			} else {
 				return null;
 			}

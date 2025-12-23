@@ -26,14 +26,14 @@ import net.fabricmc.fabric.impl.client.rendering.ModelLayerImpl;
 import net.fabricmc.fabric.mixin.client.rendering.ModelLayersAccessor;
 
 /**
- * A helpers for registering model layers and providers for the layer's textured model data.
+ * A helpers for registering model layers and providers for the layer's definition.
  */
 public final class ModelLayerRegistry {
 	/**
 	 * Registers a model layer and registers a provider for a {@linkplain LayerDefinition}.
 	 *
 	 * @param modelLayer the model layer location
-	 * @param provider the provider for the textured model data
+	 * @param provider the provider for the layer definition
 	 */
 	public static void registerModelLayer(ModelLayerLocation modelLayer, TexturedLayerDefinitionProvider provider) {
 		Objects.requireNonNull(modelLayer, "ModelLayerLocation cannot be null");
@@ -72,7 +72,7 @@ public final class ModelLayerRegistry {
 		/**
 		 * Creates the textured layer definition for use in a {@link ModelLayerLocation}.
 		 *
-		 * @return the textured layer definition for the entity model layer.
+		 * @return the textured layer definition for the model layer location.
 		 */
 		LayerDefinition createLayerDefinition();
 	}

@@ -117,7 +117,7 @@ public final class ClientRegistrySyncHandler {
 
 			for (Identifier remoteId : remoteRegistry.keySet()) {
 				if (!registry.containsKey(remoteId)) {
-					// Found a registry entry from the server that is missing on the client
+					// Found a holder from the server that is missing on the client
 					missingEntries.computeIfAbsent(registryId, i -> new ArrayList<>()).add(remoteId);
 				}
 			}

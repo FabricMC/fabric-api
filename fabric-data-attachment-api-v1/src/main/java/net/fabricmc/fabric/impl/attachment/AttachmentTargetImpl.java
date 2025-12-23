@@ -94,5 +94,5 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	RegistryAccess fabric_getDynamicRegistryManager();
+	RegistryAccess fabric_getRegistryAccess();
 }

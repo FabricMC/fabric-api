@@ -7,7 +7,7 @@
     "ConnectionMixin",
     "CommandsMixin",
     "ServerboundCustomPayloadPacketMixin",
-    "CustomPayloadPacketCodecMixin",
+    "CustomPayloadStreamCodecMixin",
     "ClientboundCustomPayloadPacketMixin",
     "DebugConfigCommandMixin",
     "PacketEncoderMixin",

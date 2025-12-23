@@ -49,7 +49,7 @@ abstract class BlockParticleOptionMixin implements FabricBlockParticleOption, Bl
 	}
 
 	@ModifyReturnValue(method = "streamCodec", at = @At("RETURN"))
-	private static StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> modifyPacketCodec(StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> codec) {
+	private static StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> modifyStreamCodec(StreamCodec<? super RegistryFriendlyByteBuf, BlockParticleOption> codec) {
 		return new ExtendedBlockParticleOptionStreamCodec(codec);
 	}
 }

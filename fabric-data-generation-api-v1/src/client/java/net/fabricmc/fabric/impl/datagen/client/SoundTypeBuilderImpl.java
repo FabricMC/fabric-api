@@ -59,19 +59,19 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 	}
 
 	@Override
-	public SoundTypeBuilder sound(EntryBuilder sound) {
+	public SoundTypeBuilder sound(RegistrationBuilder sound) {
 		Objects.requireNonNull(sound, "Sound must not be null.");
-		sounds.add(((EntryBuilderImpl) sound).build(""));
+		sounds.add(((RegistrationBuilderImpl) sound).build(""));
 		return this;
 	}
 
 	@Override
-	public SoundTypeBuilder sound(EntryBuilder sound, int count) {
+	public SoundTypeBuilder sound(RegistrationBuilder sound, int count) {
 		Objects.requireNonNull(sound, "Sound must not be null.");
 		Preconditions.checkArgument(count > 0, "Count must be greater than zero.");
 
 		for (int i = 1; i <= count; i++) {
-			sounds.add(((EntryBuilderImpl) sound).build(Integer.toString(i)));
+			sounds.add(((RegistrationBuilderImpl) sound).build(Integer.toString(i)));
 		}
 
 		return this;
@@ -115,24 +115,24 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		private static final Codec<Entry> MAP_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Identifier.CODEC.fieldOf("name").forGetter(Entry::name),
 				RegistrationType.CODEC.optionalFieldOf("type", RegistrationType.FILE).forGetter(Entry::type),
-				Codec.floatRange(Float.MIN_VALUE, 1.0F).optionalFieldOf("volume", EntryBuilder.DEFAULT_VOLUME).forGetter(Entry::volume),
-				Codec.floatRange(0.5F, 2.0F).optionalFieldOf("pitch", EntryBuilder.DEFAULT_PITCH).forGetter(Entry::pitch),
-				Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("weight", EntryBuilder.DEFAULT_WEIGHT).forGetter(Entry::weight),
-				Codec.INT.optionalFieldOf("attenuation_distance", EntryBuilder.DEFAULT_ATTENUATION_DISTANCE).forGetter(Entry::attenuationDistance),
+				Codec.floatRange(Float.MIN_VALUE, 1.0F).optionalFieldOf("volume", RegistrationBuilder.DEFAULT_VOLUME).forGetter(Entry::volume),
+				Codec.floatRange(0.5F, 2.0F).optionalFieldOf("pitch", RegistrationBuilder.DEFAULT_PITCH).forGetter(Entry::pitch),
+				Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("weight", RegistrationBuilder.DEFAULT_WEIGHT).forGetter(Entry::weight),
+				Codec.INT.optionalFieldOf("attenuation_distance", RegistrationBuilder.DEFAULT_ATTENUATION_DISTANCE).forGetter(Entry::attenuationDistance),
 				Codec.BOOL.optionalFieldOf("stream", false).forGetter(Entry::stream),
 				Codec.BOOL.optionalFieldOf("preload", false).forGetter(Entry::preload)
 		).apply(instance, Entry::new));
 
 		private static final Codec<Entry> STRING_CODEC = Identifier.CODEC.xmap(
-				id -> new Entry(id, RegistrationType.FILE, EntryBuilder.DEFAULT_VOLUME, EntryBuilder.DEFAULT_PITCH, EntryBuilder.DEFAULT_WEIGHT, EntryBuilder.DEFAULT_ATTENUATION_DISTANCE, false, false),
+				id -> new Entry(id, RegistrationType.FILE, RegistrationBuilder.DEFAULT_VOLUME, RegistrationBuilder.DEFAULT_PITCH, RegistrationBuilder.DEFAULT_WEIGHT, RegistrationBuilder.DEFAULT_ATTENUATION_DISTANCE, false, false),
 				Entry::name
 		);
 		private static final Codec<Entry> CODEC = Codec.xor(STRING_CODEC, MAP_CODEC).xmap(Either::unwrap, sound -> {
 			if (sound.type() != RegistrationType.FILE
-					|| sound.volume() != EntryBuilder.DEFAULT_VOLUME
-					|| sound.pitch() != EntryBuilder.DEFAULT_PITCH
-					|| sound.weight() != EntryBuilder.DEFAULT_WEIGHT
-					|| sound.attenuationDistance() != EntryBuilder.DEFAULT_ATTENUATION_DISTANCE
+					|| sound.volume() != RegistrationBuilder.DEFAULT_VOLUME
+					|| sound.pitch() != RegistrationBuilder.DEFAULT_PITCH
+					|| sound.weight() != RegistrationBuilder.DEFAULT_WEIGHT
+					|| sound.attenuationDistance() != RegistrationBuilder.DEFAULT_ATTENUATION_DISTANCE
 					|| sound.stream()
 					|| sound.preload()) {
 				return Either.right(sound);
@@ -142,7 +142,7 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		});
 	}
 
-	public static final class EntryBuilderImpl implements EntryBuilder {
+	public static final class RegistrationBuilderImpl implements RegistrationBuilder {
 		private final Identifier id;
 		private final RegistrationType type;
 
@@ -153,16 +153,16 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		private boolean stream = false;
 		private boolean preload = false;
 
-		private EntryBuilderImpl(RegistrationType type, Identifier id) {
+		private RegistrationBuilderImpl(RegistrationType type, Identifier id) {
 			this.type = type;
 			this.id = id;
 		}
 
-		public static EntryBuilder create(RegistrationType type, Identifier id) {
-			return new EntryBuilderImpl(type, id);
+		public static RegistrationBuilder create(RegistrationType type, Identifier id) {
+			return new RegistrationBuilderImpl(type, id);
 		}
 
-		public static EntryBuilder ofFile(Identifier soundFile) {
+		public static RegistrationBuilder ofFile(Identifier soundFile) {
 			Objects.requireNonNull(soundFile, "Sound file/event id must not be null.");
 
 			if (soundFile.getPath().indexOf('.') != -1) {
@@ -172,51 +172,51 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 			return create(RegistrationType.FILE, soundFile);
 		}
 
-		public static EntryBuilder ofEvent(SoundEvent event) {
+		public static RegistrationBuilder ofEvent(SoundEvent event) {
 			Objects.requireNonNull(event, "Sound event must not be null.");
 			return create(RegistrationType.SOUND_EVENT, event.location());
 		}
 
-		public static EntryBuilder ofEvent(Holder<SoundEvent> event) {
+		public static RegistrationBuilder ofEvent(Holder<SoundEvent> event) {
 			Objects.requireNonNull(event, "Sound event key must not be null.");
 			return create(RegistrationType.SOUND_EVENT, event.unwrapKey().orElseThrow(() -> new IllegalArgumentException("Direct (non-registered) sound event cannot be added")).identifier());
 		}
 
 		@Override
-		public EntryBuilder volume(float volume) {
+		public RegistrationBuilder volume(float volume) {
 			Preconditions.checkArgument(volume > 0 && volume <= 1, "Sound volume must be greater than 0 and less than or equal to 1.");
 			this.volume = volume;
 			return this;
 		}
 
 		@Override
-		public EntryBuilder pitch(float pitch) {
+		public RegistrationBuilder pitch(float pitch) {
 			Preconditions.checkArgument(pitch >= 0.5F && pitch <= 2, "Sound pitch must be between 0.5 and 2 (inclusive)");
 			this.pitch = pitch;
 			return this;
 		}
 
 		@Override
-		public EntryBuilder attenuationDistance(int attenuationDistance) {
+		public RegistrationBuilder attenuationDistance(int attenuationDistance) {
 			this.attenuationDistance = attenuationDistance;
 			return this;
 		}
 
 		@Override
-		public EntryBuilder weight(int weight) {
+		public RegistrationBuilder weight(int weight) {
 			Preconditions.checkArgument(weight >= 1, "Sound must have a weight of at least 1.");
 			this.weight = weight;
 			return this;
 		}
 
 		@Override
-		public EntryBuilder stream(boolean stream) {
+		public RegistrationBuilder stream(boolean stream) {
 			this.stream = stream;
 			return this;
 		}
 
 		@Override
-		public EntryBuilder preload(boolean preload) {
+		public RegistrationBuilder preload(boolean preload) {
 			this.preload = preload;
 			return this;
 		}

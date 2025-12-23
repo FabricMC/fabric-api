@@ -54,7 +54,7 @@ public interface ResourceCondition {
 	 *
 	 * @implNote {@code registryLookup} should never be {@code null} for supported use cases
 	 * (such as recipes or advancements). However, it may be {@code null} in client-side
-	 * resources, or for non-vanilla resource types.
+	 * resources, or for non-vanilla pack types.
 	 *
 	 * @param registryInfo the registry lookup, or {@code null} in case registry is unavailable
 	 * @return whether the condition was successful

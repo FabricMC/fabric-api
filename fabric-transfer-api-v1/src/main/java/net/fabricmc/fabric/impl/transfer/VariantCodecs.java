@@ -37,24 +37,24 @@ import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 public class VariantCodecs {
 	// AIR is valid (for some reason), don't use ItemStack#ITEM_CODEC
 	private static final Codec<ItemVariant> UNVALIDATED_ITEM_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("item").forGetter(ItemVariant::getRegistryEntry),
+			BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("item").forGetter(ItemVariant::getHolder),
 			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemVariant::getComponents)
 		).apply(instance, ItemVariantImpl::of)
 	);
 	public static final Codec<ItemVariant> ITEM_CODEC = UNVALIDATED_ITEM_CODEC.validate(VariantCodecs::validateComponents);
 	public static final StreamCodec<RegistryFriendlyByteBuf, ItemVariant> ITEM_PACKET_CODEC = StreamCodec.composite(
-			ByteBufCodecs.holderRegistry(Registries.ITEM), ItemVariant::getRegistryEntry,
+			ByteBufCodecs.holderRegistry(Registries.ITEM), ItemVariant::getHolder,
 			DataComponentPatch.STREAM_CODEC, ItemVariant::getComponents,
 			ItemVariantImpl::of
 	);
 
 	public static final Codec<FluidVariant> FLUID_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			BuiltInRegistries.FLUID.holderByNameCodec().fieldOf("fluid").forGetter(FluidVariant::getRegistryEntry),
+			BuiltInRegistries.FLUID.holderByNameCodec().fieldOf("fluid").forGetter(FluidVariant::getHolder),
 			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(FluidVariant::getComponents)
 		).apply(instance, FluidVariantImpl::of)
 	);
 	public static final StreamCodec<RegistryFriendlyByteBuf, FluidVariant> FLUID_PACKET_CODEC = StreamCodec.composite(
-			ByteBufCodecs.holderRegistry(Registries.FLUID), FluidVariant::getRegistryEntry,
+			ByteBufCodecs.holderRegistry(Registries.FLUID), FluidVariant::getHolder,
 			DataComponentPatch.STREAM_CODEC, FluidVariant::getComponents,
 			FluidVariantImpl::of
 	);

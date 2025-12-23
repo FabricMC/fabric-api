@@ -29,14 +29,14 @@ public class FabricApiBaseTestInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Command to call audit the mixin environment
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+		CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, environment) -> {
 			dispatcher.register(literal("audit_mixins").executes(context -> {
 				context.getSource().sendSuccess(() -> Component.literal("Auditing mixin environment"), false);
 
 				try {
 					MixinEnvironment.getCurrentEnvironment().audit();
 				} catch (Exception e) {
-					// Use an assertion error to bypass error checking in CommandManager
+					// Use an assertion error to bypass error checking in Commands
 					throw new AssertionError("Failed to audit mixin environment", e);
 				}
 

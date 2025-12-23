@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
 public final class EnumRuleEntry<E extends Enum<E>> extends EditGameRulesScreen.GameRuleEntry {
-	private final Button buttonWidget;
+	private final Button button;
 	private final String rootTranslationKey;
 
 	public EnumRuleEntry(EditGameRulesScreen gameRuleScreen, Component name, List<FormattedCharSequence> description, final String ruleName, GameRule<E> enumRule, String translationKey) {
@@ -43,16 +43,16 @@ public final class EnumRuleEntry<E extends Enum<E>> extends EditGameRulesScreen.
 
 		// Base translation key needs to be set before the button widget is created.
 		this.rootTranslationKey = translationKey;
-		this.buttonWidget = Button.builder(this.getValueText(accessor.getGameRules().get(enumRule)), (buttonWidget) -> {
+		this.button = Button.builder(this.getValueText(accessor.getGameRules().get(enumRule)), (button) -> {
 			accessor.getGameRules().set(enumRule,
 					((RuleTypeExtensions) (Object) enumRule).fabric_enumCycle(
 							accessor.getGameRules().get(enumRule)
 					),
 					null);
-			buttonWidget.setMessage(this.getValueText(accessor.getGameRules().get(enumRule)));
+			button.setMessage(this.getValueText(accessor.getGameRules().get(enumRule)));
 		}).bounds(10, 5, 42, 20).build();
 
-		this.children.add(this.buttonWidget);
+		this.children.add(this.button);
 	}
 
 	public Component getValueText(E value) {
@@ -64,8 +64,8 @@ public final class EnumRuleEntry<E extends Enum<E>> extends EditGameRulesScreen.
 	public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 		this.renderLabel(context, this.getContentY(), this.getContentX());
 
-		this.buttonWidget.setX(this.getContentRight() - 44);
-		this.buttonWidget.setY(this.getContentY());
-		this.buttonWidget.render(context, mouseX, mouseY, tickDelta);
+		this.button.setX(this.getContentRight() - 44);
+		this.button.setY(this.getContentY());
+		this.button.render(context, mouseX, mouseY, tickDelta);
 	}
 }

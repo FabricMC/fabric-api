@@ -54,7 +54,7 @@ public class DifferenceIngredient implements CustomIngredient {
 	public Stream<Holder<Item>> items() {
 		final List<Holder<Item>> subtractedMatchingItems = subtracted.items().toList();
 		return base.items()
-				.filter(registryEntry -> !subtractedMatchingItems.contains(registryEntry));
+				.filter(holder -> !subtractedMatchingItems.contains(holder));
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class DifferenceIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, DifferenceIngredient> getPacketCodec() {
+		public StreamCodec<RegistryFriendlyByteBuf, DifferenceIngredient> getStreamCodec() {
 			return PACKET_CODEC;
 		}
 	}

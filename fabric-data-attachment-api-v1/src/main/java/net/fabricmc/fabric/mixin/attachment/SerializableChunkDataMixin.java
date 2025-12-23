@@ -80,8 +80,8 @@ abstract class SerializableChunkDataMixin {
 			nbt.put(AttachmentTarget.NBT_ATTACHMENT_KEY, attachmentNbtData);
 
 			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
-				ValueInput readView = TagValueInput.create(reporter, serverLevel.registryAccess(), nbt);
-				((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(readView);
+				ValueInput input = TagValueInput.create(reporter, serverLevel.registryAccess(), nbt);
+				((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(input);
 			}
 		}
 	}
@@ -89,11 +89,11 @@ abstract class SerializableChunkDataMixin {
 	@Inject(method = "copyOf", at = @At("RETURN"))
 	private static void storeAttachmentNbtData(ServerLevel level, ChunkAccess chunk, CallbackInfoReturnable<SerializableChunkData> cir) {
 		try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
-			TagValueOutput writeView = TagValueOutput.createWithContext(reporter, level.registryAccess());
-			((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(writeView);
+			TagValueOutput output = TagValueOutput.createWithContext(reporter, level.registryAccess());
+			((AttachmentTargetImpl) chunk).fabric_writeAttachmentsToNbt(output);
 
 			//noinspection SimplifyOptionalCallChains
-			CompoundTag attachmentNbtData = writeView.buildResult().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
+			CompoundTag attachmentNbtData = output.buildResult().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
 
 			if (attachmentNbtData != null) {
 				((SerializableChunkDataMixin) (Object) cir.getReturnValue()).attachmentNbtData = attachmentNbtData;

@@ -58,8 +58,8 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 	}
 
 	private static class TestAtlasSourceProvider extends FabricCodecDataProvider<List<SpriteSource>> {
-		private TestAtlasSourceProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> holderFuture) {
-			super(dataOutput, holderFuture, PackOutput.Target.RESOURCE_PACK, "atlases", SpriteSources.FILE_CODEC);
+		private TestAtlasSourceProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> holderFuture) {
+			super(packOutput, holderFuture, PackOutput.Target.RESOURCE_PACK, "atlases", SpriteSources.FILE_CODEC);
 		}
 
 		@Override
@@ -106,12 +106,12 @@ public class DataGeneratorClientTestEntrypoint implements DataGeneratorEntrypoin
 		@Override
 		protected void configure(HolderLookup.Provider registryLookup, SoundExporter exporter) {
 			exporter.add(DataGeneratorTestContent.TEST_SOUND, SoundTypeBuilder.of(DataGeneratorTestContent.TEST_SOUND)
-					.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle"))
+					.sound(SoundTypeBuilder.RegistrationBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle"))
 						.volume(0.7F), 1)
-					.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle2")))
-					.sound(SoundTypeBuilder.EntryBuilder.ofEvent(SoundEvents.ANVIL_HIT))
-					.sound(SoundTypeBuilder.EntryBuilder.ofEvent(SoundEvents.ARMOR_EQUIP_GENERIC))
-					.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle"))
+					.sound(SoundTypeBuilder.RegistrationBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle2")))
+					.sound(SoundTypeBuilder.RegistrationBuilder.ofEvent(SoundEvents.ANVIL_HIT))
+					.sound(SoundTypeBuilder.RegistrationBuilder.ofEvent(SoundEvents.ARMOR_EQUIP_GENERIC))
+					.sound(SoundTypeBuilder.RegistrationBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle"))
 						.volume(0.3F).pitch(0.5F).stream(true).preload(true).attenuationDistance(8)
 					).replace(true)
 			);

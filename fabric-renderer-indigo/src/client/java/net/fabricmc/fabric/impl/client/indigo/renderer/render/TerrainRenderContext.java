@@ -81,7 +81,7 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 		blockInfo.release();
 	}
 
-	/** Called from section builder hook. */
+	/** Called from section compiler hook. */
 	public void bufferModel(BlockStateModel model, BlockState blockState, BlockPos blockPos) {
 		poseStack.pushPose();
 
@@ -97,8 +97,8 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 			model.emitQuads(getEmitter(), blockInfo.level, blockPos, blockState, random, blockInfo::shouldCullSide);
 		} catch (Throwable throwable) {
 			CrashReport crashReport = CrashReport.forThrowable(throwable, "Tessellating block in world - Indigo Renderer");
-			CrashReportCategory crashReportSection = crashReport.addCategory("Block being tessellated");
-			CrashReportCategory.populateBlockDetails(crashReportSection, blockInfo.level, blockPos, blockState);
+			CrashReportCategory crashReportCategory = crashReport.addCategory("Block being tessellated");
+			CrashReportCategory.populateBlockDetails(crashReportCategory, blockInfo.level, blockPos, blockState);
 			throw new ReportedException(crashReport);
 		} finally {
 			poseStack.popPose();

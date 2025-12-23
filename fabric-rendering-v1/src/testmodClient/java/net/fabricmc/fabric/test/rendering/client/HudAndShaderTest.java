@@ -49,8 +49,8 @@ public class HudAndShaderTest implements ClientModInitializer {
 			RenderSystem.setShaderColor(0f, 1f, 0f, 1f);
 			Matrix4f positionMatrix = graphics.getMatrices().peek().getPositionMatrix();
 
-			graphics.draw(vertexConsumerProvider -> {
-				VertexConsumer buffer = vertexConsumerProvider.getBuffer(RenderLayer.getGui());
+			graphics.draw(multiBufferSource -> {
+				VertexConsumer buffer = multiBufferSource.getBuffer(RenderLayer.getGui());
 				buffer.vertex(positionMatrix, x, y, 50).color(255, 255, 255, 255);
 				buffer.vertex(positionMatrix, x, y + 10, 50).color(255, 255, 255, 255);
 				buffer.vertex(positionMatrix, x + 10, y + 10, 50).color(255, 255, 255, 255);

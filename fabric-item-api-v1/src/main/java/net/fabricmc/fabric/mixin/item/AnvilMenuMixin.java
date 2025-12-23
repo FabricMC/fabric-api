@@ -47,7 +47,7 @@ abstract class AnvilMenuMixin extends ItemCombinerMenu {
 					target = "Lnet/minecraft/world/item/enchantment/Enchantment;canEnchant(Lnet/minecraft/world/item/ItemStack;)Z"
 			)
 	)
-	private boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack, @Local Holder<Enchantment> registryEntry) {
-		return stack.canBeEnchantedWith(registryEntry, EnchantingContext.ACCEPTABLE);
+	private boolean callAllowEnchantingEvent(Enchantment instance, ItemStack stack, @Local Holder<Enchantment> holder) {
+		return stack.canBeEnchantedWith(holder, EnchantingContext.ACCEPTABLE);
 	}
 }

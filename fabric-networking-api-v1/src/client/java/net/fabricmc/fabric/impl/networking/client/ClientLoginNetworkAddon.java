@@ -21,6 +21,11 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.netty.channel.ChannelFutureListener;
+
+import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryRequestPayload;
+
+import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryResponse;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -34,8 +39,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientHandshakePacketListenerImplAccessor;
 
 public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginQueryRequestHandler> {
@@ -55,7 +58,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	}
 
 	public boolean handlePacket(ClientboundCustomQueryPacket packet) {
-		PacketByteBufLoginQueryRequestPayload payload = (PacketByteBufLoginQueryRequestPayload) packet.payload();
+		FriendlyByteBufLoginQueryRequestPayload payload = (FriendlyByteBufLoginQueryRequestPayload) packet.payload();
 		return handlePacket(packet.transactionId(), packet.payload().id(), payload.data());
 	}
 
@@ -79,7 +82,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		try {
 			CompletableFuture<@Nullable FriendlyByteBuf> future = handler.receive(this.client, this.listener, buf, callbacks::add);
 			future.thenAccept(result -> {
-				ServerboundCustomQueryAnswerPacket packet = new ServerboundCustomQueryAnswerPacket(queryId, result == null ? null : new PacketByteBufLoginQueryResponse(result));
+				ServerboundCustomQueryAnswerPacket packet = new ServerboundCustomQueryAnswerPacket(queryId, result == null ? null : new FriendlyByteBufLoginQueryResponse(result));
 				((ClientHandshakePacketListenerImplAccessor) this.listener).getConnection().send(packet, operation -> {
 					for (ChannelFutureListener callback : callbacks) {
 						callback.operationComplete(operation);

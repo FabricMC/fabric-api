@@ -36,7 +36,7 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 	private LevelRenderState levelRenderState;
 
 	private ChunkSectionsToRender sectionsToRender;
-	private SubmitNodeCollector commandQueue;
+	private SubmitNodeCollector nodeCollector;
 	@Nullable
 	private PoseStack poseStack;
 	private MultiBufferSource bufferSource;
@@ -46,7 +46,7 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 			LevelRenderer levelRenderer,
 			LevelRenderState levelRenderState,
 			ChunkSectionsToRender sectionsToRender,
-			SubmitNodeCollector submitNodeCollector,
+			SubmitNodeCollector nodeCollector,
 			MultiBufferSource bufferSource
 	) {
 		this.gameRenderer = gameRenderer;
@@ -54,7 +54,7 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 		this.levelRenderState = levelRenderState;
 		this.sectionsToRender = sectionsToRender;
 
-		this.commandQueue = submitNodeCollector;
+		this.nodeCollector = nodeCollector;
 		this.bufferSource = bufferSource;
 
 		poseStack = null;
@@ -86,7 +86,7 @@ public final class LevelRenderContextImpl implements AbstractLevelRenderContext,
 
 	@Override
 	public SubmitNodeCollector submitNodeCollector() {
-		return commandQueue;
+		return nodeCollector;
 	}
 
 	@Override

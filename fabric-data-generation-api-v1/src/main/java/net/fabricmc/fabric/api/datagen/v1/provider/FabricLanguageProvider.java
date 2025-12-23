@@ -61,16 +61,16 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
  * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
  */
 public abstract class FabricLanguageProvider implements DataProvider {
-	protected final FabricPackOutput dataOutput;
+	protected final FabricPackOutput packOutput;
 	private final String languageCode;
 	private final CompletableFuture<HolderLookup.Provider> registryLookup;
 
-	protected FabricLanguageProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
-		this(dataOutput, "en_us", registryLookup);
+	protected FabricLanguageProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+		this(packOutput, "en_us", registryLookup);
 	}
 
-	protected FabricLanguageProvider(FabricPackOutput dataOutput, String languageCode, CompletableFuture<HolderLookup.Provider> registryLookup) {
-		this.dataOutput = dataOutput;
+	protected FabricLanguageProvider(FabricPackOutput packOutput, String languageCode, CompletableFuture<HolderLookup.Provider> registryLookup) {
+		this.packOutput = packOutput;
 		this.languageCode = languageCode;
 		this.registryLookup = registryLookup;
 	}
@@ -109,9 +109,9 @@ public abstract class FabricLanguageProvider implements DataProvider {
 	}
 
 	private Path getLangFilePath(String code) {
-		return dataOutput
+		return packOutput
 				.createPathProvider(PackOutput.Target.RESOURCE_PACK, "lang")
-				.json(Identifier.fromNamespaceAndPath(dataOutput.getModId(), code));
+				.json(Identifier.fromNamespaceAndPath(packOutput.getModId(), code));
 	}
 
 	@Override
@@ -163,8 +163,8 @@ public abstract class FabricLanguageProvider implements DataProvider {
 			final CreativeModeTab group = BuiltInRegistries.CREATIVE_MODE_TAB.getValueOrThrow(resourceKey);
 			final ComponentContents content = group.getDisplayName().getContents();
 
-			if (content instanceof TranslatableContents translatableTextContent) {
-				add(translatableTextContent.getKey(), value);
+			if (content instanceof TranslatableContents translatableContent) {
+				add(translatableContent.getKey(), value);
 				return;
 			}
 
@@ -194,11 +194,11 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		/**
 		 * Adds a translation for an {@link Attribute}.
 		 *
-		 * @param entityAttribute The {@link Attribute} to get the translation key from.
-		 * @param value           The value of the entry.
+		 * @param attribute The {@link Attribute} to get the translation key from.
+		 * @param value     The value of the entry.
 		 */
-		default void add(Holder<Attribute> entityAttribute, String value) {
-			add(entityAttribute.value().getDescriptionId(), value);
+		default void add(Holder<Attribute> attribute, String value) {
+			add(attribute.value().getDescriptionId(), value);
 		}
 
 		/**
@@ -214,11 +214,11 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		/**
 		 * Adds a translation for a {@link MobEffect}.
 		 *
-		 * @param statusEffect The {@link MobEffect} to get the translation key from.
-		 * @param value        The value of the entry.
+		 * @param mobEffect The {@link MobEffect} to get the translation key from.
+		 * @param value     The value of the entry.
 		 */
-		default void add(MobEffect statusEffect, String value) {
-			add(statusEffect.getDescriptionId(), value);
+		default void add(MobEffect mobEffect, String value) {
+			add(mobEffect.getDescriptionId(), value);
 		}
 
 		/**

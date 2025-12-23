@@ -38,7 +38,7 @@ abstract class LevelMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public RegistryAccess fabric_getDynamicRegistryManager() {
+	public RegistryAccess fabric_getRegistryAccess() {
 		return registryAccess();
 	}
 }

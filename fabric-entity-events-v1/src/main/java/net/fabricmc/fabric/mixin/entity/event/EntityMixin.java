@@ -35,9 +35,9 @@ abstract class EntityMixin {
 	private Level level;
 
 	@WrapOperation(method = "teleport", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;teleportCrossDimension(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/world/entity/Entity;"))
-	private Entity afterDimensionChanged(Entity instance, ServerLevel sourceLevel, ServerLevel targetWorld, TeleportTransition teleportTarget, Operation<Entity> original) {
+	private Entity afterDimensionChanged(Entity instance, ServerLevel sourceLevel, ServerLevel targetWorld, TeleportTransition teleportTransition, Operation<Entity> original) {
 		// Ret will only have an entity if the teleport worked (entity not removed, teleportTarget was valid, entity was successfully created)
-		Entity ret = original.call(instance, sourceLevel, targetWorld, teleportTarget);
+		Entity ret = original.call(instance, sourceLevel, targetWorld, teleportTransition);
 
 		if (ret != null) {
 			ServerEntityLevelChangeEvents.AFTER_ENTITY_CHANGE_LEVEL.invoker().afterChangeLevel((Entity) (Object) this, ret, (ServerLevel) this.level, (ServerLevel) ret.level());

@@ -27,6 +27,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.netty.channel.ChannelFutureListener;
+
+import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryResponse;
+
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.network.Connection;
@@ -47,8 +50,7 @@ import net.fabricmc.fabric.api.networking.v1.LoginPacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
+import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryRequestPayload;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginPacketListenerImplAccessor;
 
 public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLoginNetworking.LoginQueryResponseHandler> implements LoginPacketSender {
@@ -127,7 +129,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	 * @return true if the packet was handled
 	 */
 	public boolean handle(ServerboundCustomQueryAnswerPacket packet) {
-		PacketByteBufLoginQueryResponse response = (PacketByteBufLoginQueryResponse) packet.payload();
+		FriendlyByteBufLoginQueryResponse response = (FriendlyByteBufLoginQueryResponse) packet.payload();
 		return handle(packet.transactionId(), response == null ? null : response.data());
 	}
 
@@ -167,7 +169,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	@Override
 	public Packet<?> createPacket(Identifier channelName, FriendlyByteBuf buf) {
 		int queryId = this.queryIdFactory.nextId();
-		return new ClientboundCustomQueryPacket(queryId, new PacketByteBufLoginQueryRequestPayload(channelName, buf));
+		return new ClientboundCustomQueryPacket(queryId, new FriendlyByteBufLoginQueryRequestPayload(channelName, buf));
 	}
 
 	@Override

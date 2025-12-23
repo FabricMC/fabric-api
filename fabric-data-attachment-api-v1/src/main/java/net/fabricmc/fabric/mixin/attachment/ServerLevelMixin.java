@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.attachment;
 
+import net.fabricmc.fabric.impl.attachment.AttachmentSavedData;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,7 +37,6 @@ import net.minecraft.world.level.storage.WritableLevelData;
 
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.impl.attachment.AttachmentPersistentState;
 import net.fabricmc.fabric.impl.attachment.AttachmentTargetImpl;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
@@ -66,9 +67,9 @@ abstract class ServerLevelMixin extends Level implements AttachmentTargetImpl {
 		// Force persistent state creation
 		ServerLevel level = (ServerLevel) (Object) this;
 		var type = new SavedDataType<>(
-				AttachmentPersistentState.ID,
-				() -> new AttachmentPersistentState(level),
-				AttachmentPersistentState.codec(level),
+				AttachmentSavedData.ID,
+				() -> new AttachmentSavedData(level),
+				AttachmentSavedData.codec(level),
 				null // Object builder API 12.1.0 and later makes this a no-op
 		);
 		level.getDataStorage().computeIfAbsent(type);
@@ -92,7 +93,7 @@ abstract class ServerLevelMixin extends Level implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public RegistryAccess fabric_getDynamicRegistryManager() {
+	public RegistryAccess fabric_getRegistryAccess() {
 		return registryAccess();
 	}
 }

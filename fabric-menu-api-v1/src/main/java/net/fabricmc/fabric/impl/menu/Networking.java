@@ -86,12 +86,12 @@ public final class Networking implements ModInitializer {
 
 		forEachEntry(BuiltInRegistries.MENU, (type, id) -> {
 			if (type instanceof ExtendedMenuType<?, ?> extended) {
-				CODEC_BY_ID.put(id, extended.getPacketCodec());
+				CODEC_BY_ID.put(id, extended.getStreamCodec());
 			}
 		});
 	}
 
-	// Calls the consumer for each registry entry that has been registered or will be registered.
+	// Calls the consumer for each holder that has been registered or will be registered.
 	private static <T> void forEachEntry(Registry<T> registry, BiConsumer<T, Identifier> consumer) {
 		for (T type : registry) {
 			consumer.accept(type, registry.getKey(type));

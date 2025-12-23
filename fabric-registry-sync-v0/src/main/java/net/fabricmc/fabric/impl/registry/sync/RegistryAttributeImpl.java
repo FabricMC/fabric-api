@@ -31,8 +31,8 @@ import net.fabricmc.loader.api.FabricLoader;
 public final class RegistryAttributeImpl implements RegistryAttributeHolder {
 	private static final Map<ResourceKey<?>, RegistryAttributeHolder> HOLDER_MAP = new ConcurrentHashMap<>();
 
-	public static RegistryAttributeHolder getHolder(ResourceKey<?> registryKey) {
-		return HOLDER_MAP.computeIfAbsent(registryKey, key -> new RegistryAttributeImpl());
+	public static RegistryAttributeHolder getHolder(ResourceKey<?> resourceKey) {
+		return HOLDER_MAP.computeIfAbsent(resourceKey, key -> new RegistryAttributeImpl());
 	}
 
 	private final EnumSet<RegistryAttribute> attributes = EnumSet.noneOf(RegistryAttribute.class);

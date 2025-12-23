@@ -19,6 +19,8 @@ package net.fabricmc.fabric.mixin.recipe;
 import java.util.Collection;
 import java.util.stream.Stream;
 
+import net.fabricmc.fabric.api.recipe.v1.FabricRecipeManager;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -36,12 +38,11 @@ import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.api.recipe.v1.FabricServerRecipeManager;
 import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
 import net.fabricmc.fabric.impl.recipe.sync.SynchronizedRecipesImpl;
 
 @Mixin(RecipeManager.class)
-public abstract class RecipeManagerMixin implements FabricServerRecipeManager {
+public abstract class RecipeManagerMixin implements FabricRecipeManager {
 	@Shadow
 	private RecipeMap recipes;
 	@Unique

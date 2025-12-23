@@ -52,7 +52,7 @@ public class AttachmentSync implements ModInitializer {
 	}
 
 	public static void trySync(AttachmentChange change, ServerPlayer player) {
-		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonPacketListenerImplAccessor) player.connection).getConnection())
+		Set<Identifier> supported = ((SupportedAttachmentsConnection) ((ServerCommonPacketListenerImplAccessor) player.connection).getConnection())
 				.fabric_getSupportedAttachments();
 
 		if (supported.contains(change.type().identifier())) {
@@ -99,7 +99,7 @@ public class AttachmentSync implements ModInitializer {
 				ServerboundAcceptedAttachmentsPayload.ID, (payload, context) -> {
 					Set<Identifier> supportedAttachments = decodeResponsePayload(payload);
 					Connection connection = ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection();
-					((SupportedAttachmentsClientConnection) connection).fabric_setSupportedAttachments(supportedAttachments);
+					((SupportedAttachmentsConnection) connection).fabric_setSupportedAttachments(supportedAttachments);
 
 					context.packetListener().completeTask(AttachmentSyncTask.KEY);
 				});

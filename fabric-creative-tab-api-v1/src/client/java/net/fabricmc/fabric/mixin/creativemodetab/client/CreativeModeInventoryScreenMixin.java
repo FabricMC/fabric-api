@@ -20,6 +20,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import net.fabricmc.fabric.api.client.creativemodetab.v1.FabricCreativeModeInventoryScreen;
+
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,14 +41,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 
-import net.fabricmc.fabric.api.client.creativemodetab.v1.FabricCreativeInventoryScreen;
 import net.fabricmc.fabric.impl.client.creativemodetab.FabricCreativeGuiComponents;
 import net.fabricmc.fabric.impl.creativemodetab.FabricCreativeModeTabImpl;
 
 @Mixin(CreativeModeInventoryScreen.class)
-public abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<ItemPickerMenu> implements FabricCreativeInventoryScreen {
-	public CreativeModeInventoryScreenMixin(ItemPickerMenu screenHandler, Inventory playerInventory, Component text) {
-		super(screenHandler, playerInventory, text);
+public abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<ItemPickerMenu> implements FabricCreativeModeInventoryScreen {
+	public CreativeModeInventoryScreenMixin(ItemPickerMenu menu, Inventory playerInventory, Component text) {
+		super(menu, playerInventory, text);
 	}
 
 	@Shadow

@@ -19,6 +19,9 @@ package net.fabricmc.fabric.mixin.resource;
 import java.util.List;
 
 import com.llamalad7.mixinextras.sugar.Local;
+
+import net.fabricmc.fabric.impl.resource.FabricMultiPackResourceManager;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -28,7 +31,6 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleReloadInstance;
 
-import net.fabricmc.fabric.impl.resource.FabricLifecycledResourceManager;
 import net.fabricmc.fabric.impl.resource.ResourceLoaderImpl;
 
 @Mixin(SimpleReloadInstance.class)
@@ -41,8 +43,8 @@ public class SimpleReloadInstanceMixin {
 			)
 	)
 	private static List<PreparableReloadListener> sortSimple(List<PreparableReloadListener> reloaders, @Local(argsOnly = true) ResourceManager resourceManager) {
-		if (resourceManager instanceof FabricLifecycledResourceManager flrm) {
-			return ResourceLoaderImpl.sort(flrm.fabric$getResourceType(), reloaders);
+		if (resourceManager instanceof FabricMultiPackResourceManager flrm) {
+			return ResourceLoaderImpl.sort(flrm.fabric$getPackType(), reloaders);
 		}
 
 		return reloaders;
@@ -56,8 +58,8 @@ public class SimpleReloadInstanceMixin {
 			)
 	)
 	private static List<PreparableReloadListener> sortProfiled(List<PreparableReloadListener> reloaders, @Local(argsOnly = true) ResourceManager resourceManager) {
-		if (resourceManager instanceof FabricLifecycledResourceManager flrm) {
-			return ResourceLoaderImpl.sort(flrm.fabric$getResourceType(), reloaders);
+		if (resourceManager instanceof FabricMultiPackResourceManager flrm) {
+			return ResourceLoaderImpl.sort(flrm.fabric$getPackType(), reloaders);
 		}
 
 		return reloaders;

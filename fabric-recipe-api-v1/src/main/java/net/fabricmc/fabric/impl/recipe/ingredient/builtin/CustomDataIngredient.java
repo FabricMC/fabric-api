@@ -137,7 +137,7 @@ public class CustomDataIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, CustomDataIngredient> getPacketCodec() {
+		public StreamCodec<RegistryFriendlyByteBuf, CustomDataIngredient> getStreamCodec() {
 			return PACKET_CODEC;
 		}
 	}

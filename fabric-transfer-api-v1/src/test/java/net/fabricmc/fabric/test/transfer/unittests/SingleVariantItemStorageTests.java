@@ -131,9 +131,9 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 			tx.commit();
 		}
 
-		TagValueOutput writeView = TagValueOutput.createWithoutContext(null);
-		storage.writeValue(writeView);
-		assertEquals("{amount:1L,variant:{item:\"minecraft:diamond\"}}", writeView.buildResult().toString());
+		TagValueOutput output = TagValueOutput.createWithoutContext(null);
+		storage.writeValue(output);
+		assertEquals("{amount:1L,variant:{item:\"minecraft:diamond\"}}", output.buildResult().toString());
 	}
 
 	@Test
@@ -152,9 +152,9 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 			tx.commit();
 		}
 
-		TagValueOutput writeView = TagValueOutput.createWithoutContext(null);
-		storage.writeValue(writeView);
-		assertEquals("{amount:1L,variant:{components:{\"minecraft:custom_name\":\"test name\"},item:\"minecraft:diamond\"}}", writeView.buildResult().toString());
+		TagValueOutput output = TagValueOutput.createWithoutContext(null);
+		storage.writeValue(output);
+		assertEquals("{amount:1L,variant:{components:{\"minecraft:custom_name\":\"test name\"},item:\"minecraft:diamond\"}}", output.buildResult().toString());
 	}
 
 	@Test
@@ -220,7 +220,7 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		} else {
 			// Make sure emptied tanks can stack with tanks without components.
 			// Note: because we use a vanilla item (diamond), we need to remove;
-			// a custom item should instead set the fluid to the default value as specified in the item settings.
+			// a custom item should instead set the fluid to the default value as specified in the item properties.
 			stack.remove(FLUID);
 		}
 	}

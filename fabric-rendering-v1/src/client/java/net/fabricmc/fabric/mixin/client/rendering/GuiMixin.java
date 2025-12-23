@@ -131,21 +131,21 @@ abstract class GuiMixin {
 	}
 
 	@WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/spectator/SpectatorGui;renderAction(Lnet/minecraft/client/gui/GuiGraphics;)V"))
-	private void wrapRenderSpectatorHud(SpectatorGui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+	private void wrapRenderSpectatorGui(SpectatorGui instance, GuiGraphics graphics, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.SPECTATOR_TOOLTIP).render(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx));
 	}
 
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderEffects(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapStatusEffectOverlay(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
-		HudElementRegistryImpl.getRoot(VanillaHudElements.STATUS_EFFECTS).render(
+	private void wrapMobEffectOverlay(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+		HudElementRegistryImpl.getRoot(VanillaHudElements.MOB_EFFECTS).render(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
 	}
 
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderBossOverlay(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-	private void wrapBossBarHud(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
+	private void wrapBossHealthOverlay(Gui instance, GuiGraphics graphics, DeltaTracker deltaTracker, Operation<Void> renderVanilla) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.BOSS_BAR).render(
 				graphics,
 				deltaTracker, (ctx, dt) -> renderVanilla.call(instance, ctx, dt));
@@ -204,7 +204,7 @@ abstract class GuiMixin {
 	}
 
 	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSubtitleOverlay(Lnet/minecraft/client/gui/GuiGraphics;Z)V"))
-	private void wrapSubtitlesHud(Gui instance, GuiGraphics graphics, boolean deferRendering, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
+	private void wrapSubtitleOverlay(Gui instance, GuiGraphics graphics, boolean deferRendering, Operation<Void> renderVanilla, @Local(argsOnly = true) DeltaTracker deltaTracker) {
 		HudElementRegistryImpl.getRoot(VanillaHudElements.SUBTITLES).render(
 				graphics,
 				deltaTracker, (ctx, _) -> renderVanilla.call(instance, ctx,

@@ -45,7 +45,7 @@ public abstract class MinecraftMixin {
 		ClientLifecycleEvents.CLIENT_STOPPING.invoker().onClientStopping((Minecraft) (Object) this);
 	}
 
-	// We inject after the thread field is set so `ThreadExecutor#getThread` will work
+	// We inject after the thread field is set so `BlockableEventLoop#getRunningThread` will work
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;gameThread:Ljava/lang/Thread;", shift = At.Shift.AFTER, ordinal = 0), method = "run")
 	private void onStart(CallbackInfo ci) {
 		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((Minecraft) (Object) this);

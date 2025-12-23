@@ -65,13 +65,13 @@ abstract class ChunkAccessMixin implements AttachmentTargetImpl {
 
 	@Override
 	public boolean fabric_shouldTryToSync() {
-		// ProtoChunk or EmptyChunk
+		// ProtoChunk or EmptyLevelChunk
 		return false;
 	}
 
 	@Override
-	public RegistryAccess fabric_getDynamicRegistryManager() {
+	public RegistryAccess fabric_getRegistryAccess() {
 		// Should never happen as this is only used for sync
-		throw new UnsupportedOperationException("Chunk does not have a DynamicRegistryManager.");
+		throw new UnsupportedOperationException("Chunk does not have a RegistryAccess.");
 	}
 }

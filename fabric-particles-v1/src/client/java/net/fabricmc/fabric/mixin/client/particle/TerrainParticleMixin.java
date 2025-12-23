@@ -66,7 +66,7 @@ abstract class TerrainParticleMixin extends SingleQuadParticle {
 	}
 
 	@Redirect(method = "createTerrainParticle", at = @At(value = "NEW", target = "(Lnet/minecraft/client/multiplayer/ClientLevel;DDDDDDLnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/particle/TerrainParticle;"))
-	private static TerrainParticle constructBlockDustParticle(ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state, BlockParticleOption parameters, ClientLevel world1, double x1, double y1, double z1, double velocityX1, double velocityY1, double velocityZ1) {
+	private static TerrainParticle constructTerrainParticle(ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ, BlockState state, BlockParticleOption parameters, ClientLevel world1, double x1, double y1, double z1, double velocityX1, double velocityY1, double velocityZ1) {
 		BlockPos blockPos = parameters.getBlockPos();
 
 		if (blockPos != null) {

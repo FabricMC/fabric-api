@@ -275,7 +275,7 @@ public final class ClientConfigurationNetworking {
 	@ApiStatus.NonExtendable
 	public interface Context {
 		/**
-		 * @return The MinecraftClient instance
+		 * @return The Minecraft instance
 		 */
 		Minecraft client();
 

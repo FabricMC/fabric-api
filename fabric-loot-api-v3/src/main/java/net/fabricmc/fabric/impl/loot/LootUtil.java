@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import net.fabricmc.fabric.impl.resource.pack.BuiltinModPackSource;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -30,7 +31,6 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.api.loot.v3.LootTableSource;
-import net.fabricmc.fabric.impl.resource.pack.BuiltinModResourcePackSource;
 import net.fabricmc.fabric.impl.resource.pack.ModResourcePackCreator;
 
 public final class LootUtil {
@@ -42,7 +42,7 @@ public final class LootUtil {
 
 			if (packSource == PackSource.BUILT_IN) {
 				return LootTableSource.VANILLA;
-			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE || packSource instanceof BuiltinModResourcePackSource) {
+			} else if (packSource == ModResourcePackCreator.RESOURCE_PACK_SOURCE || packSource instanceof BuiltinModPackSource) {
 				return LootTableSource.MOD;
 			}
 		}

@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.PathfindingContext;
 
-import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
+import net.fabricmc.fabric.api.registry.LandPathTypeRegistry;
 
 @Mixin(PathfindingContext.class)
 public abstract class PathfindingContextMixin {
@@ -44,10 +44,10 @@ public abstract class PathfindingContextMixin {
 	 */
 	@Inject(method = "getPathTypeFromState", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/core/BlockPos$MutableBlockPos;set(III)Lnet/minecraft/core/BlockPos$MutableBlockPos;"), cancellable = true)
 	private void onGetNodeType(int x, int y, int z, CallbackInfoReturnable<PathType> cir, @Local BlockPos pos) {
-		final PathType neighborNodeType = LandPathNodeTypesRegistry.getPathNodeType(getBlockState(pos), level(), pos, true);
+		final PathType neighborPathType = LandPathTypeRegistry.getPathType(getBlockState(pos), level(), pos, true);
 
-		if (neighborNodeType != null) {
-			cir.setReturnValue(neighborNodeType);
+		if (neighborPathType != null) {
+			cir.setReturnValue(neighborPathType);
 		}
 	}
 }

@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.content.registry;
 
+import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder;
+import net.fabricmc.fabric.api.registry.FuelValueEvents;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,11 +57,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.CompostableRegistry;
-import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.registry.FlattenableBlockRegistry;
-import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
-import net.fabricmc.fabric.api.registry.LandPathNodeTypesRegistry;
+import net.fabricmc.fabric.api.registry.LandPathTypeRegistry;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.fabric.api.registry.StrippableBlockRegistry;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
@@ -113,16 +114,16 @@ public final class ContentRegistryTest implements ModInitializer {
 		FlammableBlockRegistry.getDefaultInstance().add(BlockTags.SAND, 4, 4);
 		FlattenableBlockRegistry.register(Blocks.RED_WOOL, Blocks.YELLOW_WOOL.defaultBlockState());
 
-		FuelRegistryEvents.BUILD.register((builder, context) -> {
+		FuelValueEvents.BUILD.register((builder, context) -> {
 			builder.add(SMELTING_FUEL_INCLUDED_BY_ITEM, context.baseSmeltTime() / 4);
 			builder.add(SMELTING_FUELS_INCLUDED_BY_TAG, context.baseSmeltTime() / 2);
 		});
 
-		FuelRegistryEvents.EXCLUSIONS.register((builder, context) -> {
+		FuelValueEvents.EXCLUSIONS.register((builder, context) -> {
 			builder.remove(SMELTING_FUELS_EXCLUDED_BY_TAG);
 		});
 
-		LandPathNodeTypesRegistry.register(Blocks.DEAD_BUSH, PathType.DAMAGE_OTHER, PathType.DANGER_OTHER);
+		LandPathTypeRegistry.register(Blocks.DEAD_BUSH, PathType.DAMAGE_OTHER, PathType.DANGER_OTHER);
 		StrippableBlockRegistry.register(Blocks.QUARTZ_PILLAR, Blocks.HAY_BLOCK);
 		StrippableBlockRegistry.register(Blocks.HAY_BLOCK, Blocks.TNT);
 		StrippableBlockRegistry.registerCopyState(Blocks.OAK_STAIRS, Blocks.SPRUCE_STAIRS);
@@ -184,9 +185,9 @@ public final class ContentRegistryTest implements ModInitializer {
 		ResourceKey<Item> dirtyPotionKey = ResourceKey.create(Registries.ITEM, id("dirty_potion"));
 		var dirtyPotion = new DirtyPotionItem(new Item.Properties().stacksTo(1).setId(dirtyPotionKey));
 		Registry.register(BuiltInRegistries.ITEM, dirtyPotionKey, dirtyPotion);
-		/* Mods should use BrewingRecipeRegistry.registerPotionType(Item), which is access widened by fabric-transitive-access-wideners-v1
+		/* Mods should use PotionBrewingRegistry.registerPotionType(Item), which is access widened by fabric-transitive-access-wideners-v1
 		 * This testmod uses an accessor due to Loom limitations that prevent TAWs from applying across Gradle subproject boundaries */
-		FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> {
+		FabricPotionBrewingBuilder.BUILD.register(builder -> {
 			builder.addContainer(dirtyPotion);
 			builder.registerItemRecipe(Items.POTION, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.DIRT)), dirtyPotion);
 			builder.registerPotionRecipe(Potions.AWKWARD, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.SMALL_FLOWERS)), Potions.HEALING);

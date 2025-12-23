@@ -251,7 +251,7 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 		final ScreenAccessor screenAccessor = (ScreenAccessor) screen;
 
 		for (Renderable renderable : screenAccessor.getRenderables()) {
-			if (renderable instanceof AbstractButton pressableWidget && pressMatchingButton(pressableWidget, buttonText)) {
+			if (renderable instanceof AbstractButton button && pressMatchingButton(button, buttonText)) {
 				return true;
 			}
 
@@ -276,18 +276,18 @@ public final class ClientGameTestContextImpl implements ClientGameTestContext {
 	private static boolean pressMatchingButton(AbstractWidget widget, String text) {
 		var clickEvent = new MouseButtonInfo(GLFW.GLFW_KEY_UNKNOWN, 0);
 
-		if (widget instanceof Button buttonWidget) {
-			if (text.equals(buttonWidget.getMessage().getString())) {
-				buttonWidget.onPress(clickEvent);
+		if (widget instanceof Button button) {
+			if (text.equals(button.getMessage().getString())) {
+				button.onPress(clickEvent);
 				return true;
 			}
 		}
 
-		if (widget instanceof CycleButton<?> buttonWidget) {
-			CycleButtonAccessor accessor = (CycleButtonAccessor) buttonWidget;
+		if (widget instanceof CycleButton<?> button) {
+			CycleButtonAccessor accessor = (CycleButtonAccessor) button;
 
 			if (text.equals(accessor.getName().getString())) {
-				buttonWidget.onPress(clickEvent);
+				button.onPress(clickEvent);
 				return true;
 			}
 		}

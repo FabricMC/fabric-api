@@ -78,9 +78,9 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return new RecipeOutput() {
 			@Override
-			public void accept(ResourceKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementHolder advancementEntry) {
+			public void accept(ResourceKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder) {
 				FabricDataGenHelper.addConditions(recipe, conditions);
-				exporter.accept(key, recipe, advancementEntry);
+				exporter.accept(key, recipe, advancementHolder);
 			}
 
 			@Override
@@ -104,7 +104,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 		return registriesFuture.thenCompose((wrapperLookup -> {
 			Set<Identifier> generatedRecipes = Sets.newHashSet();
 			List<CompletableFuture<?>> list = new ArrayList<>();
-			RecipeProvider recipeGenerator = createRecipeProvider(wrapperLookup, new RecipeOutput() {
+			RecipeProvider recipeProvider = createRecipeProvider(wrapperLookup, new RecipeOutput() {
 				@Override
 				public void accept(ResourceKey<Recipe<?>> recipeKey, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
 					Identifier identifier = recipeKey.identifier();
@@ -145,7 +145,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 					return FabricRecipeProvider.this.getRecipeIdentifier(recipeId);
 				}
 			});
-			recipeGenerator.buildRecipes();
+			recipeProvider.buildRecipes();
 			return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
 		}));
 	}

@@ -63,8 +63,8 @@ public final class ServerConfigurationNetworkAddon extends AbstractChanneledNetw
 
 	@Override
 	public boolean handle(CustomPacketPayload payload) {
-		if (payload instanceof BrandPayload brandCustomPayload) {
-			clientBrand = brandCustomPayload.brand();
+		if (payload instanceof BrandPayload brandPayload) {
+			clientBrand = brandPayload.brand();
 			return false;
 		}
 

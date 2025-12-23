@@ -86,7 +86,7 @@
  *         <td>{@code 5}</td>
  *         <td>{@code 10}</td>
  *         <td>Speeds up loading of chunks, especially for functions such as
- *         {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestClientLevelContext#waitForChunksRender() TestClientWorldContext.waitForChunksRender()}</td>
+ *         {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestClientLevelContext#waitForChunksRender() TestClientLevelContext.waitForChunksRender()}</td>
  *     </tr>
  *     <tr>
  *         <td>{@linkplain net.minecraft.client.Options#getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource) Music volume}</td>

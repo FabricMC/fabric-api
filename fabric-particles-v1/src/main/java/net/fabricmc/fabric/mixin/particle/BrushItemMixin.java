@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.particle.BlockParticleOptionExtension;
 @Mixin(BrushItem.class)
 abstract class BrushItemMixin {
 	@ModifyExpressionValue(method = "spawnDustParticles", at = @At(value = "NEW", target = "(Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/core/particles/BlockParticleOption;"))
-	private BlockParticleOption modifyBlockStateParticleEffect(BlockParticleOption original, Level level, BlockHitResult hitResult, BlockState state, Vec3 userRotation, HumanoidArm arm) {
+	private BlockParticleOption modifyBlockStateParticleOption(BlockParticleOption original, Level level, BlockHitResult hitResult, BlockState state, Vec3 userRotation, HumanoidArm arm) {
 		((BlockParticleOptionExtension) original).fabric_setBlockPos(hitResult.getBlockPos());
 		return original;
 	}

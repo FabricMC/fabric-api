@@ -33,8 +33,8 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 
 public class BannerGuiElementRenderer extends PictureInPictureRenderer<BannerGuiElementRenderState> {
-	protected BannerGuiElementRenderer(MultiBufferSource.BufferSource vertexConsumers) {
-		super(vertexConsumers);
+	protected BannerGuiElementRenderer(MultiBufferSource.BufferSource bufferSource) {
+		super(bufferSource);
 	}
 
 	@Override

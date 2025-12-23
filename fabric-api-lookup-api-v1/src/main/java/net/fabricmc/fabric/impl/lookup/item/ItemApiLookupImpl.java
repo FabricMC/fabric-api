@@ -85,8 +85,8 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void registerSelf(ItemLike... items) {
-		for (ItemLike itemConvertible : items) {
-			Item item = itemConvertible.asItem();
+		for (ItemLike itemLike : items) {
+			Item item = itemLike.asItem();
 
 			if (!apiClass.isAssignableFrom(item.getClass())) {
 				String errorMessage = String.format(
@@ -106,12 +106,12 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 		Objects.requireNonNull(provider, "ItemApiProvider may not be null.");
 
 		if (items.length == 0) {
-			throw new IllegalArgumentException("Must register at least one ItemConvertible instance with an ItemApiProvider.");
+			throw new IllegalArgumentException("Must register at least one ItemLike instance with an ItemApiProvider.");
 		}
 
-		for (ItemLike itemConvertible : items) {
-			Item item = itemConvertible.asItem();
-			Objects.requireNonNull(item, "Item convertible in item form may not be null.");
+		for (ItemLike itemLike : items) {
+			Item item = itemLike.asItem();
+			Objects.requireNonNull(item, "ItemLike in item form may not be null.");
 
 			if (providerMap.putIfAbsent(item, provider) != null) {
 				LOGGER.warn("Encountered duplicate API provider registration for item: " + BuiltInRegistries.ITEM.getKey(item));

@@ -26,6 +26,6 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
 @Mixin(LivingEntityRenderer.class)
 public interface LivingEntityRendererAccessor<S extends LivingEntityRenderState, M extends EntityModel<? super S>> {
-	@Invoker("addLayer")
-	boolean callAddFeature(RenderLayer<S, M> featureRenderer);
+	@Invoker
+	boolean callAddLayer(RenderLayer<S, M> renderLayer);
 }

@@ -44,6 +44,6 @@ class StopSoundButton extends AbstractButton {
 	}
 
 	@Override
-	protected void updateWidgetNarration(NarrationElementOutput narrationMessageBuilder) {
+	protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 	}
 }

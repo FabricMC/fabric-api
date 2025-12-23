@@ -21,5 +21,5 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
 public interface CustomPayloadTypeProvider<B extends FriendlyByteBuf> {
-	CustomPacketPayload.TypeAndCodec<B, ? extends CustomPacketPayload> get(B packetByteBuf, Identifier identifier);
+	CustomPacketPayload.TypeAndCodec<B, ? extends CustomPacketPayload> get(B buf, Identifier identifier);
 }

@@ -33,9 +33,9 @@ public interface RenderItemDecorationsCallback {
 	 */
 	Event<RenderItemDecorationsCallback> EVENT = EventFactory.createArrayBacked(
 			RenderItemDecorationsCallback.class,
-			callbacks -> (context, textRenderer, stack, x, y) -> {
+			callbacks -> (context, font, stack, x, y) -> {
 				for (RenderItemDecorationsCallback callback : callbacks) {
-					callback.onRenderItemDecorations(context, textRenderer, stack, x, y);
+					callback.onRenderItemDecorations(context, font, stack, x, y);
 				}
 			});
 

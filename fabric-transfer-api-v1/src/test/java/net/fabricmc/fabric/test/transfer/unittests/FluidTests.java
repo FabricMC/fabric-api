@@ -154,7 +154,7 @@ class FluidTests extends AbstractTransferApiTest {
 	}
 
 	@Test
-	void testPacketCodec() {
+	void testStreamCodec() {
 		FluidVariant variant = FluidVariant.of(Fluids.WATER, DataComponentPatch.builder().set(TEST, 1).build());
 		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 		RegistryFriendlyByteBuf rbuf = new RegistryFriendlyByteBuf(buf, staticDrm());

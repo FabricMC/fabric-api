@@ -46,16 +46,16 @@ public final class TestBiomes {
 	private TestBiomes() {
 	}
 
-	public static void bootstrap(BootstrapContext<Biome> biomeRegisterable) {
-		HolderGetter<PlacedFeature> placedFeatures = biomeRegisterable.lookup(Registries.PLACED_FEATURE);
-		HolderGetter<ConfiguredWorldCarver<?>> configuredCarvers = biomeRegisterable.lookup(Registries.CONFIGURED_CARVER);
+	public static void bootstrap(BootstrapContext<Biome> context) {
+		HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
+		HolderGetter<ConfiguredWorldCarver<?>> configuredCarvers = context.lookup(Registries.CONFIGURED_CARVER);
 
-		biomeRegisterable.register(EXAMPLE_BIOME, createExample());
-		biomeRegisterable.register(TEST_CRIMSON_FOREST, NetherBiomes.crimsonForest(placedFeatures, configuredCarvers));
-		biomeRegisterable.register(CUSTOM_PLAINS, OverworldBiomes.plains(placedFeatures, configuredCarvers, false, false, false));
-		biomeRegisterable.register(TEST_END_HIGHLANDS, createEndHighlands(placedFeatures));
-		biomeRegisterable.register(TEST_END_MIDLANDS, createEndMidlands());
-		biomeRegisterable.register(TEST_END_BARRRENS, createEndBarrens());
+		context.register(EXAMPLE_BIOME, createExample());
+		context.register(TEST_CRIMSON_FOREST, NetherBiomes.crimsonForest(placedFeatures, configuredCarvers));
+		context.register(CUSTOM_PLAINS, OverworldBiomes.plains(placedFeatures, configuredCarvers, false, false, false));
+		context.register(TEST_END_HIGHLANDS, createEndHighlands(placedFeatures));
+		context.register(TEST_END_MIDLANDS, createEndMidlands());
+		context.register(TEST_END_BARRRENS, createEndBarrens());
 	}
 
 	private static Biome createExample() {

@@ -105,7 +105,7 @@ abstract class ImposterProtoChunkMixin extends AttachmentTargetsMixin {
 	}
 
 	@Override
-	public RegistryAccess fabric_getDynamicRegistryManager() {
-		return ((AttachmentTargetImpl) wrapped).fabric_getDynamicRegistryManager();
+	public RegistryAccess fabric_getRegistryAccess() {
+		return ((AttachmentTargetImpl) wrapped).fabric_getRegistryAccess();
 	}
 }

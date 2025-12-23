@@ -36,7 +36,7 @@ abstract class WardenMixin extends Monster implements VibrationSystem {
 	}
 
 	@ModifyExpressionValue(method = "clientDiggingParticles", at = @At(value = "NEW", target = "(Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/core/particles/BlockParticleOption;"))
-	private BlockParticleOption modifyBlockStateParticleEffect(BlockParticleOption original) {
+	private BlockParticleOption modifyBlockStateParticleOption(BlockParticleOption original) {
 		((BlockParticleOptionExtension) original).fabric_setBlockPos(getOnPos());
 		return original;
 	}

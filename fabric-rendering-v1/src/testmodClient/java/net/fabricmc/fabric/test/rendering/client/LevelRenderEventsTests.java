@@ -53,22 +53,22 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 
 	private static boolean beforeBlockOutline(LevelRenderContext context, BlockOutlineRenderState outlineRenderState) {
 		if (Boolean.TRUE.equals(outlineRenderState.getData(DIAMOND_BLOCK_OUTLINE))) {
-			PoseStack matrixStack = new PoseStack();
-			matrixStack.pushPose();
+			PoseStack poseStack = new PoseStack();
+			poseStack.pushPose();
 			Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().position();
 			BlockPos pos = outlineRenderState.pos();
 			double x = pos.getX() - cameraPos.x;
 			double y = pos.getY() - cameraPos.y;
 			double z = pos.getZ() - cameraPos.z;
-			matrixStack.translate(x + 0.25, y + 0.25 + 1, z + 0.25);
-			matrixStack.scale(0.5f, 0.5f, 0.5f);
+			poseStack.translate(x + 0.25, y + 0.25 + 1, z + 0.25);
+			poseStack.scale(0.5f, 0.5f, 0.5f);
 
 			Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
 					Blocks.DIAMOND_BLOCK.defaultBlockState(),
-					matrixStack, context.bufferSource(), 15728880, OverlayTexture.NO_OVERLAY
+					poseStack, context.bufferSource(), 15728880, OverlayTexture.NO_OVERLAY
 			);
 
-			matrixStack.popPose();
+			poseStack.popPose();
 		}
 
 		return true;
@@ -140,7 +140,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 	}
 
 	private static void assertTerrainRenderContext(LevelTerrainRenderContext context) {
-		assertNotNull(context.sectionsToRender(), "sectionRenderState is null");
+		assertNotNull(context.sectionsToRender(), "sectionsToRender is null");
 	}
 
 	private static void assertAbstractRenderContext(AbstractLevelRenderContext context) {

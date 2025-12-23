@@ -26,12 +26,12 @@ import net.minecraft.server.packs.repository.PackSource;
  */
 public interface FabricResource {
 	/**
-	 * Gets the resource pack source of this resource.
+	 * Gets the pack source of this resource.
 	 * The source is used to separate vanilla/mod resources from user resources in Fabric API.
 	 *
 	 * <p>Custom {@link net.minecraft.server.packs.resources.Resource} implementations should override this method.
 	 *
-	 * @return the resource pack source
+	 * @return the pack source
 	 */
 	default PackSource getFabricPackSource() {
 		LoggerFactory.getLogger(FabricResource.class).error("Unknown Resource implementation {}, returning DEFAULT as the source", this.getClass().getName());

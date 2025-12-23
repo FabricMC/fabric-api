@@ -83,9 +83,9 @@ public final class VanillaHudElements {
 	 */
 	public static final Identifier SPECTATOR_TOOLTIP = Identifier.withDefaultNamespace("spectator_tooltip");
 	/**
-	 * The identifier for the vanilla status effects element.
+	 * The identifier for the vanilla mob effects element.
 	 */
-	public static final Identifier STATUS_EFFECTS = Identifier.withDefaultNamespace("status_effects");
+	public static final Identifier MOB_EFFECTS = Identifier.withDefaultNamespace("mob_effects");
 	/**
 	 * The identifier for the vanilla boss bar element.
 	 */

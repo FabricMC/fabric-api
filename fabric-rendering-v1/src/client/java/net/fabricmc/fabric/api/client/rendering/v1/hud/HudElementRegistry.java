@@ -54,15 +54,15 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
  *     </tr>
  *     <tr>
  *         <td>After {@link VanillaHudElements#BOSS_BAR BOSS_BAR}</td>
- *         <td>Render after most main hud layers like hotbar, spectator hud, status bars, experience bar, status effects overlays, and boss bar and before the sleep overlay</td>
+ *         <td>Render after most main hud layers like hotbar, spectator GUI, status bars, experience bar, mob effects overlays, and boss bar and before the sleep overlay</td>
  *     </tr>
  *     <tr>
  *         <td>Before {@link VanillaHudElements#DEMO_TIMER DEMO_TIMER}</td>
- *         <td>Render after sleep overlay and before the demo timer, debug HUD, scoreboard, overlay message (action bar), and title and subtitle</td>
+ *         <td>Render after sleep overlay and before the demo timer, debug overlay, scoreboard, overlay message (action bar), and title and subtitle</td>
  *     </tr>
  *     <tr>
  *         <td>Before {@link VanillaHudElements#CHAT CHAT}</td>
- *         <td>Render after the debug HUD, scoreboard, overlay message (action bar), and title and subtitle and before {@link net.minecraft.client.gui.components.ChatComponent ChatHud}, player list, and sound subtitles</td>
+ *         <td>Render after the debug overlay, scoreboard, overlay message (action bar), and title and subtitle and before {@linkplain net.minecraft.client.gui.components.ChatComponent chat hud}, player list, and sound subtitles</td>
  *     </tr>
  *     <tr>
  *         <td>After {@link VanillaHudElements#SUBTITLES SUBTITLES}</td>

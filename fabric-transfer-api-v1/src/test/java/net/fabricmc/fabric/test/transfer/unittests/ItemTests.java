@@ -67,7 +67,7 @@ class ItemTests extends AbstractTransferApiTest {
 	}
 
 	@Test
-	public void testStackReference() {
+	public void testSlotAccess() {
 		// Ensure that Inventory wrappers will try to mutate the backing stack as much as possible.
 		// In many cases, MC code captures a reference to the ItemStack so we want to edit that stack directly
 		// and not a copy whenever we can. Obviously this can't be perfect, but we try to cover as many cases as possible.
@@ -108,7 +108,7 @@ class ItemTests extends AbstractTransferApiTest {
 	@Test
 	public void testInventoryWrappers() {
 		ItemVariant emptyBucket = ItemVariant.of(Items.BUCKET);
-		TestSidedInventory testInventory = new TestSidedInventory();
+		TestWorldlyContainer testInventory = new TestWorldlyContainer();
 		checkRedstoneSignal(testInventory);
 
 		// Create a few wrappers.
@@ -149,8 +149,8 @@ class ItemTests extends AbstractTransferApiTest {
 
 		// Check that we return sensible results if amount stored > capacity
 		ItemStack oversizedStack = new ItemStack(Items.DIAMOND_PICKAXE, 2);
-		SimpleContainer simpleInventory = new SimpleContainer(oversizedStack);
-		ContainerStorage wrapper = ContainerStorage.of(simpleInventory, null);
+		SimpleContainer simpleContainer = new SimpleContainer(oversizedStack);
+		ContainerStorage wrapper = ContainerStorage.of(simpleContainer, null);
 
 		try (Transaction transaction = Transaction.openOuter()) {
 			assertEquals(0L, wrapper.insert(ItemVariant.of(oversizedStack), 10, transaction));
@@ -159,7 +159,7 @@ class ItemTests extends AbstractTransferApiTest {
 	}
 
 	@Test
-	void testPacketCodec() {
+	void testStreamCodec() {
 		ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
 		stack.set(DataComponents.CUSTOM_NAME, Component.literal("Custom name"));
 
@@ -179,10 +179,10 @@ class ItemTests extends AbstractTransferApiTest {
 		return variant.matches(stack) && stack.getCount() == count;
 	}
 
-	private static class TestSidedInventory extends SimpleContainer implements WorldlyContainer {
+	private static class TestWorldlyContainer extends SimpleContainer implements WorldlyContainer {
 		private static final int[] SLOTS = IntStream.range(0, 3).toArray();
 
-		TestSidedInventory() {
+		TestWorldlyContainer() {
 			super(SLOTS.length);
 		}
 
@@ -277,11 +277,11 @@ class ItemTests extends AbstractTransferApiTest {
 	}
 
 	/**
-	 * Ensure that SimpleInventory only calls setChanged at the end of a successful transaction.
+	 * Ensure that SimpleContainer only calls setChanged at the end of a successful transaction.
 	 */
 	@Test
-	public void testSimpleInventoryUpdates() {
-		var simpleInventory = new SimpleContainer(2) {
+	public void testSimpleContainerUpdates() {
+		var simpleContainer = new SimpleContainer(2) {
 			boolean throwOnSetChanged = true;
 			boolean setChangedCalled = false;
 
@@ -294,7 +294,7 @@ class ItemTests extends AbstractTransferApiTest {
 				setChangedCalled = true;
 			}
 		};
-		ContainerStorage wrapper = ContainerStorage.of(simpleInventory, null);
+		ContainerStorage wrapper = ContainerStorage.of(simpleContainer, null);
 		ItemVariant diamond = ItemVariant.of(Items.DIAMOND);
 
 		// Simulation should not trigger notifications.
@@ -306,11 +306,11 @@ class ItemTests extends AbstractTransferApiTest {
 		try (Transaction tx = Transaction.openOuter()) {
 			wrapper.insert(diamond, 1000, tx);
 
-			simpleInventory.throwOnSetChanged = false;
+			simpleContainer.throwOnSetChanged = false;
 			tx.commit();
 		}
 
-		if (!simpleInventory.setChangedCalled) {
+		if (!simpleContainer.setChangedCalled) {
 			throw new AssertionError("setChanged should have been called when committing.");
 		}
 	}

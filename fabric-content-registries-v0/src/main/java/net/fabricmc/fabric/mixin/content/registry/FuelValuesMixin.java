@@ -19,6 +19,9 @@ package net.fabricmc.fabric.mixin.content.registry;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+
+import net.fabricmc.fabric.api.registry.FuelValueEvents;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -28,7 +31,6 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.FuelValues;
 
-import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryEventsContextImpl;
 
 /**
@@ -52,10 +54,10 @@ public abstract class FuelValuesMixin {
 	private static FuelValues.Builder build(FuelValues.Builder builder, TagKey<Item> tag, Operation<FuelValues.Builder> operation, @Local(argsOnly = true) HolderLookup.Provider registries, @Local(argsOnly = true) FeatureFlagSet features, @Local(argsOnly = true) int baseSmeltTime) {
 		final var context = new FuelRegistryEventsContextImpl(registries, features, baseSmeltTime);
 
-		FuelRegistryEvents.BUILD.invoker().build(builder, context);
+		FuelValueEvents.BUILD.invoker().build(builder, context);
 
 		operation.call(builder, tag);
-		FuelRegistryEvents.EXCLUSIONS.invoker().buildExclusions(builder, context);
+		FuelValueEvents.EXCLUSIONS.invoker().buildExclusions(builder, context);
 
 		return builder;
 	}

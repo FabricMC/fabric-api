@@ -22,6 +22,9 @@ import java.util.function.Consumer;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.netty.channel.ChannelHandlerContext;
+
+import net.fabricmc.fabric.impl.networking.FabricCustomPayloadStreamCodec;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,7 +38,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-import net.fabricmc.fabric.impl.networking.FabricCustomPayloadPacketCodec;
 import net.fabricmc.fabric.impl.networking.GenericPayloadAccessor;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.fabricmc.fabric.impl.networking.splitter.FabricPacketSplitter;
@@ -56,9 +58,9 @@ public class ServerboundCustomPayloadPacketMixin implements SplittablePacket, Ge
 	)
 	private static StreamCodec<FriendlyByteBuf, CustomPacketPayload> wrapCodec(CustomPacketPayload.FallbackProvider<FriendlyByteBuf> unknownCodecFactory, List<CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, ?>> types, Operation<StreamCodec<FriendlyByteBuf, CustomPacketPayload>> original) {
 		StreamCodec<FriendlyByteBuf, CustomPacketPayload> codec = original.call(unknownCodecFactory, types);
-		FabricCustomPayloadPacketCodec<FriendlyByteBuf> fabricCodec = (FabricCustomPayloadPacketCodec<FriendlyByteBuf>) codec;
-		fabricCodec.fabric_setPacketCodecProvider((friendlyByteBuf, identifier) -> {
-			// CustomPayloadC2SPacket does not have a separate codec for play/configuration. We know if the packetByteBuf is a PacketByteBuf we are in the play phase.
+		FabricCustomPayloadStreamCodec<FriendlyByteBuf> fabricCodec = (FabricCustomPayloadStreamCodec<FriendlyByteBuf>) codec;
+		fabricCodec.fabric_setCustomPayloadTypeProvider((friendlyByteBuf, identifier) -> {
+			// ServerboundCustomPayloadPacket does not have a separate codec for play/configuration. We know if the friendlyByteBuf is a FriendlyByteBuf we are in the play phase.
 			if (friendlyByteBuf instanceof RegistryFriendlyByteBuf) {
 				return (CustomPacketPayload.TypeAndCodec<FriendlyByteBuf, ? extends CustomPacketPayload>) (Object) PayloadTypeRegistryImpl.SERVERBOUND_PLAY.get(identifier);
 			}

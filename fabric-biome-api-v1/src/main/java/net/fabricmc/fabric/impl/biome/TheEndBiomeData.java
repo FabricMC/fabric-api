@@ -123,9 +123,9 @@ public final class TheEndBiomeData {
 			this.endBarrensMap = resolveOverrides(biomeRegistry, END_BARRENS_MAP, Biomes.END_BARRENS);
 		}
 
-		// Resolves all RegistryKey instances to RegistryEntries
+		// Resolves all ResourceKey instances to Holders
 		private @Nullable Map<Holder<Biome>, WeightedPicker<Holder<Biome>>> resolveOverrides(HolderGetter<Biome> biomeRegistry, Map<ResourceKey<Biome>, WeightedPicker<ResourceKey<Biome>>> overrides, ResourceKey<Biome> vanillaKey) {
-			Map<Holder<Biome>, WeightedPicker<Holder<Biome>>> result = new Object2ObjectOpenCustomHashMap<>(overrides.size(), RegistryKeyHashStrategy.INSTANCE);
+			Map<Holder<Biome>, WeightedPicker<Holder<Biome>>> result = new Object2ObjectOpenCustomHashMap<>(overrides.size(), ResourceKeyHashStrategy.INSTANCE);
 
 			for (Map.Entry<ResourceKey<Biome>, WeightedPicker<ResourceKey<Biome>>> entry : overrides.entrySet()) {
 				WeightedPicker<ResourceKey<Biome>> picker = entry.getValue();
@@ -170,7 +170,7 @@ public final class TheEndBiomeData {
 		}
 	}
 
-	enum RegistryKeyHashStrategy implements Hash.Strategy<Holder<?>> {
+	enum ResourceKeyHashStrategy implements Hash.Strategy<Holder<?>> {
 		INSTANCE;
 		@Override
 		public boolean equals(Holder<?> a, Holder<?> b) {

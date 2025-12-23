@@ -63,12 +63,12 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 	private static final int MAX_DATA_SIZE_IN_BYTES = ServerboundCustomPayloadPacketAccessor.getMaxPayloadSize() - MAX_PADDING_SIZE_IN_BYTES;
 
 	@SuppressWarnings("unchecked")
-	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, RegistryAccess dynamicRegistryManager) {
+	public static AttachmentChange create(AttachmentTargetInfo<?> targetInfo, AttachmentType<?> type, @Nullable Object value, RegistryAccess registryAccess) {
 		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).streamCodec();
-		Objects.requireNonNull(codec, "attachment packet codec cannot be null");
-		Objects.requireNonNull(dynamicRegistryManager, "dynamic registry manager cannot be null");
+		Objects.requireNonNull(codec, "attachment stream codec cannot be null");
+		Objects.requireNonNull(registryAccess, "registry access cannot be null");
 
-		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), dynamicRegistryManager);
+		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(FriendlyByteBufs.create(), registryAccess);
 
 		if (value != null) {
 			buf.writeBoolean(true);
@@ -91,7 +91,7 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 	}
 
 	public static void partitionAndSendPackets(List<AttachmentChange> changes, ServerPlayer player) {
-		Set<Identifier> supported = ((SupportedAttachmentsClientConnection) ((ServerCommonPacketListenerImplAccessor) player.connection).getConnection())
+		Set<Identifier> supported = ((SupportedAttachmentsConnection) ((ServerCommonPacketListenerImplAccessor) player.connection).getConnection())
 				.fabric_getSupportedAttachments();
 		// sort by size to better partition packets
 		changes.sort(Comparator.comparingInt(c -> c.data().length));
@@ -123,12 +123,12 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	public Object decodeValue(RegistryAccess dynamicRegistryManager) {
+	public Object decodeValue(RegistryAccess registryAccess) {
 		StreamCodec<? super RegistryFriendlyByteBuf, Object> codec = (StreamCodec<? super RegistryFriendlyByteBuf, Object>) ((AttachmentTypeImpl<?>) type).streamCodec();
 		Objects.requireNonNull(codec, "codec was null");
-		Objects.requireNonNull(dynamicRegistryManager, "dynamic registry manager cannot be null");
+		Objects.requireNonNull(registryAccess, "registry access cannot be null");
 
-		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.copiedBuffer(data), dynamicRegistryManager);
+		RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.copiedBuffer(data), registryAccess);
 
 		if (!buf.readBoolean()) {
 			return null;

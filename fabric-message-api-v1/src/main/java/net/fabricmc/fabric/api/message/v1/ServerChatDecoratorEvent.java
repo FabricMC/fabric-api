@@ -26,32 +26,32 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * A class for registering a {@link ChatDecorator}. Check the message decorator documentation
- * for how message decorators work. Unlike other events, this uses a functional interface that is
+ * A class for registering a {@link ChatDecorator}. Check the chat decorator documentation
+ * for how chat decorators work. Unlike other events, this uses a functional interface that is
  * provided by the vanilla game.
  *
  * <p>This event uses phases to provide better mod compatibilities between mods that add custom
- * content and styling. Message decorators with the styling phase will always apply after the ones
- * with the content phase. When registering the message decorator, it is recommended to choose one
+ * content and styling. Chat decorators with the styling phase will always apply after the ones
+ * with the content phase. When registering the chat decorator, it is recommended to choose one
  * of the phases from this interface and pass that to the {@link Event#register(Identifier, Object)}
- * function. If not given, the message decorator will run in the default phase, which is between
+ * function. If not given, the chat decorator will run in the default phase, which is between
  * the content phase and the styling phase.
  *
- * <p>Example of registering a content phase message decorator:
+ * <p>Example of registering a content phase chat decorator:
  *
  * <pre>{@code
  * ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
- *     // Add smiley face. Has to copy() to get a MutableText with siblings and styles.
+ *     // Add smiley face. Has to copy() to get a MutableComponent with siblings and styles.
  *     return message.copy().append(" :)");
  * });
  * }</pre>
  *
- * <p>Example of registering a styling phase message decorator:
+ * <p>Example of registering a styling phase chat decorator:
  *
  * <pre>{@code
  * ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.STYLING_PHASE, (sender, message) -> {
  *     // Apply orange color to messages sent by server operators
- *     if (sender != null && sender.server.getPlayerManager().isOperator(sender.getGameProfile())) {
+ *     if (sender != null && sender.server.getPlayerList().isOperator(sender.getGameProfile())) {
  *         return message.copy().styled(style -> style.withColor(0xFFA500));
  *     }
  *     return message;
@@ -63,12 +63,12 @@ public final class ServerChatDecoratorEvent {
 	}
 
 	/**
-	 * The content phase of the event, passed when registering a message decorator. Use this when
+	 * The content phase of the event, passed when registering a chat decorator. Use this when
 	 * the decorator modifies the text content of the message.
 	 */
 	public static final Identifier CONTENT_PHASE = Identifier.fromNamespaceAndPath("fabric", "content");
 	/**
-	 * The styling phase of the event, passed when registering a message decorator. Use this when
+	 * The styling phase of the event, passed when registering a chat decorator. Use this when
 	 * the decorator only modifies the styling of the message with the text intact.
 	 */
 	public static final Identifier STYLING_PHASE = Identifier.fromNamespaceAndPath("fabric", "styling");

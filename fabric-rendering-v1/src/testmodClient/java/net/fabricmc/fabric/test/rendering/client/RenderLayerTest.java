@@ -50,7 +50,7 @@ public final class RenderLayerTest implements ClientModInitializer {
 			}
 
 			if (entityRenderer instanceof AvatarRenderer) {
-				registrationHelper.register(new TestPlayerFeatureRenderer((AvatarRenderer) entityRenderer));
+				registrationHelper.register(new TestPlayerRenderLayer((AvatarRenderer) entityRenderer));
 			}
 		});
 
@@ -60,26 +60,26 @@ public final class RenderLayerTest implements ClientModInitializer {
 			LOGGER.info("Client is starting");
 
 			if (this.playerRegistrations != 2) {
-				throw new AssertionError(String.format("Expected 2 entity feature renderer registration events for \"minecraft:player\" but received %s registrations", this.playerRegistrations));
+				throw new AssertionError(String.format("Expected 2 entity render layer registration events for \"minecraft:player\" but received %s registrations", this.playerRegistrations));
 			}
 
-			LOGGER.info("Successfully called feature renderer registration events");
+			LOGGER.info("Successfully called render layer registration events");
 		});*/
 	}
 
-	private static class TestPlayerFeatureRenderer extends RenderLayer<AvatarRenderState, PlayerModel> {
-		TestPlayerFeatureRenderer(RenderLayerParent<AvatarRenderState, PlayerModel> featureRendererContext) {
-			super(featureRendererContext);
+	private static class TestPlayerRenderLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
+		TestPlayerRenderLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderLayerParent) {
+			super(renderLayerParent);
 		}
 
 		@Override
-		public void submit(PoseStack matrices, SubmitNodeCollector commandQueue, int light, AvatarRenderState state, float limbAngle, float limbDistance) {
+		public void submit(PoseStack matrices, SubmitNodeCollector nodeCollector, int light, AvatarRenderState state, float limbAngle, float limbDistance) {
 			matrices.pushPose();
 
 			// Translate to center above the player's head
 			matrices.translate(-0.5F, -state.boundingBoxHeight + 0.25F, -0.5F);
 			// Render a diamond block above the player's head
-			commandQueue.order(0).submitBlock(matrices, Blocks.DIAMOND_BLOCK.defaultBlockState(), light, OverlayTexture.NO_OVERLAY, 0);
+			nodeCollector.order(0).submitBlock(matrices, Blocks.DIAMOND_BLOCK.defaultBlockState(), light, OverlayTexture.NO_OVERLAY, 0);
 
 			matrices.popPose();
 		}

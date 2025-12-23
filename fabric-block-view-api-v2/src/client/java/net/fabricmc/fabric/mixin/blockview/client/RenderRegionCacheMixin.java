@@ -54,7 +54,7 @@ public abstract class RenderRegionCacheMixin {
 		// Hash maps in chunks should generally not be modified outside of client thread
 		// but does happen in practice, due to mods or inconsistent vanilla behaviors, causing
 		// CMEs when we iterate the map. (Vanilla does not iterate these maps when it builds
-		// the chunk cache and does not suffer from this problem.)
+		// the path navigation region and does not suffer from this problem.)
 		//
 		// We handle this simply by retrying until it works. Ugly but effective.
 		while (true) {
@@ -86,18 +86,18 @@ public abstract class RenderRegionCacheMixin {
 	}
 
 	@Unique
-	private static Long2ObjectOpenHashMap<Object> mapChunk(LevelChunk chunk, SectionPos chunkSectionPos, Long2ObjectOpenHashMap<Object> map) {
+	private static Long2ObjectOpenHashMap<Object> mapChunk(LevelChunk chunk, SectionPos sectionPos, Long2ObjectOpenHashMap<Object> map) {
 		// Skip the math below if the chunk contains no block entities
 		if (chunk.getBlockEntities().isEmpty()) {
 			return map;
 		}
 
-		final int xMin = SectionPos.sectionToBlockCoord(chunkSectionPos.x() - 1);
-		final int yMin = SectionPos.sectionToBlockCoord(chunkSectionPos.y() - 1);
-		final int zMin = SectionPos.sectionToBlockCoord(chunkSectionPos.z() - 1);
-		final int xMax = SectionPos.sectionToBlockCoord(chunkSectionPos.x() + 1);
-		final int yMax = SectionPos.sectionToBlockCoord(chunkSectionPos.y() + 1);
-		final int zMax = SectionPos.sectionToBlockCoord(chunkSectionPos.z() + 1);
+		final int xMin = SectionPos.sectionToBlockCoord(sectionPos.x() - 1);
+		final int yMin = SectionPos.sectionToBlockCoord(sectionPos.y() - 1);
+		final int zMin = SectionPos.sectionToBlockCoord(sectionPos.z() - 1);
+		final int xMax = SectionPos.sectionToBlockCoord(sectionPos.x() + 1);
+		final int yMax = SectionPos.sectionToBlockCoord(sectionPos.y() + 1);
+		final int zMax = SectionPos.sectionToBlockCoord(sectionPos.z() + 1);
 
 		for (Map.Entry<BlockPos, BlockEntity> entry : chunk.getBlockEntities().entrySet()) {
 			final BlockPos pos = entry.getKey();

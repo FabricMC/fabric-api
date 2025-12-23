@@ -109,11 +109,11 @@ public class PersistenceGametest implements FabricClientGameTest {
 				assertAttached(overworld, PERSISTENT, "level_data", "Level attachment did not persist");
 				assertAttached(originChunk, PERSISTENT, "chunk_data", "LevelChunk attachment did not persist");
 
-				ImposterProtoChunk wrapperProtoChunk = (ImposterProtoChunk) overworld.getChunkSource()
+				ImposterProtoChunk imposterProtoChunk = (ImposterProtoChunk) overworld.getChunkSource()
 						.getChunk(0, 0, ChunkStatus.EMPTY, true);
 				assertAttached(
-						wrapperProtoChunk, PERSISTENT, "chunk_data",
-						"Attachment is not accessible through WrapperProtoChunk"
+						imposterProtoChunk, PERSISTENT, "chunk_data",
+						"Attachment is not accessible through ImposterProtoChunk"
 				);
 
 				ChunkAccess farChunk = overworld.getChunkSource()

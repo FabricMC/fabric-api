@@ -26,10 +26,10 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.impl.networking.FabricRegistryByteBuf;
+import net.fabricmc.fabric.impl.networking.FabricRegistryFriendlyByteBuf;
 
 @Mixin(RegistryFriendlyByteBuf.class)
-public class RegistryFriendlyByteBufMixin implements FabricRegistryByteBuf {
+public class RegistryFriendlyByteBufMixin implements FabricRegistryFriendlyByteBuf {
 	@Unique
 	private Set<Identifier> sendableConfigurationChannels = null;
 

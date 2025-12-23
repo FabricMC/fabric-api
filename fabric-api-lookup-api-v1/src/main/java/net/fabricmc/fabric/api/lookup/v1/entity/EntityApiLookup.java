@@ -67,7 +67,7 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
  * MyApi.LEVELED_ENTITY.registerSelf(LEVELED_PIG_ENTITY_TYPE);
  *
  * // Otherwise, registerForType can be used.
- * MyApi.LEVELED_ENTITY.registerForType((zombieEntity, ignored) -> {
+ * MyApi.LEVELED_ENTITY.registerForType((zombie, ignored) -> {
  *     // Return a Leveled instance for your entity here, or null if there's none.
  *     // The context is Void in this case, so it can be ignored.
  * }, EntityType.ZOMBIE);

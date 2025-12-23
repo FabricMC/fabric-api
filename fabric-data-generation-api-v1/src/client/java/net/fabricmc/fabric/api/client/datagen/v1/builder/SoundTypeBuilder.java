@@ -92,7 +92,7 @@ public interface SoundTypeBuilder {
 	 *
 	 * @param sound base sound to add
 	 */
-	SoundTypeBuilder sound(EntryBuilder sound);
+	SoundTypeBuilder sound(RegistrationBuilder sound);
 
 	/**
 	 * Adds one or more sounds to the event.
@@ -102,19 +102,19 @@ public interface SoundTypeBuilder {
 	 *
 	 * <p>Calling this with the count value of {@code 3} is the equivalent of doing:
 	 *
-	 * <p>{@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("1"));}
+	 * <p>{@code builder.sound(RegistrationBuilder.ofFile(id.withSuffixedPath("1"));}
 	 * <br>
-	 * {@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("2"));}
+	 * {@code builder.sound(RegistrationBuilder.ofFile(id.withSuffixedPath("2"));}
 	 * <br>
-	 * {@code builder.sound(EntryBuilder.ofFile(id.withSuffixedPath("3"));}
+	 * {@code builder.sound(RegistrationBuilder.ofFile(id.withSuffixedPath("3"));}
 	 *
 	 * @param sound base sound to add
 	 * @param count number of instances of that sound to register
 	 */
-	SoundTypeBuilder sound(EntryBuilder sound, int count);
+	SoundTypeBuilder sound(RegistrationBuilder sound, int count);
 
 	/**
-	 * Represents the type of weighted sound entry.
+	 * Represents the type of weighted sound event registration.
 	 *
 	 * @see net.minecraft.client.resources.sounds.Sound.Type
 	 */
@@ -143,12 +143,12 @@ public interface SoundTypeBuilder {
 	}
 
 	/**
-	 * Builder for creating a weighted sound entry that can be played for a particular sound type.
+	 * Builder for creating a weighted sound event registration that can be played for a particular sound type.
 	 *
 	 * @see net.minecraft.client.resources.sounds.Sound
 	 */
 	@ApiStatus.NonExtendable
-	interface EntryBuilder {
+	interface RegistrationBuilder {
 		/**
 		 * The default sound volume.
 		 */
@@ -170,39 +170,39 @@ public interface SoundTypeBuilder {
 		int DEFAULT_ATTENUATION_DISTANCE = 16;
 
 		/**
-		 * Creates a builder for constructing a new sound entry.
+		 * Creates a builder for constructing a new sound event registration.
 		 *
 		 * @param id sound file or event
 		 */
-		static EntryBuilder create(RegistrationType type, Identifier id) {
-			return SoundTypeBuilderImpl.EntryBuilderImpl.create(type, id);
+		static RegistrationBuilder create(RegistrationType type, Identifier id) {
+			return SoundTypeBuilderImpl.RegistrationBuilderImpl.create(type, id);
 		}
 
 		/**
-		 * Creates a builder for constructing a new sound entry.
+		 * Creates a builder for constructing a new sound event registration.
 		 *
 		 * @param soundFile sound file excluding the {@code .ogg} extension
 		 */
-		static EntryBuilder ofFile(Identifier soundFile) {
-			return SoundTypeBuilderImpl.EntryBuilderImpl.ofFile(soundFile);
+		static RegistrationBuilder ofFile(Identifier soundFile) {
+			return SoundTypeBuilderImpl.RegistrationBuilderImpl.ofFile(soundFile);
 		}
 
 		/**
-		 * Creates a builder for constructing a new sound entry.
+		 * Creates a builder for constructing a new sound event registration.
 		 *
 		 * @param event the sound event
 		 */
-		static EntryBuilder ofEvent(SoundEvent event) {
-			return SoundTypeBuilderImpl.EntryBuilderImpl.ofEvent(event);
+		static RegistrationBuilder ofEvent(SoundEvent event) {
+			return SoundTypeBuilderImpl.RegistrationBuilderImpl.ofEvent(event);
 		}
 
 		/**
-		 * Creates a builder for constructing a new sound entry.
+		 * Creates a builder for constructing a new sound event registration.
 		 *
 		 * @param event the sound event
 		 */
-		static EntryBuilder ofEvent(Holder<SoundEvent> event) {
-			return SoundTypeBuilderImpl.EntryBuilderImpl.ofEvent(event);
+		static RegistrationBuilder ofEvent(Holder<SoundEvent> event) {
+			return SoundTypeBuilderImpl.RegistrationBuilderImpl.ofEvent(event);
 		}
 
 		/**
@@ -210,40 +210,40 @@ public interface SoundTypeBuilder {
 		 *
 		 * <p>Must be a value between {@code 0} and {@code 1} (inclusive).
 		 *
-		 * <p>The default volume is {@value EntryBuilder#DEFAULT_VOLUME}.
+		 * <p>The default volume is {@value RegistrationBuilder#DEFAULT_VOLUME}.
 		 *
 		 * @see net.minecraft.client.sounds.SoundEngine#VOLUME_MIN
 		 * @see net.minecraft.client.sounds.SoundEngine#VOLUME_MAX
 		 */
-		EntryBuilder volume(float volume);
+		RegistrationBuilder volume(float volume);
 
 		/**
 		 * Sets the pitch of the sound.
 		 *
 		 * <p>Must be a value between {@code 0.5} and {@code 2}.
 		 *
-		 * <p>The default pitch is {@link EntryBuilder#DEFAULT_PITCH} ({@code 1F}).
+		 * <p>The default pitch is {@link RegistrationBuilder#DEFAULT_PITCH} ({@code 1F}).
 		 *
 		 * @see net.minecraft.client.sounds.SoundEngine#PITCH_MIN
 		 * @see net.minecraft.client.sounds.SoundEngine#PITCH_MAX
 		 */
-		EntryBuilder pitch(float pitch);
+		RegistrationBuilder pitch(float pitch);
 
 		/**
 		 * Sets the attenuation block distance of the sound.
 		 *
-		 * <p>The default attenuation is {@value EntryBuilder#DEFAULT_ATTENUATION_DISTANCE} blocks. Setting it to
+		 * <p>The default attenuation is {@value RegistrationBuilder#DEFAULT_ATTENUATION_DISTANCE} blocks. Setting it to
 		 * higher will cause the sound to be heard from greater distances.
 		 */
-		EntryBuilder attenuationDistance(int attenuationDistance);
+		RegistrationBuilder attenuationDistance(int attenuationDistance);
 
 		/**
 		 * Sets the weight or "chance" that this sound has of playing when
 		 * its parent sound event is called upon.
 		 *
-		 * <p>The default weight is {@value EntryBuilder#DEFAULT_WEIGHT}.
+		 * <p>The default weight is {@value RegistrationBuilder#DEFAULT_WEIGHT}.
 		 */
-		EntryBuilder weight(int weight);
+		RegistrationBuilder weight(int weight);
 
 		/**
 		 * Configures the sound to be streamed.
@@ -252,7 +252,7 @@ public interface SoundTypeBuilder {
 		 *
 		 * <p>The default value is {@code false}.
 		 */
-		EntryBuilder stream(boolean stream);
+		RegistrationBuilder stream(boolean stream);
 
 		/**
 		 * Configures whether the sound must be preloaded by the game.
@@ -262,6 +262,6 @@ public interface SoundTypeBuilder {
 		 *
 		 * <p>The default value is {@code false}.
 		 */
-		EntryBuilder preload(boolean preload);
+		RegistrationBuilder preload(boolean preload);
 	}
 }

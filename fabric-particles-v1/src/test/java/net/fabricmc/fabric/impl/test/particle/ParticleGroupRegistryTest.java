@@ -52,7 +52,7 @@ public class ParticleGroupRegistryTest {
 		var registry = new ParticleGroupRegistryImpl(sheets);
 
 		var customSheet = new ParticleRenderType("mymod:custom");
-		registry.register(customSheet, particleManager -> null);
+		registry.register(customSheet, particleEngine -> null);
 		registry.registerOrdering(getId(customSheet), getId(ITEM_PICKUP));
 
 		assertSame(customSheet, sheets.getFirst()); // TODO is this expected behavior?
@@ -68,7 +68,7 @@ public class ParticleGroupRegistryTest {
 		var registry = new ParticleGroupRegistryImpl(sheets);
 
 		var customSheet = new ParticleRenderType("mymod:custom");
-		registry.register(customSheet, particleManager -> null);
+		registry.register(customSheet, particleEngine -> null);
 		registry.registerOrdering(getId(ITEM_PICKUP), getId(customSheet));
 
 		assertSame(SINGLE_QUADS, sheets.getFirst());

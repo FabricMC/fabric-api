@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.registry.sync.client;
 
+import net.fabricmc.fabric.impl.registry.sync.trackers.IdMapperTracker;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,8 +30,6 @@ import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.core.IdMapper;
 import net.minecraft.core.registries.BuiltInRegistries;
 
-import net.fabricmc.fabric.impl.registry.sync.trackers.IdListTracker;
-
 @Mixin(BlockColors.class)
 public class BlockColorsMixin {
 	@Final
@@ -38,6 +38,6 @@ public class BlockColorsMixin {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void create(CallbackInfo info) {
-		IdListTracker.register(BuiltInRegistries.BLOCK, "BlockColors.providers", blockColors);
+		IdMapperTracker.register(BuiltInRegistries.BLOCK, "BlockColors.providers", blockColors);
 	}
 }

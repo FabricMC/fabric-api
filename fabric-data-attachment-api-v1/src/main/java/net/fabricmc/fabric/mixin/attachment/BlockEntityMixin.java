@@ -98,7 +98,7 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public RegistryAccess fabric_getDynamicRegistryManager() {
+	public RegistryAccess fabric_getRegistryAccess() {
 		return this.level.registryAccess();
 	}
 }

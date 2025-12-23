@@ -36,7 +36,7 @@ abstract class BreezeMixin extends Monster {
 	}
 
 	@ModifyExpressionValue(method = {"emitJumpTrailParticles", "emitGroundParticles"}, at = @At(value = "NEW", target = "(Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/core/particles/BlockParticleOption;"))
-	private BlockParticleOption modifyBlockStateParticleEffect(BlockParticleOption original) {
+	private BlockParticleOption modifyBlockStateParticleOption(BlockParticleOption original) {
 		BlockPos blockPos = !getInBlockState().isAir() ? blockPosition() : getOnPos();
 		((BlockParticleOptionExtension) original).fabric_setBlockPos(blockPos);
 		return original;

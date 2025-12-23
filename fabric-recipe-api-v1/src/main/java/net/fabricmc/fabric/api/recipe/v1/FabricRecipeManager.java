@@ -16,17 +16,36 @@
 
 package net.fabricmc.fabric.api.recipe.v1;
 
-import net.minecraft.world.item.crafting.RecipeAccess;
+import java.util.Collection;
+import java.util.stream.Stream;
 
-import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
-import net.fabricmc.fabric.impl.recipe.sync.SynchronizedRecipesImpl;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
 /**
- * General-purpose Fabric-provided extensions for {@link RecipeAccess} class.
+ * General-purpose Fabric-provided extensions for {@link RecipeManager} class.
  */
-public interface FabricRecipeManager {
-	default SynchronizedRecipes getSynchronizedRecipes() {
-		// Fallback implementation in case someone implements RecipeManager interface on a custom class.
-		return SynchronizedRecipesImpl.EMPTY;
+public interface FabricRecipeManager extends FabricRecipeAccess {
+	/**
+	 * Creates a stream of all recipe entries of the given {@code type} that match the
+	 * given {@code input} and {@code level}.
+	 *
+	 * <p>If {@code input.isEmpty()} returns true, the returned stream will be always empty.
+	 *
+	 * @return the stream of matching recipes
+	 */
+	default <I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level level) {
+		throw new AssertionError("Implemented in Mixin");
+	}
+
+	/**
+	 * @return the collection of recipe entries of given type
+	 */
+	default <I extends RecipeInput, T extends Recipe<I>> Collection<RecipeHolder<T>> getAllOfType(RecipeType<T> type) {
+		throw new AssertionError("Implemented in Mixin");
 	}
 }

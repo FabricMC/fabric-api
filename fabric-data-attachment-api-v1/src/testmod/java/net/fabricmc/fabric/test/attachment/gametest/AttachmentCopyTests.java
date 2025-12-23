@@ -83,8 +83,8 @@ public class AttachmentCopyTests {
 		mob.setAttached(DUMMY, () -> 42);
 		mob.setAttached(COPY_ON_DEATH, () -> 42);
 
-		ZombieAccessor zombieEntityAccessor = (ZombieAccessor) mob;
-		zombieEntityAccessor.invokeConvertTo(context.getLevel(), EntityType.DROWNED);
+		ZombieAccessor zombieAccessor = (ZombieAccessor) mob;
+		zombieAccessor.invokeConvertTo(context.getLevel(), EntityType.DROWNED);
 		List<Drowned> drowned = context.getEntities(EntityType.DROWNED);
 
 		if (drowned.size() != 1) {

@@ -91,7 +91,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			this.fabric_markChanged(type);
 
 			if (this.fabric_shouldTryToSync() && type.isSynced()) {
-				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getDynamicRegistryManager());
+				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getRegistryAccess());
 				acknowledgeSyncedEntry(type, change);
 				this.fabric_syncChange(type, change);
 			}
@@ -162,8 +162,8 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 
 	@Unique
 	private void acknowledgeSynced(AttachmentType<?> type, Object value, HolderLookup.Provider wrapperLookup) {
-		RegistryAccess dynamicRegistryManager = (wrapperLookup instanceof RegistryAccess drm) ? drm : fabric_getDynamicRegistryManager();
-		acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, dynamicRegistryManager));
+		RegistryAccess registryAccess = (wrapperLookup instanceof RegistryAccess drm) ? drm : fabric_getRegistryAccess();
+		acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, registryAccess));
 	}
 
 	@Unique

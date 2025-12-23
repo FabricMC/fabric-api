@@ -28,7 +28,7 @@ import net.minecraft.network.protocol.login.ClientboundCustomQueryPacket;
 import net.minecraft.network.protocol.login.custom.CustomQueryPayload;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryRequestPayload;
+import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryRequestPayload;
 import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 
 @Mixin(ClientboundCustomQueryPacket.class)
@@ -39,6 +39,6 @@ public class ClientboundCustomQueryPacketMixin {
 
 	@Inject(method = "readPayload", at = @At("HEAD"), cancellable = true)
 	private static void readPayload(Identifier id, FriendlyByteBuf buf, CallbackInfoReturnable<CustomQueryPayload> cir) {
-		cir.setReturnValue(new PacketByteBufLoginQueryRequestPayload(id, PayloadHelper.read(buf, MAX_PAYLOAD_SIZE)));
+		cir.setReturnValue(new FriendlyByteBufLoginQueryRequestPayload(id, PayloadHelper.read(buf, MAX_PAYLOAD_SIZE)));
 	}
 }

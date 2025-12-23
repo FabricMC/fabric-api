@@ -12,7 +12,7 @@
     "CapeLayerMixin",
     "ClientLevelMixin",
     "DebugOptionsScreenEntryMixin",
-    "DebugOptionsScreenListWidgetMixin",
+    "DebugOptionsScreenOptionListMixin",
     "DrawAccessor",
     "GuiGraphicsMixin",
     "ModelLayersAccessor",

@@ -25,7 +25,7 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationMarker;
 
 /**
  * This Mixin allows us to keep backup copies of biomes for
- * {@link net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl} on a per-DynamicRegistryManager basis.
+ * {@link net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl} on a per-RegistryAccess basis.
  */
 @Mixin(RegistryAccess.ImmutableRegistryAccess.class)
 public class RegistryAccessImmutableRegistryAccessMixin implements BiomeModificationMarker {
