@@ -142,27 +142,27 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 		Object value = decodeValue(level.registryAccess());
 
 		if (target == null) {
-			final MutableComponent errorMessageText = Component.empty();
-			errorMessageText
+			final MutableComponent errorMessageComponent = Component.empty();
+			errorMessageComponent
 					.append(Component.translatable("fabric-data-attachment-api-v1.unknown-target.title").withStyle(ChatFormatting.RED))
 					.append(CommonComponents.NEW_LINE);
-			errorMessageText.append(CommonComponents.NEW_LINE);
+			errorMessageComponent.append(CommonComponents.NEW_LINE);
 
-			errorMessageText
+			errorMessageComponent
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.attachment-identifier",
 							Component.literal(String.valueOf(type.identifier())).withStyle(ChatFormatting.YELLOW))
 					)
 					.append(CommonComponents.NEW_LINE);
-			errorMessageText
+			errorMessageComponent
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.level",
 							Component.literal(String.valueOf(level.dimension().identifier())).withStyle(ChatFormatting.YELLOW)
 					))
 					.append(CommonComponents.NEW_LINE);
-			targetInfo.appendDebugInformation(errorMessageText);
+			targetInfo.appendDebugInformation(errorMessageComponent);
 
-			throw new AttachmentSyncException(errorMessageText);
+			throw new AttachmentSyncException(errorMessageComponent);
 		}
 
 		target.setAttached((AttachmentType<Object>) type, value);

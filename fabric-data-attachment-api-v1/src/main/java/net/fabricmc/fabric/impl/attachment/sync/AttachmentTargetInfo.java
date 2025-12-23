@@ -51,7 +51,7 @@ public sealed interface AttachmentTargetInfo<T> {
 	@Nullable
 	AttachmentTarget getTarget(Level level);
 
-	void appendDebugInformation(MutableComponent text);
+	void appendDebugInformation(MutableComponent component);
 
 	record Type<T>(byte id, StreamCodec<ByteBuf, ? extends AttachmentTargetInfo<T>> streamCodec) {
 		static Byte2ObjectMap<Type<?>> TYPES = new Byte2ObjectArrayMap<>();
@@ -86,14 +86,14 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(MutableComponent text) {
-			text
+		public void appendDebugInformation(MutableComponent component) {
+			component
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.target-type",
 							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.block-entity").withStyle(ChatFormatting.YELLOW)
 					))
 					.append(CommonComponents.NEW_LINE);
-			text
+			component
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.block-entity-position",
 							Component.literal(pos.toShortString()).withStyle(ChatFormatting.YELLOW)
@@ -119,14 +119,14 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(MutableComponent text) {
-			text
+		public void appendDebugInformation(MutableComponent component) {
+			component
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.target-type",
 							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.entity").withStyle(ChatFormatting.YELLOW)
 					))
 					.append(CommonComponents.NEW_LINE);
-			text
+			component
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.entity-network-id",
 							Component.literal(String.valueOf(networkId)).withStyle(ChatFormatting.YELLOW)
@@ -151,14 +151,14 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(MutableComponent text) {
-			text
+		public void appendDebugInformation(MutableComponent component) {
+			component
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.target-type",
 							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.chunk").withStyle(ChatFormatting.YELLOW)
 					))
 					.append(CommonComponents.NEW_LINE);
-			text
+			component
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.chunk-position",
 							Component.literal(pos.x + ", " + pos.z).withStyle(ChatFormatting.YELLOW)
@@ -185,8 +185,8 @@ public sealed interface AttachmentTargetInfo<T> {
 		}
 
 		@Override
-		public void appendDebugInformation(MutableComponent text) {
-			text
+		public void appendDebugInformation(MutableComponent component) {
+			component
 					.append(Component.translatable(
 							"fabric-data-attachment-api-v1.unknown-target.target-type",
 							Component.translatable("fabric-data-attachment-api-v1.unknown-target.target-type.level").withStyle(ChatFormatting.YELLOW)

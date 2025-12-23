@@ -64,12 +64,12 @@ public final class ServerChatDecoratorEvent {
 
 	/**
 	 * The content phase of the event, passed when registering a chat decorator. Use this when
-	 * the decorator modifies the text content of the message.
+	 * the decorator modifies the component contents of the message.
 	 */
 	public static final Identifier CONTENT_PHASE = Identifier.fromNamespaceAndPath("fabric", "content");
 	/**
 	 * The styling phase of the event, passed when registering a chat decorator. Use this when
-	 * the decorator only modifies the styling of the message with the text intact.
+	 * the decorator only modifies the styling of the message with the component intact.
 	 */
 	public static final Identifier STYLING_PHASE = Identifier.fromNamespaceAndPath("fabric", "styling");
 

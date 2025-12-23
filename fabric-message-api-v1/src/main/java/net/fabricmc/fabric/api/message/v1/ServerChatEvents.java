@@ -145,7 +145,7 @@ public final class ServerChatEvents {
 		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 		 * and after triggering {@link #COMMAND_MESSAGE} event.
 		 *
-		 * @param message the broadcast message with chat decorators applied; use {@code message.getContent()} to get the text
+		 * @param message the broadcast message with chat decorators applied; use {@code message.decoratedContent()} to get the component
 		 * @param sender  the player that sent the message
 		 * @param bind the {@link ChatType.Bound}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
@@ -181,7 +181,7 @@ public final class ServerChatEvents {
 		 * {@link #IS_CHAT_ALLOWED_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
 		 * triggered after triggering {@link #COMMAND_MESSAGE}.
 		 *
-		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.getContent()} to get the text
+		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.decoratedContent()} to get the component
 		 * @param source  the command source that sent the message
 		 * @param bind the {@link ChatType.Bound}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
@@ -200,7 +200,7 @@ public final class ServerChatEvents {
 		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 		 * and after triggering {@link #COMMAND_MESSAGE} event.
 		 *
-		 * @param message the broadcast message with chat decorators applied; use {@code message.getContent()} to get the text
+		 * @param message the broadcast message with chat decorators applied; use {@code message.decoratedContent()} to get the component
 		 * @param sender  the player that sent the message
 		 * @param bind the {@link ChatType.Bound}
 		 */
@@ -232,7 +232,7 @@ public final class ServerChatEvents {
 		 * <p>If the command is executed by a player, {@link #IS_CHAT_ALLOWED_MESSAGE} and
 		 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
 		 *
-		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.getContent()} to get the text
+		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.decoratedContent()} to get the component
 		 * @param source  the command source that sent the message
 		 * @param bind the {@link ChatType.Bound}
 		 */

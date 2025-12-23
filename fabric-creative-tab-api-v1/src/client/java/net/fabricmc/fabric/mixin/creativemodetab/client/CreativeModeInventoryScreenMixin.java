@@ -45,8 +45,8 @@ import net.fabricmc.fabric.impl.creativemodetab.FabricCreativeModeTabImpl;
 
 @Mixin(CreativeModeInventoryScreen.class)
 public abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<ItemPickerMenu> implements FabricCreativeModeInventoryScreen {
-	public CreativeModeInventoryScreenMixin(ItemPickerMenu menu, Inventory playerInventory, Component text) {
-		super(menu, playerInventory, text);
+	public CreativeModeInventoryScreenMixin(ItemPickerMenu menu, Inventory playerInventory, Component component) {
+		super(menu, playerInventory, component);
 	}
 
 	@Shadow

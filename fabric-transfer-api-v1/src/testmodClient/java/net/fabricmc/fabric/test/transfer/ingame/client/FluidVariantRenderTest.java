@@ -64,13 +64,13 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 				}
 
 				List<Component> tooltip = FluidVariantRendering.getTooltip(variant);
-				Font textRenderer = Minecraft.getInstance().font;
+				Font font = Minecraft.getInstance().font;
 
 				renderY += 2;
 
 				for (Component line : tooltip) {
 					renderY += 10;
-					graphics.renderTooltip(textRenderer, List.of(ClientTooltipComponent.create(line.getVisualOrderText())), -8, renderY, DefaultTooltipPositioner.INSTANCE, null);
+					graphics.renderTooltip(font, List.of(ClientTooltipComponent.create(line.getVisualOrderText())), -8, renderY, DefaultTooltipPositioner.INSTANCE, null);
 				}
 			}
 		});

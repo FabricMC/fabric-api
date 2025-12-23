@@ -72,13 +72,13 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 			ItemStack stack,
 			Item.TooltipContext context,
 			TooltipDisplay displayComponent,
-			Consumer<Component> textConsumer,
+			Consumer<Component> componentConsumer,
 			TooltipFlag type
 	) {
 		Set<DataComponentType<?>> cycleDetector = new HashSet<>();
 
 		for (DataComponentType<? extends TooltipProvider> componentType : first) {
-			appendCustomComponentTooltip(stack, componentType, context, displayComponent, textConsumer, type, cycleDetector);
+			appendCustomComponentTooltip(stack, componentType, context, displayComponent, componentConsumer, type, cycleDetector);
 		}
 	}
 
@@ -86,13 +86,13 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 			ItemStack stack,
 			Item.TooltipContext context,
 			TooltipDisplay displayComponent,
-			Consumer<Component> textConsumer,
+			Consumer<Component> componentConsumer,
 			TooltipFlag type
 	) {
 		Set<DataComponentType<?>> cycleDetector = new HashSet<>();
 
 		for (DataComponentType<? extends TooltipProvider> componentType : last) {
-			appendCustomComponentTooltip(stack, componentType, context, displayComponent, textConsumer, type, cycleDetector);
+			appendCustomComponentTooltip(stack, componentType, context, displayComponent, componentConsumer, type, cycleDetector);
 		}
 	}
 
@@ -101,7 +101,7 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 			DataComponentType<?> componentType,
 			Item.TooltipContext context,
 			TooltipDisplay displayComponent,
-			Consumer<Component> textConsumer,
+			Consumer<Component> componentConsumer,
 			TooltipFlag type,
 			Set<DataComponentType<?>> cycleDetector
 	) {
@@ -109,7 +109,7 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 
 		if (befores != null) {
 			for (DataComponentType<? extends TooltipProvider> beforeComponentType : befores) {
-				appendCustomComponentTooltip(stack, beforeComponentType, context, displayComponent, textConsumer, type, cycleDetector);
+				appendCustomComponentTooltip(stack, beforeComponentType, context, displayComponent, componentConsumer, type, cycleDetector);
 			}
 		}
 	}
@@ -119,7 +119,7 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 			DataComponentType<?> componentType,
 			Item.TooltipContext context,
 			TooltipDisplay displayComponent,
-			Consumer<Component> textConsumer,
+			Consumer<Component> componentConsumer,
 			TooltipFlag type,
 			Set<DataComponentType<?>> cycleDetector
 	) {
@@ -127,7 +127,7 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 
 		if (afters != null) {
 			for (DataComponentType<? extends TooltipProvider> afterComponentType : afters) {
-				appendCustomComponentTooltip(stack, afterComponentType, context, displayComponent, textConsumer, type, cycleDetector);
+				appendCustomComponentTooltip(stack, afterComponentType, context, displayComponent, componentConsumer, type, cycleDetector);
 			}
 		}
 	}
@@ -137,7 +137,7 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 			DataComponentType<? extends TooltipProvider> componentType,
 			Item.TooltipContext context,
 			TooltipDisplay displayComponent,
-			Consumer<Component> textConsumer,
+			Consumer<Component> componentConsumer,
 			TooltipFlag type,
 			Set<DataComponentType<?>> cycleDetector
 	) {
@@ -145,9 +145,9 @@ public final class ItemComponentTooltipProviderRegistryImpl {
 			return;
 		}
 
-		onBefore(stack, componentType, context, displayComponent, textConsumer, type, cycleDetector);
-		stack.addToTooltip(componentType, context, displayComponent, textConsumer, type);
-		onAfter(stack, componentType, context, displayComponent, textConsumer, type, cycleDetector);
+		onBefore(stack, componentType, context, displayComponent, componentConsumer, type, cycleDetector);
+		stack.addToTooltip(componentType, context, displayComponent, componentConsumer, type);
+		onAfter(stack, componentType, context, displayComponent, componentConsumer, type, cycleDetector);
 
 		cycleDetector.remove(componentType);
 	}

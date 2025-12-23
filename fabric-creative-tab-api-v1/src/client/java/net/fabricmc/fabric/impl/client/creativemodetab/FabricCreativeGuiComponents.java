@@ -50,7 +50,7 @@ public class FabricCreativeGuiComponents {
 		final Type type;
 
 		public CreativeModeTabButton(int x, int y, Type type, CreativeModeInventoryScreen screen) {
-			super(x, y, 10, 12, type.text, (bw) -> type.clickConsumer.accept(screen), Button.DEFAULT_NARRATION);
+			super(x, y, 10, 12, type.component, (bw) -> type.clickConsumer.accept(screen), Button.DEFAULT_NARRATION);
 			this.type = type;
 			this.screen = screen;
 		}
@@ -78,12 +78,12 @@ public class FabricCreativeGuiComponents {
 		NEXT(Component.literal(">"), CreativeModeInventoryScreen::switchToNextPage, screen -> screen.getCurrentPage() + 1 < screen.getPageCount()),
 		PREVIOUS(Component.literal("<"), CreativeModeInventoryScreen::switchToPreviousPage, screen -> screen.getCurrentPage() != 0);
 
-		final Component text;
+		final Component component;
 		final Consumer<CreativeModeInventoryScreen> clickConsumer;
 		final Predicate<CreativeModeInventoryScreen> isEnabled;
 
-		Type(Component text, Consumer<CreativeModeInventoryScreen> clickConsumer, Predicate<CreativeModeInventoryScreen> isEnabled) {
-			this.text = text;
+		Type(Component component, Consumer<CreativeModeInventoryScreen> clickConsumer, Predicate<CreativeModeInventoryScreen> isEnabled) {
+			this.component = component;
 			this.clickConsumer = clickConsumer;
 			this.isEnabled = isEnabled;
 		}

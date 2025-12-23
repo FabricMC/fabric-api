@@ -33,21 +33,21 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 public class DefaultItemComponentGameTest {
 	@GameTest
 	public void modify(GameTestHelper context) {
-		Consumer<Component> checkText = text -> {
-			if (text == null) {
+		Consumer<Component> checkComponent = component -> {
+			if (component == null) {
 				throw context.assertionException("Item name component not found on gold ingot");
 			}
 
-			if (!"Fool's Gold".equals(text.getString())) {
+			if (!"Fool's Gold".equals(component.getString())) {
 				throw context.assertionException("Item name component on gold ingot is not set");
 			}
 		};
 
-		Component text = Items.GOLD_INGOT.components().get(DataComponents.ITEM_NAME);
-		checkText.accept(text);
+		Component component = Items.GOLD_INGOT.components().get(DataComponents.ITEM_NAME);
+		checkComponent.accept(component);
 
-		text = new ItemStack(Items.GOLD_INGOT).getComponents().get(DataComponents.ITEM_NAME);
-		checkText.accept(text);
+		component = new ItemStack(Items.GOLD_INGOT).getComponents().get(DataComponents.ITEM_NAME);
+		checkComponent.accept(component);
 
 		boolean isBeefFood = Items.BEEF.components().has(DataComponents.FOOD);
 

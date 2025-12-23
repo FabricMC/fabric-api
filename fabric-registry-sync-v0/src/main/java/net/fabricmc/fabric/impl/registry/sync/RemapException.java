@@ -22,20 +22,20 @@ import net.minecraft.network.chat.Component;
 
 public class RemapException extends Exception {
 	@Nullable
-	private final Component text;
+	private final Component component;
 
 	public RemapException(String message) {
 		super(message);
-		this.text = null;
+		this.component = null;
 	}
 
-	public RemapException(Component text) {
-		super(text.getString());
-		this.text = text;
+	public RemapException(Component component) {
+		super(component.getString());
+		this.component = component;
 	}
 
 	@Nullable
-	public Component getText() {
-		return text;
+	public Component getComponent() {
+		return component;
 	}
 }

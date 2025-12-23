@@ -33,10 +33,10 @@ public class PositionedScreen extends AbstractContainerScreen<AbstractContainerM
 	private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/gui/container/dispenser.png");
 
 	public PositionedScreen(AbstractContainerMenu menu, Inventory inventory, Component title) {
-		super(menu, inventory, getPositionText(menu).orElse(title));
+		super(menu, inventory, getPositionComponent(menu).orElse(title));
 	}
 
-	private static Optional<Component> getPositionText(AbstractContainerMenu menu) {
+	private static Optional<Component> getPositionComponent(AbstractContainerMenu menu) {
 		if (menu instanceof PositionedMenu) {
 			BlockPos pos = ((PositionedMenu) menu).getPos();
 			return pos != null ? Optional.of(Component.literal("(" + pos.toShortString() + ")")) : Optional.empty();
