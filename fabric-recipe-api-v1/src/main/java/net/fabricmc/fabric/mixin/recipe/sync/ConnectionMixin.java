@@ -18,12 +18,13 @@ package net.fabricmc.fabric.mixin.recipe.sync;
 
 import java.util.Set;
 
-import net.fabricmc.fabric.impl.recipe.sync.SyncedSerializerAwareConnection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.network.Connection;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+
+import net.fabricmc.fabric.impl.recipe.sync.SyncedSerializerAwareConnection;
 
 @Mixin(Connection.class)
 public abstract class ConnectionMixin implements SyncedSerializerAwareConnection {

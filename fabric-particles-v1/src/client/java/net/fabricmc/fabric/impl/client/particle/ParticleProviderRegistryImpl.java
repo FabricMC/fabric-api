@@ -19,12 +19,13 @@ package net.fabricmc.fabric.impl.client.particle;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleResources;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+
+import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 
 public final class ParticleProviderRegistryImpl implements ParticleProviderRegistry {
 	public static final ParticleProviderRegistryImpl INSTANCE = new ParticleProviderRegistryImpl();

@@ -19,13 +19,13 @@ package net.fabricmc.fabric.mixin.tag;
 import java.util.Map;
 import java.util.Set;
 
-import net.fabricmc.fabric.impl.tag.TagAliasEnabledRegistryLookup;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.TagKey;
+
+import net.fabricmc.fabric.impl.tag.TagAliasEnabledRegistryLookup;
 
 /**
  * Adds tag alias support to {@code MappedRegistry$2}, which is the wrapper used

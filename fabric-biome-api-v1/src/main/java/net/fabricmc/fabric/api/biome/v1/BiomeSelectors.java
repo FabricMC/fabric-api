@@ -22,8 +22,6 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.fabricmc.fabric.impl.biome.modification.BuiltInResourceKeys;
-
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.random.Weighted;
@@ -32,6 +30,8 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.dimension.LevelStem;
+
+import net.fabricmc.fabric.impl.biome.modification.BuiltInResourceKeys;
 
 /**
  * Provides several convenient biome selectors that can be used with {@link BiomeModifications}.

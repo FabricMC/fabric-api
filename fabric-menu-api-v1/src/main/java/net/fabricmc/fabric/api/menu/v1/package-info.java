@@ -46,7 +46,7 @@
  * the cursor to the center of the screen. This is because the current screen gets closed before
  * opening the screen, resetting the cursor position. Since this behavior can be problematic,
  * this API provides a way to disable this. By overriding {@link
- * net.fabricmc.fabric.api.menu.v1.FabricMenuFactory#shouldCloseCurrentScreen()}
+ * net.fabricmc.fabric.api.menu.v1.FabricMenuProvider#shouldCloseCurrentScreen()}
  * on the menu factory to return {@code false} and passing that to the {@code
  * openMenu} method, it will stop closing the screen and instead "overwrites" it.
  */

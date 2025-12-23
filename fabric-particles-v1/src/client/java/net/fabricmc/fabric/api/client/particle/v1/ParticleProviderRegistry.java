@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.particle.v1;
 
-import net.fabricmc.fabric.impl.client.particle.ParticleProviderRegistryImpl;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.particle.ParticleProvider;
@@ -24,6 +23,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.fabricmc.fabric.impl.client.particle.ParticleProviderRegistryImpl;
 
 /**
  * Registry for adding particle providers on the client for

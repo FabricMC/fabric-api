@@ -51,8 +51,8 @@ import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 
 import net.fabricmc.fabric.impl.client.rendering.GuiRendererExtensions;
-import net.fabricmc.fabric.impl.client.rendering.PictureInPictureRendererRegistryImpl;
 import net.fabricmc.fabric.impl.client.rendering.PictureInPictureRendererPool;
+import net.fabricmc.fabric.impl.client.rendering.PictureInPictureRendererRegistryImpl;
 
 @Mixin(GuiRenderer.class)
 abstract class GuiRendererMixin implements GuiRendererExtensions {

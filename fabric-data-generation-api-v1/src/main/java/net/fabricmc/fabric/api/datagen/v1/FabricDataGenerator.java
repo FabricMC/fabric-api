@@ -20,8 +20,6 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.SharedConstants;
@@ -33,6 +31,7 @@ import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.loader.api.ModContainer;
 
 /**

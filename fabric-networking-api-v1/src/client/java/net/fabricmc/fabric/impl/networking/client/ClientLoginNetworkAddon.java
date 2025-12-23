@@ -21,11 +21,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import io.netty.channel.ChannelFutureListener;
-
-import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryRequestPayload;
-
-import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryResponse;
-
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -39,6 +34,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
+import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryRequestPayload;
+import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryResponse;
 import net.fabricmc.fabric.mixin.networking.client.accessor.ClientHandshakePacketListenerImplAccessor;
 
 public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginQueryRequestHandler> {

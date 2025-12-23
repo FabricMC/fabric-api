@@ -19,9 +19,6 @@ package net.fabricmc.fabric.mixin.content.registry;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-
-import net.fabricmc.fabric.api.registry.FuelValueEvents;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -31,6 +28,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.FuelValues;
 
+import net.fabricmc.fabric.api.registry.FuelValueEvents;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryEventsContextImpl;
 
 /**

@@ -21,7 +21,7 @@ package net.fabricmc.fabric.api.menu.v1;
  * Unlike {@link ExtendedMenuFactory}, this can be used by any menus,
  * and is implemented via interface injection.
  */
-public interface FabricMenuFactory {
+public interface FabricMenuProvider {
 	/**
 	 * {@return whether the server should send {@link
 	 * net.minecraft.network.protocol.game.ClientboundContainerClosePacket } when opening the screen}

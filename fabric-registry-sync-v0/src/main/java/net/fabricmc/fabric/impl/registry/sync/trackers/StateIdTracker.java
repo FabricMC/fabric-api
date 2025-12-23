@@ -23,9 +23,6 @@ import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
-
-import net.fabricmc.fabric.impl.registry.sync.RemovableIdMapper;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +32,7 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
+import net.fabricmc.fabric.impl.registry.sync.RemovableIdMapper;
 
 public final class StateIdTracker<T, S> implements RegistryIdRemapCallback<T>, RegistryEntryAddedCallback<T> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StateIdTracker.class);

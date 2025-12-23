@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.registry.sync.client;
 
-import net.fabricmc.fabric.impl.registry.sync.trackers.IdMapperTracker;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,6 +27,8 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.core.IdMapper;
 import net.minecraft.core.registries.BuiltInRegistries;
+
+import net.fabricmc.fabric.impl.registry.sync.trackers.IdMapperTracker;
 
 @Mixin(BlockColors.class)
 public class BlockColorsMixin {

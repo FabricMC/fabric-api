@@ -27,8 +27,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.TooltipProvider;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.ItemComponentTooltipProviderRegistry;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
+import net.fabricmc.fabric.api.item.v1.ItemComponentTooltipProviderRegistry;
 
 public class ComponentTooltipProviderTest implements ModInitializer {
 	@Override

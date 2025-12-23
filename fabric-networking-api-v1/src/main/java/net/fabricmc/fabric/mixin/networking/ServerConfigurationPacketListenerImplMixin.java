@@ -23,9 +23,6 @@ import java.util.function.Function;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.netty.buffer.ByteBuf;
-
-import net.fabricmc.fabric.impl.networking.FabricRegistryFriendlyByteBuf;
-
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,6 +42,7 @@ import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 
 import net.fabricmc.fabric.api.networking.v1.FabricServerConfigurationPacketListenerImpl;
+import net.fabricmc.fabric.impl.networking.FabricRegistryFriendlyByteBuf;
 import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
 import net.fabricmc.fabric.impl.networking.server.ServerConfigurationNetworkAddon;
 

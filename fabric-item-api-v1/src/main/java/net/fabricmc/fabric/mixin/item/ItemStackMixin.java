@@ -26,9 +26,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
-
-import net.fabricmc.fabric.impl.item.ItemComponentTooltipProviderRegistryImpl;
-
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -54,6 +51,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;
+import net.fabricmc.fabric.impl.item.ItemComponentTooltipProviderRegistryImpl;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 import net.fabricmc.fabric.impl.item.VanillaTooltipProviderOrder;
 

@@ -20,8 +20,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import net.fabricmc.fabric.api.client.creativemodetab.v1.FabricCreativeModeInventoryScreen;
-
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -41,6 +39,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 
+import net.fabricmc.fabric.api.client.creativemodetab.v1.FabricCreativeModeInventoryScreen;
 import net.fabricmc.fabric.impl.client.creativemodetab.FabricCreativeGuiComponents;
 import net.fabricmc.fabric.impl.creativemodetab.FabricCreativeModeTabImpl;
 

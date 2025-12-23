@@ -21,9 +21,6 @@ import java.util.Optional;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientStreamCodec;
-import net.fabricmc.fabric.impl.recipe.ingredient.OptionalCustomIngredientStreamCodec;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -43,6 +40,8 @@ import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.FabricIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
+import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientStreamCodec;
+import net.fabricmc.fabric.impl.recipe.ingredient.OptionalCustomIngredientStreamCodec;
 
 @Mixin(Ingredient.class)
 public class IngredientMixin implements FabricIngredient {

@@ -18,8 +18,6 @@ package net.fabricmc.fabric.mixin.content.registry;
 
 import java.util.List;
 
-import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,6 +32,8 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder;
 
 @Mixin(PotionBrewing.Builder.class)
 public abstract class PotionBrewingBuilderMixin implements FabricPotionBrewingBuilder {
