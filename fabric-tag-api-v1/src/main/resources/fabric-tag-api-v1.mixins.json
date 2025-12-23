@@ -7,8 +7,6 @@
     "MappedRegistry3Mixin",
     "MappedRegistryMixin",
     "ReloadableServerResourcesMixin",
-    "SimpleRegistry2Mixin",
-    "SimpleRegistry3Mixin",
     "SimpleRegistryTagLookup2Accessor",
     "TagLoaderMixin"
   ],
