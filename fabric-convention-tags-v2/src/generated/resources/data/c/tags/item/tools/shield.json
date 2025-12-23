@@ -1,9 +1,5 @@
 {
   "values": [
-    "minecraft:shield",
-    {
-      "id": "#c:tools/shields",
-      "required": false
-    }
+    "minecraft:shield"
   ]
 }

@@ -338,22 +338,6 @@ public final class ConventionalBlockTags {
 	 */
 	public static final TagKey<Block> ORES_IN_GROUND_STONE = register("ores_in_ground/stone");
 
-	/**
-	 * This tag is redundant. Please use {@link net.minecraft.tags.BlockTags#SHULKER_BOXES} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Block> SHULKER_BOXES = register("shulker_boxes");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalBlockTags#GLAZED_TERRACOTTAS} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Block> GLAZED_TERRACOTTA = register("glazed_terracotta");
-	/**
-	 * This tag was typoed. Please use {@link ConventionalBlockTags#CONCRETES} tag instead.
-	 */
-	@Deprecated
-	public static final TagKey<Block> CONCRETE = register("concrete");
-
 	private static TagKey<Block> register(String tagId) {
 		return TagRegistration.BLOCK_TAG.registerC(tagId);
 	}

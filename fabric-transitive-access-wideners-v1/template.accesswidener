@@ -128,4 +128,18 @@ transitive-accessible	method	net/minecraft/client/gui/components/debug/DebugScre
 # Render Types
 transitive-accessible	method	net/minecraft/client/renderer/rendertype/RenderType	create	(Ljava/lang/String;Lnet/minecraft/client/renderer/rendertype/RenderSetup;)Lnet/minecraft/client/renderer/rendertype/RenderType;
 
+# Armor defense map helper
+transitive-accessible	method	net/minecraft/world/item/equipment/ArmorMaterials makeDefense	(IIIII)Ljava/util/Map;
+
+# World generation helpers
+transitive-accessible   method  net/minecraft/data/worldgen/biome/OverworldBiomes baseBiome (FF)Lnet/minecraft/world/level/biome/Biome$BiomeBuilder;
+transitive-accessible   method  net/minecraft/data/worldgen/biome/OverworldBiomes globalOverworldGeneration (Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)V
+transitive-accessible   method  net/minecraft/data/worldgen/biome/OverworldBiomes baseJungle (Lnet/minecraft/core/HolderGetter;Lnet/minecraft/core/HolderGetter;FZZZ)Lnet/minecraft/world/level/biome/Biome$BiomeBuilder;
+transitive-accessible   method  net/minecraft/data/worldgen/biome/OverworldBiomes baseOcean ()Lnet/minecraft/world/level/biome/Biome$BiomeBuilder;
+transitive-accessible   method  net/minecraft/data/worldgen/biome/OverworldBiomes baseOceanGeneration (Lnet/minecraft/core/HolderGetter;Lnet/minecraft/core/HolderGetter;)Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;
+
+transitive-accessible   method  net/minecraft/data/worldgen/biome/EndBiomes baseEndBiome (Lnet/minecraft/world/level/biome/BiomeGenerationSettings$Builder;)Lnet/minecraft/world/level/biome/Biome;
+
+transitive-accessible   method  net/minecraft/data/worldgen/biome/NetherBiomes baseBiome ()Lnet/minecraft/world/level/biome/Biome$BiomeBuilder;
+
 ### Generated access wideners below
