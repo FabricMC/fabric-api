@@ -28,7 +28,7 @@ import net.minecraft.world.item.crafting.Recipe;
 @Mixin(SmithingTrimRecipeBuilder.class)
 abstract class SmithingTrimRecipeBuilderMixin {
 	@ModifyVariable(method = "save(Lnet/minecraft/data/recipes/RecipeOutput;Lnet/minecraft/resources/ResourceKey;)V", at = @At("HEAD"), argsOnly = true)
-	private ResourceKey<Recipe<?>> modifyRecipeKey(ResourceKey<Recipe<?>> recipeKey, RecipeOutput exporter) {
-		return ResourceKey.create(recipeKey.registryKey(), exporter.getRecipeIdentifier(recipeKey.identifier()));
+	private ResourceKey<Recipe<?>> modifyRecipeKey(ResourceKey<Recipe<?>> recipeKey, RecipeOutput output) {
+		return ResourceKey.create(recipeKey.registryKey(), output.getRecipeIdentifier(recipeKey.identifier()));
 	}
 }

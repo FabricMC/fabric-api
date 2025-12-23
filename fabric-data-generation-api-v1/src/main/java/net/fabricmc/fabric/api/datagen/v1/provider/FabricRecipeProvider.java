@@ -69,23 +69,23 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 	 * Implement this method and then use the range of methods in {@link RecipeProvider} or from one of the recipe json factories such as {@link ShapedRecipeBuilder} or {@link ShapelessRecipeBuilder}.
 	 */
 	@Override
-	protected abstract RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput exporter);
+	protected abstract RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output);
 
 	/**
 	 * Return a new exporter that applies the specified conditions to any recipe json provider it receives.
 	 */
-	protected RecipeOutput withConditions(RecipeOutput exporter, ResourceCondition... conditions) {
+	protected RecipeOutput withConditions(RecipeOutput output, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return new RecipeOutput() {
 			@Override
 			public void accept(ResourceKey<Recipe<?>> key, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder) {
 				FabricDataGenHelper.addConditions(recipe, conditions);
-				exporter.accept(key, recipe, advancementHolder);
+				output.accept(key, recipe, advancementHolder);
 			}
 
 			@Override
 			public Advancement.Builder advancement() {
-				return exporter.advancement();
+				return output.advancement();
 			}
 
 			@Override
@@ -94,17 +94,17 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 
 			@Override
 			public Identifier getRecipeIdentifier(Identifier recipeId) {
-				return exporter.getRecipeIdentifier(recipeId);
+				return output.getRecipeIdentifier(recipeId);
 			}
 		};
 	}
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput output) {
-		return registriesFuture.thenCompose((wrapperLookup -> {
+		return registriesFuture.thenCompose((registries -> {
 			Set<Identifier> generatedRecipes = Sets.newHashSet();
 			List<CompletableFuture<?>> list = new ArrayList<>();
-			RecipeProvider recipeProvider = createRecipeProvider(wrapperLookup, new RecipeOutput() {
+			RecipeProvider recipeProvider = createRecipeProvider(registries, new RecipeOutput() {
 				@Override
 				public void accept(ResourceKey<Recipe<?>> recipeKey, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
 					Identifier identifier = recipeKey.identifier();
@@ -113,7 +113,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 						throw new IllegalStateException("Duplicate recipe " + identifier);
 					}
 
-					RegistryOps<JsonElement> registryOps = wrapperLookup.createSerializationContext(JsonOps.INSTANCE);
+					RegistryOps<JsonElement> registryOps = registries.createSerializationContext(JsonOps.INSTANCE);
 					JsonObject recipeJson = Recipe.CODEC.encodeStart(registryOps, recipe).getOrThrow(IllegalStateException::new).getAsJsonObject();
 					ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(recipe);
 					FabricDataGenHelper.addConditions(recipeJson, conditions);

@@ -25,7 +25,7 @@ import net.minecraft.world.MenuProvider;
  *
  * @see ExtendedMenuType usage examples
  */
-public interface ExtendedMenuFactory<D> extends MenuProvider {
+public interface ExtendedMenuProvider<D> extends MenuProvider {
 	/**
 	 * Writes additional server -&gt; client screen opening data to the buffer.
 	 *

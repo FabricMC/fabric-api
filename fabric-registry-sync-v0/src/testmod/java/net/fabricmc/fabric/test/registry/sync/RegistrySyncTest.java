@@ -85,9 +85,9 @@ public class RegistrySyncTest implements ModInitializer {
 
 		final AtomicBoolean setupCalled = new AtomicBoolean(false);
 
-		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
+		DynamicRegistrySetupCallback.EVENT.register(dynamicRegistries -> {
 			setupCalled.set(true);
-			registryManager.registerEntryAdded(Registries.BIOME, (rawId, id, object) -> {
+			dynamicRegistries.registerEntryAdded(Registries.BIOME, (rawId, id, object) -> {
 				LOGGER.info("Biome added: {}", id);
 			});
 		});

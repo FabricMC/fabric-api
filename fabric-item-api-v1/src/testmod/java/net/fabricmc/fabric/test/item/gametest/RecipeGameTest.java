@@ -30,7 +30,7 @@ import net.fabricmc.fabric.test.item.CustomDamageTest;
 
 public class RecipeGameTest {
 	@GameTest
-	public void vanillaRemainderTest(GameTestHelper context) {
+	public void vanillaRemainderTest(GameTestHelper helper) {
 		CraftingInput inventory = CraftingInput.of(1, 2, List.of(
 				new ItemStack(Items.WATER_BUCKET),
 				new ItemStack(Items.DIAMOND)));
@@ -41,11 +41,11 @@ public class RecipeGameTest {
 				new ItemStack(Items.BUCKET),
 				ItemStack.EMPTY);
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void fabricRemainderTest(GameTestHelper context) {
+	public void fabricRemainderTest(GameTestHelper helper) {
 		CraftingInput inventory = CraftingInput.of(1, 4, List.of(
 				new ItemStack(CustomDamageTest.WEIRD_PICK),
 				withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 10),
@@ -60,7 +60,7 @@ public class RecipeGameTest {
 				ItemStack.EMPTY,
 				ItemStack.EMPTY);
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	private void assertStackList(NonNullList<ItemStack> stackList, String extraErrorInfo, ItemStack... stacks) {

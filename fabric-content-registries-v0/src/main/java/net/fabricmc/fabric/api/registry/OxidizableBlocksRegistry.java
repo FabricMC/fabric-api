@@ -51,9 +51,9 @@ public final class OxidizableBlocksRegistry {
 	/**
 	 * Registers a {@link WeatheringCopperBlocks} and its oxidizing and waxing variants.
 	 *
-	 * @param blockSet the {@code WeatheringCopperBlocks} to register
+	 * @param copperBlocks the {@code WeatheringCopperBlocks} to register
 	 */
-	public static void registerWeatheringCopperBlocks(WeatheringCopperBlocks blockSet) {
-		OxidizableBlocksRegistryImpl.registerCopperBlockSet(blockSet);
+	public static void registerWeatheringCopperBlocks(WeatheringCopperBlocks copperBlocks) {
+		OxidizableBlocksRegistryImpl.registerWeatheringCopperBlocks(copperBlocks);
 	}
 }

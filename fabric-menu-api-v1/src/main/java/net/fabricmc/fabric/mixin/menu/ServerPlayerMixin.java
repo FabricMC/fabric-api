@@ -39,7 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.impl.menu.Networking;
 
@@ -67,29 +67,29 @@ public abstract class ServerPlayerMixin extends Player {
 
 	@Inject(method = "openMenu(Lnet/minecraft/world/MenuProvider;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
 	private void fabric_storeOpenedMenu(MenuProvider factory, CallbackInfoReturnable<OptionalInt> info, @Local AbstractContainerMenu menu) {
-		if (factory instanceof ExtendedMenuFactory || (factory instanceof SimpleMenuProvider simpleFactory && simpleFactory.menuConstructor instanceof ExtendedMenuFactory)) {
+		if (factory instanceof ExtendedMenuProvider || (factory instanceof SimpleMenuProvider simpleFactory && simpleFactory.menuConstructor instanceof ExtendedMenuProvider)) {
 			// Set the menu, so the factory method can access it through the player.
 			containerMenu = menu;
 		} else if (menu.getType() instanceof ExtendedMenuType<?, ?>) {
 			Identifier id = BuiltInRegistries.MENU.getKey(menu.getType());
-			throw new IllegalArgumentException("[Fabric] Extended menu " + id + " must be opened with an ExtendedMenuFactory!");
+			throw new IllegalArgumentException("[Fabric] Extended menu " + id + " must be opened with an ExtendedMenuProvider!");
 		}
 	}
 
 	@Redirect(method = "openMenu(Lnet/minecraft/world/MenuProvider;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
 	private void fabric_replaceVanillaScreenPacket(ServerGamePacketListenerImpl networkHandler, Packet<?> packet, MenuProvider factory) {
-		if (factory instanceof SimpleMenuProvider simpleFactory && simpleFactory.menuConstructor instanceof ExtendedMenuFactory<?> extendedFactory) {
-			factory = extendedFactory;
+		if (factory instanceof SimpleMenuProvider simpleProvider && simpleProvider.menuConstructor instanceof ExtendedMenuProvider<?> extendedProvider) {
+			factory = extendedProvider;
 		}
 
-		if (factory instanceof ExtendedMenuFactory<?> extendedFactory) {
+		if (factory instanceof ExtendedMenuProvider<?> extendedFactory) {
 			AbstractContainerMenu handler = Objects.requireNonNull(containerMenu);
 
 			if (handler.getType() instanceof ExtendedMenuType<?, ?>) {
 				Networking.sendOpenPacket((ServerPlayer) (Object) this, extendedFactory, handler, containerCounter);
 			} else {
 				Identifier id = BuiltInRegistries.MENU.getKey(handler.getType());
-				throw new IllegalArgumentException("[Fabric] Non-extended menu " + id + " must not be opened with an ExtendedMenuFactory!");
+				throw new IllegalArgumentException("[Fabric] Non-extended menu " + id + " must not be opened with an ExtendedMenuProvider!");
 			}
 		} else {
 			// Use vanilla logic for non-extended menus

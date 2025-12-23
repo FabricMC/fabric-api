@@ -62,8 +62,8 @@ public abstract class StructureTemplateManagerMixin {
 		if (resource.isPresent()) {
 			try {
 				String snbt = IOUtils.toString(resource.get().openAsReader());
-				CompoundTag nbt = NbtUtils.snbtToStructure(snbt);
-				return Optional.of(this.readStructure(nbt));
+				CompoundTag tag = NbtUtils.snbtToStructure(snbt);
+				return Optional.of(this.readStructure(tag));
 			} catch (IOException | CommandSyntaxException e) {
 				throw new RuntimeException("Failed to load GameTest structure " + id, e);
 			}

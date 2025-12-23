@@ -42,10 +42,10 @@ public final class OxidizableBlocksRegistryImpl {
 		HoneycombItem.WAXABLES.get().put(unwaxed, waxed);
 	}
 
-	public static void registerCopperBlockSet(WeatheringCopperBlocks blockSet) {
-		Objects.requireNonNull(blockSet, "blockSet cannot be null!");
-		blockSet.weatheringMapping().forEach(OxidizableBlocksRegistryImpl::registerNextStage);
-		blockSet.waxedMapping().forEach(OxidizableBlocksRegistryImpl::registerWaxable);
+	public static void registerWeatheringCopperBlocks(WeatheringCopperBlocks copperBlocks) {
+		Objects.requireNonNull(copperBlocks, "copperBlocks cannot be null!");
+		copperBlocks.weatheringMapping().forEach(OxidizableBlocksRegistryImpl::registerNextStage);
+		copperBlocks.waxedMapping().forEach(OxidizableBlocksRegistryImpl::registerWaxable);
 	}
 
 	private static void refreshRandomTickCache(Block block) {

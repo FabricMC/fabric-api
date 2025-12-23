@@ -166,14 +166,14 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 			}
 		};
 
-		CompoundTag variantNbt = new CompoundTag();
-		variantNbt.putString("item", "minecraft:diamond");
-		variantNbt.put("components", new CompoundTag());
-		CompoundTag nbt = new CompoundTag();
-		nbt.putLong("amount", 1);
-		nbt.put("variant", variantNbt);
+		CompoundTag variantTag = new CompoundTag();
+		variantTag.putString("item", "minecraft:diamond");
+		variantTag.put("components", new CompoundTag());
+		CompoundTag tag = new CompoundTag();
+		tag.putLong("amount", 1);
+		tag.put("variant", variantTag);
 
-		storage.readValue(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), nbt));
+		storage.readValue(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), tag));
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(1L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));
@@ -191,13 +191,13 @@ public class SingleVariantItemStorageTests extends AbstractTransferApiTest {
 		};
 
 		// Test that invalid NBT defaults to empty.
-		CompoundTag variantNbt = new CompoundTag();
-		variantNbt.putString("id", "minecraft:diamond");
-		CompoundTag nbt = new CompoundTag();
-		nbt.putLong("amount", 1);
-		nbt.put("variant", variantNbt);
+		CompoundTag variantTag = new CompoundTag();
+		variantTag.putString("id", "minecraft:diamond");
+		CompoundTag tag = new CompoundTag();
+		tag.putLong("amount", 1);
+		tag.put("variant", variantTag);
 
-		storage.readValue(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), nbt));
+		storage.readValue(TagValueInput.create(ProblemReporter.DISCARDING, staticDrm(), tag));
 
 		try (Transaction tx = Transaction.openOuter()) {
 			assertEquals(0L, storage.extract(ItemVariant.of(Items.DIAMOND), 1, tx));

@@ -36,77 +36,77 @@ public final class LootGameTest {
 	static int inlineLootTablesSeen = 0;
 
 	@GameTest
-	public void testReplace(GameTestHelper context) {
+	public void testReplace(GameTestHelper helper) {
 		// Black wool should drop an iron ingot
-		LootTableDrops drops = LootTableDrops.block(context, Blocks.BLACK_WOOL).drop();
+		LootTableDrops drops = LootTableDrops.block(helper, Blocks.BLACK_WOOL).drop();
 		drops.assertEquals(new ItemStack(Items.IRON_INGOT));
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void testAddingPools(GameTestHelper context) {
+	public void testAddingPools(GameTestHelper helper) {
 		// White wool should drop a white wool and a gold ingot
-		LootTableDrops drops = LootTableDrops.block(context, Blocks.WHITE_WOOL).drop();
+		LootTableDrops drops = LootTableDrops.block(helper, Blocks.WHITE_WOOL).drop();
 		drops.assertContains(new ItemStack(Items.WHITE_WOOL));
 		ItemStack goldIngot = new ItemStack(Items.GOLD_INGOT);
 		goldIngot.set(DataComponents.CUSTOM_NAME, Component.literal("Gold from White Wool"));
 		drops.assertContains(goldIngot);
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void testModifyingPools(GameTestHelper context) {
+	public void testModifyingPools(GameTestHelper helper) {
 		// Yellow wool should drop either yellow wool or emeralds.
 		// Let's generate the drops with specific seeds to check.
-		LootTableDrops emeraldDrops = LootTableDrops.block(context, Blocks.YELLOW_WOOL).seed(1).drop();
+		LootTableDrops emeraldDrops = LootTableDrops.block(helper, Blocks.YELLOW_WOOL).seed(1).drop();
 		emeraldDrops.assertEquals(new ItemStack(Items.EMERALD));
-		LootTableDrops woolDrops = LootTableDrops.block(context, Blocks.YELLOW_WOOL).seed(490234).drop();
+		LootTableDrops woolDrops = LootTableDrops.block(helper, Blocks.YELLOW_WOOL).seed(490234).drop();
 		woolDrops.assertEquals(new ItemStack(Items.YELLOW_WOOL));
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void testRegistryAccess(GameTestHelper context) {
+	public void testRegistryAccess(GameTestHelper helper) {
 		// Salmons should drop an enchanted fishing rod.
 		ItemStack expected = new ItemStack(Items.FISHING_ROD);
-		Holder<Enchantment> lure = context.getLevel()
+		Holder<Enchantment> lure = helper.getLevel()
 				.registryAccess()
 				.getOrThrow(Enchantments.LURE);
 		EnchantmentHelper.updateEnchantments(expected, builder -> builder.set(lure, 1));
 
-		LootTableDrops drops = LootTableDrops.entity(context, EntityType.SALMON).drop();
+		LootTableDrops drops = LootTableDrops.entity(helper, EntityType.SALMON).drop();
 		drops.assertContains(expected);
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void testModifyDropsSmelting(GameTestHelper context) {
+	public void testModifyDropsSmelting(GameTestHelper helper) {
 		// Mining smeltable blocks using a diamond pickaxe should smelt the drops,
 		// so copper ore should drop a copper ingot.
 		ItemStack tool = new ItemStack(Items.DIAMOND_PICKAXE);
-		LootTableDrops drops = LootTableDrops.block(context, Blocks.COPPER_ORE)
+		LootTableDrops drops = LootTableDrops.block(helper, Blocks.COPPER_ORE)
 				.set(LootContextParams.TOOL, tool)
 				.drop();
 		drops.assertEquals(new ItemStack(Items.COPPER_INGOT));
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void testModifyDropsDoubling(GameTestHelper context) {
+	public void testModifyDropsDoubling(GameTestHelper helper) {
 		// Red banners should drop two red banners
-		LootTableDrops drops = LootTableDrops.block(context, Blocks.RED_BANNER).drop();
+		LootTableDrops drops = LootTableDrops.block(helper, Blocks.RED_BANNER).drop();
 		drops.assertTotalCount(2);
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void testInlineTableModifyDrops(GameTestHelper context) {
+	public void testInlineTableModifyDrops(GameTestHelper helper) {
 		int seenAtStart = inlineLootTablesSeen;
-		MinecraftServer server = context.getLevel().getServer();
+		MinecraftServer server = helper.getLevel().getServer();
 		server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), "loot spawn 0 0 0 loot {\"pools\":[{\"entries\":[], \"rolls\":1.0}]}");
 		int seenAtEnd = inlineLootTablesSeen;
 
-		context.assertTrue(seenAtStart < seenAtEnd, Component.literal("inline loot table should've been processed by MODIFY_DROPS"));
-		context.succeed();
+		helper.assertTrue(seenAtStart < seenAtEnd, Component.literal("inline loot table should've been processed by MODIFY_DROPS"));
+		helper.succeed();
 	}
 }

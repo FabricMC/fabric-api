@@ -169,21 +169,21 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 
 		@Override
-		protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput exporter) {
-			return new RecipeProvider(registries, exporter) {
+		protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+			return new RecipeProvider(registries, output) {
 				@Override
 				public void buildRecipes() {
 					planksFromLog(SIMPLE_BLOCK, ItemTags.ACACIA_LOGS, 1);
 
 					shapeless(RecipeCategory.MISC, Items.DIAMOND_ORE, 4).requires(Items.ITEM_FRAME)
 							.unlockedBy("has_frame", has(Items.ITEM_FRAME))
-							.save(withConditions(output, ResourceConditions.registryContains(Registries.ITEM, BuiltInRegistries.ITEM.getKey(Items.DIAMOND_BLOCK))));
+							.save(withConditions(this.output, ResourceConditions.registryContains(Registries.ITEM, BuiltInRegistries.ITEM.getKey(Items.DIAMOND_BLOCK))));
 					shapeless(RecipeCategory.MISC, Items.EMERALD, 4).requires(Items.ITEM_FRAME, 2)
 							.unlockedBy("has_frame", has(Items.ITEM_FRAME))
-							.save(withConditions(output, ResourceConditions.registryContains(Biomes.PLAINS, Biomes.BADLANDS)));
+							.save(withConditions(this.output, ResourceConditions.registryContains(Biomes.PLAINS, Biomes.BADLANDS)));
 
-					shapeless(RecipeCategory.MISC, Items.GOLD_INGOT).requires(Items.DIRT).unlockedBy("has_dirt", has(Items.DIRT)).save(withConditions(output, NEVER_LOADED));
-					shapeless(RecipeCategory.MISC, Items.DIAMOND).requires(Items.STICK).unlockedBy("has_stick", has(Items.STICK)).save(withConditions(output, ALWAYS_LOADED));
+					shapeless(RecipeCategory.MISC, Items.GOLD_INGOT).requires(Items.DIRT).unlockedBy("has_dirt", has(Items.DIRT)).save(withConditions(this.output, NEVER_LOADED));
+					shapeless(RecipeCategory.MISC, Items.DIAMOND).requires(Items.STICK).unlockedBy("has_stick", has(Items.STICK)).save(withConditions(this.output, ALWAYS_LOADED));
 
 					/* Generate test recipes using all types of custom ingredients for easy testing */
 					// Testing procedure for vanilla and fabric clients:
@@ -218,7 +218,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							.requires(Ingredient.of(Items.DIAMOND_PICKAXE))
 							.requires(Ingredient.of(Items.DIAMOND_PICKAXE))
 							.unlockedBy("has_pickaxe", has(Items.DIAMOND_PICKAXE))
-							.save(output);
+							.save(this.output);
 
 					// Test AND
 					// To test: charcoal should give a torch, but coal should not.
@@ -226,7 +226,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							// charcoal only
 							.requires(DefaultCustomIngredients.all(tag(ItemTags.COALS), Ingredient.of(Items.CHARCOAL)))
 							.unlockedBy("has_charcoal", has(Items.CHARCOAL))
-							.save(output);
+							.save(this.output);
 
 					// Test OR
 					// To test: a golden pickaxe or a golden shovel should give a block of gold.
@@ -234,7 +234,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 							.requires(DefaultCustomIngredients.any(Ingredient.of(Items.GOLDEN_PICKAXE), Ingredient.of(Items.GOLDEN_SHOVEL)))
 							.unlockedBy("has_pickaxe", has(Items.GOLDEN_PICKAXE))
 							.unlockedBy("has_shovel", has(Items.GOLDEN_SHOVEL))
-							.save(output);
+							.save(this.output);
 
 					// Test difference
 					// To test: only copper, netherite and emerald should match the recipe.
@@ -245,7 +245,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 											Ingredient.of(Items.COPPER_INGOT)),
 									Ingredient.of(Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND)))
 							.unlockedBy("has_payment", has(ItemTags.BEACON_PAYMENT_ITEMS))
-							.save(output);
+							.save(this.output);
 				}
 			};
 		}

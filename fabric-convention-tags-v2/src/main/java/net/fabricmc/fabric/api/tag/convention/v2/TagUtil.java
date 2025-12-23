@@ -51,20 +51,20 @@ public final class TagUtil {
 	}
 
 	/**
-	 * @param registryManager the registry manager instance of the client or server. If the tag refers to entries
+	 * @param registryAccess the registry access instance of the client or server. If the tag refers to entries
 	 *                        within a dynamic registry, such as {@link net.minecraft.world.level.biome.Biome}s,
 	 *                        this must be passed to correctly evaluate the tag. Otherwise, the registry is found by
 	 *                        looking in {@link BuiltInRegistries#REGISTRY}.
 	 * @return if the entry is in the provided tag.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> boolean isIn(@Nullable RegistryAccess registryManager, TagKey<T> tagKey, T entry) {
+	public static <T> boolean isIn(@Nullable RegistryAccess registryAccess, TagKey<T> tagKey, T entry) {
 		Optional<? extends Registry<?>> maybeRegistry;
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(entry);
 
-		if (registryManager != null) {
-			maybeRegistry = registryManager.lookup(tagKey.registry());
+		if (registryAccess != null) {
+			maybeRegistry = registryAccess.lookup(tagKey.registry());
 		} else {
 			maybeRegistry = BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().identifier());
 		}

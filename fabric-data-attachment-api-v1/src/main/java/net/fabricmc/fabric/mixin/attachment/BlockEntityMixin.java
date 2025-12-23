@@ -59,16 +59,16 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 			method = "loadWithComponents",
 			at = @At("RETURN")
 	)
-	private void readBlockEntityAttachments(ValueInput view, CallbackInfo ci) {
-		this.fabric_readAttachmentsFromNbt(view);
+	private void readBlockEntityAttachments(ValueInput input, CallbackInfo ci) {
+		this.fabric_readAttachmentsFromNbt(input);
 	}
 
 	@Inject(
 			method = "saveWithoutMetadata(Lnet/minecraft/world/level/storage/ValueOutput;)V",
 			at = @At(value = "TAIL")
 	)
-	private void writeBlockEntityAttachments(ValueOutput view, CallbackInfo ci) {
-		this.fabric_writeAttachmentsToNbt(view);
+	private void writeBlockEntityAttachments(ValueOutput output, CallbackInfo ci) {
+		this.fabric_writeAttachmentsToNbt(output);
 	}
 
 	@Override

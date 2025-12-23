@@ -32,14 +32,14 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class DefaultItemComponentGameTest {
 	@GameTest
-	public void modify(GameTestHelper context) {
+	public void modify(GameTestHelper helper) {
 		Consumer<Component> checkComponent = component -> {
 			if (component == null) {
-				throw context.assertionException("Item name component not found on gold ingot");
+				throw helper.assertionException("Item name component not found on gold ingot");
 			}
 
 			if (!"Fool's Gold".equals(component.getString())) {
-				throw context.assertionException("Item name component on gold ingot is not set");
+				throw helper.assertionException("Item name component on gold ingot is not set");
 			}
 		};
 
@@ -52,31 +52,31 @@ public class DefaultItemComponentGameTest {
 		boolean isBeefFood = Items.BEEF.components().has(DataComponents.FOOD);
 
 		if (isBeefFood) {
-			throw context.assertionException("Food component not removed from beef");
+			throw helper.assertionException("Food component not removed from beef");
 		}
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void afterModify(GameTestHelper context) {
+	public void afterModify(GameTestHelper helper) {
 		Fireworks fireworksComponent = Items.GOLD_NUGGET.components().get(DataComponents.FIREWORKS);
 
 		if (fireworksComponent == null) {
-			throw context.assertionException("Fireworks component not found on gold nugget");
+			throw helper.assertionException("Fireworks component not found on gold nugget");
 		}
 
 		Boolean enchantGlint = Items.GOLD_NUGGET.components().get(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
 
 		if (enchantGlint != Boolean.TRUE) {
-			throw context.assertionException("Enchantment glint override not set on gold nugget");
+			throw helper.assertionException("Enchantment glint override not set on gold nugget");
 		}
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void diamondPickaxeIsRenamed(GameTestHelper context) {
+	public void diamondPickaxeIsRenamed(GameTestHelper helper) {
 		Item testItem = Items.DIAMOND_PICKAXE;
 		ItemStack stack = testItem.getDefaultInstance();
 
@@ -86,36 +86,36 @@ public class DefaultItemComponentGameTest {
 		String errorMessage = "Expected '%s' to be contained in '%s', but it was not!";
 
 		// if they contain each other, then they are equal
-		context.assertTrue(itemName.contains(expectedName), Component.literal(errorMessage.formatted(expectedName, itemName)));
-		context.assertTrue(expectedName.contains(itemName), Component.literal(errorMessage.formatted(itemName, expectedName)));
-		context.succeed();
+		helper.assertTrue(itemName.contains(expectedName), Component.literal(errorMessage.formatted(expectedName, itemName)));
+		helper.assertTrue(expectedName.contains(itemName), Component.literal(errorMessage.formatted(itemName, expectedName)));
+		helper.succeed();
 	}
 
 	@GameTest
-	public void emptyComponentMapDoesNotContainUnbreakable(GameTestHelper context) {
+	public void emptyComponentMapDoesNotContainUnbreakable(GameTestHelper helper) {
 		DataComponentMap.Builder builder = DataComponentMap.builder();
 
-		context.assertFalse(builder.contains(DataComponents.UNBREAKABLE), Component.literal("Empty component map contains unbreakable type"));
-		context.succeed();
+		helper.assertFalse(builder.contains(DataComponents.UNBREAKABLE), Component.literal("Empty component map contains unbreakable type"));
+		helper.succeed();
 	}
 
 	@GameTest
-	public void componentMapWithItemNameDoesNotContainUnbreakable(GameTestHelper context) {
+	public void componentMapWithItemNameDoesNotContainUnbreakable(GameTestHelper helper) {
 		DataComponentMap.Builder builder = DataComponentMap.builder();
 
 		builder.set(DataComponents.ITEM_NAME, Component.nullToEmpty("Weird Name"));
 
-		context.assertFalse(builder.contains(DataComponents.UNBREAKABLE), Component.literal("Component map should not contain unbreakable type"));
-		context.succeed();
+		helper.assertFalse(builder.contains(DataComponents.UNBREAKABLE), Component.literal("Component map should not contain unbreakable type"));
+		helper.succeed();
 	}
 
 	@GameTest
-	public void componentMapWithUnbreakableContainsUnbreakable(GameTestHelper context) {
+	public void componentMapWithUnbreakableContainsUnbreakable(GameTestHelper helper) {
 		DataComponentMap.Builder builder = DataComponentMap.builder();
 
 		builder.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
 
-		context.assertTrue(builder.contains(DataComponents.UNBREAKABLE), Component.literal("Component map does not contain unbreakable type"));
-		context.succeed();
+		helper.assertTrue(builder.contains(DataComponents.UNBREAKABLE), Component.literal("Component map does not contain unbreakable type"));
+		helper.succeed();
 	}
 }

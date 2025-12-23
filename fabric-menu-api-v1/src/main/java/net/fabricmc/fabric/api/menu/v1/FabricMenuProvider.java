@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.menu.v1;
 
 /**
  * An extension to {@link net.minecraft.world.MenuProvider}.
- * Unlike {@link ExtendedMenuFactory}, this can be used by any menus,
+ * Unlike {@link ExtendedMenuProvider}, this can be used by any menus,
  * and is implemented via interface injection.
  */
 public interface FabricMenuProvider {

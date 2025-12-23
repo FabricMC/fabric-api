@@ -44,7 +44,7 @@ public class PictureInPictureRendererTestWithNewGuiRenderer implements ClientMod
 
 		// TODO: Migrate to new HUD API once available
 		//noinspection deprecation
-		HudRenderCallback.EVENT.register((context, deltaTracker) -> {
+		HudRenderCallback.EVENT.register((graphics, deltaTracker) -> {
 			Minecraft client = Minecraft.getInstance();
 			GuiRenderState newGuiRenderState = new GuiRenderState();
 

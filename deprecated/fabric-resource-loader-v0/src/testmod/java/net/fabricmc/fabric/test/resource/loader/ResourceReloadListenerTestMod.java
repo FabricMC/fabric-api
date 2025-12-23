@@ -124,7 +124,7 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 		ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(RegistryReloader.ID, RegistryReloader::new);
 	}
 
-	private record RegistryReloader(HolderLookup.Provider wrapperLookup) implements SimpleSynchronousResourceReloadListener {
+	private record RegistryReloader(HolderLookup.Provider registries) implements SimpleSynchronousResourceReloadListener {
 		private static final Identifier ID = Identifier.fromNamespaceAndPath(MODID, "registry_reloader");
 
 		@Override
@@ -134,8 +134,8 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 
 		@Override
 		public void onResourceManagerReload(ResourceManager manager) {
-			Objects.requireNonNull(wrapperLookup);
-			wrapperLookup.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+			Objects.requireNonNull(registries);
+			registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
 		}
 	}
 }

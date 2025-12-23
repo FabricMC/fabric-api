@@ -80,9 +80,9 @@ public interface FabricItem {
 	 * <p>Here is an example for a crafting remainder that increments the item's damage.
 	 *
 	 * <pre>{@code
-	 *  if (stack.getDamage() < stack.getMaxDamage() - 1) {
+	 *  if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
 	 *  	ItemStack moreDamaged = stack.copy();
-	 *  	moreDamaged.setDamage(stack.getDamage() + 1);
+	 *  	moreDamaged.setDamageValue(stack.getDamageValue() + 1);
 	 *  	return moreDamaged;
 	 *  }
 	 *
@@ -146,17 +146,17 @@ public interface FabricItem {
 	 * @return the namespace of the mod that created the item
 	 */
 	default String getCreatorNamespace(ItemStack stack) {
-		Holder<?> entry = stack.typeHolder();
+		Holder<?> holder = stack.typeHolder();
 
 		if ((this instanceof PotionItem || this instanceof TippedArrowItem) && stack.has(DataComponents.POTION_CONTENTS)) {
 			Optional<Holder<Potion>> potion = stack.get(DataComponents.POTION_CONTENTS).potion();
-			if (potion.isPresent()) entry = potion.get();
+			if (potion.isPresent()) holder = potion.get();
 		} else if (stack.is(Items.ENCHANTED_BOOK) && stack.has(DataComponents.STORED_ENCHANTMENTS)) {
 			Set<Holder<Enchantment>> enchantments = stack.get(DataComponents.STORED_ENCHANTMENTS).keySet();
-			if (enchantments.size() == 1) entry = enchantments.iterator().next();
+			if (enchantments.size() == 1) holder = enchantments.iterator().next();
 		}
 
-		return entry.unwrapKey().orElseThrow().identifier().getNamespace();
+		return holder.unwrapKey().orElseThrow().identifier().getNamespace();
 	}
 
 	/**

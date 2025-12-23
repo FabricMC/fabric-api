@@ -88,13 +88,13 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 
 			final ChunkPos chunkPos = levelChunk.getPos();
 
-			if (Math.abs(oldChunkStatus.ordinal() - newChunkStatus.ordinal()) != 1) { // check if the levelTypes are actually sequential, also ensures levelTypes are not the same
+			if (Math.abs(oldChunkStatus.ordinal() - newChunkStatus.ordinal()) != 1) { // check if the chunkStatuses are actually sequential, also ensures chunkStatuses are not the same
 				throw new AssertionError("CHUNK_STATUS_CHANGE for " + dimensionId + " " + chunkPos + " NOT SEQUENTIAL: " + oldChunkStatus + "->" + newChunkStatus);
 			}
 
 			ChunkStatusEvent prevEvent = levelsChunkStatusTracker.computeIfAbsent(dimensionId, obj -> new Long2ObjectOpenHashMap<>()).computeIfAbsent(chunkPos.toLong(), l -> new ChunkStatusEvent(FullChunkStatus.INACCESSIBLE, FullChunkStatus.INACCESSIBLE));
 
-			if (prevEvent.newChunkStatus() != oldChunkStatus) { // check if newLevelType from the previous event == oldLevelType for this current event. Catches any out-of-sync firing issues.
+			if (prevEvent.newChunkStatus() != oldChunkStatus) { // check if newChunkStatus from the previous event == oldChunkStatus for this current event. Catches any out-of-sync firing issues.
 				throw new AssertionError("CHUNK_STATUS_CHANGE for " + dimensionId + " " + chunkPos + " PREVIOUS_EVENT: " + prevEvent.oldChunkStatus() + "->" + prevEvent.newChunkStatus() + " / CURRENT_EVENT: " + oldChunkStatus + "->" + newChunkStatus);
 			}
 
@@ -108,7 +108,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 
 				if (chunkStatuses != null && !chunkStatuses.isEmpty()) {
 					StringBuilder sb = new StringBuilder(level.dimension().identifier() + " ");
-					// Logs the number of full chunk status changes for each ChunkLevelType, only logs the newChunkStatus
+					// Logs the number of full chunk status changes for each FullChunkStatus, only logs the newChunkStatus
 					chunkStatuses.forEach((newChunkStatus, numOfEvents) -> sb.append(newChunkStatus).append(": ").append(numOfEvents).append(", "));
 					LOGGER.info(sb.toString());
 					chunkStatuses.clear();

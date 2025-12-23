@@ -60,11 +60,11 @@ public interface AttachmentTargetImpl extends AttachmentTarget {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default void fabric_writeAttachmentsToNbt(ValueOutput view) {
+	default void fabric_writeAttachmentsToNbt(ValueOutput output) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	default void fabric_readAttachmentsFromNbt(ValueInput view) {
+	default void fabric_readAttachmentsFromNbt(ValueInput input) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 

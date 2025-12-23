@@ -50,11 +50,11 @@ public abstract class HumanoidArmorLayerMixin<S extends HumanoidRenderState, M e
 	}
 
 	@Inject(method = "renderArmorPiece", at = @At("HEAD"), cancellable = true)
-	private void renderArmor(PoseStack matrices, SubmitNodeCollector submitNodeCollector, ItemStack stack, EquipmentSlot armorSlot, int light, S bipedEntityRenderState, CallbackInfo ci) {
+	private void renderArmor(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack stack, EquipmentSlot armorSlot, int light, S bipedEntityRenderState, CallbackInfo ci) {
 		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(stack.getItem());
 
 		if (renderer != null) {
-			renderer.render(matrices, submitNodeCollector, stack, humanoidRenderState, armorSlot, light, (HumanoidModel<HumanoidRenderState>) getParentModel());
+			renderer.render(poseStack, submitNodeCollector, stack, humanoidRenderState, armorSlot, light, (HumanoidModel<HumanoidRenderState>) getParentModel());
 			ci.cancel();
 		}
 	}

@@ -48,19 +48,19 @@ public final class LandPathTypeRegistry {
 	 * Registers a {@link PathType} for the specified block, overriding the default block behavior.
 	 *
 	 * @param block              Block to register.
-	 * @param nodeType           {@link PathType} to associate with the block if it is a direct target
+	 * @param pathType           {@link PathType} to associate with the block if it is a direct target
 	 *                           in an entity path.
 	 *                           (Pass {@code null} to not specify a path type and use the default behavior)
-	 * @param nodeTypeIfNeighbor {@link PathType} to associate with the block, if it is in a direct neighbor
+	 * @param pathTypeIfNeighbor {@link PathType} to associate with the block, if it is in a direct neighbor
 	 *                           position to an entity path that is directly next to a block
 	 *                           that the entity will pass through or above.
 	 *                           (Pass {@code null} to not specify a path type and use the default behavior)
 	 */
-	public static void register(Block block, @Nullable PathType nodeType, @Nullable PathType nodeTypeIfNeighbor) {
+	public static void register(Block block, @Nullable PathType pathType, @Nullable PathType pathTypeIfNeighbor) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 
 		// Registers a provider that always returns the specified path type.
-		register(block, (state, neighbor) -> neighbor ? nodeTypeIfNeighbor : nodeType);
+		register(block, (state, neighbor) -> neighbor ? pathTypeIfNeighbor : pathType);
 	}
 
 	/**

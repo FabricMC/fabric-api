@@ -29,8 +29,8 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 
 public class WorldDependentAttributesTest {
 	@GameTest
-	public void testViscosity(GameTestHelper context) {
-		ServerLevel overworld = context.getLevel();
+	public void testViscosity(GameTestHelper helper) {
+		ServerLevel overworld = helper.getLevel();
 		ServerLevel nether = overworld.getServer().getLevel(ServerLevel.NETHER);
 		FluidVariant lava = FluidVariant.of(Fluids.LAVA);
 
@@ -44,6 +44,6 @@ public class WorldDependentAttributesTest {
 		assertEquals(FluidConstants.LAVA_VISCOSITY, FluidConstants.VISCOSITY_RATIO * Fluids.LAVA.getTickDelay(overworld));
 		assertEquals(FluidConstants.LAVA_VISCOSITY_NETHER, FluidConstants.VISCOSITY_RATIO * Fluids.LAVA.getTickDelay(nether));
 
-		context.succeed();
+		helper.succeed();
 	}
 }

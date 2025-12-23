@@ -259,7 +259,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		@Override
 		public boolean removeFeature(GenerationStep.Decoration step, ResourceKey<PlacedFeature> placedFeatureKey) {
-			PlacedFeature placedFeature = getEntry(features, placedFeatureKey).value();
+			PlacedFeature placedFeature = getHolder(features, placedFeatureKey).value();
 
 			int stepIndex = step.ordinal();
 			List<HolderSet<PlacedFeature>> featureSteps = generationSettings.features;
@@ -291,7 +291,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 				featureSteps.add(HolderSet.direct(Collections.emptyList()));
 			}
 
-			Holder.Reference<PlacedFeature> feature = getEntry(features, entry);
+			Holder.Reference<PlacedFeature> feature = getHolder(features, entry);
 
 			// Don't add the feature if it's already present
 			if (featureSteps.get(index).contains(feature)) {
@@ -307,12 +307,12 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		@Override
 		public void addCarver(ResourceKey<ConfiguredWorldCarver<?>> entry) {
 			// We do not need to delay evaluation of this since the registries are already fully built
-			generationSettings.carvers = plus(generationSettings.carvers, getEntry(carvers, entry));
+			generationSettings.carvers = plus(generationSettings.carvers, getHolder(carvers, entry));
 		}
 
 		@Override
 		public boolean removeCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey) {
-			ConfiguredWorldCarver<?> carver = getEntry(carvers, carverKey).value();
+			ConfiguredWorldCarver<?> carver = getHolder(carvers, carverKey).value();
 			List<Holder<ConfiguredWorldCarver<?>>> genCarvers = new ArrayList<>(generationSettings.carvers.stream().toList());
 
 			if (genCarvers.removeIf(entry -> entry.value() == carver)) {
@@ -323,11 +323,11 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			return false;
 		}
 
-		private <T> HolderSet<T> plus(@Nullable HolderSet<T> values, Holder<T> entry) {
-			if (values == null) return HolderSet.direct(entry);
+		private <T> HolderSet<T> plus(@Nullable HolderSet<T> values, Holder<T> holder) {
+			if (values == null) return HolderSet.direct(holder);
 
 			List<Holder<T>> list = new ArrayList<>(values.stream().toList());
-			list.add(entry);
+			list.add(holder);
 			return HolderSet.direct(list);
 		}
 	}
@@ -337,15 +337,15 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 	 * Gives more helpful error messages if an entry is missing by checking if the modder
 	 * forgot to data-gen the JSONs corresponding to their built-in objects.
 	 */
-	private static <T> Holder.Reference<T> getEntry(Registry<T> registry, ResourceKey<T> key) {
-		Holder.Reference<T> entry = registry.get(key).orElse(null);
+	private static <T> Holder.Reference<T> getHolder(Registry<T> registry, ResourceKey<T> key) {
+		Holder.Reference<T> holder = registry.get(key).orElse(null);
 
-		if (entry == null) {
+		if (holder == null) {
 			// The key doesn't exist in the data packs
 			throw new IllegalArgumentException("Couldn't find holder for " + key);
 		}
 
-		return entry;
+		return holder;
 	}
 
 	private class SpawnSettingsContextImpl implements MobSpawnSettingsContext {

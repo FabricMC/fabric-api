@@ -36,16 +36,16 @@ public class BrewingStandGameTest {
 	private static final BlockPos POS = new BlockPos(0, 1, 0);
 
 	@GameTest
-	public void basicBrewing(GameTestHelper context) {
-		context.setBlock(POS, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = context.getBlockEntity(POS, BrewingStandBlockEntity.class);
+	public void basicBrewing(GameTestHelper helper) {
+		helper.setBlock(POS, Blocks.BREWING_STAND);
+		BrewingStandBlockEntity blockEntity = helper.getBlockEntity(POS, BrewingStandBlockEntity.class);
 
-		loadFuel(blockEntity, context);
+		loadFuel(blockEntity, helper);
 
 		prepareForBrewing(blockEntity, new ItemStack(Items.NETHER_WART, 8),
 				setPotion(new ItemStack(Items.POTION), Potions.WATER));
 
-		brew(blockEntity, context);
+		brew(blockEntity, helper);
 		assertInventory(blockEntity, "Testing vanilla brewing.",
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
@@ -53,20 +53,20 @@ public class BrewingStandGameTest {
 				new ItemStack(Items.NETHER_WART, 7),
 				ItemStack.EMPTY);
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void vanillaRemainderTest(GameTestHelper context) {
-		context.setBlock(POS, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = context.getBlockEntity(POS, BrewingStandBlockEntity.class);
+	public void vanillaRemainderTest(GameTestHelper helper) {
+		helper.setBlock(POS, Blocks.BREWING_STAND);
+		BrewingStandBlockEntity blockEntity = helper.getBlockEntity(POS, BrewingStandBlockEntity.class);
 
-		loadFuel(blockEntity, context);
+		loadFuel(blockEntity, helper);
 
 		prepareForBrewing(blockEntity, new ItemStack(Items.DRAGON_BREATH),
 				setPotion(new ItemStack(Items.SPLASH_POTION), Potions.AWKWARD));
 
-		brew(blockEntity, context);
+		brew(blockEntity, helper);
 		assertInventory(blockEntity, "Testing vanilla brewing recipe remainder.",
 				setPotion(new ItemStack(Items.LINGERING_POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.LINGERING_POTION), Potions.AWKWARD),
@@ -74,21 +74,21 @@ public class BrewingStandGameTest {
 				ItemStack.EMPTY,
 				ItemStack.EMPTY);
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	//@GameTest(templateName = EMPTY_STRUCTURE)
 	// Skip see: https://github.com/FabricMC/fabric/pull/2874
-	public void fabricRemainderTest(GameTestHelper context) {
-		context.setBlock(POS, Blocks.BREWING_STAND);
-		BrewingStandBlockEntity blockEntity = context.getBlockEntity(POS, BrewingStandBlockEntity.class);
+	public void fabricRemainderTest(GameTestHelper helper) {
+		helper.setBlock(POS, Blocks.BREWING_STAND);
+		BrewingStandBlockEntity blockEntity = helper.getBlockEntity(POS, BrewingStandBlockEntity.class);
 
-		loadFuel(blockEntity, context);
+		loadFuel(blockEntity, helper);
 
 		prepareForBrewing(blockEntity, new ItemStack(CustomDamageTest.WEIRD_PICK),
 				setPotion(new ItemStack(Items.POTION), Potions.WATER));
 
-		brew(blockEntity, context);
+		brew(blockEntity, helper);
 		assertInventory(blockEntity, "Testing fabric brewing recipe remainder.",
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
@@ -99,7 +99,7 @@ public class BrewingStandGameTest {
 		prepareForBrewing(blockEntity, RecipeGameTest.withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 10),
 				setPotion(new ItemStack(Items.POTION), Potions.WATER));
 
-		brew(blockEntity, context);
+		brew(blockEntity, helper);
 		assertInventory(blockEntity, "Testing fabric brewing recipe remainder.",
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
@@ -110,7 +110,7 @@ public class BrewingStandGameTest {
 		prepareForBrewing(blockEntity, RecipeGameTest.withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 31),
 				setPotion(new ItemStack(Items.POTION), Potions.WATER));
 
-		brew(blockEntity, context);
+		brew(blockEntity, helper);
 		assertInventory(blockEntity, "Testing fabric brewing recipe remainder.",
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
 				setPotion(new ItemStack(Items.POTION), Potions.AWKWARD),
@@ -118,7 +118,7 @@ public class BrewingStandGameTest {
 				ItemStack.EMPTY,
 				ItemStack.EMPTY);
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	private void prepareForBrewing(BrewingStandBlockEntity blockEntity, ItemStack ingredient, ItemStack potion) {
@@ -137,14 +137,14 @@ public class BrewingStandGameTest {
 		}
 	}
 
-	private void loadFuel(BrewingStandBlockEntity blockEntity, GameTestHelper context) {
+	private void loadFuel(BrewingStandBlockEntity blockEntity, GameTestHelper helper) {
 		blockEntity.setItem(4, new ItemStack(Items.BLAZE_POWDER));
-		BrewingStandBlockEntity.serverTick(context.getLevel(), POS, context.getBlockState(POS), blockEntity);
+		BrewingStandBlockEntity.serverTick(helper.getLevel(), POS, helper.getBlockState(POS), blockEntity);
 	}
 
-	private void brew(BrewingStandBlockEntity blockEntity, GameTestHelper context) {
+	private void brew(BrewingStandBlockEntity blockEntity, GameTestHelper helper) {
 		for (int i = 0; i < BREWING_TIME; i++) {
-			BrewingStandBlockEntity.serverTick(context.getLevel(), POS, context.getBlockState(POS), blockEntity);
+			BrewingStandBlockEntity.serverTick(helper.getLevel(), POS, helper.getBlockState(POS), blockEntity);
 		}
 	}
 

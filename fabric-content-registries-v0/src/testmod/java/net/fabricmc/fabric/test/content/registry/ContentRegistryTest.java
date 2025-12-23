@@ -103,7 +103,7 @@ public final class ContentRegistryTest implements ModInitializer {
 		//  - villagers can now collect, consume (at the same level of bread) and compost apples
 		//  - villagers can now collect oak saplings
 		//  - assign a loot table to the nitwit villager type
-		//  - right-clicking a 'test_event' block will emit a 'test_event' game event, which will have a sculk sensor frequency of 2
+		//  - right-clicking a 'test_event' block will emit a 'test_event' game event, which will have a vibration frequency of 2
 		//  - instant health potions can be brewed from awkward potions with any item in the 'minecraft:small_flowers' tag
 		//  - if Redstone Experiments experiment is enabled, luck potions can be brewed from awkward potions with a bundle
 		//  - dirty potions can be brewed by adding any item in the 'minecraft:dirt' tag to any standard potion
@@ -175,10 +175,10 @@ public final class ContentRegistryTest implements ModInitializer {
 		try {
 			VibrationFrequencyRegistry.register(GameEvent.SHRIEK.key(), 18);
 
-			throw new AssertionError("SculkSensorFrequencyRegistry didn't throw when frequency was outside allowed range!");
+			throw new AssertionError("VibrationFrequencyRegistry didn't throw when frequency was outside allowed range!");
 		} catch (IllegalArgumentException e) {
 			// expected behavior
-			LOGGER.info("SculkSensorFrequencyRegistry test passed!");
+			LOGGER.info("VibrationFrequencyRegistry test passed!");
 		}
 
 		ResourceKey<Item> dirtyPotionKey = ResourceKey.create(Registries.ITEM, id("dirty_potion"));

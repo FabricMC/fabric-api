@@ -37,7 +37,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -62,7 +62,7 @@ public final class Networking implements ModInitializer {
 	 * @param containerId  the container ID
 	 */
 	@SuppressWarnings("unchecked")
-	public static <D> void sendOpenPacket(ServerPlayer player, ExtendedMenuFactory<D> factory, AbstractContainerMenu menu, int containerId) {
+	public static <D> void sendOpenPacket(ServerPlayer player, ExtendedMenuProvider<D> factory, AbstractContainerMenu menu, int containerId) {
 		Objects.requireNonNull(player, "player is null");
 		Objects.requireNonNull(factory, "factory is null");
 		Objects.requireNonNull(menu, "menu is null");

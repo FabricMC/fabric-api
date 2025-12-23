@@ -147,7 +147,7 @@ public abstract class LevelRendererMixin {
 	}
 
 	@Inject(method = "renderBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/CameraRenderState;pos:Lnet/minecraft/world/phys/Vec3;"), cancellable = true)
-	private void beforeDrawBlockOutline(MultiBufferSource.BufferSource consumers, PoseStack matrices, boolean bl, LevelRenderState worldRenderState, CallbackInfo ci) {
+	private void beforeDrawBlockOutline(MultiBufferSource.BufferSource consumers, PoseStack poseStack, boolean bl, LevelRenderState worldRenderState, CallbackInfo ci) {
 		if (!LevelRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(renderContext, renderContext.levelState().blockOutlineRenderState)) {
 			consumers.endLastBatch();
 			ci.cancel();

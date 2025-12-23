@@ -26,16 +26,16 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class ObjectBuilderGameTest {
 	@GameTest
-	public void testBlockUse(GameTestHelper context) {
+	public void testBlockUse(GameTestHelper helper) {
 		List<Block> blocks = List.of(BlockEntityTypeBuilderTest.INITIAL_BETRAYAL_BLOCK, BlockEntityTypeBuilderTest.ADDED_BETRAYAL_BLOCK, BlockEntityTypeBuilderTest.FIRST_MULTI_BETRAYAL_BLOCK, BlockEntityTypeBuilderTest.SECOND_MULTI_BETRAYAL_BLOCK);
 		BlockPos.MutableBlockPos pos = BlockPos.ZERO.above().mutable();
 
 		for (Block block : blocks) {
-			context.setBlock(pos, block);
-			context.useBlock(pos);
+			helper.setBlock(pos, block);
+			helper.useBlock(pos);
 			pos.above();
 		}
 
-		context.succeed();
+		helper.succeed();
 	}
 }

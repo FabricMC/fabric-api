@@ -41,16 +41,16 @@ public class BakedModelRenderLayer<S extends LivingEntityRenderState, M extends 
 	}
 
 	@Override
-	public void submit(PoseStack matrices, SubmitNodeCollector nodeCollector, int light, S state, float limbAngle, float limbDistance) {
+	public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, S state, float limbAngle, float limbDistance) {
 		BlockStateModel model = modelSupplier.get();
-		matrices.pushPose();
-		matrices.mulPose(new Quaternionf(new AxisAngle4f(state.ageInTicks * 0.07F - state.bodyRot * Mth.DEG_TO_RAD, 0, 1, 0)));
-		matrices.scale(-0.75F, -0.75F, 0.75F);
+		poseStack.pushPose();
+		poseStack.mulPose(new Quaternionf(new AxisAngle4f(state.ageInTicks * 0.07F - state.bodyRot * Mth.DEG_TO_RAD, 0, 1, 0)));
+		poseStack.scale(-0.75F, -0.75F, 0.75F);
 		float aboveHead = (float) (Math.sin(state.ageInTicks * 0.08F)) * 0.5F + 0.5F;
-		matrices.translate(-0.5F, 0.75F + aboveHead, -0.5F);
+		poseStack.translate(-0.5F, 0.75F + aboveHead, -0.5F);
 		// FIXME 1.21.9
 		// FabricBlockModelRenderer.render(matrices.peek(), RenderLayerHelper.entityDelegate(bufferSource), model, 1, 1, 1, light, OverlayTexture.DEFAULT_UV, EmptyBlockRenderView.INSTANCE, BlockPos.ORIGIN, Blocks.AIR.getDefaultState());
-		nodeCollector.order(0).submitBlockModel(matrices, Sheets.cutoutBlockSheet(), model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY, 0);
-		matrices.popPose();
+		nodeCollector.order(0).submitBlockModel(poseStack, Sheets.cutoutBlockSheet(), model, 1, 1, 1, light, OverlayTexture.NO_OVERLAY, 0);
+		poseStack.popPose();
 	}
 }

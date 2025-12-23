@@ -60,13 +60,13 @@ abstract class ImposterProtoChunkMixin extends AttachmentTargetsMixin {
 	}
 
 	@Override
-	public void fabric_writeAttachmentsToNbt(ValueOutput view) {
-		((AttachmentTargetImpl) this.wrapped).fabric_writeAttachmentsToNbt(view);
+	public void fabric_writeAttachmentsToNbt(ValueOutput output) {
+		((AttachmentTargetImpl) this.wrapped).fabric_writeAttachmentsToNbt(output);
 	}
 
 	@Override
-	public void fabric_readAttachmentsFromNbt(ValueInput view) {
-		((AttachmentTargetImpl) this.wrapped).fabric_readAttachmentsFromNbt(view);
+	public void fabric_readAttachmentsFromNbt(ValueInput input) {
+		((AttachmentTargetImpl) this.wrapped).fabric_readAttachmentsFromNbt(input);
 	}
 
 	@Override

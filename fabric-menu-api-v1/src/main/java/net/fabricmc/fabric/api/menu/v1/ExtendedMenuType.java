@@ -34,7 +34,7 @@ import net.minecraft.world.inventory.MenuType;
  * <p>Extended menus can be opened using
  * {@link net.minecraft.world.entity.player.Player#openMenu(MenuProvider)
  * Player.openMenu} with an
- * {@link ExtendedMenuFactory}.
+ * {@link ExtendedMenuProvider}.
  *
  * <h2>Example</h2>
  * <pre>
@@ -63,10 +63,10 @@ import net.minecraft.world.inventory.MenuType;
  * }
  *
  * // Opening the extended menu
- * var factory = new ExtendedMenuFactory() {
+ * var provider = new ExtendedMenuProvider() {
  * 	...
  * };
- * player.openMenu(factory); // only works on ServerPlayer instances
+ * player.openMenu(provider); // only works on ServerPlayer instances
  * }
  * </pre>
  *

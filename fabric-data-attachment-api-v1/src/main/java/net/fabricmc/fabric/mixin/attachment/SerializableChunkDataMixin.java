@@ -56,7 +56,7 @@ abstract class SerializableChunkDataMixin {
 	private CompoundTag attachmentNbtData;
 
 	@Inject(method = "parse", at = @At("RETURN"))
-	private static void storeAttachmentNbtData(LevelHeightAccessor heightLimitView, PalettedContainerFactory arg, CompoundTag nbt, CallbackInfoReturnable<SerializableChunkData> cir, @Share("attachmentDataNbt") LocalRef<CompoundTag> attachmentDataNbt) {
+	private static void storeAttachmentNbtData(LevelHeightAccessor heightLimitView, PalettedContainerFactory arg, CompoundTag chunkData, CallbackInfoReturnable<SerializableChunkData> cir, @Share("attachmentDataNbt") LocalRef<CompoundTag> attachmentDataNbt) {
 		final SerializableChunkData serializer = cir.getReturnValue();
 
 		if (serializer == null) {
@@ -64,7 +64,7 @@ abstract class SerializableChunkDataMixin {
 		}
 
 		//noinspection SimplifyOptionalCallChains
-		CompoundTag attachmentNbtData = nbt.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
+		CompoundTag attachmentNbtData = chunkData.getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElse(null);
 
 		if (attachmentNbtData != null) {
 			((SerializableChunkDataMixin) (Object) serializer).attachmentNbtData = attachmentNbtData;
@@ -76,11 +76,11 @@ abstract class SerializableChunkDataMixin {
 		ProtoChunk chunk = cir.getReturnValue();
 
 		if (chunk != null && attachmentNbtData != null) {
-			var nbt = new CompoundTag();
-			nbt.put(AttachmentTarget.NBT_ATTACHMENT_KEY, attachmentNbtData);
+			var attachmentNbtData = new CompoundTag();
+			attachmentNbtData.put(AttachmentTarget.NBT_ATTACHMENT_KEY, this.attachmentNbtData);
 
 			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
-				ValueInput input = TagValueInput.create(reporter, serverLevel.registryAccess(), nbt);
+				ValueInput input = TagValueInput.create(reporter, serverLevel.registryAccess(), attachmentNbtData);
 				((AttachmentTargetImpl) chunk).fabric_readAttachmentsFromNbt(input);
 			}
 		}

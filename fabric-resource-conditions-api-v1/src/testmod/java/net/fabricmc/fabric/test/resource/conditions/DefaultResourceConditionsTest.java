@@ -43,8 +43,8 @@ public class DefaultResourceConditionsTest {
 	private static final ResourceKey<? extends Registry<Object>> UNKNOWN_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(TESTMOD_ID, "unknown_registry"));
 	private static final Identifier UNKNOWN_ENTRY_ID = Identifier.fromNamespaceAndPath(TESTMOD_ID, "tiny_potato");
 
-	private void expectCondition(GameTestHelper context, String name, ResourceCondition condition, boolean expected) {
-		HolderLookup.Provider registryLookup = context.getLevel().registryAccess();
+	private void expectCondition(GameTestHelper helper, String name, ResourceCondition condition, boolean expected) {
+		HolderLookup.Provider registryLookup = helper.getLevel().registryAccess();
 		boolean actual = condition.test(new RegistryOps.HolderLookupAdapter(registryLookup));
 
 		if (actual != expected) {
@@ -56,7 +56,7 @@ public class DefaultResourceConditionsTest {
 	}
 
 	@GameTest
-	public void featuresEnabled(GameTestHelper context) {
+	public void featuresEnabled(GameTestHelper helper) {
 		ResourceCondition vanilla = ResourceConditions.featuresEnabled(FeatureFlags.VANILLA);
 		// Reminder: GameTest enables all features by default
 		ResourceCondition vanillaAndRedstoneExperiments = ResourceConditions.featuresEnabled(FeatureFlags.VANILLA, FeatureFlags.REDSTONE_EXPERIMENTS);
@@ -65,30 +65,30 @@ public class DefaultResourceConditionsTest {
 		// Passing an array to avoid type ambiguity
 		ResourceCondition empty = ResourceConditions.featuresEnabled(new FeatureFlag[]{});
 
-		expectCondition(context, "vanilla only", vanilla, true);
-		expectCondition(context, "vanilla and redstone experiments", vanillaAndRedstoneExperiments, true);
-		expectCondition(context, "unknown feature ID", unknown, false);
-		expectCondition(context, "no feature", empty, true);
+		expectCondition(helper, "vanilla only", vanilla, true);
+		expectCondition(helper, "vanilla and redstone experiments", vanillaAndRedstoneExperiments, true);
+		expectCondition(helper, "unknown feature ID", unknown, false);
+		expectCondition(helper, "no feature", empty, true);
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void registryContains(GameTestHelper context) {
+	public void registryContains(GameTestHelper helper) {
 		// Dynamic registry (in vitro; separate testmod needs to determine if this actually functions while loading)
 		ResourceCondition plains = ResourceConditions.registryContains(Biomes.PLAINS);
 		ResourceCondition unknownBiome = ResourceConditions.registryContains(ResourceKey.create(Registries.BIOME, UNKNOWN_ENTRY_ID));
 		ResourceCondition emptyDynamic = ResourceConditions.registryContains(Registries.BIOME, new Identifier[]{});
 
-		expectCondition(context, "plains", plains, true);
-		expectCondition(context, "unknown biome", unknownBiome, false);
-		expectCondition(context, "biome registry, empty check", emptyDynamic, true);
+		expectCondition(helper, "plains", plains, true);
+		expectCondition(helper, "unknown biome", unknownBiome, false);
+		expectCondition(helper, "biome registry, empty check", emptyDynamic, true);
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void tagsPopulated(GameTestHelper context) {
+	public void tagsPopulated(GameTestHelper helper) {
 		// Static registry
 		ResourceCondition dirt = ResourceConditions.tagsPopulated(Registries.BLOCK, BlockTags.DIRT);
 		ResourceCondition dirtAndUnknownBlock = ResourceConditions.tagsPopulated(Registries.BLOCK, BlockTags.DIRT, TagKey.create(Registries.BLOCK, UNKNOWN_ENTRY_ID));
@@ -96,21 +96,21 @@ public class DefaultResourceConditionsTest {
 		ResourceCondition unknownRegistry = ResourceConditions.tagsPopulated(UNKNOWN_REGISTRY_KEY, TagKey.create(UNKNOWN_REGISTRY_KEY, UNKNOWN_ENTRY_ID));
 		ResourceCondition emptyUnknown = ResourceConditions.tagsPopulated(UNKNOWN_REGISTRY_KEY);
 
-		expectCondition(context, "dirt tag", dirt, true);
-		expectCondition(context, "dirt tag and unknown tag", dirtAndUnknownBlock, false);
-		expectCondition(context, "block registry, empty tag checks", emptyBlock, true);
-		expectCondition(context, "unknown registry, non-empty tag checks", unknownRegistry, false);
-		expectCondition(context, "unknown registry, empty tag checks", emptyUnknown, true);
+		expectCondition(helper, "dirt tag", dirt, true);
+		expectCondition(helper, "dirt tag and unknown tag", dirtAndUnknownBlock, false);
+		expectCondition(helper, "block registry, empty tag checks", emptyBlock, true);
+		expectCondition(helper, "unknown registry, non-empty tag checks", unknownRegistry, false);
+		expectCondition(helper, "unknown registry, empty tag checks", emptyUnknown, true);
 
 		// Dynamic registry (in vitro; separate testmod needs to determine if this actually functions while loading)
 		ResourceCondition forest = ResourceConditions.tagsPopulated(Registries.BIOME, BiomeTags.IS_FOREST);
 		ResourceCondition unknownBiome = ResourceConditions.tagsPopulated(Registries.BIOME, TagKey.create(Registries.BIOME, UNKNOWN_ENTRY_ID));
 		ResourceCondition emptyDynamic = ResourceConditions.tagsPopulated(Registries.BIOME);
 
-		expectCondition(context, "forest tag", forest, true);
-		expectCondition(context, "unknown biome tag", unknownBiome, false);
-		expectCondition(context, "biome registry, empty tag check", emptyDynamic, true);
+		expectCondition(helper, "forest tag", forest, true);
+		expectCondition(helper, "unknown biome tag", unknownBiome, false);
+		expectCondition(helper, "biome registry, empty tag check", emptyDynamic, true);
 
-		context.succeed();
+		helper.succeed();
 	}
 }

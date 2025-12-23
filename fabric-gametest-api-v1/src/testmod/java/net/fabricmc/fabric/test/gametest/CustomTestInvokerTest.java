@@ -29,16 +29,16 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class CustomTestInvokerTest implements CustomTestMethodInvoker {
 	@Override
-	public void invokeTestMethod(GameTestHelper context, Method method) throws ReflectiveOperationException {
-		context.setBlock(0, 1, 0, Blocks.DIAMOND_BLOCK);
+	public void invokeTestMethod(GameTestHelper helper, Method method) throws ReflectiveOperationException {
+		helper.setBlock(0, 1, 0, Blocks.DIAMOND_BLOCK);
 
-		method.invoke(this, context, Blocks.DIAMOND_BLOCK);
+		method.invoke(this, helper, Blocks.DIAMOND_BLOCK);
 	}
 
 	@GameTest
-	public void testCustomInvoker(GameTestHelper context, Block testBlock) {
-		context.succeedWhen(() ->
-				context.assertBlock(new BlockPos(0, 1, 0), (block) -> block == testBlock, (b) -> Component.literal("Expect block to be diamond"))
+	public void testCustomInvoker(GameTestHelper helper, Block testBlock) {
+		helper.succeedWhen(() ->
+				helper.assertBlock(new BlockPos(0, 1, 0), (block) -> block == testBlock, (b) -> Component.literal("Expect block to be diamond"))
 		);
 	}
 }

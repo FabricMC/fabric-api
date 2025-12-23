@@ -38,7 +38,7 @@
  * Menus can be opened using
  * {@link net.minecraft.world.entity.player.Player#openMenu(net.minecraft.world.MenuProvider)}.
  * Note that calling it on the logical client does nothing. To open an extended menu, the factory passed in
- * should be an {@link net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory}, or a
+ * should be an {@link net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider}, or a
  * {@link net.minecraft.world.SimpleMenuProvider} that wraps such factory.
  *
  * <h2>Overwriting menus</h2>

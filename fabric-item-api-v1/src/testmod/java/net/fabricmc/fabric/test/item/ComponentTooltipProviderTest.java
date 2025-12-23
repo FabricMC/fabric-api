@@ -79,16 +79,16 @@ public class ComponentTooltipProviderTest implements ModInitializer {
 	}
 
 	private interface TestComponent extends TooltipProvider {
-		TestComponent ONE = (context, componentConsumer, type, components) -> {
+		TestComponent ONE = (context, componentConsumer, flag, components) -> {
 			for (int i = 0; i < 14; i++) {
 				componentConsumer.accept(Component.literal("This Item is Happy :)").withStyle(s -> s.withColor(0xFFFF00).withItalic(true)));
 			}
 		};
 
-		TestComponent TWO = (context, componentConsumer, type, components) -> componentConsumer.accept(Component.literal("This Item is Sad :("));
+		TestComponent TWO = (context, componentConsumer, flag, components) -> componentConsumer.accept(Component.literal("This Item is Sad :("));
 
-		TestComponent THREE = (context, componentConsumer, type, components) -> componentConsumer.accept(Component.literal("This Item is Sadder :'("));
+		TestComponent THREE = (context, componentConsumer, flag, components) -> componentConsumer.accept(Component.literal("This Item is Sadder :'("));
 
-		TestComponent FOUR = (context, componentConsumer, type, components) -> componentConsumer.accept(Component.literal("This Item is the Saddest :"));
+		TestComponent FOUR = (context, componentConsumer, flag, components) -> componentConsumer.accept(Component.literal("This Item is the Saddest :"));
 	}
 }

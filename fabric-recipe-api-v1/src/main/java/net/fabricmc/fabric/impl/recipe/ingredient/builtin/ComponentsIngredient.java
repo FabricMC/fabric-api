@@ -95,8 +95,8 @@ public class ComponentsIngredient implements CustomIngredient {
 		);
 	}
 
-	private SlotDisplay createEntryDisplay(Holder<Item> entry) {
-		ItemStack stack = entry.value().getDefaultInstance();
+	private SlotDisplay createEntryDisplay(Holder<Item> holder) {
+		ItemStack stack = holder.value().getDefaultInstance();
 		stack.applyComponentsAndValidate(components);
 		return new SlotDisplay.ItemStackSlotDisplay(stack);
 	}

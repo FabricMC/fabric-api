@@ -110,8 +110,8 @@ abstract class ScreenMixin implements ScreenExtensions {
 	private Event<ScreenMouseEvents.AfterMouseScroll> afterMouseScrollEvent;
 
 	@Inject(method = "renderWithTooltipAndSubtitles", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", shift = At.Shift.AFTER))
-	public final void renderWithTooltip(GuiGraphics context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
-		ScreenEvents.afterBackground(((Screen) (Object) this)).invoker().afterBackground((Screen) (Object) this, context, mouseX, mouseY, deltaTicks);
+	public final void renderWithTooltip(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+		ScreenEvents.afterBackground(((Screen) (Object) this)).invoker().afterBackground((Screen) (Object) this, graphics, mouseX, mouseY, deltaTicks);
 	}
 
 	@Inject(method = "init(II)V", at = @At("HEAD"))

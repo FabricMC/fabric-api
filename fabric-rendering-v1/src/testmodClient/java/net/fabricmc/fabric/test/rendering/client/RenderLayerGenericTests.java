@@ -98,7 +98,7 @@ public class RenderLayerGenericTests implements ClientModInitializer {
 		}
 
 		@Override
-		public void submit(PoseStack matrices, SubmitNodeCollector nodeCollector, int light, AvatarRenderState state, float limbAngle, float limbDistance) {
+		public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, AvatarRenderState state, float limbAngle, float limbDistance) {
 		}
 	}
 
@@ -108,7 +108,7 @@ public class RenderLayerGenericTests implements ClientModInitializer {
 		}
 
 		@Override
-		public void submit(PoseStack matrices, SubmitNodeCollector nodeCollector, int light, AvatarRenderState state, float limbAngle, float limbDistance) {
+		public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, AvatarRenderState state, float limbAngle, float limbDistance) {
 		}
 	}
 
@@ -118,7 +118,7 @@ public class RenderLayerGenericTests implements ClientModInitializer {
 		}
 
 		@Override
-		public void submit(PoseStack matrices, SubmitNodeCollector nodeCollector, int light, ArmorStandRenderState state, float limbAngle, float limbDistance) {
+		public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int light, ArmorStandRenderState state, float limbAngle, float limbDistance) {
 		}
 	}
 }

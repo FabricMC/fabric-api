@@ -28,9 +28,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 @Deprecated
 public interface HudRenderCallback {
-	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) -> (context, deltaTracker) -> {
+	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) -> (graphics, deltaTracker) -> {
 		for (HudRenderCallback event : listeners) {
-			event.onHudRender(context, deltaTracker);
+			event.onHudRender(graphics, deltaTracker);
 		}
 	});
 

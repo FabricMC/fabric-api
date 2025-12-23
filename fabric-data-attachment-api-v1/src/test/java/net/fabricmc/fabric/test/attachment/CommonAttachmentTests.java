@@ -166,14 +166,14 @@ public class CommonAttachmentTests {
 		);
 		var map = new IdentityHashMap<AttachmentType<?>, Object>();
 		map.put(dummy, 0.5d);
-		RegistryAccess drm = mockDRM();
-		TagValueOutput view = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, drm);
+		RegistryAccess ra = mockRA();
+		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, ra);
 
-		AttachmentSerializingImpl.serializeAttachmentData(view, map);
-		assertTrue(view.buildResult().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
-		assertTrue(view.buildResult().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElseThrow().contains(dummy.identifier().toString()));
+		AttachmentSerializingImpl.serializeAttachmentData(output, map);
+		assertTrue(output.buildResult().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+		assertTrue(output.buildResult().getCompound(AttachmentTarget.NBT_ATTACHMENT_KEY).orElseThrow().contains(dummy.identifier().toString()));
 
-		map = AttachmentSerializingImpl.deserializeAttachmentData(TagValueInput.create(ProblemReporter.DISCARDING, drm, view.buildResult()));
+		map = AttachmentSerializingImpl.deserializeAttachmentData(TagValueInput.create(ProblemReporter.DISCARDING, ra, output.buildResult()));
 		assertEquals(1, map.size());
 		Map.Entry<AttachmentType<?>, Object> entry = map.entrySet().stream().findFirst().orElseThrow();
 		// in this case the key should be the exact same object
@@ -184,22 +184,22 @@ public class CommonAttachmentTests {
 
 	@Test
 	void deserializeNull() {
-		var nbt = new CompoundTag();
+		var tag = new CompoundTag();
 		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(null));
 
-		nbt.put(Identifier.withDefaultNamespace("test").toString(), new CompoundTag());
-		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(TagValueInput.create(ProblemReporter.DISCARDING, mockDRM(), nbt)));
+		tag.put(Identifier.withDefaultNamespace("test").toString(), new CompoundTag());
+		assertNull(AttachmentSerializingImpl.deserializeAttachmentData(TagValueInput.create(ProblemReporter.DISCARDING, mockRA(), tag)));
 	}
 
 	@Test
 	void serializeNullOrEmpty() {
-		TagValueOutput view = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, mockDRM());
-		AttachmentSerializingImpl.serializeAttachmentData(view, null);
-		assertFalse(view.buildResult().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, mockRA());
+		AttachmentSerializingImpl.serializeAttachmentData(output, null);
+		assertFalse(output.buildResult().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
 
-		view = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, mockDRM());
-		AttachmentSerializingImpl.serializeAttachmentData(view, new IdentityHashMap<>());
-		assertFalse(view.buildResult().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
+		output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, mockRA());
+		AttachmentSerializingImpl.serializeAttachmentData(output, new IdentityHashMap<>());
+		assertFalse(output.buildResult().contains(AttachmentTarget.NBT_ATTACHMENT_KEY));
 	}
 
 	@Test
@@ -227,9 +227,9 @@ public class CommonAttachmentTests {
 
 	@Test
 	void testEntityPersistence() {
-		RegistryAccess drm = mockDRM();
+		RegistryAccess ra = mockRA();
 		Level mockLevel = mock(Level.class);
-		when(mockLevel.registryAccess()).thenReturn(drm);
+		when(mockLevel.registryAccess()).thenReturn(ra);
 		Entity entity = new Marker(EntityType.MARKER, mockLevel);
 		assertFalse(entity.hasAttached(PERSISTENT));
 
@@ -240,7 +240,7 @@ public class CommonAttachmentTests {
 
 		entity = new Marker(EntityType.MARKER, mockLevel); // fresh object, like on restart
 		entity.setLevelCallback(mock());
-		entity.load(TagValueInput.create(ProblemReporter.DISCARDING, drm, fakeSave.buildResult()));
+		entity.load(TagValueInput.create(ProblemReporter.DISCARDING, ra, fakeSave.buildResult()));
 		assertTrue(entity.hasAttached(PERSISTENT));
 		assertEquals(expected, entity.getAttached(PERSISTENT));
 	}
@@ -252,9 +252,9 @@ public class CommonAttachmentTests {
 
 		int expected = 1;
 		blockEntity.setAttached(PERSISTENT, expected);
-		CompoundTag fakeSave = blockEntity.saveWithFullMetadata(mockDRM());
+		CompoundTag fakeSave = blockEntity.saveWithFullMetadata(mockRA());
 
-		blockEntity = BlockEntity.loadStatic(BlockPos.ZERO, Blocks.BELL.defaultBlockState(), fakeSave, mockDRM());
+		blockEntity = BlockEntity.loadStatic(BlockPos.ZERO, Blocks.BELL.defaultBlockState(), fakeSave, mockRA());
 		assertNotNull(blockEntity);
 		assertTrue(blockEntity.hasAttached(PERSISTENT));
 		assertEquals(expected, blockEntity.getAttached(PERSISTENT));
@@ -263,10 +263,10 @@ public class CommonAttachmentTests {
 	@Test
 	void testWorldPersistentState() {
 		// Trying to simulate actual saving and loading for the world is too hard
-		RegistryAccess drm = mockDRM();
+		RegistryAccess ra = mockRA();
 
 		ServerLevel level = mockAndDisableSync(ServerLevel.class);
-		when(level.registryAccess()).thenReturn(drm);
+		when(level.registryAccess()).thenReturn(ra);
 
 		AttachmentSavedData state = new AttachmentSavedData(level);
 		assertFalse(level.hasAttached(PERSISTENT));
@@ -275,23 +275,23 @@ public class CommonAttachmentTests {
 		int expected = 1;
 		level.setAttached(PERSISTENT, expected);
 		assertTrue(state.isDirty());
-		CompoundTag fakeSave = (CompoundTag) AttachmentSavedData.codec(level).encodeStart(RegistryOps.create(NbtOps.INSTANCE, drm), state).getOrThrow();
+		CompoundTag fakeSave = (CompoundTag) AttachmentSavedData.codec(level).encodeStart(RegistryOps.create(NbtOps.INSTANCE, ra), state).getOrThrow();
 		assertEquals("{\"fabric:attachments\":{\"example:persistent\":1}}", fakeSave.toString());
 
 		level = mockAndDisableSync(ServerLevel.class);
-		when(level.registryAccess()).thenReturn(drm);
+		when(level.registryAccess()).thenReturn(ra);
 
-		AttachmentSavedData.codec(level).decode(RegistryOps.create(NbtOps.INSTANCE, drm), fakeSave).getOrThrow();
+		AttachmentSavedData.codec(level).decode(RegistryOps.create(NbtOps.INSTANCE, ra), fakeSave).getOrThrow();
 		assertTrue(level.hasAttached(PERSISTENT));
 		assertEquals(expected, level.getAttached(PERSISTENT));
 	}
 
 	@Test
 	void applyToInvalidTarget() {
-		RegistryAccess drm = mockDRM();
+		RegistryAccess ra = mockRA();
 
 		ServerLevel level = mock(ServerLevel.class);
-		when(level.registryAccess()).thenReturn(drm);
+		when(level.registryAccess()).thenReturn(ra);
 		when(level.dimension()).thenReturn(Level.END);
 
 		BlockEntity blockEntity = new ChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState());
@@ -310,9 +310,9 @@ public class CommonAttachmentTests {
 	 * so testing is handled by the testmod instead.
 	 */
 
-	private static RegistryAccess mockDRM() {
-		RegistryAccess drm = mock(RegistryAccess.class);
-		when(drm.createSerializationContext(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.create(NbtOps.INSTANCE, drm));
-		return drm;
+	private static RegistryAccess mockRA() {
+		RegistryAccess ra = mock(RegistryAccess.class);
+		when(ra.createSerializationContext(any())).thenReturn((RegistryOps<Object>) (Object) RegistryOps.create(NbtOps.INSTANCE, ra));
+		return ra;
 	}
 }

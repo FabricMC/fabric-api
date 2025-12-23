@@ -39,9 +39,9 @@ public class ShapelessRecipeMatchTests {
 	 * The recipe requires at least one undamaged pickaxe.
 	 */
 	@GameTest
-	public void testShapelessMatch(GameTestHelper context) {
+	public void testShapelessMatch(GameTestHelper helper) {
 		ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath("fabric-recipe-api-v1-testmod", "test_shapeless_match"));
-		ShapelessRecipe recipe = (ShapelessRecipe) context.getLevel().recipeAccess().byKey(recipeKey).get().value();
+		ShapelessRecipe recipe = (ShapelessRecipe) helper.getLevel().recipeAccess().byKey(recipeKey).get().value();
 
 		ItemStack undamagedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
 		ItemStack damagedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
@@ -49,17 +49,17 @@ public class ShapelessRecipeMatchTests {
 
 		List<ItemStack> damagedPickaxes = Collections.nCopies(9, damagedPickaxe);
 
-		if (recipe.matches(CraftingInput.of(3, 3, damagedPickaxes), context.getLevel())) {
+		if (recipe.matches(CraftingInput.of(3, 3, damagedPickaxes), helper.getLevel())) {
 			throw new GameTestAssertException(Component.literal("Recipe should not match with only damaged pickaxes"), 0);
 		}
 
 		List<ItemStack> oneUndamagedPickaxe = new LinkedList<>(damagedPickaxes);
 		oneUndamagedPickaxe.set(0, undamagedPickaxe);
 
-		if (!recipe.matches(CraftingInput.of(3, 3, oneUndamagedPickaxe), context.getLevel())) {
+		if (!recipe.matches(CraftingInput.of(3, 3, oneUndamagedPickaxe), helper.getLevel())) {
 			throw new GameTestAssertException(Component.literal("Recipe should match with at least one undamaged pickaxe"), 0);
 		}
 
-		context.succeed();
+		helper.succeed();
 	}
 }

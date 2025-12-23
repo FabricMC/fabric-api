@@ -53,23 +53,23 @@ public class PictureInPictureRendererTest implements ClientModInitializer, Fabri
 
 		// TODO: Migrate to new HUD API once available
 		//noinspection deprecation
-		HudRenderCallback.EVENT.register((context, deltaTracker) -> {
+		HudRenderCallback.EVENT.register((graphics, deltaTracker) -> {
 			// render it twice to test that PiPs can be added multiple times in the same frame
-			context.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 20, 0, 40, 20, new ScreenRectangle(20, 0, 40, 20)));
-			context.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.RED, 40, 0, 60, 20, new ScreenRectangle(40, 0, 60, 20)));
+			graphics.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.BLUE, 20, 0, 40, 20, new ScreenRectangle(20, 0, 40, 20)));
+			graphics.guiRenderState.submitPicturesInPictureState(new BannerGuiElementRenderState(DyeColor.RED, 40, 0, 60, 20, new ScreenRectangle(40, 0, 60, 20)));
 
 			// also render some vanilla PiPs to check that they still work and can be rendered multiple times
-			context.guiRenderState.submitPicturesInPictureState(createSignState(60, WoodType.BIRCH));
-			context.guiRenderState.submitPicturesInPictureState(createSignState(80, WoodType.DARK_OAK));
+			graphics.guiRenderState.submitPicturesInPictureState(createSignState(60, WoodType.BIRCH));
+			graphics.guiRenderState.submitPicturesInPictureState(createSignState(80, WoodType.DARK_OAK));
 		});
 
 		// Test that InventoryScreen.drawEntity works with the same type of entity more than once
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (screen instanceof InventoryScreen) {
-				ScreenEvents.afterRender(screen).register((screen1, context, mouseX, mouseY, tickDelta) -> {
+				ScreenEvents.afterRender(screen).register((screen1, graphics, mouseX, mouseY, tickDelta) -> {
 					// no need to modify anything about this player, since they're in different locations they will be
 					// looking towards the mouse at different angles
-					InventoryScreen.renderEntityInInventoryFollowsMouse(context, 26, 8, 75, 78, 30, 0.0625F, mouseX, mouseY, client.player);
+					InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, 26, 8, 75, 78, 30, 0.0625F, mouseX, mouseY, client.player);
 				});
 			}
 		});

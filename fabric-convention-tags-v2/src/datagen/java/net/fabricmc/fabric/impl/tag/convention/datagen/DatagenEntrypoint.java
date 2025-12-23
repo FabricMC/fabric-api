@@ -33,7 +33,7 @@ public class DatagenEntrypoint implements DataGeneratorEntrypoint {
 		final FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
 		BlockTagsGenerator blockTags = pack.addProvider(BlockTagsGenerator::new);
-		pack.addProvider((output, wrapperLookup) -> new ItemTagsGenerator(output, wrapperLookup, blockTags));
+		pack.addProvider((output, registriesFuture) -> new ItemTagsGenerator(output, registriesFuture, blockTags));
 		pack.addProvider(FluidTagsGenerator::new);
 		pack.addProvider(EnchantmentTagsGenerator::new);
 		pack.addProvider(BiomeTagsGenerator::new);

@@ -61,11 +61,11 @@ public final class EnumRuleEntry<E extends Enum<E>> extends EditGameRulesScreen.
 	}
 
 	@Override
-	public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		this.renderLabel(context, this.getContentY(), this.getContentX());
+	public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float a) {
+		this.renderLabel(graphics, this.getContentY(), this.getContentX());
 
 		this.button.setX(this.getContentRight() - 44);
 		this.button.setY(this.getContentY());
-		this.button.render(context, mouseX, mouseY, tickDelta);
+		this.button.render(graphics, mouseX, mouseY, a);
 	}
 }
