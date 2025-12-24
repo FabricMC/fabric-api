@@ -38,9 +38,9 @@ public class FabricDimensionTest implements ModInitializer {
 	public void onInitialize() {
 		Registry.register(BuiltInRegistries.CHUNK_GENERATOR, Identifier.fromNamespaceAndPath("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
 
-		DimensionModifications.create(Identifier.fromNamespaceAndPath("fabric_dimension", "purple_sky"))
+		DimensionModifications.create(Identifier.fromNamespaceAndPath("fabric_dimension", "purple_clouds"))
 				.add(ModificationPhase.REPLACEMENTS, DimensionSelectors.all(), (dimensionSelectionContext, dimensionModificationContext) -> {
-					dimensionModificationContext.getAttributes().set(EnvironmentAttributes.CLOUD_COLOR, 0x800080);
+					dimensionModificationContext.getAttributes().set(EnvironmentAttributes.CLOUD_COLOR, 0xFFE580FF);
 				});
 	}
 }
