@@ -29,7 +29,7 @@ import net.minecraft.server.level.FullChunkStatus;
 import net.minecraft.world.level.ChunkPos;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
@@ -59,7 +59,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 			}
 		});
 
-		ServerChunkEvents.CHUNK_GENERATE.register((level, chunk) -> {
+		ServerChunkLifecycleEvents.CHUNK_GENERATE.register((level, chunk) -> {
 			generated.mergeInt(level.dimension().identifier(), 1, Integer::sum);
 		});
 	}
@@ -74,7 +74,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		final Object2ObjectMap<Identifier, Object2IntMap<FullChunkStatus>> levelsChunkLevelEvents = new Object2ObjectOpenHashMap<>();
 		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<ChunkStatusEvent>> levelsChunkStatusTracker = new Object2ObjectOpenHashMap<>();
 
-		ServerChunkEvents.CHUNK_STATUS_CHANGE.register((level, levelChunk, oldChunkStatus, newChunkStatus) -> {
+		ServerChunkLifecycleEvents.CHUNK_STATUS_CHANGE.register((level, levelChunk, oldChunkStatus, newChunkStatus) -> {
 			final Identifier dimensionId = level.dimension().identifier();
 
 			if (!level.getServer().isSameThread()) {

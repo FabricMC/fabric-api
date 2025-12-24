@@ -35,7 +35,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityLifecycleEvents;
 
 /**
  * This is a server only mixin for good reason:
@@ -55,7 +55,7 @@ abstract class LevelChunkMixin {
 		// Only fire the load event if the block entity has actually changed
 		if (blockEntity != null && blockEntity != removedBlockEntity) {
 			if (this.getLevel() instanceof ServerLevel) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerLevel) this.getLevel());
+				ServerBlockEntityLifecycleEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerLevel) this.getLevel());
 			}
 		}
 
@@ -65,7 +65,7 @@ abstract class LevelChunkMixin {
 	@Inject(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;setRemoved()V", shift = At.Shift.AFTER))
 	private void onRemoveBlockEntity(BlockEntity blockEntity, CallbackInfo info, @Local(ordinal = 1) BlockEntity removedBlockEntity) {
 		if (this.getLevel() instanceof ServerLevel) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ServerLevel) this.getLevel());
+			ServerBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ServerLevel) this.getLevel());
 		}
 	}
 
@@ -76,7 +76,7 @@ abstract class LevelChunkMixin {
 		@Nullable final V removed = map.remove(key);
 
 		if (removed != null && this.getLevel() instanceof ServerLevel) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ServerLevel) this.getLevel());
+			ServerBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ServerLevel) this.getLevel());
 		}
 
 		return removed;
@@ -85,7 +85,7 @@ abstract class LevelChunkMixin {
 	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/entity/BlockEntity;setRemoved()V"))
 	private void onRemoveBlockEntity(BlockPos pos, CallbackInfo ci, @Local @Nullable BlockEntity removed) {
 		if (removed != null && this.getLevel() instanceof ServerLevel) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ServerLevel) this.getLevel());
+			ServerBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ServerLevel) this.getLevel());
 		}
 	}
 }

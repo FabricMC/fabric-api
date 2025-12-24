@@ -36,7 +36,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkLifecycleEvents;
 
 @Mixin(ClientChunkCache.class)
 public abstract class ClientChunkCacheMixin {
@@ -46,19 +46,19 @@ public abstract class ClientChunkCacheMixin {
 
 	@Inject(method = "replaceWithPacketData", at = @At("TAIL"))
 	private void onChunkLoad(int x, int z, FriendlyByteBuf friendlyByteBuf, Map<Heightmap.Types, long[]> highmap, Consumer<ClientboundLevelChunkPacketData.BlockEntityTagOutput> consumer, CallbackInfoReturnable<LevelChunk> info) {
-		ClientChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(this.level, info.getReturnValue());
+		ClientChunkLifecycleEvents.CHUNK_LOAD.invoker().onChunkLoad(this.level, info.getReturnValue());
 	}
 
 	@Inject(method = "replaceWithPacketData", at = @At(value = "NEW", target = "net/minecraft/world/level/chunk/LevelChunk", shift = At.Shift.BEFORE))
 	private void onChunkUnload(int x, int z, FriendlyByteBuf buf, Map<Heightmap.Types, long[]> highmap, Consumer<ClientboundLevelChunkPacketData.BlockEntityTagOutput> consumer, CallbackInfoReturnable<LevelChunk> info, @Local LevelChunk levelChunk) {
 		if (levelChunk != null) {
-			ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, levelChunk);
+			ClientChunkLifecycleEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, levelChunk);
 		}
 	}
 
 	@Inject(method = "drop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientChunkCache$Storage;drop(ILnet/minecraft/world/level/chunk/LevelChunk;)V"))
 	private void onChunkUnload(ChunkPos pos, CallbackInfo ci, @Local LevelChunk chunk) {
-		ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, chunk);
+		ClientChunkLifecycleEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, chunk);
 	}
 
 	@Inject(
@@ -70,7 +70,7 @@ public abstract class ClientChunkCacheMixin {
 	)
 	private void onUpdateLoadDistance(int loadDistance, CallbackInfo ci, @Local ClientChunkCache.Storage clientChunkCacheStorage, @Local LevelChunk oldChunk, @Local ChunkPos chunkPos) {
 		if (!clientChunkCacheStorage.inRange(chunkPos.x, chunkPos.z)) {
-			ClientChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, oldChunk);
+			ClientChunkLifecycleEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, oldChunk);
 		}
 	}
 }

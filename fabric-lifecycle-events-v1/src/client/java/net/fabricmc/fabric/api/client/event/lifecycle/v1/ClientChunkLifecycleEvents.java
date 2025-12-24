@@ -22,8 +22,8 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public final class ClientChunkEvents {
-	private ClientChunkEvents() {
+public final class ClientChunkLifecycleEvents {
+	private ClientChunkLifecycleEvents() {
 	}
 
 	/**
@@ -31,7 +31,7 @@ public final class ClientChunkEvents {
 	 *
 	 * <p>When this event is called, the chunk is already in the level.
 	 */
-	public static final Event<ClientChunkEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ClientChunkEvents.Load.class, callbacks -> (clientLevel, chunk) -> {
+	public static final Event<ClientChunkLifecycleEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ClientChunkLifecycleEvents.Load.class, callbacks -> (clientLevel, chunk) -> {
 		for (Load callback : callbacks) {
 			callback.onChunkLoad(clientLevel, chunk);
 		}
@@ -42,7 +42,7 @@ public final class ClientChunkEvents {
 	 *
 	 * <p>When this event is called, the chunk is still present in the level.
 	 */
-	public static final Event<ClientChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ClientChunkEvents.Unload.class, callbacks -> (clientLevel, chunk) -> {
+	public static final Event<ClientChunkLifecycleEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ClientChunkLifecycleEvents.Unload.class, callbacks -> (clientLevel, chunk) -> {
 		for (Unload callback : callbacks) {
 			callback.onChunkUnload(clientLevel, chunk);
 		}

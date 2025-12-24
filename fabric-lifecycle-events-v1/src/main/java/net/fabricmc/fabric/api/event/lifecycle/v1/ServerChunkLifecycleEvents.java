@@ -27,8 +27,8 @@ import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public final class ServerChunkEvents {
-	private ServerChunkEvents() {
+public final class ServerChunkLifecycleEvents {
+	private ServerChunkLifecycleEvents() {
 	}
 
 	/**
@@ -38,9 +38,9 @@ public final class ServerChunkEvents {
 	 *
 	 * <p>Note that this event is not called for chunks that become accessible without previously being unloaded.
 	 *
-	 * @see ServerChunkEvents#CHUNK_STATUS_CHANGE
+	 * @see ServerChunkLifecycleEvents#CHUNK_STATUS_CHANGE
 	 */
-	public static final Event<ServerChunkEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ServerChunkEvents.Load.class, callbacks -> (serverLevel, chunk) -> {
+	public static final Event<ServerChunkLifecycleEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ServerChunkLifecycleEvents.Load.class, callbacks -> (serverLevel, chunk) -> {
 		for (Load callback : callbacks) {
 			callback.onChunkLoad(serverLevel, chunk);
 		}
@@ -51,7 +51,7 @@ public final class ServerChunkEvents {
 	 *
 	 * <p>When this event is called, the chunk is already in the level.
 	 */
-	public static final Event<ServerChunkEvents.Generate> CHUNK_GENERATE = EventFactory.createArrayBacked(ServerChunkEvents.Generate.class, callbacks -> (serverLevel, chunk) -> {
+	public static final Event<ServerChunkLifecycleEvents.Generate> CHUNK_GENERATE = EventFactory.createArrayBacked(ServerChunkLifecycleEvents.Generate.class, callbacks -> (serverLevel, chunk) -> {
 		for (Generate callback : callbacks) {
 			callback.onChunkGenerate(serverLevel, chunk);
 		}
@@ -64,9 +64,9 @@ public final class ServerChunkEvents {
 	 *
 	 * <p>Note that the server typically unloads chunks when the chunk's load level goes above {@link ChunkLevel#MAX_LEVEL}
 	 * (and not immediately when the chunk becomes inaccessible). To know when a chunk first becomes inaccessible, see
-	 * {@link ServerChunkEvents#CHUNK_STATUS_CHANGE}.
+	 * {@link ServerChunkLifecycleEvents#CHUNK_STATUS_CHANGE}.
 	 */
-	public static final Event<ServerChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ServerChunkEvents.Unload.class, callbacks -> (serverLevel, chunk) -> {
+	public static final Event<ServerChunkLifecycleEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ServerChunkLifecycleEvents.Unload.class, callbacks -> (serverLevel, chunk) -> {
 		for (Unload callback : callbacks) {
 			callback.onChunkUnload(serverLevel, chunk);
 		}

@@ -26,7 +26,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
@@ -43,7 +43,7 @@ public final class ClientEntityLifecycleTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ClientEntityEvents.ENTITY_LOAD.register((entity, level) -> {
+		ClientEntityLifecycleEvents.ENTITY_LOAD.register((entity, level) -> {
 			this.clientEntities.add(entity);
 
 			if (PRINT_CLIENT_ENTITY_MESSAGES) {
@@ -51,7 +51,7 @@ public final class ClientEntityLifecycleTests implements ClientModInitializer {
 			}
 		});
 
-		ClientEntityEvents.ENTITY_UNLOAD.register((entity, level) -> {
+		ClientEntityLifecycleEvents.ENTITY_UNLOAD.register((entity, level) -> {
 			this.clientEntities.remove(entity);
 
 			if (PRINT_CLIENT_ENTITY_MESSAGES) {

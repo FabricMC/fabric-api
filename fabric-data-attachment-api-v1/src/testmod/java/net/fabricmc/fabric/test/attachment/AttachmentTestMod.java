@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 
 public class AttachmentTestMod implements ModInitializer {
@@ -120,7 +120,7 @@ public class AttachmentTestMod implements ModInitializer {
 			return InteractionResult.PASS;
 		});
 
-		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+		ServerEntityLifecycleEvents.ENTITY_LOAD.register((entity, world) -> {
 			entity.onAttachedSet(SYNCED_ITEM).register((oldValue, newValue) -> {
 				if (newValue != null && !newValue.equals(oldValue) && newValue.is(Items.BRICK)) {
 					entity.hurtServer(world, world.damageSources().generic(), 1);

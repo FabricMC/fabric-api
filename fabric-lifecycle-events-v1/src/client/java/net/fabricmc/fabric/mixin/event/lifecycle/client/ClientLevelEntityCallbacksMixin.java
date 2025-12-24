@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityLifecycleEvents;
 
 @Mixin(targets = "net.minecraft.client.multiplayer.ClientLevel$EntityCallbacks")
 abstract class ClientLevelEntityCallbacksMixin {
@@ -39,12 +39,12 @@ abstract class ClientLevelEntityCallbacksMixin {
 	// Call our load event after vanilla has loaded the entity
 	@Inject(method = "onTrackingStart(Lnet/minecraft/world/entity/Entity;)V", at = @At("TAIL"))
 	private void invokeLoadEntity(Entity entity, CallbackInfo ci) {
-		ClientEntityEvents.ENTITY_LOAD.invoker().onLoad(entity, this.this$0);
+		ClientEntityLifecycleEvents.ENTITY_LOAD.invoker().onLoad(entity, this.this$0);
 	}
 
 	// Call our unload event before vanilla does.
 	@Inject(method = "onTrackingEnd(Lnet/minecraft/world/entity/Entity;)V", at = @At("HEAD"))
 	private void invokeUnloadEntity(Entity entity, CallbackInfo ci) {
-		ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.this$0);
+		ClientEntityLifecycleEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.this$0);
 	}
 }

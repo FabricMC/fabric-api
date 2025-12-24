@@ -22,8 +22,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public final class ClientLevelEvents {
-	private ClientLevelEvents() {
+public final class ClientLevelLifecycleEvents {
+	private ClientLevelLifecycleEvents() {
 	}
 
 	/**

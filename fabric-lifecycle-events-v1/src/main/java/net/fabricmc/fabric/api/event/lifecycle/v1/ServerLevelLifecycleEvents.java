@@ -23,7 +23,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public final class ServerLevelEvents {
+public final class ServerLevelLifecycleEvents {
 	/**
 	 * Called just after a level is loaded by a Minecraft server.
 	 *
@@ -57,6 +57,6 @@ public final class ServerLevelEvents {
 		void onLevelUnload(MinecraftServer server, ServerLevel level);
 	}
 
-	private ServerLevelEvents() {
+	private ServerLevelLifecycleEvents() {
 	}
 }

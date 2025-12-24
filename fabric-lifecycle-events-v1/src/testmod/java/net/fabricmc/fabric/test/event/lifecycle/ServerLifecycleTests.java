@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 /**
@@ -43,11 +43,11 @@ public final class ServerLifecycleTests implements ModInitializer {
 			LOGGER.info("Stopped Server!");
 		});
 
-		ServerLevelEvents.LOAD.register((server, level) -> {
+		ServerLevelLifecycleEvents.LOAD.register((server, level) -> {
 			LOGGER.info("Loaded level " + level.dimension().identifier().toString());
 		});
 
-		ServerLevelEvents.UNLOAD.register((server, level) -> {
+		ServerLevelLifecycleEvents.UNLOAD.register((server, level) -> {
 			LOGGER.info("Unloaded level " + level.dimension().identifier().toString());
 		});
 

@@ -30,7 +30,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.status.ChunkStatusTasks;
 import net.minecraft.world.level.chunk.status.WorldGenContext;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkLifecycleEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.ChunkLevelTypeEventTracker;
 
 @Mixin(ChunkStatusTasks.class)
@@ -43,10 +43,10 @@ abstract class ChunkStatusTasksMixin {
 		LevelChunk levelChunk = (LevelChunk) callbackInfoReturnable.getReturnValue();
 
 		// We fire the event at TAIL since the chunk is guaranteed to be a LevelChunk then.
-		ServerChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(worldGenContext.level(), levelChunk);
+		ServerChunkLifecycleEvents.CHUNK_LOAD.invoker().onChunkLoad(worldGenContext.level(), levelChunk);
 
 		if (!(chunk instanceof ImposterProtoChunk)) {
-			ServerChunkEvents.CHUNK_GENERATE.invoker().onChunkGenerate(worldGenContext.level(), levelChunk);
+			ServerChunkLifecycleEvents.CHUNK_GENERATE.invoker().onChunkGenerate(worldGenContext.level(), levelChunk);
 		}
 
 		// Handles the case where the chunk becomes accessible from being completed unloaded, only fires if chunkHolder has been set to at least that level type
@@ -55,7 +55,7 @@ abstract class ChunkStatusTasksMixin {
 		for (int i = levelTypeTracker.fabric_getCurrentEventChunkStatus().ordinal(); i < chunkHolder.getFullStatus().ordinal(); i++) {
 			FullChunkStatus oldLevelType = fabric_CHUNK_LEVEL_TYPES[i];
 			FullChunkStatus newLevelType = fabric_CHUNK_LEVEL_TYPES[i+1];
-			ServerChunkEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange(worldGenContext.level(), levelChunk, oldLevelType, newLevelType);
+			ServerChunkLifecycleEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange(worldGenContext.level(), levelChunk, oldLevelType, newLevelType);
 			levelTypeTracker.fabric_setCurrentEventChunkStatus(newLevelType);
 		}
 	}

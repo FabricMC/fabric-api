@@ -22,13 +22,13 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityLifecycleEvents;
 import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
 
 public class AttachmentClientTestMod implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+		ClientEntityLifecycleEvents.ENTITY_LOAD.register((entity, world) -> {
 			if (entity instanceof LocalPlayer) {
 				entity.onAttachedSet(AttachmentTestMod.SYNCED_RENDER_DISTANCE).register((oldValue, newValue) -> {
 					OptionInstance<Integer> viewDistance = Minecraft.getInstance().options.renderDistance();

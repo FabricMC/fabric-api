@@ -29,7 +29,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
@@ -63,7 +63,7 @@ public class NetworkingCommonTest implements ModInitializer {
 		AtomicReference<String> uuid = new AtomicReference<>();
 
 		// Ensure that the packets were received on the server
-		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
+		ServerEntityLifecycleEvents.ENTITY_LOAD.register((entity, level) -> {
 			if (!firstLoad) {
 				// No need to check again if the player changes dimensions
 				return;

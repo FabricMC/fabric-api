@@ -42,7 +42,7 @@ import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkLifecycleEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.ChunkLevelTypeEventTracker;
 
 @Mixin(ChunkHolder.class)
@@ -70,7 +70,7 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkHolder;addSaveDependency(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 0))
 	private void updateFutures$inaccessibleToFull(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
 		if (this.getChunkIfPresentUnchecked(ChunkStatus.FULL) instanceof LevelChunk && this.fabric_currentEventChunkStatus == INACCESSIBLE) { // prevent duplicate events with ChunkStatusTasksMixin
-			ServerChunkEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange((ServerLevel) levelHeightAccessor, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), INACCESSIBLE, FULL);
+			ServerChunkLifecycleEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange((ServerLevel) levelHeightAccessor, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), INACCESSIBLE, FULL);
 			this.fabric_currentEventChunkStatus = FULL;
 		}
 	}
@@ -81,7 +81,7 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkHolder;addSaveDependency(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 1))
 	private void updateFutures$fullToBlockTicking(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
 		if (fabric_currentEventChunkStatus == FULL) { // if INACCESSIBLE->FULL did not fire immediately, then ChunkStatusTasksMixin will handle this later.
-			ServerChunkEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange((ServerLevel) levelHeightAccessor, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), FULL, BLOCK_TICKING);
+			ServerChunkLifecycleEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange((ServerLevel) levelHeightAccessor, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), FULL, BLOCK_TICKING);
 			this.fabric_currentEventChunkStatus = BLOCK_TICKING;
 		}
 	}
@@ -92,7 +92,7 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkHolder;addSaveDependency(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 2))
 	private void updateFutures$blockTickingToEntityTicking(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
 		if (fabric_currentEventChunkStatus == BLOCK_TICKING) { // if INACCESSIBLE->FULL->BLOCK_TICKING did not fire immediately, then ChunkStatusTasksMixin will handle this later.
-			ServerChunkEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange((ServerLevel) levelHeightAccessor, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), BLOCK_TICKING, ENTITY_TICKING);
+			ServerChunkLifecycleEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange((ServerLevel) levelHeightAccessor, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), BLOCK_TICKING, ENTITY_TICKING);
 			this.fabric_currentEventChunkStatus = ENTITY_TICKING;
 		}
 	}
@@ -109,7 +109,7 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 			FullChunkStatus oldLevelType = fabric_CHUNK_LEVEL_TYPES[i];
 			FullChunkStatus newLevelType = fabric_CHUNK_LEVEL_TYPES[i-1];
 			if (this.fabric_currentEventChunkStatus.isOrAfter(oldLevelType)) { // if a promotion event got cancelled or never finished, then do _not_ fire an equivalent demotion event
-				ServerChunkEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange(serverWorld, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), oldLevelType, newLevelType);
+				ServerChunkLifecycleEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange(serverWorld, (LevelChunk) this.getChunkIfPresentUnchecked(ChunkStatus.FULL), oldLevelType, newLevelType);
 				this.fabric_currentEventChunkStatus = newLevelType;
 			}
 		}

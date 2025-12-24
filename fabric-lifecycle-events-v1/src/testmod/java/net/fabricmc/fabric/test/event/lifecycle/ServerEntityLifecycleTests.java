@@ -26,7 +26,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
@@ -42,7 +42,7 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 	public void onInitialize() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
+		ServerEntityLifecycleEvents.ENTITY_LOAD.register((entity, level) -> {
 			this.serverEntities.add(entity);
 
 			if (PRINT_SERVER_ENTITY_MESSAGES) {
@@ -50,7 +50,7 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 			}
 		});
 
-		ServerEntityEvents.ENTITY_UNLOAD.register((entity, level) -> {
+		ServerEntityLifecycleEvents.ENTITY_UNLOAD.register((entity, level) -> {
 			this.serverEntities.remove(entity);
 
 			if (PRINT_SERVER_ENTITY_MESSAGES) {
@@ -58,7 +58,7 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 			}
 		});
 
-		ServerEntityEvents.EQUIPMENT_CHANGE.register((livingEntity, equipmentSlot, previousStack, currentStack) -> {
+		ServerEntityLifecycleEvents.EQUIPMENT_CHANGE.register((livingEntity, equipmentSlot, previousStack, currentStack) -> {
 			if (PRINT_SERVER_ENTITY_MESSAGES) {
 				logger.info("[SERVER] Entity equipment change: Entity: {}, Slot {}, Previous: {}, Current {} ", livingEntity, equipmentSlot.name(), previousStack, currentStack);
 			}

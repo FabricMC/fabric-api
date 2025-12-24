@@ -32,7 +32,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkLifecycleEvents;
 
 @Mixin(ChunkMap.class)
 public abstract class ChunkMapMixin {
@@ -47,7 +47,7 @@ public abstract class ChunkMapMixin {
 	@Inject(method = "lambda$scheduleUnload$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap;save(Lnet/minecraft/world/level/chunk/ChunkAccess;)Z"))
 	private void onChunkUnload(ChunkHolder chunkHolder, CompletableFuture<?> completableFuture, long l, CallbackInfo ci, @Local ChunkAccess chunk) {
 		if (chunk instanceof LevelChunk levelChunk) {
-			ServerChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, levelChunk);
+			ServerChunkLifecycleEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.level, levelChunk);
 		}
 	}
 }

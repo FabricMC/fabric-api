@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
@@ -41,7 +41,7 @@ public final class ClientBlockEntityLifecycleTests implements ClientModInitializ
 	public void onInitializeClient() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, level) -> {
+		ClientBlockEntityLifecycleEvents.BLOCK_ENTITY_LOAD.register((blockEntity, level) -> {
 			this.clientBlockEntities.add(blockEntity);
 
 			if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {
@@ -49,7 +49,7 @@ public final class ClientBlockEntityLifecycleTests implements ClientModInitializ
 			}
 		});
 
-		ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, level) -> {
+		ClientBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, level) -> {
 			this.clientBlockEntities.remove(blockEntity);
 
 			if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {

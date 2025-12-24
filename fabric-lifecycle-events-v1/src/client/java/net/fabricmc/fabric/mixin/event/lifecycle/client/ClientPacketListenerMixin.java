@@ -33,8 +33,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
 
@@ -52,12 +52,12 @@ abstract class ClientPacketListenerMixin {
 		// If a world already exists, we need to unload all (block)entities in the world.
 		if (this.level != null) {
 			for (Entity entity : this.level.entitiesForRendering()) {
-				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);
+				ClientEntityLifecycleEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);
 			}
 
 			for (LevelChunk chunk : ((LoadedChunksCache) this.level).fabric_getLoadedChunks()) {
 				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
-					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.level);
+					ClientBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.level);
 				}
 			}
 		}
@@ -74,12 +74,12 @@ abstract class ClientPacketListenerMixin {
 		// If a world already exists, we need to unload all (block)entities in the world.
 		if (this.level != null) {
 			for (Entity entity : level.entitiesForRendering()) {
-				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);
+				ClientEntityLifecycleEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);
 			}
 
 			for (LevelChunk chunk : ((LoadedChunksCache) this.level).fabric_getLoadedChunks()) {
 				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
-					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.level);
+					ClientBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.level);
 				}
 			}
 		}
@@ -91,12 +91,12 @@ abstract class ClientPacketListenerMixin {
 		// If a world already exists, we need to unload all (block)entities in the world.
 		if (this.level != null) {
 			for (Entity entity : this.level.entitiesForRendering()) {
-				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);
+				ClientEntityLifecycleEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.level);
 			}
 
 			for (LevelChunk chunk : ((LoadedChunksCache) this.level).fabric_getLoadedChunks()) {
 				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
-					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.level);
+					ClientBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.level);
 				}
 			}
 		}

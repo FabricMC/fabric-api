@@ -36,8 +36,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityLifecycleEvents;
 
 @Mixin(LevelChunk.class)
 abstract class LevelChunkMixin {
@@ -52,9 +52,9 @@ abstract class LevelChunkMixin {
 		// Only fire the load event if the block entity has actually changed
 		if (blockEntity != null && blockEntity != removedBlockEntity) {
 			if (this.getLevel() instanceof ServerLevel) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerLevel) this.getLevel());
+				ServerBlockEntityLifecycleEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerLevel) this.getLevel());
 			} else if (this.getLevel() instanceof ClientLevel) {
-				ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ClientLevel) this.getLevel());
+				ClientBlockEntityLifecycleEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ClientLevel) this.getLevel());
 			}
 		}
 
@@ -65,9 +65,9 @@ abstract class LevelChunkMixin {
 	private void onRemoveBlockEntity(BlockEntity blockEntity, CallbackInfo info, @Local(ordinal = 1) BlockEntity removedBlockEntity) {
 		if (removedBlockEntity != null) {
 			if (this.getLevel() instanceof ServerLevel) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ServerLevel) this.getLevel());
+				ServerBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ServerLevel) this.getLevel());
 			} else if (this.getLevel() instanceof ClientLevel) {
-				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ClientLevel) this.getLevel());
+				ClientBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removedBlockEntity, (ClientLevel) this.getLevel());
 			}
 		}
 	}
@@ -80,9 +80,9 @@ abstract class LevelChunkMixin {
 
 		if (removed != null) {
 			if (this.getLevel() instanceof ServerLevel) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ServerLevel) this.getLevel());
+				ServerBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ServerLevel) this.getLevel());
 			} else if (this.getLevel() instanceof ClientLevel) {
-				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ClientLevel) this.getLevel());
+				ClientBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ClientLevel) this.getLevel());
 			}
 		}
 
@@ -93,9 +93,9 @@ abstract class LevelChunkMixin {
 	private void onRemoveBlockEntity(BlockPos pos, CallbackInfo ci, @Local @Nullable BlockEntity removed) {
 		if (removed != null) {
 			if (this.getLevel() instanceof ServerLevel) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ServerLevel) this.getLevel());
+				ServerBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ServerLevel) this.getLevel());
 			} else if (this.getLevel() instanceof ClientLevel) {
-				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ClientLevel) this.getLevel());
+				ClientBlockEntityLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ClientLevel) this.getLevel());
 			}
 		}
 	}

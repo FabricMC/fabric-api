@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
 public final class ClientLifecycleTests implements ClientModInitializer {
@@ -50,7 +50,7 @@ public final class ClientLifecycleTests implements ClientModInitializer {
 			System.out.println("Client has started stopping!");
 		});
 
-		ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register((client, level) -> {
+		ClientLevelLifecycleEvents.AFTER_CLIENT_LEVEL_CHANGE.register((client, level) -> {
 			LOGGER.info("Client level changed to {}", level.dimension().identifier());
 		});
 	}
