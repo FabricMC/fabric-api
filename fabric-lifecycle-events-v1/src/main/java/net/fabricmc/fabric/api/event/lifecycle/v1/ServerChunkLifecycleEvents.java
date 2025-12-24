@@ -40,7 +40,7 @@ public final class ServerChunkLifecycleEvents {
 	 *
 	 * @see ServerChunkLifecycleEvents#CHUNK_STATUS_CHANGE
 	 */
-	public static final Event<ServerChunkLifecycleEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ServerChunkLifecycleEvents.Load.class, callbacks -> (serverLevel, chunk) -> {
+	public static final Event<Load> CHUNK_LOAD = EventFactory.createArrayBacked(ServerChunkLifecycleEvents.Load.class, callbacks -> (serverLevel, chunk) -> {
 		for (Load callback : callbacks) {
 			callback.onChunkLoad(serverLevel, chunk);
 		}
@@ -51,7 +51,7 @@ public final class ServerChunkLifecycleEvents {
 	 *
 	 * <p>When this event is called, the chunk is already in the level.
 	 */
-	public static final Event<ServerChunkLifecycleEvents.Generate> CHUNK_GENERATE = EventFactory.createArrayBacked(ServerChunkLifecycleEvents.Generate.class, callbacks -> (serverLevel, chunk) -> {
+	public static final Event<Generate> CHUNK_GENERATE = EventFactory.createArrayBacked(ServerChunkLifecycleEvents.Generate.class, callbacks -> (serverLevel, chunk) -> {
 		for (Generate callback : callbacks) {
 			callback.onChunkGenerate(serverLevel, chunk);
 		}
@@ -66,7 +66,7 @@ public final class ServerChunkLifecycleEvents {
 	 * (and not immediately when the chunk becomes inaccessible). To know when a chunk first becomes inaccessible, see
 	 * {@link ServerChunkLifecycleEvents#CHUNK_STATUS_CHANGE}.
 	 */
-	public static final Event<ServerChunkLifecycleEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ServerChunkLifecycleEvents.Unload.class, callbacks -> (serverLevel, chunk) -> {
+	public static final Event<Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ServerChunkLifecycleEvents.Unload.class, callbacks -> (serverLevel, chunk) -> {
 		for (Unload callback : callbacks) {
 			callback.onChunkUnload(serverLevel, chunk);
 		}

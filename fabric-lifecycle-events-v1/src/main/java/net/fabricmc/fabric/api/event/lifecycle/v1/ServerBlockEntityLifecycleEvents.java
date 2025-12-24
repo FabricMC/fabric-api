@@ -32,7 +32,7 @@ public final class ServerBlockEntityLifecycleEvents {
 	 * <p>When this is event is called, the block entity is already in the level.
 	 * However, its data might not be loaded yet, so don't rely on it.
 	 */
-	public static final Event<ServerBlockEntityLifecycleEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ServerBlockEntityLifecycleEvents.Load.class, callbacks -> (blockEntity, level) -> {
+	public static final Event<Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ServerBlockEntityLifecycleEvents.Load.class, callbacks -> (blockEntity, level) -> {
 		for (Load callback : callbacks) {
 			callback.onLoad(blockEntity, level);
 		}

@@ -34,7 +34,7 @@ public final class ServerEntityLifecycleEvents {
 	 *
 	 * <p>When this event is called, the entity is already in the level.
 	 */
-	public static final Event<ServerEntityLifecycleEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ServerEntityLifecycleEvents.Load.class, callbacks -> (entity, level) -> {
+	public static final Event<Load> ENTITY_LOAD = EventFactory.createArrayBacked(ServerEntityLifecycleEvents.Load.class, callbacks -> (entity, level) -> {
 		for (Load callback : callbacks) {
 			callback.onLoad(entity, level);
 		}
@@ -45,7 +45,7 @@ public final class ServerEntityLifecycleEvents {
 	 *
 	 * <p>This event is called before the entity is removed from the level.
 	 */
-	public static final Event<ServerEntityLifecycleEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerEntityLifecycleEvents.Unload.class, callbacks -> (entity, level) -> {
+	public static final Event<Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerEntityLifecycleEvents.Unload.class, callbacks -> (entity, level) -> {
 		for (Unload callback : callbacks) {
 			callback.onUnload(entity, level);
 		}
