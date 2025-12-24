@@ -1,0 +1,9 @@
+accessWidener	v1	named
+
+# Top-Level Biome Fields Access
+
+accessible	field	net/minecraft/world/level/dimension/DimensionType	attributes	Lnet/minecraft/world/attribute/EnvironmentAttributeMap;
+mutable	field	net/minecraft/world/level/dimension/DimensionType	attributes	Lnet/minecraft/world/attribute/EnvironmentAttributeMap;
+
+# Registry mutation sync
+accessible	field	net/minecraft/core/MappedRegistry	registrationInfos	Ljava/util/Map;

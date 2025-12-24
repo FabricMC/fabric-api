@@ -21,9 +21,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.dimension.LevelStem;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.dimension.v1.DimensionModifications;
+import net.fabricmc.fabric.api.dimension.v1.DimensionSelectors;
+import net.fabricmc.fabric.api.dimension.v1.ModificationPhase;
 
 public class FabricDimensionTest implements ModInitializer {
 	// The level stem refers to the JSON-file in the dimension subfolder of the data pack,
@@ -33,5 +37,10 @@ public class FabricDimensionTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Registry.register(BuiltInRegistries.CHUNK_GENERATOR, Identifier.fromNamespaceAndPath("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
+
+		DimensionModifications.create(Identifier.fromNamespaceAndPath("fabric_dimension", "purple_sky"))
+				.add(ModificationPhase.REPLACEMENTS, DimensionSelectors.all(), (dimensionSelectionContext, dimensionModificationContext) -> {
+					dimensionModificationContext.getAttributes().set(EnvironmentAttributes.CLOUD_COLOR, 0x800080);
+				});
 	}
 }

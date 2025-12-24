@@ -1,5 +1,9 @@
 version = getSubprojectVersion(project)
 
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-dimensions-v1.accesswidener")
+}
+
 testDependencies(project, [
 	':fabric-resource-loader-v1'
 ])

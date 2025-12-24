@@ -6,7 +6,9 @@
     "WorldDimensionsMixin",
     "V2832Mixin",
     "TaggedChoiceMixin",
-    "TaggedChoiceTaggedChoiceTypeMixin"
+    "TaggedChoiceTaggedChoiceTypeMixin",
+    "modification.RegistryAccessImmutableRegistryAccessMixin",
+    "modification.MinecraftServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
