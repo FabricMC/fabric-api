@@ -38,7 +38,7 @@
  * Menus can be opened using
  * {@link net.minecraft.world.entity.player.Player#openMenu(net.minecraft.world.MenuProvider)}.
  * Note that calling it on the logical client does nothing. To open an extended menu, the factory passed in
- * should be an {@link net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory}, or a
+ * should be an {@link net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider}, or a
  * {@link net.minecraft.world.SimpleMenuProvider} that wraps such factory.
  *
  * <h2>Overwriting menus</h2>
@@ -46,7 +46,7 @@
  * the cursor to the center of the screen. This is because the current screen gets closed before
  * opening the screen, resetting the cursor position. Since this behavior can be problematic,
  * this API provides a way to disable this. By overriding {@link
- * net.fabricmc.fabric.api.menu.v1.FabricMenuFactory#shouldCloseCurrentScreen()}
+ * net.fabricmc.fabric.api.menu.v1.FabricMenuProvider#shouldCloseCurrentScreen()}
  * on the menu factory to return {@code false} and passing that to the {@code
  * openMenu} method, it will stop closing the screen and instead "overwrites" it.
  */

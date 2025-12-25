@@ -107,7 +107,7 @@ public class FrameBlockEntity extends BlockEntity implements RenderDataBlockEnti
 	}
 
 	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider wrapperLookup) {
-		return this.saveCustomOnly(wrapperLookup);
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		return this.saveCustomOnly(registries);
 	}
 }

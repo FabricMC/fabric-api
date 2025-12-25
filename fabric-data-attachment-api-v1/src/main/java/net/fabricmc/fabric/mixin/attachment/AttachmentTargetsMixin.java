@@ -91,7 +91,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 			this.fabric_markChanged(type);
 
 			if (this.fabric_shouldTryToSync() && type.isSynced()) {
-				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getDynamicRegistryManager());
+				AttachmentChange change = AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, fabric_getRegistryAccess());
 				acknowledgeSyncedEntry(type, change);
 				this.fabric_syncChange(type, change);
 			}
@@ -121,15 +121,15 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public void fabric_writeAttachmentsToNbt(ValueOutput view) {
-		AttachmentSerializingImpl.serializeAttachmentData(view, dataAttachments);
+	public void fabric_writeAttachmentsToNbt(ValueOutput output) {
+		AttachmentSerializingImpl.serializeAttachmentData(output, dataAttachments);
 	}
 
 	@Override
-	public void fabric_readAttachmentsFromNbt(ValueInput view) {
+	public void fabric_readAttachmentsFromNbt(ValueInput input) {
 		// Note on player targets: no syncing can happen here as the networkHandler is still null
 		// Instead it is done on player join (see AttachmentSync)
-		IdentityHashMap<AttachmentType<?>, Object> fromNbt = AttachmentSerializingImpl.deserializeAttachmentData(view);
+		IdentityHashMap<AttachmentType<?>, Object> fromNbt = AttachmentSerializingImpl.deserializeAttachmentData(input);
 
 		// If the NBT is devoid of data attachments, treat it as a no-op, rather than wiping them out.
 		// Any changes to data attachments (including removals) post-load are done independently of this
@@ -144,7 +144,7 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 		if (this.fabric_shouldTryToSync() && this.dataAttachments != null) {
 			this.dataAttachments.forEach((type, value) -> {
 				if (type.isSynced()) {
-					acknowledgeSynced(type, value, view.lookup());
+					acknowledgeSynced(type, value, input.lookup());
 				}
 			});
 		}
@@ -161,9 +161,9 @@ abstract class AttachmentTargetsMixin implements AttachmentTargetImpl {
 	}
 
 	@Unique
-	private void acknowledgeSynced(AttachmentType<?> type, Object value, HolderLookup.Provider wrapperLookup) {
-		RegistryAccess dynamicRegistryManager = (wrapperLookup instanceof RegistryAccess drm) ? drm : fabric_getDynamicRegistryManager();
-		acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, dynamicRegistryManager));
+	private void acknowledgeSynced(AttachmentType<?> type, Object value, HolderLookup.Provider registries) {
+		RegistryAccess registryAccess = (registries instanceof RegistryAccess ra) ? ra : fabric_getRegistryAccess();
+		acknowledgeSyncedEntry(type, AttachmentChange.create(fabric_getSyncTargetInfo(), type, value, registryAccess));
 	}
 
 	@Unique

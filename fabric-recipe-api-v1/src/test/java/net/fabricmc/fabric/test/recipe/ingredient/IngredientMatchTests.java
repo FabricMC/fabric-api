@@ -198,6 +198,6 @@ public class IngredientMatchTests {
 		assertEquals(1, matchingItems.size());
 		assertEquals(Items.STICK, matchingItems.getFirst().value());
 		// Test disabled as the vanilla API no longer exposes the stack with data.
-		// assertEquals(NbtComponent.of(requiredNbt), matchingItems.getFirst().value().getDefaultStack().get(DataComponentTypes.CUSTOM_DATA));
+		// assertEquals(CustomData.of(requiredNbt), matchingItems.getFirst().value().getDefaultStack().get(DataComponents.CUSTOM_DATA));
 	}
 }

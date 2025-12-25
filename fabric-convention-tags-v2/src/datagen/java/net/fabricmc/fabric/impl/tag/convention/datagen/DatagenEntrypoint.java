@@ -18,27 +18,27 @@ package net.fabricmc.fabric.impl.tag.convention.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.impl.tag.convention.datagen.generators.BiomeTagGenerator;
-import net.fabricmc.fabric.impl.tag.convention.datagen.generators.BlockTagGenerator;
-import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EnchantmentTagGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.BiomeTagsGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.BlockTagsGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EnchantmentTagsGenerator;
 import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EnglishTagLangGenerator;
-import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EntityTypeTagGenerator;
-import net.fabricmc.fabric.impl.tag.convention.datagen.generators.FluidTagGenerator;
-import net.fabricmc.fabric.impl.tag.convention.datagen.generators.ItemTagGenerator;
-import net.fabricmc.fabric.impl.tag.convention.datagen.generators.StructureTagGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.EntityTypeTagsGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.FluidTagsGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.ItemTagsGenerator;
+import net.fabricmc.fabric.impl.tag.convention.datagen.generators.StructureTagsGenerator;
 
 public class DatagenEntrypoint implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
 		final FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 
-		BlockTagGenerator blockTags = pack.addProvider(BlockTagGenerator::new);
-		pack.addProvider((output, wrapperLookup) -> new ItemTagGenerator(output, wrapperLookup, blockTags));
-		pack.addProvider(FluidTagGenerator::new);
-		pack.addProvider(EnchantmentTagGenerator::new);
-		pack.addProvider(BiomeTagGenerator::new);
-		pack.addProvider(StructureTagGenerator::new);
-		pack.addProvider(EntityTypeTagGenerator::new);
+		BlockTagsGenerator blockTags = pack.addProvider(BlockTagsGenerator::new);
+		pack.addProvider((output, registriesFuture) -> new ItemTagsGenerator(output, registriesFuture, blockTags));
+		pack.addProvider(FluidTagsGenerator::new);
+		pack.addProvider(EnchantmentTagsGenerator::new);
+		pack.addProvider(BiomeTagsGenerator::new);
+		pack.addProvider(StructureTagsGenerator::new);
+		pack.addProvider(EntityTypeTagsGenerator::new);
 		pack.addProvider(EnglishTagLangGenerator::new);
 	}
 

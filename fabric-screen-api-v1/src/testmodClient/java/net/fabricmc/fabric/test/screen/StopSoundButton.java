@@ -30,11 +30,11 @@ class StopSoundButton extends AbstractButton {
 	}
 
 	@Override
-	protected void renderContents(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
-		drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, this.getX(), this.getY(), this.width, this.height);
+	protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+		graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, this.getX(), this.getY(), this.width, this.height);
 
 		if (this.isHovered()) {
-			drawContext.setTooltipForNextFrame(Minecraft.getInstance().font, Component.literal("Click to stop all sounds"), this.getX(), this.getY());
+			graphics.setTooltipForNextFrame(Minecraft.getInstance().font, Component.literal("Click to stop all sounds"), this.getX(), this.getY());
 		}
 	}
 
@@ -44,6 +44,6 @@ class StopSoundButton extends AbstractButton {
 	}
 
 	@Override
-	protected void updateWidgetNarration(NarrationElementOutput narrationMessageBuilder) {
+	protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 	}
 }

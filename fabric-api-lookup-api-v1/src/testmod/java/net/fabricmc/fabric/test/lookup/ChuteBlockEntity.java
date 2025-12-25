@@ -38,17 +38,17 @@ public class ChuteBlockEntity extends BlockEntity {
 		super(FabricApiLookupTest.CHUTE_BLOCK_ENTITY_TYPE, pos, state);
 	}
 
-	public static void serverTick(Level world, BlockPos pos, BlockState blockState, ChuteBlockEntity blockEntity) {
+	public static void serverTick(Level level, BlockPos pos, BlockState blockState, ChuteBlockEntity blockEntity) {
 		if (!blockEntity.hasLevel()) {
 			return;
 		}
 
 		if (blockEntity.cachedInsertable == null) {
-			blockEntity.cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, (ServerLevel) world, pos.relative(Direction.DOWN));
+			blockEntity.cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, (ServerLevel) level, pos.relative(Direction.DOWN));
 		}
 
 		if (blockEntity.cachedExtractable == null) {
-			blockEntity.cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, (ServerLevel) world, pos.relative(Direction.UP));
+			blockEntity.cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, (ServerLevel) level, pos.relative(Direction.UP));
 		}
 
 		if (blockEntity.moveDelay == 0) {

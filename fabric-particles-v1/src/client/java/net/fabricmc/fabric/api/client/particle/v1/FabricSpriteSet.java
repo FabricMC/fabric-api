@@ -28,13 +28,13 @@ import net.minecraft.core.particles.ParticleType;
  * It does the same thing as vanilla's {@link SpriteSet},
  * but in a way that's accessible to mods, and that exposes the atlas as well.
  *
- * <p>Custom sprites registered using {@link ParticleFactoryRegistry} have the options
- * to supply a particle factory which will receive an instance of this
+ * <p>Custom sprites registered using {@link ParticleProviderRegistry} have the options
+ * to supply a particle provider which will receive an instance of this
  * interface containing the sprites set loaded for their particle from the
  * active resource packs.
  *
- * @see ParticleFactoryRegistry#register(ParticleType, ParticleProvider)
- * @see ParticleFactoryRegistry.PendingParticleFactory
+ * @see ParticleProviderRegistry#register(ParticleType, ParticleProvider)
+ * @see ParticleProviderRegistry.PendingParticleProvider
  */
 public interface FabricSpriteSet extends SpriteSet {
 	/**

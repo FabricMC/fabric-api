@@ -42,18 +42,18 @@ class LootTableMixin implements FabricLootTable {
 	 */
 	@Unique
 	@Nullable
-	Holder<LootTable> entry = null;
+	Holder<LootTable> holder = null;
 
 	@WrapMethod(method = "getRandomItemsRaw(Lnet/minecraft/world/level/storage/loot/LootContext;Ljava/util/function/Consumer;)V")
 	private void fabric$modifyDrops(LootContext context, Consumer<ItemStack> lootConsumer, Operation<Void> original) {
-		if (entry == null) {
-			this.entry = LootUtil.getEntryOrDirect(context.getLevel(), (LootTable) (Object) this);
+		if (holder == null) {
+			this.holder = LootUtil.getEntryOrDirect(context.getLevel(), (LootTable) (Object) this);
 		}
 
 		List<ItemStack> list = new ObjectArrayList<>();
 		original.call(context, (Consumer<ItemStack>) list::add);
 		LootTableEvents.MODIFY_DROPS.invoker().modifyLootTableDrops(
-				this.entry,
+				this.holder,
 				context,
 				list
 		);
@@ -62,6 +62,6 @@ class LootTableMixin implements FabricLootTable {
 
 	@Override
 	public void fabric$setHolder(Holder<LootTable> key) {
-		this.entry = key;
+		this.holder = key;
 	}
 }

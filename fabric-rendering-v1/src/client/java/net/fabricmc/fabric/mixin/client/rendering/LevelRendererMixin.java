@@ -103,9 +103,9 @@ public abstract class LevelRendererMixin {
 	}
 
 	@ModifyExpressionValue(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;prepareChunkRenders(Lorg/joml/Matrix4fc;DDD)Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;"))
-	private ChunkSectionsToRender onRenderBlockLayers(ChunkSectionsToRender sectionRenderState) {
-		renderContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, sectionRenderState, submitNodeStorage, renderBuffers.bufferSource());
-		return sectionRenderState;
+	private ChunkSectionsToRender onRenderBlockLayers(ChunkSectionsToRender chunkSectionsToRender) {
+		renderContext.prepare(minecraft.gameRenderer, (LevelRenderer) (Object) this, levelRenderState, chunkSectionsToRender, submitNodeStorage, renderBuffers.bufferSource());
+		return chunkSectionsToRender;
 	}
 
 	@Inject(method = "lambda$addMainPass$0",
@@ -117,9 +117,9 @@ public abstract class LevelRendererMixin {
 	}
 
 	@ModifyExpressionValue(method = "lambda$addMainPass$0", at = @At(value = "NEW", target = "Lcom/mojang/blaze3d/vertex/PoseStack;"))
-	private PoseStack onCreateMatrixStack(PoseStack matrixStack) {
-		renderContext.setPoseStack(matrixStack);
-		return matrixStack;
+	private PoseStack onCreatePoseStack(PoseStack poseStack) {
+		renderContext.setPoseStack(poseStack);
+		return poseStack;
 	}
 
 	@Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE_STRING", target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V", args = "ldc=submitEntities"))
@@ -147,7 +147,7 @@ public abstract class LevelRendererMixin {
 	}
 
 	@Inject(method = "renderBlockOutline", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/CameraRenderState;pos:Lnet/minecraft/world/phys/Vec3;"), cancellable = true)
-	private void beforeDrawBlockOutline(MultiBufferSource.BufferSource consumers, PoseStack matrices, boolean bl, LevelRenderState worldRenderState, CallbackInfo ci) {
+	private void beforeDrawBlockOutline(MultiBufferSource.BufferSource consumers, PoseStack poseStack, boolean bl, LevelRenderState worldRenderState, CallbackInfo ci) {
 		if (!LevelRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(renderContext, renderContext.levelState().blockOutlineRenderState)) {
 			consumers.endLastBatch();
 			ci.cancel();

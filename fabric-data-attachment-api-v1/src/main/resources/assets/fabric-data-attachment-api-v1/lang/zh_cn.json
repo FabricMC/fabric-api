@@ -7,7 +7,5 @@
   "fabric-data-attachment-api-v1.unknown-target.target-type.block-entity": "方块实体",
   "fabric-data-attachment-api-v1.unknown-target.target-type.chunk": "区块",
   "fabric-data-attachment-api-v1.unknown-target.target-type.entity": "实体",
-  "fabric-data-attachment-api-v1.unknown-target.target-type.world": "世界",
-  "fabric-data-attachment-api-v1.unknown-target.title": "收到了未知目标的附件更改！",
-  "fabric-data-attachment-api-v1.unknown-target.world": "世界：%s"
+  "fabric-data-attachment-api-v1.unknown-target.title": "收到了未知目标的附件更改！"
 }

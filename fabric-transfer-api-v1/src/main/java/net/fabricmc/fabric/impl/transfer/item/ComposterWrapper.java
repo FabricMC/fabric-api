@@ -48,29 +48,29 @@ import net.fabricmc.fabric.impl.transfer.DebugMessages;
  */
 public class ComposterWrapper extends SnapshotParticipant<Float> {
 	// Record is used for convenient constructor, hashcode and equals implementations.
-	private record WorldLocation(Level world, BlockPos pos) {
+	private record LevelLocation(Level level, BlockPos pos) {
 		private BlockState getBlockState() {
-			return world.getBlockState(pos);
+			return level.getBlockState(pos);
 		}
 
 		private void setBlockState(BlockState state) {
-			world.setBlockAndUpdate(pos, state);
+			level.setBlockAndUpdate(pos, state);
 		}
 
 		@Override
 		public String toString() {
-			return DebugMessages.forGlobalPos(world, pos);
+			return DebugMessages.forGlobalPos(level, pos);
 		}
 	}
 
 	// Weak values to make sure wrappers are cleaned up after use, thread-safe.
 	// The two storages strongly reference the containing wrapper, so we are alright with weak values.
-	private static final Map<WorldLocation, ComposterWrapper> COMPOSTERS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
+	private static final Map<LevelLocation, ComposterWrapper> COMPOSTERS = new MapMaker().concurrencyLevel(1).weakValues().makeMap();
 
 	@Nullable
-	public static Storage<ItemVariant> get(Level world, BlockPos pos, @Nullable Direction direction) {
+	public static Storage<ItemVariant> get(Level level, BlockPos pos, @Nullable Direction direction) {
 		if (direction != null && direction.getAxis().isVertical()) {
-			WorldLocation location = new WorldLocation(world, pos.immutable());
+			LevelLocation location = new LevelLocation(level, pos.immutable());
 			ComposterWrapper composterWrapper = COMPOSTERS.computeIfAbsent(location, ComposterWrapper::new);
 			return direction == UP ? composterWrapper.upStorage : composterWrapper.downStorage;
 		} else {
@@ -81,13 +81,13 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 	private static final float DO_NOTHING = 0f;
 	private static final float EXTRACT_BONEMEAL = -1f;
 
-	private final WorldLocation location;
+	private final LevelLocation location;
 	// -1 if bonemeal was extracted, otherwise the composter increase probability of the (pending) inserted item.
 	private Float increaseProbability = DO_NOTHING;
 	private final TopStorage upStorage = new TopStorage();
 	private final BottomStorage downStorage = new BottomStorage();
 
-	private ComposterWrapper(WorldLocation location) {
+	private ComposterWrapper(LevelLocation location) {
 		this.location = location;
 	}
 
@@ -109,11 +109,11 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 			// Mimic ComposterBlock#emptyComposter logic.
 			location.setBlockState(location.getBlockState().setValue(ComposterBlock.LEVEL, 0));
 			// Play the sound
-			location.world.playSound(null, location.pos, SoundEvents.COMPOSTER_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+			location.level.playSound(null, location.pos, SoundEvents.COMPOSTER_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 		} else if (increaseProbability > 0) {
 			BlockState state = location.getBlockState();
 			// Always increment on first insert (like vanilla).
-			boolean increaseSuccessful = state.getValue(ComposterBlock.LEVEL) == 0 || location.world.getRandom().nextDouble() < increaseProbability;
+			boolean increaseSuccessful = state.getValue(ComposterBlock.LEVEL) == 0 || location.level.getRandom().nextDouble() < increaseProbability;
 
 			if (increaseSuccessful) {
 				// Mimic ComposterBlock#addToComposter logic.
@@ -122,11 +122,11 @@ public class ComposterWrapper extends SnapshotParticipant<Float> {
 				location.setBlockState(newState);
 
 				if (newLevel == 7) {
-					location.world.scheduleTick(location.pos, state.getBlock(), 20);
+					location.level.scheduleTick(location.pos, state.getBlock(), 20);
 				}
 			}
 
-			location.world.levelEvent(LevelEvent.COMPOSTER_FILL, location.pos, increaseSuccessful ? 1 : 0);
+			location.level.levelEvent(LevelEvent.COMPOSTER_FILL, location.pos, increaseSuccessful ? 1 : 0);
 		}
 
 		// Reset after successful commit.

@@ -81,7 +81,7 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 		blockInfo.release();
 	}
 
-	/** Called from section builder hook. */
+	/** Called from section compiler hook. */
 	public void bufferModel(BlockStateModel model, BlockState blockState, BlockPos blockPos) {
 		poseStack.pushPose();
 
@@ -97,8 +97,8 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 			model.emitQuads(getEmitter(), blockInfo.level, blockPos, blockState, random, blockInfo::shouldCullSide);
 		} catch (Throwable throwable) {
 			CrashReport crashReport = CrashReport.forThrowable(throwable, "Tessellating block in world - Indigo Renderer");
-			CrashReportCategory crashReportSection = crashReport.addCategory("Block being tessellated");
-			CrashReportCategory.populateBlockDetails(crashReportSection, blockInfo.level, blockPos, blockState);
+			CrashReportCategory crashReportCategory = crashReport.addCategory("Block being tessellated");
+			CrashReportCategory.populateBlockDetails(crashReportCategory, blockInfo.level, blockPos, blockState);
 			throw new ReportedException(crashReport);
 		} finally {
 			poseStack.popPose();
@@ -120,17 +120,17 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 			this.blockInfo = blockInfo;
 		}
 
-		private final LevelRenderer.BrightnessGetter lightGetter = (world, pos) -> {
+		private final LevelRenderer.BrightnessGetter brightnessGetter = (level, pos) -> {
 			int cacheIndex = cacheIndex(pos);
 
 			if (cacheIndex == -1) {
-				return LevelRenderer.BrightnessGetter.DEFAULT.packedBrightness(world, pos);
+				return LevelRenderer.BrightnessGetter.DEFAULT.packedBrightness(level, pos);
 			}
 
 			int result = lightCache[cacheIndex];
 
 			if (result == Integer.MAX_VALUE) {
-				result = LevelRenderer.BrightnessGetter.DEFAULT.packedBrightness(world, pos);
+				result = LevelRenderer.BrightnessGetter.DEFAULT.packedBrightness(level, pos);
 				lightCache[cacheIndex] = result;
 			}
 
@@ -146,7 +146,7 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 
 		@Override
 		public int light(BlockPos pos, BlockState state) {
-			return LevelRenderer.getLightCoords(lightGetter, blockInfo.level, state, pos);
+			return LevelRenderer.getLightCoords(brightnessGetter, blockInfo.level, state, pos);
 		}
 
 		@Override

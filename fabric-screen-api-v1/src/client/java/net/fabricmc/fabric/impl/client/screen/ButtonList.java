@@ -26,29 +26,29 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 
 // TODO: When events for listening to addition of child elements are added, fire events from this list.
 public final class ButtonList extends AbstractList<AbstractWidget> {
-	private final List<Renderable> drawables;
-	private final List<NarratableEntry> selectables;
+	private final List<Renderable> renderables;
+	private final List<NarratableEntry> narratables;
 	private final List<GuiEventListener> children;
 
-	public ButtonList(List<Renderable> drawables, List<NarratableEntry> selectables, List<GuiEventListener> children) {
-		this.drawables = drawables;
-		this.selectables = selectables;
+	public ButtonList(List<Renderable> renderables, List<NarratableEntry> narratables, List<GuiEventListener> children) {
+		this.renderables = renderables;
+		this.narratables = narratables;
 		this.children = children;
 	}
 
 	@Override
 	public AbstractWidget get(int index) {
-		final int drawableIndex = translateIndex(drawables, index, false);
-		return (AbstractWidget) drawables.get(drawableIndex);
+		final int renderableIndex = translateIndex(renderables, index, false);
+		return (AbstractWidget) renderables.get(renderableIndex);
 	}
 
 	@Override
 	public AbstractWidget set(int index, AbstractWidget element) {
-		final int drawableIndex = translateIndex(drawables, index, false);
-		drawables.set(drawableIndex, element);
+		final int renderableIndex = translateIndex(renderables, index, false);
+		renderables.set(renderableIndex, element);
 
-		final int selectableIndex = translateIndex(selectables, index, false);
-		selectables.set(selectableIndex, element);
+		final int narratableIndex = translateIndex(narratables, index, false);
+		narratables.set(narratableIndex, element);
 
 		final int childIndex = translateIndex(children, index, false);
 		return (AbstractWidget) children.set(childIndex, element);
@@ -57,23 +57,23 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 	@Override
 	public void add(int index, AbstractWidget element) {
 		// ensure no duplicates
-		final int duplicateIndex = drawables.indexOf(element);
+		final int duplicateIndex = renderables.indexOf(element);
 
 		if (duplicateIndex >= 0) {
-			drawables.remove(element);
-			selectables.remove(element);
+			renderables.remove(element);
+			narratables.remove(element);
 			children.remove(element);
 
-			if (duplicateIndex <= translateIndex(drawables, index, true)) {
+			if (duplicateIndex <= translateIndex(renderables, index, true)) {
 				index--;
 			}
 		}
 
-		final int drawableIndex = translateIndex(drawables, index, true);
-		drawables.add(drawableIndex, element);
+		final int renderableIndx = translateIndex(renderables, index, true);
+		renderables.add(renderableIndx, element);
 
-		final int selectableIndex = translateIndex(selectables, index, true);
-		selectables.add(selectableIndex, element);
+		final int narratableIndex = translateIndex(narratables, index, true);
+		narratables.add(narratableIndex, element);
 
 		final int childIndex = translateIndex(children, index, true);
 		children.add(childIndex, element);
@@ -81,10 +81,10 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 
 	@Override
 	public AbstractWidget remove(int index) {
-		index = translateIndex(drawables, index, false);
+		index = translateIndex(renderables, index, false);
 
-		final AbstractWidget removedButton = (AbstractWidget) drawables.remove(index);
-		this.selectables.remove(removedButton);
+		final AbstractWidget removedButton = (AbstractWidget) renderables.remove(index);
+		this.narratables.remove(removedButton);
 		this.children.remove(removedButton);
 
 		return removedButton;
@@ -94,8 +94,8 @@ public final class ButtonList extends AbstractList<AbstractWidget> {
 	public int size() {
 		int ret = 0;
 
-		for (Renderable drawable : drawables) {
-			if (drawable instanceof AbstractWidget) {
+		for (Renderable renderable : renderables) {
+			if (renderable instanceof AbstractWidget) {
 				ret++;
 			}
 		}

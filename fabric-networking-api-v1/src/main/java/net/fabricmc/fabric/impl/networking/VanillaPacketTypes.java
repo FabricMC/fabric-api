@@ -40,7 +40,7 @@ public record VanillaPacketTypes(PacketType<?>[] types) {
 	private static VanillaPacketTypes of(ProtocolInfo.DetailsProvider factory) {
 		var list = new ArrayList<PacketType<?>>();
 
-		// See NetworkStateBuilder#createState for reference.
+		// See ProtocolInfoBuilder#buildDetails for reference.
 		factory.details().listPackets((type, i) -> list.add(type));
 
 		return new VanillaPacketTypes(list.toArray(PacketType[]::new));

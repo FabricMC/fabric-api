@@ -42,8 +42,8 @@ public class RegistryDataCollectorMixin {
 	 * Keep the pre-24w04a behavior of removing empty registries, even if the client knows that registry.
 	 */
 	@WrapOperation(method = "loadNewElementsAndTags", at = @At(value = "FIELD", target = "Lnet/minecraft/resources/RegistryDataLoader;SYNCHRONIZED_REGISTRIES:Ljava/util/List;", opcode = Opcodes.GETSTATIC))
-	private List<RegistryDataLoader.RegistryData<?>> skipEmptyRegistries(Operation<List<RegistryDataLoader.RegistryData<?>>> operation, ResourceProvider resourceFactory, @Coerce ClientRegistriesDynamicRegistriesAccessor storage, boolean bl) {
-		Map<ResourceKey<? extends Registry<?>>, List<RegistrySynchronization.PackedRegistryEntry>> dynamicRegistries = storage.getDynamicRegistries();
+	private List<RegistryDataLoader.RegistryData<?>> skipEmptyRegistries(Operation<List<RegistryDataLoader.RegistryData<?>>> operation, ResourceProvider resourceFactory, @Coerce RegistryDataCollectorContentsCollectorAccessor storage, boolean bl) {
+		Map<ResourceKey<? extends Registry<?>>, List<RegistrySynchronization.PackedRegistryEntry>> dynamicRegistries = storage.getElements();
 
 		List<RegistryDataLoader.RegistryData<?>> result = new ArrayList<>(operation.call());
 		result.removeIf(entry -> DynamicRegistriesImpl.SKIP_EMPTY_SYNC_REGISTRIES.contains(entry.key()) && !dynamicRegistries.containsKey(entry.key()));

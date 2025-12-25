@@ -62,7 +62,7 @@ public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		FabricDataGenerator.Pack pack = dataGenerator.createPack();
 		pack.addProvider(WorldgenProvider::new);
-		pack.addProvider(TestBiomeTagProvider::new);
+		pack.addProvider(TestBiomeTagsProvider::new);
 	}
 
 	@Override
@@ -72,25 +72,25 @@ public class DataGeneratorEntrypoint implements net.fabricmc.fabric.api.datagen.
 		registryBuilder.add(Registries.BIOME, TestBiomes::bootstrap);
 	}
 
-	private void bootstrapConfiguredFeatures(BootstrapContext<ConfiguredFeature<?, ?>> registerable) {
-		FeatureUtils.register(registerable, COMMON_DESERT_WELL, Feature.DESERT_WELL);
+	private void bootstrapConfiguredFeatures(BootstrapContext<ConfiguredFeature<?, ?>> context) {
+		FeatureUtils.register(context, COMMON_DESERT_WELL, Feature.DESERT_WELL);
 
 		OreConfiguration featureConfig = new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.DIAMOND_BLOCK.defaultBlockState(), 5);
-		FeatureUtils.register(registerable, COMMON_ORE, Feature.ORE, featureConfig);
+		FeatureUtils.register(context, COMMON_ORE, Feature.ORE, featureConfig);
 	}
 
-	private void bootstrapPlacedFeatures(BootstrapContext<PlacedFeature> registerable) {
-		HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = registerable.lookup(Registries.CONFIGURED_FEATURE);
+	private void bootstrapPlacedFeatures(BootstrapContext<PlacedFeature> context) {
+		HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 		Holder<ConfiguredFeature<?, ?>> commonDesertWell = configuredFeatures.getOrThrow(COMMON_DESERT_WELL);
 
 		// The placement config is taken from the vanilla desert well, but no randomness
-		PlacementUtils.register(registerable, PLACED_COMMON_DESERT_WELL, commonDesertWell,
+		PlacementUtils.register(context, PLACED_COMMON_DESERT_WELL, commonDesertWell,
 				InSquarePlacement.spread(),
 				PlacementUtils.HEIGHTMAP,
 				BiomeFilter.biome()
 		);
 
-		PlacementUtils.register(registerable, PLACED_COMMON_ORE, configuredFeatures.getOrThrow(COMMON_ORE),
+		PlacementUtils.register(context, PLACED_COMMON_ORE, configuredFeatures.getOrThrow(COMMON_ORE),
 				CountPlacement.of(25),
 				HeightRangePlacement.uniform(
 					VerticalAnchor.BOTTOM,

@@ -62,8 +62,8 @@ public abstract class StructureTemplateManagerMixin {
 		if (resource.isPresent()) {
 			try {
 				String snbt = IOUtils.toString(resource.get().openAsReader());
-				CompoundTag nbt = NbtUtils.snbtToStructure(snbt);
-				return Optional.of(this.readStructure(nbt));
+				CompoundTag tag = NbtUtils.snbtToStructure(snbt);
+				return Optional.of(this.readStructure(tag));
 			} catch (IOException | CommandSyntaxException e) {
 				throw new RuntimeException("Failed to load GameTest structure " + id, e);
 			}
@@ -79,7 +79,7 @@ public abstract class StructureTemplateManagerMixin {
 	}
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList$Builder;add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 2, shift = At.Shift.AFTER))
-	private void addFabricTemplateProvider(ResourceManager resourceManager, LevelStorageSource.LevelStorageAccess session, DataFixer dataFixer, HolderGetter<Block> blockLookup, CallbackInfo ci, @Local ImmutableList.Builder<StructureTemplateManager.Source> builder) {
+	private void addFabricTemplateProvider(ResourceManager resourceManager, LevelStorageSource.LevelStorageAccess storageAccess, DataFixer dataFixer, HolderGetter<Block> blockLookup, CallbackInfo ci, @Local ImmutableList.Builder<StructureTemplateManager.Source> builder) {
 		builder.add(new StructureTemplateManager.Source(this::fabric_loadSnbtFromResource, this::streamTemplatesFromResource));
 	}
 }

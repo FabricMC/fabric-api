@@ -32,19 +32,19 @@ public class UseBlockTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			LOGGER.info("UseBlockCallback: before chest/water hook (client-side = %s)".formatted(world.isClientSide()));
+		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
+			LOGGER.info("UseBlockCallback: before chest/water hook (client-side = %s)".formatted(level.isClientSide()));
 			return InteractionResult.PASS;
 		});
 
 		// If a chest is used and the player holds a water bucket, delete it!
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
 			BlockPos pos = hitResult.getBlockPos();
 
-			if (!player.isSpectator() && world.mayInteract(player, pos)) {
-				if (world.getBlockState(pos).is(Blocks.CHEST)) {
+			if (!player.isSpectator() && level.mayInteract(player, pos)) {
+				if (level.getBlockState(pos).is(Blocks.CHEST)) {
 					if (player.getItemInHand(hand).is(Items.WATER_BUCKET)) {
-						world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+						level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 						return InteractionResult.SUCCESS;
 					}
 				}
@@ -53,8 +53,8 @@ public class UseBlockTests implements ModInitializer {
 			return InteractionResult.PASS;
 		});
 
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			LOGGER.info("UseBlockCallback: after chest/water hook (client-side = %s)".formatted(world.isClientSide()));
+		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
+			LOGGER.info("UseBlockCallback: after chest/water hook (client-side = %s)".formatted(level.isClientSide()));
 			return InteractionResult.PASS;
 		});
 	}

@@ -73,8 +73,8 @@ public class CustomDataIngredient implements CustomIngredient {
 		);
 	}
 
-	private SlotDisplay createEntryDisplay(Holder<Item> entry) {
-		ItemStack stack = entry.value().getDefaultInstance();
+	private SlotDisplay createEntryDisplay(Holder<Item> holder) {
+		ItemStack stack = holder.value().getDefaultInstance();
 		stack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, existingNbt -> CustomData.of(existingNbt.copyTag().merge(nbt)));
 		return new SlotDisplay.ItemStackSlotDisplay(stack);
 	}
@@ -137,7 +137,7 @@ public class CustomDataIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, CustomDataIngredient> getPacketCodec() {
+		public StreamCodec<RegistryFriendlyByteBuf, CustomDataIngredient> getStreamCodec() {
 			return PACKET_CODEC;
 		}
 	}

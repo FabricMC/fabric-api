@@ -36,11 +36,11 @@ public class MainMixin {
 		return FabricGameTestRunner.ENABLED || isEulaAgreedTo;
 	}
 
-	// Inject after resourcePackManager is stored
+	// Inject after packRepository is stored
 	@Inject(method = "main", cancellable = true, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/server/packs/repository/ServerPacksSource;createPackRepository(Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;)Lnet/minecraft/server/packs/repository/PackRepository;"))
-	private static void main(String[] args, CallbackInfo info, @Local LevelStorageSource.LevelStorageAccess session, @Local PackRepository resourcePackManager) {
+	private static void main(String[] args, CallbackInfo info, @Local LevelStorageSource.LevelStorageAccess storageAccess, @Local PackRepository packRepository) {
 		if (FabricGameTestRunner.ENABLED) {
-			FabricGameTestRunner.runHeadlessServer(session, resourcePackManager);
+			FabricGameTestRunner.runHeadlessServer(storageAccess, packRepository);
 			info.cancel();  // Do not progress in starting the normal dedicated server
 		}
 	}

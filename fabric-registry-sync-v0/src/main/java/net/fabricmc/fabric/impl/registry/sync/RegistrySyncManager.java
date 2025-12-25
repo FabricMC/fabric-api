@@ -85,7 +85,7 @@ public final class RegistrySyncManager {
 			}
 
 			// Disconnect incompatible clients
-			Component message = getIncompatibleClientText(ServerNetworkingImpl.getAddon(handler).getClientBrand(), map);
+			Component message = getIncompatibleClientComponent(ServerNetworkingImpl.getAddon(handler).getClientBrand(), map);
 			handler.disconnect(message);
 			return;
 		}
@@ -93,7 +93,7 @@ public final class RegistrySyncManager {
 		handler.addTask(new SyncConfigurationTask(handler, map));
 	}
 
-	private static Component getIncompatibleClientText(@Nullable String brand, Map<Identifier, Object2IntMap<Identifier>> map) {
+	private static Component getIncompatibleClientComponent(@Nullable String brand, Map<Identifier, Object2IntMap<Identifier>> map) {
 		String brandText = switch (brand) {
 		case "fabric" -> "Fabric API";
 		case null, default -> "Fabric Loader and Fabric API";
@@ -110,19 +110,19 @@ public final class RegistrySyncManager {
 				.sorted()
 				.toList();
 
-		MutableComponent text = Component.literal("The following registry entry namespaces may be related:\n\n");
+		MutableComponent component = Component.literal("The following registry entry namespaces may be related:\n\n");
 
 		for (int i = 0; i < Math.min(namespaces.size(), toDisplay); i++) {
-			text = text.append(Component.literal(namespaces.get(i)).withStyle(ChatFormatting.YELLOW));
-			text = text.append(CommonComponents.NEW_LINE);
+			component = component.append(Component.literal(namespaces.get(i)).withStyle(ChatFormatting.YELLOW));
+			component = component.append(CommonComponents.NEW_LINE);
 		}
 
 		if (namespaces.size() > toDisplay) {
-			text = text.append(Component.literal("And %d more...".formatted(namespaces.size() - toDisplay)));
+			component = component.append(Component.literal("And %d more...".formatted(namespaces.size() - toDisplay)));
 		}
 
 		return Component.literal("This server requires ").append(Component.literal(brandText).withStyle(ChatFormatting.GREEN)).append(" installed on your client!")
-				.append(CommonComponents.NEW_LINE).append(text)
+				.append(CommonComponents.NEW_LINE).append(component)
 				.append(CommonComponents.NEW_LINE).append(CommonComponents.NEW_LINE).append(Component.literal("Contact the server's administrator for more information!").withStyle(ChatFormatting.GOLD));
 	}
 

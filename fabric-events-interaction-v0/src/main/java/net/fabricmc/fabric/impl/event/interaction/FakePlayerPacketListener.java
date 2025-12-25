@@ -29,7 +29,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.fabricmc.fabric.impl.networking.UntrackedPacketListener;
 
 public final class FakePlayerPacketListener extends ServerGamePacketListenerImpl implements UntrackedPacketListener {
-	private static final Connection FAKE_CONNECTION = new FakeClientConnection();
+	private static final Connection FAKE_CONNECTION = new FakeConnection();
 
 	public FakePlayerPacketListener(ServerPlayer player) {
 		super(player.level().getServer(), FAKE_CONNECTION, player, CommonListenerCookie.createInitial(player.getGameProfile(), false));
@@ -38,8 +38,8 @@ public final class FakePlayerPacketListener extends ServerGamePacketListenerImpl
 	@Override
 	public void send(Packet<?> packet, @Nullable ChannelFutureListener callbacks) { }
 
-	private static final class FakeClientConnection extends Connection {
-		private FakeClientConnection() {
+	private static final class FakeConnection extends Connection {
+		private FakeConnection() {
 			super(PacketFlow.CLIENTBOUND);
 		}
 	}

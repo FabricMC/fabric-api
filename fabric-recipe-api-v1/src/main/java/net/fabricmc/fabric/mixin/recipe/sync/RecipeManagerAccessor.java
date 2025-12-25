@@ -24,6 +24,6 @@ import net.minecraft.world.item.crafting.RecipeMap;
 
 @Mixin(RecipeManager.class)
 public interface RecipeManagerAccessor {
-	@Accessor("recipes")
-	RecipeMap getPreparedRecipes();
+	@Accessor
+	RecipeMap getRecipes();
 }

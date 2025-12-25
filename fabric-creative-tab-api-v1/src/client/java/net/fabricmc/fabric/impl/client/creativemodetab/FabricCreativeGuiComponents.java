@@ -50,13 +50,13 @@ public class FabricCreativeGuiComponents {
 		final Type type;
 
 		public CreativeModeTabButton(int x, int y, Type type, CreativeModeInventoryScreen screen) {
-			super(x, y, 10, 12, type.text, (bw) -> type.clickConsumer.accept(screen), Button.DEFAULT_NARRATION);
+			super(x, y, 10, 12, type.component, (bw) -> type.clickConsumer.accept(screen), Button.DEFAULT_NARRATION);
 			this.type = type;
 			this.screen = screen;
 		}
 
 		@Override
-		protected void renderContents(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
+		protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
 			this.active = type.isEnabled.test(screen);
 			this.visible = screen.hasAdditionalPages();
 
@@ -66,10 +66,10 @@ public class FabricCreativeGuiComponents {
 
 			int u = active && this.isHovered() ? 20 : 0;
 			int v = active ? 0 : 12;
-			drawContext.blit(RenderPipelines.GUI_TEXTURED, BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 10 : 0), v, 10, 12, 256, 256);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, BUTTON_TEX, this.getX(), this.getY(), u + (type == Type.NEXT ? 10 : 0), v, 10, 12, 256, 256);
 
 			if (this.isHovered()) {
-				drawContext.setTooltipForNextFrame(Minecraft.getInstance().font, net.minecraft.network.chat.Component.translatable("fabric.gui.creativeTabPage", screen.getCurrentPage() + 1, getPageCount()), mouseX, mouseY);
+				graphics.setTooltipForNextFrame(Minecraft.getInstance().font, net.minecraft.network.chat.Component.translatable("fabric.gui.creativeTabPage", screen.getCurrentPage() + 1, getPageCount()), mouseX, mouseY);
 			}
 		}
 	}
@@ -78,12 +78,12 @@ public class FabricCreativeGuiComponents {
 		NEXT(Component.literal(">"), CreativeModeInventoryScreen::switchToNextPage, screen -> screen.getCurrentPage() + 1 < screen.getPageCount()),
 		PREVIOUS(Component.literal("<"), CreativeModeInventoryScreen::switchToPreviousPage, screen -> screen.getCurrentPage() != 0);
 
-		final Component text;
+		final Component component;
 		final Consumer<CreativeModeInventoryScreen> clickConsumer;
 		final Predicate<CreativeModeInventoryScreen> isEnabled;
 
-		Type(Component text, Consumer<CreativeModeInventoryScreen> clickConsumer, Predicate<CreativeModeInventoryScreen> isEnabled) {
-			this.text = text;
+		Type(Component component, Consumer<CreativeModeInventoryScreen> clickConsumer, Predicate<CreativeModeInventoryScreen> isEnabled) {
+			this.component = component;
 			this.clickConsumer = clickConsumer;
 			this.isEnabled = isEnabled;
 		}

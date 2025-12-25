@@ -33,10 +33,10 @@ import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 
-import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
+import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder;
 
 @Mixin(PotionBrewing.Builder.class)
-public abstract class PotionBrewingBuilderMixin implements FabricBrewingRecipeRegistryBuilder {
+public abstract class PotionBrewingBuilderMixin implements FabricPotionBrewingBuilder {
 	@Shadow
 	@Final
 	private FeatureFlagSet enabledFeatures;
@@ -55,7 +55,7 @@ public abstract class PotionBrewingBuilderMixin implements FabricBrewingRecipeRe
 
 	@Inject(method = "build", at = @At("HEAD"))
 	private void build(CallbackInfoReturnable<PotionBrewing> cir) {
-		FabricBrewingRecipeRegistryBuilder.BUILD.invoker().build((PotionBrewing.Builder) (Object) this);
+		FabricPotionBrewingBuilder.BUILD.invoker().build((PotionBrewing.Builder) (Object) this);
 	}
 
 	@Override

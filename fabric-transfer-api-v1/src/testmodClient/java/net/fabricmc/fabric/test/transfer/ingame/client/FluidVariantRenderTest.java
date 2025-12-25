@@ -43,7 +43,7 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		FluidVariantAttributes.enableColoredVanillaFluidNames();
 
-		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("fabric-transfer-api-v1-testmod", "fluid_variant"), (drawContext, tickDelta) -> {
+		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath("fabric-transfer-api-v1-testmod", "fluid_variant"), (graphics, tickDelta) -> {
 			Player player = Minecraft.getInstance().player;
 			if (player == null) return;
 
@@ -57,20 +57,20 @@ public class FluidVariantRenderTest implements ClientModInitializer {
 				int color = FluidVariantRendering.getColor(variant, player.level(), player.blockPosition());
 
 				if (sprites != null) {
-					drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, sprites[0], 0, renderY, 16, 16, color);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprites[0], 0, renderY, 16, 16, color);
 					renderY += 16;
-					drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, sprites[1], 0, renderY, 16, 16, color);
+					graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprites[1], 0, renderY, 16, 16, color);
 					renderY += 16;
 				}
 
 				List<Component> tooltip = FluidVariantRendering.getTooltip(variant);
-				Font textRenderer = Minecraft.getInstance().font;
+				Font font = Minecraft.getInstance().font;
 
 				renderY += 2;
 
 				for (Component line : tooltip) {
 					renderY += 10;
-					drawContext.renderTooltip(textRenderer, List.of(ClientTooltipComponent.create(line.getVisualOrderText())), -8, renderY, DefaultTooltipPositioner.INSTANCE, null);
+					graphics.renderTooltip(font, List.of(ClientTooltipComponent.create(line.getVisualOrderText())), -8, renderY, DefaultTooltipPositioner.INSTANCE, null);
 				}
 			}
 		});

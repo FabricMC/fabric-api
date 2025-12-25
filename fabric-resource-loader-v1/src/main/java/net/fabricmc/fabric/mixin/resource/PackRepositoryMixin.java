@@ -65,20 +65,20 @@ public abstract class PackRepositoryMixin {
 		// Use a LinkedHashSet to preserve ordering
 		this.sources = new LinkedHashSet<>(this.sources);
 
-		// Search resource pack providers to find any server-related pack provider.
-		boolean shouldAddServerProvider = false;
+		// Search repository sources to find any server-related repository source.
+		boolean shouldAddServerSource = false;
 
-		for (RepositorySource provider : this.sources) {
-			if (provider instanceof FolderRepositorySource
-					&& (((FolderRepositorySource) provider).packSource == PackSource.WORLD
-					|| ((FolderRepositorySource) provider).packSource == PackSource.SERVER)) {
-				shouldAddServerProvider = true;
+		for (RepositorySource source : this.sources) {
+			if (source instanceof FolderRepositorySource
+					&& (((FolderRepositorySource) source).packSource == PackSource.WORLD
+					|| ((FolderRepositorySource) source).packSource == PackSource.SERVER)) {
+				shouldAddServerSource = true;
 				break;
 			}
 		}
 
-		// On server, add the mod resource pack provider.
-		if (shouldAddServerProvider) {
+		// On server, add the mod repository source.
+		if (shouldAddServerSource) {
 			this.sources.add(new ModResourcePackCreator(PackType.SERVER_DATA));
 		}
 	}

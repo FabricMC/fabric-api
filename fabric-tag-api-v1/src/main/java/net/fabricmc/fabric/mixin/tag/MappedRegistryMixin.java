@@ -36,16 +36,16 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
-import net.fabricmc.fabric.impl.tag.SimpleRegistryExtension;
-import net.fabricmc.fabric.impl.tag.TagAliasEnabledRegistryWrapper;
+import net.fabricmc.fabric.impl.tag.MappedRegistryExtension;
+import net.fabricmc.fabric.impl.tag.TagAliasEnabledRegistryLookup;
 
 /**
- * Adds tag alias support to {@code SimpleRegistry}, the primary registry implementation.
+ * Adds tag alias support to {@code MappedRegistry}, the primary registry implementation.
  *
- * <p>Additionally, the {@link TagAliasEnabledRegistryWrapper} implementation is for dynamic registry tag loading.
+ * <p>Additionally, the {@link TagAliasEnabledRegistryLookup} implementation is for dynamic registry tag loading.
  */
 @Mixin(MappedRegistry.class)
-abstract class MappedRegistryMixin<T> implements SimpleRegistryExtension, TagAliasEnabledRegistryWrapper {
+abstract class MappedRegistryMixin<T> implements MappedRegistryExtension, TagAliasEnabledRegistryLookup {
 	@Unique
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-tag-api-v1");
 

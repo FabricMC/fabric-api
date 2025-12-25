@@ -98,22 +98,22 @@ public class SyncGametest implements FabricClientGameTest {
 			LOGGER.info("Setting up synced attachments before join");
 			// setup before player joins
 			serverContext.runOnServer(server -> {
-				ServerLevel world = server.overworld();
-				BlockPos top = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.ZERO);
+				ServerLevel level = server.overworld();
+				BlockPos top = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.ZERO);
 				state.furnacePos = top;
 
-				world.setBlockAndUpdate(top, Blocks.FURNACE.defaultBlockState());
-				setSyncedWithAll(world.getBlockEntity(top, BlockEntityType.FURNACE).orElseThrow());
+				level.setBlockAndUpdate(top, Blocks.FURNACE.defaultBlockState());
+				setSyncedWithAll(level.getBlockEntity(top, BlockEntityType.FURNACE).orElseThrow());
 
-				var villager = new Villager(EntityType.VILLAGER, world);
+				var villager = new Villager(EntityType.VILLAGER, level);
 				villager.setNoAi(true);
 				villager.setInvulnerable(true);
 				state.villagerId = villager.getUUID();
-				world.addFreshEntity(villager);
+				level.addFreshEntity(villager);
 				setSyncedWithAll(villager);
 				set(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
 
-				LevelChunk originChunk = world.getChunk(0, 0);
+				LevelChunk originChunk = level.getChunk(0, 0);
 				setSyncedWithAll(originChunk);
 
 				ServerLevel nether = server.getLevel(Level.NETHER);
@@ -144,18 +144,18 @@ public class SyncGametest implements FabricClientGameTest {
 
 				LOGGER.info("Testing synced attachments (1/2)");
 				context.runOnClient(client -> {
-					ClientLevel world = Objects.requireNonNull(client.level);
-					Entity villager = world.getEntity(state.villagerId);
+					ClientLevel level = Objects.requireNonNull(client.level);
+					Entity villager = level.getEntity(state.villagerId);
 
-					assertHasSyncedWithAll(world.getBlockEntity(state.furnacePos));
+					assertHasSyncedWithAll(level.getBlockEntity(state.furnacePos));
 					assertHasSyncedWithAll(villager);
-					assertHasSyncedWithAll(world.getChunk(0, 0));
+					assertHasSyncedWithAll(level.getChunk(0, 0));
 					assertHasSyncedWithAll(client.player);
 					assertHasSynced(client.player, AttachmentTestMod.SYNCED_CREATIVE_ONLY);
 					assertHasSynced(client.player, AttachmentTestMod.SYNCED_ITEM);
 
-					// `world` is the overworld here
-					assertHasNotSynced(world, AttachmentTestMod.SYNCED_WITH_ALL);
+					// `level` is the overworld here
+					assertHasNotSynced(level, AttachmentTestMod.SYNCED_WITH_ALL);
 					assertHasNotSynced(client.player, AttachmentTestMod.SYNCED_EXCEPT_TARGET);
 					assertHasNotSynced(villager, AttachmentTestMod.SYNCED_WITH_TARGET);
 

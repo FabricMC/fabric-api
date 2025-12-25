@@ -21,13 +21,13 @@ import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.client.multiplayer.ClientRecipeContainer;
 
-import net.fabricmc.fabric.api.recipe.v1.FabricRecipeManager;
+import net.fabricmc.fabric.api.recipe.v1.FabricRecipeAccess;
 import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
 import net.fabricmc.fabric.impl.recipe.sync.SynchronizedRecipesImpl;
 import net.fabricmc.fabric.impl.recipe.sync.client.SynchronizedClientRecipesSetter;
 
 @Mixin(ClientRecipeContainer.class)
-public class ClientRecipeContainerMixin implements FabricRecipeManager, SynchronizedClientRecipesSetter {
+public class ClientRecipeContainerMixin implements FabricRecipeAccess, SynchronizedClientRecipesSetter {
 	@Unique
 	private SynchronizedRecipes synchronizedClientRecipes = SynchronizedRecipesImpl.EMPTY;
 

@@ -81,7 +81,7 @@ public class ChatTestClient implements ClientModInitializer {
 		ClientHandleChatInputEvents.COMMAND.register((command -> LOGGER.info("Sent command message: " + command)));
 		ClientHandleChatInputEvents.COMMAND_CANCELED.register((command) -> LOGGER.info("Canceled sending command message: " + command));
 		//Test client receive message events
-		ClientLogChatMessageEvents.IS_CHAT_ALLOWED.register((message, signedMessage, sender, params, receptionTimestamp) -> {
+		ClientLogChatMessageEvents.IS_CHAT_ALLOWED.register((message, playerChatMessage, sender, params, receptionTimestamp) -> {
 			if (message.getString().contains("block receive")) {
 				LOGGER.info("Blocked receiving chat message: " + message.getString());
 				return false;
@@ -89,7 +89,7 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientLogChatMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Received chat message sent by {} at time {}: {}", sender == null ? "null" : sender.name(), receptionTimestamp.toEpochMilli(), message.getString()));
+		ClientLogChatMessageEvents.CHAT.register((message, playerChatMessage, sender, params, receptionTimestamp) -> LOGGER.info("Received chat message sent by {} at time {}: {}", sender == null ? "null" : sender.name(), receptionTimestamp.toEpochMilli(), message.getString()));
 		ClientLogChatMessageEvents.CHAT_CANCELED.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Cancelled receiving chat message sent by {} at time {}: {}", sender == null ? "null" : sender.name(), receptionTimestamp.toEpochMilli(), message.getString()));
 		//Test client receive game message events
 		ClientLogChatMessageEvents.ALLOW_GAME.register((message, overlay) -> {

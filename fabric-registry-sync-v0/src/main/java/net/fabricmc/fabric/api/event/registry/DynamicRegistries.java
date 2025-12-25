@@ -66,11 +66,11 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
  * DynamicRegistries.register(MY_DATA_KEY, MyData.CODEC);
  *
  * // Option 2a: Register a synced registry
- * // @link substring=registerSynced target="#registerSynced(RegistryKey, Codec, SyncOption...)":
+ * // @link substring=registerSynced target="#registerSynced(ResourceKey, Codec, SyncOption...)":
  * DynamicRegistries.registerSynced(MY_DATA_KEY, MyData.CODEC);
  *
  * // Option 2b: Register a synced registry with a different network codec
- * // @link substring=registerSynced target="#registerSynced(RegistryKey, Codec, Codec, SyncOption...)":
+ * // @link substring=registerSynced target="#registerSynced(ResourceKey, Codec, Codec, SyncOption...)":
  * DynamicRegistries.registerSynced(MY_DATA_KEY, MyData.CODEC, MyData.NETWORK_CODEC);
  * }
  */

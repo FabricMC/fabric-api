@@ -273,7 +273,7 @@ public interface BiomeModificationContext {
 		}
 
 		/**
-		 * Adds a feature to one of this biomes generation steps, identified by the placed feature's registry key.
+		 * Adds a feature to one of this biomes generation steps, identified by the placed feature's resource key.
 		 */
 		void addFeature(GenerationStep.Decoration step, ResourceKey<PlacedFeature> placedFeatureKey);
 
@@ -331,7 +331,7 @@ public interface BiomeModificationContext {
 		 * @return True if any spawns were removed.
 		 */
 		default boolean removeSpawnsOfEntityType(EntityType<?> entityType) {
-			return removeSpawns((spawnGroup, spawnEntry) -> spawnEntry.type() == entityType);
+			return removeSpawns((category, spawnEntry) -> spawnEntry.type() == entityType);
 		}
 
 		/**

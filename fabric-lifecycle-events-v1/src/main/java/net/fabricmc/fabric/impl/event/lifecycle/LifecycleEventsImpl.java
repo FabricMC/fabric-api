@@ -46,7 +46,7 @@ public final class LifecycleEventsImpl implements ModInitializer {
 			}
 		});
 
-		// We use the world unload event so worlds that are dynamically hot(un)loaded get (block) entity unload events fired when shut down.
+		// We use the level unload event so levels that are dynamically hot(un)loaded get (block) entity unload events fired when shut down.
 		ServerLevelEvents.UNLOAD.register((server, level) -> {
 			for (LevelChunk chunk : ((LoadedChunksCache) level).fabric_getLoadedChunks()) {
 				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {

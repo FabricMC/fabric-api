@@ -124,7 +124,7 @@ public final class DefaultCustomIngredients {
 	 */
 	public static Ingredient components(Ingredient base, DataComponentPatch components) {
 		Objects.requireNonNull(base, "Base ingredient cannot be null");
-		Objects.requireNonNull(components, "Component changes cannot be null");
+		Objects.requireNonNull(components, "Component patch cannot be null");
 
 		return new ComponentsIngredient(base, components).toVanilla();
 	}
@@ -166,7 +166,7 @@ public final class DefaultCustomIngredients {
 	 * For strict matching, use {@link #components(Ingredient, UnaryOperator)} like this instead:
 	 *
 	 * <pre>{@code
-	 * components(base, builder -> builder.add(DataComponents.CUSTOM_DATA, NbtComponent.of(nbt)));
+	 * components(base, builder -> builder.add(DataComponents.CUSTOM_DATA, CustomData.of(nbt)));
 	 * // or, to check for absence of custom data:
 	 * components(base, builder -> builder.remove(DataComponents.CUSTOM_DATA));
 	 * }</pre>

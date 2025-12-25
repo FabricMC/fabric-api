@@ -44,47 +44,47 @@ import net.fabricmc.fabric.test.item.CustomEnchantmentEffectsTest;
 
 public class CustomEnchantmentEffectsGameTest {
 	@GameTest
-	public void weirdImpalingSetsFireToTargets(GameTestHelper context) {
+	public void weirdImpalingSetsFireToTargets(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(3, 3, 3);
-		Creeper creeper = context.spawn(EntityType.CREEPER, pos);
-		Player player = context.makeMockPlayer(GameType.CREATIVE);
+		Creeper creeper = helper.spawn(EntityType.CREEPER, pos);
+		Player player = helper.makeMockPlayer(GameType.CREATIVE);
 
 		ItemStack trident = Items.TRIDENT.getDefaultInstance();
-		Optional<Holder.Reference<Enchantment>> impaling = getEnchantmentRegistry(context)
+		Optional<Holder.Reference<Enchantment>> impaling = getEnchantmentRegistry(helper)
 				.get(CustomEnchantmentEffectsTest.WEIRD_IMPALING);
 		if (impaling.isEmpty()) {
-			throw context.assertionException("Weird Impaling enchantment is not present");
+			throw helper.assertionException("Weird Impaling enchantment is not present");
 		}
 
 		trident.enchant(impaling.get(), 1);
 
 		player.setItemInHand(InteractionHand.MAIN_HAND, trident);
 
-		context.assertEntityData(pos, EntityType.CREEPER, Entity::isOnFire, false);
+		helper.assertEntityData(pos, EntityType.CREEPER, Entity::isOnFire, false);
 		player.attack(creeper);
-		context.succeedWhenEntityData(pos, EntityType.CREEPER, Entity::isOnFire, true);
+		helper.succeedWhenEntityData(pos, EntityType.CREEPER, Entity::isOnFire, true);
 	}
 
 	@GameTest
-	public void weirdImpalingHasTwoDamageEffects(GameTestHelper context) {
-		Enchantment impaling = getEnchantmentRegistry(context).getValue(CustomEnchantmentEffectsTest.WEIRD_IMPALING);
+	public void weirdImpalingHasTwoDamageEffects(GameTestHelper helper) {
+		Enchantment impaling = getEnchantmentRegistry(helper).getValue(CustomEnchantmentEffectsTest.WEIRD_IMPALING);
 
 		if (impaling == null) {
-			throw context.assertionException("Weird Impaling enchantment is not present");
+			throw helper.assertionException("Weird Impaling enchantment is not present");
 		}
 
 		List<ConditionalEffect<EnchantmentValueEffect>> damageEffects = impaling
 				.getEffects(EnchantmentEffectComponents.DAMAGE);
 
-		context.assertTrue(
+		helper.assertTrue(
 				damageEffects.size() == 2,
 				Component.literal(String.format("Weird Impaling has %d damage effect(s), not the expected 2", damageEffects.size()))
 		);
-		context.succeed();
+		helper.succeed();
 	}
 
-	private static Registry<Enchantment> getEnchantmentRegistry(GameTestHelper context) {
-		RegistryAccess registryManager = context.getLevel().registryAccess();
-		return registryManager.lookupOrThrow(Registries.ENCHANTMENT);
+	private static Registry<Enchantment> getEnchantmentRegistry(GameTestHelper helper) {
+		RegistryAccess registryAccess = helper.getLevel().registryAccess();
+		return registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
 	}
 }

@@ -31,7 +31,7 @@ import net.minecraft.tags.TagKey;
  * A Helper class for checking whether a {@link TagKey} contains some entry.
  * This can be useful for {@link TagKey}s whose type has no easy way of querying if they are in a tag, such as {@link net.minecraft.world.item.enchantment.Enchantment}s.
  *
- * <p>For dynamic registry entries, use {@link #isIn(RegistryAccess, TagKey, Object)} with a non-null dynamic registry manager.
+ * <p>For dynamic registry entries, use {@link #isIn(RegistryAccess, TagKey, Object)} with a non-null registry access.
  * For non-dynamic registry entries, the simpler {@link #isIn(TagKey, Object)} can be used.
  */
 public final class TagUtil {
@@ -51,20 +51,20 @@ public final class TagUtil {
 	}
 
 	/**
-	 * @param registryManager the registry manager instance of the client or server. If the tag refers to entries
+	 * @param registryAccess the registry access instance of the client or server. If the tag refers to entries
 	 *                        within a dynamic registry, such as {@link net.minecraft.world.level.biome.Biome}s,
 	 *                        this must be passed to correctly evaluate the tag. Otherwise, the registry is found by
 	 *                        looking in {@link BuiltInRegistries#REGISTRY}.
 	 * @return if the entry is in the provided tag.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> boolean isIn(@Nullable RegistryAccess registryManager, TagKey<T> tagKey, T entry) {
+	public static <T> boolean isIn(@Nullable RegistryAccess registryAccess, TagKey<T> tagKey, T entry) {
 		Optional<? extends Registry<?>> maybeRegistry;
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(entry);
 
-		if (registryManager != null) {
-			maybeRegistry = registryManager.lookup(tagKey.registry());
+		if (registryAccess != null) {
+			maybeRegistry = registryAccess.lookup(tagKey.registry());
 		} else {
 			maybeRegistry = BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().identifier());
 		}

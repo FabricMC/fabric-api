@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * Fabric addition to ResourcePackProfile.
+ * Fabric addition to Pack.
  * @see ModResourcePackCreator
  */
 public interface FabricPack {

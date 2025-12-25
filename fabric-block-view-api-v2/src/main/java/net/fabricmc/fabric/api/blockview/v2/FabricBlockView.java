@@ -49,7 +49,7 @@ public interface FabricBlockView {
 	 * <p>As previously stated, a common environment to use this method in is chunk building. Methods
 	 * that are invoked during chunk building and that thus should use this method include, but are
 	 * not limited to, {@code FabricBakedModel#emitBlockQuads} (block models),
-	 * {@code BlockColorProvider#getColor} (block color providers), and
+	 * {@code BlockColor#getColor} (block color), and
 	 * {@code FabricBlock#getAppearance} (block appearance computation).
 	 *
 	 * <p>Users of this method are required to check the returned object before using it. Users must

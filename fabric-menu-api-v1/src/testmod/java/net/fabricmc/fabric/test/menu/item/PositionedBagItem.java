@@ -30,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.fabricmc.fabric.test.menu.menu.PositionedBagMenu;
 
 public class PositionedBagItem extends BagItem {
@@ -41,7 +41,7 @@ public class PositionedBagItem extends BagItem {
 	@Override
 	public InteractionResult use(Level level, Player user, InteractionHand hand) {
 		ItemStack stack = user.getItemInHand(hand);
-		user.openMenu(createScreenHandlerFactory(stack, null));
+		user.openMenu(createMenuProvider(stack, null));
 		return InteractionResult.SUCCESS;
 	}
 
@@ -50,12 +50,12 @@ public class PositionedBagItem extends BagItem {
 		Player user = context.getPlayer();
 		ItemStack stack = user.getItemInHand(context.getHand());
 		BlockPos pos = context.getClickedPos();
-		user.openMenu(createScreenHandlerFactory(stack, pos));
+		user.openMenu(createMenuProvider(stack, pos));
 		return InteractionResult.SUCCESS;
 	}
 
-	private ExtendedMenuFactory<PositionedBagMenu.BagData> createScreenHandlerFactory(ItemStack stack, BlockPos pos) {
-		return new ExtendedMenuFactory<>() {
+	private ExtendedMenuProvider<PositionedBagMenu.BagData> createMenuProvider(ItemStack stack, BlockPos pos) {
+		return new ExtendedMenuProvider<>() {
 			@Override
 			public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
 				return new PositionedBagMenu(containerId, inventory, new BagInventory(stack), pos);

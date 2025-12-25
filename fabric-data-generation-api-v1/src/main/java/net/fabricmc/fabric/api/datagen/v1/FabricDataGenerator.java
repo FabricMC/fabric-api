@@ -31,6 +31,7 @@ import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.loader.api.ModContainer;
 
 /**
@@ -149,7 +150,7 @@ public final class FabricDataGenerator extends DataGenerator {
 
 		/**
 		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricPackOutput} and the registries.
-		 * This is used, for example, with {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider}.
+		 * This is used, for example, with {@link FabricTagsProvider}.
 		 *
 		 * @return the {@link DataProvider}
 		 */

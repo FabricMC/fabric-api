@@ -95,8 +95,8 @@ public class ComponentsIngredient implements CustomIngredient {
 		);
 	}
 
-	private SlotDisplay createEntryDisplay(Holder<Item> entry) {
-		ItemStack stack = entry.value().getDefaultInstance();
+	private SlotDisplay createEntryDisplay(Holder<Item> holder) {
+		ItemStack stack = holder.value().getDefaultInstance();
 		stack.applyComponentsAndValidate(components);
 		return new SlotDisplay.ItemStackSlotDisplay(stack);
 	}
@@ -158,7 +158,7 @@ public class ComponentsIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, ComponentsIngredient> getPacketCodec() {
+		public StreamCodec<RegistryFriendlyByteBuf, ComponentsIngredient> getStreamCodec() {
 			return PACKET_CODEC;
 		}
 	}

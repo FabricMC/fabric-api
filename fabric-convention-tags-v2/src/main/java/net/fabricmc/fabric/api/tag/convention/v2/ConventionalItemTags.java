@@ -268,7 +268,7 @@ public final class ConventionalItemTags {
 	// Drinks
 	/**
 	 * Drinks are defined as (1) consumable items that (2) use the
-	 * {@linkplain net.minecraft.world.item.ItemUseAnimation#DRINK drink use action}, (3) can be consumed regardless of the
+	 * {@linkplain net.minecraft.world.item.ItemUseAnimation#DRINK drink use animation}, (3) can be consumed regardless of the
 	 * player's current hunger.
 	 *
 	 * <p>Drinks may provide nutrition and saturation, but are not required to do so.

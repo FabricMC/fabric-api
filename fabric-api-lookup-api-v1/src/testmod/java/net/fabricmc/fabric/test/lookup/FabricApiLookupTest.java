@@ -98,7 +98,7 @@ public class FabricApiLookupTest implements ModInitializer {
 
 		ensureException(() -> {
 			BlockApiLookup<Void, Void> wrongInsertable = BlockApiLookup.get(Identifier.fromNamespaceAndPath("testmod", "item_insertable"), Void.class, Void.class);
-			wrongInsertable.registerFallback((world, pos, state, be, nocontext) -> null);
+			wrongInsertable.registerFallback((level, pos, state, be, nocontext) -> null);
 		}, "The registry should have prevented creation of another instance with different classes, but same id.");
 
 		if (!insertable2.getId().equals(Identifier.fromNamespaceAndPath("testmod", "item_insertable"))) {

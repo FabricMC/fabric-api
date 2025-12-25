@@ -57,12 +57,12 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 		this.codec = codec;
 	}
 
-	protected FabricCodecDataProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
-		this(dataOutput.createPathProvider(target, directoryName), registriesFuture, codec);
+	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, PackOutput.Target target, String directoryName, Codec<T> codec) {
+		this(packOutput.createPathProvider(target, directoryName), registriesFuture, codec);
 	}
 
-	protected FabricCodecDataProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
-		this(dataOutput.createRegistryElementsPathProvider(key), registriesFuture, codec);
+	protected FabricCodecDataProvider(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, ResourceKey<? extends Registry<?>> key, Codec<T> codec) {
+		this(packOutput.createRegistryElementsPathProvider(key), registriesFuture, codec);
 	}
 
 	@Override

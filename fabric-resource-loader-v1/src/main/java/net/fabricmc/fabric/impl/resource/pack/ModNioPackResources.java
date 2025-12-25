@@ -128,7 +128,7 @@ public class ModNioPackResources implements PackResources, ModPackResources {
 
 	@Override
 	public ModNioPackResources createOverlay(String overlay) {
-		// See DirectoryResourcePack.
+		// See PathPackResources.
 		return new ModNioPackResources(this.id, this.mod, this.basePaths.stream().map(
 				path -> path.resolve(overlay)
 		).toList(), this.type, this.activationType, this.modBundled, this.metadata);

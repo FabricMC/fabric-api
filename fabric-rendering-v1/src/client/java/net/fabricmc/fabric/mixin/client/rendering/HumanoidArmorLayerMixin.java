@@ -38,23 +38,23 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRendererRegistryImpl;
 @Mixin(HumanoidArmorLayer.class)
 public abstract class HumanoidArmorLayerMixin<S extends HumanoidRenderState, M extends HumanoidModel<S>, A extends HumanoidModel<S>> extends RenderLayer<S, M> {
 	@Unique
-	private HumanoidRenderState bipedRenderState;
+	private HumanoidRenderState humanoidRenderState;
 
-	public HumanoidArmorLayerMixin(RenderLayerParent<S, M> featureRendererContext) {
-		super(featureRendererContext);
+	public HumanoidArmorLayerMixin(RenderLayerParent<S, M> renderLayerParent) {
+		super(renderLayerParent);
 	}
 
 	@Inject(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/HumanoidRenderState;FF)V", at = @At("HEAD"))
-	private void render(PoseStack matrixStack, SubmitNodeCollector orderedRenderCommandQueue, int i, S bipedEntityRenderState, float f, float g, CallbackInfo ci) {
-		this.bipedRenderState = bipedEntityRenderState;
+	private void render(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, S bipedEntityRenderState, float f, float g, CallbackInfo ci) {
+		this.humanoidRenderState = bipedEntityRenderState;
 	}
 
 	@Inject(method = "renderArmorPiece", at = @At("HEAD"), cancellable = true)
-	private void renderArmor(PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, ItemStack stack, EquipmentSlot armorSlot, int light, S bipedEntityRenderState, CallbackInfo ci) {
+	private void renderArmor(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack stack, EquipmentSlot armorSlot, int light, S bipedEntityRenderState, CallbackInfo ci) {
 		ArmorRenderer renderer = ArmorRendererRegistryImpl.get(stack.getItem());
 
 		if (renderer != null) {
-			renderer.render(matrices, orderedRenderCommandQueue, stack, bipedRenderState, armorSlot, light, (HumanoidModel<HumanoidRenderState>) getParentModel());
+			renderer.render(poseStack, submitNodeCollector, stack, humanoidRenderState, armorSlot, light, (HumanoidModel<HumanoidRenderState>) getParentModel());
 			ci.cancel();
 		}
 	}

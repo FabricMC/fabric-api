@@ -25,10 +25,10 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.network.Connection;
 import net.minecraft.resources.Identifier;
 
-import net.fabricmc.fabric.impl.attachment.sync.SupportedAttachmentsClientConnection;
+import net.fabricmc.fabric.impl.attachment.sync.SupportedAttachmentsConnection;
 
 @Mixin(Connection.class)
-public class ConnectionMixin implements SupportedAttachmentsClientConnection {
+public class ConnectionMixin implements SupportedAttachmentsConnection {
 	@Unique
 	private Set<Identifier> supportedAttachments = new HashSet<>();
 

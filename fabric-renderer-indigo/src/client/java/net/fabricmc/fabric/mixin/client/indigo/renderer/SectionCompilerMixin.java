@@ -109,15 +109,15 @@ abstract class SectionCompilerMixin {
 	 */
 	@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getRenderShape()Lnet/minecraft/world/level/block/RenderShape;"))
 	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack buffers, @Local(ordinal = 2) BlockPos blockPos) {
-		RenderShape blockRenderType = blockState.getRenderShape();
+		RenderShape renderShape = blockState.getRenderShape();
 
-		if (blockRenderType == RenderShape.MODEL) {
+		if (renderShape == RenderShape.MODEL) {
 			BlockStateModel model = blockRenderer.getBlockModel(blockState);
 			((AccessRenderSectionRegion) renderRegion).fabric_getRenderer().bufferModel(model, blockState, blockPos);
 			return RenderShape.INVISIBLE; // Cancel the vanilla logic
 		}
 
-		return blockRenderType;
+		return renderShape;
 	}
 
 	/**

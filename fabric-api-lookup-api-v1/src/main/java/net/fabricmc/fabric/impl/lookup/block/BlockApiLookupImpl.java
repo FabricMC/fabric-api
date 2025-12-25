@@ -62,19 +62,19 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 
 	@Nullable
 	@Override
-	public A find(Level world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context) {
-		Objects.requireNonNull(world, "World may not be null.");
+	public A find(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context) {
+		Objects.requireNonNull(level, "Level may not be null.");
 		Objects.requireNonNull(pos, "BlockPos may not be null.");
 		// Providers have the final say whether a null context is allowed.
 
 		// Get the block state and the block entity
 		if (blockEntity == null) {
 			if (state == null) {
-				state = world.getBlockState(pos);
+				state = level.getBlockState(pos);
 			}
 
 			if (state.hasBlockEntity()) {
-				blockEntity = world.getBlockEntity(pos);
+				blockEntity = level.getBlockEntity(pos);
 			}
 		} else {
 			if (state == null) {
@@ -87,7 +87,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		A instance = null;
 
 		if (provider != null) {
-			instance = provider.find(world, pos, state, blockEntity, context);
+			instance = provider.find(level, pos, state, blockEntity, context);
 		}
 
 		if (instance != null) {
@@ -96,7 +96,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 
 		// Query the fallback providers
 		for (BlockApiProvider<A, C> fallbackProvider : fallbackProviders) {
-			instance = fallbackProvider.find(world, pos, state, blockEntity, context);
+			instance = fallbackProvider.find(level, pos, state, blockEntity, context);
 
 			if (instance != null) {
 				return instance;
@@ -156,7 +156,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		for (BlockEntityType<?> blockEntityType : blockEntityTypes) {
 			Objects.requireNonNull(blockEntityType, "Encountered null block entity type while registering a block entity API provider mapping.");
 
-			BlockApiProvider<A, C> nullCheckedProvider = (world, pos, state, blockEntity, context) -> {
+			BlockApiProvider<A, C> nullCheckedProvider = (level, pos, state, blockEntity, context) -> {
 				if (blockEntity == null || blockEntity.getType() != blockEntityType) {
 					return null;
 				} else {

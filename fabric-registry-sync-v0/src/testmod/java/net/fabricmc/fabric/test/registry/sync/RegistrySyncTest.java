@@ -51,7 +51,7 @@ public class RegistrySyncTest implements ModInitializer {
 	public static final boolean REGISTER_BLOCKS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.blocks", "true"));
 	public static final boolean REGISTER_ITEMS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.items", "true"));
 
-	// Store a list of Registries used with PacketCodecs.registry, and then check that they are marked as synced when the server starts.
+	// Store a list of Registries used with ByteBufCodecs.registry, and then check that they are marked as synced when the server starts.
 	// We check them later as they may be used before the registry attributes are assigned.
 	private static boolean hasCheckedEarlyRegistries = false;
 	private static final List<ResourceKey<? extends Registry<?>>> sycnedRegistriesToCheck = new ArrayList<>();
@@ -85,9 +85,9 @@ public class RegistrySyncTest implements ModInitializer {
 
 		final AtomicBoolean setupCalled = new AtomicBoolean(false);
 
-		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
+		DynamicRegistrySetupCallback.EVENT.register(dynamicRegistries -> {
 			setupCalled.set(true);
-			registryManager.registerEntryAdded(Registries.BIOME, (rawId, id, object) -> {
+			dynamicRegistries.registerEntryAdded(Registries.BIOME, (rawId, id, object) -> {
 				LOGGER.info("Biome added: {}", id);
 			});
 		});
@@ -101,7 +101,7 @@ public class RegistrySyncTest implements ModInitializer {
 			}
 		});
 
-		// Vanilla status effects don't have an entry for the int id 0, test we can handle this.
+		// Vanilla mob effects don't have an entry for the int id 0, test we can handle this.
 		RegistryAttributeHolder.get(BuiltInRegistries.MOB_EFFECT).addAttribute(RegistryAttribute.MODDED);
 	}
 

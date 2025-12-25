@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.util.TriState;
 
 /**
- * Holds, manages, and provides access to the block/world related state
+ * Holds, manages, and provides access to the block/level related state
  * needed to buffer quads.
  */
 public class BlockRenderInfo {

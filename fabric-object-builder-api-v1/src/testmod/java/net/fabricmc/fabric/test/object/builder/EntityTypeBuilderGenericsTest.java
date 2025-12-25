@@ -38,11 +38,11 @@ final class EntityTypeBuilderGenericsTest {
 	static EntityType<LivingEntity> LIVING_ENTITY_1 = FabricEntityTypeBuilder.createLiving().build(DUMMY);
 	static EntityType<TestEntity> TEST_ENTITY_1 = FabricEntityTypeBuilder.createLiving()
 			.entityFactory(TestEntity::new)
-			.spawnGroup(MobCategory.CREATURE)
+			.mobCategory(MobCategory.CREATURE)
 			.build(DUMMY);
 	static EntityType<TestEntity> OLD_TEST = FabricEntityTypeBuilder.<TestEntity>createLiving()
 			.entityFactory(TestEntity::new)
-			.spawnGroup(MobCategory.CREATURE)
+			.mobCategory(MobCategory.CREATURE)
 			.build(DUMMY);
 	static EntityType<TestMob> OLD_MOB = FabricEntityTypeBuilder.<TestMob>createMob()
 			.disableSaving()
@@ -54,8 +54,8 @@ final class EntityTypeBuilderGenericsTest {
 			.build(DUMMY);
 
 	private static class TestEntity extends LivingEntity {
-		protected TestEntity(EntityType<? extends LivingEntity> entityType, Level world) {
-			super(entityType, world);
+		protected TestEntity(EntityType<? extends LivingEntity> entityType, Level level) {
+			super(entityType, level);
 		}
 
 		@Override
@@ -74,8 +74,8 @@ final class EntityTypeBuilderGenericsTest {
 	}
 
 	private static class TestMob extends Mob {
-		protected TestMob(EntityType<? extends Mob> entityType, Level world) {
-			super(entityType, world);
+		protected TestMob(EntityType<? extends Mob> entityType, Level level) {
+			super(entityType, level);
 		}
 	}
 }

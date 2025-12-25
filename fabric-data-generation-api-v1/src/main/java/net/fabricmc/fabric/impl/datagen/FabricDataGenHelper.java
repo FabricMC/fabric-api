@@ -114,7 +114,7 @@ public final class FabricDataGenHelper {
 
 		// Ensure that the DataGeneratorEntrypoint is constructed on the main thread.
 		final List<DataGeneratorEntrypoint> entrypoints = dataGeneratorInitializers.stream().map(EntrypointContainer::getEntrypoint).toList();
-		CompletableFuture<HolderLookup.Provider> registriesFuture = CompletableFuture.supplyAsync(() -> createRegistryWrapper(entrypoints), Util.backgroundExecutor());
+		CompletableFuture<HolderLookup.Provider> registriesFuture = CompletableFuture.supplyAsync(() -> createHolderLookupProvider(entrypoints), Util.backgroundExecutor());
 
 		Object2IntOpenHashMap<String> jsonKeySortOrders = (Object2IntOpenHashMap<String>) DataProvider.FIXED_ORDER_FIELDS;
 		Object2IntOpenHashMap<String> defaultJsonKeySortOrders = new Object2IntOpenHashMap<>(jsonKeySortOrders);
@@ -158,7 +158,7 @@ public final class FabricDataGenHelper {
 		}
 	}
 
-	private static HolderLookup.Provider createRegistryWrapper(List<DataGeneratorEntrypoint> dataGeneratorInitializers) {
+	private static HolderLookup.Provider createHolderLookupProvider(List<DataGeneratorEntrypoint> dataGeneratorInitializers) {
 		// Build a list of all the RegistryBuilder's including vanilla's
 		List<RegistrySetBuilder> builders = new ArrayList<>();
 		builders.add(VanillaRegistries.BUILDER);
@@ -190,9 +190,9 @@ public final class FabricDataGenHelper {
 				builder.add(key, lifecycle, this::bootstrap);
 			}
 
-			void bootstrap(BootstrapContext registerable) {
+			void bootstrap(BootstrapContext context) {
 				for (RegistrySetBuilder.RegistryBootstrap<?> function : bootstrapFunctions) {
-					function.run(registerable);
+					function.run(context);
 				}
 			}
 		}

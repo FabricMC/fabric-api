@@ -37,7 +37,7 @@ public class BrewingStandBlockEntityMixin {
 	private static final ThreadLocal<ItemStack> REMAINDER_STACK = new ThreadLocal<>();
 
 	@Inject(method = "doBrew", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V", shift = At.Shift.AFTER))
-	private static void captureItemStack(Level world, BlockPos pos, NonNullList<ItemStack> slots, CallbackInfo ci, @Local ItemStack itemStack) {
+	private static void captureItemStack(Level level, BlockPos pos, NonNullList<ItemStack> slots, CallbackInfo ci, @Local ItemStack itemStack) {
 		REMAINDER_STACK.set(itemStack.getCraftingRemainder());
 	}
 

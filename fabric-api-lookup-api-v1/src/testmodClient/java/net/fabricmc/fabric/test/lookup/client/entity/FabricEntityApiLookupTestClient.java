@@ -21,6 +21,6 @@ import net.fabricmc.fabric.test.lookup.entity.FabricEntityApiLookupTest;
 
 public class FabricEntityApiLookupTestClient {
 	public static void onInitializeClient() {
-		EntityRendererRegistry.register(FabricEntityApiLookupTest.INSPECTABLE_PIG, InspectablePigEntityRenderer::new);
+		EntityRendererRegistry.register(FabricEntityApiLookupTest.INSPECTABLE_PIG, InspectablePigRenderer::new);
 	}
 }

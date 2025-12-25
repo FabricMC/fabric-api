@@ -24,9 +24,9 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class FabricApiBaseGameTest {
 	@GameTest
-	public void auditMixins(GameTestHelper context) {
+	public void auditMixins(GameTestHelper helper) {
 		MixinEnvironment.getCurrentEnvironment().audit();
 
-		context.succeed();
+		helper.succeed();
 	}
 }

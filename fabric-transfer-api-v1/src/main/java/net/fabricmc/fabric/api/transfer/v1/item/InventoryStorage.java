@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
  * {@link #getSlots} can also be used and combined with {@link CombinedStorage} to retrieve a wrapper around a specific range of slots.
  */
 @ApiStatus.NonExtendable
-// TODO: Consider explicitly syncing stacks by sending a ScreenHandlerSlotUpdateS2CPacket if that proves to be necessary.
+// TODO: Consider explicitly syncing stacks by sending a ClientboundContainerSetSlotPacket if that proves to be necessary.
 // TODO: Vanilla doesn't seem to be doing it reliably, so we ignore it for now.
 public interface InventoryStorage extends ContainerStorage {
 	/**
@@ -58,11 +58,11 @@ public interface InventoryStorage extends ContainerStorage {
 	}
 
 	/**
-	 * Return a wrapper around the cursor slot of a screen handler,
+	 * Return a wrapper around the cursor slot of a menu,
 	 * i.e. the stack that can be manipulated with {@link AbstractContainerMenu#getCarried()} and {@link AbstractContainerMenu#setCarried}.
 	 */
-	static SingleSlotStorage<ItemVariant> getCursorStorage(AbstractContainerMenu screenHandler) {
-		return CursorSlotWrapper.get(screenHandler);
+	static SingleSlotStorage<ItemVariant> getCursorStorage(AbstractContainerMenu menu) {
+		return CursorSlotWrapper.get(menu);
 	}
 
 	/**

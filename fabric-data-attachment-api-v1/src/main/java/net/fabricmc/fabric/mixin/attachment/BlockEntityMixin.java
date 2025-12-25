@@ -59,16 +59,16 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 			method = "loadWithComponents",
 			at = @At("RETURN")
 	)
-	private void readBlockEntityAttachments(ValueInput view, CallbackInfo ci) {
-		this.fabric_readAttachmentsFromNbt(view);
+	private void readBlockEntityAttachments(ValueInput input, CallbackInfo ci) {
+		this.fabric_readAttachmentsFromNbt(input);
 	}
 
 	@Inject(
 			method = "saveWithoutMetadata(Lnet/minecraft/world/level/storage/ValueOutput;)V",
 			at = @At(value = "TAIL")
 	)
-	private void writeBlockEntityAttachments(ValueOutput view, CallbackInfo ci) {
-		this.fabric_writeAttachmentsToNbt(view);
+	private void writeBlockEntityAttachments(ValueOutput output, CallbackInfo ci) {
+		this.fabric_writeAttachmentsToNbt(output);
 	}
 
 	@Override
@@ -93,12 +93,12 @@ abstract class BlockEntityMixin implements AttachmentTargetImpl {
 
 	@Override
 	public boolean fabric_shouldTryToSync() {
-		// Persistent attachments are read at a time with no world
+		// Persistent attachments are read at a time with no level
 		return !this.hasLevel() || !this.level.isClientSide();
 	}
 
 	@Override
-	public RegistryAccess fabric_getDynamicRegistryManager() {
+	public RegistryAccess fabric_getRegistryAccess() {
 		return this.level.registryAccess();
 	}
 }

@@ -55,7 +55,7 @@ public class RegistrySyncClientTest implements ClientModInitializer {
 						final ServerPlayer player = context.getSource().getPlayer();
 
 						if (player != null) {
-							player.connection.disconnect(Objects.requireNonNull(e.getText()));
+							player.connection.disconnect(Objects.requireNonNull(e.getComponent()));
 						}
 
 						return 1;

@@ -106,9 +106,9 @@ public class AttachmentTestMod implements ModInitializer {
 				ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(MOD_ID, "set_attachment"))
 		);
 
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
 			if (player.getItemInHand(hand).getItem() == Items.CARROT) {
-				BlockEntity blockEntity = world.getBlockEntity(hitResult.getBlockPos());
+				BlockEntity blockEntity = level.getBlockEntity(hitResult.getBlockPos());
 
 				if (blockEntity != null) {
 					blockEntity.setAttached(SYNCED_WITH_ALL, true);
@@ -120,10 +120,10 @@ public class AttachmentTestMod implements ModInitializer {
 			return InteractionResult.PASS;
 		});
 
-		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
 			entity.onAttachedSet(SYNCED_ITEM).register((oldValue, newValue) -> {
 				if (newValue != null && !newValue.equals(oldValue) && newValue.is(Items.BRICK)) {
-					entity.hurtServer(world, world.damageSources().generic(), 1);
+					entity.hurtServer(level, level.damageSources().generic(), 1);
 				}
 			});
 		});

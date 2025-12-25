@@ -41,9 +41,9 @@ public abstract class DetectorRailBlockMixin {
 	protected abstract <T extends AbstractMinecart> List<T> getInteractingMinecartOfType(Level level, BlockPos blockPos, Class<T> class_, Predicate<Entity> predicate);
 
 	@Inject(at = @At("HEAD"), method = "getAnalogOutputSignal", cancellable = true)
-	private void getCustomComparatorOutput(BlockState state, Level world, BlockPos pos, Direction direction, CallbackInfoReturnable<Integer> cir) {
+	private void getCustomComparatorOutput(BlockState state, Level level, BlockPos pos, Direction direction, CallbackInfoReturnable<Integer> cir) {
 		if (state.getValue(DetectorRailBlock.POWERED)) {
-			List<AbstractMinecart> carts = getInteractingMinecartOfType(world, pos, AbstractMinecart.class,
+			List<AbstractMinecart> carts = getInteractingMinecartOfType(level, pos, AbstractMinecart.class,
 					cart -> MinecartComparatorLogicRegistry.getCustomComparatorLogic(cart.getType()) != null);
 			for (AbstractMinecart cart : carts) {
 				int comparatorValue = MinecartComparatorLogicRegistry.getCustomComparatorLogic(cart.getType())

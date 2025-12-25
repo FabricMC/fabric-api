@@ -26,5 +26,5 @@ import net.minecraft.world.entity.monster.zombie.Zombie;
 @Mixin(Zombie.class)
 public interface ZombieAccessor {
 	@Invoker("convertToZombieType")
-	void invokeConvertTo(ServerLevel serverWorld, EntityType<? extends Zombie> entityType);
+	void invokeConvertTo(ServerLevel serverLevel, EntityType<? extends Zombie> entityType);
 }

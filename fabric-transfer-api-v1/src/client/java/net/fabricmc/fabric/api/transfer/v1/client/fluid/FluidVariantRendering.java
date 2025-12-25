@@ -135,9 +135,9 @@ public final class FluidVariantRendering {
 	/**
 	 * Return the color that should be used when rendering {@linkplain #getSprite the sprite} of the passed fluid variant.
 	 *
-	 * <p>If the world and the position parameters are null, a position-independent color is returned.
-	 * If the world and position parameters are not null, the color may depend on the position.
-	 * For example, if world and position are passed, water will use them to return a biome-dependent color.
+	 * <p>If the level and the position parameters are null, a position-independent color is returned.
+	 * If the level and position parameters are not null, the color may depend on the position.
+	 * For example, if level and position are passed, water will use them to return a biome-dependent color.
 	 */
 	public static int getColor(FluidVariant fluidVariant, @Nullable BlockAndTintGetter view, @Nullable BlockPos pos) {
 		return getHandlerOrDefault(fluidVariant.getFluid()).getColor(fluidVariant, view, pos);

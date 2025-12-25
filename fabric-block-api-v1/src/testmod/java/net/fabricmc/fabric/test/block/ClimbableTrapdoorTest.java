@@ -70,7 +70,7 @@ public final class ClimbableTrapdoorTest implements ModInitializer {
 		}
 
 		@Override
-		protected VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+		protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 			return Shapes.empty();
 		}
 	}

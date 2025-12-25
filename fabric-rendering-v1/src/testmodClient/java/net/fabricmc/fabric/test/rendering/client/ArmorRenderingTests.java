@@ -55,22 +55,22 @@ public class ArmorRenderingTests implements ClientModInitializer {
 	}
 
 	record ArmorRendererTestImpl(HumanoidModel<HumanoidRenderState> model) implements ArmorRenderer {
-		ArmorRendererTestImpl(EntityRendererProvider.Context context, ModelLayerLocation entityModelLayer) {
-			this(new HumanoidModel<>(context.bakeLayer(entityModelLayer)));
+		ArmorRendererTestImpl(EntityRendererProvider.Context context, ModelLayerLocation modelLayerLocation) {
+			this(new HumanoidModel<>(context.bakeLayer(modelLayerLocation)));
 		}
 
 		@Override
 		public void render(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack stack, HumanoidRenderState humanoidRenderState, EquipmentSlot slot, int light, HumanoidModel<HumanoidRenderState> contextModel) {
-			OrderedSubmitNodeCollector renderCommandQueue = submitNodeCollector.order(0);
+			OrderedSubmitNodeCollector orderedCollector = submitNodeCollector.order(0);
 			ArmorRenderer.submitTransformCopyingModel(contextModel,
 					humanoidRenderState, model,
-					humanoidRenderState, false, renderCommandQueue,
+					humanoidRenderState, false, orderedCollector,
 					poseStack, RenderTypes.armorCutoutNoCull(TEXTURE), light, OverlayTexture.NO_OVERLAY, 0, null);
 
 			if (stack.hasFoil()) {
 				ArmorRenderer.submitTransformCopyingModel(contextModel,
 						humanoidRenderState, model,
-						humanoidRenderState, false, renderCommandQueue,
+						humanoidRenderState, false, orderedCollector,
 						poseStack, RenderTypes.armorEntityGlint(), light, OverlayTexture.NO_OVERLAY, 0, null);
 			}
 		}

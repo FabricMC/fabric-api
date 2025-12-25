@@ -28,7 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * A simple {@code SidedInventory} implementation with only default methods + an item list getter.
+ * A simple {@code WorldlyContainer} implementation with only default methods + an item list getter.
  *
  * <h2>Reading and writing to tags</h2>
  * Use {@link ContainerHelper#writeNbt(CompoundTag, NonNullList)} and {@link ContainerHelper#readNbt(CompoundTag, NonNullList)}
@@ -68,7 +68,7 @@ public interface ImplementedInventory extends WorldlyContainer {
 		return of(NonNullList.withSize(size, ItemStack.EMPTY));
 	}
 
-	// SidedInventory
+	// WorldlyContainer
 
 	/**
 	 * Gets the available slots to automation on the side.

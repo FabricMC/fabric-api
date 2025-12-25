@@ -81,8 +81,8 @@ public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 			model.emitQuads(getEmitter(), level, pos, state, random, blockInfo::shouldCullSide);
 		} catch (Throwable throwable) {
 			CrashReport crashReport = CrashReport.forThrowable(throwable, "Tessellating block model - Indigo Renderer");
-			CrashReportCategory crashReportSection = crashReport.addCategory("Block model being tessellated");
-			CrashReportCategory.populateBlockDetails(crashReportSection,
+			CrashReportCategory crashReportCategory = crashReport.addCategory("Block model being tessellated");
+			CrashReportCategory.populateBlockDetails(crashReportCategory,
 					level, pos, state);
 			throw new ReportedException(crashReport);
 		} finally {

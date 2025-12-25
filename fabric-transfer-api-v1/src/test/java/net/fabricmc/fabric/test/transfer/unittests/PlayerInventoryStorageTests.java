@@ -52,7 +52,7 @@ public class PlayerInventoryStorageTests extends AbstractTransferApiTest {
 	}
 
 	private void testStacking(Function<InventoryStorage, InsertionFunction> inserterBuilder) {
-		// A bit hacky... but nothing should try using the null player entity as long as we don't call drop.
+		// A bit hacky... but nothing should try using the null player as long as we don't call drop.
 		Inventory inv = new Inventory(null, new EntityEquipment());
 		InsertionFunction inserter = inserterBuilder.apply(InventoryStorage.of(inv));
 

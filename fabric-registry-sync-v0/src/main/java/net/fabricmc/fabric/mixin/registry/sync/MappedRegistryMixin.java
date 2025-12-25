@@ -170,13 +170,13 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, Rem
 	}
 
 	@Unique
-	private void onChange(ResourceKey<T> registryKey) {
-		if (RegistrySyncManager.postBootstrap || !VANILLA_NAMESPACES.contains(registryKey.identifier().getNamespace())) {
+	private void onChange(ResourceKey<T> resourceKey) {
+		if (RegistrySyncManager.postBootstrap || !VANILLA_NAMESPACES.contains(resourceKey.identifier().getNamespace())) {
 			RegistryAttributeHolder holder = RegistryAttributeHolder.get(key());
 
 			if (!holder.hasAttribute(RegistryAttribute.MODDED)) {
 				Identifier id = key().identifier();
-				FABRIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", id, registryKey.identifier());
+				FABRIC_LOGGER.debug("Registry {} has been marked as modded, holder {} was changed", id, resourceKey.identifier());
 				RegistryAttributeHolder.get(key()).addAttribute(RegistryAttribute.MODDED);
 			}
 		}
@@ -476,7 +476,7 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T>, Rem
 			at = @At("HEAD"),
 			argsOnly = true
 	)
-	private ResourceKey<T> aliasRegistryKeyParameter(ResourceKey<T> original) {
+	private ResourceKey<T> aliasResourceKeyParameter(ResourceKey<T> original) {
 		if (original == null) {
 			return null;
 		}

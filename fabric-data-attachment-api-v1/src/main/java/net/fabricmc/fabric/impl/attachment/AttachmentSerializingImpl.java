@@ -53,7 +53,7 @@ public class AttachmentSerializingImpl {
 				Function.identity()
 	);
 
-	public static void serializeAttachmentData(ValueOutput view, @Nullable IdentityHashMap<AttachmentType<?>, Object> attachments) {
+	public static void serializeAttachmentData(ValueOutput output, @Nullable IdentityHashMap<AttachmentType<?>, Object> attachments) {
 		if (attachments == null || attachments.isEmpty()) {
 			return;
 		}
@@ -71,7 +71,7 @@ public class AttachmentSerializingImpl {
 			return;
 		}
 
-		view.store(AttachmentTarget.NBT_ATTACHMENT_KEY, CODEC, attachmentsToSerialize);
+		output.store(AttachmentTarget.NBT_ATTACHMENT_KEY, CODEC, attachmentsToSerialize);
 	}
 
 	@Nullable

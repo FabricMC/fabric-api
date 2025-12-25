@@ -121,7 +121,7 @@ public final class ClientCommandInternals {
 		return type == builtins.dispatcherUnknownCommand() || type == builtins.dispatcherParseException();
 	}
 
-	// See ChatInputSuggestor.formatException. That cannot be used directly as it returns an OrderedText instead of a Text.
+	// See CommandSuggestions.getExceptionMessage. That cannot be used directly as it returns an FormattedCharSequence instead of a Component.
 	private static Component getErrorMessage(CommandSyntaxException e) {
 		Component message = ComponentUtils.fromMessage(e.getRawMessage());
 		String context = e.getContext();
@@ -184,7 +184,7 @@ public final class ClientCommandInternals {
 
 	/**
 	 * Copies the child commands from root to newRoot, filtered by {@code child.canUse(source)}.
-	 * Mimics vanilla's CommandManager.fillUsableCommands.
+	 * Mimics vanilla's Commands.fillUsableCommands.
 	 *
 	 * @param root           the root command node
 	 * @param newRoot        the new root command node

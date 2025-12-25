@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 public abstract class ItemStackMixin {
 	// Only target the second RETURN, the first RETURN is for no tooltip
 	@Inject(method = "getTooltipLines", at = @At(value = "RETURN", ordinal = 1))
-	private void getTooltip(Item.TooltipContext tooltipContext, @Nullable Player entity, TooltipFlag tooltipType, CallbackInfoReturnable<List<Component>> info) {
-		ItemTooltipCallback.EVENT.invoker().getTooltip((ItemStack) (Object) this, tooltipContext, tooltipType, info.getReturnValue());
+	private void getTooltip(Item.TooltipContext tooltipContext, @Nullable Player entity, TooltipFlag tooltipFlag, CallbackInfoReturnable<List<Component>> info) {
+		ItemTooltipCallback.EVENT.invoker().getTooltip((ItemStack) (Object) this, tooltipContext, tooltipFlag, info.getReturnValue());
 	}
 }

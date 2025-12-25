@@ -28,20 +28,20 @@ import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 
-import net.fabricmc.fabric.impl.resource.FabricLifecycledResourceManager;
+import net.fabricmc.fabric.impl.resource.FabricMultiPackResourceManager;
 
 @Mixin(MultiPackResourceManager.class)
-public class MultiPackResourceManagerMixin implements FabricLifecycledResourceManager {
+public class MultiPackResourceManagerMixin implements FabricMultiPackResourceManager {
 	@Unique
-	private PackType resourceType;
+	private PackType packType;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(PackType resourceType, List<PackResources> list, CallbackInfo ci) {
-		this.resourceType = resourceType;
+	private void init(PackType type, List<PackResources> list, CallbackInfo ci) {
+		this.packType = type;
 	}
 
 	@Override
-	public PackType fabric$getResourceType() {
-		return this.resourceType;
+	public PackType fabric$getPackType() {
+		return this.packType;
 	}
 }

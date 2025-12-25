@@ -23,7 +23,7 @@ import net.minecraft.core.Direction;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 
 /**
- * Adapted from vanilla BlockModelRenderer.NeighborData and BlockModelRenderer.Translation.
+ * Adapted from vanilla ModelBlockRenderer.AdjacencyInfo and ModelBlockRenderer.AmbientVertexRemap.
  */
 enum AoFace {
 	DOWN(new Direction[] { Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH }, new int[] { 0, 1, 2, 3 }) {

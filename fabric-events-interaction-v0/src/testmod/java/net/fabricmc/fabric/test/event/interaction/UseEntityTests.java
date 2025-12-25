@@ -27,7 +27,7 @@ public class UseEntityTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Disallow interactions with toolsmiths
-		UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+		UseEntityCallback.EVENT.register((player, level, hand, entity, hitResult) -> {
 			if (entity instanceof Villager villager && villager.getVillagerData().profession().is(VillagerProfession.TOOLSMITH)) {
 				return InteractionResult.FAIL;
 			}

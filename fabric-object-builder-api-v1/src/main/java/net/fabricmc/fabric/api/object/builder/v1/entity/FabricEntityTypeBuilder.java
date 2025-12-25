@@ -42,7 +42,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
  */
 @Deprecated
 public class FabricEntityTypeBuilder<T extends Entity> {
-	private MobCategory spawnGroup;
+	private MobCategory mobCategory;
 	private EntityType.EntityFactory<T> factory;
 	private boolean saveable = true;
 	private boolean summonable = true;
@@ -57,10 +57,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	@Nullable
 	private FeatureFlag[] requiredFeatures = null;
 
-	protected FabricEntityTypeBuilder(MobCategory spawnGroup, EntityType.EntityFactory<T> factory) {
-		this.spawnGroup = spawnGroup;
+	protected FabricEntityTypeBuilder(MobCategory mobCategory, EntityType.EntityFactory<T> factory) {
+		this.mobCategory = mobCategory;
 		this.factory = factory;
-		this.spawnableFarFromPlayer = spawnGroup == MobCategory.CREATURE || spawnGroup == MobCategory.MISC;
+		this.spawnableFarFromPlayer = mobCategory == MobCategory.CREATURE || mobCategory == MobCategory.MISC;
 	}
 
 	/**
@@ -81,21 +81,21 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	/**
 	 * Creates an entity type builder.
 	 *
-	 * @param spawnGroup the entity spawn group
+	 * @param mobCategory the entity mob category
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
 	 * @deprecated use {@link EntityType.Builder#createNothing(MobCategory)}
 	 */
 	@Deprecated
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(MobCategory spawnGroup) {
-		return create(spawnGroup, FabricEntityTypeBuilder::emptyFactory);
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(MobCategory mobCategory) {
+		return create(mobCategory, FabricEntityTypeBuilder::emptyFactory);
 	}
 
 	/**
 	 * Creates an entity type builder.
 	 *
-	 * @param spawnGroup the entity spawn group
+	 * @param mobCategory the entity mob category
 	 * @param factory the entity factory used to create this entity
 	 * @param <T> the type of entity
 	 *
@@ -103,8 +103,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @deprecated use {@link EntityType.Builder#of(EntityType.EntityFactory, MobCategory)}
 	 */
 	@Deprecated
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(MobCategory spawnGroup, EntityType.EntityFactory<T> factory) {
-		return new FabricEntityTypeBuilder<>(spawnGroup, factory);
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(MobCategory mobCategory, EntityType.EntityFactory<T> factory) {
+		return new FabricEntityTypeBuilder<>(mobCategory, factory);
 	}
 
 	/**
@@ -134,14 +134,14 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return new FabricEntityTypeBuilder.Mob<>(MobCategory.MISC, FabricEntityTypeBuilder::emptyFactory);
 	}
 
-	private static <T extends Entity> T emptyFactory(EntityType<T> type, Level world) {
+	private static <T extends Entity> T emptyFactory(EntityType<T> type, Level level) {
 		return null;
 	}
 
 	@Deprecated
-	public FabricEntityTypeBuilder<T> spawnGroup(MobCategory group) {
-		Objects.requireNonNull(group, "Spawn group cannot be null");
-		this.spawnGroup = group;
+	public FabricEntityTypeBuilder<T> mobCategory(MobCategory category) {
+		Objects.requireNonNull(category, "Category cannot be null");
+		this.mobCategory = category;
 		return this;
 	}
 
@@ -310,7 +310,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 */
 	@Deprecated
 	public EntityType<T> build(ResourceKey<EntityType<?>> key) {
-		EntityType.Builder<T> builder = EntityType.Builder.of(this.factory, this.spawnGroup)
+		EntityType.Builder<T> builder = EntityType.Builder.of(this.factory, this.mobCategory)
 				.immuneTo(specificSpawnBlocks.toArray(Block[]::new))
 				.clientTrackingRange(this.trackRange)
 				.updateInterval(this.trackedUpdateRate)
@@ -354,13 +354,13 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		@Nullable
 		private Supplier<AttributeSupplier.Builder> defaultAttributeBuilder;
 
-		protected Living(MobCategory spawnGroup, EntityType.EntityFactory<T> function) {
-			super(spawnGroup, function);
+		protected Living(MobCategory mobCategory, EntityType.EntityFactory<T> function) {
+			super(mobCategory, function);
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Living<T> spawnGroup(MobCategory group) {
-			super.spawnGroup(group);
+		public FabricEntityTypeBuilder.Living<T> mobCategory(MobCategory category) {
+			super.mobCategory(category);
 			return this;
 		}
 
@@ -456,7 +456,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		 * <p>This can be used in a fashion similar to this:
 		 * <blockquote><pre>
 		 * FabricEntityTypeBuilder.createLiving()
-		 * 	.spawnGroup(SpawnGroup.CREATURE)
+		 * 	.mobCategory(MobCategory.CREATURE)
 		 * 	.entityFactory(MyCreature::new)
 		 * 	.defaultAttributes(LivingEntity::createLivingAttributes)
 		 * 	...
@@ -488,23 +488,23 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * An extended version of {@link FabricEntityTypeBuilder} with support for features on present on {@link Mob mob entities}, such as spawn restrictions.
+	 * An extended version of {@link FabricEntityTypeBuilder} with support for features on present on {@link Mob mob entities}, such as spawn placements.
 	 *
 	 * @param <T> Entity class.
 	 */
 	@Deprecated
 	public static class Mob<T extends net.minecraft.world.entity.Mob> extends FabricEntityTypeBuilder.Living<T> {
-		private SpawnPlacementType spawnLocation;
-		private Heightmap.Types restrictionHeightmap;
+		private SpawnPlacementType spawnPlacementType;
+		private Heightmap.Types placementHeightmap;
 		private SpawnPlacements.SpawnPredicate<T> spawnPredicate;
 
-		protected Mob(MobCategory spawnGroup, EntityType.EntityFactory<T> function) {
-			super(spawnGroup, function);
+		protected Mob(MobCategory mobCategory, EntityType.EntityFactory<T> function) {
+			super(mobCategory, function);
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Mob<T> spawnGroup(MobCategory group) {
-			super.spawnGroup(group);
+		public FabricEntityTypeBuilder.Mob<T> mobCategory(MobCategory category) {
+			super.mobCategory(category);
 			return this;
 		}
 
@@ -601,17 +601,17 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		/**
-		 * Registers a spawn restriction for this entity.
+		 * Registers a spawn placement for this entity.
 		 *
 		 * <p>This is used by mobs to determine whether Minecraft should spawn an entity within a certain context.
 		 *
 		 * @return this builder for chaining.
-		 * @deprecated use {@link FabricEntityType.Builder.Mob#spawnRestriction(SpawnPlacementType, Heightmap.Types, SpawnPlacements.SpawnPredicate)}
+		 * @deprecated use {@link FabricEntityType.Builder.Mob#spawnPlacement(SpawnPlacementType, Heightmap.Types, SpawnPlacements.SpawnPredicate)}
 		 */
 		@Deprecated
-		public FabricEntityTypeBuilder.Mob<T> spawnRestriction(SpawnPlacementType spawnLocation, Heightmap.Types heightmap, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
-			this.spawnLocation = Objects.requireNonNull(spawnLocation, "Spawn location cannot be null.");
-			this.restrictionHeightmap = Objects.requireNonNull(heightmap, "Heightmap type cannot be null.");
+		public FabricEntityTypeBuilder.Mob<T> spawnPlacement(SpawnPlacementType spawnPlacementType, Heightmap.Types heightmap, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
+			this.spawnPlacementType = Objects.requireNonNull(spawnPlacementType, "Spawn placement type cannot be null.");
+			this.placementHeightmap = Objects.requireNonNull(heightmap, "Heightmap type cannot be null.");
 			this.spawnPredicate = Objects.requireNonNull(spawnPredicate, "Spawn predicate cannot be null.");
 			return this;
 		}
@@ -621,7 +621,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			EntityType<T> type = super.build(key);
 
 			if (this.spawnPredicate != null) {
-				SpawnPlacements.register(type, this.spawnLocation, this.restrictionHeightmap, this.spawnPredicate);
+				SpawnPlacements.register(type, this.spawnPlacementType, this.placementHeightmap, this.spawnPredicate);
 			}
 
 			return type;

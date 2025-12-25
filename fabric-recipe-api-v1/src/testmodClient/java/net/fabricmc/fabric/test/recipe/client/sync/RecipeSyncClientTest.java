@@ -32,20 +32,20 @@ public class RecipeSyncClientTest implements ClientModInitializer {
 
 		RecipeManager recipeManager = minecraft.getSingleplayerServer().getRecipeManager();
 
-		for (RecipeHolder<?> recipeEntry : synchronizedRecipes.recipes()) {
-			RecipeHolder<?> serverRecipeEntry = recipeManager.byKey(recipeEntry.id()).orElseThrow(() -> new IllegalStateException("Server is missing client recipe '" + recipeEntry.id().identifier() + "'!"));
+		for (RecipeHolder<?> recipeHolder : synchronizedRecipes.recipes()) {
+			RecipeHolder<?> serverRecipeHolder = recipeManager.byKey(recipeHolder.id()).orElseThrow(() -> new IllegalStateException("Server is missing client recipe '" + recipeHolder.id().identifier() + "'!"));
 
-			if (serverRecipeEntry.value().getSerializer() != recipeEntry.value().getSerializer()) {
-				throw new IllegalStateException("Client and server have mismatched serializer for recipe '" + recipeEntry.id().identifier() + "'!");
+			if (serverRecipeHolder.value().getSerializer() != recipeHolder.value().getSerializer()) {
+				throw new IllegalStateException("Client and server have mismatched serializer for recipe '" + recipeHolder.id().identifier() + "'!");
 			}
 
-			if (serverRecipeEntry.value().getType() != recipeEntry.value().getType()) {
-				throw new IllegalStateException("Client and server have mismatched type for recipe '" + recipeEntry.id().identifier() + "'!");
+			if (serverRecipeHolder.value().getType() != recipeHolder.value().getType()) {
+				throw new IllegalStateException("Client and server have mismatched type for recipe '" + recipeHolder.id().identifier() + "'!");
 			}
 
 			// This should be valid case when we include other mods, just invalid for vanilla sync.
-			if (serverRecipeEntry.value().getClass() != recipeEntry.value().getClass()) {
-				throw new IllegalStateException("Client and server have mismatched class for recipe '" + recipeEntry.id().identifier() + "'!");
+			if (serverRecipeHolder.value().getClass() != recipeHolder.value().getClass()) {
+				throw new IllegalStateException("Client and server have mismatched class for recipe '" + recipeHolder.id().identifier() + "'!");
 			}
 		}
 	}

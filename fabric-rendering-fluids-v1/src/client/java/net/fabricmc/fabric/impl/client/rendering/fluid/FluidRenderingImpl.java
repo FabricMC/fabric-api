@@ -55,7 +55,7 @@ public class FluidRenderingImpl {
 	}
 
 	// Invoked when FluidRenderHandler#renderFluid is called directly without using FluidRendering#render (such as
-	// from vanilla FluidRenderer#render via mixin) or from the default implementation of DefaultRenderer#render
+	// from vanilla LiquidBlockRenderer#render via mixin) or from the default implementation of DefaultRenderer#render
 	public static void renderVanillaDefault(FluidRenderHandler handler, BlockAndTintGetter level, BlockPos pos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState) {
 		FluidRenderHandlerInfo info = CURRENT_INFO.get();
 		info.setup(handler, level, pos, fluidState);

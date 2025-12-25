@@ -56,9 +56,9 @@ abstract class ServerPlayerMixin extends LivingEntityMixin {
 	public abstract ServerLevel level();
 
 	/**
-	 * Minecraft by default does not call Entity#onKilledOther for a ServerPlayerEntity being killed.
+	 * Minecraft by default does not call Entity#onKilledOther for a ServerPlayer being killed.
 	 * This is a Mojang bug.
-	 * This is implements the method call on the server player entity and then calls the corresponding event.
+	 * This is implements the method call on the server player and then calls the corresponding event.
 	 */
 	@Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getKillCredit()Lnet/minecraft/world/entity/LivingEntity;"))
 	private void callOnKillForPlayer(DamageSource source, CallbackInfo ci) {
@@ -80,7 +80,7 @@ abstract class ServerPlayerMixin extends LivingEntityMixin {
 	 * This is called by {@code teleportTo}.
 	 */
 	@Inject(method = "triggerDimensionChangeTriggers(Lnet/minecraft/server/level/ServerLevel;)V", at = @At("TAIL"))
-	private void afterWorldChanged(ServerLevel origin, CallbackInfo ci) {
+	private void afterLevelChanged(ServerLevel origin, CallbackInfo ci) {
 		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.invoker().afterChangeLevel((ServerPlayer) (Object) this, origin, this.level());
 	}
 

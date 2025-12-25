@@ -230,7 +230,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		lightPos.set(pos);
 
 		// To mirror Vanilla's behavior, if the face has a cull-face, always sample the light value
-		// offset in that direction. See net.minecraft.client.render.block.BlockModelRenderer.renderQuadsFlat
+		// offset in that direction. See net.minecraft.client.renderer.block.ModelBlockRenderer.renderModelFaceFlat
 		// for reference.
 		if (quad.cullFace() != null) {
 			lightPos.move(quad.cullFace());

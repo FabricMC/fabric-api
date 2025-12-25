@@ -38,6 +38,6 @@ public class ParticleResourcesMixin {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void onInit(CallbackInfo info) {
-		Int2ObjectMapTracker.register(BuiltInRegistries.PARTICLE_TYPE, "ParticleManager.factories", providers);
+		Int2ObjectMapTracker.register(BuiltInRegistries.PARTICLE_TYPE, "ParticleEngine.providers", providers);
 	}
 }

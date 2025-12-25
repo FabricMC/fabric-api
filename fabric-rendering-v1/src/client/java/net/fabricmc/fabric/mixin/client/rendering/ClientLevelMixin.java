@@ -59,12 +59,12 @@ public abstract class ClientLevelMixin {
 	}
 
 	@ModifyExpressionValue(method = "getBlockTint(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/ColorResolver;)I", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2ObjectArrayMap;get(Ljava/lang/Object;)Ljava/lang/Object;"))
-	private Object modifyNullCache(/* BiomeColorCache */ Object cache, BlockPos pos, ColorResolver resolver) {
+	private Object modifyNullCache(/* BlockTintCache */ Object cache, BlockPos pos, ColorResolver resolver) {
 		if (cache == null) {
 			cache = customColorCache.get(resolver);
 
 			if (cache == null) {
-				throw new UnsupportedOperationException("ClientWorld.getColor called with unregistered ColorResolver " + resolver);
+				throw new UnsupportedOperationException("ClientLevel.getColor called with unregistered ColorResolver " + resolver);
 			}
 		}
 

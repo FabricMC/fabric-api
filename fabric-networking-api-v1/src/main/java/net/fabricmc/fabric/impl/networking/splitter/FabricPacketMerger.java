@@ -38,14 +38,14 @@ import net.fabricmc.fabric.impl.networking.VanillaPacketTypes;
 import net.fabricmc.fabric.mixin.networking.accessor.PacketDecoderAccessor;
 
 public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
-	private final PacketDecoder<?> decoderHandler;
+	private final PacketDecoder<?> packetDecoder;
 	private final PayloadTypeRegistryImpl<?> payloadTypeRegistry;
 	private final VanillaPacketTypes vanillaPacketTypes;
 	@Nullable
 	private Merger packetMerger;
 
-	public FabricPacketMerger(PacketDecoder<?> decoderHandler, PayloadTypeRegistryImpl<?> payloadTypeRegistry, VanillaPacketTypes vanillaPacketTypes) {
-		this.decoderHandler = decoderHandler;
+	public FabricPacketMerger(PacketDecoder<?> packetDecoder, PayloadTypeRegistryImpl<?> payloadTypeRegistry, VanillaPacketTypes vanillaPacketTypes) {
+		this.packetDecoder = packetDecoder;
 		this.payloadTypeRegistry = payloadTypeRegistry;
 		this.vanillaPacketTypes = vanillaPacketTypes;
 	}
@@ -90,7 +90,7 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 				throw new DecoderException("Received '" + payloadId + "' packet is larger than max allowed size! Got " + packetSize + " bytes, expected " + maxSize + " bytes!");
 			}
 
-			this.packetMerger = new Merger(this.decoderHandler, payloadId, packetSize);
+			this.packetMerger = new Merger(this.packetDecoder, payloadId, packetSize);
 
 			if (this.packetMerger.add(channelHandlerContext, payload, list)) {
 				throw new DecoderException("Received '" + payloadId + "' as a split packet, but it wasn't actually split!");
@@ -111,14 +111,14 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 	}
 
 	private static class Merger {
-		private final PacketDecoderAccessor decoderHandler;
+		private final PacketDecoderAccessor packetDecoder;
 		private final Identifier packetId;
 		private final int finalSize;
 
 		private final ByteBuf byteBuf;
 
-		Merger(PacketDecoder<?> decoderHandler, Identifier identifier, int finalSize) {
-			this.decoderHandler = (PacketDecoderAccessor) decoderHandler;
+		Merger(PacketDecoder<?> packetDecoder, Identifier identifier, int finalSize) {
+			this.packetDecoder = (PacketDecoderAccessor) packetDecoder;
 			this.packetId = identifier;
 			this.byteBuf = Unpooled.buffer(finalSize);
 			this.finalSize = finalSize;
@@ -134,7 +134,7 @@ public class FabricPacketMerger extends MessageToMessageDecoder<Packet<?>> {
 			this.byteBuf.writeBytes(payload.byteBuf());
 
 			if (this.byteBuf.readableBytes() == this.finalSize) {
-				this.decoderHandler.fabric_decode(channelHandlerContext, byteBuf, objects);
+				this.packetDecoder.fabric_decode(channelHandlerContext, byteBuf, objects);
 				return true;
 			}
 

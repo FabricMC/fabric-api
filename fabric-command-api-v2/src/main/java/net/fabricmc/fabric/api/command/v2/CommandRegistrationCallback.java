@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <pre>{@code
  * CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) -> {
  *     // For example, this command is only registered on an integrated server like the vanilla publish command
- *     if (selection.includeIntegrated) dispatcher.register(CommandManager.literal("integrated_command").executes(context -> {...}));
+ *     if (selection.includeIntegrated) dispatcher.register(Commands.literal("integrated_command").executes(context -> {...}));
  * })};
  * }</pre>
  */

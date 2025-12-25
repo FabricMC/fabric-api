@@ -87,34 +87,34 @@ public final class ScreenTests implements ClientModInitializer {
 				LOGGER.warn("Pressed, Context: {}", context);
 			});
 		} else if (screen instanceof CreativeModeInventoryScreen) {
-			Screens.getWidgets(screen).add(new TestButtonWidget());
+			Screens.getWidgets(screen).add(new TestButton());
 		} else if (screen instanceof GrindstoneScreen) {
 			// Register render event to draw an icon on the screen
-			// Expected result: the icon is drawn BEHIND both the handled screen interface and the darkened background, text, items, the carried item, tooltips, etc.
-			ScreenEvents.beforeRender(screen).register((_screen, drawContext, mouseX, mouseY, tickDelta) -> {
+			// Expected result: the icon is drawn BEHIND both the container screen interface and the darkened background, text, items, the carried item, tooltips, etc.
+			ScreenEvents.beforeRender(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
-				drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) - 34, 20, 20);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) - 34, 20, 20);
 			});
 
 			// Register render event to draw an icon on the screen
-			// Expected result: the icon is drawn ABOVE both the handled screen interface and the darkened background, but still BEHIND text, items, the carried item, tooltips, etc.
-			ScreenEvents.afterBackground(screen).register((_screen, drawContext, mouseX, mouseY, tickDelta) -> {
+			// Expected result: the icon is drawn ABOVE both the container screen interface and the darkened background, but still BEHIND text, items, the carried item, tooltips, etc.
+			ScreenEvents.afterBackground(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
-				drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) - 10, 20, 20);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) - 10, 20, 20);
 			});
 
 			// Register render event to draw an icon on the screen
-			// Expected result: the icon is drawn ABOVE everything, including the background, handled screen interface, text, items, the carried item, tooltips, etc.
-			ScreenEvents.afterRender(screen).register((_screen, drawContext, mouseX, mouseY, tickDelta) -> {
+			// Expected result: the icon is drawn ABOVE everything, including the background, container screen interface, text, items, the carried item, tooltips, etc.
+			ScreenEvents.afterRender(screen).register((_screen, graphics, mouseX, mouseY, tickDelta) -> {
 				// Render an armor icon to test
-				drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) + 14, 20, 20);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ScreenTests.ARMOR_FULL_TEXTURE, (screen.width / 2) - 88 - 10, (screen.height / 2) + 14, 20, 20);
 			});
 		}
 	}
 
 	// Test that mouseReleased is called
-	private static final class TestButtonWidget extends Button.Plain {
-		private TestButtonWidget() {
+	private static final class TestButton extends Button.Plain {
+		private TestButton() {
 			super(10, 10, 10, 10, net.minecraft.network.chat.Component.literal("X"), button -> {
 				LOGGER.info("Pressed");
 			}, DEFAULT_NARRATION);

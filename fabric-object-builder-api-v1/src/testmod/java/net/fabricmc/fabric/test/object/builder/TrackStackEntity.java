@@ -39,12 +39,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 public class TrackStackEntity extends Mob {
-	private static final EntityDataAccessor<GlobalPos> GLOBAL_POS = SynchedEntityData.defineId(TrackStackEntity.class, EntityTrackedDataTest.GLOBAL_POS);
-	private static final EntityDataAccessor<Item> ITEM = SynchedEntityData.defineId(TrackStackEntity.class, EntityTrackedDataTest.ITEM);
-	private static final EntityDataAccessor<Optional<DyeColor>> OPTIONAL_DYE_COLOR = SynchedEntityData.defineId(TrackStackEntity.class, EntityTrackedDataTest.OPTIONAL_DYE_COLOR);
+	private static final EntityDataAccessor<GlobalPos> GLOBAL_POS = SynchedEntityData.defineId(TrackStackEntity.class, EntityDataAccessorTest.GLOBAL_POS);
+	private static final EntityDataAccessor<Item> ITEM = SynchedEntityData.defineId(TrackStackEntity.class, EntityDataAccessorTest.ITEM);
+	private static final EntityDataAccessor<Optional<DyeColor>> OPTIONAL_DYE_COLOR = SynchedEntityData.defineId(TrackStackEntity.class, EntityDataAccessorTest.OPTIONAL_DYE_COLOR);
 
-	public TrackStackEntity(EntityType<? extends TrackStackEntity> entityType, Level world) {
-		super(entityType, world);
+	public TrackStackEntity(EntityType<? extends TrackStackEntity> entityType, Level level) {
+		super(entityType, level);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class TrackStackEntity extends Mob {
 	public Iterable<Component> getLabelLines() {
 		List<Component> lines = new ArrayList<>();
 
-		// Get tracked data from data tracker
+		// Get entity data
 		GlobalPos globalPos = this.entityData.get(GLOBAL_POS);
 		Item item = this.entityData.get(ITEM);
 		Optional<DyeColor> optionalDyeColor = this.entityData.get(OPTIONAL_DYE_COLOR);

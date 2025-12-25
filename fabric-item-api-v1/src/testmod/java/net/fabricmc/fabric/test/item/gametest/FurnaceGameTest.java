@@ -32,69 +32,69 @@ public class FurnaceGameTest {
 	private static final BlockPos POS = new BlockPos(0, 1, 0);
 
 	@GameTest
-	public void basicSmelt(GameTestHelper context) {
-		context.setBlock(POS, Blocks.FURNACE);
-		FurnaceBlockEntity blockEntity = context.getBlockEntity(POS, FurnaceBlockEntity.class);
+	public void basicSmelt(GameTestHelper helper) {
+		helper.setBlock(POS, Blocks.FURNACE);
+		FurnaceBlockEntity blockEntity = helper.getBlockEntity(POS, FurnaceBlockEntity.class);
 
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 8), new ItemStack(Items.COAL, 2));
 
-		cook(blockEntity, context, 1);
+		cook(blockEntity, helper, 1);
 		assertInventory(blockEntity, "Testing vanilla smelting.",
 				new ItemStack(Blocks.COBBLESTONE, 7),
 				new ItemStack(Items.COAL, 1),
 				new ItemStack(Blocks.STONE, 1));
 
-		cook(blockEntity, context, 7);
+		cook(blockEntity, helper, 7);
 		assertInventory(blockEntity, "Testing vanilla smelting.",
 				ItemStack.EMPTY,
 				new ItemStack(Items.COAL, 1),
 				new ItemStack(Blocks.STONE, 8));
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void vanillaRemainderTest(GameTestHelper context) {
-		context.setBlock(POS, Blocks.FURNACE);
-		FurnaceBlockEntity blockEntity = context.getBlockEntity(POS, FurnaceBlockEntity.class);
+	public void vanillaRemainderTest(GameTestHelper helper) {
+		helper.setBlock(POS, Blocks.FURNACE);
+		FurnaceBlockEntity blockEntity = helper.getBlockEntity(POS, FurnaceBlockEntity.class);
 
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 64), new ItemStack(Items.LAVA_BUCKET));
 
-		cook(blockEntity, context, 64);
+		cook(blockEntity, helper, 64);
 		assertInventory(blockEntity, "Testing vanilla smelting recipe remainder.",
 				ItemStack.EMPTY,
 				new ItemStack(Items.BUCKET),
 				new ItemStack(Blocks.STONE, 64));
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void fabricRemainderTest(GameTestHelper context) {
-		context.setBlock(POS, Blocks.FURNACE);
-		FurnaceBlockEntity blockEntity = context.getBlockEntity(POS, FurnaceBlockEntity.class);
+	public void fabricRemainderTest(GameTestHelper helper) {
+		helper.setBlock(POS, Blocks.FURNACE);
+		FurnaceBlockEntity blockEntity = helper.getBlockEntity(POS, FurnaceBlockEntity.class);
 
 		setInputs(blockEntity, new ItemStack(Blocks.COBBLESTONE, 32), new ItemStack(CustomDamageTest.WEIRD_PICK));
 
-		cook(blockEntity, context, 1);
+		cook(blockEntity, helper, 1);
 		assertInventory(blockEntity, "Testing fabric smelting recipe remainder.",
 				new ItemStack(Blocks.COBBLESTONE, 31),
 				RecipeGameTest.withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 1),
 				new ItemStack(Blocks.STONE, 1));
 
-		cook(blockEntity, context, 30);
+		cook(blockEntity, helper, 30);
 		assertInventory(blockEntity, "Testing fabric smelting recipe remainder.",
 				new ItemStack(Blocks.COBBLESTONE, 1),
 				RecipeGameTest.withDamage(new ItemStack(CustomDamageTest.WEIRD_PICK), 31),
 				new ItemStack(Blocks.STONE, 31));
 
-		cook(blockEntity, context, 1);
+		cook(blockEntity, helper, 1);
 		assertInventory(blockEntity, "Testing fabric smelting recipe remainder.",
 				ItemStack.EMPTY,
 				ItemStack.EMPTY,
 				new ItemStack(Blocks.STONE, 32));
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	private void setInputs(FurnaceBlockEntity blockEntity, ItemStack ingredient, ItemStack fuel) {
@@ -111,9 +111,9 @@ public class FurnaceGameTest {
 		}
 	}
 
-	private void cook(FurnaceBlockEntity blockEntity, GameTestHelper context, int items) {
+	private void cook(FurnaceBlockEntity blockEntity, GameTestHelper helper, int items) {
 		for (int i = 0; i < COOK_TIME * items; i++) {
-			AbstractFurnaceBlockEntity.serverTick(context.getLevel(), POS, context.getBlockState(POS), blockEntity);
+			AbstractFurnaceBlockEntity.serverTick(helper.getLevel(), POS, helper.getBlockState(POS), blockEntity);
 		}
 	}
 }

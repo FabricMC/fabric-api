@@ -40,7 +40,7 @@ public class KnownPacksManagerMixin {
 
 	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/ServerPacksSource;createVanillaTrustedRepository()Lnet/minecraft/server/packs/repository/PackRepository;"))
 	public PackRepository createClientManager() {
-		return ModPackResourcesUtil.createClientManager();
+		return ModPackResourcesUtil.createModdedRepository();
 	}
 
 	@ModifyReturnValue(method = "trySelectingPacks", at = @At("RETURN"))

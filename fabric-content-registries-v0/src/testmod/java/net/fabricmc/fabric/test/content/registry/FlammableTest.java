@@ -28,11 +28,11 @@ public class FlammableTest {
 	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/2108">FlammableBlockRegistry ignoring tags on first load</a>.
 	 */
 	@GameTest
-	public void testFlammableTag(GameTestHelper context) {
+	public void testFlammableTag(GameTestHelper helper) {
 		if (FlammableBlockRegistry.getDefaultInstance().get(Blocks.SAND).getIgniteOdds() != 4) {
-			throw context.assertionException(Component.literal("Expected blocks in the sand tag to be flammable!"));
+			throw helper.assertionException(Component.literal("Expected blocks in the sand tag to be flammable!"));
 		}
 
-		context.succeed();
+		helper.succeed();
 	}
 }

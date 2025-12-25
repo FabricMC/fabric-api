@@ -39,7 +39,7 @@ public class FabricRegistryInit implements ModInitializer {
 			context.packetListener().completeTask(RegistrySyncManager.SyncConfigurationTask.KEY);
 		});
 
-		// Synced in PlaySoundS2CPacket.
+		// Synced in ClientboundSoundPacket.
 		RegistryAttributeHolder.get(BuiltInRegistries.SOUND_EVENT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
@@ -47,15 +47,15 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(BuiltInRegistries.FLUID)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// StatusEffectInstance serialises with raw id.
+		// MobEffectInstance serialises with raw id.
 		RegistryAttributeHolder.get(BuiltInRegistries.MOB_EFFECT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced in ChunkDeltaUpdateS2CPacket among other places, a pallet is used when saving.
+		// Synced in ClientboundSectionBlocksUpdatePacket among other places, a pallet is used when saving.
 		RegistryAttributeHolder.get(BuiltInRegistries.BLOCK)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced in EntitySpawnS2CPacket and RegistryTagManager
+		// Synced in ClientboundAddEntityPacket and RegistryTagManager
 		RegistryAttributeHolder.get(BuiltInRegistries.ENTITY_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
@@ -63,7 +63,7 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(BuiltInRegistries.ITEM)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced via PacketCodecs.registry
+		// Synced via ByteBufCodecs.registry
 		RegistryAttributeHolder.get(BuiltInRegistries.POTION)
 				.addAttribute(RegistryAttribute.SYNCED);
 
@@ -88,18 +88,18 @@ public class FabricRegistryInit implements ModInitializer {
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(BuiltInRegistries.FEATURE_SIZE_TYPE);
 
-		// Synced in ParticleS2CPacket
+		// Synced in ClientboundLevelParticlesPacket
 		RegistryAttributeHolder.get(BuiltInRegistries.PARTICLE_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(BuiltInRegistries.BIOME_SOURCE);
 
-		// Synced. Vanilla uses raw ids in BlockEntityUpdateS2CPacket, and mods use the Vanilla syncing since 1.18
+		// Synced. Vanilla uses raw ids in ClientboundBlockEntityDataPacket, and mods use the Vanilla syncing since 1.18
 		RegistryAttributeHolder.get(BuiltInRegistries.BLOCK_ENTITY_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced via PacketCodecs.registry
+		// Synced via ByteBufCodecs.registry
 		RegistryAttributeHolder.get(BuiltInRegistries.CUSTOM_STAT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
@@ -127,7 +127,7 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(BuiltInRegistries.COMMAND_ARGUMENT_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced in OpenScreenS2CPacket
+		// Synced in ClientboundOpenScreenPacket
 		RegistryAttributeHolder.get(BuiltInRegistries.MENU)
 				.addAttribute(RegistryAttribute.SYNCED);
 
@@ -138,15 +138,15 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(BuiltInRegistries.ATTRIBUTE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced in StatisticsS2CPacket
+		// Synced in ClientboundAwardStatsPacket
 		RegistryAttributeHolder.get(BuiltInRegistries.STAT_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced by rawID in TrackedDataHandlerRegistry.VILLAGER_DATA
+		// Synced by rawID in EntityDataSerializers.VILLAGER_DATA
 		RegistryAttributeHolder.get(BuiltInRegistries.VILLAGER_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced by rawID in TrackedDataHandlerRegistry.VILLAGER_DATA
+		// Synced by rawID in EntityDataSerializers.VILLAGER_DATA
 		RegistryAttributeHolder.get(BuiltInRegistries.VILLAGER_PROFESSION)
 				.addAttribute(RegistryAttribute.SYNCED);
 
@@ -195,27 +195,27 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(BuiltInRegistries.MAP_DECORATION_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced via PacketCodecs.registry
+		// Synced via ByteBufCodecs.registry
 		RegistryAttributeHolder.get(BuiltInRegistries.CONSUME_EFFECT_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced via PacketCodecs.registryValue
+		// Synced via ByteBufCodecs.registryValue
 		RegistryAttributeHolder.get(BuiltInRegistries.RECIPE_DISPLAY)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced via PacketCodecs.registryValue
+		// Synced via ByteBufCodecs.registryValue
 		RegistryAttributeHolder.get(BuiltInRegistries.SLOT_DISPLAY)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced via PacketCodecs.registryValue
+		// Synced via ByteBufCodecs.registryValue
 		RegistryAttributeHolder.get(BuiltInRegistries.RECIPE_BOOK_CATEGORY)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced via PacketCodecs.registryValue
+		// Synced via ByteBufCodecs.registryValue
 		RegistryAttributeHolder.get(BuiltInRegistries.POINT_OF_INTEREST_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Synced via PacketCodecs.registryValue
+		// Synced via ByteBufCodecs.registryValue
 		RegistryAttributeHolder.get(BuiltInRegistries.DEBUG_SUBSCRIPTION)
 				.addAttribute(RegistryAttribute.SYNCED);
 	}

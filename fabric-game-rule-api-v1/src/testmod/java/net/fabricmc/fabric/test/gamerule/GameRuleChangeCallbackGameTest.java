@@ -28,37 +28,37 @@ import net.fabricmc.fabric.impl.gamerule.RuleTypeExtensions;
 
 public class GameRuleChangeCallbackGameTest {
 	@GameTest
-	public void test(GameTestHelper context) {
-		ServerLevel serverWorld = context.getLevel();
-		MinecraftServer server = serverWorld.getServer();
+	public void test(GameTestHelper helper) {
+		ServerLevel serverLevel = helper.getLevel();
+		MinecraftServer server = serverLevel.getServer();
 
-		GameRules gameRules = serverWorld.getGameRules();
+		GameRules gameRules = serverLevel.getGameRules();
 
 		// Test change callback positive
 		GameRulesTestMod.FIRE_DAMAGE_CHANGED.set(false);
 		boolean fireDamage = !gameRules.get(GameRules.FIRE_DAMAGE);
 		gameRules.set(GameRules.FIRE_DAMAGE, fireDamage, server);
-		context.assertValueEqual(gameRules.get(GameRules.FIRE_DAMAGE), fireDamage, Component.literal("GameRules.FIRE_DAMAGE failed to change properly"));
-		context.assertTrue(GameRulesTestMod.FIRE_DAMAGE_CHANGED.get(), Component.literal("Change callback failed to detect changing GameRules.FIRE_DAMAGE"));
+		helper.assertValueEqual(gameRules.get(GameRules.FIRE_DAMAGE), fireDamage, Component.literal("GameRules.FIRE_DAMAGE failed to change properly"));
+		helper.assertTrue(GameRulesTestMod.FIRE_DAMAGE_CHANGED.get(), Component.literal("Change callback failed to detect changing GameRules.FIRE_DAMAGE"));
 
 		// Test change callback negative and enum supported values
 		for (int i = 0; i < Direction.values().length; i++) {
 			GameRulesTestMod.FIRE_DAMAGE_CHANGED.set(false);
 			Direction direction = (((RuleTypeExtensions) (Object) GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE).fabric_enumCycle(gameRules.get(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE)));
 			gameRules.set(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE, direction, server);
-			context.assertValueEqual(gameRules.get(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE), direction, Component.literal("CARDINAL_DIRECTION_ENUM_RULE failed to change properly"));
-			context.assertFalse(GameRulesTestMod.FIRE_DAMAGE_CHANGED.get(), Component.literal("Change callback incorrectly detected changing GameRules.FIRE_DAMAGE"));
+			helper.assertValueEqual(gameRules.get(GameRulesTestMod.CARDINAL_DIRECTION_ENUM_RULE), direction, Component.literal("CARDINAL_DIRECTION_ENUM_RULE failed to change properly"));
+			helper.assertFalse(GameRulesTestMod.FIRE_DAMAGE_CHANGED.get(), Component.literal("Change callback incorrectly detected changing GameRules.FIRE_DAMAGE"));
 
 			Direction.Axis axis = direction.getAxis();
-			context.assertTrue(axis == Direction.Axis.X || axis == Direction.Axis.Z, Component.literal("Enum Rule's supported values failed! Expected Axis X or Z, actually got Axis " + axis.name() + " and Direction " + direction.name()));
+			helper.assertTrue(axis == Direction.Axis.X || axis == Direction.Axis.Z, Component.literal("Enum Rule's supported values failed! Expected Axis X or Z, actually got Axis " + axis.name() + " and Direction " + direction.name()));
 		}
 
 		// Test change callback negative
 		GameRulesTestMod.FIRE_DAMAGE_CHANGED.set(false);
 		gameRules.set(GameRulesTestMod.ONE_TO_TEN_DOUBLE, 2.4D, server);
-		context.assertValueEqual(gameRules.get(GameRulesTestMod.ONE_TO_TEN_DOUBLE), 2.4D, Component.literal("ONE_TO_TEN_DOUBLE failed to change properly"));
-		context.assertFalse(GameRulesTestMod.FIRE_DAMAGE_CHANGED.get(), Component.literal("Change callback incorrectly detected changing GameRules.FIRE_DAMAGE"));
+		helper.assertValueEqual(gameRules.get(GameRulesTestMod.ONE_TO_TEN_DOUBLE), 2.4D, Component.literal("ONE_TO_TEN_DOUBLE failed to change properly"));
+		helper.assertFalse(GameRulesTestMod.FIRE_DAMAGE_CHANGED.get(), Component.literal("Change callback incorrectly detected changing GameRules.FIRE_DAMAGE"));
 
-		context.succeed();
+		helper.succeed();
 	}
 }

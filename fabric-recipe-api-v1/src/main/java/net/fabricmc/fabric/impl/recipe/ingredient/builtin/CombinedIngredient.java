@@ -82,12 +82,12 @@ abstract class CombinedIngredient implements CustomIngredient {
 	static class Serializer<I extends CombinedIngredient> implements CustomIngredientSerializer<I> {
 		private final Identifier identifier;
 		private final MapCodec<I> codec;
-		private final StreamCodec<RegistryFriendlyByteBuf, I> packetCodec;
+		private final StreamCodec<RegistryFriendlyByteBuf, I> streamCodec;
 
 		Serializer(Identifier identifier, Function<List<Ingredient>, I> factory, MapCodec<I> codec) {
 			this.identifier = identifier;
 			this.codec = codec;
-			this.packetCodec = Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list())
+			this.streamCodec = Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list())
 					.map(factory, I::getIngredients);
 		}
 
@@ -102,8 +102,8 @@ abstract class CombinedIngredient implements CustomIngredient {
 		}
 
 		@Override
-		public StreamCodec<RegistryFriendlyByteBuf, I> getPacketCodec() {
-			return this.packetCodec;
+		public StreamCodec<RegistryFriendlyByteBuf, I> getStreamCodec() {
+			return this.streamCodec;
 		}
 	}
 }

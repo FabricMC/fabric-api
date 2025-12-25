@@ -83,7 +83,7 @@ public final class ClientNetworkingImpl {
 	public static Connection getLoginConnection() {
 		final Connection connection = ((MinecraftAccessor) Minecraft.getInstance()).getPendingConnection();
 
-		// Check if we are connecting to an integrated server. This will set the field on MinecraftClient
+		// Check if we are connecting to an integrated server. This will set the field on Minecraft
 		if (connection != null) {
 			return connection;
 		} else {

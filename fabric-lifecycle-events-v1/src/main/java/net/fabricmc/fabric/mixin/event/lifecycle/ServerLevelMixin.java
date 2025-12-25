@@ -32,12 +32,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 public abstract class ServerLevelMixin {
 	// Make sure "insideBlockTick" is true before we call the start tick, so inject after it is set
 	@Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerLevel;handlingTick:Z", opcode = Opcodes.PUTFIELD, ordinal = 0, shift = At.Shift.AFTER))
-	private void startWorldTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+	private void startLevelTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		ServerTickEvents.START_LEVEL_TICK.invoker().onStartTick((ServerLevel) (Object) this);
 	}
 
 	@Inject(method = "tick", at = @At(value = "TAIL"))
-	private void endWorldTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+	private void endLevelTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		ServerTickEvents.END_LEVEL_TICK.invoker().onEndTick((ServerLevel) (Object) this);
 	}
 }

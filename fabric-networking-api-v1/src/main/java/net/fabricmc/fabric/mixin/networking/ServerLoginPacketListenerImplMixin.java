@@ -33,7 +33,7 @@ import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 import net.fabricmc.fabric.impl.networking.PacketListenerExtensions;
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
+import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryResponse;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
@@ -65,7 +65,7 @@ abstract class ServerLoginPacketListenerImplMixin implements PacketListenerExten
 		if (this.addon.handle(packet)) {
 			ci.cancel();
 		} else {
-			if (packet.payload() instanceof PacketByteBufLoginQueryResponse response) {
+			if (packet.payload() instanceof FriendlyByteBufLoginQueryResponse response) {
 				response.data().skipBytes(response.data().readableBytes());
 			}
 		}

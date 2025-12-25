@@ -40,7 +40,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
 
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 import net.fabricmc.fabric.impl.datagen.TagAliasGenerator;
 
@@ -69,13 +69,13 @@ public class TagsProviderMixin<T> {
 	@SuppressWarnings("unchecked")
 	@WrapOperation(method = "lambda$run$2", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"))
 	private CompletableFuture<Void> addTagAliasGroupBuilders(CompletableFuture<?>[] futures, Operation<CompletableFuture<Void>> original, @Local(argsOnly = true) CachedOutput writer) {
-		if ((Object) this instanceof FabricTagProvider<?>) {
-			// Note: no pattern matching instanceof so that we can cast directly to FabricTagProvider<T> instead of a wildcard
-			Map<Identifier, FabricTagProvider<T>.AliasGroupBuilder> builders = ((FabricTagProvider<T>) (Object) this).getAliasGroupBuilders();
+		if ((Object) this instanceof FabricTagsProvider<?>) {
+			// Note: no pattern matching instanceof so that we can cast directly to FabricTagsProvider<T> instead of a wildcard
+			Map<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> builders = ((FabricTagsProvider<T>) (Object) this).getAliasGroupBuilders();
 			CompletableFuture<?>[] newFutures = Arrays.copyOf(futures, futures.length + builders.size());
 			int index = futures.length;
 
-			for (Map.Entry<Identifier, FabricTagProvider<T>.AliasGroupBuilder> entry : builders.entrySet()) {
+			for (Map.Entry<Identifier, FabricTagsProvider<T>.AliasGroupBuilder> entry : builders.entrySet()) {
 				newFutures[index++] = TagAliasGenerator.writeTagAlias(writer, tagAliasPathResolver, registryKey, entry.getKey(), entry.getValue().getTags());
 			}
 

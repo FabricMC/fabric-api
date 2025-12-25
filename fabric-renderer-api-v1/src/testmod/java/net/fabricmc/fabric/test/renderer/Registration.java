@@ -54,8 +54,8 @@ public final class Registration {
 	}
 
 	private static <T extends Item> T registerItem(String path, Function<Item.Properties, T> itemFunction) {
-		ResourceKey<Item> registryKey = ResourceKey.create(Registries.ITEM, RendererTest.id(path));
-		return Registry.register(BuiltInRegistries.ITEM, registryKey, itemFunction.apply(new Item.Properties().setId(registryKey)));
+		ResourceKey<Item> resourceKey = ResourceKey.create(Registries.ITEM, RendererTest.id(path));
+		return Registry.register(BuiltInRegistries.ITEM, resourceKey, itemFunction.apply(new Item.Properties().setId(resourceKey)));
 	}
 
 	private static <T extends BlockEntityType<?>> T register(String path, T blockEntityType) {

@@ -31,16 +31,16 @@ public class AttackBlockTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, side) -> {
-			LOGGER.info("AttackBlockCallback: before chest/lava hook (client-side = %s)".formatted(world.isClientSide()));
+		AttackBlockCallback.EVENT.register((player, level, hand, pos, side) -> {
+			LOGGER.info("AttackBlockCallback: before chest/lava hook (client-side = %s)".formatted(level.isClientSide()));
 			return InteractionResult.PASS;
 		});
 		// If a chest is attacked and the player holds a lava bucket, delete it!
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, side) -> {
-			if (!player.isSpectator() && world.mayInteract(player, pos)) {
-				if (world.getBlockState(pos).is(Blocks.CHEST)) {
+		AttackBlockCallback.EVENT.register((player, level, hand, pos, side) -> {
+			if (!player.isSpectator() && level.mayInteract(player, pos)) {
+				if (level.getBlockState(pos).is(Blocks.CHEST)) {
 					if (player.getItemInHand(hand).is(Items.LAVA_BUCKET)) {
-						world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+						level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 						return InteractionResult.SUCCESS;
 					}
 				}
@@ -48,8 +48,8 @@ public class AttackBlockTests implements ModInitializer {
 
 			return InteractionResult.PASS;
 		});
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, side) -> {
-			LOGGER.info("AttackBlockCallback: after chest/lava hook (client-side = %s)".formatted(world.isClientSide()));
+		AttackBlockCallback.EVENT.register((player, level, hand, pos, side) -> {
+			LOGGER.info("AttackBlockCallback: after chest/lava hook (client-side = %s)".formatted(level.isClientSide()));
 			return InteractionResult.PASS;
 		});
 	}

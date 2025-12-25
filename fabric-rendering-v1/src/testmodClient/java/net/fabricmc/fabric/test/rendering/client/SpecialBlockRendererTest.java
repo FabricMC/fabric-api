@@ -53,16 +53,16 @@ public class SpecialBlockRendererTest implements ClientModInitializer {
 
 				return new SpecialModelRenderer<>() {
 					@Override
-					public void submit(@Nullable Object data, ItemDisplayContext displayContext, PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, int light, int overlay, boolean glint, int outlineColor) {
-						matrices.pushPose();
-						matrices.translate(0.5f, 0.0f, 0.5f);
-						matrices.translate(0, 1.46875f, 0);
-						matrices.scale(1, -1, 1);
-						matrices.mulPose(Axis.YP.rotation((float) (Util.getMillis() * 0.001)));
-						matrices.translate(0, -1.46875f, 0);
-						orderedRenderCommandQueue.order(0)
-								.submitCustomGeometry(matrices, RenderTypes.solidMovingBlock(), (matricesEntry, vertexConsumer) -> allayModel.renderToBuffer(matrices, vertexConsumer, light, overlay));
-						matrices.popPose();
+					public void submit(@Nullable Object data, ItemDisplayContext displayContext, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, int overlay, boolean glint, int outlineColor) {
+						poseStack.pushPose();
+						poseStack.translate(0.5f, 0.0f, 0.5f);
+						poseStack.translate(0, 1.46875f, 0);
+						poseStack.scale(1, -1, 1);
+						poseStack.mulPose(Axis.YP.rotation((float) (Util.getMillis() * 0.001)));
+						poseStack.translate(0, -1.46875f, 0);
+						submitNodeCollector.order(0)
+								.submitCustomGeometry(poseStack, RenderTypes.solidMovingBlock(), (matricesEntry, vertexConsumer) -> allayModel.renderToBuffer(poseStack, vertexConsumer, light, overlay));
+						poseStack.popPose();
 					}
 
 					@Override

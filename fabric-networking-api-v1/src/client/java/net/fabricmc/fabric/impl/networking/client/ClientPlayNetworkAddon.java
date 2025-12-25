@@ -62,7 +62,7 @@ public final class ClientPlayNetworkAddon extends ClientCommonNetworkAddon<Clien
 			LOGGER.error("Exception thrown while invoking ClientPlayConnectionEvents.JOIN", e);
 		}
 
-		// The client cannot send any packets, including `minecraft:register` until after GameJoinS2CPacket is received.
+		// The client cannot send any packets, including `minecraft:register` until after ClientboundLoginPacket is received.
 		this.sendInitialChannelRegistrationPacket();
 		super.onServerReady();
 	}

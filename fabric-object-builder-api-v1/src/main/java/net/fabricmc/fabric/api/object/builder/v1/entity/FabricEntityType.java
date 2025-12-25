@@ -63,15 +63,15 @@ public interface FabricEntityType {
 		/**
 		 * Creates an entity type builder for a living entity.
 		 *
-		 * <p>This entity's spawn group will automatically be set to {@link MobCategory#MISC}.
+		 * <p>This entity's mob category will automatically be set to {@link MobCategory#MISC}.
 		 *
 		 * @param <T> the type of entity
 		 * @param livingBuilder a function to configure living entity specific properties
 		 *
 		 * @return a new living entity type builder
 		 */
-		static <T extends LivingEntity> EntityType.Builder<T> createLiving(EntityType.EntityFactory<T> factory, MobCategory spawnGroup, UnaryOperator<Living<T>> livingBuilder) {
-			return FabricEntityTypeImpl.Builder.createLiving(factory, spawnGroup, livingBuilder);
+		static <T extends LivingEntity> EntityType.Builder<T> createLiving(EntityType.EntityFactory<T> factory, MobCategory mobCategory, UnaryOperator<Living<T>> livingBuilder) {
+			return FabricEntityTypeImpl.Builder.createLiving(factory, mobCategory, livingBuilder);
 		}
 
 		/**
@@ -82,8 +82,8 @@ public interface FabricEntityType {
 		 *
 		 * @return a new mob entity type builder
 		 */
-		static <T extends net.minecraft.world.entity.Mob> EntityType.Builder<T> createMob(EntityType.EntityFactory<T> factory, MobCategory spawnGroup, UnaryOperator<Mob<T>> mobBuilder) {
-			return FabricEntityTypeImpl.Builder.createMob(factory, spawnGroup, mobBuilder);
+		static <T extends net.minecraft.world.entity.Mob> EntityType.Builder<T> createMob(EntityType.EntityFactory<T> factory, MobCategory mobCategory, UnaryOperator<Mob<T>> mobBuilder) {
+			return FabricEntityTypeImpl.Builder.createMob(factory, mobCategory, mobBuilder);
 		}
 
 		/**
@@ -106,13 +106,13 @@ public interface FabricEntityType {
 		 */
 		interface Mob<T extends net.minecraft.world.entity.Mob> extends Living<T> {
 			/**
-			 * Registers a spawn restriction for this entity.
+			 * Registers a spawn placement for this entity.
 			 *
 			 * <p>This is used by mobs to determine whether Minecraft should spawn an entity within a certain context.
 			 *
 			 * @return this builder for chaining.
 			 */
-			Mob<T> spawnRestriction(SpawnPlacementType location, Heightmap.Types heightmap, SpawnPlacements.SpawnPredicate<T> spawnPredicate);
+			Mob<T> spawnPlacement(SpawnPlacementType placementType, Heightmap.Types heightmap, SpawnPlacements.SpawnPredicate<T> spawnPredicate);
 
 			/**
 			 * Sets the default attributes for a type of mob entity.

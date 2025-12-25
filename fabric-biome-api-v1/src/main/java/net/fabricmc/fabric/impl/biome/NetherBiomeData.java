@@ -47,7 +47,7 @@ public final class NetherBiomeData {
 
 	public static void addNetherBiome(ResourceKey<Biome> biome, Climate.ParameterPoint spawnNoisePoint) {
 		Preconditions.checkArgument(biome != null, "Biome is null");
-		Preconditions.checkArgument(spawnNoisePoint != null, "MultiNoiseUtil.NoiseValuePoint is null");
+		Preconditions.checkArgument(spawnNoisePoint != null, "Spawn noise point is null");
 		NETHER_BIOME_NOISE_POINTS.put(biome, spawnNoisePoint);
 		clearBiomeSourceCache();
 	}

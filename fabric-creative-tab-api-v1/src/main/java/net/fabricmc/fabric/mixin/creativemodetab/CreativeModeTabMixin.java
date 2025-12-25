@@ -55,12 +55,12 @@ abstract class CreativeModeTabMixin implements FabricCreativeModeTabImpl {
 	@Inject(method = "buildContents", at = @At("TAIL"))
 	public void getStacks(CreativeModeTab.ItemDisplayParameters context, CallbackInfo ci) {
 		final CreativeModeTab self = (CreativeModeTab) (Object) this;
-		final ResourceKey<CreativeModeTab> registryKey = BuiltInRegistries.CREATIVE_MODE_TAB.getResourceKey(self).orElseThrow(() -> new IllegalStateException("Unregistered creative mode tab : " + self));
+		final ResourceKey<CreativeModeTab> resourceKey = BuiltInRegistries.CREATIVE_MODE_TAB.getResourceKey(self).orElseThrow(() -> new IllegalStateException("Unregistered creative mode tab : " + self));
 
-		// Do not modify special creative mode tabs (except Operator Blocks) at all.
+		// Do not modify special creative mode tabs (except Game Master Blocks) at all.
 		// Special creative mode tabs include Saved Hotbars, Search, and Survival Inventory.
 		// Note, search gets modified as part of the parent creative mode tab.
-		if (self.isAlignedRight() && registryKey != CreativeModeTabs.OP_BLOCKS) return;
+		if (self.isAlignedRight() && resourceKey != CreativeModeTabs.OP_BLOCKS) return;
 
 		// Sanity check for the injection point. It should be after these fields are set.
 		Objects.requireNonNull(displayItems, "displayStacks");
@@ -72,8 +72,8 @@ abstract class CreativeModeTabMixin implements FabricCreativeModeTabImpl {
 		var entries = new FabricCreativeModeTabOutput(context, mutableDisplayStacks, mutableSearchTabStacks);
 
 		// Now trigger the events
-		if (registryKey != CreativeModeTabs.OP_BLOCKS || context.hasPermissions()) {
-			final Event<CreativeModeTabEvents.ModifyOutput> modifyEntriesEvent = CreativeModeTabEventsImpl.getModifyOutputEvent(registryKey);
+		if (resourceKey != CreativeModeTabs.OP_BLOCKS || context.hasPermissions()) {
+			final Event<CreativeModeTabEvents.ModifyOutput> modifyEntriesEvent = CreativeModeTabEventsImpl.getModifyOutputEvent(resourceKey);
 
 			if (modifyEntriesEvent != null) {
 				modifyEntriesEvent.invoker().modifyOutput(entries);

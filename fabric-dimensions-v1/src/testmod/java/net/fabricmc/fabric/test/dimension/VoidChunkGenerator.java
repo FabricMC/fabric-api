@@ -56,11 +56,11 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public void applyCarvers(WorldGenRegion chunkRegion, long seed, RandomState noiseConfig, BiomeManager biomeAccess, StructureManager structureAccessor, ChunkAccess chunk) {
+	public void applyCarvers(WorldGenRegion worldGenRegion, long seed, RandomState randomState, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunk) {
 	}
 
 	@Override
-	public void buildSurface(WorldGenRegion region, StructureManager structureAccessor, RandomState noiseConfig, ChunkAccess chunk) {
+	public void buildSurface(WorldGenRegion region, StructureManager structureManager, RandomState randomState, ChunkAccess chunk) {
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender, RandomState noiseConfig, StructureManager structureAccessor, ChunkAccess chunk) {
+	public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
 		return CompletableFuture.completedFuture(chunk);
 	}
 
@@ -88,16 +88,16 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public int getBaseHeight(int x, int z, Heightmap.Types heightmapType, LevelHeightAccessor heightLimitView, RandomState noiseConfig) {
+	public int getBaseHeight(int x, int z, Heightmap.Types heightmapType, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
 		return 0;
 	}
 
 	@Override
-	public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor heightLimitView, RandomState noiseConfig) {
+	public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
 		return new NoiseColumn(0, new BlockState[0]);
 	}
 
 	@Override
-	public void addDebugScreenInfo(List<String> list, RandomState noiseConfig, BlockPos blockPos) {
+	public void addDebugScreenInfo(List<String> list, RandomState randomState, BlockPos blockPos) {
 	}
 }

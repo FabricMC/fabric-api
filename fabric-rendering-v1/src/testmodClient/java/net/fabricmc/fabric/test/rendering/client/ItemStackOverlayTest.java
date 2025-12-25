@@ -26,18 +26,18 @@ import net.fabricmc.fabric.api.client.rendering.v1.RenderItemDecorationsCallback
 public class ItemStackOverlayTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		RenderItemDecorationsCallback.EVENT.register((context, textRenderer, stack, x, y) -> {
+		RenderItemDecorationsCallback.EVENT.register((graphics, font, stack, x, y) -> {
 			// renders a plus sign on all shulker boxes where the stack count would usually be
 			if (stack.is(ItemTags.SHULKER_BOXES)) {
 				String s = "+";
-				context.pose().pushMatrix();
-				context.drawString(textRenderer,
+				graphics.pose().pushMatrix();
+				graphics.drawString(font,
 						s,
-						x + 19 - 2 - textRenderer.width(s),
+						x + 19 - 2 - font.width(s),
 						y + 6 + 3,
 						ARGB.opaque(ChatFormatting.YELLOW.getColor()),
 						true);
-				context.pose().popMatrix();
+				graphics.pose().popMatrix();
 			}
 		});
 	}

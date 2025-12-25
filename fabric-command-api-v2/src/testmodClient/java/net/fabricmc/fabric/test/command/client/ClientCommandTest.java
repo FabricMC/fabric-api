@@ -83,7 +83,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 				throw UNEXECUTABLE_EXECUTED.create();
 			}));
 
-			// Command with argument using CommandRegistryAccess
+			// Command with argument using CommandBuildContext
 			dispatcher.register(ClientCommands.literal("test_client_command_with_registry_using_arg").then(
 					ClientCommands.argument("item", ItemArgument.item(buildContext)).executes(context -> {
 						final ItemInput item = ItemArgument.getItem(context, "item");

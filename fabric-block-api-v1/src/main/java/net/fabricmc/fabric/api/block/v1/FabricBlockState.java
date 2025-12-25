@@ -32,16 +32,16 @@ public interface FabricBlockState {
 	/**
 	 * Return the current appearance of the block, i.e. which block state this block reports to look like on a given side.
 	 *
-	 * @param blockAndTintGetter	the world this block is in
-	 * @param pos     			 	position of this block, whose appearance is being queried
-	 * @param side        			the side for which the appearance is being queried
-	 * @param sourceState 			(optional) state of the block that is querying the appearance, or null if unknown
-	 * @param sourcePos   			(optional) position of the block that is querying the appearance, or null if unknown
+	 * @param level	the level this block is in
+	 * @param pos position of this block, whose appearance is being queried
+	 * @param side the side for which the appearance is being queried
+	 * @param sourceState (optional) state of the block that is querying the appearance, or null if unknown
+	 * @param sourcePos (optional) position of the block that is querying the appearance, or null if unknown
 	 * @return the appearance of the block on the given side; the original {@code state} can be returned if there is no better option
 	 * @see FabricBlock#getAppearance
 	 */
-	default BlockState getAppearance(BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+	default BlockState getAppearance(BlockAndTintGetter level, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		BlockState self = (BlockState) this;
-		return self.getBlock().getAppearance(self, blockAndTintGetter, pos, side, sourceState, sourcePos);
+		return self.getBlock().getAppearance(self, level, pos, side, sourceState, sourcePos);
 	}
 }

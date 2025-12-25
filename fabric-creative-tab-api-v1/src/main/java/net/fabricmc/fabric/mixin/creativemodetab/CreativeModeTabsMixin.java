@@ -109,8 +109,8 @@ public class CreativeModeTabsMixin {
 		record CreativeModeTabPosition(CreativeModeTab.Row row, int column, int page) { }
 		var map = new HashMap<CreativeModeTabPosition, String>();
 
-		for (ResourceKey<CreativeModeTab> registryKey : BuiltInRegistries.CREATIVE_MODE_TAB.registryKeySet()) {
-			final CreativeModeTab creativeModeTab = BuiltInRegistries.CREATIVE_MODE_TAB.getValueOrThrow(registryKey);
+		for (ResourceKey<CreativeModeTab> resourceKey : BuiltInRegistries.CREATIVE_MODE_TAB.registryKeySet()) {
+			final CreativeModeTab creativeModeTab = BuiltInRegistries.CREATIVE_MODE_TAB.getValueOrThrow(resourceKey);
 			final FabricCreativeModeTabImpl vanillaCreativeModeTab = (FabricCreativeModeTabImpl) creativeModeTab;
 			final String displayName = creativeModeTab.getDisplayName().getString();
 			final var position = new CreativeModeTabPosition(creativeModeTab.row(), creativeModeTab.column(), vanillaCreativeModeTab.fabric_getPage());

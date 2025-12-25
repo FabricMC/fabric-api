@@ -41,7 +41,7 @@ public abstract class WrapperBakedItemModel implements ItemModel {
 	}
 
 	@Override
-	public void update(ItemStackRenderState state, ItemStack stack, ItemModelResolver resolver, ItemDisplayContext displayContext, @Nullable ClientLevel world, @Nullable ItemOwner heldItemContext, int seed) {
-		wrapped.update(state, stack, resolver, displayContext, world, heldItemContext, seed);
+	public void update(ItemStackRenderState state, ItemStack stack, ItemModelResolver resolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable ItemOwner itemOwner, int seed) {
+		wrapped.update(state, stack, resolver, displayContext, level, itemOwner, seed);
 	}
 }

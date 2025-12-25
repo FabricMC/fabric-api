@@ -53,7 +53,7 @@ abstract class LevelChunkMixin extends AttachmentTargetsMixin implements Attachm
 	public abstract Map<BlockPos, BlockEntity> getBlockEntities();
 
 	@Inject(method = "<init>(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/chunk/ProtoChunk;Lnet/minecraft/world/level/chunk/LevelChunk$PostLoadProcessor;)V", at = @At("TAIL"))
-	private void transferProtoChunkAttachment(ServerLevel world, ProtoChunk protoChunk, LevelChunk.PostLoadProcessor entityLoader, CallbackInfo ci) {
+	private void transferProtoChunkAttachment(ServerLevel level, ProtoChunk protoChunk, LevelChunk.PostLoadProcessor entityLoader, CallbackInfo ci) {
 		AttachmentTargetImpl.transfer(protoChunk, this, false);
 	}
 
@@ -68,9 +68,9 @@ abstract class LevelChunkMixin extends AttachmentTargetsMixin implements Attachm
 
 	@Override
 	public void fabric_syncChange(AttachmentType<?> type, AttachmentChange change) {
-		if (this.level instanceof ServerLevel serverWorld) {
+		if (this.level instanceof ServerLevel serverLevel) {
 			// can't shadow from Chunk because this already extends a supermixin
-			PlayerLookup.tracking(serverWorld, ((ChunkAccess) (Object) this).getPos())
+			PlayerLookup.tracking(serverLevel, ((ChunkAccess) (Object) this).getPos())
 					.forEach(player -> {
 						if (((AttachmentTypeImpl<?>) type).syncPredicate().test(this, player)) {
 							AttachmentSync.trySync(change, player);
@@ -85,7 +85,7 @@ abstract class LevelChunkMixin extends AttachmentTargetsMixin implements Attachm
 	}
 
 	@Override
-	public RegistryAccess fabric_getDynamicRegistryManager() {
+	public RegistryAccess fabric_getRegistryAccess() {
 		return level.registryAccess();
 	}
 }

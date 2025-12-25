@@ -40,8 +40,8 @@ import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.FabricIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
-import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientPacketCodec;
-import net.fabricmc.fabric.impl.recipe.ingredient.OptionalCustomIngredientPacketCodec;
+import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientStreamCodec;
+import net.fabricmc.fabric.impl.recipe.ingredient.OptionalCustomIngredientStreamCodec;
 
 @Mixin(Ingredient.class)
 public class IngredientMixin implements FabricIngredient {
@@ -62,8 +62,8 @@ public class IngredientMixin implements FabricIngredient {
 					ordinal = 0
 			)
 	)
-	private static StreamCodec<RegistryFriendlyByteBuf, Ingredient> useCustomIngredientPacketCodec(StreamCodec<RegistryFriendlyByteBuf, Ingredient> original) {
-		return new CustomIngredientPacketCodec(original);
+	private static StreamCodec<RegistryFriendlyByteBuf, Ingredient> useCustomIngredientStreamCodec(StreamCodec<RegistryFriendlyByteBuf, Ingredient> original) {
+		return new CustomIngredientStreamCodec(original);
 	}
 
 	@ModifyExpressionValue(
@@ -74,8 +74,8 @@ public class IngredientMixin implements FabricIngredient {
 					ordinal = 1
 			)
 	)
-	private static StreamCodec<RegistryFriendlyByteBuf, Optional<Ingredient>> useOptionalCustomIngredientPacketCodec(StreamCodec<RegistryFriendlyByteBuf, Optional<Ingredient>> original) {
-		return new OptionalCustomIngredientPacketCodec(original);
+	private static StreamCodec<RegistryFriendlyByteBuf, Optional<Ingredient>> useOptionalCustomIngredientStreamCodec(StreamCodec<RegistryFriendlyByteBuf, Optional<Ingredient>> original) {
+		return new OptionalCustomIngredientStreamCodec(original);
 	}
 
 	@Inject(method = "<clinit>", at = @At("TAIL"), cancellable = true)

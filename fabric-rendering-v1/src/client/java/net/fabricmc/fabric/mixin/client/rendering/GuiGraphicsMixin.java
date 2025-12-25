@@ -34,10 +34,10 @@ abstract class GuiGraphicsMixin {
 			method = "renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V",
 			at = @At("RETURN")
 	)
-	public void drawStackOverlay(Font textRenderer, ItemStack stack, int x, int y, @Nullable String stackCountText, CallbackInfo callback) {
+	public void drawStackOverlay(Font font, ItemStack stack, int x, int y, @Nullable String stackCountText, CallbackInfo callback) {
 		if (!stack.isEmpty()) {
 			RenderItemDecorationsCallback.EVENT.invoker()
-					.onRenderItemDecorations((GuiGraphics) (Object) this, textRenderer, stack, x, y);
+					.onRenderItemDecorations((GuiGraphics) (Object) this, font, stack, x, y);
 		}
 	}
 }

@@ -56,31 +56,31 @@ public interface SynchronizedRecipes {
 	<I extends RecipeInput, T extends Recipe<I>> Collection<RecipeHolder<T>> getAllOfType(RecipeType<T> type);
 
 	/**
-	 * Finds a first recipe entry (or {@code recipe}, if it matches and isn't null) of the given {@code type} that matches the
+	 * Finds a first recipe holder (or {@code recipe}, if it matches and isn't null) of the given {@code type} that matches the
 	 * given {@code input} and {@code level}.
 	 *
-	 * @return the optional containing matching recipe entry or empty
+	 * @return the optional containing matching recipe holder or empty
 	 */
 	default <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level level, @Nullable ResourceKey<Recipe<?>> recipe) {
-		RecipeHolder<T> recipeEntry = recipe != null ? this.get(type, recipe) : null;
-		return this.getFirstMatch(type, input, level, recipeEntry);
+		RecipeHolder<T> recipeHolder = recipe != null ? this.get(type, recipe) : null;
+		return this.getFirstMatch(type, input, level, recipeHolder);
 	}
 
 	/**
-	 * Finds a first recipe entry (or {@code recipe}, if it matches and isn't null) of the given {@code type} that matches the
+	 * Finds a first recipe holder (or {@code recipe}, if it matches and isn't null) of the given {@code type} that matches the
 	 * given {@code input} and {@code level}.
 	 *
-	 * @return the optional containing matching recipe entry or empty
+	 * @return the optional containing matching recipe holder or empty
 	 */
 	default <I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level level, @Nullable RecipeHolder<T> recipe) {
 		return recipe != null && recipe.value().matches(input, level) ? Optional.of(recipe) : this.getFirstMatch(type, input, level);
 	}
 
 	/**
-	 * Finds a first recipe entry of the given {@code type} that matches the
+	 * Finds a first recipe holder of the given {@code type} that matches the
 	 * given {@code input} and {@code level}.
 	 *
-	 * @return the optional containing matching recipe entry or empty
+	 * @return the optional containing matching recipe holder or empty
 	 */
 	<I extends RecipeInput, T extends Recipe<I>> Optional<RecipeHolder<T>> getFirstMatch(RecipeType<T> type, I input, Level level);
 
@@ -95,9 +95,9 @@ public interface SynchronizedRecipes {
 	 */
 	@Nullable
 	default <T extends Recipe<?>> RecipeHolder<T> get(RecipeType<T> type, ResourceKey<Recipe<?>> key) {
-		RecipeHolder<?> recipeEntry = this.get(key);
+		RecipeHolder<?> recipeHolder = this.get(key);
 		//noinspection unchecked
-		return recipeEntry != null && recipeEntry.value().getType().equals(type) ? (RecipeHolder<T>) recipeEntry : null;
+		return recipeHolder != null && recipeHolder.value().getType().equals(type) ? (RecipeHolder<T>) recipeHolder : null;
 	}
 
 	/**

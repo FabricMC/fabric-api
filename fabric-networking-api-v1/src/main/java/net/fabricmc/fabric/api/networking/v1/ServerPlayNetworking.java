@@ -146,7 +146,7 @@ public final class ServerPlayNetworking {
 	 * @return All the channel names that the server can receive packets on
 	 */
 	public static Set<Identifier> getReceived(ServerPlayer player) {
-		Objects.requireNonNull(player, "Server player entity cannot be null");
+		Objects.requireNonNull(player, "Server player cannot be null");
 
 		return getReceived(player.connection);
 	}

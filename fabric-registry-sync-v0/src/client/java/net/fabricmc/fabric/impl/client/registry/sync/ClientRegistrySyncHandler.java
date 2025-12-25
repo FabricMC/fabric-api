@@ -62,7 +62,7 @@ public final class ClientRegistrySyncHandler {
 				context.responseSender().sendPacket(SyncCompletePayload.INSTANCE);
 			} catch (Throwable e) {
 				LOGGER.error("Registry remapping failed!", e);
-				context.responseSender().disconnect(getText(e));
+				context.responseSender().disconnect(getComponent(e));
 				return;
 			}
 		});
@@ -117,7 +117,7 @@ public final class ClientRegistrySyncHandler {
 
 			for (Identifier remoteId : remoteRegistry.keySet()) {
 				if (!registry.containsKey(remoteId)) {
-					// Found a registry entry from the server that is missing on the client
+					// Found a holder from the server that is missing on the client
 					missingEntries.computeIfAbsent(registryId, i -> new ArrayList<>()).add(remoteId);
 				}
 			}
@@ -155,46 +155,46 @@ public final class ClientRegistrySyncHandler {
 	}
 
 	private static Component missingRegistriesError(List<Identifier> missingRegistries) {
-		MutableComponent text = Component.empty();
+		MutableComponent component = Component.empty();
 
 		final int count = missingRegistries.size();
 
 		if (count == 1) {
-			text = text.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.title.singular"));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.title.singular"));
 		} else {
-			text = text.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.title.plural", count));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.title.plural", count));
 		}
 
-		text = text.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.subtitle.1").withStyle(ChatFormatting.GREEN));
-		text = text.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.subtitle.2"));
+		component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.subtitle.1").withStyle(ChatFormatting.GREEN));
+		component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.subtitle.2"));
 
 		final int toDisplay = 4;
 
 		for (int i = 0; i < Math.min(missingRegistries.size(), toDisplay); i++) {
-			text = text.append(Component.literal(missingRegistries.get(i).toString()).withStyle(ChatFormatting.YELLOW));
-			text = text.append(CommonComponents.NEW_LINE);
+			component = component.append(Component.literal(missingRegistries.get(i).toString()).withStyle(ChatFormatting.YELLOW));
+			component = component.append(CommonComponents.NEW_LINE);
 		}
 
 		if (missingRegistries.size() > toDisplay) {
-			text = text.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.footer", missingRegistries.size() - toDisplay));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-registry.footer", missingRegistries.size() - toDisplay));
 		}
 
-		return text;
+		return component;
 	}
 
 	private static Component missingEntriesError(Map<Identifier, List<Identifier>> missingEntries) {
-		MutableComponent text = Component.empty();
+		MutableComponent component = Component.empty();
 
 		final int count = missingEntries.values().stream().mapToInt(List::size).sum();
 
 		if (count == 1) {
-			text = text.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.title.singular"));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.title.singular"));
 		} else {
-			text = text.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.title.plural", count));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.title.plural", count));
 		}
 
-		text = text.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.subtitle.1").withStyle(ChatFormatting.GREEN));
-		text = text.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.subtitle.2"));
+		component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.subtitle.1").withStyle(ChatFormatting.GREEN));
+		component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.subtitle.2"));
 
 		final int toDisplay = 4;
 		// Get the distinct missing namespaces
@@ -206,15 +206,15 @@ public final class ClientRegistrySyncHandler {
 				.toList();
 
 		for (int i = 0; i < Math.min(namespaces.size(), toDisplay); i++) {
-			text = text.append(Component.literal(namespaces.get(i)).withStyle(ChatFormatting.YELLOW));
-			text = text.append(CommonComponents.NEW_LINE);
+			component = component.append(Component.literal(namespaces.get(i)).withStyle(ChatFormatting.YELLOW));
+			component = component.append(CommonComponents.NEW_LINE);
 		}
 
 		if (namespaces.size() > toDisplay) {
-			text = text.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.footer", namespaces.size() - toDisplay));
+			component = component.append(Component.translatable("fabric-registry-sync-v0.unknown-remote.footer", namespaces.size() - toDisplay));
 		}
 
-		return text;
+		return component;
 	}
 
 	private static boolean isRegistryOptional(Identifier registryId, RegistrySyncPayload data) {
@@ -222,15 +222,15 @@ public final class ClientRegistrySyncHandler {
 		return registryAttributes.contains(RegistryAttribute.OPTIONAL);
 	}
 
-	private static Component getText(Throwable e) {
+	private static Component getComponent(Throwable e) {
 		if (e instanceof RemapException remapException) {
-			final Component text = remapException.getText();
+			final Component component = remapException.getComponent();
 
-			if (text != null) {
-				return text;
+			if (component != null) {
+				return component;
 			}
 		} else if (e instanceof CompletionException completionException) {
-			return getText(completionException.getCause());
+			return getComponent(completionException.getCause());
 		}
 
 		return Component.literal("Registry remapping failed: " + e.getMessage());

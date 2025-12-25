@@ -63,13 +63,13 @@ public class SoundsTypeBuilderTest {
 		);
 
 		SoundTypeBuilderImpl.SoundType soundType = ((SoundTypeBuilderImpl) SoundTypeBuilder.of(SoundEvents.ANVIL_USE)
-				.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle"))
+				.sound(SoundTypeBuilder.RegistrationBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle"))
 						.volume(0.7F), 1)
-				.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle2")))
-				.sound(SoundTypeBuilder.EntryBuilder.ofEvent(SoundEvents.ANVIL_HIT)
+				.sound(SoundTypeBuilder.RegistrationBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle2")))
+				.sound(SoundTypeBuilder.RegistrationBuilder.ofEvent(SoundEvents.ANVIL_HIT)
 						.weight(100))
-				.sound(SoundTypeBuilder.EntryBuilder.ofEvent(SoundEvents.ARMOR_EQUIP_GENERIC))
-				.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle"))
+				.sound(SoundTypeBuilder.RegistrationBuilder.ofEvent(SoundEvents.ARMOR_EQUIP_GENERIC))
+				.sound(SoundTypeBuilder.RegistrationBuilder.ofFile(Identifier.withDefaultNamespace("mob/parrot/idle"))
 						.volume(0.3F).pitch(0.5F).stream(true).preload(true).attenuationDistance(8)
 				).replace(true)).build();
 
@@ -95,11 +95,11 @@ public class SoundsTypeBuilderTest {
 		);
 
 		SoundTypeBuilderImpl.SoundType soundType = ((SoundTypeBuilderImpl) SoundTypeBuilder.of()
-				.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.withDefaultNamespace("mob/creeper/hurt"))
+				.sound(SoundTypeBuilder.RegistrationBuilder.ofFile(Identifier.withDefaultNamespace("mob/creeper/hurt"))
 						.volume(1.0F).pitch(2.0F))
-				.sound(SoundTypeBuilder.EntryBuilder.ofEvent(SoundEvents.STONE_BREAK)
+				.sound(SoundTypeBuilder.RegistrationBuilder.ofEvent(SoundEvents.STONE_BREAK)
 						.weight(1))
-				.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.withDefaultNamespace("block/beacon/power"))
+				.sound(SoundTypeBuilder.RegistrationBuilder.ofFile(Identifier.withDefaultNamespace("block/beacon/power"))
 						.volume(Float.MIN_VALUE).pitch(0.5F).stream(false).preload(false).attenuationDistance(0)
 				)).build();
 
@@ -120,7 +120,7 @@ public class SoundsTypeBuilderTest {
 
 		SoundTypeBuilderImpl.SoundType soundType = ((SoundTypeBuilderImpl) SoundTypeBuilder.of()
 				.subtitle("super_subtitle")
-				.sound(SoundTypeBuilder.EntryBuilder.ofFile(Identifier.withDefaultNamespace("sound")))).build();
+				.sound(SoundTypeBuilder.RegistrationBuilder.ofFile(Identifier.withDefaultNamespace("sound")))).build();
 
 		soundTypeEquals(expected, soundType);
 	}

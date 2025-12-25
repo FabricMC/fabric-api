@@ -39,23 +39,23 @@ public class TrackStackEntityRenderer extends MobRenderer<TrackStackEntity, Trac
 	}
 
 	@Override
-	public void submit(RenderState renderState, PoseStack matrices, SubmitNodeCollector orderedRenderCommandQueue, CameraRenderState cameraState) {
-		super.submit(renderState, matrices, orderedRenderCommandQueue, cameraState);
+	public void submit(RenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraState) {
+		super.submit(renderState, poseStack, submitNodeCollector, cameraState);
 		Iterable<Component> labelLines = renderState.labelLines;
 
 		if (labelLines == null) {
 			return;
 		}
 
-		matrices.pushPose();
-		matrices.translate(0, -2, 0);
+		poseStack.pushPose();
+		poseStack.translate(0, -2, 0);
 
 		for (Component line : labelLines) {
-			orderedRenderCommandQueue.order(0).submitNameTag(matrices, renderState.nameTagAttachment, 0, line, !renderState.isDiscrete, renderState.lightCoords, renderState.distanceToCameraSq, cameraState);
-			matrices.translate(0, 0.25875f, 0);
+			submitNodeCollector.order(0).submitNameTag(poseStack, renderState.nameTagAttachment, 0, line, !renderState.isDiscrete, renderState.lightCoords, renderState.distanceToCameraSq, cameraState);
+			poseStack.translate(0, 0.25875f, 0);
 		}
 
-		matrices.popPose();
+		poseStack.popPose();
 	}
 
 	@Override

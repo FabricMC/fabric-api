@@ -60,7 +60,7 @@ public class ResourceLoaderImplTest {
 		resourceLoader.addListenerOrdering(dummyReloader4.id, ResourceReloaderKeys.BEFORE_VANILLA);
 
 		var languageReloader = new LanguageManager(
-				"en_us", translationStorage -> {
+				"en_us", clientLanguage -> {
 		});
 		var splashTextsReloader = new SplashManager(null);
 		var periodicNotificationManager = new PeriodicNotificationManager(Identifier.parse("a"), o -> true);

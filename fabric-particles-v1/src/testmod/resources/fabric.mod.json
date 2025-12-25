@@ -13,7 +13,7 @@
       "net.fabricmc.fabric.test.particle.ParticleTestSetup"
     ],
     "client": [
-      "net.fabricmc.fabric.test.particle.client.ParticleRendererRegistryTests",
+      "net.fabricmc.fabric.test.particle.client.ParticleGroupRegistryTests",
       "net.fabricmc.fabric.test.particle.client.ParticleRenderEventTests"
     ]
   }

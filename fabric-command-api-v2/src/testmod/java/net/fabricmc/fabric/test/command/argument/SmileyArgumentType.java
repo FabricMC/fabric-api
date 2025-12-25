@@ -34,7 +34,7 @@ import net.minecraft.network.chat.Component;
 public class SmileyArgumentType implements ArgumentType<SmileyArgument> {
 	private static final Collection<String> SMILEY_VALUES = Arrays.stream(SmileyArgument.values()).map(s -> s.smiley).toList();
 	public static final DynamicCommandExceptionType INVALID_COLOR_EXCEPTION = new DynamicCommandExceptionType(smiley -> {
-		return Component.literal("Invalid smiley: " + smiley); // use Text.translatable in your mod!
+		return Component.literal("Invalid smiley: " + smiley); // use Component.translatable in your mod!
 	});
 
 	public static SmileyArgumentType smiley() {

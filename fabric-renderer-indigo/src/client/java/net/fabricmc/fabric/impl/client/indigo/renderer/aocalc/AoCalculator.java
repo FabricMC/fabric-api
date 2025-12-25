@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.LightDataProvider;
 
 /**
- * Adaptation of inner, non-static class in BlockModelRenderer that serves same purpose.
+ * Adaptation of inner, non-static class in ModelBlockRenderer that serves same purpose.
  */
 public class AoCalculator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
@@ -340,7 +340,7 @@ public class AoCalculator {
 	 * Except for parameterization, the logic itself is practically identical to vanilla.
 	 */
 	private void computeFace(AoFaceData result, Direction lightFace, boolean isOnBlockFace, boolean shade) {
-		final BlockAndTintGetter world = blockInfo.level;
+		final BlockAndTintGetter level = blockInfo.level;
 		final BlockPos pos = blockInfo.blockPos;
 		final BlockState blockState = blockInfo.blockState;
 		final BlockPos.MutableBlockPos lightPos = this.lightPos;
@@ -360,52 +360,52 @@ public class AoCalculator {
 		// visible artifacts in certain situations
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[0]);
-		searchState = world.getBlockState(searchPos);
+		searchState = level.getBlockState(searchPos);
 		final int light0 = dataProvider.light(searchPos, searchState);
 		final float ao0 = dataProvider.ao(searchPos, searchState);
 
 		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
 			searchPos.move(lightFace);
-			searchState = world.getBlockState(searchPos);
+			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear0 = !searchState.isViewBlocking(world, searchPos) || searchState.getLightBlock() == 0;
+		final boolean isClear0 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[1]);
-		searchState = world.getBlockState(searchPos);
+		searchState = level.getBlockState(searchPos);
 		final int light1 = dataProvider.light(searchPos, searchState);
 		final float ao1 = dataProvider.ao(searchPos, searchState);
 
 		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
 			searchPos.move(lightFace);
-			searchState = world.getBlockState(searchPos);
+			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear1 = !searchState.isViewBlocking(world, searchPos) || searchState.getLightBlock() == 0;
+		final boolean isClear1 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[2]);
-		searchState = world.getBlockState(searchPos);
+		searchState = level.getBlockState(searchPos);
 		final int light2 = dataProvider.light(searchPos, searchState);
 		final float ao2 = dataProvider.ao(searchPos, searchState);
 
 		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
 			searchPos.move(lightFace);
-			searchState = world.getBlockState(searchPos);
+			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear2 = !searchState.isViewBlocking(world, searchPos) || searchState.getLightBlock() == 0;
+		final boolean isClear2 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
 
 		searchPos.setWithOffset(lightPos, aoFace.neighbors[3]);
-		searchState = world.getBlockState(searchPos);
+		searchState = level.getBlockState(searchPos);
 		final int light3 = dataProvider.light(searchPos, searchState);
 		final float ao3 = dataProvider.ao(searchPos, searchState);
 
 		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
 			searchPos.move(lightFace);
-			searchState = world.getBlockState(searchPos);
+			searchState = level.getBlockState(searchPos);
 		}
 
-		final boolean isClear3 = !searchState.isViewBlocking(world, searchPos) || searchState.getLightBlock() == 0;
+		final boolean isClear3 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
 
 		// c = corner - values at corners of face
 		int cLight0, cLight1, cLight2, cLight3;
@@ -421,10 +421,10 @@ public class AoCalculator {
 			cIsClear0 = false;
 		} else {
 			searchPos.setWithOffset(lightPos, aoFace.neighbors[0]).move(aoFace.neighbors[2]);
-			searchState = world.getBlockState(searchPos);
+			searchState = level.getBlockState(searchPos);
 			cAo0 = dataProvider.ao(searchPos, searchState);
 			cLight0 = dataProvider.light(searchPos, searchState);
-			cIsClear0 = !searchState.isViewBlocking(world, searchPos) || searchState.getLightBlock() == 0;
+			cIsClear0 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
 		}
 
 		if (!isClear3 && !isClear0) {
@@ -433,10 +433,10 @@ public class AoCalculator {
 			cIsClear1 = false;
 		} else {
 			searchPos.setWithOffset(lightPos, aoFace.neighbors[0]).move(aoFace.neighbors[3]);
-			searchState = world.getBlockState(searchPos);
+			searchState = level.getBlockState(searchPos);
 			cAo1 = dataProvider.ao(searchPos, searchState);
 			cLight1 = dataProvider.light(searchPos, searchState);
-			cIsClear1 = !searchState.isViewBlocking(world, searchPos) || searchState.getLightBlock() == 0;
+			cIsClear1 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
 		}
 
 		if (!isClear2 && !isClear1) {
@@ -446,10 +446,10 @@ public class AoCalculator {
 			cIsClear2 = false;
 		} else {
 			searchPos.setWithOffset(lightPos, aoFace.neighbors[1]).move(aoFace.neighbors[2]);
-			searchState = world.getBlockState(searchPos);
+			searchState = level.getBlockState(searchPos);
 			cAo2 = dataProvider.ao(searchPos, searchState);
 			cLight2 = dataProvider.light(searchPos, searchState);
-			cIsClear2 = !searchState.isViewBlocking(world, searchPos) || searchState.getLightBlock() == 0;
+			cIsClear2 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
 		}
 
 		if (!isClear3 && !isClear1) {
@@ -459,10 +459,10 @@ public class AoCalculator {
 			cIsClear3 = false;
 		} else {
 			searchPos.setWithOffset(lightPos, aoFace.neighbors[1]).move(aoFace.neighbors[3]);
-			searchState = world.getBlockState(searchPos);
+			searchState = level.getBlockState(searchPos);
 			cAo3 = dataProvider.ao(searchPos, searchState);
 			cLight3 = dataProvider.light(searchPos, searchState);
-			cIsClear3 = !searchState.isViewBlocking(world, searchPos) || searchState.getLightBlock() == 0;
+			cIsClear3 = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
 		}
 
 		// If on block face and neighbor isn't occluding, "center" will be neighbor light
@@ -470,7 +470,7 @@ public class AoCalculator {
 		int lightCenter;
 		boolean isClearCenter;
 		searchPos.setWithOffset(pos, lightFace);
-		searchState = world.getBlockState(searchPos);
+		searchState = level.getBlockState(searchPos);
 
 		// Vanilla uses an OR operator here; we use an AND operator to invert the result when isOnBlockFace and
 		// isOpaqueFullCube have the same value. When both are true, the vanilla logic caused inset faces against
@@ -479,14 +479,14 @@ public class AoCalculator {
 		// dark room with active sculk sensor above slabs).
 		if (isOnBlockFace && !searchState.isSolidRender()) {
 			lightCenter = dataProvider.light(searchPos, searchState);
-			isClearCenter = !searchState.isViewBlocking(world, searchPos) || searchState.getLightBlock() == 0;
+			isClearCenter = !searchState.isViewBlocking(level, searchPos) || searchState.getLightBlock() == 0;
 		} else {
 			lightCenter = dataProvider.light(pos, blockState);
-			isClearCenter = !blockState.isViewBlocking(world, pos) || blockState.getLightBlock() == 0;
+			isClearCenter = !blockState.isViewBlocking(level, pos) || blockState.getLightBlock() == 0;
 		}
 
-		float aoCenter = dataProvider.ao(lightPos, world.getBlockState(lightPos));
-		float shadeBrightness = world.getShade(lightFace, shade);
+		float aoCenter = dataProvider.ao(lightPos, level.getBlockState(lightPos));
+		float shadeBrightness = level.getShade(lightFace, shade);
 
 		result.a0 = ((ao3 + ao0 + cAo1 + aoCenter) * 0.25F) * shadeBrightness;
 		result.a1 = ((ao2 + ao0 + cAo0 + aoCenter) * 0.25F) * shadeBrightness;

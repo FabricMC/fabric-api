@@ -33,8 +33,8 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 
 public class BannerGuiElementRenderer extends PictureInPictureRenderer<BannerGuiElementRenderState> {
-	protected BannerGuiElementRenderer(MultiBufferSource.BufferSource vertexConsumers) {
-		super(vertexConsumers);
+	protected BannerGuiElementRenderer(MultiBufferSource.BufferSource bufferSource) {
+		super(bufferSource);
 	}
 
 	@Override
@@ -43,13 +43,13 @@ public class BannerGuiElementRenderer extends PictureInPictureRenderer<BannerGui
 	}
 
 	@Override
-	protected void renderToTexture(BannerGuiElementRenderState state, PoseStack matrices) {
+	protected void renderToTexture(BannerGuiElementRenderState state, PoseStack poseStack) {
 		Minecraft client = Minecraft.getInstance();
 		client.gameRenderer.getLighting().setupFor(Lighting.Entry.ITEMS_FLAT);
 		FeatureRenderDispatcher renderDispatcher = client.gameRenderer.getFeatureRenderDispatcher();
 		BannerRenderer.submitPatterns(
 				client.getAtlasManager(),
-				matrices,
+				poseStack,
 				renderDispatcher.getSubmitNodeStorage(),
 				LightCoordsUtil.FULL_BRIGHT,
 				OverlayTexture.NO_OVERLAY,

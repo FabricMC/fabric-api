@@ -31,23 +31,23 @@ public class BuiltinPackSortingTest {
 	}
 
 	@GameTest
-	public void builtinPackSorting(GameTestHelper context) {
-		RecipeManager manager = context.getLevel().recipeAccess();
+	public void builtinPackSorting(GameTestHelper helper) {
+		RecipeManager manager = helper.getLevel().recipeAccess();
 
 		if (manager.byKey(recipe("disabled_by_b")).isPresent()) {
-			throw context.assertionException(Component.literal("disabled_by_b recipe should not have been loaded."));
+			throw helper.assertionException(Component.literal("disabled_by_b recipe should not have been loaded."));
 		}
 
 		if (manager.byKey(recipe("disabled_by_c")).isPresent()) {
-			throw context.assertionException(Component.literal("disabled_by_c recipe should not have been loaded."));
+			throw helper.assertionException(Component.literal("disabled_by_c recipe should not have been loaded."));
 		}
 
 		if (manager.byKey(recipe("enabled_by_c")).isEmpty()) {
-			throw context.assertionException(Component.literal("enabled_by_c recipe should have been loaded."));
+			throw helper.assertionException(Component.literal("enabled_by_c recipe should have been loaded."));
 		}
 
 		long loadedRecipes = manager.getRecipes().stream().filter(r -> r.id().identifier().getNamespace().equals(Constants.NAMESPACE)).count();
-		context.assertTrue(loadedRecipes == 1, Component.literal("Unexpected loaded recipe count: " + loadedRecipes));
-		context.succeed();
+		helper.assertTrue(loadedRecipes == 1, Component.literal("Unexpected loaded recipe count: " + loadedRecipes));
+		helper.succeed();
 	}
 }

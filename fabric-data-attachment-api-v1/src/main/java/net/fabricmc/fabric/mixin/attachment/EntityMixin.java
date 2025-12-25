@@ -58,8 +58,8 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;addAdditionalSaveData(Lnet/minecraft/world/level/storage/ValueOutput;)V"),
 			method = "saveWithoutId"
 	)
-	private void writeEntityAttachments(ValueOutput view, CallbackInfo ci) {
-		this.fabric_writeAttachmentsToNbt(view);
+	private void writeEntityAttachments(ValueOutput output, CallbackInfo ci) {
+		this.fabric_writeAttachmentsToNbt(output);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ abstract class EntityMixin implements AttachmentTargetImpl {
 	}
 
 	@Override
-	public RegistryAccess fabric_getDynamicRegistryManager() {
+	public RegistryAccess fabric_getRegistryAccess() {
 		return this.level().registryAccess();
 	}
 }

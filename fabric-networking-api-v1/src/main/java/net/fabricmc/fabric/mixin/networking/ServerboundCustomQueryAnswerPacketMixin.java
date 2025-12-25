@@ -27,7 +27,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.login.ServerboundCustomQueryAnswerPacket;
 import net.minecraft.network.protocol.login.custom.CustomQueryAnswerPayload;
 
-import net.fabricmc.fabric.impl.networking.payload.PacketByteBufLoginQueryResponse;
+import net.fabricmc.fabric.impl.networking.payload.FriendlyByteBufLoginQueryResponse;
 import net.fabricmc.fabric.impl.networking.payload.PayloadHelper;
 
 @Mixin(ServerboundCustomQueryAnswerPacket.class)
@@ -45,6 +45,6 @@ public class ServerboundCustomQueryAnswerPacketMixin {
 			return;
 		}
 
-		cir.setReturnValue(new PacketByteBufLoginQueryResponse(PayloadHelper.read(buf, MAX_PAYLOAD_SIZE)));
+		cir.setReturnValue(new FriendlyByteBufLoginQueryResponse(PayloadHelper.read(buf, MAX_PAYLOAD_SIZE)));
 	}
 }

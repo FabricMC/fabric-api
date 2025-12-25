@@ -42,12 +42,12 @@ public final class FabricGameTestRunner {
 	private FabricGameTestRunner() {
 	}
 
-	public static void runHeadlessServer(LevelStorageSource.LevelStorageAccess session, PackRepository resourcePackManager) {
+	public static void runHeadlessServer(LevelStorageSource.LevelStorageAccess storageAccess, PackRepository packRepository) {
 		String reportPath = System.getProperty(GameTestSystemProperties.REPORT_FILE);
 
 		if (reportPath != null) {
 			try {
-				GlobalTestReporter.replaceWith(new SavingXmlReportingTestCompletionListener(new File(reportPath)));
+				GlobalTestReporter.replaceWith(new SavingXmlTestReporter(new File(reportPath)));
 			} catch (ParserConfigurationException e) {
 				throw new RuntimeException(e);
 			}
@@ -58,6 +58,6 @@ public final class FabricGameTestRunner {
 		Optional<String> filter = Optional.ofNullable(System.getProperty(GameTestSystemProperties.FILTER));
 		boolean verify = Boolean.getBoolean(GameTestSystemProperties.VERIFY);
 		int repeat = 0; // TODO add an option for this?
-		MinecraftServer.spin((thread) -> GameTestServer.create(thread, session, resourcePackManager, filter, verify, repeat));
+		MinecraftServer.spin((thread) -> GameTestServer.create(thread, storageAccess, packRepository, filter, verify, repeat));
 	}
 }

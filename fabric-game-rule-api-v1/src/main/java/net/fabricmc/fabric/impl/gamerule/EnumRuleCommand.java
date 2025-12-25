@@ -50,15 +50,15 @@ public final class EnumRuleCommand {
 
 	public static <E extends Enum<E>> int executeAndSetEnum(CommandContext<CommandSourceStack> context, E value, GameRule<E> enumRule) throws CommandSyntaxException {
 		// Mostly copied from vanilla, but tweaked so we can use literals
-		CommandSourceStack serverCommandSource = context.getSource();
+		CommandSourceStack commandSourceStack = context.getSource();
 
 		try {
-			serverCommandSource.getLevel().getGameRules().set(enumRule, value, serverCommandSource.getServer());
+			commandSourceStack.getLevel().getGameRules().set(enumRule, value, commandSourceStack.getServer());
 		} catch (IllegalArgumentException e) {
 			throw new SimpleCommandExceptionType(Component.literal(e.getMessage())).create();
 		}
 
-		serverCommandSource.sendSuccess(() -> Component.translatable("commands.gamerule.set", enumRule.id(), enumRule.serialize(value)), true);
+		commandSourceStack.sendSuccess(() -> Component.translatable("commands.gamerule.set", enumRule.id(), enumRule.serialize(value)), true);
 		return enumRule.getCommandResult(value);
 	}
 }

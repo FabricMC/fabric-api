@@ -84,9 +84,9 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 		}
 
 		@Override
-		public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
-			if (!world.isClientSide()) {
-				BlockEntity blockEntity = world.getBlockEntity(pos);
+		public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+			if (!level.isClientSide()) {
+				BlockEntity blockEntity = level.getBlockEntity(pos);
 
 				if (blockEntity == null) {
 					throw new AssertionError("Missing block entity for betrayal block at " + pos);
@@ -95,8 +95,8 @@ public class BlockEntityTypeBuilderTest implements ModInitializer {
 					throw new AssertionError("Incorrect block entity for betrayal block at " + pos + ": " + id);
 				}
 
-				Component posText = Component.translatable("chat.coordinates", pos.getX(), pos.getY(), pos.getZ());
-				Component message = Component.translatableEscape("text.fabric-object-builder-api-v1-testmod.block_entity_type_success", posText, BLOCK_ENTITY_TYPE_ID);
+				Component posComponent = Component.translatable("chat.coordinates", pos.getX(), pos.getY(), pos.getZ());
+				Component message = Component.translatableEscape("text.fabric-object-builder-api-v1-testmod.block_entity_type_success", posComponent, BLOCK_ENTITY_TYPE_ID);
 
 				player.displayClientMessage(message, false);
 			}

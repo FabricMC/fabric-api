@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.resource.ResourceLoaderImpl;
 import net.fabricmc.loader.api.FabricLoader;
 
 /**
- * Represents a resource pack provider for mods and built-in mods resource packs.
+ * Represents a repository source for mods and built-in mods resource packs.
  */
 public class ModResourcePackCreator implements RepositorySource {
 	public static final String VANILLA = "vanilla";
@@ -71,16 +71,16 @@ public class ModResourcePackCreator implements RepositorySource {
 
 	private final PackType type;
 	private final PackSelectionConfig activationInfo;
-	private final boolean forClientDataPackManager;
+	private final boolean forKnownPacksManager;
 
 	public ModResourcePackCreator(PackType type) {
 		this(type, false);
 	}
 
-	protected ModResourcePackCreator(PackType type, boolean forClientDataPackManager) {
+	protected ModResourcePackCreator(PackType type, boolean forKnownPacksManager) {
 		this.type = type;
-		this.activationInfo = new PackSelectionConfig(!forClientDataPackManager, Pack.Position.TOP, false);
-		this.forClientDataPackManager = forClientDataPackManager;
+		this.activationInfo = new PackSelectionConfig(!forKnownPacksManager, Pack.Position.TOP, false);
+		this.forKnownPacksManager = forKnownPacksManager;
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class ModResourcePackCreator implements RepositorySource {
 			);
 
 			if (profile != null) {
-				if (!forClientDataPackManager) {
+				if (!forKnownPacksManager) {
 					((FabricPack) profile).fabric$setParentsPredicate(parents);
 				}
 

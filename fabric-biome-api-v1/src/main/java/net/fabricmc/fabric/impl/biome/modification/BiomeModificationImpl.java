@@ -109,7 +109,7 @@ public class BiomeModificationImpl {
 		Stopwatch sw = Stopwatch.createStarted();
 
 		// Now that we apply biome modifications inside the MinecraftServer constructor, we should only ever do
-		// this once for a dynamic registry manager. Marking the dynamic registry manager as modified ensures a crash
+		// this once for a RegistryAccess. Marking the RegistryAccess as modified ensures a crash
 		// if the precondition is violated.
 		BiomeModificationMarker modificationTracker = (BiomeModificationMarker) impl;
 		modificationTracker.fabric_markModified();
@@ -159,11 +159,11 @@ public class BiomeModificationImpl {
 				modificationContext.freeze();
 
 				if (modificationContext.shouldRebuildFeatures()) {
-					impl.lookupOrThrow(Registries.LEVEL_STEM).stream().forEach(dimensionOptions -> {
-						dimensionOptions.generator().featuresPerStep = Suppliers.memoize(
+					impl.lookupOrThrow(Registries.LEVEL_STEM).stream().forEach(levelStem -> {
+						levelStem.generator().featuresPerStep = Suppliers.memoize(
 							() -> FeatureSorter.buildFeaturesPerStep(
-									List.copyOf(dimensionOptions.generator().getBiomeSource().possibleBiomes()),
-									biomeEntry -> dimensionOptions.generator().getBiomeGenerationSettings(biomeEntry).features(),
+									List.copyOf(levelStem.generator().getBiomeSource().possibleBiomes()),
+									biomeHolder -> levelStem.generator().getBiomeGenerationSettings(biomeHolder).features(),
 									true
 							)
 						);

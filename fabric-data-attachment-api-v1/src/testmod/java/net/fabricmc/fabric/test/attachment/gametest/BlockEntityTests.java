@@ -40,25 +40,25 @@ public class BlockEntityTests {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
 	@GameTest
-	public void testBlockEntitySync(GameTestHelper context) {
+	public void testBlockEntitySync(GameTestHelper helper) {
 		BlockPos pos = BlockPos.ZERO.above();
 
-		for (Holder<BlockEntityType<?>> entry : BuiltInRegistries.BLOCK_ENTITY_TYPE.asHolderIdMap()) {
-			Block supportBlock = ((BlockEntityTypeAccessor) entry.value()).getBlocks().iterator().next();
+		for (Holder<BlockEntityType<?>> holder : BuiltInRegistries.BLOCK_ENTITY_TYPE.asHolderIdMap()) {
+			Block supportBlock = ((BlockEntityTypeAccessor) holder.value()).getBlocks().iterator().next();
 
-			if (!supportBlock.isEnabled(context.getLevel().enabledFeatures())) {
-				LOGGER.info("Skipped disabled feature {}", entry);
+			if (!supportBlock.isEnabled(helper.getLevel().enabledFeatures())) {
+				LOGGER.info("Skipped disabled feature {}", holder);
 				continue;
 			}
 
-			BlockEntity be = entry.value().create(pos, supportBlock.defaultBlockState());
+			BlockEntity be = holder.value().create(pos, supportBlock.defaultBlockState());
 
 			if (be == null) {
-				LOGGER.info("Couldn't get a block entity for type " + entry);
+				LOGGER.info("Couldn't get a block entity for type " + holder);
 				continue;
 			}
 
-			be.setLevel(context.getLevel());
+			be.setLevel(helper.getLevel());
 			be.setAttached(AttachmentTestMod.PERSISTENT, "test");
 			Packet<ClientGamePacketListener> packet = be.getUpdatePacket();
 
@@ -68,18 +68,18 @@ public class BlockEntityTests {
 			}
 
 			if (!(packet instanceof ClientboundBlockEntityDataPacket)) {
-				LOGGER.warn("Not a BE packet for {}, instead {}", entry, packet);
+				LOGGER.warn("Not a BE packet for {}, instead {}", holder, packet);
 				continue;
 			}
 
-			CompoundTag nbt = ((ClientboundBlockEntityDataPacket) packet).getTag();
+			CompoundTag tag = ((ClientboundBlockEntityDataPacket) packet).getTag();
 
-			if (nbt != null && nbt.contains(AttachmentTarget.NBT_ATTACHMENT_KEY)) {
+			if (tag != null && tag.contains(AttachmentTarget.NBT_ATTACHMENT_KEY)) {
 				// Note: this is a vanilla bug (it called createNbt, instead of the correct createComponentlessNbt)
-				throw context.assertionException("Packet NBT for " + entry + " had persistent data: " + nbt);
+				throw helper.assertionException("Packet NBT for " + holder + " had persistent data: " + tag);
 			}
 		}
 
-		context.succeed();
+		helper.succeed();
 	}
 }

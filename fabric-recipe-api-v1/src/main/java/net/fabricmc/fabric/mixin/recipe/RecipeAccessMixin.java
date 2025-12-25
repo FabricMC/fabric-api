@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.world.item.crafting.RecipeAccess;
 
-import net.fabricmc.fabric.api.recipe.v1.FabricRecipeManager;
+import net.fabricmc.fabric.api.recipe.v1.FabricRecipeAccess;
 
 @Mixin(RecipeAccess.class)
-public interface RecipeAccessMixin extends FabricRecipeManager {
+public interface RecipeAccessMixin extends FabricRecipeAccess {
 }

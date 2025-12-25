@@ -31,12 +31,12 @@ import net.fabricmc.fabric.impl.particle.BlockParticleOptionExtension;
 
 @Mixin(Warden.class)
 abstract class WardenMixin extends Monster implements VibrationSystem {
-	private WardenMixin(EntityType<? extends Monster> entityType, Level world) {
-		super(entityType, world);
+	private WardenMixin(EntityType<? extends Monster> entityType, Level level) {
+		super(entityType, level);
 	}
 
 	@ModifyExpressionValue(method = "clientDiggingParticles", at = @At(value = "NEW", target = "(Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/core/particles/BlockParticleOption;"))
-	private BlockParticleOption modifyBlockStateParticleEffect(BlockParticleOption original) {
+	private BlockParticleOption modifyBlockStateParticleOption(BlockParticleOption original) {
 		((BlockParticleOptionExtension) original).fabric_setBlockPos(getOnPos());
 		return original;
 	}

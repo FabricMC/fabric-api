@@ -88,7 +88,7 @@ public class CustomIngredientSync implements ModInitializer {
 
 		ServerConfigurationNetworking.registerGlobalReceiver(ServerboundCustomIngredientPayload.TYPE, (payload, context) -> {
 			Set<Identifier> supportedCustomIngredients = decodeResponsePayload(payload);
-			((SupportedIngredientsClientConnection) ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
+			((SupportedIngredientsConnection) ((ServerCommonPacketListenerImplAccessor) context.packetListener()).getConnection()).fabric_setSupportedCustomIngredients(supportedCustomIngredients);
 			context.packetListener().completeTask(IngredientSyncTask.KEY);
 		});
 	}

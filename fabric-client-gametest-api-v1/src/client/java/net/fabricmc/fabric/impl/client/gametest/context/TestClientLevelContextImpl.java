@@ -71,7 +71,7 @@ public class TestClientLevelContextImpl implements TestClientLevelContext {
 	}
 
 	private static boolean areChunksRendered(Minecraft client) {
-		ClientLevel world = Objects.requireNonNull(client.level);
-		return ((ClientLevelAccessor) world).getLightUpdateQueue().isEmpty() && client.levelRenderer.hasRenderedAllSections();
+		ClientLevel level = Objects.requireNonNull(client.level);
+		return ((ClientLevelAccessor) level).getLightUpdateQueue().isEmpty() && client.levelRenderer.hasRenderedAllSections();
 	}
 }

@@ -37,10 +37,10 @@ public abstract class IdDispatchCodecMixin<B extends ByteBuf, V, T> implements S
 	public void encode(B byteBuf, V packet, CallbackInfo ci, @Local(ordinal = 1) T packetType, @Local Exception e) {
 		CustomPacketPayload payload = null;
 
-		if (packet instanceof ServerboundCustomPayloadPacket customPayloadC2SPacket) {
-			payload = customPayloadC2SPacket.payload();
-		} else if (packet instanceof ClientboundCustomPayloadPacket customPayloadS2CPacket) {
-			payload = customPayloadS2CPacket.payload();
+		if (packet instanceof ServerboundCustomPayloadPacket customPayloadPacket) {
+			payload = customPayloadPacket.payload();
+		} else if (packet instanceof ClientboundCustomPayloadPacket customPayloadPacket) {
+			payload = customPayloadPacket.payload();
 		}
 
 		if (payload != null && payload.type() != null) {

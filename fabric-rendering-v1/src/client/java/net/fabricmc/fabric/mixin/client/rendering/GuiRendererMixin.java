@@ -51,8 +51,8 @@ import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 
 import net.fabricmc.fabric.impl.client.rendering.GuiRendererExtensions;
-import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRegistryImpl;
-import net.fabricmc.fabric.impl.client.rendering.SpecialGuiElementRendererPool;
+import net.fabricmc.fabric.impl.client.rendering.PictureInPictureRendererPool;
+import net.fabricmc.fabric.impl.client.rendering.PictureInPictureRendererRegistryImpl;
 
 @Mixin(GuiRenderer.class)
 abstract class GuiRendererMixin implements GuiRendererExtensions {
@@ -67,30 +67,30 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 	@Unique
 	private boolean hasFabricInitialized = false;
 	@Unique
-	private final Map<Class<? extends PictureInPictureRenderState>, SpecialGuiElementRendererPool<?>> rendererPools = new HashMap<>();
+	private final Map<Class<? extends PictureInPictureRenderState>, PictureInPictureRendererPool<?>> pipRendererPools = new HashMap<>();
 	@Unique
-	private SubmitNodeCollector orderedRenderCommandQueue = null;
+	private SubmitNodeCollector submitNodeStorage = null;
 
 	@Inject(method = "<init>", at = @At(value = "RETURN"))
-	private void mutableSpecialElementRenderers(GuiRenderState state, MultiBufferSource.BufferSource vertexConsumers, SubmitNodeCollector orderedRenderCommandQueue, FeatureRenderDispatcher renderDispatcher, List list, CallbackInfo ci) {
+	private void mutableSpecialElementRenderers(GuiRenderState state, MultiBufferSource.BufferSource bufferSource, SubmitNodeCollector submitNodeCollector, FeatureRenderDispatcher renderDispatcher, List list, CallbackInfo ci) {
 		this.pictureInPictureRenderers = new IdentityHashMap<>(this.pictureInPictureRenderers);
 	}
 
 	@Override
-	public void fabric_onReady(SubmitNodeStorage entityRenderDispatcher) {
-		this.orderedRenderCommandQueue = entityRenderDispatcher;
-		SpecialGuiElementRegistryImpl.onReady(Minecraft.getInstance(), bufferSource, entityRenderDispatcher, this.pictureInPictureRenderers);
+	public void fabric_onReady(SubmitNodeStorage submitNodeStorage) {
+		this.submitNodeStorage = submitNodeStorage;
+		PictureInPictureRendererRegistryImpl.onReady(Minecraft.getInstance(), bufferSource, submitNodeStorage, this.pictureInPictureRenderers);
 		this.hasFabricInitialized = true;
 	}
 
 	@Inject(method = "preparePictureInPicture", at = @At("HEAD"))
 	private void prePrepareSpecialElements(CallbackInfo ci) {
-		rendererPools.values().forEach(SpecialGuiElementRendererPool::newFrame);
+		pipRendererPools.values().forEach(PictureInPictureRendererPool::newFrame);
 	}
 
 	@Inject(method = "preparePictureInPicture", at = @At("RETURN"))
 	private void postPrepareSpecialElements(CallbackInfo ci) {
-		rendererPools.values().forEach(SpecialGuiElementRendererPool::cleanUpUnusedRenderers);
+		pipRendererPools.values().forEach(PictureInPictureRendererPool::cleanUpUnusedRenderers);
 	}
 
 	@ModifyVariable(method = "preparePictureInPictureState", at = @At("STORE"))
@@ -99,13 +99,13 @@ abstract class GuiRendererMixin implements GuiRendererExtensions {
 			return original;
 		}
 
-		SpecialGuiElementRendererPool<T> rendererPool = (SpecialGuiElementRendererPool<T>) rendererPools.computeIfAbsent(original.getRenderStateClass(), k -> new SpecialGuiElementRendererPool<>());
-		return rendererPool.substitute(original, elementState, Minecraft.getInstance(), bufferSource, Objects.requireNonNull(orderedRenderCommandQueue, "renderDispatcher"));
+		PictureInPictureRendererPool<T> rendererPool = (PictureInPictureRendererPool<T>) pipRendererPools.computeIfAbsent(original.getRenderStateClass(), k -> new PictureInPictureRendererPool<>());
+		return rendererPool.substitute(original, elementState, Minecraft.getInstance(), bufferSource, Objects.requireNonNull(submitNodeStorage, "renderDispatcher"));
 	}
 
 	@Inject(method = "close", at = @At("RETURN"))
 	private void closeRendererPools(CallbackInfo ci) {
-		rendererPools.values().forEach(SpecialGuiElementRendererPool::close);
+		pipRendererPools.values().forEach(PictureInPictureRendererPool::close);
 	}
 
 	@WrapOperation(

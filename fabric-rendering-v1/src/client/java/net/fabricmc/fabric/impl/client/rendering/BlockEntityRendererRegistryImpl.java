@@ -28,8 +28,8 @@ public final class BlockEntityRendererRegistryImpl {
 	private static final HashMap<BlockEntityType<?>, BlockEntityRendererProvider<?, ?>> MAP = new HashMap<>();
 	private static BiConsumer<BlockEntityType<?>, BlockEntityRendererProvider<?, ?>> handler = (type, function) -> MAP.put(type, function);
 
-	public static <E extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererProvider<? super E, ? super S> blockEntityRendererFactory) {
-		handler.accept(blockEntityType, blockEntityRendererFactory);
+	public static <E extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererProvider<? super E, ? super S> blockEntityRendererProvider) {
+		handler.accept(blockEntityType, blockEntityRendererProvider);
 	}
 
 	public static void setup(BiConsumer<BlockEntityType<?>, BlockEntityRendererProvider<?, ?>> vanillaHandler) {

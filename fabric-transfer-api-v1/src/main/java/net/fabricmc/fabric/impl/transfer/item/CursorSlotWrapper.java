@@ -27,13 +27,13 @@ import net.minecraft.world.item.ItemStack;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 
 /**
- * Wrapper around the cursor slot of a screen handler.
+ * Wrapper around the cursor slot of a menu.
  */
 public class CursorSlotWrapper extends SingleStackStorage {
 	private static final Map<AbstractContainerMenu, CursorSlotWrapper> WRAPPERS = new MapMaker().weakValues().makeMap();
 
-	public static CursorSlotWrapper get(AbstractContainerMenu screenHandler) {
-		return WRAPPERS.computeIfAbsent(screenHandler, CursorSlotWrapper::new);
+	public static CursorSlotWrapper get(AbstractContainerMenu menu) {
+		return WRAPPERS.computeIfAbsent(menu, CursorSlotWrapper::new);
 	}
 
 	private final AbstractContainerMenu menu;

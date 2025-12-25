@@ -52,7 +52,7 @@ public final class ClientConfigurationConnectionEvents {
 	});
 
 	/**
-	 * An event called after the ReadyS2CPacket has been received, just before switching to the PLAY state.
+	 * An event called after the ClientboundFinishConfigurationPacket has been received, just before switching to the PLAY state.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */

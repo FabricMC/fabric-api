@@ -40,7 +40,7 @@ import net.minecraft.world.level.storage.LevelStorageSource;
 
 import net.fabricmc.fabric.api.resource.v1.DataResourceStore;
 import net.fabricmc.fabric.impl.resource.FabricDataResourceStoreHolder;
-import net.fabricmc.fabric.impl.resource.pack.BuiltinModResourcePackSource;
+import net.fabricmc.fabric.impl.resource.pack.BuiltinModPackSource;
 import net.fabricmc.fabric.impl.resource.pack.FabricOriginalKnownPacksGetter;
 import net.fabricmc.fabric.impl.resource.pack.ModNioPackResources;
 
@@ -61,8 +61,8 @@ public class MinecraftServerMixin implements DataResourceStore, FabricOriginalKn
 	}
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void init(Thread serverThread, LevelStorageSource.LevelStorageAccess session, PackRepository dataPackManager, WorldStem saveLoader, Proxy proxy, DataFixer dataFixer, Services apiServices, LevelLoadListener chunkLoadProgress, CallbackInfo ci) {
-		this.originalKnownPacks = saveLoader.resourceManager().listPacks().flatMap(pack -> pack.location().knownPackInfo().stream()).toList();
+	private void init(Thread serverThread, LevelStorageSource.LevelStorageAccess storageAccess, PackRepository dataPackManager, WorldStem worldStem, Proxy proxy, DataFixer dataFixer, Services apiServices, LevelLoadListener chunkLoadProgress, CallbackInfo ci) {
+		this.originalKnownPacks = worldStem.resourceManager().listPacks().flatMap(pack -> pack.location().knownPackInfo().stream()).toList();
 	}
 
 	@Redirect(method = "configurePackRepository(Lnet/minecraft/server/packs/repository/PackRepository;Lnet/minecraft/world/level/WorldDataConfiguration;ZZ)Lnet/minecraft/world/level/WorldDataConfiguration;", at = @At(value = "INVOKE", target = "Ljava/util/List;contains(Ljava/lang/Object;)Z"))
@@ -76,7 +76,7 @@ public class MinecraftServerMixin implements DataResourceStore, FabricOriginalKn
 
 		Pack profile = resourcePackManager.getPack(profileId);
 
-		if (profile.getPackSource() instanceof BuiltinModResourcePackSource) {
+		if (profile.getPackSource() instanceof BuiltinModPackSource) {
 			try (PackResources pack = profile.open()) {
 				// Prevents automatic load for built-in data packs provided by mods.
 				return pack instanceof ModNioPackResources modPack && !modPack.getActivationType().isEnabledByDefault();

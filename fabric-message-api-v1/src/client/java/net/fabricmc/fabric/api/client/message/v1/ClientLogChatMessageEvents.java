@@ -65,7 +65,7 @@ public final class ClientLogChatMessageEvents {
 	 *
 	 * <p>Overlay is whether the message will be displayed in the action bar.
 	 * To toggle overlay, return false and call
-	 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean) ClientPlayerEntity.sendMessage(message, overlay)}.
+	 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean) LocalPlayer.displayClientMessage(message, overlay)}.
 	 */
 	public static final Event<AllowGame> ALLOW_GAME = EventFactory.createArrayBacked(AllowGame.class, listeners -> (message, overlay) -> {
 		boolean allow = true;
@@ -154,7 +154,7 @@ public final class ClientLogChatMessageEvents {
 		 * {@link #CHAT_CANCELED} will be triggered instead of {@link #CHAT}.
 		 *
 		 * @param message            	the message received from the server
-		 * @param playerChatMessage     the signed message received from the server (nullable)
+		 * @param playerChatMessage     the player chat message received from the server (nullable)
 		 * @param sender             	the sender of the message (nullable)
 		 * @param bind             		the parameters of the message
 		 * @param timeStamp 			the timestamp when the message was received
@@ -173,7 +173,7 @@ public final class ClientLogChatMessageEvents {
 		 *
 		 * <p>Overlay is whether the message will be displayed in the action bar.
 		 * To toggle overlay, return false and call
-		 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean) ClientPlayerEntity.sendMessage(message, overlay)}.
+		 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean) LocalPlayer.displayClientMessage(message, overlay)}.
 		 *
 		 * @param message the message received from the server
 		 * @param overlay whether the message will be displayed in the action bar
@@ -208,7 +208,7 @@ public final class ClientLogChatMessageEvents {
 		 * {@linkplain #IS_CHAT_ALLOWED chat messages are blocked}.
 		 *
 		 * @param message            	the message received from the server
-		 * @param playerChatMessage     the signed message received from the server (nullable)
+		 * @param playerChatMessage     the player chat message received from the server (nullable)
 		 * @param sender             	the sender of the message (nullable)
 		 * @param bind             		the parameters of the message
 		 * @param timeStamp 			the timestamp when the message was received
@@ -238,7 +238,7 @@ public final class ClientLogChatMessageEvents {
 		 * Called when receiving a chat message is canceled with {@link #IS_CHAT_ALLOWED}.
 		 *
 		 * @param message            	the message received from the server
-		 * @param playerChatMessage     the signed message received from the server (nullable)
+		 * @param playerChatMessage     the player chat message received from the server (nullable)
 		 * @param sender             	the sender of the message (nullable)
 		 * @param bind             		the parameters of the message
 		 * @param timeStamp 			the timestamp when the message was received

@@ -36,23 +36,23 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 public class GuiRendererNonQuadsTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("test", "gui_renderer_non_quads_test"), (context, renderTickCounter) -> {
-			context.pose().pushMatrix();
-			context.pose().rotateAbout(
+		HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath("test", "gui_renderer_non_quads_test"), (graphics, deltaTracker) -> {
+			graphics.pose().pushMatrix();
+			graphics.pose().rotateAbout(
 					(float) Util.getMillis() / 3000,
-					(float) context.guiHeight() / 8,
-					(float) context.guiHeight() / 8
+					(float) graphics.guiHeight() / 8,
+					(float) graphics.guiHeight() / 8
 			);
 
-			context.guiRenderState.submitGuiElement(new CustomTestState(
-					new Matrix3x2f(context.pose()),
-					context.scissorStack.peek(),
-					context.guiHeight() / 8, context.guiHeight() / 8,
-					context.guiHeight() / 8 + 16, context.guiHeight() / 8 + 16,
-					context.guiWidth() / 8, context.guiHeight() / 8
+			graphics.guiRenderState.submitGuiElement(new CustomTestState(
+					new Matrix3x2f(graphics.pose()),
+					graphics.scissorStack.peek(),
+					graphics.guiHeight() / 8, graphics.guiHeight() / 8,
+					graphics.guiHeight() / 8 + 16, graphics.guiHeight() / 8 + 16,
+					graphics.guiWidth() / 8, graphics.guiHeight() / 8
 			));
 
-			context.pose().popMatrix();
+			graphics.pose().popMatrix();
 		});
 	}
 

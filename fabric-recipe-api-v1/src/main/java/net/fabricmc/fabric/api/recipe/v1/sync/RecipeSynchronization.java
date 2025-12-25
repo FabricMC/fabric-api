@@ -56,7 +56,7 @@ public final class RecipeSynchronization {
 	 */
 	public static void synchronizeRecipeSerializer(RecipeSerializer<?> serializer) {
 		Objects.requireNonNull(serializer, "serializer can't be null!");
-		Objects.requireNonNull(serializer.streamCodec(), "PacketCodec can't be null!");
+		Objects.requireNonNull(serializer.streamCodec(), "StreamCodec can't be null!");
 
 		RecipeSyncImpl.addSynchronizedSerializer(serializer);
 	}

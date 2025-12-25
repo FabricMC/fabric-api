@@ -36,9 +36,9 @@ public class CustomColorResolverTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		ColorResolverRegistry.register(TEST_COLOR_RESOLVER);
 
-		ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> {
-			if (world != null && pos != null) {
-				return world.getBlockTint(pos, TEST_COLOR_RESOLVER);
+		ColorProviderRegistry.BLOCK.register((state, level, pos, tintIndex) -> {
+			if (level != null && pos != null) {
+				return level.getBlockTint(pos, TEST_COLOR_RESOLVER);
 			} else {
 				return -1;
 			}

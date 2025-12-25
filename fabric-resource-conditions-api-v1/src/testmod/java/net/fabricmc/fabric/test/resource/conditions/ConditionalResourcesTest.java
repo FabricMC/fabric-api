@@ -37,8 +37,8 @@ public class ConditionalResourcesTest {
 	}
 
 	@GameTest
-	public void conditionalRecipes(GameTestHelper context) {
-		RecipeManager manager = context.getLevel().recipeAccess();
+	public void conditionalRecipes(GameTestHelper helper) {
+		RecipeManager manager = helper.getLevel().recipeAccess();
 
 		if (manager.byKey(ResourceKey.create(Registries.RECIPE, id("not_loaded"))).isPresent()) {
 			throw new AssertionError("not_loaded recipe should not have been loaded.");
@@ -71,15 +71,15 @@ public class ConditionalResourcesTest {
 		long loadedRecipes = manager.getRecipes().stream().filter(r -> r.id().identifier().getNamespace().equals(MOD_ID)).count();
 		if (loadedRecipes != 5) throw new AssertionError("Unexpected loaded recipe count: " + loadedRecipes);
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void conditionalPredicates(GameTestHelper context) {
+	public void conditionalPredicates(GameTestHelper helper) {
 		// Predicates are internally handled as a kind of loot data,
 		// hence the yarn name "loot condition".
 
-		HolderGetter.Provider registries = context.getLevel().getServer().reloadableRegistries().lookup();
+		HolderGetter.Provider registries = helper.getLevel().getServer().reloadableRegistries().lookup();
 
 		if (registries.get(ResourceKey.create(Registries.PREDICATE, id("loaded"))).isEmpty()) {
 			throw new AssertionError("loaded predicate should have been loaded.");
@@ -89,12 +89,12 @@ public class ConditionalResourcesTest {
 			throw new AssertionError("not_loaded predicate should not have been loaded.");
 		}
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void conditionalLootTables(GameTestHelper context) {
-		ReloadableServerRegistries.Holder registries = context.getLevel().getServer().reloadableRegistries();
+	public void conditionalLootTables(GameTestHelper helper) {
+		ReloadableServerRegistries.Holder registries = helper.getLevel().getServer().reloadableRegistries();
 
 		if (registries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE, id("blocks/loaded"))) == LootTable.EMPTY) {
 			throw new AssertionError("loaded loot table should have been loaded.");
@@ -104,12 +104,12 @@ public class ConditionalResourcesTest {
 			throw new AssertionError("not_loaded loot table should not have been loaded.");
 		}
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void conditionalDynamicRegistry(GameTestHelper context) {
-		Registry<BannerPattern> registry = context.getLevel().registryAccess().lookupOrThrow(Registries.BANNER_PATTERN);
+	public void conditionalDynamicRegistry(GameTestHelper helper) {
+		Registry<BannerPattern> registry = helper.getLevel().registryAccess().lookupOrThrow(Registries.BANNER_PATTERN);
 
 		if (registry.getValue(id("loaded")) == null) {
 			throw new AssertionError("loaded banner pattern should have been loaded.");
@@ -119,12 +119,12 @@ public class ConditionalResourcesTest {
 			throw new AssertionError("not_loaded banner pattern should not have been loaded.");
 		}
 
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void conditionalOverlays(GameTestHelper context) {
-		HolderGetter.Provider registries = context.getLevel().getServer().reloadableRegistries().lookup();
+	public void conditionalOverlays(GameTestHelper helper) {
+		HolderGetter.Provider registries = helper.getLevel().getServer().reloadableRegistries().lookup();
 
 		if (registries.get(ResourceKey.create(Registries.PREDICATE, id("do_overlay"))).isEmpty()) {
 			throw new AssertionError("do_overlay predicate should have been overlayed.");
@@ -134,6 +134,6 @@ public class ConditionalResourcesTest {
 			throw new AssertionError("dont_overlay predicate should not have been overlayed.");
 		}
 
-		context.succeed();
+		helper.succeed();
 	}
 }

@@ -77,12 +77,12 @@ public final class FabricEntityDataRegistryImpl {
 			if (EXTERNAL_MODDED_HANDLERS.contains(handler)) continue;
 
 			EXTERNAL_MODDED_HANDLERS.add(handler);
-			LOGGER.warn("Tracked data handler {} is not managed by vanilla or Fabric API; it may be prone to desynchronization!", handler);
+			LOGGER.warn("Entity data serializer {} is not managed by vanilla or Fabric API; it may be prone to desynchronization!", handler);
 		}
 	}
 
 	/**
-	 * Reorders handlers in {@code TrackedDataHandlerRegistry#DATA_HANDLERS} to have a consistent order between client and server.
+	 * Reorders handlers in {@code EntityDataSerializers#SERIALIZERS} to have a consistent order between client and server.
 	 *
 	 * <p>The order used is as follows:
 	 *
@@ -94,7 +94,7 @@ public final class FabricEntityDataRegistryImpl {
 	*/
 	private static void reorderHandlers() {
 		CrudeIncrementalIntIdentityHashBiMap<EntityDataSerializer<?>> dataHandlers = EntityDataSerializersAccessor.fabric_getDataHandlers();
-		LOGGER.debug("Reordering tracked data handlers containing {} entries", dataHandlers.size());
+		LOGGER.debug("Reordering entity data serializers containing {} entries", dataHandlers.size());
 
 		// Reset the map so that handlers can be added back in a new order
 		dataHandlers.clear();
@@ -114,17 +114,17 @@ public final class FabricEntityDataRegistryImpl {
 			dataHandlers.add(handler);
 		}
 
-		LOGGER.debug("Finished reordering tracked data handlers containing {} entries", dataHandlers.size());
+		LOGGER.debug("Finished reordering entity data serializer containing {} entries", dataHandlers.size());
 	}
 
 	public static void register(Identifier id, EntityDataSerializer<?> handler) {
-		Objects.requireNonNull(id, "Tracked data handler ID cannot be null!");
-		Objects.requireNonNull(handler, "Tracked data handler cannot be null!");
+		Objects.requireNonNull(id, "Entity data serializer ID cannot be null!");
+		Objects.requireNonNull(handler, "Entity data serializer cannot be null!");
 
 		storeExternalHandlers();
 
 		if (VANILLA_HANDLERS.contains(handler) || EXTERNAL_MODDED_HANDLERS.contains(handler)) {
-			throw new IllegalArgumentException("Cannot register tracked data handler previously added via TrackedDataHandlerRegistry.register");
+			throw new IllegalArgumentException("Cannot register entity data serializer previously added via EntityDataSerializers.registerSerializer");
 		}
 
 		if (handlerRegistry == null) {
@@ -145,7 +145,7 @@ public final class FabricEntityDataRegistryImpl {
 
 	@Nullable
 	public static EntityDataSerializer<?> get(Identifier id) {
-		Objects.requireNonNull(id, "Tracked data handler ID cannot be null!");
+		Objects.requireNonNull(id, "Entity data serializer ID cannot be null!");
 
 		if (handlerRegistry == null) {
 			return null;
@@ -156,7 +156,7 @@ public final class FabricEntityDataRegistryImpl {
 
 	@Nullable
 	public static Identifier getId(EntityDataSerializer<?> handler) {
-		Objects.requireNonNull(handler, "Tracked data handler cannot be null!");
+		Objects.requireNonNull(handler, "Entity data serializer cannot be null!");
 
 		if (handlerRegistry == null) {
 			return null;

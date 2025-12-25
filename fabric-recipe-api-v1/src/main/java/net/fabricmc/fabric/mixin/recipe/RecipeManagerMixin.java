@@ -36,12 +36,12 @@ import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-import net.fabricmc.fabric.api.recipe.v1.FabricServerRecipeManager;
+import net.fabricmc.fabric.api.recipe.v1.FabricRecipeManager;
 import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
 import net.fabricmc.fabric.impl.recipe.sync.SynchronizedRecipesImpl;
 
 @Mixin(RecipeManager.class)
-public abstract class RecipeManagerMixin implements FabricServerRecipeManager {
+public abstract class RecipeManagerMixin implements FabricRecipeManager {
 	@Shadow
 	private RecipeMap recipes;
 	@Unique

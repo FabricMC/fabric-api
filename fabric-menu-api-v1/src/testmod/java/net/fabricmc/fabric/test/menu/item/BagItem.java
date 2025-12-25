@@ -35,11 +35,11 @@ public class BagItem extends Item {
 	@Override
 	public InteractionResult use(Level level, Player user, InteractionHand hand) {
 		ItemStack stack = user.getItemInHand(hand);
-		user.openMenu(createMenuFactory(stack));
+		user.openMenu(createMenuProvider(stack));
 		return InteractionResult.SUCCESS;
 	}
 
-	private MenuProvider createMenuFactory(ItemStack stack) {
+	private MenuProvider createMenuProvider(ItemStack stack) {
 		return new SimpleMenuProvider((containerId, inventory, player) -> {
 			return new BagMenu(containerId, inventory, new BagInventory(stack));
 		}, stack.getHoverName());

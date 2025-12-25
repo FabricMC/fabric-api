@@ -32,16 +32,16 @@ public class UseItemTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		UseItemCallback.EVENT.register((player, world, hand) -> {
-			LOGGER.info("UseItemCallback: before hook (client-side = %s)".formatted(world.isClientSide()));
+		UseItemCallback.EVENT.register((player, level, hand) -> {
+			LOGGER.info("UseItemCallback: before hook (client-side = %s)".formatted(level.isClientSide()));
 			return InteractionResult.PASS;
 		});
 
 		// If a player is holding a blaze rod and right-clicks spawn a fireball!
-		UseItemCallback.EVENT.register((player, world, hand) -> {
+		UseItemCallback.EVENT.register((player, level, hand) -> {
 			if (!player.isSpectator()) {
 				if (player.getItemInHand(hand).is(Items.BLAZE_ROD)) {
-					if (!world.isClientSide()) {
+					if (!level.isClientSide()) {
 						player.level().addFreshEntity(new LargeFireball(player.level(), player, new Vec3(0, 0, 0), 0));
 					}
 
@@ -52,8 +52,8 @@ public class UseItemTests implements ModInitializer {
 			return InteractionResult.PASS;
 		});
 
-		UseItemCallback.EVENT.register((player, world, hand) -> {
-			LOGGER.info("UseItemCallback: after hook (client-side = %s)".formatted(world.isClientSide()));
+		UseItemCallback.EVENT.register((player, level, hand) -> {
+			LOGGER.info("UseItemCallback: after hook (client-side = %s)".formatted(level.isClientSide()));
 			return InteractionResult.PASS;
 		});
 	}

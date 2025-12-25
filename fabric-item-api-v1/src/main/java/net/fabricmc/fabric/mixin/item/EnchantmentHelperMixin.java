@@ -33,7 +33,7 @@ abstract class EnchantmentHelperMixin {
 			method = "lambda$getAvailableEnchantmentResults$0",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/Enchantment;isPrimaryItem(Lnet/minecraft/world/item/ItemStack;)Z")
 	)
-	private static boolean useCustomEnchantingChecks(Enchantment instance, ItemStack stack, ItemStack itemStack, boolean bl, Holder<Enchantment> registryEntry) {
-		return stack.canBeEnchantedWith(registryEntry, EnchantingContext.PRIMARY);
+	private static boolean useCustomEnchantingChecks(Enchantment instance, ItemStack stack, ItemStack itemStack, boolean bl, Holder<Enchantment> holder) {
+		return stack.canBeEnchantedWith(holder, EnchantingContext.PRIMARY);
 	}
 }

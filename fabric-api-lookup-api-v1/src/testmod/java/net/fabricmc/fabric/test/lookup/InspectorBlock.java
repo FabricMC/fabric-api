@@ -38,11 +38,11 @@ public class InspectorBlock extends Block {
 	}
 
 	@Override
-	public InteractionResult useItemOn(ItemStack stack, BlockState blockState, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+	public InteractionResult useItemOn(ItemStack stack, BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
 		Inspectable inspectable = FabricItemApiLookupTest.INSPECTABLE.find(stack, null);
 
 		if (inspectable != null) {
-			if (!world.isClientSide()) {
+			if (!level.isClientSide()) {
 				player.displayClientMessage(inspectable.inspect(), true);
 			}
 
@@ -53,12 +53,12 @@ public class InspectorBlock extends Block {
 	}
 
 	@Override
-	public void stepOn(Level world, BlockPos pos, BlockState state, Entity entity) {
-		if (!world.isClientSide()) {
+	public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
+		if (!level.isClientSide()) {
 			Inspectable inspectable = FabricEntityApiLookupTest.INSPECTABLE.find(entity, null);
 
 			if (inspectable != null) {
-				for (ServerPlayer player : world.getServer().getPlayerList().getPlayers()) {
+				for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
 					player.displayClientMessage(inspectable.inspect(), true);
 				}
 			}

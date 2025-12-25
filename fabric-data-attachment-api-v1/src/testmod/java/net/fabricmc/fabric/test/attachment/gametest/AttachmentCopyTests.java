@@ -51,8 +51,8 @@ public class AttachmentCopyTests {
 	);
 
 	@GameTest
-	public void testCrossWorldTeleport(GameTestHelper context) {
-		MinecraftServer server = context.getLevel().getServer();
+	public void testCrossLevelTeleport(GameTestHelper helper) {
+		MinecraftServer server = helper.getLevel().getServer();
 		ServerLevel overworld = server.overworld();
 		ServerLevel end = server.getLevel(Level.END);
 		// using overworld and end to avoid portal code related to the nether
@@ -64,47 +64,47 @@ public class AttachmentCopyTests {
 
 		Vec3 spawnPos = entity.adjustSpawnLocation(end, end.getRespawnData().pos()).getBottomCenter();
 		Entity moved = entity.teleport(new TeleportTransition(end, spawnPos, Vec3.ZERO, 0.0F, 0.0F, TeleportTransition.DO_NOTHING));
-		if (moved == null) throw context.assertionException("Cross-world teleportation failed");
+		if (moved == null) throw helper.assertionException("Cross-level teleportation failed");
 
 		IntSupplier attached1 = moved.getAttached(DUMMY);
 		IntSupplier attached2 = moved.getAttached(COPY_ON_DEATH);
 
 		if (attached1 == null || attached1.getAsInt() != 10 || attached2 == null || attached2.getAsInt() != 10) {
-			throw context.assertionException("Attachment copying failed during cross-world teleportation");
+			throw helper.assertionException("Attachment copying failed during cross-level teleportation");
 		}
 
 		moved.discard();
-		context.succeed();
+		helper.succeed();
 	}
 
 	@GameTest
-	public void testMobConversion(GameTestHelper context) {
-		Zombie mob = context.spawn(EntityType.ZOMBIE, BlockPos.ZERO);
+	public void testMobConversion(GameTestHelper helper) {
+		Zombie mob = helper.spawn(EntityType.ZOMBIE, BlockPos.ZERO);
 		mob.setAttached(DUMMY, () -> 42);
 		mob.setAttached(COPY_ON_DEATH, () -> 42);
 
-		ZombieAccessor zombieEntityAccessor = (ZombieAccessor) mob;
-		zombieEntityAccessor.invokeConvertTo(context.getLevel(), EntityType.DROWNED);
-		List<Drowned> drowned = context.getEntities(EntityType.DROWNED);
+		ZombieAccessor zombieAccessor = (ZombieAccessor) mob;
+		zombieAccessor.invokeConvertTo(helper.getLevel(), EntityType.DROWNED);
+		List<Drowned> drowned = helper.getEntities(EntityType.DROWNED);
 
 		if (drowned.size() != 1) {
-			throw context.assertionException("Conversion failed");
+			throw helper.assertionException("Conversion failed");
 		}
 
 		Drowned converted = drowned.getFirst();
-		if (converted == null) throw context.assertionException("Conversion failed");
+		if (converted == null) throw helper.assertionException("Conversion failed");
 
 		if (converted.hasAttached(DUMMY)) {
-			throw context.assertionException("Attachment shouldn't have been copied on mob conversion");
+			throw helper.assertionException("Attachment shouldn't have been copied on mob conversion");
 		}
 
 		IntSupplier attached = converted.getAttached(COPY_ON_DEATH);
 
 		if (attached == null || attached.getAsInt() != 42) {
-			throw context.assertionException("Attachment copying failed during mob conversion");
+			throw helper.assertionException("Attachment copying failed during mob conversion");
 		}
 
 		converted.discard();
-		context.succeed();
+		helper.succeed();
 	}
 }

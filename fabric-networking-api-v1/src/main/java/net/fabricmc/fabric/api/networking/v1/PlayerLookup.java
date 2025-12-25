@@ -112,8 +112,8 @@ public final class PlayerLookup {
 		ChunkSource manager = entity.level().getChunkSource();
 
 		if (manager instanceof ServerChunkCache) {
-			ChunkMap chunkLoadingManager = ((ServerChunkCache) manager).chunkMap;
-			EntityTrackerAccessor tracker = ((ChunkMapAccessor) chunkLoadingManager).getEntityMap().get(entity.getId());
+			ChunkMap chunkMap = ((ServerChunkCache) manager).chunkMap;
+			EntityTrackerAccessor tracker = ((ChunkMapAccessor) chunkMap).getEntityMap().get(entity.getId());
 
 			// return an immutable collection to guard against accidental removals.
 			if (tracker != null) {
@@ -139,7 +139,7 @@ public final class PlayerLookup {
 
 		//noinspection ConstantConditions - IJ intrinsics don't know hasLevel == true will result in no null
 		if (!blockEntity.hasLevel() || blockEntity.getLevel().isClientSide()) {
-			throw new IllegalArgumentException("Only supported on server worlds!");
+			throw new IllegalArgumentException("Only supported on server levels!");
 		}
 
 		return tracking((ServerLevel) blockEntity.getLevel(), blockEntity.getBlockPos());

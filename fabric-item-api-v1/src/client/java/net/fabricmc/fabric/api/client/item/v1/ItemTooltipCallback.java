@@ -42,5 +42,5 @@ public interface ItemTooltipCallback {
 	 *
 	 * @param lines the list containing the lines of text displayed on the stack's tooltip
 	 */
-	void getTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipFlag tooltipType, List<Component> lines);
+	void getTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> lines);
 }

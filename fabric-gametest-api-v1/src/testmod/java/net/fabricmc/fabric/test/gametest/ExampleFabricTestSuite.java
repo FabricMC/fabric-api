@@ -25,18 +25,18 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class ExampleFabricTestSuite {
 	@GameTest(structure = "fabric-gametest-api-v1-testmod:exampletestsuite.diamond")
-	public void diamond(GameTestHelper context) {
+	public void diamond(GameTestHelper helper) {
 		// Nothing to do as the structure placed the block.
-		context.succeedWhen(() ->
-				context.assertBlock(new BlockPos(0, 1, 0), (block) -> block == Blocks.DIAMOND_BLOCK, (b) -> Component.literal("Expect block to be diamond"))
+		helper.succeedWhen(() ->
+				helper.assertBlock(new BlockPos(0, 1, 0), (block) -> block == Blocks.DIAMOND_BLOCK, (b) -> Component.literal("Expect block to be diamond"))
 		);
 	}
 
 	@GameTest
-	public void noStructure(GameTestHelper context) {
-		context.setBlock(0, 1, 0, Blocks.DIAMOND_BLOCK);
-		context.succeedWhen(() ->
-				context.assertBlock(new BlockPos(0, 1, 0), (block) -> block == Blocks.DIAMOND_BLOCK, (b) -> Component.literal("Expect block to be diamond"))
+	public void noStructure(GameTestHelper helper) {
+		helper.setBlock(0, 1, 0, Blocks.DIAMOND_BLOCK);
+		helper.succeedWhen(() ->
+				helper.assertBlock(new BlockPos(0, 1, 0), (block) -> block == Blocks.DIAMOND_BLOCK, (b) -> Component.literal("Expect block to be diamond"))
 		);
 	}
 }

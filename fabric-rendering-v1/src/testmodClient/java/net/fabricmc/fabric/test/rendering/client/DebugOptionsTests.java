@@ -25,11 +25,11 @@ import net.fabricmc.api.ClientModInitializer;
 public class DebugOptionsTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		DebugScreenEntries.register(Identifier.fromNamespaceAndPath("fabric-rendering", "example"), (lines, world, clientChunk, chunk) -> {
+		DebugScreenEntries.register(Identifier.fromNamespaceAndPath("fabric-rendering", "example"), (lines, level, clientChunk, chunk) -> {
 			lines.addLine("Very important debug information");
 		});
 
-		DebugScreenEntry nope = (lines, world, clientChunk, chunk) -> {
+		DebugScreenEntry nope = (lines, level, clientChunk, chunk) -> {
 		};
 
 		// Test sorting
