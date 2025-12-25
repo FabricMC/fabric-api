@@ -18,19 +18,19 @@ package net.fabricmc.fabric.impl.transfer.context;
 
 import net.minecraft.world.entity.player.Player;
 
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class CreativeInteractionContainerItemContext extends ConstantContainerItemContext {
-	private final InventoryStorage playerInventory;
+	private final PlayerInventoryStorage playerInventory;
 
 	public CreativeInteractionContainerItemContext(ItemVariant initialVariant, long initialAmount, Player player) {
 		super(initialVariant, initialAmount);
 
-		this.playerInventory = InventoryStorage.of(player);
+		this.playerInventory = PlayerInventoryStorage.of(player);
 	}
 
 	@Override

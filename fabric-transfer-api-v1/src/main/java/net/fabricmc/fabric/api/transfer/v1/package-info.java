@@ -60,7 +60,7 @@
  *
  * <p>The lookup already provides compatibility with vanilla inventories, however it may sometimes be interesting to use
  * {@link net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage ContainerStorage} or
- * {@link net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage InventoryStorage} when interaction with
+ * {@link net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage InventoryStorage} when interaction with
  * {@link net.minecraft.world.Container Container}-based APIs is required.
  *
  * <h2>{@code ContainerItemContext}</h2>

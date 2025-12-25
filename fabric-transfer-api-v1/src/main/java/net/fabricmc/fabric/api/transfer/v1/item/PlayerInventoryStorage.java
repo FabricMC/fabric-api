@@ -42,19 +42,19 @@ import net.fabricmc.fabric.impl.transfer.item.CursorSlotWrapper;
 @ApiStatus.NonExtendable
 // TODO: Consider explicitly syncing stacks by sending a ClientboundContainerSetSlotPacket if that proves to be necessary.
 // TODO: Vanilla doesn't seem to be doing it reliably, so we ignore it for now.
-public interface InventoryStorage extends ContainerStorage {
+public interface PlayerInventoryStorage extends ContainerStorage {
 	/**
 	 * Return an instance for the passed player's inventory.
 	 */
-	static InventoryStorage of(Player player) {
+	static PlayerInventoryStorage of(Player player) {
 		return of(player.getInventory());
 	}
 
 	/**
 	 * Return an instance for the passed player inventory.
 	 */
-	static InventoryStorage of(Inventory playerInventory) {
-		return (InventoryStorage) ContainerStorage.of(playerInventory, null);
+	static PlayerInventoryStorage of(Inventory playerInventory) {
+		return (PlayerInventoryStorage) ContainerStorage.of(playerInventory, null);
 	}
 
 	/**

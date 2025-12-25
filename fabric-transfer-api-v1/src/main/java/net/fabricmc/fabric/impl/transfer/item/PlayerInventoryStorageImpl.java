@@ -23,7 +23,7 @@ import java.util.Objects;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
@@ -32,11 +32,11 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
-class InventoryStorageImpl extends ContainerStorageImpl implements InventoryStorage {
+class PlayerInventoryStorageImpl extends ContainerStorageImpl implements PlayerInventoryStorage {
 	private final DroppedStacks droppedStacks;
 	private final Inventory inventory;
 
-	InventoryStorageImpl(Inventory inventory) {
+	PlayerInventoryStorageImpl(Inventory inventory) {
 		super(inventory);
 		this.droppedStacks = new DroppedStacks();
 		this.inventory = inventory;

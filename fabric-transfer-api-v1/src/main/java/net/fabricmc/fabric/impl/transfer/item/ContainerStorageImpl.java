@@ -56,7 +56,7 @@ public class ContainerStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 	public static ContainerStorage of(Container inventory, @Nullable Direction direction) {
 		ContainerStorageImpl storage = WRAPPERS.computeIfAbsent(inventory, inv -> {
 			if (inv instanceof Inventory playerInventory) {
-				return new InventoryStorageImpl(playerInventory);
+				return new PlayerInventoryStorageImpl(playerInventory);
 			} else {
 				return new ContainerStorageImpl(inv);
 			}
