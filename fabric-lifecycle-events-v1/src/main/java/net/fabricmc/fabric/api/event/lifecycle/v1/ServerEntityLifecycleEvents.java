@@ -34,7 +34,7 @@ public final class ServerEntityLifecycleEvents {
 	 *
 	 * <p>When this event is called, the entity is already in the level.
 	 */
-	public static final Event<Load> ENTITY_LOAD = EventFactory.createArrayBacked(ServerEntityLifecycleEvents.Load.class, callbacks -> (entity, level) -> {
+	public static final Event<Load> ENTITY_LOAD = EventFactory.createArrayBacked(Load.class, callbacks -> (entity, level) -> {
 		for (Load callback : callbacks) {
 			callback.onLoad(entity, level);
 		}
@@ -45,7 +45,7 @@ public final class ServerEntityLifecycleEvents {
 	 *
 	 * <p>This event is called before the entity is removed from the level.
 	 */
-	public static final Event<Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerEntityLifecycleEvents.Unload.class, callbacks -> (entity, level) -> {
+	public static final Event<Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(Unload.class, callbacks -> (entity, level) -> {
 		for (Unload callback : callbacks) {
 			callback.onUnload(entity, level);
 		}
@@ -57,7 +57,7 @@ public final class ServerEntityLifecycleEvents {
 	 * <p>This event is also called when the entity joins the level.
 	 * A change in equipment is determined by {@link ItemStack#matches(ItemStack, ItemStack)}.
 	 */
-	public static final Event<EquipmentChange> EQUIPMENT_CHANGE = EventFactory.createArrayBacked(ServerEntityLifecycleEvents.EquipmentChange.class, callbacks -> (livingEntity, equipmentSlot, previous, next) -> {
+	public static final Event<EquipmentChange> EQUIPMENT_CHANGE = EventFactory.createArrayBacked(EquipmentChange.class, callbacks -> (livingEntity, equipmentSlot, previous, next) -> {
 		for (EquipmentChange callback : callbacks) {
 			callback.onChange(livingEntity, equipmentSlot, previous, next);
 		}

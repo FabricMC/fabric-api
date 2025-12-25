@@ -31,7 +31,7 @@ public final class ClientEntityLifecycleEvents {
 	 *
 	 * <p>When this event is called, the chunk is already in the level.
 	 */
-	public static final Event<Load> ENTITY_LOAD = EventFactory.createArrayBacked(ClientEntityLifecycleEvents.Load.class, callbacks -> (entity, level) -> {
+	public static final Event<Load> ENTITY_LOAD = EventFactory.createArrayBacked(Load.class, callbacks -> (entity, level) -> {
 		for (Load callback : callbacks) {
 			callback.onLoad(entity, level);
 		}
@@ -42,7 +42,7 @@ public final class ClientEntityLifecycleEvents {
 	 *
 	 * <p>This event is called before the entity is unloaded from the level.
 	 */
-	public static final Event<Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientEntityLifecycleEvents.Unload.class, callbacks -> (entity, level) -> {
+	public static final Event<Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(Unload.class, callbacks -> (entity, level) -> {
 		for (Unload callback : callbacks) {
 			callback.onUnload(entity, level);
 		}

@@ -32,7 +32,7 @@ public final class ClientBlockEntityLifecycleEvents {
 	 * <p>When this event is called, the block entity is already in the level.
 	 * However, its data might not be loaded yet, so don't rely on it.
 	 */
-	public static final Event<Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ClientBlockEntityLifecycleEvents.Load.class, callbacks -> (blockEntity, level) -> {
+	public static final Event<Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(Load.class, callbacks -> (blockEntity, level) -> {
 		for (Load callback : callbacks) {
 			callback.onLoad(blockEntity, level);
 		}
@@ -43,7 +43,7 @@ public final class ClientBlockEntityLifecycleEvents {
 	 *
 	 * <p>When this event is called, the block entity is still present on the world.
 	 */
-	public static final Event<Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientBlockEntityLifecycleEvents.Unload.class, callbacks -> (blockEntity, level) -> {
+	public static final Event<Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(Unload.class, callbacks -> (blockEntity, level) -> {
 		for (Unload callback : callbacks) {
 			callback.onUnload(blockEntity, level);
 		}

@@ -31,7 +31,7 @@ public final class ClientChunkLifecycleEvents {
 	 *
 	 * <p>When this event is called, the chunk is already in the level.
 	 */
-	public static final Event<Load> CHUNK_LOAD = EventFactory.createArrayBacked(ClientChunkLifecycleEvents.Load.class, callbacks -> (clientLevel, chunk) -> {
+	public static final Event<Load> CHUNK_LOAD = EventFactory.createArrayBacked(Load.class, callbacks -> (clientLevel, chunk) -> {
 		for (Load callback : callbacks) {
 			callback.onChunkLoad(clientLevel, chunk);
 		}
@@ -42,7 +42,7 @@ public final class ClientChunkLifecycleEvents {
 	 *
 	 * <p>When this event is called, the chunk is still present in the level.
 	 */
-	public static final Event<Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ClientChunkLifecycleEvents.Unload.class, callbacks -> (clientLevel, chunk) -> {
+	public static final Event<Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(Unload.class, callbacks -> (clientLevel, chunk) -> {
 		for (Unload callback : callbacks) {
 			callback.onChunkUnload(clientLevel, chunk);
 		}
