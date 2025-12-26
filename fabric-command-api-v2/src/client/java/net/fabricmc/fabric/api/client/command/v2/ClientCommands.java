@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
  * <p>Client-sided commands are fully executed on the client,
  * so players can use them in both singleplayer and multiplayer.
  *
- * <p>Registrations can be done in handlers for {@link ClientCommandsRegistrationCallback#EVENT}
+ * <p>Registrations can be done in handlers for {@link ClientCommandRegistrationCallback#EVENT}
  * (See example below.)
  *
  * <p>The commands are run on the client game thread by default.

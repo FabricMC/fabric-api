@@ -171,7 +171,7 @@ public abstract class CreativeModeInventoryScreenMixin extends AbstractContainer
 	}
 
 	@Override
-	public List<CreativeModeTab> getCreativeModeTabsOnPage(int page) {
+	public List<CreativeModeTab> getTabsOnPage(int page) {
 		return CreativeModeTabs.tabs()
 				.stream()
 				.filter(creativeModeTab -> getPage(creativeModeTab) == page)
@@ -187,12 +187,12 @@ public abstract class CreativeModeInventoryScreenMixin extends AbstractContainer
 	}
 
 	@Override
-	public CreativeModeTab getSelectedCreativeModeTab() {
+	public CreativeModeTab getSelectedTab() {
 		return selectedTab;
 	}
 
 	@Override
-	public boolean setSelectedCreativeModeTab(CreativeModeTab creativeModeTab) {
+	public boolean setSelectedTab(CreativeModeTab creativeModeTab) {
 		Objects.requireNonNull(creativeModeTab, "creativeModeTab");
 
 		if (selectedTab == creativeModeTab) {

@@ -19,13 +19,13 @@ package net.fabricmc.fabric.test.networking.client;
 import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandsRegistrationCallback;
 
 public class DisconnectScreenTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
 				dispatcher.register(ClientCommands.literal("disconnect_screen_test").executes(context -> {
 					StringBuilder builder = new StringBuilder("A very long disconnect reason:");
 

@@ -32,8 +32,8 @@ import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.network.chat.Component;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandsRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
@@ -47,7 +47,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
 			dispatcher.register(ClientCommands.literal("test_client_command").executes(context -> {
 				context.getSource().sendFeedback(Component.literal("This is a client command!"));
 

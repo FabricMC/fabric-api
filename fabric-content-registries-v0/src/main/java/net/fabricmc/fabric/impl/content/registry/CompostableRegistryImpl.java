@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.ComposterBlock;
 
 import net.fabricmc.fabric.api.registry.CompostableRegistry;
 
-public class CompostableRegistryRegistryImpl implements CompostableRegistry {
+public class CompostableRegistryImpl implements CompostableRegistry {
 	@Override
 	public Float get(ItemLike item) {
 		return ComposterBlock.COMPOSTABLES.getOrDefault(item.asItem(), 0.0F);

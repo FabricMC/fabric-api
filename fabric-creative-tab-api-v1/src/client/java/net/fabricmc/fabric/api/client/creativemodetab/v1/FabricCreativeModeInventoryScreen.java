@@ -71,7 +71,7 @@ public interface FabricCreativeModeInventoryScreen {
 	/**
 	 * Returns an ordered list containing the creative mode tabs on the requested page.
 	 */
-	default List<CreativeModeTab> getCreativeModeTabsOnPage(int page) {
+	default List<CreativeModeTab> getTabsOnPage(int page) {
 		throw new AssertionError("Implemented by mixin");
 	}
 
@@ -101,7 +101,7 @@ public interface FabricCreativeModeInventoryScreen {
 	 *
 	 * @return the currently selected {@link CreativeModeTab}
 	 */
-	default CreativeModeTab getSelectedCreativeModeTab() {
+	default CreativeModeTab getSelectedTab() {
 		throw new AssertionError("Implemented by mixin");
 	}
 
@@ -111,7 +111,7 @@ public interface FabricCreativeModeInventoryScreen {
 	 * @param creativeModeTab the {@link CreativeModeTab} to select
 	 * @return true if the tab was successfully selected
 	 */
-	default boolean setSelectedCreativeModeTab(CreativeModeTab creativeModeTab) {
+	default boolean setSelectedTab(CreativeModeTab creativeModeTab) {
 		throw new AssertionError("Implemented by mixin");
 	}
 }

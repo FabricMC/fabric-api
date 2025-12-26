@@ -38,8 +38,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandsRegistrationCallback;
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteSet;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleGroupRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
@@ -58,7 +58,7 @@ public class ParticleGroupRegistryTests implements ClientModInitializer {
 		ParticleGroupRegistry.register(TEST_PARTICLE_TEXTURE_SHEET, TestParticleGroup::new);
 		ParticleGroupRegistry.registerOrdering(TEST_PARTICLE_TEXTURE_SHEET, ParticleRenderType.ITEM_PICKUP);
 
-		ClientCommandsRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
 				dispatcher.register(ClientCommands.literal("custom_particles").executes(context -> {
 					ClientLevel level = Minecraft.getInstance().level;
 					RandomSource random = level.getRandom();

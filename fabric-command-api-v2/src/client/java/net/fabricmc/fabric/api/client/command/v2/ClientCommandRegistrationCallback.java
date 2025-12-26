@@ -30,9 +30,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>See {@link ClientCommands} for more details and an example.
  */
-public interface ClientCommandsRegistrationCallback {
-	Event<ClientCommandsRegistrationCallback> EVENT = EventFactory.createArrayBacked(ClientCommandsRegistrationCallback.class, (callbacks) -> (dispatcher, buildContext) -> {
-		for (ClientCommandsRegistrationCallback callback : callbacks) {
+public interface ClientCommandRegistrationCallback {
+	Event<ClientCommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(ClientCommandRegistrationCallback.class, (callbacks) -> (dispatcher, buildContext) -> {
+		for (ClientCommandRegistrationCallback callback : callbacks) {
 			callback.register(dispatcher, buildContext);
 		}
 	});
