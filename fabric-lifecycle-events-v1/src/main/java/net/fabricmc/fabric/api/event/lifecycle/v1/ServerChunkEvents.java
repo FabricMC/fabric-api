@@ -38,7 +38,7 @@ public final class ServerChunkEvents {
 	 *
 	 * <p>Note that this event is not called for chunks that become accessible without previously being unloaded.
 	 *
-	 * @see ServerChunkEvents#CHUNK_STATUS_CHANGE
+	 * @see ServerChunkEvents#FULL_CHUNK_STATUS_CHANGE
 	 */
 	public static final Event<ServerChunkEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ServerChunkEvents.Load.class, callbacks -> (serverLevel, chunk) -> {
 		for (Load callback : callbacks) {
@@ -64,7 +64,7 @@ public final class ServerChunkEvents {
 	 *
 	 * <p>Note that the server typically unloads chunks when the chunk's load level goes above {@link ChunkLevel#MAX_LEVEL}
 	 * (and not immediately when the chunk becomes inaccessible). To know when a chunk first becomes inaccessible, see
-	 * {@link ServerChunkEvents#CHUNK_STATUS_CHANGE}.
+	 * {@link ServerChunkEvents#FULL_CHUNK_STATUS_CHANGE}.
 	 */
 	public static final Event<ServerChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ServerChunkEvents.Unload.class, callbacks -> (serverLevel, chunk) -> {
 		for (Unload callback : callbacks) {
@@ -83,7 +83,7 @@ public final class ServerChunkEvents {
 	 * <li>When transitioning from {@link FullChunkStatus#INACCESSIBLE} to {@link FullChunkStatus#FULL}, calling {@link ServerChunkCache#getChunkFuture(int, int, ChunkStatus, boolean)} to fetch the current chunk at {@link ChunkStatus#FULL} status results in undefined behavior.</li>
 	 * </ul>
 	 */
-	public static final Event<ChunkStatusChange> CHUNK_STATUS_CHANGE = EventFactory.createArrayBacked(ChunkStatusChange.class, (level, chunk, oldChunkStatus, newChunkStatus) -> { }, callbacks -> (serverLevel, chunk, oldChunkStatus, newChunkStatus) -> {
+	public static final Event<ChunkStatusChange> FULL_CHUNK_STATUS_CHANGE = EventFactory.createArrayBacked(ChunkStatusChange.class, (level, chunk, oldChunkStatus, newChunkStatus) -> { }, callbacks -> (serverLevel, chunk, oldChunkStatus, newChunkStatus) -> {
 		for (ChunkStatusChange callback : callbacks) {
 			callback.onChunkStatusChange(serverLevel, chunk, oldChunkStatus, newChunkStatus);
 		}

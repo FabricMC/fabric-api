@@ -21,7 +21,7 @@ import net.minecraft.server.level.FullChunkStatus;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 
 /**
- * A marker interface that tracks the current {@link ServerChunkEvents#CHUNK_STATUS_CHANGE} level type.
+ * A marker interface that tracks the current {@link ServerChunkEvents#FULL_CHUNK_STATUS_CHANGE} level type.
  */
 public interface FullChunkStatusEventTracker {
 	void fabric_setCurrentEventChunkStatus(FullChunkStatus chunkStatus);

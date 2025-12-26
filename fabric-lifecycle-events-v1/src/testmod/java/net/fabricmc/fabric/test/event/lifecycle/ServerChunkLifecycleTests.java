@@ -74,7 +74,7 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		final Object2ObjectMap<Identifier, Object2IntMap<FullChunkStatus>> levelsChunkLevelEvents = new Object2ObjectOpenHashMap<>();
 		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<ChunkStatusEvent>> levelsChunkStatusTracker = new Object2ObjectOpenHashMap<>();
 
-		ServerChunkEvents.CHUNK_STATUS_CHANGE.register((level, levelChunk, oldChunkStatus, newChunkStatus) -> {
+		ServerChunkEvents.FULL_CHUNK_STATUS_CHANGE.register((level, levelChunk, oldChunkStatus, newChunkStatus) -> {
 			final Identifier dimensionId = level.dimension().identifier();
 
 			if (!level.getServer().isSameThread()) {

@@ -55,7 +55,7 @@ abstract class ChunkStatusTasksMixin {
 		for (int i = chunkStatusTracker.fabric_getCurrentEventChunkStatus().ordinal(); i < chunkHolder.getFullStatus().ordinal(); i++) {
 			FullChunkStatus oldLevelType = fabric_CHUNK_LEVEL_TYPES[i];
 			FullChunkStatus newLevelType = fabric_CHUNK_LEVEL_TYPES[i+1];
-			ServerChunkEvents.CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange(worldGenContext.level(), levelChunk, oldLevelType, newLevelType);
+			ServerChunkEvents.FULL_CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange(worldGenContext.level(), levelChunk, oldLevelType, newLevelType);
 			chunkStatusTracker.fabric_setCurrentEventChunkStatus(newLevelType);
 		}
 	}
