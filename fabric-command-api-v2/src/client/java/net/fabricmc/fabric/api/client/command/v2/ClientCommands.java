@@ -53,7 +53,7 @@ import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
  * <h2>Example command</h2>
  * <pre>
  * {@code
- * ClientCommandsRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
+ * ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
  * 		dispatcher.register(
  * 			ClientCommands.literal("hello").executes(context -> {
  * 				context.getSource().sendFeedback(Component.literal("Hello, world!"));
