@@ -25,8 +25,8 @@ import net.minecraft.network.chat.Component;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandsRegistrationCallback;
-import net.fabricmc.fabric.api.client.message.v1.ClientHandleChatInputEvents;
-import net.fabricmc.fabric.api.client.message.v1.ClientLogChatMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 
 public class ChatTestClient implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ChatTestClient.class);
@@ -43,7 +43,7 @@ public class ChatTestClient implements ClientModInitializer {
 			return Command.SINGLE_SUCCESS;
 		}))))));
 		//Test client send message events
-		ClientHandleChatInputEvents.IS_CHAT_ALLOWED.register((message) -> {
+		ClientSendMessageEvents.ALLOW_CHAT.register((message) -> {
 			if (message.contains("block send")) {
 				LOGGER.info("Blocked chat message: " + message);
 				return false;
@@ -51,7 +51,7 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientHandleChatInputEvents.MODIFY_CHAT.register((message) -> {
+		ClientSendMessageEvents.MODIFY_CHAT.register((message) -> {
 			if (message.contains("modify send")) {
 				LOGGER.info("Modifying chat message: " + message);
 				return "sending modified chat message";
@@ -59,10 +59,10 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return message;
 		});
-		ClientHandleChatInputEvents.CHAT.register((message -> LOGGER.info("Sent chat message: " + message)));
-		ClientHandleChatInputEvents.CHAT_CANCELED.register((message) -> LOGGER.info("Canceled sending chat message: " + message));
+		ClientSendMessageEvents.CHAT.register((message -> LOGGER.info("Sent chat message: " + message)));
+		ClientSendMessageEvents.CHAT_CANCELED.register((message) -> LOGGER.info("Canceled sending chat message: " + message));
 		//Test client send command events
-		ClientHandleChatInputEvents.ALLOW_COMMAND.register((command) -> {
+		ClientSendMessageEvents.ALLOW_COMMAND.register((command) -> {
 			if (command.contains("block send")) {
 				LOGGER.info("Blocked command message: " + command);
 				return false;
@@ -70,7 +70,7 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientHandleChatInputEvents.MODIFY_COMMAND.register((command) -> {
+		ClientSendMessageEvents.MODIFY_COMMAND.register((command) -> {
 			if (command.contains("modify send")) {
 				LOGGER.info("Modifying command message: " + command);
 				return "sending modified command message";
@@ -78,10 +78,10 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return command;
 		});
-		ClientHandleChatInputEvents.COMMAND.register((command -> LOGGER.info("Sent command message: " + command)));
-		ClientHandleChatInputEvents.COMMAND_CANCELED.register((command) -> LOGGER.info("Canceled sending command message: " + command));
+		ClientSendMessageEvents.COMMAND.register((command -> LOGGER.info("Sent command message: " + command)));
+		ClientSendMessageEvents.COMMAND_CANCELED.register((command) -> LOGGER.info("Canceled sending command message: " + command));
 		//Test client receive message events
-		ClientLogChatMessageEvents.IS_CHAT_ALLOWED.register((message, playerChatMessage, sender, params, receptionTimestamp) -> {
+		ClientReceiveMessageEvents.ALLOW_CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> {
 			if (message.getString().contains("block receive")) {
 				LOGGER.info("Blocked receiving chat message: " + message.getString());
 				return false;
@@ -89,10 +89,10 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientLogChatMessageEvents.CHAT.register((message, playerChatMessage, sender, params, receptionTimestamp) -> LOGGER.info("Received chat message sent by {} at time {}: {}", sender == null ? "null" : sender.name(), receptionTimestamp.toEpochMilli(), message.getString()));
-		ClientLogChatMessageEvents.CHAT_CANCELED.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Cancelled receiving chat message sent by {} at time {}: {}", sender == null ? "null" : sender.name(), receptionTimestamp.toEpochMilli(), message.getString()));
+		ClientReceiveMessageEvents.CHAT.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Received chat message sent by {} at time {}: {}", sender == null ? "null" : sender.name(), receptionTimestamp.toEpochMilli(), message.getString()));
+		ClientReceiveMessageEvents.CHAT_CANCELED.register((message, signedMessage, sender, params, receptionTimestamp) -> LOGGER.info("Cancelled receiving chat message sent by {} at time {}: {}", sender == null ? "null" : sender.name(), receptionTimestamp.toEpochMilli(), message.getString()));
 		//Test client receive game message events
-		ClientLogChatMessageEvents.ALLOW_GAME.register((message, overlay) -> {
+		ClientReceiveMessageEvents.ALLOW_GAME.register((message, overlay) -> {
 			if (message.getString().contains("block receive")) {
 				LOGGER.info("Blocked receiving game message: " + message.getString());
 				return false;
@@ -100,7 +100,7 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return true;
 		});
-		ClientLogChatMessageEvents.MODIFY_GAME.register((message, overlay) -> {
+		ClientReceiveMessageEvents.MODIFY_GAME.register((message, overlay) -> {
 			if (message.getString().contains("modify receive")) {
 				LOGGER.info("Modifying received game message: " + message.getString());
 				return Component.nullToEmpty("modified receiving game message");
@@ -108,7 +108,7 @@ public class ChatTestClient implements ClientModInitializer {
 
 			return message;
 		});
-		ClientLogChatMessageEvents.GAME.register((message, overlay) -> LOGGER.info("Received game message with overlay {}: {}", overlay, message.getString()));
-		ClientLogChatMessageEvents.GAME_CANCELED.register((message, overlay) -> LOGGER.info("Cancelled receiving game message with overlay {}: {}", overlay, message.getString()));
+		ClientReceiveMessageEvents.GAME.register((message, overlay) -> LOGGER.info("Received game message with overlay {}: {}", overlay, message.getString()));
+		ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> LOGGER.info("Cancelled receiving game message with overlay {}: {}", overlay, message.getString()));
 	}
 }

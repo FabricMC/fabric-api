@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Contains server-side events triggered when broadcasting messages.
  */
-public final class ServerChatEvents {
+public final class ServerMessageEvents {
 	/**
 	 * An event triggered when the server broadcasts a chat message sent by a player,
 	 * typically from a client GUI or a player-executed command. Mods can use this to block
@@ -43,9 +43,9 @@ public final class ServerChatEvents {
 	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 	 * and after triggering {@link #COMMAND_MESSAGE} event.
 	 */
-	public static final Event<AllowChatMessage> IS_CHAT_ALLOWED_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, handlers -> (message, sender, bind) -> {
+	public static final Event<AllowChatMessage> ALLOW_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, handlers -> (message, sender, boundChatType) -> {
 		for (AllowChatMessage handler : handlers) {
-			if (!handler.allowChatMessage(message, sender, bind)) return false;
+			if (!handler.allowChatMessage(message, sender, boundChatType)) return false;
 		}
 
 		return true;
@@ -78,12 +78,12 @@ public final class ServerChatEvents {
 	 * event will not be triggered.
 	 *
 	 * <p>If the command is executed by a player and the message is not blocked,
-	 * {@link #IS_CHAT_ALLOWED_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
+	 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
 	 * triggered after triggering {@link #COMMAND_MESSAGE}.
 	 */
-	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, handlers -> (message, source, bind) -> {
+	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, handlers -> (message, source, boundChatType) -> {
 		for (AllowCommandMessage handler : handlers) {
-			if (!handler.allowCommandMessage(message, source, bind)) return false;
+			if (!handler.allowCommandMessage(message, source, boundChatType)) return false;
 		}
 
 		return true;
@@ -92,15 +92,15 @@ public final class ServerChatEvents {
 	/**
 	 * An event triggered when the server broadcasts a chat message sent by a player, typically
 	 * from a client GUI or a player-executed command. Is not called when {@linkplain
-	 * #IS_CHAT_ALLOWED_MESSAGE chat messages are blocked}.
+	 * #ALLOW_CHAT_MESSAGE chat messages are blocked}.
 	 *
 	 * <p>If the message is from a player-executed command, this will be called
 	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
 	 * and after triggering {@link #COMMAND_MESSAGE} event.
 	 */
-	public static final Event<ChatMessage> CHAT_MESSAGE = EventFactory.createArrayBacked(ChatMessage.class, handlers -> (message, sender, bind) -> {
+	public static final Event<ChatMessage> CHAT_MESSAGE = EventFactory.createArrayBacked(ChatMessage.class, handlers -> (message, sender, boundChatType) -> {
 		for (ChatMessage handler : handlers) {
-			handler.onChatMessage(message, sender, bind);
+			handler.onChatMessage(message, sender, boundChatType);
 		}
 	});
 
@@ -121,16 +121,16 @@ public final class ServerChatEvents {
 	 * {@code /msg}). Is not called when {@linkplain #ALLOW_COMMAND_MESSAGE command messages
 	 * are blocked}.
 	 *
-	 * <p>If the command is executed by a player, {@link #IS_CHAT_ALLOWED_MESSAGE} and
+	 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
 	 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
 	 */
-	public static final Event<CommandMessage> COMMAND_MESSAGE = EventFactory.createArrayBacked(CommandMessage.class, handlers -> (message, source, bind) -> {
+	public static final Event<CommandMessage> COMMAND_MESSAGE = EventFactory.createArrayBacked(CommandMessage.class, handlers -> (message, source, boundChatType) -> {
 		for (CommandMessage handler : handlers) {
-			handler.onCommandMessage(message, source, bind);
+			handler.onCommandMessage(message, source, boundChatType);
 		}
 	});
 
-	private ServerChatEvents() {
+	private ServerMessageEvents() {
 	}
 
 	@FunctionalInterface
@@ -147,10 +147,10 @@ public final class ServerChatEvents {
 		 *
 		 * @param message the broadcast message with chat decorators applied; use {@code message.decoratedContent()} to get the component
 		 * @param sender  the player that sent the message
-		 * @param bind the {@link ChatType.Bound}
+		 * @param boundChatType the {@link ChatType.Bound}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound bind);
+		boolean allowChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound boundChatType);
 	}
 
 	@FunctionalInterface
@@ -178,15 +178,15 @@ public final class ServerChatEvents {
 		 * and the {@link #COMMAND_MESSAGE} event from triggering.
 		 *
 		 * <p>If the command is executed by a player and the message is not blocked,
-		 * {@link #IS_CHAT_ALLOWED_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
+		 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
 		 * triggered after triggering {@link #COMMAND_MESSAGE}.
 		 *
 		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.decoratedContent()} to get the component
 		 * @param source  the command source that sent the message
-		 * @param bind the {@link ChatType.Bound}
+		 * @param boundChatType the {@link ChatType.Bound}
 		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
 		 */
-		boolean allowCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound bind);
+		boolean allowCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound boundChatType);
 	}
 
 	@FunctionalInterface
@@ -194,7 +194,7 @@ public final class ServerChatEvents {
 		/**
 		 * Called when the server broadcasts a chat message sent by a player, typically
 		 * from a client GUI or a player-executed command. Is not called when {@linkplain
-		 * #IS_CHAT_ALLOWED_MESSAGE chat messages are blocked}.
+		 * #ALLOW_CHAT_MESSAGE chat messages are blocked}.
 		 *
 		 * <p>If the message is from a player-executed command, this will be called
 		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
@@ -202,9 +202,9 @@ public final class ServerChatEvents {
 		 *
 		 * @param message the broadcast message with chat decorators applied; use {@code message.decoratedContent()} to get the component
 		 * @param sender  the player that sent the message
-		 * @param bind the {@link ChatType.Bound}
+		 * @param boundChatType the {@link ChatType.Bound}
 		 */
-		void onChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound bind);
+		void onChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound boundChatType);
 	}
 
 	@FunctionalInterface
@@ -229,13 +229,13 @@ public final class ServerChatEvents {
 		 * {@code /msg}). Is not called when {@linkplain #ALLOW_COMMAND_MESSAGE command messages
 		 * are blocked}.
 		 *
-		 * <p>If the command is executed by a player, {@link #IS_CHAT_ALLOWED_MESSAGE} and
+		 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
 		 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
 		 *
 		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.decoratedContent()} to get the component
 		 * @param source  the command source that sent the message
-		 * @param bind the {@link ChatType.Bound}
+		 * @param boundChatType the {@link ChatType.Bound}
 		 */
-		void onCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound bind);
+		void onCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound boundChatType);
 	}
 }

@@ -40,26 +40,26 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>Example of registering a content phase chat decorator:
  *
  * <pre>{@code
- * ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
+ * ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
  *     // Add smiley face. Has to copy() to get a MutableComponent with siblings and styles.
  *     return message.copy().append(" :)");
  * });
  * }</pre>
  *
- * <p>Example of registering a styling phase chat decorator:
+ * <p>Example of registering a styling phase message decorator:
  *
  * <pre>{@code
- * ServerChatDecoratorEvent.EVENT.register(ServerChatDecoratorEvent.STYLING_PHASE, (sender, message) -> {
+ * ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) -> {
  *     // Apply orange color to messages sent by server operators
- *     if (sender != null && sender.server.getPlayerList().isOperator(sender.getGameProfile())) {
+ *     if (sender != null && sender.server.getPlayerManager().isOperator(sender.getGameProfile())) {
  *         return message.copy().styled(style -> style.withColor(0xFFA500));
  *     }
  *     return message;
  * });
  * }</pre>
  */
-public final class ServerChatDecoratorEvent {
-	private ServerChatDecoratorEvent() {
+public final class ServerMessageDecoratorEvent {
+	private ServerMessageDecoratorEvent() {
 	}
 
 	/**

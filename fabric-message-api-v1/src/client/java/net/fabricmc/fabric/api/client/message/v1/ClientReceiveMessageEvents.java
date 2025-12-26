@@ -32,8 +32,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Contains client-side events triggered when receiving messages.
  */
-public final class ClientLogChatMessageEvents {
-	private ClientLogChatMessageEvents() {
+public final class ClientReceiveMessageEvents {
+	private ClientReceiveMessageEvents() {
 	}
 
 	/**
@@ -44,11 +44,11 @@ public final class ClientLogChatMessageEvents {
 	 * the remaining listeners will be called (if any), and
 	 * {@link #CHAT_CANCELED} will be triggered instead of {@link #CHAT}.
 	 */
-	public static final Event<IsChatAllowed> IS_CHAT_ALLOWED = EventFactory.createArrayBacked(IsChatAllowed.class, listeners -> (message, playerChatMessage, sender, bind, timeStamp) -> {
+	public static final Event<AllowChat> ALLOW_CHAT = EventFactory.createArrayBacked(AllowChat.class, listeners -> (message, playerChatMessage, sender, boundChatType, timeStamp) -> {
 		boolean allow = true;
 
-		for (IsChatAllowed listener : listeners) {
-			allow &= listener.allowLogChatMessage(message, playerChatMessage, sender, bind, timeStamp);
+		for (AllowChat listener : listeners) {
+			allow &= listener.allowReceiveChatMessage(message, playerChatMessage, sender, boundChatType, timeStamp);
 		}
 
 		return allow;
@@ -71,7 +71,7 @@ public final class ClientLogChatMessageEvents {
 		boolean allow = true;
 
 		for (AllowGame listener : listeners) {
-			allow &= listener.allowLogGameMessage(message, overlay);
+			allow &= listener.allowReceiveGameMessage(message, overlay);
 		}
 
 		return allow;
@@ -89,7 +89,7 @@ public final class ClientLogChatMessageEvents {
 	 */
 	public static final Event<ModifyGame> MODIFY_GAME = EventFactory.createArrayBacked(ModifyGame.class, listeners -> (message, overlay) -> {
 		for (ModifyGame listener : listeners) {
-			message = listener.modifyLoggedGameMessage(message, overlay);
+			message = listener.modifyReceivedGameMessage(message, overlay);
 		}
 
 		return message;
@@ -98,15 +98,15 @@ public final class ClientLogChatMessageEvents {
 	/**
 	 * An event triggered when the client receives a chat message,
 	 * which is any message sent by a player. Is not called when
-	 * {@linkplain #IS_CHAT_ALLOWED chat messages are blocked}.
+	 * {@linkplain #ALLOW_CHAT chat messages are blocked}.
 	 * Mods can use this to listen to the message.
 	 *
-	 * <p>If mods want to modify the message, they should use {@link #IS_CHAT_ALLOWED}
+	 * <p>If mods want to modify the message, they should use {@link #ALLOW_CHAT}
 	 * and manually add the new message to the chat hud using {@link ChatComponent#addMessage(Component)}
 	 */
-	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message, playerChatMessage, sender, bind, timeStamp) -> {
+	public static final Event<Chat> CHAT = EventFactory.createArrayBacked(Chat.class, listeners -> (message, playerChatMessage, sender, boundChatType, timeStamp) -> {
 		for (Chat listener : listeners) {
-			listener.onLogChatMessage(message, playerChatMessage, sender, bind, timeStamp);
+			listener.onReceiveChatMessage(message, playerChatMessage, sender, boundChatType, timeStamp);
 		}
 	});
 
@@ -121,16 +121,16 @@ public final class ClientLogChatMessageEvents {
 	 */
 	public static final Event<Game> GAME = EventFactory.createArrayBacked(Game.class, listeners -> (message, overlay) -> {
 		for (Game listener : listeners) {
-			listener.onLogGameMessage(message, overlay);
+			listener.onReceiveGameMessage(message, overlay);
 		}
 	});
 
 	/**
-	 * An event triggered when receiving a chat message is canceled with {@link #IS_CHAT_ALLOWED}.
+	 * An event triggered when receiving a chat message is canceled with {@link #ALLOW_CHAT}.
 	 */
-	public static final Event<ChatCanceled> CHAT_CANCELED = EventFactory.createArrayBacked(ChatCanceled.class, listeners -> (message, playerChatMessage, sender, bind, timeStamp) -> {
+	public static final Event<ChatCanceled> CHAT_CANCELED = EventFactory.createArrayBacked(ChatCanceled.class, listeners -> (message, playerChatMessage, sender, boundChatType, timeStamp) -> {
 		for (ChatCanceled listener : listeners) {
-			listener.onLogChatMessageCanceled(message, playerChatMessage, sender, bind, timeStamp);
+			listener.onReceiveChatMessageCanceled(message, playerChatMessage, sender, boundChatType, timeStamp);
 		}
 	});
 
@@ -141,26 +141,26 @@ public final class ClientLogChatMessageEvents {
 	 */
 	public static final Event<GameCanceled> GAME_CANCELED = EventFactory.createArrayBacked(GameCanceled.class, listeners -> (message, overlay) -> {
 		for (GameCanceled listener : listeners) {
-			listener.onLogGameMessageCanceled(message, overlay);
+			listener.onReceiveGameMessageCanceled(message, overlay);
 		}
 	});
 
 	@FunctionalInterface
-	public interface IsChatAllowed {
+	public interface AllowChat {
 		/**
 		 * Called when the client receives a chat message,
 		 * which is any message sent by a player.
 		 * Returning {@code false} prevents the message from being displayed, and
 		 * {@link #CHAT_CANCELED} will be triggered instead of {@link #CHAT}.
 		 *
-		 * @param message            	the message received from the server
-		 * @param playerChatMessage     the player chat message received from the server (nullable)
-		 * @param sender             	the sender of the message (nullable)
-		 * @param bind             		the parameters of the message
-		 * @param timeStamp 			the timestamp when the message was received
+		 * @param message            the message received from the server
+		 * @param playerChatMessage      the signed message received from the server (nullable)
+		 * @param sender             the sender of the message (nullable)
+		 * @param boundChatType             the parameters of the message
+		 * @param timeStamp the timestamp when the message was received
 		 * @return {@code true} if the message should be displayed, otherwise {@code false}
 		 */
-		boolean allowLogChatMessage(Component message, @Nullable PlayerChatMessage playerChatMessage, @Nullable GameProfile sender, ChatType.Bound bind, Instant timeStamp);
+		boolean allowReceiveChatMessage(Component message, @Nullable PlayerChatMessage playerChatMessage, @Nullable GameProfile sender, ChatType.Bound boundChatType, Instant timeStamp);
 	}
 
 	@FunctionalInterface
@@ -173,13 +173,13 @@ public final class ClientLogChatMessageEvents {
 		 *
 		 * <p>Overlay is whether the message will be displayed in the action bar.
 		 * To toggle overlay, return false and call
-		 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean) LocalPlayer.displayClientMessage(message, overlay)}.
+		 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean) ClientPlayerEntity.sendMessage(message, overlay)}.
 		 *
 		 * @param message the message received from the server
 		 * @param overlay whether the message will be displayed in the action bar
 		 * @return {@code true} if the message should be displayed, otherwise {@code false}
 		 */
-		boolean allowLogGameMessage(Component message, boolean overlay);
+		boolean allowReceiveGameMessage(Component message, boolean overlay);
 	}
 
 	@FunctionalInterface
@@ -197,7 +197,7 @@ public final class ClientLogChatMessageEvents {
 		 * @param overlay whether the message will be displayed in the action bar
 		 * @return the modified message to display or the original {@code message} if the message is not modified
 		 */
-		Component modifyLoggedGameMessage(Component message, boolean overlay);
+		Component modifyReceivedGameMessage(Component message, boolean overlay);
 	}
 
 	@FunctionalInterface
@@ -205,15 +205,15 @@ public final class ClientLogChatMessageEvents {
 		/**
 		 * Called when the client receives a chat message,
 		 * which is any message sent by a player. Is not called when
-		 * {@linkplain #IS_CHAT_ALLOWED chat messages are blocked}.
+		 * {@linkplain #ALLOW_CHAT chat messages are blocked}.
 		 *
-		 * @param message            	the message received from the server
-		 * @param playerChatMessage     the player chat message received from the server (nullable)
-		 * @param sender             	the sender of the message (nullable)
-		 * @param bind             		the parameters of the message
-		 * @param timeStamp 			the timestamp when the message was received
+		 * @param message             the message received from the server
+		 * @param playerChatMessage   the player chat message received from the server (nullable)
+		 * @param sender              the sender of the message (nullable)
+		 * @param boundChatType       the parameters of the message
+		 * @param timeStamp           the timestamp when the message was received
 		 */
-		void onLogChatMessage(Component message, @Nullable PlayerChatMessage playerChatMessage, @Nullable GameProfile sender, ChatType.Bound bind, Instant timeStamp);
+		void onReceiveChatMessage(Component message, @Nullable PlayerChatMessage playerChatMessage, @Nullable GameProfile sender, ChatType.Bound boundChatType, Instant timeStamp);
 	}
 
 	@FunctionalInterface
@@ -229,21 +229,21 @@ public final class ClientLogChatMessageEvents {
 		 * @param message the message received from the server
 		 * @param overlay whether the message will be displayed in the action bar
 		 */
-		void onLogGameMessage(Component message, boolean overlay);
+		void onReceiveGameMessage(Component message, boolean overlay);
 	}
 
 	@FunctionalInterface
 	public interface ChatCanceled {
 		/**
-		 * Called when receiving a chat message is canceled with {@link #IS_CHAT_ALLOWED}.
+		 * Called when receiving a chat message is canceled with {@link #ALLOW_CHAT}.
 		 *
-		 * @param message            	the message received from the server
-		 * @param playerChatMessage     the player chat message received from the server (nullable)
-		 * @param sender             	the sender of the message (nullable)
-		 * @param bind             		the parameters of the message
-		 * @param timeStamp 			the timestamp when the message was received
+		 * @param message            the message received from the server
+		 * @param playerChatMessage  the signed message received from the server (nullable)
+		 * @param sender             the sender of the message (nullable)
+		 * @param boundChatType      the parameters of the message
+		 * @param timeStamp          the timestamp when the message was received
 		 */
-		void onLogChatMessageCanceled(Component message, @Nullable PlayerChatMessage playerChatMessage, @Nullable GameProfile sender, ChatType.Bound bind, Instant timeStamp);
+		void onReceiveChatMessageCanceled(Component message, @Nullable PlayerChatMessage playerChatMessage, @Nullable GameProfile sender, ChatType.Bound boundChatType, Instant timeStamp);
 	}
 
 	@FunctionalInterface
@@ -254,6 +254,6 @@ public final class ClientLogChatMessageEvents {
 		 * @param message the message received from the server
 		 * @param overlay whether the message would have been displayed in the action bar
 		 */
-		void onLogGameMessageCanceled(Component message, boolean overlay);
+		void onReceiveGameMessageCanceled(Component message, boolean overlay);
 	}
 }
