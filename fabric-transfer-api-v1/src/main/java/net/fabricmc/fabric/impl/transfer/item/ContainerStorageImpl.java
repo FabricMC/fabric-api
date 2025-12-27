@@ -45,8 +45,8 @@ public class ContainerStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 	/**
 	 * Global wrapper concurrent map.
 	 *
-	 * <p>A note on GC: weak keys alone are not suitable as the InventoryStorage slots strongly reference the Inventory keys.
-	 * Weak values are suitable, but we have to ensure that the InventoryStorageImpl remains strongly reachable as long as
+	 * <p>A note on GC: weak keys alone are not suitable as the ContainerStorage slots strongly reference the Inventory keys.
+	 * Weak values are suitable, but we have to ensure that the ContainerStorageImpl remains strongly reachable as long as
 	 * one of the slot wrappers refers to it, hence the {@code strongRef} field in {@link ContainerSlotWrapper}.
 	 */
 	// TODO: look into promoting the weak reference to a soft reference if building the wrappers becomes a performance bottleneck.
