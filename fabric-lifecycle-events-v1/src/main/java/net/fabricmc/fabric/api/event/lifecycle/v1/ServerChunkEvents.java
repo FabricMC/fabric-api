@@ -79,13 +79,13 @@ public final class ServerChunkEvents {
 	 * <ul>
 	 * <li>The chunk's {@link LevelChunk#getFullStatus()} has already changed.</li>
 	 * <li>Entities within the chunk are not guaranteed to be accessible.</li>
-	 * <li>The chunk's corresponding level type future in {@link ChunkHolder} is not guaranteed to be done.</li>
+	 * <li>The chunk's corresponding full chunk status future in {@link ChunkHolder} is not guaranteed to be done.</li>
 	 * <li>When transitioning from {@link FullChunkStatus#INACCESSIBLE} to {@link FullChunkStatus#FULL}, calling {@link ServerChunkCache#getChunkFuture(int, int, ChunkStatus, boolean)} to fetch the current chunk at {@link ChunkStatus#FULL} status results in undefined behavior.</li>
 	 * </ul>
 	 */
-	public static final Event<ChunkStatusChange> FULL_CHUNK_STATUS_CHANGE = EventFactory.createArrayBacked(ChunkStatusChange.class, (level, chunk, oldChunkStatus, newChunkStatus) -> { }, callbacks -> (serverLevel, chunk, oldChunkStatus, newChunkStatus) -> {
-		for (ChunkStatusChange callback : callbacks) {
-			callback.onChunkStatusChange(serverLevel, chunk, oldChunkStatus, newChunkStatus);
+	public static final Event<FullChunkStatusChange> FULL_CHUNK_STATUS_CHANGE = EventFactory.createArrayBacked(FullChunkStatusChange.class, (level, chunk, oldChunkStatus, newChunkStatus) -> { }, callbacks -> (serverLevel, chunk, oldChunkStatus, newChunkStatus) -> {
+		for (FullChunkStatusChange callback : callbacks) {
+			callback.onFullChunkStatusChange(serverLevel, chunk, oldChunkStatus, newChunkStatus);
 		}
 	});
 
@@ -105,7 +105,7 @@ public final class ServerChunkEvents {
 	}
 
 	@FunctionalInterface
-	public interface ChunkStatusChange {
-		void onChunkStatusChange(ServerLevel level, LevelChunk chunk, FullChunkStatus oldChunkStatus, FullChunkStatus newChunkStatus);
+	public interface FullChunkStatusChange {
+		void onFullChunkStatusChange(ServerLevel level, LevelChunk chunk, FullChunkStatus oldChunkStatus, FullChunkStatus newChunkStatus);
 	}
 }
