@@ -115,7 +115,7 @@ public class ContainerStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 
 	@Override
 	public String toString() {
-		return "InventoryStorage[" + DebugMessages.forInventory(container) + "]";
+		return "ContainerStorage[" + DebugMessages.forInventory(container) + "]";
 	}
 
 	// Boolean is used to prevent allocation. Null values are not allowed by SnapshotParticipant.
