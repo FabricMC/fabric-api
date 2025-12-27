@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.event.lifecycle.FullChunkStatusEventTracker;
 @Mixin(ChunkStatusTasks.class)
 abstract class ChunkStatusTasksMixin {
 	@Unique
-	private static final FullChunkStatus[] fabric_CHUNK_LEVEL_TYPES = FullChunkStatus.values(); // values() clones the internal array each call, so cache the return
+	private static final FullChunkStatus[] fabric_FULL_CHUNK_STATUSES = FullChunkStatus.values(); // values() clones the internal array each call, so cache the return
 
 	@Inject(method = "lambda$full$0", at = @At("TAIL"))
 	private static void onChunkLoad(ChunkAccess chunk, WorldGenContext worldGenContext, GenerationChunkHolder chunkHolder, CallbackInfoReturnable<ChunkAccess> callbackInfoReturnable) {
@@ -49,14 +49,14 @@ abstract class ChunkStatusTasksMixin {
 			ServerChunkEvents.CHUNK_GENERATE.invoker().onChunkGenerate(worldGenContext.level(), levelChunk);
 		}
 
-		// Handles the case where the chunk becomes accessible from being completed unloaded, only fires if chunkHolder has been set to at least that level type
+		// Handles the case where the chunk becomes accessible from being completely unloaded, only fires if chunkHolder has been set to at least that full chunk status
 		FullChunkStatusEventTracker chunkStatusTracker = (FullChunkStatusEventTracker) chunkHolder;
 
-		for (int i = chunkStatusTracker.fabric_getCurrentEventChunkStatus().ordinal(); i < chunkHolder.getFullStatus().ordinal(); i++) {
-			FullChunkStatus oldLevelType = fabric_CHUNK_LEVEL_TYPES[i];
-			FullChunkStatus newLevelType = fabric_CHUNK_LEVEL_TYPES[i+1];
-			ServerChunkEvents.FULL_CHUNK_STATUS_CHANGE.invoker().onChunkStatusChange(worldGenContext.level(), levelChunk, oldLevelType, newLevelType);
-			chunkStatusTracker.fabric_setCurrentEventChunkStatus(newLevelType);
+		for (int i = chunkStatusTracker.fabric_getCurrentEventFullChunkStatus().ordinal(); i < chunkHolder.getFullStatus().ordinal(); i++) {
+			FullChunkStatus oldStatus = fabric_FULL_CHUNK_STATUSES[i];
+			FullChunkStatus newStatus = fabric_FULL_CHUNK_STATUSES[i+1];
+			ServerChunkEvents.FULL_CHUNK_STATUS_CHANGE.invoker().onFullChunkStatusChange(worldGenContext.level(), levelChunk, oldStatus, newStatus);
+			chunkStatusTracker.fabric_setCurrentEventFullChunkStatus(newStatus);
 		}
 	}
 }

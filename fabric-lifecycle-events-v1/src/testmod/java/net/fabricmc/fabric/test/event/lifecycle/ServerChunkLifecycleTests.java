@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 public final class ServerChunkLifecycleTests implements ModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
-	private record ChunkStatusEvent(FullChunkStatus oldChunkStatus, FullChunkStatus newChunkStatus) { }
+	private record FullChunkStatusEvent(FullChunkStatus oldChunkStatus, FullChunkStatus newChunkStatus) { }
 
 	@Override
 	public void onInitialize() {
@@ -71,40 +71,40 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 	 * Moving into another chunk should trigger some logs.
 	 */
 	private static void setupFullChunkStatusChangeTest() {
-		final Object2ObjectMap<Identifier, Object2IntMap<FullChunkStatus>> levelsChunkLevelEvents = new Object2ObjectOpenHashMap<>();
-		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<ChunkStatusEvent>> levelsChunkStatusTracker = new Object2ObjectOpenHashMap<>();
+		final Object2ObjectMap<Identifier, Object2IntMap<FullChunkStatus>> numOfEventsPerLevel = new Object2ObjectOpenHashMap<>();
+		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<FullChunkStatusEvent>> eventsPerChunk = new Object2ObjectOpenHashMap<>();
 
 		ServerChunkEvents.FULL_CHUNK_STATUS_CHANGE.register((level, levelChunk, oldChunkStatus, newChunkStatus) -> {
 			final Identifier dimensionId = level.dimension().identifier();
 
 			if (!level.getServer().isSameThread()) {
 				level.getServer().halt(false); // make sure the server actually "crashes", the throw below will just log the error.
-				throw new AssertionError("CHUNK_STATUS_CHANGE for " + dimensionId + " NOT ON SERVER THREAD: " + oldChunkStatus + "->" + newChunkStatus);
+				throw new AssertionError("FULL_CHUNK_STATUS_CHANGE for " + dimensionId + " NOT ON SERVER THREAD: " + oldChunkStatus + "->" + newChunkStatus);
 			}
 
 			if (levelChunk == null) {
-				throw new AssertionError("CHUNK_STATUS_CHANGE for " + dimensionId + " NULL LEVEL CHUNK: " + oldChunkStatus + "->" + newChunkStatus);
+				throw new AssertionError("FULL_CHUNK_STATUS_CHANGE for " + dimensionId + " NULL LEVEL CHUNK: " + oldChunkStatus + "->" + newChunkStatus);
 			}
 
 			final ChunkPos chunkPos = levelChunk.getPos();
 
 			if (Math.abs(oldChunkStatus.ordinal() - newChunkStatus.ordinal()) != 1) { // check if the chunkStatuses are actually sequential, also ensures chunkStatuses are not the same
-				throw new AssertionError("CHUNK_STATUS_CHANGE for " + dimensionId + " " + chunkPos + " NOT SEQUENTIAL: " + oldChunkStatus + "->" + newChunkStatus);
+				throw new AssertionError("FULL_CHUNK_STATUS_CHANGE for " + dimensionId + " " + chunkPos + " NOT SEQUENTIAL: " + oldChunkStatus + "->" + newChunkStatus);
 			}
 
-			ChunkStatusEvent prevEvent = levelsChunkStatusTracker.computeIfAbsent(dimensionId, obj -> new Long2ObjectOpenHashMap<>()).computeIfAbsent(chunkPos.toLong(), l -> new ChunkStatusEvent(FullChunkStatus.INACCESSIBLE, FullChunkStatus.INACCESSIBLE));
+			FullChunkStatusEvent prevEvent = eventsPerChunk.computeIfAbsent(dimensionId, obj -> new Long2ObjectOpenHashMap<>()).computeIfAbsent(chunkPos.toLong(), l -> new FullChunkStatusEvent(FullChunkStatus.INACCESSIBLE, FullChunkStatus.INACCESSIBLE));
 
 			if (prevEvent.newChunkStatus() != oldChunkStatus) { // check if newChunkStatus from the previous event == oldChunkStatus for this current event. Catches any out-of-sync firing issues.
-				throw new AssertionError("CHUNK_STATUS_CHANGE for " + dimensionId + " " + chunkPos + " PREVIOUS_EVENT: " + prevEvent.oldChunkStatus() + "->" + prevEvent.newChunkStatus() + " / CURRENT_EVENT: " + oldChunkStatus + "->" + newChunkStatus);
+				throw new AssertionError("FULL_CHUNK_STATUS_CHANGE for " + dimensionId + " " + chunkPos + " PREVIOUS_EVENT: " + prevEvent.oldChunkStatus() + "->" + prevEvent.newChunkStatus() + " / CURRENT_EVENT: " + oldChunkStatus + "->" + newChunkStatus);
 			}
 
-			levelsChunkStatusTracker.get(dimensionId).put(chunkPos.toLong(), new ChunkStatusEvent(oldChunkStatus, newChunkStatus));
-			levelsChunkLevelEvents.computeIfAbsent(dimensionId, obj -> new Object2IntOpenHashMap<>()).mergeInt(newChunkStatus, 1, Integer::sum);
+			eventsPerChunk.get(dimensionId).put(chunkPos.toLong(), new FullChunkStatusEvent(oldChunkStatus, newChunkStatus));
+			numOfEventsPerLevel.computeIfAbsent(dimensionId, obj -> new Object2IntOpenHashMap<>()).mergeInt(newChunkStatus, 1, Integer::sum);
 		});
 
 		ServerTickEvents.END_LEVEL_TICK.register(level -> {
 			if (level.getGameTime() % 20 == 0) { // limit to 1 per second
-				Object2IntMap<FullChunkStatus> chunkStatuses = levelsChunkLevelEvents.get(level.dimension().identifier());
+				Object2IntMap<FullChunkStatus> chunkStatuses = numOfEventsPerLevel.get(level.dimension().identifier());
 
 				if (chunkStatuses != null && !chunkStatuses.isEmpty()) {
 					StringBuilder sb = new StringBuilder(level.dimension().identifier() + " ");
@@ -117,14 +117,14 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			levelsChunkStatusTracker.forEach((id, chunks) -> {
+			eventsPerChunk.forEach((id, chunks) -> {
 				final Object2IntMap<FullChunkStatus> totals = new Object2IntOpenHashMap<>();
-				chunks.forEach((chunkPos, chunkStatusEvent) -> {
-					totals.mergeInt(chunkStatusEvent.newChunkStatus(), 1, Integer::sum);
+				chunks.forEach((chunkPos, fullChunkStatusEvent) -> {
+					totals.mergeInt(fullChunkStatusEvent.newChunkStatus(), 1, Integer::sum);
 				});
 
 				if (totals.containsKey(FullChunkStatus.FULL) || totals.containsKey(FullChunkStatus.BLOCK_TICKING) || totals.containsKey(FullChunkStatus.ENTITY_TICKING)) {
-					StringBuilder sb = new StringBuilder("CHUNK_STATUS_CHANGE expected all chunks to be INACCESSIBLE for " + id + ", instead got ");
+					StringBuilder sb = new StringBuilder("FULL_CHUNK_STATUS_CHANGE expected all chunks to be INACCESSIBLE for " + id + ", instead got ");
 					totals.forEach((chunkStatus, finalTotal) -> {
 						sb.append(chunkStatus).append(": ").append(finalTotal);
 					});
@@ -133,8 +133,8 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 			});
 
 			// clear everything otherwise it may trip the test incorrectly when you open another world
-			levelsChunkLevelEvents.clear();
-			levelsChunkStatusTracker.clear();
+			numOfEventsPerLevel.clear();
+			eventsPerChunk.clear();
 		});
 	}
 }
