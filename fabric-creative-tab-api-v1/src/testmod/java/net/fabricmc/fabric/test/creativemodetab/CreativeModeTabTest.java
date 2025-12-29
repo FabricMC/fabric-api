@@ -60,12 +60,12 @@ public class CreativeModeTabTest implements ModInitializer {
 		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.BUILDING_BLOCKS).register((content) -> {
 			content.accept(TEST_ITEM);
 
-			content.acceptBefore(Blocks.OAK_FENCE, Items.DIAMOND, Items.DIAMOND_BLOCK);
-			content.acceptAfter(Blocks.OAK_DOOR, Items.EMERALD, Items.EMERALD_BLOCK);
+			content.insertBefore(Blocks.OAK_FENCE, Items.DIAMOND, Items.DIAMOND_BLOCK);
+			content.insertAfter(Blocks.OAK_DOOR, Items.EMERALD, Items.EMERALD_BLOCK);
 
 			// Test adding when the existing entry does not exist.
-			content.acceptBefore(Blocks.BEDROCK, Items.GOLD_INGOT, Items.GOLD_BLOCK);
-			content.acceptAfter(Blocks.BEDROCK, Items.IRON_INGOT, Items.IRON_BLOCK);
+			content.insertBefore(Blocks.BEDROCK, Items.GOLD_INGOT, Items.GOLD_BLOCK);
+			content.insertAfter(Blocks.BEDROCK, Items.IRON_INGOT, Items.IRON_BLOCK);
 		});
 
 		// Add a differently damaged pickaxe to all groups

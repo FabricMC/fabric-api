@@ -145,45 +145,45 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	}
 
 	/**
-	 * See {@link #acceptAfter(ItemLike, Collection)}.
+	 * See {@link #insertAfter(ItemLike, Collection)}.
 	 */
-	public void acceptAfter(ItemLike afterLast, ItemStack... newStack) {
-		acceptAfter(afterLast, Arrays.asList(newStack));
+	public void insertAfter(ItemLike afterLast, ItemStack... newStack) {
+		insertAfter(afterLast, Arrays.asList(newStack));
 	}
 
 	/**
-	 * See {@link #acceptAfter(ItemStack, Collection)}.
+	 * See {@link #insertAfter(ItemStack, Collection)}.
 	 */
-	public void acceptAfter(ItemStack afterLast, ItemStack... newStack) {
-		acceptAfter(afterLast, Arrays.asList(newStack));
+	public void insertAfter(ItemStack afterLast, ItemStack... newStack) {
+		insertAfter(afterLast, Arrays.asList(newStack));
 	}
 
 	/**
-	 * See {@link #acceptAfter(ItemLike, Collection)}.
+	 * See {@link #insertAfter(ItemLike, Collection)}.
 	 */
-	public void acceptAfter(ItemLike afterLast, ItemLike... newItem) {
-		acceptAfter(afterLast, Arrays.stream(newItem).map(ItemStack::new).toList());
+	public void insertAfter(ItemLike afterLast, ItemLike... newItem) {
+		insertAfter(afterLast, Arrays.stream(newItem).map(ItemStack::new).toList());
 	}
 
 	/**
-	 * See {@link #acceptAfter(ItemStack, Collection)}.
+	 * See {@link #insertAfter(ItemStack, Collection)}.
 	 */
-	public void acceptAfter(ItemStack afterLast, ItemLike... newItem) {
-		acceptAfter(afterLast, Arrays.stream(newItem).map(ItemStack::new).toList());
+	public void insertAfter(ItemStack afterLast, ItemLike... newItem) {
+		insertAfter(afterLast, Arrays.stream(newItem).map(ItemStack::new).toList());
 	}
 
 	/**
-	 * See {@link #acceptAfter(ItemLike, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
+	 * See {@link #insertAfter(ItemLike, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
 	 */
-	public void acceptAfter(ItemLike afterLast, Collection<ItemStack> newStacks) {
-		acceptAfter(afterLast, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+	public void insertAfter(ItemLike afterLast, Collection<ItemStack> newStacks) {
+		insertAfter(afterLast, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	/**
-	 * See {@link #acceptAfter(ItemStack, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
+	 * See {@link #insertAfter(ItemStack, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
 	 */
-	public void acceptAfter(ItemStack afterLast, Collection<ItemStack> newStacks) {
-		acceptAfter(afterLast, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+	public void insertAfter(ItemStack afterLast, Collection<ItemStack> newStacks) {
+		insertAfter(afterLast, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	/**
@@ -194,7 +194,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	 * @param visibility Determines whether the stack will be shown in the tab itself, returned
 	 *                   for searches, or both.
 	 */
-	public void acceptAfter(ItemLike afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
+	public void insertAfter(ItemLike afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -203,11 +203,11 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 
 		switch (visibility) {
 		case PARENT_AND_SEARCH_TABS -> {
-			acceptAfter(afterLast, newStacks, displayStacks);
-			acceptAfter(afterLast, newStacks, searchTabStacks);
+			insertAfter(afterLast, newStacks, displayStacks);
+			insertAfter(afterLast, newStacks, searchTabStacks);
 		}
-		case PARENT_TAB_ONLY -> acceptAfter(afterLast, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> acceptAfter(afterLast, newStacks, searchTabStacks);
+		case PARENT_TAB_ONLY -> insertAfter(afterLast, newStacks, displayStacks);
+		case SEARCH_TAB_ONLY -> insertAfter(afterLast, newStacks, searchTabStacks);
 		}
 	}
 
@@ -219,7 +219,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	 * @param visibility Determines whether the stack will be shown in the tab itself, returned
 	 *                   for searches, or both.
 	 */
-	public void acceptAfter(ItemStack afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
+	public void insertAfter(ItemStack afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -228,11 +228,11 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 
 		switch (visibility) {
 		case PARENT_AND_SEARCH_TABS -> {
-			acceptAfter(afterLast, newStacks, displayStacks);
-			acceptAfter(afterLast, newStacks, searchTabStacks);
+			insertAfter(afterLast, newStacks, displayStacks);
+			insertAfter(afterLast, newStacks, searchTabStacks);
 		}
-		case PARENT_TAB_ONLY -> acceptAfter(afterLast, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> acceptAfter(afterLast, newStacks, searchTabStacks);
+		case PARENT_TAB_ONLY -> insertAfter(afterLast, newStacks, displayStacks);
+		case SEARCH_TAB_ONLY -> insertAfter(afterLast, newStacks, searchTabStacks);
 		}
 	}
 
@@ -244,7 +244,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	 * @param visibility Determines whether the stack will be shown in the tab itself, returned
 	 *                   for searches, or both.
 	 */
-	public void acceptAfter(Predicate<ItemStack> afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
+	public void insertAfter(Predicate<ItemStack> afterLast, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -253,54 +253,54 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 
 		switch (visibility) {
 		case PARENT_AND_SEARCH_TABS -> {
-			acceptAfter(afterLast, newStacks, displayStacks);
-			acceptAfter(afterLast, newStacks, searchTabStacks);
+			insertAfter(afterLast, newStacks, displayStacks);
+			insertAfter(afterLast, newStacks, searchTabStacks);
 		}
-		case PARENT_TAB_ONLY -> acceptAfter(afterLast, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> acceptAfter(afterLast, newStacks, searchTabStacks);
+		case PARENT_TAB_ONLY -> insertAfter(afterLast, newStacks, displayStacks);
+		case SEARCH_TAB_ONLY -> insertAfter(afterLast, newStacks, searchTabStacks);
 		}
 	}
 
 	/**
-	 * See {@link #acceptBefore(ItemLike, Collection)}.
+	 * See {@link #insertBefore(ItemLike, Collection)}.
 	 */
-	public void acceptBefore(ItemLike beforeFirst, ItemStack... newStack) {
-		acceptBefore(beforeFirst, Arrays.asList(newStack));
+	public void insertBefore(ItemLike beforeFirst, ItemStack... newStack) {
+		insertBefore(beforeFirst, Arrays.asList(newStack));
 	}
 
 	/**
-	 * See {@link #acceptBefore(ItemStack, Collection)}.
+	 * See {@link #insertBefore(ItemStack, Collection)}.
 	 */
-	public void acceptBefore(ItemStack beforeFirst, ItemStack... newStack) {
-		acceptBefore(beforeFirst, Arrays.asList(newStack));
+	public void insertBefore(ItemStack beforeFirst, ItemStack... newStack) {
+		insertBefore(beforeFirst, Arrays.asList(newStack));
 	}
 
 	/**
-	 * See {@link #acceptBefore(ItemLike, Collection)}.
+	 * See {@link #insertBefore(ItemLike, Collection)}.
 	 */
-	public void acceptBefore(ItemLike beforeFirst, ItemLike... newItem) {
-		acceptBefore(beforeFirst, Arrays.stream(newItem).map(ItemStack::new).toList());
+	public void insertBefore(ItemLike beforeFirst, ItemLike... newItem) {
+		insertBefore(beforeFirst, Arrays.stream(newItem).map(ItemStack::new).toList());
 	}
 
 	/**
-	 * See {@link #acceptBefore(ItemStack, Collection)}.
+	 * See {@link #insertBefore(ItemStack, Collection)}.
 	 */
-	public void acceptBefore(ItemStack beforeFirst, ItemLike... newItem) {
-		acceptBefore(beforeFirst, Arrays.stream(newItem).map(ItemStack::new).toList());
+	public void insertBefore(ItemStack beforeFirst, ItemLike... newItem) {
+		insertBefore(beforeFirst, Arrays.stream(newItem).map(ItemStack::new).toList());
 	}
 
 	/**
-	 * See {@link #acceptBefore(ItemLike, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
+	 * See {@link #insertBefore(ItemLike, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
 	 */
-	public void acceptBefore(ItemLike beforeFirst, Collection<ItemStack> newStacks) {
-		acceptBefore(beforeFirst, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+	public void insertBefore(ItemLike beforeFirst, Collection<ItemStack> newStacks) {
+		insertBefore(beforeFirst, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	/**
-	 * See {@link #acceptBefore(ItemStack, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
+	 * See {@link #insertBefore(ItemStack, Collection, net.minecraft.world.item.CreativeModeTab.TabVisibility)}.
 	 */
-	public void acceptBefore(ItemStack beforeFirst, Collection<ItemStack> newStacks) {
-		acceptBefore(beforeFirst, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+	public void insertBefore(ItemStack beforeFirst, Collection<ItemStack> newStacks) {
+		insertBefore(beforeFirst, newStacks, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 
 	/**
@@ -311,7 +311,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	 * @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	 *                    for searches, or both.
 	 */
-	public void acceptBefore(ItemLike beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
+	public void insertBefore(ItemLike beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -320,11 +320,11 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 
 		switch (visibility) {
 		case PARENT_AND_SEARCH_TABS -> {
-			acceptBefore(beforeFirst, newStacks, displayStacks);
-			acceptBefore(beforeFirst, newStacks, searchTabStacks);
+			insertBefore(beforeFirst, newStacks, displayStacks);
+			insertBefore(beforeFirst, newStacks, searchTabStacks);
 		}
-		case PARENT_TAB_ONLY -> acceptBefore(beforeFirst, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> acceptBefore(beforeFirst, newStacks, searchTabStacks);
+		case PARENT_TAB_ONLY -> insertBefore(beforeFirst, newStacks, displayStacks);
+		case SEARCH_TAB_ONLY -> insertBefore(beforeFirst, newStacks, searchTabStacks);
 		}
 	}
 
@@ -336,7 +336,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	 * @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	 *                    for searches, or both.
 	 */
-	public void acceptBefore(ItemStack beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
+	public void insertBefore(ItemStack beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -345,11 +345,11 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 
 		switch (visibility) {
 		case PARENT_AND_SEARCH_TABS -> {
-			acceptBefore(beforeFirst, newStacks, displayStacks);
-			acceptBefore(beforeFirst, newStacks, searchTabStacks);
+			insertBefore(beforeFirst, newStacks, displayStacks);
+			insertBefore(beforeFirst, newStacks, searchTabStacks);
 		}
-		case PARENT_TAB_ONLY -> acceptBefore(beforeFirst, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> acceptBefore(beforeFirst, newStacks, searchTabStacks);
+		case PARENT_TAB_ONLY -> insertBefore(beforeFirst, newStacks, displayStacks);
+		case SEARCH_TAB_ONLY -> insertBefore(beforeFirst, newStacks, searchTabStacks);
 		}
 	}
 
@@ -361,7 +361,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	 * @param visibility  Determines whether the stack will be shown in the tab itself, returned
 	 *                    for searches, or both.
 	 */
-	public void acceptBefore(Predicate<ItemStack> beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
+	public void insertBefore(Predicate<ItemStack> beforeFirst, Collection<ItemStack> newStacks, CreativeModeTab.TabVisibility visibility) {
 		newStacks = getEnabledStacks(newStacks);
 
 		if (newStacks.isEmpty()) {
@@ -370,11 +370,11 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 
 		switch (visibility) {
 		case PARENT_AND_SEARCH_TABS -> {
-			acceptBefore(beforeFirst, newStacks, displayStacks);
-			acceptBefore(beforeFirst, newStacks, searchTabStacks);
+			insertBefore(beforeFirst, newStacks, displayStacks);
+			insertBefore(beforeFirst, newStacks, searchTabStacks);
 		}
-		case PARENT_TAB_ONLY -> acceptBefore(beforeFirst, newStacks, displayStacks);
-		case SEARCH_TAB_ONLY -> acceptBefore(beforeFirst, newStacks, searchTabStacks);
+		case PARENT_TAB_ONLY -> insertBefore(beforeFirst, newStacks, displayStacks);
+		case SEARCH_TAB_ONLY -> insertBefore(beforeFirst, newStacks, searchTabStacks);
 		}
 	}
 
@@ -398,7 +398,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 	/**
 	 * Adds the {@link ItemStack} before the first match, if no matches the {@link ItemStack} is appended to the end of the {@link CreativeModeTab}.
 	 */
-	private static void acceptBefore(Predicate<ItemStack> predicate, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+	private static void insertBefore(Predicate<ItemStack> predicate, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
 		checkStacks(newStacks);
 
 		for (int i = 0; i < addTo.size(); i++) {
@@ -412,7 +412,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 		addTo.addAll(newStacks);
 	}
 
-	private static void acceptAfter(Predicate<ItemStack> predicate, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+	private static void insertAfter(Predicate<ItemStack> predicate, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
 		checkStacks(newStacks);
 
 		// Iterate in reverse to add after the last match
@@ -427,7 +427,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 		addTo.addAll(newStacks);
 	}
 
-	private static void acceptBefore(ItemStack anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+	private static void insertBefore(ItemStack anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
 		checkStacks(newStacks);
 
 		for (int i = 0; i < addTo.size(); i++) {
@@ -441,7 +441,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 		addTo.addAll(newStacks);
 	}
 
-	private static void acceptAfter(ItemStack anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+	private static void insertAfter(ItemStack anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
 		checkStacks(newStacks);
 
 		// Iterate in reverse to add after the last match
@@ -456,7 +456,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 		addTo.addAll(newStacks);
 	}
 
-	private static void acceptBefore(ItemLike anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+	private static void insertBefore(ItemLike anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
 		checkStacks(newStacks);
 
 		Item anchorItem = anchor.asItem();
@@ -472,7 +472,7 @@ public class FabricCreativeModeTabOutput implements CreativeModeTab.Output {
 		addTo.addAll(newStacks);
 	}
 
-	private static void acceptAfter(ItemLike anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
+	private static void insertAfter(ItemLike anchor, Collection<ItemStack> newStacks, List<ItemStack> addTo) {
 		checkStacks(newStacks);
 
 		Item anchorItem = anchor.asItem();
