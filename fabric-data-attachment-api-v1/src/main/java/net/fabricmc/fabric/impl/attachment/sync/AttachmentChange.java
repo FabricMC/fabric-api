@@ -106,8 +106,8 @@ public record AttachmentChange(AttachmentTargetInfo<?> targetInfo, AttachmentTyp
 
 			int size = MAX_PADDING_SIZE_IN_BYTES + change.data.length;
 
-			if (byteSize + size > MAX_DATA_SIZE_IN_BYTES) {
-				ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(packetChanges));
+			if (!packetChanges.isEmpty() && byteSize + size > MAX_DATA_SIZE_IN_BYTES) {
+				ServerPlayNetworking.send(player, new AttachmentSyncPayloadS2C(List.copyOf(packetChanges)));
 				packetChanges.clear();
 				byteSize = maxVarIntSize;
 			}
