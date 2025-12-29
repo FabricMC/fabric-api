@@ -94,7 +94,7 @@ public class ResourceReloaderTestMod implements ModInitializer {
 
 		@Override
 		public CompletableFuture<Void> reload(SharedState store, Executor prepareExecutor, PreparationBarrier reloadSynchronizer, Executor applyExecutor) {
-			HolderLookup.Provider registries = store.get(ResourceLoader.HOLDER_LOOKUP_KEY);
+			HolderLookup.Provider registries = store.get(ResourceLoader.REGISTRY_LOOKUP_KEY);
 			registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
 			registries.lookupOrThrow(Registries.ITEM).getOrThrow(ItemTags.AXES);
 			return reloadSynchronizer.wait(null).thenRunAsync(

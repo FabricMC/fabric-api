@@ -58,7 +58,7 @@ public final class TagAliasLoader extends SimpleReloadListener<Map<ResourceKey<?
 	@Override
 	protected Map<ResourceKey<? extends Registry<?>>, List<TagAliasLoader.Data>> prepare(SharedState state) {
 		Map<ResourceKey<? extends Registry<?>>, List<TagAliasLoader.Data>> dataByRegistry = new HashMap<>();
-		HolderLookup.Provider registries = state.get(ResourceLoader.HOLDER_LOOKUP_KEY);
+		HolderLookup.Provider registries = state.get(ResourceLoader.REGISTRY_LOOKUP_KEY);
 		Iterator<ResourceKey<? extends Registry<?>>> registryIterator = registries.listRegistryKeys().iterator();
 
 		while (registryIterator.hasNext()) {
@@ -131,7 +131,7 @@ public final class TagAliasLoader extends SimpleReloadListener<Map<ResourceKey<?
 			// Remove any groups of one tag, we don't need to apply them.
 			groupsByTag.values().removeIf(tags -> tags.size() == 1);
 
-			HolderLookup.RegistryLookup<?> lookup = state.get(ResourceLoader.HOLDER_LOOKUP_KEY).lookupOrThrow(entry.getKey());
+			HolderLookup.RegistryLookup<?> lookup = state.get(ResourceLoader.REGISTRY_LOOKUP_KEY).lookupOrThrow(entry.getKey());
 
 			if (lookup instanceof TagAliasEnabledRegistryLookup aliasLookup) {
 				aliasLookup.fabric_loadTagAliases(groupsByTag);

@@ -55,7 +55,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		this.resourceLoader.registerReloadListener(identifier, new PreparableReloadListener() {
 			@Override
 			public CompletableFuture<Void> reload(SharedState store, Executor prepareExecutor, PreparationBarrier reloadSynchronizer, Executor applyExecutor) {
-				HolderLookup.Provider registries = store.get(ResourceLoader.HOLDER_LOOKUP_KEY);
+				HolderLookup.Provider registries = store.get(ResourceLoader.REGISTRY_LOOKUP_KEY);
 				PreparableReloadListener resourceReloader = listenerFactory.apply(registries);
 
 				return resourceReloader.reload(store, prepareExecutor, reloadSynchronizer, applyExecutor);

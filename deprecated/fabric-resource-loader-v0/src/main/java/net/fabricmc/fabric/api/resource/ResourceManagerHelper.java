@@ -66,7 +66,7 @@ public interface ResourceManagerHelper {
 	 *
 	 * @param identifier The identifier of the listener.
 	 * @param listenerFactory   A function that creates a new instance of the listener with a given registry lookup.
-	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#HOLDER_LOOKUP_KEY} with {@link net.minecraft.server.packs.resources.PreparableReloadListener.SharedState},
+	 * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#REGISTRY_LOOKUP_KEY} with {@link net.minecraft.server.packs.resources.PreparableReloadListener.SharedState},
 	 * or {@link net.fabricmc.fabric.api.resource.v1.DataResourceLoader#registerReloadListener(Identifier, Function)} instead.
 	 */
 	@Deprecated

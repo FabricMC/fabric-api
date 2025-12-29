@@ -35,11 +35,11 @@ import net.fabricmc.loader.api.ModContainer;
 @ApiStatus.NonExtendable
 public interface ResourceLoader {
 	/**
-	 * The resource listener state key for the holder lookup.
+	 * The resource listener state key for the registry lookup {@link HolderLookup.Provider}.
 	 *
 	 * @apiNote The holder lookup is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
 	 */
-	PreparableReloadListener.StateKey<HolderLookup.Provider> HOLDER_LOOKUP_KEY = new PreparableReloadListener.StateKey<>();
+	PreparableReloadListener.StateKey<HolderLookup.Provider> REGISTRY_LOOKUP_KEY = new PreparableReloadListener.StateKey<>();
 	/**
 	 * The resource listener state key for the currently enabled feature flag set.
 	 *
