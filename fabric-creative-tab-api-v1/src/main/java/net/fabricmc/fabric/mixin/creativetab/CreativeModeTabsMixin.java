@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.creativemodetab;
+package net.fabricmc.fabric.mixin.creativetab;
 
 import static net.minecraft.world.item.CreativeModeTabs.BUILDING_BLOCKS;
 import static net.minecraft.world.item.CreativeModeTabs.COLORED_BLOCKS;
@@ -48,7 +48,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 
-import net.fabricmc.fabric.impl.creativemodetab.FabricCreativeModeTabImpl;
+import net.fabricmc.fabric.impl.creativetab.FabricCreativeModeTabImpl;
 
 @Mixin(CreativeModeTabs.class)
 public class CreativeModeTabsMixin {

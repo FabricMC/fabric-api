@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.creativemodetab;
+package net.fabricmc.fabric.impl.creativetab;
 
 public interface FabricCreativeModeTabImpl {
 	int TABS_PER_PAGE = 10;

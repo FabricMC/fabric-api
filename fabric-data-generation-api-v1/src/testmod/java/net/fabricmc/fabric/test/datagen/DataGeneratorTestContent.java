@@ -39,8 +39,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.creativemodetab.v1.CreativeModeTabEvents;
-import net.fabricmc.fabric.api.creativemodetab.v1.FabricCreativeModeTab;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 
 public class DataGeneratorTestContent implements ModInitializer {

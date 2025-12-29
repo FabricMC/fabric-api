@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.creativemodetab",
+  "package": "net.fabricmc.fabric.mixin.creativetab",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
     "CreativeModeTabAccessor",

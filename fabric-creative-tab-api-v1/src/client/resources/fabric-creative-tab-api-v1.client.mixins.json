@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.creativemodetab.client",
+  "package": "net.fabricmc.fabric.mixin.creativetab.client",
   "compatibilityLevel": "JAVA_25",
   "client": [
     "CreativeModeInventoryScreenMixin"
