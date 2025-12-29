@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.creativemodetab.v1;
+package net.fabricmc.fabric.api.creativetab.v1;
 
 import java.util.Arrays;
 import java.util.Collection;

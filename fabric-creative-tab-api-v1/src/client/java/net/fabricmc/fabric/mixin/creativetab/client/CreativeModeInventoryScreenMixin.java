@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.creativemodetab.client;
+package net.fabricmc.fabric.mixin.creativetab.client;
 
 import java.util.Comparator;
 import java.util.List;
@@ -39,9 +39,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 
-import net.fabricmc.fabric.api.client.creativemodetab.v1.FabricCreativeModeInventoryScreen;
-import net.fabricmc.fabric.impl.client.creativemodetab.FabricCreativeGuiComponents;
-import net.fabricmc.fabric.impl.creativemodetab.FabricCreativeModeTabImpl;
+import net.fabricmc.fabric.api.client.creativetab.v1.FabricCreativeModeInventoryScreen;
+import net.fabricmc.fabric.impl.client.creativetab.FabricCreativeGuiComponents;
+import net.fabricmc.fabric.impl.creativetab.FabricCreativeModeTabImpl;
 
 @Mixin(CreativeModeInventoryScreen.class)
 public abstract class CreativeModeInventoryScreenMixin extends AbstractContainerScreen<ItemPickerMenu> implements FabricCreativeModeInventoryScreen {

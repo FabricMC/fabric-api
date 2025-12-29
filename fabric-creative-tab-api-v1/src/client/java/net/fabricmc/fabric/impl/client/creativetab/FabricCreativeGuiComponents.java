@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.creativemodetab;
+package net.fabricmc.fabric.impl.client.creativetab;
 
 import java.util.Set;
 import java.util.function.Consumer;
@@ -32,7 +32,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 
-import net.fabricmc.fabric.impl.creativemodetab.FabricCreativeModeTabImpl;
+import net.fabricmc.fabric.impl.creativetab.FabricCreativeModeTabImpl;
 
 public class FabricCreativeGuiComponents {
 	private static final Identifier BUTTON_TEX = Identifier.fromNamespaceAndPath("fabric", "textures/gui/creative_buttons.png");

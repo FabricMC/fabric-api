@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.creativemodetab.v1;
+package net.fabricmc.fabric.api.creativetab.v1;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 
-import net.fabricmc.fabric.impl.creativemodetab.FabricCreativeModeTabBuilderImpl;
+import net.fabricmc.fabric.impl.creativetab.FabricCreativeModeTabBuilderImpl;
 
 /**
  * Contains a method to create a creative mode tab builder.

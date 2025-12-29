@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.creativemodetab.v1;
+package net.fabricmc.fabric.api.creativetab.v1;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
@@ -22,7 +22,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.impl.creativemodetab.CreativeModeTabEventsImpl;
+import net.fabricmc.fabric.impl.creativetab.CreativeModeTabEventsImpl;
 
 /**
  * Holds events related to {@link CreativeModeTabs}.

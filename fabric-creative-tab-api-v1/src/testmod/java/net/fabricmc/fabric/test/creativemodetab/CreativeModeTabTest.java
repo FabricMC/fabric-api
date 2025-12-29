@@ -32,8 +32,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.creativemodetab.v1.CreativeModeTabEvents;
-import net.fabricmc.fabric.api.creativemodetab.v1.FabricCreativeModeTab;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 
 public class CreativeModeTabTest implements ModInitializer {
 	private static final String MOD_ID = "fabric-creative-mode-tab-v1-testmod";

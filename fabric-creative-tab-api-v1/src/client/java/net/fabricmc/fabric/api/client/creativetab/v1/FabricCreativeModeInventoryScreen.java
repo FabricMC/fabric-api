@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.creativemodetab.v1;
+package net.fabricmc.fabric.api.client.creativetab.v1;
 
 import java.util.List;
 

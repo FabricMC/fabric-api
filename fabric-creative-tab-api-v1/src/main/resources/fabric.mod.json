@@ -32,7 +32,7 @@
   "custom": {
     "fabric-api:module-lifecycle": "stable",
     "loom:injected_interfaces": {
-      "net/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen": ["net/fabricmc/fabric/api/client/creativemodetab/v1/FabricCreativeModeInventoryScreen"]
+      "net/minecraft/client/gui/screens/inventory/CreativeModeInventoryScreen": ["net/fabricmc/fabric/api/client/creativetab/v1/FabricCreativeModeInventoryScreen"]
     }
   }
 }
