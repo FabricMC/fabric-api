@@ -76,7 +76,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
 	 */
 	default boolean matches(ItemStack stack) {
-		return isOf(stack.getItem()) && Objects.equals(stack.getComponentsPatch(), getComponents());
+		return isOf(stack.getItem()) && Objects.equals(stack.getComponentsPatch(), getComponentsPatch());
 	}
 
 	/**
@@ -86,7 +86,8 @@ public interface ItemVariant extends TransferVariant<Item> {
 		return getObject();
 	}
 
-	default Holder<Item> getHolder() {
+	@Override
+	default Holder<Item> typeHolder() {
 		return getItem().builtInRegistryHolder();
 	}
 
@@ -104,7 +105,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 */
 	default ItemStack toStack(int count) {
 		if (isBlank()) return ItemStack.EMPTY;
-		return new ItemStack(getHolder(), count, getComponents());
+		return new ItemStack(typeHolder(), count, getComponentsPatch());
 	}
 
 	/**

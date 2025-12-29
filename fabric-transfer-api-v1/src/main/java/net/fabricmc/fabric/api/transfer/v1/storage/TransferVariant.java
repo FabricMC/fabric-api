@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import java.util.Objects;
 
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 
@@ -32,7 +34,7 @@ import net.minecraft.core.component.DataComponentPatch;
  *
  * @param <O> The type of the immutable object instance, for example {@code Item} or {@code Fluid}.
  */
-public interface TransferVariant<O> {
+public interface TransferVariant<O> extends DataComponentHolder, TypedInstance<O> {
 	/**
 	 * Return true if this variant is blank, and false otherwise.
 	 */
@@ -46,18 +48,19 @@ public interface TransferVariant<O> {
 	/**
 	 * @return The {@link DataComponentPatch} of this variant.
 	 */
-	DataComponentPatch getComponents();
+	DataComponentPatch getComponentsPatch();
 
 	/**
 	 * @return The {@link DataComponentMap} of this variant.
 	 */
-	DataComponentMap getComponentMap();
+	@Override
+	DataComponentMap getComponents();
 
 	/**
 	 * Return true if this variant has a component patch.
 	 */
 	default boolean hasComponents() {
-		return !getComponents().isEmpty();
+		return !getComponentsPatch().isEmpty();
 	}
 
 	/**
@@ -66,7 +69,7 @@ public interface TransferVariant<O> {
 	 * <p>Note: True is returned if both tags are {@code null}.
 	 */
 	default boolean componentsMatch(DataComponentPatch other) {
-		return Objects.equals(getComponents(), other);
+		return Objects.equals(getComponentsPatch(), other);
 	}
 
 	/**

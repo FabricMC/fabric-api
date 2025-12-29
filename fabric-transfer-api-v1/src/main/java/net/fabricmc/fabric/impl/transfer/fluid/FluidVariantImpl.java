@@ -87,18 +87,18 @@ public class FluidVariantImpl implements FluidVariant {
 	}
 
 	@Override
-	public @Nullable DataComponentPatch getComponents() {
+	public @Nullable DataComponentPatch getComponentsPatch() {
 		return components;
 	}
 
 	@Override
-	public DataComponentMap getComponentMap() {
+	public DataComponentMap getComponents() {
 		return componentMap;
 	}
 
 	@Override
 	public FluidVariant withComponents(DataComponentPatch patch) {
-		return of(fluid, TransferApiImpl.mergePatches(getComponents(), patch));
+		return of(fluid, TransferApiImpl.mergePatches(getComponentsPatch(), patch));
 	}
 
 	@Override

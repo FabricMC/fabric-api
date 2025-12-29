@@ -81,7 +81,8 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 		return getObject();
 	}
 
-	default Holder<Fluid> getHolder() {
+	@Override
+	default Holder<Fluid> typeHolder() {
 		return getFluid().builtInRegistryHolder();
 	}
 

@@ -68,18 +68,18 @@ public class ItemVariantImpl implements ItemVariant {
 
 	@Nullable
 	@Override
-	public DataComponentPatch getComponents() {
+	public DataComponentPatch getComponentsPatch() {
 		return components;
 	}
 
 	@Override
-	public DataComponentMap getComponentMap() {
+	public DataComponentMap getComponents() {
 		return getCachedStack().getComponents();
 	}
 
 	@Override
 	public ItemVariant withComponents(DataComponentPatch patch) {
-		return of(item, TransferApiImpl.mergePatches(getComponents(), patch));
+		return of(item, TransferApiImpl.mergePatches(getComponentsPatch(), patch));
 	}
 
 	@Override

@@ -71,7 +71,7 @@ public final class EmptyItemFluidStorage implements InsertionOnlyStorage<FluidVa
 	 * @param insertableAmount The amount of fluid that can be inserted.
 	 */
 	public EmptyItemFluidStorage(ContainerItemContext context, Item fullItem, Fluid insertableFluid, long insertableAmount) {
-		this(context, emptyVariant -> ItemVariant.of(fullItem, emptyVariant.getComponents()), insertableFluid, insertableAmount);
+		this(context, emptyVariant -> ItemVariant.of(fullItem, emptyVariant.getComponentsPatch()), insertableFluid, insertableAmount);
 	}
 
 	/**

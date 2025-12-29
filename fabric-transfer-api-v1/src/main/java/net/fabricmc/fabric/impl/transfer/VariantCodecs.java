@@ -37,29 +37,29 @@ import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 public class VariantCodecs {
 	// AIR is valid (for some reason), don't use ItemStack#ITEM_CODEC
 	private static final Codec<ItemVariant> UNVALIDATED_ITEM_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("item").forGetter(ItemVariant::getHolder),
-			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemVariant::getComponents)
+			BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("item").forGetter(ItemVariant::typeHolder),
+			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemVariant::getComponentsPatch)
 		).apply(instance, ItemVariantImpl::of)
 	);
 	public static final Codec<ItemVariant> ITEM_CODEC = UNVALIDATED_ITEM_CODEC.validate(VariantCodecs::validateComponents);
 	public static final StreamCodec<RegistryFriendlyByteBuf, ItemVariant> ITEM_PACKET_CODEC = StreamCodec.composite(
-			ByteBufCodecs.holderRegistry(Registries.ITEM), ItemVariant::getHolder,
-			DataComponentPatch.STREAM_CODEC, ItemVariant::getComponents,
+			ByteBufCodecs.holderRegistry(Registries.ITEM), ItemVariant::typeHolder,
+			DataComponentPatch.STREAM_CODEC, ItemVariant::getComponentsPatch,
 			ItemVariantImpl::of
 	);
 
 	public static final Codec<FluidVariant> FLUID_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			BuiltInRegistries.FLUID.holderByNameCodec().fieldOf("fluid").forGetter(FluidVariant::getHolder),
-			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(FluidVariant::getComponents)
+			BuiltInRegistries.FLUID.holderByNameCodec().fieldOf("fluid").forGetter(FluidVariant::typeHolder),
+			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(FluidVariant::getComponentsPatch)
 		).apply(instance, FluidVariantImpl::of)
 	);
 	public static final StreamCodec<RegistryFriendlyByteBuf, FluidVariant> FLUID_PACKET_CODEC = StreamCodec.composite(
-			ByteBufCodecs.holderRegistry(Registries.FLUID), FluidVariant::getHolder,
-			DataComponentPatch.STREAM_CODEC, FluidVariant::getComponents,
+			ByteBufCodecs.holderRegistry(Registries.FLUID), FluidVariant::typeHolder,
+			DataComponentPatch.STREAM_CODEC, FluidVariant::getComponentsPatch,
 			FluidVariantImpl::of
 	);
 
 	private static DataResult<ItemVariant> validateComponents(ItemVariant variant) {
-		return ItemStack.validateComponents(PatchedDataComponentMap.fromPatch(variant.getItem().components(), variant.getComponents())).map(v -> variant);
+		return ItemStack.validateComponents(PatchedDataComponentMap.fromPatch(variant.getItem().components(), variant.getComponentsPatch())).map(v -> variant);
 	}
 }

@@ -54,7 +54,7 @@ public class ItemContainerContentsStorage extends CombinedSlottedStorage<ItemVar
 	}
 
 	ItemContainerContents container() {
-		return ctx.getItemVariant().getComponentMap().getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
+		return ctx.getItemVariant().getComponents().getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
 	}
 
 	ItemContainerContentsAccessor containerAccessor() {

@@ -52,7 +52,7 @@ public final class FullItemFluidStorage implements ExtractionOnlyStorage<FluidVa
 	 * @param containedAmount How much of {@code containedFluid} is contained.
 	 */
 	public FullItemFluidStorage(ContainerItemContext context, Item emptyItem, FluidVariant containedFluid, long containedAmount) {
-		this(context, fullVariant -> ItemVariant.of(emptyItem, fullVariant.getComponents()), containedFluid, containedAmount);
+		this(context, fullVariant -> ItemVariant.of(emptyItem, fullVariant.getComponentsPatch()), containedFluid, containedAmount);
 	}
 
 	/**

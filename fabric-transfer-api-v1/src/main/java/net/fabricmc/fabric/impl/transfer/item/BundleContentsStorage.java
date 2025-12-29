@@ -123,7 +123,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 	}
 
 	BundleContents bundleContents() {
-		return ctx.getItemVariant().getComponentMap().getOrDefault(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY);
+		return ctx.getItemVariant().getComponents().getOrDefault(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY);
 	}
 
 	private class BundleSlotWrapper implements StorageView<ItemVariant> {
