@@ -42,21 +42,21 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 
 /**
- * Extend this class and implement {@link FabricEntityLootTableSubProvider#generate()}.
+ * Extend this class and implement {@link FabricEntityLootSubProvider#generate()}.
  *
  * <p>Register an instance of this class with {@link FabricDataGenerator.Pack#addProvider} in a
  * {@link DataGeneratorEntrypoint}.
  */
-public abstract class FabricEntityLootTableSubProvider extends EntityLootSubProvider implements FabricLootTableSubProvider {
+public abstract class FabricEntityLootSubProvider extends EntityLootSubProvider implements FabricLootTableSubProvider {
 	private final FabricPackOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
-	private final CompletableFuture<HolderLookup.Provider> registryLookupFuture;
+	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
 
-	protected FabricEntityLootTableSubProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
-		super(FeatureFlags.REGISTRY.allFlags(), registryLookupFuture.join());
+	protected FabricEntityLootSubProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		super(FeatureFlags.REGISTRY.allFlags(), registriesFuture.join());
 
 		this.output = output;
-		this.registryLookupFuture = registryLookupFuture;
+		this.registriesFuture = registriesFuture;
 	}
 
 	/**
@@ -121,7 +121,7 @@ public abstract class FabricEntityLootTableSubProvider extends EntityLootSubProv
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput output) {
-		return FabricLootTableProviderImpl.run(output, this, LootContextParamSets.ENTITY, this.output, this.registryLookupFuture);
+		return FabricLootTableProviderImpl.run(output, this, LootContextParamSets.ENTITY, this.output, this.registriesFuture);
 	}
 
 	@Override

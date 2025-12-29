@@ -38,7 +38,7 @@ import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableSubProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLootTableSubProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableSubProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
@@ -46,7 +46,7 @@ import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
 public final class FabricLootTableProviderImpl {
 	/**
-	 * Shared run logic for {@link FabricBlockLootTableSubProvider} and {@link SimpleFabricLootTableSubProvider}.
+	 * Shared run logic for {@link FabricBlockLootSubProvider} and {@link SimpleFabricLootTableSubProvider}.
 	 */
 	public static CompletableFuture<?> run(
 			CachedOutput cache,

@@ -88,10 +88,10 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.JsonKeySortOrderCallback;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableSubProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootSubProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricEntityLootTableSubProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricEntityLootSubProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
@@ -116,8 +116,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 
 		pack.addProvider(TestRecipeProvider::new);
 		pack.addProvider(TestAdvancementProvider::new);
-		pack.addProvider(TestBlockLootTableSubProvider::new);
-		pack.addProvider(TestEntityLootTableSubProvider::new);
+		pack.addProvider(TestBlockLootSubProvider::new);
+		pack.addProvider(TestEntityLootSubProvider::new);
 		pack.addProvider(TestBarterLootTableSubProvider::new);
 		pack.addProvider(ExistingEnglishLangProvider::new);
 		pack.addProvider(JapaneseLangProvider::new);
@@ -387,8 +387,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	private static class TestBlockLootTableSubProvider extends FabricBlockLootTableSubProvider {
-		private TestBlockLootTableSubProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+	private static class TestBlockLootSubProvider extends FabricBlockLootSubProvider {
+		private TestBlockLootSubProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
 			super(output, registryLookup);
 		}
 
@@ -402,8 +402,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	public static class TestEntityLootTableSubProvider extends FabricEntityLootTableSubProvider {
-		private TestEntityLootTableSubProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+	public static class TestEntityLootSubProvider extends FabricEntityLootSubProvider {
+		private TestEntityLootSubProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
 			super(output, registryLookup);
 		}
 
