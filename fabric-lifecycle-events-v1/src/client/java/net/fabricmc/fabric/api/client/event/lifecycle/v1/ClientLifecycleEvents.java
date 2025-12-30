@@ -51,8 +51,7 @@ public final class ClientLifecycleEvents {
 	/**
 	 * Called after the client has finished reloading resources.
 	 */
-	public static final Event<ResourcesLoaded> RESOURCES_LOADED = EventFactory.createArrayBacked(
-		ResourcesLoaded.class, callbacks -> (client, isFirst) -> {
+	public static final Event<ResourcesLoaded> RESOURCES_LOADED = EventFactory.createArrayBacked(ResourcesLoaded.class, callbacks -> (client, isFirst) -> {
 		for (ResourcesLoaded callback : callbacks) {
 			callback.onResourcesLoaded(client, isFirst);
 		}
