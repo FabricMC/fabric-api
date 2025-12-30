@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -57,11 +60,21 @@ public abstract class MinecraftMixin {
 		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((Minecraft) (Object) this);
 	}
 
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/resources/ReloadableResourceManager;createReload(Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Ljava/util/List;)Lnet/minecraft/server/packs/resources/ReloadInstance;"), method = "<init>")
+	private void onStartResourceLoad(CallbackInfo ci) {
+		ClientLifecycleEvents.START_RESOURCE_RELOAD.invoker().startResourceReload((Minecraft) (Object) this, true);
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/ResourceLoadStateTracker;startReload(Lnet/minecraft/client/ResourceLoadStateTracker$ReloadReason;Ljava/util/List;)V"), method = "reloadResourcePacks(ZLnet/minecraft/client/Minecraft$GameLoadCookie;)Ljava/util/concurrent/CompletableFuture;")
+	private void onStartResourceReload(CallbackInfoReturnable<CompletableFuture<Void>> cir) {
+		ClientLifecycleEvents.START_RESOURCE_RELOAD.invoker().startResourceReload((Minecraft) (Object) this, false);
+	}
+
 	@WrapMethod(method = "onResourceLoadFinished")
-	private void onResourceReload(@Coerce Object gameLoadCookie, Operation<Void> original) {
+	private void onResourceLoadFinished(@Coerce Object gameLoadCookie, Operation<Void> original) {
 		boolean first = !this.gameLoadFinished;
 		original.call(gameLoadCookie);
-		ClientLifecycleEvents.RESOURCES_LOADED.invoker().onResourcesLoaded((Minecraft) (Object) this, first);
+		ClientLifecycleEvents.END_RESOURCE_RELOAD.invoker().endResourceReload((Minecraft) (Object) this, first);
 	}
 
 	@Inject(method = "updateLevelInEngines", at = @At("TAIL"))
