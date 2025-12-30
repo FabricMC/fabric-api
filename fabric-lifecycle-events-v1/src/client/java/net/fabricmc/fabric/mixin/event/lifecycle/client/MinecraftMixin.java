@@ -34,9 +34,9 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
-    @Shadow private boolean gameLoadFinished;
+	@Shadow private boolean gameLoadFinished;
 
-    @Inject(at = @At("HEAD"), method = "tick")
+	@Inject(at = @At("HEAD"), method = "tick")
 	private void onStartTick(CallbackInfo info) {
 		ClientTickEvents.START_CLIENT_TICK.invoker().onStartTick((Minecraft) (Object) this);
 	}
@@ -57,14 +57,14 @@ public abstract class MinecraftMixin {
 		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((Minecraft) (Object) this);
 	}
 
-    @WrapMethod(method = "onResourceLoadFinished")
-    private void onResourceReload(@Coerce Object gameLoadCookie, Operation<Void> original) {
-        boolean first = !this.gameLoadFinished;
-        original.call(gameLoadCookie);
-        ClientLifecycleEvents.RESOURCES_LOADED.invoker().onResourcesLoaded((Minecraft) (Object) this, first);
-    }
+	@WrapMethod(method = "onResourceLoadFinished")
+	private void onResourceReload(@Coerce Object gameLoadCookie, Operation<Void> original) {
+		boolean first = !this.gameLoadFinished;
+		original.call(gameLoadCookie);
+		ClientLifecycleEvents.RESOURCES_LOADED.invoker().onResourcesLoaded((Minecraft) (Object) this, first);
+	}
 
-    @Inject(method = "updateLevelInEngines", at = @At("TAIL"))
+	@Inject(method = "updateLevelInEngines", at = @At("TAIL"))
 	private void afterClientWorldChange(ClientLevel world, CallbackInfo ci) {
 		if (world != null) {
 			Minecraft client = (Minecraft) (Object) this;

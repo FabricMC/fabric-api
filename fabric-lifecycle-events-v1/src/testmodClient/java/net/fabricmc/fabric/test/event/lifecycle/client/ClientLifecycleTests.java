@@ -50,9 +50,9 @@ public final class ClientLifecycleTests implements ClientModInitializer {
 			System.out.println("Client has started stopping!");
 		});
 
-        ClientLifecycleEvents.RESOURCES_LOADED.register((client, first) -> {
-            LOGGER.info((first ? "First r" : "R") + "esource load completed");
-        });
+		ClientLifecycleEvents.RESOURCES_LOADED.register((client, first) -> {
+			LOGGER.info((first ? "First r" : "R") + "esource load completed");
+		});
 
 		ClientWorldEvents.AFTER_CLIENT_WORLD_CHANGE.register((client, world) -> {
 			LOGGER.info("Client world changed to {}", world.dimension().identifier());
