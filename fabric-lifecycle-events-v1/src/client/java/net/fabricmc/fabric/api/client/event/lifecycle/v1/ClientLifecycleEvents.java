@@ -48,6 +48,16 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+    /**
+     * Called after the client has finished reloading resources.
+     */
+    public static final Event<ResourcesLoaded> RESOURCES_LOADED = EventFactory.createArrayBacked(
+        ResourcesLoaded.class, callbacks -> (client, isFirst) -> {
+        for (ResourcesLoaded callback : callbacks) {
+            callback.onResourcesLoaded(client, isFirst);
+        }
+    });
+
 	@FunctionalInterface
 	public interface ClientStarted {
 		void onClientStarted(Minecraft client);
@@ -57,4 +67,9 @@ public final class ClientLifecycleEvents {
 	public interface ClientStopping {
 		void onClientStopping(Minecraft client);
 	}
+
+    @FunctionalInterface
+    public interface ResourcesLoaded {
+        void onResourcesLoaded(Minecraft client, boolean isFirst);
+    }
 }

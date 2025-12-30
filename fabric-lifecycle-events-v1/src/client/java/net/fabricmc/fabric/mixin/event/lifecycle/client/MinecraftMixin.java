@@ -16,8 +16,12 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -30,7 +34,9 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
-	@Inject(at = @At("HEAD"), method = "tick")
+    @Shadow private boolean gameLoadFinished;
+
+    @Inject(at = @At("HEAD"), method = "tick")
 	private void onStartTick(CallbackInfo info) {
 		ClientTickEvents.START_CLIENT_TICK.invoker().onStartTick((Minecraft) (Object) this);
 	}
@@ -51,7 +57,14 @@ public abstract class MinecraftMixin {
 		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((Minecraft) (Object) this);
 	}
 
-	@Inject(method = "updateLevelInEngines", at = @At("TAIL"))
+    @WrapMethod(method = "onResourceLoadFinished")
+    private void onResourceReload(@Coerce Object gameLoadCookie, Operation<Void> original) {
+        boolean first = !this.gameLoadFinished;
+        original.call(gameLoadCookie);
+        ClientLifecycleEvents.RESOURCES_LOADED.invoker().onResourcesLoaded((Minecraft) (Object) this, first);
+    }
+
+    @Inject(method = "updateLevelInEngines", at = @At("TAIL"))
 	private void afterClientWorldChange(ClientLevel world, CallbackInfo ci) {
 		if (world != null) {
 			Minecraft client = (Minecraft) (Object) this;
