@@ -56,7 +56,7 @@ public final class FabricParticleTypes {
 	/**
 	 * Creates a new, default particle type for the given id.
 	 *
-	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
+	 * @param alwaysSpawn {@code true} to always spawn the particle regardless of distance.
 	 */
 	public static SimpleParticleType simple(boolean alwaysSpawn) {
 		return new SimpleParticleType(alwaysSpawn) { };
@@ -75,7 +75,7 @@ public final class FabricParticleTypes {
 	/**
 	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
 	 *
-	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
+	 * @param alwaysSpawn {@code true} to always spawn the particle regardless of distance.
 	 * @param codec The codec for serialization.
 	 * @param packetCodec The packet codec for network serialization.
 	 */
@@ -108,7 +108,7 @@ public final class FabricParticleTypes {
 	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
 	 * This method is useful when two different {@link ParticleType}s share the same {@link ParticleOptions} implementation.
 	 *
-	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
+	 * @param alwaysSpawn {@code true} to always spawn the particle regardless of distance.
 	 * @param codecGetter A function that, given the newly created type, returns the codec for serialization.
 	 * @param packetCodecGetter A function that, given the newly created type, returns the packet codec for network serialization.
 	 */

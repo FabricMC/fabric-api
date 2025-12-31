@@ -73,14 +73,14 @@ public interface ItemVariant extends TransferVariant<Item> {
 	}
 
 	/**
-	 * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
+	 * @return {@code true} if the item and tag of this variant match those of the passed stack, and {@code false} otherwise.
 	 */
 	default boolean matches(ItemStack stack) {
 		return isOf(stack.getItem()) && Objects.equals(stack.getComponentsPatch(), getComponents());
 	}
 
 	/**
-	 * Return the item of this variant.
+	 * @return the item of this variant.
 	 */
 	default Item getItem() {
 		return getObject();

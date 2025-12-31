@@ -53,7 +53,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 public class QuadViewImpl implements QuadView {
 	@Nullable
 	protected Direction nominalFace;
-	/** True when face normal, light face, or geometry flags may not match geometry. */
+	/** {@code true} when face normal, light face, or geometry flags may not match geometry. */
 	protected boolean isGeometryInvalid = true;
 	protected final Vector3f faceNormal = new Vector3f();
 

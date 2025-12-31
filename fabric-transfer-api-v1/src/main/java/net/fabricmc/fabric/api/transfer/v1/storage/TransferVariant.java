@@ -34,7 +34,7 @@ import net.minecraft.core.component.DataComponentPatch;
  */
 public interface TransferVariant<O> {
 	/**
-	 * Return true if this variant is blank, and false otherwise.
+	 * Return {@code true} if this variant is blank, and {@code false} otherwise.
 	 */
 	boolean isBlank();
 

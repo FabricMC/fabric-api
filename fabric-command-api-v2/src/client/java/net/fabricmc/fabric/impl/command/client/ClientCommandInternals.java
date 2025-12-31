@@ -69,7 +69,7 @@ public final class ClientCommandInternals {
 	 * (This is the same requirement as {@code ClientPlayerEntity#sendCommand}.)
 	 *
 	 * @param command the command with slash removed
-	 * @return true if the command should not be sent to the server, false otherwise
+	 * @return {@code true} if the command should not be sent to the server, false otherwise
 	 */
 	public static boolean executeCommand(String command) {
 		Minecraft client = Minecraft.getInstance();
@@ -111,7 +111,7 @@ public final class ClientCommandInternals {
 	 * should be ignored and the command sent to the server.
 	 *
 	 * @param type the exception type
-	 * @return true if ignored, false otherwise
+	 * @return {@code true} if ignored, {@code false} otherwise
 	 */
 	private static boolean isIgnoredException(CommandExceptionType type) {
 		BuiltInExceptionProvider builtins = CommandSyntaxException.BUILT_IN_EXCEPTIONS;

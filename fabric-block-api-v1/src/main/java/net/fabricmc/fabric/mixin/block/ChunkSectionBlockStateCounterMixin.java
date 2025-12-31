@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class ChunkSectionBlockStateCounterMixin {
 	/**
 	 * Makes Chunk Sections not have isAir = true modded blocks be replaced with AIR against their will.
-	 * Mojang report: https://bugs.mojang.com/browse/MC-232360
+	 * Mojang report: <a href="https://bugs.mojang.com/browse/MC-232360">https://bugs.mojang.com/browse/MC-232360</a>
 	 */
 	@Redirect(method = "accept(Lnet/minecraft/world/level/block/state/BlockState;I)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;isAir()Z"))

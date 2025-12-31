@@ -148,7 +148,7 @@ public class HudElementRegistryImpl {
 	}
 
 	/**
-	 * @return true if an element with the given identifier was found
+	 * @return {@code true} if an element with the given identifier was found
 	 */
 	@VisibleForTesting
 	static boolean findLayer(Identifier identifier, LayerVisitor visitor) {
@@ -196,7 +196,7 @@ public class HudElementRegistryImpl {
 	@VisibleForTesting
 	interface LayerVisitor {
 		/**
-		 * @return true if the list has been modified, false if not modified
+		 * @return {@code true} if the list has been modified, {@code false} if not modified
 		 */
 		boolean visit(HudLayer layer, ListIterator<HudLayer> iterator);
 	}

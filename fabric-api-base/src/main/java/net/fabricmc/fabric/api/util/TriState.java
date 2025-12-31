@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.util.StringRepresentable;
 
 /**
- * Represents a boolean value which can be true, false or refer to a default value.
+ * Represents a boolean value which can be {@code true}, {@code false} or refer to a default value.
  */
 public enum TriState implements StringRepresentable {
 	/**
@@ -62,6 +62,7 @@ public enum TriState implements StringRepresentable {
 	 *
 	 * @param bool the boolean value
 	 * @return {@link TriState#DEFAULT} if {@code null}.
+	 * <br>
 	 * Otherwise {@link TriState#TRUE} or {@link TriState#FALSE} depending on the value of the boolean.
 	 */
 	public static TriState of(@Nullable Boolean bool) {
@@ -71,7 +72,7 @@ public enum TriState implements StringRepresentable {
 	/**
 	 * Gets the value of the tri-state.
 	 *
-	 * @return true if the tri-state is {@link TriState#TRUE},
+	 * @return {@code true} if the tri-state is {@link TriState#TRUE},
 	 * otherwise false.
 	 */
 	public boolean get() {
@@ -82,6 +83,7 @@ public enum TriState implements StringRepresentable {
 	 * Gets the value of the tri-state as a boxed, nullable boolean.
 	 *
 	 * @return {@code null} if {@link TriState#DEFAULT}.
+	 * <br>
 	 * Otherwise {@code true} if {@link TriState#TRUE} or {@code false} if {@link TriState#FALSE}.
 	 */
 	@Nullable

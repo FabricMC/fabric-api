@@ -112,7 +112,7 @@ public abstract class FabricTagProvider<T> extends TagsProvider<T> {
 	}
 
 	/**
-	 * {@return a read-only map of alias group builders by the alias group ID}.
+	 * @return a read-only map of alias group builders by the alias group ID
 	 */
 	public Map<Identifier, AliasGroupBuilder> getAliasGroupBuilders() {
 		return Collections.unmodifiableMap(aliasGroupBuilders);

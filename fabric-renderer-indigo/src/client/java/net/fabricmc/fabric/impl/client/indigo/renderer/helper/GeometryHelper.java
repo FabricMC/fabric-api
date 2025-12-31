@@ -77,7 +77,7 @@ public final class GeometryHelper {
 	}
 
 	/**
-	 * Returns true if quad is parallel to the given face.
+	 * @return {@code true} if quad is parallel to the given face.
 	 * Does not validate quad winding order.
 	 * Expects convex quads with all points co-planar.
 	 */
@@ -88,7 +88,7 @@ public final class GeometryHelper {
 	}
 
 	/**
-	 * True if quad - already known to be parallel to a face - is actually coplanar with it.
+	 * Returns: {@code true} if quad - already known to be parallel to a face - is actually coplanar with it.
 	 * For compatibility with vanilla resource packs, also true if quad is outside the face.
 	 *
 	 * <p>Test will be unreliable if not already parallel, use {@link #isQuadParallelToFace(Direction, QuadView)}
@@ -100,7 +100,7 @@ public final class GeometryHelper {
 	}
 
 	/**
-	 * Returns true if quad is truly a quad (not a triangle) and fills a full block cross-section.
+	 * Returns: {@code true} if quad is truly a quad (not a triangle) and fills a full block cross-section.
 	 * If known to be true, allows use of a simpler/faster AO lighting algorithm.
 	 *
 	 * <p>Does not check if quad is actually coplanar with the light face, nor does it check that all
@@ -223,7 +223,7 @@ public final class GeometryHelper {
 	}
 
 	/**
-	 * Returns the index of the vertex which is in the first cubic corner for the given quad's light face, according to
+	 * @return  the index of the vertex which is in the first cubic corner for the given quad's light face, according to
 	 * the directions specified in {@link FaceInfo}. Assumes that the given quad is
 	 * {@linkplain #isQuadCubic(Direction, QuadView) cubic}. Used to make smooth lighting for cubic quads work correctly
 	 * regardless of vertex order.

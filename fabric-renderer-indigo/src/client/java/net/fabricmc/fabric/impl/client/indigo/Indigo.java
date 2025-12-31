@@ -35,10 +35,10 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class Indigo implements ClientModInitializer {
 	public static final AoConfig AMBIENT_OCCLUSION_MODE;
-	/** Set true in dev env to confirm results match vanilla when they should. */
+	/** Set {@code true} in dev env to confirm results match vanilla when they should. */
 	public static final boolean DEBUG_COMPARE_LIGHTING;
 	public static final boolean FIX_SMOOTH_LIGHTING_OFFSET;
-	/** When true, requires {@link #FIX_SMOOTH_LIGHTING_OFFSET} to be true. */
+	/** When {@code true}, requires {@link #FIX_SMOOTH_LIGHTING_OFFSET} to be {@code true}. */
 	public static final boolean FIX_MEAN_LIGHT_CALCULATION;
 	public static final boolean FIX_EXTERIOR_VERTEX_LIGHTING;
 	public static final boolean FIX_LUMINOUS_AO_SHADE;

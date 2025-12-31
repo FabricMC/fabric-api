@@ -43,27 +43,27 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
  */
 public interface BiomeModificationContext {
 	/**
-	 * Returns the modification context for the biomes weather properties.
+	 * @return the modification context for the biomes weather properties.
 	 */
 	WeatherContext getWeather();
 
 	/**
-	 * Returns the modification context for the biomes environment attributes.
+	 * @return the modification context for the biomes environment attributes.
 	 */
 	AttributesContext getAttributes();
 
 	/**
-	 * Returns the modification context for the biomes effects.
+	 * @return the modification context for the biomes effects.
 	 */
 	EffectsContext getEffects();
 
 	/**
-	 * Returns the modification context for the biomes generation settings.
+	 * @return the modification context for the biomes generation settings.
 	 */
 	GenerationSettingsContext getGenerationSettings();
 
 	/**
-	 * Returns the modification context for the biomes spawn settings.
+	 * @return the modification context for the biomes spawn settings.
 	 */
 	SpawnSettingsContext getSpawnSettings();
 
@@ -286,7 +286,7 @@ public interface BiomeModificationContext {
 		/**
 		 * Removes all carvers with the given key from this biome.
 		 *
-		 * @return True if any carvers were removed.
+		 * @return {@code true} if any carvers were removed.
 		 */
 		boolean removeCarver(ResourceKey<ConfiguredWorldCarver<?>> configuredCarverKey);
 	}
@@ -318,7 +318,7 @@ public interface BiomeModificationContext {
 		void addSpawn(MobCategory spawnGroup, MobSpawnSettings.SpawnerData spawnEntry, int weight);
 
 		/**
-		 * Removes any spawns matching the given predicate from this biome, and returns true if any matched.
+		 * Removes any spawns matching the given predicate from this biome, and returns {@code true} if any matched.
 		 *
 		 * <p>Associated JSON property: <code>spawners</code>.
 		 */
@@ -329,7 +329,7 @@ public interface BiomeModificationContext {
 		 *
 		 * <p>Associated JSON property: <code>spawners</code>.
 		 *
-		 * @return True if any spawns were removed.
+		 * @return {@code true} if any spawns were removed.
 		 */
 		default boolean removeSpawnsOfEntityType(EntityType<?> entityType) {
 			return removeSpawns((spawnGroup, spawnEntry) -> spawnEntry.type() == entityType);

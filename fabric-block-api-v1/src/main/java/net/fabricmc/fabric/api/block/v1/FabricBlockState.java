@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public interface FabricBlockState {
 	/**
-	 * Return the current appearance of the block, i.e. which block state this block reports to look like on a given side.
+	 * {@return the current appearance of the block, i.e. which block state this block reports to look like on a given side}
 	 *
 	 * @param renderView  the world this block is in
 	 * @param pos         position of this block, whose appearance is being queried

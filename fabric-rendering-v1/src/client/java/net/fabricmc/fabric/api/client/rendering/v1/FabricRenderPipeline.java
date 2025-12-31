@@ -29,7 +29,7 @@ public interface FabricRenderPipeline {
 	/**
 	 * Returns whether the pipeline draw mode should be used for GUI rendering.
 	 *
-	 * @return true if the pipeline draw mode should be used for GUI rendering, false otherwise.
+	 * @return {@code true} if the pipeline draw mode should be used for GUI rendering, false otherwise.
 	 */
 	default boolean usePipelineDrawModeForGui() {
 		throw new AssertionError("Implemented in Mixin");
@@ -44,7 +44,7 @@ public interface FabricRenderPipeline {
 		/**
 		 * Sets whether the pipeline draw mode should be used for GUI rendering.
 		 *
-		 * @param usePipelineDrawMode true if the pipeline draw mode should be used for GUI rendering, false otherwise.
+		 * @param usePipelineDrawMode {@code true} if the pipeline draw mode should be used for GUI rendering, {@code false} otherwise.
 		 * @return this builder instance for chaining.
 		 */
 		default RenderPipeline.Builder withUsePipelineDrawModeForGui(boolean usePipelineDrawMode) {
@@ -70,7 +70,7 @@ public interface FabricRenderPipeline {
 		/**
 		 * Returns whether the pipeline draw mode should be used for GUI rendering.
 		 *
-		 * @return an Optional containing true if the pipeline draw mode should be used for GUI rendering, false otherwise.
+		 * @return an Optional containing {@code true} if the pipeline draw mode should be used for GUI rendering, {@code false} otherwise.
 		 */
 		default Optional<Boolean> usePipelineDrawModeForGui() {
 			throw new AssertionError("Implemented in Mixin");
@@ -79,7 +79,7 @@ public interface FabricRenderPipeline {
 		/**
 		 * Creates a new snippet with the specified pipeline draw mode for GUI rendering.
 		 *
-		 * @param usePipelineDrawMode true if the pipeline draw mode should be used for GUI rendering, false otherwise.
+		 * @param usePipelineDrawMode {@code true} if the pipeline draw mode should be used for GUI rendering, {@code false} otherwise.
 		 * @return a new RenderPipeline.Snippet instance with the specified pipeline draw mode.
 		 */
 		static RenderPipeline.Snippet withPipelineDrawModeForGui(RenderPipeline.Snippet base, boolean usePipelineDrawMode) {

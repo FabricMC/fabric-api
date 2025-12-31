@@ -37,7 +37,7 @@ import net.minecraft.world.level.material.Fluid;
  */
 public interface FluidVariantAttributeHandler {
 	/**
-	 * Return the name that should be used for the passed fluid variant.
+	 * @return the name that should be used for the passed fluid variant.
 	 */
 	default Component getName(FluidVariant fluidVariant) {
 		Block fluidBlock = fluidVariant.getFluid().defaultFluidState().createLegacyBlock().getBlock();
@@ -51,7 +51,7 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * Return the sound corresponding to this fluid being filled, or none if no sound is available.
+	 * @return the sound corresponding to this fluid being filled, or none if no sound is available.
 	 *
 	 * <p>If a non-empty sound event is returned, {@link Fluid#getPickupSound} will return that sound.
 	 */
@@ -60,7 +60,7 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * Return the sound corresponding to this fluid being emptied, or none if no sound is available.
+	 * @return the sound corresponding to this fluid being emptied, or none if no sound is available.
 	 *
 	 * <p>If a non-empty sound event is returned, {@link BucketItem#playEmptySound} will play that sound.
 	 */
@@ -69,14 +69,14 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * Return an integer in [0, 15]: the light level emitted by this fluid, or 0 if it doesn't naturally emit light.
+	 * @return an integer in the range of 0 to 15: the light level emitted by this fluid, or 0 if it doesn't naturally emit light.
 	 */
 	default int getLuminance(FluidVariant variant) {
 		return variant.getFluid().defaultFluidState().createLegacyBlock().getLightEmission();
 	}
 
 	/**
-	 * Return a non-negative integer, representing the temperature of this fluid in Kelvin.
+	 * {@return a non-negative integer, representing the temperature of this fluid in Kelvin.}
 	 * The reference values are {@value FluidConstants#WATER_TEMPERATURE} for water, and {@value FluidConstants#LAVA_TEMPERATURE} for lava.
 	 */
 	default int getTemperature(FluidVariant variant) {
@@ -84,22 +84,22 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * Return a positive integer, representing the viscosity of this fluid.
-	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity.
-	 *
+	 * {@return a positive integer, representing the viscosity of this fluid.
+	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity}
+	 * <br><br>
 	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowingFluid#getTickDelay} for flowable fluids.
 	 * The reference values are {@value FluidConstants#WATER_VISCOSITY} for water,
 	 * {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),
 	 * and {@value FluidConstants#LAVA_VISCOSITY} for lava in other dimensions.
 	 *
-	 * @param world World if available, otherwise null.
+	 * @param world World if available, otherwise {@code null}.
 	 */
 	default int getViscosity(FluidVariant variant, @Nullable Level world) {
 		return FluidConstants.WATER_VISCOSITY;
 	}
 
 	/**
-	 * Return true if this fluid is lighter than air.
+	 * @return {@code true} if this fluid is lighter than air.
 	 * Fluids that are lighter than air generally flow upwards.
 	 */
 	default boolean isLighterThanAir(FluidVariant variant) {

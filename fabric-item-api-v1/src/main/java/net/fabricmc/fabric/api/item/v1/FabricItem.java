@@ -44,15 +44,15 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  */
 public interface FabricItem {
 	/**
-	 * When the components of an item stack in the main hand or off hand changes, vanilla runs an "update animation".
+	 * When the components of an item stack in the main hand or offhand changes, vanilla runs an "update animation".
 	 * This function is called on the client side when the components or count of the stack has changed, but not the item,
 	 * and returning false cancels this animation.
 	 *
 	 * @param player   the current player; this may be safely cast to {@link net.minecraft.client.player.LocalPlayer} in client-only code
-	 * @param hand     the hand; this function applies both to the main hand and the off hand
+	 * @param hand     the hand; this function applies both to the main hand and the offhand
 	 * @param oldStack the previous stack, of this item
 	 * @param newStack the new stack, also of this item
-	 * @return true to run the vanilla animation, false to cancel it.
+	 * @return {@code true} to run the vanilla animation, {@code false} to cancel it.
 	 */
 	default boolean allowComponentsUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack, ItemStack newStack) {
 		return true;
@@ -61,12 +61,12 @@ public interface FabricItem {
 	/**
 	 * When the components of the selected stack changes, block breaking progress is reset.
 	 * This function is called when the components of the selected stack has changed,
-	 * and returning true allows the block breaking progress to continue.
+	 * and returning {@code true} allows the block breaking progress to continue.
 	 *
 	 * @param player   the player breaking the block
 	 * @param oldStack the previous stack, of this item
 	 * @param newStack the new stack, also of this item
-	 * @return true to allow continuing block breaking, false to reset the progress.
+	 * @return {@code true} to allow continuing block breaking, false to reset the progress.
 	 */
 	default boolean allowContinuingBlockBreaking(Player player, ItemStack oldStack, ItemStack newStack) {
 		return false;
@@ -177,7 +177,7 @@ public interface FabricItem {
 
 		/**
 		 * Sets the custom damage handler of the item.
-		 * Note that this is only called on an ItemStack if {@link ItemStack#isDamageableItem()} returns true.
+		 * Note that this is only called on an ItemStack if {@link ItemStack#isDamageableItem()} returns {@code true}.
 		 *
 		 * @see CustomDamageHandler
 		 */

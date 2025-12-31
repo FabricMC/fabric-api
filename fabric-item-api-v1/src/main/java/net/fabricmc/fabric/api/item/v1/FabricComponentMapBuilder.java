@@ -75,7 +75,7 @@ public interface FabricComponentMapBuilder {
 	 * Checks if a component type has been registered to this builder.
 	 *
 	 * @param type The component type to check
-	 * @return Returns true if the type has been registered to this builder, false otherwise
+	 * @return Returns {@code true} if the type has been registered to this builder, {@code false} otherwise
 	 */
 	default boolean contains(DataComponentType<?> type) {
 		throw new AssertionError("Implemented in Mixin");

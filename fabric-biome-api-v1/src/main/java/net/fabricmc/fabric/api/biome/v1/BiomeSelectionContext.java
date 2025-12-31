@@ -36,14 +36,14 @@ public interface BiomeSelectionContext {
 	ResourceKey<Biome> getBiomeKey();
 
 	/**
-	 * Returns the biome with modifications by biome modifiers of higher priority already applied.
+	 * @return the biome with modifications by biome modifiers of higher priority already applied.
 	 */
 	Biome getBiome();
 
 	Holder<Biome> getBiomeRegistryEntry();
 
 	/**
-	 * Returns true if this biome contains a placed feature referencing a configured feature with the given key.
+	 * @return {@code true} if this biome contains a placed feature referencing a configured feature with the given key.
 	 */
 	default boolean hasFeature(ResourceKey<ConfiguredFeature<?, ?>> key) {
 		List<HolderSet<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().features();
@@ -60,7 +60,7 @@ public interface BiomeSelectionContext {
 	}
 
 	/**
-	 * Returns true if this biome contains a placed feature with the given key.
+	 * @return {@code true} if this biome contains a placed feature with the given {@link TagKey}.
 	 */
 	default boolean hasPlacedFeature(ResourceKey<PlacedFeature> key) {
 		List<HolderSet<PlacedFeature>> featureSteps = getBiome().getGenerationSettings().features();
@@ -91,7 +91,7 @@ public interface BiomeSelectionContext {
 	Optional<ResourceKey<PlacedFeature>> getPlacedFeatureKey(PlacedFeature placedFeature);
 
 	/**
-	 * Returns true if the configured structure with the given key can start in this biome in any chunk generator
+	 * @return {@code true} if the configured structure with the given key can start in this biome in any chunk generator
 	 * used by the current world-save.
 	 */
 	boolean validForStructure(ResourceKey<Structure> key);
@@ -112,7 +112,7 @@ public interface BiomeSelectionContext {
 	boolean canGenerateIn(ResourceKey<LevelStem> dimensionKey);
 
 	/**
-	 * {@return true if this biome is in the given {@link TagKey }}.
+	 * @return {@code true} if this biome is in the given {@link TagKey}.
 	 */
 	boolean hasTag(TagKey<Biome> tag);
 }
