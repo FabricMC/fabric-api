@@ -37,9 +37,7 @@ abstract class LivingEntityMixin extends Entity {
 		throw new AssertionError();
 	}
 
-	/**
-	 * Handle ALLOW and CUSTOM {@link EntityElytraEvents} when an entity is fall flying.
-	 */
+	/// Handle ALLOW and CUSTOM [EntityElytraEvents] when an entity is fall flying.
 	@SuppressWarnings("ConstantConditions")
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getRandom(Ljava/util/List;Lnet/minecraft/util/RandomSource;)Ljava/lang/Object;"), method = "updateFallFlying()V", allow = 1, cancellable = true)
 	void injectElytraTick(CallbackInfo info) {

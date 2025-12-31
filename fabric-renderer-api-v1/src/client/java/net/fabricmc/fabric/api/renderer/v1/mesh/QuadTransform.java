@@ -18,9 +18,7 @@ package net.fabricmc.fabric.api.renderer.v1.mesh;
 
 @FunctionalInterface
 public interface QuadTransform {
-	/**
-	 * Return false to filter out quads from rendering. When more than one transform
-	 * is in effect, returning false means unapplied transforms will not receive the quad.
-	 */
+	/// Return false to filter out quads from rendering. When more than one transform
+	/// is in effect, returning false means unapplied transforms will not receive the quad.
 	boolean transform(MutableQuadView quad);
 }

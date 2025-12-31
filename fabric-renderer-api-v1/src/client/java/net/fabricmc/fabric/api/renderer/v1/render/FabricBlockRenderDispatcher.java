@@ -32,32 +32,28 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
-/**
- * Note: This interface is automatically implemented on {@link BlockRenderDispatcher} via Mixin and interface injection.
- */
+/// Note: This interface is automatically implemented on [BlockRenderDispatcher] via Mixin and interface injection.
 public interface FabricBlockRenderDispatcher {
-	/**
-	 * Alternative for
-	 * {@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)} that
-	 * additionally accepts the {@link BlockAndTintGetter} and {@link BlockPos} to pass to
-	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
-	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
-	 * on multiple chunk layers and to provide the model with additional context.</b>
-	 *
-	 * <p>This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
-	 * entity renderers.
-	 *
-	 * @param state The block state.
-	 * @param poseStack The pose stack.
-	 * @param bufferSource The buffer source.
-	 * @param light The minimum light value.
-	 * @param overlay The overlay value.
-	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
-	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
-	 *            </b>
-	 *
-	 * @see FabricOrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
-	 */
+	/// Alternative for
+	/// [BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)] that
+	/// additionally accepts the [BlockAndTintGetter] and [BlockPos] to pass to
+	/// [BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)] when
+	/// necessary. **Prefer using this method over the vanilla alternative to correctly buffer models that have geometry
+	/// on multiple chunk layers and to provide the model with additional context.**
+	///
+	/// This method allows buffering a block model with minimal transformations to the model geometry. Usually used by
+	/// entity renderers.
+	///
+	/// @param state The block state.
+	/// @param poseStack The pose stack.
+	/// @param bufferSource The buffer source.
+	/// @param light The minimum light value.
+	/// @param overlay The overlay value.
+	/// @param level The level in which to render the model. **Can be empty (i.e. [EmptyBlockAndTintGetter]).**
+	/// @param pos The position of the block in the level. **Should be [BlockPos#ZERO] if the level is empty.
+	///            **
+	///
+	/// @see FabricOrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int, BlockAndTintGetter, BlockPos)
 	default void renderBlockAsEntity(BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos) {
 		Renderer.get().renderBlockAsEntity((BlockRenderDispatcher) this, state,
 				poseStack, bufferSource, light, overlay,

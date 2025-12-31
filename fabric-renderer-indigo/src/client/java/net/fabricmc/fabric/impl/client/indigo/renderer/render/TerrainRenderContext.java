@@ -39,9 +39,7 @@ import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
-/**
- * Used during section block buffering to invoke {@link BlockStateModel#emitQuads}.
- */
+/// Used during section block buffering to invoke [BlockStateModel#emitQuads].
 public class TerrainRenderContext extends AbstractTerrainRenderContext {
 	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
 
@@ -81,7 +79,7 @@ public class TerrainRenderContext extends AbstractTerrainRenderContext {
 		blockInfo.release();
 	}
 
-	/** Called from section compiler hook. */
+	/// Called from section compiler hook.
 	public void bufferModel(BlockStateModel model, BlockState blockState, BlockPos blockPos) {
 		poseStack.pushPose();
 

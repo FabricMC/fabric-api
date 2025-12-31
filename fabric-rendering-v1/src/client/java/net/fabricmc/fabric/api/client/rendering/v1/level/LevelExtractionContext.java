@@ -27,11 +27,9 @@ import net.minecraft.client.renderer.culling.Frustum;
 
 @ApiStatus.NonExtendable
 public interface LevelExtractionContext extends AbstractLevelRenderContext {
-	/**
-	 * Convenient access to {@link LevelRenderer#level}.
-	 *
-	 * @return the level renderer's client level instance
-	 */
+	/// Convenient access to [LevelRenderer#level].
+	///
+	/// @return the level renderer's client level instance
 	@SuppressWarnings("JavadocReference")
 	ClientLevel level();
 

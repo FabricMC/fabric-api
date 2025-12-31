@@ -35,26 +35,22 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
-/**
- * Helper functions to work with fluid storages.
- */
+/// Helper functions to work with fluid storages.
 public final class FluidStorageUtil {
-	/**
-	 * Try to make the item in a player hand "interact" with a fluid storage.
-	 * This can be used when a player right-clicks a tank, for example.
-	 *
-	 * <p>More specifically, this function tries to find a fluid storing item in the player's hand.
-	 * Then, it tries to fill that item from the storage. If that fails, it tries to fill the storage from that item.
-	 *
-	 * <p>Only up to one fluid variant will be moved, and the corresponding emptying/filling sound will be played.
-	 * In creative mode, the original container item is not modified,
-	 * and the player's inventory will additionally receive a copy of the modified container, if it doesn't have it yet.
-	 *
-	 * @param storage The storage that the player is interacting with.
-	 * @param player The player.
-	 * @param hand The hand that the player used.
-	 * @return True if some fluid was moved.
-	 */
+	/// Try to make the item in a player hand "interact" with a fluid storage.
+	/// This can be used when a player right-clicks a tank, for example.
+	///
+	/// More specifically, this function tries to find a fluid storing item in the player's hand.
+	/// Then, it tries to fill that item from the storage. If that fails, it tries to fill the storage from that item.
+	///
+	/// Only up to one fluid variant will be moved, and the corresponding emptying/filling sound will be played.
+	/// In creative mode, the original container item is not modified,
+	/// and the player's inventory will additionally receive a copy of the modified container, if it doesn't have it yet.
+	///
+	/// @param storage The storage that the player is interacting with.
+	/// @param player The player.
+	/// @param hand The hand that the player used.
+	/// @return True if some fluid was moved.
 	public static boolean interactWithFluidStorage(Storage<FluidVariant> storage, Player player, InteractionHand hand) {
 		// Check if hand is a fluid container.
 		Storage<FluidVariant> handStorage = ContainerItemContext.forPlayerInteraction(player, hand).find(FluidStorage.ITEM);

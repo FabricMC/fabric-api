@@ -34,9 +34,7 @@ import net.minecraft.world.phys.Vec3;
 import net.fabricmc.fabric.api.renderer.v1.render.BlockMultiBufferSource;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
 
-/**
- * Used during terrain-like block buffering to invoke {@link BlockStateModel#emitQuads}.
- */
+/// Used during terrain-like block buffering to invoke [BlockStateModel#emitQuads].
 public class TerrainLikeRenderContext extends AbstractTerrainRenderContext {
 	public static final ThreadLocal<TerrainLikeRenderContext> POOL = ThreadLocal.withInitial(TerrainLikeRenderContext::new);
 

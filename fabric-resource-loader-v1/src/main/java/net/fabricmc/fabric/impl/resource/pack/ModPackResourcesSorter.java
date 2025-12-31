@@ -32,13 +32,9 @@ import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 public class ModPackResourcesSorter {
 	private final Object lock = new Object();
 	private ModPackResources[] packs;
-	/**
-	 * Registered load phases.
-	 */
+	/// Registered load phases.
 	private final Map<String, LoadPhaseData> phases = new LinkedHashMap<>();
-	/**
-	 * Phases sorted in the correct dependency order.
-	 */
+	/// Phases sorted in the correct dependency order.
 	private final List<LoadPhaseData> sortedPhases = new ArrayList<>();
 
 	ModPackResourcesSorter() {

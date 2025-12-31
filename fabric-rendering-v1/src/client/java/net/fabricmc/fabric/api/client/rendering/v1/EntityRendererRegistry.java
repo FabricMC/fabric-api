@@ -24,24 +24,20 @@ import net.minecraft.world.entity.EntityType;
 
 import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 
-/**
- * Helper class for registering EntityRenderers.
- *
- * <p>Use {@link net.minecraft.client.renderer.entity.EntityRenderers#register(EntityType, EntityRendererProvider)} instead.
- *
- * @deprecated Replaced with transitive access wideners in Fabric Transitive Access Wideners (v1).
- */
+/// Helper class for registering EntityRenderers.
+///
+/// Use [net.minecraft.client.renderer.entity.EntityRenderers#register(EntityType, EntityRendererProvider)] instead.
+///
+/// @deprecated Replaced with transitive access wideners in Fabric Transitive Access Wideners (v1).
 @Deprecated
 public final class EntityRendererRegistry {
-	/**
-	 * Register an {@link EntityRenderer} for an {@link EntityType}. Can be called clientside before the level is rendered.
-	 *
-	 * @param entityType            the {@link EntityType} to register a renderer for
-	 * @param entityRendererProvider a {@link EntityRendererProvider} that creates a {@link EntityRenderer}, called
-	 *                              when {@link EntityRenderDispatcher} is initialized or immediately if the dispatcher
-	 *                              class is already loaded
-	 * @param <E>                   the {@link Entity}
-	 */
+	/// Register an [EntityRenderer] for an [EntityType]. Can be called clientside before the level is rendered.
+	///
+	/// @param entityType            the [EntityType] to register a renderer for
+	/// @param entityRendererProvider a [EntityRendererProvider] that creates a [EntityRenderer], called
+	///                              when [EntityRenderDispatcher] is initialized or immediately if the dispatcher
+	///                              class is already loaded
+	/// @param <E>                   the [Entity]
 	public static <E extends Entity> void register(EntityType<? extends E> entityType, EntityRendererProvider<E> entityRendererProvider) {
 		EntityRendererRegistryImpl.register(entityType, entityRendererProvider);
 	}

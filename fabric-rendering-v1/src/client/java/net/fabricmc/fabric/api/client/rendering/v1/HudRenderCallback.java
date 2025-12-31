@@ -23,9 +23,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * @deprecated Use {@link HudElementRegistry} instead.
- */
+/// @deprecated Use [HudElementRegistry] instead.
 @Deprecated
 public interface HudRenderCallback {
 	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) -> (graphics, deltaTracker) -> {
@@ -34,11 +32,9 @@ public interface HudRenderCallback {
 		}
 	});
 
-	/**
-	 * Called after rendering the whole hud, which is displayed in game, in a level.
-	 *
-	 * @param graphics the {@link GuiGraphics} instance
-	 * @param deltaTracker the {@link DeltaTracker} instance
-	 */
+	/// Called after rendering the whole hud, which is displayed in game, in a level.
+	///
+	/// @param graphics the [GuiGraphics] instance
+	/// @param deltaTracker the [DeltaTracker] instance
 	void onHudRender(GuiGraphics graphics, DeltaTracker deltaTracker);
 }

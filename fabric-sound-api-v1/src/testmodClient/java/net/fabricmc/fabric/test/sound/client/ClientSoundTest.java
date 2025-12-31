@@ -22,9 +22,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 
-/**
- * Plays a sine wave when the {@code /sine} client command is run.
- */
+/// Plays a sine wave when the `/sine` client command is run.
 public class ClientSoundTest implements ClientModInitializer {
 	public static final String MOD_ID = "fabric-sound-api-v1-testmod";
 

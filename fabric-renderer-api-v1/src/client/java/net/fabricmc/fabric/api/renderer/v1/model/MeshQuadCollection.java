@@ -28,14 +28,12 @@ import net.minecraft.client.resources.model.UnbakedGeometry;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 
-/**
- * A special {@link QuadCollection} which hides a {@link Mesh} instead of using {@link BakedQuad}s. Useful for custom
- * implementations of {@link UnbakedGeometry#bake(TextureSlots, ModelBaker, ModelState, ModelDebugName)} that want to return a
- * mesh. Instances of this class always return empty lists from inherited methods.
- *
- * <p>Any code that interacts with {@link QuadCollection} should first check {@code instanceof MeshBakedGeometry} and use
- * {@link #getMesh()} if {@code true} or the vanilla methods otherwise.
- */
+/// A special [QuadCollection] which hides a [Mesh] instead of using [BakedQuad]s. Useful for custom
+/// implementations of [UnbakedGeometry#bake(TextureSlots, ModelBaker, ModelState, ModelDebugName)] that want to return a
+/// mesh. Instances of this class always return empty lists from inherited methods.
+///
+/// Any code that interacts with [QuadCollection] should first check `instanceof MeshBakedGeometry` and use
+/// [#getMesh()] if `true` or the vanilla methods otherwise.
 public final class MeshQuadCollection extends QuadCollection {
 	private final Mesh mesh;
 
@@ -44,9 +42,7 @@ public final class MeshQuadCollection extends QuadCollection {
 		this.mesh = mesh;
 	}
 
-	/**
-	 * Gets this geometry's mesh. Always use this method instead of vanilla methods when available.
-	 */
+	/// Gets this geometry's mesh. Always use this method instead of vanilla methods when available.
 	public Mesh getMesh() {
 		return mesh;
 	}

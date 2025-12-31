@@ -89,15 +89,11 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		return new SoundType(sounds, replace, Optional.ofNullable(subtitle));
 	}
 
-	/**
-	 * Record of the sound event registration class for data generation.
-	 *
-	 * @see net.minecraft.client.resources.sounds.SoundEventRegistration
-	 */
+	/// Record of the sound event registration class for data generation.
+	///
+	/// @see net.minecraft.client.resources.sounds.SoundEventRegistration
 	public record SoundType(List<Entry> sounds, boolean replace, Optional<String> subtitle) {
-		/**
-		 * @see net.minecraft.client.resources.sounds.SoundEventRegistrationSerializer
-		 */
+		/// @see net.minecraft.client.resources.sounds.SoundEventRegistrationSerializer
 		public static final Codec<SoundType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Entry.CODEC.listOf().fieldOf("sounds").forGetter(SoundType::sounds),
 				Codec.BOOL.optionalFieldOf("replace", false).forGetter(SoundType::replace),
@@ -105,11 +101,9 @@ public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
 		).apply(instance, SoundType::new));
 	}
 
-	/**
-	 * Record of the sound class to use for data generation.
-	 *
-	 * @see net.minecraft.client.resources.sounds.Sound
-	 */
+	/// Record of the sound class to use for data generation.
+	///
+	/// @see net.minecraft.client.resources.sounds.Sound
 	public record Entry(Identifier name, RegistrationType type, float volume, float pitch, int weight,
 						int attenuationDistance, boolean stream, boolean preload) {
 		private static final Codec<Entry> MAP_CODEC = RecordCodecBuilder.create(instance -> instance.group(

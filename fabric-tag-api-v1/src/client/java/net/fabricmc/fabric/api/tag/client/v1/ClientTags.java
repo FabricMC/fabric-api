@@ -26,46 +26,40 @@ import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.impl.tag.client.ClientTagsImpl;
 
-/**
- * Allows the use of tags by directly loading them from the installed mods.
- *
- * <p>Tags are loaded by the server, either the internal server in singleplayer or the connected server and
- * synced to the client. This can be a pain point for interoperability, as a tag that does not exist on the server
- * because it is part of a mod only present on the client will no longer be available to the client that may wish to
- * query it.
- *
- * <p>Client Tags resolve that issue by lazily reading the tag json files within the mods on the side of the caller,
- * directly, allowing for mods to query tags such as {@link net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags}
- * even when connected to a vanilla server.
- *
- * <p>Note that locally read client tags don't currently support Fabric's tag aliases. The aliasing system is only
- * implemented on servers.
- */
+/// Allows the use of tags by directly loading them from the installed mods.
+///
+/// Tags are loaded by the server, either the internal server in singleplayer or the connected server and
+/// synced to the client. This can be a pain point for interoperability, as a tag that does not exist on the server
+/// because it is part of a mod only present on the client will no longer be available to the client that may wish to
+/// query it.
+///
+/// Client Tags resolve that issue by lazily reading the tag json files within the mods on the side of the caller,
+/// directly, allowing for mods to query tags such as [net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags]
+/// even when connected to a vanilla server.
+///
+/// Note that locally read client tags don't currently support Fabric's tag aliases. The aliasing system is only
+/// implemented on servers.
 public final class ClientTags {
 	private ClientTags() {
 	}
 
-	/**
-	 * Loads a tag into the cache, recursively loading any contained tags along with it.
-	 *
-	 * @param tagKey the {@code TagKey} to load
-	 * @return a set of {@code Identifier}s this tag contains
-	 */
+	/// Loads a tag into the cache, recursively loading any contained tags along with it.
+	///
+	/// @param tagKey the `TagKey` to load
+	/// @return a set of `Identifier`s this tag contains
 	public static Set<Identifier> getOrCreateLocalTag(TagKey<?> tagKey) {
 		return ClientTagsImpl.getOrCreatePartiallySyncedTag(tagKey).completeIds();
 	}
 
-	/**
-	 * Checks if an entry is in a tag.
-	 *
-	 * <p>If the synced tag does exist, it is queried. If it does not exist,
-	 * the tag populated from the available mods is checked, recursively checking the
-	 * synced tags and entries contained within.
-	 *
-	 * @param tagKey the {@code TagKey} to being checked
-	 * @param entry  the entry to check
-	 * @return if the entry is in the given tag
-	 */
+	/// Checks if an entry is in a tag.
+	///
+	/// If the synced tag does exist, it is queried. If it does not exist,
+	/// the tag populated from the available mods is checked, recursively checking the
+	/// synced tags and entries contained within.
+	///
+	/// @param tagKey the `TagKey` to being checked
+	/// @param entry  the entry to check
+	/// @return if the entry is in the given tag
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, T entry) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(entry);
@@ -73,31 +67,27 @@ public final class ClientTags {
 		return ClientTagsImpl.getHolder(tagKey, entry).map(re -> isInWithLocalFallback(tagKey, re)).orElse(false);
 	}
 
-	/**
-	 * Checks if an entry is in a tag, for use with entries from a dynamic registry,
-	 * such as {@link net.minecraft.world.level.biome.Biome}s.
-	 *
-	 * <p>If the synced tag does exist, it is queried. If it does not exist,
-	 * the tag populated from the available mods is checked, recursively checking the
-	 * synced tags and entries contained within.
-	 *
-	 * @param tagKey        the {@code TagKey} to be checked
-	 * @param holder the entry to check
-	 * @return if the entry is in the given tag
-	 */
+	/// Checks if an entry is in a tag, for use with entries from a dynamic registry,
+	/// such as [net.minecraft.world.level.biome.Biome]s.
+	///
+	/// If the synced tag does exist, it is queried. If it does not exist,
+	/// the tag populated from the available mods is checked, recursively checking the
+	/// synced tags and entries contained within.
+	///
+	/// @param tagKey        the `TagKey` to be checked
+	/// @param holder the entry to check
+	/// @return if the entry is in the given tag
 	public static <T> boolean isInWithLocalFallback(TagKey<T> tagKey, Holder<T> holder) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(holder);
 		return ClientTagsImpl.isInWithLocalFallback(tagKey, holder);
 	}
 
-	/**
-	 * Checks if an entry is in a tag provided by the available mods.
-	 *
-	 * @param tagKey      the {@code TagKey} to being checked
-	 * @param resourceKey the entry to check
-	 * @return if the entry is in the given tag
-	 */
+	/// Checks if an entry is in a tag provided by the available mods.
+	///
+	/// @param tagKey      the `TagKey` to being checked
+	/// @param resourceKey the entry to check
+	/// @return if the entry is in the given tag
 	public static <T> boolean isInLocal(TagKey<T> tagKey, ResourceKey<T> resourceKey) {
 		Objects.requireNonNull(tagKey);
 		Objects.requireNonNull(resourceKey);

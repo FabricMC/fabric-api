@@ -25,31 +25,27 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.util.TriState;
 
-/**
- * Events relating to enchantments, allowing for finer control of what enchantments can apply to different items.
- */
+/// Events relating to enchantments, allowing for finer control of what enchantments can apply to different items.
 public final class EnchantmentEvents {
 	private EnchantmentEvents() { }
 
-	/**
-	 * An event that allows overriding whether an {@link Enchantment} can be applied to an {@link ItemStack}.
-	 *
-	 * <p>This should only be used to modify the behavior of <em>external</em> items with regards to <em>external</em> enchantments,
-	 * where 'external' means either vanilla or from another mod. For instance, a mod might allow enchanting a pickaxe
-	 * with Sharpness (and only Sharpness) under certain specific conditions.</p>
-	 *
-	 * <p>To modify the behavior of your own modded <em>enchantments</em>, specify a custom tag for {@link Enchantment.EnchantmentDefinition#supportedItems()} instead.
-	 * To modify the behavior of your own modded <em>items</em>, add to the applicable tags instead, when that suffices.
-	 * Note that this event triggers <em>before</em> {@link FabricItem#canBeEnchantedWith(ItemStack, Holder, EnchantingContext)},
-	 * and that method will only be called if no listeners override it.</p>
-	 *
-	 * <p>Note that allowing an enchantment using this event does not guarantee the item will receive that enchantment,
-	 * only that it isn't forbidden from doing so.</p>
-	 *
-	 * @see AllowEnchanting#allowEnchanting(Holder, ItemStack, EnchantingContext)
-	 * @see Enchantment#canEnchant(ItemStack)
-	 * @see FabricItem#canBeEnchantedWith(ItemStack, Holder, EnchantingContext)
-	 */
+	/// An event that allows overriding whether an [Enchantment] can be applied to an [ItemStack].
+	///
+	/// This should only be used to modify the behavior of _external_ items with regards to _external_ enchantments,
+	/// where 'external' means either vanilla or from another mod. For instance, a mod might allow enchanting a pickaxe
+	/// with Sharpness (and only Sharpness) under certain specific conditions.
+	///
+	/// To modify the behavior of your own modded _enchantments_, specify a custom tag for [Enchantment.EnchantmentDefinition#supportedItems()] instead.
+	/// To modify the behavior of your own modded _items_, add to the applicable tags instead, when that suffices.
+	/// Note that this event triggers _before_ [FabricItem#canBeEnchantedWith(ItemStack, Holder, EnchantingContext)],
+	/// and that method will only be called if no listeners override it.
+	///
+	/// Note that allowing an enchantment using this event does not guarantee the item will receive that enchantment,
+	/// only that it isn't forbidden from doing so.
+	///
+	/// @see AllowEnchanting#allowEnchanting(Holder, ItemStack, EnchantingContext)
+	/// @see Enchantment#canEnchant(ItemStack)
+	/// @see FabricItem#canBeEnchantedWith(ItemStack, Holder, EnchantingContext)
 	public static final Event<AllowEnchanting> ALLOW_ENCHANTING = EventFactory.createArrayBacked(
 			AllowEnchanting.class,
 			callbacks -> (enchantment, target, context) -> {
@@ -65,18 +61,16 @@ public final class EnchantmentEvents {
 			}
 	);
 
-	/**
-	 * An event that allows an {@link Enchantment} to be modified without needing to fully override an enchantment.
-	 *
-	 * <p>This should only be used to modify the behavior of <em>external</em> enchantments, where 'external' means
-	 * either vanilla or from another mod. For instance, a mod might add a bleed effect to Sharpness (and only Sharpness).
-	 * For your own enchantments, you should simply define them in your mod's data pack. See the
-	 * <a href="https://minecraft.wiki/w/Enchantment_definition">Enchantment Definition page</a> on the Minecraft Wiki
-	 * for more information.
-	 *
-	 * <p>Note: If you wish to modify the exclusive set of the enchantment, consider extending the
-	 * {@linkplain net.minecraft.tags.EnchantmentTags relevant tag} through your mod's data pack instead.
-	 */
+	/// An event that allows an [Enchantment] to be modified without needing to fully override an enchantment.
+	///
+	/// This should only be used to modify the behavior of _external_ enchantments, where 'external' means
+	/// either vanilla or from another mod. For instance, a mod might add a bleed effect to Sharpness (and only Sharpness).
+	/// For your own enchantments, you should simply define them in your mod's data pack. See the
+	/// <a href="https://minecraft.wiki/w/Enchantment_definition">Enchantment Definition page</a> on the Minecraft Wiki
+	/// for more information.
+	///
+	/// Note: If you wish to modify the exclusive set of the enchantment, consider extending the
+	/// {@linkplain net.minecraft.tags.EnchantmentTags relevant tag} through your mod's data pack instead.
 	public static final Event<Modify> MODIFY = EventFactory.createArrayBacked(
 			Modify.class,
 			callbacks -> (key, builder, source) -> {
@@ -88,16 +82,14 @@ public final class EnchantmentEvents {
 
 	@FunctionalInterface
 	public interface AllowEnchanting {
-		/**
-		 * Checks whether an {@link Enchantment} should be applied to a given {@link ItemStack}.
-		 *
-		 * @param enchantment the enchantment that may be applied
-		 * @param target the target item
-		 * @param enchantingContext the enchanting context in which this check is made
-		 * @return {@link TriState#TRUE} if the enchantment may be applied, {@link TriState#FALSE} if it
-		 * may not, {@link TriState#DEFAULT} to fall back to other callbacks/vanilla behavior
-		 * @see EnchantingContext
-		 */
+		/// Checks whether an [Enchantment] should be applied to a given [ItemStack].
+		///
+		/// @param enchantment the enchantment that may be applied
+		/// @param target the target item
+		/// @param enchantingContext the enchanting context in which this check is made
+		/// @return [TriState#TRUE] if the enchantment may be applied, [TriState#FALSE] if it
+		/// may not, [TriState#DEFAULT] to fall back to other callbacks/vanilla behavior
+		/// @see EnchantingContext
 		TriState allowEnchanting(
 				Holder<Enchantment> enchantment,
 				ItemStack target,
@@ -107,13 +99,11 @@ public final class EnchantmentEvents {
 
 	@FunctionalInterface
 	public interface Modify {
-		/**
-		 * Modifies the effects of an {@link Enchantment}.
-		 *
-		 * @param key The ID of the enchantment
-		 * @param builder The enchantment builder
-		 * @param source The source of the enchantment
-		 */
+		/// Modifies the effects of an [Enchantment].
+		///
+		/// @param key The ID of the enchantment
+		/// @param builder The enchantment builder
+		/// @param source The source of the enchantment
 		void modify(
 				ResourceKey<Enchantment> key,
 				Enchantment.Builder builder,

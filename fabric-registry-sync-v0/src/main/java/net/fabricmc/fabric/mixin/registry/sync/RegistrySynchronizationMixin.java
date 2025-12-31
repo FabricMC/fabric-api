@@ -37,9 +37,7 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 // Implements skipping empty dynamic registries with the SKIP_WHEN_EMPTY sync option.
 @Mixin(RegistrySynchronization.class)
 abstract class RegistrySynchronizationMixin {
-	/**
-	 * Used for tag syncing.
-	 */
+	/// Used for tag syncing.
 	@Dynamic("lambda$ownedNetworkableRegistries$0: Stream.filter in ownedNetworkableRegistries")
 	@Inject(method = "lambda$ownedNetworkableRegistries$0", at = @At("HEAD"), cancellable = true)
 	private static void filterNonSyncedEntries(RegistryAccess.RegistryEntry<?> entry, CallbackInfoReturnable<Boolean> cir) {
@@ -50,9 +48,7 @@ abstract class RegistrySynchronizationMixin {
 		}
 	}
 
-	/**
-	 * Used for registry serialization.
-	 */
+	/// Used for registry serialization.
 	@Dynamic("lambda$packRegistry$0: Optional.ifPresent in packRegistry")
 	@Inject(method = "lambda$packRegistry$0", at = @At("HEAD"), cancellable = true)
 	private static void filterNonSyncedEntriesAgain(Set set, RegistryDataLoader.RegistryData entry, DynamicOps dynamicOps, BiConsumer biConsumer, Registry registry, CallbackInfo ci) {

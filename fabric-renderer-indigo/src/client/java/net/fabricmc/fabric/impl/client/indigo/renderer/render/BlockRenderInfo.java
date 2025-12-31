@@ -30,10 +30,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.util.TriState;
 
-/**
- * Holds, manages, and provides access to the block/level related state
- * needed to buffer quads.
- */
+/// Holds, manages, and provides access to the block/level related state
+/// needed to buffer quads.
 public class BlockRenderInfo {
 	private final BlockColors blockColorMap = Minecraft.getInstance().getBlockColors();
 	private final BlockPos.MutableBlockPos searchPos = new BlockPos.MutableBlockPos();

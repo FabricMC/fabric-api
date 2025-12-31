@@ -30,25 +30,21 @@ import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-/**
- * This class provides utilities to create a {@link PoiType}.
- *
- * <p>A point of interest or POI is typically used by villagers to specify their workstation blocks, meeting zones and homes.
- * Points of interest are also used by bees to specify where their bee hive is and nether portals to find existing portals.
- */
+/// This class provides utilities to create a [PoiType].
+///
+/// A point of interest or POI is typically used by villagers to specify their workstation blocks, meeting zones and homes.
+/// Points of interest are also used by bees to specify where their bee hive is and nether portals to find existing portals.
 public final class PoiHelper {
 	private PoiHelper() {
 	}
 
-	/**
-	 * Creates and registers a {@link PoiType}.
-	 *
-	 * @param id The id of this {@link PoiType}.
-	 * @param ticketCount the amount of tickets.
-	 * @param searchDistance the search distance.
-	 * @param blocks all the blocks where a {@link PoiRecord} of this type will be present.
-	 * @return a new {@link PoiType}.
-	 */
+	/// Creates and registers a [PoiType].
+	///
+	/// @param id The id of this [PoiType].
+	/// @param ticketCount the amount of tickets.
+	/// @param searchDistance the search distance.
+	/// @param blocks all the blocks where a [PoiRecord] of this type will be present.
+	/// @return a new [PoiType].
 	public static PoiType register(Identifier id, int ticketCount, int searchDistance, Block... blocks) {
 		final ImmutableSet.Builder<BlockState> builder = ImmutableSet.builder();
 
@@ -59,15 +55,13 @@ public final class PoiHelper {
 		return register(id, ticketCount, searchDistance, builder.build());
 	}
 
-	/**
-	 * Creates and registers a {@link PoiType}.
-	 *
-	 * @param id the id of this {@link PoiType}.
-	 * @param ticketCount the amount of tickets.
-	 * @param searchDistance the search distance.
-	 * @param blocks all {@link BlockState block states} where a {@link PoiRecord} of this type will be present
-	 * @return a new {@link PoiType}.
-	 */
+	/// Creates and registers a [PoiType].
+	///
+	/// @param id the id of this [PoiType].
+	/// @param ticketCount the amount of tickets.
+	/// @param searchDistance the search distance.
+	/// @param blocks all [block states][BlockState] where a [PoiRecord] of this type will be present
+	/// @return a new [PoiType].
 	public static PoiType register(Identifier id, int ticketCount, int searchDistance, Iterable<BlockState> blocks) {
 		final ImmutableSet.Builder<BlockState> builder = ImmutableSet.builder();
 

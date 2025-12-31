@@ -64,9 +64,7 @@ public abstract class RuleListEntryTypeVisitorMixin implements GameRuleTypeVisit
 		return ((EditGameRulesScreenRuleListAccessor) this$1).getThis();
 	}
 
-	/**
-	 * @reason We need to display an enum rule's default value as translated.
-	 */
+	/// @reason We need to display an enum rule's default value as translated.
 	@WrapOperation(method = "addEntry(Lnet/minecraft/world/level/gamerules/GameRule;Lnet/minecraft/client/gui/screens/worldselection/EditGameRulesScreen$EntryFactory;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/gamerules/GameRule;serialize(Ljava/lang/Object;)Ljava/lang/String;"))
 	private <T> String displayProperEnumName(GameRule<T> instance, T value, Operation<String> original) {
 		String valueName = original.call(instance, value);

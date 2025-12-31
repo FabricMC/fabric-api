@@ -36,9 +36,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 
-/**
- * Allows hoppers to interact with ItemVariant storages.
- */
+/// Allows hoppers to interact with ItemVariant storages.
 @Mixin(HopperBlockEntity.class)
 public class HopperBlockEntityMixin {
 	@Shadow

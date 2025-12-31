@@ -29,47 +29,39 @@ import net.minecraft.data.AtlasIds;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 
-/**
- * Collection of utilities for model implementations.
- */
+/// Collection of utilities for model implementations.
 public final class ModelHelper {
-	/** @see #faceFromIndex(int) */
+	/// @see #faceFromIndex(int)
 	private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
-	/** Result from {@link #toFaceIndex(Direction)} for null values. */
+	/// Result from [#toFaceIndex(Direction)] for null values.
 	public static final int NULL_FACE_ID = 6;
 
 	private ModelHelper() { }
 
-	/**
-	 * Convenient way to encode faces that may be null.
-	 * Null is returned as {@link #NULL_FACE_ID}.
-	 * Use {@link #faceFromIndex(int)} to retrieve encoded face.
-	 */
+	/// Convenient way to encode faces that may be null.
+	/// Null is returned as [#NULL_FACE_ID].
+	/// Use [#faceFromIndex(int)] to retrieve encoded face.
 	public static int toFaceIndex(@Nullable Direction face) {
 		return face == null ? NULL_FACE_ID : face.get3DDataValue();
 	}
 
-	/**
-	 * Use to decode a result from {@link #toFaceIndex(Direction)}.
-	 * Return value will be null if encoded value was null.
-	 * Can also be used for no-allocation iteration of {@link Direction#values()},
-	 * optionally including the null face. (Use &lt; or  &lt;= {@link #NULL_FACE_ID}
-	 * to exclude or include the null value, respectively.)
-	 */
+	/// Use to decode a result from [#toFaceIndex(Direction)].
+	/// Return value will be null if encoded value was null.
+	/// Can also be used for no-allocation iteration of [Direction#values()],
+	/// optionally including the null face. (Use &lt; or  &lt;= [#NULL_FACE_ID]
+	/// to exclude or include the null value, respectively.)
 	@Nullable
 	public static Direction faceFromIndex(int faceIndex) {
 		return FACES[faceIndex];
 	}
 
-	/**
-	 * Converts a mesh into an array of lists of vanilla baked quads.
-	 * Useful for creating vanilla baked models when required for compatibility.
-	 * The array indexes correspond to {@link Direction#getName()} with the
-	 * addition of {@link #NULL_FACE_ID}.
-	 *
-	 * <p>Retrieves sprites from the block texture atlas via {@link SpriteFinder}.
-	 */
+	/// Converts a mesh into an array of lists of vanilla baked quads.
+	/// Useful for creating vanilla baked models when required for compatibility.
+	/// The array indexes correspond to [Direction#getName()] with the
+	/// addition of [#NULL_FACE_ID].
+	///
+	/// Retrieves sprites from the block texture atlas via [SpriteFinder].
 	public static List<BakedQuad>[] toQuadLists(Mesh mesh) {
 		SpriteFinder finder = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).spriteFinder();
 

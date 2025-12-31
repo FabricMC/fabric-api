@@ -35,9 +35,7 @@ import net.fabricmc.fabric.api.resource.v1.pack.ModPackResources;
 import net.fabricmc.fabric.impl.resource.ResourceLoaderImpl;
 import net.fabricmc.loader.api.FabricLoader;
 
-/**
- * Represents a repository source for mods and built-in mods resource packs.
- */
+/// Represents a repository source for mods and built-in mods resource packs.
 public class ModResourcePackCreator implements RepositorySource {
 	public static final String VANILLA = "vanilla";
 	private static final String PROGRAMMER_ART = "programmer_art";
@@ -49,9 +47,7 @@ public class ModResourcePackCreator implements RepositorySource {
 	public static final Predicate<Set<String>> PROGRAMMER_ART_PARENT = enabled -> enabled.contains(VANILLA) && enabled.contains(PROGRAMMER_ART);
 	@VisibleForTesting
 	public static final Predicate<Set<String>> HIGH_CONTRAST_PARENT = enabled -> enabled.contains(VANILLA) && enabled.contains(HIGH_CONTRAST);
-	/**
-	 * This can be used to check if a pack profile is for mod-provided packs.
-	 */
+	/// This can be used to check if a pack profile is for mod-provided packs.
 	public static final PackSource RESOURCE_PACK_SOURCE = new PackSource() {
 		@Override
 		public Component decorate(Component packName) {
@@ -64,9 +60,7 @@ public class ModResourcePackCreator implements RepositorySource {
 		}
 	};
 	public static final ModResourcePackCreator CLIENT_RESOURCE_PACK_PROVIDER = new ModResourcePackCreator(PackType.CLIENT_RESOURCES);
-	/**
-	 * The maximum number of known data packs requested from the client, including vanilla data packs.
-	 */
+	/// The maximum number of known data packs requested from the client, including vanilla data packs.
 	public static final int MAX_KNOWN_PACKS = Integer.getInteger("fabric-resource-loader-v1:maxKnownPacks", 1024);
 
 	private final PackType type;
@@ -83,11 +77,9 @@ public class ModResourcePackCreator implements RepositorySource {
 		this.forKnownPacksManager = forKnownPacksManager;
 	}
 
-	/**
-	 * Registers the resource packs.
-	 *
-	 * @param consumer the pack consumer
-	 */
+	/// Registers the resource packs.
+	///
+	/// @param consumer the pack consumer
 	@Override
 	public void loadPacks(Consumer<Pack> consumer) {
 		/*

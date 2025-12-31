@@ -25,47 +25,37 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-/**
- * A base {@link Storage} implementation that delegates every call to another storage,
- * except that it only allows insertion or extraction if {@link #canInsert} or {@link #canExtract} allows it respectively.
- * This can for example be used to wrap the internal storage of some device behind additional insertion or extraction checks.
- * If one of these two functions is overridden to always return false, implementors may also wish to override
- * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
- *
- * <p>The static functions can be used when insertion or/and extraction should be blocked entirely.
- *
- * @param <T> The type of the stored resources.
- */
+/// A base [Storage] implementation that delegates every call to another storage,
+/// except that it only allows insertion or extraction if [#canInsert] or [#canExtract] allows it respectively.
+/// This can for example be used to wrap the internal storage of some device behind additional insertion or extraction checks.
+/// If one of these two functions is overridden to always return false, implementors may also wish to override
+/// [#supportsInsertion] and/or [#supportsExtraction].
+///
+/// The static functions can be used when insertion or/and extraction should be blocked entirely.
+///
+/// @param <T> The type of the stored resources.
 public abstract class FilteringStorage<T> implements Storage<T> {
-	/**
-	 * Return a wrapper over the passed storage that prevents extraction.
-	 */
+	/// Return a wrapper over the passed storage that prevents extraction.
 	public static <T> Storage<T> insertOnlyOf(Storage<T> backingStorage) {
 		return of(backingStorage, true, false);
 	}
 
-	/**
-	 * Return a wrapper over the passed storage that prevents insertion.
-	 */
+	/// Return a wrapper over the passed storage that prevents insertion.
 	public static <T> Storage<T> extractOnlyOf(Storage<T> backingStorage) {
 		return of(backingStorage, false, true);
 	}
 
-	/**
-	 * Return a wrapper over the passed storage that prevents insertion and extraction.
-	 */
+	/// Return a wrapper over the passed storage that prevents insertion and extraction.
 	public static <T> Storage<T> readOnlyOf(Storage<T> backingStorage) {
 		return of(backingStorage, false, false);
 	}
 
-	/**
-	 * Return a wrapper over the passed storage that may prevent insertion or extraction, depending on the boolean parameters.
-	 * For more fine-grained control, a custom subclass of {@link FilteringStorage} should be used.
-	 *
-	 * @param backingStorage Storage to wrap.
-	 * @param allowInsert True to allow insertion, false to block insertion.
-	 * @param allowExtract True to allow extraction, false to block extraction.
-	 */
+	/// Return a wrapper over the passed storage that may prevent insertion or extraction, depending on the boolean parameters.
+	/// For more fine-grained control, a custom subclass of [FilteringStorage] should be used.
+	///
+	/// @param backingStorage Storage to wrap.
+	/// @param allowInsert True to allow insertion, false to block insertion.
+	/// @param allowExtract True to allow extraction, false to block extraction.
 	public static <T> Storage<T> of(Storage<T> backingStorage, boolean allowInsert, boolean allowExtract) {
 		if (allowInsert && allowExtract) {
 			return backingStorage;
@@ -96,32 +86,24 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 
 	protected final Supplier<Storage<T>> backingStorage;
 
-	/**
-	 * Create a new filtering storage, with a fixed backing storage.
-	 */
+	/// Create a new filtering storage, with a fixed backing storage.
 	public FilteringStorage(Storage<T> backingStorage) {
 		this(() -> backingStorage);
 	}
 
-	/**
-	 * Create a new filtering storage, with a supplier for the backing storage.
-	 * This allows the backing storage to change without having to create a new filtering storage.
-	 * If that is unnecessary, the other overload can be used for convenience.
-	 */
+	/// Create a new filtering storage, with a supplier for the backing storage.
+	/// This allows the backing storage to change without having to create a new filtering storage.
+	/// If that is unnecessary, the other overload can be used for convenience.
 	public FilteringStorage(Supplier<Storage<T>> backingStorage) {
 		this.backingStorage = backingStorage;
 	}
 
-	/**
-	 * Return true if insertion of the passed resource should be forwarded to the backing storage, or false if it should fail.
-	 */
+	/// Return true if insertion of the passed resource should be forwarded to the backing storage, or false if it should fail.
 	protected boolean canInsert(T resource) {
 		return true;
 	}
 
-	/**
-	 * Return true if extraction of the passed resource should be forwarded to the backing storage, or false if it should fail.
-	 */
+	/// Return true if extraction of the passed resource should be forwarded to the backing storage, or false if it should fail.
 	protected boolean canExtract(T resource) {
 		return true;
 	}
@@ -169,9 +151,7 @@ public abstract class FilteringStorage<T> implements Storage<T> {
 		return "FilteringStorage[" + backingStorage.get() + "/" + backingStorage + "]";
 	}
 
-	/**
-	 * This is used to ensure extractions through storage views of the backing stored also get checked by {@link #canExtract}.
-	 */
+	/// This is used to ensure extractions through storage views of the backing stored also get checked by [#canExtract].
 	private class FilteringStorageView implements StorageView<T> {
 		private final StorageView<T> backingView;
 

@@ -22,10 +22,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
 
-/**
- * Implements a fix to prevent luminous blocks from casting AO shade.
- * Will give normal result if fix is disabled.
- */
+/// Implements a fix to prevent luminous blocks from casting AO shade.
+/// Will give normal result if fix is disabled.
 @FunctionalInterface
 public interface AoLuminanceFix {
 	float apply(BlockGetter level, BlockPos pos, BlockState state);

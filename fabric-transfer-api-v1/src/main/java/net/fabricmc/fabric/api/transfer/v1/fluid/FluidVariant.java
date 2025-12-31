@@ -30,53 +30,43 @@ import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.impl.transfer.VariantCodecs;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 
-/**
- * An immutable association of a still fluid and data components.
- *
- * <p>Do not extend this class. Use {@link #of(Fluid)} and {@link #of(Fluid, DataComponentPatch)} to create instances.
- *
- * <p>{@link net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering} can be used for client-side rendering of fluid variants.
- *
- * <p><b>Fluid variants must always be compared with {@code equals}, never by reference!</b>
- * {@code hashCode} is guaranteed to be correct and constant time independently of the size of the components.
- */
+/// An immutable association of a still fluid and data components.
+///
+/// Do not extend this class. Use [#of(Fluid)] and [#of(Fluid, DataComponentPatch)] to create instances.
+///
+/// [net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering] can be used for client-side rendering of fluid variants.
+///
+/// **Fluid variants must always be compared with `equals`, never by reference!**
+/// `hashCode` is guaranteed to be correct and constant time independently of the size of the components.
 @ApiStatus.NonExtendable
 public interface FluidVariant extends TransferVariant<Fluid> {
 	Codec<FluidVariant> CODEC = VariantCodecs.FLUID_CODEC;
 	StreamCodec<RegistryFriendlyByteBuf, FluidVariant> PACKET_CODEC = VariantCodecs.FLUID_PACKET_CODEC;
 
-	/**
-	 * Retrieve a blank FluidVariant.
-	 */
+	/// Retrieve a blank FluidVariant.
 	static FluidVariant blank() {
 		return of(Fluids.EMPTY);
 	}
 
-	/**
-	 * Retrieve a FluidVariant with a fluid, and a {@code null} tag.
-	 *
-	 * <p>The flowing and still variations of {@linkplain net.minecraft.world.level.material.FlowingFluid flowing fluids}
-	 * are normalized to always refer to the still variant. For example,
-	 * {@code FluidVariant.of(Fluids.FLOWING_WATER).getFluid() == Fluids.WATER}.
-	 */
+	/// Retrieve a FluidVariant with a fluid, and a `null` tag.
+	///
+	/// The flowing and still variations of {@linkplain net.minecraft.world.level.material.FlowingFluid flowing fluids}
+	/// are normalized to always refer to the still variant. For example,
+	/// `FluidVariant.of(Fluids.FLOWING_WATER).getFluid() == Fluids.WATER`.
 	static FluidVariant of(Fluid fluid) {
 		return of(fluid, DataComponentPatch.EMPTY);
 	}
 
-	/**
-	 * Retrieve a FluidVariant with a fluid, and an optional tag.
-	 *
-	 * <p>The flowing and still variations of {@linkplain net.minecraft.world.level.material.FlowingFluid flowing fluids}
-	 * are normalized to always refer to the still fluid. For example,
-	 * {@code FluidVariant.of(Fluids.FLOWING_WATER, DataComponentPatch.EMPTY).getFluid() == Fluids.WATER}.
-	 */
+	/// Retrieve a FluidVariant with a fluid, and an optional tag.
+	///
+	/// The flowing and still variations of {@linkplain net.minecraft.world.level.material.FlowingFluid flowing fluids}
+	/// are normalized to always refer to the still fluid. For example,
+	/// `FluidVariant.of(Fluids.FLOWING_WATER, DataComponentPatch.EMPTY).getFluid() == Fluids.WATER`.
 	static FluidVariant of(Fluid fluid, DataComponentPatch components) {
 		return FluidVariantImpl.of(fluid, components);
 	}
 
-	/**
-	 * Return the fluid of this variant.
-	 */
+	/// Return the fluid of this variant.
 	default Fluid getFluid() {
 		return getObject();
 	}
@@ -86,11 +76,9 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 		return getFluid().builtInRegistryHolder();
 	}
 
-	/**
-	 * Creates a copy of this FluidVariant with the provided component patch applied.
-	 * @param patch the patch to apply
-	 * @return the new variant with the patch applied
-	 */
+	/// Creates a copy of this FluidVariant with the provided component patch applied.
+	/// @param patch the patch to apply
+	/// @return the new variant with the patch applied
 	@Override
 	FluidVariant withComponents(DataComponentPatch patch);
 }

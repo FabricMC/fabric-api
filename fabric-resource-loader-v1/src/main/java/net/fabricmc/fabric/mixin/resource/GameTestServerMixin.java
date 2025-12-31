@@ -27,9 +27,7 @@ import net.minecraft.world.level.DataPackConfig;
 
 import net.fabricmc.fabric.impl.resource.pack.ModPackResourcesUtil;
 
-/**
- * @see ModPackResourcesUtil#createTestServerSettings
- */
+/// @see ModPackResourcesUtil#createTestServerSettings
 @Mixin(GameTestServer.class)
 public class GameTestServerMixin {
 	@Redirect(method = "create", at = @At(value = "NEW", target = "(Ljava/util/List;Ljava/util/List;)Lnet/minecraft/world/level/DataPackConfig;"))

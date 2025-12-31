@@ -30,9 +30,7 @@ class TransactionStateTests extends AbstractTransferApiTest {
 		bootstrap();
 	}
 
-	/**
-	 * Make sure that transaction global state stays valid in case of exceptions.
-	 */
+	/// Make sure that transaction global state stays valid in case of exceptions.
 	@Test
 	public void testTransactionExceptions() {
 		// Test exception inside the try.

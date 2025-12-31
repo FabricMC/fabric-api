@@ -45,9 +45,7 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 public class RegistrySyncTest implements ModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
 
-	/**
-	 * These are system property's as it allows for easier testing with different run configurations.
-	 */
+	/// These are system property's as it allows for easier testing with different run configurations.
 	public static final boolean REGISTER_BLOCKS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.blocks", "true"));
 	public static final boolean REGISTER_ITEMS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.items", "true"));
 

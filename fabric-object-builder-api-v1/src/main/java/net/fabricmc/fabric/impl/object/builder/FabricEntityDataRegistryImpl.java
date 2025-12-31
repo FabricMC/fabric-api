@@ -81,17 +81,14 @@ public final class FabricEntityDataRegistryImpl {
 		}
 	}
 
-	/**
-	 * Reorders handlers in {@code EntityDataSerializers#SERIALIZERS} to have a consistent order between client and server.
-	 *
-	 * <p>The order used is as follows:
-	 *
-	 * <ul>
-	 *   <li>Vanilla handlers</li>
-	 *   <li>Handlers in the Fabric API registry (sorted by ID)</li>
-	 *   <li>External modded handlers</li>
-	 * </ul>
-	*/
+	/// Reorders handlers in `EntityDataSerializers#SERIALIZERS` to have a consistent order between client and server.
+	///
+	/// The order used is as follows:
+	///
+	///     - Vanilla handlers
+	///     - Handlers in the Fabric API registry (sorted by ID)
+	///     - External modded handlers
+	///
 	private static void reorderHandlers() {
 		CrudeIncrementalIntIdentityHashBiMap<EntityDataSerializer<?>> dataHandlers = EntityDataSerializersAccessor.fabric_getDataHandlers();
 		LOGGER.debug("Reordering entity data serializers containing {} entries", dataHandlers.size());

@@ -151,11 +151,9 @@ public final class RegistrySyncManager {
 		}
 	}
 
-	/**
-	 * Creates a {@link Map} used to sync the registry ids.
-	 *
-	 * @return a {@link Map} to sync, null when empty
-	 */
+	/// Creates a [Map] used to sync the registry ids.
+	///
+	/// @return a [Map] to sync, null when empty
 	@Nullable
 	public static Map<Identifier, Object2IntMap<Identifier>> createAndPopulateRegistryMap() {
 		Map<Identifier, Object2IntMap<Identifier>> map = new LinkedHashMap<>();

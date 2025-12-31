@@ -30,21 +30,17 @@ import net.fabricmc.fabric.api.datagen.v1.loot.FabricEntityLootSubProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
-/**
- * A base interface for Loot table providers. You should not implement this class directly.
- *
- * <p>{@link FabricBlockLootSubProvider} provides additional features specific to block drop loot tables.
- *
- * <p>Use {@link SimpleFabricLootTableSubProvider} for a simple abstract class that you can implement to handle standard loot table functions.
- */
+/// A base interface for Loot table providers. You should not implement this class directly.
+///
+/// [FabricBlockLootSubProvider] provides additional features specific to block drop loot tables.
+///
+/// Use [SimpleFabricLootTableSubProvider] for a simple abstract class that you can implement to handle standard loot table functions.
 @ApiStatus.NonExtendable
 public interface FabricLootTableSubProvider extends LootTableSubProvider, DataProvider {
-	/**
-	 * Return a new exporter that applies the specified conditions to any loot table it receives.
-	 *
-	 * <p>For block and entity loot tables, use {@link net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootSubProvider#withConditions} or
-	 * {@link FabricEntityLootSubProvider#withConditions} instead, respectively.
-	 */
+	/// Return a new exporter that applies the specified conditions to any loot table it receives.
+	///
+	/// For block and entity loot tables, use [net.fabricmc.fabric.api.datagen.v1.loot.FabricBlockLootSubProvider#withConditions] or
+	/// [FabricEntityLootSubProvider#withConditions] instead, respectively.
 	default BiConsumer<ResourceKey<LootTable>, LootTable.Builder> withConditions(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> exporter, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return (id, table) -> {

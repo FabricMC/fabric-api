@@ -43,11 +43,9 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		setupFullChunkStatusChangeTest();
 	}
 
-	/**
-	 * After creating an SP world and waiting for all nearby chunks to generate (logging to stop),
-	 * closing the SP world and opening it again should not log any fresh generation.
-	 * Moving to an unexplored area will start logging again.
-	 */
+	/// After creating an SP world and waiting for all nearby chunks to generate (logging to stop),
+	/// closing the SP world and opening it again should not log any fresh generation.
+	/// Moving to an unexplored area will start logging again.
 	private static void setupChunkGenerateTest() {
 		final Object2IntMap<Identifier> generated = new Object2IntOpenHashMap<>();
 
@@ -64,12 +62,10 @@ public final class ServerChunkLifecycleTests implements ModInitializer {
 		});
 	}
 
-	/**
-	 * While the world is loading in, this will log a few times.
-	 * Once all chunks within (and just outside) simulation distance have loaded in, logging stops.
-	 * Moving around within the same chunk (use F3+G) should not log anything.
-	 * Moving into another chunk should trigger some logs.
-	 */
+	/// While the world is loading in, this will log a few times.
+	/// Once all chunks within (and just outside) simulation distance have loaded in, logging stops.
+	/// Moving around within the same chunk (use F3+G) should not log anything.
+	/// Moving into another chunk should trigger some logs.
 	private static void setupFullChunkStatusChangeTest() {
 		final Object2ObjectMap<Identifier, Object2IntMap<FullChunkStatus>> numOfEventsPerLevel = new Object2ObjectOpenHashMap<>();
 		final Object2ObjectMap<Identifier, Long2ObjectOpenHashMap<FullChunkStatusEvent>> eventsPerChunk = new Object2ObjectOpenHashMap<>();

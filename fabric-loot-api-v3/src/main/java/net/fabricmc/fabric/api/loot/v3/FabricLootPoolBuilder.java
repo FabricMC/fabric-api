@@ -27,80 +27,64 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import net.fabricmc.fabric.mixin.loot.LootPoolAccessor;
 
-/**
- * Convenience extensions to {@link LootPool.Builder}
- * for adding pre-built objects or collections.
- *
- * <p>This interface is automatically injected to {@link LootPool.Builder}.
- */
+/// Convenience extensions to [LootPool.Builder]
+/// for adding pre-built objects or collections.
+///
+/// This interface is automatically injected to [LootPool.Builder].
 @ApiStatus.NonExtendable
 public interface FabricLootPoolBuilder {
-	/**
-	 * Adds an entry to this builder.
-	 *
-	 * @param entry the added loot entry
-	 * @return this builder
-	 */
+	/// Adds an entry to this builder.
+	///
+	/// @param entry the added loot entry
+	/// @return this builder
 	default LootPool.Builder add(LootPoolEntryContainer entry) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	/**
-	 * Adds entries to this builder.
-	 *
-	 * @param entries the added loot entries
-	 * @return this builder
-	 */
+	/// Adds entries to this builder.
+	///
+	/// @param entries the added loot entries
+	/// @return this builder
 	default LootPool.Builder add(Collection<? extends LootPoolEntryContainer> entries) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	/**
-	 * Adds a condition to this builder.
-	 *
-	 * @param condition the added condition
-	 * @return this builder
-	 */
+	/// Adds a condition to this builder.
+	///
+	/// @param condition the added condition
+	/// @return this builder
 	default LootPool.Builder when(LootItemCondition condition) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	/**
-	 * Adds conditions to this builder.
-	 *
-	 * @param conditions the added conditions
-	 * @return this builder
-	 */
+	/// Adds conditions to this builder.
+	///
+	/// @param conditions the added conditions
+	/// @return this builder
 	default LootPool.Builder when(Collection<? extends LootItemCondition> conditions) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	/**
-	 * Applies a function to this builder.
-	 *
-	 * @param function the applied loot function
-	 * @return this builder
-	 */
+	/// Applies a function to this builder.
+	///
+	/// @param function the applied loot function
+	/// @return this builder
 	default LootPool.Builder apply(LootItemFunction function) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	/**
-	 * Applies loot functions to this builder.
-	 *
-	 * @param functions the applied loot functions
-	 * @return this builder
-	 */
+	/// Applies loot functions to this builder.
+	///
+	/// @param functions the applied loot functions
+	/// @return this builder
 	default LootPool.Builder apply(Collection<? extends LootItemFunction> functions) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	/**
-	 * Creates a builder copy of a loot pool.
-	 *
-	 * @param pool the loot pool
-	 * @return the copied builder
-	 */
+	/// Creates a builder copy of a loot pool.
+	///
+	/// @param pool the loot pool
+	/// @return the copied builder
 	static LootPool.Builder copyOf(LootPool pool) {
 		LootPoolAccessor accessor = (LootPoolAccessor) pool;
 		return LootPool.lootPool()

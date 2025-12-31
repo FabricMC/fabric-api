@@ -32,28 +32,24 @@ import net.minecraft.util.thread.BlockableEventLoop;
 
 import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 
-/**
- * Ensures packets are always handled by the end of the task loop on the receiving thread.
- *
- * <h1>Implementation notes</h1>
- *
- * <ul>
- *     <li>A packet can be either "in-flight", which is between the time it is sent and the time it is handled on the
- *         Netty thread on the receiving side, or it can be queued for handling on the receiving main thread, which is
- *         between when it is handled on the Netty thread and it is removed from the main thread task queue.
- *         <ul>
- *             <li>Some packets are handled directly on the Netty thread and never enter the second stage. The
- *                 {@code NetworkSynchronizer} is careful not to assume that all packets must be added to the task
- *                 queue.</li>
- *         </ul>
- *     </li>
- *     <li>Once the packets are tracked in this way, the key change is that the client and server now continue running
- *         their task loops until there are no in-flight packets and no packets waiting to be handled in the vanilla
- *         task queues.</li>
- *     <li>Network synchronization can be disabled via a system property, which is useful for mods which directly
- *         interface with the Netty pipeline, which would desynchronize the in-flight packet counter.</li>
- * </ul>
- */
+/// Ensures packets are always handled by the end of the task loop on the receiving thread.
+/// # Implementation notes
+///
+///   - A packet can be either "in-flight", which is between the time it is sent and the time it is handled on the
+///     Netty thread on the receiving side, or it can be queued for handling on the receiving main thread, which is
+///     between when it is handled on the Netty thread and it is removed from the main thread task queue.
+///
+///   - Some packets are handled directly on the Netty thread and never enter the second stage. The
+///     `NetworkSynchronizer` is careful not to assume that all packets must be added to the task
+///     queue.
+///
+///
+///   - Once the packets are tracked in this way, the key change is that the client and server now continue running
+///     their task loops until there are no in-flight packets and no packets waiting to be handled in the vanilla
+///     task queues.
+///   - Network synchronization can be disabled via a system property, which is useful for mods which directly
+///     interface with the Netty pipeline, which would desynchronize the in-flight packet counter.
+///
 public final class NetworkSynchronizer {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-gametest-api-v1");
 

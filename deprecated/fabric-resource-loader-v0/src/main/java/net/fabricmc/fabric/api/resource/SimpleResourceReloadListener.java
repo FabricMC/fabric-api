@@ -24,26 +24,23 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 import net.fabricmc.fabric.api.resource.v1.reloader.SimpleReloadListener;
 
-/**
- * A simplified version of the "resource reload listener" interface, hiding the
- * peculiarities of the API.
- *
- * <p>In essence, there are two stages:
- *
- * <ul><li>load: create an instance of your data object containing all loaded and
- * processed information,
- * <li>apply: apply the information from the data object to the game instance.</ul>
- *
- * <p>The load stage should be self-contained as it can run on any thread! However,
- * the apply stage is guaranteed to run on the game thread.
- *
- * <p>For a fully synchronous alternative, consider using
- * {@link ResourceManagerReloadListener} in conjunction with
- * {@link IdentifiableResourceReloadListener}.
- *
- * @param <T> The data object.
- * @deprecated Use {@link SimpleReloadListener} instead.
- */
+/// A simplified version of the "resource reload listener" interface, hiding the
+/// peculiarities of the API.
+///
+/// In essence, there are two stages:
+///   - load: create an instance of your data object containing all loaded and
+///     processed information,
+///   - apply: apply the information from the data object to the game instance.
+///
+/// The load stage should be self-contained as it can run on any thread! However,
+/// the apply stage is guaranteed to run on the game thread.
+///
+/// For a fully synchronous alternative, consider using
+/// [ResourceManagerReloadListener] in conjunction with
+/// [IdentifiableResourceReloadListener].
+///
+/// @param <T> The data object.
+/// @deprecated Use [SimpleReloadListener] instead.
 @Deprecated
 public interface SimpleResourceReloadListener<T> extends IdentifiableResourceReloadListener {
 	@Override
@@ -53,22 +50,18 @@ public interface SimpleResourceReloadListener<T> extends IdentifiableResourceRel
 		);
 	}
 
-	/**
-	 * Asynchronously process and load resource-based data. The code
-	 * must be thread-safe and not modify game state!
-	 *
-	 * @param manager  The resource manager used during reloading.
-	 * @param executor The executor which should be used for this stage.
-	 * @return A CompletableFuture representing the "data loading" stage.
-	 */
+	/// Asynchronously process and load resource-based data. The code
+	/// must be thread-safe and not modify game state!
+	///
+	/// @param manager  The resource manager used during reloading.
+	/// @param executor The executor which should be used for this stage.
+	/// @return A CompletableFuture representing the "data loading" stage.
 	CompletableFuture<T> load(ResourceManager manager, Executor executor);
 
-	/**
-	 * Synchronously apply loaded data to the game state.
-	 *
-	 * @param manager  The resource manager used during reloading.
-	 * @param executor The executor which should be used for this stage.
-	 * @return A CompletableFuture representing the "data applying" stage.
-	 */
+	/// Synchronously apply loaded data to the game state.
+	///
+	/// @param manager  The resource manager used during reloading.
+	/// @param executor The executor which should be used for this stage.
+	/// @return A CompletableFuture representing the "data applying" stage.
 	CompletableFuture<Void> apply(T data, ResourceManager manager, Executor executor);
 }

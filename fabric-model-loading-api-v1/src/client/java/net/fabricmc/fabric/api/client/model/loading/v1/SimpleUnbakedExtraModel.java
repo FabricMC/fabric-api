@@ -28,51 +28,42 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.resources.Identifier;
 
-/**
- * A {@link UnbakedExtraModel} that loads a single model.
- *
- * @param <T> The type of the baked model, for instance {@link BlockStateModel}.
- */
+/// A [UnbakedExtraModel] that loads a single model.
+///
+/// @param <T> The type of the baked model, for instance [BlockStateModel].
 public final class SimpleUnbakedExtraModel<T> implements UnbakedExtraModel<T> {
 	private final Identifier model;
 	private final BiFunction<ResolvedModel, ModelBaker, T> bake;
 
-	/**
-	 * @param model The location of the model to load.
-	 * @param bake  A function to bake the model.
-	 */
+	/// @param model The location of the model to load.
+	/// @param bake  A function to bake the model.
 	public SimpleUnbakedExtraModel(Identifier model, BiFunction<ResolvedModel, ModelBaker, T> bake) {
 		this.model = model;
 		this.bake = bake;
 	}
 
-	/**
-	 * Create a {@link SimpleUnbakedExtraModel} for a {@link BlockStateModel}.
-	 *
-	 * <h2>Example</h2>
-	 * {@snippet :
-	 * public static final Identifier MODEL_ID = Identifier.fromNamespaceAndPath("modid", "model_path");
-	 * public static final ExtraModelKey<BlockStateModel> MODEL_KEY = ExtraModelKey.create(MODEL_ID::toString);
-	 *
-	 * public static void register() {
-	 * 		ModelLoadingPlugin.register(pluginContext -> pluginContext.addModel(MODEL_KEY, SimpleUnbakedExtraModel.blockStateModel(MODEL_ID)));
-	 * }
-	 * }
-	 *
-	 * @param model The location of the model to load.
-	 * @return The unbaked extra model.
-	 */
+	/// Create a [SimpleUnbakedExtraModel] for a [BlockStateModel].
+	/// ## Example
+	/// {@snippet :
+	///  public static final Identifier MODEL_ID = Identifier.fromNamespaceAndPath("modid", "model_path");
+	///  public static final ExtraModelKey<BlockStateModel> MODEL_KEY = ExtraModelKey.create(MODEL_ID::toString);
+	///
+	///  public static void register() {
+	///  		ModelLoadingPlugin.register(pluginContext -> pluginContext.addModel(MODEL_KEY, SimpleUnbakedExtraModel.blockStateModel(MODEL_ID)));
+	///  }
+	///  }
+	///
+	/// @param model The location of the model to load.
+	/// @return The unbaked extra model.
 	public static SimpleUnbakedExtraModel<BlockStateModel> blockStateModel(Identifier model) {
 		return blockStateModel(model, BlockModelRotation.IDENTITY);
 	}
 
-	/**
-	 * Create a {@link SimpleUnbakedExtraModel} for a {@link BlockStateModel}.
-	 *
-	 * @param model    The location of the model to load.
-	 * @param settings The settings to bake the geometry with.
-	 * @return The unbaked extra model.
-	 */
+	/// Create a [SimpleUnbakedExtraModel] for a [BlockStateModel].
+	///
+	/// @param model    The location of the model to load.
+	/// @param settings The settings to bake the geometry with.
+	/// @return The unbaked extra model.
 	public static SimpleUnbakedExtraModel<BlockStateModel> blockStateModel(Identifier model, ModelState settings) {
 		return new SimpleUnbakedExtraModel<>(model, (baked, baker) -> {
 			TextureSlots textures = baked.getTopTextureSlots();

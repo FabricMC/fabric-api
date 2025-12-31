@@ -24,54 +24,44 @@ import net.minecraft.world.item.component.TooltipProvider;
 
 import net.fabricmc.fabric.impl.item.ItemComponentTooltipProviderRegistryImpl;
 
-/**
- * A registry of {@link TooltipProvider} item components. Adding your item component to this registry will render the
- * item component to the tooltip of them item when it is present, in a location relative to other item components.
- */
+/// A registry of [TooltipProvider] item components. Adding your item component to this registry will render the
+/// item component to the tooltip of them item when it is present, in a location relative to other item components.
 @ApiStatus.NonExtendable
 public interface ItemComponentTooltipProviderRegistry {
-	/**
-	 * Adds the specified item component type to the list of tooltip providers to be called first. The component will
-	 * render at the top of the tooltip.
-	 *
-	 * @param componentType the component type to add
-	 */
+	/// Adds the specified item component type to the list of tooltip providers to be called first. The component will
+	/// render at the top of the tooltip.
+	///
+	/// @param componentType the component type to add
 	static void addFirst(DataComponentType<? extends TooltipProvider> componentType) {
 		Preconditions.checkNotNull(componentType, "componentType");
 		ItemComponentTooltipProviderRegistryImpl.addFirst(componentType);
 	}
 
-	/**
-	 * Adds the specified item component type to the list of tooltip providers to be called last. The component will
-	 * render at the bottom of the tooltip.
-	 *
-	 * @param componentType the component type to add
-	 */
+	/// Adds the specified item component type to the list of tooltip providers to be called last. The component will
+	/// render at the bottom of the tooltip.
+	///
+	/// @param componentType the component type to add
 	static void addLast(DataComponentType<? extends TooltipProvider> componentType) {
 		Preconditions.checkNotNull(componentType, "componentType");
 		ItemComponentTooltipProviderRegistryImpl.addLast(componentType);
 	}
 
-	/**
-	 * Adds the specified item component type to the list of tooltip providers so that it will render
-	 * before the tooltip provider associated with the specified anchor component type.
-	 *
-	 * @param anchor the component type before which the specified component type will be rendered
-	 * @param componentType the component type to add
-	 */
+	/// Adds the specified item component type to the list of tooltip providers so that it will render
+	/// before the tooltip provider associated with the specified anchor component type.
+	///
+	/// @param anchor the component type before which the specified component type will be rendered
+	/// @param componentType the component type to add
 	static void addBefore(DataComponentType<?> anchor, DataComponentType<? extends TooltipProvider> componentType) {
 		Preconditions.checkNotNull(anchor, "anchor");
 		Preconditions.checkNotNull(componentType, "componentType");
 		ItemComponentTooltipProviderRegistryImpl.addBefore(anchor, componentType);
 	}
 
-	/**
-	 * Adds the specified item component type to the list of tooltip providers so that it will render
-	 * after the tooltip provider associated with the specified anchor component type.
-	 *
-	 * @param anchor the component type after which the specified component type will be rendered
-	 * @param componentType the component type to add
-	 */
+	/// Adds the specified item component type to the list of tooltip providers so that it will render
+	/// after the tooltip provider associated with the specified anchor component type.
+	///
+	/// @param anchor the component type after which the specified component type will be rendered
+	/// @param componentType the component type to add
 	static void addAfter(DataComponentType<?> anchor, DataComponentType<? extends TooltipProvider> componentType) {
 		Preconditions.checkNotNull(anchor, "anchor");
 		Preconditions.checkNotNull(componentType, "componentType");

@@ -22,12 +22,10 @@ import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
-/**
- * A storage that is also its only storage view.
- * It can be used in APIs for storages that are wrappers around a single "slot", or for slightly more convenient implementation.
- *
- * @param <T> The type of the stored resource.
- */
+/// A storage that is also its only storage view.
+/// It can be used in APIs for storages that are wrappers around a single "slot", or for slightly more convenient implementation.
+///
+/// @param <T> The type of the stored resource.
 public interface SingleSlotStorage<T> extends SlottedStorage<T>, StorageView<T> {
 	@Override
 	default Iterator<StorageView<T>> iterator() {

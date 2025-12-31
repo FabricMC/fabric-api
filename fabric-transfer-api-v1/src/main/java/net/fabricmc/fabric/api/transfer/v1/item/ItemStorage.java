@@ -45,53 +45,47 @@ import net.fabricmc.fabric.impl.transfer.item.ComposterWrapper;
 import net.fabricmc.fabric.impl.transfer.item.ItemContainerContentsStorage;
 import net.fabricmc.fabric.mixin.transfer.CompoundContainerAccessor;
 
-/**
- * Access to {@link Storage Storage&lt;ItemVariant&gt;} instances.
- */
+/// Access to [Storage&lt;ItemVariant&gt;][Storage] instances.
 public final class ItemStorage {
-	/**
-	 * Sided block access to item variant storages.
-	 * The {@code Direction} parameter may be null, meaning that the full storage (ignoring side restrictions) should be queried.
-	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
-	 *
-	 * <p>When the operations supported by a storage change,
-	 * that is if the return value of {@link Storage#supportsInsertion} or {@link Storage#supportsExtraction} changes,
-	 * the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
-	 *
-	 * <p>Block entities directly implementing {@link Container} or {@link WorldlyContainer} are automatically handled by a fallback provider,
-	 * and don't need to do anything.
-	 * Blocks that implement {@link WorldlyContainerHolder} and whose returned container is constant (it's the same for two subsequent calls)
-	 * are also handled automatically and don't need to do anything.
-	 * The fallback provider assumes that the {@link Container} "owns" its contents. If that's not the case,
-	 * for example because it redirects all function calls to another container, then implementing {@link Container} should be avoided.
-	 *
-	 * <p>Hoppers and droppers will interact with storages exposed through this lookup, thus implementing one of the vanilla APIs is not necessary.
-	 *
-	 * <p>Depending on the use case, the following strategies can be used to offer a {@code Storage<ItemVariant>} implementation:
-	 * <ul>
-	 *     <li>Directly implementing {@link Container} or {@link WorldlyContainer} on a block entity - it will be wrapped automatically.</li>
-	 *     <li>Storing a container inside a block entity field, and converting it manually with {@link ContainerStorage#of}.
-	 *     {@link SimpleContainer} can be used for easy implementation.</li>
-	 *     <li>{@link SingleStackStorage} can also be used for more flexibility. Multiple of them can be combined with {@link CombinedStorage}.</li>
-	 *     <li>Directly providing a custom implementation of {@code Storage<ItemVariant>} is also possible.</li>
-	 * </ul>
-	 *
-	 * <p>A simple way to expose item variant storages for a block entity hierarchy is to extend {@link SidedStorageBlockEntity}.
-	 *
-	 * <p>This may be queried safely both on the logical server and on the logical client threads.
-	 * On the server thread (i.e. with a server level), all transfer functionality is always supported.
-	 * On the client thread (i.e. with a client level), contents of queried Storages are unreliable and should not be modified.
-	 */
+	/// Sided block access to item variant storages.
+	/// The `Direction` parameter may be null, meaning that the full storage (ignoring side restrictions) should be queried.
+	/// Refer to [BlockApiLookup] for documentation on how to use this field.
+	///
+	/// When the operations supported by a storage change,
+	/// that is if the return value of [Storage#supportsInsertion] or [Storage#supportsExtraction] changes,
+	/// the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
+	///
+	/// Block entities directly implementing [Container] or [WorldlyContainer] are automatically handled by a fallback provider,
+	/// and don't need to do anything.
+	/// Blocks that implement [WorldlyContainerHolder] and whose returned container is constant (it's the same for two subsequent calls)
+	/// are also handled automatically and don't need to do anything.
+	/// The fallback provider assumes that the [Container] "owns" its contents. If that's not the case,
+	/// for example because it redirects all function calls to another container, then implementing [Container] should be avoided.
+	///
+	/// Hoppers and droppers will interact with storages exposed through this lookup, thus implementing one of the vanilla APIs is not necessary.
+	///
+	/// Depending on the use case, the following strategies can be used to offer a `Storage<ItemVariant>` implementation:
+	///
+	///   - Directly implementing [Container] or [WorldlyContainer] on a block entity - it will be wrapped automatically.
+	///   - Storing a container inside a block entity field, and converting it manually with [ContainerStorage#of].
+	///     [SimpleContainer] can be used for easy implementation.
+	///   - [SingleStackStorage] can also be used for more flexibility. Multiple of them can be combined with [CombinedStorage].
+	///   - Directly providing a custom implementation of `Storage<ItemVariant>` is also possible.
+	///
+	///
+	/// A simple way to expose item variant storages for a block entity hierarchy is to extend [SidedStorageBlockEntity].
+	///
+	/// This may be queried safely both on the logical server and on the logical client threads.
+	/// On the server thread (i.e. with a server level), all transfer functionality is always supported.
+	/// On the client thread (i.e. with a client level), contents of queried Storages are unreliable and should not be modified.
 	public static final BlockApiLookup<Storage<ItemVariant>, @Nullable Direction> SIDED =
 			BlockApiLookup.get(Identifier.fromNamespaceAndPath("fabric", "sided_item_storage"), Storage.asClass(), Direction.class);
 
-	/**
-	 * Item access to item variant storages.
-	 * Querying should happen through {@link ContainerItemContext#find}.
-	 *
-	 * <p>This may be queried both client-side and server-side.
-	 * Returned APIs should behave the same regardless of the logical side.
-	 */
+	/// Item access to item variant storages.
+	/// Querying should happen through [ContainerItemContext#find].
+	///
+	/// This may be queried both client-side and server-side.
+	/// Returned APIs should behave the same regardless of the logical side.
 	public static final ItemApiLookup<Storage<ItemVariant>, ContainerItemContext> ITEM =
 			ItemApiLookup.get(Identifier.fromNamespaceAndPath("fabric", "item_storage"), Storage.asClass(), ContainerItemContext.class);
 

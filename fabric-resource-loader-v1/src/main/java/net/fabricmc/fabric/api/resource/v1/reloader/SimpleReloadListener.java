@@ -22,24 +22,21 @@ import java.util.concurrent.Executor;
 
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
-/**
- * A variant of {@link net.minecraft.server.packs.resources.SimplePreparableReloadListener}
- * which passes the shared state instead of the resource manager in its methods.
- *
- * <p>In essence, there are two stages:
- *
- * <ul><li>prepare: create an instance of your data object containing all loaded and
- * processed information,
- * <li>apply: apply the information from the data object to the game instance.</ul>
- *
- * <p>The prepare stage should be self-contained as it can run on any thread! However,
- * the apply stage is guaranteed to run on the game thread.
- *
- * <p>For a fully synchronous alternative, consider using
- * {@link net.minecraft.server.packs.resources.ResourceManagerReloadListener}.
- *
- * @param <T> the data object
- */
+/// A variant of [net.minecraft.server.packs.resources.SimplePreparableReloadListener]
+/// which passes the shared state instead of the resource manager in its methods.
+///
+/// In essence, there are two stages:
+///   - prepare: create an instance of your data object containing all loaded and
+///     processed information,
+///   - apply: apply the information from the data object to the game instance.
+///
+/// The prepare stage should be self-contained as it can run on any thread! However,
+/// the apply stage is guaranteed to run on the game thread.
+///
+/// For a fully synchronous alternative, consider using
+/// [net.minecraft.server.packs.resources.ResourceManagerReloadListener].
+///
+/// @param <T> the data object
 public abstract class SimpleReloadListener<T> implements PreparableReloadListener {
 	public final CompletableFuture<Void> reload(SharedState state, Executor prepareExecutor, PreparationBarrier preparationBarrier, Executor applyExecutor) {
 		CompletableFuture<T> prepareStep = CompletableFuture.supplyAsync(() -> this.prepare(state), prepareExecutor);
@@ -48,20 +45,16 @@ public abstract class SimpleReloadListener<T> implements PreparableReloadListene
 				.thenAcceptAsync((prepared) -> this.apply(prepared, state), applyExecutor);
 	}
 
-	/**
-	 * Asynchronously processes and prepares resource-based data.
-	 * The code must be thread-safe and not modify game state!
-	 *
-	 * @param state the data state used for sharing state between reload listeners
-	 * @return the prepared data
-	 */
+	/// Asynchronously processes and prepares resource-based data.
+	/// The code must be thread-safe and not modify game state!
+	///
+	/// @param state the data state used for sharing state between reload listeners
+	/// @return the prepared data
 	protected abstract T prepare(SharedState state);
 
-	/**
-	 * Synchronously applies prepared data to the game state.
-	 *
-	 * @param prepared the prepared data
-	 * @param state the data state used for sharing state between reload listeners
-	 */
+	/// Synchronously applies prepared data to the game state.
+	///
+	/// @param prepared the prepared data
+	/// @param state the data state used for sharing state between reload listeners
 	protected abstract void apply(T prepared, SharedState state);
 }

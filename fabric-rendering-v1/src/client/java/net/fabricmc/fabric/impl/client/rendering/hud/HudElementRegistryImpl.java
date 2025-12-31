@@ -61,10 +61,8 @@ public class HudElementRegistryImpl {
 			VanillaHudElements.PLAYER_LIST,
 			VanillaHudElements.SUBTITLES
 	);
-	/**
-	 * A map containing vanilla layers.
-	 * This map should not be modified. Modify {@link RootLayer#layers()} instead.
-	 */
+	/// A map containing vanilla layers.
+	/// This map should not be modified. Modify [RootLayer#layers()] instead.
 	@VisibleForTesting
 	public static final Map<Identifier, RootLayer> ROOT_ELEMENTS = VANILLA_ELEMENT_IDS.stream()
 			.map(RootLayer::new)
@@ -147,9 +145,7 @@ public class HudElementRegistryImpl {
 		});
 	}
 
-	/**
-	 * @return true if an element with the given identifier was found
-	 */
+	/// @return true if an element with the given identifier was found
 	@VisibleForTesting
 	static boolean findLayer(Identifier identifier, LayerVisitor visitor) {
 		MutableBoolean found = new MutableBoolean(false);
@@ -195,15 +191,11 @@ public class HudElementRegistryImpl {
 
 	@VisibleForTesting
 	interface LayerVisitor {
-		/**
-		 * @return true if the list has been modified, false if not modified
-		 */
+		/// @return true if the list has been modified, false if not modified
 		boolean visit(HudLayer layer, ListIterator<HudLayer> iterator);
 	}
 
-	/**
-	 * An element that wraps a vanilla element using a list, allowing for users to attach layers before or after it, replace it, or remove it.
-	 */
+	/// An element that wraps a vanilla element using a list, allowing for users to attach layers before or after it, replace it, or remove it.
 	public record RootLayer(Identifier id, List<HudLayer> layers) {
 		private RootLayer(Identifier id) {
 			this(id, new ArrayList<>());

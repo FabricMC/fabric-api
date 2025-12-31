@@ -25,18 +25,12 @@ import net.minecraft.commands.Commands;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Callback for when a server registers all commands.
- *
- * <p>To register some commands, you would register an event listener and implement the callback.
- *
- * <pre>{@code
- * CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) -> {
- *     // For example, this command is only registered on an integrated server like the vanilla publish command
- *     if (selection.includeIntegrated) dispatcher.register(Commands.literal("integrated_command").executes(context -> {...}));
- * })};
- * }</pre>
- */
+/// Callback for when a server registers all commands.
+///
+/// To register some commands, you would register an event listener and implement the callback.
+/// <pre>
+/// `CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) ->{// For example, this command is only registered on an integrated server like the vanilla publish commandif (selection.includeIntegrated) dispatcher.register(Commands.literal("integrated_command").executes(context ->{...}));})`;
+/// }</pre>
 public interface CommandRegistrationCallback {
 	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dispatcher, buildContext, selection) -> {
 		for (CommandRegistrationCallback callback : callbacks) {
@@ -44,12 +38,10 @@ public interface CommandRegistrationCallback {
 		}
 	});
 
-	/**
-	 * Called when the server is registering commands.
-	 *
-	 * @param dispatcher the command dispatcher to register commands to
-	 * @param buildContext    object exposing access to the game's holders
-	 * @param selection  environment selection the registrations should be done for, used for commands that are dedicated or integrated server only
-	 */
+	/// Called when the server is registering commands.
+	///
+	/// @param dispatcher the command dispatcher to register commands to
+	/// @param buildContext    object exposing access to the game's holders
+	/// @param selection  environment selection the registrations should be done for, used for commands that are dedicated or integrated server only
 	void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext, Commands.CommandSelection selection);
 }

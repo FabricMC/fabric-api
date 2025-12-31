@@ -30,23 +30,21 @@ import net.minecraft.world.entity.LivingEntity;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Called when {@link RenderLayer render layers} for a {@link LivingEntityRenderer living entity renderer} are registered.
- *
- * <p>Render layers are typically used for rendering additional objects on an entity, such as armor, an elytra or {@link Deadmau5EarsLayer Deadmau5's ears}.
- * This callback lets developers add additional render layers for use in entity rendering.
- * Listeners should filter out the specific entity renderer they want to hook into, usually through {@code instanceof} checks or filtering by entity type.
- * Once listeners find a suitable entity renderer, they should register their render layer via the registration helper.
- *
- * <p>For example, to register a render layer for a player model, the example below may be used:
- * <blockquote><pre>
- * LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
- * 	if (entityRenderer instanceof AvatarRenderer&lt;?&gt; avatarEntityRenderer) {
- * 		registrationHelper.register(new MyRenderLayer(avatarEntityRenderer, context.getModelSet()));
- * 	}
- * });
- * </pre></blockquote>
- */
+/// Called when [render layers][RenderLayer] for a [living entity renderer][LivingEntityRenderer] are registered.
+///
+/// Render layers are typically used for rendering additional objects on an entity, such as armor, an elytra or [Deadmau5's ears][Deadmau5EarsLayer].
+/// This callback lets developers add additional render layers for use in entity rendering.
+/// Listeners should filter out the specific entity renderer they want to hook into, usually through `instanceof` checks or filtering by entity type.
+/// Once listeners find a suitable entity renderer, they should register their render layer via the registration helper.
+///
+/// For example, to register a render layer for a player model, the example below may be used:
+/// <blockquote><pre>
+/// LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
+/// 	if (entityRenderer instanceof AvatarRenderer&lt;?&gt; avatarEntityRenderer) {
+/// 		registrationHelper.register(new MyRenderLayer(avatarEntityRenderer, context.getModelSet()));
+/// 	}
+/// });
+/// </pre></blockquote>
 @FunctionalInterface
 public interface LivingEntityRenderLayerRegistrationCallback {
 	Event<LivingEntityRenderLayerRegistrationCallback> EVENT = EventFactory.createArrayBacked(
@@ -56,27 +54,21 @@ public interface LivingEntityRenderLayerRegistrationCallback {
 				}
 			});
 
-	/**
-	 * Called when render layers may be registered.
-	 *
-	 * @param entityType     the entity type of the renderer
-	 * @param entityRenderer the entity renderer
-	 */
+	/// Called when render layers may be registered.
+	///
+	/// @param entityType     the entity type of the renderer
+	/// @param entityRenderer the entity renderer
 	void registerLayers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?, ?> entityRenderer, RegistrationHelper registrationHelper, EntityRendererProvider.Context context);
 
-	/**
-	 * A delegate object used to help register render layers for an entity renderer.
-	 *
-	 * <p>This is not meant for implementation by users of the API.
-	 */
+	/// A delegate object used to help register render layers for an entity renderer.
+	///
+	/// This is not meant for implementation by users of the API.
 	@ApiStatus.NonExtendable
 	interface RegistrationHelper {
-		/**
-		 * Adds a render layer to the entity renderer.
-		 *
-		 * @param renderLayer the render layer
-		 * @param <T> the type of entity
-		 */
+		/// Adds a render layer to the entity renderer.
+		///
+		/// @param renderLayer the render layer
+		/// @param <T> the type of entity
 		<T extends EntityRenderState> void register(RenderLayer<T, ? extends EntityModel<T>> renderLayer);
 	}
 }

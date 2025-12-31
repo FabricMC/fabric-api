@@ -23,39 +23,33 @@ import net.minecraft.world.entity.Entity;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Events related to an entity being moved to another level.
- *
- * @apiNote For a {@link ServerPlayer}, please use {@link ServerEntityLevelChangeEvents#AFTER_PLAYER_CHANGE_LEVEL}.
- */
+/// Events related to an entity being moved to another level.
+///
+/// @apiNote For a [ServerPlayer], please use [ServerEntityLevelChangeEvents#AFTER_PLAYER_CHANGE_LEVEL].
 public final class ServerEntityLevelChangeEvents {
-	/**
-	 * An event which is called after an entity has been moved to a different level.
-	 *
-	 * <p>All entities are copied to the destination and the old entity removed.
-	 * This event does not apply to the {@link ServerPlayer} since players are physically moved to the new level instead of being copied over.
-	 *
-	 * <p>A mod may use this event for reference cleanup if it is tracking an entity's current level.
-	 *
-	 * @see ServerEntityLevelChangeEvents#AFTER_PLAYER_CHANGE_LEVEL
-	 */
+	/// An event which is called after an entity has been moved to a different level.
+	///
+	/// All entities are copied to the destination and the old entity removed.
+	/// This event does not apply to the [ServerPlayer] since players are physically moved to the new level instead of being copied over.
+	///
+	/// A mod may use this event for reference cleanup if it is tracking an entity's current level.
+	///
+	/// @see ServerEntityLevelChangeEvents#AFTER_PLAYER_CHANGE_LEVEL
 	public static final Event<AfterEntityChange> AFTER_ENTITY_CHANGE_LEVEL = EventFactory.createArrayBacked(AfterEntityChange.class, callbacks -> (originalEntity, newEntity, origin, destination) -> {
 		for (AfterEntityChange callback : callbacks) {
 			callback.afterChangeLevel(originalEntity, newEntity, origin, destination);
 		}
 	});
 
-	/**
-	 * An event which is called after a player has been moved to a different level.
-	 *
-	 * <p>This is similar to {@link ServerEntityLevelChangeEvents#AFTER_ENTITY_CHANGE_LEVEL} but is only called for players.
-	 * This is because the player is usually physically moved to the new level instead of being recreated at the destination.
-	 *
-	 * <p>However, there is one exception to this. When the player respawns in a different level, the player is recreated at the destination. When that happens,
-	 * this event passes in the new {@link ServerPlayer}. If you need the old {@link ServerPlayer}, see {@link ServerPlayerEvents#AFTER_RESPAWN}
-	 *
-	 * @see ServerEntityLevelChangeEvents#AFTER_ENTITY_CHANGE_LEVEL
-	 */
+	/// An event which is called after a player has been moved to a different level.
+	///
+	/// This is similar to [ServerEntityLevelChangeEvents#AFTER_ENTITY_CHANGE_LEVEL] but is only called for players.
+	/// This is because the player is usually physically moved to the new level instead of being recreated at the destination.
+	///
+	/// However, there is one exception to this. When the player respawns in a different level, the player is recreated at the destination. When that happens,
+	/// this event passes in the new [ServerPlayer]. If you need the old [ServerPlayer], see [ServerPlayerEvents#AFTER_RESPAWN]
+	///
+	/// @see ServerEntityLevelChangeEvents#AFTER_ENTITY_CHANGE_LEVEL
 	public static final Event<AfterPlayerChange> AFTER_PLAYER_CHANGE_LEVEL = EventFactory.createArrayBacked(AfterPlayerChange.class, callbacks -> (player, origin, destination) -> {
 		for (AfterPlayerChange callback : callbacks) {
 			callback.afterChangeLevel(player, origin, destination);
@@ -64,29 +58,25 @@ public final class ServerEntityLevelChangeEvents {
 
 	@FunctionalInterface
 	public interface AfterEntityChange {
-		/**
-		 * Called after an entity has been recreated at the destination when being moved to a different level.
-		 *
-		 * <p>Note this event is not called if the entity is a {@link ServerPlayer}.
-		 * {@link AfterPlayerChange} should be used to track when a player has changed levels.
-		 *
-		 * @param originalEntity the original entity
-		 * @param newEntity the new entity at the destination
-		 * @param origin the level the original entity is in
-		 * @param destination the destination level the new entity is in
-		 */
+		/// Called after an entity has been recreated at the destination when being moved to a different level.
+		///
+		/// Note this event is not called if the entity is a [ServerPlayer].
+		/// [AfterPlayerChange] should be used to track when a player has changed levels.
+		///
+		/// @param originalEntity the original entity
+		/// @param newEntity the new entity at the destination
+		/// @param origin the level the original entity is in
+		/// @param destination the destination level the new entity is in
 		void afterChangeLevel(Entity originalEntity, Entity newEntity, ServerLevel origin, ServerLevel destination);
 	}
 
 	@FunctionalInterface
 	public interface AfterPlayerChange {
-		/**
-		 * Called after a player has been moved to different level.
-		 *
-		 * @param player the player
-		 * @param origin the original level the player was in
-		 * @param destination the new level the player was moved to
-		 */
+		/// Called after a player has been moved to different level.
+		///
+		/// @param player the player
+		/// @param origin the original level the player was in
+		/// @param destination the new level the player was moved to
 		void afterChangeLevel(ServerPlayer player, ServerLevel origin, ServerLevel destination);
 	}
 

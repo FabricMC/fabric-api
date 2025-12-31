@@ -26,22 +26,18 @@ public final class ClientEntityEvents {
 	private ClientEntityEvents() {
 	}
 
-	/**
-	 * Called when an Entity is loaded into a ClientLevel.
-	 *
-	 * <p>When this event is called, the chunk is already in the level.
-	 */
+	/// Called when an Entity is loaded into a ClientLevel.
+	///
+	/// When this event is called, the chunk is already in the level.
 	public static final Event<ClientEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ClientEntityEvents.Load.class, callbacks -> (entity, level) -> {
 		for (Load callback : callbacks) {
 			callback.onLoad(entity, level);
 		}
 	});
 
-	/**
-	 * Called when an Entity is about to be unloaded from a ClientLevel.
-	 *
-	 * <p>This event is called before the entity is unloaded from the level.
-	 */
+	/// Called when an Entity is about to be unloaded from a ClientLevel.
+	///
+	/// This event is called before the entity is unloaded from the level.
 	public static final Event<ClientEntityEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientEntityEvents.Unload.class, callbacks -> (entity, level) -> {
 		for (Unload callback : callbacks) {
 			callback.onUnload(entity, level);

@@ -29,34 +29,28 @@ public final class ServerEntityEvents {
 	private ServerEntityEvents() {
 	}
 
-	/**
-	 * Called when an Entity is loaded into a ServerLevel.
-	 *
-	 * <p>When this event is called, the entity is already in the level.
-	 */
+	/// Called when an Entity is loaded into a ServerLevel.
+	///
+	/// When this event is called, the entity is already in the level.
 	public static final Event<ServerEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.Load.class, callbacks -> (entity, level) -> {
 		for (Load callback : callbacks) {
 			callback.onLoad(entity, level);
 		}
 	});
 
-	/**
-	 * Called when an Entity is unloaded from a ServerLevel.
-	 *
-	 * <p>This event is called before the entity is removed from the level.
-	 */
+	/// Called when an Entity is unloaded from a ServerLevel.
+	///
+	/// This event is called before the entity is removed from the level.
 	public static final Event<ServerEntityEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerEntityEvents.Unload.class, callbacks -> (entity, level) -> {
 		for (Unload callback : callbacks) {
 			callback.onUnload(entity, level);
 		}
 	});
 
-	/**
-	 * Called during {@link LivingEntity#tick()} if the Entity's equipment has been changed or mutated.
-	 *
-	 * <p>This event is also called when the entity joins the level.
-	 * A change in equipment is determined by {@link ItemStack#matches(ItemStack, ItemStack)}.
-	 */
+	/// Called during [LivingEntity#tick()] if the Entity's equipment has been changed or mutated.
+	///
+	/// This event is also called when the entity joins the level.
+	/// A change in equipment is determined by [ItemStack#matches(ItemStack, ItemStack)].
 	public static final Event<EquipmentChange> EQUIPMENT_CHANGE = EventFactory.createArrayBacked(ServerEntityEvents.EquipmentChange.class, callbacks -> (livingEntity, equipmentSlot, previous, next) -> {
 		for (EquipmentChange callback : callbacks) {
 			callback.onChange(livingEntity, equipmentSlot, previous, next);

@@ -29,57 +29,47 @@ import net.minecraft.world.item.crafting.RecipeManager;
 
 import net.fabricmc.fabric.impl.resource.DataResourceLoaderImpl;
 
-/**
- * Provides various hooks into the {@linkplain net.minecraft.server.packs.PackType#SERVER_DATA server data} resource loader.
- */
+/// Provides various hooks into the {@linkplain net.minecraft.server.packs.PackType#SERVER_DATA server data} resource loader.
 @ApiStatus.NonExtendable
 public interface DataResourceLoader extends ResourceLoader {
-	/**
-	 * The reload listener state key for the recipe manager.
-	 *
-	 * @apiNote The recipe manager is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
-	 * <br/>
-	 * It should <b>only</b> be accessed in the application phase of the reload listeners,
-	 * and you should depend on {@link net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server#RECIPES}.
-	 */
+	/// The reload listener state key for the recipe manager.
+	///
+	/// @apiNote The recipe manager is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
+	///
+	/// It should **only** be accessed in the application phase of the reload listeners,
+	/// and you should depend on [net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server#RECIPES].
 	PreparableReloadListener.StateKey<RecipeManager> RECIPE_MANAGER_KEY = new PreparableReloadListener.StateKey<>();
-	/**
-	 * The reload listener state key for the advancement loader.
-	 *
-	 * @apiNote The advancement loader is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
-	 * <br/>
-	 * It should <b>only</b> be accessed in the application phase of the reload listeners,
-	 * and you should depend on {@link net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server#ADVANCEMENTS}.
-	 */
+	/// The reload listener state key for the advancement loader.
+	///
+	/// @apiNote The advancement loader is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
+	///
+	/// It should **only** be accessed in the application phase of the reload listeners,
+	/// and you should depend on [net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys.Server#ADVANCEMENTS].
 	PreparableReloadListener.StateKey<ServerAdvancementManager> ADVANCEMENT_LOADER_KEY = new PreparableReloadListener.StateKey<>();
-	/**
-	 * The reload listener state key for the data resource store.
-	 *
-	 * @apiNote The data resource store is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
-	 * <br/>
-	 * It should <b>only</b> be mutated in the application phase of the reload listeners.
-	 */
+	/// The reload listener state key for the data resource store.
+	///
+	/// @apiNote The data resource store is only available in {@linkplain PackType#SERVER_DATA server data} reload listeners.
+	///
+	/// It should **only** be mutated in the application phase of the reload listeners.
 	PreparableReloadListener.StateKey<DataResourceStore.Mutable> DATA_RESOURCE_STORE_KEY = new PreparableReloadListener.StateKey<>();
 
 	static DataResourceLoader get() {
 		return DataResourceLoaderImpl.INSTANCE;
 	}
 
-	/**
-	 * Registers a data reload listener.
-	 *
-	 * @param id the identifier of the reload listener
-	 * @param factory the factory function of the reload listener
-	 * @see #registerReloadListener(Identifier, PreparableReloadListener)
-	 * @see #addListenerOrdering(Identifier, Identifier)
-	 *
-	 * @apiNote In most cases {@link #registerReloadListener(Identifier, PreparableReloadListener)} is sufficient and should be preferred,
-	 * but for some reload listeners like {@link net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener} constructing the reload listener
-	 * with a known instance of the holder lookup is required.
-	 * <br/>
-	 * While this may encourage stateful reload listeners, it is best to primarily use reload listeners as stateless loaders,
-	 * as storing a state may easily lead to incomplete or leaking data.
-	 */
+	/// Registers a data reload listener.
+	///
+	/// @param id the identifier of the reload listener
+	/// @param factory the factory function of the reload listener
+	/// @see #registerReloadListener(Identifier, PreparableReloadListener)
+	/// @see #addListenerOrdering(Identifier, Identifier)
+	///
+	/// @apiNote In most cases [#registerReloadListener(Identifier, PreparableReloadListener)] is sufficient and should be preferred,
+	/// but for some reload listeners like [net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener] constructing the reload listener
+	/// with a known instance of the holder lookup is required.
+	///
+	/// While this may encourage stateful reload listeners, it is best to primarily use reload listeners as stateless loaders,
+	/// as storing a state may easily lead to incomplete or leaking data.
 	void registerReloadListener(
 			Identifier id,
 			Function<HolderLookup.Provider, PreparableReloadListener> factory

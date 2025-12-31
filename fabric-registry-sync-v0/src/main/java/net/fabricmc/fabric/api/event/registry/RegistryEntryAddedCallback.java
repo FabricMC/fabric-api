@@ -25,40 +25,32 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
 
-/**
- * An event for when an entry is added to a registry.
- *
- * @param <T> the type of the entry within the registry
- */
+/// An event for when an entry is added to a registry.
+///
+/// @param <T> the type of the entry within the registry
 @FunctionalInterface
 public interface RegistryEntryAddedCallback<T> {
-	/**
-	 * Called when a new entry is added to the registry.
-	 *
-	 * @param rawId the raw id of the entry
-	 * @param id the identifier of the entry
-	 * @param object the object that was added
-	 */
+	/// Called when a new entry is added to the registry.
+	///
+	/// @param rawId the raw id of the entry
+	/// @param id the identifier of the entry
+	/// @param object the object that was added
 	void onEntryAdded(int rawId, Identifier id, T object);
 
-	/**
-	 * Get the {@link Event} for the {@link RegistryEntryAddedCallback} for the given registry.
-	 *
-	 * @param registry the registry to get the event for
-	 * @return the event
-	 */
+	/// Get the [Event] for the [RegistryEntryAddedCallback] for the given registry.
+	///
+	/// @param registry the registry to get the event for
+	/// @return the event
 	static <T> Event<RegistryEntryAddedCallback<T>> event(Registry<T> registry) {
 		return ListenableRegistry.get(registry).fabric_getAddObjectEvent();
 	}
 
-	/**
-	 * Register a callback for all present and future entries in the registry.
-	 *
-	 * <p>Note: The callback is recursive and will be invoked for anything registered within the callback itself.
-	 *
-	 * @param registry the registry to listen to
-	 * @param consumer the callback that accepts a {@link Holder.Reference}
-	 */
+	/// Register a callback for all present and future entries in the registry.
+	///
+	/// Note: The callback is recursive and will be invoked for anything registered within the callback itself.
+	///
+	/// @param registry the registry to listen to
+	/// @param consumer the callback that accepts a [Holder.Reference]
 	static <T> void allEntries(Registry<T> registry, Consumer<Holder.Reference<T>> consumer) {
 		event(registry).register((rawId, id, object) -> consumer.accept(registry.get(id).orElseThrow()));
 		// Call the consumer for all existing entries, after registering the callback.

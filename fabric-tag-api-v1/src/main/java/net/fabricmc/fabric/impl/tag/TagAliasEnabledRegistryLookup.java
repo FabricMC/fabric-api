@@ -21,10 +21,8 @@ import java.util.Set;
 
 import net.minecraft.tags.TagKey;
 
-/**
- * Implemented on {@code HolderLookup.RegistryLookup} instances used during data loading
- * to give access to the underlying registry.
- */
+/// Implemented on `HolderLookup.RegistryLookup` instances used during data loading
+/// to give access to the underlying registry.
 public interface TagAliasEnabledRegistryLookup {
 	void fabric_loadTagAliases(Map<TagKey<?>, Set<TagKey<?>>> aliasGroups);
 }

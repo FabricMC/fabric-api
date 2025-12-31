@@ -23,69 +23,45 @@ import net.minecraft.client.sounds.AudioStream;
 import net.minecraft.client.sounds.SoundBufferLibrary;
 import net.minecraft.resources.Identifier;
 
-/**
- * General purpose Fabric-provided extensions to {@link SoundInstance}.
- *
- * <p>This interface is implicitly implemented on all {@link SoundInstance}s via a mixin and interface injection.
- */
+/// General purpose Fabric-provided extensions to [SoundInstance].
+///
+/// This interface is implicitly implemented on all [SoundInstance]s via a mixin and interface injection.
 public interface FabricSoundInstance {
-	/**
-	 * An empty sound, which may be used as a placeholder in your {@code sounds.json} file for sounds with custom audio
-	 * streams.
-	 *
-	 * @see #getAudioStream(SoundBufferLibrary, Identifier, boolean)
-	 */
+	/// An empty sound, which may be used as a placeholder in your `sounds.json` file for sounds with custom audio
+	/// streams.
+	///
+	/// @see #getAudioStream(SoundBufferLibrary, Identifier, boolean)
 	Identifier EMPTY_SOUND = Identifier.fromNamespaceAndPath("fabric-sound-api-v1", "empty");
 
-	/**
-	 * Loads the audio stream for this sound.
-	 *
-	 * <p>By default this will load {@code .ogg} files from active resource packs. It may be overridden to provide a
-	 * custom {@link AudioStream} implementation which provides audio from another source, such as over the network or
-	 * driven from user input.
-	 *
-	 * <h3>Usage Example</h3>
-	 *
-	 * <p>Creating a sound with a custom audio stream requires the following:
-	 *
-	 * <p>Firstly, an entry in {@code sounds.json}. The name can be set to any sound (though it is recommended to use
-	 * the dummy {@link #EMPTY_SOUND}), and the "stream" property set to true:
-	 *
-	 * <pre>{@code
-	 * {
-	 *   "custom_sound": {"sounds": [{"name": "fabric-sound-api-v1:empty", "stream": true}]}
-	 * }
-	 * }</pre>
-	 *
-	 * <p>You should then define your own implementation of {@link AudioStream}, which provides audio data to the sound
-	 * engine.
-	 *
-	 * <p>Finally, you'll need an implementation of {@link SoundInstance} which overrides {@link #getAudioStream} to
-	 * return your custom implementation. {@link SoundInstance#getSound()} should return the newly-added entry in
-	 * {@code sounds.json}.
-	 *
-	 * <pre>{@code
-	 * class CustomSound extends AbstractSoundInstance {
-	 *     CustomSound() {
-	 *         // Use the sound defined in sounds.json
-	 *         super(Identifier.fromNamespaceAndPath("modid", "custom_sound"), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
-	 *     }
-	 *
-	 *     @Override
-	 *     public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
-	 *         // Return your custom AudioStream implementation.
-	 *         return CompletableFuture.completedFuture(new CustomStream());
-	 *     }
-	 * }
-	 * }</pre>
-	 *
-	 * @param library         The default buffer library, capable of loading {@code .ogg} files.
-	 * @param id              The resolved sound ID, equal to {@link SoundInstance#getSound()}'s location.
-	 * @param repeatInstantly Whether this sound should loop. This is true when the sound
-	 *                        {@linkplain SoundInstance#isLooping() is repeatable} and has
-	 *                        {@linkplain SoundInstance#getDelay() no delay}.
-	 * @return the loaded audio stream
-	 */
+	/// Loads the audio stream for this sound.
+	///
+	/// By default this will load `.ogg` files from active resource packs. It may be overridden to provide a
+	/// custom [AudioStream] implementation which provides audio from another source, such as over the network or
+	/// driven from user input.
+	/// ### Usage Example
+	///
+	/// Creating a sound with a custom audio stream requires the following:
+	///
+	/// Firstly, an entry in `sounds.json`. The name can be set to any sound (though it is recommended to use
+	/// the dummy [#EMPTY_SOUND]), and the "stream" property set to true:
+	/// <pre>
+	/// `{"custom_sound":{"sounds": [{"name": "fabric-sound-api-v1:empty", "stream": true}]}}`</pre>
+	///
+	/// You should then define your own implementation of [AudioStream], which provides audio data to the sound
+	/// engine.
+	///
+	/// Finally, you'll need an implementation of [SoundInstance] which overrides [#getAudioStream] to
+	/// return your custom implementation. [SoundInstance#getSound()] should return the newly-added entry in
+	/// `sounds.json`.
+	/// <pre>
+	/// `class CustomSound extends AbstractSoundInstance{CustomSound(){// Use the sound defined in sounds.jsonsuper(Identifier.fromNamespaceAndPath("modid", "custom_sound"), SoundSource.BLOCKS, SoundInstance.createUnseededRandom());}CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly){// Return your custom AudioStream implementation.return CompletableFuture.completedFuture(new CustomStream());}}`</pre>
+	///
+	/// @param library         The default buffer library, capable of loading `.ogg` files.
+	/// @param id              The resolved sound ID, equal to [SoundInstance#getSound()]'s location.
+	/// @param repeatInstantly Whether this sound should loop. This is true when the sound
+	///                        {@linkplain SoundInstance#isLooping() is repeatable} and has
+	///                        {@linkplain SoundInstance#getDelay() no delay}.
+	/// @return the loaded audio stream
 	default CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
 		return library.getStream(id, repeatInstantly);
 	}

@@ -31,14 +31,10 @@ public final class NetworkingImpl {
 	public static final String MOD_ID = "fabric-networking-api-v1";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	/**
-	 * Id of packet used to register supported channels.
-	 */
+	/// Id of packet used to register supported channels.
 	public static final Identifier REGISTER_CHANNEL = Identifier.withDefaultNamespace("register");
 
-	/**
-	 * Id of packet used to unregister supported channels.
-	 */
+	/// Id of packet used to unregister supported channels.
 	public static final Identifier UNREGISTER_CHANNEL = Identifier.withDefaultNamespace("unregister");
 
 	public static boolean isReservedCommonChannel(Identifier channelName) {

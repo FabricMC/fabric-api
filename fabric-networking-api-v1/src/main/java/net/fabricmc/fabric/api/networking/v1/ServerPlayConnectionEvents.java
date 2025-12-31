@@ -23,37 +23,29 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Offers access to events related to the connection to a client on a logical server while a client is in game.
- */
+/// Offers access to events related to the connection to a client on a logical server while a client is in game.
 public final class ServerPlayConnectionEvents {
-	/**
-	 * Event indicating a connection entered the PLAY state, ready for registering channel handlers.
-	 *
-	 * @see ServerPlayNetworking#registerReceiver(ServerGamePacketListenerImpl, CustomPacketPayload.Type, ServerPlayNetworking.PlayPayloadHandler)
-	 */
+	/// Event indicating a connection entered the PLAY state, ready for registering channel handlers.
+	///
+	/// @see ServerPlayNetworking#registerReceiver(ServerGamePacketListenerImpl, CustomPacketPayload.Type, ServerPlayNetworking.PlayPayloadHandler)
 	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (listener, server) -> {
 		for (Init callback : callbacks) {
 			callback.onPlayInit(listener, server);
 		}
 	});
 
-	/**
-	 * An event for notification when the server game packet listener is ready to send packets to the client.
-	 *
-	 * <p>At this stage, the packet listener is ready to send packets to the client.
-	 */
+	/// An event for notification when the server game packet listener is ready to send packets to the client.
+	///
+	/// At this stage, the packet listener is ready to send packets to the client.
 	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> (listener, sender, server) -> {
 		for (Join callback : callbacks) {
 			callback.onPlayReady(listener, sender, server);
 		}
 	});
 
-	/**
-	 * An event for the disconnection of the server game packet listener.
-	 *
-	 * <p>No packets should be sent when this event is invoked.
-	 */
+	/// An event for the disconnection of the server game packet listener.
+	///
+	/// No packets should be sent when this event is invoked.
 	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (listener, server) -> {
 		for (Disconnect callback : callbacks) {
 			callback.onPlayDisconnect(listener, server);

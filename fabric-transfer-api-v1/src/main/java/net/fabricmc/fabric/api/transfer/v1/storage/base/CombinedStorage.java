@@ -26,14 +26,12 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-/**
- * A {@link Storage} wrapping multiple storages.
- *
- * <p>The storages passed to {@linkplain CombinedStorage#CombinedStorage the constructor} will be iterated in order.
- *
- * @param <T> The type of the stored resources.
- * @param <S> The class of every part. {@code ? extends Storage<T>} can be used if the parts are of different types.
- */
+/// A [Storage] wrapping multiple storages.
+///
+/// The storages passed to {@linkplain CombinedStorage#CombinedStorage the constructor} will be iterated in order.
+///
+/// @param <T> The type of the stored resources.
+/// @param <S> The class of every part. `? extends Storage<T>` can be used if the parts are of different types.
 public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	public List<S> parts;
 
@@ -105,9 +103,7 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 		return "CombinedStorage[" + partNames + "]";
 	}
 
-	/**
-	 * The combined iterator for multiple storages.
-	 */
+	/// The combined iterator for multiple storages.
 	private class CombinedIterator implements Iterator<StorageView<T>> {
 		final Iterator<S> partIterator = parts.iterator();
 		// Always holds the next StorageView<T>, except during next() while the iterator is being advanced.

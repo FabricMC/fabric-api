@@ -170,9 +170,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 		});
 	}
 
-	/**
-	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
-	 */
+	/// @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
 	private static void renderHealth(GuiGraphics graphics, Player player, int y, int heartRows, int height, int x) {
 		int l = Mth.floor(player.getHealth());
 
@@ -194,9 +192,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 		}
 	}
 
-	/**
-	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
-	 */
+	/// @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
 	private static void renderArmor(GuiGraphics graphics, Player player, int y, int heartRows, int height, int x) {
 		int l = player.getArmorValue();
 
@@ -217,9 +213,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 		}
 	}
 
-	/**
-	 * @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
-	 */
+	/// @see Gui#renderArmor(GuiGraphics, Player, int, int, int, int)
 	private static void renderToughness(GuiGraphics graphics, Player player, int y, int heartRows, int height, int x) {
 		int i = Mth.floor(player.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
 
@@ -244,9 +238,7 @@ public class HudStatusBarHeightsTest implements ClientModInitializer {
 		}
 	}
 
-	/**
-	 * @see Gui#renderFood(GuiGraphics, Player, int, int)
-	 */
+	/// @see Gui#renderFood(GuiGraphics, Player, int, int)
 	private static void renderStamina(GuiGraphics graphics, Player player, int y, int x) {
 		int k = player.getFoodData().getFoodLevel();
 

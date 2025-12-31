@@ -61,30 +61,20 @@ import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 public final class FabricDataGenHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDataGenHelper.class);
 
-	/**
-	 * When enabled the dedicated server startup will be hijacked to run the data generators and then quit.
-	 */
+	/// When enabled the dedicated server startup will be hijacked to run the data generators and then quit.
 	public static final boolean ENABLED = System.getProperty("fabric-api.datagen") != null;
 
-	/**
-	 * Sets the output directory for the generated data.
-	 */
+	/// Sets the output directory for the generated data.
 	private static final String OUTPUT_DIR = System.getProperty("fabric-api.datagen.output-dir");
 
-	/**
-	 * When enabled providers can enable extra validation, such as ensuring all registry entries have data generated for them.
-	 */
+	/// When enabled providers can enable extra validation, such as ensuring all registry entries have data generated for them.
 	private static final boolean STRICT_VALIDATION = System.getProperty("fabric-api.datagen.strict-validation") != null;
 
-	/**
-	 * Filter to a specific mod ID with this property, useful if dependencies also have data generators.
-	 */
+	/// Filter to a specific mod ID with this property, useful if dependencies also have data generators.
 	@Nullable
 	private static final String MOD_ID_FILTER = System.getProperty("fabric-api.datagen.modid");
 
-	/**
-	 * Entrypoint key to register classes implementing {@link DataGeneratorEntrypoint}.
-	 */
+	/// Entrypoint key to register classes implementing [DataGeneratorEntrypoint].
 	private static final String ENTRYPOINT_KEY = "fabric-datagen";
 
 	private FabricDataGenHelper() {
@@ -223,9 +213,7 @@ public final class FabricDataGenHelper {
 		return registryLookup;
 	}
 
-	/**
-	 * Used to keep track of conditions associated to generated objects.
-	 */
+	/// Used to keep track of conditions associated to generated objects.
 	private static final Map<Object, ResourceCondition[]> CONDITIONS_MAP = new IdentityHashMap<>();
 
 	public static void addConditions(Object object, ResourceCondition[] conditions) {
@@ -237,12 +225,10 @@ public final class FabricDataGenHelper {
 		return CONDITIONS_MAP.remove(object);
 	}
 
-	/**
-	 * Adds {@code conditions} to {@code baseObject}.
-	 * @param baseObject the base JSON object to which the conditions are inserted
-	 * @param conditions the conditions to insert
-	 * @throws IllegalArgumentException if the object already has conditions
-	 */
+	/// Adds `conditions` to `baseObject`.
+	/// @param baseObject the base JSON object to which the conditions are inserted
+	/// @param conditions the conditions to insert
+	/// @throws IllegalArgumentException if the object already has conditions
 	public static void addConditions(JsonObject baseObject, ResourceCondition... conditions) {
 		if (baseObject.has(ResourceConditions.CONDITIONS_KEY)) {
 			throw new IllegalArgumentException("Object already has a condition entry: " + baseObject);

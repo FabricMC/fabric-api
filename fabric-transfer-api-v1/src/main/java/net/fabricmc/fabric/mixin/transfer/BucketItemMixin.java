@@ -30,10 +30,8 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 
-/**
- * Automatically uses the correct bucket emptying sound for
- * fluid attributes handlers overriding {@link FluidVariantAttributeHandler#getEmptySound}.
- */
+/// Automatically uses the correct bucket emptying sound for
+/// fluid attributes handlers overriding [FluidVariantAttributeHandler#getEmptySound].
 @Mixin(BucketItem.class)
 public class BucketItemMixin {
 	@Shadow

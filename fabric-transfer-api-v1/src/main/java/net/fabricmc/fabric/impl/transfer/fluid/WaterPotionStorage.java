@@ -34,9 +34,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-/**
- * Implementation of the storage for a water potion.
- */
+/// Implementation of the storage for a water potion.
 public class WaterPotionStorage implements ExtractionOnlyStorage<FluidVariant>, SingleSlotStorage<FluidVariant> {
 	private static final FluidVariant CONTAINED_FLUID = FluidVariant.of(Fluids.WATER);
 	private static final long CONTAINED_AMOUNT = FluidConstants.BOTTLE;

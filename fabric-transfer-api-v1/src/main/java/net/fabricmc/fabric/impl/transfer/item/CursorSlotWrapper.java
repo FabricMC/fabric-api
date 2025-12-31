@@ -26,9 +26,7 @@ import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 
-/**
- * Wrapper around the cursor slot of a menu.
- */
+/// Wrapper around the cursor slot of a menu.
 public class CursorSlotWrapper extends SingleStackStorage {
 	private static final Map<AbstractContainerMenu, CursorSlotWrapper> WRAPPERS = new MapMaker().weakValues().makeMap();
 

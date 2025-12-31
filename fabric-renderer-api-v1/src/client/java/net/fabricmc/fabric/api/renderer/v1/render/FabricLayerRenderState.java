@@ -25,40 +25,34 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
-/**
- * Note: This interface is automatically implemented on {@link ItemStackRenderState.LayerRenderState} via Mixin and interface
- * injection.
- */
+/// Note: This interface is automatically implemented on [ItemStackRenderState.LayerRenderState] via Mixin and interface
+/// injection.
 public interface FabricLayerRenderState {
-	/**
-	 * Retrieves the {@link QuadEmitter} used to append quads to this layer. Calling this method a second time
-	 * invalidates any prior result. Geometry added to this emitter will not be visible in
-	 * {@link ItemStackRenderState.LayerRenderState#prepareQuadList()} and will be rendered after any
-	 * {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads} when this layer is rendered. Vertex
-	 * positions of geometry added to this emitter will automatically be output on
-	 * {@link ItemStackRenderState#visitExtents(Consumer)} ({@link ItemStackRenderState.LayerRenderState#setExtents(Supplier)} must still
-	 * be used to add positions of {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads}). Adding quads
-	 * that use animated sprites to this emitter will not automatically call {@link ItemStackRenderState#setAnimated()}. Any
-	 * quads added to this emitter will be cleared on {@link ItemStackRenderState.LayerRenderState#clear()}.
-	 *
-	 * <p>Do not retain references outside the context of this layer.
-	 */
+	/// Retrieves the [QuadEmitter] used to append quads to this layer. Calling this method a second time
+	/// invalidates any prior result. Geometry added to this emitter will not be visible in
+	/// [ItemStackRenderState.LayerRenderState#prepareQuadList()] and will be rendered after any
+	/// {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads} when this layer is rendered. Vertex
+	/// positions of geometry added to this emitter will automatically be output on
+	/// [ItemStackRenderState#visitExtents(Consumer)] ([ItemStackRenderState.LayerRenderState#setExtents(Supplier)] must still
+	/// be used to add positions of {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads}). Adding quads
+	/// that use animated sprites to this emitter will not automatically call [ItemStackRenderState#setAnimated()]. Any
+	/// quads added to this emitter will be cleared on [ItemStackRenderState.LayerRenderState#clear()].
+	///
+	/// Do not retain references outside the context of this layer.
 	default QuadEmitter emitter() {
 		return Renderer.get().getLayerRenderStateEmitter((ItemStackRenderState.LayerRenderState) this);
 	}
 
-	/**
-	 * Sets the function that chooses the {@link RenderType} for quads added to this layer through {@link #emitter()}
-	 * based on certain quad properties. This method has no effect on how
-	 * {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads} are rendered. If this function
-	 * is not set, all non-vanilla quads in this layer will be rendered using this layer's
-	 * {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(RenderType) default render type}. If the
-	 * function returns {@code null} for a certain combination of quad properties, then all non-vanilla quads with
-	 * matching property values will use this layer's default render type. This layer's function will be unset on
-	 * {@link ItemStackRenderState.LayerRenderState#clear()}.
-	 *
-	 * @see ItemRenderTypeGetter
-	 */
+	/// Sets the function that chooses the [RenderType] for quads added to this layer through [#emitter()]
+	/// based on certain quad properties. This method has no effect on how
+	/// {@linkplain ItemStackRenderState.LayerRenderState#prepareQuadList() vanilla quads} are rendered. If this function
+	/// is not set, all non-vanilla quads in this layer will be rendered using this layer's
+	/// {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(RenderType) default render type}. If the
+	/// function returns `null` for a certain combination of quad properties, then all non-vanilla quads with
+	/// matching property values will use this layer's default render type. This layer's function will be unset on
+	/// [ItemStackRenderState.LayerRenderState#clear()].
+	///
+	/// @see ItemRenderTypeGetter
 	default void setRenderTypeGetter(ItemRenderTypeGetter renderTypeGetter) {
 		Renderer.get().setLayerRenderTypeGetter((ItemStackRenderState.LayerRenderState) this, renderTypeGetter);
 	}

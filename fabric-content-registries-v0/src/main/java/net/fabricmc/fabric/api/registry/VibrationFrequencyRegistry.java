@@ -25,29 +25,25 @@ import net.minecraft.tags.GameEventTags;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 
-/**
- * Provides a method for registering vibration frequencies.
- */
+/// Provides a method for registering vibration frequencies.
 public final class VibrationFrequencyRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VibrationFrequencyRegistry.class);
 
 	private VibrationFrequencyRegistry() {
 	}
 
-	/**
-	 * Registers a sculk vibration for the given game event.
-	 *
-	 * <p>A frequency is defined as the redstone signal strength a sculk sensor will emit to a comparator when it detects a specific vibration.
-	 *
-	 * <p>As redstone signal strengths are limited to a maximum of 15, a frequency must also be between 1 and 15. As such, many game events will share a single frequency.
-	 *
-	 * <p>Note that the game event must also be in the {@linkplain GameEventTags#VIBRATIONS} tag to be detected by sculk sensors in the first place.
-	 * The same applies for interactions with the Warden in the {@linkplain GameEventTags#WARDEN_CAN_LISTEN} tag.
-	 *
-	 * @param event The event to register the frequency for.
-	 * @param frequency The frequency to register.
-	 * @throws IllegalArgumentException if the given frequency is not within the allowed range.
-	 */
+	/// Registers a sculk vibration for the given game event.
+	///
+	/// A frequency is defined as the redstone signal strength a sculk sensor will emit to a comparator when it detects a specific vibration.
+	///
+	/// As redstone signal strengths are limited to a maximum of 15, a frequency must also be between 1 and 15. As such, many game events will share a single frequency.
+	///
+	/// Note that the game event must also be in the {@linkplain GameEventTags#VIBRATIONS} tag to be detected by sculk sensors in the first place.
+	/// The same applies for interactions with the Warden in the {@linkplain GameEventTags#WARDEN_CAN_LISTEN} tag.
+	///
+	/// @param event The event to register the frequency for.
+	/// @param frequency The frequency to register.
+	/// @throws IllegalArgumentException if the given frequency is not within the allowed range.
 	public static void register(ResourceKey<GameEvent> event, int frequency) {
 		if (frequency <= 0 || frequency >= 16) {
 			throw new IllegalArgumentException("Attempted to register vibration frequency for event "+ event.identifier() +" with frequency "+frequency+". Sculk Sensor frequencies must be between 1 and 15 inclusive.");

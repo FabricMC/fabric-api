@@ -39,9 +39,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.BlockRenderInfo;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.LightDataProvider;
 
-/**
- * Adaptation of inner, non-static class in ModelBlockRenderer that serves same purpose.
- */
+/// Adaptation of inner, non-static class in ModelBlockRenderer that serves same purpose.
 public class AoCalculator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
 
@@ -51,13 +49,13 @@ public class AoCalculator {
 	private final BlockPos.MutableBlockPos lightPos = new BlockPos.MutableBlockPos();
 	private final BlockPos.MutableBlockPos searchPos = new BlockPos.MutableBlockPos();
 
-	/** caches results of {@link #computeFace(Direction, boolean, boolean)} for the current block. */
+	/// caches results of [#computeFace(Direction, boolean, boolean)] for the current block.
 	private final AoFaceData[] faceData = new AoFaceData[24];
 
-	/** indicates which elements of {@link #faceData} have been computed for the current block. */
+	/// indicates which elements of [#faceData] have been computed for the current block.
 	private int completionFlags = 0;
 
-	/** holds per-corner weights - used locally to avoid new allocation. */
+	/// holds per-corner weights - used locally to avoid new allocation.
 	private final float[] w = new float[4];
 
 	// outputs
@@ -73,7 +71,7 @@ public class AoCalculator {
 		}
 	}
 
-	/** call at start of each new block. */
+	/// call at start of each new block.
 	public void clear() {
 		completionFlags = 0;
 	}
@@ -209,20 +207,18 @@ public class AoCalculator {
 		partialFace(quad, lightFace, computeFace(lightFace, isOnLightFace, shade));
 	}
 
-	/** Used in {@link #blendedInsetFace(QuadViewImpl, int, Direction, boolean)} as return variable to avoid new allocation. */
+	/// Used in [#blendedInsetFace(QuadViewImpl, int, Direction, boolean)] as return variable to avoid new allocation.
 	private final AoFaceData tmpFace = new AoFaceData();
 
-	/** Returns linearly interpolated blend of outer and inner face based on depth of vertex in face. */
+	/// Returns linearly interpolated blend of outer and inner face based on depth of vertex in face.
 	private AoFaceData blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, boolean shade) {
 		final float w1 = AoFace.get(lightFace).computeDepth(quad, vertexIndex);
 		final float w0 = 1 - w1;
 		return AoFaceData.weightedMean(computeFace(lightFace, true, shade), w0, computeFace(lightFace, false, shade), w1, tmpFace);
 	}
 
-	/**
-	 * Like {@link #blendedInsetFace(QuadViewImpl, int, Direction, boolean)} but optimizes if depth is 0 or 1.
-	 * Used for irregular faces when depth varies by vertex to avoid unneeded interpolation.
-	 */
+	/// Like [#blendedInsetFace(QuadViewImpl, int, Direction, boolean)] but optimizes if depth is 0 or 1.
+	/// Used for irregular faces when depth varies by vertex to avoid unneeded interpolation.
 	private AoFaceData gatherInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, boolean shade) {
 		final float w1 = AoFace.get(lightFace).computeDepth(quad, vertexIndex);
 
@@ -244,7 +240,7 @@ public class AoCalculator {
 		partialFace(quad, lightFace, blendedInsetFace(quad, 0, lightFace, shade));
 	}
 
-	/** used exclusively in irregular face to avoid new heap allocations each call. */
+	/// used exclusively in irregular face to avoid new heap allocations each call.
 	private final Vector3f vertexNormal = new Vector3f();
 
 	private void irregularFace(QuadViewImpl quad, boolean shade) {
@@ -331,14 +327,12 @@ public class AoCalculator {
 		return result;
 	}
 
-	/**
-	 * Computes smoothed light and brightness for four corners of a block face.
-	 * Outer block face is what you normally see and what you get when the second
-	 * parameter is true. Inner is light *within* the block and usually darker.
-	 * It is blended with the outer face for inset surfaces, but is also used directly
-	 * in vanilla logic for some blocks that aren't full opaque cubes.
-	 * Except for parameterization, the logic itself is practically identical to vanilla.
-	 */
+	/// Computes smoothed light and brightness for four corners of a block face.
+	/// Outer block face is what you normally see and what you get when the second
+	/// parameter is true. Inner is light *within* the block and usually darker.
+	/// It is blended with the outer face for inset surfaces, but is also used directly
+	/// in vanilla logic for some blocks that aren't full opaque cubes.
+	/// Except for parameterization, the logic itself is practically identical to vanilla.
 	private void computeFace(AoFaceData result, Direction lightFace, boolean isOnBlockFace, boolean shade) {
 		final BlockAndTintGetter level = blockInfo.level;
 		final BlockPos pos = blockInfo.blockPos;
@@ -499,14 +493,12 @@ public class AoCalculator {
 		result.l3(meanLight(light3, light1, cLight3, lightCenter, isClear3, isClear1, cIsClear3, isClearCenter));
 	}
 
-	/**
-	 * Vanilla code sets light values equal to zero to the center light value (D) before taking the mean, which fixes
-	 * solid blocks near a face making edges too dark. However, a value of zero does not mean it came from a solid
-	 * block; this causes natural zero values to be treated differently from other natural values, causing visual
-	 * inconsistencies. This implementation checks for the source of a light value explicitly. It also fixes samples
-	 * being blended inconsistently based on the center position, which causes discontinuities, by computing a
-	 * consistent minimum light value from all four samples.
-	 */
+	/// Vanilla code sets light values equal to zero to the center light value (D) before taking the mean, which fixes
+	/// solid blocks near a face making edges too dark. However, a value of zero does not mean it came from a solid
+	/// block; this causes natural zero values to be treated differently from other natural values, causing visual
+	/// inconsistencies. This implementation checks for the source of a light value explicitly. It also fixes samples
+	/// being blended inconsistently based on the center position, which causes discontinuities, by computing a
+	/// consistent minimum light value from all four samples.
 	private static int meanLight(int lightA, int lightB, int lightC, int lightD, boolean isClearA, boolean isClearB, boolean isClearC, boolean isClearD) {
 		if (Indigo.FIX_MEAN_LIGHT_CALCULATION) {
 			int lightABlock = lightA & 0xFFFF;
@@ -557,7 +549,7 @@ public class AoCalculator {
 		}
 	}
 
-	/** vanilla logic - excludes missing light values from mean and has anisotropy defect mentioned above. */
+	/// vanilla logic - excludes missing light values from mean and has anisotropy defect mentioned above.
 	private static int vanillaMeanLight(int a, int b, int c, int d) {
 		if (a == 0) a = d;
 		if (b == 0) b = d;

@@ -54,9 +54,7 @@ public class TransactionManagerImpl {
 		}
 	}
 
-	/**
-	 * Open a new transaction, outer or nested, without performing any state check.
-	 */
+	/// Open a new transaction, outer or nested, without performing any state check.
 	Transaction open() {
 		currentDepth++;
 

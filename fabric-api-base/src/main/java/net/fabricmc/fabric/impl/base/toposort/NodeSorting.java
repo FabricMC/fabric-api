@@ -28,33 +28,29 @@ import com.google.common.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Contains a topological sort implementation, with tie breaking using a {@link Comparator}.
- *
- * <p>The final order is always deterministic (i.e. doesn't change with the order of the input elements or the edges),
- * assuming that they are all different according to the comparator. This also holds in the presence of cycles.
- *
- * <p>The steps are as follows:
- * <ol>
- *     <li>Compute node SCCs (Strongly Connected Components, i.e. cycles).</li>
- *     <li>Sort nodes within SCCs using the comparator.</li>
- *     <li>Sort SCCs with respect to each other by respecting constraints, and using the comparator in case of a tie.</li>
- * </ol>
- */
+/// Contains a topological sort implementation, with tie breaking using a [Comparator].
+///
+/// The final order is always deterministic (i.e. doesn't change with the order of the input elements or the edges),
+/// assuming that they are all different according to the comparator. This also holds in the presence of cycles.
+///
+/// The steps are as follows:
+/// <ol>
+///   - Compute node SCCs (Strongly Connected Components, i.e. cycles).
+///   - Sort nodes within SCCs using the comparator.
+///   - Sort SCCs with respect to each other by respecting constraints, and using the comparator in case of a tie.
+/// </ol>
 public class NodeSorting {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-base");
 
 	@VisibleForTesting
 	public static boolean ENABLE_CYCLE_WARNING = true;
 
-	/**
-	 * Sort a list of nodes.
-	 *
-	 * @param sortedNodes The list of nodes to sort. Will be modified in-place.
-	 * @param elementDescription A description of the elements, used for logging in the presence of cycles.
-	 * @param comparator The comparator to break ties and to order elements within a cycle.
-	 * @return {@code true} if all the constraints were satisfied, {@code false} if there was at least one cycle.
-	 */
+	/// Sort a list of nodes.
+	///
+	/// @param sortedNodes The list of nodes to sort. Will be modified in-place.
+	/// @param elementDescription A description of the elements, used for logging in the presence of cycles.
+	/// @param comparator The comparator to break ties and to order elements within a cycle.
+	/// @return `true` if all the constraints were satisfied, `false` if there was at least one cycle.
 	public static <N extends SortableNode<N>> boolean sort(List<N> sortedNodes, String elementDescription, Comparator<N> comparator) {
 		// FIRST KOSARAJU SCC VISIT
 		List<N> toposort = new ArrayList<>(sortedNodes.size());

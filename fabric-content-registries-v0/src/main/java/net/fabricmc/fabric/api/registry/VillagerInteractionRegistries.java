@@ -29,43 +29,35 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.fabricmc.fabric.impl.content.registry.VillagerInteractionRegistriesImpl;
 import net.fabricmc.fabric.mixin.content.registry.GiveGiftToHeroAccessor;
 
-/**
- * Registries for modifying villager interactions that
- * villagers have with the world.
- */
+/// Registries for modifying villager interactions that
+/// villagers have with the world.
 public final class VillagerInteractionRegistries {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VillagerInteractionRegistries.class);
 
 	private VillagerInteractionRegistries() {
 	}
 
-	/**
-	 * Registers an item to be collectable (picked up from item entity)
-	 * by any profession villagers.
-	 *
-	 * @param item the item to register
-	 * @deprecated Add items to the {@linkplain net.minecraft.tags.ItemTags#VILLAGER_PICKS_UP {@code minecraft:villager_picks_up} item tag} instead.
-	 */
+	/// Registers an item to be collectable (picked up from item entity)
+	/// by any profession villagers.
+	///
+	/// @param item the item to register
+	/// @deprecated Add items to the {@linkplain net.minecraft.tags.ItemTags#VILLAGER_PICKS_UP {@code minecraft:villager_picks_up} item tag} instead.
 	@Deprecated
 	public static void registerGatherableItem(ItemLike item) {
 		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
 		VillagerInteractionRegistriesImpl.getGatherableItemRegistry().add(item.asItem());
 	}
 
-	/**
-	 * Registers an item to be used in a composter by farmer villagers.
-	 * @param item the item to register
-	 */
+	/// Registers an item to be used in a composter by farmer villagers.
+	/// @param item the item to register
 	public static void registerCompostable(ItemLike item) {
 		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
 		VillagerInteractionRegistriesImpl.getCompostableRegistry().add(item.asItem());
 	}
 
-	/**
-	 * Registers an item to be edible by villagers.
-	 * @param item      the item to register
-	 * @param foodValue the amount of breeding power the item has (1 = normal food item, 4 = bread)
-	 */
+	/// Registers an item to be edible by villagers.
+	/// @param item      the item to register
+	/// @param foodValue the amount of breeding power the item has (1 = normal food item, 4 = bread)
 	public static void registerFood(ItemLike item, int foodValue) {
 		Objects.requireNonNull(item.asItem(), "Item cannot be null!");
 		Integer oldValue = VillagerInteractionRegistriesImpl.getFoodRegistry().put(item.asItem(), foodValue);
@@ -75,11 +67,9 @@ public final class VillagerInteractionRegistries {
 		}
 	}
 
-	/**
-	 * Registers a hero of the village gifts loot table to a profession.
-	 * @param profession the profession to modify
-	 * @param lootTable  the loot table to associate with the profession
-	 */
+	/// Registers a hero of the village gifts loot table to a profession.
+	/// @param profession the profession to modify
+	/// @param lootTable  the loot table to associate with the profession
 	public static void registerGiftLootTable(ResourceKey<VillagerProfession> profession, ResourceKey<LootTable> lootTable) {
 		Objects.requireNonNull(profession, "Profession cannot be null!");
 		Objects.requireNonNull(lootTable, "Loot table identifier cannot be null!");

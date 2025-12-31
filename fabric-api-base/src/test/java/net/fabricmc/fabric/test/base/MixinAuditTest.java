@@ -23,11 +23,9 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
 
-/**
- * A simple unit test that forces Mixin to load and apply all mixins.
- *
- * <p>This test is useful when porting to a new version as you don't need to wait for the game to load to check for mixin errors.
- */
+/// A simple unit test that forces Mixin to load and apply all mixins.
+///
+/// This test is useful when porting to a new version as you don't need to wait for the game to load to check for mixin errors.
 public class MixinAuditTest {
 	@BeforeAll
 	static void beforeAll() {

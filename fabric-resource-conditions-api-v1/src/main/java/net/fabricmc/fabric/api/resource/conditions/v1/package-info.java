@@ -14,43 +14,22 @@
  * limitations under the License.
  */
 
-/**
- * Provides a way of conditionally loading JSON-based resources. By default, this can
- * be used with recipes, advancements, loot tables, predicates, and item modifiers.
- * Conditions are identified by an identifier and registered at {@link
- * net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions}.
- *
- * <h2>JSON format</h2>
- *
- * <p>Add an array with the {@code fabric:load_conditions} key to the JSON file:
- * <pre>{@code
- * {
- *   "type": "minecraft:crafting_shapeless",
- *   "ingredients": [
- *     {
- *       "item": "minecraft:dirt"
- *     }
- *   ],
- *   "result": {
- *     "item": "minecraft:diamond"
- *   },
- *   "fabric:load_conditions": [
- *     {
- *       "condition": "<insert condition ID here>",
- *       // values of the condition
- *     }
- *   ]
- * }
- * }</pre>
- *
- * <p>Unknown/invalid conditions will be skipped and considered successful.
- *
- * <h2>Data generation integration</h2>
- *
- * <p>Fabric Data Generation API supports adding a {@link
- * net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition} to a generated file.
- * Please check the documentation of the Data Generation API.
- */
+/// Provides a way of conditionally loading JSON-based resources. By default, this can
+/// be used with recipes, advancements, loot tables, predicates, and item modifiers.
+/// Conditions are identified by an identifier and registered at
+/// [net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions].
+/// ## JSON format
+///
+/// Add an array with the `fabric:load_conditions` key to the JSON file:
+/// <pre>
+/// `{"type": "minecraft:crafting_shapeless","ingredients": [{"item": "minecraft:dirt"}],"result":{"item": "minecraft:diamond"},"fabric:load_conditions": [{"condition": "<insert condition ID here>",// values of the condition}]}`</pre>
+///
+/// Unknown/invalid conditions will be skipped and considered successful.
+/// ## Data generation integration
+///
+/// Fabric Data Generation API supports adding a
+/// [net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition] to a generated file.
+/// Please check the documentation of the Data Generation API.
 @NullMarked
 package net.fabricmc.fabric.api.resource.conditions.v1;
 

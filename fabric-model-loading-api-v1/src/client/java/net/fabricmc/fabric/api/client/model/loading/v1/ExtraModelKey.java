@@ -20,17 +20,15 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Contract;
 
-/**
- * A unique key representing an extra model, not tied to a block state or item model.
- *
- * <p>Extra models can be registered with a {@link ModelLoadingPlugin} (see
- * {@link ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)}). Once baking is complete, they may
- * then be queried from the model manager using {@link FabricModelManager#getModel(ExtraModelKey)}.
- *
- * @param <T> The type of the baked model.
- * @see FabricModelManager#getModel(ExtraModelKey)
- * @see ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)
- */
+/// A unique key representing an extra model, not tied to a block state or item model.
+///
+/// Extra models can be registered with a [ModelLoadingPlugin] (see
+/// [ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)]). Once baking is complete, they may
+/// then be queried from the model manager using [FabricModelManager#getModel(ExtraModelKey)].
+///
+/// @param <T> The type of the baked model.
+/// @see FabricModelManager#getModel(ExtraModelKey)
+/// @see ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)
 public final class ExtraModelKey<T> {
 	private final Supplier<String> name;
 
@@ -38,24 +36,20 @@ public final class ExtraModelKey<T> {
 		this.name = debugName;
 	}
 
-	/**
-	 * Create a new unique model key.
-	 *
-	 * @param <T> The type of the baked model.
-	 * @return The newly created model key.
-	 */
+	/// Create a new unique model key.
+	///
+	/// @param <T> The type of the baked model.
+	/// @return The newly created model key.
 	@Contract("-> new")
 	public static <T> ExtraModelKey<T> create() {
 		return new ExtraModelKey<>(() -> "unnamed");
 	}
 
-	/**
-	 * Create a new unique model key.
-	 *
-	 * @param name The name of this model key, shown in error messages.
-	 * @param <T>  The type of the baked model.
-	 * @return The newly created model key.
-	 */
+	/// Create a new unique model key.
+	///
+	/// @param name The name of this model key, shown in error messages.
+	/// @param <T>  The type of the baked model.
+	/// @return The newly created model key.
 	@Contract("_ -> new")
 	public static <T> ExtraModelKey<T> create(Supplier<String> name) {
 		return new ExtraModelKey<>(name);

@@ -37,14 +37,12 @@ import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 
-/**
- * Extend this class and implement {@link FabricSoundsProvider#configure(HolderLookup.Provider, SoundExporter)}.
- *
- * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
- *
- * <p>Registered sound types will be appended to their own {@code sounds.json} in a namespace corresponding to
- * the id of the sound event they are assigned to.
- */
+/// Extend this class and implement [FabricSoundsProvider#configure(HolderLookup.Provider, SoundExporter)].
+///
+/// Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
+///
+/// Registered sound types will be appended to their own `sounds.json` in a namespace corresponding to
+/// the id of the sound event they are assigned to.
 public abstract class FabricSoundsProvider implements DataProvider {
 	private static final Codec<Map<String, SoundTypeBuilderImpl.SoundType>> CODEC = Codec.unboundedMap(Codec.STRING, SoundTypeBuilderImpl.SoundType.CODEC);
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
@@ -72,48 +70,38 @@ public abstract class FabricSoundsProvider implements DataProvider {
 		});
 	}
 
-	/**
-	 * Implement this method and then use {@link BiConsumer#accept} to register sound events to be data-generated.
-	 *
-	 * <p>Registered sound types will be appended to their own {@code sounds.json} in a namespace corresponding to
-	 * the id of the sound event they are assigned to.
-	 */
+	/// Implement this method and then use [BiConsumer#accept] to register sound events to be data-generated.
+	///
+	/// Registered sound types will be appended to their own `sounds.json` in a namespace corresponding to
+	/// the id of the sound event they are assigned to.
 	protected abstract void configure(HolderLookup.Provider registryLookup, SoundExporter exporter);
 
-	/**
-	 * A consumer used by {@link FabricSoundsProvider#configure}.
-	 */
+	/// A consumer used by [FabricSoundsProvider#configure].
 	@ApiStatus.NonExtendable
 	@FunctionalInterface
 	public interface SoundExporter {
-		/**
-		 * Adds a sound event.
-		 *
-		 * @param event   the sound event
-		 * @param builder the sound event details
-		 */
+		/// Adds a sound event.
+		///
+		/// @param event   the sound event
+		/// @param builder the sound event details
 		default void add(SoundEvent event, SoundTypeBuilder builder) {
 			add(event.location(), builder);
 		}
 
-		/**
-		 * Adds a sound event.
-		 *
-		 * @param event   holder for sound event
-		 * @param builder the sound event details
-		 *
-		 * @throws IllegalArgumentException if the holder provided has not been registered
-		 */
+		/// Adds a sound event.
+		///
+		/// @param event   holder for sound event
+		/// @param builder the sound event details
+		///
+		/// @throws IllegalArgumentException if the holder provided has not been registered
 		default void add(Holder<SoundEvent> event, SoundTypeBuilder builder) {
 			add(event.unwrapKey().orElseThrow(() -> new IllegalArgumentException("Direct (non-registered) sound event cannot be added")).identifier(), builder);
 		}
 
-		/**
-		 * Adds a sound event.
-		 *
-		 * @param id	  the id of a sound event
-		 * @param builder the sound event details
-		 */
+		/// Adds a sound event.
+		///
+		/// @param id	  the id of a sound event
+		/// @param builder the sound event details
 		void add(Identifier id, SoundTypeBuilder builder);
 	}
 }

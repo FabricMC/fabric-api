@@ -34,10 +34,8 @@ import net.minecraft.world.flag.FeatureFlagSet;
 
 import net.fabricmc.fabric.impl.tag.TagAliasLoader;
 
-/**
- * Applies pending tag aliases to dynamic (including reloadable) registries.
- * The priority is 999 because it must apply the injection to applyPendingTagLoads before the tag loaded lifecycle event.
- */
+/// Applies pending tag aliases to dynamic (including reloadable) registries.
+/// The priority is 999 because it must apply the injection to applyPendingTagLoads before the tag loaded lifecycle event.
 @Mixin(value = ReloadableServerResources.class, priority = 999)
 abstract class ReloadableServerResourcesMixin {
 	@Unique

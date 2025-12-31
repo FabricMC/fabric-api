@@ -34,13 +34,9 @@ class ArrayBackedEvent<T> extends Event<T> {
 	private final Function<T[], T> invokerFactory;
 	private final Object lock = new Object();
 	private T[] handlers;
-	/**
-	 * Registered event phases.
-	 */
+	/// Registered event phases.
 	private final Map<Identifier, EventPhaseData<T>> phases = new LinkedHashMap<>();
-	/**
-	 * Phases sorted in the correct dependency order.
-	 */
+	/// Phases sorted in the correct dependency order.
 	private final List<EventPhaseData<T>> sortedPhases = new ArrayList<>();
 
 	@SuppressWarnings("unchecked")

@@ -28,65 +28,50 @@ import net.minecraft.network.protocol.game.ClientboundCommandsPacket;
 
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 
-/**
- * Manages client-sided commands and provides some related helper methods.
- *
- * <p>Client-sided commands are fully executed on the client,
- * so players can use them in both singleplayer and multiplayer.
- *
- * <p>Registrations can be done in handlers for {@link ClientCommandRegistrationCallback#EVENT}
- * (See example below.)
- *
- * <p>The commands are run on the client game thread by default.
- * Avoid doing any heavy calculations here as that can freeze the game's rendering.
- * For example, you can move heavy code to another thread.
- *
- * <p>This class also has alternatives to the server-side helper methods in
- * {@link net.minecraft.commands.Commands}:
- * {@link #literal(String)} and {@link #argument(String, ArgumentType)}.
- *
- * <p>The precedence rules of client-sided and server-sided commands with the same name
- * are an implementation detail that is not guaranteed to remain the same in future versions.
- * The aim is to make commands from the server take precedence over client-sided commands
- * in a future version of this API.
- *
- * <h2>Example command</h2>
- * <pre>
- * {@code
- * ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
- * 		dispatcher.register(
- * 			ClientCommands.literal("hello").executes(context -> {
- * 				context.getSource().sendFeedback(Component.literal("Hello, world!"));
- * 				return 0;
- * 			})
- * 		);
- * });
- * }
- * </pre>
- */
+/// Manages client-sided commands and provides some related helper methods.
+///
+/// Client-sided commands are fully executed on the client,
+/// so players can use them in both singleplayer and multiplayer.
+///
+/// Registrations can be done in handlers for [ClientCommandRegistrationCallback#EVENT]
+/// (See example below.)
+///
+/// The commands are run on the client game thread by default.
+/// Avoid doing any heavy calculations here as that can freeze the game's rendering.
+/// For example, you can move heavy code to another thread.
+///
+/// This class also has alternatives to the server-side helper methods in
+/// [net.minecraft.commands.Commands]:
+/// [#literal(String)] and [#argument(String, ArgumentType)].
+///
+/// The precedence rules of client-sided and server-sided commands with the same name
+/// are an implementation detail that is not guaranteed to remain the same in future versions.
+/// The aim is to make commands from the server take precedence over client-sided commands
+/// in a future version of this API.
+/// ## Example command
+/// <pre>
+///
+/// `ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) ->{dispatcher.register(ClientCommands.literal("hello").executes(context ->{context.getSource().sendFeedback(Component.literal("Hello, world!"));return 0;}));});`
+/// </pre>
 public final class ClientCommands {
 	private ClientCommands() {
 	}
 
-	/**
-	 * Gets the active command dispatcher that handles client command registration and execution.
-	 *
-	 * <p>May be null when not connected to a server (dedicated or integrated).</p>
-	 *
-	 * @return active dispatcher if present
-	 */
+	/// Gets the active command dispatcher that handles client command registration and execution.
+	///
+	/// May be null when not connected to a server (dedicated or integrated).
+	///
+	/// @return active dispatcher if present
 	public static @Nullable CommandDispatcher<FabricClientCommandSource> getActiveDispatcher() {
 		return ClientCommandInternals.getActiveDispatcher();
 	}
 
-	/**
-	 * Refresh the command completions. This is helpful when a condition as defined using {@link LiteralArgumentBuilder#requires}
-	 * changes for a client command. The method uses the last received {@code minecraft:commands}
-	 * packet and calls its handler. This triggers the client command's condition to be reevaluated.
-	 *
-	 * @throws IllegalStateException if not connected to a server (dedicated or integrated) or no
-	 * {@code minecraft:commands} packet has been received yet
-	 */
+	/// Refresh the command completions. This is helpful when a condition as defined using [LiteralArgumentBuilder#requires]
+	/// changes for a client command. The method uses the last received `minecraft:commands`
+	/// packet and calls its handler. This triggers the client command's condition to be reevaluated.
+	///
+	/// @throws IllegalStateException if not connected to a server (dedicated or integrated) or no
+	/// `minecraft:commands` packet has been received yet
 	public static void refreshCommandCompletions() {
 		ClientPacketListener packetListener = Minecraft.getInstance().getConnection();
 
@@ -103,24 +88,20 @@ public final class ClientCommands {
 		packetListener.handleCommands(lastReceivedCommandsPacket);
 	}
 
-	/**
-	 * Creates a literal argument builder.
-	 *
-	 * @param name the literal name
-	 * @return the created argument builder
-	 */
+	/// Creates a literal argument builder.
+	///
+	/// @param name the literal name
+	/// @return the created argument builder
 	public static LiteralArgumentBuilder<FabricClientCommandSource> literal(String name) {
 		return LiteralArgumentBuilder.literal(name);
 	}
 
-	/**
-	 * Creates a required argument builder.
-	 *
-	 * @param name the name of the argument
-	 * @param type the type of the argument
-	 * @param <T>  the type of the parsed argument value
-	 * @return the created argument builder
-	 */
+	/// Creates a required argument builder.
+	///
+	/// @param name the name of the argument
+	/// @param type the type of the argument
+	/// @param <T>  the type of the parsed argument value
+	/// @return the created argument builder
 	public static <T> RequiredArgumentBuilder<FabricClientCommandSource, T> argument(String name, ArgumentType<T> type) {
 		return RequiredArgumentBuilder.argument(name, type);
 	}

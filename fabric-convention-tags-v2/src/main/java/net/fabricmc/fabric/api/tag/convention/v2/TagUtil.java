@@ -27,13 +27,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
-/**
- * A Helper class for checking whether a {@link TagKey} contains some entry.
- * This can be useful for {@link TagKey}s whose type has no easy way of querying if they are in a tag, such as {@link net.minecraft.world.item.enchantment.Enchantment}s.
- *
- * <p>For dynamic registry entries, use {@link #isIn(RegistryAccess, TagKey, Object)} with a non-null registry access.
- * For non-dynamic registry entries, the simpler {@link #isIn(TagKey, Object)} can be used.
- */
+/// A Helper class for checking whether a [TagKey] contains some entry.
+/// This can be useful for [TagKey]s whose type has no easy way of querying if they are in a tag, such as [net.minecraft.world.item.enchantment.Enchantment]s.
+///
+/// For dynamic registry entries, use [#isIn(RegistryAccess, TagKey, Object)] with a non-null registry access.
+/// For non-dynamic registry entries, the simpler [#isIn(TagKey, Object)] can be used.
 public final class TagUtil {
 	public static final String C_TAG_NAMESPACE = "c";
 	public static final String FABRIC_TAG_NAMESPACE = "fabric";
@@ -41,22 +39,18 @@ public final class TagUtil {
 	private TagUtil() {
 	}
 
-	/**
-	 * See {@link TagUtil#isIn(RegistryAccess, TagKey, Object)} to check tags that refer to entries in dynamic
-	 * registries, such as {@link net.minecraft.world.level.biome.Biome}s.
-	 * @return if the entry is in the provided tag.
-	 */
+	/// See [TagUtil#isIn(RegistryAccess, TagKey, Object)] to check tags that refer to entries in dynamic
+	/// registries, such as [net.minecraft.world.level.biome.Biome]s.
+	/// @return if the entry is in the provided tag.
 	public static <T> boolean isIn(TagKey<T> tagKey, T entry) {
 		return isIn(null, tagKey, entry);
 	}
 
-	/**
-	 * @param registryAccess the registry access instance of the client or server. If the tag refers to entries
-	 *                        within a dynamic registry, such as {@link net.minecraft.world.level.biome.Biome}s,
-	 *                        this must be passed to correctly evaluate the tag. Otherwise, the registry is found by
-	 *                        looking in {@link BuiltInRegistries#REGISTRY}.
-	 * @return if the entry is in the provided tag.
-	 */
+	/// @param registryAccess the registry access instance of the client or server. If the tag refers to entries
+	///                        within a dynamic registry, such as [net.minecraft.world.level.biome.Biome]s,
+	///                        this must be passed to correctly evaluate the tag. Otherwise, the registry is found by
+	///                        looking in [BuiltInRegistries#REGISTRY].
+	/// @return if the entry is in the provided tag.
 	@SuppressWarnings("unchecked")
 	public static <T> boolean isIn(@Nullable RegistryAccess registryAccess, TagKey<T> tagKey, T entry) {
 		Optional<? extends Registry<?>> maybeRegistry;

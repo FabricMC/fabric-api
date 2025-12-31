@@ -24,22 +24,18 @@ import net.minecraft.world.level.gamerules.GameRule;
 
 import net.fabricmc.fabric.impl.gamerule.RuleCategoryExtensions;
 
-/**
- * Utility class for creating custom game rule categories with full control over the name.
- *
- * @see net.minecraft.world.level.gamerules.GameRuleCategory
- */
+/// Utility class for creating custom game rule categories with full control over the name.
+///
+/// @see net.minecraft.world.level.gamerules.GameRuleCategory
 @SuppressWarnings("ClassCanBeRecord")
 public final class CustomGameRuleCategory {
 	private final Identifier id;
 	private final Component name;
 
-	/**
-	 * Creates a custom game rule category.
-	 *
-	 * @param id   the id of this category
-	 * @param name the name of this category
-	 */
+	/// Creates a custom game rule category.
+	///
+	/// @param id   the id of this category
+	/// @param name the name of this category
 	public CustomGameRuleCategory(Identifier id, Component name) {
 		this.id = id;
 		this.name = name;
@@ -68,13 +64,11 @@ public final class CustomGameRuleCategory {
 		return this.id.hashCode();
 	}
 
-	/**
-	 * Gets the custom category a {@linkplain GameRule game rule} is registered to.
-	 *
-	 * @param gameRule the rule
-	 * @param <T>  the type of value the rule holds
-	 * @return the custom category this rule belongs to. Otherwise {@linkplain Optional#empty() empty}
-	 */
+	/// Gets the custom category a {@linkplain GameRule game rule} is registered to.
+	///
+	/// @param gameRule the rule
+	/// @param <T>  the type of value the rule holds
+	/// @return the custom category this rule belongs to. Otherwise {@linkplain Optional#empty() empty}
 	public static <T> Optional<CustomGameRuleCategory> getCategory(GameRule<T> gameRule) {
 		return Optional.ofNullable(((RuleCategoryExtensions) (Object) gameRule).fabric_getCustomCategory());
 	}

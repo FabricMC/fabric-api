@@ -47,23 +47,23 @@ public class CustomUnbakedBlockStateModelRegistry {
 	private static final String TYPE_KEY = "fabric:type";
 	private static final ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends CustomUnbakedBlockStateModel>> ID_MAPPER = new ExtraCodecs.LateBoundIdMapper<>();
 
-	/** Map codec for a custom model. Must be a map codec to allow combining with weighted model entry's "weight" field. */
+	/// Map codec for a custom model. Must be a map codec to allow combining with weighted model entry's "weight" field.
 	private static final MapCodec<CustomUnbakedBlockStateModel> CUSTOM_MODEL_MAP_CODEC = ID_MAPPER.codec(Identifier.CODEC).dispatchMap(TYPE_KEY, CustomUnbakedBlockStateModel::codec, codec -> codec);
-	/** Map codec for a simple model. Must be a map codec to allow checking presence of type key before parsing. */
+	/// Map codec for a simple model. Must be a map codec to allow checking presence of type key before parsing.
 	private static final MapCodec<SingleVariant.Unbaked> SIMPLE_MODEL_MAP_CODEC = Variant.MAP_CODEC
 			.xmap(SingleVariant.Unbaked::new, SingleVariant.Unbaked::variant);
-	/** Map codec for a custom model or a simple model. Uses {@link SingleVariant.Unbaked} instead of {@link Variant} like vanilla to also allow use in {@link #MODEL_CODEC} for convenience and consistent behavior. Must be a map codec to allow combining with weighted model entry's "weight" field. */
+	/// Map codec for a custom model or a simple model. Uses [SingleVariant.Unbaked] instead of [Variant] like vanilla to also allow use in [#MODEL_CODEC] for convenience and consistent behavior. Must be a map codec to allow combining with weighted model entry's "weight" field.
 	private static final MapCodec<Either<CustomUnbakedBlockStateModel, SingleVariant.Unbaked>> VARIANT_MAP_CODEC = new KeyExistsCodec<>(TYPE_KEY, CUSTOM_MODEL_MAP_CODEC, SIMPLE_MODEL_MAP_CODEC);
-	/** Codec for a custom model or a simple model. */
+	/// Codec for a custom model or a simple model.
 	private static final Codec<Either<CustomUnbakedBlockStateModel, SingleVariant.Unbaked>> VARIANT_CODEC = VARIANT_MAP_CODEC.codec();
-	/** Codec for a weighted variant, with support for custom models. Used as list elements in a weighted model. */
+	/// Codec for a weighted variant, with support for custom models. Used as list elements in a weighted model.
 	private static final Codec<Weighted<Either<CustomUnbakedBlockStateModel, SingleVariant.Unbaked>>> WEIGHTED_VARIANT_CODEC = RecordCodecBuilder.create(
 			instance -> instance.group(
 					VARIANT_MAP_CODEC.forGetter(Weighted::value),
 					ExtraCodecs.POSITIVE_INT.optionalFieldOf("weight", 1).forGetter(Weighted::weight)
 			).apply(instance, Weighted::new)
 	);
-	/** Extended codec for a vanilla weighted model that supports using custom models instead of regular variants. Replaces {@link BlockStateModel.Unbaked#WEIGHTED_CODEC}. */
+	/// Extended codec for a vanilla weighted model that supports using custom models instead of regular variants. Replaces [BlockStateModel.Unbaked#WEIGHTED_CODEC].
 	public static final Codec<WeightedVariants.Unbaked> WEIGHTED_MODEL_CODEC = ExtraCodecs.nonEmptyList(WEIGHTED_VARIANT_CODEC.listOf())
 			.flatComapMap(
 					weightedVariants -> new WeightedVariants.Unbaked(WeightedList.of(Lists.transform(weightedVariants, weighted -> weighted.map(either -> either.map(Function.identity(), Function.identity()))))),
@@ -88,7 +88,7 @@ public class CustomUnbakedBlockStateModelRegistry {
 						return DataResult.success(weightedVariants);
 					}
 			);
-	/** Extended codec for an unbaked model that supports using a custom model directly or inside weighted entries. Replaces {@link BlockStateModel.Unbaked#CODEC}. */
+	/// Extended codec for an unbaked model that supports using a custom model directly or inside weighted entries. Replaces [BlockStateModel.Unbaked#CODEC].
 	public static final Codec<BlockStateModel.Unbaked> MODEL_CODEC = Codec.either(WEIGHTED_MODEL_CODEC, VARIANT_CODEC)
 			.flatComapMap(either -> either.map(Function.identity(), right -> right.map(Function.identity(), Function.identity())), model -> {
 				Objects.requireNonNull(model);
@@ -105,7 +105,7 @@ public class CustomUnbakedBlockStateModelRegistry {
 		ID_MAPPER.put(id, codec);
 	}
 
-	/** When decoding, uses a different codec depending on whether a certain key exists or not. */
+	/// When decoding, uses a different codec depending on whether a certain key exists or not.
 	private static class KeyExistsCodec<E, N> extends MapCodec<Either<E, N>> {
 		private final String key;
 		private final MapCodec<E> exists;

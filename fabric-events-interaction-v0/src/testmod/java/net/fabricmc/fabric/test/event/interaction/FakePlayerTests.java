@@ -35,9 +35,7 @@ import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class FakePlayerTests {
-	/**
-	 * Try placing a sign with a fake player.
-	 */
+	/// Try placing a sign with a fake player.
 	@GameTest
 	public void testFakePlayerPlaceSign(GameTestHelper helper) {
 		// This is for Fabric internal testing only, if you copy this to your mod you're on your own...
@@ -64,9 +62,7 @@ public class FakePlayerTests {
 		helper.succeed();
 	}
 
-	/**
-	 * Try breaking a beehive with a fake player (see {@code BeehiveBlockMixin}).
-	 */
+	/// Try breaking a beehive with a fake player (see `BeehiveBlockMixin`).
 	@GameTest
 	public void testFakePlayerBreakBeehive(GameTestHelper helper) {
 		BlockPos basePos = new BlockPos(0, 1, 0);

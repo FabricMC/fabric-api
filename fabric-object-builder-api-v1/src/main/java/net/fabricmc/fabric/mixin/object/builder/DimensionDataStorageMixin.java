@@ -28,9 +28,7 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 
 @Mixin(DimensionDataStorage.class)
 class DimensionDataStorageMixin {
-	/**
-	 * Handle mods passing a null DataFixTypes to a PersistentState.Type.
-	 */
+	/// Handle mods passing a null DataFixTypes to a PersistentState.Type.
 	@WrapOperation(method = "readTagFromDisk", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/datafix/DataFixTypes;update(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/nbt/CompoundTag;II)Lnet/minecraft/nbt/CompoundTag;"))
 	private CompoundTag handleNullDataFixType(DataFixTypes dataFixTypes, DataFixer dataFixer, CompoundTag nbt, int oldVersion, int newVersion, Operation<CompoundTag> original) {
 		if (dataFixTypes == null) {

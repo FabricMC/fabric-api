@@ -21,9 +21,7 @@ import java.util.Set;
 import net.minecraft.network.Connection;
 import net.minecraft.resources.Identifier;
 
-/**
- * Implemented on {@link Connection} to store which attachments the client supports.
- */
+/// Implemented on [Connection] to store which attachments the client supports.
 public interface SupportedAttachmentsConnection {
 	void fabric_setSupportedAttachments(Set<Identifier> supportedAttachments);
 

@@ -175,9 +175,7 @@ public final class GlobalReceiverRegistry<H> {
 		}
 	}
 
-	/**
-	 * In practice, trackedAddons should never contain more than the number of players.
-	 */
+	/// In practice, trackedAddons should never contain more than the number of players.
 	private void logTrackedAddonSize() {
 		if (LOGGER.isTraceEnabled() && this.trackedAddons.size() > 1) {
 			LOGGER.trace("{} receiver registry tracks {} addon instances", protocol.id(), trackedAddons.size());

@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 
 public class MeshViewImpl implements MeshView {
-	/** Used to satisfy external calls to {@link #forEach(Consumer)}. */
+	/// Used to satisfy external calls to [#forEach(Consumer)].
 	private static final ThreadLocal<ObjectArrayList<QuadViewImpl>> CURSOR_POOLS = ThreadLocal.withInitial(ObjectArrayList::new);
 
 	int[] data;
@@ -57,10 +57,8 @@ public class MeshViewImpl implements MeshView {
 		pool.push(cursor);
 	}
 
-	/**
-	 * The renderer can call this with its own cursor to avoid the performance hit of a
-	 * thread-local lookup or to use a mutable cursor.
-	 */
+	/// The renderer can call this with its own cursor to avoid the performance hit of a
+	/// thread-local lookup or to use a mutable cursor.
 	<C extends QuadViewImpl> void forEach(Consumer<? super C> action, C cursor) {
 		final int limit = this.limit;
 		int index = 0;

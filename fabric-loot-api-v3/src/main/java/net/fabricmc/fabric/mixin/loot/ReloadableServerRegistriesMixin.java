@@ -55,14 +55,10 @@ import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.fabricmc.fabric.impl.loot.FabricLootTable;
 import net.fabricmc.fabric.impl.loot.LootUtil;
 
-/**
- * Implements the events from {@link LootTableEvents}.
- */
+/// Implements the events from [LootTableEvents].
 @Mixin(ReloadableServerRegistries.class)
 abstract class ReloadableServerRegistriesMixin {
-	/**
-	 * Due to possible cross-thread handling, this uses WeakHashMap instead of ThreadLocal.
-	 */
+	/// Due to possible cross-thread handling, this uses WeakHashMap instead of ThreadLocal.
 	@Unique
 	private static final WeakHashMap<RegistryOps<JsonElement>, HolderLookup.Provider> WRAPPERS = new WeakHashMap<>();
 

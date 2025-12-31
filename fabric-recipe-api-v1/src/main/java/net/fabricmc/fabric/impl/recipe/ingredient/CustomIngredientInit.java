@@ -24,9 +24,7 @@ import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentsIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.CustomDataIngredient;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.DifferenceIngredient;
 
-/**
- * Register builtin custom ingredients.
- */
+/// Register builtin custom ingredients.
 public class CustomIngredientInit implements ModInitializer {
 	@Override
 	public void onInitialize() {

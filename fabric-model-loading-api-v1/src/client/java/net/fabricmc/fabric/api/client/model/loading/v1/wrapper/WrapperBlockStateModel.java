@@ -32,10 +32,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
-/**
- * A simple implementation of {@link BlockStateModel} that delegates all method calls to the {@link #wrapped} field.
- * Implementations must set the {@link #wrapped} field somehow.
- */
+/// A simple implementation of [BlockStateModel] that delegates all method calls to the [#wrapped] field.
+/// Implementations must set the [#wrapped] field somehow.
 public abstract class WrapperBlockStateModel implements BlockStateModel {
 	protected BlockStateModel wrapped;
 

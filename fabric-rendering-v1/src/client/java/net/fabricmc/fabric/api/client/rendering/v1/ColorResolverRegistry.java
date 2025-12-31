@@ -26,55 +26,45 @@ import net.minecraft.world.level.ColorResolver;
 
 import net.fabricmc.fabric.impl.client.rendering.ColorResolverRegistryImpl;
 
-/**
- * The registry for custom {@link ColorResolver}s. Custom resolvers must be registered during client initialization for
- * them to be usable in {@link BlockAndTintGetter#getBlockTint}. Calling this method may throw an exception if the passed
- * resolver is not registered with this class. Vanilla resolvers found in {@link BiomeColors} are automatically
- * registered.
- *
- * <p>Other mods may also require custom resolvers to be registered if they provide additional functionality related to
- * color resolvers.
- */
+/// The registry for custom [ColorResolver]s. Custom resolvers must be registered during client initialization for
+/// them to be usable in [BlockAndTintGetter#getBlockTint]. Calling this method may throw an exception if the passed
+/// resolver is not registered with this class. Vanilla resolvers found in [BiomeColors] are automatically
+/// registered.
+///
+/// Other mods may also require custom resolvers to be registered if they provide additional functionality related to
+/// color resolvers.
 public final class ColorResolverRegistry {
 	private ColorResolverRegistry() {
 	}
 
-	/**
-	 * Registers a custom {@link ColorResolver} for use in {@link BlockAndTintGetter#getBlockTint}. This method should be
-	 * called during client initialization.
-	 *
-	 * @param resolver the resolver to register
-	 */
+	/// Registers a custom [ColorResolver] for use in [BlockAndTintGetter#getBlockTint]. This method should be
+	/// called during client initialization.
+	///
+	/// @param resolver the resolver to register
 	public static void register(ColorResolver resolver) {
 		ColorResolverRegistryImpl.register(resolver);
 	}
 
-	/**
-	 * Gets a view of all registered {@link ColorResolver}s, including all vanilla resolvers.
-	 *
-	 * @return a view of all registered resolvers
-	 */
+	/// Gets a view of all registered [ColorResolver]s, including all vanilla resolvers.
+	///
+	/// @return a view of all registered resolvers
 	@UnmodifiableView
 	public static Set<ColorResolver> getAllResolvers() {
 		return ColorResolverRegistryImpl.getAllResolvers();
 	}
 
-	/**
-	 * Gets a view of all registered {@link ColorResolver}s, not including vanilla resolvers.
-	 *
-	 * @return a view of all registered custom resolvers
-	 */
+	/// Gets a view of all registered [ColorResolver]s, not including vanilla resolvers.
+	///
+	/// @return a view of all registered custom resolvers
 	@UnmodifiableView
 	public static Set<ColorResolver> getCustomResolvers() {
 		return ColorResolverRegistryImpl.getCustomResolvers();
 	}
 
-	/**
-	 * Checks whether the given {@link ColorResolver} is registered. Vanilla resolvers are always registered.
-	 *
-	 * @param resolver the resolver
-	 * @return whether the given resolver is registered
-	 */
+	/// Checks whether the given [ColorResolver] is registered. Vanilla resolvers are always registered.
+	///
+	/// @param resolver the resolver
+	/// @return whether the given resolver is registered
 	public static boolean isRegistered(ColorResolver resolver) {
 		return getAllResolvers().contains(resolver);
 	}

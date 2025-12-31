@@ -44,9 +44,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.fabric.mixin.client.indigo.renderer.ItemRendererAccessor;
 
-/**
- * Used during item buffering to support geometry added through {@link FabricLayerRenderState#emitter()}.
- */
+/// Used during item buffering to support geometry added through [FabricLayerRenderState#emitter()].
 public class ItemRenderContext extends AbstractRenderContext {
 	private static final int FOIL_TYPE_COUNT = ItemStackRenderState.FoilType.values().length;
 

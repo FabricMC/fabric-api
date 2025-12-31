@@ -26,25 +26,19 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-/**
- * General-purpose Fabric-provided extensions for {@link RecipeManager} class.
- */
+/// General-purpose Fabric-provided extensions for [RecipeManager] class.
 public interface FabricRecipeManager extends FabricRecipeAccess {
-	/**
-	 * Creates a stream of all recipe entries of the given {@code type} that match the
-	 * given {@code input} and {@code level}.
-	 *
-	 * <p>If {@code input.isEmpty()} returns true, the returned stream will be always empty.
-	 *
-	 * @return the stream of matching recipes
-	 */
+	/// Creates a stream of all recipe entries of the given `type` that match the
+	/// given `input` and `level`.
+	///
+	/// If `input.isEmpty()` returns true, the returned stream will be always empty.
+	///
+	/// @return the stream of matching recipes
 	default <I extends RecipeInput, T extends Recipe<I>> Stream<RecipeHolder<T>> getAllMatches(RecipeType<T> type, I input, Level level) {
 		throw new AssertionError("Implemented in Mixin");
 	}
 
-	/**
-	 * @return the collection of recipe entries of given type
-	 */
+	/// @return the collection of recipe entries of given type
 	default <I extends RecipeInput, T extends Recipe<I>> Collection<RecipeHolder<T>> getAllOfType(RecipeType<T> type) {
 		throw new AssertionError("Implemented in Mixin");
 	}

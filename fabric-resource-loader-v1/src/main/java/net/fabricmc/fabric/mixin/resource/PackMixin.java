@@ -34,13 +34,11 @@ import net.fabricmc.fabric.api.resource.v1.FabricResource;
 import net.fabricmc.fabric.impl.resource.PackSourceTracker;
 import net.fabricmc.fabric.impl.resource.pack.FabricPack;
 
-/**
- * Implements pack source tracking (for {@link FabricResource}).
- * {@link PackResources} doesn't hold a reference to its {@link net.minecraft.server.packs.repository.PackSource}
- * so we store the source in a global tracker when the resource packs are created.
- *
- * @see PackSourceTracker
- */
+/// Implements pack source tracking (for [FabricResource]).
+/// [PackResources] doesn't hold a reference to its [net.minecraft.server.packs.repository.PackSource]
+/// so we store the source in a global tracker when the resource packs are created.
+///
+/// @see PackSourceTracker
 @Mixin(Pack.class)
 abstract class PackMixin implements FabricPack {
 	@Unique

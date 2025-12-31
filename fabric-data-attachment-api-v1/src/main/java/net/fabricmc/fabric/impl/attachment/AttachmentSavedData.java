@@ -34,10 +34,8 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 
-/**
- * Backing storage for server-side level attachments.
- * Thanks to custom {@link #isDirty()} logic, the file is only written if something needs to be persisted.
- */
+/// Backing storage for server-side level attachments.
+/// Thanks to custom [#isDirty()] logic, the file is only written if something needs to be persisted.
 public class AttachmentSavedData extends SavedData {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentSavedData.class);
 	public static final String ID = "fabric_attachments";

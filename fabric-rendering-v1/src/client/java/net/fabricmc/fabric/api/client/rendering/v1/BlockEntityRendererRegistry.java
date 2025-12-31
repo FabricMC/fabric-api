@@ -25,24 +25,20 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 
-/**
- * Helper class for registering BlockEntityRenderers.
- *
- * <p>Use {@link net.minecraft.client.renderer.blockentity.BlockEntityRenderers#register(BlockEntityType, BlockEntityRendererProvider)} instead.
- *
- * @deprecated Replaced with transitive access wideners in Fabric Transitive Access Wideners (v1).
- */
+/// Helper class for registering BlockEntityRenderers.
+///
+/// Use [net.minecraft.client.renderer.blockentity.BlockEntityRenderers#register(BlockEntityType, BlockEntityRendererProvider)] instead.
+///
+/// @deprecated Replaced with transitive access wideners in Fabric Transitive Access Wideners (v1).
 @Deprecated
 public final class BlockEntityRendererRegistry {
-	/**
-	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the level is rendered.
-	 *
-	 * @param blockEntityType the {@link BlockEntityType} to register a renderer for
-	 * @param blockEntityRendererProvider a {@link BlockEntityRendererProvider} that creates a {@link BlockEntityRenderer}, called
-	 *                            when {@link BlockEntityRenderDispatcher} is initialized or immediately if the dispatcher
-	 *                            class is already loaded
-	 * @param <E> the {@link BlockEntity}
-	 */
+	/// Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the level is rendered.
+	///
+	/// @param blockEntityType the [BlockEntityType] to register a renderer for
+	/// @param blockEntityRendererProvider a [BlockEntityRendererProvider] that creates a [BlockEntityRenderer], called
+	///                            when [BlockEntityRenderDispatcher] is initialized or immediately if the dispatcher
+	///                            class is already loaded
+	/// @param <E> the [BlockEntity]
 	public static <E extends BlockEntity, S extends BlockEntityRenderState> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererProvider<? super E, ? super S> blockEntityRendererProvider) {
 		BlockEntityRendererRegistryImpl.register(blockEntityType, blockEntityRendererProvider);
 	}

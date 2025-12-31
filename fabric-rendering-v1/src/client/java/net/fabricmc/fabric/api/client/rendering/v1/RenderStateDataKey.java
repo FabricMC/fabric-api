@@ -18,12 +18,10 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.function.Supplier;
 
-/**
- * A unique key representing extra data to attach to a render state.
- * @param <T> The type of the render state data.
- * @see FabricRenderState#getData(RenderStateDataKey)
- * @see FabricRenderState#setData(RenderStateDataKey, Object)
- */
+/// A unique key representing extra data to attach to a render state.
+/// @param <T> The type of the render state data.
+/// @see FabricRenderState#getData(RenderStateDataKey)
+/// @see FabricRenderState#setData(RenderStateDataKey, Object)
 public final class RenderStateDataKey<T> {
 	private final Supplier<String> name;
 
@@ -31,21 +29,17 @@ public final class RenderStateDataKey<T> {
 		this.name = debugName;
 	}
 
-	/**
-	 * Creates a new unique data key.
-	 * @param debugName The name of this data key, shown in error messages.
-	 * @param <T> The type of the render state data.
-	 * @return The newly created data key.
-	 */
+	/// Creates a new unique data key.
+	/// @param debugName The name of this data key, shown in error messages.
+	/// @param <T> The type of the render state data.
+	/// @return The newly created data key.
 	public static <T> RenderStateDataKey<T> create(Supplier<String> debugName) {
 		return new RenderStateDataKey<>(debugName);
 	}
 
-	/**
-	 * Creates a new unique data key.
-	 * @param <T> The type of the render state data.
-	 * @return The newly created data key.
-	 */
+	/// Creates a new unique data key.
+	/// @param <T> The type of the render state data.
+	/// @return The newly created data key.
 	public static <T> RenderStateDataKey<T> create() {
 		return new RenderStateDataKey<>(() -> "unnamed");
 	}

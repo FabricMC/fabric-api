@@ -24,27 +24,21 @@ import net.minecraft.client.renderer.state.LevelRenderState;
 
 @ApiStatus.NonExtendable
 public interface AbstractLevelRenderContext {
-	/**
-	 * The game renderer instance.
-	 *
-	 * @return GameRenderer instance
-	 */
+	/// The game renderer instance.
+	///
+	/// @return GameRenderer instance
 	GameRenderer gameRenderer();
 
-	/**
-	 * The level renderer instance doing the rendering and invoking the event.
-	 *
-	 * @return {@link LevelRenderer} instance invoking the event
-	 */
+	/// The level renderer instance doing the rendering and invoking the event.
+	///
+	/// @return [LevelRenderer] instance invoking the event
 	LevelRenderer levelRenderer();
 
-	/**
-	 * The render state for the level being rendered.
-	 *
-	 * <p>Render states contain information about the current frame used for rendering,
-	 * and should be used instead of accessing the level or other objects directly from rendering events.
-	 *
-	 * @return {@link LevelRenderState} instance
-	 */
+	/// The render state for the level being rendered.
+	///
+	/// Render states contain information about the current frame used for rendering,
+	/// and should be used instead of accessing the level or other objects directly from rendering events.
+	///
+	/// @return [LevelRenderState] instance
 	LevelRenderState levelState();
 }

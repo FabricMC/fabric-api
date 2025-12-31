@@ -40,9 +40,7 @@ public class UnderlyingViewTests extends AbstractTransferApiTest {
 		bootstrap();
 	}
 
-	/**
-	 * Ensure that only 3 slots with different underlying view exist on all sides of a furnace combined.
-	 */
+	/// Ensure that only 3 slots with different underlying view exist on all sides of a furnace combined.
 	@Test
 	public void testFurnaceSides() {
 		FurnaceBlockEntity furnace = new FurnaceBlockEntity(BlockPos.ZERO, Blocks.FURNACE.defaultBlockState());

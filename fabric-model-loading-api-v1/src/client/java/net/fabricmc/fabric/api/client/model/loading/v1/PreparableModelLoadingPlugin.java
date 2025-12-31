@@ -29,58 +29,46 @@ import net.minecraft.server.packs.resources.ResourceManager;
 
 import net.fabricmc.fabric.impl.client.model.loading.ModelLoadingPluginManager;
 
-/**
- * A model loading plugin is used to extend the model loading process through the passed
- * {@link ModelLoadingPlugin.Context} object.
- *
- * <p>This version of {@link ModelLoadingPlugin} allows loading ("preparing") some data off-thread in parallel before
- * the model loading process starts. Usually, this means loading some resources from the provided
- * {@link ResourceManager}.
- */
+/// A model loading plugin is used to extend the model loading process through the passed
+/// [ModelLoadingPlugin.Context] object.
+///
+/// This version of [ModelLoadingPlugin] allows loading ("preparing") some data off-thread in parallel before
+/// the model loading process starts. Usually, this means loading some resources from the provided
+/// [ResourceManager].
 @FunctionalInterface
 public interface PreparableModelLoadingPlugin<T> {
-	/**
-	 * Registers a preparable model loading plugin.
-	 */
+	/// Registers a preparable model loading plugin.
 	static <T> void register(DataLoader<T> loader, PreparableModelLoadingPlugin<T> plugin) {
 		ModelLoadingPluginManager.registerPlugin(loader, plugin);
 	}
 
-	/**
-	 * Gets a list of all registered preparable model loading plugins.
-	 */
+	/// Gets a list of all registered preparable model loading plugins.
 	@UnmodifiableView
 	static List<Holder<?>> getAll() {
 		return ModelLoadingPluginManager.PREPARABLE_PLUGINS_VIEW;
 	}
 
-	/**
-	 * Called towards the beginning of the model loading process, every time resource are (re)loaded.
-	 * Use the context object to extend model loading as desired.
-	 *
-	 * @param data The data loaded by the {@link DataLoader}.
-	 * @param pluginContext The context that can be used to extend model loading.
-	 */
+	/// Called towards the beginning of the model loading process, every time resource are (re)loaded.
+	/// Use the context object to extend model loading as desired.
+	///
+	/// @param data The data loaded by the [DataLoader].
+	/// @param pluginContext The context that can be used to extend model loading.
 	void initialize(T data, ModelLoadingPlugin.Context pluginContext);
 
 	@FunctionalInterface
 	interface DataLoader<T> {
-		/**
-		 * Returns a {@link CompletableFuture} that will load the data.
-		 * Do not block the thread when this function is called, rather use
-		 * {@link CompletableFuture#supplyAsync(Supplier, Executor)} to compute the data.
-		 * The completable future should be scheduled to run using the passed executor.
-		 *
-		 * @param resourceReloaderStore The {@link PreparableReloadListener.SharedState} instance. Use {@link PreparableReloadListener.SharedState#resourceManager()} to retrieve resources.
-		 * @param executor The executor that <b>must</b> be used to schedule any completable future.
-		 */
+		/// Returns a [CompletableFuture] that will load the data.
+		/// Do not block the thread when this function is called, rather use
+		/// [CompletableFuture#supplyAsync(Supplier, Executor)] to compute the data.
+		/// The completable future should be scheduled to run using the passed executor.
+		///
+		/// @param resourceReloaderStore The [PreparableReloadListener.SharedState] instance. Use [PreparableReloadListener.SharedState#resourceManager()] to retrieve resources.
+		/// @param executor The executor that **must** be used to schedule any completable future.
 		CompletableFuture<T> load(PreparableReloadListener.SharedState resourceReloaderStore, Executor executor);
 	}
 
-	/**
-	 * Bundles a {@link PreparableModelLoadingPlugin} with its corresponding {@link DataLoader}
-	 * for retrieval through {@link #getAll()}.
-	 */
+	/// Bundles a [PreparableModelLoadingPlugin] with its corresponding [DataLoader]
+	/// for retrieval through [#getAll()].
 	@ApiStatus.NonExtendable
 	interface Holder<T> {
 		DataLoader<T> loader();

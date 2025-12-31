@@ -27,10 +27,8 @@ import net.minecraft.tags.TagKey;
 
 import net.fabricmc.fabric.impl.tag.TagAliasEnabledRegistryLookup;
 
-/**
- * Adds tag alias support to {@code MappedRegistry$2}, which is the wrapper used
- * for (TODO: only?) static registries during world creation and world/data reloading.
- */
+/// Adds tag alias support to `MappedRegistry$2`, which is the wrapper used
+/// for (TODO: only?) static registries during world creation and world/data reloading.
 @Mixin(targets = "net.minecraft.core.MappedRegistry$2")
 abstract class MappedRegistry2Mixin<T> implements TagAliasEnabledRegistryLookup {
 	// returns MappedRegistry.this, which implements TagAliasEnabledRegistry

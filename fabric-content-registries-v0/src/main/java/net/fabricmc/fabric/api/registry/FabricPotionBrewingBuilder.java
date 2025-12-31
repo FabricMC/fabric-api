@@ -26,13 +26,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * An extension of {@link PotionBrewing.Builder} to support ingredients.
- */
+/// An extension of [PotionBrewing.Builder] to support ingredients.
 public interface FabricPotionBrewingBuilder {
-	/**
-	 * An event that is called when the potion brewing registry is being built.
-	 */
+	/// An event that is called when the potion brewing registry is being built.
 	Event<FabricPotionBrewingBuilder.BuildCallback> BUILD = EventFactory.createArrayBacked(FabricPotionBrewingBuilder.BuildCallback.class, listeners -> builder -> {
 		for (FabricPotionBrewingBuilder.BuildCallback listener : listeners) {
 			listener.build(builder);
@@ -55,16 +51,12 @@ public interface FabricPotionBrewingBuilder {
 		throw new AssertionError("Must be implemented via interface injection");
 	}
 
-	/**
-	 * Use this event to register custom brewing recipes.
-	 */
+	/// Use this event to register custom brewing recipes.
 	@FunctionalInterface
 	interface BuildCallback {
-		/**
-		 * Called when the potion brewing registry is being built.
-		 *
-		 * @param builder the {@link PotionBrewing} instance
-		 */
+		/// Called when the potion brewing registry is being built.
+		///
+		/// @param builder the [PotionBrewing] instance
 		void build(PotionBrewing.Builder builder);
 	}
 }

@@ -25,39 +25,30 @@ import net.minecraft.client.KeyMapping;
 import net.fabricmc.fabric.impl.client.keymapping.KeyMappingRegistryImpl;
 import net.fabricmc.fabric.mixin.client.keymapping.KeyMappingAccessor;
 
-/**
- * Helper for registering {@link KeyMapping}s.
- *
- * <pre>{@code
- * KeyMapping left = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.left", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, KeyMapping.Category.MISC));
- * KeyMapping right = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.right", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_U, KeyMapping.Category.MISC));
- * }</pre>
- *
- * @see KeyMapping
- * @see net.minecraft.client.ToggleKeyMapping
- */
+/// Helper for registering [KeyMapping]s.
+/// <pre>
+/// `KeyMapping left = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.left", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, KeyMapping.Category.MISC));KeyMapping right = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.right", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_U, KeyMapping.Category.MISC));`</pre>
+///
+/// @see KeyMapping
+/// @see net.minecraft.client.ToggleKeyMapping
 public final class KeyMappingHelper {
 	private KeyMappingHelper() {
 	}
 
-	/**
-	 * Registers the keymapping and add the keymapping category if required.
-	 *
-	 * @param keyMapping the keymapping
-	 * @return the keymapping itself
-	 * @throws IllegalArgumentException when a key mapping with the same ID is already registered
-	 */
+	/// Registers the keymapping and add the keymapping category if required.
+	///
+	/// @param keyMapping the keymapping
+	/// @return the keymapping itself
+	/// @throws IllegalArgumentException when a key mapping with the same ID is already registered
 	public static KeyMapping registerKeyMapping(KeyMapping keyMapping) {
 		Objects.requireNonNull(keyMapping, "key mapping cannot be null");
 		return KeyMappingRegistryImpl.registerKeyMapping(keyMapping);
 	}
 
-	/**
-	 * Returns the configured KeyCode bound to the KeyMapping from the player's settings.
-	 *
-	 * @param keyMapping the keymapping
-	 * @return configured KeyCode
-	 */
+	/// Returns the configured KeyCode bound to the KeyMapping from the player's settings.
+	///
+	/// @param keyMapping the keymapping
+	/// @return configured KeyCode
 	public static InputConstants.Key getBoundKeyOf(KeyMapping keyMapping) {
 		return ((KeyMappingAccessor) keyMapping).fabric_getBoundKey();
 	}

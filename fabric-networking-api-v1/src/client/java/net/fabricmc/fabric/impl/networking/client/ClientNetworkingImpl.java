@@ -76,9 +76,7 @@ public final class ClientNetworkingImpl {
 		return new ServerboundCustomPayloadPacket(payload);
 	}
 
-	/**
-	 * Due to the way logging into an integrated or remote dedicated server will differ, we need to obtain the login client connection differently.
-	 */
+	/// Due to the way logging into an integrated or remote dedicated server will differ, we need to obtain the login client connection differently.
 	@Nullable
 	public static Connection getLoginConnection() {
 		final Connection connection = ((MinecraftAccessor) Minecraft.getInstance()).getPendingConnection();

@@ -25,65 +25,51 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 
-/**
- * A registry for payload types.
- */
+/// A registry for payload types.
 @ApiStatus.NonExtendable
 public interface PayloadTypeRegistry<B extends FriendlyByteBuf> {
-	/**
-	 * Registers a custom payload type.
-	 *
-	 * <p>This must be done on both the sending and receiving side, usually during mod initialization
-	 * and <strong>before registering a packet handler</strong>.
-	 *
-	 * @param type  the payload type
-	 * @param codec the codec for the payload type
-	 * @param <T>   the payload class
-	 * @return the registered payload type
-	 */
+	/// Registers a custom payload type.
+	///
+	/// This must be done on both the sending and receiving side, usually during mod initialization
+	/// and **before registering a packet handler**.
+	///
+	/// @param type  the payload type
+	/// @param codec the codec for the payload type
+	/// @param <T>   the payload class
+	/// @return the registered payload type
 	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> register(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec);
 
-	/**
-	 * Registers a large custom payload type.
-	 *
-	 * <p>This must be done on both the sending and receiving side, usually during mod initialization
-	 * and <strong>before registering a packet handler</strong>.
-	 *
-	 * <p>Payload types registered with this method will be split into multiple packets,
-	 * allowing to send packets larger than vanilla limited size.
-	 *
-	 * @param type          the payload type
-	 * @param codec         the codec for the payload type
-	 * @param <T>           the payload class
-	 * @param maxPacketSize the maximum size of payload packet
-	 * @return the registered payload type
-	 */
+	/// Registers a large custom payload type.
+	///
+	/// This must be done on both the sending and receiving side, usually during mod initialization
+	/// and **before registering a packet handler**.
+	///
+	/// Payload types registered with this method will be split into multiple packets,
+	/// allowing to send packets larger than vanilla limited size.
+	///
+	/// @param type          the payload type
+	/// @param codec         the codec for the payload type
+	/// @param <T>           the payload class
+	/// @param maxPacketSize the maximum size of payload packet
+	/// @return the registered payload type
 	<T extends CustomPacketPayload> CustomPacketPayload.TypeAndCodec<? super B, T> registerLarge(CustomPacketPayload.Type<T> type, StreamCodec<? super B, T> codec, int maxPacketSize);
 
-	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the serverbound (client to server) configuration channel.
-	 */
+	/// @return the [PayloadTypeRegistry] instance for the serverbound (client to server) configuration channel.
 	static PayloadTypeRegistry<FriendlyByteBuf> serverboundConfiguration() {
 		return PayloadTypeRegistryImpl.SERVERBOUND_CONFIGURATION;
 	}
 
-	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the clientbound (server to client) configuration channel.
-	 */
+	/// @return the [PayloadTypeRegistry] instance for the clientbound (server to client) configuration channel.
 	static PayloadTypeRegistry<FriendlyByteBuf> clientboundConfiguration() {
 		return PayloadTypeRegistryImpl.CLIENTBOUND_CONFIGURATION;
 	}
 
-	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the serverbound (client to server) play channel.
-	 */
+	/// @return the [PayloadTypeRegistry] instance for the serverbound (client to server) play channel.
 	static PayloadTypeRegistry<RegistryFriendlyByteBuf> serverboundPlay() {
 		return PayloadTypeRegistryImpl.SERVERBOUND_PLAY;
 	}
 
-	/**
-	 * @return the {@link PayloadTypeRegistry} instance for the clientbound (server to client) play channel.
-	 */
+	/// @return the [PayloadTypeRegistry] instance for the clientbound (server to client) play channel.
 	static PayloadTypeRegistry<RegistryFriendlyByteBuf> clientboundPlay() {
 		return PayloadTypeRegistryImpl.CLIENTBOUND_PLAY;
 	}

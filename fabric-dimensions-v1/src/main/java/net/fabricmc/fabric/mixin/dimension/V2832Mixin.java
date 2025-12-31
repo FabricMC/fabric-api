@@ -33,9 +33,7 @@ import net.fabricmc.fabric.impl.dimension.TaggedChoiceExtension;
 
 @Mixin(V2832.class)
 public class V2832Mixin {
-	/**
-	 * Make the DSL.taggedChoiceLazy to ignore mod custom generator types and not cause deserialization failure.
-	 */
+	/// Make the DSL.taggedChoiceLazy to ignore mod custom generator types and not cause deserialization failure.
 	@Redirect(
 			method = {
 					"lambda$registerTypes$2", "lambda$registerTypes$4"

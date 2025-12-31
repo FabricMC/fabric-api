@@ -102,9 +102,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		return spawnSettings;
 	}
 
-	/**
-	 * Re-freeze any immutable lists and perform general post-modification cleanup.
-	 */
+	/// Re-freeze any immutable lists and perform general post-modification cleanup.
 	void freeze() {
 		generationSettings.freeze();
 		spawnSettings.freeze();
@@ -215,10 +213,8 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 
 		boolean rebuildFeatures;
 
-		/**
-		 * Unfreeze the immutable lists found in the generation settings, and make sure they're filled up to every
-		 * possible step if they're dense lists.
-		 */
+		/// Unfreeze the immutable lists found in the generation settings, and make sure they're filled up to every
+		/// possible step if they're dense lists.
 		GenerationSettingsContextImpl() {
 			unfreezeFeatures();
 
@@ -229,9 +225,7 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 			generationSettings.features = new ArrayList<>(generationSettings.features);
 		}
 
-		/**
-		 * Re-freeze the lists in the generation settings to immutable variants, also fixes the flower features.
-		 */
+		/// Re-freeze the lists in the generation settings to immutable variants, also fixes the flower features.
 		public void freeze() {
 			freezeFeatures();
 
@@ -332,11 +326,9 @@ public class BiomeModificationContextImpl implements BiomeModificationContext {
 		}
 	}
 
-	/**
-	 * Gets an entry from the given registry, assuming it's a registry loaded from data packs.
-	 * Gives more helpful error messages if an entry is missing by checking if the modder
-	 * forgot to data-gen the JSONs corresponding to their built-in objects.
-	 */
+	/// Gets an entry from the given registry, assuming it's a registry loaded from data packs.
+	/// Gives more helpful error messages if an entry is missing by checking if the modder
+	/// forgot to data-gen the JSONs corresponding to their built-in objects.
 	private static <T> Holder.Reference<T> getHolder(Registry<T> registry, ResourceKey<T> key) {
 		Holder.Reference<T> holder = registry.get(key).orElse(null);
 

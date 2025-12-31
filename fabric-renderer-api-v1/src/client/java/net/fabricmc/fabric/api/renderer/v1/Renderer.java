@@ -42,83 +42,62 @@ import net.fabricmc.fabric.api.renderer.v1.render.FabricModelBlockRenderer;
 import net.fabricmc.fabric.api.renderer.v1.render.ItemRenderTypeGetter;
 import net.fabricmc.fabric.impl.renderer.RendererManager;
 
-/**
- * Interface for rendering plug-ins that provide enhanced capabilities
- * for model lighting, buffering and rendering. Such plug-ins implement the
- * enhanced model rendering interfaces specified by the Fabric API.
- *
- * <p>Renderers must ensure that terrain buffering supports {@link BlockStateModel#emitQuads}, which happens in
- * {@link SectionCompiler} in vanilla; this code is not patched automatically. Renderers must also ensure that the
- * following vanilla methods support {@link BlockStateModel#emitQuads}; these methods are not patched automatically.
- *
- * <ul><li>{@link ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
- *
- * <li>{@link BlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)}
- *
- * <li>{@link BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)}</ul>
- *
- * <p>All other places in vanilla code that invoke {@link BlockStateModel#collectParts(RandomSource, List)},
- * {@link BlockStateModel#collectParts(RandomSource)}, or
- * {@link ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)}
- * are, where appropriate, patched automatically to invoke the corresponding method above or the corresponding method in
- * {@link FabricModelBlockRenderer} or {@link FabricBlockRenderDispatcher}.
- */
+/// Interface for rendering plug-ins that provide enhanced capabilities
+/// for model lighting, buffering and rendering. Such plug-ins implement the
+/// enhanced model rendering interfaces specified by the Fabric API.
+///
+/// Renderers must ensure that terrain buffering supports [BlockStateModel#emitQuads], which happens in
+/// [SectionCompiler] in vanilla; this code is not patched automatically. Renderers must also ensure that the
+/// following vanilla methods support [BlockStateModel#emitQuads]; these methods are not patched automatically.
+///   - [ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)]
+///   - [BlockRenderDispatcher#renderBreakingTexture(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer)]
+///   - [BlockRenderDispatcher#renderSingleBlock(BlockState, PoseStack, MultiBufferSource, int, int)]
+///
+/// All other places in vanilla code that invoke [BlockStateModel#collectParts(RandomSource, List)],
+/// [BlockStateModel#collectParts(RandomSource)], or
+/// [ModelBlockRenderer#renderModel(PoseStack.Pose, VertexConsumer, BlockStateModel, float, float, float, int, int)]
+/// are, where appropriate, patched automatically to invoke the corresponding method above or the corresponding method in
+/// [FabricModelBlockRenderer] or [FabricBlockRenderDispatcher].
 public interface Renderer {
-	/**
-	 * Access to the current {@link Renderer} for creating and retrieving mesh builders
-	 * and materials.
-	 */
+	/// Access to the current [Renderer] for creating and retrieving mesh builders
+	/// and materials.
 	static Renderer get() {
 		return RendererManager.getRenderer();
 	}
 
-	/**
-	 * Rendering extension mods must implement {@link Renderer} and
-	 * call this method during initialization.
-	 *
-	 * <p>Only one {@link Renderer} plug-in can be active in any game instance.
-	 * If a second mod attempts to register, this method will throw an UnsupportedOperationException.
-	 */
+	/// Rendering extension mods must implement [Renderer] and
+	/// call this method during initialization.
+	///
+	/// Only one [Renderer] plug-in can be active in any game instance.
+	/// If a second mod attempts to register, this method will throw an UnsupportedOperationException.
 	static void register(Renderer renderer) {
 		RendererManager.registerRenderer(renderer);
 	}
 
-	/**
-	 * Obtain a new {@link MutableMesh} instance to build optimized meshes and create baked models
-	 * with enhanced features.
-	 *
-	 * <p>Renderer does not retain a reference to returned instances, so they should be re-used
-	 * when possible to avoid memory allocation overhead.
-	 */
+	/// Obtain a new [MutableMesh] instance to build optimized meshes and create baked models
+	/// with enhanced features.
+	///
+	/// Renderer does not retain a reference to returned instances, so they should be re-used
+	/// when possible to avoid memory allocation overhead.
 	MutableMesh mutableMesh();
 
-	/**
-	 * @see FabricModelBlockRenderer#render(BlockAndTintGetter, BlockStateModel, BlockState, BlockPos, PoseStack, BlockMultiBufferSource, boolean, long, int)
-	 */
+	/// @see FabricModelBlockRenderer#render(BlockAndTintGetter, BlockStateModel, BlockState, BlockPos, PoseStack, BlockMultiBufferSource, boolean, long, int)
 	@ApiStatus.OverrideOnly
 	void render(ModelBlockRenderer blockRenderer, BlockAndTintGetter level, BlockStateModel model, BlockState state, BlockPos pos, PoseStack poseStack, BlockMultiBufferSource bufferSource, boolean cull, long seed, int overlay);
 
-	/**
-	 * @see FabricModelBlockRenderer#render(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
-	 */
+	/// @see FabricModelBlockRenderer#render(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	@ApiStatus.OverrideOnly
 	void render(PoseStack.Pose pose, BlockMultiBufferSource bufferSource, BlockStateModel model, float red, float green, float blue, int light, int overlay, BlockAndTintGetter level, BlockPos pos, BlockState state);
 
-	/**
-	 * @see FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
-	 */
+	/// @see FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
 	@ApiStatus.OverrideOnly
 	void renderBlockAsEntity(BlockRenderDispatcher renderDispatcher, BlockState state, PoseStack poseStack, MultiBufferSource bufferSource, int light, int overlay, BlockAndTintGetter level, BlockPos pos);
 
-	/**
-	 * @see FabricLayerRenderState#emitter()
-	 */
+	/// @see FabricLayerRenderState#emitter()
 	@ApiStatus.OverrideOnly
 	QuadEmitter getLayerRenderStateEmitter(ItemStackRenderState.LayerRenderState layer);
 
-	/**
-	 * @see FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)
-	 */
+	/// @see FabricLayerRenderState#setRenderTypeGetter(ItemRenderTypeGetter)
 	@ApiStatus.OverrideOnly
 	void setLayerRenderTypeGetter(ItemStackRenderState.LayerRenderState layer, ItemRenderTypeGetter renderTypeGetter);
 }

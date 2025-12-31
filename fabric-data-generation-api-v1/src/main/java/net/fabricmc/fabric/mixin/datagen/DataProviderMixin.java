@@ -29,9 +29,7 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
 @Mixin(DataProvider.class)
 public interface DataProviderMixin {
-	/**
-	 * Adjust the default sort order of some keys provided by Fabric API.
-	 */
+	/// Adjust the default sort order of some keys provided by Fabric API.
 	@Inject(method = "lambda$static$0", at = @At("RETURN"))
 	private static void addFabricKeySortOrders(Object2IntOpenHashMap<String> map, CallbackInfo ci) {
 		map.put(ResourceConditions.CONDITIONS_KEY, -100); // always at the beginning

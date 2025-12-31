@@ -20,10 +20,8 @@ import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.world.level.block.state.BlockState;
 
-/**
- * A simple implementation of {@link BlockStateModel.UnbakedRoot} that delegates all method calls to the
- * {@link #wrapped} field. Implementations must set the {@link #wrapped} field somehow.
- */
+/// A simple implementation of [BlockStateModel.UnbakedRoot] that delegates all method calls to the
+/// [#wrapped] field. Implementations must set the [#wrapped] field somehow.
 public abstract class WrapperUnbakedRootBlockStateModel implements BlockStateModel.UnbakedRoot {
 	protected BlockStateModel.UnbakedRoot wrapped;
 

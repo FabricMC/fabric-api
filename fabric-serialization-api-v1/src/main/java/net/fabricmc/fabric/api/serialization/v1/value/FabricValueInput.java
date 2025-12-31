@@ -24,48 +24,38 @@ import net.minecraft.world.level.storage.ValueInput;
 
 import net.fabricmc.fabric.impl.serialization.SpecialCodecs;
 
-/**
- * Fabric provided extension of ValueInput.
- *
- * <p>Note: This interface is automatically implemented on {@link ValueInput} via Mixin and interface injection.
- */
+/// Fabric provided extension of ValueInput.
+///
+/// Note: This interface is automatically implemented on [ValueInput] via Mixin and interface injection.
 public interface FabricValueInput {
-	/**
-	 * Returns a collection of keys available in this {@link ValueInput}.
-	 *
-	 * @return collection of keys or empty list if this {@link ValueInput} is empty.
-	 */
+	/// Returns a collection of keys available in this [ValueInput].
+	///
+	/// @return collection of keys or empty list if this [ValueInput] is empty.
 	default Collection<String> keySet() {
 		//noinspection deprecation
 		return ((ValueInput) this).read(SpecialCodecs.KEYS_EXTRACT).orElse(List.of());
 	}
 
-	/**
-	 * Checks if this {@link ValueInput} contains data under provided key.
-	 *
-	 * @param key key to check for
-	 * @return true, when this {@link ValueInput} contains data under provided key, otherwise false
-	 */
+	/// Checks if this [ValueInput] contains data under provided key.
+	///
+	/// @param key key to check for
+	/// @return true, when this [ValueInput] contains data under provided key, otherwise false
 	default boolean contains(String key) {
 		return ((ValueInput) this).read(SpecialCodecs.contains(key)).orElseThrow();
 	}
 
-	/**
-	 * Returns an long array present in this {@link ValueInput} under provided key.
-	 *
-	 * @param key key to check for
-	 * @return long array wrapped in optional if long array is present, empty Optional otherwise
-	 */
+	/// Returns an long array present in this [ValueInput] under provided key.
+	///
+	/// @param key key to check for
+	/// @return long array wrapped in optional if long array is present, empty Optional otherwise
 	default Optional<long[]> getOptionalLongArray(String key) {
 		return ((ValueInput) this).read(key, SpecialCodecs.LONG_ARRAY);
 	}
 
-	/**
-	 * Returns an byte array present in this {@link ValueInput} under provided key.
-	 *
-	 * @param key key to check for
-	 * @return byte array wrapped in optional if byte array is present, empty Optional otherwise
-	 */
+	/// Returns an byte array present in this [ValueInput] under provided key.
+	///
+	/// @param key key to check for
+	/// @return byte array wrapped in optional if byte array is present, empty Optional otherwise
 	default Optional<byte[]> getOptionalByteArray(String key) {
 		return ((ValueInput) this).read(key, SpecialCodecs.BYTE_ARRAY);
 	}

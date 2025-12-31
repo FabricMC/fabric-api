@@ -18,12 +18,10 @@ package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import net.minecraft.world.level.material.FlowingFluid;
 
-/**
- * Constants for fluid transfer. In general, 1 bucket = 81000 droplets = 1 block.
- *
- * <p>If you don't know how many droplets you should pick for a specific resource that has a block form,
- * the convention is to use 81000 droplets for what is worth one block of that resource.
- */
+/// Constants for fluid transfer. In general, 1 bucket = 81000 droplets = 1 block.
+///
+/// If you don't know how many droplets you should pick for a specific resource that has a block form,
+/// the convention is to use 81000 droplets for what is worth one block of that resource.
 public final class FluidConstants {
 	///////////////////////////
 	// ==== FLUID UNITS ==== //
@@ -36,14 +34,12 @@ public final class FluidConstants {
 	public static final long NUGGET = 1000;
 	public static final long DROPLET = 1;
 
-	/**
-	 * Convert a fraction of buckets into droplets.
-	 *
-	 * <p>For example, passing {@code (1, 3)} will return the 1/3 of a bucket as droplets, so 27000.
-	 *
-	 * @return The amount of droplets that the passed fraction is equivalent to.
-	 * @throws IllegalArgumentException If the fraction can't be converted to droplets exactly.
-	 */
+	/// Convert a fraction of buckets into droplets.
+	///
+	/// For example, passing `(1, 3)` will return the 1/3 of a bucket as droplets, so 27000.
+	///
+	/// @return The amount of droplets that the passed fraction is equivalent to.
+	/// @throws IllegalArgumentException If the fraction can't be converted to droplets exactly.
 	public static long fromBucketFraction(long numerator, long denominator) {
 		long total = numerator * BUCKET;
 
@@ -57,21 +53,15 @@ public final class FluidConstants {
 	// ==========================
 	// ==== FLUID ATTRIBUTES ====
 	// ==========================
-	/**
-	 * Water temperature, in Kelvin.
-	 */
+	/// Water temperature, in Kelvin.
 	public static final int WATER_TEMPERATURE = 300;
-	/**
-	 * Lava temperature, in Kelvin.
-	 */
+	/// Lava temperature, in Kelvin.
 	public static final int LAVA_TEMPERATURE = 1300;
 
 	public static final int WATER_VISCOSITY = 1000;
 	public static final int LAVA_VISCOSITY = 6000;
 	public static final int LAVA_VISCOSITY_NETHER = 2000;
-	/**
-	 * For flowing fluids, the viscosity should match {@code VISCOSITY_RATIO} * {@link FlowingFluid#getTickDelay}.
-	 */
+	/// For flowing fluids, the viscosity should match `VISCOSITY_RATIO` * [FlowingFluid#getTickDelay].
 	public static final int VISCOSITY_RATIO = 200;
 
 	private FluidConstants() {

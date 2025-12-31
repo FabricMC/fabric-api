@@ -41,10 +41,8 @@ import net.minecraft.server.packs.repository.PackRepository;
 
 import net.fabricmc.fabric.impl.resource.pack.FabricPack;
 
-/**
- * Disables enabling/disabling internal data packs.
- * Listing them is still allowed, but they do not appear in suggestions.
- */
+/// Disables enabling/disabling internal data packs.
+/// Listing them is still allowed, but they do not appear in suggestions.
 @Mixin(DataPackCommand.class)
 public class DataPackCommandMixin {
 	@Unique

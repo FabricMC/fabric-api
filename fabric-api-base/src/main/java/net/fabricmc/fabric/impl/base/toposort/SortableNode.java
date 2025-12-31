@@ -24,9 +24,7 @@ public abstract class SortableNode<N extends SortableNode<N>> {
 	protected final List<N> previousNodes = new ArrayList<>();
 	boolean visited = false;
 
-	/**
-	 * @return Description of this node, used to print the cycle warning.
-	 */
+	/// @return Description of this node, used to print the cycle warning.
 	protected abstract String getDescription();
 
 	protected void addSubsequentNode(N node) {

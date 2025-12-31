@@ -30,13 +30,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 
-/**
- * A registry to associate block states with specific path types.
- * Specifying a path type for a block will change the way an entity recognizes the block when trying to pathfind.
- * You can make a safe block dangerous and vice-versa.
- * This works only for entities that move on air and land.
- * Duplicated registrations for the same block will replace the previous registration entry.
- */
+/// A registry to associate block states with specific path types.
+/// Specifying a path type for a block will change the way an entity recognizes the block when trying to pathfind.
+/// You can make a safe block dangerous and vice-versa.
+/// This works only for entities that move on air and land.
+/// Duplicated registrations for the same block will replace the previous registration entry.
 public final class LandPathTypeRegistry {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LandPathTypeRegistry.class);
 	private static final Map<Block, PathTypeProvider> PATH_TYPES = new IdentityHashMap<>();
@@ -44,18 +42,16 @@ public final class LandPathTypeRegistry {
 	private LandPathTypeRegistry() {
 	}
 
-	/**
-	 * Registers a {@link PathType} for the specified block, overriding the default block behavior.
-	 *
-	 * @param block              Block to register.
-	 * @param pathType           {@link PathType} to associate with the block if it is a direct target
-	 *                           in an entity path.
-	 *                           (Pass {@code null} to not specify a path type and use the default behavior)
-	 * @param pathTypeIfNeighbor {@link PathType} to associate with the block, if it is in a direct neighbor
-	 *                           position to an entity path that is directly next to a block
-	 *                           that the entity will pass through or above.
-	 *                           (Pass {@code null} to not specify a path type and use the default behavior)
-	 */
+	/// Registers a [PathType] for the specified block, overriding the default block behavior.
+	///
+	/// @param block              Block to register.
+	/// @param pathType           [PathType] to associate with the block if it is a direct target
+	///                           in an entity path.
+	///                           (Pass `null` to not specify a path type and use the default behavior)
+	/// @param pathTypeIfNeighbor [PathType] to associate with the block, if it is in a direct neighbor
+	///                           position to an entity path that is directly next to a block
+	///                           that the entity will pass through or above.
+	///                           (Pass `null` to not specify a path type and use the default behavior)
 	public static void register(Block block, @Nullable PathType pathType, @Nullable PathType pathTypeIfNeighbor) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 
@@ -63,14 +59,12 @@ public final class LandPathTypeRegistry {
 		register(block, (state, neighbor) -> neighbor ? pathTypeIfNeighbor : pathType);
 	}
 
-	/**
-	 * Registers a {@link StaticPathTypeProvider} for the specified block overriding the default block behavior.
-	 *
-	 * <p>A static provider provides the path type basing on the block state.
-	 *
-	 * @param block    Block to register.
-	 * @param provider {@link StaticPathTypeProvider} to associate with the block.
-	 */
+	/// Registers a [StaticPathTypeProvider] for the specified block overriding the default block behavior.
+	///
+	/// A static provider provides the path type basing on the block state.
+	///
+	/// @param block    Block to register.
+	/// @param provider [StaticPathTypeProvider] to associate with the block.
 	public static void register(Block block, StaticPathTypeProvider provider) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 		Objects.requireNonNull(provider, "StaticPathTypeProvider cannot be null!");
@@ -83,17 +77,15 @@ public final class LandPathTypeRegistry {
 		}
 	}
 
-	/**
-	 * Registers a {@link DynamicPathTypeProvider} for the specified block, overriding the default block behavior.
-	 *
-	 * <p>A dynamic provider provides the path type basing on the block state, level and position.
-	 * This is more difficult to handle, must be used only if you want to change the path type basing on the position
-	 * of the block in the world, and may degrade the game performances because cannot be optimized but must be
-	 * recalculated at every tick for every entity.
-	 *
-	 * @param block    Block to register.
-	 * @param provider {@link DynamicPathTypeProvider} to associate with the block.
-	 */
+	/// Registers a [DynamicPathTypeProvider] for the specified block, overriding the default block behavior.
+	///
+	/// A dynamic provider provides the path type basing on the block state, level and position.
+	/// This is more difficult to handle, must be used only if you want to change the path type basing on the position
+	/// of the block in the world, and may degrade the game performances because cannot be optimized but must be
+	/// recalculated at every tick for every entity.
+	///
+	/// @param block    Block to register.
+	/// @param provider [DynamicPathTypeProvider] to associate with the block.
 	public static void registerDynamic(Block block, DynamicPathTypeProvider provider) {
 		Objects.requireNonNull(block, "Block cannot be null!");
 		Objects.requireNonNull(provider, "DynamicPathTypeProvider cannot be null!");
@@ -106,20 +98,18 @@ public final class LandPathTypeRegistry {
 		}
 	}
 
-	/**
-	 * Gets the {@link PathType} from the provider registered for the specified block state at the specified position.
-	 *
-	 * <p>If no valid {@link PathType} provider is registered for the block, it returns {@code null}.
-	 * You cannot use this method to retrieve vanilla block path types.
-	 *
-	 * @param state    Current block state.
-	 * @param level    Current level.
-	 * @param pos      Current position.
-	 * @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
-	 * @return the custom {@link PathType} from the provider registered for the specified block,
-	 * passing the block state, the level, and the position to the provider, or {@code null} if no valid
-	 * provider is registered for the block.
-	 */
+	/// Gets the [PathType] from the provider registered for the specified block state at the specified position.
+	///
+	/// If no valid [PathType] provider is registered for the block, it returns `null`.
+	/// You cannot use this method to retrieve vanilla block path types.
+	///
+	/// @param state    Current block state.
+	/// @param level    Current level.
+	/// @param pos      Current position.
+	/// @param neighbor Specifies if the block is not a directly targeted block, but a neighbor block in the path.
+	/// @return the custom [PathType] from the provider registered for the specified block,
+	/// passing the block state, the level, and the position to the provider, or `null` if no valid
+	/// provider is registered for the block.
 	@Nullable
 	public static PathType getPathType(BlockState state, BlockGetter level, BlockPos pos, boolean neighbor) {
 		Objects.requireNonNull(state, "BlockState cannot be null!");
@@ -141,26 +131,24 @@ public final class LandPathTypeRegistry {
 		}
 	}
 
-	/**
-	 * Gets the raw {@link PathTypeProvider} registered for the specified block.
-	 *
-	 * <p>If no {@link PathTypeProvider} is registered for the block, it returns {@code null}.
-	 *
-	 * <p>Note 1: {@link PathTypeProvider} is a marker interface with no methods,
-	 * so you need to cast the result to a subtype, in order to get something from it.
-	 * Currently, if non-null, the result can be of {@link StaticPathTypeProvider}
-	 * or {@link DynamicPathTypeProvider}.
-	 * Note that more kinds of providers might be added if the API is expanded in the future,
-	 * so make sure not to fail if another type of object is returned.
-	 *
-	 * <p>Note 2: This method is intended to be used in any cases in which you need to get
-	 * the raw provider for the block, if you need the {@link PathType} for the block state instead,
-	 * you can simply use {@link #getPathType}.
-	 *
-	 * @param block Current block.
-	 * @return the {@link PathTypeProvider} registered for the specified block,
-	 * or {@code null} if no provider is registered for the block.
-	 */
+	/// Gets the raw [PathTypeProvider] registered for the specified block.
+	///
+	/// If no [PathTypeProvider] is registered for the block, it returns `null`.
+	///
+	/// Note 1: [PathTypeProvider] is a marker interface with no methods,
+	/// so you need to cast the result to a subtype, in order to get something from it.
+	/// Currently, if non-null, the result can be of [StaticPathTypeProvider]
+	/// or [DynamicPathTypeProvider].
+	/// Note that more kinds of providers might be added if the API is expanded in the future,
+	/// so make sure not to fail if another type of object is returned.
+	///
+	/// Note 2: This method is intended to be used in any cases in which you need to get
+	/// the raw provider for the block, if you need the [PathType] for the block state instead,
+	/// you can simply use [#getPathType].
+	///
+	/// @param block Current block.
+	/// @return the [PathTypeProvider] registered for the specified block,
+	/// or `null` if no provider is registered for the block.
 	@Nullable
 	public static PathTypeProvider getPathTypeProvider(Block block) {
 		Objects.requireNonNull(block, "Block cannot be null!");
@@ -168,62 +156,52 @@ public final class LandPathTypeRegistry {
 		return PATH_TYPES.get(block);
 	}
 
-	/**
-	 * Generic provider, this is a marker interface.
-	 */
+	/// Generic provider, this is a marker interface.
 	public sealed interface PathTypeProvider permits StaticPathTypeProvider, DynamicPathTypeProvider {
 	}
 
-	/**
-	 * A functional interface that provides the {@link PathType}, given the block state.
-	 */
+	/// A functional interface that provides the [PathType], given the block state.
 	@FunctionalInterface
 	public non-sealed interface StaticPathTypeProvider extends PathTypeProvider {
-		/**
-		 * Gets the {@link PathType} for the specified block state.
-		 *
-		 * <p>You can specify what to return if the block state is a direct target of an entity path,
-		 * or a neighbor block of the entity path.
-		 *
-		 * <p>For example, for a cactus-like block you should use {@link PathType#DAMAGE_OTHER} if the block
-		 * is a direct target in the entity path ({@code neighbor == false}) to specify that an entity should not pass
-		 * through or above the block because it will cause damage, and you should use {@link PathType#DANGER_OTHER}
-		 * if the block is a neighbor block in the entity path ({@code neighbor == true}) to specify that the entity
-		 * should not get close to the block because it is dangerous.
-		 *
-		 * @param state    Current block state.
-		 * @param neighbor Specifies that the block is in a direct neighbor position to an entity path
-		 *                 that is directly next to a block that the entity will pass through or above.
-		 * @return the custom {@link PathType} registered for the specified block state.
-		 */
+		/// Gets the [PathType] for the specified block state.
+		///
+		/// You can specify what to return if the block state is a direct target of an entity path,
+		/// or a neighbor block of the entity path.
+		///
+		/// For example, for a cactus-like block you should use [PathType#DAMAGE_OTHER] if the block
+		/// is a direct target in the entity path (`neighbor == false`) to specify that an entity should not pass
+		/// through or above the block because it will cause damage, and you should use [PathType#DANGER_OTHER]
+		/// if the block is a neighbor block in the entity path (`neighbor == true`) to specify that the entity
+		/// should not get close to the block because it is dangerous.
+		///
+		/// @param state    Current block state.
+		/// @param neighbor Specifies that the block is in a direct neighbor position to an entity path
+		///                 that is directly next to a block that the entity will pass through or above.
+		/// @return the custom [PathType] registered for the specified block state.
 		@Nullable
 		PathType getPathType(BlockState state, boolean neighbor);
 	}
 
-	/**
-	 * A functional interface that provides the {@link PathType}, given the block state level and position.
-	 */
+	/// A functional interface that provides the [PathType], given the block state level and position.
 	@FunctionalInterface
 	public non-sealed interface DynamicPathTypeProvider extends PathTypeProvider {
-		/**
-		 * Gets the {@link PathType} for the specified block state at the specified position.
-		 *
-		 * <p>You can specify what to return if the block state is a direct target of an entity path,
-		 * or a neighbor block of the entity path.
-		 *
-		 * <p>For example, for a cactus-like block you should specify {@link PathType#DAMAGE_OTHER} if the block
-		 * is a direct target ({@code neighbor == false}) to specify that an entity should not pass through or above
-		 * the block because it will cause damage, and {@link PathType#DANGER_OTHER} if the cactus will be found
-		 * as a neighbor block in the entity path ({@code neighbor == true}) to specify that the entity should not get
-		 * close to the block because is dangerous.
-		 *
-		 * @param state    Current block state.
-		 * @param level    Current level.
-		 * @param pos      Current position.
-		 * @param neighbor Specifies that the block is in a direct neighbor position to an entity path
-		 *                 (directly next to a block that the entity will pass through or above).
-		 * @return the custom {@link PathType} registered for the specified block state at the specified position.
-		 */
+		/// Gets the [PathType] for the specified block state at the specified position.
+		///
+		/// You can specify what to return if the block state is a direct target of an entity path,
+		/// or a neighbor block of the entity path.
+		///
+		/// For example, for a cactus-like block you should specify [PathType#DAMAGE_OTHER] if the block
+		/// is a direct target (`neighbor == false`) to specify that an entity should not pass through or above
+		/// the block because it will cause damage, and [PathType#DANGER_OTHER] if the cactus will be found
+		/// as a neighbor block in the entity path (`neighbor == true`) to specify that the entity should not get
+		/// close to the block because is dangerous.
+		///
+		/// @param state    Current block state.
+		/// @param level    Current level.
+		/// @param pos      Current position.
+		/// @param neighbor Specifies that the block is in a direct neighbor position to an entity path
+		///                 (directly next to a block that the entity will pass through or above).
+		/// @return the custom [PathType] registered for the specified block state at the specified position.
 		@Nullable
 		PathType getPathType(BlockState state, BlockGetter level, BlockPos pos, boolean neighbor);
 	}

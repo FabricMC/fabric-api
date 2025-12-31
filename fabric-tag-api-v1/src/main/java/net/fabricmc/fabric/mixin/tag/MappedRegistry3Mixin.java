@@ -27,13 +27,11 @@ import net.minecraft.core.MappedRegistry;
 
 import net.fabricmc.fabric.impl.tag.MappedRegistryExtension;
 
-/**
- * This is a mixin to the Registry.PendingTagLoad implementation in MappedRegistry.
- * It applies pending tag aliases to static registries when data packs are loaded
- * and to dynamic registries when data packs are reloaded using the {@code /reload} command.
- * (Tags run on their own data loading system separate from resource reloaders, so we need to inject them
- * once the tag and resource reloads are done, which is here.)
- */
+/// This is a mixin to the Registry.PendingTagLoad implementation in MappedRegistry.
+/// It applies pending tag aliases to static registries when data packs are loaded
+/// and to dynamic registries when data packs are reloaded using the `/reload` command.
+/// (Tags run on their own data loading system separate from resource reloaders, so we need to inject them
+/// once the tag and resource reloads are done, which is here.)
 @Mixin(targets = "net.minecraft.core.MappedRegistry$3")
 abstract class MappedRegistry3Mixin {
 	@Shadow

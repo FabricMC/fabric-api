@@ -22,23 +22,17 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 
-/**
- * A handle for a singleplayer world save. Can be used to reopen a singleplayer world that was created earlier in the
- * same gametest.
- */
+/// A handle for a singleplayer world save. Can be used to reopen a singleplayer world that was created earlier in the
+/// same gametest.
 @ApiStatus.NonExtendable
 public interface TestWorldSave {
-	/**
-	 * Gets the directory of the world save.
-	 *
-	 * @return The world save directory
-	 */
+	/// Gets the directory of the world save.
+	///
+	/// @return The world save directory
 	Path getSaveDirectory();
 
-	/**
-	 * Opens and joins the singleplayer world.
-	 *
-	 * @return The singleplayer context of the world that was joined
-	 */
+	/// Opens and joins the singleplayer world.
+	///
+	/// @return The singleplayer context of the world that was joined
 	TestSingleplayerContext open();
 }

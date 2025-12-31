@@ -21,38 +21,30 @@ import net.minecraft.world.level.block.WeatheringCopperBlocks;
 
 import net.fabricmc.fabric.impl.content.registry.OxidizableBlocksRegistryImpl;
 
-/**
- * Provides methods for registering oxidizable and waxable blocks.
- */
+/// Provides methods for registering oxidizable and waxable blocks.
 public final class OxidizableBlocksRegistry {
 	private OxidizableBlocksRegistry() {
 	}
 
-	/**
-	 * Registers the next oxidization stage from one block to the other.
-	 *
-	 * @param from the variant with less oxidation
-	 * @param to the variant with more oxidation
-	 */
+	/// Registers the next oxidization stage from one block to the other.
+	///
+	/// @param from the variant with less oxidation
+	/// @param to the variant with more oxidation
 	public static void registerNextStage(Block from, Block to) {
 		OxidizableBlocksRegistryImpl.registerNextStage(from, to);
 	}
 
-	/**
-	 * Registers a block pair as being able to add and remove wax.
-	 *
-	 * @param unwaxed the unwaxed variant
-	 * @param waxed   the waxed variant
-	 */
+	/// Registers a block pair as being able to add and remove wax.
+	///
+	/// @param unwaxed the unwaxed variant
+	/// @param waxed   the waxed variant
 	public static void registerWaxable(Block unwaxed, Block waxed) {
 		OxidizableBlocksRegistryImpl.registerWaxable(unwaxed, waxed);
 	}
 
-	/**
-	 * Registers a {@link WeatheringCopperBlocks} and its oxidizing and waxing variants.
-	 *
-	 * @param copperBlocks the {@code WeatheringCopperBlocks} to register
-	 */
+	/// Registers a [WeatheringCopperBlocks] and its oxidizing and waxing variants.
+	///
+	/// @param copperBlocks the `WeatheringCopperBlocks` to register
 	public static void registerWeatheringCopperBlocks(WeatheringCopperBlocks copperBlocks) {
 		OxidizableBlocksRegistryImpl.registerWeatheringCopperBlocks(copperBlocks);
 	}

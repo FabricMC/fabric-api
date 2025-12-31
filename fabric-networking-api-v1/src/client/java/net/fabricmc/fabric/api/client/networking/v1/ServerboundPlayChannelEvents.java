@@ -26,24 +26,18 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
-/**
- * Offers access to events related to the indication of a connected server's ability to receive packets in certain channels.
- */
+/// Offers access to events related to the indication of a connected server's ability to receive packets in certain channels.
 public final class ServerboundPlayChannelEvents {
-	/**
-	 * An event for the client play packet listener receiving an update indicating the connected server's ability to receive packets in certain channels.
-	 * This event may be invoked at any time after login and up to disconnection.
-	 */
+	/// An event for the client play packet listener receiving an update indicating the connected server's ability to receive packets in certain channels.
+	/// This event may be invoked at any time after login and up to disconnection.
 	public static final Event<Register> REGISTER = EventFactory.createArrayBacked(Register.class, callbacks -> (listener, sender, client, channels) -> {
 		for (Register callback : callbacks) {
 			callback.onChannelRegister(listener, sender, client, channels);
 		}
 	});
 
-	/**
-	 * An event for the client play packet listener receiving an update indicating the connected server's lack of ability to receive packets in certain channels.
-	 * This event may be invoked at any time after login and up to disconnection.
-	 */
+	/// An event for the client play packet listener receiving an update indicating the connected server's lack of ability to receive packets in certain channels.
+	/// This event may be invoked at any time after login and up to disconnection.
 	public static final Event<Unregister> UNREGISTER = EventFactory.createArrayBacked(Unregister.class, callbacks -> (listener, sender, client, channels) -> {
 		for (Unregister callback : callbacks) {
 			callback.onChannelUnregister(listener, sender, client, channels);
@@ -53,17 +47,13 @@ public final class ServerboundPlayChannelEvents {
 	private ServerboundPlayChannelEvents() {
 	}
 
-	/**
-	 * @see ServerboundPlayChannelEvents#REGISTER
-	 */
+	/// @see ServerboundPlayChannelEvents#REGISTER
 	@FunctionalInterface
 	public interface Register {
 		void onChannelRegister(ClientPacketListener listener, PacketSender sender, Minecraft client, List<Identifier> channels);
 	}
 
-	/**
-	 * @see ServerboundPlayChannelEvents#UNREGISTER
-	 */
+	/// @see ServerboundPlayChannelEvents#UNREGISTER
 	@FunctionalInterface
 	public interface Unregister {
 		void onChannelUnregister(ClientPacketListener listener, PacketSender sender, Minecraft client, List<Identifier> channels);

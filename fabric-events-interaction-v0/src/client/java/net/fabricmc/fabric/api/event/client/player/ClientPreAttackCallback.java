@@ -22,22 +22,20 @@ import net.minecraft.client.player.LocalPlayer;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * This event fires every tick when the attack key (left mouse button by default) is pressed
- * (including clicking and holding the attack key).
- * If the callback returns true,
- * the vanilla handling (block breaking, entity attacking, hand swing) will be cancelled,
- * and the later callbacks of this event are also cancelled.
- *
- * <p>This event is client-only, which means handling it may require sending custom packets.
- *
- * <p>The event fires both when clicking and holding attack key.
- * To check whether the attack key is just clicked, use {@code clickCount != 0}
- *
- * <p>The vanilla attack cooldown and player game mode does not affect this event.
- * The mod probably needs to check {@link net.minecraft.client.Minecraft#missTime} and the game mode.
- * {@link net.minecraft.world.item.ItemCooldowns} can be used for custom item cooldown handling.
- */
+/// This event fires every tick when the attack key (left mouse button by default) is pressed
+/// (including clicking and holding the attack key).
+/// If the callback returns true,
+/// the vanilla handling (block breaking, entity attacking, hand swing) will be cancelled,
+/// and the later callbacks of this event are also cancelled.
+///
+/// This event is client-only, which means handling it may require sending custom packets.
+///
+/// The event fires both when clicking and holding attack key.
+/// To check whether the attack key is just clicked, use `clickCount != 0`
+///
+/// The vanilla attack cooldown and player game mode does not affect this event.
+/// The mod probably needs to check [net.minecraft.client.Minecraft#missTime] and the game mode.
+/// [net.minecraft.world.item.ItemCooldowns] can be used for custom item cooldown handling.
 public interface ClientPreAttackCallback {
 	Event<ClientPreAttackCallback> EVENT = EventFactory.createArrayBacked(
 			ClientPreAttackCallback.class,
@@ -52,10 +50,8 @@ public interface ClientPreAttackCallback {
 			}
 	);
 
-	/**
-	 * @param player the client player
-	 * @param clickCount the click count of the attack key in this tick.
-	 * @return whether to intercept attack handling
-	 */
+	/// @param player the client player
+	/// @param clickCount the click count of the attack key in this tick.
+	/// @return whether to intercept attack handling
 	boolean onClientPlayerPreAttack(Minecraft client, LocalPlayer player, int clickCount);
 }

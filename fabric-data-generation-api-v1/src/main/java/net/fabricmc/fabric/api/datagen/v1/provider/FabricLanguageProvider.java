@@ -54,12 +54,10 @@ import net.minecraft.world.level.block.Block;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
-/**
- * Extend this class and implement {@link FabricLanguageProvider#generateTranslations}.
- * Make sure to use {@link FabricLanguageProvider#FabricLanguageProvider(FabricPackOutput, String, CompletableFuture) FabricLanguageProvider} to declare what language code is being generated if it isn't {@code en_us}.
- *
- * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
- */
+/// Extend this class and implement [FabricLanguageProvider#generateTranslations].
+/// Make sure to use [FabricLanguageProvider][FabricLanguageProvider#FabricLanguageProvider(FabricPackOutput, String, CompletableFuture)] to declare what language code is being generated if it isn't `en_us`.
+///
+/// Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 public abstract class FabricLanguageProvider implements DataProvider {
 	protected final FabricPackOutput packOutput;
 	private final String languageCode;
@@ -75,11 +73,9 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		this.registryLookup = registryLookup;
 	}
 
-	/**
-	 * Implement this method to register languages.
-	 *
-	 * <p>Call {@link TranslationBuilder#add(String, String)} to add a translation.
-	 */
+	/// Implement this method to register languages.
+	///
+	/// Call [TranslationBuilder#add(String, String)] to add a translation.
 	public abstract void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder);
 
 	@Override
@@ -108,11 +104,9 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		});
 	}
 
-	/**
-	 * Override this method to change where the generated language file is placed.
-	 *
-	 * @param code The language code (like "en_us") of the translations.
-	 */
+	/// Override this method to change where the generated language file is placed.
+	///
+	/// @param code The language code (like "en_us") of the translations.
 	protected Path getLangFilePath(String code) {
 		return packOutput
 				.createPathProvider(PackOutput.Target.RESOURCE_PACK, "lang")
@@ -124,46 +118,36 @@ public abstract class FabricLanguageProvider implements DataProvider {
 		return "Language (%s)".formatted(languageCode);
 	}
 
-	/**
-	 * A consumer used by {@link FabricLanguageProvider#generateTranslations}.
-	 */
+	/// A consumer used by [FabricLanguageProvider#generateTranslations].
 	@ApiStatus.NonExtendable
 	@FunctionalInterface
 	public interface TranslationBuilder {
-		/**
-		 * Adds a translation.
-		 *
-		 * @param translationKey The key of the translation.
-		 * @param value          The value of the entry.
-		 */
+		/// Adds a translation.
+		///
+		/// @param translationKey The key of the translation.
+		/// @param value          The value of the entry.
 		void add(String translationKey, String value);
 
-		/**
-		 * Adds a translation for an {@link Item}.
-		 *
-		 * @param item  The {@link Item} to get the translation key from.
-		 * @param value The value of the entry.
-		 */
+		/// Adds a translation for an [Item].
+		///
+		/// @param item  The [Item] to get the translation key from.
+		/// @param value The value of the entry.
 		default void add(Item item, String value) {
 			add(item.getDescriptionId(), value);
 		}
 
-		/**
-		 * Adds a translation for a {@link Block}.
-		 *
-		 * @param block The {@link Block} to get the translation key from.
-		 * @param value The value of the entry.
-		 */
+		/// Adds a translation for a [Block].
+		///
+		/// @param block The [Block] to get the translation key from.
+		/// @param value The value of the entry.
 		default void add(Block block, String value) {
 			add(block.getDescriptionId(), value);
 		}
 
-		/**
-		 * Adds a translation for an {@link CreativeModeTab}.
-		 *
-		 * @param resourceKey The {@link ResourceKey} to get the translation key from.
-		 * @param value The value of the entry.
-		 */
+		/// Adds a translation for an [CreativeModeTab].
+		///
+		/// @param resourceKey The [ResourceKey] to get the translation key from.
+		/// @param value The value of the entry.
 		default void add(ResourceKey<CreativeModeTab> resourceKey, String value) {
 			final CreativeModeTab group = BuiltInRegistries.CREATIVE_MODE_TAB.getValueOrThrow(resourceKey);
 			final ComponentContents content = group.getDisplayName().getContents();
@@ -176,94 +160,76 @@ public abstract class FabricLanguageProvider implements DataProvider {
 			throw new UnsupportedOperationException("Cannot add language entry for CreativeModeTab (%s) as the display name is not translatable.".formatted(group.getDisplayName().getString()));
 		}
 
-		/**
-		 * Adds a translation for an {@link EntityType}.
-		 *
-		 * @param entityType The {@link EntityType} to get the translation key from.
-		 * @param value      The value of the entry.
-		 */
+		/// Adds a translation for an [EntityType].
+		///
+		/// @param entityType The [EntityType] to get the translation key from.
+		/// @param value      The value of the entry.
 		default void add(EntityType<?> entityType, String value) {
 			add(entityType.getDescriptionId(), value);
 		}
 
-		/**
-		 * Adds a translation for an {@link Enchantment}.
-		 *
-		 * @param enchantment The {@link Enchantment} to get the translation key from.
-		 * @param value       The value of the entry.
-		 */
+		/// Adds a translation for an [Enchantment].
+		///
+		/// @param enchantment The [Enchantment] to get the translation key from.
+		/// @param value       The value of the entry.
 		default void addEnchantment(ResourceKey<Enchantment> enchantment, String value) {
 			add(Util.makeDescriptionId("enchantment", enchantment.identifier()), value);
 		}
 
-		/**
-		 * Adds a translation for an {@link Attribute}.
-		 *
-		 * @param attribute The {@link Attribute} to get the translation key from.
-		 * @param value     The value of the entry.
-		 */
+		/// Adds a translation for an [Attribute].
+		///
+		/// @param attribute The [Attribute] to get the translation key from.
+		/// @param value     The value of the entry.
 		default void add(Holder<Attribute> attribute, String value) {
 			add(attribute.value().getDescriptionId(), value);
 		}
 
-		/**
-		 * Adds a translation for a {@link StatType}.
-		 *
-		 * @param statType The {@link StatType} to get the translation key from.
-		 * @param value    The value of the entry.
-		 */
+		/// Adds a translation for a [StatType].
+		///
+		/// @param statType The [StatType] to get the translation key from.
+		/// @param value    The value of the entry.
 		default void add(StatType<?> statType, String value) {
 			add("stat_type." + BuiltInRegistries.STAT_TYPE.getKey(statType).toString().replace(':', '.'), value);
 		}
 
-		/**
-		 * Adds a translation for a {@link MobEffect}.
-		 *
-		 * @param mobEffect The {@link MobEffect} to get the translation key from.
-		 * @param value     The value of the entry.
-		 */
+		/// Adds a translation for a [MobEffect].
+		///
+		/// @param mobEffect The [MobEffect] to get the translation key from.
+		/// @param value     The value of the entry.
 		default void add(MobEffect mobEffect, String value) {
 			add(mobEffect.getDescriptionId(), value);
 		}
 
-		/**
-		 * Adds a translation for an {@link Identifier}.
-		 *
-		 * @param identifier The {@link Identifier} to get the translation key from.
-		 * @param value      The value of the entry.
-		 */
+		/// Adds a translation for an [Identifier].
+		///
+		/// @param identifier The [Identifier] to get the translation key from.
+		/// @param value      The value of the entry.
 		default void add(Identifier identifier, String value) {
 			add(identifier.toLanguageKey(), value);
 		}
 
-		/**
-		 * Adds a translation for a {@link TagKey}.
-		 *
-		 * @param tagKey the {@link TagKey} to get the translation key from
-		 * @param value  the value of the entry
-		 */
+		/// Adds a translation for a [TagKey].
+		///
+		/// @param tagKey the [TagKey] to get the translation key from
+		/// @param value  the value of the entry
 		default void add(TagKey<?> tagKey, String value) {
 			add(tagKey.getTranslationKey(), value);
 		}
 
-		/**
-		 * Adds a subtitle translation for a {@link SoundEvent} of the form
-		 * {@code subtitles.<namespace>.<path>}. If the sound event uses a non-standard
-		 * translation key for its subtitle, use {@link #add(String, String)} instead.
-		 *
-		 * @param sound The {@link SoundEvent} to get the translation key from
-		 * @param value The value of the entry
-		 */
+		/// Adds a subtitle translation for a [SoundEvent] of the form
+		/// `subtitles.<namespace>.<path>`. If the sound event uses a non-standard
+		/// translation key for its subtitle, use [#add(String, String)] instead.
+		///
+		/// @param sound The [SoundEvent] to get the translation key from
+		/// @param value The value of the entry
 		default void add(SoundEvent sound, String value) {
 			add(Util.makeDescriptionId("subtitles", sound.location()), value);
 		}
 
-		/**
-		 * Merges an existing language file into the generated language file.
-		 *
-		 * @param existingLanguageFile The path to the existing language file.
-		 * @throws IOException If loading the language file failed.
-		 */
+		/// Merges an existing language file into the generated language file.
+		///
+		/// @param existingLanguageFile The path to the existing language file.
+		/// @throws IOException If loading the language file failed.
 		default void add(Path existingLanguageFile) throws IOException {
 			try (Reader reader = Files.newBufferedReader(existingLanguageFile)) {
 				JsonObject translations = StrictJsonParser.parse(reader).getAsJsonObject();

@@ -74,9 +74,7 @@ public class LevelRenderEventsTests implements ClientModInitializer, FabricClien
 		return true;
 	}
 
-	/**
-	 * Renders a translucent filled box at (0, 100, 0).
-	 */
+	/// Renders a translucent filled box at (0, 100, 0).
 	private static void renderBeforeTranslucent(LevelRenderContext context) {
 		Vec3 camera = context.levelState().cameraRenderState.pos;
 

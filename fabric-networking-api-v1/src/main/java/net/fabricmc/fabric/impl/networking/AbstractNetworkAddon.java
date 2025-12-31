@@ -32,11 +32,9 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.resources.Identifier;
 
-/**
- * A network addon is a simple abstraction to hold information about a player's registered channels.
- *
- * @param <H> the channel handler type
- */
+/// A network addon is a simple abstraction to hold information about a player's registered channels.
+///
+/// @param <H> the channel handler type
 public abstract class AbstractNetworkAddon<H> {
 	protected final GlobalReceiverRegistry<H> receiver;
 	protected final Logger logger;
@@ -164,12 +162,10 @@ public abstract class AbstractNetworkAddon<H> {
 
 	protected abstract void invokeDisconnectEvent();
 
-	/**
-	 * Checks if a channel is considered a "reserved" channel.
-	 * A reserved channel such as "minecraft:(un)register" has special handling and should not have any channel handlers registered for it.
-	 *
-	 * @param channelName the channel name
-	 * @return whether the channel is reserved
-	 */
+	/// Checks if a channel is considered a "reserved" channel.
+	/// A reserved channel such as "minecraft:(un)register" has special handling and should not have any channel handlers registered for it.
+	///
+	/// @param channelName the channel name
+	/// @return whether the channel is reserved
 	protected abstract boolean isReservedChannel(Identifier channelName);
 }

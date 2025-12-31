@@ -16,17 +16,15 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-/**
- * An immutable bundle of {@linkplain QuadView quads} encoded by the renderer, typically via
- * {@link MutableMesh#immutableCopy()}.
- *
- * <p>All declared methods in this interface and inherited methods from {@link MeshView} are thread-safe and may be used
- * concurrently.
- *
- * <p>Only the renderer should implement or extend this interface.
- *
- * @see MeshView
- * @see MutableMesh
- */
+/// An immutable bundle of {@linkplain QuadView quads} encoded by the renderer, typically via
+/// [MutableMesh#immutableCopy()].
+///
+/// All declared methods in this interface and inherited methods from [MeshView] are thread-safe and may be used
+/// concurrently.
+///
+/// Only the renderer should implement or extend this interface.
+///
+/// @see MeshView
+/// @see MutableMesh
 public interface Mesh extends MeshView {
 }

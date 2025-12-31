@@ -34,38 +34,32 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.impl.transfer.item.ContainerStorageImpl;
 
-/**
- * An implementation of {@code Storage<ItemVariant>} for vanilla's {@link Container}, {@link WorldlyContainer} and {@link Inventory}.
- *
- * <p>{@link Container} is often nicer to implement than {@code Storage<ItemVariant>}, but harder to use for item transfer.
- * This wrapper allows one to have the best of both worlds, for example by storing a subclass of {@link SimpleContainer} in a block entity class,
- * while exposing it as a {@code Storage<ItemVariant>} to {@linkplain ItemStorage#SIDED the item transfer API}.
- *
- * <p>In particular, note that {@link #getSlots} can be combined with {@link CombinedStorage} to retrieve a wrapper around a specific range of slots.
- *
- * <p><b>Important note:</b> This wrapper assumes that the container owns its slots.
- * If the container does not own its slots, for example because it delegates to another container, this wrapper should not be used!
- */
+/// An implementation of `Storage<ItemVariant>` for vanilla's [Container], [WorldlyContainer] and [Inventory].
+///
+/// [Container] is often nicer to implement than `Storage<ItemVariant>`, but harder to use for item transfer.
+/// This wrapper allows one to have the best of both worlds, for example by storing a subclass of [SimpleContainer] in a block entity class,
+/// while exposing it as a `Storage<ItemVariant>` to {@linkplain ItemStorage#SIDED the item transfer API}.
+///
+/// In particular, note that [#getSlots] can be combined with [CombinedStorage] to retrieve a wrapper around a specific range of slots.
+///
+/// **Important note:** This wrapper assumes that the container owns its slots.
+/// If the container does not own its slots, for example because it delegates to another container, this wrapper should not be used!
 @ApiStatus.NonExtendable
 public interface ContainerStorage extends SlottedStorage<ItemVariant> {
-	/**
-	 * Return a wrapper around an {@link Container}.
-	 *
-	 * <p>If the container is a {@link WorldlyContainer} and the direction is nonnull, the wrapper wraps the sided container from the given direction.
-	 * The returned wrapper contains only the slots with the indices returned by {@link WorldlyContainer#getSlotsForFace} at query time.
-	 *
-	 * @param container The container to wrap.
-	 * @param direction The direction to use if the access is sided, or {@code null} if the access is not sided.
-	 */
+	/// Return a wrapper around an [Container].
+	///
+	/// If the container is a [WorldlyContainer] and the direction is nonnull, the wrapper wraps the sided container from the given direction.
+	/// The returned wrapper contains only the slots with the indices returned by [WorldlyContainer#getSlotsForFace] at query time.
+	///
+	/// @param container The container to wrap.
+	/// @param direction The direction to use if the access is sided, or `null` if the access is not sided.
 	static ContainerStorage of(Container container, @Nullable Direction direction) {
 		Objects.requireNonNull(container, "Null container is not supported.");
 		return ContainerStorageImpl.of(container, direction);
 	}
 
-	/**
-	 * Retrieve an unmodifiable list of the wrappers for the slots in this container.
-	 * Each wrapper corresponds to a single slot in the container.
-	 */
+	/// Retrieve an unmodifiable list of the wrappers for the slots in this container.
+	/// Each wrapper corresponds to a single slot in the container.
 	@Override
 	@UnmodifiableView
 	List<SingleSlotStorage<ItemVariant>> getSlots();

@@ -33,11 +33,9 @@ import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 
-/**
- * Holds all the array offsets and bit-wise encoders/decoders for
- * packing/unpacking quad data in an array of integers.
- * All of this is implementation-specific - that's why it isn't a "helper" class.
- */
+/// Holds all the array offsets and bit-wise encoders/decoders for
+/// packing/unpacking quad data in an array of integers.
+/// All of this is implementation-specific - that's why it isn't a "helper" class.
 public final class EncodingFormat {
 	private EncodingFormat() { }
 
@@ -163,7 +161,7 @@ public final class EncodingFormat {
 		return (bits & ~LIGHT_MASK) | (ModelHelper.toFaceIndex(face) << LIGHT_BIT_OFFSET);
 	}
 
-	/** indicate if vertex normal has been set - bits correspond to vertex ordinals. */
+	/// indicate if vertex normal has been set - bits correspond to vertex ordinals.
 	static int normalFlags(int bits) {
 		return (bits & NORMALS_MASK) >>> NORMALS_BIT_OFFSET;
 	}

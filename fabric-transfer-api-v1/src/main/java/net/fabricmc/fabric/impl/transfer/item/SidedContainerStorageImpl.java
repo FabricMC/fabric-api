@@ -28,9 +28,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 
-/**
- * Sidedness-aware wrapper around a {@link ContainerStorageImpl} for sided inventories.
- */
+/// Sidedness-aware wrapper around a [ContainerStorageImpl] for sided inventories.
 class SidedContainerStorageImpl extends CombinedStorage<ItemVariant, SingleSlotStorage<ItemVariant>> implements ContainerStorage {
 	private final ContainerStorageImpl backingStorage;
 

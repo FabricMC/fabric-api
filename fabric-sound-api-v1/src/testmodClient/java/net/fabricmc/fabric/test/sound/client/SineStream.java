@@ -24,9 +24,7 @@ import org.lwjgl.BufferUtils;
 
 import net.minecraft.client.sounds.AudioStream;
 
-/**
- * An audio stream which plays a sine wave.
- */
+/// An audio stream which plays a sine wave.
 class SineStream implements AudioStream {
 	private static final AudioFormat FORMAT = new AudioFormat(44100, 8, 1, false, false);
 	private static final double DT = 2 * Math.PI * 220 / 44100;

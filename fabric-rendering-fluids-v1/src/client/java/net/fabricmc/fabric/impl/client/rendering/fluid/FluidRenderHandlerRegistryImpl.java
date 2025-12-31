@@ -103,9 +103,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	private static class WaterRenderHandler implements FluidRenderHandler {
 		public static final WaterRenderHandler INSTANCE = new WaterRenderHandler();
 
-		/**
-		 * The water color of {@link Biomes#OCEAN}.
-		 */
+		/// The water color of [Biomes#OCEAN].
 		private static final int DEFAULT_WATER_COLOR = 0x3f76e4;
 
 		private final TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];

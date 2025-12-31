@@ -23,40 +23,32 @@ import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Offers access to events related to the connection to a client on a logical server while a client is logging in.
- */
+/// Offers access to events related to the connection to a client on a logical server while a client is logging in.
 public final class ServerLoginConnectionEvents {
-	/**
-	 * Event indicating a connection entered the LOGIN state, ready for registering query response handlers.
-	 *
-	 * @see ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)
-	 */
+	/// Event indicating a connection entered the LOGIN state, ready for registering query response handlers.
+	///
+	/// @see ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)
 	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (listener, server) -> {
 		for (Init callback : callbacks) {
 			callback.onLoginInit(listener, server);
 		}
 	});
 
-	/**
-	 * An event for the start of login queries of the server login packet listener.
-	 * This event may be used to register {@link ServerLoginNetworking.LoginQueryResponseHandler login query response handlers}
-	 * using {@link ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
-	 * since this event is fired just before the first login query response is processed.
-	 *
-	 * <p>You may send login queries to the connected client using the provided {@link LoginPacketSender}.
-	 */
+	/// An event for the start of login queries of the server login packet listener.
+	/// This event may be used to register [login query response handlers][ServerLoginNetworking.LoginQueryResponseHandler]
+	/// using [ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)]
+	/// since this event is fired just before the first login query response is processed.
+	///
+	/// You may send login queries to the connected client using the provided [LoginPacketSender].
 	public static final Event<QueryStart> QUERY_START = EventFactory.createArrayBacked(QueryStart.class, callbacks -> (listener, server, sender, synchronizer) -> {
 		for (QueryStart callback : callbacks) {
 			callback.onLoginStart(listener, server, sender, synchronizer);
 		}
 	});
 
-	/**
-	 * An event for the disconnection of the server login packet listener.
-	 *
-	 * <p>No packets should be sent when this event is invoked.
-	 */
+	/// An event for the disconnection of the server login packet listener.
+	///
+	/// No packets should be sent when this event is invoked.
 	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (listener, server) -> {
 		for (Disconnect callback : callbacks) {
 			callback.onLoginDisconnect(listener, server);
@@ -66,25 +58,19 @@ public final class ServerLoginConnectionEvents {
 	private ServerLoginConnectionEvents() {
 	}
 
-	/**
-	 * @see ServerLoginConnectionEvents#INIT
-	 */
+	/// @see ServerLoginConnectionEvents#INIT
 	@FunctionalInterface
 	public interface Init {
 		void onLoginInit(ServerLoginPacketListenerImpl listener, MinecraftServer server);
 	}
 
-	/**
-	 * @see ServerLoginConnectionEvents#QUERY_START
-	 */
+	/// @see ServerLoginConnectionEvents#QUERY_START
 	@FunctionalInterface
 	public interface QueryStart {
 		void onLoginStart(ServerLoginPacketListenerImpl listener, MinecraftServer server, LoginPacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer);
 	}
 
-	/**
-	 * @see ServerLoginConnectionEvents#DISCONNECT
-	 */
+	/// @see ServerLoginConnectionEvents#DISCONNECT
 	@FunctionalInterface
 	public interface Disconnect {
 		void onLoginDisconnect(ServerLoginPacketListenerImpl listener, MinecraftServer server);

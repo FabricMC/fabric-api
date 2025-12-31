@@ -63,13 +63,11 @@ public final class ClientCommandInternals {
 		return activeDispatcher;
 	}
 
-	/**
-	 * Executes a client-sided command. Callers should ensure that this is only called
-	 * on slash-prefixed messages and the slash needs to be removed before calling.
-	 *
-	 * @param command the command with slash removed
-	 * @return true if the command should not be sent to the server, false otherwise
-	 */
+	/// Executes a client-sided command. Callers should ensure that this is only called
+	/// on slash-prefixed messages and the slash needs to be removed before calling.
+	///
+	/// @param command the command with slash removed
+	/// @return true if the command should not be sent to the server, false otherwise
 	public static boolean executeCommand(String command) {
 		Minecraft instance = Minecraft.getInstance();
 
@@ -105,13 +103,11 @@ public final class ClientCommandInternals {
 		}
 	}
 
-	/**
-	 * Tests whether a command syntax exception with the type
-	 * should be ignored and the command sent to the server.
-	 *
-	 * @param type the exception type
-	 * @return true if ignored, false otherwise
-	 */
+	/// Tests whether a command syntax exception with the type
+	/// should be ignored and the command sent to the server.
+	///
+	/// @param type the exception type
+	/// @return true if ignored, false otherwise
 	private static boolean isIgnoredException(CommandExceptionType type) {
 		BuiltInExceptionProvider builtins = CommandSyntaxException.BUILT_IN_EXCEPTIONS;
 
@@ -129,10 +125,8 @@ public final class ClientCommandInternals {
 		return context != null ? Component.translatable("command.context.parse_error", message, e.getCursor(), context) : message;
 	}
 
-	/**
-	 * Runs final initialization tasks such as {@link CommandDispatcher#findAmbiguities(AmbiguityConsumer)}
-	 * on the command dispatcher. Also registers a {@code /fcc help} command if there are other commands present.
-	 */
+	/// Runs final initialization tasks such as [CommandDispatcher#findAmbiguities(AmbiguityConsumer)]
+	/// on the command dispatcher. Also registers a `/fcc help` command if there are other commands present.
 	public static void finalizeInit() {
 		if (!activeDispatcher.getRoot().getChildren().isEmpty()) {
 			// Register an API command if there are other commands;
@@ -182,16 +176,14 @@ public final class ClientCommandInternals {
 		copyChildren(activeDispatcher.getRoot(), target.getRoot(), source, nodes);
 	}
 
-	/**
-	 * Copies the child commands from root to newRoot, filtered by {@code child.canUse(source)}.
-	 * Mimics vanilla's Commands.fillUsableCommands.
-	 *
-	 * @param root           the root command node
-	 * @param newRoot        the new root command node
-	 * @param source         the command source
-	 * @param nodes          a mutable map from original command nodes to their copies, used for redirects;
-	 *                       should contain a mapping from root to newRoot
-	 */
+	/// Copies the child commands from root to newRoot, filtered by `child.canUse(source)`.
+	/// Mimics vanilla's Commands.fillUsableCommands.
+	///
+	/// @param root           the root command node
+	/// @param newRoot        the new root command node
+	/// @param source         the command source
+	/// @param nodes          a mutable map from original command nodes to their copies, used for redirects;
+	///                       should contain a mapping from root to newRoot
 	private static void copyChildren(
 			CommandNode<FabricClientCommandSource> root,
 			CommandNode<FabricClientCommandSource> newRoot,

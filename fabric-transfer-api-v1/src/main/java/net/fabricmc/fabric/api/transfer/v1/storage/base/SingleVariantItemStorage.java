@@ -25,34 +25,28 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-/**
- * Base implementation of a fixed-capacity "continuous" storage for item-provided storage APIs.
- * The item may not change, so the data has to be stored in the components of the stacks.
- * This can be used for example to implement portable fluid tanks, fluid-containing jetpacks, and so on...
- * Continuous here means that they can store any integer amount between 0 and the capacity, unlike buckets or bottles.
- *
- * <p>To expose the storage API for an item, you need to register a provider for your item, and pass it an instance of this class:
- * <ul>
- *    <li>You must override {@link #getBlankResource()}, for example {@code return FluidVariant.blank();} for fluids.</li>
- *    <li>You must override {@link #getResource(ItemVariant)} and {@link #getAmount(ItemVariant)}.
- *    Generally you will read the resource and the amount from the components of the item variant.</li>
- *    <li>You must override {@link #getCapacity(TransferVariant)} to set the capacity of your storage.</li>
- *    <li>You must override {@link #getUpdatedVariant}. It is used to change the resource and the amount of the item variant.
- *    Generally you will copy the components, modify it, and then create a new variant from that.
- *    Copying the components instead of recreating it from scratch is important to keep custom names or enchantments.</li>
- *    <li>You may also override {@link #canInsert} and {@link #canExtract} if you want to restrict insertion and/or extraction.</li>
- * </ul>
- *
- * @param <T> The type of the stored transfer variant.
- */
+/// Base implementation of a fixed-capacity "continuous" storage for item-provided storage APIs.
+/// The item may not change, so the data has to be stored in the components of the stacks.
+/// This can be used for example to implement portable fluid tanks, fluid-containing jetpacks, and so on...
+/// Continuous here means that they can store any integer amount between 0 and the capacity, unlike buckets or bottles.
+///
+/// To expose the storage API for an item, you need to register a provider for your item, and pass it an instance of this class:
+///
+///  - You must override [#getBlankResource()], for example `return FluidVariant.blank();` for fluids.
+///  - You must override [#getResource(ItemVariant)] and [#getAmount(ItemVariant)].
+///     Generally you will read the resource and the amount from the components of the item variant.
+///  - You must override [#getCapacity(TransferVariant)] to set the capacity of your storage.
+///  - You must override [#getUpdatedVariant]. It is used to change the resource and the amount of the item variant.
+///     Generally you will copy the components, modify it, and then create a new variant from that.
+///     Copying the components instead of recreating it from scratch is important to keep custom names or enchantments.
+///  - You may also override [#canInsert] and [#canExtract] if you want to restrict insertion and/or extraction.
+///
+///
+/// @param <T> The type of the stored transfer variant.
 public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> implements SingleSlotStorage<T> {
-	/**
-	 * Reference to the context.
-	 */
+	/// Reference to the context.
 	private final ContainerItemContext context;
-	/**
-	 * Starting item. The storage is not valid for other items.
-	 */
+	/// Starting item. The storage is not valid for other items.
 	private final Item item;
 
 	public SingleVariantItemStorage(ContainerItemContext context) {
@@ -60,54 +54,40 @@ public abstract class SingleVariantItemStorage<T extends TransferVariant<?>> imp
 		this.item = context.getItemVariant().getItem();
 	}
 
-	/**
-	 * Return the blank resource.
-	 */
+	/// Return the blank resource.
 	protected abstract T getBlankResource();
 
-	/**
-	 * Return the current resource by reading the components of the passed variant.
-	 */
+	/// Return the current resource by reading the components of the passed variant.
 	protected abstract T getResource(ItemVariant currentVariant);
 
-	/**
-	 * Return the current amount by reading the components of the passed variant.
-	 */
+	/// Return the current amount by reading the components of the passed variant.
 	protected abstract long getAmount(ItemVariant currentVariant);
 
-	/**
-	 * Return the capacity of this storage for the passed resource.
-	 * An estimate should be returned if the passed resource is blank.
-	 */
+	/// Return the capacity of this storage for the passed resource.
+	/// An estimate should be returned if the passed resource is blank.
 	protected abstract long getCapacity(T variant);
 
-	/**
-	 * Return an updated variant with new resource and amount.
-	 * Implementors should generally convert the passed {@code currentVariant} to a stack,
-	 * then edit the components of the stack so it contains the correct resource and amount.
-	 *
-	 * <p>When the new amount is 0, it is recommended that the components corresponding to the resource and amount
-	 * be removed, so that newly-crafted containers can stack with emptied containers.
-	 * If a custom item is used, this means {@linkplain ItemStack#set setting} it to the default as specified in {@link Item.Properties#component};
-	 * if a vanilla item is used, this means {@linkplain ItemStack#remove removing} the said component.
-	 *
-	 * @param currentVariant Variant to which the modification should be applied.
-	 * @param newResource Resource that should be contained in the returned variant.
-	 * @param newAmount Amount that should be contained in the returned variant.
-	 * @return A modified variant containing the new resource and amount.
-	 */
+	/// Return an updated variant with new resource and amount.
+	/// Implementors should generally convert the passed `currentVariant` to a stack,
+	/// then edit the components of the stack so it contains the correct resource and amount.
+	///
+	/// When the new amount is 0, it is recommended that the components corresponding to the resource and amount
+	/// be removed, so that newly-crafted containers can stack with emptied containers.
+	/// If a custom item is used, this means {@linkplain ItemStack#set setting} it to the default as specified in [Item.Properties#component];
+	/// if a vanilla item is used, this means {@linkplain ItemStack#remove removing} the said component.
+	///
+	/// @param currentVariant Variant to which the modification should be applied.
+	/// @param newResource Resource that should be contained in the returned variant.
+	/// @param newAmount Amount that should be contained in the returned variant.
+	/// @return A modified variant containing the new resource and amount.
 	protected abstract ItemVariant getUpdatedVariant(ItemVariant currentVariant, T newResource, long newAmount);
 
-	/**
-	 * Return {@code true} if the passed non-blank variant can be inserted, {@code false} otherwise.
-	 */
+	/// Return `true` if the passed non-blank variant can be inserted, `false` otherwise.
 	protected boolean canInsert(T resource) {
 		return true;
 	}
 
-	/**
-	 * Return {@code true} if the passed non-blank variant can be extracted, {@code false} otherwise.
-	 */
+	/// Return `true` if the passed non-blank variant can be extracted, `false` otherwise.
 	protected boolean canExtract(T resource) {
 		return true;
 	}

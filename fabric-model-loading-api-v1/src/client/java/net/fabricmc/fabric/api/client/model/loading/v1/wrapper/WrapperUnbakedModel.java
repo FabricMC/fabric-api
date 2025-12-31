@@ -24,10 +24,8 @@ import net.minecraft.client.resources.model.UnbakedGeometry;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.Identifier;
 
-/**
- * A simple implementation of {@link UnbakedModel} that delegates all method calls to the {@link #wrapped} field.
- * Implementations must set the {@link #wrapped} field somehow.
- */
+/// A simple implementation of [UnbakedModel] that delegates all method calls to the [#wrapped] field.
+/// Implementations must set the [#wrapped] field somehow.
 public abstract class WrapperUnbakedModel implements UnbakedModel {
 	protected UnbakedModel wrapped;
 

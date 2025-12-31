@@ -27,9 +27,7 @@ import net.minecraft.tags.TagKey;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagAppender;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 
-/**
- * Extends TagAppender to support setting the replace field.
- */
+/// Extends TagAppender to support setting the replace field.
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Mixin(TagAppender.class)
 interface TagAppenderMixin<E, T> extends FabricTagAppender<E, T> {

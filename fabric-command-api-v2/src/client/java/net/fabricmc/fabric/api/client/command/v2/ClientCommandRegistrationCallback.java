@@ -23,13 +23,11 @@ import net.minecraft.commands.CommandBuildContext;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Callback for when client commands are registered to the dispatcher.
- *
- * <p>To register some commands, you would register an event listener and implement the callback.
- *
- * <p>See {@link ClientCommands} for more details and an example.
- */
+/// Callback for when client commands are registered to the dispatcher.
+///
+/// To register some commands, you would register an event listener and implement the callback.
+///
+/// See [ClientCommands] for more details and an example.
 public interface ClientCommandRegistrationCallback {
 	Event<ClientCommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(ClientCommandRegistrationCallback.class, (callbacks) -> (dispatcher, buildContext) -> {
 		for (ClientCommandRegistrationCallback callback : callbacks) {
@@ -37,11 +35,9 @@ public interface ClientCommandRegistrationCallback {
 		}
 	});
 
-	/**
-	 * Called when registering client commands.
-	 *
-	 * @param dispatcher the command dispatcher to register commands to
-	 * @param buildContext object exposing access to the game's holders
-	 */
+	/// Called when registering client commands.
+	///
+	/// @param dispatcher the command dispatcher to register commands to
+	/// @param buildContext object exposing access to the game's holders
 	void register(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext buildContext);
 }

@@ -120,12 +120,10 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		}
 	}
 
-	/**
-	 * Handles an incoming query response during login.
-	 *
-	 * @param packet the packet to handle
-	 * @return true if the packet was handled
-	 */
+	/// Handles an incoming query response during login.
+	///
+	/// @param packet the packet to handle
+	/// @return true if the packet was handled
 	public boolean handle(ServerboundCustomQueryAnswerPacket packet) {
 		FriendlyByteBufLoginQueryResponse response = (FriendlyByteBufLoginQueryResponse) packet.payload();
 		return handle(packet.transactionId(), response == null ? null : response.data());

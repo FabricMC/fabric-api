@@ -46,27 +46,23 @@ import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 
-/**
- * Base class for all quads / quad makers. Handles the ugly bits
- * of maintaining and encoding the quad state.
- */
+/// Base class for all quads / quad makers. Handles the ugly bits
+/// of maintaining and encoding the quad state.
 public class QuadViewImpl implements QuadView {
 	@Nullable
 	protected Direction nominalFace;
-	/** True when face normal, light face, or geometry flags may not match geometry. */
+	/// True when face normal, light face, or geometry flags may not match geometry.
 	protected boolean isGeometryInvalid = true;
 	protected final Vector3f faceNormal = new Vector3f();
 
-	/** Size and where it comes from will vary in subtypes. But in all cases quad is fully encoded to array. */
+	/// Size and where it comes from will vary in subtypes. But in all cases quad is fully encoded to array.
 	protected int[] data;
 
-	/** Beginning of the quad. Also the header index. */
+	/// Beginning of the quad. Also the header index.
 	protected int baseIndex = 0;
 
-	/**
-	 * Decodes necessary state from the backing data array.
-	 * The encoded data must contain valid computed geometry.
-	 */
+	/// Decodes necessary state from the backing data array.
+	/// The encoded data must contain valid computed geometry.
 	public final void load() {
 		isGeometryInvalid = false;
 		nominalFace = lightFace();
@@ -88,7 +84,7 @@ public class QuadViewImpl implements QuadView {
 		}
 	}
 
-	/** gets flags used for lighting - lazily computed via {@link GeometryHelper#computeShapeFlags(QuadView)}. */
+	/// gets flags used for lighting - lazily computed via [GeometryHelper#computeShapeFlags(QuadView)].
 	public final int geometryFlags() {
 		computeGeometry();
 		return EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS]);
@@ -165,12 +161,12 @@ public class QuadViewImpl implements QuadView {
 		return (normalFlags() & (1 << vertexIndex)) != 0;
 	}
 
-	/** True if any vertex normal has been set. */
+	/// True if any vertex normal has been set.
 	public final boolean hasVertexNormals() {
 		return normalFlags() != 0;
 	}
 
-	/** True if all vertex normals have been set. */
+	/// True if all vertex normals have been set.
 	public final boolean hasAllVertexNormals() {
 		return (normalFlags() & 0b1111) == 0b1111;
 	}

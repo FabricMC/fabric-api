@@ -24,9 +24,7 @@ import net.minecraft.data.PackOutput;
 
 import net.fabricmc.loader.api.ModContainer;
 
-/**
- * Extends {@link PackOutput} to keep track of the {@link ModContainer} that it originated from.
- */
+/// Extends [PackOutput] to keep track of the [ModContainer] that it originated from.
 public final class FabricPackOutput extends PackOutput {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
@@ -38,29 +36,23 @@ public final class FabricPackOutput extends PackOutput {
 		this.strictValidation = strictValidation;
 	}
 
-	/**
-	 * Returns the {@link ModContainer} for the mod that this data generator has been created for.
-	 *
-	 * @return a {@link ModContainer} instance
-	 */
+	/// Returns the [ModContainer] for the mod that this data generator has been created for.
+	///
+	/// @return a [ModContainer] instance
 	public ModContainer getModContainer() {
 		return modContainer;
 	}
 
-	/**
-	 * Returns the mod ID for the mod that this data generator has been created for.
-	 *
-	 * @return a mod ID
-	 */
+	/// Returns the mod ID for the mod that this data generator has been created for.
+	///
+	/// @return a mod ID
 	public String getModId() {
 		return getModContainer().getMetadata().getId();
 	}
 
-	/**
-	 * When enabled data providers can do strict validation to ensure that all entries have data generated for them.
-	 *
-	 * @return if strict validation should be enabled
-	 */
+	/// When enabled data providers can do strict validation to ensure that all entries have data generated for them.
+	///
+	/// @return if strict validation should be enabled
 	public boolean isStrictValidationEnabled() {
 		return strictValidation;
 	}

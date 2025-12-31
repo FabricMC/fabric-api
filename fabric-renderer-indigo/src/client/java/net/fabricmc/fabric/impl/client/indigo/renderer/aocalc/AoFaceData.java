@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.aocalc;
 
-/**
- * Holds per-corner results for a single block face.
- * Handles caching and provides various utility methods to simplify code elsewhere.
- */
+/// Holds per-corner results for a single block face.
+/// Handles caching and provides various utility methods to simplify code elsewhere.
 class AoFaceData {
 	float a0;
 	float a1;

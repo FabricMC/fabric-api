@@ -23,13 +23,11 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableMesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
-/**
- * Our implementation of {@link MutableMesh}, mainly used for optimized mesh creation.
- * Not much to it - mainly it just needs to grow the int[] array as quads are appended
- * and maintain/provide a properly-configured {@link MutableQuadView} instance.
- * All the encoding and other work is handled in the quad base classes.
- * The one interesting bit is in {@link #emitter}.
- */
+/// Our implementation of [MutableMesh], mainly used for optimized mesh creation.
+/// Not much to it - mainly it just needs to grow the int[] array as quads are appended
+/// and maintain/provide a properly-configured [MutableQuadView] instance.
+/// All the encoding and other work is handled in the quad base classes.
+/// The one interesting bit is in [#emitter].
 public class MutableMeshImpl extends MeshViewImpl implements MutableMesh {
 	private final MutableQuadViewImpl emitter = new MutableQuadViewImpl() {
 		@Override

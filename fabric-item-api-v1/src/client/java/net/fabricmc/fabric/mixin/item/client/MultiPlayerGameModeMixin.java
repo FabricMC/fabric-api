@@ -37,11 +37,9 @@ public class MultiPlayerGameModeMixin {
 	@Shadow
 	private ItemStack destroyingItem;
 
-	/**
-	 * Allows a FabricItem to continue block breaking progress even if the count or nbt changed.
-	 * For this, we inject after vanilla decided that the stack was "not unchanged", and we set if back to "unchanged"
-	 * if the item wishes to continue mining.
-	 */
+	/// Allows a FabricItem to continue block breaking progress even if the count or nbt changed.
+	/// For this, we inject after vanilla decided that the stack was "not unchanged", and we set if back to "unchanged"
+	/// if the item wishes to continue mining.
 	@Redirect(
 			at = @At(
 					value = "INVOKE",

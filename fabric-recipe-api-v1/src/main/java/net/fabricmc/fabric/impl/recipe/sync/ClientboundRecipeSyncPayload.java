@@ -32,9 +32,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
-/**
- * Main packet used to send recipes to the client.
- */
+/// Main packet used to send recipes to the client.
 public record ClientboundRecipeSyncPayload(List<Entry> entries) implements CustomPacketPayload {
 	public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundRecipeSyncPayload> CODEC = Entry.CODEC.apply(ByteBufCodecs.list()).map(ClientboundRecipeSyncPayload::new, ClientboundRecipeSyncPayload::entries);
 

@@ -24,20 +24,17 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
 
-/**
- * The remapping process functions as follows:
- *
- * <ul><li>RegistryEntryRemovedCallbacks are called to remove any objects culled in the process, with the old numeric ID.
- * <li>RegistryIdRemapCallback is emitted to allow remapping the IDs of objects still present.
- * <li>RegistryEntryAddedCallbacks are called to add any objects added in the process, with the new numeric ID.</ul>
- *
- * <p>RegistryIdRemapCallback is called on every remapping operation, if you want to do your own processing in one swoop
- * (say, rebuild the ID map from scratch).
- *
- * <p>Generally speaking, a remap can only cause object *removals*; object *additions* are necessary to reverse remaps.
- *
- * @param <T> The registry type.
- */
+/// The remapping process functions as follows:
+///   - RegistryEntryRemovedCallbacks are called to remove any objects culled in the process, with the old numeric ID.
+///   - RegistryIdRemapCallback is emitted to allow remapping the IDs of objects still present.
+///   - RegistryEntryAddedCallbacks are called to add any objects added in the process, with the new numeric ID.
+///
+/// RegistryIdRemapCallback is called on every remapping operation, if you want to do your own processing in one swoop
+/// (say, rebuild the ID map from scratch).
+///
+/// Generally speaking, a remap can only cause object *removals*; object *additions* are necessary to reverse remaps.
+///
+/// @param <T> The registry type.
 @FunctionalInterface
 public interface RegistryIdRemapCallback<T> {
 	void onRemap(RemapState<T> state);

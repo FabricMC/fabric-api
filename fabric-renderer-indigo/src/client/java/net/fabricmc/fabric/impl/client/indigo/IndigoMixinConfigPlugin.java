@@ -28,7 +28,7 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
 public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
-	/** Set by other renderers to disable loading of Indigo. */
+	/// Set by other renderers to disable loading of Indigo.
 	private static final String JSON_KEY_DISABLE_INDIGO = "fabric-renderer-api-v1:contains_renderer";
 
 	private static boolean needsLoad = true;

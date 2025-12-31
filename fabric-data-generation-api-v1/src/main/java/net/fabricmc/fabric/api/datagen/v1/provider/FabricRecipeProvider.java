@@ -50,11 +50,9 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
-/**
- * Extend this class and implement {@link FabricRecipeProvider#createRecipeProvider(HolderLookup.Provider, RecipeOutput)}.
- *
- * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
- */
+/// Extend this class and implement [FabricRecipeProvider#createRecipeProvider(HolderLookup.Provider, RecipeOutput)].
+///
+/// Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 	protected final FabricPackOutput output;
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
@@ -65,15 +63,11 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 		this.registriesFuture = registriesFuture;
 	}
 
-	/**
-	 * Implement this method and then use the range of methods in {@link RecipeProvider} or from one of the recipe json factories such as {@link ShapedRecipeBuilder} or {@link ShapelessRecipeBuilder}.
-	 */
+	/// Implement this method and then use the range of methods in [RecipeProvider] or from one of the recipe json factories such as [ShapedRecipeBuilder] or [ShapelessRecipeBuilder].
 	@Override
 	protected abstract RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output);
 
-	/**
-	 * Return a new exporter that applies the specified conditions to any recipe json provider it receives.
-	 */
+	/// Return a new exporter that applies the specified conditions to any recipe json provider it receives.
 	protected RecipeOutput withConditions(RecipeOutput output, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return new RecipeOutput() {
@@ -150,9 +144,7 @@ public abstract class FabricRecipeProvider extends RecipeProvider.Runner {
 		}));
 	}
 
-	/**
-	 * Override this method to change the recipe identifier. The default implementation normalizes the namespace to the mod ID.
-	 */
+	/// Override this method to change the recipe identifier. The default implementation normalizes the namespace to the mod ID.
 	protected Identifier getRecipeIdentifier(Identifier identifier) {
 		return Identifier.fromNamespaceAndPath(output.getModId(), identifier.getPath());
 	}

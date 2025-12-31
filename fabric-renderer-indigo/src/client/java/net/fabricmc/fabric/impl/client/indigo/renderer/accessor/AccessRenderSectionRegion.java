@@ -18,10 +18,8 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.accessor;
 
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderContext;
 
-/**
- * Used to stash block renderer reference in local scope during
- * chunk rebuild, thus avoiding repeated thread-local lookups.
- */
+/// Used to stash block renderer reference in local scope during
+/// chunk rebuild, thus avoiding repeated thread-local lookups.
 public interface AccessRenderSectionRegion {
 	TerrainRenderContext fabric_getRenderer();
 

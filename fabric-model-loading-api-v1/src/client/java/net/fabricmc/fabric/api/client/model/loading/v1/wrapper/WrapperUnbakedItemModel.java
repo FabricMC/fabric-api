@@ -20,10 +20,8 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.client.renderer.item.ItemModel;
 
-/**
- * A simple implementation of {@link ItemModel.Unbaked} that delegates all method calls to the {@link #wrapped} field.
- * Implementations must set the {@link #wrapped} field somehow.
- */
+/// A simple implementation of [ItemModel.Unbaked] that delegates all method calls to the [#wrapped] field.
+/// Implementations must set the [#wrapped] field somehow.
 public abstract class WrapperUnbakedItemModel implements ItemModel.Unbaked {
 	protected ItemModel.Unbaked wrapped;
 

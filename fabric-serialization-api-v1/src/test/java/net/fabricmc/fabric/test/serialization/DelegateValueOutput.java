@@ -22,9 +22,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.world.level.storage.ValueOutput;
 
-/**
- * A delegating ValueOutput, used to force usage of fallback implementation of FabricValueOutput.
- */
+/// A delegating ValueOutput, used to force usage of fallback implementation of FabricValueOutput.
 public record DelegateValueOutput(ValueOutput output) implements ValueOutput {
 	@Override
 	public <T> void store(String key, Codec<T> codec, T value) {

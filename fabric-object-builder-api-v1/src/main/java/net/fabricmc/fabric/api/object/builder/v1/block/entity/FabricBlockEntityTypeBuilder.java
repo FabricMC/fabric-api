@@ -32,9 +32,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.object.builder.ExtendedBlockEntityType;
 
-/**
- * Use this builder to create a {@link BlockEntityType}.
- */
+/// Use this builder to create a [BlockEntityType].
 public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 	private final Factory<? extends T> factory;
 	private final Set<Block> blocks = new HashSet<>();
@@ -49,46 +47,38 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 		return new FabricBlockEntityTypeBuilder<T>(factory).addBlocks(blocks);
 	}
 
-	/**
-	 * Adds a supported block for the block entity type.
-	 *
-	 * @param block the supported block
-	 * @return this builder
-	 */
+	/// Adds a supported block for the block entity type.
+	///
+	/// @param block the supported block
+	/// @return this builder
 	public FabricBlockEntityTypeBuilder<T> addBlock(Block block) {
 		this.blocks.add(block);
 		return this;
 	}
 
-	/**
-	 * Adds supported blocks for the block entity type.
-	 *
-	 * @param blocks the supported blocks
-	 * @return this builder
-	 */
+	/// Adds supported blocks for the block entity type.
+	///
+	/// @param blocks the supported blocks
+	/// @return this builder
 	public FabricBlockEntityTypeBuilder<T> addBlocks(Block... blocks) {
 		Collections.addAll(this.blocks, blocks);
 		return this;
 	}
 
-	/**
-	 * Adds supported blocks for the block entity type.
-	 *
-	 * @param blocks the supported blocks
-	 * @return this builder
-	 */
+	/// Adds supported blocks for the block entity type.
+	///
+	/// @param blocks the supported blocks
+	/// @return this builder
 	public FabricBlockEntityTypeBuilder<T> addBlocks(Collection<? extends Block> blocks) {
 		this.blocks.addAll(blocks);
 		return this;
 	}
 
-	/**
-	 * Makes the built {@link BlockEntityType} return {@code true} from
-	 * {@link BlockEntityType#onlyOpCanSetNbt()}.
-	 *
-	 * @param canPotentiallyExecuteCommands whether the block entity is able to execute commands
-	 * @return this builder
-	 */
+	/// Makes the built [BlockEntityType] return `true` from
+	/// [BlockEntityType#onlyOpCanSetNbt()].
+	///
+	/// @param canPotentiallyExecuteCommands whether the block entity is able to execute commands
+	/// @return this builder
 	public FabricBlockEntityTypeBuilder<T> canPotentiallyExecuteCommands(boolean canPotentiallyExecuteCommands) {
 		this.canPotentiallyExecuteCommands = canPotentiallyExecuteCommands;
 		return this;
@@ -98,9 +88,7 @@ public final class FabricBlockEntityTypeBuilder<T extends BlockEntity> {
 		return new ExtendedBlockEntityType<>(factory::create, new HashSet<>(blocks), canPotentiallyExecuteCommands);
 	}
 
-	/**
-	 * @deprecated Use {@link #build()} instead.
-	 */
+	/// @deprecated Use [#build()] instead.
 	@Deprecated
 	public BlockEntityType<T> build(@Nullable Type<?> type) {
 		return build();

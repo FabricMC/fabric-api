@@ -23,17 +23,13 @@ import net.minecraft.world.item.Item;
 
 import net.fabricmc.fabric.impl.tag.convention.v2.TagRegistration;
 
-/**
- * See {@link net.minecraft.tags.ItemTags} for vanilla tags.
- * Note that addition to some vanilla tags implies having certain functionality.
- */
+/// See [net.minecraft.tags.ItemTags] for vanilla tags.
+/// Note that addition to some vanilla tags implies having certain functionality.
 public final class ConventionalItemTags {
 	private ConventionalItemTags() {
 	}
 
-	/**
-	 * Natural stone-like blocks that can be used as a base ingredient in recipes that take stone.
-	 */
+	/// Natural stone-like blocks that can be used as a base ingredient in recipes that take stone.
 	public static final TagKey<Item> STONES = register("stones");
 	public static final TagKey<Item> COBBLESTONES = register("cobblestones");
 	public static final TagKey<Item> DEEPSLATE_COBBLESTONES = register("cobblestones/deepslate");
@@ -44,78 +40,54 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> END_STONES = register("end_stones");
 	public static final TagKey<Item> GRAVELS = register("gravels");
 	public static final TagKey<Item> OBSIDIANS = register("obsidians");
-	/**
-	 * For common obsidian that has no special quirks or behaviors. Ideal for recipe use.
-	 * Crying Obsidian, for example, is a light block and harder to obtain. So it gets its own tag instead of being under normal tag.
-	 */
+	/// For common obsidian that has no special quirks or behaviors. Ideal for recipe use.
+	/// Crying Obsidian, for example, is a light block and harder to obtain. So it gets its own tag instead of being under normal tag.
 	public static final TagKey<Item> NORMAL_OBSIDIANS = register("obsidians/normal");
 	public static final TagKey<Item> CRYING_OBSIDIANS = register("obsidians/crying");
 
 	// Tool tags
 	public static final TagKey<Item> TOOLS = register("tools");
 	public static final TagKey<Item> SHEAR_TOOLS = register("tools/shear");
-	/**
-	 * For spear tools, like Minecraft's tridents.
-	 * Note, other weapons like boomerangs and throwing knives are best put into their own tools tag.
-	 */
+	/// For spear tools, like Minecraft's tridents.
+	/// Note, other weapons like boomerangs and throwing knives are best put into their own tools tag.
 	public static final TagKey<Item> SPEAR_TOOLS = register("tools/spear");
 	public static final TagKey<Item> BOW_TOOLS = register("tools/bow");
 	public static final TagKey<Item> CROSSBOW_TOOLS = register("tools/crossbow");
 	public static final TagKey<Item> SHIELD_TOOLS = register("tools/shield");
 	public static final TagKey<Item> FISHING_ROD_TOOLS = register("tools/fishing_rod");
 	public static final TagKey<Item> BRUSH_TOOLS = register("tools/brush");
-	/**
-	 * A tag containing all existing fire starting tools such as Flint and Steel.
-	 * Fire Charge is not a tool (no durability) and thus, does not go in this tag.
-	 */
+	/// A tag containing all existing fire starting tools such as Flint and Steel.
+	/// Fire Charge is not a tool (no durability) and thus, does not go in this tag.
 	public static final TagKey<Item> IGNITER_TOOLS = register("tools/igniter");
 	public static final TagKey<Item> MACE_TOOLS = register("tools/mace");
 	public static final TagKey<Item> WRENCH_TOOLS = register("tools/wrench");
 
 	// Action-based tool tags
-	/**
-	 * A tag containing melee-based weapons for recipes and loot tables.
-	 * Tools are considered melee if they are intentionally intended to be used for melee attack as a primary purpose.
-	 * (In other words, Pickaxes are not melee weapons as they are not intended to be a weapon as a primary purpose)
-	 */
+	/// A tag containing melee-based weapons for recipes and loot tables.
+	/// Tools are considered melee if they are intentionally intended to be used for melee attack as a primary purpose.
+	/// (In other words, Pickaxes are not melee weapons as they are not intended to be a weapon as a primary purpose)
 	public static final TagKey<Item> MELEE_WEAPON_TOOLS = register("tools/melee_weapon");
-	/**
-	 * A tag containing ranged-based weapons for recipes and loot tables.
-	 * Tools are considered ranged if they can damage entities beyond the weapon's and player's melee attack range.
-	 */
+	/// A tag containing ranged-based weapons for recipes and loot tables.
+	/// Tools are considered ranged if they can damage entities beyond the weapon's and player's melee attack range.
 	public static final TagKey<Item> RANGED_WEAPON_TOOLS = register("tools/ranged_weapon");
-	/**
-	 * A tag containing mining-based tools for recipes and loot tables.
-	 */
+	/// A tag containing mining-based tools for recipes and loot tables.
 	public static final TagKey<Item> MINING_TOOL_TOOLS = register("tools/mining_tool");
 
 	// Armor tags
-	/**
-	 * A tag containing all conventional armor tags.
-	 * Note that this can contain armor that does not necessarily fit on a player. For that, see {@link ConventionalItemTags#HUMANOID_ARMORS}
-	 */
+	/// A tag containing all conventional armor tags.
+	/// Note that this can contain armor that does not necessarily fit on a player. For that, see [ConventionalItemTags#HUMANOID_ARMORS]
 	public static final TagKey<Item> ARMORS = register("armors");
-	/**
-	 * Armor that can fit on a humanoid mob like the Player. This tag collects the 4 vanilla armor tags into one parent collection for ease.
-	 */
+	/// Armor that can fit on a humanoid mob like the Player. This tag collects the 4 vanilla armor tags into one parent collection for ease.
 	public static final TagKey<Item> HUMANOID_ARMORS = register("armors/humanoid");
-	/**
-	 * A tag containing armor that can fit on a Horse.
-	 */
+	/// A tag containing armor that can fit on a Horse.
 	public static final TagKey<Item> HORSE_ARMORS = register("armors/horse");
-	/**
-	 * A tag containing armor that can fit on a Nautilus.
-	 */
+	/// A tag containing armor that can fit on a Nautilus.
 	public static final TagKey<Item> NAUTILUS_ARMORS = register("armors/nautilus");
-	/**
-	 * A tag containing armor that can fit on a Wolf.
-	 */
+	/// A tag containing armor that can fit on a Wolf.
 	public static final TagKey<Item> WOLF_ARMORS = register("armors/wolf");
 
 	// Tools/Armor tags
-	/**
-	 * Collects the many enchantable tags into one parent collection for ease.
-	 */
+	/// Collects the many enchantable tags into one parent collection for ease.
 	public static final TagKey<Item> ENCHANTABLES = register("enchantables");
 
 	// Ores and ingots - categories
@@ -145,39 +117,23 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> NETHERITE_INGOTS = register("ingots/netherite");
 
 	// Ores - vanilla instances (All ores consolidated here for consistency)
-	/**
-	 * Aliased with {@link ItemTags#COAL_ORES}.
-	 */
+	/// Aliased with [ItemTags#COAL_ORES].
 	public static final TagKey<Item> COAL_ORES = register("ores/coal");
-	/**
-	 * Aliased with {@link ItemTags#COPPER_ORES}.
-	 */
+	/// Aliased with [ItemTags#COPPER_ORES].
 	public static final TagKey<Item> COPPER_ORES = register("ores/copper");
-	/**
-	 * Aliased with {@link ItemTags#DIAMOND_ORES}.
-	 */
+	/// Aliased with [ItemTags#DIAMOND_ORES].
 	public static final TagKey<Item> DIAMOND_ORES = register("ores/diamond");
-	/**
-	 * Aliased with {@link ItemTags#EMERALD_ORES}.
-	 */
+	/// Aliased with [ItemTags#EMERALD_ORES].
 	public static final TagKey<Item> EMERALD_ORES = register("ores/emerald");
-	/**
-	 * Aliased with {@link ItemTags#GOLD_ORES}.
-	 */
+	/// Aliased with [ItemTags#GOLD_ORES].
 	public static final TagKey<Item> GOLD_ORES = register("ores/gold");
-	/**
-	 * Aliased with {@link ItemTags#IRON_ORES}.
-	 */
+	/// Aliased with [ItemTags#IRON_ORES].
 	public static final TagKey<Item> IRON_ORES = register("ores/iron");
-	/**
-	 * Aliased with {@link ItemTags#LAPIS_ORES}.
-	 */
+	/// Aliased with [ItemTags#LAPIS_ORES].
 	public static final TagKey<Item> LAPIS_ORES = register("ores/lapis");
 	public static final TagKey<Item> NETHERITE_SCRAP_ORES = register("ores/netherite_scrap");
 	public static final TagKey<Item> QUARTZ_ORES = register("ores/quartz");
-	/**
-	 * Aliased with {@link ItemTags#REDSTONE_ORES}.
-	 */
+	/// Aliased with [ItemTags#REDSTONE_ORES].
 	public static final TagKey<Item> REDSTONE_ORES = register("ores/redstone");
 
 	// Gems - vanilla instances
@@ -200,38 +156,26 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> RESIN_CLUMPS = register("clumps/resin");
 
 	// Consumables
-	/**
-	 * Items that can hold various potion effects by making use of {@link net.minecraft.core.component.DataComponents#POTION_CONTENTS}.
-	 * Contents of this tag may not always be a kind of bottle. Buckets of potions could go here.
-	 * The subtags would be the name of the container that is holding the potion effects such as `c:potions/bucket` or `c:potions/vial` as examples.
-	 */
+	/// Items that can hold various potion effects by making use of [net.minecraft.core.component.DataComponents#POTION_CONTENTS].
+	/// Contents of this tag may not always be a kind of bottle. Buckets of potions could go here.
+	/// The subtags would be the name of the container that is holding the potion effects such as `c:potions/bucket` or `c:potions/vial` as examples.
 	public static final TagKey<Item> POTIONS = register("potions");
-	/**
-	 * Variations of the potion bottle that can hold various effects by using {@link net.minecraft.core.component.DataComponents#POTION_CONTENTS}.
-	 * Examples are splash and lingering potions from vanilla.
-	 * If a mod adds a new variant like seeking potion that applies effect to the closest entity at impact, that would in this tag.
-	 */
+	/// Variations of the potion bottle that can hold various effects by using [net.minecraft.core.component.DataComponents#POTION_CONTENTS].
+	/// Examples are splash and lingering potions from vanilla.
+	/// If a mod adds a new variant like seeking potion that applies effect to the closest entity at impact, that would in this tag.
 	public static final TagKey<Item> BOTTLE_POTIONS = register("potions/bottle");
 
 	// Foods
 	public static final TagKey<Item> FOODS = register("foods");
-	/**
-	 * All foods edible by animals excluding poisonous foods. (Does not include {@link ItemTags#PARROT_POISONOUS_FOOD})
-	 */
+	/// All foods edible by animals excluding poisonous foods. (Does not include [ItemTags#PARROT_POISONOUS_FOOD])
 	public static final TagKey<Item> ANIMAL_FOODS = register("animal_foods");
-	/**
-	 * Apples and other foods that are considered fruits in the culinary field belong in this tag.
-	 * Cherries would go here as they are considered a "stone fruit" within culinary fields.
-	 */
+	/// Apples and other foods that are considered fruits in the culinary field belong in this tag.
+	/// Cherries would go here as they are considered a "stone fruit" within culinary fields.
 	public static final TagKey<Item> FRUIT_FOODS = register("foods/fruit");
-	/**
-	 * Tomatoes and other foods that are considered vegetables in the culinary field belong in this tag.
-	 */
+	/// Tomatoes and other foods that are considered vegetables in the culinary field belong in this tag.
 	public static final TagKey<Item> VEGETABLE_FOODS = register("foods/vegetable");
-	/**
-	 * Strawberries, raspberries, and other berry foods belong in this tag.
-	 * Cherries would NOT go here as they are considered a "stone fruit" within culinary fields.
-	 */
+	/// Strawberries, raspberries, and other berry foods belong in this tag.
+	/// Cherries would NOT go here as they are considered a "stone fruit" within culinary fields.
 	public static final TagKey<Item> BERRY_FOODS = register("foods/berry");
 	public static final TagKey<Item> BREAD_FOODS = register("foods/bread");
 	public static final TagKey<Item> COOKIE_FOODS = register("foods/cookie");
@@ -239,87 +183,57 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> COOKED_MEAT_FOODS = register("foods/cooked_meat");
 	public static final TagKey<Item> RAW_FISH_FOODS = register("foods/raw_fish");
 	public static final TagKey<Item> COOKED_FISH_FOODS = register("foods/cooked_fish");
-	/**
-	 * Soups, stews, and other liquid food in bowls belongs in this tag.
-	 */
+	/// Soups, stews, and other liquid food in bowls belongs in this tag.
 	public static final TagKey<Item> SOUP_FOODS = register("foods/soup");
-	/**
-	 * Sweets and candies like lollipops or chocolate belong in this tag.
-	 */
+	/// Sweets and candies like lollipops or chocolate belong in this tag.
 	public static final TagKey<Item> CANDY_FOODS = register("foods/candy");
-	/**
-	 * Pies and other pie-like foods belong in this tag.
-	 */
+	/// Pies and other pie-like foods belong in this tag.
 	public static final TagKey<Item> PIE_FOODS = register("foods/pie");
-	/**
-	 * Any gold-based foods would go in this tag. Such as Golden Apples or Glistering Melon Slice.
-	 */
+	/// Any gold-based foods would go in this tag. Such as Golden Apples or Glistering Melon Slice.
 	public static final TagKey<Item> GOLDEN_FOODS = register("foods/golden");
-	/**
-	 * Foods like cake that can be eaten when placed in the world belong in this tag.
-	 */
+	/// Foods like cake that can be eaten when placed in the world belong in this tag.
 	public static final TagKey<Item> EDIBLE_WHEN_PLACED_FOODS = register("foods/edible_when_placed");
-	/**
-	 * For foods that inflict food poisoning-like effects.
-	 * Examples are Rotten Flesh's Hunger or Pufferfish's Nausea, or Poisonous Potato's Poison.
-	 */
+	/// For foods that inflict food poisoning-like effects.
+	/// Examples are Rotten Flesh's Hunger or Pufferfish's Nausea, or Poisonous Potato's Poison.
 	public static final TagKey<Item> FOOD_POISONING_FOODS = register("foods/food_poisoning");
 
 	// Drinks
-	/**
-	 * Drinks are defined as (1) consumable items that (2) use the
-	 * {@linkplain net.minecraft.world.item.ItemUseAnimation#DRINK drink use animation}, (3) can be consumed regardless of the
-	 * player's current hunger.
-	 *
-	 * <p>Drinks may provide nutrition and saturation, but are not required to do so.
-	 *
-	 * <p>More specific types of drinks, such as Water, Milk, or Juice should be placed in a sub-tag, such as
-	 * {@code #c:drinks/water}, {@code #c:drinks/milk}, and {@code #c:drinks/juice}.
-	 */
+	/// Drinks are defined as (1) consumable items that (2) use the
+	/// {@linkplain net.minecraft.world.item.ItemUseAnimation#DRINK drink use animation}, (3) can be consumed regardless of the
+	/// player's current hunger.
+	///
+	/// Drinks may provide nutrition and saturation, but are not required to do so.
+	///
+	/// More specific types of drinks, such as Water, Milk, or Juice should be placed in a sub-tag, such as
+	/// `#c:drinks/water`, `#c:drinks/milk`, and `#c:drinks/juice`.
 	public static final TagKey<Item> DRINKS = register("drinks");
-	/**
-	 * For consumable drinks that contain only water.
-	 */
+	/// For consumable drinks that contain only water.
 	public static final TagKey<Item> WATER_DRINKS = register("drinks/water");
-	/**
-	 * For consumable drinks that are generally watery (such as potions).
-	 */
+	/// For consumable drinks that are generally watery (such as potions).
 	public static final TagKey<Item> WATERY_DRINKS = register("drinks/watery");
 	public static final TagKey<Item> MILK_DRINKS = register("drinks/milk");
 	public static final TagKey<Item> HONEY_DRINKS = register("drinks/honey");
-	/**
-	 * For consumable drinks that are magic in nature and usually grant at least one
-	 * {@link net.minecraft.world.effect.MobEffect} when consumed.
-	 */
+	/// For consumable drinks that are magic in nature and usually grant at least one
+	/// [net.minecraft.world.effect.MobEffect] when consumed.
 	public static final TagKey<Item> MAGIC_DRINKS = register("drinks/magic");
-	/**
-	 * For drinks that always grant the {@linkplain net.minecraft.world.effect.MobEffects#BAD_OMEN Bad Omen} effect.
-	 */
+	/// For drinks that always grant the {@linkplain net.minecraft.world.effect.MobEffects#BAD_OMEN Bad Omen} effect.
 	public static final TagKey<Item> OMINOUS_DRINKS = register("drinks/ominous");
-	/**
-	 * Non-alcoholic, plant based fruit and vegetable juices belong in this tag, for example apple juice and carrot juice.
-	 *
-	 * <p>If tags for specific types of juices are desired, they may go in a sub-tag, using their regular name such as
-	 * {@code #c:drinks/apple_juice}.
-	 */
+	/// Non-alcoholic, plant based fruit and vegetable juices belong in this tag, for example apple juice and carrot juice.
+	///
+	/// If tags for specific types of juices are desired, they may go in a sub-tag, using their regular name such as
+	/// `#c:drinks/apple_juice`.
 	public static final TagKey<Item> JUICE_DRINKS = register("drinks/juice");
 
 	// Drink containing items
-	/**
-	 * For non-empty buckets that are {@linkplain #DRINKS drinkable}.
-	 */
+	/// For non-empty buckets that are {@linkplain #DRINKS drinkable}.
 	public static final TagKey<Item> DRINK_CONTAINING_BUCKET = register("drink_containing/bucket");
-	/**
-	 * For non-empty bottles that are {@linkplain #DRINKS drinkable}.
-	 */
+	/// For non-empty bottles that are {@linkplain #DRINKS drinkable}.
 	public static final TagKey<Item> DRINK_CONTAINING_BOTTLE = register("drink_containing/bottle");
 
 	// Buckets
 	public static final TagKey<Item> BUCKETS = register("buckets");
 	public static final TagKey<Item> EMPTY_BUCKETS = register("buckets/empty");
-	/**
-	 * Does not include entity water buckets.
-	 */
+	/// Does not include entity water buckets.
 	public static final TagKey<Item> WATER_BUCKETS = register("buckets/water");
 	public static final TagKey<Item> LAVA_BUCKETS = register("buckets/lava");
 	public static final TagKey<Item> MILK_BUCKETS = register("buckets/milk");
@@ -335,22 +249,16 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> ENDER_CHESTS = register("chests/ender");
 	public static final TagKey<Item> GLASS_BLOCKS = register("glass_blocks");
 	public static final TagKey<Item> GLASS_BLOCKS_COLORLESS = register("glass_blocks/colorless");
-	/**
-	 * Glass which is made from cheap resources like sand and only minor additional ingredients like dyes.
-	 */
+	/// Glass which is made from cheap resources like sand and only minor additional ingredients like dyes.
 	public static final TagKey<Item> GLASS_BLOCKS_CHEAP = register("glass_blocks/cheap");
 	public static final TagKey<Item> GLASS_BLOCKS_TINTED = register("glass_blocks/tinted");
 	public static final TagKey<Item> GLASS_PANES = register("glass_panes");
 	public static final TagKey<Item> GLASS_PANES_COLORLESS = register("glass_panes/colorless");
-	/**
-	 * Block tag equivalent is {@link BlockTags#SHULKER_BOXES}.
-	 */
+	/// Block tag equivalent is [BlockTags#SHULKER_BOXES].
 	public static final TagKey<Item> SHULKER_BOXES = register("shulker_boxes");
 	public static final TagKey<Item> GLAZED_TERRACOTTAS = register("glazed_terracottas");
 	public static final TagKey<Item> CONCRETES = register("concretes");
-	/**
-	 * Block tag equivalent is {@link BlockTags#CONCRETE_POWDER}.
-	 */
+	/// Block tag equivalent is [BlockTags#CONCRETE_POWDER].
 	public static final TagKey<Item> CONCRETE_POWDERS = register("concrete_powders");
 
 	// Related to budding mechanics
@@ -377,53 +285,35 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> UNCOLORED_SANDSTONE_STAIRS = register("sandstone/uncolored_stairs");
 
 	// Flower
-	/**
-	 * Contains living ground-based flowers that are 1 block tall such as Dandelions or Poppy.
-	 * Equivalent to the {@code minecraft:small_flowers} item tag.
-	 * Aliased with {@link ItemTags#SMALL_FLOWERS}.
-	 */
+	/// Contains living ground-based flowers that are 1 block tall such as Dandelions or Poppy.
+	/// Equivalent to the `minecraft:small_flowers` item tag.
+	/// Aliased with [ItemTags#SMALL_FLOWERS].
 	public static final TagKey<Item> SMALL_FLOWERS = register("flowers/small");
-	/**
-	 * Contains living ground-based flowers that are 2 block tall such as Rose Bush or Peony.
-	 * Equivalent to the {@code minecraft:tall_flowers} item tag in past Minecraft versions.
-	 */
+	/// Contains living ground-based flowers that are 2 block tall such as Rose Bush or Peony.
+	/// Equivalent to the `minecraft:tall_flowers` item tag in past Minecraft versions.
 	public static final TagKey<Item> TALL_FLOWERS = register("flowers/tall");
-	/**
-	 * Contains any living plant block that contains flowers or is a flower itself.
-	 * Equivalent to the {@code minecraft:flowers} item tag in past Minecraft versions.
-	 */
+	/// Contains any living plant block that contains flowers or is a flower itself.
+	/// Equivalent to the `minecraft:flowers` item tag in past Minecraft versions.
 	public static final TagKey<Item> FLOWERS = register("flowers");
 
 	// Fences and Fence Gates
-	/**
-	 * Aliased with {@link ItemTags#FENCES}.
-	 */
+	/// Aliased with [ItemTags#FENCES].
 	public static final TagKey<Item> FENCES = register("fences");
-	/**
-	 * Aliased with {@link ItemTags#WOODEN_FENCES}.
-	 */
+	/// Aliased with [ItemTags#WOODEN_FENCES].
 	public static final TagKey<Item> WOODEN_FENCES = register("fences/wooden");
 	public static final TagKey<Item> NETHER_BRICK_FENCES = register("fences/nether_brick");
-	/**
-	 * Aliased with {@link ItemTags#FENCE_GATES}.
-	 */
+	/// Aliased with [ItemTags#FENCE_GATES].
 	public static final TagKey<Item> FENCE_GATES = register("fence_gates");
 	public static final TagKey<Item> WOODEN_FENCE_GATES = register("fence_gates/wooden");
 
 	// Pumpkins
 	public static final TagKey<Item> PUMPKINS = register("pumpkins");
-	/**
-	 * For pumpkins that are not carved.
-	 */
+	/// For pumpkins that are not carved.
 	public static final TagKey<Item> NORMAL_PUMPKINS = register("pumpkins/normal");
-	/**
-	 * For pumpkins that are already carved but not a light source.
-	 */
+	/// For pumpkins that are already carved but not a light source.
 	public static final TagKey<Item> CARVED_PUMPKINS = register("pumpkins/carved");
 
-	/**
-	 * For pumpkins that are already carved and a light source.
-	 */
+	/// For pumpkins that are already carved and a light source.
 	public static final TagKey<Item> JACK_O_LANTERNS_PUMPKINS = register("pumpkins/jack_o_lanterns");
 
 	// Dyes
@@ -446,16 +336,14 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> YELLOW_DYES = register("dyes/yellow");
 
 	// Items created with dyes
-	/**
-	 * Tag that holds all blocks and items that can be dyed a specific color.
-	 * (Does not include color blending items like leather armor.
-	 * Use {@link net.minecraft.tags.ItemTags#DYEABLE} tag instead for color blending items)
-	 *
-	 * <p>Note: Use custom ingredients in recipes to do tag intersections and/or tag exclusions
-	 * to make more powerful recipes utilizing multiple tags such as dyed tags for an ingredient.
-	 * See {@link net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients}
-	 * children classes for various custom ingredients available that can also be used in data generation.
-	 */
+	/// Tag that holds all blocks and items that can be dyed a specific color.
+	/// (Does not include color blending items like leather armor.
+	/// Use [net.minecraft.tags.ItemTags#DYEABLE] tag instead for color blending items)
+	///
+	/// Note: Use custom ingredients in recipes to do tag intersections and/or tag exclusions
+	/// to make more powerful recipes utilizing multiple tags such as dyed tags for an ingredient.
+	/// See [net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients]
+	/// children classes for various custom ingredients available that can also be used in data generation.
 	public static final TagKey<Item> DYED = register("dyed");
 	public static final TagKey<Item> BLACK_DYED = register("dyed/black");
 	public static final TagKey<Item> BLUE_DYED = register("dyed/blue");
@@ -475,13 +363,11 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> YELLOW_DYED = register("dyed/yellow");
 
 	// Storage blocks - categories
-	/**
-	 * A storage block is generally a block that has a recipe to craft a bulk of 1 kind of resource to a block
-	 * and has a mirror recipe to reverse the crafting with no loss in resources.
-	 *
-	 * <p>Honey Block is special in that the reversing recipe is not a perfect mirror of the crafting recipe
-	 * and so, it is considered a special case and not given a storage block tag.
-	 */
+	/// A storage block is generally a block that has a recipe to craft a bulk of 1 kind of resource to a block
+	/// and has a mirror recipe to reverse the crafting with no loss in resources.
+	///
+	/// Honey Block is special in that the reversing recipe is not a perfect mirror of the crafting recipe
+	/// and so, it is considered a special case and not given a storage block tag.
 	public static final TagKey<Item> STORAGE_BLOCKS = register("storage_blocks");
 	public static final TagKey<Item> STORAGE_BLOCKS_BONE_MEAL = register("storage_blocks/bone_meal");
 	public static final TagKey<Item> STORAGE_BLOCKS_COAL = register("storage_blocks/coal");
@@ -502,36 +388,22 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STORAGE_BLOCKS_WHEAT = register("storage_blocks/wheat");
 
 	// Logs
-	/**
-	 * For logs found naturally in the Overworld, does not include Stripped Logs.
-	 */
+	/// For logs found naturally in the Overworld, does not include Stripped Logs.
 	public static final TagKey<Item> OVERWORLD_NATURAL_LOGS = register("natural_logs/overworld");
-	/**
-	 * For logs, including Stems, found naturally in the Nether, does not include Stripped Logs.
-	 */
+	/// For logs, including Stems, found naturally in the Nether, does not include Stripped Logs.
 	public static final TagKey<Item> NETHER_NATURAL_LOGS = register("natural_logs/nether");
-	/**
-	 * For logs, including Stems, found naturally that have not been stripped.
-	 */
+	/// For logs, including Stems, found naturally that have not been stripped.
 	public static final TagKey<Item> NATURAL_LOGS = register("natural_logs");
-	/**
-	 * For six-sided wood blocks, including Hyphae, found naturally that have not been stripped.
-	 */
+	/// For six-sided wood blocks, including Hyphae, found naturally that have not been stripped.
 	public static final TagKey<Item> NATURAL_WOODS = register("natural_woods");
-	/**
-	 * For logs, including Stems, found naturally that have been stripped.
-	 */
+	/// For logs, including Stems, found naturally that have been stripped.
 	public static final TagKey<Item> STRIPPED_LOGS = register("stripped_logs");
-	/**
-	 * For six-sided wood blocks, including Hyphae, found naturally that have been stripped.
-	 */
+	/// For six-sided wood blocks, including Hyphae, found naturally that have been stripped.
 	public static final TagKey<Item> STRIPPED_WOODS = register("stripped_woods");
 
 	// Crops
-	/**
-	 * For raw materials harvested from growable plants. Crop items can be edible like carrots or non-edible like
-	 * wheat and cocoa beans.
-	 */
+	/// For raw materials harvested from growable plants. Crop items can be edible like carrots or non-edible like
+	/// wheat and cocoa beans.
 	public static final TagKey<Item> CROPS = register("crops");
 	public static final TagKey<Item> BEETROOT_CROPS = register("crops/beetroot");
 	public static final TagKey<Item> CACTUS_CROPS = register("crops/cactus");
@@ -545,9 +417,7 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> WHEAT_CROPS = register("crops/wheat");
 
 	// Seeds
-	/**
-	 * For items that are explicitly seeds for use cases such as refilling a bird feeder block or certain seed-based recipes.
-	 */
+	/// For items that are explicitly seeds for use cases such as refilling a bird feeder block or certain seed-based recipes.
 	public static final TagKey<Item> SEEDS = register("seeds");
 	public static final TagKey<Item> BEETROOT_SEEDS = register("seeds/beetroot");
 	public static final TagKey<Item> MELON_SEEDS = register("seeds/melon");
@@ -562,30 +432,20 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> STRINGS = register("strings");
 	public static final TagKey<Item> LEATHERS = register("leathers");
 	public static final TagKey<Item> BONES = register("bones");
-	/**
-	 * For eggs to use for culinary purposes in recipes such as baking a cake.
-	 */
+	/// For eggs to use for culinary purposes in recipes such as baking a cake.
 	public static final TagKey<Item> EGGS = register("eggs");
 	public static final TagKey<Item> FEATHERS = register("feathers");
 	public static final TagKey<Item> GUNPOWDERS = register("gunpowders");
-	/**
-	 * Small mushroom items. Not the full block forms.
-	 */
+	/// Small mushroom items. Not the full block forms.
 	public static final TagKey<Item> MUSHROOMS = register("mushrooms");
 	public static final TagKey<Item> NETHER_STARS = register("nether_stars");
-	/**
-	 * For music disc-like materials to be used in recipes.
-	 * A pancake with a JUKEBOX_PLAYABLE component attached to play in Jukeboxes as an Easter Egg is not a music disc and would not go in this tag.
-	 */
+	/// For music disc-like materials to be used in recipes.
+	/// A pancake with a JUKEBOX_PLAYABLE component attached to play in Jukeboxes as an Easter Egg is not a music disc and would not go in this tag.
 	public static final TagKey<Item> MUSIC_DISCS = register("music_discs");
-	/**
-	 * For rod-like materials to be used in recipes.
-	 */
+	/// For rod-like materials to be used in recipes.
 	public static final TagKey<Item> RODS = register("rods");
-	/**
-	 * For stick-like materials to be used in recipes.
-	 * One example is a mod adds stick variants such as Spruce Sticks but would like stick recipes to be able to use it.
-	 */
+	/// For stick-like materials to be used in recipes.
+	/// One example is a mod adds stick variants such as Spruce Sticks but would like stick recipes to be able to use it.
 	public static final TagKey<Item> WOODEN_RODS = register("rods/wooden");
 	public static final TagKey<Item> BLAZE_RODS = register("rods/blaze");
 	public static final TagKey<Item> BREEZE_RODS = register("rods/breeze");
@@ -593,61 +453,39 @@ public final class ConventionalItemTags {
 	public static final TagKey<Item> CHAINS = register("chains");
 	public static final TagKey<Item> ENDER_PEARLS = register("ender_pearls");
 	public static final TagKey<Item> SLIME_BALLS = register("slime_balls");
-	/**
-	 * For bonemeal-like items that can grow plants.
-	 * (Note: Could include durability-based modded bonemeal-like items. Check for durability {@link net.minecraft.core.component.DataComponents#DAMAGE} to handle them properly)
-	 */
+	/// For bonemeal-like items that can grow plants.
+	/// (Note: Could include durability-based modded bonemeal-like items. Check for durability [net.minecraft.core.component.DataComponents#DAMAGE] to handle them properly)
 	public static final TagKey<Item> FERTILIZERS = register("fertilizers");
 
-	/**
-	 * Tag that holds all items that recipe viewers should not show to users.
-	 */
+	/// Tag that holds all items that recipe viewers should not show to users.
 	public static final TagKey<Item> HIDDEN_FROM_RECIPE_VIEWERS = register("hidden_from_recipe_viewers");
 
-	/**
-	 * Blocks which are often replaced by deepslate ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_DEEPSLATE}, during world generation.
-	 * (The block's registry name is used as the tag name)
-	 */
+	/// Blocks which are often replaced by deepslate ores, i.e. the ores in the tag [#ORES_IN_GROUND_DEEPSLATE], during world generation.
+	/// (The block's registry name is used as the tag name)
 	public static final TagKey<Item> ORE_BEARING_GROUND_DEEPSLATE = register("ore_bearing_ground/deepslate");
-	/**
-	 * Blocks which are often replaced by netherrack ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_NETHERRACK}, during world generation.
-	 * (The block's registry name is used as the tag name)
-	 */
+	/// Blocks which are often replaced by netherrack ores, i.e. the ores in the tag [#ORES_IN_GROUND_NETHERRACK], during world generation.
+	/// (The block's registry name is used as the tag name)
 	public static final TagKey<Item> ORE_BEARING_GROUND_NETHERRACK = register("ore_bearing_ground/netherrack");
-	/**
-	 * Blocks which are often replaced by stone ores, i.e. the ores in the tag {@link #ORES_IN_GROUND_STONE}, during world generation.
-	 * (The block's registry name is used as the tag name)
-	 */
+	/// Blocks which are often replaced by stone ores, i.e. the ores in the tag [#ORES_IN_GROUND_STONE], during world generation.
+	/// (The block's registry name is used as the tag name)
 	public static final TagKey<Item> ORE_BEARING_GROUND_STONE = register("ore_bearing_ground/stone");
-	/**
-	 * Ores which on average result in more than one resource worth of materials ignoring fortune and other modifiers.
-	 * (example, Copper Ore)
-	 */
+	/// Ores which on average result in more than one resource worth of materials ignoring fortune and other modifiers.
+	/// (example, Copper Ore)
 	public static final TagKey<Item> ORE_RATES_DENSE = register("ore_rates/dense");
-	/**
-	 * Ores which on average result in one resource worth of materials ignoring fortune and other modifiers.
-	 * (Example, Iron Ore)
-	 */
+	/// Ores which on average result in one resource worth of materials ignoring fortune and other modifiers.
+	/// (Example, Iron Ore)
 	public static final TagKey<Item> ORE_RATES_SINGULAR = register("ore_rates/singular");
-	/**
-	 * Ores which on average result in less than one resource worth of materials ignoring fortune and other modifiers.
-	 * (Example, Nether Gold Ore as it drops 2 to 6 Gold Nuggets which is less than normal Gold Ore's Raw Gold drop)
-	 */
+	/// Ores which on average result in less than one resource worth of materials ignoring fortune and other modifiers.
+	/// (Example, Nether Gold Ore as it drops 2 to 6 Gold Nuggets which is less than normal Gold Ore's Raw Gold drop)
 	public static final TagKey<Item> ORE_RATES_SPARSE = register("ore_rates/sparse");
-	/**
-	 * Ores in deepslate (or in equivalent blocks in the tag {@link #ORE_BEARING_GROUND_DEEPSLATE}) which could logically use deepslate as recipe input or output.
-	 * (The block's registry name is used as the tag name)
-	 */
+	/// Ores in deepslate (or in equivalent blocks in the tag [#ORE_BEARING_GROUND_DEEPSLATE]) which could logically use deepslate as recipe input or output.
+	/// (The block's registry name is used as the tag name)
 	public static final TagKey<Item> ORES_IN_GROUND_DEEPSLATE = register("ores_in_ground/deepslate");
-	/**
-	 * Ores in netherrack (or in equivalent blocks in the tag {@link #ORE_BEARING_GROUND_NETHERRACK}) which could logically use netherrack as recipe input or output.
-	 * (The block's registry name is used as the tag name)
-	 */
+	/// Ores in netherrack (or in equivalent blocks in the tag [#ORE_BEARING_GROUND_NETHERRACK]) which could logically use netherrack as recipe input or output.
+	/// (The block's registry name is used as the tag name)
 	public static final TagKey<Item> ORES_IN_GROUND_NETHERRACK = register("ores_in_ground/netherrack");
-	/**
-	 * Ores in stone (or in equivalent blocks in the tag {@link #ORE_BEARING_GROUND_STONE}) which could logically use stone as recipe input or output.
-	 * (The block's registry name is used as the tag name)
-	 */
+	/// Ores in stone (or in equivalent blocks in the tag [#ORE_BEARING_GROUND_STONE]) which could logically use stone as recipe input or output.
+	/// (The block's registry name is used as the tag name)
 	public static final TagKey<Item> ORES_IN_GROUND_STONE = register("ores_in_ground/stone");
 
 	private static TagKey<Item> register(String tagId) {

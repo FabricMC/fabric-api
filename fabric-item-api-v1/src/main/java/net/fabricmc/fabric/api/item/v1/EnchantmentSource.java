@@ -16,24 +16,16 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-/**
- * Determines where an enchantment has been loaded from.
- */
+/// Determines where an enchantment has been loaded from.
 public enum EnchantmentSource {
-	/**
-	 * An enchantment loaded from the vanilla data pack.
-	 */
+	/// An enchantment loaded from the vanilla data pack.
 	VANILLA(true),
-	/**
-	 * An enchantment loaded from mods' bundled resources.
-	 *
-	 * <p>This includes the additional builtin data packs registered by mods
-	 * with Fabric Resource Loader.
-	 */
+	/// An enchantment loaded from mods' bundled resources.
+	///
+	/// This includes the additional builtin data packs registered by mods
+	/// with Fabric Resource Loader.
 	MOD(true),
-	/**
-	 * An enchantment loaded from an external data pack.
-	 */
+	/// An enchantment loaded from an external data pack.
 	DATA_PACK(false);
 
 	private final boolean builtin;
@@ -42,13 +34,11 @@ public enum EnchantmentSource {
 		this.builtin = builtin;
 	}
 
-	/**
-	 * Returns whether this enchantment source is builtin and bundled in the vanilla or mod resources.
-	 *
-	 * <p>{@link #VANILLA} and {@link #MOD} are builtin.
-	 *
-	 * @return {@code true} if builtin, {@code false} otherwise
-	 */
+	/// Returns whether this enchantment source is builtin and bundled in the vanilla or mod resources.
+	///
+	/// [#VANILLA] and [#MOD] are builtin.
+	///
+	/// @return `true` if builtin, `false` otherwise
 	public boolean isBuiltin() {
 		return builtin;
 	}

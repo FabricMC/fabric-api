@@ -31,9 +31,7 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
-/**
- * Base class for ALL and ANY ingredients.
- */
+/// Base class for ALL and ANY ingredients.
 abstract class CombinedIngredient implements CustomIngredient {
 	protected final List<Ingredient> ingredients;
 

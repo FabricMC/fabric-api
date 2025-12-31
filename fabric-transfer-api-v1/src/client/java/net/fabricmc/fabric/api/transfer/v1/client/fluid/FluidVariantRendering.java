@@ -36,9 +36,7 @@ import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 
-/**
- * Client-side display of fluid variants.
- */
+/// Client-side display of fluid variants.
 public final class FluidVariantRendering {
 	private static final ApiProviderMap<Fluid, FluidVariantRenderHandler> HANDLERS = ApiProviderMap.create();
 	private static final FluidVariantRenderHandler DEFAULT_HANDLER = new FluidVariantRenderHandler() { };
@@ -46,45 +44,35 @@ public final class FluidVariantRendering {
 	private FluidVariantRendering () {
 	}
 
-	/**
-	 * Register a render handler for the passed fluid.
-	 */
+	/// Register a render handler for the passed fluid.
 	public static void register(Fluid fluid, FluidVariantRenderHandler handler) {
 		if (HANDLERS.putIfAbsent(fluid, handler) != null) {
 			throw new IllegalArgumentException("Duplicate handler registration for fluid " + fluid);
 		}
 	}
 
-	/**
-	 * Return the render handler for the passed fluid, if available, and {@code null} otherwise.
-	 */
+	/// Return the render handler for the passed fluid, if available, and `null` otherwise.
 	@Nullable
 	public static FluidVariantRenderHandler getHandler(Fluid fluid) {
 		return HANDLERS.get(fluid);
 	}
 
-	/**
-	 * Return the render handler for the passed fluid, if available, or the default instance otherwise.
-	 */
+	/// Return the render handler for the passed fluid, if available, or the default instance otherwise.
 	public static FluidVariantRenderHandler getHandlerOrDefault(Fluid fluid) {
 		FluidVariantRenderHandler handler = HANDLERS.get(fluid);
 		return handler == null ? DEFAULT_HANDLER : handler;
 	}
 
-	/**
-	 * Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
-	 * and the id of the fluid if advanced tooltips are enabled.
-	 *
-	 * <p>Compared to {@linkplain #getTooltip(FluidVariant, TooltipFlag) the other overload}, the current tooltip context is automatically used.
-	 */
+	/// Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
+	/// and the id of the fluid if advanced tooltips are enabled.
+	///
+	/// Compared to {@linkplain #getTooltip(FluidVariant, TooltipFlag) the other overload}, the current tooltip context is automatically used.
 	public static List<Component> getTooltip(FluidVariant fluidVariant) {
 		return getTooltip(fluidVariant, Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
 	}
 
-	/**
-	 * Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
-	 * and the id of the fluid if advanced tooltips are enabled.
-	 */
+	/// Return a mutable list: the tooltip for the passed fluid variant, including the name and additional lines if available
+	/// and the id of the fluid if advanced tooltips are enabled.
 	public static List<Component> getTooltip(FluidVariant fluidVariant, TooltipFlag flag) {
 		List<Component> tooltip = new ArrayList<>();
 
@@ -104,41 +92,33 @@ public final class FluidVariantRendering {
 		return tooltip;
 	}
 
-	/**
-	 * Return the still and the flowing sprite that should be used to render the passed fluid variant, or null if they are not available.
-	 * The sprites should be rendered using the color returned by {@link #getColor}.
-	 *
-	 * @see FluidVariantRenderHandler#getSprites
-	 */
+	/// Return the still and the flowing sprite that should be used to render the passed fluid variant, or null if they are not available.
+	/// The sprites should be rendered using the color returned by [#getColor].
+	///
+	/// @see FluidVariantRenderHandler#getSprites
 	@Nullable
 	public static TextureAtlasSprite[] getSprites(FluidVariant fluidVariant) {
 		return getHandlerOrDefault(fluidVariant.getFluid()).getSprites(fluidVariant);
 	}
 
-	/**
-	 * Return the still sprite that should be used to render the passed fluid variant, or null if it's not available.
-	 * The sprite should be rendered using the color returned by {@link #getColor}.
-	 */
+	/// Return the still sprite that should be used to render the passed fluid variant, or null if it's not available.
+	/// The sprite should be rendered using the color returned by [#getColor].
 	@Nullable
 	public static TextureAtlasSprite getSprite(FluidVariant fluidVariant) {
 		TextureAtlasSprite[] sprites = getSprites(fluidVariant);
 		return sprites != null ? Objects.requireNonNull(sprites[0]) : null;
 	}
 
-	/**
-	 * Return the position-independent color that should be used to render {@linkplain #getSprite the sprite} of the passed fluid variant.
-	 */
+	/// Return the position-independent color that should be used to render {@linkplain #getSprite the sprite} of the passed fluid variant.
 	public static int getColor(FluidVariant fluidVariant) {
 		return getColor(fluidVariant, null, null);
 	}
 
-	/**
-	 * Return the color that should be used when rendering {@linkplain #getSprite the sprite} of the passed fluid variant.
-	 *
-	 * <p>If the level and the position parameters are null, a position-independent color is returned.
-	 * If the level and position parameters are not null, the color may depend on the position.
-	 * For example, if level and position are passed, water will use them to return a biome-dependent color.
-	 */
+	/// Return the color that should be used when rendering {@linkplain #getSprite the sprite} of the passed fluid variant.
+	///
+	/// If the level and the position parameters are null, a position-independent color is returned.
+	/// If the level and position parameters are not null, the color may depend on the position.
+	/// For example, if level and position are passed, water will use them to return a biome-dependent color.
 	public static int getColor(FluidVariant fluidVariant, @Nullable BlockAndTintGetter view, @Nullable BlockPos pos) {
 		return getHandlerOrDefault(fluidVariant.getFluid()).getColor(fluidVariant, view, pos);
 	}

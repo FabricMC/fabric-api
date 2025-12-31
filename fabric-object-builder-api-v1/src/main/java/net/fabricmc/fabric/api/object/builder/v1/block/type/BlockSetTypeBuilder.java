@@ -22,13 +22,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 
-/**
- * This class allows easy creation of {@link BlockSetType}s.
- *
- * <p>A {@link BlockSetType} is used to tell the game various properties of related blocks, such as what sounds they should use.
- *
- * @see WoodTypeBuilder
- */
+/// This class allows easy creation of [BlockSetType]s.
+///
+/// A [BlockSetType] is used to tell the game various properties of related blocks, such as what sounds they should use.
+///
+/// @see WoodTypeBuilder
 public final class BlockSetTypeBuilder {
 	private boolean openableByHand = true;
 	private boolean openableByWindCharge = true;
@@ -44,169 +42,141 @@ public final class BlockSetTypeBuilder {
 	private SoundEvent buttonClickOffSound = SoundEvents.WOODEN_BUTTON_CLICK_OFF;
 	private SoundEvent buttonClickOnSound = SoundEvents.WOODEN_BUTTON_CLICK_ON;
 
-	/**
-	 * Sets whether this block set type's door and trapdoor can be opened by hand.
-	 *
-	 * <p>Defaults to {@code true}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets whether this block set type's door and trapdoor can be opened by hand.
+	///
+	/// Defaults to `true`.
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder openableByHand(boolean openableByHand) {
 		this.openableByHand = openableByHand;
 		return this;
 	}
 
-	/**
-	 * Sets whether this block set type's door and trapdoor can be opened by wind charge.
-	 *
-	 * <p>Defaults to {@code true}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets whether this block set type's door and trapdoor can be opened by wind charge.
+	///
+	/// Defaults to `true`.
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder openableByWindCharge(boolean openableByWindCharge) {
 		this.openableByWindCharge = openableByWindCharge;
 		return this;
 	}
 
-	/**
-	 * Sets whether this block set type's button can be activated by an arrow.
-	 *
-	 * <p>Defaults to {@code true}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets whether this block set type's button can be activated by an arrow.
+	///
+	/// Defaults to `true`.
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder buttonActivatedByArrows(boolean buttonActivatedByArrows) {
 		this.buttonActivatedByArrows = buttonActivatedByArrows;
 		return this;
 	}
 
-	/**
-	 * Sets this block set type's pressure plate {@link BlockSetType.PressurePlateSensitivity}.
-	 *
-	 * <p>Defaults to {@link BlockSetType.PressurePlateSensitivity#EVERYTHING}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets this block set type's pressure plate [BlockSetType.PressurePlateSensitivity].
+	///
+	/// Defaults to [BlockSetType.PressurePlateSensitivity#EVERYTHING].
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder pressurePlateActivationRule(BlockSetType.PressurePlateSensitivity activationRule) {
 		this.pressurePlateActivationRule = activationRule;
 		return this;
 	}
 
-	/**
-	 * Sets this block set type's sound type.
-	 *
-	 * <p>Defaults to {@link SoundType#WOOD}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets this block set type's sound type.
+	///
+	/// Defaults to [SoundType#WOOD].
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder soundType(SoundType soundType) {
 		this.soundType = soundType;
 		return this;
 	}
 
-	/**
-	 * Sets this block set type's door close sound.
-	 *
-	 * <p>Defaults to {@link SoundEvents#WOODEN_DOOR_CLOSE}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets this block set type's door close sound.
+	///
+	/// Defaults to [SoundEvents#WOODEN_DOOR_CLOSE].
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder doorCloseSound(SoundEvent doorCloseSound) {
 		this.doorCloseSound = doorCloseSound;
 		return this;
 	}
 
-	/**
-	 * Sets this block set type's door open sound.
-	 *
-	 * <p>Defaults to {@link SoundEvents#WOODEN_DOOR_OPEN}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets this block set type's door open sound.
+	///
+	/// Defaults to [SoundEvents#WOODEN_DOOR_OPEN].
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder doorOpenSound(SoundEvent doorOpenSound) {
 		this.doorOpenSound = doorOpenSound;
 		return this;
 	}
 
-	/**
-	 * Sets this block set type's trapdoor close sound.
-	 *
-	 * <p>Defaults to {@link SoundEvents#WOODEN_TRAPDOOR_CLOSE}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets this block set type's trapdoor close sound.
+	///
+	/// Defaults to [SoundEvents#WOODEN_TRAPDOOR_CLOSE].
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder trapdoorCloseSound(SoundEvent trapdoorCloseSound) {
 		this.trapdoorCloseSound = trapdoorCloseSound;
 		return this;
 	}
 
-	/**
-	 * Sets this block set type's trapdoor open sound.
-	 *
-	 * <p>Defaults to {@link SoundEvents#WOODEN_TRAPDOOR_OPEN}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets this block set type's trapdoor open sound.
+	///
+	/// Defaults to [SoundEvents#WOODEN_TRAPDOOR_OPEN].
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder trapdoorOpenSound(SoundEvent trapdoorOpenSound) {
 		this.trapdoorOpenSound = trapdoorOpenSound;
 		return this;
 	}
 
-	/**
-	 * Sets this block set type's pressure plate click off sound.
-	 *
-	 * <p>Defaults to {@link SoundEvents#WOODEN_PRESSURE_PLATE_CLICK_OFF}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets this block set type's pressure plate click off sound.
+	///
+	/// Defaults to [SoundEvents#WOODEN_PRESSURE_PLATE_CLICK_OFF].
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder pressurePlateClickOffSound(SoundEvent pressurePlateClickOffSound) {
 		this.pressurePlateClickOffSound = pressurePlateClickOffSound;
 		return this;
 	}
 
-	/**
-	 * Sets this block set type's pressure plate click on sound.
-	 *
-	 * <p>Defaults to {@link SoundEvents#WOODEN_PRESSURE_PLATE_CLICK_ON}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets this block set type's pressure plate click on sound.
+	///
+	/// Defaults to [SoundEvents#WOODEN_PRESSURE_PLATE_CLICK_ON].
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder pressurePlateClickOnSound(SoundEvent pressurePlateClickOnSound) {
 		this.pressurePlateClickOnSound = pressurePlateClickOnSound;
 		return this;
 	}
 
-	/**
-	 * Sets this block set type's button click off sound.
-	 *
-	 * <p>Defaults to {@link SoundEvents#WOODEN_BUTTON_CLICK_OFF}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets this block set type's button click off sound.
+	///
+	/// Defaults to [SoundEvents#WOODEN_BUTTON_CLICK_OFF].
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder buttonClickOffSound(SoundEvent buttonClickOffSound) {
 		this.buttonClickOffSound = buttonClickOffSound;
 		return this;
 	}
 
-	/**
-	 * Sets this block set type's button click on sound.
-	 *
-	 * <p>Defaults to {@link SoundEvents#WOODEN_BUTTON_CLICK_ON}.
-	 *
-	 * @return this builder for chaining
-	 */
+	/// Sets this block set type's button click on sound.
+	///
+	/// Defaults to [SoundEvents#WOODEN_BUTTON_CLICK_ON].
+	///
+	/// @return this builder for chaining
 	public BlockSetTypeBuilder buttonClickOnSound(SoundEvent buttonClickOnSound) {
 		this.buttonClickOnSound = buttonClickOnSound;
 		return this;
 	}
 
-	/**
-	 * Creates a new {@link BlockSetTypeBuilder} that copies all of another builder's values.
-	 *
-	 * @param builder the {@link BlockSetTypeBuilder} whose values are to be copied
-	 *
-	 * @return the created copy
-	 */
+	/// Creates a new [BlockSetTypeBuilder] that copies all of another builder's values.
+	///
+	/// @param builder the [BlockSetTypeBuilder] whose values are to be copied
+	///
+	/// @return the created copy
 	public static BlockSetTypeBuilder copyOf(BlockSetTypeBuilder builder) {
 		BlockSetTypeBuilder copy = new BlockSetTypeBuilder();
 		copy.openableByHand(builder.openableByHand);
@@ -225,13 +195,11 @@ public final class BlockSetTypeBuilder {
 		return copy;
 	}
 
-	/**
-	 * Creates a new {@link BlockSetTypeBuilder} that copies all of another block set type's values.
-	 *
-	 * @param setType the {@link BlockSetType} whose values are to be copied
-	 *
-	 * @return the created copy
-	 */
+	/// Creates a new [BlockSetTypeBuilder] that copies all of another block set type's values.
+	///
+	/// @param setType the [BlockSetType] whose values are to be copied
+	///
+	/// @return the created copy
 	public static BlockSetTypeBuilder copyOf(BlockSetType setType) {
 		BlockSetTypeBuilder copy = new BlockSetTypeBuilder();
 		copy.openableByHand(setType.canOpenByHand());
@@ -250,30 +218,28 @@ public final class BlockSetTypeBuilder {
 		return copy;
 	}
 
-	/**
-	 * Builds and registers a {@link BlockSetType} from this builder's values.
-	 *
-	 * <p>Alternatively, you can use {@link #build(Identifier)} to build without registering.
-	 * <br>Then {@link BlockSetType#register(BlockSetType)} can be used to register it later.
-	 *
-	 * @param id the id for the built {@link BlockSetType}
-	 *
-	 * @return the built and registered {@link BlockSetType}
-	 */
+	/// Builds and registers a [BlockSetType] from this builder's values.
+	///
+	/// Alternatively, you can use [#build(Identifier)] to build without registering.
+	///
+	///Then [BlockSetType#register(BlockSetType)] can be used to register it later.
+	///
+	/// @param id the id for the built [BlockSetType]
+	///
+	/// @return the built and registered [BlockSetType]
 	public BlockSetType register(Identifier id) {
 		return BlockSetType.register(this.build(id));
 	}
 
-	/**
-	 * Builds a {@link BlockSetType} from this builder's values without registering it.
-	 *
-	 * <p>Use {@link BlockSetType#register(BlockSetType)} to register it later.
-	 * <br>Alternatively, you can use {@link #register(Identifier)} to build and register it now.
-	 *
-	 * @param id the id for the built {@link BlockSetType}
-	 *
-	 * @return the built {@link BlockSetType}
-	 */
+	/// Builds a [BlockSetType] from this builder's values without registering it.
+	///
+	/// Use [BlockSetType#register(BlockSetType)] to register it later.
+	///
+	///Alternatively, you can use [#register(Identifier)] to build and register it now.
+	///
+	/// @param id the id for the built [BlockSetType]
+	///
+	/// @return the built [BlockSetType]
 	public BlockSetType build(Identifier id) {
 		return new BlockSetType(id.toString(), openableByHand, openableByWindCharge, buttonActivatedByArrows, pressurePlateActivationRule,
 				soundType, doorCloseSound, doorOpenSound, trapdoorCloseSound, trapdoorOpenSound, pressurePlateClickOffSound, pressurePlateClickOnSound, buttonClickOffSound, buttonClickOnSound);

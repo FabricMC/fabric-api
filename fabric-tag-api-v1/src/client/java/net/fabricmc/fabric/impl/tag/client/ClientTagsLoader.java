@@ -46,10 +46,8 @@ import net.fabricmc.loader.api.ModContainer;
 
 public class ClientTagsLoader {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-client-tags-api-v1");
-	/**
-	 * Load a given tag from the available mods into a set of {@link Identifier}s.
-	 * Parsing based on {@link net.minecraft.tags.TagLoader#load(net.minecraft.server.packs.resources.ResourceManager)}
-	 */
+	/// Load a given tag from the available mods into a set of [Identifier]s.
+	/// Parsing based on [net.minecraft.tags.TagLoader#load(net.minecraft.server.packs.resources.ResourceManager)]
 	public static LoadedTag loadTag(TagKey<?> tagKey) {
 		var tags = new HashSet<TagEntry>();
 		HashSet<Path> tagFiles = getTagFiles(tagKey.registry(), tagKey.location());
@@ -105,26 +103,20 @@ public class ClientTagsLoader {
 	public record LoadedTag(Set<Identifier> completeIds, Set<TagKey<?>> immediateChildTags, Set<Identifier> immediateChildIds) {
 	}
 
-	/**
-	 * @param resourceKey the {@link ResourceKey} of the {@link TagKey}
-	 * @param identifier  the {@link Identifier} of the tag
-	 * @return the paths to all tag json files within the available mods
-	 */
+	/// @param resourceKey the [ResourceKey] of the [TagKey]
+	/// @param identifier  the [Identifier] of the tag
+	/// @return the paths to all tag json files within the available mods
 	private static HashSet<Path> getTagFiles(ResourceKey<? extends Registry<?>> resourceKey, Identifier identifier) {
 		return getTagFiles(Registries.tagsDirPath(resourceKey), identifier);
 	}
 
-	/**
-	 * @return the paths to all tag json files within the available mods
-	 */
+	/// @return the paths to all tag json files within the available mods
 	private static HashSet<Path> getTagFiles(String tagType, Identifier identifier) {
 		String tagFile = "data/%s/%s/%s.json".formatted(identifier.getNamespace(), tagType, identifier.getPath());
 		return getResourcePaths(tagFile);
 	}
 
-	/**
-	 * @return all paths from the available mods that match the given internal path
-	 */
+	/// @return all paths from the available mods that match the given internal path
 	private static HashSet<Path> getResourcePaths(String path) {
 		HashSet<Path> out = new HashSet<>();
 

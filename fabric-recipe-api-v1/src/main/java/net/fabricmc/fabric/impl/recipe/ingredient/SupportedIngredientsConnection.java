@@ -21,9 +21,7 @@ import java.util.Set;
 import net.minecraft.network.Connection;
 import net.minecraft.resources.Identifier;
 
-/**
- * Implemented on {@link Connection} to store which custom ingredients the client supports.
- */
+/// Implemented on [Connection] to store which custom ingredients the client supports.
 public interface SupportedIngredientsConnection {
 	void fabric_setSupportedCustomIngredients(Set<Identifier> supportedCustomIngredients);
 

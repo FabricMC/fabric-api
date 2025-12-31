@@ -24,158 +24,132 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 
-/**
- * Events related to use of the mouse in a {@link Screen}.
- *
- * <p>All of these events work on top of a specific screen instance.
- * Subscriptions will only last as long as the screen itself, they'll disappear once the screen gets refreshed, closed or replaced.
- * Use {@link ScreenEvents#BEFORE_INIT} to register the desired events every time it is necessary.
- *
- * <p>Events are fired in the following order:
- * <pre>{@code AllowX -> BeforeX -> AfterX}</pre>
- * If the result of the Allow event is false, then Before and After are not called.
- *
- * @see ScreenEvents
- */
+/// Events related to use of the mouse in a [Screen].
+///
+/// All of these events work on top of a specific screen instance.
+/// Subscriptions will only last as long as the screen itself, they'll disappear once the screen gets refreshed, closed or replaced.
+/// Use [ScreenEvents#BEFORE_INIT] to register the desired events every time it is necessary.
+///
+/// Events are fired in the following order:
+/// <pre>`AllowX -> BeforeX -> AfterX`</pre>
+/// If the result of the Allow event is false, then Before and After are not called.
+///
+/// @see ScreenEvents
 public final class ScreenMouseEvents {
-	/**
-	 * An event that checks if the mouse click should be allowed.
-	 *
-	 * @return the event
-	 */
+	/// An event that checks if the mouse click should be allowed.
+	///
+	/// @return the event
 	public static Event<AllowMouseClick> allowMouseClick(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAllowMouseClickEvent();
 	}
 
-	/**
-	 * An event that is called before a mouse click is processed for a screen.
-	 *
-	 * @return the event
-	 */
+	/// An event that is called before a mouse click is processed for a screen.
+	///
+	/// @return the event
 	public static Event<BeforeMouseClick> beforeMouseClick(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeMouseClickEvent();
 	}
 
-	/**
-	 * An event that is called after a mouse click is processed for a screen.
-	 *
-	 * @return the event
-	 */
+	/// An event that is called after a mouse click is processed for a screen.
+	///
+	/// @return the event
 	public static Event<AfterMouseClick> afterMouseClick(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterMouseClickEvent();
 	}
 
-	/**
-	 * An event that checks if the mouse click should be allowed to release in a screen.
-	 *
-	 * @return the event
-	 */
+	/// An event that checks if the mouse click should be allowed to release in a screen.
+	///
+	/// @return the event
 	public static Event<AllowMouseRelease> allowMouseRelease(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAllowMouseReleaseEvent();
 	}
 
-	/**
-	 * An event that is called before the release of a mouse click is processed for a screen.
-	 *
-	 * @return the event
-	 */
+	/// An event that is called before the release of a mouse click is processed for a screen.
+	///
+	/// @return the event
 	public static Event<BeforeMouseRelease> beforeMouseRelease(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeMouseReleaseEvent();
 	}
 
-	/**
-	 * An event that is called after the release of a mouse click is processed for a screen.
-	 *
-	 * @return the event
-	 */
+	/// An event that is called after the release of a mouse click is processed for a screen.
+	///
+	/// @return the event
 	public static Event<AfterMouseRelease> afterMouseRelease(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterMouseReleaseEvent();
 	}
 
-	/**
-	 * An event that checks if the mouse should be allowed to drag in a screen.
-	 *
-	 * <p>This event tracks the amount a mouse was dragged both vertically and horizontally.
-	 *
-	 * @return the event
-	 */
+	/// An event that checks if the mouse should be allowed to drag in a screen.
+	///
+	/// This event tracks the amount a mouse was dragged both vertically and horizontally.
+	///
+	/// @return the event
 	public static Event<AllowMouseDrag> allowMouseDrag(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAllowMouseDragEvent();
 	}
 
-	/**
-	 * An event called after mouse dragging is processed for a screen.
-	 *
-	 * <p>This event tracks the amount a mouse was dragged both vertically and horizontally.
-	 *
-	 * @return the event
-	 */
+	/// An event called after mouse dragging is processed for a screen.
+	///
+	/// This event tracks the amount a mouse was dragged both vertically and horizontally.
+	///
+	/// @return the event
 	public static Event<BeforeMouseDrag> beforeMouseDrag(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeMouseDragEvent();
 	}
 
-	/**
-	 * An event called after mouse dragging is processed for a screen.
-	 *
-	 * <p>This event tracks the amount a mouse was dragged both vertically and horizontally.
-	 *
-	 * @return the event
-	 */
+	/// An event called after mouse dragging is processed for a screen.
+	///
+	/// This event tracks the amount a mouse was dragged both vertically and horizontally.
+	///
+	/// @return the event
 	public static Event<AfterMouseDrag> afterMouseDrag(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterMouseDragEvent();
 	}
 
-	/**
-	 * An event that checks if the mouse should be allowed to scroll in a screen.
-	 *
-	 * <p>This event tracks the amount a mouse was scrolled both vertically and horizontally.
-	 *
-	 * @return the event
-	 */
+	/// An event that checks if the mouse should be allowed to scroll in a screen.
+	///
+	/// This event tracks the amount a mouse was scrolled both vertically and horizontally.
+	///
+	/// @return the event
 	public static Event<AllowMouseScroll> allowMouseScroll(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAllowMouseScrollEvent();
 	}
 
-	/**
-	 * An event called before mouse scrolling is processed for a screen.
-	 *
-	 * <p>This event tracks the amount a mouse was scrolled both vertically and horizontally.
-	 *
-	 * @return the event
-	 */
+	/// An event called before mouse scrolling is processed for a screen.
+	///
+	/// This event tracks the amount a mouse was scrolled both vertically and horizontally.
+	///
+	/// @return the event
 	public static Event<BeforeMouseScroll> beforeMouseScroll(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeMouseScrollEvent();
 	}
 
-	/**
-	 * An event called after mouse scrolling is processed for a screen.
-	 *
-	 * <p>This event tracks the amount a mouse was scrolled both vertically and horizontally.
-	 *
-	 * @return the event
-	 */
+	/// An event called after mouse scrolling is processed for a screen.
+	///
+	/// This event tracks the amount a mouse was scrolled both vertically and horizontally.
+	///
+	/// @return the event
 	public static Event<AfterMouseScroll> afterMouseScroll(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
@@ -187,164 +161,140 @@ public final class ScreenMouseEvents {
 
 	@FunctionalInterface
 	public interface AllowMouseClick {
-		/**
-		 * Checks if the mouse click should be allowed in a screen.
-		 *
-		 * @param screen the screen
-		 * @param event the mouse button event, containing the mouse position and button
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
-		 */
+		/// Checks if the mouse click should be allowed in a screen.
+		///
+		/// @param screen the screen
+		/// @param event the mouse button event, containing the mouse position and button
+		/// @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		boolean allowMouseClick(Screen screen, MouseButtonEvent event);
 	}
 
 	@FunctionalInterface
 	public interface BeforeMouseClick {
-		/**
-		 * Called before a mouse click in a screen.
-		 *
-		 * @param screen the screen
-		 * @param event the mouse button event, containing the mouse position and button
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
-		 */
+		/// Called before a mouse click in a screen.
+		///
+		/// @param screen the screen
+		/// @param event the mouse button event, containing the mouse position and button
+		/// @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		void beforeMouseClick(Screen screen, MouseButtonEvent event);
 	}
 
 	@FunctionalInterface
 	public interface AfterMouseClick {
-		/**
-		 * Called after a mouse click in a screen.
-		 *
-		 * @param screen the screen
-		 * @param event the mouse button event, containing the mouse position and button
-		 * @param consumed whether the mouse click was already consumed
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
-		 */
+		/// Called after a mouse click in a screen.
+		///
+		/// @param screen the screen
+		/// @param event the mouse button event, containing the mouse position and button
+		/// @param consumed whether the mouse click was already consumed
+		/// @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		boolean afterMouseClick(Screen screen, MouseButtonEvent event, boolean consumed);
 	}
 
 	@FunctionalInterface
 	public interface AllowMouseRelease {
-		/**
-		 * Checks if the mouse click should be allowed to release in a screen.
-		 *
-		 * @param screen the screen
-		 * @param event the mouse button event, containing the mouse position and button
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
-		 */
+		/// Checks if the mouse click should be allowed to release in a screen.
+		///
+		/// @param screen the screen
+		/// @param event the mouse button event, containing the mouse position and button
+		/// @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		boolean allowMouseRelease(Screen screen, MouseButtonEvent event);
 	}
 
 	@FunctionalInterface
 	public interface BeforeMouseRelease {
-		/**
-		 * Called before a mouse click has released in a screen.
-		 *
-		 * @param screen the screen
-		 * @param event the mouse button event, containing the mouse position and button
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
-		 */
+		/// Called before a mouse click has released in a screen.
+		///
+		/// @param screen the screen
+		/// @param event the mouse button event, containing the mouse position and button
+		/// @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		void beforeMouseRelease(Screen screen, MouseButtonEvent event);
 	}
 
 	@FunctionalInterface
 	public interface AfterMouseRelease {
-		/**
-		 * Called after a mouse click has released in a screen.
-		 *
-		 * @param screen the screen
-		 * @param event the mouse release event, containing the mouse position and button
-		 * @param consumed whether the mouse release was already consumed
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
-		 */
+		/// Called after a mouse click has released in a screen.
+		///
+		/// @param screen the screen
+		/// @param event the mouse release event, containing the mouse position and button
+		/// @param consumed whether the mouse release was already consumed
+		/// @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		boolean afterMouseRelease(Screen screen, MouseButtonEvent event, boolean consumed);
 	}
 
 	@FunctionalInterface
 	public interface AllowMouseDrag {
-		/**
-		 * Checks if the mouse should be allowed to drag in a screen by moving the cursor while a mouse button is held
-		 * down.
-		 *
-		 * @param screen the screen
-		 * @param event the mouse button event, containing the mouse position and button
-		 * @param horizontalAmount the horizontal drag amount
-		 * @param verticalAmount the vertical drag amount
-		 * @return whether the mouse should be allowed to drag
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
-		 */
+		/// Checks if the mouse should be allowed to drag in a screen by moving the cursor while a mouse button is held
+		/// down.
+		///
+		/// @param screen the screen
+		/// @param event the mouse button event, containing the mouse position and button
+		/// @param horizontalAmount the horizontal drag amount
+		/// @param verticalAmount the vertical drag amount
+		/// @return whether the mouse should be allowed to drag
+		/// @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		boolean allowMouseDrag(Screen screen, MouseButtonEvent event, double horizontalAmount, double verticalAmount);
 	}
 
 	@FunctionalInterface
 	public interface BeforeMouseDrag {
-		/**
-		 * Called before a mouse is dragged on screen.
-		 *
-		 * @param screen the screen
-		 * @param event the mouse button event, containing the mouse position and button
-		 * @param horizontalAmount the horizontal drag amount
-		 * @param verticalAmount the vertical drag amount
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
-		 */
+		/// Called before a mouse is dragged on screen.
+		///
+		/// @param screen the screen
+		/// @param event the mouse button event, containing the mouse position and button
+		/// @param horizontalAmount the horizontal drag amount
+		/// @param verticalAmount the vertical drag amount
+		/// @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		void beforeMouseDrag(Screen screen, MouseButtonEvent event, double horizontalAmount, double verticalAmount);
 	}
 
 	@FunctionalInterface
 	public interface AfterMouseDrag {
-		/**
-		 * Called after a mouse is dragged on screen.
-		 *
-		 * @param screen the screen
-		 * @param event the mouse button event, containing the mouse position and button
-		 * @param horizontalAmount the horizontal drag amount
-		 * @param verticalAmount the vertical drag amount
-		 * @param consumed whether the mouse drag was already consumed
-		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
-		 */
+		/// Called after a mouse is dragged on screen.
+		///
+		/// @param screen the screen
+		/// @param event the mouse button event, containing the mouse position and button
+		/// @param horizontalAmount the horizontal drag amount
+		/// @param verticalAmount the vertical drag amount
+		/// @param consumed whether the mouse drag was already consumed
+		/// @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		boolean afterMouseDrag(Screen screen, MouseButtonEvent event, double horizontalAmount, double verticalAmount, boolean consumed);
 	}
 
 	@FunctionalInterface
 	public interface AllowMouseScroll {
-		/**
-		 * Checks if the mouse should be allowed to scroll in a screen.
-		 *
-		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param horizontalAmount the horizontal scroll amount
-		 * @param verticalAmount the vertical scroll amount
-		 * @return whether the mouse should be allowed to scroll
-		 */
+		/// Checks if the mouse should be allowed to scroll in a screen.
+		///
+		/// @param screen the screen
+		/// @param mouseX the x position of the mouse
+		/// @param mouseY the y position of the mouse
+		/// @param horizontalAmount the horizontal scroll amount
+		/// @param verticalAmount the vertical scroll amount
+		/// @return whether the mouse should be allowed to scroll
 		boolean allowMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
 	}
 
 	@FunctionalInterface
 	public interface BeforeMouseScroll {
-		/**
-		 * Called before a mouse has scrolled on screen.
-		 *
-		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param horizontalAmount the horizontal scroll amount
-		 * @param verticalAmount the vertical scroll amount
-		 */
+		/// Called before a mouse has scrolled on screen.
+		///
+		/// @param screen the screen
+		/// @param mouseX the x position of the mouse
+		/// @param mouseY the y position of the mouse
+		/// @param horizontalAmount the horizontal scroll amount
+		/// @param verticalAmount the vertical scroll amount
 		void beforeMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
 	}
 
 	@FunctionalInterface
 	public interface AfterMouseScroll {
-		/**
-		 * Called after a mouse has scrolled on screen.
-		 *
-		 * @param screen the screen
-		 * @param mouseX the x position of the mouse
-		 * @param mouseY the y position of the mouse
-		 * @param horizontalAmount the horizontal scroll amount
-		 * @param verticalAmount the vertical scroll amount
-		 * @param consumed whether the mouse scroll was already consumed
-		 */
+		/// Called after a mouse has scrolled on screen.
+		///
+		/// @param screen the screen
+		/// @param mouseX the x position of the mouse
+		/// @param mouseY the y position of the mouse
+		/// @param horizontalAmount the horizontal scroll amount
+		/// @param verticalAmount the vertical scroll amount
+		/// @param consumed whether the mouse scroll was already consumed
 		boolean afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount, boolean consumed);
 	}
 }

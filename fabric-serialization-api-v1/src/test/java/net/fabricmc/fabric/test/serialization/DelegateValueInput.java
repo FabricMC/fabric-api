@@ -24,9 +24,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.ValueInput;
 
-/**
- * A delegating ValueInput, used to force usage of fallback implementation of FabricValueInput.
- */
+/// A delegating ValueInput, used to force usage of fallback implementation of FabricValueInput.
 public record DelegateValueInput(ValueInput input) implements ValueInput {
 	@Override
 	public <T> Optional<T> read(String key, Codec<T> codec) {

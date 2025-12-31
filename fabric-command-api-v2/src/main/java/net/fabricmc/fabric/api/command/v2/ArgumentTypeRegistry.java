@@ -26,15 +26,13 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.mixin.command.ArgumentTypeInfosAccessor;
 
 public final class ArgumentTypeRegistry {
-	/**
-	 * Register a new argument type.
-	 *
-	 * @param id the identifier of the argument type
-	 * @param clazz the class of the argument type
-	 * @param serializer the serializer for the argument type
-	 * @param <A> the argument type
-	 * @param <T> the argument type properties
-	 */
+	/// Register a new argument type.
+	///
+	/// @param id the identifier of the argument type
+	/// @param clazz the class of the argument type
+	/// @param serializer the serializer for the argument type
+	/// @param <A> the argument type
+	/// @param <T> the argument type properties
 	public static <A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>> void registerArgumentType(
 			Identifier id, Class<? extends A> clazz, ArgumentTypeInfo<A, T> serializer) {
 		ArgumentTypeInfosAccessor.fabric_getClassMap().put(clazz, serializer);

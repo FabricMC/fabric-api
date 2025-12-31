@@ -40,57 +40,46 @@ import net.minecraft.world.scores.PlayerTeam;
 
 import net.fabricmc.fabric.impl.event.interaction.FakePlayerPacketListener;
 
-/**
- * A "fake player" is a {@link ServerPlayer} that is not a human player.
- * They are typically used to automatically perform player actions such as placing blocks.
- *
- * <p>The easiest way to obtain a fake player is with {@link FakePlayer#get(ServerLevel)} or {@link FakePlayer#get(ServerLevel, GameProfile)}.
- * It is also possible to create a subclass for more control over the fake player's behavior.
- *
- * <p>For good inter-mod compatibility, fake players should have the UUID of their owning (human) player.
- * They should still have a different name to ensure the {@link GameProfile} is different.
- * For example:
- * <pre>{@code
- * UUID humanPlayerUuid = ...;
- * String humanPlayerName = ...;
- * GameProfile fakeProfile = new GameProfile(humanPlayerUuid, "[Block Breaker of " + humanPlayerName + "]");
- * }</pre>
- * If a fake player does not belong to a specific player, the {@link #DEFAULT_UUID default UUID} should be used.
- *
- * <p>Fake players try to behave like regular {@link ServerPlayer} objects to a reasonable extent.
- * In some edge cases, or for gameplay considerations, it might be necessary to check whether a {@link ServerPlayer} is a fake player.
- * This can be done with an {@code instanceof} check: {@code player instanceof FakePlayer}.
- */
+/// A "fake player" is a [ServerPlayer] that is not a human player.
+/// They are typically used to automatically perform player actions such as placing blocks.
+///
+/// The easiest way to obtain a fake player is with [FakePlayer#get(ServerLevel)] or [FakePlayer#get(ServerLevel, GameProfile)].
+/// It is also possible to create a subclass for more control over the fake player's behavior.
+///
+/// For good inter-mod compatibility, fake players should have the UUID of their owning (human) player.
+/// They should still have a different name to ensure the [GameProfile] is different.
+/// For example:
+/// <pre>
+/// `UUID humanPlayerUuid = ...;String humanPlayerName = ...;GameProfile fakeProfile = new GameProfile(humanPlayerUuid, "[Block Breaker of " + humanPlayerName + "]");`</pre>
+/// If a fake player does not belong to a specific player, the [default UUID][#DEFAULT_UUID] should be used.
+///
+/// Fake players try to behave like regular [ServerPlayer] objects to a reasonable extent.
+/// In some edge cases, or for gameplay considerations, it might be necessary to check whether a [ServerPlayer] is a fake player.
+/// This can be done with an `instanceof` check: `player instanceof FakePlayer`.
 public class FakePlayer extends ServerPlayer {
-	/**
-	 * Default UUID, for fake players not associated with a specific (human) player.
-	 */
+	/// Default UUID, for fake players not associated with a specific (human) player.
 	public static final UUID DEFAULT_UUID = UUID.fromString("41C82C87-7AfB-4024-BA57-13D2C99CAE77");
 	private static final GameProfile DEFAULT_PROFILE = new GameProfile(DEFAULT_UUID, "[Minecraft]");
 
-	/**
-	 * Retrieves a fake player for the specified level, using the {@link #DEFAULT_UUID default UUID}.
-	 * This is suitable when the fake player is not associated with a specific (human) player.
-	 * Otherwise, the UUID of the owning (human) player should be used (see class javadoc).
-	 *
-	 * <p>Instances are reused for the same level parameter.
-	 *
-	 * <p>Caution should be exerted when storing the returned value,
-	 * as strong references to the fake player will keep the level loaded.
-	 */
+	/// Retrieves a fake player for the specified level, using the [default UUID][#DEFAULT_UUID].
+	/// This is suitable when the fake player is not associated with a specific (human) player.
+	/// Otherwise, the UUID of the owning (human) player should be used (see class javadoc).
+	///
+	/// Instances are reused for the same level parameter.
+	///
+	/// Caution should be exerted when storing the returned value,
+	/// as strong references to the fake player will keep the level loaded.
 	public static FakePlayer get(ServerLevel level) {
 		return get(level, DEFAULT_PROFILE);
 	}
 
-	/**
-	 * Retrieves a fake player for the specified level and game profile.
-	 * See class javadoc for more information on fake player game profiles.
-	 *
-	 * <p>Instances are reused for the same parameters.
-	 *
-	 * <p>Caution should be exerted when storing the returned value,
-	 * as strong references to the fake player will keep the level loaded.
-	 */
+	/// Retrieves a fake player for the specified level and game profile.
+	/// See class javadoc for more information on fake player game profiles.
+	///
+	/// Instances are reused for the same parameters.
+	///
+	/// Caution should be exerted when storing the returned value,
+	/// as strong references to the fake player will keep the level loaded.
 	public static FakePlayer get(ServerLevel level, GameProfile profile) {
 		Objects.requireNonNull(level, "Level may not be null.");
 		Objects.requireNonNull(profile, "Game profile may not be null.");

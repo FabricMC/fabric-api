@@ -18,9 +18,7 @@ package net.fabricmc.fabric.test.lookup.api;
 
 import net.minecraft.network.chat.Component;
 
-/**
- * An object that may provide an arbitrary component for display.
- */
+/// An object that may provide an arbitrary component for display.
 public interface Inspectable {
 	Component inspect();
 }

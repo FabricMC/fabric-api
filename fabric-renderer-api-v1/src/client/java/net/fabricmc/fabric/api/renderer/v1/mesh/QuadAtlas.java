@@ -21,9 +21,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.Identifier;
 
-/**
- * An atlas texture that a {@link QuadView} uses.
- */
+/// An atlas texture that a [QuadView] uses.
 public enum QuadAtlas {
 	BLOCK(TextureAtlas.LOCATION_BLOCKS),
 	ITEM(TextureAtlas.LOCATION_ITEMS);
@@ -34,9 +32,7 @@ public enum QuadAtlas {
 		this.textureId = textureId;
 	}
 
-	/**
-	 * {@return the quad atlas for the given atlas texture ID or null if no corresponding quad atlas exists}
-	 */
+	/// {@return the quad atlas for the given atlas texture ID or null if no corresponding quad atlas exists}
 	@Nullable
 	public static QuadAtlas of(Identifier atlasTextureId) {
 		if (atlasTextureId.equals(TextureAtlas.LOCATION_BLOCKS)) {
@@ -48,9 +44,7 @@ public enum QuadAtlas {
 		}
 	}
 
-	/**
-	 * {@return the atlas texture ID}
-	 */
+	/// {@return the atlas texture ID}
 	public Identifier getTextureId() {
 		return textureId;
 	}

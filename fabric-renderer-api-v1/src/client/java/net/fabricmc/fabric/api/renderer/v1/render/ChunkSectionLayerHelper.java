@@ -27,10 +27,8 @@ public final class ChunkSectionLayerHelper {
 	private ChunkSectionLayerHelper() {
 	}
 
-	/**
-	 * Same logic as {@link net.minecraft.client.renderer.ItemBlockRenderTypes#getMovingBlockRenderType}, but accepts a {@link ChunkSectionLayer} instead of a
-	 * {@link BlockState}.
-	 */
+	/// Same logic as [net.minecraft.client.renderer.ItemBlockRenderTypes#getMovingBlockRenderType], but accepts a [ChunkSectionLayer] instead of a
+	/// [BlockState].
 	public static RenderType getMovingBlockLayer(ChunkSectionLayer layer) {
 		return switch (layer) {
 		case SOLID -> RenderTypes.solidMovingBlock();
@@ -40,26 +38,20 @@ public final class ChunkSectionLayerHelper {
 		};
 	}
 
-	/**
-	 * Same logic as {@link net.minecraft.client.renderer.ItemBlockRenderTypes#getRenderType}, but accepts a {@link ChunkSectionLayer} instead of a
-	 * {@link BlockState}.
-	 */
+	/// Same logic as [net.minecraft.client.renderer.ItemBlockRenderTypes#getRenderType], but accepts a [ChunkSectionLayer] instead of a
+	/// [BlockState].
 	public static RenderType getEntityBlockLayer(ChunkSectionLayer layer) {
 		return layer == ChunkSectionLayer.TRANSLUCENT ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockSheet();
 	}
 
-	/**
-	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types using
-	 * {@link #getMovingBlockLayer(ChunkSectionLayer)}.
-	 */
+	/// Wraps the given provider, converting [ChunkSectionLayer]s to render types using
+	/// [#getMovingBlockLayer(ChunkSectionLayer)].
 	public static BlockMultiBufferSource movingDelegate(MultiBufferSource bufferSource) {
 		return layer -> bufferSource.getBuffer(ChunkSectionLayerHelper.getMovingBlockLayer(layer));
 	}
 
-	/**
-	 * Wraps the given provider, converting {@link ChunkSectionLayer}s to render types using
-	 * {@link #getEntityBlockLayer(ChunkSectionLayer)}.
-	 */
+	/// Wraps the given provider, converting [ChunkSectionLayer]s to render types using
+	/// [#getEntityBlockLayer(ChunkSectionLayer)].
 	public static BlockMultiBufferSource entityDelegate(MultiBufferSource bufferSource) {
 		return layer -> bufferSource.getBuffer(ChunkSectionLayerHelper.getEntityBlockLayer(layer));
 	}

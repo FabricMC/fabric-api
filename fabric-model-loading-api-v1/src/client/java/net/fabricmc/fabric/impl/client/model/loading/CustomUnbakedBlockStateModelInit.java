@@ -21,9 +21,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.CustomUnbakedBlockStateModel;
 
-/**
- * Register builtin custom unbaked block state models.
- */
+/// Register builtin custom unbaked block state models.
 public class CustomUnbakedBlockStateModelInit implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {

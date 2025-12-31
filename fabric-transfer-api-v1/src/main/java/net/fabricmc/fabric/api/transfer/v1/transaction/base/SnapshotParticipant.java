@@ -23,68 +23,54 @@ import java.util.Objects;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-/**
- * A base participant implementation that modifies itself during transactions,
- * saving snapshots of its state in objects of type {@code T} in case it needs to revert to a previous state.
- *
- * <h3>How to use from subclasses</h3>
- * <ul>
- *     <li>Call {@link #updateSnapshots} right before the state of your subclass is modified in a transaction.</li>
- *     <li>Override {@link #createSnapshot}: it is called when necessary to create an object representing the state of your subclass.</li>
- *     <li>Override {@link #readSnapshot}: it is called when necessary to revert to a previous state of your subclass.</li>
- *     <li>You may optionally override {@link #onFinalCommit}: it is called at the of a transaction that modified the state.
- *     For example, it could contain a call to {@code setChanged()}.</li>
- *     <li>(Advanced!) You may optionally override {@link #releaseSnapshot}: it is called once a snapshot object will not be used,
- *     for example you may wish to pool expensive state objects.</li>
- * </ul>
- *
- * <h3>More technical explanation</h3>
- *
- * <p>{@link #updateSnapshots} should be called before any modification.
- * This will save the state of this participant using {@link #createSnapshot} if no state was already saved for that transaction.
- * When the transaction is aborted and changes need to be rolled back, {@link #readSnapshot} will be called
- * to signal that the current state should revert to that of the snapshot.
- * The snapshot object is then {@linkplain #releaseSnapshot released}, and can be cached for subsequent use, or discarded.
- *
- * <p>When an outer transaction is committed, {@link #readSnapshot} will not be called so that the current state of this participant
- * is retained. {@link #releaseSnapshot} will be called because the snapshot is not necessary anymore,
- * and {@link #onFinalCommit} will be called after the transaction is closed.
- *
- * @param <T> The objects that this participant uses to save its state snapshots.
- */
+/// A base participant implementation that modifies itself during transactions,
+/// saving snapshots of its state in objects of type `T` in case it needs to revert to a previous state.
+/// ### How to use from subclasses
+///
+///   - Call [#updateSnapshots] right before the state of your subclass is modified in a transaction.
+///   - Override [#createSnapshot]: it is called when necessary to create an object representing the state of your subclass.
+///   - Override [#readSnapshot]: it is called when necessary to revert to a previous state of your subclass.
+///   - You may optionally override [#onFinalCommit]: it is called at the of a transaction that modified the state.
+///     For example, it could contain a call to `setChanged()`.
+///   - (Advanced!) You may optionally override [#releaseSnapshot]: it is called once a snapshot object will not be used,
+///     for example you may wish to pool expensive state objects.
+///
+/// ### More technical explanation
+///
+/// [#updateSnapshots] should be called before any modification.
+/// This will save the state of this participant using [#createSnapshot] if no state was already saved for that transaction.
+/// When the transaction is aborted and changes need to be rolled back, [#readSnapshot] will be called
+/// to signal that the current state should revert to that of the snapshot.
+/// The snapshot object is then {@linkplain #releaseSnapshot released}, and can be cached for subsequent use, or discarded.
+///
+/// When an outer transaction is committed, [#readSnapshot] will not be called so that the current state of this participant
+/// is retained. [#releaseSnapshot] will be called because the snapshot is not necessary anymore,
+/// and [#onFinalCommit] will be called after the transaction is closed.
+///
+/// @param <T> The objects that this participant uses to save its state snapshots.
 public abstract class SnapshotParticipant<T> implements Transaction.CloseCallback, Transaction.OuterCloseCallback {
 	private final List<T> snapshots = new ArrayList<>();
 
-	/**
-	 * Return a new <b>nonnull</b> object containing the current state of this participant.
-	 * <b>{@code null} may not be returned, or an exception will be thrown!</b>
-	 */
+	/// Return a new **nonnull** object containing the current state of this participant.
+	/// **`null` may not be returned, or an exception will be thrown!**
 	protected abstract T createSnapshot();
 
-	/**
-	 * Roll back to a state previously created by {@link #createSnapshot}.
-	 */
+	/// Roll back to a state previously created by [#createSnapshot].
 	protected abstract void readSnapshot(T snapshot);
 
-	/**
-	 * Signals that the snapshot will not be used anymore, and is safe to cache for next calls to {@link #createSnapshot},
-	 * or discard entirely.
-	 */
+	/// Signals that the snapshot will not be used anymore, and is safe to cache for next calls to [#createSnapshot],
+	/// or discard entirely.
 	protected void releaseSnapshot(T snapshot) {
 	}
 
-	/**
-	 * Called after an outer transaction succeeded,
-	 * to perform irreversible actions such as {@code setChanged()} or neighbor updates.
-	 */
+	/// Called after an outer transaction succeeded,
+	/// to perform irreversible actions such as `setChanged()` or neighbor updates.
 	protected void onFinalCommit() {
 	}
 
-	/**
-	 * Update the stored snapshots so that the changes happening as part of the passed transaction can be correctly
-	 * committed or rolled back.
-	 * This function should be called every time the participant is about to change its internal state as part of a transaction.
-	 */
+	/// Update the stored snapshots so that the changes happening as part of the passed transaction can be correctly
+	/// committed or rolled back.
+	/// This function should be called every time the participant is about to change its internal state as part of a transaction.
 	public void updateSnapshots(TransactionContext transaction) {
 		// Make sure we have enough storage for snapshots
 		while (snapshots.size() <= transaction.nestingDepth()) {

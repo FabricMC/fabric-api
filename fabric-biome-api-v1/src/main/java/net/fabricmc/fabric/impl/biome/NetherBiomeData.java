@@ -32,9 +32,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
 
-/**
- * Internal data for modding Vanilla's {@link MultiNoiseBiomeSourceParameterList.Preset#NETHER}.
- */
+/// Internal data for modding Vanilla's [MultiNoiseBiomeSourceParameterList.Preset#NETHER].
 public final class NetherBiomeData {
 	// Cached sets of the biomes that would generate from Vanilla's default biome source without consideration
 	// for data packs (as those would be distinct biome sources).

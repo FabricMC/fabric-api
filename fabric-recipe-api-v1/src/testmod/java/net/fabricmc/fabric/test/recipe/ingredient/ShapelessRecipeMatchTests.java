@@ -35,9 +35,7 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class ShapelessRecipeMatchTests {
-	/**
-	 * The recipe requires at least one undamaged pickaxe.
-	 */
+	/// The recipe requires at least one undamaged pickaxe.
 	@GameTest
 	public void testShapelessMatch(GameTestHelper helper) {
 		ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath("fabric-recipe-api-v1-testmod", "test_shapeless_match"));

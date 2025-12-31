@@ -39,19 +39,17 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.impl.registry.sync.RegistryAttributeImpl;
 
-/**
- * A more optimized method to sync registry ids to client.
- * Produces smaller packets than the old nbt-based method.
- *
- * <p>This method optimizes the packet in multiple ways:
- * <ul>
- *     <li>Directly writes into the buffer instead of using an nbt;</li>
- *     <li>Groups all {@link Identifier}s with same namespace together and only sends those unique namespaces once for each group;</li>
- *     <li>Groups consecutive rawIds together and only sends the difference of the first rawId and the last rawId of the bulk before.
- *     This is based on the assumption that mods generally register all of their objects at once,
- *     therefore making the rawIds somewhat densely packed.</li>
- * </ul>
- */
+/// A more optimized method to sync registry ids to client.
+/// Produces smaller packets than the old nbt-based method.
+///
+/// This method optimizes the packet in multiple ways:
+///
+///   - Directly writes into the buffer instead of using an nbt;
+///   - Groups all [Identifier]s with same namespace together and only sends those unique namespaces once for each group;
+///   - Groups consecutive rawIds together and only sends the difference of the first rawId and the last rawId of the bulk before.
+///     This is based on the assumption that mods generally register all of their objects at once,
+///     therefore making the rawIds somewhat densely packed.
+///
 public record RegistrySyncPayload(
 		Map<Identifier, Object2IntMap<Identifier>> registryMap,
 		Map<Identifier, EnumSet<RegistryAttribute>> registryAttributes

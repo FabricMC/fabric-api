@@ -37,9 +37,7 @@ import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.TheEndBiomeSource;
 import net.minecraft.world.level.levelgen.synth.ImprovedNoise;
 
-/**
- * Internal data for modding Vanilla's {@link TheEndBiomeSource}.
- */
+/// Internal data for modding Vanilla's [TheEndBiomeSource].
 public final class TheEndBiomeData {
 	public static final ThreadLocal<HolderGetter<Biome>> biomeRegistry = new ThreadLocal<>();
 	public static final Set<ResourceKey<Biome>> ADDED_BIOMES = new HashSet<>();
@@ -92,9 +90,7 @@ public final class TheEndBiomeData {
 		return new Overrides(biomes);
 	}
 
-	/**
-	 * An instance of this class is attached to each {@link TheEndBiomeSource}.
-	 */
+	/// An instance of this class is attached to each [TheEndBiomeSource].
 	public static class Overrides {
 		public final Set<Holder<Biome>> customBiomes;
 

@@ -21,9 +21,7 @@ import java.util.Set;
 import net.minecraft.network.Connection;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
-/**
- * Implemented on {@link Connection} to store which recipe serializers should be synced to client.
- */
+/// Implemented on [Connection] to store which recipe serializers should be synced to client.
 public interface SyncedSerializerAwareConnection {
 	void fabric_setSyncedRecipeSerializers(Set<RecipeSerializer<?>> syncedRecipeSerializers);
 

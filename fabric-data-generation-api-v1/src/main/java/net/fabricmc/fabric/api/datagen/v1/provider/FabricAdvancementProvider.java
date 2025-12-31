@@ -44,11 +44,9 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 
-/**
- * Extend this class and implement {@link FabricAdvancementProvider#generateAdvancement}.
- *
- * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
- */
+/// Extend this class and implement [FabricAdvancementProvider#generateAdvancement].
+///
+/// Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 public abstract class FabricAdvancementProvider implements DataProvider {
 	protected final FabricPackOutput output;
 	private final PackOutput.PathProvider pathProvider;
@@ -60,16 +58,12 @@ public abstract class FabricAdvancementProvider implements DataProvider {
 		this.registryLookup = registryLookup;
 	}
 
-	/**
-	 * Implement this method to register advancements to generate use the consumer callback to register advancements.
-	 *
-	 * <p>Use {@link Advancement.Builder#save(Consumer, String)} to help build advancements.
-	 */
+	/// Implement this method to register advancements to generate use the consumer callback to register advancements.
+	///
+	/// Use [Advancement.Builder#save(Consumer, String)] to help build advancements.
 	public abstract void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer);
 
-	/**
-	 * Return a new exporter that applies the specified conditions to any advancement it receives.
-	 */
+	/// Return a new exporter that applies the specified conditions to any advancement it receives.
 	protected Consumer<AdvancementHolder> withConditions(Consumer<AdvancementHolder> exporter, ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 		return advancement -> {

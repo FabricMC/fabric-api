@@ -20,28 +20,21 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 
-/**
- * The testmod for the Fabric Renderer API. These tests are used to validate that
- * Indigo's implementation is correct, but they may also be useful for other
- * implementations of the Fabric Renderer API.
- *
- * <h3>Tests</h3>
- *
- * <ul>
- *     <li>Frame blocks display another block inside, scaled down and made translucent.
- *     Blocks that provide a block entity cannot be placed inside frames.
- *
- *     <li>Pillars connect vertically with each other by changing textures. They also
- *     connect vertically to frame blocks containing a pillar, and vice versa.
- *
- *     <li>Octagonal columns have irregular faces to test enhanced AO and normal shade. The
- *     octagonal item column has glint force enabled on all faces except the top and bottom
- *     faces.
- *
- *     <li>Riverstone blocks look like stone normally, but turn to gold in river biomes
- *     (biomes tagged with #minecraft:is_river).
- * </ul>
- */
+/// The testmod for the Fabric Renderer API. These tests are used to validate that
+/// Indigo's implementation is correct, but they may also be useful for other
+/// implementations of the Fabric Renderer API.
+/// ### Tests
+///
+///   - Frame blocks display another block inside, scaled down and made translucent.
+///     Blocks that provide a block entity cannot be placed inside frames.
+///   - Pillars connect vertically with each other by changing textures. They also
+///     connect vertically to frame blocks containing a pillar, and vice versa.
+///   - Octagonal columns have irregular faces to test enhanced AO and normal shade. The
+///     octagonal item column has glint force enabled on all faces except the top and bottom
+///     faces.
+///   - Riverstone blocks look like stone normally, but turn to gold in river biomes
+///     (biomes tagged with #minecraft:is_river).
+///
 public final class RendererTest implements ModInitializer {
 	@Override
 	public void onInitialize() {

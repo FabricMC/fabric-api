@@ -20,28 +20,24 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 
-/**
- * General-purpose Fabric-provided extensions for {@link TagKey} subclasses.
- *
- * <p>These extensions were designed primarily for giving extra utility methods for TagKeys usages.
- * Getting a TagKey's translation key for example.
- *
- * <p>Note: This interface is automatically implemented on all {@link TagKey} instances via Mixin and interface injection.
- */
+/// General-purpose Fabric-provided extensions for [TagKey] subclasses.
+///
+/// These extensions were designed primarily for giving extra utility methods for TagKeys usages.
+/// Getting a TagKey's translation key for example.
+///
+/// Note: This interface is automatically implemented on all [TagKey] instances via Mixin and interface injection.
 public interface FabricTagKey {
-	/**
-	 * Use this to get a TagKey's translation key safely on any side.
-	 *
-	 * <p>Format for vanilla registry TagKeys is:
-	 * tag.(registry_path).(tag_namespace).(tag_path)
-	 *
-	 * <p>Format for modded registry TagKeys is:
-	 * tag.(registry_namespace).(registry_path).(tag_namespace).(tag_path)
-	 *
-	 * <p>The registry's path and tag path's slashes will be converted to periods.
-	 *
-	 * @return the translation key for a TagKey
-	 */
+	/// Use this to get a TagKey's translation key safely on any side.
+	///
+	/// Format for vanilla registry TagKeys is:
+	/// tag.(registry_path).(tag_namespace).(tag_path)
+	///
+	/// Format for modded registry TagKeys is:
+	/// tag.(registry_namespace).(registry_path).(tag_namespace).(tag_path)
+	///
+	/// The registry's path and tag path's slashes will be converted to periods.
+	///
+	/// @return the translation key for a TagKey
 	default String getTranslationKey() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("tag.");
@@ -64,14 +60,12 @@ public interface FabricTagKey {
 		return stringBuilder.toString();
 	}
 
-	/**
-	 * Use this to get a TagKey's translatable component for display purposes.
-	 *
-	 * <p>The component uses the result of {@link TagKey#getTranslationKey} for the translation key
-	 * and will fall back to displaying #tag_namespace:tag_path if no translation exists.
-	 *
-	 * @return the translatable component for a TagKey
-	 */
+	/// Use this to get a TagKey's translatable component for display purposes.
+	///
+	/// The component uses the result of [TagKey#getTranslationKey] for the translation key
+	/// and will fall back to displaying #tag_namespace:tag_path if no translation exists.
+	///
+	/// @return the translatable component for a TagKey
 	default Component getName() {
 		return Component.translatableWithFallback(getTranslationKey(), "#" + ((TagKey<?>) this).location().toString());
 	}

@@ -26,23 +26,19 @@ public final class ClientBlockEntityEvents {
 	private ClientBlockEntityEvents() {
 	}
 
-	/**
-	 * Called when a BlockEntity is loaded into a ClientLevel.
-	 *
-	 * <p>When this event is called, the block entity is already in the level.
-	 * However, its data might not be loaded yet, so don't rely on it.
-	 */
+	/// Called when a BlockEntity is loaded into a ClientLevel.
+	///
+	/// When this event is called, the block entity is already in the level.
+	/// However, its data might not be loaded yet, so don't rely on it.
 	public static final Event<ClientBlockEntityEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Load.class, callbacks -> (blockEntity, level) -> {
 		for (Load callback : callbacks) {
 			callback.onLoad(blockEntity, level);
 		}
 	});
 
-	/**
-	 * Called when a BlockEntity is about to be unloaded from a ClientLevel.
-	 *
-	 * <p>When this event is called, the block entity is still present on the level.
-	 */
+	/// Called when a BlockEntity is about to be unloaded from a ClientLevel.
+	///
+	/// When this event is called, the block entity is still present on the level.
 	public static final Event<ClientBlockEntityEvents.Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientBlockEntityEvents.Unload.class, callbacks -> (blockEntity, level) -> {
 		for (Unload callback : callbacks) {
 			callback.onUnload(blockEntity, level);

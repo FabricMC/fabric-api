@@ -48,22 +48,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessRenderSectionRegion;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderContext;
 
-/**
- * Implements the main hooks for terrain rendering. Attempts to tread
- * lightly. This means we are deliberately stepping over some minor
- * optimization opportunities.
- *
- * <p>Non-Fabric renderer implementations that are looking to maximize
- * performance will likely take a much more aggressive approach.
- * For that reason, mod authors who want compatibility with advanced
- * renderers will do well to steer clear of chunk rebuild hooks unless
- * they are creating a renderer.
- *
- * <p>These hooks are intended only for the Fabric default renderer and
- * aren't expected to be present when a different renderer is being used.
- * Renderer authors are responsible for creating the hooks they need.
- * (Though they can use these as an example if they wish.)
- */
+/// Implements the main hooks for terrain rendering. Attempts to tread
+/// lightly. This means we are deliberately stepping over some minor
+/// optimization opportunities.
+///
+/// Non-Fabric renderer implementations that are looking to maximize
+/// performance will likely take a much more aggressive approach.
+/// For that reason, mod authors who want compatibility with advanced
+/// renderers will do well to steer clear of chunk rebuild hooks unless
+/// they are creating a renderer.
+///
+/// These hooks are intended only for the Fabric default renderer and
+/// aren't expected to be present when a different renderer is being used.
+/// Renderer authors are responsible for creating the hooks they need.
+/// (Though they can use these as an example if they wish.)
 @Mixin(SectionCompiler.class)
 abstract class SectionCompilerMixin {
 	@Shadow
@@ -94,19 +92,17 @@ abstract class SectionCompilerMixin {
 		((AccessRenderSectionRegion) region).fabric_setRenderer(renderer);
 	}
 
-	/**
-	 * This is the hook that actually implements the rendering API for terrain rendering.
-	 *
-	 * <p>It's unusual to have a @Redirect in a Fabric library, but in this case it is our explicit intention that
-	 * {@link BlockStateModel#collectParts(RandomSource, List)} and
-	 * {@link BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)}
-	 * do not execute for models that will be rendered by our renderer. For performance and convenience, just skip the
-	 * entire if block.
-	 *
-	 * <p>Any mod that wants to redirect this specific call is likely also a renderer, in which case this
-	 * renderer should not be present, or the mod should probably instead be relying on the renderer API
-	 * which was specifically created to provide for enhanced terrain rendering.
-	 */
+	/// This is the hook that actually implements the rendering API for terrain rendering.
+	///
+	/// It's unusual to have a @Redirect in a Fabric library, but in this case it is our explicit intention that
+	/// [BlockStateModel#collectParts(RandomSource, List)] and
+	/// [BlockRenderDispatcher#renderBatched(BlockState, BlockPos, BlockAndTintGetter, PoseStack, VertexConsumer, boolean, List)]
+	/// do not execute for models that will be rendered by our renderer. For performance and convenience, just skip the
+	/// entire if block.
+	///
+	/// Any mod that wants to redirect this specific call is likely also a renderer, in which case this
+	/// renderer should not be present, or the mod should probably instead be relying on the renderer API
+	/// which was specifically created to provide for enhanced terrain rendering.
 	@Redirect(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getRenderShape()Lnet/minecraft/world/level/block/RenderShape;"))
 	private RenderShape hookBuildRenderBlock(BlockState blockState, SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack buffers, @Local(ordinal = 2) BlockPos blockPos) {
 		RenderShape renderShape = blockState.getRenderShape();
@@ -120,9 +116,7 @@ abstract class SectionCompilerMixin {
 		return renderShape;
 	}
 
-	/**
-	 * Release all references. Probably not necessary but would be $#%! to debug if it is.
-	 */
+	/// Release all references. Probably not necessary but would be $#%! to debug if it is.
 	@Inject(method = "compile", at = @At(value = "RETURN"))
 	private void hookBuildReturn(SectionPos sectionPos, RenderSectionRegion renderRegion, VertexSorting vertexSorter, SectionBufferBuilderPack buffers, CallbackInfoReturnable<SectionCompiler.Results> cir) {
 		((AccessRenderSectionRegion) renderRegion).fabric_getRenderer().release();

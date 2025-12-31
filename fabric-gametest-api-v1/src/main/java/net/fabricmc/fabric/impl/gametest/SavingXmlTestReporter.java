@@ -25,10 +25,8 @@ import javax.xml.transform.TransformerException;
 
 import net.minecraft.gametest.framework.JUnitLikeTestReporter;
 
-/**
- * An extension of {@link JUnitLikeTestReporter} which creates the destination directory before saving
- * the report.
- */
+/// An extension of [JUnitLikeTestReporter] which creates the destination directory before saving
+/// the report.
 final class SavingXmlTestReporter extends JUnitLikeTestReporter {
 	SavingXmlTestReporter(File file) throws ParserConfigurationException {
 		super(file);

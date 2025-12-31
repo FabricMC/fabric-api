@@ -43,10 +43,8 @@ public class PackSelectionModelMixin {
 	@Final
 	List<Pack> unselected;
 
-	/**
-	 * Do not list hidden packs in either enabledPacks or disabledPacks.
-	 * They are managed entirely by PackRepository on save, and are invisible to client.
-	 */
+	/// Do not list hidden packs in either enabledPacks or disabledPacks.
+	/// They are managed entirely by PackRepository on save, and are invisible to client.
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void removeHiddenPacksInit(Consumer<PackSelectionModel.EntryBase> updateCallback, Function iconIdSupplier, PackRepository packRepository, Consumer applier, CallbackInfo ci) {
 		this.selected.removeIf(profile -> ((FabricPack) profile).fabric$isHidden());

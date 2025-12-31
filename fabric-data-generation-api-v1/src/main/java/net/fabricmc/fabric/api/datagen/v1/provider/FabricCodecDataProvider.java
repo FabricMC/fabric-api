@@ -41,11 +41,9 @@ import net.minecraft.resources.ResourceKey;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 
-/**
- * Extend this class and implement {@link FabricCodecDataProvider#configure(BiConsumer, HolderLookup.Provider)}.
- *
- * <p>Register an instance of the class with {@link FabricDataGenerator.Pack#addProvider} in a {@link net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint}.
- */
+/// Extend this class and implement [FabricCodecDataProvider#configure(BiConsumer, HolderLookup.Provider)].
+///
+/// Register an instance of the class with [FabricDataGenerator.Pack#addProvider] in a [net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint].
 public abstract class FabricCodecDataProvider<T> implements DataProvider {
 	private final PackOutput.PathProvider pathProvider;
 	private final CompletableFuture<HolderLookup.Provider> registriesFuture;
@@ -85,11 +83,9 @@ public abstract class FabricCodecDataProvider<T> implements DataProvider {
 		});
 	}
 
-	/**
-	 * Implement this method to register entries to generate using a {@link HolderLookup.Provider}.
-	 * @param provider A consumer that accepts an {@link Identifier} and a value to register.
-	 * @param registryLookup A lookup for registries.
-	 */
+	/// Implement this method to register entries to generate using a [HolderLookup.Provider].
+	/// @param provider A consumer that accepts an [Identifier] and a value to register.
+	/// @param registryLookup A lookup for registries.
 	protected abstract void configure(BiConsumer<Identifier, T> provider, HolderLookup.Provider registryLookup);
 
 	private JsonElement convert(Identifier id, T value, DynamicOps<JsonElement> ops) {

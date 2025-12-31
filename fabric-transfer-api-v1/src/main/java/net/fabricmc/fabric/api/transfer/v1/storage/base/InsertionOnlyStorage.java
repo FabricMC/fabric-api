@@ -23,9 +23,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-/**
- * A {@link Storage} that supports insertion, and not extraction. By default, it doesn't have any storage view either.
- */
+/// A [Storage] that supports insertion, and not extraction. By default, it doesn't have any storage view either.
 public interface InsertionOnlyStorage<T> extends Storage<T> {
 	@Override
 	default boolean supportsExtraction() {

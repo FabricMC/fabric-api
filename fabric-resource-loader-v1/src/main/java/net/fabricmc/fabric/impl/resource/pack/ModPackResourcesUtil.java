@@ -63,9 +63,7 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
-/**
- * Internal utilities for managing resource packs.
- */
+/// Internal utilities for managing resource packs.
 public final class ModPackResourcesUtil {
 	public static final Gson GSON = new Gson();
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModPackResourcesUtil.class);
@@ -74,12 +72,10 @@ public final class ModPackResourcesUtil {
 	private ModPackResourcesUtil() {
 	}
 
-	/**
-	 * Returns a list of mod resource packs.
-	 *
-	 * @param type    the type of resource
-	 * @param subPath the resource pack sub path directory in mods, may be {@code null}
-	 */
+	/// Returns a list of mod resource packs.
+	///
+	/// @param type    the type of resource
+	/// @param subPath the resource pack sub path directory in mods, may be `null`
 	public static List<ModPackResources> getModResourcePacks(FabricLoader fabricLoader, PackType type, @Nullable String subPath) {
 		var sorter = new ModPackResourcesSorter();
 
@@ -228,11 +224,9 @@ public final class ModPackResourcesUtil {
 		}
 	}
 
-	/**
-	 * Creates the default data pack config that replaces
-	 * {@code DataPackConfig.DEFAULT} used in vanilla.
-	 * @return the default data pack config
-	 */
+	/// Creates the default data pack config that replaces
+	/// `DataPackConfig.DEFAULT` used in vanilla.
+	/// @return the default data pack config
 	public static WorldDataConfiguration createDefaultDataConfiguration() {
 		var modResourcePackCreator = new ModResourcePackCreator(PackType.SERVER_DATA);
 		var moddedResourcePacks = new ArrayList<Pack>();
@@ -264,11 +258,9 @@ public final class ModPackResourcesUtil {
 		);
 	}
 
-	/**
-	 * Vanilla enables all available datapacks automatically in TestServer#create, but it does so in alphabetical order,
-	 * which means the Vanilla pack has higher precedence than modded, breaking our tests.
-	 * To fix this, we move all modded pack profiles to the end of the list.
-	 */
+	/// Vanilla enables all available datapacks automatically in TestServer#create, but it does so in alphabetical order,
+	/// which means the Vanilla pack has higher precedence than modded, breaking our tests.
+	/// To fix this, we move all modded pack profiles to the end of the list.
 	public static DataPackConfig createTestServerSettings(List<String> enabled, List<String> disabled) {
 		// Collect modded profiles
 		var moddedProfiles = new HashSet<String>();
@@ -293,10 +285,8 @@ public final class ModPackResourcesUtil {
 		return new DataPackConfig(enabled, disabled);
 	}
 
-	/**
-	 * Creates the PackRepository used by the KnownPacksManager and replaces
-	 * {@code ServerPacksSource.createVanillaTrustedRepository} used by vanilla.
-	 */
+	/// Creates the PackRepository used by the KnownPacksManager and replaces
+	/// `ServerPacksSource.createVanillaTrustedRepository` used by vanilla.
 	public static PackRepository createModdedRepository() {
 		return new PackRepository(
 				new ServerPacksSource(new DirectoryValidator((path) -> true)),

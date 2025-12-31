@@ -26,52 +26,32 @@ import net.minecraft.client.renderer.item.CompositeModel;
 
 import net.fabricmc.fabric.impl.client.model.loading.CompositeBlockStateModelImpl;
 
-/**
- * A custom block state model that is made of one or more other block state models. Analogous to
- * {@link CompositeModel}. Uses the first submodel to determine the particle sprite.
- */
+/// A custom block state model that is made of one or more other block state models. Analogous to
+/// [CompositeModel]. Uses the first submodel to determine the particle sprite.
 @ApiStatus.NonExtendable
 public interface CompositeBlockStateModel extends BlockStateModel {
-	/**
-	 * Creates a new composite model from the given non-empty list of submodels.
-	 */
+	/// Creates a new composite model from the given non-empty list of submodels.
 	static CompositeBlockStateModel of(List<BlockStateModel> models) {
 		return CompositeBlockStateModelImpl.of(models);
 	}
 
-	/**
-	 * Gets the models that make up this composite model. The returned list will contain at least one model.
-	 */
+	/// Gets the models that make up this composite model. The returned list will contain at least one model.
 	@Unmodifiable
 	List<BlockStateModel> models();
 
-	/**
-	 * An unbaked composite model made of one or more other unbaked models.
-	 *
-	 * <p>The JSON format is as follows:
-	 * <pre>{@code
-	 * {
-	 *     "fabric:type": "fabric:composite",
-	 *     "models": [
-	 *         // sub-model 1,
-	 *         // sub-model 2,
-	 *         // etc...
-	 *     ]
-	 * }
-	 * }</pre>
-	 */
+	/// An unbaked composite model made of one or more other unbaked models.
+	///
+	/// The JSON format is as follows:
+	/// <pre>
+	/// `{"fabric:type": "fabric:composite","models": [// sub-model 1,// sub-model 2,// etc...]}`</pre>
 	@ApiStatus.NonExtendable
 	interface Unbaked extends CustomUnbakedBlockStateModel {
-		/**
-		 * Creates a new unbaked composite model from the given non-empty list of submodels.
-		 */
+		/// Creates a new unbaked composite model from the given non-empty list of submodels.
 		static Unbaked of(List<BlockStateModel.Unbaked> models) {
 			return CompositeBlockStateModelImpl.Unbaked.of(models);
 		}
 
-		/**
-		 * Gets the models that make up this unbaked composite model. The returned list will contain at least one model.
-		 */
+		/// Gets the models that make up this unbaked composite model. The returned list will contain at least one model.
 		@Unmodifiable
 		List<BlockStateModel.Unbaked> models();
 	}

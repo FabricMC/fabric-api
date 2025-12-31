@@ -20,37 +20,27 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
 
-/**
- * Context for a client gametest containing various helpful functions while a singleplayer game is open.
- *
- * <p>Functions in this class can only be called on the client gametest thread.
- */
+/// Context for a client gametest containing various helpful functions while a singleplayer game is open.
+///
+/// Functions in this class can only be called on the client gametest thread.
 @ApiStatus.NonExtendable
 public interface TestSingleplayerContext extends AutoCloseable {
-	/**
-	 * Gets the handle for the world save.
-	 *
-	 * @return The handle for the world save
-	 */
+	/// Gets the handle for the world save.
+	///
+	/// @return The handle for the world save
 	TestWorldSave getWorldSave();
 
-	/**
-	 * Gets the handle for the client level.
-	 *
-	 * @return The handle for the client level
-	 */
+	/// Gets the handle for the client level.
+	///
+	/// @return The handle for the client level
 	TestClientLevelContext getClientLevel();
 
-	/**
-	 * Gets the handle for the integrated server.
-	 *
-	 * @return The handle for the integrated server
-	 */
+	/// Gets the handle for the integrated server.
+	///
+	/// @return The handle for the integrated server
 	TestServerContext getServer();
 
-	/**
-	 * Closes the singleplayer world.
-	 */
+	/// Closes the singleplayer world.
 	@Override
 	void close();
 }

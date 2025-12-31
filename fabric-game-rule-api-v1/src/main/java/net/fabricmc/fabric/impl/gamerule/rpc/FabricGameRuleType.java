@@ -18,9 +18,7 @@ package net.fabricmc.fabric.impl.gamerule.rpc;
 
 import net.minecraft.util.StringRepresentable;
 
-/**
- * Extensions to {@link net.minecraft.world.level.gamerules.GameRuleType}.
- */
+/// Extensions to [net.minecraft.world.level.gamerules.GameRuleType].
 public enum FabricGameRuleType implements StringRepresentable {
 	DOUBLE("fabric:double"),
 	ENUM("fabric:enum");

@@ -28,9 +28,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 
-/**
- * Test that fluid attributes for vanilla fluids have the correct values.
- */
+/// Test that fluid attributes for vanilla fluids have the correct values.
 public class AttributeTests extends AbstractTransferApiTest {
 	@BeforeAll
 	static void beforeAll() {

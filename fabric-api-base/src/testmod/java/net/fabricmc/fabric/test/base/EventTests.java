@@ -160,29 +160,27 @@ public class EventTests {
 		}
 	}
 
-	/**
-	 * Ensure that phases get sorted deterministically regardless of the order in which constraints are registered.
-	 *
-	 * <p>The graph is displayed here as ascii art, and also in the file graph.png.
-	 * <pre>
-	 *             +-------------------+
-	 *             v                   |
-	 * +---+     +---+     +---+     +---+
-	 * | a | --> | z | --> | b | --> | y |
-	 * +---+     +---+     +---+     +---+
-	 *             ^
-	 *             |
-	 *             |
-	 * +---+     +---+
-	 * | d | --> | e |
-	 * +---+     +---+
-	 * +---+
-	 * | f |
-	 * +---+
-	 * </pre>
-	 * Notice the cycle z -> b -> y -> z. The elements of the cycle are ordered [b, y, z], and the cycle itself is ordered with its lowest id "b".
-	 * We get for the final order: [a, d, e, cycle [b, y, z], f].
-	 */
+	/// Ensure that phases get sorted deterministically regardless of the order in which constraints are registered.
+	///
+	/// The graph is displayed here as ascii art, and also in the file graph.png.
+	/// <pre>
+	///             +-------------------+
+	///             v                   |
+	/// +---+     +---+     +---+     +---+
+	/// | a | --> | z | --> | b | --> | y |
+	/// +---+     +---+     +---+     +---+
+	///             ^
+	///             |
+	///             |
+	/// +---+     +---+
+	/// | d | --> | e |
+	/// +---+     +---+
+	/// +---+
+	/// | f |
+	/// +---+
+	/// </pre>
+	/// Notice the cycle z -> b -> y -> z. The elements of the cycle are ordered [b, y, z], and the cycle itself is ordered with its lowest id "b".
+	/// We get for the final order: [a, d, e, cycle [b, y, z], f].
 	private static void testDeterministicOrdering() {
 		Identifier a = Identifier.fromNamespaceAndPath("fabric", "a");
 		Identifier b = Identifier.fromNamespaceAndPath("fabric", "b");
@@ -222,12 +220,10 @@ public class EventTests {
 		});
 	}
 
-	/**
-	 * Test deterministic phase sorting with two cycles.
-	 * <pre>
-	 * e --> a <--> b <-- d <--> c
-	 * </pre>
-	 */
+	/// Test deterministic phase sorting with two cycles.
+	/// <pre>
+	/// e --> a <--> b <-- d <--> c
+	/// </pre>
 	private static void testTwoCycles() {
 		Identifier a = Identifier.fromNamespaceAndPath("fabric", "a");
 		Identifier b = Identifier.fromNamespaceAndPath("fabric", "b");

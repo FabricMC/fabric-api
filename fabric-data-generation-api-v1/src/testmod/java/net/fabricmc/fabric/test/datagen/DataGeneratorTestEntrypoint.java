@@ -436,10 +436,8 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	/**
-	 * Tests generating files for a custom dynamic registry.
-	 * Note that Biome API testmod provides the test for vanilla dynamic registries.
-	 */
+	/// Tests generating files for a custom dynamic registry.
+	/// Note that Biome API testmod provides the test for vanilla dynamic registries.
 	private static class TestDynamicRegistryProvider extends FabricDynamicRegistryProvider {
 		TestDynamicRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 			super(output, registriesFuture);
@@ -459,9 +457,7 @@ public class DataGeneratorTestEntrypoint implements DataGeneratorEntrypoint {
 		}
 	}
 
-	/**
-	 * Test generating files for a patched/extended dynamic registry.
-	 */
+	/// Test generating files for a patched/extended dynamic registry.
 	private static class TestExtraDynamicRegistryProvider extends FabricDynamicRegistryProvider {
 		TestExtraDynamicRegistryProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
 			super(output, registriesFuture);

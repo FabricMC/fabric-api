@@ -23,48 +23,40 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Offers access to events related to the connection to a server on the client while the server is processing the client's login request.
- */
+/// Offers access to events related to the connection to a server on the client while the server is processing the client's login request.
 public final class ClientLoginConnectionEvents {
-	/**
-	 * Event indicating a connection entered the LOGIN state, ready for registering query request handlers.
-	 * This event may be used by mods to prepare their client side state.
-	 * This event does not guarantee that a login attempt will be successful.
-	 *
-	 * @see ClientLoginNetworking#registerReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)
-	 */
+	/// Event indicating a connection entered the LOGIN state, ready for registering query request handlers.
+	/// This event may be used by mods to prepare their client side state.
+	/// This event does not guarantee that a login attempt will be successful.
+	///
+	/// @see ClientLoginNetworking#registerReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)
 	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (listener, client) -> {
 		for (Init callback : callbacks) {
 			callback.onLoginStart(listener, client);
 		}
 	});
 
-	/**
-	 * An event for when the client has started receiving login queries.
-	 * A client can only start receiving login queries when a server has sent the first login query.
-	 * Vanilla servers will typically never make the client enter this login phase, but it is not a guarantee that the
-	 * connected server is a vanilla server since a modded server or proxy may have no login queries to send to the client
-	 * and therefore bypass the login query phase.
-	 * If this event is fired then it is a sign that a server is not a vanilla server or the server is behind a proxy which
-	 * is capable of handling login queries.
-	 *
-	 * <p>This event may be used to {@link ClientLoginNetworking.LoginQueryRequestHandler register login query handlers}
-	 * which may be used to send a response to a server.
-	 *
-	 * <p>No packets should be sent when this event is invoked.
-	 */
+	/// An event for when the client has started receiving login queries.
+	/// A client can only start receiving login queries when a server has sent the first login query.
+	/// Vanilla servers will typically never make the client enter this login phase, but it is not a guarantee that the
+	/// connected server is a vanilla server since a modded server or proxy may have no login queries to send to the client
+	/// and therefore bypass the login query phase.
+	/// If this event is fired then it is a sign that a server is not a vanilla server or the server is behind a proxy which
+	/// is capable of handling login queries.
+	///
+	/// This event may be used to [register login query handlers][ClientLoginNetworking.LoginQueryRequestHandler]
+	/// which may be used to send a response to a server.
+	///
+	/// No packets should be sent when this event is invoked.
 	public static final Event<QueryStart> QUERY_START = EventFactory.createArrayBacked(QueryStart.class, callbacks -> (listener, client) -> {
 		for (QueryStart callback : callbacks) {
 			callback.onLoginQueryStart(listener, client);
 		}
 	});
 
-	/**
-	 * An event for when the client's login process has ended due to disconnection.
-	 *
-	 * <p>No packets should be sent when this event is invoked.
-	 */
+	/// An event for when the client's login process has ended due to disconnection.
+	///
+	/// No packets should be sent when this event is invoked.
 	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (listener, client) -> {
 		for (Disconnect callback : callbacks) {
 			callback.onLoginDisconnect(listener, client);
@@ -74,25 +66,19 @@ public final class ClientLoginConnectionEvents {
 	private ClientLoginConnectionEvents() {
 	}
 
-	/**
-	 * @see ClientLoginConnectionEvents#INIT
-	 */
+	/// @see ClientLoginConnectionEvents#INIT
 	@FunctionalInterface
 	public interface Init {
 		void onLoginStart(ClientHandshakePacketListenerImpl listener, Minecraft client);
 	}
 
-	/**
-	 * @see ClientLoginConnectionEvents#QUERY_START
-	 */
+	/// @see ClientLoginConnectionEvents#QUERY_START
 	@FunctionalInterface
 	public interface QueryStart {
 		void onLoginQueryStart(ClientHandshakePacketListenerImpl listener, Minecraft client);
 	}
 
-	/**
-	 * @see ClientLoginConnectionEvents#DISCONNECT
-	 */
+	/// @see ClientLoginConnectionEvents#DISCONNECT
 	@FunctionalInterface
 	public interface Disconnect {
 		void onLoginDisconnect(ClientHandshakePacketListenerImpl listener, Minecraft client);

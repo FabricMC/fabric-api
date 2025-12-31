@@ -26,34 +26,28 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.impl.particle.BlockParticleOptionFactoryImpl;
 
-/**
- * Note: This interface is automatically implemented on {@link BlockParticleOption} via Mixin and interface injection.
- */
+/// Note: This interface is automatically implemented on [BlockParticleOption] via Mixin and interface injection.
 public interface FabricBlockParticleOption {
-	/**
-	 * Alternative for {@link BlockParticleOption#BlockParticleOption(ParticleType, BlockState)} that also
-	 * accepts a {@link BlockPos}. This method should be used instead of the vanilla constructor when the block state
-	 * is retrieved using a block pos, most commonly through {@link BlockGetter#getBlockState(BlockPos)}. This ensures
-	 * that any particles created from this option use an accurate pos for any client-side logic.
-	 *
-	 * <p>If an instance with a non-null block pos needs to be synced to the client, the block pos will only be synced
-	 * if it is known that the client supports decoding it (has this Fabric API module installed); otherwise, the effect
-	 * will be sent as a vanilla effect and the client will produce a null block pos.
-	 *
-	 * @param type the particle type
-	 * @param blockState the block state
-	 * @param blockPos the block pos from which the block state was retrieved
-	 * @return the particle option
-	 */
+	/// Alternative for [BlockParticleOption#BlockParticleOption(ParticleType, BlockState)] that also
+	/// accepts a [BlockPos]. This method should be used instead of the vanilla constructor when the block state
+	/// is retrieved using a block pos, most commonly through [BlockGetter#getBlockState(BlockPos)]. This ensures
+	/// that any particles created from this option use an accurate pos for any client-side logic.
+	///
+	/// If an instance with a non-null block pos needs to be synced to the client, the block pos will only be synced
+	/// if it is known that the client supports decoding it (has this Fabric API module installed); otherwise, the effect
+	/// will be sent as a vanilla effect and the client will produce a null block pos.
+	///
+	/// @param type the particle type
+	/// @param blockState the block state
+	/// @param blockPos the block pos from which the block state was retrieved
+	/// @return the particle option
 	static BlockParticleOption create(ParticleType<BlockParticleOption> type, BlockState blockState, @Nullable BlockPos blockPos) {
 		return BlockParticleOptionFactoryImpl.create(type, blockState, blockPos);
 	}
 
-	/**
-	 * @return the block pos from which {@linkplain BlockParticleOption#getState() the block state} was
-	 * retrieved, or {@code null} if not applicable or this instance was synced from a remote server that does not have
-	 * this Fabric API module installed
-	 */
+	/// @return the block pos from which {@linkplain BlockParticleOption#getState() the block state} was
+	/// retrieved, or `null` if not applicable or this instance was synced from a remote server that does not have
+	/// this Fabric API module installed
 	@Nullable
 	default BlockPos getBlockPos() {
 		throw new AssertionError("Implemented in Mixin");

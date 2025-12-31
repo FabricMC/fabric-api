@@ -30,9 +30,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
-/**
- * Tests related to the lifecycle of entities.
- */
+/// Tests related to the lifecycle of entities.
 public final class ServerEntityLifecycleTests implements ModInitializer {
 	private static final boolean PRINT_SERVER_ENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printServerEntityMessages") != null;
 	private final List<Entity> serverEntities = new ArrayList<>();

@@ -26,23 +26,19 @@ import net.minecraft.server.level.ServerPlayer;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Contains server-side events triggered when broadcasting messages.
- */
+/// Contains server-side events triggered when broadcasting messages.
 public final class ServerMessageEvents {
-	/**
-	 * An event triggered when the server broadcasts a chat message sent by a player,
-	 * typically from a client GUI or a player-executed command. Mods can use this to block
-	 * the message.
-	 *
-	 * <p>If a listener returned {@code false}, the message will not be broadcast,
-	 * the remaining listeners will not be called (if any), and {@link #CHAT_MESSAGE}
-	 * event will not be triggered.
-	 *
-	 * <p>If the message is from a player-executed command, this will be called
-	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
-	 * and after triggering {@link #COMMAND_MESSAGE} event.
-	 */
+	/// An event triggered when the server broadcasts a chat message sent by a player,
+	/// typically from a client GUI or a player-executed command. Mods can use this to block
+	/// the message.
+	///
+	/// If a listener returned `false`, the message will not be broadcast,
+	/// the remaining listeners will not be called (if any), and [#CHAT_MESSAGE]
+	/// event will not be triggered.
+	///
+	/// If the message is from a player-executed command, this will be called
+	/// only if [#ALLOW_COMMAND_MESSAGE] event did not block the message,
+	/// and after triggering [#COMMAND_MESSAGE] event.
 	public static final Event<AllowChatMessage> ALLOW_CHAT_MESSAGE = EventFactory.createArrayBacked(AllowChatMessage.class, handlers -> (message, sender, boundChatType) -> {
 		for (AllowChatMessage handler : handlers) {
 			if (!handler.allowChatMessage(message, sender, boundChatType)) return false;
@@ -51,15 +47,13 @@ public final class ServerMessageEvents {
 		return true;
 	});
 
-	/**
-	 * An event triggered when the server broadcasts a game message to all players. Game
-	 * messages include death messages, join/leave messages, and advancement messages.
-	 * Mods can use this to block the message.
-	 *
-	 * <p>If a listener returned {@code false}, the message will not be broadcast,
-	 * the remaining listeners will not be called (if any), and {@link #GAME_MESSAGE}
-	 * event will not be triggered.
-	 */
+	/// An event triggered when the server broadcasts a game message to all players. Game
+	/// messages include death messages, join/leave messages, and advancement messages.
+	/// Mods can use this to block the message.
+	///
+	/// If a listener returned `false`, the message will not be broadcast,
+	/// the remaining listeners will not be called (if any), and [#GAME_MESSAGE]
+	/// event will not be triggered.
 	public static final Event<AllowGameMessage> ALLOW_GAME_MESSAGE = EventFactory.createArrayBacked(AllowGameMessage.class, handlers -> (server, message, overlay) -> {
 		for (AllowGameMessage handler : handlers) {
 			if (!handler.allowGameMessage(server, message, overlay)) return false;
@@ -68,19 +62,17 @@ public final class ServerMessageEvents {
 		return true;
 	});
 
-	/**
-	 * An event triggered when the server broadcasts a command message to all players, such as one
-	 * from {@code /me} and {@code /say} (but not ones that specify the recipients like
-	 * {@code /msg}). Mods can use this to block the message.
-	 *
-	 * <p>If a listener returned {@code false}, the message will not be broadcast,
-	 * the remaining listeners will not be called (if any), and {@link #COMMAND_MESSAGE}
-	 * event will not be triggered.
-	 *
-	 * <p>If the command is executed by a player and the message is not blocked,
-	 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
-	 * triggered after triggering {@link #COMMAND_MESSAGE}.
-	 */
+	/// An event triggered when the server broadcasts a command message to all players, such as one
+	/// from `/me` and `/say` (but not ones that specify the recipients like
+	/// `/msg`). Mods can use this to block the message.
+	///
+	/// If a listener returned `false`, the message will not be broadcast,
+	/// the remaining listeners will not be called (if any), and [#COMMAND_MESSAGE]
+	/// event will not be triggered.
+	///
+	/// If the command is executed by a player and the message is not blocked,
+	/// [#ALLOW_CHAT_MESSAGE] and [#CHAT_MESSAGE] events will also be
+	/// triggered after triggering [#COMMAND_MESSAGE].
 	public static final Event<AllowCommandMessage> ALLOW_COMMAND_MESSAGE = EventFactory.createArrayBacked(AllowCommandMessage.class, handlers -> (message, source, boundChatType) -> {
 		for (AllowCommandMessage handler : handlers) {
 			if (!handler.allowCommandMessage(message, source, boundChatType)) return false;
@@ -89,41 +81,36 @@ public final class ServerMessageEvents {
 		return true;
 	});
 
-	/**
-	 * An event triggered when the server broadcasts a chat message sent by a player, typically
-	 * from a client GUI or a player-executed command. Is not called when {@linkplain
-	 * #ALLOW_CHAT_MESSAGE chat messages are blocked}.
-	 *
-	 * <p>If the message is from a player-executed command, this will be called
-	 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
-	 * and after triggering {@link #COMMAND_MESSAGE} event.
-	 */
+	/// An event triggered when the server broadcasts a chat message sent by a player, typically
+	/// from a client GUI or a player-executed command. Is not called when
+	/// {@linkplain
+	///  #ALLOW_CHAT_MESSAGE chat messages are blocked}.
+	///
+	/// If the message is from a player-executed command, this will be called
+	/// only if [#ALLOW_COMMAND_MESSAGE] event did not block the message,
+	/// and after triggering [#COMMAND_MESSAGE] event.
 	public static final Event<ChatMessage> CHAT_MESSAGE = EventFactory.createArrayBacked(ChatMessage.class, handlers -> (message, sender, boundChatType) -> {
 		for (ChatMessage handler : handlers) {
 			handler.onChatMessage(message, sender, boundChatType);
 		}
 	});
 
-	/**
-	 * An event triggered when the server broadcasts a game message to all players. Game messages
-	 * include death messages, join/leave messages, and advancement messages. Is not called
-	 * when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
-	 */
+	/// An event triggered when the server broadcasts a game message to all players. Game messages
+	/// include death messages, join/leave messages, and advancement messages. Is not called
+	/// when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
 	public static final Event<GameMessage> GAME_MESSAGE = EventFactory.createArrayBacked(GameMessage.class, handlers -> (server, message, overlay) -> {
 		for (GameMessage handler : handlers) {
 			handler.onGameMessage(server, message, overlay);
 		}
 	});
 
-	/**
-	 * An event triggered when the server broadcasts a command message to all players, such as one
-	 * from {@code /me} and {@code /say} (but not ones that specify the recipients like
-	 * {@code /msg}). Is not called when {@linkplain #ALLOW_COMMAND_MESSAGE command messages
-	 * are blocked}.
-	 *
-	 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
-	 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
-	 */
+	/// An event triggered when the server broadcasts a command message to all players, such as one
+	/// from `/me` and `/say` (but not ones that specify the recipients like
+	/// `/msg`). Is not called when {@linkplain #ALLOW_COMMAND_MESSAGE command messages
+	///  are blocked}.
+	///
+	/// If the command is executed by a player, [#ALLOW_CHAT_MESSAGE] and
+	/// [#CHAT_MESSAGE] events will also be triggered after this event.
 	public static final Event<CommandMessage> COMMAND_MESSAGE = EventFactory.createArrayBacked(CommandMessage.class, handlers -> (message, source, boundChatType) -> {
 		for (CommandMessage handler : handlers) {
 			handler.onCommandMessage(message, source, boundChatType);
@@ -135,107 +122,96 @@ public final class ServerMessageEvents {
 
 	@FunctionalInterface
 	public interface AllowChatMessage {
-		/**
-		 * Called when the server broadcasts a chat message sent by a player, typically
-		 * from a client GUI or a player-executed command. Returning {@code false}
-		 * prevents the message from being broadcast and the {@link #CHAT_MESSAGE} event
-		 * from triggering.
-		 *
-		 * <p>If the message is from a player-executed command, this will be called
-		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
-		 * and after triggering {@link #COMMAND_MESSAGE} event.
-		 *
-		 * @param message the broadcast message with chat decorators applied; use {@code message.decoratedContent()} to get the component
-		 * @param sender  the player that sent the message
-		 * @param boundChatType the {@link ChatType.Bound}
-		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
-		 */
+		/// Called when the server broadcasts a chat message sent by a player, typically
+		/// from a client GUI or a player-executed command. Returning `false`
+		/// prevents the message from being broadcast and the [#CHAT_MESSAGE] event
+		/// from triggering.
+		///
+		/// If the message is from a player-executed command, this will be called
+		/// only if [#ALLOW_COMMAND_MESSAGE] event did not block the message,
+		/// and after triggering [#COMMAND_MESSAGE] event.
+		///
+		/// @param message the broadcast message with chat decorators applied; use `message.decoratedContent()` to get the component
+		/// @param sender  the player that sent the message
+		/// @param boundChatType the [ChatType.Bound]
+		/// @return `true` if the message should be broadcast, otherwise `false`
 		boolean allowChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound boundChatType);
 	}
 
 	@FunctionalInterface
 	public interface AllowGameMessage {
-		/**
-		 * Called when the server broadcasts a game message to all players. Game messages
-		 * include death messages, join/leave messages, and advancement messages. Returning {@code false}
-		 * prevents the message from being broadcast and the {@link #GAME_MESSAGE} event
-		 * from triggering.
-		 *
-		 * @param server the server that sent the message
-		 * @param message the broadcast message
-		 * @param overlay {@code true} when the message is an overlay
-		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
-		 */
+		/// Called when the server broadcasts a game message to all players. Game messages
+		/// include death messages, join/leave messages, and advancement messages. Returning `false`
+		/// prevents the message from being broadcast and the [#GAME_MESSAGE] event
+		/// from triggering.
+		///
+		/// @param server the server that sent the message
+		/// @param message the broadcast message
+		/// @param overlay `true` when the message is an overlay
+		/// @return `true` if the message should be broadcast, otherwise `false`
 		boolean allowGameMessage(MinecraftServer server, Component message, boolean overlay);
 	}
 
 	@FunctionalInterface
 	public interface AllowCommandMessage {
-		/**
-		 * Called when the server broadcasts a command message to all players, such as one
-		 * from {@code /me} and {@code /say} (but not ones that specify the recipients like
-		 * {@code /msg}). Returning {@code false} prevents the message from being broadcast
-		 * and the {@link #COMMAND_MESSAGE} event from triggering.
-		 *
-		 * <p>If the command is executed by a player and the message is not blocked,
-		 * {@link #ALLOW_CHAT_MESSAGE} and {@link #CHAT_MESSAGE} events will also be
-		 * triggered after triggering {@link #COMMAND_MESSAGE}.
-		 *
-		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.decoratedContent()} to get the component
-		 * @param source  the command source that sent the message
-		 * @param boundChatType the {@link ChatType.Bound}
-		 * @return {@code true} if the message should be broadcast, otherwise {@code false}
-		 */
+		/// Called when the server broadcasts a command message to all players, such as one
+		/// from `/me` and `/say` (but not ones that specify the recipients like
+		/// `/msg`). Returning `false` prevents the message from being broadcast
+		/// and the [#COMMAND_MESSAGE] event from triggering.
+		///
+		/// If the command is executed by a player and the message is not blocked,
+		/// [#ALLOW_CHAT_MESSAGE] and [#CHAT_MESSAGE] events will also be
+		/// triggered after triggering [#COMMAND_MESSAGE].
+		///
+		/// @param message the broadcast message with chat decorators applied if applicable; use `message.decoratedContent()` to get the component
+		/// @param source  the command source that sent the message
+		/// @param boundChatType the [ChatType.Bound]
+		/// @return `true` if the message should be broadcast, otherwise `false`
 		boolean allowCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound boundChatType);
 	}
 
 	@FunctionalInterface
 	public interface ChatMessage {
-		/**
-		 * Called when the server broadcasts a chat message sent by a player, typically
-		 * from a client GUI or a player-executed command. Is not called when {@linkplain
-		 * #ALLOW_CHAT_MESSAGE chat messages are blocked}.
-		 *
-		 * <p>If the message is from a player-executed command, this will be called
-		 * only if {@link #ALLOW_COMMAND_MESSAGE} event did not block the message,
-		 * and after triggering {@link #COMMAND_MESSAGE} event.
-		 *
-		 * @param message the broadcast message with chat decorators applied; use {@code message.decoratedContent()} to get the component
-		 * @param sender  the player that sent the message
-		 * @param boundChatType the {@link ChatType.Bound}
-		 */
+		/// Called when the server broadcasts a chat message sent by a player, typically
+		/// from a client GUI or a player-executed command. Is not called when
+		/// {@linkplain
+		///  #ALLOW_CHAT_MESSAGE chat messages are blocked}.
+		///
+		/// If the message is from a player-executed command, this will be called
+		/// only if [#ALLOW_COMMAND_MESSAGE] event did not block the message,
+		/// and after triggering [#COMMAND_MESSAGE] event.
+		///
+		/// @param message the broadcast message with chat decorators applied; use `message.decoratedContent()` to get the component
+		/// @param sender  the player that sent the message
+		/// @param boundChatType the [ChatType.Bound]
 		void onChatMessage(PlayerChatMessage message, ServerPlayer sender, ChatType.Bound boundChatType);
 	}
 
 	@FunctionalInterface
 	public interface GameMessage {
-		/**
-		 * Called when the server broadcasts a game message to all players. Game messages
-		 * include death messages, join/leave messages, and advancement messages. Is not called
-		 * when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
-		 *
-		 * @param server the server that sent the message
-		 * @param message the broadcast message
-		 * @param overlay {@code true} when the message is an overlay
-		 */
+		/// Called when the server broadcasts a game message to all players. Game messages
+		/// include death messages, join/leave messages, and advancement messages. Is not called
+		/// when {@linkplain #ALLOW_GAME_MESSAGE game messages are blocked}.
+		///
+		/// @param server the server that sent the message
+		/// @param message the broadcast message
+		/// @param overlay `true` when the message is an overlay
 		void onGameMessage(MinecraftServer server, Component message, boolean overlay);
 	}
 
 	@FunctionalInterface
 	public interface CommandMessage {
-		/**
-		 * Called when the server broadcasts a command message to all players, such as one
-		 * from {@code /me} and {@code /say} (but not ones that specify the recipients like
-		 * {@code /msg}). Is not called when {@linkplain #ALLOW_COMMAND_MESSAGE command messages
-		 * are blocked}.
-		 *
-		 * <p>If the command is executed by a player, {@link #ALLOW_CHAT_MESSAGE} and
-		 * {@link #CHAT_MESSAGE} events will also be triggered after this event.
-		 *
-		 * @param message the broadcast message with chat decorators applied if applicable; use {@code message.decoratedContent()} to get the component
-		 * @param source  the command source that sent the message
-		 * @param boundChatType the {@link ChatType.Bound}
-		 */
+		/// Called when the server broadcasts a command message to all players, such as one
+		/// from `/me` and `/say` (but not ones that specify the recipients like
+		/// `/msg`). Is not called when {@linkplain #ALLOW_COMMAND_MESSAGE command messages
+		///  are blocked}.
+		///
+		/// If the command is executed by a player, [#ALLOW_CHAT_MESSAGE] and
+		/// [#CHAT_MESSAGE] events will also be triggered after this event.
+		///
+		/// @param message the broadcast message with chat decorators applied if applicable; use `message.decoratedContent()` to get the component
+		/// @param source  the command source that sent the message
+		/// @param boundChatType the [ChatType.Bound]
 		void onCommandMessage(PlayerChatMessage message, CommandSourceStack source, ChatType.Bound boundChatType);
 	}
 }

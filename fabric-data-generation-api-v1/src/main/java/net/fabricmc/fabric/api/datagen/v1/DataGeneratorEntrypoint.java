@@ -21,50 +21,40 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.resources.ResourceKey;
 
-/**
- * An entry point for data generation.
- *
- * <p>In {@code fabric.mod.json}, the entrypoint is defined with {@code fabric-datagen} key.</p>
- *
- * @see FabricDataGenerator
- */
+/// An entry point for data generation.
+///
+/// In `fabric.mod.json`, the entrypoint is defined with `fabric-datagen` key.
+///
+/// @see FabricDataGenerator
 @FunctionalInterface
 public interface DataGeneratorEntrypoint {
-	/**
-	 * Register {@link net.minecraft.data.DataProvider} with the {@link FabricDataGenerator} during this entrypoint.
-	 *
-	 * @param fabricDataGenerator The {@link FabricDataGenerator} instance
-	 */
+	/// Register [net.minecraft.data.DataProvider] with the [FabricDataGenerator] during this entrypoint.
+	///
+	/// @param fabricDataGenerator The [FabricDataGenerator] instance
 	void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator);
 
-	/**
-	 * Returns the mod ID of the mod the data is being generated for.
-	 * A {@code null} return will run the data generator using the mod ID that registered the current entrypoint.
-	 *
-	 * @return a {@link String} or {@code null}
-	 * @throws RuntimeException If the mod ID does not exist.
-	 */
+	/// Returns the mod ID of the mod the data is being generated for.
+	/// A `null` return will run the data generator using the mod ID that registered the current entrypoint.
+	///
+	/// @return a [String] or `null`
+	/// @throws RuntimeException If the mod ID does not exist.
 	@Nullable
 	default String getEffectiveModId() {
 		return null;
 	}
 
-	/**
-	 * Builds a registry containing dynamic registry entries to be generated.
-	 * Users should call {@link RegistrySetBuilder#add(ResourceKey, RegistrySetBuilder.RegistryBootstrap)}
-	 * to register a bootstrap function, which adds registry entries to be generated.
-	 *
-	 * <p>This is invoked asynchronously.
-	 *
-	 * @param registryBuilder a {@link RegistrySetBuilder} instance
-	 */
+	/// Builds a registry containing dynamic registry entries to be generated.
+	/// Users should call [RegistrySetBuilder#add(ResourceKey, RegistrySetBuilder.RegistryBootstrap)]
+	/// to register a bootstrap function, which adds registry entries to be generated.
+	///
+	/// This is invoked asynchronously.
+	///
+	/// @param registryBuilder a [RegistrySetBuilder] instance
 	default void buildRegistry(RegistrySetBuilder registryBuilder) {
 	}
 
-	/**
-	 * Provides a callback for setting the sort priority of object keys in generated JSON files.
-	 * @param callback a callback for setting the sort priority for a given key
-	 */
+	/// Provides a callback for setting the sort priority of object keys in generated JSON files.
+	/// @param callback a callback for setting the sort priority for a given key
 	default void addJsonKeySortOrders(JsonKeySortOrderCallback callback) {
 	}
 }

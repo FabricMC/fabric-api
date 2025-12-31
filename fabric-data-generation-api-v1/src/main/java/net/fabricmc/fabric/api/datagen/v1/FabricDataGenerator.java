@@ -34,9 +34,7 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.fabricmc.loader.api.ModContainer;
 
-/**
- * An extension to vanilla's {@link DataGenerator} providing mod specific data, and helper functions.
- */
+/// An extension to vanilla's [DataGenerator] providing mod specific data, and helper functions.
 public final class FabricDataGenerator extends DataGenerator {
 	private final ModContainer modContainer;
 	private final boolean strictValidation;
@@ -52,124 +50,98 @@ public final class FabricDataGenerator extends DataGenerator {
 		this.registriesFuture = registriesFuture;
 	}
 
-	/**
-	 * Create a default {@link Pack} instance for generating a mod's data.
-	 */
+	/// Create a default [Pack] instance for generating a mod's data.
 	public Pack createPack() {
 		return new Pack(true, modContainer.getMetadata().getName(), this.fabricOutput);
 	}
 
-	/**
-	 * Create a new {@link Pack} instance for generating a builtin resource pack.
-	 *
-	 * <p>To be used in conjunction with {@link net.fabricmc.fabric.api.resource.ResourceManagerHelper#registerBuiltinResourcePack}
-	 *
-	 * <p>The path in which the resource pack is generated is {@code "resourcepacks/<id path>"}. {@code id path} being the path specified
-	 * in the identifier.
-	 */
+	/// Create a new [Pack] instance for generating a builtin resource pack.
+	///
+	/// To be used in conjunction with [net.fabricmc.fabric.api.resource.ResourceManagerHelper#registerBuiltinResourcePack]
+	///
+	/// The path in which the resource pack is generated is `"resourcepacks/<id path>"`. `id path` being the path specified
+	/// in the identifier.
 	public Pack createBuiltinResourcePack(Identifier id) {
 		Path path = this.vanillaPackOutput.getOutputFolder().resolve("resourcepacks").resolve(id.getPath());
 		return new Pack(true, id.toString(), new FabricPackOutput(modContainer, path, strictValidation));
 	}
 
-	/**
-	 * Returns the {@link ModContainer} for the mod that this data generator has been created for.
-	 *
-	 * @return a {@link ModContainer} instance
-	 */
+	/// Returns the [ModContainer] for the mod that this data generator has been created for.
+	///
+	/// @return a [ModContainer] instance
 	public ModContainer getModContainer() {
 		return modContainer;
 	}
 
-	/**
-	 * Returns the mod ID for the mod that this data generator has been created for.
-	 *
-	 * @return a mod ID
-	 */
+	/// Returns the mod ID for the mod that this data generator has been created for.
+	///
+	/// @return a mod ID
 	public String getModId() {
 		return getModContainer().getMetadata().getId();
 	}
 
-	/**
-	 * When enabled data providers can do strict validation to ensure that all entries have data generated for them.
-	 *
-	 * @return if strict validation should be enabled
-	 */
+	/// When enabled data providers can do strict validation to ensure that all entries have data generated for them.
+	///
+	/// @return if strict validation should be enabled
 	public boolean isStrictValidationEnabled() {
 		return strictValidation;
 	}
 
-	/**
-	 * Get a future returning the default registries produced by {@link VanillaRegistries} and
-	 * {@link DataGeneratorEntrypoint#buildRegistry(RegistrySetBuilder)}.
-	 *
-	 * <p>Generally one does not need direct access to the registries, and instead can pass them directly to a
-	 * {@link DataProvider} by using {@link Pack#addProvider(Pack.RegistryDependentFactory)}. However, this method may
-	 * be useful when extending the vanilla registries (such as with {@link RegistryPatchGenerator}).
-	 *
-	 * @return A future containing the builtin registries.
-	 */
+	/// Get a future returning the default registries produced by [VanillaRegistries] and
+	/// [DataGeneratorEntrypoint#buildRegistry(RegistrySetBuilder)].
+	///
+	/// Generally one does not need direct access to the registries, and instead can pass them directly to a
+	/// [DataProvider] by using [Pack#addProvider(Pack.RegistryDependentFactory)]. However, this method may
+	/// be useful when extending the vanilla registries (such as with [RegistryPatchGenerator]).
+	///
+	/// @return A future containing the builtin registries.
 	public CompletableFuture<HolderLookup.Provider> getRegistries() {
 		return registriesFuture;
 	}
 
-	/**
-	 * @deprecated Please use {@link FabricDataGenerator#createPack()}
-	 */
+	/// @deprecated Please use [FabricDataGenerator#createPack()]
 	@Override
 	@Deprecated
 	public DataGenerator.PackGenerator getVanillaPack(boolean shouldRun) {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * @deprecated Please use {@link FabricDataGenerator#createBuiltinResourcePack(Identifier)}
-	 */
+	/// @deprecated Please use [FabricDataGenerator#createBuiltinResourcePack(Identifier)]
 	@Override
 	@Deprecated
 	public DataGenerator.PackGenerator getBuiltinDatapack(boolean shouldRun, String packName) {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * Represents a pack of generated data (i.e. data pack or resource pack). Providers are added to a pack.
-	 */
+	/// Represents a pack of generated data (i.e. data pack or resource pack). Providers are added to a pack.
 	public final class Pack extends DataGenerator.PackGenerator {
 		private Pack(boolean shouldRun, String name, FabricPackOutput output) {
 			super(shouldRun, name, output);
 		}
 
-		/**
-		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricPackOutput}.
-		 *
-		 * @return the {@link DataProvider}
-		 */
+		/// Registers a constructor of [DataProvider] which takes a [FabricPackOutput].
+		///
+		/// @return the [DataProvider]
 		public <T extends DataProvider> T addProvider(Factory<T> factory) {
 			return super.addProvider(output -> factory.create((FabricPackOutput) output));
 		}
 
-		/**
-		 * Registers a constructor of {@link DataProvider} which takes a {@link FabricPackOutput} and the registries.
-		 * This is used, for example, with {@link FabricTagsProvider}.
-		 *
-		 * @return the {@link DataProvider}
-		 */
+		/// Registers a constructor of [DataProvider] which takes a [FabricPackOutput] and the registries.
+		/// This is used, for example, with [FabricTagsProvider].
+		///
+		/// @return the [DataProvider]
 		public <T extends DataProvider> T addProvider(RegistryDependentFactory<T> factory) {
 			return super.addProvider(output -> factory.create((FabricPackOutput) output, registriesFuture));
 		}
 
-		/**
-		 * A factory of a data provider. This is usually the constructor.
-		 */
+		/// A factory of a data provider. This is usually the constructor.
 		@FunctionalInterface
 		public interface Factory<T extends DataProvider> {
 			T create(FabricPackOutput output);
 		}
 
-		/**
-		 * A factory of a data provider. This is usually the constructor.
-		 * The provider has access to the registries.
-		 */
+		/// A factory of a data provider. This is usually the constructor.
+		/// The provider has access to the registries.
 		@FunctionalInterface
 		public interface RegistryDependentFactory<T extends DataProvider> {
 			T create(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture);

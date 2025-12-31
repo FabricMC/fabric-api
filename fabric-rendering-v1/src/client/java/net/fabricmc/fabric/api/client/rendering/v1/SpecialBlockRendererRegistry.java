@@ -23,20 +23,16 @@ import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.impl.client.rendering.SpecialBlockRendererRegistryImpl;
 
-/**
- * Allows registering special renderers for certain blocks, such that they are used when
- * {@link SpecialBlockModelRenderer#renderByBlock} is invoked. The most common use of this method is through
- * {@link BlockRenderDispatcher#renderSingleBlock}, which is used for rendering blocks in minecarts, blocks held by
- * endermen, and other cases.
- */
+/// Allows registering special renderers for certain blocks, such that they are used when
+/// [SpecialBlockModelRenderer#renderByBlock] is invoked. The most common use of this method is through
+/// [BlockRenderDispatcher#renderSingleBlock], which is used for rendering blocks in minecarts, blocks held by
+/// endermen, and other cases.
 public final class SpecialBlockRendererRegistry {
 	private SpecialBlockRendererRegistry() {
 	}
 
-	/**
-	 * Assign the given unbaked renderer to the given block. {@link SpecialModelRenderer.Unbaked#type()} will not be
-	 * used and can return {@code null}.
-	 */
+	/// Assign the given unbaked renderer to the given block. [SpecialModelRenderer.Unbaked#type()] will not be
+	/// used and can return `null`.
 	public static void register(Block block, SpecialModelRenderer.Unbaked unbakedRenderer) {
 		SpecialBlockRendererRegistryImpl.register(block, unbakedRenderer);
 	}

@@ -25,14 +25,12 @@ import net.minecraft.world.item.Item;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Allows registering a mapping from {@link TooltipComponent} to {@link ClientTooltipComponent}.
- * This allows custom tooltips for items: first, override {@link Item#getTooltipImage} and return a custom {@link TooltipComponent}.
- * Second, register a listener to this event and convert the component to your client component implementation if it's an instance of your component class.
- *
- * <p>Note that failure to map some components to a client component will throw an exception,
- * so make sure that any components you return in {@link Item#getTooltipImage} will be handled by one of the callbacks.
- */
+/// Allows registering a mapping from [TooltipComponent] to [ClientTooltipComponent].
+/// This allows custom tooltips for items: first, override [Item#getTooltipImage] and return a custom [TooltipComponent].
+/// Second, register a listener to this event and convert the component to your client component implementation if it's an instance of your component class.
+///
+/// Note that failure to map some components to a client component will throw an exception,
+/// so make sure that any components you return in [Item#getTooltipImage] will be handled by one of the callbacks.
 public interface ClientTooltipComponentCallback {
 	Event<ClientTooltipComponentCallback> EVENT = EventFactory.createArrayBacked(
 			ClientTooltipComponentCallback.class, listeners -> data -> {
@@ -47,9 +45,7 @@ public interface ClientTooltipComponentCallback {
 				return null;
 			});
 
-	/**
-	 * Return the client tooltip component for the passed tooltip component, or null if none is available.
-	 */
+	/// Return the client tooltip component for the passed tooltip component, or null if none is available.
 	@Nullable
 	ClientTooltipComponent getClientComponent(TooltipComponent component);
 }

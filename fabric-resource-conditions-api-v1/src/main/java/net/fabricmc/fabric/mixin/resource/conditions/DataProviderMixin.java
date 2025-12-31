@@ -27,9 +27,7 @@ import net.minecraft.data.DataProvider;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 
-/**
- * Make the {@value ResourceConditions#CONDITIONS_KEY} appear first in generated JSON objects.
- */
+/// Make the {@value ResourceConditions#CONDITIONS_KEY} appear first in generated JSON objects.
 @Mixin(DataProvider.class)
 public interface DataProviderMixin {
 	@Dynamic("lambda method passed to Util.make")

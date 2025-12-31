@@ -37,11 +37,9 @@ import net.minecraft.server.RunningOnDifferentThreadException;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
-/**
- * A network addon which is aware of the channels the other side may receive.
- *
- * @param <H> the channel handler type
- */
+/// A network addon which is aware of the channels the other side may receive.
+///
+/// @param <H> the channel handler type
 public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<H> implements PacketSender, CommonPacketHandler {
 	// The maximum number of channels that a connecting client can register.
 	private static final int MAX_CHANNELS = Integer.getInteger("fabric.networking.maxChannels", 8192);
@@ -174,9 +172,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		this.connection.disconnect(disconnectReason);
 	}
 
-	/**
-	 * Schedules a task to run on the main thread.
-	 */
+	/// Schedules a task to run on the main thread.
 	protected abstract void schedule(Runnable task);
 
 	protected abstract void invokeRegisterEvent(List<Identifier> ids);

@@ -28,46 +28,36 @@ import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
-/**
- * A storage that can store a single transfer variant at any given time.
- * Implementors should at least override {@link #getCapacity(TransferVariant)},
- * and probably {@link #onFinalCommit} as well for {@code setChanged()} and similar calls.
- *
- * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which variants may be inserted or extracted.
- * If one of these two functions is overridden to always return false, implementors may also wish to override
- * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
- *
- * @see net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage SingleFluidStorage for fluid variants.
- * @see net.fabricmc.fabric.api.transfer.v1.item.base.SingleItemStorage SingleItemStorage for item variants.
- */
+/// A storage that can store a single transfer variant at any given time.
+/// Implementors should at least override [#getCapacity(TransferVariant)],
+/// and probably [#onFinalCommit] as well for `setChanged()` and similar calls.
+///
+/// [#canInsert] and [#canExtract] can be used for more precise control over which variants may be inserted or extracted.
+/// If one of these two functions is overridden to always return false, implementors may also wish to override
+/// [#supportsInsertion] and/or [#supportsExtraction].
+///
+/// @see net.fabricmc.fabric.api.transfer.v1.fluid.base.SingleFluidStorage SingleFluidStorage for fluid variants.
+/// @see net.fabricmc.fabric.api.transfer.v1.item.base.SingleItemStorage SingleItemStorage for item variants.
 public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends SnapshotParticipant<ResourceAmount<T>> implements SingleSlotStorage<T> {
 	public T variant = getBlankVariant();
 	public long amount = 0;
 
-	/**
-	 * Return the blank variant.
-	 *
-	 * <p>Note: this is called very early in the constructor.
-	 * If fields need to be accessed from this function, make sure to re-initialize {@link #variant} yourself.
-	 */
+	/// Return the blank variant.
+	///
+	/// Note: this is called very early in the constructor.
+	/// If fields need to be accessed from this function, make sure to re-initialize [#variant] yourself.
 	protected abstract T getBlankVariant();
 
-	/**
-	 * Return the maximum capacity of this storage for the passed transfer variant.
-	 * If the passed variant is blank, an estimate should be returned.
-	 */
+	/// Return the maximum capacity of this storage for the passed transfer variant.
+	/// If the passed variant is blank, an estimate should be returned.
 	protected abstract long getCapacity(T variant);
 
-	/**
-	 * @return {@code true} if the passed non-blank variant can be inserted, {@code false} otherwise.
-	 */
+	/// @return `true` if the passed non-blank variant can be inserted, `false` otherwise.
 	protected boolean canInsert(T variant) {
 		return true;
 	}
 
-	/**
-	 * @return {@code true} if the passed non-blank variant can be extracted, {@code false} otherwise.
-	 */
+	/// @return `true` if the passed non-blank variant can be extracted, `false` otherwise.
 	protected boolean canExtract(T variant) {
 		return true;
 	}
@@ -154,28 +144,24 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
 		return "SingleVariantStorage[%d %s]".formatted(amount, variant);
 	}
 
-	/**
-	 * Read a {@link SingleVariantStorage} from a {@link ValueInput}.
-	 *
-	 * @param storage the {@link SingleVariantStorage} to read into
-	 * @param codec the item variant codec
-	 * @param fallback the fallback item variant, used when the value is invalid
-	 * @param value the @{@link ValueInput} instance to read from
-	 * @param <T> the type of the item variant
-	 */
+	/// Read a [SingleVariantStorage] from a [ValueInput].
+	///
+	/// @param storage the [SingleVariantStorage] to read into
+	/// @param codec the item variant codec
+	/// @param fallback the fallback item variant, used when the value is invalid
+	/// @param value the @[ValueInput] instance to read from
+	/// @param <T> the type of the item variant
 	public static <T extends TransferVariant<?>> void readValue(SingleVariantStorage<T> storage, Codec<T> codec, Supplier<T> fallback, ValueInput value) {
 		storage.variant = value.read("variant", codec).orElseGet(fallback);
 		storage.amount = value.getLongOr("amount", 0L);
 	}
 
-	/**
-	 * Write a {@link SingleVariantStorage} to {@link ValueOutput}.
-	 *
-	 * @param storage the {@link SingleVariantStorage} to write from
-	 * @param codec the item variant codec
-	 * @param value the @{@link ValueOutput} instance to write to
-	 * @param <T> the type of the item variant
-	 */
+	/// Write a [SingleVariantStorage] to [ValueOutput].
+	///
+	/// @param storage the [SingleVariantStorage] to write from
+	/// @param codec the item variant codec
+	/// @param value the @[ValueOutput] instance to write to
+	/// @param <T> the type of the item variant
 	public static <T extends TransferVariant<?>> void writeValue(SingleVariantStorage<T> storage, Codec<T> codec, ValueOutput value) {
 		value.store("variant", codec, storage.variant);
 		value.putLong("amount", storage.amount);

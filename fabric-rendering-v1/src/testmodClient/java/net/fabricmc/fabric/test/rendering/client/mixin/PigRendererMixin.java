@@ -35,9 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderState;
 import net.fabricmc.fabric.api.client.rendering.v1.RenderStateDataKey;
 
-/**
- * Tests {@link RenderStateDataKey} and {@link FabricRenderState}. Pigs will render the block they're standing on at their location.
- */
+/// Tests [RenderStateDataKey] and [FabricRenderState]. Pigs will render the block they're standing on at their location.
 @Mixin(PigRenderer.class)
 public class PigRendererMixin {
 	@Unique

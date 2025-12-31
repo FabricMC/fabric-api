@@ -34,17 +34,15 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
-/**
- * Standard implementation of {@code Storage<FluidVariant>}, using cauldron/fluid mappings registered in {@link CauldronFluidContent}.
- *
- * <p>Implementation notes:
- * <ul>
- *     <li>To make sure multiple access to the same cauldron return the same wrapper, we maintain a {@code (Level, BlockPos) -> Wrapper} cache.</li>
- *     <li>The wrapper mutates the level directly with setBlockState, but updates are suppressed.
- *     On final commit, a block update is sent by reverting to {@linkplain #lastReleasedSnapshot the initial block state} with updates suppressed,
- *     then setting the final block state again, without suppressing updates.</li>
- * </ul>
- */
+/// Standard implementation of `Storage<FluidVariant>`, using cauldron/fluid mappings registered in [CauldronFluidContent].
+///
+/// Implementation notes:
+///
+///   - To make sure multiple access to the same cauldron return the same wrapper, we maintain a `(Level, BlockPos) -> Wrapper` cache.
+///   - The wrapper mutates the level directly with setBlockState, but updates are suppressed.
+///     On final commit, a block update is sent by reverting to {@linkplain #lastReleasedSnapshot the initial block state} with updates suppressed,
+///     then setting the final block state again, without suppressing updates.
+///
 public class CauldronStorage extends SnapshotParticipant<BlockState> implements SingleSlotStorage<FluidVariant> {
 	// Record is used for convenient constructor, hashcode and equals implementations.
 	private record LevelLocation(Level level, BlockPos pos) {

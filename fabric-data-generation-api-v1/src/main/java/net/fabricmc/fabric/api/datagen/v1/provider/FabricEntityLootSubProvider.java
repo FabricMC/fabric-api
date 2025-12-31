@@ -41,12 +41,10 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.impl.datagen.loot.FabricLootTableProviderImpl;
 
-/**
- * Extend this class and implement {@link FabricEntityLootSubProvider#generate()}.
- *
- * <p>Register an instance of this class with {@link FabricDataGenerator.Pack#addProvider} in a
- * {@link DataGeneratorEntrypoint}.
- */
+/// Extend this class and implement [FabricEntityLootSubProvider#generate()].
+///
+/// Register an instance of this class with [FabricDataGenerator.Pack#addProvider] in a
+/// [DataGeneratorEntrypoint].
 public abstract class FabricEntityLootSubProvider extends EntityLootSubProvider implements FabricLootTableSubProvider {
 	private final FabricPackOutput output;
 	private final Set<Identifier> excludedFromStrictValidation = new HashSet<>();
@@ -59,19 +57,15 @@ public abstract class FabricEntityLootSubProvider extends EntityLootSubProvider 
 		this.registriesFuture = registriesFuture;
 	}
 
-	/**
-	 * Implement this method to add entity drops.
-	 *
-	 * <p>Use the {@link EntityLootSubProvider#add} methods to generate entity drops.
-	 *
-	 * <p>See {@link VanillaEntityLoot#generate()} for examples of vanilla entity loot tables.
-	 */
+	/// Implement this method to add entity drops.
+	///
+	/// Use the [EntityLootSubProvider#add] methods to generate entity drops.
+	///
+	/// See [VanillaEntityLoot#generate()] for examples of vanilla entity loot tables.
 	@Override
 	public abstract void generate();
 
-	/**
-	 * Disable strict validation for the given entity type.
-	 */
+	/// Disable strict validation for the given entity type.
 	public void excludeFromStrictValidation(EntityType<?> entityType) {
 		this.excludedFromStrictValidation.add(BuiltInRegistries.ENTITY_TYPE.getKey(entityType));
 	}

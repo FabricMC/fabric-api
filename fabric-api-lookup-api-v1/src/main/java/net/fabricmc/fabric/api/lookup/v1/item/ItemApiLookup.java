@@ -27,160 +27,106 @@ import net.minecraft.world.level.ItemLike;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
 
-/**
- * An object that allows retrieving APIs from item stacks.
- * Instances of this interface can be obtained through {@link #get}.
- *
- * <p>When trying to {@link #find} an API for an item stack, the provider registered for the item of the stack will be queried if it exists.
- * If it doesn't exist, or if it returns {@code null}, the fallback providers will be queried in order.
- *
- * <h3>Usage Example</h3>
- * Let us reuse {@code FluidContainer} from {@linkplain BlockApiLookup the BlockApiLookup example}.
- * We will query {@code FluidContainer} instances from the stack directly.
- * We need no context, so we will use {@code Void}.
- *
- * <pre>{@code
- * public interface FluidContainer {
- *     boolean containsFluids(); // return true if not empty
- * }}</pre>
- * We need to create the ItemApiLookup:
- *
- * <pre>{@code
- * public final class MyApi {
- *     public static final ItemApiLookup<FluidContainer, Void> FLUID_CONTAINER_ITEM = ItemApiLookup.get(Identifier.fromNamespaceAndPath("modid", "fluid_container"), FluidContainer.class, Void.class);
- * }}</pre>
- * API instances are easy to access:
- *
- * <pre>{@code
- * FluidContainer container = MyApi.FLUID_CONTAINER_ITEM.find(itemStack, null); // Void is always null
- * if (container != null) {
- *     // Do something with the container
- *     if (container.containsFluids()) {
- *         System.out.println("It contains fluids!");
- *     }
- * }}</pre>
- * For the query to return a useful result, we must expose the API:
- *
- * <pre>{@code
- * // If the item directly implements the interface, registerSelf can be used.
- * public class InfiniteWaterItem implements FluidContainer {
- *     ＠Override
- *     public boolean containsFluids() {
- *         return true; // This item always contains fluids!
- *     }
- * }
- * MyApi.FLUID_CONTAINER_ITEM.registerSelf(INFINITE_WATER_ITEM);
- *
- * // Otherwise, registerForItems can be used.
- * MyApi.FLUID_CONTAINER_ITEM.registerForItems((itemStack, ignored) -> {
- *     // return a FluidContainer for your item, or null if there is none
- *     // the second parameter is Void in this case, so it's always null and can be ignored
- * }, ITEM_INSTANCE, ANOTHER_ITEM_INSTANCE); // register as many items as you want
- *
- * // General fallback, to interface with anything, for example another ItemApiLookup.
- * MyApi.FLUID_CONTAINER_ITEM.registerFallback((itemStack, ignored) -> {
- *     // return something if available, or null
- * });}</pre>
- *
- * <h3>Generic context types</h3>
- * Note that {@code FluidContainer} and {@code Void} were completely arbitrary in this example.
- * We can define any {@code ItemApiLookup&lt;A, C&gt;}, where {@code A} is the type of the queried API, and {@code C} is the type of the additional context
- * (the void parameter in the previous example).
- * If no context is necessary, {@code Void} should be used, and {@code null} instances should be passed, like we did in the example.
- *
- * @param <A> The type of the API.
- * @param <C> The type of the additional context object.
- */
+/// An object that allows retrieving APIs from item stacks.
+/// Instances of this interface can be obtained through [#get].
+///
+/// When trying to [#find] an API for an item stack, the provider registered for the item of the stack will be queried if it exists.
+/// If it doesn't exist, or if it returns `null`, the fallback providers will be queried in order.
+/// ### Usage Example
+/// Let us reuse `FluidContainer` from {@linkplain BlockApiLookup the BlockApiLookup example}.
+/// We will query `FluidContainer` instances from the stack directly.
+/// We need no context, so we will use `Void`.
+/// <pre>
+/// `public interface FluidContainer{boolean containsFluids(); // return true if not empty}`</pre>
+/// We need to create the ItemApiLookup:
+/// <pre>
+/// `public final class MyApi{public static final ItemApiLookup<FluidContainer, Void> FLUID_CONTAINER_ITEM = ItemApiLookup.get(Identifier.fromNamespaceAndPath("modid", "fluid_container"), FluidContainer.class, Void.class);}`</pre>
+/// API instances are easy to access:
+/// <pre>
+/// `FluidContainer container = MyApi.FLUID_CONTAINER_ITEM.find(itemStack, null); // Void is always nullif (container != null){// Do something with the containerif (container.containsFluids()){System.out.println("It contains fluids!");}}`</pre>
+/// For the query to return a useful result, we must expose the API:
+/// <pre>
+/// `// If the item directly implements the interface, registerSelf can be used.public class InfiniteWaterItem implements FluidContainer{＠Overridepublic boolean containsFluids(){return true; // This item always contains fluids!}}MyApi.FLUID_CONTAINER_ITEM.registerSelf(INFINITE_WATER_ITEM);// Otherwise, registerForItems can be used.MyApi.FLUID_CONTAINER_ITEM.registerForItems((itemStack, ignored) ->{// return a FluidContainer for your item, or null if there is none// the second parameter is Void in this case, so it's always null and can be ignored}, ITEM_INSTANCE, ANOTHER_ITEM_INSTANCE); // register as many items as you want// General fallback, to interface with anything, for example another ItemApiLookup.MyApi.FLUID_CONTAINER_ITEM.registerFallback((itemStack, ignored) ->{// return something if available, or null});`</pre>
+/// ### Generic context types
+/// Note that `FluidContainer` and `Void` were completely arbitrary in this example.
+/// We can define any `ItemApiLookup&lt;A, C&gt;`, where `A` is the type of the queried API, and `C` is the type of the additional context
+/// (the void parameter in the previous example).
+/// If no context is necessary, `Void` should be used, and `null` instances should be passed, like we did in the example.
+///
+/// @param <A> The type of the API.
+/// @param <C> The type of the additional context object.
 @ApiStatus.NonExtendable
 public interface ItemApiLookup<A, C> {
-	/**
-	 * Retrieve the {@link ItemApiLookup} associated with an identifier, or create it if it didn't exist yet.
-	 *
-	 * @param lookupId The unique identifier of the lookup.
-	 * @param apiClass The class of the API.
-	 * @param contextClass The class of the additional context.
-	 * @return The unique lookup with the passed lookupId.
-	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
-	 */
+	/// Retrieve the [ItemApiLookup] associated with an identifier, or create it if it didn't exist yet.
+	///
+	/// @param lookupId The unique identifier of the lookup.
+	/// @param apiClass The class of the API.
+	/// @param contextClass The class of the additional context.
+	/// @return The unique lookup with the passed lookupId.
+	/// @throws IllegalArgumentException If another `apiClass` or another `contextClass` was already registered with the same identifier.
 	static <A, C> ItemApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
 		return ItemApiLookupImpl.get(lookupId, apiClass, contextClass);
 	}
 
-	/**
-	 * Attempt to retrieve an API from an item stack.
-	 *
-	 * <p>Note: An API may or may not allow the item stack to be modified by the returned instance.
-	 * API authors are strongly encouraged to document this behavior so that implementors can refer
-	 * to the API documentation.
-	 * <br>While providers may capture a reference to the stack, it is expected that they do not modify it directly.
-	 *
-	 * @param itemStack The item stack.
-	 * @param context Additional context for the query, defined by type parameter C.
-	 * @return The retrieved API, or {@code null} if no API was found.
-	 */
+	/// Attempt to retrieve an API from an item stack.
+	///
+	/// Note: An API may or may not allow the item stack to be modified by the returned instance.
+	/// API authors are strongly encouraged to document this behavior so that implementors can refer
+	/// to the API documentation.
+	///
+	///While providers may capture a reference to the stack, it is expected that they do not modify it directly.
+	///
+	/// @param itemStack The item stack.
+	/// @param context Additional context for the query, defined by type parameter C.
+	/// @return The retrieved API, or `null` if no API was found.
 	@Nullable
 	A find(ItemStack itemStack, C context);
 
-	/**
-	 * Expose the API for the passed items directly implementing it.
-	 *
-	 * @param items Items for which to expose the API.
-	 * @throws IllegalArgumentException If the API class is not assignable from a class of one of the items.
-	 */
+	/// Expose the API for the passed items directly implementing it.
+	///
+	/// @param items Items for which to expose the API.
+	/// @throws IllegalArgumentException If the API class is not assignable from a class of one of the items.
 	void registerSelf(ItemLike... items);
 
-	/**
-	 * Expose the API for the passed items.
-	 * The mapping from the parameters of the query to the API is handled by the passed {@link ItemApiProvider}.
-	 *
-	 * @param provider The provider.
-	 * @param items The items.
-	 */
+	/// Expose the API for the passed items.
+	/// The mapping from the parameters of the query to the API is handled by the passed [ItemApiProvider].
+	///
+	/// @param provider The provider.
+	/// @param items The items.
 	void registerForItems(ItemApiProvider<A, C> provider, ItemLike... items);
 
-	/**
-	 * Expose the API for all queries: the fallbacks providers will be invoked if no object was found using the regular providers.
-	 *
-	 * @param fallbackProvider The fallback provider.
-	 */
+	/// Expose the API for all queries: the fallbacks providers will be invoked if no object was found using the regular providers.
+	///
+	/// @param fallbackProvider The fallback provider.
 	void registerFallback(ItemApiProvider<A, C> fallbackProvider);
 
-	/**
-	 * Return the identifier of this lookup.
-	 */
+	/// Return the identifier of this lookup.
 	Identifier getId();
 
-	/**
-	 * Return the API class of this lookup.
-	 */
+	/// Return the API class of this lookup.
 	Class<A> apiClass();
 
-	/**
-	 * Return the context class of this lookup.
-	 */
+	/// Return the context class of this lookup.
 	Class<C> contextClass();
 
-	/**
-	 * Return the provider for the passed item (registered with one of the {@code register} functions), or null if none was registered (yet).
-	 * Queries should go through {@link #find}, only use this to inspect registered providers!
-	 */
+	/// Return the provider for the passed item (registered with one of the `register` functions), or null if none was registered (yet).
+	/// Queries should go through [#find], only use this to inspect registered providers!
 	@Nullable
 	ItemApiProvider<A, C> getProvider(Item item);
 
 	@FunctionalInterface
 	interface ItemApiProvider<A, C> {
-		/**
-		 * Return an API of type {@code A} if available for the given item stack with the given context, or {@code null} otherwise.
-		 *
-		 * <p>Note: An API may or may not allow the item stack to be modified by the returned instance.
-		 * API authors are strongly encouraged to document this behavior so that implementors can refer
-		 * to the API documentation.
-		 * <br>While providers may capture a reference to the stack, it is expected that they do not modify it directly.
-		 *
-		 * @param itemStack The item stack.
-		 * @param context Additional context passed to the query.
-		 * @return An API of type {@code A}, or {@code null} if no API is available.
-		 */
+		/// Return an API of type `A` if available for the given item stack with the given context, or `null` otherwise.
+		///
+		/// Note: An API may or may not allow the item stack to be modified by the returned instance.
+		/// API authors are strongly encouraged to document this behavior so that implementors can refer
+		/// to the API documentation.
+		///
+		///While providers may capture a reference to the stack, it is expected that they do not modify it directly.
+		///
+		/// @param itemStack The item stack.
+		/// @param context Additional context passed to the query.
+		/// @return An API of type `A`, or `null` if no API is available.
 		@Nullable
 		A find(ItemStack itemStack, C context);
 	}

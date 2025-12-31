@@ -20,22 +20,18 @@ import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
 
-/**
- * An unbaked extra model.
- *
- * <p>Similar to {@link ItemModel.Unbaked} and other {@link ResolvableModel}, this model can
- * {@linkplain ResolvableModel.Resolver#resolveDependencies(Resolver) depend} on one or more model files, and then combine them into
- * a single baked model.
- *
- * @param <T> The type of the baked model.
- * @see ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)
- */
+/// An unbaked extra model.
+///
+/// Similar to [ItemModel.Unbaked] and other [ResolvableModel], this model can
+/// {@linkplain ResolvableModel.Resolver#resolveDependencies(Resolver) depend} on one or more model files, and then combine them into
+/// a single baked model.
+///
+/// @param <T> The type of the baked model.
+/// @see ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)
 public interface UnbakedExtraModel<T> extends ResolvableModel {
-	/**
-	 * Bake this model.
-	 *
-	 * @param baker The current model baker.
-	 * @return The fully-baked model.
-	 */
+	/// Bake this model.
+	///
+	/// @param baker The current model baker.
+	/// @return The fully-baked model.
 	T bake(ModelBaker baker);
 }

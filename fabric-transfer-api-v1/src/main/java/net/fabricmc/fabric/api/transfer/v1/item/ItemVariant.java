@@ -34,54 +34,40 @@ import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.impl.transfer.VariantCodecs;
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 
-/**
- * An immutable count-less ItemStack, i.e. an immutable association of an item and its data components.
- *
- * <p>Do not implement, use the static {@code of(...)} functions instead.
- */
+/// An immutable count-less ItemStack, i.e. an immutable association of an item and its data components.
+///
+/// Do not implement, use the static `of(...)` functions instead.
 @ApiStatus.NonExtendable
 public interface ItemVariant extends TransferVariant<Item> {
 	Codec<ItemVariant> CODEC = VariantCodecs.ITEM_CODEC;
 	StreamCodec<RegistryFriendlyByteBuf, ItemVariant> PACKET_CODEC = VariantCodecs.ITEM_PACKET_CODEC;
 
-	/**
-	 * Retrieve a blank ItemVariant.
-	 */
+	/// Retrieve a blank ItemVariant.
 	static ItemVariant blank() {
 		return of(Items.AIR);
 	}
 
-	/**
-	 * Retrieve an ItemVariant with the item and tag of a stack.
-	 */
+	/// Retrieve an ItemVariant with the item and tag of a stack.
 	static ItemVariant of(ItemStack stack) {
 		return of(stack.getItem(), stack.getComponentsPatch());
 	}
 
-	/**
-	 * Retrieve an ItemVariant with an item and without a tag.
-	 */
+	/// Retrieve an ItemVariant with an item and without a tag.
 	static ItemVariant of(ItemLike item) {
 		return of(item, DataComponentPatch.EMPTY);
 	}
 
-	/**
-	 * Retrieve an ItemVariant with an item and an optional tag.
-	 */
+	/// Retrieve an ItemVariant with an item and an optional tag.
 	static ItemVariant of(ItemLike item, DataComponentPatch components) {
 		return ItemVariantImpl.of(item.asItem(), components);
 	}
 
-	/**
-	 * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
-	 */
+	/// Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
 	default boolean matches(ItemStack stack) {
 		return isOf(stack.getItem()) && Objects.equals(stack.getComponentsPatch(), getComponentsPatch());
 	}
 
-	/**
-	 * Return the item of this variant.
-	 */
+	/// Return the item of this variant.
 	default Item getItem() {
 		return getObject();
 	}
@@ -91,30 +77,24 @@ public interface ItemVariant extends TransferVariant<Item> {
 		return getItem().builtInRegistryHolder();
 	}
 
-	/**
-	 * Create a new item stack with count 1 from this variant.
-	 */
+	/// Create a new item stack with count 1 from this variant.
 	default ItemStack toStack() {
 		return toStack(1);
 	}
 
-	/**
-	 * Create a new item stack from this variant.
-	 *
-	 * @param count The count of the returned stack. It may lead to counts higher than maximum stack size.
-	 */
+	/// Create a new item stack from this variant.
+	///
+	/// @param count The count of the returned stack. It may lead to counts higher than maximum stack size.
 	default ItemStack toStack(int count) {
 		if (isBlank()) return ItemStack.EMPTY;
 		return new ItemStack(typeHolder(), count, getComponentsPatch());
 	}
 
-	/**
-	 * Creates a copy of this ItemVariant with the provided component patch applied.
-	 * @param patch the patch to apply
-	 * @return the new variant with the patch applied
-	 *
-	 * @see ItemStack#applyComponents(DataComponentPatch)
-	 */
+	/// Creates a copy of this ItemVariant with the provided component patch applied.
+	/// @param patch the patch to apply
+	/// @return the new variant with the patch applied
+	///
+	/// @see ItemStack#applyComponents(DataComponentPatch)
 	@Override
 	ItemVariant withComponents(DataComponentPatch patch);
 }

@@ -33,10 +33,8 @@ import net.minecraft.world.item.DyeColor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
-/**
- * This test mod renders a second banner in the top left corner next to the one of
- * {@link PictureInPictureRendererTest}. It does so via a dedicated {@link GuiRenderer}.
- */
+/// This test mod renders a second banner in the top left corner next to the one of
+/// [PictureInPictureRendererTest]. It does so via a dedicated [GuiRenderer].
 public class PictureInPictureRendererTestWithNewGuiRenderer implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {

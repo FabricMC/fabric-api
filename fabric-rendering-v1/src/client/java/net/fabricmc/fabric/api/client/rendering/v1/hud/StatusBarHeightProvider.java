@@ -22,18 +22,14 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.world.entity.player.Player;
 
-/**
- * Define the vertical space occupied by HUD elements, known as status bars, which are positioned on the left and right
- * sides above the player's hotbar.
- *
- * @see HudStatusBarHeightRegistry
- */
+/// Define the vertical space occupied by HUD elements, known as status bars, which are positioned on the left and right
+/// sides above the player's hotbar.
+///
+/// @see HudStatusBarHeightRegistry
 @FunctionalInterface
 public interface StatusBarHeightProvider extends ToIntFunction<Player> {
-	/**
-	 * @param player the {@link Player} from {@link net.minecraft.client.gui.Gui#getCameraPlayer()}
-	 * @return the vertical space occupied by the status bar
-	 */
+	/// @param player the [Player] from [net.minecraft.client.gui.Gui#getCameraPlayer()]
+	/// @return the vertical space occupied by the status bar
 	int getStatusBarHeight(Player player);
 
 	@ApiStatus.NonExtendable

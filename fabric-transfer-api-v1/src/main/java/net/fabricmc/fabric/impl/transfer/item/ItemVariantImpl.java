@@ -50,9 +50,7 @@ public class ItemVariantImpl implements ItemVariant {
 	private final Item item;
 	private final DataComponentPatch components;
 	private final int hashCode;
-	/**
-	 * Lazily computed, equivalent to calling toStack(1). <b>MAKE SURE IT IS NEVER MODIFIED!</b>
-	 */
+	/// Lazily computed, equivalent to calling toStack(1). **MAKE SURE IT IS NEVER MODIFIED!**
 	private volatile @Nullable ItemStack cachedStack = null;
 
 	public ItemVariantImpl(Item item, DataComponentPatch components) {

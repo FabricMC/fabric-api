@@ -22,13 +22,9 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 
-/**
- * Note: This interface is automatically implemented on {@link SpriteGetter} via Mixin and interface injection.
- */
+/// Note: This interface is automatically implemented on [SpriteGetter] via Mixin and interface injection.
 public interface FabricSpriteGetter extends SpriteFinderGetter {
-	/**
-	 * {@return the sprite finder for the given atlas texture ID}
-	 */
+	/// {@return the sprite finder for the given atlas texture ID}
 	default SpriteFinder spriteFinder(Identifier atlasTextureId) {
 		throw new UnsupportedOperationException();
 	}

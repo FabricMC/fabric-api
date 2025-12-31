@@ -23,20 +23,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Events related to particle rendering.
- */
+/// Events related to particle rendering.
 public final class ParticleRenderEvents {
 	private ParticleRenderEvents() {
 	}
 
-	/**
-	 * An event that checks if a {@linkplain net.minecraft.client.particle.TerrainParticle terrain particle}
-	 * can be tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor color}.
-	 *
-	 * <p>The default return value of this event is {@code true}. If any callback returns {@code false} for a given call,
-	 * further iteration will be canceled and the event invoker will return {@code false}.
-	 */
+	/// An event that checks if a {@linkplain net.minecraft.client.particle.TerrainParticle terrain particle}
+	/// can be tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor color}.
+	///
+	/// The default return value of this event is `true`. If any callback returns `false` for a given call,
+	/// further iteration will be canceled and the event invoker will return `false`.
 	public static final Event<AllowTerrainParticleTint> ALLOW_TERRAIN_PARTICLE_TINT = EventFactory.createArrayBacked(
 			AllowTerrainParticleTint.class, callbacks -> (state, level, pos) -> {
 				for (AllowTerrainParticleTint callback : callbacks) {
@@ -50,15 +46,13 @@ public final class ParticleRenderEvents {
 
 	@FunctionalInterface
 	public interface AllowTerrainParticleTint {
-		/**
-		 * Checks whether a {@linkplain net.minecraft.client.particle.TerrainParticle terrain particle} can be
-		 * tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor block color}.
-		 *
-		 * @param state the block state that the particle represents
-		 * @param level the level the particle is created in
-		 * @param pos   the position of the particle
-		 * @return {@code true} if block color tinting should be allowed, {@code false} otherwise
-		 */
+		/// Checks whether a {@linkplain net.minecraft.client.particle.TerrainParticle terrain particle} can be
+		/// tinted using the corresponding block's {@linkplain net.minecraft.client.color.block.BlockColor block color}.
+		///
+		/// @param state the block state that the particle represents
+		/// @param level the level the particle is created in
+		/// @param pos   the position of the particle
+		/// @return `true` if block color tinting should be allowed, `false` otherwise
 		boolean allowTerrainParticleTint(BlockState state, ClientLevel level, BlockPos pos);
 	}
 }

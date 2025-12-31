@@ -25,79 +25,44 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-/**
- * General-purpose Fabric-provided extensions for {@link Block} subclasses.
- *
- * <p>Note: This interface is automatically implemented on all blocks via Mixin and interface injection.
- */
+/// General-purpose Fabric-provided extensions for [Block] subclasses.
+///
+/// Note: This interface is automatically implemented on all blocks via Mixin and interface injection.
 // Note to maintainers: Functions should only be added to this interface if they are general-purpose enough,
 // to be evaluated on a case-by-case basis. Otherwise, they are better suited for more specialized APIs.
 public interface FabricBlock {
-	/**
-	 * Return the current appearance of the block, i.e. which block state this block reports to look like on a given side.
-	 *
-	 * <p>Common implementors are covers and facades, or any other mimic blocks that proxy another block's model.
-	 * These will want to override this method. In that case, make sure to carefully read the implementation guidelines below.
-	 *
-	 * <p>Common consumers are models with connected textures that wish to seamlessly connect to mimic blocks.
-	 * These will want to check the apparent block state using {@link FabricBlockState#getAppearance}.
-	 *
-	 * <p>Generally, the appearance will be queried from a nearby block,
-	 * identified by the optional {@code sourcePos} and {@code sourceState} parameters.
-	 *
-	 * <p>When a block changes appearance, it should trigger a chunk remesh for itself and the adjacent blocks,
-	 * for example by calling {@link Level#sendBlockUpdated}.
-	 *
-	 * <p>Note: Overriding this method for a block does <strong>not</strong> change how it renders.
-	 * It's up to modded models to check for the appearance of nearby blocks and adjust accordingly.
-	 *
-	 * <h3>Implementation guidelines</h3>
-	 *
-	 * <p>This can be called on the server, where block entity data can be safely accessed,
-	 * and on the client, possibly in a meshing thread, where block entity data is not safe to access!
-	 * Here is an example of how data from a block entity can be handled safely.
-	 * The block entity should override {@code RenderDataBlockEntity#getBlockEntityRenderData} to return
-	 * the necessary data. Refer to the documentation of {@code RenderDataBlockEntity} for more information.
-	 * <pre>{@code @Override
-	 * public BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
-	 *     if (blockAndTintGetter instanceof ServerLevel serverLevel) {
-	 *         // Server side; ok to use block entity directly!
-	 *         BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
-	 *
-	 *         if (blockEntity instanceof ...) {
-	 *             // Get data from block entity
-	 *             return ...;
-	 *         }
-	 *     } else {
-	 *         // Client side; need to use the block entity render data!
-	 *         Object data = blockAndTintGetter.getBlockEntityRenderData(pos);
-	 *
-	 *         // Check if data is not null and of the correct type, and use that to determine the appearance
-	 *         if (data instanceof ...) {
-	 *             // get appearance for side ...
-	 *             return ...;
-	 *         }
-	 *     }
-	 *
-	 *     // Example of varying the appearance based on the source pos
-	 *     if (sourcePos != null) {
-	 *         // get appearance for side ...
-	 *         return ...;
-	 *     }
-	 *
-	 *     // If there is no other appearance, just return the original block state
-	 *     return state;
-	 * });
-	 * }</pre>
-	 *
-	 * @param state       			state of this block, whose appearance is being queried
-	 * @param blockAndTintGetter  	the level this block is in
-	 * @param pos			        position of this block, whose appearance is being queried
-	 * @param side       			the side for which the appearance is being queried
-	 * @param sourceState 			(optional) state of the block that is querying the appearance, or null if unknown
-	 * @param sourcePos   			(optional) position of the block that is querying the appearance, or null if unknown
-	 * @return the appearance of the block on the given side; the original {@code state} can be returned if there is no better option
-	 */
+	/// Return the current appearance of the block, i.e. which block state this block reports to look like on a given side.
+	///
+	/// Common implementors are covers and facades, or any other mimic blocks that proxy another block's model.
+	/// These will want to override this method. In that case, make sure to carefully read the implementation guidelines below.
+	///
+	/// Common consumers are models with connected textures that wish to seamlessly connect to mimic blocks.
+	/// These will want to check the apparent block state using [FabricBlockState#getAppearance].
+	///
+	/// Generally, the appearance will be queried from a nearby block,
+	/// identified by the optional `sourcePos` and `sourceState` parameters.
+	///
+	/// When a block changes appearance, it should trigger a chunk remesh for itself and the adjacent blocks,
+	/// for example by calling [Level#sendBlockUpdated].
+	///
+	/// Note: Overriding this method for a block does **not** change how it renders.
+	/// It's up to modded models to check for the appearance of nearby blocks and adjust accordingly.
+	/// ### Implementation guidelines
+	///
+	/// This can be called on the server, where block entity data can be safely accessed,
+	/// and on the client, possibly in a meshing thread, where block entity data is not safe to access!
+	/// Here is an example of how data from a block entity can be handled safely.
+	/// The block entity should override `RenderDataBlockEntity#getBlockEntityRenderData` to return
+	/// the necessary data. Refer to the documentation of `RenderDataBlockEntity` for more information.
+	/// <pre>`@Overridepublic BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos){if (blockAndTintGetter instanceof ServerLevel serverLevel){// Server side; ok to use block entity directly!BlockEntity blockEntity = serverLevel.getBlockEntity(pos);if (blockEntity instanceof ...){// Get data from block entityreturn ...;}}else{// Client side; need to use the block entity render data!Object data = blockAndTintGetter.getBlockEntityRenderData(pos);// Check if data is not null and of the correct type, and use that to determine the appearanceif (data instanceof ...){// get appearance for side ...return ...;}}// Example of varying the appearance based on the source posif (sourcePos != null){// get appearance for side ...return ...;}// If there is no other appearance, just return the original block statereturn state;});`</pre>
+	///
+	/// @param state       			state of this block, whose appearance is being queried
+	/// @param blockAndTintGetter  	the level this block is in
+	/// @param pos			        position of this block, whose appearance is being queried
+	/// @param side       			the side for which the appearance is being queried
+	/// @param sourceState 			(optional) state of the block that is querying the appearance, or null if unknown
+	/// @param sourcePos   			(optional) position of the block that is querying the appearance, or null if unknown
+	/// @return the appearance of the block on the given side; the original `state` can be returned if there is no better option
 	default BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
 		return state;
 	}

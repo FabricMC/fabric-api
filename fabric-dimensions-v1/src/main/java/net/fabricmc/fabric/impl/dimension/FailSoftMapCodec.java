@@ -31,10 +31,8 @@ import com.mojang.serialization.codecs.UnboundedMapCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Has the same functionality as {@link UnboundedMapCodec}.
- * But it will fail-soft when an entry cannot be deserialized.
- */
+/// Has the same functionality as [UnboundedMapCodec].
+/// But it will fail-soft when an entry cannot be deserialized.
 public record FailSoftMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elementCodec) implements BaseMapCodec<K, V>, Codec<Map<K, V>> {
 	private static final Logger LOGGER = LoggerFactory.getLogger("FailSoftMapCodec");
 
@@ -48,15 +46,13 @@ public record FailSoftMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elementCodec) i
 		return encode(input, ops, ops.mapBuilder()).build(prefix);
 	}
 
-	/**
-	 * In {@link BaseMapCodec#decode(DynamicOps, MapLike)},
-	 * the whole deserialization will fail if one element fails.
-	 * `apply2stable` will return fail when any of the two elements is failed.
-	 * In this implementation, if one deserialization fails, it will log and ignore.
-	 * The result will always be success.
-	 * It will not output partial result when some entries fail deserialization because
-	 * currently (MC 1.19.3) the dimension data deserialization rejects partial result.
-	 */
+	/// In [BaseMapCodec#decode(DynamicOps, MapLike)],
+	/// the whole deserialization will fail if one element fails.
+	/// `apply2stable` will return fail when any of the two elements is failed.
+	/// In this implementation, if one deserialization fails, it will log and ignore.
+	/// The result will always be success.
+	/// It will not output partial result when some entries fail deserialization because
+	/// currently (MC 1.19.3) the dimension data deserialization rejects partial result.
 	@Override
 	public <T> DataResult<Map<K, V>> decode(final DynamicOps<T> ops, final MapLike<T> input) {
 		final ImmutableMap.Builder<K, V> builder = ImmutableMap.builder();

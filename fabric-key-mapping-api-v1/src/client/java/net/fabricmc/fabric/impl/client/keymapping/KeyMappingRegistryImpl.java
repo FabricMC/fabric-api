@@ -47,10 +47,8 @@ public final class KeyMappingRegistryImpl {
 		return binding;
 	}
 
-	/**
-	 * Processes the keymappings array for our modded ones by first removing existing modded keymappings and readding them,
-	 * we can make sure that there are no duplicates this way.
-	 */
+	/// Processes the keymappings array for our modded ones by first removing existing modded keymappings and readding them,
+	/// we can make sure that there are no duplicates this way.
 	public static KeyMapping[] process(KeyMapping[] keysAll) {
 		List<KeyMapping> newKeysAll = Lists.newArrayList(keysAll);
 		newKeysAll.removeAll(MODDED_KEY_BINDINGS);

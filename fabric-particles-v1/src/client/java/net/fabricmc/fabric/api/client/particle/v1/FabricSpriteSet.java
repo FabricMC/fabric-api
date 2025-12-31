@@ -24,27 +24,21 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleType;
 
-/**
- * It does the same thing as vanilla's {@link SpriteSet},
- * but in a way that's accessible to mods, and that exposes the atlas as well.
- *
- * <p>Custom sprites registered using {@link ParticleProviderRegistry} have the options
- * to supply a particle provider which will receive an instance of this
- * interface containing the sprites set loaded for their particle from the
- * active resource packs.
- *
- * @see ParticleProviderRegistry#register(ParticleType, ParticleProvider)
- * @see ParticleProviderRegistry.PendingParticleProvider
- */
+/// It does the same thing as vanilla's [SpriteSet],
+/// but in a way that's accessible to mods, and that exposes the atlas as well.
+///
+/// Custom sprites registered using [ParticleProviderRegistry] have the options
+/// to supply a particle provider which will receive an instance of this
+/// interface containing the sprites set loaded for their particle from the
+/// active resource packs.
+///
+/// @see ParticleProviderRegistry#register(ParticleType, ParticleProvider)
+/// @see ParticleProviderRegistry.PendingParticleProvider
 public interface FabricSpriteSet extends SpriteSet {
-	/**
-	 * Returns the entire particles texture atlas.
-	 */
+	/// Returns the entire particles texture atlas.
 	TextureAtlas getAtlas();
 
-	/**
-	 * Gets the list of all sprites available for this particle to use.
-	 * This is defined in your resource pack.
-	 */
+	/// Gets the list of all sprites available for this particle to use.
+	/// This is defined in your resource pack.
 	List<TextureAtlasSprite> getSprites();
 }

@@ -41,9 +41,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.SimpleBlockRenderC
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainLikeRenderContext;
 import net.fabricmc.fabric.mixin.client.indigo.renderer.BlockRenderDispatcherAccessor;
 
-/**
- * The Fabric default renderer implementation. Supports all features defined in the API.
- */
+/// The Fabric default renderer implementation. Supports all features defined in the API.
 public class IndigoRenderer implements Renderer {
 	public static final IndigoRenderer INSTANCE = new IndigoRenderer();
 

@@ -23,9 +23,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-/**
- * Tests related to the lifecycle of a server.
- */
+/// Tests related to the lifecycle of a server.
 public final class ServerLifecycleTests implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("LifecycleEventsTest");
 

@@ -30,29 +30,25 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.impl.renderer.VanillaBlockModelPartEncoder;
 
-/**
- * Note: This interface is automatically implemented on {@link BlockModelPart} via Mixin and interface injection.
- */
+/// Note: This interface is automatically implemented on [BlockModelPart] via Mixin and interface injection.
 public interface FabricBlockModelPart {
-	/**
-	 * Produces this model part's geometry. <b>This method must be called instead of
-	 * {@link BlockModelPart#getQuads(Direction)} and {@link BlockModelPart#useAmbientOcclusion()}; the vanilla methods
-	 * should be considered deprecated as they may not produce accurate results.</b> However, it is acceptable for a
-	 * custom model part to only implement the vanilla methods as the default implementation of this method will
-	 * delegate to the vanilla methods.
-	 *
-	 * <p>This method mainly exists for convenience when interacting with parts implemented and produced by vanilla
-	 * code. Custom models should generally override
-	 * {@link FabricBlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)}
-	 * instead of subclassing {@link BlockModelPart} and overriding this method.
-	 *
-	 * @param emitter Accepts model part output.
-	 * @param cullTest A test that returns {@code true} for faces which will be culled and {@code false} for faces which
-	 *                 may or may not be culled. Meant to be used to cull groups of quads or expensive dynamic quads
-	 *                 early for performance. Early culled quads will likely not be added the emitter, so callers of
-	 *                 this method must account for this. Since model parts should be completely static, this test
-	 *                 should be used whenever possible.
-	 */
+	/// Produces this model part's geometry. **This method must be called instead of
+	/// [BlockModelPart#getQuads(Direction)] and [BlockModelPart#useAmbientOcclusion()]; the vanilla methods
+	/// should be considered deprecated as they may not produce accurate results.** However, it is acceptable for a
+	/// custom model part to only implement the vanilla methods as the default implementation of this method will
+	/// delegate to the vanilla methods.
+	///
+	/// This method mainly exists for convenience when interacting with parts implemented and produced by vanilla
+	/// code. Custom models should generally override
+	/// [FabricBlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)]
+	/// instead of subclassing [BlockModelPart] and overriding this method.
+	///
+	/// @param emitter Accepts model part output.
+	/// @param cullTest A test that returns `true` for faces which will be culled and `false` for faces which
+	///                 may or may not be culled. Meant to be used to cull groups of quads or expensive dynamic quads
+	///                 early for performance. Early culled quads will likely not be added the emitter, so callers of
+	///                 this method must account for this. Since model parts should be completely static, this test
+	///                 should be used whenever possible.
 	default void emitQuads(QuadEmitter emitter, Predicate<@Nullable Direction> cullTest) {
 		VanillaBlockModelPartEncoder.emitQuads((BlockModelPart) this, emitter, cullTest);
 	}

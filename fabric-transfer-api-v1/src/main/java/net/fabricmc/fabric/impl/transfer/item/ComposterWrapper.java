@@ -43,9 +43,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
-/**
- * Implementation of {@code Storage<ItemVariant>} for composters.
- */
+/// Implementation of `Storage<ItemVariant>` for composters.
 public class ComposterWrapper extends SnapshotParticipant<Float> {
 	// Record is used for convenient constructor, hashcode and equals implementations.
 	private record LevelLocation(Level level, BlockPos pos) {

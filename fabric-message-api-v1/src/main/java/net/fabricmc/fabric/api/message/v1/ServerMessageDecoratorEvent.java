@@ -25,52 +25,33 @@ import net.minecraft.resources.Identifier;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * A class for registering a {@link ChatDecorator}. Check the chat decorator documentation
- * for how chat decorators work. Unlike other events, this uses a functional interface that is
- * provided by the vanilla game.
- *
- * <p>This event uses phases to provide better mod compatibilities between mods that add custom
- * content and styling. Chat decorators with the styling phase will always apply after the ones
- * with the content phase. When registering the chat decorator, it is recommended to choose one
- * of the phases from this interface and pass that to the {@link Event#register(Identifier, Object)}
- * function. If not given, the chat decorator will run in the default phase, which is between
- * the content phase and the styling phase.
- *
- * <p>Example of registering a content phase chat decorator:
- *
- * <pre>{@code
- * ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) -> {
- *     // Add smiley face. Has to copy() to get a MutableComponent with siblings and styles.
- *     return message.copy().append(" :)");
- * });
- * }</pre>
- *
- * <p>Example of registering a styling phase message decorator:
- *
- * <pre>{@code
- * ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) -> {
- *     // Apply orange color to messages sent by server operators
- *     if (sender != null && sender.server.getPlayerManager().isOperator(sender.getGameProfile())) {
- *         return message.copy().styled(style -> style.withColor(0xFFA500));
- *     }
- *     return message;
- * });
- * }</pre>
- */
+/// A class for registering a [ChatDecorator]. Check the chat decorator documentation
+/// for how chat decorators work. Unlike other events, this uses a functional interface that is
+/// provided by the vanilla game.
+///
+/// This event uses phases to provide better mod compatibilities between mods that add custom
+/// content and styling. Chat decorators with the styling phase will always apply after the ones
+/// with the content phase. When registering the chat decorator, it is recommended to choose one
+/// of the phases from this interface and pass that to the [Event#register(Identifier, Object)]
+/// function. If not given, the chat decorator will run in the default phase, which is between
+/// the content phase and the styling phase.
+///
+/// Example of registering a content phase chat decorator:
+/// <pre>
+/// `ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.CONTENT_PHASE, (sender, message) ->{// Add smiley face. Has to copy() to get a MutableComponent with siblings and styles.return message.copy().append(" :)");});`</pre>
+///
+/// Example of registering a styling phase message decorator:
+/// <pre>
+/// `ServerMessageDecoratorEvent.EVENT.register(ServerMessageDecoratorEvent.STYLING_PHASE, (sender, message) ->{// Apply orange color to messages sent by server operatorsif (sender != null && sender.server.getPlayerManager().isOperator(sender.getGameProfile())){return message.copy().styled(style -> style.withColor(0xFFA500));}return message;});`</pre>
 public final class ServerMessageDecoratorEvent {
 	private ServerMessageDecoratorEvent() {
 	}
 
-	/**
-	 * The content phase of the event, passed when registering a chat decorator. Use this when
-	 * the decorator modifies the component contents of the message.
-	 */
+	/// The content phase of the event, passed when registering a chat decorator. Use this when
+	/// the decorator modifies the component contents of the message.
 	public static final Identifier CONTENT_PHASE = Identifier.fromNamespaceAndPath("fabric", "content");
-	/**
-	 * The styling phase of the event, passed when registering a chat decorator. Use this when
-	 * the decorator only modifies the styling of the message with the component intact.
-	 */
+	/// The styling phase of the event, passed when registering a chat decorator. Use this when
+	/// the decorator only modifies the styling of the message with the component intact.
 	public static final Identifier STYLING_PHASE = Identifier.fromNamespaceAndPath("fabric", "styling");
 
 	public static final Event<ChatDecorator> EVENT = EventFactory.createWithPhases(ChatDecorator.class, decorators -> (sender, message) -> {

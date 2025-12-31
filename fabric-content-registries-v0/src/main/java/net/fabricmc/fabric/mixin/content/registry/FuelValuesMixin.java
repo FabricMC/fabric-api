@@ -31,16 +31,12 @@ import net.minecraft.world.level.block.entity.FuelValues;
 import net.fabricmc.fabric.api.registry.FuelValueEvents;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryEventsContextImpl;
 
-/**
- * Implements the invocation of {@link FabricFuelRegistryBuilder} callbacks.
- */
+/// Implements the invocation of [FabricFuelRegistryBuilder] callbacks.
 @Mixin(FuelValues.class)
 public abstract class FuelValuesMixin {
-	/**
-	 * Handles invoking both pre- and post-exclusion events.
-	 *
-	 * <p>Vanilla currently uses a single exclusion for non-flammable wood; if more builder calls for exclusions are added, this mixin method must be split accordingly.
-	 */
+	/// Handles invoking both pre- and post-exclusion events.
+	///
+	/// Vanilla currently uses a single exclusion for non-flammable wood; if more builder calls for exclusions are added, this mixin method must be split accordingly.
 	@WrapOperation(
 			method = "vanillaBurnTimes(Lnet/minecraft/core/HolderLookup$Provider;Lnet/minecraft/world/flag/FeatureFlagSet;I)Lnet/minecraft/world/level/block/entity/FuelValues;",
 			at = @At(

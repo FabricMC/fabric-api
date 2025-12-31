@@ -46,16 +46,14 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.ShadeMode;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 
-/**
- * Almost-concrete implementation of a mutable quad. The only missing part is {@link #emitDirectly()},
- * because that depends on where/how it is used. (Mesh encoding vs. render-time transformation).
- *
- * <p>In many cases an instance of this class is used as an "editor quad". The editor quad's
- * {@link #emitDirectly()} method calls some other internal method that transforms the quad
- * data and then buffers it. Transformations should be the same as they would be in a vanilla
- * render - the editor is serving mainly as a way to access vertex data without magical
- * numbers. It also allows for a consistent interface for those transformations.
- */
+/// Almost-concrete implementation of a mutable quad. The only missing part is [#emitDirectly()],
+/// because that depends on where/how it is used. (Mesh encoding vs. render-time transformation).
+///
+/// In many cases an instance of this class is used as an "editor quad". The editor quad's
+/// [#emitDirectly()] method calls some other internal method that transforms the quad
+/// data and then buffers it. Transformations should be the same as they would be in a vanilla
+/// render - the editor is serving mainly as a way to access vertex data without magical
+/// numbers. It also allows for a consistent interface for those transformations.
 public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEmitter {
 	private static final QuadTransform NO_TRANSFORM = q -> true;
 
@@ -142,9 +140,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return this;
 	}
 
-	/**
-	 * Internal helper method. Copies face normal to vertices lacking a normal.
-	 */
+	/// Internal helper method. Copies face normal to vertices lacking a normal.
 	public final void populateMissingNormals() {
 		final int normalFlags = this.normalFlags();
 
@@ -312,15 +308,11 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		}
 	}
 
-	/**
-	 * Emit the quad without applying transforms and without clearing the underlying data.
-	 * Geometry is not guaranteed to be valid when called, but can be computed by calling {@link #computeGeometry()}.
-	 */
+	/// Emit the quad without applying transforms and without clearing the underlying data.
+	/// Geometry is not guaranteed to be valid when called, but can be computed by calling [#computeGeometry()].
 	protected abstract void emitDirectly();
 
-	/**
-	 * Apply transforms and then if transforms return true, emit the quad without clearing the underlying data.
-	 */
+	/// Apply transforms and then if transforms return true, emit the quad without clearing the underlying data.
 	public final void transformAndEmit() {
 		if (activeTransform.transform(this)) {
 			emitDirectly();

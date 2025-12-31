@@ -22,27 +22,21 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 
-/**
- * General purpose Fabric extensions to the {@link Model} class.
- *
- * <p>Note: This interface is automatically implemented on all {@link Model} instances via Mixin and interface injection.
- */
+/// General purpose Fabric extensions to the [Model] class.
+///
+/// Note: This interface is automatically implemented on all [Model] instances via Mixin and interface injection.
 @ApiStatus.NonExtendable
 public interface FabricModel<S> {
-	/**
-	 * Returns a child model part of the given name, or {@code null} if one is not found.
-	 * @param name the name of the child model part
-	 * @return the child model part that corresponds to the name parameter, or {@code null} if it is not found.
-	 */
+	/// Returns a child model part of the given name, or `null` if one is not found.
+	/// @param name the name of the child model part
+	/// @return the child model part that corresponds to the name parameter, or `null` if it is not found.
 	@Nullable
 	default ModelPart getChildPart(String name) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	/**
-	 * Copies transforms of child model parts of the model to child model parts of this model whose names match.
-	 * @param model the model to copy transforms from
-	 */
+	/// Copies transforms of child model parts of the model to child model parts of this model whose names match.
+	/// @param model the model to copy transforms from
 	default void copyTransforms(Model<?> model) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}

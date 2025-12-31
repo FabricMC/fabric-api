@@ -27,10 +27,8 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 
-/**
- * Mixin to {@link ClientPacketListener} to listen for sending messages and commands.
- * Priority set to 800 to inject before {@code fabric-command-api} so that this api will be called first.
- */
+/// Mixin to [ClientPacketListener] to listen for sending messages and commands.
+/// Priority set to 800 to inject before `fabric-command-api` so that this api will be called first.
 @Mixin(value = ClientPacketListener.class, priority = 800)
 public abstract class ClientPacketListenerMixin {
 	@Inject(method = "sendChat", at = @At("HEAD"), cancellable = true)

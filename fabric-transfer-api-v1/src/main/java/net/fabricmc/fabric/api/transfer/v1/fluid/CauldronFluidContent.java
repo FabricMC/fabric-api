@@ -31,43 +31,31 @@ import net.minecraft.world.level.material.Fluids;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.impl.transfer.fluid.CauldronStorage;
 
-/**
- * Entrypoint to expose cauldrons to the Fluid Transfer API.
- * Empty, water and lava cauldrons are registered by default, and additional cauldrons must be registered with {@link #registerCauldron}.
- * Contents can be queried with {@link #getForBlock} and {@link #getForFluid}.
- *
- * <p>The {@code CauldronFluidContent} itself defines:
- * <ul>
- *     <li>The block of the cauldron.</li>
- *     <li>The fluid that can be accepted by the cauldron. Components are discarded when entering the cauldron.</li>
- *     <li>Which fluid amounts can be stored in the cauldron, and how they map to the level property of the cauldron.
- *     If {@code levelProperty} is {@code null}, then {@code maxLevel = 1}, and there is only one level.
- *     Otherwise, the levels are all the integer values between {@code 1} and {@code maxLevel} (included).
- *     </li>
- *     <li>{@code amountPerLevel} defines how much fluid (in droplets) there is in one level of the cauldron.</li>
- * </ul>
- */
+/// Entrypoint to expose cauldrons to the Fluid Transfer API.
+/// Empty, water and lava cauldrons are registered by default, and additional cauldrons must be registered with [#registerCauldron].
+/// Contents can be queried with [#getForBlock] and [#getForFluid].
+///
+/// The `CauldronFluidContent` itself defines:
+///
+///   - The block of the cauldron.
+///   - The fluid that can be accepted by the cauldron. Components are discarded when entering the cauldron.
+///   - Which fluid amounts can be stored in the cauldron, and how they map to the level property of the cauldron.
+///     If `levelProperty` is `null`, then `maxLevel = 1`, and there is only one level.
+///     Otherwise, the levels are all the integer values between `1` and `maxLevel` (included).
+///
+///   - `amountPerLevel` defines how much fluid (in droplets) there is in one level of the cauldron.
+///
 public final class CauldronFluidContent {
-	/**
-	 * Block of the cauldron.
-	 */
+	/// Block of the cauldron.
 	public final Block block;
-	/**
-	 * Fluid stored inside the cauldron.
-	 */
+	/// Fluid stored inside the cauldron.
 	public final Fluid fluid;
-	/**
-	 * Amount in droplets for each level of {@link #levelProperty}.
-	 */
+	/// Amount in droplets for each level of [#levelProperty].
 	public final long amountPerLevel;
-	/**
-	 * Maximum level for {@link #levelProperty}. {@code 1} if {@code levelProperty} is null, otherwise a number {@code >= 1}.
-	 * The minimum level is always 1.
-	 */
+	/// Maximum level for [#levelProperty]. `1` if `levelProperty` is null, otherwise a number `>= 1`.
+	/// The minimum level is always 1.
 	public final int maxLevel;
-	/**
-	 * Property storing the level of the cauldron. If it's null, only one level is possible.
-	 */
+	/// Property storing the level of the cauldron. If it's null, only one level is possible.
 	@Nullable
 	public final IntegerProperty levelProperty;
 
@@ -83,31 +71,25 @@ public final class CauldronFluidContent {
 	private static final ApiProviderMap<Block, CauldronFluidContent> BLOCK_TO_CAULDRON = ApiProviderMap.create();
 	private static final ApiProviderMap<Fluid, CauldronFluidContent> FLUID_TO_CAULDRON = ApiProviderMap.create();
 
-	/**
-	 * Get the cauldron fluid content for a cauldron block, or {@code null} if none was registered (yet).
-	 */
+	/// Get the cauldron fluid content for a cauldron block, or `null` if none was registered (yet).
 	@Nullable
 	public static CauldronFluidContent getForBlock(Block block) {
 		return BLOCK_TO_CAULDRON.get(block);
 	}
 
-	/**
-	 * Get the cauldron fluid content for a fluid, or {@code null} if no cauldron was registered for that fluid (yet).
-	 */
+	/// Get the cauldron fluid content for a fluid, or `null` if no cauldron was registered for that fluid (yet).
 	@Nullable
 	public static CauldronFluidContent getForFluid(Fluid fluid) {
 		return FLUID_TO_CAULDRON.get(fluid);
 	}
 
-	/**
-	 * Attempt to register a new cauldron if not already registered, allowing it to be filled and emptied through the Fluid Transfer API.
-	 * In both cases, return the content of the cauldron, either the existing one, or the newly registered one.
-	 *
-	 * @param block The block of the cauldron.
-	 * @param fluid The fluid stored in this cauldron.
-	 * @param amountPerLevel How much fluid is contained in one level of the cauldron, in {@linkplain FluidConstants droplets}.
-	 * @param levelProperty The property used by the cauldron to store its levels. {@code null} if the cauldron only has one level.
-	 */
+	/// Attempt to register a new cauldron if not already registered, allowing it to be filled and emptied through the Fluid Transfer API.
+	/// In both cases, return the content of the cauldron, either the existing one, or the newly registered one.
+	///
+	/// @param block The block of the cauldron.
+	/// @param fluid The fluid stored in this cauldron.
+	/// @param amountPerLevel How much fluid is contained in one level of the cauldron, in {@linkplain FluidConstants droplets}.
+	/// @param levelProperty The property used by the cauldron to store its levels. `null` if the cauldron only has one level.
 	public static synchronized CauldronFluidContent registerCauldron(Block block, Fluid fluid, long amountPerLevel, @Nullable IntegerProperty levelProperty) {
 		CauldronFluidContent existingBlockData = BLOCK_TO_CAULDRON.get(block);
 
@@ -153,9 +135,7 @@ public final class CauldronFluidContent {
 		return data;
 	}
 
-	/**
-	 * Return the current level of the cauldron given its block state, or 0 if it's an empty cauldron.
-	 */
+	/// Return the current level of the cauldron given its block state, or 0 if it's an empty cauldron.
 	public int currentLevel(BlockState state) {
 		if (fluid == Fluids.EMPTY) {
 			return 0;

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-/**
- * Includes methods for registering in-game logics.
- */
+/// Includes methods for registering in-game logics.
 @NullMarked
 package net.fabricmc.fabric.api.registry;
 

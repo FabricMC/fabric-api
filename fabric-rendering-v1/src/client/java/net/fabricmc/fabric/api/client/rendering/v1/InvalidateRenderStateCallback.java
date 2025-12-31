@@ -19,15 +19,13 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Called when the level renderer reloads, usually as result of changing resource pack
- * or video configuration, or when the player types F3+A in the debug screen.
- * Afterwards all render chunks will be reset and reloaded.
- *
- * <p>Render chunks and other render-related object instances will be made null
- * or invalid after this event so do not use it to capture dependent state.
- * Instead, use it to invalidate state and reinitialize lazily.
- */
+/// Called when the level renderer reloads, usually as result of changing resource pack
+/// or video configuration, or when the player types F3+A in the debug screen.
+/// Afterwards all render chunks will be reset and reloaded.
+///
+/// Render chunks and other render-related object instances will be made null
+/// or invalid after this event so do not use it to capture dependent state.
+/// Instead, use it to invalidate state and reinitialize lazily.
 public interface InvalidateRenderStateCallback {
 	Event<InvalidateRenderStateCallback> EVENT = EventFactory.createArrayBacked(InvalidateRenderStateCallback.class,
 			(listeners) -> () -> {

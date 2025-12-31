@@ -36,16 +36,12 @@ import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
-/**
- * A wrapper around a single slot of an inventory.
- * We must ensure that only one instance of this class exists for every inventory slot,
- * or the transaction logic will not work correctly.
- * This is handled by the Map in InventoryStorageImpl.
- */
+/// A wrapper around a single slot of an inventory.
+/// We must ensure that only one instance of this class exists for every inventory slot,
+/// or the transaction logic will not work correctly.
+/// This is handled by the Map in InventoryStorageImpl.
 class ContainerSlotWrapper extends SingleStackStorage {
-	/**
-	 * The strong reference to the InventoryStorageImpl ensures that the weak value doesn't get GC'ed when individual slots are still being accessed.
-	 */
+	/// The strong reference to the InventoryStorageImpl ensures that the weak value doesn't get GC'ed when individual slots are still being accessed.
 	private final ContainerStorageImpl storage;
 	final int slot;
 	private final @Nullable SpecialLogicContainer specialContainer;
@@ -104,13 +100,11 @@ class ContainerSlotWrapper extends SingleStackStorage {
 		return ret;
 	}
 
-	/**
-	 * Special cases because vanilla checks the current stack in the following functions (which it shouldn't):
-	 * <ul>
-	 *     <li>{@link AbstractFurnaceBlockEntity#canPlaceItem(int, ItemStack)}.</li>
-	 *     <li>{@link BrewingStandBlockEntity#canPlaceItem(int, ItemStack)}.</li>
-	 * </ul>
-	 */
+	/// Special cases because vanilla checks the current stack in the following functions (which it shouldn't):
+	///
+	///   - [AbstractFurnaceBlockEntity#canPlaceItem(int, ItemStack)].
+	///   - [BrewingStandBlockEntity#canPlaceItem(int, ItemStack)].
+	///
 	@Override
 	public int getCapacity(ItemVariant variant) {
 		// Special case to limit buckets to 1 in furnace fuel inputs.

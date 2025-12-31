@@ -33,9 +33,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.mixin.transfer.BucketItemAccessor;
 
-/**
- * Storage implementation for empty buckets, accepting any fluid with a bidirectional fluid &lt;-&gt; bucket mapping.
- */
+/// Storage implementation for empty buckets, accepting any fluid with a bidirectional fluid &lt;-&gt; bucket mapping.
 public class EmptyBucketStorage implements InsertionOnlyStorage<FluidVariant> {
 	private final ContainerItemContext context;
 	private final List<StorageView<FluidVariant>> blankView = List.of(new BlankVariantView<>(FluidVariant.blank(), FluidConstants.BUCKET));

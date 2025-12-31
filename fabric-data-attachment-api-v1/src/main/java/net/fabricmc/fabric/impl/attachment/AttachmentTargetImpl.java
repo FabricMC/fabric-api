@@ -32,12 +32,10 @@ import net.fabricmc.fabric.impl.attachment.sync.AttachmentChange;
 import net.fabricmc.fabric.impl.attachment.sync.AttachmentTargetInfo;
 
 public interface AttachmentTargetImpl extends AttachmentTarget {
-	/**
-	 * Copies attachments from the original to the target. This is used when a ProtoChunk is converted to a
-	 * LevelChunk, and when an entity is respawned and a new instance is created. For entity respawns, it is
-	 * triggered on player respawn, entity conversion, return from the End, or cross-level entity teleportation.
-	 * In the first two cases, only the attachments with {@link AttachmentType#copyOnDeath()} will be transferred.
-	 */
+	/// Copies attachments from the original to the target. This is used when a ProtoChunk is converted to a
+	/// LevelChunk, and when an entity is respawned and a new instance is created. For entity respawns, it is
+	/// triggered on player respawn, entity conversion, return from the End, or cross-level entity teleportation.
+	/// In the first two cases, only the attachments with [AttachmentType#copyOnDeath()] will be transferred.
 	@SuppressWarnings("unchecked")
 	static void transfer(AttachmentTarget original, AttachmentTarget target, boolean isDeath) {
 		Map<AttachmentType<?>, ?> attachments = ((AttachmentTargetImpl) original).fabric_getAttachments();

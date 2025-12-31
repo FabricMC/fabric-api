@@ -16,28 +16,18 @@
 
 package net.fabricmc.fabric.api.resource.v1.pack;
 
-/**
- * Represents the resource pack activation type.
- */
+/// Represents the resource pack activation type.
 public enum PackActivationType {
-	/**
-	 * Normal activation. The user has full control over the activation of the resource pack.
-	 */
+	/// Normal activation. The user has full control over the activation of the resource pack.
 	NORMAL,
-	/**
-	 * Enabled by default. The user has still full control over the activation of the resource pack.
-	 */
+	/// Enabled by default. The user has still full control over the activation of the resource pack.
 	DEFAULT_ENABLED,
-	/**
-	 * Always enabled. The user cannot disable the resource pack.
-	 */
+	/// Always enabled. The user cannot disable the resource pack.
 	ALWAYS_ENABLED;
 
-	/**
-	 * Returns whether this resource pack will be enabled by default or not.
-	 *
-	 * @return {@code true} if enabled by default, else {@code false}
-	 */
+	/// Returns whether this resource pack will be enabled by default or not.
+	///
+	/// @return `true` if enabled by default, else `false`
 	public boolean isEnabledByDefault() {
 		return this == DEFAULT_ENABLED || this == ALWAYS_ENABLED;
 	}

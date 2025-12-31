@@ -31,10 +31,8 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder;
 
-/**
- * The implementation of the injected interface {@link FabricLootPoolBuilder}.
- * Simply implements the new methods by adding the relevant objects inside the lists.
- */
+/// The implementation of the injected interface [FabricLootPoolBuilder].
+/// Simply implements the new methods by adding the relevant objects inside the lists.
 @Mixin(LootPool.Builder.class)
 abstract class LootPoolBuilderMixin implements FabricLootPoolBuilder {
 	@Shadow

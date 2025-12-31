@@ -23,18 +23,14 @@ import java.util.List;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
-/**
- * Helper class to perform a shapeless recipe match when ingredients that require testing are involved.
- *
- * <p>The problem to solve is a maximum cardinality bipartite matching, for which this implementation uses the augmenting path algorithm.
- * This has good performance in simple cases, and sufficient O(N^3) asymptotic complexity in the worst case.
- */
+/// Helper class to perform a shapeless recipe match when ingredients that require testing are involved.
+///
+/// The problem to solve is a maximum cardinality bipartite matching, for which this implementation uses the augmenting path algorithm.
+/// This has good performance in simple cases, and sufficient O(N^3) asymptotic complexity in the worst case.
 public class ShapelessMatch {
 	private final int[] match;
-	/**
-	 * The first {@code size} bits are for the visited array (on the left partition).
-	 * The remaining {@code size * size} bits are for the adjacency matrix.
-	 */
+	/// The first `size` bits are for the visited array (on the left partition).
+	/// The remaining `size * size` bits are for the adjacency matrix.
 	private final BitSet bitSet;
 
 	private ShapelessMatch(int size) {

@@ -44,82 +44,70 @@ import net.fabricmc.fabric.impl.transfer.fluid.EmptyBucketStorage;
 import net.fabricmc.fabric.impl.transfer.fluid.WaterPotionStorage;
 import net.fabricmc.fabric.mixin.transfer.BucketItemAccessor;
 
-/**
- * Access to {@link Storage Storage&lt;FluidVariant&gt;} instances.
- */
+/// Access to [Storage&lt;FluidVariant&gt;][Storage] instances.
 public final class FluidStorage {
-	/**
-	 * Sided block access to fluid variant storages.
-	 * Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
-	 * The {@code Direction} parameter may be null, meaning that the full storage (ignoring side restrictions) should be queried.
-	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
-	 *
-	 * <p>A simple way to expose fluid variant storages for a block entity hierarchy is to extend {@link SidedStorageBlockEntity}.
-	 *
-	 * <p>When the operations supported by a storage change,
-	 * that is if the return value of {@link Storage#supportsInsertion} or {@link Storage#supportsExtraction} changes,
-	 * the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
-	 *
-	 * <p>This may be queried safely both on the logical server and on the logical client threads.
-	 * On the server thread (i.e. with a server level), all transfer functionality is always supported.
-	 * On the client thread (i.e. with a client level), contents of queried Storages are unreliable and should not be modified.
-	 */
+	/// Sided block access to fluid variant storages.
+	/// Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
+	/// The `Direction` parameter may be null, meaning that the full storage (ignoring side restrictions) should be queried.
+	/// Refer to [BlockApiLookup] for documentation on how to use this field.
+	///
+	/// A simple way to expose fluid variant storages for a block entity hierarchy is to extend [SidedStorageBlockEntity].
+	///
+	/// When the operations supported by a storage change,
+	/// that is if the return value of [Storage#supportsInsertion] or [Storage#supportsExtraction] changes,
+	/// the storage should notify its neighbors with a block update so that they can refresh their connections if necessary.
+	///
+	/// This may be queried safely both on the logical server and on the logical client threads.
+	/// On the server thread (i.e. with a server level), all transfer functionality is always supported.
+	/// On the client thread (i.e. with a client level), contents of queried Storages are unreliable and should not be modified.
 	public static final BlockApiLookup<Storage<FluidVariant>, @Nullable Direction> SIDED =
 			BlockApiLookup.get(Identifier.fromNamespaceAndPath("fabric", "sided_fluid_storage"), Storage.asClass(), Direction.class);
 
-	/**
-	 * Item access to fluid variant storages.
-	 * Querying should happen through {@link ContainerItemContext#find}.
-	 *
-	 * <p>Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
-	 * By default, Fabric API only registers storage support for buckets that have a 1:1 mapping to their fluid, and for water potions.
-	 *
-	 * <p>{@link #combinedItemApiProvider} and {@link #GENERAL_COMBINED_PROVIDER} should be used for API provider registration
-	 * when multiple mods may want to offer a storage for the same item.
-	 *
-	 * <p>Base implementations are provided: {@link EmptyItemFluidStorage} and {@link FullItemFluidStorage}.
-	 *
-	 * <p>This may be queried both client-side and server-side.
-	 * Returned APIs should behave the same regardless of the logical side.
-	 */
+	/// Item access to fluid variant storages.
+	/// Querying should happen through [ContainerItemContext#find].
+	///
+	/// Fluid amounts are always expressed in {@linkplain FluidConstants droplets}.
+	/// By default, Fabric API only registers storage support for buckets that have a 1:1 mapping to their fluid, and for water potions.
+	///
+	/// [#combinedItemApiProvider] and [#GENERAL_COMBINED_PROVIDER] should be used for API provider registration
+	/// when multiple mods may want to offer a storage for the same item.
+	///
+	/// Base implementations are provided: [EmptyItemFluidStorage] and [FullItemFluidStorage].
+	///
+	/// This may be queried both client-side and server-side.
+	/// Returned APIs should behave the same regardless of the logical side.
 	public static final ItemApiLookup<Storage<FluidVariant>, ContainerItemContext> ITEM =
 			ItemApiLookup.get(Identifier.fromNamespaceAndPath("fabric", "fluid_storage"), Storage.asClass(), ContainerItemContext.class);
 
-	/**
-	 * Get or create and register a {@link CombinedItemApiProvider} event for the passed item.
-	 * Allows multiple API providers to provide a {@code Storage<FluidVariant>} implementation for the same item.
-	 *
-	 * <p>When the item is queried for an API through {@link #ITEM}, all the providers registered through the event will be invoked.
-	 * All non-null {@code Storage<FluidVariant>} instances returned by the providers will be combined in a single storage,
-	 * that will be the final result of the query, or {@code null} if no storage is offered by the event handlers.
-	 *
-	 * <p>This is appropriate to use when multiple mods could wish to expose the Fluid API for some items,
-	 * for example when dealing with items added by the base Minecraft game such as buckets or empty bottles.
-	 * A typical usage example is a mod adding support for filling empty bottles with a honey fluid:
-	 * Fabric API already registers a storage for empty bottles to allow filling them with water through the event,
-	 * and a mod can register an event handler that will attach a second storage allowing empty bottles to be filled with its honey fluid.
-	 * @throws IllegalStateException If an incompatible provider is already registered for the item.
-	 */
+	/// Get or create and register a [CombinedItemApiProvider] event for the passed item.
+	/// Allows multiple API providers to provide a `Storage<FluidVariant>` implementation for the same item.
+	///
+	/// When the item is queried for an API through [#ITEM], all the providers registered through the event will be invoked.
+	/// All non-null `Storage<FluidVariant>` instances returned by the providers will be combined in a single storage,
+	/// that will be the final result of the query, or `null` if no storage is offered by the event handlers.
+	///
+	/// This is appropriate to use when multiple mods could wish to expose the Fluid API for some items,
+	/// for example when dealing with items added by the base Minecraft game such as buckets or empty bottles.
+	/// A typical usage example is a mod adding support for filling empty bottles with a honey fluid:
+	/// Fabric API already registers a storage for empty bottles to allow filling them with water through the event,
+	/// and a mod can register an event handler that will attach a second storage allowing empty bottles to be filled with its honey fluid.
+	/// @throws IllegalStateException If an incompatible provider is already registered for the item.
 	public static Event<CombinedItemApiProvider> combinedItemApiProvider(Item item) {
 		return CombinedProvidersImpl.getOrCreateItemEvent(item);
 	}
 
-	/**
-	 * Allows multiple API providers to return {@code Storage<FluidVariant>} implementations for some items.
-	 * {@link #combinedItemApiProvider} is per-item while this one is queried for all items, hence the "general" name.
-	 *
-	 * <p>Implementation note: This event is invoked both through an API Lookup fallback, and by the {@code combinedItemApiProvider} events.
-	 * This means that per-item combined providers registered through {@code combinedItemApiProvider} DO NOT prevent these general providers from running,
-	 * however regular providers registered through {@code ItemApiLookup#register...} that return a non-null API instance DO prevent it.
-	 */
+	/// Allows multiple API providers to return `Storage<FluidVariant>` implementations for some items.
+	/// [#combinedItemApiProvider] is per-item while this one is queried for all items, hence the "general" name.
+	///
+	/// Implementation note: This event is invoked both through an API Lookup fallback, and by the `combinedItemApiProvider` events.
+	/// This means that per-item combined providers registered through `combinedItemApiProvider` DO NOT prevent these general providers from running,
+	/// however regular providers registered through `ItemApiLookup#register...` that return a non-null API instance DO prevent it.
 	public static final Event<CombinedItemApiProvider> GENERAL_COMBINED_PROVIDER = CombinedProvidersImpl.createEvent(false);
 
 	@FunctionalInterface
 	public interface CombinedItemApiProvider {
-		/**
-		 * Return a {@code Storage<FluidVariant>} if available in the given context, or {@code null} otherwise.
-		 * The current item variant can be {@linkplain ContainerItemContext#getItemVariant() retrieved from the context}.
-		 */
+		/// Return a `Storage<FluidVariant>` if available in the given context, or `null` otherwise.
+		/// The current item variant can be {@linkplain ContainerItemContext#getItemVariant() retrieved from the context}.
 		@Nullable
 		Storage<FluidVariant> find(ContainerItemContext context);
 	}

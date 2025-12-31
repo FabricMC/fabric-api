@@ -23,19 +23,15 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.client.rendering.SpriteSourceRegistryImpl;
 
-/**
- * A registry for custom {@link SpriteSource}s. Registered types will be automatically available for use in atlas definition JSON files.
- */
+/// A registry for custom [SpriteSource]s. Registered types will be automatically available for use in atlas definition JSON files.
 public final class SpriteSourceRegistry {
 	private SpriteSourceRegistry() {
 	}
 
-	/**
-	 * Registers a new {@link SpriteSource} by providing a codec for it.
-	 *
-	 * @param id the identifier of the sprite source type
-	 * @param codec the codec for the sprite source type
-	 */
+	/// Registers a new [SpriteSource] by providing a codec for it.
+	///
+	/// @param id the identifier of the sprite source type
+	/// @param codec the codec for the sprite source type
 	public static void register(Identifier id, MapCodec<? extends SpriteSource> codec) {
 		SpriteSourceRegistryImpl.register(id, codec);
 	}

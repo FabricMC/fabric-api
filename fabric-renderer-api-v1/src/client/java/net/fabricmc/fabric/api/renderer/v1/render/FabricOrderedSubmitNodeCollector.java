@@ -36,67 +36,61 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 
-/**
- * Note: This interface is automatically implemented on {@link OrderedSubmitNodeCollector} via Mixin and interface injection.
- */
+/// Note: This interface is automatically implemented on [OrderedSubmitNodeCollector] via Mixin and interface injection.
 public interface FabricOrderedSubmitNodeCollector {
-	/**
-	 * Alternative for
-	 * {@link OrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int)} that additionally accepts the
-	 * {@link BlockAndTintGetter} and {@link BlockPos} to pass to
-	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
-	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly render models that have geometry
-	 * on multiple {@linkplain ChunkSectionLayer chunk layers} and to provide the model with additional context.</b>
-	 *
-	 * <p>This method allows rendering a block model with minimal transformations to the model geometry. Also invokes
-	 * the {@link SpecialModelRenderer}. Usually used by entity renderers.
-	 *
-	 * @param poseStack The pose stack.
-	 * @param state The block state.
-	 * @param light The minimum light value.
-	 * @param overlay The overlay value.
-	 * @param outlineColor The outline color.
-	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
-	 *                  <b>Must not be mutated after calling this method.</b>
-	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
-	 *            </b> <b>Must not be mutated after calling this method.</b>
-	 *
-	 * @see FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
-	 */
+	/// Alternative for
+	/// [OrderedSubmitNodeCollector#submitBlock(PoseStack, BlockState, int, int, int)] that additionally accepts the
+	/// [BlockAndTintGetter] and [BlockPos] to pass to
+	/// [BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)] when
+	/// necessary. **Prefer using this method over the vanilla alternative to correctly render models that have geometry
+	/// on multiple {@linkplain ChunkSectionLayer chunk layers} and to provide the model with additional context.**
+	///
+	/// This method allows rendering a block model with minimal transformations to the model geometry. Also invokes
+	/// the [SpecialModelRenderer]. Usually used by entity renderers.
+	///
+	/// @param poseStack The pose stack.
+	/// @param state The block state.
+	/// @param light The minimum light value.
+	/// @param overlay The overlay value.
+	/// @param outlineColor The outline color.
+	/// @param level The level in which to render the model. **Can be empty (i.e. [EmptyBlockAndTintGetter]).**
+	///                  **Must not be mutated after calling this method.**
+	/// @param pos The position of the block in the level. **Should be [BlockPos#ZERO] if the level is empty.
+	///            ** **Must not be mutated after calling this method.**
+	///
+	/// @see FabricBlockRenderDispatcher#renderBlockAsEntity(BlockState, PoseStack, MultiBufferSource, int, int, BlockAndTintGetter, BlockPos)
 	default void submitBlock(PoseStack poseStack, BlockState state, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos) {
 		((OrderedSubmitNodeCollector) this).submitBlock(poseStack, state, light, overlay, outlineColor);
 	}
 
-	/**
-	 * Alternative for
-	 * {@link OrderedSubmitNodeCollector#submitBlockModel(PoseStack, RenderType, BlockStateModel, float, float, float, int, int, int)}
-	 * that accepts a {@code Function<ChunkSectionLayer, RenderType>} instead of a {@link RenderType}. Also accepts the
-	 * {@link BlockAndTintGetter}, {@link BlockPos}, and {@link BlockState} to pass to
-	 * {@link BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} when
-	 * necessary. <b>Prefer using this method over the vanilla alternative to correctly render models that have geometry
-	 * on multiple {@linkplain ChunkSectionLayer chunk layers} and to provide the model with additional context.</b>
-	 *
-	 * <p>This method allows rendering a block model with minimal transformations to the model geometry. Usually used by
-	 * entity renderers.
-	 *
-	 * @param poseStack The pose stack.
-	 * @param renderTypeFunction The function to use to convert {@link ChunkSectionLayer}s to {@link RenderType}s.
-	 *                            <b>Must not be mutated after calling this method.</b>
-	 * @param model The model to render.
-	 * @param r The red component of the tint color.
-	 * @param g The green component of the tint color.
-	 * @param b The blue component of the tint color.
-	 * @param light The minimum light value.
-	 * @param overlay The overlay value.
-	 * @param outlineColor The outline color.
-	 * @param level The level in which to render the model. <b>Can be empty (i.e. {@link EmptyBlockAndTintGetter}).</b>
-	 *                  <b>Must not be mutated after calling this method.</b>
-	 * @param pos The position of the block in the level. <b>Should be {@link BlockPos#ZERO} if the level is empty.
-	 *            </b> <b>Must not be mutated after calling this method.</b>
-	 * @param state The block state. <b>Should be {@code Blocks.AIR.getDefaultState()} if not applicable.</b>
-	 *
-	 * @see FabricModelBlockRenderer#render(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
-	 */
+	/// Alternative for
+	/// [OrderedSubmitNodeCollector#submitBlockModel(PoseStack, RenderType, BlockStateModel, float, float, float, int, int, int)]
+	/// that accepts a `Function<ChunkSectionLayer, RenderType>` instead of a [RenderType]. Also accepts the
+	/// [BlockAndTintGetter], [BlockPos], and [BlockState] to pass to
+	/// [BlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)] when
+	/// necessary. **Prefer using this method over the vanilla alternative to correctly render models that have geometry
+	/// on multiple {@linkplain ChunkSectionLayer chunk layers} and to provide the model with additional context.**
+	///
+	/// This method allows rendering a block model with minimal transformations to the model geometry. Usually used by
+	/// entity renderers.
+	///
+	/// @param poseStack The pose stack.
+	/// @param renderTypeFunction The function to use to convert [ChunkSectionLayer]s to [RenderType]s.
+	///                            **Must not be mutated after calling this method.**
+	/// @param model The model to render.
+	/// @param r The red component of the tint color.
+	/// @param g The green component of the tint color.
+	/// @param b The blue component of the tint color.
+	/// @param light The minimum light value.
+	/// @param overlay The overlay value.
+	/// @param outlineColor The outline color.
+	/// @param level The level in which to render the model. **Can be empty (i.e. [EmptyBlockAndTintGetter]).**
+	///                  **Must not be mutated after calling this method.**
+	/// @param pos The position of the block in the level. **Should be [BlockPos#ZERO] if the level is empty.
+	///            ** **Must not be mutated after calling this method.**
+	/// @param state The block state. **Should be `Blocks.AIR.getDefaultState()` if not applicable.**
+	///
+	/// @see FabricModelBlockRenderer#render(PoseStack.Pose, BlockMultiBufferSource, BlockStateModel, float, float, float, int, int, BlockAndTintGetter, BlockPos, BlockState)
 	default void submitBlockStateModel(PoseStack poseStack, Function<ChunkSectionLayer, RenderType> renderTypeFunction, BlockStateModel model, float r, float g, float b, int light, int overlay, int outlineColor, BlockAndTintGetter level, BlockPos pos, BlockState state) {
 		((OrderedSubmitNodeCollector) this).submitBlockModel(poseStack, renderTypeFunction.apply(ItemBlockRenderTypes.getChunkRenderType(state)), model, r, g, b, light, overlay, outlineColor);
 	}

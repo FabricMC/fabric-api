@@ -22,11 +22,9 @@ import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
 
 @ApiStatus.NonExtendable
 public interface LevelTerrainRenderContext extends AbstractLevelRenderContext {
-	/**
-	 * The render state for all chunk section to be rendered.
-	 *
-	 * <p>Render states contain information about the current frame used for rendering,
-	 * and should be used instead of accessing the level or other objects directly from rendering events.
-	 */
+	/// The render state for all chunk section to be rendered.
+	///
+	/// Render states contain information about the current frame used for rendering,
+	/// and should be used instead of accessing the level or other objects directly from rendering events.
 	ChunkSectionsToRender sectionsToRender();
 }

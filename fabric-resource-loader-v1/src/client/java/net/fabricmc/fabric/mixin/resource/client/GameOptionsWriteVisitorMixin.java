@@ -31,9 +31,7 @@ import net.minecraft.server.packs.repository.PackRepository;
 
 import net.fabricmc.fabric.impl.resource.pack.FabricPack;
 
-/**
- * Mixins to the anonymous class in #write method.
- */
+/// Mixins to the anonymous class in #write method.
 @Mixin(targets = "net.minecraft.client.Options$3")
 public class GameOptionsWriteVisitorMixin {
 	@Unique

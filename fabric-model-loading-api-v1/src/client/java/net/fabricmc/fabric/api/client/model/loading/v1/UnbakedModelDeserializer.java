@@ -33,73 +33,59 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.client.model.loading.UnbakedModelDeserializerRegistry;
 
-/**
- * Allows creating custom unbaked models by overriding the parsing of JSON model files. <b>It is not necessary to
- * implement this interface when using a custom subclass of {@link UnbakedModel} at runtime</b>, e.g. for
- * {@link ModelModifier}.
- *
- * <p>The format for custom unbaked models is as follows:
- * <pre>{@code
- * {
- *     "fabric:type": "<identifier of the deserializer>",
- *     // extra model data, dependent on the deserializer
- * }
- * }</pre>
- *
- * <p>Alternatively, {@code "fabric:type"} may be an object with the required string field {@code "id"}, specifying the
- * identifier of the deserializer, and the optional boolean field {@code "optional"} with default {@code false},
- * specifying whether the model should fail loading ({@code false}) or continue loading as a vanilla model
- * ({@code true}) when the specified deserializer has not been registered.
- *
- * <p>All instances must be registered using {@link #register} for deserialization to work.
- */
+/// Allows creating custom unbaked models by overriding the parsing of JSON model files. **It is not necessary to
+/// implement this interface when using a custom subclass of [UnbakedModel] at runtime**, e.g. for
+/// [ModelModifier].
+///
+/// The format for custom unbaked models is as follows:
+/// <pre>
+/// `{"fabric:type": "<identifier of the deserializer>",// extra model data, dependent on the deserializer}`</pre>
+///
+/// Alternatively, `"fabric:type"` may be an object with the required string field `"id"`, specifying the
+/// identifier of the deserializer, and the optional boolean field `"optional"` with default `false`,
+/// specifying whether the model should fail loading (`false`) or continue loading as a vanilla model
+/// (`true`) when the specified deserializer has not been registered.
+///
+/// All instances must be registered using [#register] for deserialization to work.
 public interface UnbakedModelDeserializer {
-	/**
-	 * Registers a custom model deserializer.
-	 *
-	 * @throws IllegalArgumentException if the deserializer is already registered
-	 */
+	/// Registers a custom model deserializer.
+	///
+	/// @throws IllegalArgumentException if the deserializer is already registered
 	static void register(Identifier id, UnbakedModelDeserializer deserializer) {
 		UnbakedModelDeserializerRegistry.register(id, deserializer);
 	}
 
-	/**
-	 * {@return the custom model deserializer registered with the given identifier, or {@code null} if there is no such
-	 * deserializer}
-	 */
+	/// {@return the custom model deserializer registered with the given identifier, or {@code null} if there is no such
+	///  deserializer}
 	@Nullable
 	static UnbakedModelDeserializer get(Identifier id) {
 		return UnbakedModelDeserializerRegistry.get(id);
 	}
 
-	/**
-	 * Deserializes an {@link UnbakedModel} from a {@link Reader}, respecting custom deserializers. Prefer using this
-	 * method to {@link BlockModel#fromStream(Reader)}.
-	 */
+	/// Deserializes an [UnbakedModel] from a [Reader], respecting custom deserializers. Prefer using this
+	/// method to [BlockModel#fromStream(Reader)].
 	static UnbakedModel deserialize(Reader reader) throws JsonParseException {
 		return UnbakedModelDeserializerRegistry.deserialize(reader);
 	}
 
-	/**
-	 * Deserialize an {@link UnbakedModel} given a {@link JsonObject} representing the entire model file.
-	 *
-	 * <p>The provided deserialization context is able to deserialize objects of the following types:
-	 * <ul>
-	 *     <li>{@link UnbakedModel}</li>
-	 *     <li>{@link BlockElement}</li>
-	 *     <li>{@link BlockElementFace}</li>
-	 *     <li>{@link ItemTransform}</li>
-	 *     <li>{@link ItemTransforms}</li>
-	 * </ul>
-	 *
-	 * <p>For example, to deserialize a nested {@link UnbakedModel}, use
-	 * {@code context.deserialize(nestedModelJson, UnbakedModel.class)}.
-	 *
-	 * <p>This method is allowed and encouraged to throw exceptions, as they will be caught and logged by the caller.
-	 *
-	 * @param jsonObject the JSON object representing the entire model file
-	 * @param context the deserialization context
-	 * @return the unbaked model
-	 */
+	/// Deserialize an [UnbakedModel] given a [JsonObject] representing the entire model file.
+	///
+	/// The provided deserialization context is able to deserialize objects of the following types:
+	///
+	///   - [UnbakedModel]
+	///   - [BlockElement]
+	///   - [BlockElementFace]
+	///   - [ItemTransform]
+	///   - [ItemTransforms]
+	///
+	///
+	/// For example, to deserialize a nested [UnbakedModel], use
+	/// `context.deserialize(nestedModelJson, UnbakedModel.class)`.
+	///
+	/// This method is allowed and encouraged to throw exceptions, as they will be caught and logged by the caller.
+	///
+	/// @param jsonObject the JSON object representing the entire model file
+	/// @param context the deserialization context
+	/// @return the unbaked model
 	UnbakedModel deserialize(JsonObject jsonObject, JsonDeserializationContext context);
 }

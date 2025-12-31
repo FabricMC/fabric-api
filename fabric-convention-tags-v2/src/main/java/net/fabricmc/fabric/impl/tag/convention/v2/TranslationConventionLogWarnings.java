@@ -37,11 +37,9 @@ import net.fabricmc.loader.api.FabricLoader;
 public class TranslationConventionLogWarnings implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TranslationConventionLogWarnings.class);
 
-	/**
-	 * A config option mainly for developers.
-	 * Logs out modded item tags that do not have translations when running on integrated server.
-	 * Defaults to SHORT.
-	 */
+	/// A config option mainly for developers.
+	/// Logs out modded item tags that do not have translations when running on integrated server.
+	/// Defaults to SHORT.
 	private static final LogWarningMode LOG_UNTRANSLATED_WARNING_MODE = setupLogWarningModeProperty();
 
 	private static LogWarningMode setupLogWarningModeProperty() {

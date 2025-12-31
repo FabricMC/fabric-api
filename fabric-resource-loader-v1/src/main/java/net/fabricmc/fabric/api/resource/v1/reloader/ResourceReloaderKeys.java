@@ -18,34 +18,26 @@ package net.fabricmc.fabric.api.resource.v1.reloader;
 
 import net.minecraft.resources.Identifier;
 
-/**
- * This class contains default keys for various Minecraft reload listener.
- *
- * @see net.minecraft.server.packs.resources.PreparableReloadListener
- */
+/// This class contains default keys for various Minecraft reload listener.
+///
+/// @see net.minecraft.server.packs.resources.PreparableReloadListener
 public final class ResourceReloaderKeys {
-	/**
-	 * Represents the application phase before Vanilla reload listeners are invoked.
-	 *
-	 * <p>No reload listeners are assigned to this identifier.
-	 *
-	 * @see net.fabricmc.fabric.api.resource.v1.ResourceLoader#addListenerOrdering(Identifier, Identifier)
-	 */
+	/// Represents the application phase before Vanilla reload listeners are invoked.
+	///
+	/// No reload listeners are assigned to this identifier.
+	///
+	/// @see net.fabricmc.fabric.api.resource.v1.ResourceLoader#addListenerOrdering(Identifier, Identifier)
 	public static final Identifier BEFORE_VANILLA = Identifier.fromNamespaceAndPath("fabric", "before_vanilla");
-	/**
-	 * Represents the application phase after Vanilla reload listeners are invoked.
-	 *
-	 * <p>No reload listeners are assigned to this identifier.
-	 *
-	 * @see net.fabricmc.fabric.api.resource.v1.ResourceLoader#addListenerOrdering(Identifier, Identifier)
-	 */
+	/// Represents the application phase after Vanilla reload listeners are invoked.
+	///
+	/// No reload listeners are assigned to this identifier.
+	///
+	/// @see net.fabricmc.fabric.api.resource.v1.ResourceLoader#addListenerOrdering(Identifier, Identifier)
 	public static final Identifier AFTER_VANILLA = Identifier.fromNamespaceAndPath("fabric", "after_vanilla");
 
 	private ResourceReloaderKeys() { }
 
-	/**
-	 * Keys for various client reload listeners.
-	 */
+	/// Keys for various client reload listeners.
 	public static final class Client {
 		public static final Identifier BLOCK_ENTITY_RENDER_DISPATCHER = Identifier.withDefaultNamespace("block_entity_render_dispatcher");
 		public static final Identifier BLOCK_RENDER_DISPATCHER = Identifier.withDefaultNamespace("block_render_dispatcher");
@@ -70,9 +62,7 @@ public final class ResourceReloaderKeys {
 		}
 	}
 
-	/**
-	 * Keys for various server reload listeners.
-	 */
+	/// Keys for various server reload listeners.
 	public static final class Server {
 		public static final Identifier ADVANCEMENTS = Identifier.withDefaultNamespace("advancements");
 		public static final Identifier FUNCTIONS = Identifier.withDefaultNamespace("functions");

@@ -34,13 +34,11 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantCache;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 
-/**
- * <ul>
- *     <li>Cache the FluidVariant with a null tag inside each Fluid directly.</li>
- *     <li>Automatically uses the correct bucket filling sound for
- *     fluid attributes handlers overriding {@link FluidVariantAttributeHandler#getEmptySound}.</li>
- * </ul>
- */
+///
+///   - Cache the FluidVariant with a null tag inside each Fluid directly.
+///   - Automatically uses the correct bucket filling sound for
+///     fluid attributes handlers overriding [FluidVariantAttributeHandler#getEmptySound].
+///
 @Mixin(Fluid.class)
 @SuppressWarnings("unused")
 public class FluidMixin implements FluidVariantCache {

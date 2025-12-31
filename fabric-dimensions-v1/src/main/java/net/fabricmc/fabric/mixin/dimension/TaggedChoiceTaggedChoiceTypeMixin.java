@@ -46,11 +46,9 @@ public class TaggedChoiceTaggedChoiceTypeMixin<K> implements TaggedChoiceTypeExt
 	@Unique
 	private boolean failSoft;
 
-	/**
-	 * Make the DSL.taggedChoiceLazy to ignore mod custom generator types and not cause deserialization failure.
-	 * The Codec.PASSTHROUGH will not make Dynamic to be deserialized and serialized to Dynamic.
-	 * This will avoid deserialization failure from DFU when upgrading level.dat that contains mod custom generator types.
-	 */
+	/// Make the DSL.taggedChoiceLazy to ignore mod custom generator types and not cause deserialization failure.
+	/// The Codec.PASSTHROUGH will not make Dynamic to be deserialized and serialized to Dynamic.
+	/// This will avoid deserialization failure from DFU when upgrading level.dat that contains mod custom generator types.
 	@Inject(
 			method = "getMapCodec", at = @At("HEAD"), cancellable = true
 	)

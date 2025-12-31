@@ -32,100 +32,78 @@ import net.minecraft.util.Util;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider;
 import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 
-/**
- * Provides functionality for building entries that go into a {@code sounds.json} file.
- *
- * <p>Use in conjunction with {@link FabricSoundsProvider} to generate sound definitions.
- *
- * @see net.minecraft.client.resources.sounds.SoundEventRegistration
- */
+/// Provides functionality for building entries that go into a `sounds.json` file.
+///
+/// Use in conjunction with [FabricSoundsProvider] to generate sound definitions.
+///
+/// @see net.minecraft.client.resources.sounds.SoundEventRegistration
 @ApiStatus.NonExtendable
 public interface SoundTypeBuilder {
-	/**
-	 * Creates a new builder pre-filled with a subtitle translation key string based on the passed event.
-	 *
-	 * <p>Note: To generate a translation value, use {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider.TranslationBuilder#add(SoundEvent, String)}.
-	 *
-	 * @return New sound type builder
-	 */
+	/// Creates a new builder pre-filled with a subtitle translation key string based on the passed event.
+	///
+	/// Note: To generate a translation value, use [net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider.TranslationBuilder#add(SoundEvent, String)].
+	///
+	/// @return New sound type builder
 	static SoundTypeBuilder of(SoundEvent event) {
 		Objects.requireNonNull(event, "Sound event cannot be null.");
 		return of().subtitle(Util.makeDescriptionId("subtitles", event.location()));
 	}
 
-	/**
-	 * Creates a new empty builder.
-	 *
-	 * @return New sound type builder
-	 */
+	/// Creates a new empty builder.
+	///
+	/// @return New sound type builder
 	static SoundTypeBuilder of() {
 		return new SoundTypeBuilderImpl();
 	}
 
-	/**
-	 * @deprecated Source is not a field interpreted by vanilla in the sounds file,
-	 * calling this method will have no effect.
-	 */
+	/// @deprecated Source is not a field interpreted by vanilla in the sounds file,
+	/// calling this method will have no effect.
 	@Deprecated(forRemoval = true)
 	default SoundTypeBuilder source(SoundSource source) {
 		return this;
 	}
 
-	/**
-	 * Sets an optional replace boolean, which on true allows this sound type to override others.
-	 *
-	 * <p>The default is false.
-	 */
+	/// Sets an optional replace boolean, which on true allows this sound type to override others.
+	///
+	/// The default is false.
 	SoundTypeBuilder replace(boolean replace);
 
-	/**
-	 * Sets an optional translation key string to use for the sound's subtitle.
-	 *
-	 * <p>The default is null (no subtitle).
-	 *
-	 * <p>Note: To generate a translation value, use {@link net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider.TranslationBuilder#add(SoundEvent, String)}.
-	 */
+	/// Sets an optional translation key string to use for the sound's subtitle.
+	///
+	/// The default is null (no subtitle).
+	///
+	/// Note: To generate a translation value, use [net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider.TranslationBuilder#add(SoundEvent, String)].
 	SoundTypeBuilder subtitle(@Nullable String subtitle);
 
-	/**
-	 * Adds one sound to the event.
-	 *
-	 * @param sound base sound to add
-	 */
+	/// Adds one sound to the event.
+	///
+	/// @param sound base sound to add
 	SoundTypeBuilder sound(RegistrationBuilder sound);
 
-	/**
-	 * Adds one or more sounds to the event.
-	 *
-	 * <p>This is a shorthand method for quickly adding multiple
-	 * entries where each sound is a variant with an index at the end of their name.
-	 *
-	 * <p>Calling this with the count value of {@code 3} is the equivalent of doing:
-	 *
-	 * <p>{@code builder.sound(RegistrationBuilder.ofFile(id.withSuffixedPath("1"));}
-	 * <br>
-	 * {@code builder.sound(RegistrationBuilder.ofFile(id.withSuffixedPath("2"));}
-	 * <br>
-	 * {@code builder.sound(RegistrationBuilder.ofFile(id.withSuffixedPath("3"));}
-	 *
-	 * @param sound base sound to add
-	 * @param count number of instances of that sound to register
-	 */
+	/// Adds one or more sounds to the event.
+	///
+	/// This is a shorthand method for quickly adding multiple
+	/// entries where each sound is a variant with an index at the end of their name.
+	///
+	/// Calling this with the count value of `3` is the equivalent of doing:
+	///
+	/// `builder.sound(RegistrationBuilder.ofFile(id.withSuffixedPath("1"));`
+	///
+	/// `builder.sound(RegistrationBuilder.ofFile(id.withSuffixedPath("2"));`
+	///
+	/// `builder.sound(RegistrationBuilder.ofFile(id.withSuffixedPath("3"));`
+	///
+	/// @param sound base sound to add
+	/// @param count number of instances of that sound to register
 	SoundTypeBuilder sound(RegistrationBuilder sound, int count);
 
-	/**
-	 * Represents the type of weighted sound event registration.
-	 *
-	 * @see net.minecraft.client.resources.sounds.Sound.Type
-	 */
+	/// Represents the type of weighted sound event registration.
+	///
+	/// @see net.minecraft.client.resources.sounds.Sound.Type
 	enum RegistrationType implements StringRepresentable {
-		/**
-		 * Direct references to sound files by path and filename excluding {@code *.ogg} extension.
-		 */
+		/// Direct references to sound files by path and filename excluding `*.ogg` extension.
 		FILE("file"),
-		/**
-		 * References to another sound event.
-		 */
+		/// References to another sound event.
 		SOUND_EVENT("event");
 
 		public static final Codec<RegistrationType> CODEC = StringRepresentable.fromEnum(RegistrationType::values);
@@ -142,126 +120,96 @@ public interface SoundTypeBuilder {
 		}
 	}
 
-	/**
-	 * Builder for creating a weighted sound event registration that can be played for a particular sound type.
-	 *
-	 * @see net.minecraft.client.resources.sounds.Sound
-	 */
+	/// Builder for creating a weighted sound event registration that can be played for a particular sound type.
+	///
+	/// @see net.minecraft.client.resources.sounds.Sound
 	@ApiStatus.NonExtendable
 	interface RegistrationBuilder {
-		/**
-		 * The default sound volume.
-		 */
+		/// The default sound volume.
 		float DEFAULT_VOLUME = 1F;
 
-		/**
-		 * The default sound pitch.
-		 */
+		/// The default sound pitch.
 		float DEFAULT_PITCH = 1F;
 
-		/**
-		 * The default weight applied to individual sounds.
-		 */
+		/// The default weight applied to individual sounds.
 		int DEFAULT_WEIGHT = 1;
 
-		/**
-		 * The default attenuation distance for a sound (16 blocks).
-		 */
+		/// The default attenuation distance for a sound (16 blocks).
 		int DEFAULT_ATTENUATION_DISTANCE = 16;
 
-		/**
-		 * Creates a builder for constructing a new sound event registration.
-		 *
-		 * @param id sound file or event
-		 */
+		/// Creates a builder for constructing a new sound event registration.
+		///
+		/// @param id sound file or event
 		static RegistrationBuilder create(RegistrationType type, Identifier id) {
 			return SoundTypeBuilderImpl.RegistrationBuilderImpl.create(type, id);
 		}
 
-		/**
-		 * Creates a builder for constructing a new sound event registration.
-		 *
-		 * @param soundFile sound file excluding the {@code .ogg} extension
-		 */
+		/// Creates a builder for constructing a new sound event registration.
+		///
+		/// @param soundFile sound file excluding the `.ogg` extension
 		static RegistrationBuilder ofFile(Identifier soundFile) {
 			return SoundTypeBuilderImpl.RegistrationBuilderImpl.ofFile(soundFile);
 		}
 
-		/**
-		 * Creates a builder for constructing a new sound event registration.
-		 *
-		 * @param event the sound event
-		 */
+		/// Creates a builder for constructing a new sound event registration.
+		///
+		/// @param event the sound event
 		static RegistrationBuilder ofEvent(SoundEvent event) {
 			return SoundTypeBuilderImpl.RegistrationBuilderImpl.ofEvent(event);
 		}
 
-		/**
-		 * Creates a builder for constructing a new sound event registration.
-		 *
-		 * @param event the sound event
-		 */
+		/// Creates a builder for constructing a new sound event registration.
+		///
+		/// @param event the sound event
 		static RegistrationBuilder ofEvent(Holder<SoundEvent> event) {
 			return SoundTypeBuilderImpl.RegistrationBuilderImpl.ofEvent(event);
 		}
 
-		/**
-		 * Sets the volume of the sound.
-		 *
-		 * <p>Must be a value between {@code 0} and {@code 1} (inclusive).
-		 *
-		 * <p>The default volume is {@value RegistrationBuilder#DEFAULT_VOLUME}.
-		 *
-		 * @see net.minecraft.client.sounds.SoundEngine#VOLUME_MIN
-		 * @see net.minecraft.client.sounds.SoundEngine#VOLUME_MAX
-		 */
+		/// Sets the volume of the sound.
+		///
+		/// Must be a value between `0` and `1` (inclusive).
+		///
+		/// The default volume is {@value RegistrationBuilder#DEFAULT_VOLUME}.
+		///
+		/// @see net.minecraft.client.sounds.SoundEngine#VOLUME_MIN
+		/// @see net.minecraft.client.sounds.SoundEngine#VOLUME_MAX
 		RegistrationBuilder volume(float volume);
 
-		/**
-		 * Sets the pitch of the sound.
-		 *
-		 * <p>Must be a value between {@code 0.5} and {@code 2}.
-		 *
-		 * <p>The default pitch is {@link RegistrationBuilder#DEFAULT_PITCH} ({@code 1F}).
-		 *
-		 * @see net.minecraft.client.sounds.SoundEngine#PITCH_MIN
-		 * @see net.minecraft.client.sounds.SoundEngine#PITCH_MAX
-		 */
+		/// Sets the pitch of the sound.
+		///
+		/// Must be a value between `0.5` and `2`.
+		///
+		/// The default pitch is [RegistrationBuilder#DEFAULT_PITCH] (`1F`).
+		///
+		/// @see net.minecraft.client.sounds.SoundEngine#PITCH_MIN
+		/// @see net.minecraft.client.sounds.SoundEngine#PITCH_MAX
 		RegistrationBuilder pitch(float pitch);
 
-		/**
-		 * Sets the attenuation block distance of the sound.
-		 *
-		 * <p>The default attenuation is {@value RegistrationBuilder#DEFAULT_ATTENUATION_DISTANCE} blocks. Setting it to
-		 * higher will cause the sound to be heard from greater distances.
-		 */
+		/// Sets the attenuation block distance of the sound.
+		///
+		/// The default attenuation is {@value RegistrationBuilder#DEFAULT_ATTENUATION_DISTANCE} blocks. Setting it to
+		/// higher will cause the sound to be heard from greater distances.
 		RegistrationBuilder attenuationDistance(int attenuationDistance);
 
-		/**
-		 * Sets the weight or "chance" that this sound has of playing when
-		 * its parent sound event is called upon.
-		 *
-		 * <p>The default weight is {@value RegistrationBuilder#DEFAULT_WEIGHT}.
-		 */
+		/// Sets the weight or "chance" that this sound has of playing when
+		/// its parent sound event is called upon.
+		///
+		/// The default weight is {@value RegistrationBuilder#DEFAULT_WEIGHT}.
 		RegistrationBuilder weight(int weight);
 
-		/**
-		 * Configures the sound to be streamed.
-		 * This is usually set for longer sounds like music discs
-		 * to prevent delays when the game tries to play them.
-		 *
-		 * <p>The default value is {@code false}.
-		 */
+		/// Configures the sound to be streamed.
+		/// This is usually set for longer sounds like music discs
+		/// to prevent delays when the game tries to play them.
+		///
+		/// The default value is `false`.
 		RegistrationBuilder stream(boolean stream);
 
-		/**
-		 * Configures whether the sound must be preloaded by the game.
-		 * By default, sounds are only loaded upon playing.
-		 *
-		 * <p>Setting this to {@code true} will cause them to be loaded when the game starts.
-		 *
-		 * <p>The default value is {@code false}.
-		 */
+		/// Configures whether the sound must be preloaded by the game.
+		/// By default, sounds are only loaded upon playing.
+		///
+		/// Setting this to `true` will cause them to be loaded when the game starts.
+		///
+		/// The default value is `false`.
 		RegistrationBuilder preload(boolean preload);
 	}
 }

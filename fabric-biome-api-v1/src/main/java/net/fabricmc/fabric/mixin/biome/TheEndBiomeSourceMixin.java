@@ -60,10 +60,8 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 	@Unique
 	private boolean hasCheckedForModifiedSet = false;
 
-	/**
-	 * Modifies the codec, so it calls the static factory method that gives us access to the
-	 * full biome registry instead of just the pre-defined biomes that vanilla uses.
-	 */
+	/// Modifies the codec, so it calls the static factory method that gives us access to the
+	/// full biome registry instead of just the pre-defined biomes that vanilla uses.
 	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void modifyCodec(CallbackInfo ci) {
 		CODEC = RecordCodecBuilder.mapCodec((instance) -> {
@@ -71,26 +69,20 @@ public class TheEndBiomeSourceMixin extends BiomeSourceMixin {
 		});
 	}
 
-	/**
-	 * Captures the biome registry at the beginning of the static factory method to allow access to it in the
-	 * constructor.
-	 */
+	/// Captures the biome registry at the beginning of the static factory method to allow access to it in the
+	/// constructor.
 	@Inject(method = "create", at = @At("HEAD"))
 	private static void rememberLookup(HolderGetter<Biome> biomes, CallbackInfoReturnable<?> ci) {
 		TheEndBiomeData.biomeRegistry.set(biomes);
 	}
 
-	/**
-	 * Frees up the captured biome registry.
-	 */
+	/// Frees up the captured biome registry.
 	@Inject(method = "create", at = @At("TAIL"))
 	private static void clearLookup(HolderGetter<Biome> biomes, CallbackInfoReturnable<?> ci) {
 		TheEndBiomeData.biomeRegistry.remove();
 	}
 
-	/**
-	 * Uses the captured biome registry to set up the modded end biomes.
-	 */
+	/// Uses the captured biome registry to set up the modded end biomes.
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void init(Holder<Biome> centerBiome, Holder<Biome> highlandsBiome, Holder<Biome> midlandsBiome, Holder<Biome> smallIslandsBiome, Holder<Biome> barrensBiome, CallbackInfo ci) {
 		HolderGetter<Biome> biomes = TheEndBiomeData.biomeRegistry.get();

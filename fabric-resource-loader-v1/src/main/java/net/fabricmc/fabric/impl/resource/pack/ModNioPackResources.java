@@ -70,10 +70,8 @@ public class ModNioPackResources implements PackResources, ModPackResources {
 	private final PackActivationType activationType;
 	private final Map<PackType, Set<String>> namespaces;
 	private final PackLocationInfo metadata;
-	/**
-	 * Whether the pack is bundled and loaded by default, as opposed to registered built-in packs.
-	 * @see ModResourcePackUtil#appendModResourcePacks(List, PackType, String)
-	 */
+	/// Whether the pack is bundled and loaded by default, as opposed to registered built-in packs.
+	/// @see ModResourcePackUtil#appendModResourcePacks(List, PackType, String)
 	private final boolean modBundled;
 
 	@Nullable

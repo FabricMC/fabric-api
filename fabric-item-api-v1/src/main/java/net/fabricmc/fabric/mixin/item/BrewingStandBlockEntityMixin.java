@@ -41,9 +41,7 @@ public class BrewingStandBlockEntityMixin {
 		REMAINDER_STACK.set(itemStack.getCraftingRemainder());
 	}
 
-	/**
-	 * Wrap the {@link Item#getCraftingRemainder} call to replace the old remainder with the new one.
-	 */
+	/// Wrap the [Item#getCraftingRemainder] call to replace the old remainder with the new one.
 	@Redirect(method = "doBrew", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;getCraftingRemainder()Lnet/minecraft/world/item/ItemStack;"))
 	private static ItemStack createStackCraftingRemainder(Item item) {
 		ItemStack remainder = REMAINDER_STACK.get();

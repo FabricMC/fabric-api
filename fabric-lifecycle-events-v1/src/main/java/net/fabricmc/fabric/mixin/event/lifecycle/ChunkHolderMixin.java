@@ -64,9 +64,7 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 		super(pos);
 	}
 
-	/**
-	 * Handles INACCESSIBLE -> FULL for chunks that are immediately loaded and available. {@link ChunkStatusTasksMixin} handles the rest.
-	 */
+	/// Handles INACCESSIBLE -> FULL for chunks that are immediately loaded and available. [ChunkStatusTasksMixin] handles the rest.
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkHolder;addSaveDependency(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 0))
 	private void updateFutures$inaccessibleToFull(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
 		if (this.getChunkIfPresentUnchecked(ChunkStatus.FULL) instanceof LevelChunk && this.fabric_currentEventFullChunkStatus == INACCESSIBLE) { // prevent duplicate events with ChunkStatusTasksMixin
@@ -75,9 +73,7 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 		}
 	}
 
-	/**
-	 * Handles FULL -> BLOCK_TICKING.
-	 */
+	/// Handles FULL -> BLOCK_TICKING.
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkHolder;addSaveDependency(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 1))
 	private void updateFutures$fullToBlockTicking(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
 		if (fabric_currentEventFullChunkStatus == FULL) { // if INACCESSIBLE->FULL did not fire immediately, then ChunkStatusTasksMixin will handle this later.
@@ -86,9 +82,7 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 		}
 	}
 
-	/**
-	 * Handles BLOCK_TICKING -> ENTITY_TICKING.
-	 */
+	/// Handles BLOCK_TICKING -> ENTITY_TICKING.
 	@Inject(method = "updateFutures", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkHolder;addSaveDependency(Ljava/util/concurrent/CompletableFuture;)V", shift = At.Shift.AFTER, ordinal = 2))
 	private void updateFutures$blockTickingToEntityTicking(ChunkMap chunkMap, Executor executor, CallbackInfo ci) {
 		if (fabric_currentEventFullChunkStatus == BLOCK_TICKING) { // if INACCESSIBLE->FULL->BLOCK_TICKING did not fire immediately, then ChunkStatusTasksMixin will handle this later.
@@ -97,9 +91,7 @@ public abstract class ChunkHolderMixin extends GenerationChunkHolder implements 
 		}
 	}
 
-	/**
-	 * Fire right before onFullChunkStatusChange() is called.
-	 */
+	/// Fire right before onFullChunkStatusChange() is called.
 	@Inject(method = "demoteFullChunk", at = @At("HEAD"))
 	private void decreaseLevel(ChunkMap chunkMap, FullChunkStatus target, CallbackInfo ci) {
 		FullChunkStatus previous = ChunkLevel.fullStatus(this.oldTicketLevel);

@@ -19,18 +19,13 @@ package net.fabricmc.fabric.api.client.rendering.v1.hud;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
 
-/**
- * Represents a mod added {@link net.minecraft.client.gui.Gui} element that can be rendered on the screen.
- *
- *
- * <p>HUD elements should be registered using {@link HudElementRegistry}
- */
+/// Represents a mod added [net.minecraft.client.gui.Gui] element that can be rendered on the screen.
+///
+/// HUD elements should be registered using [HudElementRegistry]
 public interface HudElement {
-	/**
-	 * Renders the HUD element.
-	 *
-	 * @param graphics the {@link GuiGraphics} used for rendering
-	 * @param deltaTracker the {@link DeltaTracker} providing timing information
-	 */
+	/// Renders the HUD element.
+	///
+	/// @param graphics the [GuiGraphics] used for rendering
+	/// @param deltaTracker the [DeltaTracker] providing timing information
 	void render(GuiGraphics graphics, DeltaTracker deltaTracker);
 }

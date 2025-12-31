@@ -26,22 +26,18 @@ public final class ClientChunkEvents {
 	private ClientChunkEvents() {
 	}
 
-	/**
-	 * Called when a chunk is loaded into a ClientLevel.
-	 *
-	 * <p>When this event is called, the chunk is already in the level.
-	 */
+	/// Called when a chunk is loaded into a ClientLevel.
+	///
+	/// When this event is called, the chunk is already in the level.
 	public static final Event<ClientChunkEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ClientChunkEvents.Load.class, callbacks -> (clientLevel, chunk) -> {
 		for (Load callback : callbacks) {
 			callback.onChunkLoad(clientLevel, chunk);
 		}
 	});
 
-	/**
-	 * Called when a chunk is about to be unloaded from a ClientLevel.
-	 *
-	 * <p>When this event is called, the chunk is still present in the level.
-	 */
+	/// Called when a chunk is about to be unloaded from a ClientLevel.
+	///
+	/// When this event is called, the chunk is still present in the level.
 	public static final Event<ClientChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ClientChunkEvents.Unload.class, callbacks -> (clientLevel, chunk) -> {
 		for (Unload callback : callbacks) {
 			callback.onChunkUnload(clientLevel, chunk);

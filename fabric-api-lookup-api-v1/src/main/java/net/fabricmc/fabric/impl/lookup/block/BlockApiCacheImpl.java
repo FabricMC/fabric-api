@@ -31,16 +31,12 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 	private final BlockApiLookupImpl<A, C> lookup;
 	private final ServerLevel level;
 	private final BlockPos pos;
-	/**
-	 * We always cache the block entity, even if it's null. We rely on BE load and unload events to invalidate the cache when necessary.
-	 * blockEntityCacheValid maintains whether the cache is valid or not.
-	 */
+	/// We always cache the block entity, even if it's null. We rely on BE load and unload events to invalidate the cache when necessary.
+	/// blockEntityCacheValid maintains whether the cache is valid or not.
 	private boolean blockEntityCacheValid = false;
 	private BlockEntity cachedBlockEntity = null;
-	/**
-	 * We also cache the BlockApiProvider at the target position. We check if the block state has changed to invalidate the cache.
-	 * lastState maintains for which block state the cachedProvider is valid.
-	 */
+	/// We also cache the BlockApiProvider at the target position. We check if the block state has changed to invalidate the cache.
+	/// lastState maintains for which block state the cachedProvider is valid.
 	private BlockState lastState = null;
 	private BlockApiLookup.BlockApiProvider<A, C> cachedProvider = null;
 

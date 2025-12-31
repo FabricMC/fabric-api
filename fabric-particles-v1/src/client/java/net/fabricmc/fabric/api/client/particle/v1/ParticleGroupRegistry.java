@@ -28,96 +28,80 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.client.particle.ParticleGroupRegistryImpl;
 
-/**
- * A registry for custom {@link ParticleGroup}s.
- */
+/// A registry for custom [ParticleGroup]s.
 public final class ParticleGroupRegistry {
-	/**
-	 * Registers a {@link ParticleGroup} factory for the given {@link ParticleRenderType}.
-	 *
-	 * @param renderType the render type
-	 * @param function the factory function
-	 */
+	/// Registers a [ParticleGroup] factory for the given [ParticleRenderType].
+	///
+	/// @param renderType the render type
+	/// @param function the factory function
 	public static void register(ParticleRenderType renderType, Function<ParticleEngine, ParticleGroup<?>> function) {
 		ParticleGroupRegistryImpl.INSTANCE.register(renderType, function);
 	}
 
-	/**
-	 * Registers a rendering order between two {@link ParticleRenderType}s.
-	 *
-	 * <p>The first render type will be rendered before the second render type.
-	 *
-	 * <p>Note that the rendering order of vanilla render types is already defined by Minecraft,
-	 * and you cannot change the order of vanilla render types with this method.
-	 *
-	 * @param first  the render type to render first
-	 * @param second the render type to render second
-	 */
+	/// Registers a rendering order between two [ParticleRenderType]s.
+	///
+	/// The first render type will be rendered before the second render type.
+	///
+	/// Note that the rendering order of vanilla render types is already defined by Minecraft,
+	/// and you cannot change the order of vanilla render types with this method.
+	///
+	/// @param first  the render type to render first
+	/// @param second the render type to render second
 	public static void registerOrdering(ParticleRenderType first, Identifier second) {
 		registerOrdering(getId(first), second);
 	}
 
-	/**
-	 * Registers a rendering order between two {@link ParticleRenderType}s.
-	 *
-	 * <p>The first render type will be rendered before the second render type.
-	 *
-	 * <p>Note that the rendering order of vanilla render types is already defined by Minecraft,
-	 * and you cannot change the order of vanilla render types with this method.
-	 *
-	 * @param first  the render type to render first
-	 * @param second the render type to render second
-	 */
+	/// Registers a rendering order between two [ParticleRenderType]s.
+	///
+	/// The first render type will be rendered before the second render type.
+	///
+	/// Note that the rendering order of vanilla render types is already defined by Minecraft,
+	/// and you cannot change the order of vanilla render types with this method.
+	///
+	/// @param first  the render type to render first
+	/// @param second the render type to render second
 	public static void registerOrdering(ParticleRenderType first, ParticleRenderType second) {
 		registerOrdering(getId(first), getId(second));
 	}
 
-	/**
-	 * Registers a rendering order between two {@link ParticleRenderType}s.
-	 *
-	 * <p>The first render type will be rendered before the second render type.
-	 *
-	 * <p>Note that the rendering order of vanilla render types is already defined by Minecraft,
-	 * and you cannot change the order of vanilla render types with this method.
-	 *
-	 * @param first  the render type to render first
-	 * @param second the render type to render second
-	 */
+	/// Registers a rendering order between two [ParticleRenderType]s.
+	///
+	/// The first render type will be rendered before the second render type.
+	///
+	/// Note that the rendering order of vanilla render types is already defined by Minecraft,
+	/// and you cannot change the order of vanilla render types with this method.
+	///
+	/// @param first  the render type to render first
+	/// @param second the render type to render second
 	public static void registerOrdering(Identifier first, ParticleRenderType second) {
 		registerOrdering(first, getId(second));
 	}
 
-	/**
-	 * Registers a rendering order between two {@link ParticleRenderType}s.
-	 *
-	 * <p>The first render type will be rendered before the second render type.
-	 *
-	 * <p>Note that the rendering order of vanilla render types is already defined by Minecraft,
-	 * and you cannot change the order of vanilla render types with this method.
-	 *
-	 * @param first  the render type to render first
-	 * @param second the render type to render second
-	 */
+	/// Registers a rendering order between two [ParticleRenderType]s.
+	///
+	/// The first render type will be rendered before the second render type.
+	///
+	/// Note that the rendering order of vanilla render types is already defined by Minecraft,
+	/// and you cannot change the order of vanilla render types with this method.
+	///
+	/// @param first  the render type to render first
+	/// @param second the render type to render second
 	public static void registerOrdering(Identifier first, Identifier second) {
 		ParticleGroupRegistryImpl.INSTANCE.registerOrdering(first, second);
 	}
 
-	/**
-	 * Gets the {@link ParticleRenderType} registered with the given identifier.
-	 *
-	 * @param id the identifier of the render type
-	 * @return the render type, or null if none is registered with the given identifier
-	 */
+	/// Gets the [ParticleRenderType] registered with the given identifier.
+	///
+	/// @param id the identifier of the render type
+	/// @return the render type, or null if none is registered with the given identifier
 	public static @Nullable ParticleRenderType getParticleRenderType(Identifier id) {
 		return ParticleGroupRegistryImpl.INSTANCE.getParticleRenderType(id);
 	}
 
-	/**
-	 * Gets the identifier for the given {@link ParticleRenderType}.
-	 *
-	 * @param renderType the render type
-	 * @return the identifier
-	 */
+	/// Gets the identifier for the given [ParticleRenderType].
+	///
+	/// @param renderType the render type
+	/// @return the identifier
 	public static Identifier getId(ParticleRenderType renderType) {
 		if (renderType == ParticleRenderType.SINGLE_QUADS
 				|| renderType == ParticleRenderType.NO_RENDER

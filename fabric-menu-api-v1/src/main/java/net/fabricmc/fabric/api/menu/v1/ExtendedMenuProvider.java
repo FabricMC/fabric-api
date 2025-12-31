@@ -19,18 +19,14 @@ package net.fabricmc.fabric.api.menu.v1;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 
-/**
- * An extension of {@code MenuProvider} that can write additional data to a screen opening packet.
- * This is used for {@linkplain ExtendedMenuType extended menus}.
- *
- * @see ExtendedMenuType usage examples
- */
+/// An extension of `MenuProvider` that can write additional data to a screen opening packet.
+/// This is used for {@linkplain ExtendedMenuType extended menus}.
+///
+/// @see ExtendedMenuType usage examples
 public interface ExtendedMenuProvider<D> extends MenuProvider {
-	/**
-	 * Writes additional server -&gt; client screen opening data to the buffer.
-	 *
-	 * @param player the player that is opening the screen
-	 * @return the screen opening data
-	 */
+	/// Writes additional server -&gt; client screen opening data to the buffer.
+	///
+	/// @param player the player that is opening the screen
+	/// @return the screen opening data
 	D getScreenOpeningData(ServerPlayer player);
 }

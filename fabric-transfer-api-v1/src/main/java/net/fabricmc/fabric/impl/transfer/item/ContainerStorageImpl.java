@@ -36,19 +36,15 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
-/**
- * Implementation of {@link ContainerStorage}.
- * Note on thread-safety: we assume that Inventory's are inherently single-threaded, and no attempt is made at synchronization.
- * However, the access to implementations can happen on multiple threads concurrently, which is why we use a thread-safe wrapper map.
- */
+/// Implementation of [ContainerStorage].
+/// Note on thread-safety: we assume that Inventory's are inherently single-threaded, and no attempt is made at synchronization.
+/// However, the access to implementations can happen on multiple threads concurrently, which is why we use a thread-safe wrapper map.
 public class ContainerStorageImpl extends CombinedStorage<ItemVariant, SingleSlotStorage<ItemVariant>> implements ContainerStorage {
-	/**
-	 * Global wrapper concurrent map.
-	 *
-	 * <p>A note on GC: weak keys alone are not suitable as the ContainerStorage slots strongly reference the Inventory keys.
-	 * Weak values are suitable, but we have to ensure that the ContainerStorageImpl remains strongly reachable as long as
-	 * one of the slot wrappers refers to it, hence the {@code strongRef} field in {@link ContainerSlotWrapper}.
-	 */
+	/// Global wrapper concurrent map.
+	///
+	/// A note on GC: weak keys alone are not suitable as the ContainerStorage slots strongly reference the Inventory keys.
+	/// Weak values are suitable, but we have to ensure that the ContainerStorageImpl remains strongly reachable as long as
+	/// one of the slot wrappers refers to it, hence the `strongRef` field in [ContainerSlotWrapper].
 	// TODO: look into promoting the weak reference to a soft reference if building the wrappers becomes a performance bottleneck.
 	// TODO: should have identity semantics?
 	private static final Map<Container, ContainerStorageImpl> WRAPPERS = new MapMaker().weakValues().makeMap();
@@ -66,14 +62,10 @@ public class ContainerStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 	}
 
 	final Container container;
-	/**
-	 * This {@code backingList} is the real list of wrappers.
-	 * The {@code parts} in the superclass is the public-facing unmodifiable sublist with exactly the right amount of slots.
-	 */
+	/// This `backingList` is the real list of wrappers.
+	/// The `parts` in the superclass is the public-facing unmodifiable sublist with exactly the right amount of slots.
 	final List<ContainerSlotWrapper> backingList;
-	/**
-	 * This participant ensures that setChanged is only called once for the entire inventory.
-	 */
+	/// This participant ensures that setChanged is only called once for the entire inventory.
 	final SetChangedParticipant setChangedParticipant = new SetChangedParticipant();
 
 	ContainerStorageImpl(Container container) {
@@ -87,9 +79,7 @@ public class ContainerStorageImpl extends CombinedStorage<ItemVariant, SingleSlo
 		return parts;
 	}
 
-	/**
-	 * Resize slot list to match the current size of the inventory.
-	 */
+	/// Resize slot list to match the current size of the inventory.
 	private void resizeSlotList() {
 		int inventorySize = container.getContainerSize();
 

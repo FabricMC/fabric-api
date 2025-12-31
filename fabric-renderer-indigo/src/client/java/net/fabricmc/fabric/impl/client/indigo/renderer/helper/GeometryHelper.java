@@ -28,35 +28,31 @@ import net.minecraft.core.Direction.AxisDirection;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 
-/**
- * Static routines of general utility for renderer implementations.
- * Renderers are not required to use these helpers, but they were
- * designed to be usable without the default renderer.
- */
+/// Static routines of general utility for renderer implementations.
+/// Renderers are not required to use these helpers, but they were
+/// designed to be usable without the default renderer.
 public final class GeometryHelper {
 	private GeometryHelper() { }
 
-	/** set when a quad touches all four corners of a unit cube. */
+	/// set when a quad touches all four corners of a unit cube.
 	public static final int CUBIC_FLAG = 1;
 
-	/** set when a quad is parallel to (but not necessarily on) its light face. */
+	/// set when a quad is parallel to (but not necessarily on) its light face.
 	public static final int AXIS_ALIGNED_FLAG = CUBIC_FLAG << 1;
 
-	/** set when a quad is coplanar with its light face. Implies {@link #AXIS_ALIGNED_FLAG} */
+	/// set when a quad is coplanar with its light face. Implies [#AXIS_ALIGNED_FLAG]
 	public static final int LIGHT_FACE_FLAG = AXIS_ALIGNED_FLAG << 1;
 
-	/** how many bits quad header encoding should reserve for encoding geometry flags. */
+	/// how many bits quad header encoding should reserve for encoding geometry flags.
 	public static final int FLAG_BIT_COUNT = 3;
 
 	private static final float EPS_MIN = 0.0001f;
 	private static final float EPS_MAX = 1.0f - EPS_MIN;
 
-	/**
-	 * Analyzes the quad and returns a value with some combination
-	 * of {@link #AXIS_ALIGNED_FLAG}, {@link #LIGHT_FACE_FLAG} and {@link #CUBIC_FLAG}.
-	 * Intended use is to optimize lighting when the geometry is regular.
-	 * Expects convex quads with all points co-planar.
-	 */
+	/// Analyzes the quad and returns a value with some combination
+	/// of [#AXIS_ALIGNED_FLAG], [#LIGHT_FACE_FLAG] and [#CUBIC_FLAG].
+	/// Intended use is to optimize lighting when the geometry is regular.
+	/// Expects convex quads with all points co-planar.
 	public static int computeShapeFlags(QuadView quad) {
 		Direction lightFace = quad.lightFace();
 		int bits = 0;
@@ -76,38 +72,32 @@ public final class GeometryHelper {
 		return bits;
 	}
 
-	/**
-	 * Returns true if quad is parallel to the given face.
-	 * Does not validate quad winding order.
-	 * Expects convex quads with all points co-planar.
-	 */
+	/// Returns true if quad is parallel to the given face.
+	/// Does not validate quad winding order.
+	/// Expects convex quads with all points co-planar.
 	public static boolean isQuadParallelToFace(Direction face, QuadView quad) {
 		int i = face.getAxis().ordinal();
 		final float val = quad.posByIndex(0, i);
 		return equal(val, quad.posByIndex(1, i)) && equal(val, quad.posByIndex(2, i)) && equal(val, quad.posByIndex(3, i));
 	}
 
-	/**
-	 * True if quad - already known to be parallel to a face - is actually coplanar with it.
-	 * For compatibility with vanilla resource packs, also true if quad is outside the face.
-	 *
-	 * <p>Test will be unreliable if not already parallel, use {@link #isQuadParallelToFace(Direction, QuadView)}
-	 * for that purpose. Expects convex quads with all points co-planar.
-	 */
+	/// True if quad - already known to be parallel to a face - is actually coplanar with it.
+	/// For compatibility with vanilla resource packs, also true if quad is outside the face.
+	///
+	/// Test will be unreliable if not already parallel, use [#isQuadParallelToFace(Direction, QuadView)]
+	/// for that purpose. Expects convex quads with all points co-planar.
 	public static boolean isParallelQuadOnFace(Direction lightFace, QuadView quad) {
 		final float x = quad.posByIndex(0, lightFace.getAxis().ordinal());
 		return lightFace.getAxisDirection() == AxisDirection.POSITIVE ? x >= EPS_MAX : x <= EPS_MIN;
 	}
 
-	/**
-	 * Returns true if quad is truly a quad (not a triangle) and fills a full block cross-section.
-	 * If known to be true, allows use of a simpler/faster AO lighting algorithm.
-	 *
-	 * <p>Does not check if quad is actually coplanar with the light face, nor does it check that all
-	 * quad vertices are coplanar with each other.
-	 *
-	 * <p>Expects convex quads with all points co-planar.
-	 */
+	/// Returns true if quad is truly a quad (not a triangle) and fills a full block cross-section.
+	/// If known to be true, allows use of a simpler/faster AO lighting algorithm.
+	///
+	/// Does not check if quad is actually coplanar with the light face, nor does it check that all
+	/// quad vertices are coplanar with each other.
+	///
+	/// Expects convex quads with all points co-planar.
 	public static boolean isQuadCubic(Direction lightFace, QuadView quad) {
 		int a, b;
 
@@ -135,13 +125,11 @@ public final class GeometryHelper {
 		return confirmSquareCorners(a, b, quad);
 	}
 
-	/**
-	 * Used by {@link #isQuadCubic(Direction, QuadView)}.
-	 * True if quad touches all four corners of unit square.
-	 *
-	 * <p>For compatibility with resource packs that contain models with quads exceeding
-	 * block boundaries, considers corners outside the block to be at the corners.
-	 */
+	/// Used by [#isQuadCubic(Direction, QuadView)].
+	/// True if quad touches all four corners of unit square.
+	///
+	/// For compatibility with resource packs that contain models with quads exceeding
+	/// block boundaries, considers corners outside the block to be at the corners.
 	private static boolean confirmSquareCorners(int aCoordinate, int bCoordinate, QuadView quad) {
 		int flags = 0;
 
@@ -173,13 +161,11 @@ public final class GeometryHelper {
 		return flags == 15;
 	}
 
-	/**
-	 * Identifies the face to which the quad is most closely aligned.
-	 * This mimics the value that {@link BakedQuad#direction()} returns, and is
-	 * used in the vanilla renderer for all diffuse lighting.
-	 *
-	 * <p>Derived from the quad face normal and expects convex quads with all points co-planar.
-	 */
+	/// Identifies the face to which the quad is most closely aligned.
+	/// This mimics the value that [BakedQuad#direction()] returns, and is
+	/// used in the vanilla renderer for all diffuse lighting.
+	///
+	/// Derived from the quad face normal and expects convex quads with all points co-planar.
 	public static Direction lightFace(QuadView quad) {
 		final Vector3fc normal = quad.faceNormal();
 		switch (GeometryHelper.longestAxis(normal)) {
@@ -198,16 +184,12 @@ public final class GeometryHelper {
 		}
 	}
 
-	/**
-	 * @see #longestAxis(float, float, float)
-	 */
+	/// @see #longestAxis(float, float, float)
 	public static Axis longestAxis(Vector3fc vec) {
 		return longestAxis(vec.x(), vec.y(), vec.z());
 	}
 
-	/**
-	 * Identifies the largest (max absolute magnitude) component (X, Y, Z) in the given vector.
-	 */
+	/// Identifies the largest (max absolute magnitude) component (X, Y, Z) in the given vector.
 	public static Axis longestAxis(float normalX, float normalY, float normalZ) {
 		Axis result = Axis.Y;
 		float longest = Math.abs(normalY);
@@ -222,16 +204,14 @@ public final class GeometryHelper {
 				? Axis.Z : result;
 	}
 
-	/**
-	 * Returns the index of the vertex which is in the first cubic corner for the given quad's light face, according to
-	 * the directions specified in {@link FaceInfo}. Assumes that the given quad is
-	 * {@linkplain #isQuadCubic(Direction, QuadView) cubic}. Used to make smooth lighting for cubic quads work correctly
-	 * regardless of vertex order.
-	 *
-	 * <p>Because cubic quads have all vertices in different corners, the implementation only has to find which corner
-	 * the first vertex is in based on the same criteria as {@link #isQuadCubic(Direction, QuadView)}. Then, since
-	 * the vertex winding order is always counterclockwise, it can know which vertex is in the first corner.
-	 */
+	/// Returns the index of the vertex which is in the first cubic corner for the given quad's light face, according to
+	/// the directions specified in [FaceInfo]. Assumes that the given quad is
+	/// {@linkplain #isQuadCubic(Direction, QuadView) cubic}. Used to make smooth lighting for cubic quads work correctly
+	/// regardless of vertex order.
+	///
+	/// Because cubic quads have all vertices in different corners, the implementation only has to find which corner
+	/// the first vertex is in based on the same criteria as [#isQuadCubic(Direction, QuadView)]. Then, since
+	/// the vertex winding order is always counterclockwise, it can know which vertex is in the first corner.
 	public static int firstCubicVertex(QuadView quad) {
 		final float x = quad.x(0);
 		final float y = quad.y(0);

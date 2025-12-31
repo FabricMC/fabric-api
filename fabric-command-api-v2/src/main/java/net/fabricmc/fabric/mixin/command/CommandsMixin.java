@@ -36,13 +36,11 @@ public abstract class CommandsMixin {
 	@Final
 	private CommandDispatcher<CommandSourceStack> dispatcher;
 
-	/**
-	 * Wait an inject in a constructor?
-	 * This is a new addition to Fabric's fork of mixin.
-	 * If you are not using fabric's fork of mixin this will fail.
-	 *
-	 * @reason Add commands before ambiguities are calculated.
-	 */
+	/// Wait an inject in a constructor?
+	/// This is a new addition to Fabric's fork of mixin.
+	/// If you are not using fabric's fork of mixin this will fail.
+	///
+	/// @reason Add commands before ambiguities are calculated.
 	@Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;setConsumer(Lcom/mojang/brigadier/ResultConsumer;)V"), method = "<init>")
 	private void fabric_addCommands(Commands.CommandSelection selection, CommandBuildContext buildContext, CallbackInfo ci) {
 		CommandRegistrationCallback.EVENT.invoker().register(this.dispatcher, buildContext, selection);

@@ -38,9 +38,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.SpecialBlockRendererRegistry;
 
-/**
- * Tests {@link SpecialBlockRendererRegistry} by rendering an allay model above TNT blocks in a minecart.
- */
+/// Tests [SpecialBlockRendererRegistry] by rendering an allay model above TNT blocks in a minecart.
 public class SpecialBlockRendererTest implements ClientModInitializer {
 	private static final Identifier ALLAY_TEXTURE = Identifier.withDefaultNamespace("textures/entity/allay/allay.png");
 

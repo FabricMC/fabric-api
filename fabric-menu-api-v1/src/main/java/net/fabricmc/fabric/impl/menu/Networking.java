@@ -53,14 +53,12 @@ public final class Networking implements ModInitializer {
 	public static final Identifier OPEN_ID = Identifier.fromNamespaceAndPath("fabric-menu-api-v1", "open_screen");
 	public static final Map<Identifier, StreamCodec<? super RegistryFriendlyByteBuf, ?>> CODEC_BY_ID = new HashMap<>();
 
-	/**
-	 * Opens an extended menu by sending a custom packet to the client.
-	 *
-	 * @param player  the player
-	 * @param factory the menu factory
-	 * @param menu the menu instance
-	 * @param containerId  the container ID
-	 */
+	/// Opens an extended menu by sending a custom packet to the client.
+	///
+	/// @param player  the player
+	/// @param factory the menu factory
+	/// @param menu the menu instance
+	/// @param containerId  the container ID
 	@SuppressWarnings("unchecked")
 	public static <D> void sendOpenPacket(ServerPlayer player, ExtendedMenuProvider<D> factory, AbstractContainerMenu menu, int containerId) {
 		Objects.requireNonNull(player, "player is null");

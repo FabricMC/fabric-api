@@ -36,9 +36,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
-/**
- * Allows droppers to insert into ItemVariant storages.
- */
+/// Allows droppers to insert into ItemVariant storages.
 @Mixin(DropperBlock.class)
 public class DropperBlockMixin {
 	@Inject(

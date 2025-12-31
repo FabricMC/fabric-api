@@ -31,61 +31,51 @@ import net.minecraft.client.renderer.state.SkyRenderState;
 import net.minecraft.client.renderer.state.WeatherRenderState;
 import net.minecraft.client.renderer.state.WorldBorderRenderState;
 
-/**
- * Fabric-provided extensions for render states, allowing for the addition of extra render data.
- *
- * <p>Note: This interface is automatically implemented on the following classes via Mixin and interface injection:
- * <ul>
- *     <li>{@link EntityRenderState},
- *     <li>{@link BlockEntityRenderState}
- *     <li>{@link ItemStackRenderState} and {@link ItemStackRenderState.LayerRenderState}
- *     <li>{@link MapRenderState} and {@link MapRenderState.MapDecorationRenderState}
- *     <li>{@link MovingBlockRenderState}
- *     <li>{@link LevelRenderState}
- *     <li>{@link CameraRenderState}
- *     <li>{@link BlockOutlineRenderState}
- *     <li>{@link WeatherRenderState}
- *     <li>{@link WorldBorderRenderState}
- *     <li>{@link SkyRenderState}
- * </ul>
- */
+/// Fabric-provided extensions for render states, allowing for the addition of extra render data.
+///
+/// Note: This interface is automatically implemented on the following classes via Mixin and interface injection:
+///
+///   - [EntityRenderState],
+///   - [BlockEntityRenderState]
+///   - [ItemStackRenderState] and [ItemStackRenderState.LayerRenderState]
+///   - [MapRenderState] and [MapRenderState.MapDecorationRenderState]
+///   - [MovingBlockRenderState]
+///   - [LevelRenderState]
+///   - [CameraRenderState]
+///   - [BlockOutlineRenderState]
+///   - [WeatherRenderState]
+///   - [WorldBorderRenderState]
+///   - [SkyRenderState]
+///
 @ApiStatus.NonExtendable
 public interface FabricRenderState {
-	/**
-	 * Get extra render data from the render state.
-	 * @param key the key of the data
-	 * @param <T> the type of the data
-	 * @return the data, or {@code null} if it cannot be found.
-	 */
+	/// Get extra render data from the render state.
+	/// @param key the key of the data
+	/// @param <T> the type of the data
+	/// @return the data, or `null` if it cannot be found.
 	@Nullable
 	default <T> T getData(RenderStateDataKey<T> key) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	/**
-	 * Get extra render data from the render state, or a default value if it cannot be found.
-	 * @param key the key of the data
-	 * @param defaultValue the default value
-	 * @param <T> the type of the data
-	 * @return the data, or the default value if it cannot be found.
-	 */
+	/// Get extra render data from the render state, or a default value if it cannot be found.
+	/// @param key the key of the data
+	/// @param defaultValue the default value
+	/// @param <T> the type of the data
+	/// @return the data, or the default value if it cannot be found.
 	default <T> T getDataOrDefault(RenderStateDataKey<T> key, T defaultValue) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	/**
-	 * Set extra render data to the render state.
-	 * @param key the key of the data
-	 * @param value the data
-	 * @param <T> the type of the data
-	 */
+	/// Set extra render data to the render state.
+	/// @param key the key of the data
+	/// @param value the data
+	/// @param <T> the type of the data
 	default <T> void setData(RenderStateDataKey<T> key, @Nullable T value) {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}
 
-	/**
-	 * Clears all extra render data on the render state.
-	 */
+	/// Clears all extra render data on the render state.
 	default void clearExtraData() {
 		throw new UnsupportedOperationException("Implemented via mixin");
 	}

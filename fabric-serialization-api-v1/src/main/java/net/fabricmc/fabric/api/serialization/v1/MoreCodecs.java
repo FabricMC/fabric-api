@@ -21,9 +21,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.impl.serialization.SpecialCodecs;
 
-/**
- * Additional codecs that can be used by modders.
- */
+/// Additional codecs that can be used by modders.
 @ApiStatus.NonExtendable
 public interface MoreCodecs {
 	Codec<long[]> LONG_ARRAY = SpecialCodecs.LONG_ARRAY;

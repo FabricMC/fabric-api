@@ -20,11 +20,9 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import net.fabricmc.fabric.impl.serialization.SpecialCodecs;
 
-/**
- * Fabric provided extension of ValueOutput.
- *
- * <p>Note: This interface is automatically implemented on {@link ValueOutput} via Mixin and interface injection.
- */
+/// Fabric provided extension of ValueOutput.
+///
+/// Note: This interface is automatically implemented on [ValueOutput] via Mixin and interface injection.
 public interface FabricValueOutput {
 	default void putLongArray(String key, long[] value) {
 		((ValueOutput) this).store(key, SpecialCodecs.LONG_ARRAY, value);

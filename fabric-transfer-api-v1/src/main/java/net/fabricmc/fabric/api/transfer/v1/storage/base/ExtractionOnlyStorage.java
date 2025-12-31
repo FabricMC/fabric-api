@@ -19,9 +19,7 @@ package net.fabricmc.fabric.api.transfer.v1.storage.base;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-/**
- * A {@link Storage} that supports extraction, and not insertion.
- */
+/// A [Storage] that supports extraction, and not insertion.
 public interface ExtractionOnlyStorage<T> extends Storage<T> {
 	@Override
 	default boolean supportsInsertion() {

@@ -43,9 +43,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.test.renderer.Registration;
 import net.fabricmc.fabric.test.renderer.RendererTest;
 
-/**
- * Very crude implementation of a pillar block model that connects with pillars above and below.
- */
+/// Very crude implementation of a pillar block model that connects with pillars above and below.
 public class PillarBlockStateModel implements BlockStateModel {
 	private enum ConnectedTexture {
 		ALONE, BOTTOM, MIDDLE, TOP

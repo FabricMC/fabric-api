@@ -36,56 +36,46 @@ import net.fabricmc.fabric.api.renderer.v1.sprite.FabricPreparations;
 import net.fabricmc.fabric.api.renderer.v1.sprite.FabricSpriteGetter;
 import net.fabricmc.fabric.api.renderer.v1.sprite.FabricTextureAtlas;
 
-/**
- * Indexes a texture atlas to allow fast lookup of {@link TextureAtlasSprite}s from baked texture coordinates.
- *
- * <p>Example use cases include interpolating the textures of a submodel's quads in
- * {@link FabricBlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)} or
- * finding the sprite for use in {@link QuadView#toBakedQuad(TextureAtlasSprite)}.
- *
- * <p>A sprite finder can be retrieved from various vanilla objects. Always use
- * {@link FabricSpriteGetter#spriteFinder(Identifier)} or {@link FabricPreparations#spriteFinder()}
- * whenever an applicable instance is available. For example, model baking is supplied with a
- * {@link SpriteGetter}, so it should be used to retrieve the sprite finder. In most other cases, it is
- * safe to use {@link FabricTextureAtlas#spriteFinder()}.
- */
+/// Indexes a texture atlas to allow fast lookup of [TextureAtlasSprite]s from baked texture coordinates.
+///
+/// Example use cases include interpolating the textures of a submodel's quads in
+/// [FabricBlockStateModel#emitQuads(QuadEmitter, BlockAndTintGetter, BlockPos, BlockState, RandomSource, Predicate)] or
+/// finding the sprite for use in [QuadView#toBakedQuad(TextureAtlasSprite)].
+///
+/// A sprite finder can be retrieved from various vanilla objects. Always use
+/// [FabricSpriteGetter#spriteFinder(Identifier)] or [FabricPreparations#spriteFinder()]
+/// whenever an applicable instance is available. For example, model baking is supplied with a
+/// [SpriteGetter], so it should be used to retrieve the sprite finder. In most other cases, it is
+/// safe to use [FabricTextureAtlas#spriteFinder()].
 @ApiStatus.NonExtendable
 public interface SpriteFinder {
-	/**
-	 * Finds the atlas sprite containing the vertex centroid of the quad.
-	 * Vertex centroid is essentially the mean u,v coordinate - the intent being
-	 * to find a point that is unambiguously inside the sprite (vs on an edge.)
-	 *
-	 * <p>Should be reliable for any convex quad or triangle. May fail for non-convex quads.
-	 * Note that all the above refers to u,v coordinates. Geometric vertex does not matter,
-	 * except to the extent it was used to determine u,v.
-	 */
+	/// Finds the atlas sprite containing the vertex centroid of the quad.
+	/// Vertex centroid is essentially the mean u,v coordinate - the intent being
+	/// to find a point that is unambiguously inside the sprite (vs on an edge.)
+	///
+	/// Should be reliable for any convex quad or triangle. May fail for non-convex quads.
+	/// Note that all the above refers to u,v coordinates. Geometric vertex does not matter,
+	/// except to the extent it was used to determine u,v.
 	TextureAtlasSprite find(QuadView quad);
 
-	/**
-	 * Alternative to {@link #find(QuadView, int)} when vertex centroid is already
-	 * known or unsuitable.  Expects normalized (0-1) coordinates on the atlas texture,
-	 * which should already be the case for u,v values in vanilla baked quads and in
-	 * {@link QuadView} after calling {@link MutableQuadView#spriteBake(TextureAtlasSprite, int)}.
-	 *
-	 * <p>Coordinates must be in the sprite interior for reliable results. Generally will
-	 * be easier to use {@link #find(QuadView, int)} unless you know the vertex
-	 * centroid will somehow not be in the quad interior. This method will be slightly
-	 * faster if you already have the centroid or another appropriate value.
-	 */
+	/// Alternative to [#find(QuadView, int)] when vertex centroid is already
+	/// known or unsuitable.  Expects normalized (0-1) coordinates on the atlas texture,
+	/// which should already be the case for u,v values in vanilla baked quads and in
+	/// [QuadView] after calling [MutableQuadView#spriteBake(TextureAtlasSprite, int)].
+	///
+	/// Coordinates must be in the sprite interior for reliable results. Generally will
+	/// be easier to use [#find(QuadView, int)] unless you know the vertex
+	/// centroid will somehow not be in the quad interior. This method will be slightly
+	/// faster if you already have the centroid or another appropriate value.
 	TextureAtlasSprite find(float u, float v);
 
-	/**
-	 * @deprecated Use {@link FabricTextureAtlas#spriteFinder()} instead.
-	 */
+	/// @deprecated Use [FabricTextureAtlas#spriteFinder()] instead.
 	@Deprecated
 	static SpriteFinder get(TextureAtlas atlas) {
 		return atlas.spriteFinder();
 	}
 
-	/**
-	 * @deprecated Use {@link #find(QuadView)} instead.
-	 */
+	/// @deprecated Use [#find(QuadView)] instead.
 	@Deprecated
 	default TextureAtlasSprite find(QuadView quad, int textureIndex) {
 		return find(quad);

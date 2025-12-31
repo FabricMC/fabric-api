@@ -18,9 +18,7 @@ package net.fabricmc.fabric.impl.networking.server;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Tracks the current query id used for login query responses.
- */
+/// Tracks the current query id used for login query responses.
 interface QueryIdFactory {
 	static QueryIdFactory create() {
 		return new QueryIdFactory() {

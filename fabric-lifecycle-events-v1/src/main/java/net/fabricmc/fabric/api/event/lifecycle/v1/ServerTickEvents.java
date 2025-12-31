@@ -22,58 +22,48 @@ import net.minecraft.server.level.ServerLevel;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Contains events that are triggered on the server every tick.
- *
- * <p>A dedicated server may "pause" if no player is present for a
- * certain length of time (by default, 1 minute). See {@code pause-when-empty-seconds}
- * property in {@code server.properties}.
- * When the server is "paused", none of the events here will be invoked.
- */
+/// Contains events that are triggered on the server every tick.
+///
+/// A dedicated server may "pause" if no player is present for a
+/// certain length of time (by default, 1 minute). See `pause-when-empty-seconds`
+/// property in `server.properties`.
+/// When the server is "paused", none of the events here will be invoked.
 public final class ServerTickEvents {
 	private ServerTickEvents() {
 	}
 
-	/**
-	 * Called at the start of the server tick.
-	 *
-	 * <p>When the dedicated server is "paused", this event is not invoked.
-	 */
+	/// Called at the start of the server tick.
+	///
+	/// When the dedicated server is "paused", this event is not invoked.
 	public static final Event<StartTick> START_SERVER_TICK = EventFactory.createArrayBacked(StartTick.class, callbacks -> server -> {
 		for (StartTick event : callbacks) {
 			event.onStartTick(server);
 		}
 	});
 
-	/**
-	 * Called at the end of the server tick.
-	 *
-	 * <p>When the dedicated server is "paused", this event is not invoked.
-	 */
+	/// Called at the end of the server tick.
+	///
+	/// When the dedicated server is "paused", this event is not invoked.
 	public static final Event<EndTick> END_SERVER_TICK = EventFactory.createArrayBacked(EndTick.class, callbacks -> server -> {
 		for (EndTick event : callbacks) {
 			event.onEndTick(server);
 		}
 	});
 
-	/**
-	 * Called at the start of a ServerLevel's tick.
-	 *
-	 * <p>When the dedicated server is "paused", this event is not invoked.
-	 */
+	/// Called at the start of a ServerLevel's tick.
+	///
+	/// When the dedicated server is "paused", this event is not invoked.
 	public static final Event<StartLevelTick> START_LEVEL_TICK = EventFactory.createArrayBacked(StartLevelTick.class, callbacks -> level -> {
 		for (StartLevelTick callback : callbacks) {
 			callback.onStartTick(level);
 		}
 	});
 
-	/**
-	 * Called at the end of a ServerLevel's tick.
-	 *
-	 * <p>End of level tick may be used to start async computations for the next tick.
-	 *
-	 * <p>When the dedicated server is "paused", this event is not invoked.
-	 */
+	/// Called at the end of a ServerLevel's tick.
+	///
+	/// End of level tick may be used to start async computations for the next tick.
+	///
+	/// When the dedicated server is "paused", this event is not invoked.
 	public static final Event<EndLevelTick> END_LEVEL_TICK = EventFactory.createArrayBacked(EndLevelTick.class, callbacks -> level -> {
 		for (EndLevelTick callback : callbacks) {
 			callback.onEndTick(level);

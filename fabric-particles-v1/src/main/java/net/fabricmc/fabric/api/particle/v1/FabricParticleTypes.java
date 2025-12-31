@@ -26,59 +26,49 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
-/**
- * Methods for creating particle types, both simple and using an existing attribute factory.
- *
- * <p>Usage:
- * <blockquote>
- * <pre>
- * public static final SimpleParticleType SIMPLE_TEST_PARTICLE = FabricParticleTypes.simple();
- * public static final SimpleParticleType CUSTOM_TEST_PARTICLE = FabricParticleTypes.simple();
- *
- * {@literal @}Override
- * public void onInitialize() {
- *     Registry.register(Registries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("modid", "simple"), SIMPLE_TEST_PARTICLE);
- *     Registry.register(Registries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("modid", "custom"), CUSTOM_TEST_PARTICLE);
- * }}
- * </pre>
- * </blockquote>
- */
+/// Methods for creating particle types, both simple and using an existing attribute factory.
+///
+/// Usage:
+/// <blockquote>
+/// <pre>
+/// public static final SimpleParticleType SIMPLE_TEST_PARTICLE = FabricParticleTypes.simple();
+/// public static final SimpleParticleType CUSTOM_TEST_PARTICLE = FabricParticleTypes.simple();
+///
+/// {@literal @}Override
+/// public void onInitialize() {
+///     Registry.register(Registries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("modid", "simple"), SIMPLE_TEST_PARTICLE);
+///     Registry.register(Registries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("modid", "custom"), CUSTOM_TEST_PARTICLE);
+/// }}
+/// </pre>
+/// </blockquote>
 public final class FabricParticleTypes {
 	private FabricParticleTypes() { }
 
-	/**
-	 * Creates a new, default particle type for the given id.
-	 */
+	/// Creates a new, default particle type for the given id.
 	public static SimpleParticleType simple() {
 		return simple(false);
 	}
 
-	/**
-	 * Creates a new, default particle type for the given id.
-	 *
-	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
-	 */
+	/// Creates a new, default particle type for the given id.
+	///
+	/// @param alwaysSpawn True to always spawn the particle regardless of distance.
 	public static SimpleParticleType simple(boolean alwaysSpawn) {
 		return new SimpleParticleType(alwaysSpawn) { };
 	}
 
-	/**
-	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
-	 *
-	 * @param codec The codec for serialization.
-	 * @param streamCodec The stream codec for network serialization.
-	 */
+	/// Creates a new particle type with a custom factory and codecs for packet/data serialization.
+	///
+	/// @param codec The codec for serialization.
+	/// @param streamCodec The stream codec for network serialization.
 	public static <T extends ParticleOptions> ParticleType<T> complex(final MapCodec<T> codec, final StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
 		return complex(false, codec, streamCodec);
 	}
 
-	/**
-	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
-	 *
-	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
-	 * @param codec The codec for serialization.
-	 * @param streamCodec The stream codec for network serialization.
-	 */
+	/// Creates a new particle type with a custom factory and codecs for packet/data serialization.
+	///
+	/// @param alwaysSpawn True to always spawn the particle regardless of distance.
+	/// @param codec The codec for serialization.
+	/// @param streamCodec The stream codec for network serialization.
 	public static <T extends ParticleOptions> ParticleType<T> complex(boolean alwaysSpawn, final MapCodec<T> codec, final StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
 		return new ParticleType<>(alwaysSpawn) {
 			@Override
@@ -93,25 +83,21 @@ public final class FabricParticleTypes {
 		};
 	}
 
-	/**
-	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
-	 * This method is useful when two different {@link ParticleType}s share the same {@link ParticleOptions} implementation.
-	 *
-	 * @param codecGetter A function that, given the newly created type, returns the codec for serialization.
-	 * @param streamCodecGetter A function that, given the newly created type, returns the stream codec for network serialization.
-	 */
+	/// Creates a new particle type with a custom factory and codecs for packet/data serialization.
+	/// This method is useful when two different [ParticleType]s share the same [ParticleOptions] implementation.
+	///
+	/// @param codecGetter A function that, given the newly created type, returns the codec for serialization.
+	/// @param streamCodecGetter A function that, given the newly created type, returns the stream codec for network serialization.
 	public static <T extends ParticleOptions> ParticleType<T> complex(final Function<ParticleType<T>, MapCodec<T>> codecGetter, final Function<ParticleType<T>, StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodecGetter) {
 		return complex(false, codecGetter, streamCodecGetter);
 	}
 
-	/**
-	 * Creates a new particle type with a custom factory and codecs for packet/data serialization.
-	 * This method is useful when two different {@link ParticleType}s share the same {@link ParticleOptions} implementation.
-	 *
-	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
-	 * @param codecGetter A function that, given the newly created type, returns the codec for serialization.
-	 * @param streamCodecGetter A function that, given the newly created type, returns the stream codec for network serialization.
-	 */
+	/// Creates a new particle type with a custom factory and codecs for packet/data serialization.
+	/// This method is useful when two different [ParticleType]s share the same [ParticleOptions] implementation.
+	///
+	/// @param alwaysSpawn True to always spawn the particle regardless of distance.
+	/// @param codecGetter A function that, given the newly created type, returns the codec for serialization.
+	/// @param streamCodecGetter A function that, given the newly created type, returns the stream codec for network serialization.
 	public static <T extends ParticleOptions> ParticleType<T> complex(boolean alwaysSpawn, final Function<ParticleType<T>, MapCodec<T>> codecGetter, final Function<ParticleType<T>, StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodecGetter) {
 		return new ParticleType<>(alwaysSpawn) {
 			@Override

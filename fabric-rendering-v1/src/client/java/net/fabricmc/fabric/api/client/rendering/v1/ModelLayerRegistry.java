@@ -25,16 +25,12 @@ import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.fabricmc.fabric.impl.client.rendering.ModelLayerImpl;
 import net.fabricmc.fabric.mixin.client.rendering.ModelLayersAccessor;
 
-/**
- * A helpers for registering model layers and providers for the layer's definition.
- */
+/// A helpers for registering model layers and providers for the layer's definition.
 public final class ModelLayerRegistry {
-	/**
-	 * Registers a model layer and registers a provider for a {@linkplain LayerDefinition}.
-	 *
-	 * @param modelLayer the model layer location
-	 * @param provider the provider for the layer definition
-	 */
+	/// Registers a model layer and registers a provider for a {@linkplain LayerDefinition}.
+	///
+	/// @param modelLayer the model layer location
+	/// @param provider the provider for the layer definition
 	public static void registerModelLayer(ModelLayerLocation modelLayer, TexturedLayerDefinitionProvider provider) {
 		Objects.requireNonNull(modelLayer, "ModelLayerLocation cannot be null");
 		Objects.requireNonNull(provider, "TexturedLayerDefinitionProvider cannot be null");
@@ -46,11 +42,9 @@ public final class ModelLayerRegistry {
 		ModelLayersAccessor.getLayers().add(modelLayer);
 	}
 
-	/**
-	 * Registers armor model layers and registers a provider for a {@link ArmorModelSet} of type {@link LayerDefinition}.
-	 * @param armorModelSet the armor model set of type {@link ModelLayerLocation}
-	 * @param provider the provider for the textured armor model set
-	 */
+	/// Registers armor model layers and registers a provider for a [ArmorModelSet] of type [LayerDefinition].
+	/// @param armorModelSet the armor model set of type [ModelLayerLocation]
+	/// @param provider the provider for the textured armor model set
 	public static void registerArmorModelLayers(ArmorModelSet<ModelLayerLocation> armorModelSet, TexturedArmorModelSetProvider provider) {
 		Objects.requireNonNull(armorModelSet, "ArmorModelSet cannot be null");
 		Objects.requireNonNull(provider, "TexturedArmorModelSetProvider cannot be null");
@@ -69,21 +63,17 @@ public final class ModelLayerRegistry {
 
 	@FunctionalInterface
 	public interface TexturedLayerDefinitionProvider {
-		/**
-		 * Creates the textured layer definition for use in a {@link ModelLayerLocation}.
-		 *
-		 * @return the textured layer definition for the model layer location.
-		 */
+		/// Creates the textured layer definition for use in a [ModelLayerLocation].
+		///
+		/// @return the textured layer definition for the model layer location.
 		LayerDefinition createLayerDefinition();
 	}
 
 	@FunctionalInterface
 	public interface TexturedArmorModelSetProvider {
-		/**
-		 * Creates the textured layer definition for use in a {@link ArmorModelSet} of type {@link LayerDefinition}.
-		 *
-		 * @return the textured layer definition for the model layer.
-		 */
+		/// Creates the textured layer definition for use in a [ArmorModelSet] of type [LayerDefinition].
+		///
+		/// @return the textured layer definition for the model layer.
 		ArmorModelSet<LayerDefinition> createArmorModelSet();
 	}
 }

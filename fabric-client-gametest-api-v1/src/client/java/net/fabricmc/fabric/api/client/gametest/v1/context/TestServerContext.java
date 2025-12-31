@@ -22,38 +22,30 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.server.MinecraftServer;
 
-/**
- * Context for a client gametest containing various helpful functions while a server (integrated or dedicated) is
- * running.
- *
- * <p>Functions in this class can only be called on the client gametest thread.
- */
+/// Context for a client gametest containing various helpful functions while a server (integrated or dedicated) is
+/// running.
+///
+/// Functions in this class can only be called on the client gametest thread.
 @ApiStatus.NonExtendable
 public interface TestServerContext {
-	/**
-	 * Runs a command on the server.
-	 *
-	 * @param command The command to run
-	 */
+	/// Runs a command on the server.
+	///
+	/// @param command The command to run
 	void runCommand(String command);
 
-	/**
-	 * Runs the given action on the server thread, and waits for it to complete.
-	 *
-	 * @param action The action to run on the server thread
-	 * @param <E> The type of the checked exception that the action throws
-	 * @throws E When the action throws an exception
-	 */
+	/// Runs the given action on the server thread, and waits for it to complete.
+	///
+	/// @param action The action to run on the server thread
+	/// @param <E> The type of the checked exception that the action throws
+	/// @throws E When the action throws an exception
 	<E extends Throwable> void runOnServer(FailableConsumer<MinecraftServer, E> action) throws E;
 
-	/**
-	 * Runs the given function on the server thread, and returns the result.
-	 *
-	 * @param function The function to run on the server thread
-	 * @return The result of the function
-	 * @param <T> The type of the value to return
-	 * @param <E> The type of the checked exception that the function throws
-	 * @throws E When the function throws an exception
-	 */
+	/// Runs the given function on the server thread, and returns the result.
+	///
+	/// @param function The function to run on the server thread
+	/// @return The result of the function
+	/// @param <T> The type of the value to return
+	/// @param <E> The type of the checked exception that the function throws
+	/// @throws E When the function throws an exception
 	<T, E extends Throwable> T computeOnServer(FailableFunction<MinecraftServer, T, E> function) throws E;
 }

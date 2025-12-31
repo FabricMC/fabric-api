@@ -21,9 +21,7 @@ import java.util.function.Predicate;
 import net.minecraft.world.item.ItemStack;
 
 public final class ItemUtils {
-	/**
-	 * Move at most maxCount items, and return the number of items moved.
-	 */
+	/// Move at most maxCount items, and return the number of items moved.
 	public static int move(ItemExtractable from, ItemInsertable to, int maxCount) {
 		Predicate<ItemStack> insertionFilter = stack -> {
 			if (stack.isEmpty()) return false;

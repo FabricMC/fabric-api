@@ -165,11 +165,9 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 		return new LinkedHashSet<>(this.addedReloaders.entrySet());
 	}
 
-	/**
-	 * Sorts the given resource reloaders to satisfy dependencies.
-	 *
-	 * @param reloaders the resource reloaders to sort
-	 */
+	/// Sorts the given resource reloaders to satisfy dependencies.
+	///
+	/// @param reloaders the resource reloaders to sort
 	private void sort(List<PreparableReloadListener> reloaders) {
 		// Locate and extract the setup marker.
 		SetupMarkerResourceReloader setupReloader = this.extractSetupMarker(reloaders);
@@ -293,18 +291,16 @@ public sealed class ResourceLoaderImpl implements ResourceLoader permits DataRes
 	private record ReloaderOrder(Identifier first, Identifier second) {
 	}
 
-	/**
-	 * Registers a built-in resource pack. Internal implementation.
-	 *
-	 * @param id             the identifier of the resource pack
-	 * @param subPath        the sub path in the mod resources
-	 * @param container      the mod container
-	 * @param displayName    the display name of the resource pack
-	 * @param activationType the activation type of the resource pack
-	 * @return {@code true} if successfully registered the resource pack, or {@code false} otherwise
-	 * @see ResourceLoader#registerBuiltinPack(Identifier, ModContainer, Component, PackActivationType)
-	 * @see ResourceLoader#registerBuiltinPack(Identifier, ModContainer, PackActivationType)
-	 */
+	/// Registers a built-in resource pack. Internal implementation.
+	///
+	/// @param id             the identifier of the resource pack
+	/// @param subPath        the sub path in the mod resources
+	/// @param container      the mod container
+	/// @param displayName    the display name of the resource pack
+	/// @param activationType the activation type of the resource pack
+	/// @return `true` if successfully registered the resource pack, or `false` otherwise
+	/// @see ResourceLoader#registerBuiltinPack(Identifier, ModContainer, Component, PackActivationType)
+	/// @see ResourceLoader#registerBuiltinPack(Identifier, ModContainer, PackActivationType)
 	public static boolean registerBuiltinPack(Identifier id, String subPath, ModContainer container, Component displayName, PackActivationType activationType) {
 		// Assuming the mod has multiple paths, we simply "hope" that the file separator is *not* different across them
 		List<Path> paths = container.getRootPaths();

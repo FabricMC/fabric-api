@@ -31,18 +31,15 @@ import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerCommonPacketListenerImplAccessor;
 import net.fabricmc.fabric.mixin.recipe.ingredient.PacketEncoderMixin;
 
-/**
- * To reasonably support server-side only custom ingredients, we only send custom ingredients to clients that support them.
- * If a specific client doesn't support a custom ingredient, we send the matching stacks as a regular ingredient.
- * This is fine since all recipe computation happens server-side anyway.
- *
- * <ul>
- *     <li>Each client sends a packet with the set of custom ingredients it supports.</li>
- *     <li>We store that set inside the {@link PacketEncoder} using {@link PacketEncoderMixin}.</li>
- *     <li>When serializing a custom ingredient, we get access to the current {@link PacketEncoder},
- *     and based on that we decide whether to send the custom ingredient, or a vanilla ingredient with the matching stacks.</li>
- * </ul>
- */
+/// To reasonably support server-side only custom ingredients, we only send custom ingredients to clients that support them.
+/// If a specific client doesn't support a custom ingredient, we send the matching stacks as a regular ingredient.
+/// This is fine since all recipe computation happens server-side anyway.
+///
+///   - Each client sends a packet with the set of custom ingredients it supports.
+///   - We store that set inside the [PacketEncoder] using [PacketEncoderMixin].
+///   - When serializing a custom ingredient, we get access to the current [PacketEncoder],
+///     and based on that we decide whether to send the custom ingredient, or a vanilla ingredient with the matching stacks.
+///
 public class CustomIngredientSync implements ModInitializer {
 	public static final Identifier PACKET_ID = Identifier.fromNamespaceAndPath("fabric", "custom_ingredient_sync");
 	public static final int PROTOCOL_VERSION_1 = 1;

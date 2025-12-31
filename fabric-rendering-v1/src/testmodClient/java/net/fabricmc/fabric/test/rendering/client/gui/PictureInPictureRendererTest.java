@@ -43,9 +43,7 @@ import net.fabricmc.fabric.impl.client.rendering.PictureInPictureRendererRegistr
 import net.fabricmc.fabric.test.rendering.client.mixin.GameRendererAccessor;
 import net.fabricmc.fabric.test.rendering.client.mixin.GuiRendererAccessor;
 
-/**
- * This test mod renders two banners and two signs in the top left corner.
- */
+/// This test mod renders two banners and two signs in the top left corner.
 public class PictureInPictureRendererTest implements ClientModInitializer, FabricClientGameTest {
 	@Override
 	public void onInitializeClient() {

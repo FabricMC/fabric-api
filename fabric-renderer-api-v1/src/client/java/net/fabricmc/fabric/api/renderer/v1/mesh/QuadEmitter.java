@@ -30,15 +30,13 @@ import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.util.TriState;
 
-/**
- * Specialized {@link MutableQuadView} that supports transformers and
- * sends quads to some destination, such as a mesh builder or rendering.
- *
- * <p>Instances of {@link QuadEmitter} will practically always be
- * thread local and/or reused - do not retain references.
- *
- * <p>Only the renderer should implement or extend this interface.
- */
+/// Specialized [MutableQuadView] that supports transformers and
+/// sends quads to some destination, such as a mesh builder or rendering.
+///
+/// Instances of [QuadEmitter] will practically always be
+/// thread local and/or reused - do not retain references.
+///
+/// Only the renderer should implement or extend this interface.
 public interface QuadEmitter extends MutableQuadView {
 	@Override
 	QuadEmitter pos(int vertexIndex, float x, float y, float z);
@@ -156,22 +154,18 @@ public interface QuadEmitter extends MutableQuadView {
 	@Override
 	QuadEmitter fromBakedQuad(BakedQuad quad);
 
-	/**
-	 * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}
-	 * is effectively zero - meaning the face is a cull face.
-	 */
+	/// Tolerance for determining if the depth parameter to [#square(Direction, float, float, float, float, float)]
+	/// is effectively zero - meaning the face is a cull face.
 	float CULL_FACE_EPSILON = 0.00001f;
 
-	/**
-	 * Helper method to assign vertex coordinates for a square aligned with the given face.
-	 * Ensures that vertex order is consistent with vanilla convention. (Incorrect order can
-	 * lead to bad AO lighting unless enhanced lighting logic is available/enabled.)
-	 *
-	 * <p>Square will be parallel to the given face and coplanar with the face (and culled if the
-	 * face is occluded) if the depth parameter is approximately zero. See {@link #CULL_FACE_EPSILON}.
-	 *
-	 * <p>All coordinates should be normalized (0-1).
-	 */
+	/// Helper method to assign vertex coordinates for a square aligned with the given face.
+	/// Ensures that vertex order is consistent with vanilla convention. (Incorrect order can
+	/// lead to bad AO lighting unless enhanced lighting logic is available/enabled.)
+	///
+	/// Square will be parallel to the given face and coplanar with the face (and culled if the
+	/// face is occluded) if the depth parameter is approximately zero. See [#CULL_FACE_EPSILON].
+	///
+	/// All coordinates should be normalized (0-1).
 	default QuadEmitter square(Direction nominalFace, float left, float bottom, float right, float top, float depth) {
 		if (Math.abs(depth) < CULL_FACE_EPSILON) {
 			cullFace(nominalFace);
@@ -222,29 +216,23 @@ public interface QuadEmitter extends MutableQuadView {
 		return this;
 	}
 
-	/**
-	 * Pushed transforms will be applied immediately after every call to {@link #emit()} and before the quad data is
-	 * delivered to its destination. If any transform returns {@code false}, the emitted quad will be discarded and will
-	 * not be delivered to its destination.
-	 *
-	 * <p>You MUST call {@link #popTransform()} once you are done using this emitter in the current scope.
-	 *
-	 * <p>More than one transformer can be pushed. Transformers are applied in reverse order. (Last pushed is applied
-	 * first.)
-	 *
-	 * <p>Using {@code this} emitter from inside the pushed quad transform is not supported.
-	 */
+	/// Pushed transforms will be applied immediately after every call to [#emit()] and before the quad data is
+	/// delivered to its destination. If any transform returns `false`, the emitted quad will be discarded and will
+	/// not be delivered to its destination.
+	///
+	/// You MUST call [#popTransform()] once you are done using this emitter in the current scope.
+	///
+	/// More than one transformer can be pushed. Transformers are applied in reverse order. (Last pushed is applied
+	/// first.)
+	///
+	/// Using `this` emitter from inside the pushed quad transform is not supported.
 	void pushTransform(QuadTransform transform);
 
-	/**
-	 * Removes the transformer added by the last call to {@link #pushTransform(QuadTransform)}. MUST be called once you
-	 * are done using this emitter in the current scope.
-	 */
+	/// Removes the transformer added by the last call to [#pushTransform(QuadTransform)]. MUST be called once you
+	/// are done using this emitter in the current scope.
 	void popTransform();
 
-	/**
-	 * In static mesh building, causes quad to be appended to the mesh being built. In a dynamic render context, create
-	 * a new quad to be output to rendering. In both cases, current instance is reset to default values.
-	 */
+	/// In static mesh building, causes quad to be appended to the mesh being built. In a dynamic render context, create
+	/// a new quad to be output to rendering. In both cases, current instance is reset to default values.
 	QuadEmitter emit();
 }

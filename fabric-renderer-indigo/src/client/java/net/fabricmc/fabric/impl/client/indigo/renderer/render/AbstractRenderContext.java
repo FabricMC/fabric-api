@@ -52,7 +52,7 @@ public abstract class AbstractRenderContext {
 
 	protected abstract void bufferQuad(MutableQuadViewImpl quad);
 
-	/** final output step, common to all renders. */
+	/// final output step, common to all renders.
 	protected void bufferQuad(MutableQuadViewImpl quad, VertexConsumer vertexConsumer) {
 		final Vector4f posVec = this.posVec;
 		final Vector3f normalVec = this.normalVec;

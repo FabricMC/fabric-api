@@ -37,20 +37,16 @@ import net.minecraft.core.Direction;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadTransform;
 import net.fabricmc.fabric.api.renderer.v1.sprite.SpriteFinderGetter;
 
-/**
- * Utilities to make it easier to work with {@link ModelState}.
- */
+/// Utilities to make it easier to work with [ModelState].
 public final class ModelStateHelper {
 	private static final Direction[] DIRECTIONS = Direction.values();
 
 	private ModelStateHelper() {
 	}
 
-	/**
-	 * Creates a new {@link ModelState} using the given transformation and enables UV lock if specified. Works
-	 * exactly like {@link BlockModelRotation}, but allows an arbitrary transformation. Instances should be retained and
-	 * reused, especially if UV lock is enabled, to avoid redoing costly computations.
-	 */
+	/// Creates a new [ModelState] using the given transformation and enables UV lock if specified. Works
+	/// exactly like [BlockModelRotation], but allows an arbitrary transformation. Instances should be retained and
+	/// reused, especially if UV lock is enabled, to avoid redoing costly computations.
 	public static ModelState of(Transformation transformation, boolean uvLock) {
 		Matrix4fc matrix = transformation.getMatrix();
 
@@ -94,13 +90,11 @@ public final class ModelStateHelper {
 		};
 	}
 
-	/**
-	 * Creates a new {@link ModelState} that is the product of the two given states. States are represented
-	 * by matrices, so this method follows the rules of matrix multiplication, namely that applying the resulting
-	 * state is (mostly) equivalent to applying the right state and then the left state. The only exception
-	 * during standard application is cull face transformation, as the result must be clamped. Thus, applying a single
-	 * premultiplied transformation generally yields better results than multiple applications.
-	 */
+	/// Creates a new [ModelState] that is the product of the two given states. States are represented
+	/// by matrices, so this method follows the rules of matrix multiplication, namely that applying the resulting
+	/// state is (mostly) equivalent to applying the right state and then the left state. The only exception
+	/// during standard application is cull face transformation, as the result must be clamped. Thus, applying a single
+	/// premultiplied transformation generally yields better results than multiple applications.
 	public static ModelState multiply(ModelState left, ModelState right) {
 		// Assumes face transformations are identity if main transformation is identity
 		if (MatrixUtil.isIdentity(left.transformation().getMatrix())) {
@@ -172,13 +166,11 @@ public final class ModelStateHelper {
 		};
 	}
 
-	/**
-	 * Creates a new {@link QuadTransform} that applies the given transformation. The sprite finder is used to look up
-	 * the current sprite to correctly apply UV lock, if present in the transformation.
-	 *
-	 * <p>This method is most useful when creating custom implementations of {@link UnbakedGeometry}, which receive a
-	 * {@link ModelState}.
-	 */
+	/// Creates a new [QuadTransform] that applies the given transformation. The sprite finder is used to look up
+	/// the current sprite to correctly apply UV lock, if present in the transformation.
+	///
+	/// This method is most useful when creating custom implementations of [UnbakedGeometry], which receive a
+	/// [ModelState].
 	public static QuadTransform asQuadTransform(ModelState state, SpriteFinderGetter spriteFinderGetter) {
 		Matrix4fc matrix = state.transformation().getMatrix();
 

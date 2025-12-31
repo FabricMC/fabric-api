@@ -25,23 +25,17 @@ import net.minecraft.world.level.block.entity.FuelValues;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Contains events to aid in modifying fuels.
- */
+/// Contains events to aid in modifying fuels.
 @ApiStatus.NonExtendable
 public interface FuelValueEvents {
-	/**
-	 * An event that is called when the fuel values are being built after vanilla fuels have been added and before exclusions have been applied.
-	 */
+	/// An event that is called when the fuel values are being built after vanilla fuels have been added and before exclusions have been applied.
 	Event<FuelValueEvents.BuildCallback> BUILD = EventFactory.createArrayBacked(FuelValueEvents.BuildCallback.class, listeners -> (builder, context) -> {
 		for (FuelValueEvents.BuildCallback listener : listeners) {
 			listener.build(builder, context);
 		}
 	});
 
-	/**
-	 * An event that is called when the fuel values are being built after vanilla exclusions have been applied.
-	 */
+	/// An event that is called when the fuel values are being built after vanilla exclusions have been applied.
 	Event<FuelValueEvents.ExclusionsCallback> EXCLUSIONS = EventFactory.createArrayBacked(FuelValueEvents.ExclusionsCallback.class, listeners -> (builder, context) -> {
 		for (FuelValueEvents.ExclusionsCallback listener : listeners) {
 			listener.buildExclusions(builder, context);
@@ -50,50 +44,36 @@ public interface FuelValueEvents {
 
 	@ApiStatus.NonExtendable
 	interface Context {
-		/**
-		 * Get the base smelt time for the fuel, for furnaces this defaults to 200.
-		 * @return the base smelt time
-		 */
+		/// Get the base smelt time for the fuel, for furnaces this defaults to 200.
+		/// @return the base smelt time
 		int baseSmeltTime();
 
-		/**
-		 * Get the {@link HolderLookup.Provider} for all registries.
-		 * @return the registry lookup
-		 */
+		/// Get the [HolderLookup.Provider] for all registries.
+		/// @return the registry lookup
 		HolderLookup.Provider registries();
 
-		/**
-		 * Get the currently enabled feature set.
-		 * @return the {@link FeatureFlagSet} instance
-		 */
+		/// Get the currently enabled feature set.
+		/// @return the [FeatureFlagSet] instance
 		FeatureFlagSet enabledFeatures();
 	}
 
-	/**
-	 * Use this event to register custom fuels.
-	 */
+	/// Use this event to register custom fuels.
 	@FunctionalInterface
 	interface BuildCallback {
-		/**
-		 * Called when the fuel values are being built after vanilla fuels have been added and before exclusions have been applied.
-		 *
-		 * @param builder the builder being used to construct a {@link FuelValues} instance
-		 * @param context the context for the event
-		 */
+		/// Called when the fuel values are being built after vanilla fuels have been added and before exclusions have been applied.
+		///
+		/// @param builder the builder being used to construct a [FuelValues] instance
+		/// @param context the context for the event
 		void build(FuelValues.Builder builder, Context context);
 	}
 
-	/**
-	 * Use this event to register custom fuels.
-	 */
+	/// Use this event to register custom fuels.
 	@FunctionalInterface
 	interface ExclusionsCallback {
-		/**
-		 * Called when the fuel values are being built after vanilla exclusions have been applied.
-		 *
-		 * @param builder the builder being used to construct a {@link FuelValues} instance
-		 * @param context the context for the event
-		 */
+		/// Called when the fuel values are being built after vanilla exclusions have been applied.
+		///
+		/// @param builder the builder being used to construct a [FuelValues] instance
+		/// @param context the context for the event
 		void buildExclusions(FuelValues.Builder builder, Context context);
 	}
 }

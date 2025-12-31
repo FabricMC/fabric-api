@@ -25,56 +25,38 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.mixin.command.EntitySelectorOptionsAccessor;
 
-/**
- * Contains a function to register an entity selector option.
- */
+/// Contains a function to register an entity selector option.
 public final class EntitySelectorOptionRegistry {
 	private EntitySelectorOptionRegistry() {
 	}
 
-	/**
-	 * Registers an entity selector option. The added option is available under the underscore
-	 * separated ID.
-	 *
-	 * <p>Here's an example of a custom entity selector option. The option is registered under
-	 * {@code example_min_health} and can be used like {@code @e[example_min_health=5]}.
-	 * <pre>{@code
-	 * EntitySelectorOptionRegistry.register(
-	 * 	Identifier.fromNamespaceAndPath("modid", "min_health"),
-	 * 	Component.literal("Minimum entity health"),
-	 * 	(parser) -> {
-	 * 	    final float minHealth = parser.getReader().readFloat();
-	 *
-	 * 	    if (minHealth > 0) {
-	 * 	        parser.addPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);
-	 * 	    }
-	 * 	},
-	 * 	(parser) -> true
-	 * );
-	 * }</pre>
-	 *
-	 * <p>By default, a selector option can be used multiple times. To make a non-repeatable
-	 * option, either use {@link FabricEntitySelectorParser} to flag the existence of an option
-	 * and check it inside {@code canUse}, or use {@link #registerNonRepeatable} instead of this
-	 * method.
-	 *
-	 * @param id the ID of the option
-	 * @param description the description of the option
-	 * @param modifier the modifier for the entity option that reads and sets the predicate
-	 * @param canUse the predicate that checks whether the option is syntactically valid
-	 */
+	/// Registers an entity selector option. The added option is available under the underscore
+	/// separated ID.
+	///
+	/// Here's an example of a custom entity selector option. The option is registered under
+	/// `example_min_health` and can be used like `@e[example_min_health=5]`.
+	/// <pre>
+	/// `EntitySelectorOptionRegistry.register(Identifier.fromNamespaceAndPath("modid", "min_health"),Component.literal("Minimum entity health"),(parser) ->{final float minHealth = parser.getReader().readFloat();if (minHealth > 0){parser.addPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);}},(parser) -> true);`</pre>
+	///
+	/// By default, a selector option can be used multiple times. To make a non-repeatable
+	/// option, either use [FabricEntitySelectorParser] to flag the existence of an option
+	/// and check it inside `canUse`, or use [#registerNonRepeatable] instead of this
+	/// method.
+	///
+	/// @param id the ID of the option
+	/// @param description the description of the option
+	/// @param modifier the modifier for the entity option that reads and sets the predicate
+	/// @param canUse the predicate that checks whether the option is syntactically valid
 	public static void register(Identifier id, Component description, EntitySelectorOptions.Modifier modifier, Predicate<EntitySelectorParser> canUse) {
 		EntitySelectorOptionsAccessor.callPutOption(id.toDebugFileName(), modifier, canUse, description);
 	}
 
-	/**
-	 * Registers an entity selector option. The added option is available under the underscore
-	 * separated ID. The added option cannot be used multiple times within a single selector.
-	 *
-	 * @param id the ID of the option
-	 * @param description the description of the option
-	 * @param modifier the modifier for the entity option that reads and sets the predicate
-	 */
+	/// Registers an entity selector option. The added option is available under the underscore
+	/// separated ID. The added option cannot be used multiple times within a single selector.
+	///
+	/// @param id the ID of the option
+	/// @param description the description of the option
+	/// @param modifier the modifier for the entity option that reads and sets the predicate
 	public static void registerNonRepeatable(Identifier id, Component description, EntitySelectorOptions.Modifier modifier) {
 		register(id, description, (parser) -> {
 			modifier.handle(parser);

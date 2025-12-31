@@ -22,11 +22,9 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.recipe.v1.sync.SynchronizedRecipes;
 
-/**
- * This event gets invoked when client receives all synchronized recipes.
- * It will only be invoked if the server client is currently connected supports
- * Fabric's Recipe Sync packets.
- */
+/// This event gets invoked when client receives all synchronized recipes.
+/// It will only be invoked if the server client is currently connected supports
+/// Fabric's Recipe Sync packets.
 public interface ClientRecipeSynchronizedEvent {
 	Event<ClientRecipeSynchronizedEvent> EVENT = EventFactory.createArrayBacked(ClientRecipeSynchronizedEvent.class,
 			callbacks -> ((client, recipes) -> {

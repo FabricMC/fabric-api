@@ -76,9 +76,7 @@ public class BiomeModificationImpl {
 		modifiersUnsorted = true;
 	}
 
-	/**
-	 * This is currently not publicly exposed but likely useful for modpack support mods.
-	 */
+	/// This is currently not publicly exposed but likely useful for modpack support mods.
 	void changeOrder(Identifier id, int order) {
 		modifiersUnsorted = true;
 

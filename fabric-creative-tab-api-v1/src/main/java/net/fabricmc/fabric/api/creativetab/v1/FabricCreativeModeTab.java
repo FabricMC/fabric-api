@@ -22,41 +22,23 @@ import net.minecraft.world.item.CreativeModeTab;
 
 import net.fabricmc.fabric.impl.creativetab.FabricCreativeModeTabBuilderImpl;
 
-/**
- * Contains a method to create a creative mode tab builder.
- */
+/// Contains a method to create a creative mode tab builder.
 public final class FabricCreativeModeTab {
 	private FabricCreativeModeTab() {
 	}
 
-	/**
-	 * Creates a new builder for {@link CreativeModeTab}. Creative Mode Tab are used to group items in the creative
-	 * inventory.
-	 *
-	 * <p>You must register the newly created {@link CreativeModeTab} to the {@link BuiltInRegistries#CREATIVE_MODE_TAB} registry.
-	 *
-	 * <p>You must also set a display name by calling {@link CreativeModeTab.Builder#title(Component)}
-	 *
-	 * <p>Example:
-	 *
-	 * <pre>{@code
-	 * private static final ResourceKey<CreativeModeTab> CREATIVE_MODE_TAB = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath("modid", "custom_group"));
-	 *
-	 * @Override
-	 * public void onInitialize() {
-	 *    Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_MODE_TAB, FabricCreativeModeTab.builder()
-	 *       .title(Component.translatable("modid.test_group"))
-	 *       .icon(() -> new ItemStack(Items.DIAMOND))
-	 *       .displayItems((context, output) -> {
-	 *          output.accept(TEST_ITEM);
-	 *       })
-	 *       .build()
-	 *    );
-	 * }
-	 * }</pre>
-	 *
-	 * @return a new {@link CreativeModeTab.Builder} instance
-	 */
+	/// Creates a new builder for [CreativeModeTab]. Creative Mode Tab are used to group items in the creative
+	/// inventory.
+	///
+	/// You must register the newly created [CreativeModeTab] to the [BuiltInRegistries#CREATIVE_MODE_TAB] registry.
+	///
+	/// You must also set a display name by calling [CreativeModeTab.Builder#title(Component)]
+	///
+	/// Example:
+	/// <pre>
+	/// `private static final ResourceKey<CreativeModeTab> CREATIVE_MODE_TAB = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath("modid", "custom_group"));void onInitialize(){Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CREATIVE_MODE_TAB, FabricCreativeModeTab.builder().title(Component.translatable("modid.test_group")).icon(() -> new ItemStack(Items.DIAMOND)).displayItems((context, output) ->{output.accept(TEST_ITEM);}).build());}`</pre>
+	///
+	/// @return a new [CreativeModeTab.Builder] instance
 	public static CreativeModeTab.Builder builder() {
 		return new FabricCreativeModeTabBuilderImpl();
 	}

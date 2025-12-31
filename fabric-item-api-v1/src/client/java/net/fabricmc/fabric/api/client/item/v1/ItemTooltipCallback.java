@@ -27,20 +27,16 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public interface ItemTooltipCallback {
-	/**
-	 * Fired after the game has appended all base tooltip lines to the list.
-	 */
+	/// Fired after the game has appended all base tooltip lines to the list.
 	Event<ItemTooltipCallback> EVENT = EventFactory.createArrayBacked(ItemTooltipCallback.class, callbacks -> (stack, context, type, lines) -> {
 		for (ItemTooltipCallback callback : callbacks) {
 			callback.getTooltip(stack, context, type, lines);
 		}
 	});
 
-	/**
-	 * Called when an item stack's tooltip is rendered. Text added to {@code lines} will be
-	 * rendered with the tooltip.
-	 *
-	 * @param lines the list containing the lines of text displayed on the stack's tooltip
-	 */
+	/// Called when an item stack's tooltip is rendered. Text added to `lines` will be
+	/// rendered with the tooltip.
+	///
+	/// @param lines the list containing the lines of text displayed on the stack's tooltip
 	void getTooltip(ItemStack stack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> lines);
 }

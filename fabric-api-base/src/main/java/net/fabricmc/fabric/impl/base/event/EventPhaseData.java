@@ -23,9 +23,7 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
 
-/**
- * Data of an {@link ArrayBackedEvent} phase.
- */
+/// Data of an [ArrayBackedEvent] phase.
 class EventPhaseData<T> extends SortableNode<EventPhaseData<T>> {
 	final Identifier id;
 	T[] listeners;

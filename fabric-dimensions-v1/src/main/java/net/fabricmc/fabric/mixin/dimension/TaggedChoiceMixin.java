@@ -38,9 +38,7 @@ public class TaggedChoiceMixin implements TaggedChoiceExtension {
 		failSoft = cond;
 	}
 
-	/**
-	 * Pass the failSoft information into TaggedChoice.TaggedChoiceType.
-	 */
+	/// Pass the failSoft information into TaggedChoice.TaggedChoiceType.
 	@SuppressWarnings("rawtypes")
 	@Inject(
 			method = "lambda$apply$0", at = @At("RETURN")

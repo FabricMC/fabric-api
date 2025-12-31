@@ -24,54 +24,44 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.creativetab.CreativeModeTabEventsImpl;
 
-/**
- * Holds events related to {@link CreativeModeTabs}.
- */
+/// Holds events related to [CreativeModeTabs].
 public final class CreativeModeTabEvents {
 	private CreativeModeTabEvents() {
 	}
 
-	/**
-	 * This event allows the output of any creative mode tab to be modified.
-	 * <p/>
-	 * Use {@link #modifyOutputEvent(ResourceKey)} to get the event for a specific creative mode tab.
-	 * <p/>
-	 * This event is invoked after those two more specific events.
-	 */
+	/// This event allows the output of any creative mode tab to be modified.
+	///
+	/// Use [#modifyOutputEvent(ResourceKey)] to get the event for a specific creative mode tab.
+	///
+	/// This event is invoked after those two more specific events.
 	public static final Event<ModifyOutputAll> MODIFY_OUTPUT_ALL = EventFactory.createArrayBacked(ModifyOutputAll.class, callbacks -> (tab, output) -> {
 		for (ModifyOutputAll callback : callbacks) {
 			callback.modifyOutput(tab, output);
 		}
 	});
 
-	/**
-	 * Returns the modify output event for a specific creative mode tab. This uses the tab's ID and
-	 * is suitable for modifying a modded creative mode tab that might not exist.
-	 * @param resourceKey the {@link ResourceKey} of the creative mode tab to modify
-	 * @return the event
-	 */
+	/// Returns the modify output event for a specific creative mode tab. This uses the tab's ID and
+	/// is suitable for modifying a modded creative mode tab that might not exist.
+	/// @param resourceKey the [ResourceKey] of the creative mode tab to modify
+	/// @return the event
 	public static Event<ModifyOutput> modifyOutputEvent(ResourceKey<CreativeModeTab> resourceKey) {
 		return CreativeModeTabEventsImpl.getOrCreateModifyOutputEvent(resourceKey);
 	}
 
 	@FunctionalInterface
 	public interface ModifyOutput {
-		/**
-		 * Modifies the creative mode tab output.
-		 * @param output the output
-		 * @see FabricCreativeModeTabOutput
-		 */
+		/// Modifies the creative mode tab output.
+		/// @param output the output
+		/// @see FabricCreativeModeTabOutput
 		void modifyOutput(FabricCreativeModeTabOutput output);
 	}
 
 	@FunctionalInterface
 	public interface ModifyOutputAll {
-		/**
-		 * Modifies the creative mode tab output.
-		 * @param tab the creative mode tab that is being modified
-		 * @param output the output
-		 * @see FabricCreativeModeTabOutput
-		 */
+		/// Modifies the creative mode tab output.
+		/// @param tab the creative mode tab that is being modified
+		/// @param output the output
+		/// @see FabricCreativeModeTabOutput
 		void modifyOutput(CreativeModeTab tab, FabricCreativeModeTabOutput output);
 	}
 }

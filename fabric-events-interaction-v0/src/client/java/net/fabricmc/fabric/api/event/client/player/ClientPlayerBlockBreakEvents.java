@@ -24,21 +24,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Contains client side events triggered by block breaking.
- *
- * <p>For preventing block breaking client side and other purposes, see {@link net.fabricmc.fabric.api.event.player.AttackBlockCallback}.
- * For server side block break events, see {@link net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents}.
- */
+/// Contains client side events triggered by block breaking.
+///
+/// For preventing block breaking client side and other purposes, see [net.fabricmc.fabric.api.event.player.AttackBlockCallback].
+/// For server side block break events, see [net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents].
 public final class ClientPlayerBlockBreakEvents {
 	private ClientPlayerBlockBreakEvents() {
 	}
 
-	/**
-	 * Callback after a block is broken client side.
-	 *
-	 * <p>Only called client side. For server side see {@link net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents#AFTER}
-	 */
+	/// Callback after a block is broken client side.
+	///
+	/// Only called client side. For server side see [net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents#AFTER]
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
 			(listeners) -> (level, player, pos, state) -> {
 				for (After event : listeners) {
@@ -49,14 +45,12 @@ public final class ClientPlayerBlockBreakEvents {
 
 	@FunctionalInterface
 	public interface After {
-		/**
-		 * Called after a block is successfully broken.
-		 *
-		 * @param level  the level where the block was broken
-		 * @param player the player who broke the block
-		 * @param pos    the position where the block was broken
-		 * @param state  the block state <strong>before</strong> the block was broken
-		 */
+		/// Called after a block is successfully broken.
+		///
+		/// @param level  the level where the block was broken
+		/// @param player the player who broke the block
+		/// @param pos    the position where the block was broken
+		/// @param state  the block state **before** the block was broken
 		void afterBlockBreak(ClientLevel level, LocalPlayer player, BlockPos pos, BlockState state);
 	}
 }

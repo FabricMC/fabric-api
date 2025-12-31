@@ -21,8 +21,6 @@ import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 
 @FunctionalInterface
 public interface SpriteFinderGetter {
-	/**
-	 * Gets the {@link SpriteFinder} for the given {@link QuadAtlas}.
-	 */
+	/// Gets the [SpriteFinder] for the given [QuadAtlas].
 	SpriteFinder spriteFinder(QuadAtlas quadAtlas);
 }

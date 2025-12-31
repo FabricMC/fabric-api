@@ -26,9 +26,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantCache;
 import net.fabricmc.fabric.impl.transfer.item.ItemVariantImpl;
 
-/**
- * Cache the ItemVariant with a null tag inside each Item directly.
- */
+/// Cache the ItemVariant with a null tag inside each Item directly.
 @Mixin(Item.class)
 public class ItemMixin implements ItemVariantCache {
 	@Unique

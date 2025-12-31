@@ -20,16 +20,12 @@ import java.util.function.Predicate;
 
 import net.minecraft.world.item.ItemStack;
 
-/**
- * Something that can provide items.
- */
+/// Something that can provide items.
 public interface ItemExtractable {
-	/**
-	 * Try to extract a single stack.
-	 * @param maxCount The maximum number of items to extract
-	 * @param filter What items to extract. Please note that the predicate should be independent of the count of the stack!
-	 * @param simulate If true, don't modify any state
-	 * @return The extracted stack
-	 */
+	/// Try to extract a single stack.
+	/// @param maxCount The maximum number of items to extract
+	/// @param filter What items to extract. Please note that the predicate should be independent of the count of the stack!
+	/// @param simulate If true, don't modify any state
+	/// @return The extracted stack
 	ItemStack tryExtract(int maxCount, Predicate<ItemStack> filter, boolean simulate);
 }

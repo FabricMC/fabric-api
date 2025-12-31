@@ -25,9 +25,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.synth.ImprovedNoise;
 
-/**
- * Picks entries with arbitrary double weights using a binary search.
- */
+/// Picks entries with arbitrary double weights using a binary search.
 public final class WeightedPicker<T> {
 	private double currentTotal;
 	private final List<WeightedEntry<T>> entries;
@@ -61,9 +59,7 @@ public final class WeightedPicker<T> {
 		return search(target).entry();
 	}
 
-	/**
-	 * Applies a mapping function to each entry and returns a picker with otherwise equivalent settings.
-	 */
+	/// Applies a mapping function to each entry and returns a picker with otherwise equivalent settings.
 	<U> WeightedPicker<U> map(Function<T, U> mapper) {
 		return new WeightedPicker<U>(
 				currentTotal,
@@ -73,12 +69,10 @@ public final class WeightedPicker<T> {
 		);
 	}
 
-	/**
-	 * Searches with the specified target value.
-	 *
-	 * @param target The target value, must satisfy the constraint 0 <= target <= currentTotal
-	 * @return The result of the search
-	 */
+	/// Searches with the specified target value.
+	///
+	/// @param target The target value, must satisfy the constraint 0 <= target <= currentTotal
+	/// @return The result of the search
 	WeightedEntry<T> search(final double target) {
 		// Sanity checks, fail fast if stuff is going wrong.
 		Preconditions.checkArgument(target <= currentTotal, "The provided target value for entry selection must be less than or equal to the weight total");
@@ -100,13 +94,11 @@ public final class WeightedPicker<T> {
 		return entries.get(low);
 	}
 
-	/**
-	 * Represents a modded entry in a list, and its corresponding weight.
-	 *
-	 * @param entry            the entry
-	 * @param weight           how often an entry will be chosen
-	 * @param upperWeightBound the upper weight bound within the context of the other entries, used for the binary search
-	 */
+	/// Represents a modded entry in a list, and its corresponding weight.
+	///
+	/// @param entry            the entry
+	/// @param weight           how often an entry will be chosen
+	/// @param upperWeightBound the upper weight bound within the context of the other entries, used for the binary search
 	record WeightedEntry<T>(T entry, double weight, double upperWeightBound) {
 	}
 }

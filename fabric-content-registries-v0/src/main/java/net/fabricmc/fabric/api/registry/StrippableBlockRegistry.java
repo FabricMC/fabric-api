@@ -26,20 +26,16 @@ import net.minecraft.world.level.block.state.properties.Property;
 
 import net.fabricmc.fabric.impl.content.registry.StrippableBlockRegistryImpl;
 
-/**
- * A registry for axe stripping interactions. A vanilla example is turning logs to stripped logs.
- */
+/// A registry for axe stripping interactions. A vanilla example is turning logs to stripped logs.
 public final class StrippableBlockRegistry {
 	private StrippableBlockRegistry() {
 	}
 
-	/**
-	 * Registers a stripping interaction.
-	 * The resulting BlockState of stripping of input will only copy the {@link BlockStateProperties#AXIS axis} property, if it's present.
-	 *
-	 * @param input    the input block that can be stripped
-	 * @param stripped the stripped result block
-	 */
+	/// Registers a stripping interaction.
+	/// The resulting BlockState of stripping of input will only copy the [axis][BlockStateProperties#AXIS] property, if it's present.
+	///
+	/// @param input    the input block that can be stripped
+	/// @param stripped the stripped result block
 	public static void register(Block input, Block stripped) {
 		StrippingTransformer transformer;
 
@@ -52,35 +48,29 @@ public final class StrippableBlockRegistry {
 		StrippableBlockRegistryImpl.register(input, stripped, transformer);
 	}
 
-	/**
-	 * Registers a stripping interaction.
-	 * The resulting BlockState of stripping of input will copy all present properties.
-	 *
-	 * @param input    the input block that can be stripped
-	 * @param stripped the stripped result block
-	 */
+	/// Registers a stripping interaction.
+	/// The resulting BlockState of stripping of input will copy all present properties.
+	///
+	/// @param input    the input block that can be stripped
+	/// @param stripped the stripped result block
 	public static void registerCopyState(Block input, Block stripped) {
 		StrippableBlockRegistryImpl.register(input, stripped, StrippingTransformer.COPY);
 	}
 
-	/**
-	 * Registers a stripping interaction.
-	 * The resulting BlockState of stripping of input will depend on provided transformer.
-	 *
-	 * @param input       the input block that can be stripped
-	 * @param stripped    the stripped result block
-	 * @param transformer the transformer used to provide the resulting block state
-	 */
+	/// Registers a stripping interaction.
+	/// The resulting BlockState of stripping of input will depend on provided transformer.
+	///
+	/// @param input       the input block that can be stripped
+	/// @param stripped    the stripped result block
+	/// @param transformer the transformer used to provide the resulting block state
 	public static void register(Block input, Block stripped, StrippingTransformer transformer) {
 		StrippableBlockRegistryImpl.register(input, stripped, transformer);
 	}
 
-	/**
-	 * Provides result of stripping interaction.
-	 *
-	 * @param blockState original block state
-	 * @return stripped block state if successful, otherwise null
-	 */
+	/// Provides result of stripping interaction.
+	///
+	/// @param blockState original block state
+	/// @return stripped block state if successful, otherwise null
 	@Nullable
 	public static BlockState getStrippedBlockState(BlockState blockState) {
 		return StrippableBlockRegistryImpl.getStrippedBlockState(blockState);

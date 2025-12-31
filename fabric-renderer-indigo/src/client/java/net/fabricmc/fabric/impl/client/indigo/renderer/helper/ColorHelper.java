@@ -16,17 +16,13 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
 
-/**
- * Static routines of general utility for renderer implementations.
- * Renderers are not required to use these helpers, but they were
- * designed to be usable without the default renderer.
- */
+/// Static routines of general utility for renderer implementations.
+/// Renderers are not required to use these helpers, but they were
+/// designed to be usable without the default renderer.
 public final class ColorHelper {
 	private ColorHelper() { }
 
-	/**
-	 * Component-wise max.
-	 */
+	/// Component-wise max.
 	public static int maxLight(int l0, int l1) {
 		if (l0 == 0) return l1;
 		if (l1 == 0) return l0;

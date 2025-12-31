@@ -20,77 +20,59 @@ import java.util.Optional;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 
-/**
- * General purpose Fabric extensions to the {@link RenderPipeline} class.
- *
- * <p>Note: This interface is automatically implemented on all render pipelines via Mixin and interface injection.
- */
+/// General purpose Fabric extensions to the [RenderPipeline] class.
+///
+/// Note: This interface is automatically implemented on all render pipelines via Mixin and interface injection.
 public interface FabricRenderPipeline {
-	/**
-	 * Returns whether the pipeline draw mode should be used for GUI rendering.
-	 *
-	 * @return true if the pipeline draw mode should be used for GUI rendering, false otherwise.
-	 */
+	/// Returns whether the pipeline draw mode should be used for GUI rendering.
+	///
+	/// @return true if the pipeline draw mode should be used for GUI rendering, false otherwise.
 	default boolean usePipelineDrawModeForGui() {
 		throw new AssertionError("Implemented in Mixin");
 	}
 
-	/**
-	 * General purpose Fabric extensions to the {@link RenderPipeline.Builder} class.
-	 *
-	 * <p>Note: This interface is automatically implemented on all render pipeline builders via Mixin and interface injection.
-	 */
+	/// General purpose Fabric extensions to the [RenderPipeline.Builder] class.
+	///
+	/// Note: This interface is automatically implemented on all render pipeline builders via Mixin and interface injection.
 	interface Builder {
-		/**
-		 * Sets whether the pipeline draw mode should be used for GUI rendering.
-		 *
-		 * @param usePipelineDrawMode true if the pipeline draw mode should be used for GUI rendering, false otherwise.
-		 * @return this builder instance for chaining.
-		 */
+		/// Sets whether the pipeline draw mode should be used for GUI rendering.
+		///
+		/// @param usePipelineDrawMode true if the pipeline draw mode should be used for GUI rendering, false otherwise.
+		/// @return this builder instance for chaining.
 		default RenderPipeline.Builder withUsePipelineDrawModeForGui(boolean usePipelineDrawMode) {
 			throw new AssertionError("Implemented in Mixin");
 		}
 
-		/**
-		 * Set the default behavior for GUI rendering regarding the pipeline draw mode.
-		 *
-		 * @return this builder instance for chaining.
-		 */
+		/// Set the default behavior for GUI rendering regarding the pipeline draw mode.
+		///
+		/// @return this builder instance for chaining.
 		default RenderPipeline.Builder withoutUsePipelineDrawModeForGui() {
 			throw new AssertionError("Implemented in Mixin");
 		}
 	}
 
-	/**
-	 * General purpose Fabric extensions to the {@link RenderPipeline.Snippet} class.
-	 *
-	 * <p>Note: This interface is automatically implemented on all render pipeline snippets via Mixin and interface injection.
-	 */
+	/// General purpose Fabric extensions to the [RenderPipeline.Snippet] class.
+	///
+	/// Note: This interface is automatically implemented on all render pipeline snippets via Mixin and interface injection.
 	interface Snippet {
-		/**
-		 * Returns whether the pipeline draw mode should be used for GUI rendering.
-		 *
-		 * @return an Optional containing true if the pipeline draw mode should be used for GUI rendering, false otherwise.
-		 */
+		/// Returns whether the pipeline draw mode should be used for GUI rendering.
+		///
+		/// @return an Optional containing true if the pipeline draw mode should be used for GUI rendering, false otherwise.
 		default Optional<Boolean> usePipelineDrawModeForGui() {
 			throw new AssertionError("Implemented in Mixin");
 		}
 
-		/**
-		 * Creates a new snippet with the specified pipeline draw mode for GUI rendering.
-		 *
-		 * @param usePipelineDrawMode true if the pipeline draw mode should be used for GUI rendering, false otherwise.
-		 * @return a new RenderPipeline.Snippet instance with the specified pipeline draw mode.
-		 */
+		/// Creates a new snippet with the specified pipeline draw mode for GUI rendering.
+		///
+		/// @param usePipelineDrawMode true if the pipeline draw mode should be used for GUI rendering, false otherwise.
+		/// @return a new RenderPipeline.Snippet instance with the specified pipeline draw mode.
 		static RenderPipeline.Snippet withPipelineDrawModeForGui(RenderPipeline.Snippet base, boolean usePipelineDrawMode) {
 			return RenderPipeline.builder(base).withUsePipelineDrawModeForGui(usePipelineDrawMode).buildSnippet();
 		}
 
-		/**
-		 * Creates a new snippet without the pipeline draw mode for GUI rendering.
-		 *
-		 * @return a new RenderPipeline.Snippet instance without any effect on whether the pipeline draw mode will be used for GUI rendering.
-		 */
+		/// Creates a new snippet without the pipeline draw mode for GUI rendering.
+		///
+		/// @return a new RenderPipeline.Snippet instance without any effect on whether the pipeline draw mode will be used for GUI rendering.
 		static RenderPipeline.Snippet withoutPipelineDrawModeForGui(RenderPipeline.Snippet base) {
 			return RenderPipeline.builder(base).withoutUsePipelineDrawModeForGui().buildSnippet();
 		}

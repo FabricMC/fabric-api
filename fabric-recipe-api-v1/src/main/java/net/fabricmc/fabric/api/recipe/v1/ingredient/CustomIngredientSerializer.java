@@ -26,49 +26,37 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 
-/**
- * Serializer for a {@link CustomIngredient}.
- *
- * <p>All instances must be registered using {@link #register} for deserialization to work.
- *
- * @param <T> the type of the custom ingredient
- */
+/// Serializer for a [CustomIngredient].
+///
+/// All instances must be registered using [#register] for deserialization to work.
+///
+/// @param <T> the type of the custom ingredient
 public interface CustomIngredientSerializer<T extends CustomIngredient> {
-	/**
-	 * Registers a custom ingredient serializer, using the {@linkplain CustomIngredientSerializer#getIdentifier() serializer's identifier}.
-	 *
-	 * @throws IllegalArgumentException if the serializer is already registered
-	 */
+	/// Registers a custom ingredient serializer, using the {@linkplain CustomIngredientSerializer#getIdentifier() serializer's identifier}.
+	///
+	/// @throws IllegalArgumentException if the serializer is already registered
 	static void register(CustomIngredientSerializer<?> serializer) {
 		CustomIngredientImpl.registerSerializer(serializer);
 	}
 
-	/**
-	 * {@return the custom ingredient serializer registered with the given identifier, or {@code null} if there is no such serializer}.
-	 */
+	/// {@return the custom ingredient serializer registered with the given identifier, or {@code null} if there is no such serializer}.
 	@Nullable
 	static CustomIngredientSerializer<?> get(Identifier identifier) {
 		return CustomIngredientImpl.getSerializer(identifier);
 	}
 
-	/**
-	 * {@return the identifier of this serializer}.
-	 */
+	/// {@return the identifier of this serializer}.
 	Identifier getIdentifier();
 
-	/**
-	 * {@return the codec}.
-	 *
-	 * <p>Codecs are used to read the ingredient from the recipe JSON files.
-	 *
-	 * @see Ingredient#CODEC
-	 */
+	/// {@return the codec}.
+	///
+	/// Codecs are used to read the ingredient from the recipe JSON files.
+	///
+	/// @see Ingredient#CODEC
 	MapCodec<T> getCodec();
 
-	/**
-	 * {@return the stream codec for serializing this ingredient}.
-	 *
-	 * @see Ingredient#CONTENTS_STREAM_CODEC
-	 */
+	/// {@return the stream codec for serializing this ingredient}.
+	///
+	/// @see Ingredient#CONTENTS_STREAM_CODEC
 	StreamCodec<RegistryFriendlyByteBuf, T> getStreamCodec();
 }

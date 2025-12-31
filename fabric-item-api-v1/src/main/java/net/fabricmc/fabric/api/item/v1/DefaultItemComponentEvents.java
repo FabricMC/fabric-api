@@ -27,13 +27,9 @@ import net.minecraft.world.item.Item;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Events to modify the default {@link DataComponentMap} of items.
- */
+/// Events to modify the default [DataComponentMap] of items.
 public final class DefaultItemComponentEvents {
-	/**
-	 * Event used to add or remove data components to known items.
-	 */
+	/// Event used to add or remove data components to known items.
 	public static final Event<ModifyCallback> MODIFY = EventFactory.createArrayBacked(ModifyCallback.class, listeners -> context -> {
 		for (ModifyCallback listener : listeners) {
 			listener.modify(context);
@@ -44,29 +40,23 @@ public final class DefaultItemComponentEvents {
 	}
 
 	public interface ModifyContext {
-		/**
-		 * Modify the default data components of the specified item.
-		 *
-		 * @param itemPredicate A predicate to match items to modify
-		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
-		 */
+		/// Modify the default data components of the specified item.
+		///
+		/// @param itemPredicate A predicate to match items to modify
+		/// @param builderConsumer A consumer that provides a [DataComponentMap.Builder] to modify the item's components.
 		void modify(Predicate<Item> itemPredicate, BiConsumer<DataComponentMap.Builder, Item> builderConsumer);
 
-		/**
-		 * Modify the default data components of the specified item.
-		 *
-		 * @param item The item to modify
-		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
-		 */
+		/// Modify the default data components of the specified item.
+		///
+		/// @param item The item to modify
+		/// @param builderConsumer A consumer that provides a [DataComponentMap.Builder] to modify the item's components.
 		default void modify(Item item, Consumer<DataComponentMap.Builder> builderConsumer) {
 			modify(Predicate.isEqual(item), (builder, _item) -> builderConsumer.accept(builder));
 		}
 
-		/**
-		 * Modify the default data components of the specified items.
-		 * @param items The items to modify
-		 * @param builderConsumer A consumer that provides a {@link DataComponentMap.Builder} to modify the item's components.
-		 */
+		/// Modify the default data components of the specified items.
+		/// @param items The items to modify
+		/// @param builderConsumer A consumer that provides a [DataComponentMap.Builder] to modify the item's components.
 		default void modify(Collection<Item> items, BiConsumer<DataComponentMap.Builder, Item> builderConsumer) {
 			modify(items::contains, builderConsumer);
 		}
@@ -74,11 +64,9 @@ public final class DefaultItemComponentEvents {
 
 	@FunctionalInterface
 	public interface ModifyCallback {
-		/**
-		 * Modify the default data components of items using the provided {@link ModifyContext} instance.
-		 *
-		 * @param context The context to modify items
-		 */
+		/// Modify the default data components of items using the provided [ModifyContext] instance.
+		///
+		/// @param context The context to modify items
 		void modify(ModifyContext context);
 	}
 }

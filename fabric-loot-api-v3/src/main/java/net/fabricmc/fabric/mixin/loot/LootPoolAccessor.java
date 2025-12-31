@@ -29,10 +29,8 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
 import net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder;
 
-/**
- * Accesses loot pool fields for {@link FabricLootPoolBuilder#copyOf(LootPool)}.
- * These are normally available in the transitive access widener module.
- */
+/// Accesses loot pool fields for [FabricLootPoolBuilder#copyOf(LootPool)].
+/// These are normally available in the transitive access widener module.
 @Mixin(LootPool.class)
 public interface LootPoolAccessor {
 	@Accessor("rolls")

@@ -19,17 +19,13 @@ package net.fabricmc.fabric.api.resource;
 import net.fabricmc.fabric.api.resource.v1.pack.ModPackResources;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
-/**
- * Interface implemented by mod-provided resource packs.
- *
- * @deprecated See {@link ModPackResources}.
- */
+/// Interface implemented by mod-provided resource packs.
+///
+/// @deprecated See [ModPackResources].
 @Deprecated
 public interface ModResourcePack extends ModPackResources {
-	/**
-	 * @return The ModMetadata object associated with the mod providing this
-	 * resource pack.
-	 */
+	/// @return The ModMetadata object associated with the mod providing this
+	/// resource pack.
 	ModMetadata getFabricModMetadata();
 
 	ModResourcePack createOverlay(String overlay);

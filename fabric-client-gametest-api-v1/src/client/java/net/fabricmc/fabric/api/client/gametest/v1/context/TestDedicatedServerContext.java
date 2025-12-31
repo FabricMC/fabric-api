@@ -18,30 +18,24 @@ package net.fabricmc.fabric.api.client.gametest.v1.context;
 
 import org.jetbrains.annotations.ApiStatus;
 
-/**
- * Context for a client gametest containing various helpful functions while an in-process dedicated server is running.
- * This class implements {@link AutoCloseable} and is intended to be used in a try-with-resources statement. When
- * closed, the dedicated server will be stopped.
- *
- * <p>Dedicated servers will only run if the EULA has been accepted in {@code eula.txt}. If you have read and accepted
- * the <a href="https://aka.ms/MinecraftEULA">Minecraft EULA</a>, you can write the file at build-time by setting
- * {@code fabricApi.configureTests { eula = true }} in your {@code build.gradle}.
- *
- * <p>Functions in this class can only be called on the client gametest thread.
- */
+/// Context for a client gametest containing various helpful functions while an in-process dedicated server is running.
+/// This class implements [AutoCloseable] and is intended to be used in a try-with-resources statement. When
+/// closed, the dedicated server will be stopped.
+///
+/// Dedicated servers will only run if the EULA has been accepted in `eula.txt`. If you have read and accepted
+/// the <a href="https://aka.ms/MinecraftEULA">Minecraft EULA</a>, you can write the file at build-time by setting
+/// `fabricApi.configureTests{eula = true}` in your `build.gradle`.
+///
+/// Functions in this class can only be called on the client gametest thread.
 @ApiStatus.NonExtendable
 public interface TestDedicatedServerContext extends TestServerContext, AutoCloseable {
-	/**
-	 * Connects the client to the dedicated server. The resulting connection is intended to be used in a
-	 * try-with-resources statement.
-	 *
-	 * @return The connection handle to the dedicated server
-	 */
+	/// Connects the client to the dedicated server. The resulting connection is intended to be used in a
+	/// try-with-resources statement.
+	///
+	/// @return The connection handle to the dedicated server
 	TestServerConnection connect();
 
-	/**
-	 * Stops the dedicated server.
-	 */
+	/// Stops the dedicated server.
 	@Override
 	void close();
 }

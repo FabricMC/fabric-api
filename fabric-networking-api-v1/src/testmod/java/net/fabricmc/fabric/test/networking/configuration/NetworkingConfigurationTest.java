@@ -37,9 +37,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
-/**
- * Also see NetworkingConfigurationClientTest.
- */
+/// Also see NetworkingConfigurationClientTest.
 public class NetworkingConfigurationTest implements ModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(NetworkingConfigurationTest.class);
 

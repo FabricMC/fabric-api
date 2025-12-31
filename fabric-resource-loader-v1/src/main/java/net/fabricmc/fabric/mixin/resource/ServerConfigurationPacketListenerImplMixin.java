@@ -37,11 +37,9 @@ public abstract class ServerConfigurationPacketListenerImplMixin extends ServerC
 		super(server, connection, clientData);
 	}
 
-	/**
-	 * Only use packs that were enabled at server start and are enabled now. This avoids a descync when packs have been
-	 * enabled or disabled before the client joins. Since the server registry contents aren't reloaded, we don't want
-	 * the client to use the new data pack data.
-	 */
+	/// Only use packs that were enabled at server start and are enabled now. This avoids a descync when packs have been
+	/// enabled or disabled before the client joins. Since the server registry contents aren't reloaded, we don't want
+	/// the client to use the new data pack data.
 	@ModifyArg(method = "startConfiguration", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/config/SynchronizeRegistriesTask;<init>(Ljava/util/List;Lnet/minecraft/core/LayeredRegistryAccess;)V", ordinal = 0))
 	public List<KnownPack> filterKnownPacks(List<KnownPack> currentKnownPacks) {
 		return ((FabricOriginalKnownPacksGetter) this.server).fabric$getOriginalKnownPacks().stream().filter(currentKnownPacks::contains).toList();

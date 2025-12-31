@@ -25,10 +25,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 @Mixin(targets = "net.minecraft.world.level.chunk.LevelChunkSection$1BlockCounter")
 public class ChunkSectionBlockStateCounterMixin {
-	/**
-	 * Makes Chunk Sections not have isAir = true modded blocks be replaced with AIR against their will.
-	 * Mojang report: https://bugs.mojang.com/browse/MC-232360
-	 */
+	/// Makes Chunk Sections not have isAir = true modded blocks be replaced with AIR against their will.
+	/// Mojang report: https://bugs.mojang.com/browse/MC-232360
 	@Redirect(method = "accept(Lnet/minecraft/world/level/block/state/BlockState;I)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;isAir()Z"))
 	private boolean modifyAirCheck(BlockState blockState) {

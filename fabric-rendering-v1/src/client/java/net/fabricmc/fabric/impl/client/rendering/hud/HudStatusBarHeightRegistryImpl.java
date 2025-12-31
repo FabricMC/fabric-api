@@ -57,24 +57,16 @@ import net.fabricmc.fabric.mixin.client.rendering.GuiAccessor;
 
 public final class HudStatusBarHeightRegistryImpl implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("fabric-rendering-v1");
-	/**
-	 * The height at which vanilla begins rendering status bars; this is used for health and food / mount health.
-	 */
+	/// The height at which vanilla begins rendering status bars; this is used for health and food / mount health.
 	static final int DEFAULT_HEIGHT = 39;
-	/**
-	 * The height at which the held item tooltip renders in vanilla; for our purposes we already subtract the default
-	 * height.
-	 */
+	/// The height at which the held item tooltip renders in vanilla; for our purposes we already subtract the default
+	/// height.
 	static final int HELD_ITEM_TOOLTIP_HEIGHT = 59 - DEFAULT_HEIGHT;
-	/**
-	 * The height at which the overlay message (from playing records, or unsuccessfully trying to sleep) renders in
-	 * vanilla; for our purposes we already subtract the default height.
-	 */
+	/// The height at which the overlay message (from playing records, or unsuccessfully trying to sleep) renders in
+	/// vanilla; for our purposes we already subtract the default height.
 	static final int OVERLAY_MESSAGE_HEIGHT = 68 - DEFAULT_HEIGHT;
 	static final int TEXT_HEIGHT_DELTA = OVERLAY_MESSAGE_HEIGHT - HELD_ITEM_TOOLTIP_HEIGHT;
-	/**
-	 * Height provider for the vanilla health bar.
-	 */
+	/// Height provider for the vanilla health bar.
 	static final StatusBarHeightProvider HEALTH_BAR = (Player player) -> {
 		Gui hud = Minecraft.getInstance().gui;
 		int playerHealth = Mth.ceil(player.getHealth());
@@ -86,45 +78,35 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		int rowShift = Math.max(10 - (healthRows - 2), 3);
 		return 10 + (healthRows - 1) * rowShift;
 	};
-	/**
-	 * Height provider for the vanilla armor bar.
-	 */
+	/// Height provider for the vanilla armor bar.
 	static final StatusBarHeightProvider ARMOR_BAR = (Player player) -> {
 		return player.getArmorValue() > 0 ? 10 : 0;
 	};
-	/**
-	 * Height provider for the vanilla mount health.
-	 */
+	/// Height provider for the vanilla mount health.
 	static final StatusBarHeightProvider MOUNT_HEALTH = (Player player) -> {
 		Gui hud = Minecraft.getInstance().gui;
 		LivingEntity livingEntity = ((GuiAccessor) hud).fabric$callGetRiddenEntity();
 		int vehicleMaxHearts = ((GuiAccessor) hud).fabric$callGetHeartCount(livingEntity);
 		return ((GuiAccessor) hud).fabric$callGetHeartRows(vehicleMaxHearts) * 10;
 	};
-	/**
-	 * Height provider for the vanilla food bar.
-	 */
+	/// Height provider for the vanilla food bar.
 	static final StatusBarHeightProvider FOOD_BAR = (Player player) -> {
 		Gui hud = Minecraft.getInstance().gui;
 		LivingEntity livingEntity = ((GuiAccessor) hud).fabric$callGetRiddenEntity();
 		return ((GuiAccessor) hud).fabric$callGetHeartCount(livingEntity) == 0 ? 10 : 0;
 	};
-	/**
-	 * Height provider for the vanilla air bar.
-	 */
+	/// Height provider for the vanilla air bar.
 	static final StatusBarHeightProvider AIR_BAR = (Player player) -> {
 		int maxAirSupply = player.getMaxAirSupply();
 		int airSupply = Math.clamp(player.getAirSupply(), 0, maxAirSupply);
 		boolean isInWater = player.isEyeInFluid(FluidTags.WATER);
 		return isInWater || airSupply < maxAirSupply ? 10 : 0;
 	};
-	/**
-	 * This serves two purposes: it provides a fixed order for some vanilla status bars; and it provides resolved
-	 * vanilla height providers, to compare with the actual height providers during rendering for potential translations
-	 * for vanilla status bars. Translations are achieved via pose stack transformations.
-	 *
-	 * <p>Do not use {@link Map#of()}; it does not preserve insertion order.
-	 */
+	/// This serves two purposes: it provides a fixed order for some vanilla status bars; and it provides resolved
+	/// vanilla height providers, to compare with the actual height providers during rendering for potential translations
+	/// for vanilla status bars. Translations are achieved via pose stack transformations.
+	///
+	/// Do not use [Map#of()]; it does not preserve insertion order.
 	static final Map<Identifier, ResolvedHeightProvider> RESOLVED_VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.HEALTH_BAR,
 			ResolvedHeightProvider.ZERO,
@@ -136,21 +118,17 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 			ResolvedHeightProvider.ZERO,
 			VanillaHudElements.AIR_BAR,
 			reduceToIntFunctions(MOUNT_HEALTH, FOOD_BAR, Integer::sum));
-	/**
-	 * Height providers registered for the left side above the hotbar.
-	 *
-	 * <p>Used for checking if any custom height providers have been registered to potentially skip resolving later on.
-	 */
+	/// Height providers registered for the left side above the hotbar.
+	///
+	/// Used for checking if any custom height providers have been registered to potentially skip resolving later on.
 	static final Map<Identifier, StatusBarHeightProvider> LEFT_VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.HEALTH_BAR,
 			HEALTH_BAR,
 			VanillaHudElements.ARMOR_BAR,
 			ARMOR_BAR);
-	/**
-	 * Height providers registered for the right side above the hotbar.
-	 *
-	 * <p>Used for checking if any custom height providers have been registered to potentially skip resolving later on.
-	 */
+	/// Height providers registered for the right side above the hotbar.
+	///
+	/// Used for checking if any custom height providers have been registered to potentially skip resolving later on.
 	static final Map<Identifier, StatusBarHeightProvider> RIGHT_VANILLA_HEIGHT_PROVIDERS = ImmutableMap.of(
 			VanillaHudElements.MOUNT_HEALTH,
 			MOUNT_HEALTH,
@@ -158,28 +136,22 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 			FOOD_BAR,
 			VanillaHudElements.AIR_BAR,
 			AIR_BAR);
-	/**
-	 * Height providers registered for the left side above the hotbar, like health and armor.
-	 *
-	 * <p>The height providers registered here simply return the height of the corresponding status bar.
-	 */
+	/// Height providers registered for the left side above the hotbar, like health and armor.
+	///
+	/// The height providers registered here simply return the height of the corresponding status bar.
 	static final Map<Identifier, StatusBarHeightProvider> LEFT_HEIGHT_PROVIDERS = new HashMap<>(
 			LEFT_VANILLA_HEIGHT_PROVIDERS);
-	/**
-	 * Height providers registered for the right side above the hotbar, like food and air bubbles.
-	 *
-	 * <p>The height providers registered here simply return the height of the corresponding status bar.
-	 */
+	/// Height providers registered for the right side above the hotbar, like food and air bubbles.
+	///
+	/// The height providers registered here simply return the height of the corresponding status bar.
 	static final Map<Identifier, StatusBarHeightProvider> RIGHT_HEIGHT_PROVIDERS = new HashMap<>(
 			RIGHT_VANILLA_HEIGHT_PROVIDERS);
 
-	/**
-	 * Height providers used during rendering computed from everything that was registered.
-	 *
-	 * <p>These providers do NOT
-	 * return the heights of individual elements; instead they return the height at which an element should render at,
-	 * which is computed by summing all the heights from providers considered "below" an element.
-	 */
+	/// Height providers used during rendering computed from everything that was registered.
+	///
+	/// These providers do NOT
+	/// return the heights of individual elements; instead they return the height at which an element should render at,
+	/// which is computed by summing all the heights from providers considered "below" an element.
 	@Nullable
 	static Map<Identifier, ResolvedHeightProvider> resolvedHeightProviders;
 
@@ -385,21 +357,17 @@ public final class HudStatusBarHeightRegistryImpl implements ClientModInitialize
 		});
 	}
 
-	/**
-	 * Returns the sum of all registered provider heights that are considered "below" the position of the element
-	 * associated with the given {@link HudElement}.
-	 *
-	 * <p>Exists in addition to {@link StatusBarHeightProvider} to help distinguish both functionalities in the
-	 * implementation.
-	 */
+	/// Returns the sum of all registered provider heights that are considered "below" the position of the element
+	/// associated with the given [HudElement].
+	///
+	/// Exists in addition to [StatusBarHeightProvider] to help distinguish both functionalities in the
+	/// implementation.
 	@FunctionalInterface
 	public interface ResolvedHeightProvider extends ToIntFunction<Player> {
 		ResolvedHeightProvider ZERO = (Player player) -> 0;
 
-		/**
-		 * @param player the {@link Player} from {@link Gui#getCameraPlayer()}
-		 * @return the vertical space occupied by all status bars "below" this one
-		 */
+		/// @param player the [Player] from [Gui#getCameraPlayer()]
+		/// @return the vertical space occupied by all status bars "below" this one
 		int getResolvedHeight(Player player);
 
 		@ApiStatus.NonExtendable

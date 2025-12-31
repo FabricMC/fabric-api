@@ -35,9 +35,7 @@ import net.fabricmc.fabric.impl.lookup.block.ServerLevelCache;
 abstract class ServerLevelMixin implements ServerLevelCache {
 	@Unique
 	private final Map<BlockPos, List<WeakReference<BlockApiCacheImpl<?, ?>>>> apiLookupCaches = new Object2ReferenceOpenHashMap<>();
-	/**
-	 * Ensures that the apiLookupCaches map is iterated over every once in a while to clean up caches.
-	 */
+	/// Ensures that the apiLookupCaches map is iterated over every once in a while to clean up caches.
 	@Unique
 	private int apiLookupAccessesWithoutCleanup = 0;
 

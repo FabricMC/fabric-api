@@ -27,9 +27,7 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
 
-/**
- * Defer setChanged until the outer transaction close callback when setStack is called from an inventory wrapper.
- */
+/// Defer setChanged until the outer transaction close callback when setStack is called from an inventory wrapper.
 @Mixin(BaseContainerBlockEntity.class)
 public class BaseContainerBlockEntityMixin implements SpecialLogicContainer {
 	@Unique

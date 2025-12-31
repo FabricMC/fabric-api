@@ -27,31 +27,25 @@ import net.minecraft.client.gui.screens.Screen;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 import net.fabricmc.fabric.mixin.screen.ScreenAccessor;
 
-/**
- * Utility methods related to screens.
- *
- * @see ScreenEvents
- */
+/// Utility methods related to screens.
+///
+/// @see ScreenEvents
 public final class Screens {
-	/**
-	 * Gets all of a screen's widgets.
-	 * The provided list allows for addition and removal of widgets from the screen.
-	 * This method should be preferred over adding widgets directly to a screen's {@link Screen#children() child elements}.
-	 *
-	 * @return a list of all of a screen's widgets
-	 */
+	/// Gets all of a screen's widgets.
+	/// The provided list allows for addition and removal of widgets from the screen.
+	/// This method should be preferred over adding widgets directly to a screen's [child elements][Screen#children()].
+	///
+	/// @return a list of all of a screen's widgets
 	public static List<AbstractWidget> getWidgets(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getButtons();
 	}
 
-	/**
-	 * Gets a screen's font.
-	 *
-	 * @return the screen's font.
-	 * @deprecated Use {@link Screen#getFont()} directly
-	 */
+	/// Gets a screen's font.
+	///
+	/// @return the screen's font.
+	/// @deprecated Use [Screen#getFont()] directly
 	@Deprecated
 	public static Font getFont(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");

@@ -22,9 +22,7 @@ import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
 
-/**
- * Adapted from vanilla ModelBlockRenderer.AdjacencyInfo and ModelBlockRenderer.AmbientVertexRemap.
- */
+/// Adapted from vanilla ModelBlockRenderer.AdjacencyInfo and ModelBlockRenderer.AmbientVertexRemap.
 enum AoFace {
 	DOWN(new Direction[] { Direction.WEST, Direction.EAST, Direction.NORTH, Direction.SOUTH }, new int[] { 0, 1, 2, 3 }) {
 		@Override
@@ -126,11 +124,9 @@ enum AoFace {
 	private static final AoFace[] VALUES = AoFace.values();
 
 	final Direction[] neighbors;
-	/**
-	 * Cubic quads have a vertex in each corner, which allows us to skip computing
-	 * weights and map values to vertices directly. Note that vanilla assumes a
-	 * certain vertex order, but we detect it and offset the map accordingly.
-	 */
+	/// Cubic quads have a vertex in each corner, which allows us to skip computing
+	/// weights and map values to vertices directly. Note that vanilla assumes a
+	/// certain vertex order, but we detect it and offset the map accordingly.
 	final int[] vertexMap;
 
 	AoFace(Direction[] neighbors, int[] vertexMap) {
@@ -138,14 +134,12 @@ enum AoFace {
 		this.vertexMap = vertexMap;
 	}
 
-	/**
-	 * Implementations handle bilinear interpolation of a point on a light face
-	 * by computing weights for each corner of the light face. Relies on the fact
-	 * that each face is a unit cube. Uses coordinates from axes orthogonal to face
-	 * as distance from the edge of the cube, flipping as needed. Multiplying distance
-	 * coordinate pairs together gives sub-area that are the corner weights.
-	 * Weights sum to 1 because it is a unit cube. Values are stored in the provided array.
-	 */
+	/// Implementations handle bilinear interpolation of a point on a light face
+	/// by computing weights for each corner of the light face. Relies on the fact
+	/// that each face is a unit cube. Uses coordinates from axes orthogonal to face
+	/// as distance from the edge of the cube, flipping as needed. Multiplying distance
+	/// coordinate pairs together gives sub-area that are the corner weights.
+	/// Weights sum to 1 because it is a unit cube. Values are stored in the provided array.
 	abstract void computeCornerWeights(QuadViewImpl q, int vertexIndex, float[] out);
 
 	abstract float computeDepth(QuadViewImpl q, int vertexIndex);

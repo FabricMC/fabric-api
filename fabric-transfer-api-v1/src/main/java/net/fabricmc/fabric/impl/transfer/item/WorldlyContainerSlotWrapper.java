@@ -25,9 +25,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.impl.transfer.DebugMessages;
 
-/**
- * Wrapper around an {@link ContainerSlotWrapper}, with additional canInsert and canExtract checks.
- */
+/// Wrapper around an [ContainerSlotWrapper], with additional canInsert and canExtract checks.
 class WorldlyContainerSlotWrapper implements SingleSlotStorage<ItemVariant> {
 	private final ContainerSlotWrapper slotWrapper;
 	private final WorldlyContainer container;

@@ -22,49 +22,39 @@ import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-/**
- * Block state resolvers are responsible for mapping each {@link BlockState} of a block to a
- * {@link BlockStateModel.UnbakedRoot}. They replace the {@code blockstates/} JSON files. One block can be mapped to
- * only one block state resolver; multiple resolvers will not receive the same block.
- *
- * <p>Block state resolvers can be used to create custom block state formats or dynamically resolve block state models.
- *
- * <p>Use {@link ModelModifier.OnLoad} instead of this interface if interacting with the block and block states directly
- * is not necessary. Use {@link UnbakedModelDeserializer} for custom model deserializers and loaders.
- *
- * @see ModelModifier.OnLoad
- * @see ModelModifier.OnLoadBlock
- * @see UnbakedModelDeserializer
- */
+/// Block state resolvers are responsible for mapping each [BlockState] of a block to a
+/// [BlockStateModel.UnbakedRoot]. They replace the `blockstates/` JSON files. One block can be mapped to
+/// only one block state resolver; multiple resolvers will not receive the same block.
+///
+/// Block state resolvers can be used to create custom block state formats or dynamically resolve block state models.
+///
+/// Use [ModelModifier.OnLoad] instead of this interface if interacting with the block and block states directly
+/// is not necessary. Use [UnbakedModelDeserializer] for custom model deserializers and loaders.
+///
+/// @see ModelModifier.OnLoad
+/// @see ModelModifier.OnLoadBlock
+/// @see UnbakedModelDeserializer
 @FunctionalInterface
 public interface BlockStateResolver {
-	/**
-	 * Resolves the models for all block states of the block.
-	 *
-	 * <p>For each block state, call {@link Context#setModel} to set its unbaked model.
-	 * This method must be called exactly once for each block state.
-	 *
-	 * <p>Note that if multiple block states share the same unbaked model instance, it will be baked multiple times
-	 * (once per block state that has the model set).
-	 */
+	/// Resolves the models for all block states of the block.
+	///
+	/// For each block state, call [Context#setModel] to set its unbaked model.
+	/// This method must be called exactly once for each block state.
+	///
+	/// Note that if multiple block states share the same unbaked model instance, it will be baked multiple times
+	/// (once per block state that has the model set).
 	void resolveBlockStates(Context context);
 
-	/**
-	 * The context for block state resolution.
-	 */
+	/// The context for block state resolution.
 	@ApiStatus.NonExtendable
 	interface Context {
-		/**
-		 * The block for which block state models are being resolved.
-		 */
+		/// The block for which block state models are being resolved.
 		Block block();
 
-		/**
-		 * Sets the model for a block state.
-		 *
-		 * @param state the block state for which this model should be used
-		 * @param model the unbaked model for this block state
-		 */
+		/// Sets the model for a block state.
+		///
+		/// @param state the block state for which this model should be used
+		/// @param model the unbaked model for this block state
 		void setModel(BlockState state, BlockStateModel.UnbakedRoot model);
 	}
 }

@@ -25,9 +25,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
-/**
- * Used to notify server which recipes can be synced to the client.
- */
+/// Used to notify server which recipes can be synced to the client.
 public record ServerboundSupportedRecipeSerializersPayload(Set<Identifier> synchronizedSerializers) implements CustomPacketPayload {
 	public static final StreamCodec<FriendlyByteBuf, ServerboundSupportedRecipeSerializersPayload> CODEC = StreamCodec.composite(
 			ByteBufCodecs.collection(HashSet::new, Identifier.STREAM_CODEC), ServerboundSupportedRecipeSerializersPayload::synchronizedSerializers,

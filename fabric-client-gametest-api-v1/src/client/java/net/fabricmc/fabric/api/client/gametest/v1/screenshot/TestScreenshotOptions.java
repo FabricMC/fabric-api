@@ -21,17 +21,13 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotOptionsImpl;
 
-/**
- * Options to customize a screenshot.
- */
+/// Options to customize a screenshot.
 @ApiStatus.NonExtendable
 public interface TestScreenshotOptions extends TestScreenshotCommonOptions<TestScreenshotOptions> {
-	/**
-	 * Creates a {@link TestScreenshotOptions} with the given screenshot name.
-	 *
-	 * @param name The name of the screenshot
-	 * @return The new screenshot options instance
-	 */
+	/// Creates a [TestScreenshotOptions] with the given screenshot name.
+	///
+	/// @param name The name of the screenshot
+	/// @return The new screenshot options instance
 	static TestScreenshotOptions of(String name) {
 		Preconditions.checkNotNull(name, "name");
 		return new TestScreenshotOptionsImpl(name);

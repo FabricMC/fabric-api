@@ -39,10 +39,8 @@ import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 
-/**
- * To test this API beyond the unit tests, please refer to the recipe provider in the datagen API testmod.
- * It contains various interesting recipes to test, and explains how to package them in a datapack.
- */
+/// To test this API beyond the unit tests, please refer to the recipe provider in the datagen API testmod.
+/// It contains various interesting recipes to test, and explains how to package them in a datapack.
 public class CustomIngredientImpl extends Ingredient {
 	// Static helpers used by the API
 

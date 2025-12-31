@@ -21,9 +21,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworkin
 import net.fabricmc.fabric.impl.recipe.ingredient.ClientboundCustomIngredientPayload;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientSync;
 
-/**
- * @see CustomIngredientSync
- */
+/// @see CustomIngredientSync
 public class CustomIngredientSyncClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {

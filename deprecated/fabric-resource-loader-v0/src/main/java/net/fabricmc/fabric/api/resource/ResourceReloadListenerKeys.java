@@ -20,12 +20,10 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys;
 
-/**
- * This class contains default keys for various Minecraft resource reload listeners.
- *
- * @see IdentifiableResourceReloadListener
- * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys} instead.
- */
+/// This class contains default keys for various Minecraft resource reload listeners.
+///
+/// @see IdentifiableResourceReloadListener
+/// @deprecated Use [net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys] instead.
 @Deprecated
 public final class ResourceReloadListenerKeys {
 	// client

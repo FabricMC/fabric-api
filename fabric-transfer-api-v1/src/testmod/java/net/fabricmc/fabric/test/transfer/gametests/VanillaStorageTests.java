@@ -53,10 +53,8 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.test.transfer.mixin.AbstractFurnaceBlockEntityAccessor;
 
 public class VanillaStorageTests {
-	/**
-	 * Regression test for https://github.com/FabricMC/fabric/issues/1972.
-	 * Ensures that furnace cook time is only reset when extraction is actually committed.
-	 */
+	/// Regression test for https://github.com/FabricMC/fabric/issues/1972.
+	/// Ensures that furnace cook time is only reset when extraction is actually committed.
 	@GameTest
 	public void testFurnaceCookTime(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(0, 1, 0);
@@ -100,12 +98,10 @@ public class VanillaStorageTests {
 		});
 	}
 
-	/**
-	 * Tests that the passed block doesn't update adjacent comparators until the very end of a committed transaction.
-	 *
-	 * @param block A block with an Inventory block entity.
-	 * @param variant The variant to try to insert (needs to be supported by the Inventory).
-	 */
+	/// Tests that the passed block doesn't update adjacent comparators until the very end of a committed transaction.
+	///
+	/// @param block A block with an Inventory block entity.
+	/// @param variant The variant to try to insert (needs to be supported by the Inventory).
 	private static <T extends BlockEntity & Container> void testComparatorOnInventory(GameTestHelper helper, Block block, ItemVariant variant, Class<T> inventoryClass) {
 		Level level = helper.getLevel();
 
@@ -145,33 +141,25 @@ public class VanillaStorageTests {
 		helper.succeed();
 	}
 
-	/**
-	 * Tests that containers such as chests don't update adjacent comparators until the very end of a committed transaction.
-	 */
+	/// Tests that containers such as chests don't update adjacent comparators until the very end of a committed transaction.
 	@GameTest
 	public void testChestComparator(GameTestHelper helper) {
 		testComparatorOnInventory(helper, Blocks.CHEST, ItemVariant.of(Items.DIAMOND), ChestBlockEntity.class);
 	}
 
-	/**
-	 * Same as {@link #testChestComparator} but for shelves.
-	 */
+	/// Same as [#testChestComparator] but for shelves.
 	@GameTest
 	public void testShelfComparator(GameTestHelper helper) {
 		testComparatorOnInventory(helper, Blocks.OAK_SHELF, ItemVariant.of(Items.DIAMOND), ShelfBlockEntity.class);
 	}
 
-	/**
-	 * Same as {@link #testChestComparator} but for chiseled bookshelves, because their implementation is very... strange.
-	 */
+	/// Same as [#testChestComparator] but for chiseled bookshelves, because their implementation is very... strange.
 	@GameTest
 	public void testChiseledBookshelfComparator(GameTestHelper helper) {
 		testComparatorOnInventory(helper, Blocks.CHISELED_BOOKSHELF, ItemVariant.of(Items.BOOK), ChiseledBookShelfBlockEntity.class);
 	}
 
-	/**
-	 * Test for chiseled bookshelves, because their implementation is very... strange.
-	 */
+	/// Test for chiseled bookshelves, because their implementation is very... strange.
 	@GameTest
 	public void testChiseledBookshelf(GameTestHelper helper) {
 		ItemVariant book = ItemVariant.of(Items.BOOK);
@@ -232,9 +220,7 @@ public class VanillaStorageTests {
 		helper.succeed();
 	}
 
-	/**
-	 * Tests that shulker boxes cannot be inserted into other shulker boxes.
-	 */
+	/// Tests that shulker boxes cannot be inserted into other shulker boxes.
 	@GameTest
 	public void testShulkerNoInsert(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(0, 2, 0);
@@ -249,11 +235,9 @@ public class VanillaStorageTests {
 		helper.succeed();
 	}
 
-	/**
-	 * {@link Container#isValid(int, ItemStack)} is supposed to be independent of the stack size.
-	 * However, to limit some stackable inputs to a size of 1, brewing stands and furnaces don't follow this rule in all cases.
-	 * This test ensures that the Transfer API works around this issue for furnaces.
-	 */
+	/// [Container#isValid(int, ItemStack)] is supposed to be independent of the stack size.
+	/// However, to limit some stackable inputs to a size of 1, brewing stands and furnaces don't follow this rule in all cases.
+	/// This test ensures that the Transfer API works around this issue for furnaces.
 	@GameTest
 	public void testBadFurnaceIsValid(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(0, 1, 0);
@@ -270,9 +254,7 @@ public class VanillaStorageTests {
 		helper.succeed();
 	}
 
-	/**
-	 * Same as {@link #testBadFurnaceIsValid(GameTestHelper)}, but for brewing stands.
-	 */
+	/// Same as [#testBadFurnaceIsValid(GameTestHelper)], but for brewing stands.
 	@GameTest
 	public void testBadBrewingStandIsValid(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(0, 1, 0);
@@ -295,9 +277,7 @@ public class VanillaStorageTests {
 		helper.succeed();
 	}
 
-	/**
-	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/2810">double chest wrapper only updating modified halves</a>.
-	 */
+	/// Regression test for <a href="https://github.com/FabricMC/fabric/issues/2810">double chest wrapper only updating modified halves</a>.
 	@GameTest(structure = "fabric-transfer-api-v1-testmod:double_chest_comparators", skyAccess = true)
 	public void testDoubleChestComparator(GameTestHelper helper) {
 		BlockPos chestPos = new BlockPos(2, 1, 2);
@@ -347,9 +327,7 @@ public class VanillaStorageTests {
 		helper.succeed();
 	}
 
-	/**
-	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/3017">composters not always incrementing their level on the first insert</a>.
-	 */
+	/// Regression test for <a href="https://github.com/FabricMC/fabric/issues/3017">composters not always incrementing their level on the first insert</a>.
 	@GameTest
 	public void testComposterFirstInsert(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(0, 1, 0);
@@ -374,9 +352,7 @@ public class VanillaStorageTests {
 		helper.succeed();
 	}
 
-	/**
-	 * Regression test for <a href="https://github.com/FabricMC/fabric/issues/3485">jukeboxes having their state changed mid-transaction</a>.
-	 */
+	/// Regression test for <a href="https://github.com/FabricMC/fabric/issues/3485">jukeboxes having their state changed mid-transaction</a>.
 	@GameTest
 	public void testJukeboxState(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(2, 2, 2);

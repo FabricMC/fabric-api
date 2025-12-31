@@ -26,13 +26,11 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadAtlas;
 
 @FunctionalInterface
 public interface ItemRenderTypeGetter {
-	/**
-	 * Gets the {@link RenderType} for the given {@link QuadAtlas} and nullable {@link ChunkSectionLayer}. Quads with
-	 * matching property values will be rendered using the returned render type.
-	 *
-	 * <p>A return value of {@code null} means that the current item layer's
-	 * {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(RenderType) default render type} will be used.
-	 */
+	/// Gets the [RenderType] for the given [QuadAtlas] and nullable [ChunkSectionLayer]. Quads with
+	/// matching property values will be rendered using the returned render type.
+	///
+	/// A return value of `null` means that the current item layer's
+	/// {@linkplain ItemStackRenderState.LayerRenderState#setRenderType(RenderType) default render type} will be used.
 	@Nullable
 	RenderType renderType(QuadAtlas quadAtlas, @Nullable ChunkSectionLayer sectionLayer);
 }

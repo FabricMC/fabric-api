@@ -29,10 +29,8 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
 
-/**
- * Accesses loot table fields for {@link FabricLootTableBuilder#copyOf(LootTable)}.
- * These are normally available in the transitive access widener module.
- */
+/// Accesses loot table fields for [FabricLootTableBuilder#copyOf(LootTable)].
+/// These are normally available in the transitive access widener module.
 @Mixin(LootTable.class)
 public interface LootTableAccessor {
 	@Accessor("pools")

@@ -37,10 +37,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 
-/**
- * This test exists solely for testing generics.
- * As such it is not in the mod json
- */
+/// This test exists solely for testing generics.
+/// As such it is not in the mod json
 public class RenderLayerGenericTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {

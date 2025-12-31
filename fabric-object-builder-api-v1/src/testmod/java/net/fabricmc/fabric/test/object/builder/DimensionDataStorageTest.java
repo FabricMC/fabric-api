@@ -46,9 +46,7 @@ public class DimensionDataStorageTest implements ModInitializer {
 	}
 
 	private static class TestState extends SavedData {
-		/**
-		 * We are testing that null can be passed as the dataFixType.
-		 */
+		/// We are testing that null can be passed as the dataFixType.
 		private static final Codec<TestState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("value").forGetter(TestState::getValue)
 		).apply(instance, TestState::new));

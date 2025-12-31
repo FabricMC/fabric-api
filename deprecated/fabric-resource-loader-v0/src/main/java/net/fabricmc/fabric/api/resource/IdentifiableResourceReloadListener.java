@@ -22,29 +22,23 @@ import java.util.Collections;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
-/**
- * Interface for "identifiable" resource reload listeners.
- *
- * <p>"Identifiable" listeners have a unique identifier, which can be depended on,
- * and can provide dependencies that they would like to see executed before
- * themselves.
- *
- * @see net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys
- * @deprecated Use {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloadListener(Identifier, PreparableReloadListener)}
- * and {@link net.fabricmc.fabric.api.resource.v1.ResourceLoader#addListenerOrdering(Identifier, Identifier)} instead.
- */
+/// Interface for "identifiable" resource reload listeners.
+///
+/// "Identifiable" listeners have a unique identifier, which can be depended on,
+/// and can provide dependencies that they would like to see executed before
+/// themselves.
+///
+/// @see net.fabricmc.fabric.api.resource.v1.reloader.ResourceReloaderKeys
+/// @deprecated Use [net.fabricmc.fabric.api.resource.v1.ResourceLoader#registerReloadListener(Identifier, PreparableReloadListener)]
+/// and [net.fabricmc.fabric.api.resource.v1.ResourceLoader#addListenerOrdering(Identifier, Identifier)] instead.
 @Deprecated
 public interface IdentifiableResourceReloadListener extends PreparableReloadListener {
-	/**
-	 * @return The unique identifier of this listener.
-	 */
+	/// @return The unique identifier of this listener.
 	Identifier getFabricId();
 
-	/**
-	 * @return The identifiers of listeners this listener expects to have been
-	 * executed before itself. Please keep in mind that this only takes effect
-	 * during the application stage!
-	 */
+	/// @return The identifiers of listeners this listener expects to have been
+	/// executed before itself. Please keep in mind that this only takes effect
+	/// during the application stage!
 	default Collection<Identifier> getFabricDependencies() {
 		return Collections.emptyList();
 	}

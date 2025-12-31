@@ -42,12 +42,10 @@ import net.minecraft.util.Util;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
 
-/**
- * Allows putting model files in {@code /model_replacements} instead of {@code /models} to override models.
- * This is just a test for off-thread data loading.
- *
- * <p>The visible effect in game is that gold blocks use the diamond texture instead...
- */
+/// Allows putting model files in `/model_replacements` instead of `/models` to override models.
+/// This is just a test for off-thread data loading.
+///
+/// The visible effect in game is that gold blocks use the diamond texture instead...
 public class PreparablePluginTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogUtils.getLogger();
 	private static final FileToIdConverter MODEL_REPLACEMENTS_FINDER = FileToIdConverter.json("model_replacements");
@@ -68,9 +66,7 @@ public class PreparablePluginTest implements ClientModInitializer {
 		});
 	}
 
-	/**
-	 * Adaptation of the {@link ModelManager} method.
-	 */
+	/// Adaptation of the [ModelManager] method.
 	private static CompletableFuture<Map<Identifier, BlockModel>> loadModelReplacements(PreparableReloadListener.SharedState resourceReloaderStore, Executor executor) {
 		Objects.requireNonNull(resourceReloaderStore.get(AtlasManager.PENDING_STITCH));
 

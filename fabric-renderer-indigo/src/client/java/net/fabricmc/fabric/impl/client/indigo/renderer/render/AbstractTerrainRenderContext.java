@@ -55,7 +55,7 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 
 	protected abstract VertexConsumer getVertexConsumer(ChunkSectionLayer layer);
 
-	/** Must be called before buffering a block model. */
+	/// Must be called before buffering a block model.
 	protected void prepare(BlockPos pos, BlockState state) {
 		blockInfo.prepareForBlock(pos, state);
 		aoCalc.clear();
@@ -129,10 +129,8 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		}
 	}
 
-	/**
-	 * Starting in 1.16 flat shading uses dimension-specific diffuse factors that can be < 1.0
-	 * even for un-shaded quads. These are also applied with AO shading but that is done in AO calculator.
-	 */
+	/// Starting in 1.16 flat shading uses dimension-specific diffuse factors that can be < 1.0
+	/// even for un-shaded quads. These are also applied with AO shading but that is done in AO calculator.
 	private void shadeFlatQuad(MutableQuadViewImpl quad, boolean vanillaShade) {
 		final boolean hasShade = quad.diffuseShade();
 
@@ -184,11 +182,9 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		}
 	}
 
-	/**
-	 * Finds mean of per-face shading factors weighted by normal components.
-	 * Not how light actually works but the vanilla diffuse shading model is a hack to start with
-	 * and this gives reasonable results for non-cubic surfaces in a vanilla-style renderer.
-	 */
+	/// Finds mean of per-face shading factors weighted by normal components.
+	/// Not how light actually works but the vanilla diffuse shading model is a hack to start with
+	/// and this gives reasonable results for non-cubic surfaces in a vanilla-style renderer.
 	private float normalShade(float normalX, float normalY, float normalZ, boolean hasShade) {
 		float sum = 0;
 		float div = 0;
@@ -220,10 +216,8 @@ public abstract class AbstractTerrainRenderContext extends AbstractRenderContext
 		return sum / div;
 	}
 
-	/**
-	 * Handles geometry-based check for using self light or neighbor light.
-	 * That logic only applies in flat lighting.
-	 */
+	/// Handles geometry-based check for using self light or neighbor light.
+	/// That logic only applies in flat lighting.
 	private int flatLight(MutableQuadViewImpl quad) {
 		BlockState blockState = blockInfo.blockState;
 		BlockPos pos = blockInfo.blockPos;

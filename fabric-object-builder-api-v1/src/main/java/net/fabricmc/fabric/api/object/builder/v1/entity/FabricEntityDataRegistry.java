@@ -24,39 +24,31 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityDataRegistryImpl;
 
-/**
- * Allows registering custom {@link EntityDataSerializer}s in a reliable way.
- */
+/// Allows registering custom [EntityDataSerializer]s in a reliable way.
 public final class FabricEntityDataRegistry {
 	private FabricEntityDataRegistry() {
 	}
 
-	/**
-	 * Registers a {@link EntityDataSerializer} using the given ID. Use this instead of
-	 * {@link EntityDataSerializers#registerSerializer(EntityDataSerializer)} as the vanilla method exclusively uses integer
-	 * IDs, which can result in desyncs and errors with custom handlers. This method is guaranteed to work reliably.
-	 *
-	 * <p>Handlers registered with this method will have an associated integer ID as well, which can be used with
-	 * {@link EntityDataSerializers#getSerializer(int)} and {@link EntityDataSerializers#getSerializedId(EntityDataSerializer)}.
-	 * However, the integer ID of a given custom handler registered through this method may change on registry sync.
-	 * The integer IDs of vanilla handlers are guaranteed to remain constant.
-	 */
+	/// Registers a [EntityDataSerializer] using the given ID. Use this instead of
+	/// [EntityDataSerializers#registerSerializer(EntityDataSerializer)] as the vanilla method exclusively uses integer
+	/// IDs, which can result in desyncs and errors with custom handlers. This method is guaranteed to work reliably.
+	///
+	/// Handlers registered with this method will have an associated integer ID as well, which can be used with
+	/// [EntityDataSerializers#getSerializer(int)] and [EntityDataSerializers#getSerializedId(EntityDataSerializer)].
+	/// However, the integer ID of a given custom handler registered through this method may change on registry sync.
+	/// The integer IDs of vanilla handlers are guaranteed to remain constant.
 	public static void register(Identifier id, EntityDataSerializer<?> handler) {
 		FabricEntityDataRegistryImpl.register(id, handler);
 	}
 
-	/**
-	 * Retrieves the handler for the given ID, or {@code null} if it does not exist.
-	 */
+	/// Retrieves the handler for the given ID, or `null` if it does not exist.
 	@Nullable
 	public static EntityDataSerializer<?> get(Identifier id) {
 		return FabricEntityDataRegistryImpl.get(id);
 	}
 
-	/**
-	 * Retrieves the ID for the given handler, or {@code null} if the handler was not registered with
-	 * {@link #register(Identifier, EntityDataSerializer)}.
-	 */
+	/// Retrieves the ID for the given handler, or `null` if the handler was not registered with
+	/// [#register(Identifier, EntityDataSerializer)].
 	@Nullable
 	public static Identifier getId(EntityDataSerializer<?> handler) {
 		return FabricEntityDataRegistryImpl.getId(handler);

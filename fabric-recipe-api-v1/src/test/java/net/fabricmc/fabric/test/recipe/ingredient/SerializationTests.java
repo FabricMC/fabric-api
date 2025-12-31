@@ -48,9 +48,7 @@ public class SerializationTests {
 		new CustomIngredientInit().onInitialize();
 	}
 
-	/**
-	 * Check that trying to use a custom ingredient inside an array ingredient fails.
-	 */
+	/// Check that trying to use a custom ingredient inside an array ingredient fails.
 	@Test
 	public void testArrayDeserialization() {
 		String ingredientJson = """
@@ -74,9 +72,7 @@ public class SerializationTests {
 		});
 	}
 
-	/**
-	 * Check that we can serialize and deserialize a custom ingredient.
-	 */
+	/// Check that we can serialize and deserialize a custom ingredient.
 	@Test
 	public void testCustomIngredientSerialization() {
 		RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));

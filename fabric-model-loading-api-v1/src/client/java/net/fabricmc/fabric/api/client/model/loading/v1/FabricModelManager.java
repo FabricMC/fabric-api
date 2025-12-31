@@ -20,26 +20,22 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.resources.model.ModelManager;
 
-/**
- * Fabric-provided helper methods for {@link ModelManager}.
- *
- * <p>Note: This interface is automatically implemented on the {@link ModelManager} via Mixin and interface injection.
- */
+/// Fabric-provided helper methods for [ModelManager].
+///
+/// Note: This interface is automatically implemented on the [ModelManager] via Mixin and interface injection.
 public interface FabricModelManager {
-	/**
-	 * Get an extra model from the model manager.
-	 *
-	 * <p>This can be used to retrieve models loaded using
-	 * {@link ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)}.
-	 *
-	 * <p><b>This method, as well as its vanilla counterpart, should only be used after the
-	 * {@link ModelManager} has completed reloading.</b> Otherwise, the result will be
-	 * outdated or an exception will be thrown.
-	 *
-	 * @param key the key of the model
-	 * @return the model, or {@code null} if it cannot be found.
-	 * @see ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)
-	 */
+	/// Get an extra model from the model manager.
+	///
+	/// This can be used to retrieve models loaded using
+	/// [ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)].
+	///
+	/// **This method, as well as its vanilla counterpart, should only be used after the
+	/// [ModelManager] has completed reloading.** Otherwise, the result will be
+	/// outdated or an exception will be thrown.
+	///
+	/// @param key the key of the model
+	/// @return the model, or `null` if it cannot be found.
+	/// @see ModelLoadingPlugin.Context#addModel(ExtraModelKey, UnbakedExtraModel)
 	default <T> @Nullable T getModel(ExtraModelKey<T> key) {
 		throw new UnsupportedOperationException("Implemented via mixin.");
 	}

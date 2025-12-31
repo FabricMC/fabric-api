@@ -27,25 +27,19 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 
 import net.fabricmc.fabric.impl.client.rendering.PictureInPictureRendererRegistryImpl;
 
-/**
- * Allows registering {@linkplain PictureInPictureRenderer picture-in-picture renderers},
- * used to render custom gui elements beyond the methods available in {@link net.minecraft.client.gui.GuiGraphics GuiGraphics}.
- *
- * <p>To render a custom gui element, first implement and register a {@link PictureInPictureRenderer}.
- * When you want to render, add an instance of the corresponding render state to {@link net.minecraft.client.gui.GuiGraphics#guiRenderState GuiGraphics#guiRenderState} using {@link net.minecraft.client.gui.render.state.GuiRenderState#submitPicturesInPictureState(net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState) GuiRenderState#submitPicturesInPictureState(PictureInPictureRenderState)}.
- */
+/// Allows registering {@linkplain PictureInPictureRenderer picture-in-picture renderers},
+/// used to render custom gui elements beyond the methods available in [GuiGraphics][net.minecraft.client.gui.GuiGraphics].
+///
+/// To render a custom gui element, first implement and register a [PictureInPictureRenderer].
+/// When you want to render, add an instance of the corresponding render state to [GuiGraphics#guiRenderState][net.minecraft.client.gui.GuiGraphics#guiRenderState] using [GuiRenderState#submitPicturesInPictureState(PictureInPictureRenderState)][net.minecraft.client.gui.render.state.GuiRenderState#submitPicturesInPictureState(net.minecraft.client.gui.render.state.pip.PictureInPictureRenderState)].
 public final class PictureInPictureRendererRegistry {
-	/**
-	 * Registers a new {@link Factory} used to create a new {@link PictureInPictureRenderer} instance.
-	 */
+	/// Registers a new [Factory] used to create a new [PictureInPictureRenderer] instance.
 	public static void register(Factory factory) {
 		Objects.requireNonNull(factory, "factory");
 		PictureInPictureRendererRegistryImpl.register(factory);
 	}
 
-	/**
-	 * A factory to create a new {@link PictureInPictureRenderer} instance.
-	 */
+	/// A factory to create a new [PictureInPictureRenderer] instance.
 	@FunctionalInterface
 	public interface Factory {
 		PictureInPictureRenderer<?> createRenderer(Context ctx);
@@ -53,19 +47,13 @@ public final class PictureInPictureRendererRegistry {
 
 	@ApiStatus.NonExtendable
 	public interface Context {
-		/**
-		 * @return the {@link MultiBufferSource.BufferSource}.
-		 */
+		/// @return the [MultiBufferSource.BufferSource].
 		MultiBufferSource.BufferSource bufferSource();
 
-		/**
-		 * @return the {@link Minecraft} instance.
-		 */
+		/// @return the [Minecraft] instance.
 		Minecraft minecraft();
 
-		/**
-		 * @return the {@link SubmitNodeCollector} instance.
-		 */
+		/// @return the [SubmitNodeCollector] instance.
 		SubmitNodeCollector submitNodeCollector();
 	}
 }

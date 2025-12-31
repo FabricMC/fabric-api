@@ -21,19 +21,15 @@ import net.minecraft.core.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 
-/**
- * Handles most texture-baking use cases for model loaders and model libraries
- * via {@link #bakeSprite(MutableQuadView, TextureAtlasSprite, int)}.
- */
+/// Handles most texture-baking use cases for model loaders and model libraries
+/// via [#bakeSprite(MutableQuadView, TextureAtlasSprite, int)].
 public final class QuadSpriteBaker {
 	private QuadSpriteBaker() { }
 
 	private static final float NORMALIZER = 1f / 16f;
 
-	/**
-	 * Bakes textures in the provided vertex data, handling UV locking,
-	 * rotation, interpolation, etc. Textures must not be already baked.
-	 */
+	/// Bakes textures in the provided vertex data, handling UV locking,
+	/// rotation, interpolation, etc. Textures must not be already baked.
 	public static void bakeSprite(MutableQuadView quad, TextureAtlasSprite sprite, int bakeFlags) {
 		if (quad.nominalFace() != null && (MutableQuadView.BAKE_LOCK_UV & bakeFlags) != 0) {
 			// Assigns normalized UV coordinates based on vertex positions
@@ -64,10 +60,8 @@ public final class QuadSpriteBaker {
 		interpolate(quad, sprite);
 	}
 
-	/**
-	 * Faster than sprite method. Sprite computes span and normalizes inputs each call,
-	 * so we'd have to denormalize before we called, only to have the sprite renormalize immediately.
-	 */
+	/// Faster than sprite method. Sprite computes span and normalizes inputs each call,
+	/// so we'd have to denormalize before we called, only to have the sprite renormalize immediately.
 	private static void interpolate(MutableQuadView q, TextureAtlasSprite sprite) {
 		final float uMin = sprite.getU0();
 		final float uSpan = sprite.getU1() - uMin;

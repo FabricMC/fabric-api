@@ -18,12 +18,8 @@ package net.fabricmc.fabric.api.client.gametest.v1;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 
-/**
- * The {@code fabric-client-gametest} entrypoint interface. See the package documentation.
- */
+/// The `fabric-client-gametest` entrypoint interface. See the package documentation.
 public interface FabricClientGameTest {
-	/**
-	 * Runs the gametest.
-	 */
+	/// Runs the gametest.
 	void runTest(ClientGameTestContext context);
 }

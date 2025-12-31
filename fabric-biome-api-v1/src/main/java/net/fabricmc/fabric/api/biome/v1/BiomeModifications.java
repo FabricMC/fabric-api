@@ -30,43 +30,35 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
-/**
- * Provides an API to modify Biomes after they have been loaded and before they are used in the Level.
- *
- * <p>Any modifications made to biomes will not be available for use in the demo level.
- */
+/// Provides an API to modify Biomes after they have been loaded and before they are used in the Level.
+///
+/// Any modifications made to biomes will not be available for use in the demo level.
 public final class BiomeModifications {
 	private BiomeModifications() {
 	}
 
-	/**
-	 * Convenience method to add a feature to one or more biomes.
-	 *
-	 * @see BiomeSelectors
-	 */
+	/// Convenience method to add a feature to one or more biomes.
+	///
+	/// @see BiomeSelectors
 	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Decoration step, ResourceKey<PlacedFeature> placedFeatureKey) {
 		create(placedFeatureKey.identifier()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
 			context.getGenerationSettings().addFeature(step, placedFeatureKey);
 		});
 	}
 
-	/**
-	 * Convenience method to add a carver to one or more biomes.
-	 *
-	 * @see BiomeSelectors
-	 */
+	/// Convenience method to add a carver to one or more biomes.
+	///
+	/// @see BiomeSelectors
 	public static void addCarver(Predicate<BiomeSelectionContext> biomeSelector, ResourceKey<ConfiguredWorldCarver<?>> configuredCarverKey) {
 		create(configuredCarverKey.identifier()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
 			context.getGenerationSettings().addCarver(configuredCarverKey);
 		});
 	}
 
-	/**
-	 * Convenience method to add an entity spawn to one or more biomes.
-	 *
-	 * @see BiomeSelectors
-	 * @see net.minecraft.world.level.biome.MobSpawnSettings.Builder#addSpawn(MobCategory, int, MobSpawnSettings.SpawnerData)
-	 */
+	/// Convenience method to add an entity spawn to one or more biomes.
+	///
+	/// @see BiomeSelectors
+	/// @see net.minecraft.world.level.biome.MobSpawnSettings.Builder#addSpawn(MobCategory, int, MobSpawnSettings.SpawnerData)
 	public static void addSpawn(Predicate<BiomeSelectionContext> biomeSelector,
 								MobCategory category, EntityType<?> entityType,
 								int weight, int minGroupSize, int maxGroupSize) {
@@ -83,13 +75,11 @@ public final class BiomeModifications {
 		});
 	}
 
-	/**
-	 * Creates a new biome modification which will be applied whenever biomes are loaded from data packs.
-	 *
-	 * @param id An identifier for the new set of biome modifications that is returned. Is used for
-	 *           guaranteeing consistent ordering between the biome modifications added by different mods
-	 *           (assuming they otherwise have the same phase).
-	 */
+	/// Creates a new biome modification which will be applied whenever biomes are loaded from data packs.
+	///
+	/// @param id An identifier for the new set of biome modifications that is returned. Is used for
+	///           guaranteeing consistent ordering between the biome modifications added by different mods
+	///           (assuming they otherwise have the same phase).
 	public static BiomeModification create(Identifier id) {
 		return new BiomeModification(id);
 	}

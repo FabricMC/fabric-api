@@ -26,9 +26,7 @@ public final class ClientLevelEvents {
 	private ClientLevelEvents() {
 	}
 
-	/**
-	 * An event which is called after the client level has been changed.
-	 */
+	/// An event which is called after the client level has been changed.
 	public static final Event<AfterClientLevelChange> AFTER_CLIENT_LEVEL_CHANGE = EventFactory.createArrayBacked(AfterClientLevelChange.class, callbacks -> (client, level) -> {
 		for (AfterClientLevelChange callback : callbacks) {
 			callback.afterLevelChange(client, level);
@@ -37,12 +35,10 @@ public final class ClientLevelEvents {
 
 	@FunctionalInterface
 	public interface AfterClientLevelChange {
-		/**
-		 * Called after the client level has been changed.
-		 *
-		 * @param client the client instance
-		 * @param level the new level instance
-		 */
+		/// Called after the client level has been changed.
+		///
+		/// @param client the client instance
+		/// @param level the new level instance
 		void afterLevelChange(Minecraft client, ClientLevel level);
 	}
 }

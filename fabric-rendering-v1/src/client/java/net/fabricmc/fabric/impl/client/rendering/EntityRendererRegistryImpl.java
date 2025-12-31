@@ -23,9 +23,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
-/**
- * Helper class for registering EntityRenderers.
- */
+/// Helper class for registering EntityRenderers.
 public final class EntityRendererRegistryImpl {
 	private static HashMap<EntityType<?>, EntityRendererProvider<?>> map = new HashMap<>();
 	private static BiConsumer<EntityType<?>, EntityRendererProvider<?>> handler = (type, function) -> map.put(type, function);

@@ -22,9 +22,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * Factory methods for creating event instances used in {@link ScreenExtensions}.
- */
+/// Factory methods for creating event instances used in [ScreenExtensions].
 public final class ScreenEventFactory {
 	public static Event<ScreenEvents.Remove> createRemoveEvent() {
 		return EventFactory.createArrayBacked(ScreenEvents.Remove.class, callbacks -> screen -> {

@@ -31,85 +31,68 @@ import net.minecraft.resources.ResourceKey;
 
 import net.fabricmc.fabric.mixin.registry.sync.BuiltInRegistriesAccessor;
 
-/**
- * Used to create custom registries, with specified registry attributes.
- *
- * <p>See the following example for creating a {@link Registry} of String objects.
- *
- * <pre>
- * {@code
- *  ResourceKey<Registry<String>> key = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("modid", "custom_registry"));
- *  Registry<String> registry = FabricRegistryBuilder.createSimple(key)
- * 													.attribute(RegistryAttribute.SYNCED)
- * 													.buildAndRegister();
- * 	}
- * </pre>
- *
- * <p>Tags for the entries of a custom registry must be placed in
- * {@code /tags/<registry namespace>/<registry path>/}. For example, the tags for the example
- * registry above would be placed in {@code /tags/modid/registry_name/}.
- *
- * @param <T> The type stored in the Registry
- * @param <R> The registry type
- */
+/// Used to create custom registries, with specified registry attributes.
+///
+/// See the following example for creating a [Registry] of String objects.
+/// <pre>
+///
+/// `ResourceKey<Registry<String>> key = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("modid", "custom_registry"));Registry<String> registry = FabricRegistryBuilder.createSimple(key).attribute(RegistryAttribute.SYNCED).buildAndRegister();`
+/// </pre>
+///
+/// Tags for the entries of a custom registry must be placed in
+/// `/tags/<registry namespace>/<registry path>/`. For example, the tags for the example
+/// registry above would be placed in `/tags/modid/registry_name/`.
+///
+/// @param <T> The type stored in the Registry
+/// @param <R> The registry type
 public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
-	/**
-	 * Create a new {@link FabricRegistryBuilder}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
-	 *
-	 * @param registry The base registry type such as {@link net.minecraft.core.MappedRegistry} or {@link net.minecraft.core.DefaultedRegistry}
-	 * @param <T> The type stored in the Registry
-	 * @param <R> The registry type
-	 * @return An instance of FabricRegistryBuilder
-	 */
+	/// Create a new [FabricRegistryBuilder], the registry has the [RegistryAttribute#MODDED] attribute by default.
+	///
+	/// @param registry The base registry type such as [net.minecraft.core.MappedRegistry] or [net.minecraft.core.DefaultedRegistry]
+	/// @param <T> The type stored in the Registry
+	/// @param <R> The registry type
+	/// @return An instance of FabricRegistryBuilder
 	public static <T, R extends WritableRegistry<T>> FabricRegistryBuilder<T, R> from(R registry) {
 		return new FabricRegistryBuilder<>(registry);
 	}
 
-	/**
-	 * Create a new {@link FabricRegistryBuilder} using a {@link MappedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
-	 *
-	 * @param key The registry's {@link ResourceKey}
-	 * @param <T> The type stored in the Registry
-	 * @return An instance of FabricRegistryBuilder
-	 */
+	/// Create a new [FabricRegistryBuilder] using a [MappedRegistry], the registry has the [RegistryAttribute#MODDED] attribute by default.
+	///
+	/// @param key The registry's [ResourceKey]
+	/// @param <T> The type stored in the Registry
+	/// @return An instance of FabricRegistryBuilder
 	public static <T> FabricRegistryBuilder<T, MappedRegistry<T>> create(ResourceKey<Registry<T>> key) {
 		return from(new MappedRegistry<>(key, Lifecycle.stable(), false));
 	}
 
-	/**
-	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
-	 *
-	 * @param key The registry's {@link ResourceKey}
-	 * @param defaultId The default registry id
-	 * @param <T> The type stored in the Registry
-	 * @return An instance of FabricRegistryBuilder
-	 */
+	/// Create a new [FabricRegistryBuilder] using a [DefaultedRegistry], the registry has the [RegistryAttribute#MODDED] attribute by default.
+	///
+	/// @param key The registry's [ResourceKey]
+	/// @param defaultId The default registry id
+	/// @param <T> The type stored in the Registry
+	/// @return An instance of FabricRegistryBuilder
 	public static <T> FabricRegistryBuilder<T, DefaultedMappedRegistry<T>> createDefaulted(ResourceKey<Registry<T>> key, Identifier defaultId) {
 		return from(new DefaultedMappedRegistry<T>(defaultId.toString(), key, Lifecycle.stable(), false));
 	}
 
-	/**
-	 * Create a new {@link FabricRegistryBuilder} using a {@link MappedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
-	 *
-	 * @param registryId The registry {@link Identifier} used as the registry id
-	 * @param <T> The type stored in the Registry
-	 * @return An instance of FabricRegistryBuilder
-	 * @deprecated Please migrate to {@link FabricRegistryBuilder#create(ResourceKey)}
-	 */
+	/// Create a new [FabricRegistryBuilder] using a [MappedRegistry], the registry has the [RegistryAttribute#MODDED] attribute by default.
+	///
+	/// @param registryId The registry [Identifier] used as the registry id
+	/// @param <T> The type stored in the Registry
+	/// @return An instance of FabricRegistryBuilder
+	/// @deprecated Please migrate to [FabricRegistryBuilder#create(ResourceKey)]
 	@Deprecated
 	public static <T> FabricRegistryBuilder<T, MappedRegistry<T>> create(Class<T> type, Identifier registryId) {
 		return create(ResourceKey.createRegistryKey(registryId));
 	}
 
-	/**
-	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
-	 *
-	 * @param registryId The registry {@link Identifier} used as the registry id
-	 * @param defaultId The default registry id
-	 * @param <T> The type stored in the Registry
-	 * @return An instance of FabricRegistryBuilder
-	 * @deprecated Please migrate to {@link FabricRegistryBuilder#createDefaulted(ResourceKey, Identifier)}
-	 */
+	/// Create a new [FabricRegistryBuilder] using a [DefaultedRegistry], the registry has the [RegistryAttribute#MODDED] attribute by default.
+	///
+	/// @param registryId The registry [Identifier] used as the registry id
+	/// @param defaultId The default registry id
+	/// @param <T> The type stored in the Registry
+	/// @return An instance of FabricRegistryBuilder
+	/// @deprecated Please migrate to [FabricRegistryBuilder#createDefaulted(ResourceKey, Identifier)]
 	@Deprecated
 	public static <T> FabricRegistryBuilder<T, DefaultedMappedRegistry<T>> createDefaulted(Class<T> type, Identifier registryId, Identifier defaultId) {
 		return createDefaulted(ResourceKey.createRegistryKey(registryId), defaultId);
@@ -123,21 +106,17 @@ public final class FabricRegistryBuilder<T, R extends WritableRegistry<T>> {
 		attribute(RegistryAttribute.MODDED);
 	}
 
-	/**
-	 * Add a {@link RegistryAttribute} to the registry.
-	 *
-	 * @param attribute the {@link RegistryAttribute} to add to the registry
-	 * @return the instance of {@link FabricRegistryBuilder}
-	 */
+	/// Add a [RegistryAttribute] to the registry.
+	///
+	/// @param attribute the [RegistryAttribute] to add to the registry
+	/// @return the instance of [FabricRegistryBuilder]
 	public FabricRegistryBuilder<T, R> attribute(RegistryAttribute attribute) {
 		attributes.add(attribute);
 		return this;
 	}
 
-	/**
-	 * Applies the attributes to the registry and registers it.
-	 * @return the registry instance with the attributes applied
-	 */
+	/// Applies the attributes to the registry and registers it.
+	/// @return the registry instance with the attributes applied
 	public R buildAndRegister() {
 		final ResourceKey<?> key = registry.key();
 

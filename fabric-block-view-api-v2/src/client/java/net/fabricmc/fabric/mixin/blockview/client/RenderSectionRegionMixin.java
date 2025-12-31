@@ -46,9 +46,7 @@ public abstract class RenderSectionRegionMixin implements BlockAndTintGetter, Re
 		return fabric_renderDataMap == null ? null : fabric_renderDataMap.get(pos.asLong());
 	}
 
-	/**
-	 * Called in {@link RenderRegionCacheMixin}.
-	 */
+	/// Called in [RenderRegionCacheMixin].
 	@Override
 	public void fabric_acceptRenderDataMap(Long2ObjectMap<Object> renderDataMap) {
 		this.fabric_renderDataMap = renderDataMap;

@@ -20,19 +20,15 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.server.packs.repository.PackSource;
 
-/**
- * Extensions to {@link net.minecraft.server.packs.resources.Resource}.
- * Automatically implemented there via a mixin.
- */
+/// Extensions to [net.minecraft.server.packs.resources.Resource].
+/// Automatically implemented there via a mixin.
 public interface FabricResource {
-	/**
-	 * Gets the pack source of this resource.
-	 * The source is used to separate vanilla/mod resources from user resources in Fabric API.
-	 *
-	 * <p>Custom {@link net.minecraft.server.packs.resources.Resource} implementations should override this method.
-	 *
-	 * @return the pack source
-	 */
+	/// Gets the pack source of this resource.
+	/// The source is used to separate vanilla/mod resources from user resources in Fabric API.
+	///
+	/// Custom [net.minecraft.server.packs.resources.Resource] implementations should override this method.
+	///
+	/// @return the pack source
 	default PackSource getFabricPackSource() {
 		LoggerFactory.getLogger(FabricResource.class).error("Unknown Resource implementation {}, returning DEFAULT as the source", this.getClass().getName());
 		return PackSource.DEFAULT;

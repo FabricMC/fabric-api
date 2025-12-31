@@ -27,80 +27,60 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
-/**
- * Extensions to {@link SharedSuggestionProvider} for client-sided commands.
- */
+/// Extensions to [SharedSuggestionProvider] for client-sided commands.
 public interface FabricClientCommandSource extends SharedSuggestionProvider {
-	/**
-	 * Sends a feedback message to the player.
-	 *
-	 * @param message the feedback message
-	 */
+	/// Sends a feedback message to the player.
+	///
+	/// @param message the feedback message
 	void sendFeedback(Component message);
 
-	/**
-	 * Sends an error message to the player.
-	 *
-	 * @param message the error message
-	 */
+	/// Sends an error message to the player.
+	///
+	/// @param message the error message
 	void sendError(Component message);
 
-	/**
-	 * Gets the client instance used to run the command.
-	 *
-	 * @return the client
-	 */
+	/// Gets the client instance used to run the command.
+	///
+	/// @return the client
 	Minecraft getClient();
 
-	/**
-	 * Gets the player that used the command.
-	 *
-	 * @return the player
-	 */
+	/// Gets the player that used the command.
+	///
+	/// @return the player
 	LocalPlayer getPlayer();
 
-	/**
-	 * Gets the entity that used the command.
-	 *
-	 * @return the entity
-	 */
+	/// Gets the entity that used the command.
+	///
+	/// @return the entity
 	default Entity getEntity() {
 		return getPlayer();
 	}
 
-	/**
-	 * Gets the position from where the command has been executed.
-	 *
-	 * @return the position
-	 */
+	/// Gets the position from where the command has been executed.
+	///
+	/// @return the position
 	default Vec3 getPosition() {
 		return getPlayer().position();
 	}
 
-	/**
-	 * Gets the rotation of the entity that used the command.
-	 *
-	 * @return the rotation
-	 */
+	/// Gets the rotation of the entity that used the command.
+	///
+	/// @return the rotation
 	default Vec2 getRotation() {
 		return getPlayer().getRotationVector();
 	}
 
-	/**
-	 * Gets the level where the player used the command.
-	 *
-	 * @return the level
-	 */
+	/// Gets the level where the player used the command.
+	///
+	/// @return the level
 	ClientLevel getLevel();
 
-	/**
-	 * Gets the meta property under {@code key} that was assigned to this source.
-	 *
-	 * <p>This method should return the same result for every call with the same {@code key}.
-	 *
-	 * @param key the meta key
-	 * @return the meta
-	 */
+	/// Gets the meta property under `key` that was assigned to this source.
+	///
+	/// This method should return the same result for every call with the same `key`.
+	///
+	/// @param key the meta key
+	/// @return the meta
 	default @Nullable Object getMeta(String key) {
 		return null;
 	}

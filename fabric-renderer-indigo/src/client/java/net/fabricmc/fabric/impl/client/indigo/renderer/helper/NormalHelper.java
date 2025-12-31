@@ -24,22 +24,18 @@ import net.minecraft.util.Mth;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 
-/**
- * Static routines of general utility for renderer implementations.
- * Renderers are not required to use these helpers, but they were
- * designed to be usable without the default renderer.
- */
+/// Static routines of general utility for renderer implementations.
+/// Renderers are not required to use these helpers, but they were
+/// designed to be usable without the default renderer.
 public final class NormalHelper {
 	private NormalHelper() { }
 
 	private static final float PACK = 127.0f;
 	private static final float UNPACK = 1.0f / PACK;
 
-	/**
-	 * Stores a normal plus an extra value as a quartet of signed bytes.
-	 * This is the same normal format that vanilla rendering expects.
-	 * The extra value is for use by shaders.
-	 */
+	/// Stores a normal plus an extra value as a quartet of signed bytes.
+	/// This is the same normal format that vanilla rendering expects.
+	/// The extra value is for use by shaders.
 	public static int packNormal(float x, float y, float z, float w) {
 		x = Mth.clamp(x, -1, 1);
 		y = Mth.clamp(y, -1, 1);
@@ -49,16 +45,12 @@ public final class NormalHelper {
 		return ((int) (x * PACK) & 0xFF) | (((int) (y * PACK) & 0xFF) << 8) | (((int) (z * PACK) & 0xFF) << 16) | (((int) (w * PACK) & 0xFF) << 24);
 	}
 
-	/**
-	 * Version of {@link #packNormal(float, float, float, float)} that accepts a vector type.
-	 */
+	/// Version of [#packNormal(float, float, float, float)] that accepts a vector type.
 	public static int packNormal(Vector3f normal, float w) {
 		return packNormal(normal.x(), normal.y(), normal.z(), w);
 	}
 
-	/**
-	 * Like {@link #packNormal(float, float, float, float)}, but without a {@code w} value.
-	 */
+	/// Like [#packNormal(float, float, float, float)], but without a `w` value.
 	public static int packNormal(float x, float y, float z) {
 		x = Mth.clamp(x, -1, 1);
 		y = Mth.clamp(y, -1, 1);
@@ -67,9 +59,7 @@ public final class NormalHelper {
 		return ((int) (x * PACK) & 0xFF) | (((int) (y * PACK) & 0xFF) << 8) | (((int) (z * PACK) & 0xFF) << 16);
 	}
 
-	/**
-	 * Like {@link #packNormal(Vector3f, float)}, but without a {@code w} value.
-	 */
+	/// Like [#packNormal(Vector3f, float)], but without a `w` value.
 	public static int packNormal(Vector3f normal) {
 		return packNormal(normal.x(), normal.y(), normal.z());
 	}
@@ -94,14 +84,12 @@ public final class NormalHelper {
 		target.set(unpackNormalX(packedNormal), unpackNormalY(packedNormal), unpackNormalZ(packedNormal));
 	}
 
-	/**
-	 * Computes the face normal of the given quad and saves it in the provided non-null vector.
-	 * If {@link QuadView#nominalFace()} is set will optimize by confirming quad is parallel to that
-	 * face and, if so, use the standard normal for that face direction.
-	 *
-	 * <p>Will work with triangles also. Assumes counter-clockwise winding order, which is the norm.
-	 * Expects convex quads with all points co-planar.
-	 */
+	/// Computes the face normal of the given quad and saves it in the provided non-null vector.
+	/// If [QuadView#nominalFace()] is set will optimize by confirming quad is parallel to that
+	/// face and, if so, use the standard normal for that face direction.
+	///
+	/// Will work with triangles also. Assumes counter-clockwise winding order, which is the norm.
+	/// Expects convex quads with all points co-planar.
 	public static void computeFaceNormal(Vector3f saveTo, QuadView q) {
 		final Direction nominalFace = q.nominalFace();
 

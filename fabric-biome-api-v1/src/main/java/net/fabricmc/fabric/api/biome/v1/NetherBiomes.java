@@ -22,20 +22,16 @@ import net.minecraft.world.level.biome.Climate;
 
 import net.fabricmc.fabric.impl.biome.NetherBiomeData;
 
-/**
- * API that exposes the internals of Minecraft's nether biome code.
- */
+/// API that exposes the internals of Minecraft's nether biome code.
 public final class NetherBiomes {
 	private NetherBiomes() {
 	}
 
-	/**
-	 * Adds a biome to the Nether generator.
-	 *
-	 * @param biome           The biome to add. Must not be null.
-	 * @param targetPoint data about the given {@link Biome}'s spawning information in the nether.
-	 * @see Climate.TargetPoint
-	 */
+	/// Adds a biome to the Nether generator.
+	///
+	/// @param biome           The biome to add. Must not be null.
+	/// @param targetPoint data about the given [Biome]'s spawning information in the nether.
+	/// @see Climate.TargetPoint
 	public static void addNetherBiome(ResourceKey<Biome> biome, Climate.TargetPoint targetPoint) {
 		NetherBiomeData.addNetherBiome(biome, Climate.parameters(
 				targetPoint.temperature(),
@@ -48,21 +44,17 @@ public final class NetherBiomes {
 		));
 	}
 
-	/**
-	 * Adds a biome to the Nether generator.
-	 *
-	 * @param biome           The biome to add. Must not be null.
-	 * @param parameterPoint data about the given {@link Biome}'s spawning information in the nether.
-	 * @see Climate.ParameterPoint
-	 */
+	/// Adds a biome to the Nether generator.
+	///
+	/// @param biome           The biome to add. Must not be null.
+	/// @param parameterPoint data about the given [Biome]'s spawning information in the nether.
+	/// @see Climate.ParameterPoint
 	public static void addNetherBiome(ResourceKey<Biome> biome, Climate.ParameterPoint parameterPoint) {
 		NetherBiomeData.addNetherBiome(biome, parameterPoint);
 	}
 
-	/**
-	 * Returns true if the given biome can generate in the nether, considering the Vanilla nether biomes,
-	 * and any biomes added to the Nether by mods.
-	 */
+	/// Returns true if the given biome can generate in the nether, considering the Vanilla nether biomes,
+	/// and any biomes added to the Nether by mods.
 	public static boolean canGenerateInNether(ResourceKey<Biome> biome) {
 		return NetherBiomeData.canGenerateInNether(biome);
 	}

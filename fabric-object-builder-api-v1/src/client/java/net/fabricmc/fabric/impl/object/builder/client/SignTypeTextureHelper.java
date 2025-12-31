@@ -20,11 +20,9 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.world.level.block.state.properties.WoodType;
 
 public final class SignTypeTextureHelper {
-	/**
-	 * Set to true after {@link Sheets} has been classloaded. If any new {@link WoodType}s are registered
-	 * after this point, they need to be added to the texture maps manually. Always adding textures manually classloads
-	 * {@link Sheets} too early, which causes issues such as decorated pot pattern textures not being
-	 * initialized correctly.
-	 */
+	/// Set to true after [Sheets] has been classloaded. If any new [WoodType]s are registered
+	/// after this point, they need to be added to the texture maps manually. Always adding textures manually classloads
+	/// [Sheets] too early, which causes issues such as decorated pot pattern textures not being
+	/// initialized correctly.
 	public static boolean shouldAddTextures = false;
 }

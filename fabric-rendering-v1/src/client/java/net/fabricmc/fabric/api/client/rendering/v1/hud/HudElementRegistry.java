@@ -23,85 +23,77 @@ import net.minecraft.resources.Identifier;
 
 import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 
-/**
- * A registry of identified hud layers with methods to add layers in specific positions.
- *
- * <p>Operations relative to a vanilla element will inherit that element's render condition.
- *
- * <p>The render condition for all vanilla layers except {@link VanillaHudElements#SLEEP} is
- * {@link net.minecraft.client.Options#hideGui}.
- *
- * <p>Only {@link #addFirst(Identifier, HudElement)} and {@link #addLast(Identifier, HudElement)} will not inherit any
- * render condition.
- *
- * <p>There is currently no mechanism to change the render condition of a vanilla element.
- *
- * <p>For vanilla layers, see {@link VanillaHudElements}.
- *
- * <p>Common places to add layers (as of 1.21.6):
- * <table>
- *     <tr>
- *         <th>Injection Point</th>
- *         <th>Use Case</th>
- *     </tr>
- *     <tr>
- *         <td>Before {@link VanillaHudElements#MISC_OVERLAYS MISC_OVERLAYS}</td>
- *         <td>Render before everything</td>
- *     </tr>
- *     <tr>
- *         <td>After {@link VanillaHudElements#MISC_OVERLAYS MISC_OVERLAYS}</td>
- *         <td>Render after misc overlays (vignette, spyglass, and powder snow) and before the crosshair</td>
- *     </tr>
- *     <tr>
- *         <td>After {@link VanillaHudElements#BOSS_BAR BOSS_BAR}</td>
- *         <td>Render after most main hud layers like hotbar, spectator GUI, status bars, experience bar, mob effects overlays, and boss bar and before the sleep overlay</td>
- *     </tr>
- *     <tr>
- *         <td>Before {@link VanillaHudElements#DEMO_TIMER DEMO_TIMER}</td>
- *         <td>Render after sleep overlay and before the demo timer, debug overlay, scoreboard, overlay message (action bar), and title and subtitle</td>
- *     </tr>
- *     <tr>
- *         <td>Before {@link VanillaHudElements#CHAT CHAT}</td>
- *         <td>Render after the debug overlay, scoreboard, overlay message (action bar), and title and subtitle and before {@linkplain net.minecraft.client.gui.components.ChatComponent chat hud}, player list, and sound subtitles</td>
- *     </tr>
- *     <tr>
- *         <td>After {@link VanillaHudElements#SUBTITLES SUBTITLES}</td>
- *         <td>Render after everything</td>
- *     </tr>
- * </table>
- */
+/// A registry of identified hud layers with methods to add layers in specific positions.
+///
+/// Operations relative to a vanilla element will inherit that element's render condition.
+///
+/// The render condition for all vanilla layers except [VanillaHudElements#SLEEP] is
+/// [net.minecraft.client.Options#hideGui].
+///
+/// Only [#addFirst(Identifier, HudElement)] and [#addLast(Identifier, HudElement)] will not inherit any
+/// render condition.
+///
+/// There is currently no mechanism to change the render condition of a vanilla element.
+///
+/// For vanilla layers, see [VanillaHudElements].
+///
+/// Common places to add layers (as of 1.21.6):
+/// <table>
+///     <tr>
+///         <th>Injection Point</th>
+///         <th>Use Case</th>
+///     </tr>
+///     <tr>
+///         <td>Before [MISC_OVERLAYS][VanillaHudElements#MISC_OVERLAYS]</td>
+///         <td>Render before everything</td>
+///     </tr>
+///     <tr>
+///         <td>After [MISC_OVERLAYS][VanillaHudElements#MISC_OVERLAYS]</td>
+///         <td>Render after misc overlays (vignette, spyglass, and powder snow) and before the crosshair</td>
+///     </tr>
+///     <tr>
+///         <td>After [BOSS_BAR][VanillaHudElements#BOSS_BAR]</td>
+///         <td>Render after most main hud layers like hotbar, spectator GUI, status bars, experience bar, mob effects overlays, and boss bar and before the sleep overlay</td>
+///     </tr>
+///     <tr>
+///         <td>Before [DEMO_TIMER][VanillaHudElements#DEMO_TIMER]</td>
+///         <td>Render after sleep overlay and before the demo timer, debug overlay, scoreboard, overlay message (action bar), and title and subtitle</td>
+///     </tr>
+///     <tr>
+///         <td>Before [CHAT][VanillaHudElements#CHAT]</td>
+///         <td>Render after the debug overlay, scoreboard, overlay message (action bar), and title and subtitle and before {@linkplain net.minecraft.client.gui.components.ChatComponent chat hud}, player list, and sound subtitles</td>
+///     </tr>
+///     <tr>
+///         <td>After [SUBTITLES][VanillaHudElements#SUBTITLES]</td>
+///         <td>Render after everything</td>
+///     </tr>
+/// </table>
 public interface HudElementRegistry {
-	/**
-	 * Adds an element to the front.
-	 *
-	 * @param element the element to add
-	 */
+	/// Adds an element to the front.
+	///
+	/// @param element the element to add
 	static void addFirst(Identifier id, HudElement element) {
 		Objects.requireNonNull(id, "identifier");
 		Objects.requireNonNull(element, "hudElement");
 		HudElementRegistryImpl.addFirst(id, element);
 	}
 
-	/**
-	 * Adds an element to the end.
-	 *
-	 * @param element the element to add
-	 */
+	/// Adds an element to the end.
+	///
+	/// @param element the element to add
 	static void addLast(Identifier id, HudElement element) {
 		Objects.requireNonNull(id, "identifier");
 		Objects.requireNonNull(element, "hudElement");
 		HudElementRegistryImpl.addLast(id, element);
 	}
 
-	/**
-	 * Attaches an element before the element with the specified identifier.
-	 *
-	 * <p>The render condition of the vanilla element being attached to, if any, also applies to the new element.
-	 *
-	 * @param beforeThis the identifier of the element to add the new element before
-	 * @param identifier the identifier of the new element
-	 * @param element    the element to add
-	 */
+	/// Attaches an element before the element with the specified identifier.
+	///
+	/// The render condition of the vanilla element being attached to, if any, also applies to the new element.
+	///
+	/// @param beforeThis the identifier of the element to add the new element before
+	/// @param identifier the identifier of the new element
+	/// @param element    the element to add
 	static void attachElementBefore(Identifier beforeThis, Identifier identifier, HudElement element) {
 		Objects.requireNonNull(beforeThis, "beforeThis");
 		Objects.requireNonNull(identifier, "identifier");
@@ -109,15 +101,13 @@ public interface HudElementRegistry {
 		HudElementRegistryImpl.attachElementBefore(beforeThis, identifier, element);
 	}
 
-	/**
-	 * Attaches an element after the element with the specified identifier.
-	 *
-	 * <p>The render condition of the vanilla element being attached to, if any, also applies to the new element.
-	 *
-	 * @param afterThis  the identifier of the element to add the new element after
-	 * @param identifier the identifier of the new element
-	 * @param element    the element to add
-	 */
+	/// Attaches an element after the element with the specified identifier.
+	///
+	/// The render condition of the vanilla element being attached to, if any, also applies to the new element.
+	///
+	/// @param afterThis  the identifier of the element to add the new element after
+	/// @param identifier the identifier of the new element
+	/// @param element    the element to add
 	static void attachElementAfter(Identifier afterThis, Identifier identifier, HudElement element) {
 		Objects.requireNonNull(afterThis, "afterThis");
 		Objects.requireNonNull(identifier, "identifier");
@@ -125,28 +115,24 @@ public interface HudElementRegistry {
 		HudElementRegistryImpl.attachElementAfter(afterThis, identifier, element);
 	}
 
-	/**
-	 * Removes an element with the specified identifier.
-	 *
-	 * @param identifier the identifier of the element to remove
-	 */
+	/// Removes an element with the specified identifier.
+	///
+	/// @param identifier the identifier of the element to remove
 	static void removeElement(Identifier identifier) {
 		Objects.requireNonNull(identifier, "identifier");
 		HudElementRegistryImpl.removeElement(identifier);
 	}
 
-	/**
-	 * Replaces an element with the specified identifier, the element retains its original identifier.
-	 *
-	 * <p>The render condition of the vanilla element being replaced, if any, also applies to the new element.
-	 *
-	 * <p>If the replaced element is a status bar (like {@link VanillaHudElements#HEALTH_BAR HEALTH_BAR},
-	 * {@link VanillaHudElements#ARMOR_BAR ARMOR_BAR} or {@link VanillaHudElements#FOOD_BAR FOOD_BAR}), it may be
-	 * necessary to register a new {@link StatusBarHeightProvider} in {@link HudStatusBarHeightRegistry}.
-	 *
-	 * @param identifier the identifier of the element to replace
-	 * @param replacer   a function that takes the old element and returns the new element
-	 */
+	/// Replaces an element with the specified identifier, the element retains its original identifier.
+	///
+	/// The render condition of the vanilla element being replaced, if any, also applies to the new element.
+	///
+	/// If the replaced element is a status bar (like [HEALTH_BAR][VanillaHudElements#HEALTH_BAR],
+	/// [ARMOR_BAR][VanillaHudElements#ARMOR_BAR] or [FOOD_BAR][VanillaHudElements#FOOD_BAR]), it may be
+	/// necessary to register a new [StatusBarHeightProvider] in [HudStatusBarHeightRegistry].
+	///
+	/// @param identifier the identifier of the element to replace
+	/// @param replacer   a function that takes the old element and returns the new element
 	static void replaceElement(Identifier identifier, Function<HudElement, HudElement> replacer) {
 		Objects.requireNonNull(identifier, "identifier");
 		Objects.requireNonNull(replacer, "replacer");

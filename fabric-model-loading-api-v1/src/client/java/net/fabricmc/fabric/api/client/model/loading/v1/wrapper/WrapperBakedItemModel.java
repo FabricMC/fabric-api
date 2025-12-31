@@ -26,10 +26,8 @@ import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-/**
- * A simple implementation of {@link ItemModel} that delegates all method calls to the {@link #wrapped} field.
- * Implementations must set the {@link #wrapped} field somehow.
- */
+/// A simple implementation of [ItemModel] that delegates all method calls to the [#wrapped] field.
+/// Implementations must set the [#wrapped] field somehow.
 public abstract class WrapperBakedItemModel implements ItemModel {
 	protected ItemModel wrapped;
 

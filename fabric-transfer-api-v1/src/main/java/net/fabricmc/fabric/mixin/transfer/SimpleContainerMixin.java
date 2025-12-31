@@ -26,9 +26,7 @@ import net.minecraft.world.item.ItemStack;
 
 import net.fabricmc.fabric.impl.transfer.item.SpecialLogicContainer;
 
-/**
- * Defer setChanged until the outer transaction close callback when setStack is called from an inventory wrapper.
- */
+/// Defer setChanged until the outer transaction close callback when setStack is called from an inventory wrapper.
 @Mixin(SimpleContainer.class)
 public class SimpleContainerMixin implements SpecialLogicContainer {
 	@Unique

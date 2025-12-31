@@ -63,12 +63,10 @@ abstract class ClientPacketListenerMixin {
 		}
 	}
 
-	/**
-	 * An explanation why we unload entities during onGameJoin:
-	 * Proxies such as Waterfall may send another Game Join packet if entity meta rewrite is disabled, so we will cover ourselves.
-	 * Velocity by default will send a Game Join packet when the player changes servers, which will create a new client level.
-	 * Also anyone can send another GameJoinPacket at any time, so we need to watch out.
-	 */
+	/// An explanation why we unload entities during onGameJoin:
+	/// Proxies such as Waterfall may send another Game Join packet if entity meta rewrite is disabled, so we will cover ourselves.
+	/// Velocity by default will send a Game Join packet when the player changes servers, which will create a new client level.
+	/// Also anyone can send another GameJoinPacket at any time, so we need to watch out.
 	@Inject(method = "handleLogin", at = @At(value = "NEW", target = "net/minecraft/client/multiplayer/ClientLevel"))
 	private void onGameJoin(ClientboundLoginPacket packet, CallbackInfo ci) {
 		// If a level already exists, we need to unload all (block)entities in the level.

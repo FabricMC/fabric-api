@@ -25,9 +25,7 @@ import net.minecraft.world.level.Level;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
-/**
- * Test related to ticking events on the server.
- */
+/// Test related to ticking events on the server.
 public final class ServerTickTests implements ModInitializer {
 	private final Map<ResourceKey<Level>, Integer> tickTracker = new HashMap<>();
 

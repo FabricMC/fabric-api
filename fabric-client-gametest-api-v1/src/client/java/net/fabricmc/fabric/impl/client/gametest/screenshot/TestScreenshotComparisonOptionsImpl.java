@@ -90,18 +90,14 @@ public final class TestScreenshotComparisonOptionsImpl extends TestScreenshotCom
 		return this;
 	}
 
-	/**
-	 * Gets the path to the template image, relative to the {@code templates} directory, if one was provided.
-	 */
+	/// Gets the path to the template image, relative to the `templates` directory, if one was provided.
 	public Optional<String> getTemplateImagePath() {
 		return this.templateImage.left();
 	}
 
-	/**
-	 * Gets the path to the template image, relative to the {@code templates} directory, if one was provided.
-	 *
-	 * @throws java.util.NoSuchElementException if template image is not provided by path
-	 */
+	/// Gets the path to the template image, relative to the `templates` directory, if one was provided.
+	///
+	/// @throws java.util.NoSuchElementException if template image is not provided by path
 	public String getTemplateImagePathOrThrow() {
 		return this.getTemplateImagePath().orElseThrow();
 	}

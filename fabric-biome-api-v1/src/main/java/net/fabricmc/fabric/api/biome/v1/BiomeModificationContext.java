@@ -38,228 +38,160 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
-/**
- * Allows {@link Biome} properties to be modified.
- */
+/// Allows [Biome] properties to be modified.
 public interface BiomeModificationContext {
-	/**
-	 * Returns the modification context for the biomes weather properties.
-	 */
+	/// Returns the modification context for the biomes weather properties.
 	WeatherContext getWeather();
 
-	/**
-	 * Returns the modification context for the biomes environment attributes.
-	 */
+	/// Returns the modification context for the biomes environment attributes.
 	AttributesContext getAttributes();
 
-	/**
-	 * Returns the modification context for the biomes effects.
-	 */
+	/// Returns the modification context for the biomes effects.
 	EffectsContext getEffects();
 
-	/**
-	 * Returns the modification context for the biomes generation settings.
-	 */
+	/// Returns the modification context for the biomes generation settings.
 	GenerationSettingsContext getGenerationSettings();
 
-	/**
-	 * Returns the modification context for the biomes mob spawn settings.
-	 */
+	/// Returns the modification context for the biomes mob spawn settings.
 	MobSpawnSettingsContext getMobSpawnSettings();
 
 	interface WeatherContext {
-		/**
-		 * @see Biome#hasPrecipitation()
-		 * @see Biome.BiomeBuilder#hasPrecipitation(boolean)
-		 */
+		/// @see Biome#hasPrecipitation()
+		/// @see Biome.BiomeBuilder#hasPrecipitation(boolean)
 		void setPrecipitation(boolean hasPrecipitation);
 
-		/**
-		 * @see Biome#getBaseTemperature()
-		 * @see Biome.BiomeBuilder#temperature(float)
-		 */
+		/// @see Biome#getBaseTemperature()
+		/// @see Biome.BiomeBuilder#temperature(float)
 		void setTemperature(float temperature);
 
-		/**
-		 * @see Biome.BiomeBuilder#temperatureAdjustment(Biome.TemperatureModifier)
-		 */
+		/// @see Biome.BiomeBuilder#temperatureAdjustment(Biome.TemperatureModifier)
 		void setTemperatureModifier(Biome.TemperatureModifier temperatureModifier);
 
-		/**
-		 * @see Biome.BiomeBuilder#downfall(float)
-		 */
+		/// @see Biome.BiomeBuilder#downfall(float)
 		void setDownfall(float downfall);
 	}
 
 	interface AttributesContext {
-		/**
-		 * @see Biome.BiomeBuilder#putAttributes(EnvironmentAttributeMap)
-		 */
+		/// @see Biome.BiomeBuilder#putAttributes(EnvironmentAttributeMap)
 		void addAll(EnvironmentAttributeMap map);
 
-		/**
-		 * @see Biome.BiomeBuilder#putAttributes(EnvironmentAttributeMap.Builder)
-		 */
+		/// @see Biome.BiomeBuilder#putAttributes(EnvironmentAttributeMap.Builder)
 		default void addAll(EnvironmentAttributeMap.Builder map) {
 			this.addAll(map.build());
 		}
 
-		/**
-		 * @see Biome.BiomeBuilder#setAttribute(EnvironmentAttribute, Object)
-		 */
+		/// @see Biome.BiomeBuilder#setAttribute(EnvironmentAttribute, Object)
 		<T> void set(EnvironmentAttribute<T> key, T value);
 
-		/**
-		 * @see Biome.BiomeBuilder#modifyAttribute(EnvironmentAttribute, AttributeModifier, Object)
-		 */
+		/// @see Biome.BiomeBuilder#modifyAttribute(EnvironmentAttribute, AttributeModifier, Object)
 		<T, M> void setModifier(EnvironmentAttribute<T> key, AttributeModifier<T, M> modifier, M value);
 	}
 
 	interface EffectsContext {
-		/**
-		 * @deprecated Set the fog color using environment attributes instead
-		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#FOG_COLOR
-		 */
+		/// @deprecated Set the fog color using environment attributes instead
+		/// @see BiomeModificationContext#getAttributes()
+		/// @see EnvironmentAttributes#FOG_COLOR
 		@Deprecated
 		void setFogColor(int color);
 
-		/**
-		 * @see BiomeSpecialEffects#waterColor()
-		 * @see BiomeSpecialEffects.Builder#waterColor(int)
-		 */
+		/// @see BiomeSpecialEffects#waterColor()
+		/// @see BiomeSpecialEffects.Builder#waterColor(int)
 		void setWaterColor(int color);
 
-		/**
-		 * @deprecated Set the water fog color using environment attributes instead
-		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#WATER_FOG_COLOR
-		 */
+		/// @deprecated Set the water fog color using environment attributes instead
+		/// @see BiomeModificationContext#getAttributes()
+		/// @see EnvironmentAttributes#WATER_FOG_COLOR
 		@Deprecated
 		void setWaterFogColor(int color);
 
-		/**
-		 * @deprecated Set the sky color using environment attributes instead
-		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#SKY_COLOR
-		 */
+		/// @deprecated Set the sky color using environment attributes instead
+		/// @see BiomeModificationContext#getAttributes()
+		/// @see EnvironmentAttributes#SKY_COLOR
 		@Deprecated
 		void setSkyColor(int color);
 
-		/**
-		 * @see BiomeSpecialEffects#foliageColorOverride()
-		 * @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#foliageColorOverride()
+		/// @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
 		void setFoliageColorOverride(Optional<Integer> color);
 
-		/**
-		 * @see BiomeSpecialEffects#foliageColorOverride()
-		 * @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#foliageColorOverride()
+		/// @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
 		default void setFoliageColorOverride(int color) {
 			setFoliageColorOverride(Optional.of(color));
 		}
 
-		/**
-		 * @see BiomeSpecialEffects#foliageColorOverride()
-		 * @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#foliageColorOverride()
+		/// @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
 		default void setFoliageColorOverride(OptionalInt color) {
 			color.ifPresentOrElse(this::setFoliageColorOverride, this::clearFoliageColorOverride);
 		}
 
-		/**
-		 * @see BiomeSpecialEffects#foliageColorOverride()
-		 * @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#foliageColorOverride()
+		/// @see BiomeSpecialEffects.Builder#foliageColorOverride(int)
 		default void clearFoliageColorOverride() {
 			setFoliageColorOverride(Optional.empty());
 		}
 
-		/**
-		 * @see BiomeSpecialEffects#dryFoliageColorOverride()
-		 * @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#dryFoliageColorOverride()
+		/// @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
 		void setDryFoliageColorOverride(Optional<Integer> color);
 
-		/**
-		 * @see BiomeSpecialEffects#dryFoliageColorOverride()
-		 * @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#dryFoliageColorOverride()
+		/// @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
 		default void setDryFoliageColorOverride(int color) {
 			setDryFoliageColorOverride(Optional.of(color));
 		}
 
-		/**
-		 * @see BiomeSpecialEffects#dryFoliageColorOverride()
-		 * @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#dryFoliageColorOverride()
+		/// @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
 		default void setDryFoliageColorOverride(OptionalInt color) {
 			color.ifPresentOrElse(this::setDryFoliageColorOverride, this::clearDryFoliageColorOverride);
 		}
 
-		/**
-		 * @see BiomeSpecialEffects#dryFoliageColorOverride()
-		 * @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#dryFoliageColorOverride()
+		/// @see BiomeSpecialEffects.Builder#dryFoliageColorOverride(int)
 		default void clearDryFoliageColorOverride() {
 			setDryFoliageColorOverride(Optional.empty());
 		}
 
-		/**
-		 * @see BiomeSpecialEffects#grassColorOverride()
-		 * @see BiomeSpecialEffects.Builder#grassColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#grassColorOverride()
+		/// @see BiomeSpecialEffects.Builder#grassColorOverride(int)
 		void setGrassColorOverride(Optional<Integer> color);
 
-		/**
-		 * @see BiomeSpecialEffects#grassColorOverride()
-		 * @see BiomeSpecialEffects.Builder#grassColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#grassColorOverride()
+		/// @see BiomeSpecialEffects.Builder#grassColorOverride(int)
 		default void setGrassColorOverride(int color) {
 			setGrassColorOverride(Optional.of(color));
 		}
 
-		/**
-		 * @see BiomeSpecialEffects#grassColorOverride()
-		 * @see BiomeSpecialEffects.Builder#grassColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#grassColorOverride()
+		/// @see BiomeSpecialEffects.Builder#grassColorOverride(int)
 		default void setGrassColorOverride(OptionalInt color) {
 			color.ifPresentOrElse(this::setGrassColorOverride, this::clearGrassColorOverride);
 		}
 
-		/**
-		 * @see BiomeSpecialEffects#grassColorOverride()
-		 * @see BiomeSpecialEffects.Builder#grassColorOverride(int)
-		 */
+		/// @see BiomeSpecialEffects#grassColorOverride()
+		/// @see BiomeSpecialEffects.Builder#grassColorOverride(int)
 		default void clearGrassColorOverride() {
 			setGrassColorOverride(Optional.empty());
 		}
 
-		/**
-		 * @see BiomeSpecialEffects#grassColorOverride()
-		 * @see BiomeSpecialEffects.Builder#grassColorModifier(BiomeSpecialEffects.GrassColorModifier)
-		 */
+		/// @see BiomeSpecialEffects#grassColorOverride()
+		/// @see BiomeSpecialEffects.Builder#grassColorModifier(BiomeSpecialEffects.GrassColorModifier)
 		void setGrassColorModifier(BiomeSpecialEffects.GrassColorModifier colorModifier);
 
-		/**
-		 * @deprecated Set the music volume using environment attributes instead
-		 * @see BiomeModificationContext#getAttributes()
-		 * @see EnvironmentAttributes#MUSIC_VOLUME
-		 */
+		/// @deprecated Set the music volume using environment attributes instead
+		/// @see BiomeModificationContext#getAttributes()
+		/// @see EnvironmentAttributes#MUSIC_VOLUME
 		@Deprecated
 		void setMusicVolume(float volume);
 	}
 
 	interface GenerationSettingsContext {
-		/**
-		 * Removes a feature from one of this biomes generation steps, and returns if any features were removed.
-		 */
+		/// Removes a feature from one of this biomes generation steps, and returns if any features were removed.
 		boolean removeFeature(GenerationStep.Decoration step, ResourceKey<PlacedFeature> placedFeatureKey);
 
-		/**
-		 * Removes a feature from all of this biomes generation steps, and returns if any features were removed.
-		 */
+		/// Removes a feature from all of this biomes generation steps, and returns if any features were removed.
 		default boolean removeFeature(ResourceKey<PlacedFeature> placedFeatureKey) {
 			boolean anyFound = false;
 
@@ -272,99 +204,75 @@ public interface BiomeModificationContext {
 			return anyFound;
 		}
 
-		/**
-		 * Adds a feature to one of this biomes generation steps, identified by the placed feature's resource key.
-		 */
+		/// Adds a feature to one of this biomes generation steps, identified by the placed feature's resource key.
 		void addFeature(GenerationStep.Decoration step, ResourceKey<PlacedFeature> placedFeatureKey);
 
-		/**
-		 * Adds a configured world carver to this biome.
-		 */
+		/// Adds a configured world carver to this biome.
 		void addCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey);
 
-		/**
-		 * Removes all carvers with the given key from this biome.
-		 *
-		 * @return True if any carvers were removed.
-		 */
+		/// Removes all carvers with the given key from this biome.
+		///
+		/// @return True if any carvers were removed.
 		boolean removeCarver(ResourceKey<ConfiguredWorldCarver<?>> carverKey);
 	}
 
 	interface MobSpawnSettingsContext {
-		/**
-		 * Associated JSON property: <code>creature_spawn_probability</code>.
-		 *
-		 * @see MobSpawnSettings#getCreatureProbability()
-		 * @see MobSpawnSettings.Builder#creatureGenerationProbability(float)
-		 */
+		/// Associated JSON property: <code>creature_spawn_probability</code>.
+		///
+		/// @see MobSpawnSettings#getCreatureProbability()
+		/// @see MobSpawnSettings.Builder#creatureGenerationProbability(float)
 		void setCreatureGenerationProbability(float probability);
 
-		/**
-		 * Provides a view of all spawns of the given category.
-		 *
-		 * <p>Associated JSON property: <code>spawners</code>.
-		 *
-		 * @see MobSpawnSettings#getMobs(MobCategory)
-		 */
+		/// Provides a view of all spawns of the given category.
+		///
+		/// Associated JSON property: <code>spawners</code>.
+		///
+		/// @see MobSpawnSettings#getMobs(MobCategory)
 		@UnmodifiableView List<Weighted<MobSpawnSettings.SpawnerData>> getMobs(MobCategory category);
 
-		/**
-		 * Associated JSON property: <code>spawners</code>.
-		 *
-		 * @see MobSpawnSettings#getMobs(MobCategory)
-		 * @see MobSpawnSettings.Builder#addSpawn(MobCategory, int, MobSpawnSettings.SpawnerData)
-		 */
+		/// Associated JSON property: <code>spawners</code>.
+		///
+		/// @see MobSpawnSettings#getMobs(MobCategory)
+		/// @see MobSpawnSettings.Builder#addSpawn(MobCategory, int, MobSpawnSettings.SpawnerData)
 		void addSpawn(MobCategory category, MobSpawnSettings.SpawnerData data, int weight);
 
-		/**
-		 * Removes any spawns matching the given predicate from this biome, and returns true if any matched.
-		 *
-		 * <p>Associated JSON property: <code>spawners</code>.
-		 */
+		/// Removes any spawns matching the given predicate from this biome, and returns true if any matched.
+		///
+		/// Associated JSON property: <code>spawners</code>.
 		boolean removeSpawns(BiPredicate<MobCategory, MobSpawnSettings.SpawnerData> predicate);
 
-		/**
-		 * Removes all spawns of the given entity type.
-		 *
-		 * <p>Associated JSON property: <code>spawners</code>.
-		 *
-		 * @return True if any spawns were removed.
-		 */
+		/// Removes all spawns of the given entity type.
+		///
+		/// Associated JSON property: <code>spawners</code>.
+		///
+		/// @return True if any spawns were removed.
 		default boolean removeSpawnsOfEntityType(EntityType<?> entityType) {
 			return removeSpawns((category, spawnEntry) -> spawnEntry.type() == entityType);
 		}
 
-		/**
-		 * Removes all spawns of the given category.
-		 *
-		 * <p>Associated JSON property: <code>spawners</code>.
-		 */
+		/// Removes all spawns of the given category.
+		///
+		/// Associated JSON property: <code>spawners</code>.
 		default void clearSpawns(MobCategory category) {
 			removeSpawns((mobCategory, spawnEntry) -> mobCategory == category);
 		}
 
-		/**
-		 * Removes all spawns.
-		 *
-		 * <p>Associated JSON property: <code>spawners</code>.
-		 */
+		/// Removes all spawns.
+		///
+		/// Associated JSON property: <code>spawners</code>.
 		default void clearSpawns() {
 			removeSpawns((mobCategory, spawnEntry) -> true);
 		}
 
-		/**
-		 * Associated JSON property: <code>spawn_costs</code>.
-		 *
-		 * @see MobSpawnSettings#getMobSpawnCost(EntityType)
-		 * @see MobSpawnSettings.Builder#addMobCharge(EntityType, double, double)
-		 */
+		/// Associated JSON property: <code>spawn_costs</code>.
+		///
+		/// @see MobSpawnSettings#getMobSpawnCost(EntityType)
+		/// @see MobSpawnSettings.Builder#addMobCharge(EntityType, double, double)
 		void addMobCharge(EntityType<?> entityType, double charge, double energyBudget);
 
-		/**
-		 * Removes a spawn cost entry for a given entity type.
-		 *
-		 * <p>Associated JSON property: <code>spawn_costs</code>.
-		 */
+		/// Removes a spawn cost entry for a given entity type.
+		///
+		/// Associated JSON property: <code>spawn_costs</code>.
 		void clearMobCharge(EntityType<?> entityType);
 	}
 }

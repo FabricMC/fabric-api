@@ -57,10 +57,8 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.FabricDataGenHelper;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 
-/**
- * A provider to help with data-generation of dynamic registry objects,
- * such as biomes, features, or message types.
- */
+/// A provider to help with data-generation of dynamic registry objects,
+/// such as biomes, features, or message types.
 public abstract class FabricDynamicRegistryProvider implements DataProvider {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDynamicRegistryProvider.class);
 
@@ -93,108 +91,84 @@ public abstract class FabricDynamicRegistryProvider implements DataProvider {
 			this.modId = modId;
 		}
 
-		/**
-		 * Gets access to all registry lookups.
-		 */
+		/// Gets access to all registry lookups.
 		public HolderLookup.Provider getLookups() {
 			return registries;
 		}
 
-		/**
-		 * Gets a lookup for entries from the given registry.
-		 */
+		/// Gets a lookup for entries from the given registry.
 		public <T> HolderGetter<T> getLookup(ResourceKey<? extends Registry<T>> registryKey) {
 			return registries.lookupOrThrow(registryKey);
 		}
 
-		/**
-		 * Returns a lookup for placed features. Useful when creating biomes.
-		 */
+		/// Returns a lookup for placed features. Useful when creating biomes.
 		public HolderGetter<PlacedFeature> placedFeatures() {
 			return getLookup(Registries.PLACED_FEATURE);
 		}
 
-		/**
-		 * Returns a lookup for configured carvers. Useful when creating biomes.
-		 */
+		/// Returns a lookup for configured carvers. Useful when creating biomes.
 		public HolderGetter<ConfiguredWorldCarver<?>> configuredCarvers() {
 			return getLookup(Registries.CONFIGURED_CARVER);
 		}
 
-		/**
-		 * Gets a reference to a holder for use in other registrations.
-		 */
+		/// Gets a reference to a holder for use in other registrations.
 		public <T> Holder<T> ref(ResourceKey<T> key) {
 			RegistryEntries<T> entries = getQueuedEntries(key);
 			return Holder.Reference.createStandAlone(entries.lookup, key);
 		}
 
-		/**
-		 * Adds a new object to be data generated.
-		 *
-		 * @param key    The key of the resource to register.
-		 * @param object The object to register.
-		 * @return a reference to it for use in other objects.
-		 */
+		/// Adds a new object to be data generated.
+		///
+		/// @param key    The key of the resource to register.
+		/// @param object The object to register.
+		/// @return a reference to it for use in other objects.
 		public <T> Holder<T> add(ResourceKey<T> key, T object) {
 			return getQueuedEntries(key).add(key, object, null);
 		}
 
-		/**
-		 * Adds a new object to be data generated with several resource conditions.
-		 *
-		 * @param key        The key of the resource to register.
-		 * @param object     The object to register.
-		 * @param conditions Conditions that must be satisfied to load this object.
-		 * @return a reference to it for use in other objects.
-		 */
+		/// Adds a new object to be data generated with several resource conditions.
+		///
+		/// @param key        The key of the resource to register.
+		/// @param object     The object to register.
+		/// @param conditions Conditions that must be satisfied to load this object.
+		/// @return a reference to it for use in other objects.
 		public <T> Holder<T> add(ResourceKey<T> key, T object, ResourceCondition... conditions) {
 			return getQueuedEntries(key).add(key, object, conditions);
 		}
 
-		/**
-		 * Adds a new object to be data generated.
-		 *
-		 * @param object The object to generate. This holder must have both a
-		 *               {@linkplain Holder#isBound() key and value}.
-		 */
+		/// Adds a new object to be data generated.
+		///
+		/// @param object The object to generate. This holder must have both a
+		///               {@linkplain Holder#isBound() key and value}.
 		public <T> void add(Holder.Reference<T> object) {
 			add(object.key(), object.value());
 		}
 
-		/**
-		 * Adds a new object to be data generated with several resource conditions.
-		 *
-		 * @param object     The object to generate. This holder must have both a
-		 *                   {@linkplain Holder#isBound() key and value}.
-		 * @param conditions Conditions that must be satisfied to load this object.
-		 */
+		/// Adds a new object to be data generated with several resource conditions.
+		///
+		/// @param object     The object to generate. This holder must have both a
+		///                   {@linkplain Holder#isBound() key and value}.
+		/// @param conditions Conditions that must be satisfied to load this object.
 		public <T> void add(Holder.Reference<T> object, ResourceCondition... conditions) {
 			add(object.key(), object.value(), conditions);
 		}
 
-		/**
-		 * Adds a new {@link ResourceKey} from a given {@link HolderLookup.RegistryLookup} to be data generated.
-		 *
-		 * @return a reference to it for use in other objects.
-		 */
+		/// Adds a new [ResourceKey] from a given [HolderLookup.RegistryLookup] to be data generated.
+		///
+		/// @return a reference to it for use in other objects.
 		public <T> Holder<T> add(HolderLookup.RegistryLookup<T> registry, ResourceKey<T> valueKey) {
 			return add(valueKey, registry.getOrThrow(valueKey).value());
 		}
 
-		/**
-		 * Adds a new {@link ResourceKey} from a given {@link HolderLookup.RegistryLookup} to be data generated.
-		 *
-		 * @param conditions Conditions that must be satisfied to load this object.
-		 * @return a reference to it for use in other objects.
-		 */
+		/// Adds a new [ResourceKey] from a given [HolderLookup.RegistryLookup] to be data generated.
+		///
+		/// @param conditions Conditions that must be satisfied to load this object.
+		/// @return a reference to it for use in other objects.
 		public <T> Holder<T> add(HolderLookup.RegistryLookup<T> registry, ResourceKey<T> valueKey, ResourceCondition... conditions) {
 			return add(valueKey, registry.getOrThrow(valueKey).value(), conditions);
 		}
 
-		/**
-		 * All the holders whose namespace matches the current effective mod ID will be data generated.
-		 */
+		/// All the holders whose namespace matches the current effective mod ID will be data generated.
 		public <T> List<Holder<T>> addAll(HolderLookup.RegistryLookup<T> registry) {
 			return registry.listElementIds()
 					.filter(resourceKey -> resourceKey.identifier().getNamespace().equals(modId))

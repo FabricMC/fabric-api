@@ -35,10 +35,8 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.fabricmc.fabric.api.loot.v3.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v3.FabricLootTableBuilder;
 
-/**
- * The implementation of the injected interface {@link FabricLootTableBuilder}.
- * Simply implements the new methods by adding the relevant objects inside the lists.
- */
+/// The implementation of the injected interface [FabricLootTableBuilder].
+/// Simply implements the new methods by adding the relevant objects inside the lists.
 @Mixin(LootTable.Builder.class)
 abstract class LootTableBuilderMixin implements FabricLootTableBuilder {
 	@Shadow

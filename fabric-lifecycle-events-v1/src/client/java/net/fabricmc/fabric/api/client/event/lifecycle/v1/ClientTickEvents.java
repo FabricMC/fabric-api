@@ -26,38 +26,30 @@ public final class ClientTickEvents {
 	private ClientTickEvents() {
 	}
 
-	/**
-	 * Called at the start of the client tick.
-	 */
+	/// Called at the start of the client tick.
 	public static final Event<StartTick> START_CLIENT_TICK = EventFactory.createArrayBacked(StartTick.class, callbacks -> client -> {
 		for (StartTick event : callbacks) {
 			event.onStartTick(client);
 		}
 	});
 
-	/**
-	 * Called at the end of the client tick.
-	 */
+	/// Called at the end of the client tick.
 	public static final Event<EndTick> END_CLIENT_TICK = EventFactory.createArrayBacked(EndTick.class, callbacks -> client -> {
 		for (EndTick event : callbacks) {
 			event.onEndTick(client);
 		}
 	});
 
-	/**
-	 * Called at the start of a ClientLevel's tick.
-	 */
+	/// Called at the start of a ClientLevel's tick.
 	public static final Event<StartLevelTick> START_LEVEL_TICK = EventFactory.createArrayBacked(StartLevelTick.class, callbacks -> level -> {
 		for (StartLevelTick callback : callbacks) {
 			callback.onStartTick(level);
 		}
 	});
 
-	/**
-	 * Called at the end of a ClientLevel's tick.
-	 *
-	 * <p>End of level tick may be used to start async computations for the next tick.
-	 */
+	/// Called at the end of a ClientLevel's tick.
+	///
+	/// End of level tick may be used to start async computations for the next tick.
 	public static final Event<EndLevelTick> END_LEVEL_TICK = EventFactory.createArrayBacked(EndLevelTick.class, callbacks -> level -> {
 		for (EndLevelTick callback : callbacks) {
 			callback.onEndTick(level);

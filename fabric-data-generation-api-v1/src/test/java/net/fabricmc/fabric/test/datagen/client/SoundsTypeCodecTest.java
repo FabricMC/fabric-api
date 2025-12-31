@@ -43,19 +43,13 @@ import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
 import net.fabricmc.fabric.impl.datagen.client.SoundTypeBuilderImpl;
 
 public class SoundsTypeCodecTest {
-	/**
-	 * Codec copied from {@link net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider} to use in testing, as it is not accessible.
-	 */
+	/// Codec copied from [net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider] to use in testing, as it is not accessible.
 	private static final Codec<Map<String, SoundTypeBuilderImpl.SoundType>> CODEC =
 			Codec.unboundedMap(Codec.STRING, SoundTypeBuilderImpl.SoundType.CODEC);
-	/**
-	 * Gson copied from {@link net.minecraft.client.sounds.SoundManager} to use in testing, as it is not accessible.
-	 */
+	/// Gson copied from [net.minecraft.client.sounds.SoundManager] to use in testing, as it is not accessible.
 	private static final Gson GSON = new GsonBuilder().registerTypeAdapter(SoundEventRegistration.class,
 			new SoundEventRegistrationSerializer()).create();
-	/**
-	 * Type token copied from {@link net.minecraft.client.sounds.SoundManager} to use in testing, as it is not accessible.
-	 */
+	/// Type token copied from [net.minecraft.client.sounds.SoundManager] to use in testing, as it is not accessible.
 	private static final TypeToken<Map<String, SoundEventRegistration>> SOUND_EVENT_REGISTRATION_TYPE = new TypeToken<>() { };
 
 	private static final Identifier IDENTIFIER =
@@ -115,12 +109,10 @@ public class SoundsTypeCodecTest {
 		expectInputDataInOutput(data, process(data));
 	}
 
-	/**
-	 * Test if the output data has all values present in the input data.
-	 *
-	 * @param inputData Sounds input data used for data generation.
-	 * @param outputData Sounds output data interpreted from sounds file.
-	 */
+	/// Test if the output data has all values present in the input data.
+	///
+	/// @param inputData Sounds input data used for data generation.
+	/// @param outputData Sounds output data interpreted from sounds file.
 	private static void expectInputDataInOutput(Map<String, SoundTypeBuilderImpl.SoundType> inputData,
 												Map<String, SoundEventRegistration> outputData) {
 		for (String identifier : inputData.keySet()) {
@@ -144,12 +136,10 @@ public class SoundsTypeCodecTest {
 		}
 	}
 
-	/**
-	 * Test if the output data has all values present in the input data.
-	 *
-	 * @param entry Entry used to represent sound for data generation.
-	 * @param sound Sound interpreted from sounds file.
-	 */
+	/// Test if the output data has all values present in the input data.
+	///
+	/// @param entry Entry used to represent sound for data generation.
+	/// @param sound Sound interpreted from sounds file.
 	private static void expectInputDataInOutput(SoundTypeBuilderImpl.Entry entry, Sound sound) {
 		Assertions.assertEquals(entry.name(), sound.getLocation());
 		Assertions.assertEquals(entry.type().name(), sound.getType().name());
@@ -161,12 +151,10 @@ public class SoundsTypeCodecTest {
 		Assertions.assertEquals(entry.pitch(), sound.getPitch().sample(RandomSource.create()));
 	}
 
-	/**
-	 * Generate and interpret data like the sounds provider and sounds manager respectively.
-	 *
-	 * @see net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider
-	 * @see net.minecraft.client.sounds.SoundManager
-	 */
+	/// Generate and interpret data like the sounds provider and sounds manager respectively.
+	///
+	/// @see net.fabricmc.fabric.api.client.datagen.v1.provider.FabricSoundsProvider
+	/// @see net.minecraft.client.sounds.SoundManager
 	private Map<String, SoundEventRegistration> process(Map<String, SoundTypeBuilderImpl.SoundType> data) {
 		// Generate json element, matching the codec from fabric sounds provider.
 		DataResult<JsonElement> result = CODEC.encodeStart(JsonOps.INSTANCE, data);

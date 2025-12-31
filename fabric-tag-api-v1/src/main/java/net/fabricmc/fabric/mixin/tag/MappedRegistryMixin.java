@@ -39,11 +39,9 @@ import net.minecraft.tags.TagKey;
 import net.fabricmc.fabric.impl.tag.MappedRegistryExtension;
 import net.fabricmc.fabric.impl.tag.TagAliasEnabledRegistryLookup;
 
-/**
- * Adds tag alias support to {@code MappedRegistry}, the primary registry implementation.
- *
- * <p>Additionally, the {@link TagAliasEnabledRegistryLookup} implementation is for dynamic registry tag loading.
- */
+/// Adds tag alias support to `MappedRegistry`, the primary registry implementation.
+///
+/// Additionally, the [TagAliasEnabledRegistryLookup] implementation is for dynamic registry tag loading.
 @Mixin(MappedRegistry.class)
 abstract class MappedRegistryMixin<T> implements MappedRegistryExtension, TagAliasEnabledRegistryLookup {
 	@Unique

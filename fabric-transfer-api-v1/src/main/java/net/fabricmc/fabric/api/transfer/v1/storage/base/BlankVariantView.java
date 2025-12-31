@@ -20,18 +20,14 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-/**
- * A transfer variant storage view that contains a blank variant all the time (it's always empty), but may have a nonzero capacity.
- * This can be used to give capacity hints even if the storage is empty.
- */
+/// A transfer variant storage view that contains a blank variant all the time (it's always empty), but may have a nonzero capacity.
+/// This can be used to give capacity hints even if the storage is empty.
 public class BlankVariantView<T extends TransferVariant<?>> implements StorageView<T> {
 	private final T blankVariant;
 	private final long capacity;
 
-	/**
-	 * Create a new instance.
-	 * @throws IllegalArgumentException If the passed {@code blankVariant} is not blank.
-	 */
+	/// Create a new instance.
+	/// @throws IllegalArgumentException If the passed `blankVariant` is not blank.
 	public BlankVariantView(T blankVariant, long capacity) {
 		if (!blankVariant.isBlank()) {
 			throw new IllegalArgumentException("Expected a blank variant, received " + blankVariant);

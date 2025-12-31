@@ -53,9 +53,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.test.transfer.ingame.TransferTestInitializer;
 
-/**
- * Tests for the item transfer APIs.
- */
+/// Tests for the item transfer APIs.
 class ItemTests extends AbstractTransferApiTest {
 	public static DataComponentType<Integer> ENERGY;
 
@@ -207,9 +205,7 @@ class ItemTests extends AbstractTransferApiTest {
 		}
 	}
 
-	/**
-	 * Test insertion when {@link Container#getMaxCountPerStack()} is the bottleneck.
-	 */
+	/// Test insertion when [Container#getMaxCountPerStack()] is the bottleneck.
 	@Test
 	public void testLimitedStackCountInventory() {
 		ItemVariant diamond = ItemVariant.of(Items.DIAMOND);
@@ -226,9 +222,7 @@ class ItemTests extends AbstractTransferApiTest {
 		}
 	}
 
-	/**
-	 * Test insertion when {@link Item#getMaxCount()} is the bottleneck.
-	 */
+	/// Test insertion when [Item#getMaxCount()] is the bottleneck.
 	@Test
 	public void testLimitedStackCountItem() {
 		ItemVariant diamondPickaxe = ItemVariant.of(Items.DIAMOND_PICKAXE);
@@ -276,9 +270,7 @@ class ItemTests extends AbstractTransferApiTest {
 		}
 	}
 
-	/**
-	 * Ensure that SimpleContainer only calls setChanged at the end of a successful transaction.
-	 */
+	/// Ensure that SimpleContainer only calls setChanged at the end of a successful transaction.
 	@Test
 	public void testSimpleContainerUpdates() {
 		var simpleContainer = new SimpleContainer(2) {
