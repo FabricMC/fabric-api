@@ -76,7 +76,7 @@ public interface FluidVariantAttributeHandler {
 	}
 
 	/**
-	 * {@return a non-negative integer, representing the temperature of this fluid in Kelvin.}
+	 * {@return a non-negative integer, representing the temperature of this fluid in Kelvin}.
 	 * The reference values are {@value FluidConstants#WATER_TEMPERATURE} for water, and {@value FluidConstants#LAVA_TEMPERATURE} for lava.
 	 */
 	default int getTemperature(FluidVariant variant) {
@@ -87,7 +87,7 @@ public interface FluidVariantAttributeHandler {
 	 * {@return a positive integer, representing the viscosity of this fluid.
 	 * Fluids with lower viscosity generally flow faster than fluids with higher viscosity}
 	 * <br><br>
-	 * 
+	 *
 	 * <p>More precisely, viscosity should be {@value FluidConstants#VISCOSITY_RATIO} * {@link FlowingFluid#getTickDelay} for flowable fluids.
 	 * The reference values are {@value FluidConstants#WATER_VISCOSITY} for water,
 	 * {@value FluidConstants#LAVA_VISCOSITY_NETHER} for lava in ultrawarm dimensions (such as the nether),

@@ -33,7 +33,7 @@ import java.util.function.Consumer;
  */
 public interface MutableMesh extends MeshView {
 	/**
-	 * Returns the {@link QuadEmitter} used to append quads to this mesh. Calling this method a second time invalidates
+	 * @return  the {@link QuadEmitter} used to append quads to this mesh. Calling this method a second time invalidates
 	 * any prior result. Do not retain references outside the context of this mesh.
 	 */
 	QuadEmitter emitter();

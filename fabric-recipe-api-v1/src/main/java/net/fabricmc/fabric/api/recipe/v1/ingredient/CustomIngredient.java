@@ -62,7 +62,7 @@ public interface CustomIngredient {
 	boolean test(ItemStack stack);
 
 	/**
-	 * {@return the list of stacks that match this ingredient.}
+	 * {@return the list of stacks that match this ingredient}
 	 *
 	 * <p>The following guidelines should be followed for good compatibility:
 	 * <ul>

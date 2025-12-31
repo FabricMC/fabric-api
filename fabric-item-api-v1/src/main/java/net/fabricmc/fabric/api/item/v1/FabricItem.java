@@ -75,8 +75,10 @@ public interface FabricItem {
 	/**
 	 * Returns a leftover item stack after {@code stack} is consumed in a recipe.
 	 * (This is also known as "recipe remainder".)
-	 * For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
+	 * <br>
+	 * <br>
 	 *
+	 * <p>For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
 	 * <p>Here is an example for a recipe remainder that increments the item's damage.
 	 *
 	 * <pre>{@code
