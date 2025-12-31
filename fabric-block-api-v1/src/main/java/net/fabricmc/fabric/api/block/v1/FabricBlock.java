@@ -51,7 +51,7 @@ public interface FabricBlock {
 	 * <p>Note: Overriding this method for a block does <strong>not</strong> change how it renders.
 	 * It's up to modded models to check for the appearance of nearby blocks and adjust accordingly.
 	 *
-	 * <p><strong>Implementation guidelines</strong>
+	 * <h4>Implementation guidelines</h4>
 	 *
 	 * <p>This can be called on the server, where block entity data can be safely accessed,
 	 * and on the client, possibly in a meshing thread, where block entity data is not safe to access!

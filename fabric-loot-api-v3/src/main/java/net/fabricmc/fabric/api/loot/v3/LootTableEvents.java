@@ -62,7 +62,7 @@ public final class LootTableEvents {
 	 * <p>You can also modify loot tables that are created by {@link #REPLACE}.
 	 * They have the loot table source {@link LootTableSource#REPLACED}.
 	 *
-	 * <p><strong>Example: adding diamonds to the cobblestone loot table</strong>
+	 * <h4>Example: adding diamonds to the cobblestone loot table</h4>
 	 *
 	 * <p>We'll add a new diamond {@linkplain net.minecraft.world.level.storage.loot.LootPool loot pool} to the cobblestone loot table
 	 * that will be dropped alongside the original cobblestone loot pool.
