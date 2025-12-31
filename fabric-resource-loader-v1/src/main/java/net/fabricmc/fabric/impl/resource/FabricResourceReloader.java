@@ -20,7 +20,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 public interface FabricResourceReloader extends PreparableReloadListener {
-	/// {@return the unique identifier of this Vanilla resource reloader}
+	/// @return the unique identifier of this Vanilla resource reloader
 	Identifier fabric$getId();
 
 	@Override

@@ -93,6 +93,6 @@ public interface BiomeSelectionContext {
 	/// If no level stem exists for the given level stem key, `false` is returned.
 	boolean canGenerateIn(ResourceKey<LevelStem> levelStemKey);
 
-	/// {@return true if this biome is in the given [TagKey]}.
+	/// @return true if this biome is in the given [TagKey].
 	boolean hasTag(TagKey<Biome> tag);
 }

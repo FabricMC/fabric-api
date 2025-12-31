@@ -120,7 +120,7 @@ public enum TriState implements StringRepresentable {
 		throw exceptionSupplier.get();
 	}
 
-	/// {@return a parsed TriState from a system property}
+	/// @return a parsed TriState from a system property
 	///
 	/// @param property the system property
 	public static TriState fromSystemProperty(String property) {

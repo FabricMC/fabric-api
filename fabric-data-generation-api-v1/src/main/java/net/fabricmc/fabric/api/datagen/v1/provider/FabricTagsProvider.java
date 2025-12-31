@@ -99,7 +99,7 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 		return aliasGroupBuilders.computeIfAbsent(groupId, key -> new AliasGroupBuilder());
 	}
 
-	/// {@return a read-only map of alias group builders by the alias group ID}.
+	/// @return a read-only map of alias group builders by the alias group ID.
 	public Map<Identifier, AliasGroupBuilder> getAliasGroupBuilders() {
 		return Collections.unmodifiableMap(aliasGroupBuilders);
 	}
@@ -192,7 +192,7 @@ public abstract class FabricTagsProvider<T> extends TagsProvider<T> {
 		private AliasGroupBuilder() {
 		}
 
-		/// {@return a read-only list of the tags in this alias group}.
+		/// @return a read-only list of the tags in this alias group.
 		public List<TagKey<T>> getTags() {
 			return Collections.unmodifiableList(tags);
 		}

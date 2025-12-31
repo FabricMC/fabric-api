@@ -24,8 +24,8 @@ import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.impl.datagen.loot.ConditionEntityLootSubProvider;
 
 public interface FabricEntityLootSubProvider {
-	/// {@return a new generator that applies the specified conditions to any loot table it receives, and then forwards
-	///  the loot tables to this generator}.
+	/// @return a new generator that applies the specified conditions to any loot table it receives, and then forwards
+	///  the loot tables to this generator.
 	default EntityLootSubProvider withConditions(ResourceCondition... conditions) {
 		Preconditions.checkArgument(conditions.length > 0, "Must add at least one condition.");
 

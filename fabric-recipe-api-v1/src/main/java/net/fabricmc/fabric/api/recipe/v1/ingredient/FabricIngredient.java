@@ -21,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 /// Fabric-provided extensions for [net.minecraft.world.item.crafting.Ingredient].
 /// This interface is automatically implemented on all ingredients via Mixin and interface injection.
 public interface FabricIngredient {
-	/// {@return the backing [CustomIngredient] of this ingredient if it's custom, `null` otherwise}.
+	/// @return the backing [CustomIngredient] of this ingredient if it's custom, `null` otherwise.
 	@Nullable
 	default CustomIngredient getCustomIngredient() {
 		return null;
