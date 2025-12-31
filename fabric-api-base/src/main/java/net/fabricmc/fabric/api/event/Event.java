@@ -37,8 +37,8 @@ public abstract class Event<T> {
 
 	/**
 	 * @return the invoker instance.
-	 * 
-	 * <p>An "invoker" is an object which hides multiple registered
+	 * <br>
+	 * An "invoker" is an object which hides multiple registered
 	 * listeners of type {@code T} under one instance of type {@code T}, executing
 	 * them and leaving early as necessary.
 	 */
