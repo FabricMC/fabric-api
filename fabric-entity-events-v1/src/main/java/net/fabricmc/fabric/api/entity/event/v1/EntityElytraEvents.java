@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class EntityElytraEvents {
 	/**
 	 * An event to check if elytra flight (both through normal and custom elytras) is allowed.
-	 * All listeners need to return true to allow the entity to fly, otherwise elytra flight will be blocked/stopped.
+	 * All listeners need to return {@code true} to allow the entity to fly, otherwise elytra flight will be blocked/stopped.
 	 */
 	public static final Event<Allow> ALLOW = EventFactory.createArrayBacked(Allow.class, listeners -> entity -> {
 		for (Allow listener : listeners) {
@@ -59,7 +59,7 @@ public final class EntityElytraEvents {
 	@FunctionalInterface
 	public interface Allow {
 		/**
-		 * @return false to block elytra flight, true to allow it (unless another listener returns false)
+		 * @return {@code false} to block elytra flight, {@code true} to allow it (unless another listener returns {@code false})
 		 */
 		boolean allowElytraFlight(LivingEntity entity);
 	}
@@ -86,8 +86,8 @@ public final class EntityElytraEvents {
 		 * }</pre>
 		 *
 		 * @param entity     the entity
-		 * @param tickElytra false if this is just to check if the custom elytra can be used, true if the custom elytra should also be ticked, i.e. perform side-effects of flying such as using resources.
-		 * @return true to use a custom elytra, enabling elytra flight for the entity and cancelling subsequent handlers
+		 * @param tickElytra {@code false} if this is just to check if the custom elytra can be used, {@code true} if the custom elytra should also be ticked, i.e. perform side-effects of flying such as using resources.
+		 * @return {@code true} to use a custom elytra, enabling elytra flight for the entity and cancelling subsequent handlers
 		 */
 		boolean useCustomElytra(LivingEntity entity, boolean tickElytra);
 	}

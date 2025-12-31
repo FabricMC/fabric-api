@@ -107,14 +107,14 @@ public interface TransactionContext {
 		COMMITTED;
 
 		/**
-		 * @return true if the transaction was aborted, false if it was committed.
+		 * @return {@code true} if the transaction was aborted, {@code false} if it was committed.
 		 */
 		public boolean wasAborted() {
 			return this == ABORTED;
 		}
 
 		/**
-		 * @return true if the transaction was committed, false if it was aborted.
+		 * @return {@code true} if the transaction was committed, {@code false} if it was aborted.
 		 */
 		public boolean wasCommitted() {
 			return this == COMMITTED;

@@ -53,7 +53,7 @@ public final class FluidStorageUtil {
 	 * @param storage The storage that the player is interacting with.
 	 * @param player The player.
 	 * @param hand The hand that the player used.
-	 * @return True if some fluid was moved.
+	 * @return {@code true} if some fluid was moved.
 	 */
 	public static boolean interactWithFluidStorage(Storage<FluidVariant> storage, Player player, InteractionHand hand) {
 		// Check if hand is a fluid container.

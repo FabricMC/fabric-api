@@ -34,12 +34,12 @@ import net.minecraft.core.component.DataComponentPatch;
  */
 public interface TransferVariant<O> {
 	/**
-	 * Return {@code true} if this variant is blank, and {@code false} otherwise.
+	 * @return {@code true} if this variant is blank, and {@code false} otherwise.
 	 */
 	boolean isBlank();
 
 	/**
-	 * Return the immutable object instance of this variant.
+	 * @return the immutable object instance of this variant.
 	 */
 	O getObject();
 
@@ -54,16 +54,16 @@ public interface TransferVariant<O> {
 	DataComponentMap getComponentMap();
 
 	/**
-	 * Return true if this variant has a component changes.
+	 * @return {@code true} if this variant has a component changes.
 	 */
 	default boolean hasComponents() {
 		return !getComponents().isEmpty();
 	}
 
 	/**
-	 * Return true if the tag of this variant matches the passed tag, and false otherwise.
+	 * @return {@code true} if the tag of this variant matches the passed tag, and false otherwise.
 	 *
-	 * <p>Note: True is returned if both tags are {@code null}.
+	 * <p>Note: {@code true} is returned if both tags are {@code null}.
 	 */
 	default boolean componentsMatch(DataComponentPatch other) {
 		return Objects.equals(getComponents(), other);

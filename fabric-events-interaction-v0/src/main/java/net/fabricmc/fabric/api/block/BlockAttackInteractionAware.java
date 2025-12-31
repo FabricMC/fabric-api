@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 @Deprecated
 public interface BlockAttackInteractionAware {
 	/**
-	 * @return True if the block accepted the player and it should no longer be processed.
+	 * @return {@code true} if the block accepted the player, and it should no longer be processed.
 	 */
 	boolean onAttackInteraction(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, Direction direction);
 }

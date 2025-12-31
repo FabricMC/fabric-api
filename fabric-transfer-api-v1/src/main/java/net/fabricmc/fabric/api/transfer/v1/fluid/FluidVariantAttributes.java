@@ -155,7 +155,7 @@ public final class FluidVariantAttributes {
 	}
 
 	/**
-	 * Return true if this fluid is lighter than air.
+	 * @return {@code true} if this fluid is lighter than air.
 	 * Fluids that are lighter than air generally flow upwards.
 	 */
 	public static boolean isLighterThanAir(FluidVariant variant) {

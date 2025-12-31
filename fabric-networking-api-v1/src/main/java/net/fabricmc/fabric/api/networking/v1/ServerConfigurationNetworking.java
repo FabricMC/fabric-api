@@ -234,7 +234,7 @@ public final class ServerConfigurationNetworking {
 	}
 
 	/**
-	 * Returns true if the client has previously completed configuration, and has re-entered the configuration phase.
+	 * Returns {@code true} if the client has previously completed configuration, and has re-entered the configuration phase.
 	 *
 	 * @param handler the server configuration network handler
 	 * @return {@code true} if the client is reconfiguring

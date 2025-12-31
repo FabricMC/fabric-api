@@ -379,7 +379,7 @@ public class FabricItemGroupEntries implements CreativeModeTab.Output {
 	}
 
 	/**
-	 * @return True if the item of a given stack is enabled in the current {@link FeatureFlagSet}.
+	 * @return {@code true} if the item of a given stack is enabled in the current {@link FeatureFlagSet}.
 	 * @see Item#isEnabled
 	 */
 	private boolean isEnabled(ItemStack stack) {

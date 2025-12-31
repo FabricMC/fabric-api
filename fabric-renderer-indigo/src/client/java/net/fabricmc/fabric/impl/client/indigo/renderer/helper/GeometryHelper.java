@@ -89,7 +89,7 @@ public final class GeometryHelper {
 
 	/**
 	 * Returns: {@code true} if quad - already known to be parallel to a face - is actually coplanar with it.
-	 * For compatibility with vanilla resource packs, also true if quad is outside the face.
+	 * For compatibility with vanilla resource packs, also {@code true} if quad is outside the face.
 	 *
 	 * <p>Test will be unreliable if not already parallel, use {@link #isQuadParallelToFace(Direction, QuadView)}
 	 * for that purpose. Expects convex quads with all points co-planar.
@@ -137,7 +137,7 @@ public final class GeometryHelper {
 
 	/**
 	 * Used by {@link #isQuadCubic(Direction, QuadView)}.
-	 * True if quad touches all four corners of unit square.
+	 * {@code true} if quad touches all four corners of unit square.
 	 *
 	 * <p>For compatibility with resource packs that contain models with quads exceeding
 	 * block boundaries, considers corners outside the block to be at the corners.

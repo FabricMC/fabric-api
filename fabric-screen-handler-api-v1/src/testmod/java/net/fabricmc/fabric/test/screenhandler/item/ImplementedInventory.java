@@ -90,14 +90,12 @@ public interface ImplementedInventory extends WorldlyContainer {
 	}
 
 	/**
-	 * Returns true if the stack can be inserted in the slot at the side.
-	 *
-	 * <p>The default implementation returns true.
+	 * The default implementation returns {@code true}.
 	 *
 	 * @param slot  the slot
 	 * @param stack the stack
 	 * @param side  the side
-	 * @return true if the stack can be inserted
+	 * @return {@code true} if the stack can be inserted in the slot at the side.
 	 */
 	@Override
 	default boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
@@ -105,14 +103,11 @@ public interface ImplementedInventory extends WorldlyContainer {
 	}
 
 	/**
-	 * Returns true if the stack can be extracted from the slot at the side.
-	 *
-	 * <p>The default implementation returns true.
-	 *
+	 * The default implementation returns {@code true}.
 	 * @param slot  the slot
 	 * @param stack the stack
 	 * @param side  the side
-	 * @return true if the stack can be extracted
+	 * @return {@code true} if the stack can be extracted from the slot at the side.
 	 */
 	@Override
 	default boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
@@ -134,7 +129,7 @@ public interface ImplementedInventory extends WorldlyContainer {
 	}
 
 	/**
-	 * @return true if this inventory has only empty stacks, false otherwise
+	 * @return {@code true} if this inventory has only empty stacks, false otherwise
 	 */
 	@Override
 	default boolean isEmpty() {
@@ -168,7 +163,7 @@ public interface ImplementedInventory extends WorldlyContainer {
 	 *
 	 * @param slot  the slot
 	 * @param count the item count
-	 * @return a stack
+	 * @return the removed stack with count {@code count} or {@link ItemStack#EMPTY} if query is invalid
 	 */
 	@Override
 	default ItemStack removeItem(int slot, int count) {
@@ -184,7 +179,7 @@ public interface ImplementedInventory extends WorldlyContainer {
 	/**
 	 * Removes the current stack in the {@code slot} and returns it.
 	 *
-	 * <p>The default implementation uses {@link ContainerHelper#removeStack(List, int)}
+	 * <p>The default implementation uses {@link ContainerHelper#takeItem(List, int)}
 	 *
 	 * @param slot the slot
 	 * @return the removed stack
@@ -197,7 +192,7 @@ public interface ImplementedInventory extends WorldlyContainer {
 	/**
 	 * Replaces the current stack in the {@code slot} with the provided stack.
 	 *
-	 * <p>If the stack is too big for this inventory ({@link Container#getMaxCountPerStack()} ()}),
+	 * <p>If the stack is too big for this inventory ({@link Container#getMaxStackSize()}),
 	 * it gets resized to this inventory's maximum amount.
 	 *
 	 * @param slot  the slot
@@ -213,7 +208,7 @@ public interface ImplementedInventory extends WorldlyContainer {
 	}
 
 	/**
-	 * Clears {@linkplain #getItems() the item list}}.
+	 * Clears the {@linkplain #getItems() item list}.
 	 */
 	@Override
 	default void clearContent() {

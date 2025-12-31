@@ -155,7 +155,7 @@ public final class ServerLifecycleEvents {
 		 * <p>For example, this event can be used to sync data loaded with custom resource reloaders.
 		 *
 		 * @param player Player to which the data is being sent.
-		 * @param joined True if the player is joining the server, false if the server finished a successful resource reload.
+		 * @param joined {@code true} if the player is joining the server, false if the server finished a successful resource reload.
 		 */
 		void onSyncDataPackContents(ServerPlayer player, boolean joined);
 	}
@@ -185,7 +185,7 @@ public final class ServerLifecycleEvents {
 		 * Called before a Minecraft server begins saving data.
 		 *
 		 * @param server the server
-		 * @param flush is true when all chunks are being written to disk, server will likely freeze during this time
+		 * @param flush is {@code true} when all chunks are being written to disk, server will likely freeze during this time
 		 * @param force whether servers that have save-off set should save
 		 */
 		void onBeforeSave(MinecraftServer server, boolean flush, boolean force);
@@ -197,7 +197,7 @@ public final class ServerLifecycleEvents {
 		 * Called before a Minecraft server begins saving data.
 		 *
 		 * @param server the server
-		 * @param flush is true when all chunks are being written to disk, server will likely freeze during this time
+		 * @param flush is {@code true} when all chunks are being written to disk, server will likely freeze during this time
 		 * @param force whether servers that have save-off set should save
 		 */
 		void onAfterSave(MinecraftServer server, boolean flush, boolean force);

@@ -144,7 +144,7 @@ public final class ServerPlayerEvents {
 		 * @param player the player
 		 * @param damageSource the fatal damage damageSource
 		 * @param damageAmount the damageAmount of damage that has killed the player
-		 * @return true if the death should go ahead, false otherwise.
+		 * @return {@code true} if the death should go ahead, {@code false} otherwise.
 		 */
 		boolean allowDeath(ServerPlayer player, DamageSource damageSource, float damageAmount);
 	}

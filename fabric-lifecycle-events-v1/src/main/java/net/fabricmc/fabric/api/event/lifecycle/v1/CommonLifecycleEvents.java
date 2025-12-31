@@ -37,7 +37,7 @@ public final class CommonLifecycleEvents {
 	public interface TagsLoaded {
 		/**
 		 * @param registries Up-to-date registries from which the tags can be retrieved.
-		 * @param client True if the client just received a sync packet, false if the server just (re)loaded the tags.
+		 * @param client {@code true} if the client just received a sync packet, {@code false} if the server just (re)loaded the tags.
 		 */
 		void onTagsLoaded(RegistryAccess registries, boolean client);
 	}

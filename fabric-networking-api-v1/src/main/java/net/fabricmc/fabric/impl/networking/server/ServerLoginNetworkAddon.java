@@ -124,7 +124,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	 * Handles an incoming query response during login.
 	 *
 	 * @param packet the packet to handle
-	 * @return true if the packet was handled
+	 * @return {@code true} if the packet was handled
 	 */
 	public boolean handle(ServerboundCustomQueryAnswerPacket packet) {
 		PacketByteBufLoginQueryResponse response = (PacketByteBufLoginQueryResponse) packet.payload();

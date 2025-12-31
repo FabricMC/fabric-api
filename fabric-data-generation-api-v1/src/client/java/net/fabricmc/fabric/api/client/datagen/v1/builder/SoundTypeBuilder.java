@@ -72,7 +72,7 @@ public interface SoundTypeBuilder {
 	}
 
 	/**
-	 * Sets an optional replace boolean, which on true allows this sound type to override others.
+	 * Sets an optional replace boolean, which on {@code true} allows this sound type to override others.
 	 *
 	 * <p>The default is false.
 	 */

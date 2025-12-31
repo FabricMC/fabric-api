@@ -64,7 +64,7 @@ public final class ServerLivingEntityEvents {
 	 *
 	 * <p>Mods can cancel this to keep the entity alive.
 	 *
-	 * <p>Vanilla checks for entity health {@code <= 0} each tick (with {@link LivingEntity#isDeadOrDying()}), and kills if true -
+	 * <p>Vanilla checks for entity health {@code <= 0} each tick (with {@link LivingEntity#isDeadOrDying()}), and kills if {@code true} -
 	 * so the entity will still die next tick if this event is cancelled.
 	 * It's assumed that the listener will do something to prevent this, for example, if the entity is a player:
 	 * <ul>
@@ -116,7 +116,7 @@ public final class ServerLivingEntityEvents {
 		 * @param entity the entity
 		 * @param source the source of the damage
 		 * @param amount the amount of damage that the entity will take (before mitigations)
-		 * @return true if the damage should go ahead, false to cancel the damage.
+		 * @return {@code true} if the damage should go ahead, false to cancel the damage.
 		 */
 		boolean allowDamage(LivingEntity entity, DamageSource source, float amount);
 	}
@@ -144,7 +144,7 @@ public final class ServerLivingEntityEvents {
 		 * @param entity the entity
 		 * @param damageSource the source of the fatal damage
 		 * @param damageAmount the amount of damage that has killed the entity
-		 * @return true if the death should go ahead, false to cancel the death.
+		 * @return {@code true} if the death should go ahead, false to cancel the death.
 		 */
 		boolean allowDeath(LivingEntity entity, DamageSource damageSource, float damageAmount);
 	}

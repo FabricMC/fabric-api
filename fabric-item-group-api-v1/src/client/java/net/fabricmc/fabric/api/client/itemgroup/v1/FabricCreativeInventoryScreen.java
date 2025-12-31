@@ -30,7 +30,7 @@ public interface FabricCreativeInventoryScreen {
 	 * Switches to the page with the given index if it exists.
 	 *
 	 * @param page the index of the page to switch to
-	 * @return Returns true when the page was changed
+	 * @return Returns {@code true} when the page was changed
 	 */
 	default boolean switchToPage(int page) {
 		throw new AssertionError("Implemented by mixin");
@@ -39,7 +39,7 @@ public interface FabricCreativeInventoryScreen {
 	/**
 	 * Switches to the next page if it exists.
 	 *
-	 * @return Returns true when the page was changed
+	 * @return Returns {@code true} when the page was changed
 	 */
 	default boolean switchToNextPage() {
 		return switchToPage(getCurrentPage() + 1);
@@ -48,7 +48,7 @@ public interface FabricCreativeInventoryScreen {
 	/**
 	 * Switches to the previous page if it exists.
 	 *
-	 * @return Returns true when the page was changed
+	 * @return Returns {@code true} when the page was changed
 	 */
 	default boolean switchToPreviousPage() {
 		return switchToPage(getCurrentPage() - 1);
@@ -90,7 +90,7 @@ public interface FabricCreativeInventoryScreen {
 	/**
 	 * Returns whether there are additional pages to show on top of the default vanilla pages.
 	 *
-	 * @return true if there are additional pages
+	 * @return {@code true} if there are additional pages
 	 */
 	default boolean hasAdditionalPages() {
 		throw new AssertionError("Implemented by mixin");
@@ -109,7 +109,7 @@ public interface FabricCreativeInventoryScreen {
 	 * Sets the currently selected tab to the given {@link CreativeModeTab}.
 	 *
 	 * @param itemGroup the {@link CreativeModeTab} to select
-	 * @return true if the tab was successfully selected
+	 * @return {@code true} if the tab was successfully selected
 	 */
 	default boolean setSelectedItemGroup(CreativeModeTab itemGroup) {
 		throw new AssertionError("Implemented by mixin");
