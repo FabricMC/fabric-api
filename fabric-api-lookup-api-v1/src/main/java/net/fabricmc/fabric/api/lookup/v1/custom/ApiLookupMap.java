@@ -32,13 +32,71 @@ import net.fabricmc.fabric.impl.lookup.custom.ApiLookupMapImpl;
 /// to illustrate how to use [ApiLookupMap] and [ApiProviderMap].
 ///
 /// ```java
-/// public interface ItemStackApiLookup<A, C>{static <A, C> ItemStackApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass){return ItemStackApiLookupImpl.get(lookupId, apiClass, contextClass);}// Find an API instance.＠NullableA find(ItemStack stack, C context);// Expose the API for some item.void register(ItemStackApiProvider<A, C> provider, Item item);interface ItemStackApiProvider<A, C>{// Return an API instance if available, or null otherwise.＠NullableA find(ItemStack stack, C context);}}
+/// public interface ItemStackApiLookup<A, C> {
+///     static <A, C> ItemStackApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
+///         return ItemStackApiLookupImpl.get(lookupId, apiClass, contextClass);
+///     }
+///
+///     // Find an API instance.
+///     @Nullable
+///     A find(ItemStack stack, C context);
+///
+///     // Expose the API for some item.
+///     void register(ItemStackApiProvider<A, C> provider, Item item);
+///
+///     interface ItemStackApiProvider<A, C> {
+///         // Return an API instance if available, or null otherwise.
+///         @Nullable
+///         A find(ItemStack stack, C context);
+///     }
+/// }
 /// ```
 ///
 /// All the implementation can fit in a single class:
 ///
 /// ```java
-/// public class ItemStackApiLookupImpl<A, C> implements ItemStackApiLookup<A, C>{// Management of lookup instances is handled by ApiLookupMap.private static final ApiLookupMap<ItemStackApiLookup<?, ?>> LOOKUPS = ApiLookupMap.create(ItemStackApiLookupImpl::new);// We have to perform an unchecked cast to convert <?, ?> back to <A, C>.＠SuppressWarnings("unchecked")public static <A, C> ItemStackApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass){// Null checks are already handled by ApiLookupMap#get.return (ItemStackApiLookup<A, C>) LOOKUPS.getLookup(lookupId, apiClass, contextClass);}private ItemStackApiLookupImpl(Identifier id, Class<?> apiClass, Class<?> contextClass){// We don't use these parameters, so nothing to do here.// In practice, these parameters should be stored and exposed with identifier(), apiClass() and contextClass() getter functions.}// We will use an ApiProviderMap to store the providers.private final ApiProviderMap<Item, ItemStackApiProvider<A, C>> providerMap = ApiProviderMap.create();＠Nullablepublic A find(ItemStack stack, C context){ItemStackApiProvider<A, C> provider = providerMap.get(stack.getItem());if (provider == null){return null;}else{return provider.find(stack, context);}}public void register(ItemStackApiProvider provider, Item item){// Let's add a few null checks just in case.Objects.requireNonNull(provider, "ItemStackApiProvider may not be null.");Objects.requireNonNull(item, "Item may not be null.");// Register the provider, or warn if it is already registeredif (providerMap.putIfAbsent(item, provider) != null){// Emit a warning printing the item ID to help users debug more easily.LoggerFactory.getLogger("The name of your mod").warn("Encountered duplicate API provider registration for item " + Registry.ITEM.getId(item) + ".");}}}
+/// public class ItemStackApiLookupImpl<A, C> implements ItemStackApiLookup<A, C> {
+///     // Management of lookup instances is handled by ApiLookupMap.
+///     private static final ApiLookupMap<ItemStackApiLookup<?, ?>> LOOKUPS = ApiLookupMap.create(ItemStackApiLookupImpl::new);
+///
+///     // We have to perform an unchecked cast to convert <?, ?> back to <A, C>.
+///     @SuppressWarnings("unchecked")
+///     public static <A, C> ItemStackApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
+///         // Null checks are already handled by ApiLookupMap#get.
+///         return (ItemStackApiLookup<A, C>) LOOKUPS.getLookup(lookupId, apiClass, contextClass);
+///     }
+///
+///     private ItemStackApiLookupImpl(Identifier id, Class<?> apiClass, Class<?> contextClass) {
+///         // We don't use these parameters, so nothing to do here.
+///         // In practice, these parameters should be stored and exposed with identifier(), apiClass() and contextClass() getter functions.
+///     }
+///
+///     // We will use an ApiProviderMap to store the providers.
+///     private final ApiProviderMap<Item, ItemStackApiProvider<A, C>> providerMap = ApiProviderMap.create();
+///
+///     @Nullable
+///     public A find(ItemStack stack, C context) {
+///         ItemStackApiProvider<A, C> provider = providerMap.get(stack.getItem());
+///
+///         if (provider == null) {
+///             return null;
+///         } else {
+///             return provider.find(stack, context);
+///         }
+///     }
+///
+///     public void register(ItemStackApiProvider provider, Item item) {
+///         // Let's add a few null checks just in case.
+///         Objects.requireNonNull(provider, "ItemStackApiProvider may not be null.");
+///         Objects.requireNonNull(item, "Item may not be null.");
+///
+///         // Register the provider, or warn if it is already registered
+///         if (providerMap.putIfAbsent(item, provider) != null) {
+///             // Emit a warning printing the item ID to help users debug more easily.
+///             LoggerFactory.getLogger("The name of your mod").warn("Encountered duplicate API provider registration for item " + Registry.ITEM.getId(item) + ".");
+///         }
+///     }
+/// }
 /// ```
 ///
 /// @param <L> The type of the lookup implementation, similar to the existing [BlockApiLookup][net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup].
