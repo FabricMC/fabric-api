@@ -165,12 +165,12 @@ public class QuadViewImpl implements QuadView {
 		return (normalFlags() & (1 << vertexIndex)) != 0;
 	}
 
-	/** True if any vertex normal has been set. */
+	/** @return {@code true} if any vertex normal has been set. */
 	public final boolean hasVertexNormals() {
 		return normalFlags() != 0;
 	}
 
-	/** True if all vertex normals have been set. */
+	/** @return {@code true if all vertex normals have been set. */
 	public final boolean hasAllVertexNormals() {
 		return (normalFlags() & 0b1111) == 0b1111;
 	}
