@@ -129,7 +129,7 @@ public interface ImplementedInventory extends WorldlyContainer {
 	}
 
 	/**
-	 * @return {@code true} if this inventory has only empty stacks, false otherwise
+	 * @return {@code true} if this inventory has only empty stacks, {@code false} otherwise
 	 */
 	@Override
 	default boolean isEmpty() {

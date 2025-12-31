@@ -86,7 +86,7 @@ public interface Transaction extends AutoCloseable, TransactionContext {
 	}
 
 	/**
-	 * @return {@code true} if a transaction is open or closing on the current thread, and false otherwise.
+	 * @return {@code true} if a transaction is open or closing on the current thread, and {@code false} otherwise.
 	 */
 	static boolean isOpen() {
 		return getLifecycle() != Lifecycle.NONE;

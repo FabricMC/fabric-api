@@ -49,7 +49,7 @@ public final class ServerLoginNetworking {
 	 *
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
-	 * @return false if a handler is already registered to the channel
+	 * @return {@code false} if a handler is already registered to the channel
 	 * @see ServerLoginNetworking#unregisterGlobalReceiver(Identifier)
 	 * @see ServerLoginNetworking#registerReceiver(ServerLoginPacketListenerImpl, Identifier, LoginQueryResponseHandler)
 	 */
@@ -91,7 +91,7 @@ public final class ServerLoginNetworking {
 	 * @param networkHandler the handler
 	 * @param channelName the id of the channel
 	 * @param responseHandler the handler
-	 * @return false if a handler is already registered to the channel name
+	 * @return {@code false} if a handler is already registered to the channel name
 	 */
 	public static boolean registerReceiver(ServerLoginPacketListenerImpl networkHandler, Identifier channelName, LoginQueryResponseHandler responseHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");

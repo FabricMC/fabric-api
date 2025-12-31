@@ -63,7 +63,7 @@ public final class ClientPlayNetworking {
 	 *
 	 * @param type the payload type
 	 * @param handler the handler
-	 * @return false if a handler is already registered to the channel
+	 * @return {@code false} if a handler is already registered to the channel
 	 * @throws IllegalArgumentException if the codec for {@code type} has not been {@linkplain PayloadTypeRegistry#playS2C() registered} yet
 	 * @see ClientPlayNetworking#unregisterGlobalReceiver(Identifier)
 	 * @see ClientPlayNetworking#registerReceiver(CustomPacketPayload.Type, PlayPayloadHandler)
@@ -180,8 +180,7 @@ public final class ClientPlayNetworking {
 	 * Checks if the connected server declared the ability to receive a payload on a specified channel name.
 	 *
 	 * @param channelName the channel name
-	 * @return {@code true} if the connected server has declared the ability to receive a payload on the specified channel.
-	 * False if the client is not in game.
+	 * @return {@code true} if the connected server has declared the ability to receive a payload on the specified channel, {@code false} if the client is not in game.
 	 */
 	public static boolean canSend(Identifier channelName) throws IllegalArgumentException {
 		// You cant send without a client player, so this is fine

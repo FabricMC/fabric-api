@@ -116,7 +116,7 @@ public final class ServerLivingEntityEvents {
 		 * @param entity the entity
 		 * @param source the source of the damage
 		 * @param amount the amount of damage that the entity will take (before mitigations)
-		 * @return {@code true} if the damage should go ahead, false to cancel the damage.
+		 * @return {@code true} if the damage should go ahead, {@code false} to cancel the damage.
 		 */
 		boolean allowDamage(LivingEntity entity, DamageSource source, float amount);
 	}
@@ -144,7 +144,7 @@ public final class ServerLivingEntityEvents {
 		 * @param entity the entity
 		 * @param damageSource the source of the fatal damage
 		 * @param damageAmount the amount of damage that has killed the entity
-		 * @return {@code true} if the death should go ahead, false to cancel the death.
+		 * @return {@code true} if the death should go ahead, {@code false} to cancel the death.
 		 */
 		boolean allowDeath(LivingEntity entity, DamageSource damageSource, float damageAmount);
 	}

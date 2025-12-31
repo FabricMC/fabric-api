@@ -64,7 +64,7 @@ public final class ClientReceiveMessageEvents {
 	 * {@link #GAME_CANCELED} will be triggered instead of {@link #MODIFY_GAME}.
 	 *
 	 * <p>Overlay is whether the message will be displayed in the action bar.
-	 * To toggle overlay, return false and call
+	 * To toggle overlay, return {@code false} and call
 	 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean)}  ClientPlayerEntity.sendMessage(message, overlay)}.
 	 */
 	public static final Event<AllowGame> ALLOW_GAME = EventFactory.createArrayBacked(AllowGame.class, listeners -> (message, overlay) -> {
@@ -172,7 +172,7 @@ public final class ClientReceiveMessageEvents {
 		 * {@link #GAME_CANCELED} will be triggered instead of {@link #MODIFY_GAME}.
 		 *
 		 * <p>Overlay is whether the message will be displayed in the action bar.
-		 * To toggle overlay, return false and call
+		 * To toggle overlay, return {@code false} and call
 		 * {@link net.minecraft.client.player.LocalPlayer#displayClientMessage(Component, boolean)}  ClientPlayerEntity.sendMessage(message, overlay)}.
 		 *
 		 * @param message the message received from the server

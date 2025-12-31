@@ -61,7 +61,7 @@ public interface TransferVariant<O> {
 	}
 
 	/**
-	 * @return {@code true} if the tag of this variant matches the passed tag, and false otherwise.
+	 * @return {@code true} if the tag of this variant matches the passed tag, and {@code false} otherwise.
 	 *
 	 * <p>Note: {@code true} is returned if both tags are {@code null}.
 	 */

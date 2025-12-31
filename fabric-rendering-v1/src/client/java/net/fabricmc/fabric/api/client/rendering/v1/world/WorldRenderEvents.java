@@ -171,7 +171,7 @@ public final class WorldRenderEvents {
 	 * handling a specific block.  If two subscribers render for the same block, both
 	 * renders will appear.
 	 *
-	 * <p>Returning false from any event subscriber will cancel the default block
+	 * <p>Returning {@code false} from any event subscriber will cancel the default block
 	 * outline render.  This has no effect on other subscribers to this event -
 	 * all subscribers will always be called.  Canceling is appropriate when the
 	 * subscriber replacing the default block outline render for a specific block.

@@ -69,7 +69,7 @@ public final class ClientCommandInternals {
 	 * (This is the same requirement as {@code ClientPlayerEntity#sendCommand}.)
 	 *
 	 * @param command the command with slash removed
-	 * @return {@code true} if the command should not be sent to the server, false otherwise
+	 * @return {@code true} if the command should not be sent to the server, {@code false} otherwise
 	 */
 	public static boolean executeCommand(String command) {
 		Minecraft client = Minecraft.getInstance();

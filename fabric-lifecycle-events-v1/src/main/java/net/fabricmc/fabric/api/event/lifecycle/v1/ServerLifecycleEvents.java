@@ -155,7 +155,7 @@ public final class ServerLifecycleEvents {
 		 * <p>For example, this event can be used to sync data loaded with custom resource reloaders.
 		 *
 		 * @param player Player to which the data is being sent.
-		 * @param joined {@code true} if the player is joining the server, false if the server finished a successful resource reload.
+		 * @param joined {@code true} if the player is joining the server, {@code false} if the server finished a successful resource reload.
 		 */
 		void onSyncDataPackContents(ServerPlayer player, boolean joined);
 	}

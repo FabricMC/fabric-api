@@ -43,7 +43,7 @@ public final class LivingEntityFeatureRenderEvents {
 	@FunctionalInterface
 	public interface AllowCapeRender {
 		/**
-		 * @return false to prevent rendering the cape
+		 * @return {@code false} to prevent rendering the cape
 		 */
 		boolean allowCapeRender(AvatarRenderState state);
 	}

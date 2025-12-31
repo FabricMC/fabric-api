@@ -51,7 +51,7 @@ public final class ClientLoginNetworking {
 	 *
 	 * @param channelName the id of the channel
 	 * @param queryHandler the handler
-	 * @return false if a handler is already registered to the channel
+	 * @return {@code false} if a handler is already registered to the channel
 	 * @see ClientLoginNetworking#unregisterGlobalReceiver(Identifier)
 	 * @see ClientLoginNetworking#registerReceiver(Identifier, LoginQueryRequestHandler)
 	 */
@@ -92,7 +92,7 @@ public final class ClientLoginNetworking {
 	 *
 	 * @param channelName the id of the channel
 	 * @param queryHandler the handler
-	 * @return false if a handler is already registered to the channel name
+	 * @return {@code false} if a handler is already registered to the channel name
 	 * @throws IllegalStateException if the client is not logging in
 	 */
 	public static boolean registerReceiver(Identifier channelName, LoginQueryRequestHandler queryHandler) throws IllegalStateException {

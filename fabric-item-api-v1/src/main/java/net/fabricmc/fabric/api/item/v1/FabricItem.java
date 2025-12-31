@@ -46,7 +46,7 @@ public interface FabricItem {
 	/**
 	 * When the components of an item stack in the main hand or offhand changes, vanilla runs an "update animation".
 	 * This function is called on the client side when the components or count of the stack has changed, but not the item,
-	 * and returning false cancels this animation.
+	 * and returning {@code false} cancels this animation.
 	 *
 	 * @param player   the current player; this may be safely cast to {@link net.minecraft.client.player.LocalPlayer} in client-only code
 	 * @param hand     the hand; this function applies both to the main hand and the offhand
@@ -66,7 +66,7 @@ public interface FabricItem {
 	 * @param player   the player breaking the block
 	 * @param oldStack the previous stack, of this item
 	 * @param newStack the new stack, also of this item
-	 * @return {@code true} to allow continuing block breaking, false to reset the progress.
+	 * @return {@code true} to allow continuing block breaking, {@code false} to reset the progress.
 	 */
 	default boolean allowContinuingBlockBreaking(Player player, ItemStack oldStack, ItemStack newStack) {
 		return false;
