@@ -50,9 +50,10 @@ import net.fabricmc.fabric.impl.gamerule.rpc.FabricGameRuleType;
 ///
 /// To register a game rule, you can use [GameRuleBuilder#buildAndRegister(Identifier)].
 /// For example, to register a game rule that is an integer where the default value is 1 and the acceptable values are between 0 and 10, one would use the following:
-/// <blockquote><pre>
+///
+/// ```java
 /// public static final GameRule&lt;Integer&gt; EXAMPLE_INT_RULE = GameRuleBuilder.forInteger(1).range(0, 10).buildAndRegister(Identifier.fromNamespaceAndPath("modid", "custom_int_gamerule"));
-/// </pre></blockquote>
+/// ```
 ///
 /// To register a game rule in a custom category, call [GameRuleBuilder#category(CustomGameRuleCategory)] on the builder.
 @SuppressWarnings("UnusedReturnValue")

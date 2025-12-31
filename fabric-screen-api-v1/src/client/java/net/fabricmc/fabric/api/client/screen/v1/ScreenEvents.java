@@ -48,8 +48,19 @@ public final class ScreenEvents {
 	///
 	/// The [ScreenExtensions] provided by the `info` parameter may be used to register tick, render events, keyboard, mouse, additional and removal of child elements (including buttons).
 	/// For example, to register an event on container-like screens after render, the following code could be used:
-	/// <pre>
-	/// `&#64;Overridepublic void onInitializeClient(){ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) ->{if (screen instanceof AbstractContainerScreen){ScreenEvents.afterRender(screen).register((screen1, graphics, mouseX, mouseY, tickProgress) ->{...});}});}`</pre>
+	///
+	/// ```java
+	/// @Override
+	/// public void onInitializeClient() {
+	/// 	ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+	/// 		if (screen instanceof AbstractContainerScreen) {
+	/// 			ScreenEvents.afterRender(screen).register((screen1, graphics, mouseX, mouseY, tickProgress) -> {
+	/// 				...
+	/// 			});
+	/// 		}
+	/// 	});
+	/// }
+	/// ```
 	///
 	/// This event indicates a screen has been resized, and therefore is being re-initialized.
 	/// This event can also indicate that the previous screen has been changed.
@@ -66,8 +77,14 @@ public final class ScreenEvents {
 	/// Modifications such as changing sizes of buttons, removing buttons and adding/removing child elements to the screen can be done safely using this event.
 	///
 	/// For example, to add a button to the title screen, the following code could be used:
-	/// <pre>
-	/// `ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) ->{if (screen instanceof TitleScreen){Screens.getWidgets(screen).add(new Button(...));}});`</pre>
+	///
+	/// ```java
+	/// ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+	/// 	if (screen instanceof TitleScreen) {
+	/// 		Screens.getWidgets(screen).add(new Button(...));
+	/// 	}
+	/// });
+	/// ```
 	///
 	/// Note that by adding an element to a screen, the element is not automatically [drawn][net.minecraft.client.gui.components.Renderable].
 	/// Unless the element is button, you need to call the specific [render][net.minecraft.client.gui.components.Renderable#render(GuiGraphics, int, int, float)] methods in the corresponding screen events.

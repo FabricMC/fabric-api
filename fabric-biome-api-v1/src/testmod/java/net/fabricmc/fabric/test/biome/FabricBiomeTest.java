@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 /// When running with this test-mod, also test this when running a dedicated server since there
 /// are significant differences between server + client and how they sync biomes.
 ///
-/// Ingame, you can use <code>/locatebiome</code> since we use nether- and end-biomes in the overworld,
+/// Ingame, you can use `/locatebiome` since we use nether- and end-biomes in the overworld,
 /// and vice-versa, making them easy to find to verify the injection worked.
 ///
 /// If you don't find a biome right away, teleport far away (~10000 blocks) from spawn and try again.

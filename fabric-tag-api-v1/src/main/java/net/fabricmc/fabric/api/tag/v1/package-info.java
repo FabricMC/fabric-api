@@ -16,7 +16,7 @@
 
 /// The Fabric Tag API for working with {@linkplain net.minecraft.tags.TagKey tags}.
 /// # Aliasing tags
-/// <dfn>Tag alias groups</dfn> are lists of tags that refer to the same set of registry entries.
+/// **Tag alias groups** are lists of tags that refer to the same set of registry entries.
 /// The contained tags will be linked together and get the combined set of entries
 /// of all the aliased tags in a group.
 ///

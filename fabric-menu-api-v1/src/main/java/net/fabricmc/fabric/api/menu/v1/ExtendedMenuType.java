@@ -33,10 +33,38 @@ import net.minecraft.world.inventory.MenuType;
 /// [Player.openMenu][net.minecraft.world.entity.player.Player#openMenu(net.minecraft.world.MenuProvider)] with an
 /// [ExtendedMenuProvider].
 /// ## Example
-/// <pre>
 ///
-/// `// Data classpublic record OvenData(String label){public static final StreamCodec<RegistryFriendlyByteBuf, OvenData> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.STRING_UTF8,OvenData::label,OvenData::new);}// Creating and registering the typepublic static final ExtendedMenuType<OvenMenu> OVEN =new ExtendedMenuType((containerId, inventory, data) -> ..., OvenData.STREAM_CODEC);Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath("modid", "custom_menu"), OVEN);// Note: remember to also register the screen using vanilla's MenuScreens!// Menu classpublic class OvenMenu extends AbstractContainerMenu{public OvenMenu(int syncId){super(MyMenus.OVEN, syncId);}}// Opening the extended menuvar provider = new ExtendedMenuProvider(){...};player.openMenu(provider); // only works on ServerPlayer instances`
-/// </pre>
+/// ```java
+/// // Data class
+/// public record OvenData(String label) {
+///     public static final StreamCodec<RegistryFriendlyByteBuf, OvenData> STREAM_CODEC =
+///         StreamCodec.composite(
+///             ByteBufCodecs.STRING_UTF8,
+///             OvenData::label,
+///             OvenData::new
+///         );
+/// }
+///
+/// // Creating and registering the type
+/// public static final ExtendedMenuType<OvenMenu> OVEN =
+///     new ExtendedMenuType((containerId, inventory, data) -> ..., OvenData.STREAM_CODEC);
+/// Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath("modid", "custom_menu"), OVEN);
+///
+/// // Note: remember to also register the screen using vanilla's MenuScreens!
+///
+/// // Menu class
+/// public class OvenMenu extends AbstractContainerMenu {
+///     public OvenMenu(int syncId) {
+///         super(MyMenus.OVEN, syncId);
+///     }
+/// }
+///
+/// // Opening the extended menu
+/// var provider = new ExtendedMenuProvider() {
+///     ...
+/// };
+/// player.openMenu(provider); // only works on ServerPlayer instances
+/// ```
 ///
 /// @param <T> the type of menu created by this type
 /// @param <D> the type of the data

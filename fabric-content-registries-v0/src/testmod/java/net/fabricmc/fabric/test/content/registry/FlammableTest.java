@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 
 public class FlammableTest {
-	/// Regression test for <a href="https://github.com/FabricMC/fabric/issues/2108">FlammableBlockRegistry ignoring tags on first load</a>.
+	/// Regression test for [FlammableBlockRegistry ignoring tags on first load](https://github.com/FabricMC/fabric/issues/2108).
 	@GameTest
 	public void testFlammableTag(GameTestHelper helper) {
 		if (FlammableBlockRegistry.getDefaultInstance().get(Blocks.SAND).getIgniteOdds() != 4) {

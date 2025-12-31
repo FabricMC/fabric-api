@@ -33,10 +33,10 @@ import net.fabricmc.fabric.mixin.registry.sync.BuiltInRegistriesAccessor;
 /// Used to create custom registries, with specified registry attributes.
 ///
 /// See the following example for creating a [Registry] of String objects.
-/// <pre>
 ///
-/// `ResourceKey<Registry<String>> key = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("modid", "custom_registry"));Registry<String> registry = FabricRegistryBuilder.createSimple(key).attribute(RegistryAttribute.SYNCED).buildAndRegister();`
-/// </pre>
+/// ```java
+/// ResourceKey<Registry<String>> key = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("modid", "custom_registry"));Registry<String> registry = FabricRegistryBuilder.createSimple(key).attribute(RegistryAttribute.SYNCED).buildAndRegister();
+/// ```
 ///
 /// Tags for the entries of a custom registry must be placed in
 /// `/tags/<registry namespace>/<registry path>/`. For example, the tags for the example

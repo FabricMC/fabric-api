@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 /// An object that can store resources.
 ///
 /// Most of the documentation that follows is quite technical.
-/// For an easier introduction to the API, see the <a href="https://fabricmc.net/wiki/tutorial:transfer-api">wiki page</a>.
+/// For an easier introduction to the API, see the [wiki page](https://fabricmc.net/wiki/tutorial:transfer-api).
 ///
 ///   - [#supportsInsertion] and [#supportsExtraction] can be used to tell if insertion and extraction
 ///     functionality are possibly supported by this storage.
@@ -130,8 +130,12 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	}
 
 	/// Convenient helper to get an [Iterable] over the {@linkplain #nonEmptyIterator() non-empty views} of this storage, for use in for-each loops.
-	/// <pre>
-	/// `for (StorageView<T> view : storage.nonEmptyViews()){// Do something with the view}`</pre>
+	///
+	/// ```java
+	/// for (StorageView<T> view : storage.nonEmptyViews()) {
+	/// 	// Do something with the view
+	/// }
+	/// ```
 	default Iterable<StorageView<T>> nonEmptyViews() {
 		return this::nonEmptyIterator;
 	}
@@ -140,8 +144,21 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
 	/// if the version hasn't changed since the last time, **and the storage instance is the same**, the storage has the same contents.
 	/// This can be used to avoid re-scanning the contents of the storage, which could be an expensive operation.
 	/// It may be used like that:
-	/// <pre>
-	/// `// Store storage and version:Storage<?> firstStorage = // ...long firstVersion = firstStorage.getVersion();// Later, check if the secondStorage is the unchanged firstStorage:Storage<?> secondStorage = // ...long secondVersion = secondStorage.getVersion();// We must check firstStorage == secondStorage first, otherwise versions may not be compared.if (firstStorage == secondStorage && firstVersion == secondVersion){// storage contents are the same.}else{// storage contents might have changed.}`</pre>
+	///
+	/// ```java
+	/// // Store storage and version:
+	/// Storage<?> firstStorage = // ...
+	/// long firstVersion = firstStorage.getVersion();
+	/// // Later, check if the secondStorage is the unchanged firstStorage:
+	/// Storage<?> secondStorage = // ...
+	/// long secondVersion = secondStorage.getVersion();
+	/// // We must check firstStorage == secondStorage first, otherwise versions may not be compared.
+	/// if (firstStorage == secondStorage && firstVersion == secondVersion) {
+	/// 	// storage contents are the same.
+	/// } else {
+	/// 	// storage contents might have changed.
+	/// }
+	/// ```
 	///
 	/// The version **must** change if the state of the storage has changed,
 	/// generally after a direct modification, or at the end of a modifying transaction.

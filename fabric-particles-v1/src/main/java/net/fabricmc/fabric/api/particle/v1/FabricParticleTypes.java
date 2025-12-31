@@ -29,8 +29,8 @@ import net.minecraft.network.codec.StreamCodec;
 /// Methods for creating particle types, both simple and using an existing attribute factory.
 ///
 /// Usage:
-/// <blockquote>
-/// <pre>
+///
+/// ```java
 /// public static final SimpleParticleType SIMPLE_TEST_PARTICLE = FabricParticleTypes.simple();
 /// public static final SimpleParticleType CUSTOM_TEST_PARTICLE = FabricParticleTypes.simple();
 ///
@@ -38,9 +38,8 @@ import net.minecraft.network.codec.StreamCodec;
 /// public void onInitialize() {
 ///     Registry.register(Registries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("modid", "simple"), SIMPLE_TEST_PARTICLE);
 ///     Registry.register(Registries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("modid", "custom"), CUSTOM_TEST_PARTICLE);
-/// }}
-/// </pre>
-/// </blockquote>
+/// }
+/// ```
 public final class FabricParticleTypes {
 	private FabricParticleTypes() { }
 

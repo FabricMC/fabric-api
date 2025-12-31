@@ -30,8 +30,17 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 ///
 /// How it works is that fabric registers fallback providers for instances of this interface.
 /// This can be used for convenient Storage registration, but please always use the SIDED lookups for queries:
-/// <pre>
-/// `Storage<FluidVariant> maybeFluidStorage = net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage.SIDED.find(level, pos, direction);if (maybeFluidStorage != null){// use it}Storage<ItemVariant> maybeItemStorage = net.fabricmc.fabric.api.transfer.v1.item.ItemStorage.SIDED.find(level, pos, direction);if (maybeItemStorage != null){// use it}`</pre>
+///
+/// ```java
+/// Storage<FluidVariant> maybeFluidStorage = net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage.SIDED.find(level, pos, direction);
+/// if (maybeFluidStorage != null) {
+/// 	// use it
+/// }
+/// Storage<ItemVariant> maybeItemStorage = net.fabricmc.fabric.api.transfer.v1.item.ItemStorage.SIDED.find(level, pos, direction);
+/// if (maybeItemStorage != null) {
+/// 	// use it
+/// }
+/// ```
 public interface SidedStorageBlockEntity {
 	/// Return a fluid storage if available on the queried side, or null otherwise.
 	///

@@ -71,8 +71,15 @@ public interface FabricItem {
 	/// For example, using a lava bucket in a furnace as fuel will leave an empty bucket.
 	///
 	/// Here is an example for a crafting remainder that increments the item's damage.
-	/// <pre>
-	/// `if (stack.getDamageValue() < stack.getMaxDamage() - 1){ItemStack moreDamaged = stack.copy();moreDamaged.setDamageValue(stack.getDamageValue() + 1);return moreDamaged;}return ItemStack.EMPTY;`</pre>
+	///
+	/// ```java
+	/// if (stack.getDamageValue() < stack.getMaxDamage() - 1) {
+	/// 	ItemStack moreDamaged = stack.copy();
+	/// 	moreDamaged.setDamageValue(stack.getDamageValue() + 1);
+	/// 	return moreDamaged;
+	/// }
+	/// return ItemStack.EMPTY;
+	/// ```
 	///
 	/// This is a stack-aware version of [Item#getCraftingRemainder()].
 	///

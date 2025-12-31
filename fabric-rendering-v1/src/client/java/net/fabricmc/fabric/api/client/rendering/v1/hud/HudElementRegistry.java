@@ -38,36 +38,15 @@ import net.fabricmc.fabric.impl.client.rendering.hud.HudElementRegistryImpl;
 /// For vanilla layers, see [VanillaHudElements].
 ///
 /// Common places to add layers (as of 1.21.6):
-/// <table>
-///     <tr>
-///         <th>Injection Point</th>
-///         <th>Use Case</th>
-///     </tr>
-///     <tr>
-///         <td>Before [MISC_OVERLAYS][VanillaHudElements#MISC_OVERLAYS]</td>
-///         <td>Render before everything</td>
-///     </tr>
-///     <tr>
-///         <td>After [MISC_OVERLAYS][VanillaHudElements#MISC_OVERLAYS]</td>
-///         <td>Render after misc overlays (vignette, spyglass, and powder snow) and before the crosshair</td>
-///     </tr>
-///     <tr>
-///         <td>After [BOSS_BAR][VanillaHudElements#BOSS_BAR]</td>
-///         <td>Render after most main hud layers like hotbar, spectator GUI, status bars, experience bar, mob effects overlays, and boss bar and before the sleep overlay</td>
-///     </tr>
-///     <tr>
-///         <td>Before [DEMO_TIMER][VanillaHudElements#DEMO_TIMER]</td>
-///         <td>Render after sleep overlay and before the demo timer, debug overlay, scoreboard, overlay message (action bar), and title and subtitle</td>
-///     </tr>
-///     <tr>
-///         <td>Before [CHAT][VanillaHudElements#CHAT]</td>
-///         <td>Render after the debug overlay, scoreboard, overlay message (action bar), and title and subtitle and before {@linkplain net.minecraft.client.gui.components.ChatComponent chat hud}, player list, and sound subtitles</td>
-///     </tr>
-///     <tr>
-///         <td>After [SUBTITLES][VanillaHudElements#SUBTITLES]</td>
-///         <td>Render after everything</td>
-///     </tr>
-/// </table>
+///
+/// | Injection Point | Use Case |
+/// |-----------------|----------|
+/// | Before [MISC_OVERLAYS][VanillaHudElements#MISC_OVERLAYS] | Render before everything |
+/// | After [MISC_OVERLAYS][VanillaHudElements#MISC_OVERLAYS] | Render after misc overlays (vignette, spyglass, and powder snow) and before the crosshair |
+/// | After [BOSS_BAR][VanillaHudElements#BOSS_BAR] | Render after most main hud layers like hotbar, spectator GUI, status bars, experience bar, mob effects overlays, and boss bar and before the sleep overlay |
+/// | Before [DEMO_TIMER][VanillaHudElements#DEMO_TIMER] | Render after sleep overlay and before the demo timer, debug overlay, scoreboard, overlay message (action bar), and title and subtitle |
+/// | Before [CHAT][VanillaHudElements#CHAT] | Render after the debug overlay, scoreboard, overlay message (action bar), and title and subtitle and before {@linkplain net.minecraft.client.gui.components.ChatComponent chat hud}, player list, and sound subtitles |
+/// | After [SUBTITLES][VanillaHudElements#SUBTITLES] | Render after everything |
 public interface HudElementRegistry {
 	/// Adds an element to the front.
 	///

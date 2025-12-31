@@ -32,15 +32,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /// Events about the sleep of {@linkplain LivingEntity living entities}.
 ///
 /// These events can be categorized into three groups:
-/// <ol>
-///   - Simple listeners: [#START_SLEEPING] and [#STOP_SLEEPING]
-///   - Predicates: [#ALLOW_BED], [#ALLOW_RESETTING_TIME],
-///     [#ALLOW_NEARBY_MONSTERS], [#ALLOW_SETTING_SPAWN] and [#ALLOW_SLEEPING]
 ///
-/// **Note:** Only the [#ALLOW_BED] event applies to non-player entities.
-///   - Modifiers: [#MODIFY_SLEEPING_DIRECTION], [#SET_BED_OCCUPATION_STATE]
-///     and [#MODIFY_WAKE_UP_POSITION]
-/// </ol>
+/// 1. Simple listeners: [#START_SLEEPING] and [#STOP_SLEEPING]
+/// 2. Predicates: [#ALLOW_BED], [#ALLOW_RESETTING_TIME],
+///    [#ALLOW_NEARBY_MONSTERS], [#ALLOW_SETTING_SPAWN] and [#ALLOW_SLEEPING]
+///
+///    **Note:** Only the [#ALLOW_BED] event applies to non-player entities.
+/// 3. Modifiers: [#MODIFY_SLEEPING_DIRECTION], [#SET_BED_OCCUPATION_STATE]
+///    and [#MODIFY_WAKE_UP_POSITION]
 ///
 /// Sleep events are useful for making custom bed blocks that do not extend [net.minecraft.world.level.block.BedBlock].
 /// Custom beds generally only need a custom [#ALLOW_BED] checker and a [#MODIFY_SLEEPING_DIRECTION] callback,

@@ -406,14 +406,15 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		/// Sets the default attributes for a type of living entity.
 		///
 		/// This can be used in a fashion similar to this:
-		/// <blockquote><pre>
+		///
+		/// ```java
 		/// FabricEntityTypeBuilder.createLiving()
 		/// 	.mobCategory(MobCategory.CREATURE)
 		/// 	.entityFactory(MyCreature::new)
 		/// 	.defaultAttributes(LivingEntity::createLivingAttributes)
 		/// 	...
 		/// 	.build();
-		/// </pre></blockquote>
+		/// ```
 		///
 		/// @param defaultAttributeBuilder a function to generate the default attribute builder from the entity type
 		/// @return this builder for chaining

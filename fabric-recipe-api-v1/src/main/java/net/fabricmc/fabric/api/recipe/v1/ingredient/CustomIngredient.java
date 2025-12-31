@@ -38,8 +38,13 @@ import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 ///
 ///
 /// The format for custom ingredients is as follows:
-/// <pre>
-/// `{"fabric:type": "<identifier of the serializer>",// extra ingredient data, dependent on the serializer}`</pre>
+///
+/// ```json
+/// {
+/// 	"fabric:type": "<identifier of the serializer>",
+/// 	// extra ingredient data, dependent on the serializer
+/// }
+/// ```
 ///
 /// Implementors of this interface are strongly encouraged to also implement
 /// [Object#equals(Object)] and [Object#hashCode()].

@@ -78,11 +78,10 @@ public interface PlayerInventoryStorage extends ContainerStorage {
 	/// Unlike [#offerOrDrop], this function will not drop excess items.
 	///
 	/// The exact behavior is:
-	/// <ol>
-	///   - Try to stack inserted items with existing items in the main hand, then the offhand.
-	///   - Try to stack remaining inserted items with existing items in the player main inventory.
-	///   - Try to insert the remainder into empty slots of the player main inventory.
-	/// </ol>
+	///
+	/// 1. Try to stack inserted items with existing items in the main hand, then the offhand.
+	/// 2. Try to stack remaining inserted items with existing items in the player main inventory.
+	/// 3. Try to insert the remainder into empty slots of the player main inventory.
 	///
 	/// @param variant The variant to insert.
 	/// @param maxAmount How many of the variant to insert, at most.

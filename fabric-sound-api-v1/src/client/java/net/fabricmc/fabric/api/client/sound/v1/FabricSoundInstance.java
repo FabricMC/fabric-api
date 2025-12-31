@@ -43,8 +43,10 @@ public interface FabricSoundInstance {
 	///
 	/// Firstly, an entry in `sounds.json`. The name can be set to any sound (though it is recommended to use
 	/// the dummy [#EMPTY_SOUND]), and the "stream" property set to true:
-	/// <pre>
-	/// `{"custom_sound":{"sounds": [{"name": "fabric-sound-api-v1:empty", "stream": true}]}}`</pre>
+	///
+	/// ```json
+	/// {"custom_sound":{"sounds": [{"name": "fabric-sound-api-v1:empty", "stream": true}]}}
+	/// ```
 	///
 	/// You should then define your own implementation of [AudioStream], which provides audio data to the sound
 	/// engine.
@@ -52,8 +54,20 @@ public interface FabricSoundInstance {
 	/// Finally, you'll need an implementation of [net.minecraft.client.resources.sounds.SoundInstance] which overrides [#getAudioStream] to
 	/// return your custom implementation. [net.minecraft.client.resources.sounds.SoundInstance#getSound()] should return the newly-added entry in
 	/// `sounds.json`.
-	/// <pre>
-	/// `class CustomSound extends AbstractSoundInstance{CustomSound(){// Use the sound defined in sounds.jsonsuper(Identifier.fromNamespaceAndPath("modid", "custom_sound"), SoundSource.BLOCKS, net.minecraft.client.resources.sounds.SoundInstance.createUnseededRandom());}CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly){// Return your custom AudioStream implementation.return CompletableFuture.completedFuture(new CustomStream());}}`</pre>
+	///
+	/// ```java
+	/// class CustomSound extends AbstractSoundInstance {
+	/// 	CustomSound() {
+	/// 		// Use the sound defined in sounds.json
+	/// 		super(Identifier.fromNamespaceAndPath("modid", "custom_sound"), SoundSource.BLOCKS, net.minecraft.client.resources.sounds.SoundInstance.createUnseededRandom());
+	/// 	}
+	///
+	/// 	CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary library, Identifier id, boolean repeatInstantly) {
+	/// 		// Return your custom AudioStream implementation.
+	/// 		return CompletableFuture.completedFuture(new CustomStream());
+	/// 	}
+	/// }
+	/// ```
 	///
 	/// @param library         The default buffer library, capable of loading `.ogg` files.
 	/// @param id              The resolved sound ID, equal to [net.minecraft.client.resources.sounds.SoundInstance#getSound()]'s location.

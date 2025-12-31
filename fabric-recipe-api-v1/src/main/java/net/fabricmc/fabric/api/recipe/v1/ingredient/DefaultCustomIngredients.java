@@ -37,8 +37,17 @@ public final class DefaultCustomIngredients {
 	/// Creates an ingredient that matches when its sub-ingredients all match.
 	///
 	/// The JSON format is as follows:
-	/// <pre>
-	/// `{"fabric:type": "fabric:all","ingredients": [// sub-ingredient 1,// sub-ingredient 2,// etc...]}`</pre>
+	///
+	/// ```json
+	/// {
+	/// 	"fabric:type": "fabric:all",
+	/// 	"ingredients": [
+	/// 		// sub-ingredient 1,
+	/// 		// sub-ingredient 2,
+	/// 		// etc...
+	/// 	]
+	/// }
+	/// ```
 	///
 	/// @throws IllegalArgumentException if the array is empty
 	public static Ingredient all(Ingredient... ingredients) {
@@ -50,8 +59,17 @@ public final class DefaultCustomIngredients {
 	/// Creates an ingredient that matches when any of its sub-ingredients matches.
 	///
 	/// The JSON format is as follows:
-	/// <pre>
-	/// `{"fabric:type": "fabric:any","ingredients": [// sub-ingredient 1,// sub-ingredient 2,// etc...]}`</pre>
+	///
+	/// ```json
+	/// {
+	/// 	"fabric:type": "fabric:any",
+	/// 	"ingredients": [
+	/// 		// sub-ingredient 1,
+	/// 		// sub-ingredient 2,
+	/// 		// etc...
+	/// 	]
+	/// }
+	/// ```
 	///
 	/// @throws IllegalArgumentException if the array is empty
 	public static Ingredient any(Ingredient... ingredients) {
@@ -63,8 +81,14 @@ public final class DefaultCustomIngredients {
 	/// Creates an ingredient that matches if its base ingredient matches, and its subtracted ingredient **does not** match.
 	///
 	/// The JSON format is as follows:
-	/// <pre>
-	/// `{"fabric:type": "fabric:difference","base": // base ingredient,"subtracted": // subtracted ingredient}`</pre>
+	///
+	/// ```json
+	/// {
+	/// 	"fabric:type": "fabric:difference",
+	/// 	"base": // base ingredient,
+	/// 	"subtracted": // subtracted ingredient
+	/// }
+	/// ```
 	public static Ingredient difference(Ingredient base, Ingredient subtracted) {
 		Objects.requireNonNull(base, "Base ingredient cannot be null");
 		Objects.requireNonNull(subtracted, "Subtracted ingredient cannot be null");
@@ -81,8 +105,14 @@ public final class DefaultCustomIngredients {
 	/// The check is "non-strict"; components that are neither added nor removed are ignored.
 	///
 	/// The JSON format is as follows:
-	/// <pre>
-	/// `{"fabric:type": "fabric:components","base": // base ingredient,"components": // components to be checked}`</pre>
+	///
+	/// ```json
+	/// {
+	/// 	"fabric:type": "fabric:components",
+	/// 	"base": // base ingredient,
+	/// 	"components": // components to be checked
+	/// }
+	/// ```
 	///
 	/// @throws IllegalArgumentException if there are no components to check
 	public static Ingredient components(Ingredient base, DataComponentPatch components) {
@@ -123,14 +153,24 @@ public final class DefaultCustomIngredients {
 	///
 	/// Passing a `null` or empty `nbt` is **not** allowed, as it would always match.
 	/// For strict matching, use [#components(Ingredient, UnaryOperator)] like this instead:
-	/// <pre>
-	/// `components(base, builder -> builder.add(DataComponents.CUSTOM_DATA, CustomData.of(nbt)));// or, to check for absence of custom data:components(base, builder -> builder.remove(DataComponents.CUSTOM_DATA));`</pre>
+	///
+	/// ```java
+	/// components(base, builder -> builder.add(DataComponents.CUSTOM_DATA, CustomData.of(nbt)));
+	/// // or, to check for absence of custom data:
+	/// components(base, builder -> builder.remove(DataComponents.CUSTOM_DATA));
+	/// ```
 	///
 	/// See [net.minecraft.nbt.NbtUtils#compareNbt] for how matching works.
 	///
 	/// The JSON format is as follows:
-	/// <pre>
-	/// `{"fabric:type": "fabric:custom_data","base": // base ingredient,"nbt": // NBT tag to match, either in JSON directly or a string representation}`</pre>
+	///
+	/// ```json
+	/// {
+	/// 	"fabric:type": "fabric:custom_data",
+	/// 	"base": // base ingredient,
+	/// 	"nbt": // NBT tag to match, either in JSON directly or a string representation
+	/// }
+	/// ```
 	///
 	/// @throws IllegalArgumentException if `nbt` is `null` or empty
 	public static Ingredient customData(Ingredient base, CompoundTag nbt) {

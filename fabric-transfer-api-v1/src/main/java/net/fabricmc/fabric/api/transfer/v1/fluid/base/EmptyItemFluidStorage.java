@@ -38,8 +38,20 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 /// however there is a second constructor that allows customizing the mapping.
 ///
 /// For example, an empty bucket could be registered to accept exactly 81000 droplets of water and turn into a water bucket, like that:
-/// <pre>
-/// `FluidStorage.combinedItemApiProvider(Items.BUCKET) // Go through the combined API provider to make sure other mods can provide storages for empty buckets..register(context ->{// Register a provider for the bucket, returning a new storage every time:return new EmptyItemFluidStorage(context, // Pass the context.Items.WATER_BUCKET, // The result after fluid is inserted.Fluids.WATER, // Which fluid to accept.FluidConstants.BUCKET // How much fluid to accept.);});`</pre>
+///
+/// ```java
+/// FluidStorage.combinedItemApiProvider(Items.BUCKET) // Go through the combined API provider to make sure other mods can provide storages for empty buckets.
+/// 	.register(context -> {
+/// 		// Register a provider for the bucket, returning a new storage every time:
+/// 		return new EmptyItemFluidStorage(
+/// 			context, // Pass the context.
+/// 			Items.WATER_BUCKET, // The result after fluid is inserted.
+/// 			Fluids.WATER, // Which fluid to accept.
+/// 			FluidConstants.BUCKET // How much fluid to accept.
+/// 		);
+/// 	});
+/// ```
+///
 /// (This is just for illustration purposes! In practice, Fabric API already registers storages for most buckets,
 /// and it is inefficient to have one storage registered per fluid
 /// so Fabric API has a storage that accepts any fluid with a corresponding full bucket).

@@ -41,8 +41,16 @@
 /// Test methods should end with [net.minecraft.gametest.framework.GameTestHelper#succeed()].
 ///
 /// Example of a test method:
-/// <pre>
-/// `public class MyTest{void testSomething(GameTestHelper helper){helper.assertTrue(MyMod.getSomeValue(helper.getLevel()) > 0, "SomeValue should be positive.");helper.succeed(); // do not forget!}}`</pre>
+///
+/// ```java
+/// public class MyTest {
+/// 	void testSomething(GameTestHelper helper) {
+/// 		helper.assertTrue(MyMod.getSomeValue(helper.getLevel()) > 0, "SomeValue should be positive.");
+/// 		helper.succeed(); // do not forget!
+/// 	}
+/// }
+/// ```
+///
 /// ## Running GameTest
 ///
 /// To run the server with GameTest enabled, add `-Dfabric-api.gametest` to the
@@ -53,8 +61,21 @@
 /// property to the output file path.
 ///
 /// Example of a Gradle run config to launch GameTest:
-/// <pre>
-/// `loom{runs{gametest{inherit testmodServername "Game Test"vmArg "-Dfabric-api.gametest"vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"runDir "build/gametest"}}}`</pre>
+///
+/// ```gradle
+/// loom {
+/// 	runs {
+/// 		gametest {
+/// 			inherit testmod
+/// 			server
+/// 			name "Game Test"
+/// 			vmArg "-Dfabric-api.gametest"
+/// 			vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
+/// 			runDir "build/gametest"
+/// 		}
+/// 	}
+/// }
+/// ```
 ///
 /// @see net.fabricmc.fabric.api.gametest.v1.GameTest
 @NullMarked

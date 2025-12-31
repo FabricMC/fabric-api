@@ -35,8 +35,20 @@ public final class EntitySelectorOptionRegistry {
 	///
 	/// Here's an example of a custom entity selector option. The option is registered under
 	/// `example_min_health` and can be used like `@e[example_min_health=5]`.
-	/// <pre>
-	/// `EntitySelectorOptionRegistry.register(Identifier.fromNamespaceAndPath("modid", "min_health"),Component.literal("Minimum entity health"),(parser) ->{final float minHealth = parser.getReader().readFloat();if (minHealth > 0){parser.addPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);}},(parser) -> true);`</pre>
+	///
+	/// ```java
+	/// EntitySelectorOptionRegistry.register(
+	/// 	Identifier.fromNamespaceAndPath("modid", "min_health"),
+	/// 	Component.literal("Minimum entity health"),
+	/// 	(parser) -> {
+	/// 		final float minHealth = parser.getReader().readFloat();
+	/// 		if (minHealth > 0) {
+	/// 			parser.addPredicate((entity) -> entity instanceof LivingEntity livingEntity && livingEntity.getHealth() >= minHealth);
+	/// 		}
+	/// 	},
+	/// 	(parser) -> true
+	/// );
+	/// ```
 	///
 	/// By default, a selector option can be used multiple times. To make a non-repeatable
 	/// option, either use [FabricEntitySelectorParser] to flag the existence of an option

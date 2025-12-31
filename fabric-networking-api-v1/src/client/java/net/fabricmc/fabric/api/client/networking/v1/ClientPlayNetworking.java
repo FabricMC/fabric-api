@@ -232,8 +232,13 @@ public final class ClientPlayNetworking {
 		/// call client methods.
 		///
 		/// An example usage of this is to display an overlay message:
-		/// <pre>
-		/// `// use net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry for registering the payloadClientPlayNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (payload, context) ->{context.client().gui.setOverlayMessage(payload.message(), true);});`</pre>
+		///
+		/// ```java
+		/// // use net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry for registering the payload
+		/// ClientPlayNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (payload, context) -> {
+		/// 	context.client().gui.setOverlayMessage(payload.message(), true);
+		/// });
+		/// ```
 		///
 		/// The packet listener can be accessed via [LocalPlayer#connection].
 		///

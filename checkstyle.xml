@@ -61,6 +61,12 @@
 		<property name="message" value="missing blank line after block at same indentation level"/>
 	</module>
 
+	<!-- disallow markdown javadoc code blocks without language specifier -->
+	<module name="RegexpMultiline">
+		<property name="format" value="///[\t ]*```[\t ]*\r?\n[\t ]*///[\t ]*[^`\r\n]"/>
+		<property name="message" value="markdown javadoc code blocks must specify a language (e.g., ```java)"/>
+	</module>
+
 	<module name="TreeWalker">
         <!-- Allow "//CHECKSTYLE.OFF: <InspectionName>" and "//CHECKSTYLE.ON: <InspectionName>" pairs to toggle some inspections -->
         <module name="SuppressionCommentFilter">

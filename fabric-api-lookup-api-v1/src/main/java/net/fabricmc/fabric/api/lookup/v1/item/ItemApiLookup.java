@@ -35,17 +35,59 @@ import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
 /// Let us reuse `FluidContainer` from {@linkplain net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup the net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup example}.
 /// We will query `FluidContainer` instances from the stack directly.
 /// We need no context, so we will use `Void`.
-/// <pre>
-/// `public interface FluidContainer{boolean containsFluids(); // return true if not empty}`</pre>
+///
+/// ```java
+/// public interface FluidContainer {
+/// 	boolean containsFluids(); // return true if not empty
+/// }
+/// ```
+///
 /// We need to create the ItemApiLookup:
-/// <pre>
-/// `public final class MyApi{public static final ItemApiLookup<FluidContainer, Void> FLUID_CONTAINER_ITEM = ItemApiLookup.get(Identifier.fromNamespaceAndPath("modid", "fluid_container"), FluidContainer.class, Void.class);}`</pre>
+///
+/// ```java
+/// public final class MyApi {
+/// 	public static final ItemApiLookup<FluidContainer, Void> FLUID_CONTAINER_ITEM =
+/// 		ItemApiLookup.get(Identifier.fromNamespaceAndPath("modid", "fluid_container"),
+/// 			FluidContainer.class, Void.class);
+/// }
+/// ```
+///
 /// API instances are easy to access:
-/// <pre>
-/// `FluidContainer container = MyApi.FLUID_CONTAINER_ITEM.find(itemStack, null); // Void is always nullif (container != null){// Do something with the containerif (container.containsFluids()){System.out.println("It contains fluids!");}}`</pre>
+///
+/// ```java
+/// FluidContainer container = MyApi.FLUID_CONTAINER_ITEM.find(itemStack, null); // Void is always null
+/// if (container != null) {
+/// 	// Do something with the container
+/// 	if (container.containsFluids()) {
+/// 		System.out.println("It contains fluids!");
+/// 	}
+/// }
+/// ```
+///
 /// For the query to return a useful result, we must expose the API:
-/// <pre>
-/// `// If the item directly implements the interface, registerSelf can be used.public class InfiniteWaterItem implements FluidContainer{＠Overridepublic boolean containsFluids(){return true; // This item always contains fluids!}}MyApi.FLUID_CONTAINER_ITEM.registerSelf(INFINITE_WATER_ITEM);// Otherwise, registerForItems can be used.MyApi.FLUID_CONTAINER_ITEM.registerForItems((itemStack, ignored) ->{// return a FluidContainer for your item, or null if there is none// the second parameter is Void in this case, so it's always null and can be ignored}, ITEM_INSTANCE, ANOTHER_ITEM_INSTANCE); // register as many items as you want// General fallback, to interface with anything, for example another ItemApiLookup.MyApi.FLUID_CONTAINER_ITEM.registerFallback((itemStack, ignored) ->{// return something if available, or null});`</pre>
+///
+/// ```java
+/// // If the item directly implements the interface, registerSelf can be used.
+/// public class InfiniteWaterItem implements FluidContainer {
+/// 	@Override
+/// 	public boolean containsFluids() {
+/// 		return true; // This item always contains fluids!
+/// 	}
+/// }
+/// MyApi.FLUID_CONTAINER_ITEM.registerSelf(INFINITE_WATER_ITEM);
+///
+/// // Otherwise, registerForItems can be used.
+/// MyApi.FLUID_CONTAINER_ITEM.registerForItems((itemStack, ignored) -> {
+/// 	// return a FluidContainer for your item, or null if there is none
+/// 	// the second parameter is Void in this case, so it's always null and can be ignored
+/// }, ITEM_INSTANCE, ANOTHER_ITEM_INSTANCE); // register as many items as you want
+///
+/// // General fallback, to interface with anything, for example another ItemApiLookup.
+/// MyApi.FLUID_CONTAINER_ITEM.registerFallback((itemStack, ignored) -> {
+/// 	// return something if available, or null
+/// });
+/// ```
+///
 /// ### Generic context types
 /// Note that `FluidContainer` and `Void` were completely arbitrary in this example.
 /// We can define any `ItemApiLookup&lt;A, C&gt;`, where `A` is the type of the queried API, and `C` is the type of the additional context

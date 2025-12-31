@@ -227,8 +227,11 @@ public final class ClientConfigurationNetworking {
 		/// Modification to the game should be {@linkplain net.minecraft.util.thread.BlockableEventLoop#submit(Runnable) scheduled}.
 		///
 		/// An example usage of this:
-		/// <pre>
-		/// `// use net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry for registering the payloadClientConfigurationNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (payload, context) ->{});`</pre>
+		///
+		/// ```java
+		/// // use net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry for registering the payloadClient
+		/// ConfigurationNetworking.registerReceiver(OVERLAY_PACKET_TYPE, (payload, context) ->{});
+		/// ```
 		///
 		/// @param payload the packet payload
 		/// @param context the configuration networking context

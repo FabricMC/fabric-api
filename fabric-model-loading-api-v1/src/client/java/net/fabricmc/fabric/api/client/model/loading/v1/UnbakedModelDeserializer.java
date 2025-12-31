@@ -33,8 +33,13 @@ import net.fabricmc.fabric.impl.client.model.loading.UnbakedModelDeserializerReg
 /// [ModelModifier].
 ///
 /// The format for custom unbaked models is as follows:
-/// <pre>
-/// `{"fabric:type": "<identifier of the deserializer>",// extra model data, dependent on the deserializer}`</pre>
+///
+/// ```json
+/// {
+/// 	"fabric:type": "<identifier of the deserializer>",
+/// 	// extra model data, dependent on the deserializer
+/// }
+/// ```
 ///
 /// Alternatively, `"fabric:type"` may be an object with the required string field `"id"`, specifying the
 /// identifier of the deserializer, and the optional boolean field `"optional"` with default `false`,

@@ -277,7 +277,7 @@ public class VanillaStorageTests {
 		helper.succeed();
 	}
 
-	/// Regression test for <a href="https://github.com/FabricMC/fabric/issues/2810">double chest wrapper only updating modified halves</a>.
+	/// Regression test for [double chest wrapper only updating modified halves](https://github.com/FabricMC/fabric/issues/2810).
 	@GameTest(structure = "fabric-transfer-api-v1-testmod:double_chest_comparators", skyAccess = true)
 	public void testDoubleChestComparator(GameTestHelper helper) {
 		BlockPos chestPos = new BlockPos(2, 1, 2);
@@ -327,7 +327,7 @@ public class VanillaStorageTests {
 		helper.succeed();
 	}
 
-	/// Regression test for <a href="https://github.com/FabricMC/fabric/issues/3017">composters not always incrementing their level on the first insert</a>.
+	/// Regression test for [composters not always incrementing their level on the first insert](https://github.com/FabricMC/fabric/issues/3017).
 	@GameTest
 	public void testComposterFirstInsert(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(0, 1, 0);
@@ -352,7 +352,7 @@ public class VanillaStorageTests {
 		helper.succeed();
 	}
 
-	/// Regression test for <a href="https://github.com/FabricMC/fabric/issues/3485">jukeboxes having their state changed mid-transaction</a>.
+	/// Regression test for [jukeboxes having their state changed mid-transaction](https://github.com/FabricMC/fabric/issues/3485).
 	@GameTest
 	public void testJukeboxState(GameTestHelper helper) {
 		BlockPos pos = new BlockPos(2, 2, 2);

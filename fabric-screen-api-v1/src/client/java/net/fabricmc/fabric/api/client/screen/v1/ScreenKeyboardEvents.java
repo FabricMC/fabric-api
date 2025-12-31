@@ -31,7 +31,9 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 /// Use [ScreenEvents#BEFORE_INIT] to register the desired events every time it is necessary.
 ///
 /// Events are fired in the following order:
-/// <pre>`AllowX -> BeforeX -> AfterX`</pre>
+///
+/// `AllowX -> BeforeX -> AfterX`
+///
 /// If the result of the Allow event is false, then Before and After are not called.
 ///
 /// @see ScreenEvents
@@ -100,7 +102,7 @@ public final class ScreenKeyboardEvents {
 		/// @param event the key press event, containing the key, scancode and modifiers
 		/// @return whether the key press should be processed
 		/// @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		/// @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		/// @see [Modifier key flags](https://www.glfw.org/docs/3.3/group__mods.html)
 		boolean allowKeyPress(Screen screen, KeyEvent event);
 	}
 
@@ -110,7 +112,7 @@ public final class ScreenKeyboardEvents {
 		///
 		/// @param event the key press event, containing the key, scancode and modifiers
 		/// @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		/// @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		/// @see [Modifier key flags](https://www.glfw.org/docs/3.3/group__mods.html)
 		void beforeKeyPress(Screen screen, KeyEvent event);
 	}
 
@@ -120,7 +122,7 @@ public final class ScreenKeyboardEvents {
 		///
 		/// @param event the key press event, containing the key, scancode and modifiers
 		/// @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		/// @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		/// @see [Modifier key flags](https://www.glfw.org/docs/3.3/group__mods.html)
 		void afterKeyPress(Screen screen, KeyEvent event);
 	}
 
@@ -131,7 +133,7 @@ public final class ScreenKeyboardEvents {
 		/// @param event the key press event, containing the key, scancode and modifiers
 		/// @return whether the key press should be released
 		/// @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		/// @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		/// @see [Modifier key flags](https://www.glfw.org/docs/3.3/group__mods.html)
 		boolean allowKeyRelease(Screen screen, KeyEvent event);
 	}
 
@@ -141,7 +143,7 @@ public final class ScreenKeyboardEvents {
 		///
 		/// @param event the key press event, containing the key, scancode and modifiers
 		/// @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		/// @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		/// @see [Modifier key flags](https://www.glfw.org/docs/3.3/group__mods.html)
 		void beforeKeyRelease(Screen screen, KeyEvent event);
 	}
 
@@ -151,7 +153,7 @@ public final class ScreenKeyboardEvents {
 		///
 		/// @param event the key press event, containing the key, scancode and modifiers
 		/// @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
-		/// @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		/// @see [Modifier key flags](https://www.glfw.org/docs/3.3/group__mods.html)
 		void afterKeyRelease(Screen screen, KeyEvent event);
 	}
 }

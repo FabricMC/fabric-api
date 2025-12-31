@@ -31,7 +31,11 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 /// Use [ScreenEvents#BEFORE_INIT] to register the desired events every time it is necessary.
 ///
 /// Events are fired in the following order:
-/// <pre>`AllowX -> BeforeX -> AfterX`</pre>
+///
+/// ```text
+/// AllowX -> BeforeX -> AfterX
+/// ```
+///
 /// If the result of the Allow event is false, then Before and After are not called.
 ///
 /// @see ScreenEvents

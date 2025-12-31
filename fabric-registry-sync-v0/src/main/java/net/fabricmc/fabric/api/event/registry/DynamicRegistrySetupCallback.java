@@ -22,10 +22,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /// This event gets triggered before a dynamic registry is being loaded.
 /// Therefore, this is the ideal place to register callbacks to dynamic registries.
 /// For example, the following code is used to register a callback that gets triggered for any registered Biome:
-/// <pre>
 ///
-/// `DynamicRegistrySetupCallback.EVENT.register(registryView ->{registryView.registerEntryAdded(Registries.BIOME, (rawId, id, object) ->{// Do something});});`
-/// </pre>
+/// ```java
+/// DynamicRegistrySetupCallback.EVENT.register(registryView -> {
+/// 	registryView.registerEntryAdded(Registries.BIOME, (rawId, id, object) -> {
+/// 		// Do something
+/// 	});
+/// });
+/// ```
 ///
 /// @see DynamicRegistryView
 /// @see net.minecraft.server.RegistryLayer

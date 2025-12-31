@@ -34,12 +34,11 @@ import net.fabricmc.fabric.impl.client.gametest.TestSystemProperties;
 ///
 /// When a client test is running, ticks are run in a much more controlled way than in vanilla. A tick is split into 4
 /// phases:
-/// <ol>
-///   - {@linkplain #PHASE_TICK} - The client and server threads run a single tick in parallel, if they exist. The test thread waits.
-///   - {@linkplain #PHASE_SERVER_TASKS} - The server runs its task queue, if the server exists. The other threads wait.
-///   - {@linkplain #PHASE_CLIENT_TASKS} - The client runs its task queue, if the client exists. The other threads wait.
-///   - {@linkplain #PHASE_TEST} - The test thread runs test code while the client and server threads wait for tasks to be handed off.
-/// </ol>
+///
+/// 1. {@linkplain #PHASE_TICK} - The client and server threads run a single tick in parallel, if they exist. The test thread waits.
+/// 2. {@linkplain #PHASE_SERVER_TASKS} - The server runs its task queue, if the server exists. The other threads wait.
+/// 3. {@linkplain #PHASE_CLIENT_TASKS} - The client runs its task queue, if the client exists. The other threads wait.
+/// 4. {@linkplain #PHASE_TEST} - The test thread runs test code while the client and server threads wait for tasks to be handed off.
 ///
 /// In `PHASE_TEST`, the client and server threads (if they exist) are blocked on semaphores waiting for tasks
 /// to be handed to them from the test thread. When the test thread wants to send one of the other threads a task to run,

@@ -34,8 +34,10 @@ import net.fabricmc.fabric.api.event.Event;
 /// state (using [net.minecraft.world.level.block.entity.BlockEntity#setChanged()] and [net.minecraft.world.level.chunk.ChunkAccess#markUnsaved()] respectively), otherwise the modifications will not take effect properly.
 /// The [#setAttached(AttachmentType, Object)] method handles this automatically, but this needs to be done manually
 /// when attached data is mutable, for example:
-/// <pre>
-/// `AttachmentType<MutableType> MUTABLE_ATTACHMENT_TYPE = ...;net.minecraft.world.level.block.entity.BlockEntity be = ...;MutableType data = be.getAttachedOrCreate(MUTABLE_ATTACHMENT_TYPE);data.mutate();be.setChanged(); // Required because we are not using setAttached`</pre>
+///
+/// ```java
+/// AttachmentType<MutableType> MUTABLE_ATTACHMENT_TYPE = ...;net.minecraft.world.level.block.entity.BlockEntity be = ...;MutableType data = be.getAttachedOrCreate(MUTABLE_ATTACHMENT_TYPE);data.mutate();be.setChanged(); // Required because we are not using setAttached
+/// ```
 ///
 ///
 /// Note about [net.minecraft.world.level.block.entity.BlockEntity] targets: by default, many block entities use their NBT to synchronize with the client.

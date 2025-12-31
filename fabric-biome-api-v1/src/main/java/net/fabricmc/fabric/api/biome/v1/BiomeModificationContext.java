@@ -216,7 +216,7 @@ public interface BiomeModificationContext {
 	}
 
 	interface MobSpawnSettingsContext {
-		/// Associated JSON property: <code>creature_spawn_probability</code>.
+		/// Associated JSON property: `creature_spawn_probability`.
 		///
 		/// @see MobSpawnSettings#getCreatureProbability()
 		/// @see MobSpawnSettings.Builder#creatureGenerationProbability(float)
@@ -224,12 +224,12 @@ public interface BiomeModificationContext {
 
 		/// Provides a view of all spawns of the given category.
 		///
-		/// Associated JSON property: <code>spawners</code>.
+		/// Associated JSON property: `spawners`.
 		///
 		/// @see MobSpawnSettings#getMobs(MobCategory)
 		@UnmodifiableView List<Weighted<MobSpawnSettings.SpawnerData>> getMobs(MobCategory category);
 
-		/// Associated JSON property: <code>spawners</code>.
+		/// Associated JSON property: `spawners`.
 		///
 		/// @see MobSpawnSettings#getMobs(MobCategory)
 		/// @see MobSpawnSettings.Builder#addSpawn(MobCategory, int, MobSpawnSettings.SpawnerData)
@@ -237,12 +237,12 @@ public interface BiomeModificationContext {
 
 		/// Removes any spawns matching the given predicate from this biome, and returns true if any matched.
 		///
-		/// Associated JSON property: <code>spawners</code>.
+		/// Associated JSON property: `spawners`.
 		boolean removeSpawns(BiPredicate<MobCategory, MobSpawnSettings.SpawnerData> predicate);
 
 		/// Removes all spawns of the given entity type.
 		///
-		/// Associated JSON property: <code>spawners</code>.
+		/// Associated JSON property: `spawners`.
 		///
 		/// @return True if any spawns were removed.
 		default boolean removeSpawnsOfEntityType(EntityType<?> entityType) {
@@ -251,19 +251,19 @@ public interface BiomeModificationContext {
 
 		/// Removes all spawns of the given category.
 		///
-		/// Associated JSON property: <code>spawners</code>.
+		/// Associated JSON property: `spawners`.
 		default void clearSpawns(MobCategory category) {
 			removeSpawns((mobCategory, spawnEntry) -> mobCategory == category);
 		}
 
 		/// Removes all spawns.
 		///
-		/// Associated JSON property: <code>spawners</code>.
+		/// Associated JSON property: `spawners`.
 		default void clearSpawns() {
 			removeSpawns((mobCategory, spawnEntry) -> true);
 		}
 
-		/// Associated JSON property: <code>spawn_costs</code>.
+		/// Associated JSON property: `spawn_costs`.
 		///
 		/// @see MobSpawnSettings#getMobSpawnCost(EntityType)
 		/// @see MobSpawnSettings.Builder#addMobCharge(EntityType, double, double)
@@ -271,7 +271,7 @@ public interface BiomeModificationContext {
 
 		/// Removes a spawn cost entry for a given entity type.
 		///
-		/// Associated JSON property: <code>spawn_costs</code>.
+		/// Associated JSON property: `spawn_costs`.
 		void clearMobCharge(EntityType<?> entityType);
 	}
 }

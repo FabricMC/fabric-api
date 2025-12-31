@@ -34,11 +34,10 @@ import org.slf4j.LoggerFactory;
 /// assuming that they are all different according to the comparator. This also holds in the presence of cycles.
 ///
 /// The steps are as follows:
-/// <ol>
-///   - Compute node SCCs (Strongly Connected Components, i.e. cycles).
-///   - Sort nodes within SCCs using the comparator.
-///   - Sort SCCs with respect to each other by respecting constraints, and using the comparator in case of a tie.
-/// </ol>
+///
+/// 1. Compute node SCCs (Strongly Connected Components, i.e. cycles).
+/// 2. Sort nodes within SCCs using the comparator.
+/// 3. Sort SCCs with respect to each other by respecting constraints, and using the comparator in case of a tie.
 public class NodeSorting {
 	private static final Logger LOGGER = LoggerFactory.getLogger("fabric-api-base");
 

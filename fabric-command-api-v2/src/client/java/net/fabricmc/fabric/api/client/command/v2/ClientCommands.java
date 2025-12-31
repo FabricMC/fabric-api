@@ -48,11 +48,16 @@ import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 /// are an implementation detail that is not guaranteed to remain the same in future versions.
 /// The aim is to make commands from the server take precedence over client-sided commands
 /// in a future version of this API.
-/// ## Example command
-/// <pre>
+/// # Example
 ///
-/// `ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) ->{dispatcher.register(ClientCommands.literal("hello").executes(context ->{context.getSource().sendFeedback(Component.literal("Hello, world!"));return 0;}));});`
-/// </pre>
+/// ```java
+/// ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
+/// 	dispatcher.register(ClientCommands.literal("hello").executes(context -> {
+/// 		context.getSource().sendFeedback(Component.literal("Hello, world!"));
+/// 		return 0;
+/// 	}));
+/// });
+/// ```
 public final class ClientCommands {
 	private ClientCommands() {
 	}

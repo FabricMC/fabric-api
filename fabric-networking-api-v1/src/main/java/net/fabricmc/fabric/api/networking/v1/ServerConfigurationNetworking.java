@@ -227,8 +227,12 @@ public final class ServerConfigurationNetworking {
 		/// Modification to the game should be {@linkplain net.minecraft.util.thread.BlockableEventLoop#submit(Runnable) scheduled} using the Minecraft server instance from [ServerConfigurationNetworking#getServer(ServerConfigurationPacketListenerImpl)].
 		///
 		/// An example usage of this:
-		/// <pre>
-		/// `// use PayloadTypeRegistry for registering the payloadServerConfigurationNetworking.registerReceiver(BOOM_PACKET_TYPE, (payload, context) ->{});`</pre>
+		///
+		/// ```java
+		/// // use PayloadTypeRegistry for registering the payload
+		/// ServerConfigurationNetworking.registerReceiver(BOOM_PACKET_TYPE, (payload, context) -> {
+		/// });
+		/// ```
 		///
 		/// @param payload the packet payload
 		/// @param context the configuration networking context

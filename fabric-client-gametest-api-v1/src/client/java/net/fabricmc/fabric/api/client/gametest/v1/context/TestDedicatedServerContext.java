@@ -23,7 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 /// closed, the dedicated server will be stopped.
 ///
 /// Dedicated servers will only run if the EULA has been accepted in `eula.txt`. If you have read and accepted
-/// the <a href="https://aka.ms/MinecraftEULA">Minecraft EULA</a>, you can write the file at build-time by setting
+/// the [Minecraft EULA](https://aka.ms/MinecraftEULA), you can write the file at build-time by setting
 /// `fabricApi.configureTests{eula = true}` in your `build.gradle`.
 ///
 /// Functions in this class can only be called on the client gametest thread.

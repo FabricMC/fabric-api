@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistriesImpl;
 /// Contains methods for registering and accessing dynamic {@linkplain Registry registries}.
 /// ## Basic usage
 /// Custom dynamic registries can be registered with [#register(ResourceKey, Codec)]. These registries will not be
-/// <a href="#sync">synced to the client</a>.
+/// [synced to the client](#sync).
 ///
 /// The list of all dynamic registries, whether from vanilla or mods, can be accessed using
 /// [#getDynamicRegistries()].

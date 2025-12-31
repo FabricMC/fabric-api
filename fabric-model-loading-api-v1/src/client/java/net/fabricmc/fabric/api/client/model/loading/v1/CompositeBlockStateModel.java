@@ -41,8 +41,17 @@ public interface CompositeBlockStateModel extends BlockStateModel {
 	/// An unbaked composite model made of one or more other unbaked models.
 	///
 	/// The JSON format is as follows:
-	/// <pre>
-	/// `{"fabric:type": "fabric:composite","models": [// sub-model 1,// sub-model 2,// etc...]}`</pre>
+	///
+	/// ```json
+	/// {
+	/// 	"fabric:type": "fabric:composite",
+	/// 	"models": [
+	/// 		// sub-model 1,
+	/// 		// sub-model 2,
+	/// 		// etc...
+	/// 	]
+	/// }
+	/// ```
 	@ApiStatus.NonExtendable
 	interface Unbaked extends CustomUnbakedBlockStateModel {
 		/// Creates a new unbaked composite model from the given non-empty list of submodels.

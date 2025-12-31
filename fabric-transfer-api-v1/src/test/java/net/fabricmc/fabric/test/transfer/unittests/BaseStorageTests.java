@@ -102,8 +102,7 @@ public class BaseStorageTests extends AbstractTransferApiTest {
 		assertEquals(BUCKET, StorageUtil.simulateExtract(storage, lava, BUCKET, null));
 	}
 
-	/// Regression test for <a href="https://github.com/FabricMC/fabric/issues/3414">
-	/// `nonEmptyIterator` not handling views that become empty during iteration correctly</a>.
+	/// Regression test for [`nonEmptyIterator` not handling views that become empty during iteration correctly](https://github.com/FabricMC/fabric/issues/3414).
 	@Test
 	public void testNonEmptyIteratorWithModifiedView() {
 		SingleVariantStorage<FluidVariant> storage = SingleFluidStorage.withFixedCapacity(BUCKET, () -> { });

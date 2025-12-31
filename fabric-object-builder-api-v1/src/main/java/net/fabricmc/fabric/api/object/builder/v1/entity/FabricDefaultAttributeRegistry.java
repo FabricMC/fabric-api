@@ -54,9 +54,10 @@ public final class FabricDefaultAttributeRegistry {
 	/// Registers a default attribute for a type of living entity.
 	///
 	/// It can be used in a fashion similar to this:
-	/// <blockquote><pre>
+	///
+	/// ```java
 	/// FabricDefaultAttributeRegistry.register(type, LivingEntity.createLivingAttributes());
-	/// </pre></blockquote>
+	/// ```
 	///
 	///
 	/// If a registration overrides another, a debug log message will be emitted. Existing registrations

@@ -40,8 +40,17 @@ public final class ServerConfigurationConnectionEvents {
 	/// This event is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
 	///
 	/// An example usage of this:
-	/// <pre>
-	/// `ServerConfigurationConnectionEvents.CONFIGURE.register((listener, server) ->{if (ServerConfigurationNetworking.canSend(listener, ConfigurationPacket.PACKET_TYPE)){listener.addTask(new TestConfigurationTask("Example data"));}else{// You can opt to disconnect the client if it cannot handle the configuration tasklistener.disconnect(Component.literal("Network test configuration not supported by client"));}});`</pre>
+	///
+	/// ```java
+	/// ServerConfigurationConnectionEvents.CONFIGURE.register((listener, server) -> {
+	/// 	if (ServerConfigurationNetworking.canSend(listener, ConfigurationPacket.PACKET_TYPE)) {
+	/// 		listener.addTask(new TestConfigurationTask("Example data"));
+	/// 	} else {
+	/// 		// You can opt to disconnect the client if it cannot handle the configuration task
+	/// 		listener.disconnect(Component.literal("Network test configuration not supported by client"));
+	/// 	}
+	/// });
+	/// ```
 	public static final Event<Configure> CONFIGURE = EventFactory.createArrayBacked(Configure.class, callbacks -> (listener, server) -> {
 		for (Configure callback : callbacks) {
 			callback.onSendConfiguration(listener, server);

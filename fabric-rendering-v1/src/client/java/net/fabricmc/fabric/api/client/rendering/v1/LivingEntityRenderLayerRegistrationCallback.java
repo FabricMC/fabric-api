@@ -37,13 +37,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /// Once listeners find a suitable entity renderer, they should register their render layer via the registration helper.
 ///
 /// For example, to register a render layer for a player model, the example below may be used:
-/// <blockquote><pre>
+///
+/// ```java
 /// LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
 /// 	if (entityRenderer instanceof AvatarRenderer&lt;?&gt; avatarEntityRenderer) {
 /// 		registrationHelper.register(new MyRenderLayer(avatarEntityRenderer, context.getModelSet()));
 /// 	}
 /// });
-/// </pre></blockquote>
+/// ```
 @FunctionalInterface
 public interface LivingEntityRenderLayerRegistrationCallback {
 	Event<LivingEntityRenderLayerRegistrationCallback> EVENT = EventFactory.createArrayBacked(

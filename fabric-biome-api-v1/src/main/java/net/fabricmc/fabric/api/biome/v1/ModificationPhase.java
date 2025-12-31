@@ -20,12 +20,11 @@ package net.fabricmc.fabric.api.biome.v1;
 /// the phase in which they will be applied.
 ///
 /// This will result in the following order:
-/// <ol>
-///   - Additions to biomes
-///   - Removals from biomes
-///   - Replacements (removal + add) in biomes
-///   - Generic post-processing of biomes
-/// </ol>
+///
+/// 1. Additions to biomes
+/// 2. Removals from biomes
+/// 3. Replacements (removal + add) in biomes
+/// 4. Generic post-processing of biomes
 public enum ModificationPhase {
 	/// The appropriate phase for enriching biomes by adding to them without relying on
 	/// other information in the biome, or removing other features.

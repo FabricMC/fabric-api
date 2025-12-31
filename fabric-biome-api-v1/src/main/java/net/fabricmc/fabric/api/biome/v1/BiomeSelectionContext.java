@@ -90,7 +90,7 @@ public interface BiomeSelectionContext {
 	/// Tries to determine whether this biome generates in a specific dimension, based on the [net.minecraft.world.level.levelgen.WorldOptions]
 	/// used by the current level.
 	///
-	/// If no level stem exists for the given level stem key, <code>false</code> is returned.
+	/// If no level stem exists for the given level stem key, `false` is returned.
 	boolean canGenerateIn(ResourceKey<LevelStem> levelStemKey);
 
 	/// {@return true if this biome is in the given {@link TagKey}}.

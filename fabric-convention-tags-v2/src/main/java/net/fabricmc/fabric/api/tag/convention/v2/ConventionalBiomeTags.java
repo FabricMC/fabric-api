@@ -140,7 +140,7 @@ public final class ConventionalBiomeTags {
 	public static final TagKey<Biome> IS_BIRCH_FOREST = register("is_birch_forest");
 	/// For biomes that are a variant of Dark Forest. (Has roofed trees that are reminiscent of Dark Forest's style)
 	/// Pale Gardens is included in this tag because according to Mojang's blog post, they state it is a variation of the Dark Forest biome.
-	/// <a href="https://www.minecraft.net/en-us/article/minecraft-java-edition-1-21-4#pale_garden:~:text=The%20Pale%20Garden%20is%20a%20biome%20variation%20of%20Dark%20Forest">...</a>.
+	/// [...](https://www.minecraft.net/en-us/article/minecraft-java-edition-1-21-4#pale_garden:~:text=The%20Pale%20Garden%20is%20a%20biome%20variation%20of%20Dark%20Forest).
 	public static final TagKey<Biome> IS_DARK_FOREST = register("is_dark_forest");
 	/// For biomes that are a variant of Flower Forest. (Is very dense in variety of flowers)
 	public static final TagKey<Biome> IS_FLOWER_FOREST = register("is_flower_forest");

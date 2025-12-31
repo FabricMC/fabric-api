@@ -40,22 +40,101 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
 /// Note: If you are going to query APIs a lot, consider using [BlockApiCache], it may drastically improve performance.
 /// ### Usage Example
 /// Let us pretend we have the following interface that we would like to attach to some blocks depending on the direction.
-/// <pre>
-/// `public interface FluidContainer{boolean containsFluids(); // return true if not empty}`</pre>
+///
+/// ```java
+/// public interface FluidContainer {
+///     boolean containsFluids(); // return true if not empty
+/// }
+/// ```
+///
 /// Let us first create a static `BlockApiLookup` instance that will manage the registration and the query.
-/// <pre>
-/// `public final class MyApi{public static final BlockApiLookup<FluidContainer, Direction> FLUID_CONTAINER = BlockApiLookup.get(Identifier.fromNamespaceAndPath("modid", "fluid_container"), FluidContainer.class, Direction.class);}`</pre>
+///
+/// ```java
+/// public final class MyApi {
+///     public static final BlockApiLookup<FluidContainer, Direction> FLUID_CONTAINER =
+///         BlockApiLookup.get(Identifier.fromNamespaceAndPath("modid", "fluid_container"),
+///             FluidContainer.class, Direction.class);
+/// }
+/// ```
+///
 /// Using that, we can query instances of `FluidContainer`:
-/// <pre>
-/// `FluidContainer container = MyApi.FLUID_CONTAINER.find(level, pos, direction);if (container != null){// Do something with the containerif (container.containsFluids()){System.out.println("It contains fluids!");}}`</pre>
+///
+/// ```java
+/// FluidContainer container = MyApi.FLUID_CONTAINER.find(level, pos, direction);
+/// if (container != null) {
+///     // Do something with the container
+///     if (container.containsFluids()) {
+///         System.out.println("It contains fluids!");
+///     }
+/// }
+/// ```
+///
 /// For the query to return a useful result, functions that provide an API for a block or a block entity must be registered.
-/// <pre>
-/// `// If the block entity directly implements the interface, registerSelf can be used.public class ContainerBlockEntity implements FluidContainer{// ...}BlockEntityType<ContainerBlockEntity> CONTAINER_BLOCK_ENTITY_TYPE;MyApi.FLUID_CONTAINER.registerSelf(CONTAINER_BLOCK_ENTITY_TYPE);// For more complicated block entity logic, registerForBlockEntities can be used.// For example, let's provide a stored field, and only when the direction is UP:public class MyBlockEntity{public final FluidContainer upContainer;// ...}MyApi.FLUID_CONTAINER.registerForBlockEntities((blockEntity, direction) ->{if (direction == Direction.UP){// only expose from the top// return a fieldreturn ((MyBlockEntity) blockEntity).upContainer;}else{return null;}}, BLOCK_ENTITY_TYPE_1, BLOCK_ENTITY_TYPE_2);// Without a block entity, registerForBlocks can be used.MyApi.FLUID_CONTAINER.registerForBlocks((level, pos, state, blockEntity, direction) ->{// return a FluidContainer for your block, or null if there is none}, BLOCK_INSTANCE, ANOTHER_BLOCK_INSTANCE); // register as many blocks as you want// Block entity fallback, for example to interface with another mod's FluidInventory.MyApi.FLUID_CONTAINER.registerFallback((level, pos, state, blockEntity, direction) ->{if (blockEntity instanceof FluidInventory){// return wrapper}return null;});// General fallback, to interface with anything, for example another BlockApiLookup.MyApi.FLUID_CONTAINER.registerFallback((level, pos, state, blockEntity, direction) ->{// return something if available, or null});`</pre>
+///
+/// ```java
+/// // If the block entity directly implements the interface, registerSelf can be used.
+/// public class ContainerBlockEntity implements FluidContainer {
+///     // ...
+/// }
+/// BlockEntityType<ContainerBlockEntity> CONTAINER_BLOCK_ENTITY_TYPE;
+/// MyApi.FLUID_CONTAINER.registerSelf(CONTAINER_BLOCK_ENTITY_TYPE);
+///
+/// // For more complicated block entity logic, registerForBlockEntities can be used.
+/// // For example, let's provide a stored field, and only when the direction is UP:
+/// public class MyBlockEntity {
+///     public final FluidContainer upContainer;
+///     // ...
+/// }
+/// MyApi.FLUID_CONTAINER.registerForBlockEntities((blockEntity, direction) -> {
+///     if (direction == Direction.UP) {
+///         // only expose from the top
+///         // return a field
+///         return ((MyBlockEntity) blockEntity).upContainer;
+///     } else {
+///         return null;
+///     }
+/// }, BLOCK_ENTITY_TYPE_1, BLOCK_ENTITY_TYPE_2);
+///
+/// // Without a block entity, registerForBlocks can be used.
+/// MyApi.FLUID_CONTAINER.registerForBlocks((level, pos, state, blockEntity, direction) -> {
+///     // return a FluidContainer for your block, or null if there is none
+/// }, BLOCK_INSTANCE, ANOTHER_BLOCK_INSTANCE); // register as many blocks as you want
+///
+/// // Block entity fallback, for example to interface with another mod's FluidInventory.
+/// MyApi.FLUID_CONTAINER.registerFallback((level, pos, state, blockEntity, direction) -> {
+///     if (blockEntity instanceof FluidInventory) {
+///         // return wrapper
+///     }
+///     return null;
+/// });
+///
+/// // General fallback, to interface with anything, for example another BlockApiLookup.
+/// MyApi.FLUID_CONTAINER.registerFallback((level, pos, state, blockEntity, direction) -> {
+///     // return something if available, or null
+/// });
+/// ```
+///
 /// ### Improving performance
 /// When performing queries every tick, it is recommended to use [BlockApiCache&lt;A, C&gt;][BlockApiCache]
 /// instead of directly querying the `BlockApiLookup`.
-/// <pre>
-/// `// 1) create and store an instanceBlockApiCache<FluidContainer, Direction> cache = BlockApiCache.create(MyApi.FLUID_CONTAINER, serverLevel, pos);// 2) use it later, the block entity instance will be cached among other thingsFluidContainer container = cache.find(direction);if (container != null){// ...}// 2bis) if the caller is able to cache the block state as well, for example by listening to neighbor updates,//       that will further improve performance.FluidContainer container = cache.find(direction, cachedBlockState);if (container != null){// ...}// no need to destroy the cache, the garbage collector will take care of it`</pre>
+///
+/// ```java
+/// // 1) create and store an instance
+/// BlockApiCache<FluidContainer, Direction> cache = BlockApiCache.create(MyApi.FLUID_CONTAINER, serverLevel, pos);
+/// // 2) use it later, the block entity instance will be cached among other things
+/// FluidContainer container = cache.find(direction);
+/// if (container != null) {
+///     // ...
+/// }
+/// // 2bis) if the caller is able to cache the block state as well, for example by listening to neighbor updates,
+/// //       that will further improve performance.
+/// FluidContainer container = cache.find(direction, cachedBlockState);
+/// if (container != null) {
+///     // ...
+/// }
+/// // no need to destroy the cache, the garbage collector will take care of it
+/// ```
+///
 /// ### Generic context types
 /// Note that `FluidContainer` and `Direction` were completely arbitrary in this example.
 /// We can define any `BlockApiLookup&lt;A, C&gt;`, where `A` is the type of the queried API, and `C` is the type of the additional context

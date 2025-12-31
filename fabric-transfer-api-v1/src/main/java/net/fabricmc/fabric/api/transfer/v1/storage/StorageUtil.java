@@ -42,8 +42,22 @@ public final class StorageUtil {
 	/// Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.
 	///
 	/// Here is a usage example with fluid variant storages:
-	/// <pre>
-	/// `// SourceStorage<FluidVariant> source;// TargetStorage<FluidVariant> target;// Move up to one bucket in total from source to target, outside of a transaction:long amountMoved = StorageUtil.move(source, target, variant -> true, FluidConstants.BUCKET, null);// Move exactly one bucket in total, only of water:try (Transaction transaction = Transaction.openOuter()){Predicate<FluidVariant> filter = variant -> variant.isOf(Fluids.WATER);long waterMoved = StorageUtil.move(source, target, filter, FluidConstants.BUCKET, transaction);if (waterMoved == FluidConstants.BUCKET){// Only commit if exactly one bucket was moved (no less!).transaction.commit();}}`</pre>
+	///
+	/// ```java
+	/// // SourceStorage<FluidVariant> source;
+	/// // TargetStorage<FluidVariant> target;
+	/// // Move up to one bucket in total from source to target, outside of a transaction:
+	/// long amountMoved = StorageUtil.move(source, target, variant -> true, FluidConstants.BUCKET, null);
+	/// // Move exactly one bucket in total, only of water:
+	/// try (Transaction transaction = Transaction.openOuter()) {
+	/// 	Predicate<FluidVariant> filter = variant -> variant.isOf(Fluids.WATER);
+	/// 	long waterMoved = StorageUtil.move(source, target, filter, FluidConstants.BUCKET, transaction);
+	/// 	if (waterMoved == FluidConstants.BUCKET) {
+	/// 		// Only commit if exactly one bucket was moved (no less!).
+	/// 		transaction.commit();
+	/// 	}
+	/// }
+	/// ```
 	///
 	/// @param from The source storage. May be null.
 	/// @param to The target storage. May be null.

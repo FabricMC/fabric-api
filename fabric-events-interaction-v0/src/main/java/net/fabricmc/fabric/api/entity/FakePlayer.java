@@ -49,8 +49,11 @@ import net.fabricmc.fabric.impl.event.interaction.FakePlayerPacketListener;
 /// For good inter-mod compatibility, fake players should have the UUID of their owning (human) player.
 /// They should still have a different name to ensure the [GameProfile] is different.
 /// For example:
-/// <pre>
-/// `UUID humanPlayerUuid = ...;String humanPlayerName = ...;GameProfile fakeProfile = new GameProfile(humanPlayerUuid, "[Block Breaker of " + humanPlayerName + "]");`</pre>
+///
+/// ```java
+/// UUID humanPlayerUuid = ...;String humanPlayerName = ...;GameProfile fakeProfile = new GameProfile(humanPlayerUuid, "[Block Breaker of " + humanPlayerName + "]");
+/// ```
+///
 /// If a fake player does not belong to a specific player, the [default UUID][#DEFAULT_UUID] should be used.
 ///
 /// Fake players try to behave like regular [ServerPlayer] objects to a reasonable extent.

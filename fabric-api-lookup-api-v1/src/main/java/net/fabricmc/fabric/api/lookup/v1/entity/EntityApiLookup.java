@@ -34,20 +34,28 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
 /// If it doesn't exist, or if it returns `null`, the fallback providers will be queried in order.
 /// ### Usage Example
 /// Let's pretend that we have the following interface that we want to attach to entities.
-/// <pre>
-/// `public interface Leveled{int getLevel();}`</pre>
+///
+/// ```java
+/// public interface Leveled{int getLevel();}
+/// ```
 ///
 /// We need to create the EntityApiLookup. We don't need any context so we use [Void].
-/// <pre>
-/// `public class MyApi{public static final EntityApiLookup<Leveled, Void> LEVELED_ENTITY = EntityApiLookup.get(Identifier.fromNamespaceAndPath("modid", "leveled_entity"), Leveled.class, Void.class);}`</pre>
+///
+/// ```java
+/// public class MyApi{public static final EntityApiLookup<Leveled, Void> LEVELED_ENTITY = EntityApiLookup.get(Identifier.fromNamespaceAndPath("modid", "leveled_entity"), Leveled.class, Void.class);}
+/// ```
 ///
 /// Now we can query instances of `Leveled`.
-/// <pre>
-/// `Leveled leveled = MyApi.LEVELED_ENTITY.find(entity, null);if (leveled != null){// Do something with the API.System.out.println("Entity " + entity.getScoreboardName() + " is level " + leveled.getLevel());}`</pre>
+///
+/// ```java
+/// Leveled leveled = MyApi.LEVELED_ENTITY.find(entity, null);if (leveled != null){// Do something with the API.System.out.println("Entity " + entity.getScoreboardName() + " is level " + leveled.getLevel());}
+/// ```
 ///
 /// For query to return useful result, we must expose the API.
-/// <pre>
-/// `// If the entity directly implements the interface, registerSelf can be used.public class LeveledPig extends Pig implements Leveled{...}MyApi.LEVELED_ENTITY.registerSelf(LEVELED_PIG_ENTITY_TYPE);// Otherwise, registerForType can be used.MyApi.LEVELED_ENTITY.registerForType((zombie, ignored) ->{// Return a Leveled instance for your entity here, or null if there's none.// The context is Void in this case, so it can be ignored.}, EntityType.ZOMBIE);// Generic fallback, to interface with anything, for example if we want to all other entity level defaults to 1.MyApi.LEVELED_ENTITY.registerFallback((entity, ignored) ->{// Return something if available, or null otherwise.});`</pre>
+///
+/// ```java
+/// // If the entity directly implements the interface, registerSelf can be used.public class LeveledPig extends Pig implements Leveled{...}MyApi.LEVELED_ENTITY.registerSelf(LEVELED_PIG_ENTITY_TYPE);// Otherwise, registerForType can be used.MyApi.LEVELED_ENTITY.registerForType((zombie, ignored) ->{// Return a Leveled instance for your entity here, or null if there's none.// The context is Void in this case, so it can be ignored.}, EntityType.ZOMBIE);// Generic fallback, to interface with anything, for example if we want to all other entity level defaults to 1.MyApi.LEVELED_ENTITY.registerFallback((entity, ignored) ->{// Return something if available, or null otherwise.});
+/// ```
 ///
 /// @param <A> the type of the API we want to query.
 /// @param <C> the type of the additional context object. Completely arbitrary.

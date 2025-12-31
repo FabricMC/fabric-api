@@ -154,8 +154,30 @@ public final class ServerLoginNetworking {
 		/// Here is an example where the player log-in is blocked so that a credential check and
 		/// building of a followup query request can be performed properly on the logical server
 		/// thread before the player successfully logs in:
-		/// <pre>
-		/// `ServerLoginNetworking.registerGlobalReceiver(CHECK_CHANNEL, (server, listener, understood, buf, synchronizer, responseSender) -&gt;{if (!understood){listener.disconnect(Component.literal("Only accept clients that can check!"));return;}String checkMessage = buf.readString(32767);// Just send the CompletableFuture returned by the server's submit methodsynchronizer.waitFor(server.submit(() -&gt;{LoginInfoChecker checker = LoginInfoChecker.get(server);if (!checker.check(listener.getUserName(), checkMessage)){listener.disconnect(Component.literal("Invalid credentials!"));return;}responseSender.send(UPCOMING_CHECK, checker.buildSecondQueryPacket(listener, checkMessage));}));});`</pre>
+		///
+		/// ```java
+		/// ServerLoginNetworking.registerGlobalReceiver(CHECK_CHANNEL, (server, listener, understood, buf, synchronizer, responseSender) -> {
+		/// 	if (!understood) {
+		/// 		listener.disconnect(Component.literal("Only accept clients that can check!"));
+		/// 		return;
+		/// 	}
+		///
+		/// 	String checkMessage = buf.readString(32767);
+		///
+		/// 	// Just send the CompletableFuture returned by the server's submit method
+		/// 	synchronizer.waitFor(server.submit(() -> {
+		/// 		LoginInfoChecker checker = LoginInfoChecker.get(server);
+		///
+		/// 		if (!checker.check(listener.getUserName(), checkMessage)) {
+		/// 			listener.disconnect(Component.literal("Invalid credentials!"));
+		/// 			return;
+		/// 		}
+		///
+		/// 		responseSender.send(UPCOMING_CHECK, checker.buildSecondQueryPacket(listener, checkMessage));
+		/// 	}));
+		/// });
+		/// ```
+		///
 		/// Usually it is enough to pass the return value for [net.minecraft.util.thread.BlockableEventLoop#submit(Runnable)] for `future`.
 		///
 		/// @param future the future that must be done before the player can log in

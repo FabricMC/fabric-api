@@ -26,8 +26,11 @@ import net.fabricmc.fabric.impl.client.keymapping.KeyMappingRegistryImpl;
 import net.fabricmc.fabric.mixin.client.keymapping.KeyMappingAccessor;
 
 /// Helper for registering [KeyMapping]s.
-/// <pre>
-/// `KeyMapping left = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.left", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, KeyMapping.Category.MISC));KeyMapping right = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.right", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_U, KeyMapping.Category.MISC));`</pre>
+///
+/// ```java
+/// KeyMapping left = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.left", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_P, KeyMapping.Category.MISC));
+/// KeyMapping right = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.example.right", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_U, KeyMapping.Category.MISC));
+/// ```
 ///
 /// @see KeyMapping
 /// @see net.minecraft.client.ToggleKeyMapping

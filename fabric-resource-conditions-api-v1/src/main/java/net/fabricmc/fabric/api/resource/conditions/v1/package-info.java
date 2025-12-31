@@ -21,8 +21,24 @@
 /// ## JSON format
 ///
 /// Add an array with the `fabric:load_conditions` key to the JSON file:
-/// <pre>
-/// `{"type": "minecraft:crafting_shapeless","ingredients": [{"item": "minecraft:dirt"}],"result":{"item": "minecraft:diamond"},"fabric:load_conditions": [{"condition": "<insert condition ID here>",// values of the condition}]}`</pre>
+///
+/// ```json
+/// {
+/// 	"type": "minecraft:crafting_shapeless",
+/// 	"ingredients": [
+/// 		{"item": "minecraft:dirt"}
+/// 	],
+/// 	"result": {
+/// 		"item": "minecraft:diamond"
+/// 	},
+/// 	"fabric:load_conditions": [
+/// 		{
+/// 			"condition": "<insert condition ID here>",
+/// 			// values of the condition
+/// 		}
+/// 	]
+/// }
+/// ```
 ///
 /// Unknown/invalid conditions will be skipped and considered successful.
 /// ## Data generation integration

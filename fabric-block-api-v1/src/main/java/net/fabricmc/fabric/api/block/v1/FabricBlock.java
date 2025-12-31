@@ -52,7 +52,37 @@ public interface FabricBlock {
 	/// Here is an example of how data from a block entity can be handled safely.
 	/// The block entity should override `RenderDataBlockEntity#getBlockEntityRenderData` to return
 	/// the necessary data. Refer to the documentation of `RenderDataBlockEntity` for more information.
-	/// <pre>`@Overridepublic BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos){if (blockAndTintGetter instanceof ServerLevel serverLevel){// Server side; ok to use block entity directly!BlockEntity blockEntity = serverLevel.getBlockEntity(pos);if (blockEntity instanceof ...){// Get data from block entityreturn ...;}}else{// Client side; need to use the block entity render data!Object data = blockAndTintGetter.getBlockEntityRenderData(pos);// Check if data is not null and of the correct type, and use that to determine the appearanceif (data instanceof ...){// get appearance for side ...return ...;}}// Example of varying the appearance based on the source posif (sourcePos != null){// get appearance for side ...return ...;}// If there is no other appearance, just return the original block statereturn state;});`</pre>
+	///
+	/// ```java
+	/// @Override
+	/// public BlockState getAppearance(BlockState state, BlockAndTintGetter blockAndTintGetter, BlockPos pos, Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+	/// 	if (blockAndTintGetter instanceof ServerLevel serverLevel) {
+	/// 		// Server side; ok to use block entity directly!
+	/// 		BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
+	/// 		if (blockEntity instanceof ...) {
+	/// 			// Get data from block entity
+	/// 			return ...;
+	/// 		}
+	/// 	} else {
+	/// 		// Client side; need to use the block entity render data!
+	/// 		Object data = blockAndTintGetter.getBlockEntityRenderData(pos);
+	/// 		// Check if data is not null and of the correct type, and use that to determine the appearance
+	/// 		if (data instanceof ...) {
+	/// 			// get appearance for side ...
+	/// 			return ...;
+	/// 		}
+	/// 	}
+	///
+	/// 	// Example of varying the appearance based on the source pos
+	/// 	if (sourcePos != null) {
+	/// 		// get appearance for side ...
+	/// 		return ...;
+	/// 	}
+	///
+	/// 	// If there is no other appearance, just return the original block state
+	/// 	return state;
+	/// });
+	/// ```
 	///
 	/// @param state       			state of this block, whose appearance is being queried
 	/// @param blockAndTintGetter  	the level this block is in

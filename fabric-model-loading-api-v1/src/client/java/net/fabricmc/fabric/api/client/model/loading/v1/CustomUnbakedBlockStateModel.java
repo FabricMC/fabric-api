@@ -28,8 +28,13 @@ import net.fabricmc.fabric.impl.client.model.loading.CustomUnbakedBlockStateMode
 /// **, e.g. for [ModelModifier].
 ///
 /// The format for custom unbaked block state models is as follows:
-/// <pre>
-/// `{"fabric:type": "<identifier of the type>",// extra model data, dependent on the type}`</pre>
+///
+/// ```json
+/// {
+/// 	"fabric:type": "<identifier of the type>",
+/// 	// extra model data, dependent on the type
+/// }
+/// ```
 ///
 /// The above JSON object may be used in a `blockstates/` file wherever a [net.minecraft.client.renderer.block.model.Variant] or
 /// [net.minecraft.client.renderer.block.model.SingleVariant.Unbaked] is normally valid. Note that if the `"fabric:type"` key is present,

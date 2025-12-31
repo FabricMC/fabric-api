@@ -28,9 +28,13 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /// Callback for when a server registers all commands.
 ///
 /// To register some commands, you would register an event listener and implement the callback.
-/// <pre>
-/// `CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) ->{// For example, this command is only registered on an integrated server like the vanilla publish commandif (selection.includeIntegrated) dispatcher.register(Commands.literal("integrated_command").executes(context ->{...}));})`;
-/// }</pre>
+///
+/// ```java
+/// CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) -> {
+/// 	// For example, this command is only registered on an integrated server like the vanilla publish command
+/// 	if (selection.includeIntegrated) dispatcher.register(Commands.literal("integrated_command").executes(context -> {...}));
+/// });
+/// ```
 public interface CommandRegistrationCallback {
 	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dispatcher, buildContext, selection) -> {
 		for (CommandRegistrationCallback callback : callbacks) {

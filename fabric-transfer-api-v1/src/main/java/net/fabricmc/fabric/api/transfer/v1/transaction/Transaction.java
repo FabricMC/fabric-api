@@ -41,8 +41,21 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionManagerImpl;
 ///
 ///
 /// This is illustrated in the following example.
-/// <pre>
-/// `try (Transaction outerTransaction = Transaction.openOuter()){// (A) some transaction operationstry (Transaction nestedTransaction = outerTransaction.openNested()){// (B) more operationsnestedTransaction.commit(); // Validate the changes that happened in this transaction.// This is a nested transaction, so changes will only be applied if the outer// transaction is committed too.}// (C) even more operationsouterTransaction.commit(); // This is an outer transaction: changes (A), (B) and (C) are applied.}// If we hadn't committed the outerTransaction, all changes (A), (B) and (C) would have been reverted.`</pre>
+///
+/// ```java
+/// try (Transaction outerTransaction = Transaction.openOuter()) {
+/// 	// (A) some transaction operations
+/// 	try (Transaction nestedTransaction = outerTransaction.openNested()) {
+/// 		// (B) more operations
+/// 		nestedTransaction.commit(); // Validate the changes that happened in this transaction.
+/// 		// This is a nested transaction, so changes will only be applied if the outer
+/// 		// transaction is committed too.
+/// 	}
+/// 	// (C) even more operations
+/// 	outerTransaction.commit(); // This is an outer transaction: changes (A), (B) and (C) are applied.
+/// }
+/// // If we hadn't committed the outerTransaction, all changes (A), (B) and (C) would have been reverted.
+/// ```
 ///
 /// Participants are responsible for upholding this contract themselves, by using [#addCloseCallback]
 /// to react to transaction close events and properly validate or revert changes.

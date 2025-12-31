@@ -282,8 +282,13 @@ public final class ServerPlayNetworking {
 		/// manipulate the world.
 		///
 		/// An example usage of this is to create an explosion where the player is looking:
-		/// <pre>
-		/// `// use PayloadTypeRegistry for registering the payloadServerPlayNetworking.registerReceiver(BoomPayload.TYPE, (payload, context) ->{ModPacketHandler.createExplosion(context.player(), payload.fire());});`</pre>
+		///
+		/// ```java
+		/// // use PayloadTypeRegistry for registering the payload
+		/// ServerPlayNetworking.registerReceiver(BoomPayload.TYPE, (payload, context) -> {
+		/// 	ModPacketHandler.createExplosion(context.player(), payload.fire());
+		/// });
+		/// ```
 		///
 		/// The packet listener can be accessed via [ServerPlayer#connection].
 		///
